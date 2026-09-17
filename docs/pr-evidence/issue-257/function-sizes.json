@@ -1,0 +1,233 @@
+[
+  {
+    "trace": ".next/server/app/enti/[codice]/page.js.nft.json",
+    "files": 4075,
+    "bytes": 463155751,
+    "MiB": 441.7,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/enti/[codice]/route.js.nft.json",
+    "files": 4056,
+    "bytes": 454282530,
+    "MiB": 433.24,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/enti/[codice]/appalti/page.js.nft.json",
+    "files": 4062,
+    "bytes": 432453877,
+    "MiB": 412.42,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/assistant/chat/route.js.nft.json",
+    "files": 2192,
+    "bytes": 290720059,
+    "MiB": 277.25,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/assistant/route.js.nft.json",
+    "files": 2191,
+    "bytes": 290708353,
+    "MiB": 277.24,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/mcp/route.js.nft.json",
+    "files": 2186,
+    "bytes": 273720599,
+    "MiB": 261.04,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/spese/sanita/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230852260,
+    "MiB": 220.16,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/dati/[dataset]/page.js.nft.json",
+    "files": 2161,
+    "bytes": 230770928,
+    "MiB": 220.08,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/spese/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757315,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/trasparenza/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757282,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/controlli/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757263,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/incarichi/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757260,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/confronti/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757252,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/appalti/[topic]/page.js.nft.json",
+    "files": 2160,
+    "bytes": 230757247,
+    "MiB": 220.07,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/pnrr/asili/route.js.nft.json",
+    "files": 2034,
+    "bytes": 230551426,
+    "MiB": 219.87,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/dati/page.js.nft.json",
+    "files": 2155,
+    "bytes": 230297051,
+    "MiB": 219.63,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/partecipazioni/page.js.nft.json",
+    "files": 2155,
+    "bytes": 230286821,
+    "MiB": 219.62,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/trasparenza/page.js.nft.json",
+    "files": 2154,
+    "bytes": 230282041,
+    "MiB": 219.61,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/incarichi/dettaglio/page.js.nft.json",
+    "files": 2154,
+    "bytes": 230281744,
+    "MiB": 219.61,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/spese/operative/page.js.nft.json",
+    "files": 2154,
+    "bytes": 230281667,
+    "MiB": 219.61,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/appalti/dettaglio/page.js.nft.json",
+    "files": 2154,
+    "bytes": 230281516,
+    "MiB": 219.61,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/fonti/catalogo/page.js.nft.json",
+    "files": 2154,
+    "bytes": 230243813,
+    "MiB": 219.58,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/pnrr/page.js.nft.json",
+    "files": 2153,
+    "bytes": 230243766,
+    "MiB": 219.58,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/fonti/copertura/page.js.nft.json",
+    "files": 2153,
+    "bytes": 230242497,
+    "MiB": 219.58,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/appalti/ted/page.js.nft.json",
+    "files": 2153,
+    "bytes": 230239233,
+    "MiB": 219.57,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/pnrr/progetti/route.js.nft.json",
+    "files": 2138,
+    "bytes": 229783630,
+    "MiB": 219.14,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/dati/[dataset]/route.js.nft.json",
+    "files": 2136,
+    "bytes": 229693175,
+    "MiB": 219.05,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/fonti/catalogo/route.js.nft.json",
+    "files": 2136,
+    "bytes": 229692766,
+    "MiB": 219.05,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/spese/sport/page.js.nft.json",
+    "files": 2147,
+    "bytes": 221346458,
+    "MiB": 211.09,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/governi/dati/[download]/route.js.nft.json",
+    "files": 2033,
+    "bytes": 215837221,
+    "MiB": 205.84,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/api/governi/dati/route.js.nft.json",
+    "files": 2033,
+    "bytes": 215837137,
+    "MiB": 205.84,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/mcp/page.js.nft.json",
+    "files": 2055,
+    "bytes": 212862986,
+    "MiB": 203.0,
+    "missing": []
+  },
+  {
+    "trace": ".next/server/app/pnrr/incarichi/page.js.nft.json",
+    "files": 2049,
+    "bytes": 212423755,
+    "MiB": 202.58,
+    "missing": []
+  }
+]

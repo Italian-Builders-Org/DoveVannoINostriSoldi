@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "oecd-taxing-wages",
+  "period": {
+    "from": 2000,
+    "to": 2025,
+    "peersFrom": 2015,
+    "peersTo": 2025
+  },
+  "referencePeriod": "2000-2025 (Italia AW100/AW67); 2015-2025 (confronto peer AW100)",
+  "observedAt": "2026-09-11",
+  "source": {
+    "owner": "OECD",
+    "landingUrl": "https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html",
+    "dataExplorerUrl": "https://data-explorer.oecd.org/vis?df[ag]=OECD.CTP.TPS&df[id]=DSD_TAX_WAGES_COMP@DF_TW_COMP&df[vs]=2.1",
+    "apiHost": "https://sdmx.oecd.org/public/rest/",
+    "agencyId": "OECD.CTP.TPS",
+    "dataflowId": "DSD_TAX_WAGES_COMP@DF_TW_COMP",
+    "dataflowVersion": "2.1",
+    "datasetLabel": "Labour taxation – OECD comparative country indicators",
+    "publication": {
+      "title": "Taxing Wages 2025",
+      "doi": "https://doi.org/10.1787/b3a95829-en",
+      "citation": "OECD (2025), Taxing Wages 2025, OECD Publishing, Paris, https://doi.org/10.1787/b3a95829-en."
+    },
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Taxing Wages 2025 è pubblicato sotto Creative Commons Attribution 4.0 International (CC BY 4.0). Riuso consentito con attribuzione OECD; adattamenti devono citare l'originale e dichiarare che non rappresentano le opinioni ufficiali dell'OECD o dei suoi Membri. Non usare logo OECD. Verifica sulla pagina della pubblicazione il 2026-09-11.",
+    "termsUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "oecdTermsUrl": "https://www.oecd.org/en/about/terms-conditions.html",
+    "acquisition": {
+      "acquiredAt": "2026-09-11",
+      "checkedAt": "2026-09-11",
+      "note": "Quattro risposte SDMX-CSV ufficiali da sdmx.oecd.org (DisseminateFinalDMZ) per DF_TW_COMP 2.1. Il profilo prodotto è S_C0 AW100; AW67 è solo controllo. I denominatori PT_COS_LB e PT_WG_EARN_G restano distinti."
+    },
+    "assets": {
+      "italy-wedge-aw100": {
+        "filename": "italy-wedge-aw100.csv",
+        "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_TAX_WAGES_COMP@DF_TW_COMP,2.1/ITA.AV_TW.PT_COS_LB.S_C0.AW100._Z.A?startPeriod=2000&endPeriod=2025&format=csvfilewithlabels",
+        "bytes": 9218,
+        "sha256": "8967922a76d0d5f0dd5d489fd59a4f1629b0daaae17790c9fb66ecb1e11d21e9",
+        "format": "sdmx-csv-with-labels",
+        "note": "Italia, cuneo medio AV_TW in % del costo del lavoro, single senza figli, AW100."
+      },
+      "italy-components-aw100": {
+        "filename": "italy-components-aw100.csv",
+        "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_TAX_WAGES_COMP@DF_TW_COMP,2.1/ITA.AV_ITR+AV_R_EMPEE_SSC+AV_R_EMPER_SSC+AV_RITEESSC+NPATR.PT_WG_EARN_G.S_C0.AW100._Z.A?startPeriod=2000&endPeriod=2025&format=csvfilewithlabels",
+        "bytes": 50088,
+        "sha256": "3868409425ad7f902aec665c88410432a84e906cd8e46438f68f020780be993a",
+        "format": "sdmx-csv-with-labels",
+        "note": "Italia, componenti in % del lordo, stesso profilo S_C0 AW100."
+      },
+      "peers-wedge-aw100": {
+        "filename": "peers-wedge-aw100.csv",
+        "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_TAX_WAGES_COMP@DF_TW_COMP,2.1/ITA+FRA+DEU+ESP+OECD_REP.AV_TW.PT_COS_LB.S_C0.AW100._Z.A?startPeriod=2015&endPeriod=2025&format=csvfilewithlabels",
+        "bytes": 19295,
+        "sha256": "604b06a474499ac340866b8edf3e00fc7448ee3a3237c447353d61ba73379612",
+        "format": "sdmx-csv-with-labels",
+        "note": "Confronto IT/FR/DE/ES e media OECD_REP, AV_TW, stesso profilo, 2015-2025."
+      },
+      "italy-wedge-aw67": {
+        "filename": "italy-wedge-aw67.csv",
+        "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_TAX_WAGES_COMP@DF_TW_COMP,2.1/ITA.AV_TW.PT_COS_LB.S_C0.AW67._Z.A?startPeriod=2000&endPeriod=2025&format=csvfilewithlabels",
+        "bytes": 9168,
+        "sha256": "eb64b38fc7a669fea1a5eabd416058e689d9c3bb1cc0c987c9e5ebac99f94a6f",
+        "format": "sdmx-csv-with-labels",
+        "note": "Italia AV_TW low wage AW67 per controllo con Eurostat earn_nt_taxwedge; non è il profilo hero."
+      }
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "applicable": false,
+      "unit": "non applicabile",
+      "nature": "aliquote effettive medie su profilo tipo OECD Taxing Wages",
+      "note": "Nessun importo di spesa pubblica: sono percentuali su costo del lavoro o lordo di un lavoratore tipo."
+    },
+    "periodo": {
+      "referencePeriod": "2000/2025",
+      "note": "TIME_PERIOD della fonte SDMX; il confronto peer ha una finestra più corta."
+    },
+    "provenance": {
+      "holder": "OECD",
+      "license": "CC-BY-4.0",
+      "publicationDate": null,
+      "acquisitionDate": "2026-09-11",
+      "checkedAt": "2026-09-11",
+      "canonicalUrls": [
+        "https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html",
+        "https://doi.org/10.1787/b3a95829-en",
+        "https://data-explorer.oecd.org/vis?df[ag]=OECD.CTP.TPS&df[id]=DSD_TAX_WAGES_COMP@DF_TW_COMP&df[vs]=2.1"
+      ]
+    }
+  },
+  "coverage": {
+    "expectedCells": 237,
+    "observedCells": 237,
+    "italyYears": 26,
+    "peerYears": 11,
+    "peerGeographies": 5
+  },
+  "reconciliation": {
+    "toleranceMillionths": 1,
+    "gapByYearMillionths": {
+      "2000": 0,
+      "2001": -1,
+      "2002": 0,
+      "2003": 0,
+      "2004": 0,
+      "2005": 0,
+      "2006": -1,
+      "2007": 0,
+      "2008": 0,
+      "2009": 0,
+      "2010": 0,
+      "2011": 0,
+      "2012": -1,
+      "2013": 0,
+      "2014": -1,
+      "2015": 0,
+      "2016": -1,
+      "2017": 0,
+      "2018": -1,
+      "2019": 0,
+      "2020": -1,
+      "2021": 0,
+      "2022": 0,
+      "2023": 0,
+      "2024": 0,
+      "2025": 0
+    },
+    "note": "Per ogni anno italiano AW100, (AV_ITR + AV_R_EMPEE_SSC + AV_R_EMPER_SSC) / (100 + AV_R_EMPER_SSC) * 100 riconcilia AV_TW entro la sola tolleranza di arrotondamento. Le componenti restano sul lordo; il cuneo resta sul costo del lavoro."
+  },
+  "integrity": {
+    "sourceLockSha256": "c517daedb0d01f625b506ee6f7d5d76276a7ce6164605bd35fad4afcb7a17ed2",
+    "dataSha256": "4154964b2e9fe348b52aaa53a464b792650333d966487905396946c57221d36c"
+  }
+}

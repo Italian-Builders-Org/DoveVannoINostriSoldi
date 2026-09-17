@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "dataset": "mop-comparable-browse",
+  "distributionKind": "comparable-subset-browse",
+  "observedAt": null,
+  "generatedAt": null,
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale",
+    "datasetId": "bda1676b-62ab-44b7-8f9a-ca93b8534488@rgs",
+    "license": "CC BY",
+    "format": "OpenBDAP OData JSON"
+  },
+  "contract": {
+    "comparableRule": "plannedTotalCents>0 and actualTotalCents>0",
+    "moneyFamily": "mop-costs-only",
+    "dedupeKey": "localCode",
+    "acquisitionOrder": "ccosto_lavori_previsto desc",
+    "geography": "absent-in-source-columns"
+  },
+  "limitations": [
+    "Non e l'intero catalogo nazionale MOP: e il sottoinsieme confrontabile acquisito in ordine di costo lavori previsto",
+    "Le colonne ufficiali MOP non espongono regione, provincia o comune",
+    "I finanziamenti non entrano nel delta costi",
+    "I segnali e i ranking restano di screening e non indicano spreco o illecito",
+    "La lookup live per CUP resta disponibile per opere fuori da questo sottoinsieme"
+  ]
+}

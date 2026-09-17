@@ -1,0 +1,89 @@
+{
+  "issue": 423,
+  "applicationCommit": "8bdd6cc1c1eabb62ecac77afc34cd9294657dd4c",
+  "source": "Local production build (next build; next start --hostname 127.0.0.1 --port 3187, Node 25.8.2, Chromium headless), XIX panel at scroll position zero",
+  "route": "/stato/legislature",
+  "viewports": {
+    "desktop": [
+      1440,
+      900
+    ],
+    "tablet": [
+      768,
+      900
+    ],
+    "mobile": [
+      390,
+      844
+    ]
+  },
+  "api": {
+    "path": "/api/spese/stato/legislature",
+    "nineteenthYears": [
+      2023,
+      2024,
+      2025
+    ],
+    "totalsEuro": {
+      "2023": 1128747446131.48,
+      "2024": 1160469843093.8403,
+      "2025": 1154165459883.84
+    },
+    "packageIds": {
+      "2023": "f02d19f1-9d34-406f-9fe8-5c758bcfda87",
+      "2024": "507f162e-ad7f-43de-a37e-50b915a314ea",
+      "2025": "54c0c16d-6ca4-4e33-87cb-8acef15a7135"
+    }
+  },
+  "mcp": {
+    "path": "/api/mcp",
+    "tool": "query_dataset",
+    "dataset": "openbdap_spesa_legislature",
+    "cycles": 3,
+    "nineteenthYears": [
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "files": [
+    {
+      "file": "legislature-xix-1440.png",
+      "route": "/stato/legislature",
+      "viewportWidth": 1440,
+      "imageWidth": 1316,
+      "imageHeight": 386,
+      "bytes": 59186,
+      "sha256": "4187a2d33200c056161c0dd1faf6635d69626e1a896a82a850745f318277cc10"
+    },
+    {
+      "file": "legislature-xix-768.png",
+      "route": "/stato/legislature",
+      "viewportWidth": 768,
+      "imageWidth": 728,
+      "imageHeight": 406,
+      "bytes": 59042,
+      "sha256": "b8ff6922a6324319d3d66f94200fbf2c1454f6c0fc76057462eee9a5d6f99c35"
+    },
+    {
+      "file": "legislature-xix-390.png",
+      "route": "/stato/legislature",
+      "viewportWidth": 390,
+      "imageWidth": 362,
+      "imageHeight": 740,
+      "bytes": 55082,
+      "sha256": "4e84ad3e1e187027d8eefd8b05b9cc47f79bd51d5f09c2ed24878d97aa5a6680"
+    }
+  ],
+  "checks": [
+    "XIX legislatura: 2023, 2024 e 2025 con importi reali, nessun anno pre-elettorale e nessuna media di confronto",
+    "XVII e XVIII conservano l'anno pre-elettorale (2017 e 2021)",
+    "1440/768/390 px senza overflow orizzontale di pagina, tabelle dentro il contenitore scorrevole con tabindex 0",
+    "nessun errore di pagina, console, richiesta o HTTP same-origin su nessun viewport",
+    "API e MCP HTTP reali (non import in-process) restituiscono la stessa serie"
+  ],
+  "notVerified": [
+    "Dispositivi fisici e runtime ospitato: gli screenshot provengono dal server locale.",
+    "Il gate completo npm run test:production non è stato eseguito per intero in locale."
+  ]
+}

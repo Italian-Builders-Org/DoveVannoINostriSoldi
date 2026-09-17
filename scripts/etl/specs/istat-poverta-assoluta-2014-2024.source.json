@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-poverta-assoluta",
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "apiPath": "/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_1,1.0/",
+    "dataflowId": "34_727_DF_DCCV_POVERTA_1",
+    "dataflowLabel": "Povertà nuove serie — Principali indicatori",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX-CSV non espone alcun campo di licenza. Come per istat-cofog e per il Casellario pensioni non viene inferita alcuna licenza e non se ne estende una da altri dataset ISTAT.",
+    "seriesNote": "34_727 è la serie corrente post-revisione. I dataflow 34_201 (indicatori di povertà assoluta) e 34_202 (relativa) sono serie CHIUSE che si fermano al 2013 e non vanno usati come indicatore corrente; 34_728 sono le serie interrotte 1997-2021 e non va mai giuntato a questa. Le famiglie 34_178 e 34_198 non sono acquisibili: tutti i loro membri rispondono HTTP 404 «doesn't contain a mapping set».",
+    "assets": {
+      "poverta-assoluta": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_1,1.0/A.IT+ITC+ITCD+ITD+ITE+ITF+ITFG+ITG.FAM_POVASS+FAM_POVASS_VAL+INCID_POVASS_FAM+INCID_POVASS_INDIV+INDIV_POVASS+INDIV_POVASS_VAL+INTENS_POVASS_FAM.ALL.TOT.HH.TOTAL.99.ALL.9.TOTAL",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 71951,
+        "sha256": "91c43775c511b3eb4620e4b60ee1369980bf99220faf7808fe49746b4f5a80a0"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-09-05",
+      "checkedAt": "2026-09-05",
+      "note": "Chiave SDMX completamente specificata: delle 11 dimensioni del dataflow nove hanno un solo valore in questa tabella e sono fissate letteralmente (POVERTY_LINES=ALL, NUMBER_HOUSEHOLD_COMP=TOT, HOUSEHOLD_TYPOLOGY=HH, AGE_REFERENCE_PERSON=TOTAL, EDU_LEV_REFPERS=99, LABPROF_STATUS_B_REF=ALL, SEX=9, AGE=TOTAL, FREQ=A); REF_AREA e DATA_TYPE sono enumerate. I byte sono quindi deterministici e un hash diverso segnala una revisione della fonte, non l'avanzare del tempo. Byte identici riacquisiti il 2026-09-05 da rete diversa."
+    }
+  },
+  "measure": {
+    "scale": 10,
+    "scaleNote": "I valori sono memorizzati come interi moltiplicati per 10. La fonte pubblica le percentuali con AL PIÙ un decimale e i conteggi senza decimali: la conversione resta esatta sugli interi e nessun float entra nell'artefatto.",
+    "family": "povertà assoluta",
+    "familyNote": "Solo misure ASSOLUTE. Le sette misure relative simmetriche vivono nello stesso dataflow ma sono un dataset distinto (Fetta B): stessa acquisizione, id e artefatti separati, mai sommate né messe sullo stesso asse."
+  },
+  "expected": {
+    "years": [
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "cells": 616,
+    "flagged": 0,
+    "flagMarker": {
+      "attribute": "OBS_STATUS",
+      "codelist": "CL_FLAG",
+      "note": "ATTENZIONE: in questo DSD OBS_STATUS è vincolato a CL_FLAG, non a CL_OBS_STATUS. Il valore «0» significa «il dato non raggiunge la metà della cifra minima considerata»: NON è uno zero osservato e NON è una soppressione, è un valore positivo sotto la soglia di arrotondamento. In questa fetta non ce n'è nessuno, ma la dimensione esiste e il contratto la onora: un flag rende il valore null e non diventa mai zero.",
+      "knownValues": {
+        "0": "il dato non raggiunge la metà della cifra minima considerata",
+        "c": "dato oscurato per la tutela del segreto statistico",
+        "n": "dato statisticamente non significativo",
+        "u": "dato indisponibile o incerto"
+      }
+    },
+    "territories": [
+      {
+        "code": "IT",
+        "label": "Italia",
+        "kind": "country"
+      },
+      {
+        "code": "ITC",
+        "label": "Nord-ovest",
+        "kind": "macro"
+      },
+      {
+        "code": "ITD",
+        "label": "Nord-est",
+        "kind": "macro"
+      },
+      {
+        "code": "ITE",
+        "label": "Centro",
+        "kind": "macro"
+      },
+      {
+        "code": "ITF",
+        "label": "Sud",
+        "kind": "macro"
+      },
+      {
+        "code": "ITG",
+        "label": "Isole",
+        "kind": "macro"
+      },
+      {
+        "code": "ITCD",
+        "label": "Nord",
+        "kind": "composite",
+        "parts": [
+          "ITC",
+          "ITD"
+        ]
+      },
+      {
+        "code": "ITFG",
+        "label": "Mezzogiorno",
+        "kind": "composite",
+        "parts": [
+          "ITF",
+          "ITG"
+        ]
+      }
+    ],
+    "measures": [
+      {
+        "code": "INCID_POVASS_FAM",
+        "label": "incidenza di povertà assoluta familiare (% di famiglie in poverta assoluta)",
+        "kind": "rate",
+        "unit": "percentuale",
+        "subject": "famiglie",
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "INCID_POVASS_INDIV",
+        "label": "incidenza di povertà assoluta individuale (% di persone che vivono in famiglie in povertà assoluta sui residenti)",
+        "kind": "rate",
+        "unit": "percentuale",
+        "subject": "individui",
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "INTENS_POVASS_FAM",
+        "label": "intensità di povertà assoluta familiare (differenza % dalla soglia di povertà)",
+        "kind": "rate",
+        "unit": "percentuale",
+        "subject": "famiglie",
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "FAM_POVASS",
+        "label": "famiglie in povertà assoluta (composizione % per area di residenza)",
+        "kind": "composition",
+        "unit": "percentuale",
+        "subject": "famiglie",
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "INDIV_POVASS",
+        "label": "individui in povertà assoluta (composizione % per area di residenza)",
+        "kind": "composition",
+        "unit": "percentuale",
+        "subject": "individui",
+        "summableAcrossTerritories": false
+      },
+      {
+        "code": "FAM_POVASS_VAL",
+        "label": "famiglie in povertà assoluta (migliaia)",
+        "kind": "count",
+        "unit": "migliaia",
+        "subject": "famiglie",
+        "summableAcrossTerritories": true
+      },
+      {
+        "code": "INDIV_POVASS_VAL",
+        "label": "individui in povertà assoluta (migliaia)",
+        "kind": "count",
+        "unit": "migliaia",
+        "subject": "individui",
+        "summableAcrossTerritories": true
+      }
+    ],
+    "fixedDimensions": {
+      "FREQ": "A",
+      "POVERTY_LINES": "ALL",
+      "NUMBER_HOUSEHOLD_COMP": "TOT",
+      "HOUSEHOLD_TYPOLOGY": "HH",
+      "AGE_REFERENCE_PERSON": "TOTAL",
+      "EDU_LEV_REFPERS": "99",
+      "LABPROF_STATUS_B_REF": "ALL",
+      "SEX": "9",
+      "AGE": "TOTAL"
+    }
+  },
+  "reconciliation": {
+    "note": "Solo le misure di conteggio sono sommabili fra territori. La tolleranza è EMPIRICA: la fonte pubblica i conteggi in migliaia arrotondate all'unità, quindi una partizione a cinque parti può discostarsi di qualche unità di migliaia senza che nulla sia sbagliato. Le percentuali non vengono riconciliate per somma perché non sono sommabili: sommarle è l'errore che il dataset deve rendere impossibile, ed è verificato come test negativo. Le composizioni percentuali chiudono invece a 100 sulle cinque ripartizioni base.",
+    "toleranceTenths": 10,
+    "compositionToleranceTenths": 2,
+    "compositionTotalTenths": 1000,
+    "compositionBase": [
+      "ITC",
+      "ITD",
+      "ITE",
+      "ITF",
+      "ITG"
+    ],
+    "territorial": [
+      {
+        "whole": "IT",
+        "parts": [
+          "ITC",
+          "ITD",
+          "ITE",
+          "ITF",
+          "ITG"
+        ]
+      },
+      {
+        "whole": "ITCD",
+        "parts": [
+          "ITC",
+          "ITD"
+        ]
+      },
+      {
+        "whole": "ITFG",
+        "parts": [
+          "ITF",
+          "ITG"
+        ]
+      }
+    ]
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/istat-poverta-assoluta-2014-2024.data.json",
+      "bytes": 54574,
+      "sha256": "bd5c9c8070ac7b63ef4da864353879446b81510286bbcc6d91dcac4bf4916e76"
+    },
+    "lockSha256": "cd0cb4695f79a0609814ede22bb5b7d8c8b03bb20c6a9eaeba33338bd41d0774"
+  }
+}

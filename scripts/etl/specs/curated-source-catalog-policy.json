@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "1",
+  "inputHeaders": [
+    "dataset",
+    "field",
+    "kind",
+    "value",
+    "occurrences"
+  ],
+  "identityId": {
+    "algorithm": "hmac-sha256",
+    "prefix": "src_",
+    "base32Chars": 26,
+    "minimumKeyBytes": 32
+  },
+  "classifications": [
+    "commercial",
+    "local",
+    "news",
+    "official_index",
+    "official_primary",
+    "official_secondary",
+    "unknown",
+    "unresolved"
+  ],
+  "dispositions": [
+    "published",
+    "quarantined"
+  ],
+  "limits": {
+    "maximumInputBytes": 104857600,
+    "maximumRows": 1000000,
+    "maximumTextChars": 65536,
+    "maximumPublicUrlChars": 2048,
+    "maximumQueryPairs": 64,
+    "maximumQueryPartChars": 512,
+    "maximumPublicQueryValueChars": 128
+  },
+  "urlRules": {
+    "allowedSchemes": [
+      "http",
+      "https"
+    ],
+    "sensitiveQueryKeys": [
+      "accesstoken",
+      "apikey",
+      "auth",
+      "authorization",
+      "clientsecret",
+      "code",
+      "cookie",
+      "credential",
+      "jwt",
+      "key",
+      "password",
+      "secret",
+      "session",
+      "sessionid",
+      "sig",
+      "signature",
+      "token",
+      "xamzcredential",
+      "xamzsignature",
+      "xgoogcredential",
+      "xgoogsignature"
+    ],
+    "trackingQueryKeys": [
+      "fbclid",
+      "gclid",
+      "mccid",
+      "mceid",
+      "utmcontent",
+      "utmmedium",
+      "utmsource",
+      "utmterm"
+    ],
+    "localHostSuffixes": [
+      "internal",
+      "invalid",
+      "local",
+      "localhost",
+      "test"
+    ],
+    "officialSecondaryHostSuffixes": [
+      "data.europa.eu",
+      "dati.gov.it"
+    ],
+    "officialHostSuffixes": [
+      "anac.it",
+      "camera.it",
+      "consip.it",
+      "corteconti.it",
+      "europa.eu",
+      "gov.it",
+      "inps.it",
+      "istat.it",
+      "senato.it"
+    ],
+    "commercialHostSuffixes": [
+      "box.com",
+      "deepl.com",
+      "dropbox.com",
+      "phrase.com"
+    ],
+    "newsHostSuffixes": [
+      "ansa.it",
+      "corriere.it",
+      "ilsole24ore.com",
+      "repubblica.it",
+      "reuters.com"
+    ],
+    "officialPrimaryPathPatterns": [
+      "(?:^|/)(?:api|allegati?|attachments?|cig|cup|dataset|datasets|document|documents|download|downloads|export|files?|record|report|resource|resources)(?:/|$)",
+      "\\.(?:csv|json|ods|pdf|tsv|xls|xlsx|xml|zip)$"
+    ],
+    "processPathPatterns": [
+      "(?:^|/)(?:agent|backup|bak|copy|draft|profile|raw|session|stub|temp|tmp|work|working|workspace)(?:[-_/]|$)",
+      "(?:^|/)(?:chrome|chromium)(?:[-_/]|$)"
+    ]
+  },
+  "textRules": {
+    "publicationMode": "quarantine_all",
+    "localPathPatterns": [
+      "(?:^|[\\s=])[/\\\\](?:home|private|tmp|users|var|workspace)(?:[/\\\\]|$)",
+      "(?:^|[\\s=])\\.\\.?[/\\\\]",
+      "^file://"
+    ],
+    "processPatterns": [
+      "(?:^|[-_/\\s])(?:agent|backup|bak|copy|draft|profile|raw|release|session|stub|temp|tmp|ui|work|working|workspace)(?:[-_/\\s]|$)"
+    ]
+  }
+}

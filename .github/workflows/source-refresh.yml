@@ -1,0 +1,47 @@
+name: Source refresh
+
+on:
+  workflow_dispatch:
+
+# contents: read — least-privilege: only read repository contents.
+permissions:
+  contents: read
+
+concurrency:
+  group: source-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: refresh
+    runs-on: ubuntu-24.04
+    environment: source-operations
+    timeout-minutes: 5
+    env:
+      REFRESH_URL: ${{ secrets.REFRESH_URL }}
+      SOURCE_REFRESH_SECRET: ${{ secrets.SOURCE_REFRESH_SECRET }}
+    steps:
+      - name: Refresh integrated source caches
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${REFRESH_URL}" || -z "${SOURCE_REFRESH_SECRET}" ]]; then
+            echo "::error::Source refresh is not configured. Set REFRESH_URL and SOURCE_REFRESH_SECRET in the source-operations environment."
+            exit 1
+          fi
+
+          base_url="${REFRESH_URL%/}"
+          curl \
+            --fail-with-body \
+            --silent \
+            --show-error \
+            --retry 2 \
+            --retry-all-errors \
+            --connect-timeout 10 \
+            --max-time 45 \
+            --request POST \
+            --header "Authorization: Bearer ${SOURCE_REFRESH_SECRET}" \
+            --header "Content-Type: application/json" \
+            --data '{"sources":["ipa","openbdap","siope"]}' \
+            "${base_url}/api/internal/refresh-sources"

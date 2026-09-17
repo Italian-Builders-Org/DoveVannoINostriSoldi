@@ -1,0 +1,629 @@
+Anno,gestione_fondi,Regione,Mese,Ramo di attività,totale_ore_autorizzate
+2023,FIS,Piemonte,Gennaio,Industria,15785.0
+2023,FIS,Piemonte,Gennaio,Commercio,106108.0
+2023,FIS,Piemonte,Febbraio,Industria,2764.0
+2023,FIS,Piemonte,Febbraio,Commercio,32665.0
+2023,FIS,Piemonte,Marzo,Industria,23107.0
+2023,FIS,Piemonte,Marzo,Commercio,185897.0
+2023,FIS,Piemonte,Marzo,Credito,4225.0
+2023,FIS,Piemonte,Aprile,Industria,384.0
+2023,FIS,Piemonte,Aprile,Commercio,113681.0
+2023,FIS,Piemonte,Maggio,Industria,1480.0
+2023,FIS,Piemonte,Maggio,Commercio,540804.0
+2023,FIS,Piemonte,Giugno,Commercio,94128.0
+2023,FIS,Piemonte,Luglio,Commercio,34869.0
+2023,FIS,Piemonte,Agosto,Commercio,70424.0
+2023,FIS,Piemonte,Agosto,Credito,1728.0
+2023,FIS,Piemonte,Settembre,Commercio,20457.0
+2023,FIS,Piemonte,Ottobre,Industria,416.0
+2023,FIS,Piemonte,Ottobre,Commercio,23060.0
+2023,FIS,Piemonte,Novembre,Commercio,13583.0
+2023,FIS,Piemonte,Dicembre,Industria,1600.0
+2023,FIS,Piemonte,Dicembre,Commercio,22381.0
+2023,FIS,Valle d'Aosta/Vallee d'Aoste,Giugno,Industria,7260.0
+2023,FIS,Valle d'Aosta/Vallee d'Aoste,Giugno,Commercio,13.0
+2023,FIS,Valle d'Aosta/Vallee d'Aoste,Agosto,Commercio,315.0
+2023,FIS,Valle d'Aosta/Vallee d'Aoste,Settembre,Commercio,520.0
+2023,FIS,Liguria,Gennaio,Commercio,144561.0
+2023,FIS,Liguria,Febbraio,Industria,2302.0
+2023,FIS,Liguria,Febbraio,Commercio,54178.0
+2023,FIS,Liguria,Marzo,Industria,2600.0
+2023,FIS,Liguria,Marzo,Commercio,37444.0
+2023,FIS,Liguria,Aprile,Industria,573.0
+2023,FIS,Liguria,Aprile,Commercio,35599.0
+2023,FIS,Liguria,Maggio,Commercio,25753.0
+2023,FIS,Liguria,Giugno,Industria,12900.0
+2023,FIS,Liguria,Giugno,Commercio,9943.0
+2023,FIS,Liguria,Luglio,Commercio,21762.0
+2023,FIS,Liguria,Agosto,Commercio,57105.0
+2023,FIS,Liguria,Settembre,Industria,64.0
+2023,FIS,Liguria,Settembre,Commercio,2194.0
+2023,FIS,Liguria,Ottobre,Commercio,759.0
+2023,FIS,Liguria,Novembre,Industria,7230.0
+2023,FIS,Liguria,Novembre,Commercio,833.0
+2023,FIS,Liguria,Dicembre,Commercio,576.0
+2023,FIS,Lombardia,Gennaio,Industria,2540.0
+2023,FIS,Lombardia,Gennaio,Commercio,292600.0
+2023,FIS,Lombardia,Febbraio,Industria,4058.0
+2023,FIS,Lombardia,Febbraio,Commercio,204230.0
+2023,FIS,Lombardia,Marzo,Industria,1536.0
+2023,FIS,Lombardia,Marzo,Commercio,238124.0
+2023,FIS,Lombardia,Aprile,Industria,1580.0
+2023,FIS,Lombardia,Aprile,Commercio,64055.0
+2023,FIS,Lombardia,Maggio,Industria,18294.0
+2023,FIS,Lombardia,Maggio,Commercio,180366.0
+2023,FIS,Lombardia,Giugno,Industria,969.0
+2023,FIS,Lombardia,Giugno,Commercio,124787.0
+2023,FIS,Lombardia,Luglio,Industria,191.0
+2023,FIS,Lombardia,Luglio,Commercio,127181.0
+2023,FIS,Lombardia,Agosto,Industria,81.0
+2023,FIS,Lombardia,Agosto,Commercio,165627.0
+2023,FIS,Lombardia,Settembre,Commercio,91660.0
+2023,FIS,Lombardia,Ottobre,Industria,20875.0
+2023,FIS,Lombardia,Ottobre,Commercio,167261.0
+2023,FIS,Lombardia,Novembre,Industria,1337.0
+2023,FIS,Lombardia,Novembre,Commercio,200635.0
+2023,FIS,Lombardia,Dicembre,Industria,23938.0
+2023,FIS,Lombardia,Dicembre,Commercio,117474.0
+2023,FIS,Trentino-Alto-Adige,Marzo,Commercio,705.0
+2023,FIS,Trentino-Alto-Adige,Aprile,Commercio,816.0
+2023,FIS,Trentino-Alto-Adige,Luglio,Commercio,7000.0
+2023,FIS,Trentino-Alto-Adige,Agosto,Commercio,3904.0
+2023,FIS,Trentino-Alto-Adige,Settembre,Commercio,87.0
+2023,FIS,Veneto,Gennaio,Industria,1818.0
+2023,FIS,Veneto,Gennaio,Commercio,88853.0
+2023,FIS,Veneto,Febbraio,Industria,13388.0
+2023,FIS,Veneto,Febbraio,Commercio,101565.0
+2023,FIS,Veneto,Marzo,Industria,22256.0
+2023,FIS,Veneto,Marzo,Commercio,228522.0
+2023,FIS,Veneto,Aprile,Industria,1300.0
+2023,FIS,Veneto,Aprile,Commercio,24244.0
+2023,FIS,Veneto,Maggio,Industria,9710.0
+2023,FIS,Veneto,Maggio,Commercio,90619.0
+2023,FIS,Veneto,Giugno,Industria,684.0
+2023,FIS,Veneto,Giugno,Commercio,82863.0
+2023,FIS,Veneto,Luglio,Industria,966.0
+2023,FIS,Veneto,Luglio,Commercio,84739.0
+2023,FIS,Veneto,Agosto,Industria,135.0
+2023,FIS,Veneto,Agosto,Commercio,31141.0
+2023,FIS,Veneto,Settembre,Industria,3646.0
+2023,FIS,Veneto,Settembre,Commercio,77476.0
+2023,FIS,Veneto,Ottobre,Industria,732.0
+2023,FIS,Veneto,Ottobre,Commercio,41828.0
+2023,FIS,Veneto,Novembre,Industria,127.0
+2023,FIS,Veneto,Novembre,Commercio,55716.0
+2023,FIS,Veneto,Dicembre,Industria,770.0
+2023,FIS,Veneto,Dicembre,Commercio,59459.0
+2023,FIS,Friuli-Venezia Giulia,Gennaio,Industria,721.0
+2023,FIS,Friuli-Venezia Giulia,Gennaio,Commercio,40785.0
+2023,FIS,Friuli-Venezia Giulia,Febbraio,Industria,232.0
+2023,FIS,Friuli-Venezia Giulia,Febbraio,Commercio,15239.0
+2023,FIS,Friuli-Venezia Giulia,Marzo,Industria,220.0
+2023,FIS,Friuli-Venezia Giulia,Marzo,Commercio,4260.0
+2023,FIS,Friuli-Venezia Giulia,Aprile,Commercio,16065.0
+2023,FIS,Friuli-Venezia Giulia,Maggio,Industria,464.0
+2023,FIS,Friuli-Venezia Giulia,Maggio,Commercio,32938.0
+2023,FIS,Friuli-Venezia Giulia,Giugno,Industria,1432.0
+2023,FIS,Friuli-Venezia Giulia,Giugno,Commercio,9102.0
+2023,FIS,Friuli-Venezia Giulia,Luglio,Commercio,12632.0
+2023,FIS,Friuli-Venezia Giulia,Agosto,Commercio,6038.0
+2023,FIS,Friuli-Venezia Giulia,Settembre,Industria,297.0
+2023,FIS,Friuli-Venezia Giulia,Settembre,Commercio,25089.0
+2023,FIS,Friuli-Venezia Giulia,Ottobre,Industria,336.0
+2023,FIS,Friuli-Venezia Giulia,Ottobre,Commercio,24726.0
+2023,FIS,Friuli-Venezia Giulia,Novembre,Industria,12.0
+2023,FIS,Friuli-Venezia Giulia,Novembre,Commercio,4741.0
+2023,FIS,Friuli-Venezia Giulia,Dicembre,Commercio,21568.0
+2023,FIS,Emilia-Romagna,Gennaio,Industria,716.0
+2023,FIS,Emilia-Romagna,Gennaio,Commercio,93689.0
+2023,FIS,Emilia-Romagna,Febbraio,Industria,3377.0
+2023,FIS,Emilia-Romagna,Febbraio,Commercio,16820.0
+2023,FIS,Emilia-Romagna,Marzo,Industria,256.0
+2023,FIS,Emilia-Romagna,Marzo,Commercio,90818.0
+2023,FIS,Emilia-Romagna,Aprile,Commercio,45931.0
+2023,FIS,Emilia-Romagna,Maggio,Commercio,17348.0
+2023,FIS,Emilia-Romagna,Giugno,Industria,5515.0
+2023,FIS,Emilia-Romagna,Giugno,Commercio,42723.0
+2023,FIS,Emilia-Romagna,Luglio,Commercio,176388.0
+2023,FIS,Emilia-Romagna,Agosto,Industria,456.0
+2023,FIS,Emilia-Romagna,Agosto,Commercio,61863.0
+2023,FIS,Emilia-Romagna,Settembre,Commercio,88790.0
+2023,FIS,Emilia-Romagna,Ottobre,Commercio,41413.0
+2023,FIS,Emilia-Romagna,Novembre,Commercio,32608.0
+2023,FIS,Emilia-Romagna,Dicembre,Industria,12916.0
+2023,FIS,Emilia-Romagna,Dicembre,Commercio,230263.0
+2023,FIS,Toscana,Gennaio,Industria,32482.0
+2023,FIS,Toscana,Gennaio,Commercio,26775.0
+2023,FIS,Toscana,Febbraio,Industria,2325.0
+2023,FIS,Toscana,Febbraio,Commercio,50723.0
+2023,FIS,Toscana,Febbraio,Credito,448.0
+2023,FIS,Toscana,Marzo,Industria,6992.0
+2023,FIS,Toscana,Marzo,Commercio,46259.0
+2023,FIS,Toscana,Aprile,Industria,1190.0
+2023,FIS,Toscana,Aprile,Commercio,19934.0
+2023,FIS,Toscana,Maggio,Industria,1752.0
+2023,FIS,Toscana,Maggio,Commercio,36501.0
+2023,FIS,Toscana,Giugno,Industria,1358.0
+2023,FIS,Toscana,Giugno,Commercio,16441.0
+2023,FIS,Toscana,Luglio,Industria,640.0
+2023,FIS,Toscana,Luglio,Commercio,27496.0
+2023,FIS,Toscana,Agosto,Commercio,30574.0
+2023,FIS,Toscana,Settembre,Industria,915.0
+2023,FIS,Toscana,Settembre,Commercio,15820.0
+2023,FIS,Toscana,Ottobre,Commercio,31238.0
+2023,FIS,Toscana,Novembre,Industria,59425.0
+2023,FIS,Toscana,Novembre,Commercio,18277.0
+2023,FIS,Toscana,Dicembre,Industria,1337.0
+2023,FIS,Toscana,Dicembre,Commercio,50593.0
+2023,FIS,Umbria,Gennaio,Industria,5766.0
+2023,FIS,Umbria,Gennaio,Commercio,30776.0
+2023,FIS,Umbria,Febbraio,Commercio,48188.0
+2023,FIS,Umbria,Febbraio,Credito,75.0
+2023,FIS,Umbria,Marzo,Commercio,43111.0
+2023,FIS,Umbria,Aprile,Industria,6877.0
+2023,FIS,Umbria,Aprile,Commercio,3376.0
+2023,FIS,Umbria,Maggio,Commercio,6831.0
+2023,FIS,Umbria,Giugno,Industria,10395.0
+2023,FIS,Umbria,Giugno,Commercio,22185.0
+2023,FIS,Umbria,Luglio,Commercio,3253.0
+2023,FIS,Umbria,Agosto,Commercio,1245.0
+2023,FIS,Umbria,Settembre,Industria,16264.0
+2023,FIS,Umbria,Settembre,Commercio,5626.0
+2023,FIS,Umbria,Ottobre,Commercio,6312.0
+2023,FIS,Umbria,Novembre,Industria,6422.0
+2023,FIS,Umbria,Novembre,Commercio,8477.0
+2023,FIS,Umbria,Dicembre,Commercio,2418.0
+2023,FIS,Marche,Gennaio,Commercio,49333.0
+2023,FIS,Marche,Febbraio,Commercio,21013.0
+2023,FIS,Marche,Marzo,Commercio,14388.0
+2023,FIS,Marche,Aprile,Industria,18577.0
+2023,FIS,Marche,Aprile,Commercio,46156.0
+2023,FIS,Marche,Maggio,Industria,17968.0
+2023,FIS,Marche,Maggio,Commercio,13443.0
+2023,FIS,Marche,Giugno,Industria,4160.0
+2023,FIS,Marche,Giugno,Commercio,6079.0
+2023,FIS,Marche,Luglio,Commercio,16825.0
+2023,FIS,Marche,Agosto,Commercio,5342.0
+2023,FIS,Marche,Settembre,Commercio,30164.0
+2023,FIS,Marche,Ottobre,Commercio,14725.0
+2023,FIS,Marche,Novembre,Industria,28392.0
+2023,FIS,Marche,Novembre,Commercio,7237.0
+2023,FIS,Marche,Dicembre,Commercio,67651.0
+2023,FIS,Lazio,Gennaio,Industria,1079.0
+2023,FIS,Lazio,Gennaio,Commercio,444043.0
+2023,FIS,Lazio,Febbraio,Industria,23269.0
+2023,FIS,Lazio,Febbraio,Commercio,238953.0
+2023,FIS,Lazio,Marzo,Industria,20248.0
+2023,FIS,Lazio,Marzo,Commercio,165496.0
+2023,FIS,Lazio,Aprile,Industria,34556.0
+2023,FIS,Lazio,Aprile,Commercio,139749.0
+2023,FIS,Lazio,Maggio,Commercio,246282.0
+2023,FIS,Lazio,Giugno,Commercio,55275.0
+2023,FIS,Lazio,Luglio,Industria,7960.0
+2023,FIS,Lazio,Luglio,Commercio,106851.0
+2023,FIS,Lazio,Agosto,Commercio,22031.0
+2023,FIS,Lazio,Settembre,Industria,160.0
+2023,FIS,Lazio,Settembre,Commercio,66025.0
+2023,FIS,Lazio,Ottobre,Industria,2291.0
+2023,FIS,Lazio,Ottobre,Commercio,21615.0
+2023,FIS,Lazio,Novembre,Industria,4346.0
+2023,FIS,Lazio,Novembre,Commercio,102426.0
+2023,FIS,Lazio,Dicembre,Commercio,42178.0
+2023,FIS,Abruzzo,Gennaio,Commercio,51206.0
+2023,FIS,Abruzzo,Febbraio,Commercio,46921.0
+2023,FIS,Abruzzo,Marzo,Commercio,8535.0
+2023,FIS,Abruzzo,Aprile,Commercio,5224.0
+2023,FIS,Abruzzo,Maggio,Commercio,88.0
+2023,FIS,Abruzzo,Maggio,ex Enti Pubblici,188.0
+2023,FIS,Abruzzo,Luglio,Commercio,22632.0
+2023,FIS,Abruzzo,Agosto,Commercio,704.0
+2023,FIS,Abruzzo,Settembre,Commercio,15849.0
+2023,FIS,Abruzzo,Ottobre,Commercio,4115.0
+2023,FIS,Abruzzo,Novembre,Commercio,4446.0
+2023,FIS,Abruzzo,Dicembre,Commercio,19206.0
+2023,FIS,Molise,Gennaio,Commercio,1801.0
+2023,FIS,Molise,Febbraio,Commercio,3762.0
+2023,FIS,Molise,Marzo,Commercio,8514.0
+2023,FIS,Molise,Aprile,Commercio,196.0
+2023,FIS,Molise,Maggio,Industria,1079.0
+2023,FIS,Molise,Maggio,Commercio,8677.0
+2023,FIS,Molise,Giugno,Commercio,16.0
+2023,FIS,Molise,Luglio,Commercio,280.0
+2023,FIS,Molise,Agosto,Commercio,2040.0
+2023,FIS,Molise,Settembre,Commercio,2600.0
+2023,FIS,Molise,Dicembre,Commercio,246.0
+2023,FIS,Campania,Gennaio,Industria,1320.0
+2023,FIS,Campania,Gennaio,Commercio,9555.0
+2023,FIS,Campania,Febbraio,Commercio,21760.0
+2023,FIS,Campania,Marzo,Commercio,44486.0
+2023,FIS,Campania,Aprile,Commercio,41045.0
+2023,FIS,Campania,Maggio,Commercio,33120.0
+2023,FIS,Campania,Giugno,Commercio,13372.0
+2023,FIS,Campania,Luglio,Commercio,59203.0
+2023,FIS,Campania,Agosto,Industria,1469.0
+2023,FIS,Campania,Agosto,Commercio,45839.0
+2023,FIS,Campania,Settembre,Commercio,9166.0
+2023,FIS,Campania,Ottobre,Commercio,121079.0
+2023,FIS,Campania,Novembre,Commercio,21794.0
+2023,FIS,Campania,Dicembre,Commercio,8763.0
+2023,FIS,Puglia,Gennaio,Commercio,68527.0
+2023,FIS,Puglia,Febbraio,Commercio,454420.0
+2023,FIS,Puglia,Febbraio,ex Enti Pubblici,6760.0
+2023,FIS,Puglia,Marzo,Commercio,95329.0
+2023,FIS,Puglia,Aprile,Industria,318599.0
+2023,FIS,Puglia,Aprile,Commercio,81304.0
+2023,FIS,Puglia,Maggio,Commercio,92875.0
+2023,FIS,Puglia,Giugno,Commercio,59466.0
+2023,FIS,Puglia,Luglio,Commercio,23198.0
+2023,FIS,Puglia,Agosto,Commercio,28179.0
+2023,FIS,Puglia,Settembre,Industria,4867.0
+2023,FIS,Puglia,Settembre,Commercio,29786.0
+2023,FIS,Puglia,Ottobre,Commercio,10483.0
+2023,FIS,Puglia,Novembre,Commercio,5122.0
+2023,FIS,Puglia,Dicembre,Commercio,27267.0
+2023,FIS,Basilicata,Gennaio,Industria,930.0
+2023,FIS,Basilicata,Gennaio,Commercio,1255.0
+2023,FIS,Basilicata,Febbraio,Commercio,235.0
+2023,FIS,Basilicata,Marzo,Commercio,1800.0
+2023,FIS,Basilicata,Aprile,Commercio,9032.0
+2023,FIS,Basilicata,Giugno,Commercio,9298.0
+2023,FIS,Basilicata,Luglio,Commercio,312.0
+2023,FIS,Basilicata,Agosto,Commercio,910.0
+2023,FIS,Basilicata,Settembre,Commercio,1997.0
+2023,FIS,Basilicata,Dicembre,Commercio,1683.0
+2023,FIS,Calabria,Gennaio,Commercio,7527.0
+2023,FIS,Calabria,Febbraio,Commercio,4227.0
+2023,FIS,Calabria,Marzo,Commercio,244.0
+2023,FIS,Calabria,Maggio,Commercio,21545.0
+2023,FIS,Calabria,Giugno,Commercio,11090.0
+2023,FIS,Calabria,Settembre,Commercio,1820.0
+2023,FIS,Calabria,Ottobre,Commercio,65845.0
+2023,FIS,Calabria,Novembre,Commercio,3047.0
+2023,FIS,Sicilia,Gennaio,Commercio,23626.0
+2023,FIS,Sicilia,Febbraio,Industria,3770.0
+2023,FIS,Sicilia,Febbraio,Commercio,39418.0
+2023,FIS,Sicilia,Marzo,Commercio,40874.0
+2023,FIS,Sicilia,Aprile,Commercio,26886.0
+2023,FIS,Sicilia,Maggio,Commercio,136517.0
+2023,FIS,Sicilia,Giugno,Industria,1182.0
+2023,FIS,Sicilia,Giugno,Commercio,14116.0
+2023,FIS,Sicilia,Luglio,Commercio,12147.0
+2023,FIS,Sicilia,Agosto,Commercio,111823.0
+2023,FIS,Sicilia,Settembre,Commercio,56795.0
+2023,FIS,Sicilia,Ottobre,Commercio,4544.0
+2023,FIS,Sicilia,Novembre,Commercio,18791.0
+2023,FIS,Sicilia,Dicembre,Commercio,24907.0
+2023,FIS,Sardegna,Gennaio,Commercio,21301.0
+2023,FIS,Sardegna,Febbraio,Commercio,4860.0
+2023,FIS,Sardegna,Marzo,Commercio,2034.0
+2023,FIS,Sardegna,Aprile,Commercio,3777.0
+2023,FIS,Sardegna,Maggio,Commercio,57262.0
+2023,FIS,Sardegna,Giugno,Commercio,8628.0
+2023,FIS,Sardegna,Settembre,Commercio,547.0
+2023,FIS,Sardegna,Ottobre,Commercio,108.0
+2023,FIS,Sardegna,Novembre,Commercio,1341.0
+2023,Altri fondi,Piemonte,Gennaio,Commercio,16363.0
+2023,Altri fondi,Piemonte,Marzo,Commercio,2798.0
+2023,Altri fondi,Piemonte,Aprile,Commercio,5210.0
+2023,Altri fondi,Piemonte,Aprile,Credito,672.0
+2023,Altri fondi,Piemonte,Maggio,Commercio,29828.0
+2023,Altri fondi,Piemonte,Luglio,Commercio,9000.0
+2023,Altri fondi,Piemonte,Ottobre,Commercio,924.0
+2023,Altri fondi,Piemonte,Dicembre,Commercio,46140.0
+2023,Altri fondi,Valle d'Aosta/Vallee d'Aoste,Aprile,Credito,4477.0
+2023,Altri fondi,Valle d'Aosta/Vallee d'Aoste,Giugno,Credito,2553.0
+2023,Altri fondi,Valle d'Aosta/Vallee d'Aoste,Dicembre,Credito,3267.0
+2023,Altri fondi,Liguria,Gennaio,Industria,24400.0
+2023,Altri fondi,Liguria,Aprile,Commercio,533.0
+2023,Altri fondi,Lombardia,Gennaio,Commercio,63166.0
+2023,Altri fondi,Lombardia,Febbraio,Commercio,33085.0
+2023,Altri fondi,Lombardia,Marzo,Credito,8995.0
+2023,Altri fondi,Lombardia,Aprile,Commercio,5160.0
+2023,Altri fondi,Lombardia,Maggio,Commercio,2558.0
+2023,Altri fondi,Lombardia,Giugno,Credito,157.0
+2023,Altri fondi,Lombardia,Luglio,Commercio,2505.0
+2023,Altri fondi,Lombardia,Ottobre,Commercio,34838.0
+2023,Altri fondi,Lombardia,Dicembre,Commercio,42333.0
+2023,Altri fondi,Lombardia,Dicembre,Credito,1887.0
+2023,Altri fondi,Trentino-Alto-Adige,Gennaio,Commercio,5426.0
+2023,Altri fondi,Trentino-Alto-Adige,Aprile,Commercio,1025.0
+2023,Altri fondi,Trentino-Alto-Adige,Maggio,Commercio,20434.0
+2023,Altri fondi,Trentino-Alto-Adige,Agosto,Commercio,10645.0
+2023,Altri fondi,Trentino-Alto-Adige,Dicembre,Commercio,8033.0
+2023,Altri fondi,Veneto,Gennaio,Commercio,6621.0
+2023,Altri fondi,Veneto,Marzo,Commercio,84.0
+2023,Altri fondi,Veneto,Aprile,Commercio,2083.0
+2023,Altri fondi,Veneto,Aprile,Credito,6154.0
+2023,Altri fondi,Veneto,Maggio,Commercio,4515.0
+2023,Altri fondi,Veneto,Maggio,Credito,4244.0
+2023,Altri fondi,Veneto,Giugno,Commercio,2795.0
+2023,Altri fondi,Veneto,Luglio,Commercio,3256.0
+2023,Altri fondi,Veneto,Ottobre,Commercio,1845.0
+2023,Altri fondi,Friuli-Venezia Giulia,Gennaio,Commercio,312.0
+2023,Altri fondi,Friuli-Venezia Giulia,Marzo,Commercio,1950.0
+2023,Altri fondi,Friuli-Venezia Giulia,Aprile,Commercio,99.0
+2023,Altri fondi,Friuli-Venezia Giulia,Giugno,Commercio,7761.0
+2023,Altri fondi,Emilia-Romagna,Gennaio,Commercio,7708.0
+2023,Altri fondi,Emilia-Romagna,Aprile,Commercio,9995.0
+2023,Altri fondi,Emilia-Romagna,Aprile,Credito,3983.0
+2023,Altri fondi,Emilia-Romagna,Maggio,Commercio,626.0
+2023,Altri fondi,Emilia-Romagna,Giugno,Commercio,480.0
+2023,Altri fondi,Emilia-Romagna,Luglio,Commercio,1715.0
+2023,Altri fondi,Emilia-Romagna,Ottobre,Commercio,3731.0
+2023,Altri fondi,Emilia-Romagna,Dicembre,Commercio,12944.0
+2023,Altri fondi,Toscana,Gennaio,Commercio,1525.0
+2023,Altri fondi,Toscana,Febbraio,Industria,3528.0
+2023,Altri fondi,Toscana,Febbraio,Commercio,2660.0
+2023,Altri fondi,Toscana,Marzo,Commercio,4232.0
+2023,Altri fondi,Toscana,Aprile,Commercio,2860.0
+2023,Altri fondi,Toscana,Maggio,Commercio,9726.0
+2023,Altri fondi,Toscana,Giugno,Commercio,1080.0
+2023,Altri fondi,Toscana,Luglio,Commercio,1096.0
+2023,Altri fondi,Toscana,Ottobre,Commercio,1520.0
+2023,Altri fondi,Toscana,Dicembre,Commercio,1368.0
+2023,Altri fondi,Umbria,Febbraio,Industria,4447.0
+2023,Altri fondi,Umbria,Febbraio,Commercio,3952.0
+2023,Altri fondi,Umbria,Aprile,Commercio,4509.0
+2023,Altri fondi,Umbria,Maggio,Commercio,896.0
+2023,Altri fondi,Umbria,Giugno,Commercio,984.0
+2023,Altri fondi,Umbria,Luglio,Commercio,168.0
+2023,Altri fondi,Marche,Febbraio,Industria,814.0
+2023,Altri fondi,Marche,Febbraio,Commercio,2981.0
+2023,Altri fondi,Marche,Marzo,Commercio,9676.0
+2023,Altri fondi,Marche,Aprile,Commercio,10400.0
+2023,Altri fondi,Marche,Maggio,Commercio,12265.0
+2023,Altri fondi,Marche,Luglio,Commercio,2503.0
+2023,Altri fondi,Lazio,Gennaio,Commercio,75915.0
+2023,Altri fondi,Lazio,Marzo,Commercio,450.0
+2023,Altri fondi,Lazio,Aprile,Commercio,19510.0
+2023,Altri fondi,Lazio,Maggio,Commercio,4508.0
+2023,Altri fondi,Lazio,Giugno,Commercio,832.0
+2023,Altri fondi,Lazio,Ottobre,Commercio,15921.0
+2023,Altri fondi,Lazio,Ottobre,ex Enti Pubblici,944876.0
+2023,Altri fondi,Lazio,Dicembre,Commercio,2049.0
+2023,Altri fondi,Abruzzo,Gennaio,Commercio,1843.0
+2023,Altri fondi,Abruzzo,Marzo,Commercio,1040.0
+2023,Altri fondi,Abruzzo,Aprile,Commercio,6616.0
+2023,Altri fondi,Abruzzo,Maggio,Commercio,11436.0
+2023,Altri fondi,Abruzzo,Ottobre,Commercio,2160.0
+2023,Altri fondi,Campania,Gennaio,Commercio,6011.0
+2023,Altri fondi,Campania,Marzo,Commercio,211.0
+2023,Altri fondi,Campania,Aprile,Commercio,18202.0
+2023,Altri fondi,Campania,Maggio,Commercio,346.0
+2023,Altri fondi,Campania,Dicembre,Commercio,9360.0
+2023,Altri fondi,Puglia,Gennaio,Commercio,8874.0
+2023,Altri fondi,Puglia,Maggio,Commercio,1900.0
+2023,Altri fondi,Puglia,Giugno,Commercio,1920.0
+2023,Altri fondi,Puglia,Luglio,Commercio,6864.0
+2023,Altri fondi,Puglia,Ottobre,Commercio,4640.0
+2023,Altri fondi,Puglia,Dicembre,Commercio,640.0
+2023,Altri fondi,Basilicata,Maggio,Commercio,4120.0
+2023,Altri fondi,Basilicata,Giugno,Commercio,2800.0
+2023,Altri fondi,Basilicata,Luglio,Commercio,3464.0
+2023,Altri fondi,Basilicata,Ottobre,Commercio,400.0
+2023,Altri fondi,Basilicata,Dicembre,Commercio,330.0
+2023,Altri fondi,Sicilia,Gennaio,Commercio,572.0
+2023,Altri fondi,Sicilia,Febbraio,Commercio,54.0
+2023,Altri fondi,Sicilia,Marzo,Commercio,4390.0
+2023,Altri fondi,Sicilia,Aprile,Commercio,2522.0
+2023,Altri fondi,Sicilia,Giugno,Commercio,6433.0
+2023,Altri fondi,Sardegna,Gennaio,Commercio,11193.0
+2023,Altri fondi,Sardegna,Marzo,Commercio,1040.0
+2023,Altri fondi,Sardegna,Aprile,Commercio,2771.0
+2023,Altri fondi,Sardegna,Dicembre,Commercio,4104.0
+2024,FIS,Piemonte,Gennaio,Commercio,40783.0
+2024,FIS,Piemonte,Febbraio,Industria,4843.0
+2024,FIS,Piemonte,Febbraio,Commercio,30374.0
+2024,FIS,Piemonte,Marzo,Commercio,67537.0
+2024,FIS,Piemonte,Aprile,Commercio,81077.0
+2024,FIS,Piemonte,Maggio,Commercio,81678.0
+2024,FIS,Piemonte,Giugno,Industria,1924.0
+2024,FIS,Piemonte,Giugno,Commercio,77838.0
+2024,FIS,Piemonte,Luglio,Industria,3394.0
+2024,FIS,Piemonte,Luglio,Commercio,52216.0
+2024,FIS,Liguria,Gennaio,Commercio,9938.0
+2024,FIS,Liguria,Febbraio,Commercio,18823.0
+2024,FIS,Liguria,Marzo,Commercio,6637.0
+2024,FIS,Liguria,Aprile,Commercio,3898.0
+2024,FIS,Liguria,Maggio,Commercio,10475.0
+2024,FIS,Liguria,Giugno,Commercio,80.0
+2024,FIS,Liguria,Luglio,Commercio,49092.0
+2024,FIS,Lombardia,Gennaio,Industria,393.0
+2024,FIS,Lombardia,Gennaio,Commercio,83972.0
+2024,FIS,Lombardia,Febbraio,Industria,98.0
+2024,FIS,Lombardia,Febbraio,Commercio,218039.0
+2024,FIS,Lombardia,Marzo,Industria,677.0
+2024,FIS,Lombardia,Marzo,Commercio,167441.0
+2024,FIS,Lombardia,Aprile,Industria,1895.0
+2024,FIS,Lombardia,Aprile,Commercio,187001.0
+2024,FIS,Lombardia,Maggio,Commercio,161777.0
+2024,FIS,Lombardia,Giugno,Industria,9674.0
+2024,FIS,Lombardia,Giugno,Commercio,191274.0
+2024,FIS,Lombardia,Luglio,Commercio,129038.0
+2024,FIS,Veneto,Gennaio,Industria,120.0
+2024,FIS,Veneto,Gennaio,Commercio,69997.0
+2024,FIS,Veneto,Febbraio,Commercio,58442.0
+2024,FIS,Veneto,Marzo,Industria,49683.0
+2024,FIS,Veneto,Marzo,Commercio,79736.0
+2024,FIS,Veneto,Aprile,Industria,14516.0
+2024,FIS,Veneto,Aprile,Commercio,52038.0
+2024,FIS,Veneto,Maggio,Industria,11734.0
+2024,FIS,Veneto,Maggio,Commercio,64670.0
+2024,FIS,Veneto,Giugno,Industria,2674.0
+2024,FIS,Veneto,Giugno,Commercio,67836.0
+2024,FIS,Veneto,Luglio,Industria,55262.0
+2024,FIS,Veneto,Luglio,Commercio,88072.0
+2024,FIS,Friuli-Venezia Giulia,Gennaio,Industria,32.0
+2024,FIS,Friuli-Venezia Giulia,Gennaio,Commercio,23397.0
+2024,FIS,Friuli-Venezia Giulia,Febbraio,Commercio,10815.0
+2024,FIS,Friuli-Venezia Giulia,Marzo,Industria,18772.0
+2024,FIS,Friuli-Venezia Giulia,Marzo,Commercio,24124.0
+2024,FIS,Friuli-Venezia Giulia,Aprile,Commercio,15948.0
+2024,FIS,Friuli-Venezia Giulia,Maggio,Commercio,2040.0
+2024,FIS,Friuli-Venezia Giulia,Giugno,Commercio,16020.0
+2024,FIS,Friuli-Venezia Giulia,Luglio,Industria,10080.0
+2024,FIS,Friuli-Venezia Giulia,Luglio,Commercio,3650.0
+2024,FIS,Emilia-Romagna,Gennaio,Industria,21801.0
+2024,FIS,Emilia-Romagna,Gennaio,Commercio,84681.0
+2024,FIS,Emilia-Romagna,Febbraio,Industria,392.0
+2024,FIS,Emilia-Romagna,Febbraio,Commercio,45033.0
+2024,FIS,Emilia-Romagna,Marzo,Industria,360.0
+2024,FIS,Emilia-Romagna,Marzo,Commercio,69812.0
+2024,FIS,Emilia-Romagna,Aprile,Industria,756.0
+2024,FIS,Emilia-Romagna,Aprile,Commercio,24009.0
+2024,FIS,Emilia-Romagna,Maggio,Commercio,134240.0
+2024,FIS,Emilia-Romagna,Giugno,Industria,82836.0
+2024,FIS,Emilia-Romagna,Giugno,Commercio,30826.0
+2024,FIS,Emilia-Romagna,Luglio,Commercio,268798.0
+2024,FIS,Toscana,Gennaio,Industria,5186.0
+2024,FIS,Toscana,Gennaio,Commercio,68876.0
+2024,FIS,Toscana,Febbraio,Industria,3085.0
+2024,FIS,Toscana,Febbraio,Commercio,67751.0
+2024,FIS,Toscana,Marzo,Commercio,41793.0
+2024,FIS,Toscana,Aprile,Commercio,25797.0
+2024,FIS,Toscana,Maggio,Commercio,23881.0
+2024,FIS,Toscana,Giugno,Commercio,19356.0
+2024,FIS,Toscana,Luglio,Commercio,28750.0
+2024,FIS,Umbria,Gennaio,Industria,19414.0
+2024,FIS,Umbria,Gennaio,Commercio,1015.0
+2024,FIS,Umbria,Febbraio,Industria,2604.0
+2024,FIS,Umbria,Febbraio,Commercio,9872.0
+2024,FIS,Umbria,Marzo,Industria,2699.0
+2024,FIS,Umbria,Marzo,Commercio,10532.0
+2024,FIS,Umbria,Aprile,Commercio,3560.0
+2024,FIS,Umbria,Maggio,Industria,7920.0
+2024,FIS,Umbria,Maggio,Commercio,33111.0
+2024,FIS,Umbria,Giugno,Commercio,22086.0
+2024,FIS,Umbria,Luglio,Commercio,196.0
+2024,FIS,Marche,Gennaio,Commercio,15573.0
+2024,FIS,Marche,Febbraio,Commercio,29484.0
+2024,FIS,Marche,Marzo,Industria,3708.0
+2024,FIS,Marche,Marzo,Commercio,18198.0
+2024,FIS,Marche,Aprile,Commercio,36301.0
+2024,FIS,Marche,Maggio,Commercio,7827.0
+2024,FIS,Marche,Giugno,Industria,42432.0
+2024,FIS,Marche,Giugno,Commercio,15368.0
+2024,FIS,Marche,Luglio,Commercio,11910.0
+2024,FIS,Lazio,Gennaio,Commercio,22551.0
+2024,FIS,Lazio,Febbraio,Industria,325.0
+2024,FIS,Lazio,Febbraio,Commercio,276751.0
+2024,FIS,Lazio,Marzo,Industria,3911.0
+2024,FIS,Lazio,Marzo,Commercio,313185.0
+2024,FIS,Lazio,Aprile,Commercio,14513.0
+2024,FIS,Lazio,Maggio,Industria,7422.0
+2024,FIS,Lazio,Maggio,Commercio,71983.0
+2024,FIS,Lazio,Giugno,Commercio,12120.0
+2024,FIS,Lazio,Luglio,Industria,17024.0
+2024,FIS,Lazio,Luglio,Commercio,332736.0
+2024,FIS,Abruzzo,Gennaio,Commercio,102355.0
+2024,FIS,Abruzzo,Febbraio,Commercio,2120.0
+2024,FIS,Abruzzo,Marzo,Commercio,440.0
+2024,FIS,Abruzzo,Aprile,Commercio,43226.0
+2024,FIS,Abruzzo,Maggio,Commercio,600.0
+2024,FIS,Abruzzo,Luglio,Commercio,2032.0
+2024,FIS,Molise,Gennaio,Commercio,13360.0
+2024,FIS,Molise,Febbraio,Commercio,316.0
+2024,FIS,Molise,Marzo,Commercio,6084.0
+2024,FIS,Molise,Aprile,Commercio,693.0
+2024,FIS,Molise,Giugno,Commercio,3604.0
+2024,FIS,Campania,Gennaio,Commercio,17314.0
+2024,FIS,Campania,Febbraio,Commercio,16549.0
+2024,FIS,Campania,Marzo,Commercio,22305.0
+2024,FIS,Campania,Aprile,Commercio,9518.0
+2024,FIS,Campania,Maggio,Commercio,24248.0
+2024,FIS,Campania,Giugno,Commercio,1116.0
+2024,FIS,Campania,Luglio,Commercio,8432.0
+2024,FIS,Campania,Luglio,Credito,3822.0
+2024,FIS,Puglia,Gennaio,Industria,4812.0
+2024,FIS,Puglia,Gennaio,Commercio,11590.0
+2024,FIS,Puglia,Febbraio,Commercio,17497.0
+2024,FIS,Puglia,Marzo,Commercio,54166.0
+2024,FIS,Puglia,Aprile,Commercio,95259.0
+2024,FIS,Puglia,Maggio,Industria,744.0
+2024,FIS,Puglia,Maggio,Commercio,4897.0
+2024,FIS,Puglia,Giugno,Industria,3240.0
+2024,FIS,Puglia,Giugno,Commercio,42828.0
+2024,FIS,Puglia,Luglio,Industria,3784.0
+2024,FIS,Puglia,Luglio,Commercio,166218.0
+2024,FIS,Basilicata,Gennaio,Commercio,32535.0
+2024,FIS,Basilicata,Febbraio,Commercio,5880.0
+2024,FIS,Basilicata,Marzo,Commercio,2191.0
+2024,FIS,Basilicata,Aprile,Commercio,24462.0
+2024,FIS,Basilicata,Giugno,Commercio,17510.0
+2024,FIS,Basilicata,Luglio,Commercio,9300.0
+2024,FIS,Calabria,Gennaio,Commercio,6801.0
+2024,FIS,Calabria,Febbraio,Commercio,6468.0
+2024,FIS,Calabria,Marzo,Commercio,2226.0
+2024,FIS,Calabria,Aprile,Commercio,66834.0
+2024,FIS,Calabria,Maggio,Industria,252.0
+2024,FIS,Calabria,Maggio,Commercio,75999.0
+2024,FIS,Calabria,Giugno,Commercio,384.0
+2024,FIS,Calabria,Luglio,Commercio,2778.0
+2024,FIS,Sicilia,Gennaio,Commercio,1282.0
+2024,FIS,Sicilia,Febbraio,Commercio,36951.0
+2024,FIS,Sicilia,Marzo,Commercio,1565.0
+2024,FIS,Sicilia,Aprile,Commercio,60222.0
+2024,FIS,Sicilia,Maggio,Commercio,82561.0
+2024,FIS,Sicilia,Giugno,Commercio,192.0
+2024,FIS,Sicilia,Luglio,Commercio,7018.0
+2024,FIS,Sardegna,Marzo,Commercio,586.0
+2024,FIS,Sardegna,Aprile,Commercio,13396.0
+2024,FIS,Sardegna,Maggio,Commercio,6177.0
+2024,FIS,Sardegna,Giugno,Commercio,370.0
+2024,FIS,Sardegna,Luglio,Commercio,6060.0
+2024,Altri fondi,Piemonte,Febbraio,Commercio,6340.0
+2024,Altri fondi,Piemonte,Luglio,Commercio,2824.0
+2024,Altri fondi,Piemonte,Luglio,Credito,3300.0
+2024,Altri fondi,Valle d'Aosta/Vallee d'Aoste,Luglio,Credito,12522.0
+2024,Altri fondi,Liguria,Gennaio,Industria,6656.0
+2024,Altri fondi,Lombardia,Gennaio,Industria,36816.0
+2024,Altri fondi,Lombardia,Gennaio,Commercio,25640.0
+2024,Altri fondi,Lombardia,Febbraio,Commercio,17017.0
+2024,Altri fondi,Lombardia,Aprile,Commercio,200.0
+2024,Altri fondi,Lombardia,Maggio,Commercio,5625.0
+2024,Altri fondi,Lombardia,Luglio,Commercio,6342.0
+2024,Altri fondi,Lombardia,Luglio,Credito,706.0
+2024,Altri fondi,Trentino-Alto-Adige,Febbraio,Commercio,9600.0
+2024,Altri fondi,Trentino-Alto-Adige,Giugno,Commercio,3162.0
+2024,Altri fondi,Trentino-Alto-Adige,Luglio,Credito,13376.0
+2024,Altri fondi,Veneto,Gennaio,Commercio,240.0
+2024,Altri fondi,Veneto,Maggio,Commercio,8528.0
+2024,Altri fondi,Veneto,Luglio,Commercio,120.0
+2024,Altri fondi,Emilia-Romagna,Gennaio,Industria,1664.0
+2024,Altri fondi,Emilia-Romagna,Febbraio,Commercio,1040.0
+2024,Altri fondi,Emilia-Romagna,Aprile,Commercio,7740.0
+2024,Altri fondi,Emilia-Romagna,Maggio,Commercio,160.0
+2024,Altri fondi,Emilia-Romagna,Luglio,Commercio,5260.0
+2024,Altri fondi,Toscana,Gennaio,Industria,148096.0
+2024,Altri fondi,Toscana,Gennaio,Commercio,10553.0
+2024,Altri fondi,Toscana,Febbraio,Commercio,3600.0
+2024,Altri fondi,Toscana,Aprile,Commercio,256.0
+2024,Altri fondi,Toscana,Maggio,Commercio,25456.0
+2024,Altri fondi,Toscana,Luglio,Credito,1944.0
+2024,Altri fondi,Umbria,Giugno,Industria,16224.0
+2024,Altri fondi,Umbria,Luglio,Commercio,6000.0
+2024,Altri fondi,Marche,Febbraio,Commercio,920.0
+2024,Altri fondi,Lazio,Gennaio,Industria,3328.0
+2024,Altri fondi,Lazio,Gennaio,Commercio,8208.0
+2024,Altri fondi,Lazio,Febbraio,Commercio,5174.0
+2024,Altri fondi,Lazio,Aprile,Commercio,4040.0
+2024,Altri fondi,Lazio,Luglio,Commercio,1192.0
+2024,Altri fondi,Abruzzo,Febbraio,Commercio,1300.0
+2024,Altri fondi,Abruzzo,Aprile,Commercio,2150.0
+2024,Altri fondi,Abruzzo,Giugno,Industria,98.0
+2024,Altri fondi,Campania,Gennaio,Industria,231088.0
+2024,Altri fondi,Campania,Gennaio,Commercio,898.0
+2024,Altri fondi,Campania,Febbraio,Commercio,551.0
+2024,Altri fondi,Puglia,Gennaio,Commercio,304.0
+2024,Altri fondi,Puglia,Febbraio,Commercio,48.0
+2024,Altri fondi,Puglia,Aprile,Commercio,48.0
+2024,Altri fondi,Puglia,Maggio,Industria,2548.0
+2024,Altri fondi,Puglia,Maggio,Commercio,96.0
+2024,Altri fondi,Puglia,Luglio,Commercio,48.0
+2024,Altri fondi,Basilicata,Luglio,Commercio,40.0
+2024,Altri fondi,Sicilia,Aprile,Commercio,108.0
+2024,Altri fondi,Sicilia,Luglio,Commercio,320.0
+2024,Altri fondi,Sardegna,Gennaio,Industria,43264.0
+2024,Altri fondi,Sardegna,Febbraio,Commercio,2600.0
+2024,Altri fondi,Sardegna,Luglio,Industria,2568.0
+2024,Altri fondi,Sardegna,Luglio,Commercio,2340.0

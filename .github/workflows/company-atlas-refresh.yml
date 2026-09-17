@@ -1,0 +1,39 @@
+name: Atlante Imprese snapshot
+
+on:
+  schedule:
+    - cron: "41 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: company-atlas-snapshot
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: refresh
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: source-operations
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22.23.2"
+      - name: Refresh official aggregate snapshot
+        run: node scripts/etl/company_atlas_snapshot.mjs
+      - name: Validate offline snapshot
+        run: node scripts/etl/company_atlas_snapshot.mjs --check
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: company-atlas
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="224"
+   height="280"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="Flag_of_Campania.svg">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="1.0415094"
+     inkscape:cx="360.451"
+     inkscape:cy="260.77577"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <defs
+     id="defs4">
+    <clipPath
+       id="c">
+      <path
+         id="p"
+         d="m 188.88941,73.82279 0,223.8712 c 0,24.06261 22.70927,34.32567 48.26284,35.82882 14.06024,0.82702 31.51412,1.84181 44.66816,3.0643 13.01622,1.2225 18.20906,10.72508 18.20906,10.72508 0,0 5.19284,-9.50258 18.20905,-10.72508 13.15404,-1.22249 30.6079,-2.23728 44.66817,-3.0643 25.55357,-1.50315 48.2039,-11.76621 48.2039,-35.82882 l 0,-223.8712 z"
+         inkscape:connector-curvature="0" />
+    </clipPath>
+  </defs>
+  <use
+     xlink:href="#p"
+     id="use10"
+     transform="matrix(1.0012565,0,0,1.0183208,-188.37675,-74.425223)"
+     style="fill:#ffffff"
+     x="0"
+     y="0"
+     width="600"
+     height="400" />
+  <line
+     clip-path="url(#c)"
+     x1="137.2"
+     x2="455.60001"
+     y2="400"
+     id="line12"
+     y1="0"
+     transform="matrix(1.0012565,0,0,1.0183208,-188.37675,-74.425223)"
+     style="fill:none;stroke:#d20019;stroke-width:45.85280991;stroke-opacity:1" />
+  <use
+     xlink:href="#p"
+     id="use14"
+     transform="matrix(1.0012565,0,0,1.0183208,-188.37675,-74.425223)"
+     style="fill:none;stroke:#000000;stroke-width:1.48551261"
+     x="0"
+     y="0"
+     width="600"
+     height="400" />
+</svg>

@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "datasetId": "spd_ssn_cce_elb_voccn_01_2024",
+  "referenceYear": 2024,
+  "observation": {
+    "type": "CONSUNTIVO",
+    "observedAt": "2026-02-10",
+    "publishedAt": "2026-02-11"
+  },
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "publisher": "Data Warehouse RGS",
+    "title": "2024 - Modello di rilevazione del Conto Economico degli enti del SSN",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=94083af2-a542-482d-8ad6-5877d04cd1ca",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn",
+    "license": "Creative Commons Attribution",
+    "licenseId": "cc-by",
+    "licenseVersion": "3.0 Unported",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+    "rightsHolder": "Ragioneria Generale dello Stato",
+    "catalogMetadataCreated": "2026-02-11T13:45:44Z",
+    "catalogMetadataModified": "2026-02-11T13:48:11Z",
+    "landingPageUpdatedAt": "2026-02-16",
+    "dataObservedAt": "2026-02-10"
+  },
+  "datasets": {
+    "entities": {
+      "datasetId": "spd_ssn_cce_elb_voccn_01_2024",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn",
+      "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/94083af2-a542-482d-8ad6-5877d04cd1ca.csv",
+      "odataUrl": "https://bdap-opendata.rgs.mef.gov.it/ODataProxy/MdData('446bba56-fea9-4bb5-aee6-ce5c91dc5854@rgs')/DataRows",
+      "encoding": "UTF-8",
+      "delimiter": ";",
+      "quote": "\"",
+      "lineEnding": "CRLF",
+      "columns": [
+        "Anno di Riferimento",
+        "Codice Regione",
+        "Descrizione Regione",
+        "Tipo Rilevazione",
+        "Codice Ente SSN",
+        "Codice Ente BDAP",
+        "Descrizione Ente",
+        "Codice Voce Contabile",
+        "Descrizione Voce Contabile",
+        "Data Aggiornamento",
+        "Importo Totale"
+      ],
+      "expectedRows": 76124,
+      "expectedEntities": 253,
+      "expectedExposedEntities": 232,
+      "expectedAggregateEntities": 21,
+      "expectedRegions": 21,
+      "expectedVoices": 554,
+      "sourceBytes": 15636428,
+      "sourceSha256": "a3e2ed4e42f4c7ae4f6147aaf4b9b2145176b4ba71f281aaba247b90cbff5c56"
+    },
+    "national": {
+      "datasetId": "SSN_CCE_NAZ_VOCCN_001",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn-livello-nazionale",
+      "odataUrl": "https://bdap-opendata.rgs.mef.gov.it/ODataProxy/MdData('4b3d92d0-77ec-413a-ab0c-ae431c217474@rgs')/DataRows?%24top=5&%24filter=Cccodice_voce_c1597042508%20eq%20%27BZ9999%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA2080%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA1350%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA1750%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA0390%27&%24orderby=Cccodice_voce_c1597042508",
+      "properties": [
+        "row_id",
+        "Ccanno_di_rifer2017547080",
+        "Cccodice_voce_c1597042508",
+        "Ccdescrizione_vo915899106",
+        "Ccdata_aggiorna2057202945",
+        "Ccimporto_total1317737785"
+      ],
+      "expectedRows": 5,
+      "sourceBytes": 2507,
+      "sourceSha256": "13099a8df2f52eb1aa7383036a7ed9ecc3ad21cb8de5cc9e9b75aeda6ab5e20a"
+    },
+    "regional": {
+      "datasetId": "SSN_CCE_REG_VOCCN_001",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn-livello-regionale",
+      "odataUrl": "https://bdap-opendata.rgs.mef.gov.it/ODataProxy/MdData('8e06c6e5-f5ab-4a3c-b192-79b5447109d7@rgs')/DataRows?%24top=105&%24filter=Cccodice_voce_c1597042508%20eq%20%27BZ9999%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA2080%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA1350%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA1750%27%20or%20Cccodice_voce_c1597042508%20eq%20%27BA0390%27&%24orderby=Cccodice_region1532212456%2CCccodice_voce_c1597042508",
+      "properties": [
+        "row_id",
+        "Ccanno_di_rifer2017547080",
+        "Cccodice_region1532212456",
+        "Ccdescrizione_r1013517246",
+        "Cccodice_voce_c1597042508",
+        "Ccdescrizione_vo915899106",
+        "Ccdata_aggiorna2057202945",
+        "Ccimporto_total1317737785"
+      ],
+      "expectedRows": 105,
+      "expectedRegions": 21,
+      "sourceBytes": 60028,
+      "sourceSha256": "61ffcc7d55e106ac03c19c7117b835b5b746432d0964aa291bcd2d9b1630b05f"
+    }
+  },
+  "metrics": [
+    {
+      "id": "productionCosts",
+      "code": "BZ9999",
+      "label": "Totale costi della produzione (B)",
+      "meaning": "Totale della sezione B del conto economico secondo la voce contabile pubblicata dalla fonte."
+    },
+    {
+      "id": "personnelCost",
+      "code": "BA2080",
+      "label": "Totale Costo del personale",
+      "meaning": "Voce contabile del costo del personale pubblicata dalla fonte; non è una misura di organico."
+    },
+    {
+      "id": "healthcareWorkServices",
+      "code": "BA1350",
+      "label": "B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie",
+      "meaning": "Voce contabile aggregata della fonte; non identifica singoli lavoratori, contratti o categorie come gettonisti."
+    },
+    {
+      "id": "nonHealthcareWorkServices",
+      "code": "BA1750",
+      "label": "B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie",
+      "meaning": "Voce contabile aggregata della fonte per prestazioni di lavoro non sanitarie."
+    },
+    {
+      "id": "purchasedServices",
+      "code": "BA0390",
+      "label": "B.2) Acquisti di servizi",
+      "meaning": "Totale della voce B.2 del conto economico; include servizi sanitari e non sanitari, non solo lavoro esterno."
+    }
+  ],
+  "expected": {
+    "entitySourceRows": 76124,
+    "entities": 253,
+    "exposedEntities": 232,
+    "aggregateEntities": 21,
+    "nationalRows": 5,
+    "regionalRows": 105,
+    "regions": 21,
+    "voices": 554,
+    "referenceYear": 2024,
+    "observationType": "CONSUNTIVO"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, sorted keys, compact separators, excluding integrity.lockSha256",
+    "artifact": {
+      "bytes": 126487,
+      "sha256": "83475a59d4afc9555420f8abbddd89ec818cc56cb1cab73b18fb15303c7e1d9c"
+    },
+    "lockSha256": "8c8057b9c8dbff29223e11f9f7d78811cf5140ea4f1f8595fdfbc78da9fe5c3a"
+  }
+}

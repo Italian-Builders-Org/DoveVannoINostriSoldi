@@ -1,0 +1,147 @@
+.page {
+  gap: var(--space-6);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--color-accent-700);
+}
+
+.completeValue {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 2vw, 31px);
+  font-weight: 800;
+  color: var(--color-positive);
+}
+
+.twoColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.countList {
+  margin: 0;
+}
+
+.countList > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 9px 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.countList dt {
+  color: var(--color-neutral-700);
+}
+
+.countList dd {
+  margin: 0;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.panelNote {
+  margin: var(--space-3) 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.datasetSources {
+  width: max-content;
+  min-width: 100%;
+}
+
+.datasetSources th,
+.datasetSources td {
+  min-width: 150px;
+  max-width: 360px;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.datasetSources th:first-child {
+  min-width: 220px;
+}
+
+.datasetSources tr:target {
+  background: var(--color-accent-100);
+  outline: 2px solid var(--color-accent-600);
+  outline-offset: -2px;
+}
+
+.barList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barList li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: 5px;
+}
+
+.barList span {
+  font-variant-numeric: tabular-nums;
+}
+
+.barList progress {
+  display: block;
+  width: 100%;
+  height: 7px;
+  border: 0;
+  background: var(--color-neutral-200);
+}
+
+.barList progress::-webkit-progress-bar {
+  background: var(--color-neutral-200);
+}
+
+.barList progress::-webkit-progress-value {
+  background: var(--color-accent-700);
+}
+
+.barList progress::-moz-progress-bar {
+  background: var(--color-accent-700);
+}
+
+.nextLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.nextLinks h2 {
+  width: 100%;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .twoColumns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

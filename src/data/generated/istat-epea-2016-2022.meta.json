@@ -1,0 +1,80 @@
+{
+  "datasetId": "istat-epea",
+  "edition": "2025M2",
+  "referencePeriod": {
+    "from": 2016,
+    "to": 2022
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "dataflowId": "IT1,97_953,1.0",
+    "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,97_953,1.0/",
+    "accept": "application/vnd.sdmx.data+csv;version=1.0.0",
+    "sha256": "07a30ae5d9abe9956bbfc00eafb1c01a12dbd7e1d6e1ebaa8fa32ca373748dcb",
+    "bytes": 890282,
+    "rows": 5656,
+    "acquiredAt": "2026-09-04"
+  },
+  "unit": {
+    "source": "milioni di euro (UNIT_MEAS=EURO, UNIT_MULT=6)",
+    "storage": "amountCents = OBS_VALUE * 1e6 * 100 quando OBS_VALUE presente"
+  },
+  "dimensions": {
+    "institutionalSectors": [
+      "S1",
+      "S13_15",
+      "S14",
+      "S1K",
+      "S1K_ANC",
+      "S1K_SPASEC",
+      "S2"
+    ],
+    "cepaClasses": [
+      "CEPA1",
+      "CEPA2",
+      "CEPA3",
+      "CEPA4",
+      "CEPA5",
+      "CEPA6",
+      "CEPA7_9",
+      "TOT_CEPA"
+    ],
+    "dataTypeAggr": [
+      "EPS_CUR_IN",
+      "EPS_D1",
+      "EPS_INV_EOP",
+      "EPS_INV_IT",
+      "EPS_NEXP",
+      "EPS_P1",
+      "EPS_P11",
+      "EPS_P13",
+      "EPS_P1_ANC",
+      "EPS_P2",
+      "EPS_P2_EPS",
+      "EPS_P3",
+      "EPS_P51G_NP",
+      "EPS_P6",
+      "EPS_P7",
+      "EP_D3_7_92_99_P",
+      "EP_D3_7_92_99_R"
+    ],
+    "years": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ]
+  },
+  "caveats": [
+    "EPEA è contabilità SEC di competenza: non è cassa SIOPE.",
+    "Non sommare né confrontare silenziosamente con RGS spese ambientali del bilancio dello Stato.",
+    "Non sommare né confrontare con PNRR Missione 2 né SAD/SAF.",
+    "TOT_CEPA e totali settoriali non vanno sommati alle parti che già li compongono senza verifica di sovrapposizione.",
+    "Edizione 2025M2 fissata: non mescolare con altre edizioni della serie.",
+    "Licenza non dichiarata dalla risposta SDMX: non inferita."
+  ],
+  "issue": 86
+}

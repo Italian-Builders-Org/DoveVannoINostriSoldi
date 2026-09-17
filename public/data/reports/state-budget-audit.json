@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "cutoff": "2026-09-15",
+  "canonicalPath": "src/content/reports/state-budget-reader.json",
+  "classification": "Reconciliation and execution indicators, not a national waste estimate",
+  "coverage": {
+    "ministryAggregates": 15,
+    "acquiredAmountCells": 105,
+    "accountingIdentities": 45,
+    "columnReconciliations": 7,
+    "historicalObservations": 10,
+    "historicalComponentChecks": 10,
+    "chapterRowsReprocessed": 0,
+    "chapterRowsDeclaredByUpstream": 5395
+  },
+  "checks": [
+    {
+      "id": "ministry-02-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-02-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-02-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-04-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-04-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-04-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-07-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-07-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-07-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-12-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-12-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-12-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-08-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-08-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-08-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-10-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-10-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-10-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-03-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-03-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-03-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-11-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-11-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-11-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-05-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-05-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-05-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-09-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-09-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-09-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-06-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-06-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-06-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-14-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-14-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-14-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-15-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-15-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-15-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-13-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-13-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-13-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-16-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-16-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "ministry-16-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-commitmentsCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-paymentsCompetenceCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-remainingCpCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-paymentsResidualRsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-paymentsCashCsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-remainingRsCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "total-residualsEndCents",
+      "unit": "EUR_cent",
+      "difference": "0",
+      "passed": true
+    },
+    {
+      "id": "history-2015",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2016",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2017",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2018",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2019",
+      "unit": "EUR_million",
+      "difference": "1",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2020",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2021",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2022",
+      "unit": "EUR_million",
+      "difference": "-1",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2023",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    },
+    {
+      "id": "history-2024",
+      "unit": "EUR_million",
+      "difference": "0",
+      "tolerance": "1",
+      "passed": true
+    }
+  ],
+  "executionOrder": [
+    "16",
+    "10",
+    "15",
+    "09",
+    "14",
+    "13",
+    "03",
+    "08",
+    "11",
+    "12",
+    "05",
+    "02",
+    "06",
+    "04",
+    "07"
+  ],
+  "hypothesesRejectedOrNotUsed": [
+    {
+      "title": "Somma dei residui = spreco",
+      "reason": "Scartata. Lo stock include fasi e scadenze diverse; non misura da solo ritardi colpevoli o denaro perduto."
+    },
+    {
+      "title": "Cassa superiore agli impegni 2025 = spesa fuori bilancio",
+      "reason": "Scartata quando la differenza è coperta dai pagamenti sui residui precedenti. Le tre identità sono verificate per ogni ministero."
+    },
+    {
+      "title": "Cancellazioni INPS = pensioni indebite",
+      "reason": "Scartata. Crediti contributivi e prestazioni pagate sono oggetti contabili diversi; i fondi svalutazione anticipano parte della perdita di valore."
+    },
+    {
+      "title": "Proposte Recovery Fund 2020 = pagamenti eseguiti",
+      "reason": "Non utilizzata come evidenza. L’allegato Radio Radio descrive una bozza di 557 progetti, non impegni, fatture o pagamenti."
+    },
+    {
+      "title": "Salari stagnanti = prova che un capitolo di bilancio è sprecato",
+      "reason": "Non utilizzata come evidenza. Il secondo articolo allegato presenta una tesi macroeconomica; non identifica un flusso di spesa né una stima causale verificabile qui."
+    }
+  ],
+  "canonicalSha256": "e7e70ee143e6a98ab60b5c7327cc997ee3f18771b6820c933a7e5521b3abbb31"
+}

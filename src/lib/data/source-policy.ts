@@ -1,0 +1,842 @@
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
+
+export type SourceId =
+  | "ipa"
+  | "ipa-struttura"
+  | "openbdap"
+  | "anac"
+  | "inps"
+  | "cpt"
+  | "mef-irpef"
+  | "siope"
+  | "istat"
+  | "istat-casellario-pensioni"
+  | "consip"
+  | "opencoesione"
+  | "opencup"
+  | "italiadomani"
+  | "opencivitas"
+  | "consulenti"
+  | "camera"
+  | "senato"
+  | "pcm"
+  | "partecipazioni-pubbliche"
+  | "bancaditalia"
+  | "eurostat"
+  | "eurostat-hicp"
+  | "eurostat-gdp"
+  | "oecd-taxing-wages"
+  | "eurostat-cofog"
+  | "eurostat-gov-main"
+  | "istat-cofog"
+  | "istat-epea"
+  | "istat-poverta"
+  | "istat-poverta-relativa"
+  | "istat-bes-economico"
+  | "istat-bes-salute"
+  | "istat-bes-istruzione"
+  | "istat-bes-lavoro"
+  | "istat-bes-relazioni"
+  | "istat-bes-politica"
+  | "inps-naspi"
+  | "inps-assegno-unico"
+  | "inps-integrazioni-salariali"
+  | "inps-cig-fondi-solidarieta"
+  | "inl-vigilanza"
+  | "aifa-spesa-consumi"
+  | "mef-irpef-dettaglio"
+  | "mef-iva"
+  | "eu-vat-gap-italy"
+  | "mef-tax-gap-nazionale"
+  | "eurostat-taxag"
+  | "eurostat-sha-health"
+  | "ameco"
+  | "governi-presidenza";
+
+export type SourceCadence =
+  | "giornaliera"
+  | "settimanale"
+  | "mensile"
+  | "bimestrale"
+  | "trimestrale"
+  | "annuale"
+  | "periodica"
+  | "per-amministrazione"
+  | "su-pubblicazione";
+
+export type ProductIntegrationState = "active" | "configured";
+
+/** One release gate shared by source status, UI and MCP. */
+export const OPENCUP_PRODUCT_INTEGRATION = "configured" as ProductIntegrationState;
+
+export type SourcePolicy = {
+  id: SourceId;
+  label: string;
+  owner: string;
+  sourceUrl: string;
+  cadence: SourceCadence;
+  cadenceNote: string;
+  discoveryRevalidateSeconds: number;
+  dataRevalidateSeconds: number;
+  staleAfterSeconds: number | null;
+  timeoutMs: number;
+  maxRetries: number;
+  tags: readonly string[];
+  integration?: ProductIntegrationState;
+};
+
+const HOUR = 60 * 60;
+const DAY = 24 * HOUR;
+
+/**
+ * Operational freshness policies for DoveVannoINostriSoldi.
+ *
+ * `cadence` describes the publication cadence declared by the source when it
+ * is known. Revalidation is intentionally more frequent than publication: it
+ * lets us notice a new official release shortly after it appears without
+ * pretending the underlying dataset itself is real-time.
+ *
+ * `staleAfterSeconds` is null when the publisher does not promise a stable
+ * cadence. In that case we expose the source timestamp without assigning a
+ * misleading "stale" judgement.
+ */
+export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
+  ameco: {
+    id: "ameco",
+    label: "Commissione europea · AMECO",
+    owner: "Commissione europea · DG ECFIN",
+    sourceUrl: "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
+    cadence: "su-pubblicazione",
+    cadenceNote:
+      "AMECO viene aggiornato con i principali esercizi previsivi della Commissione; il controllo settimanale intercetta un nuovo vintage senza presentare le serie come dati in tempo reale.",
+    discoveryRevalidateSeconds: 7 * DAY,
+    dataRevalidateSeconds: 7 * DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:ameco", "domain:government-scorecard"],
+  },
+  "governi-presidenza": {
+    id: "governi-presidenza",
+    label: "Presidenza della Repubblica · giuramenti dei governi",
+    owner: "Presidenza della Repubblica",
+    sourceUrl: "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+    cadence: "periodica",
+    cadenceNote:
+      "La cronologia istituzionale cambia con il giuramento di un nuovo governo; il controllo giornaliero valida fonti Quirinale, contenuto e ordine prima di aggiornare il registro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:governi-presidenza", "domain:government-scorecard"],
+  },
+  ipa: {
+    id: "ipa",
+    label: "Indice PA",
+    owner: "AgID",
+    sourceUrl: "https://www.indicepa.gov.it/ipa-dati/dataset/enti",
+    cadence: "giornaliera",
+    cadenceNote: "Il dataset Enti IPA dichiara aggiornamento giornaliero.",
+    discoveryRevalidateSeconds: HOUR,
+    dataRevalidateSeconds: HOUR,
+    staleAfterSeconds: 2 * DAY,
+    timeoutMs: 9_000,
+    maxRetries: 1,
+    tags: ["source:ipa", "domain:entities"],
+  },
+  "ipa-struttura": {
+    id: "ipa-struttura",
+    label: "IPA · UO e AOO",
+    owner: "AgID",
+    sourceUrl: "https://www.indicepa.gov.it/ipa-dati/dataset/unita-organizzative",
+    cadence: "giornaliera",
+    cadenceNote: "I dataset UO e AOO IPA dichiarano aggiornamento giornaliero.",
+    discoveryRevalidateSeconds: HOUR,
+    dataRevalidateSeconds: HOUR,
+    staleAfterSeconds: 2 * DAY,
+    timeoutMs: 9_000,
+    maxRetries: 1,
+    tags: ["source:ipa-struttura", "domain:organization-structure"],
+  },
+  openbdap: {
+    id: "openbdap",
+    label: "OpenBDAP",
+    owner: "Ragioneria Generale dello Stato",
+    sourceUrl: "https://bdap-opendata.rgs.mef.gov.it/",
+    cadence: "mensile",
+    cadenceNote:
+      "I pagamenti dello Stato sono rilasciati per mese contabile e, a chiusura dell'esercizio, come consuntivo annuale. Il dataset MOP espone una propria data di aggiornamento e viene ricontrollato insieme allo schema.",
+    discoveryRevalidateSeconds: 2 * HOUR,
+    dataRevalidateSeconds: 6 * HOUR,
+    staleAfterSeconds: 45 * DAY,
+    timeoutMs: 15_000,
+    maxRetries: 1,
+    tags: ["source:openbdap", "domain:state-spending"],
+  },
+  anac: {
+    id: "anac",
+    label: "BDNCP / dati aperti ANAC",
+    owner: "Autorità Nazionale Anticorruzione",
+    sourceUrl: "https://dati.anticorruzione.it/opendata/dataset",
+    cadence: "mensile",
+    cadenceNote:
+      "Gli open data BDNCP sono aggiornati con rilasci mensili e file delta; Analytics dichiara aggiornamento settimanale e ANAC documenta endpoint API OCDS.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 45 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:anac", "domain:public-procurement"],
+  },
+  inps: {
+    id: "inps",
+    label: "INPS",
+    owner: "Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://www.inps.it/it/it/dati-e-bilanci.html",
+    cadence: "su-pubblicazione",
+    cadenceNote:
+      "Rendiconti e analisi statistiche seguono la pubblicazione istituzionale; ogni nuova edizione richiede la riconciliazione del contratto dati.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps", "domain:social-benefits"],
+  },
+  cpt: {
+    id: "cpt",
+    label: "Conti Pubblici Territoriali",
+    owner: "Dipartimento per le Politiche di Coesione e per il Sud",
+    sourceUrl: "https://politichecoesione.governo.it/it/politica-di-coesione/misurazione-valutazione-e-trasparenza/la-misurazione-delle-politiche-di-coesione/conti-pubblici-territoriali-cpt/i-dati/catalogo-open-cpt/",
+    cadence: "annuale",
+    cadenceNote: "Il Sistema CPT pubblica serie consolidate annuali; lo snapshot viene rigenerato solo dopo la validazione congiunta di entrate e spese.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:cpt", "domain:regional-public-finance"],
+  },
+  "mef-irpef": {
+    id: MEF_IRPEF_SOURCE.id,
+    label: MEF_IRPEF_SOURCE.label,
+    owner: MEF_IRPEF_SOURCE.owner,
+    sourceUrl: MEF_IRPEF_SOURCE.sourceUrl,
+    ...MEF_IRPEF_SOURCE.policy,
+  },
+  siope: {
+    id: "siope",
+    label: "SIOPE / SIOPE+",
+    owner: "RGS · banca dati gestita da Banca d'Italia",
+    sourceUrl: "https://www.siope.it/documenti/siope2/open/last/",
+    cadence: "periodica",
+    cadenceNote:
+      "L’automazione SIOPE controlla ogni giorno i validator dei file nazionali di entrate e uscite e rigenera gli snapshot solo quando la fonte ufficiale cambia; il monitor HTTP ha una cache distinta di un’ora.",
+    discoveryRevalidateSeconds: HOUR,
+    dataRevalidateSeconds: HOUR,
+    staleAfterSeconds: null,
+    timeoutMs: 15_000,
+    maxRetries: 1,
+    tags: ["source:siope", "domain:local-spending"],
+  },
+  istat: {
+    id: "istat",
+    label: "ISTAT SITUAS",
+    owner: "Istituto nazionale di statistica",
+    sourceUrl: "https://situas.istat.it/web/#/territorio",
+    cadence: "periodica",
+    cadenceNote: "SITUAS pubblica quadri territoriali interrogabili per data; lo snapshot viene rigenerato dopo variazioni ufficiali.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat", "domain:territorial-geography"],
+  },
+  "istat-casellario-pensioni": {
+    id: "istat-casellario-pensioni",
+    label: "ISTAT · Casellario dei pensionati",
+    owner: "Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il Casellario dei pensionati pubblica serie annuali; lo snapshot resta bloccato sul periodo verificato e viene aggiornato solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-casellario-pensioni", "domain:social-benefits"],
+  },
+  consip: {
+    id: "consip",
+    label: "Consip · acquisti centralizzati",
+    owner: "Consip S.p.A. (società del MEF)",
+    sourceUrl: "https://dati.consip.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il portale open data Consip pubblica dump annuali per package; lo snapshot resta bloccato sui file verificati (hash e byte) e viene aggiornato solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:consip", "domain:public-procurement"],
+  },
+  opencoesione: {
+    id: "opencoesione",
+    label: "OpenCoesione",
+    owner: "Dipartimento per le Politiche di Coesione",
+    sourceUrl: "https://opencoesione.gov.it/it/opendata/",
+    cadence: "bimestrale",
+    cadenceNote: "I principali dataset OpenCoesione dichiarano frequenza prevista bimestrale.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: 24 * HOUR,
+    staleAfterSeconds: 90 * DAY,
+    timeoutMs: 15_000,
+    maxRetries: 1,
+    tags: ["source:opencoesione", "domain:cohesion"],
+  },
+  opencup: {
+    id: "opencup",
+    label: "OpenCUP · Progetti",
+    owner: "Dipartimento per la programmazione e il coordinamento della politica economica",
+    sourceUrl: "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data",
+    cadence: "mensile",
+    cadenceNote: "La landing OpenCUP dichiara aggiornamento mensile. La freschezza è valutabile solo dalla data di pubblicazione del rilascio effettivamente servito.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 62 * DAY,
+    timeoutMs: 5_000,
+    maxRetries: 0,
+    tags: ["source:opencup", "domain:projects"],
+    integration: OPENCUP_PRODUCT_INTEGRATION,
+  },
+  italiadomani: {
+    id: PNRR_CHILDCARE_SOURCE.id,
+    label: PNRR_CHILDCARE_SOURCE.label,
+    owner: PNRR_CHILDCARE_SOURCE.owner,
+    sourceUrl: PNRR_CHILDCARE_SOURCE.sourceUrl,
+    ...PNRR_CHILDCARE_SOURCE.policy,
+  },
+  opencivitas: {
+    id: "opencivitas",
+    label: "OpenCivitas",
+    owner: "Sogei",
+    sourceUrl: "https://www.opencivitas.it/it/open-data",
+    cadence: "periodica",
+    cadenceNote:
+      "La fonte dichiara frequenza irregolare. Il rilascio 2022 viene verificato ogni giorno; una nuova annualità richiede la convalida del contratto dati.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 60_000,
+    maxRetries: 1,
+    tags: ["source:opencivitas", "domain:municipal-standard-needs"],
+  },
+  consulenti: {
+    id: "consulenti",
+    label: "Consulenti Pubblici",
+    owner: "Dipartimento della Funzione Pubblica",
+    sourceUrl: "https://consulentipubblici.dfp.gov.it/progetto",
+    cadence: "per-amministrazione",
+    cadenceNote:
+      "L'aggiornamento dipende dalle comunicazioni delle singole amministrazioni; lo snapshot nazionale viene controllato ogni 6 ore.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: 6 * HOUR,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:consulenti", "domain:appointments"],
+  },
+  camera: {
+    id: "camera",
+    label: "Camera Trasparente",
+    owner: "Camera dei deputati",
+    sourceUrl: "https://trasparenza.camera.it/",
+    cadence: "su-pubblicazione",
+    cadenceNote: "Documenti e dati seguono la pubblicazione istituzionale.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: 12 * HOUR,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:camera", "domain:parliament"],
+  },
+  senato: {
+    id: "senato",
+    label: "Senato · Spese e trasparenza",
+    owner: "Senato della Repubblica",
+    sourceUrl: "https://www.senato.it/relazioni-con-i-cittadini/spese-trasparenza/spese-e-trasparenza",
+    cadence: "su-pubblicazione",
+    cadenceNote: "I documenti contabili seguono la pubblicazione istituzionale; gli importi restano esclusi finché il PDF non è acquisito e verificato.",
+    discoveryRevalidateSeconds: 6 * HOUR,
+    dataRevalidateSeconds: 12 * HOUR,
+    staleAfterSeconds: null,
+    timeoutMs: 12_000,
+    maxRetries: 1,
+    tags: ["source:senato", "domain:parliament"],
+  },
+  pcm: {
+    id: "pcm",
+    label: "Bilanci della Presidenza del Consiglio",
+    owner: "Presidenza del Consiglio dei ministri",
+    sourceUrl: "https://presidenza.governo.it/AmministrazioneTrasparente/Bilanci/BilancioPreventivoConsultivo/index.html",
+    cadence: "annuale",
+    cadenceNote: "Bilanci e rendiconti seguono l'approvazione e la pubblicazione istituzionale; ogni nuovo workbook richiede una verifica di schema.",
+    discoveryRevalidateSeconds: 12 * HOUR,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:pcm", "domain:presidency-spending"],
+  },
+  "partecipazioni-pubbliche": {
+    id: "partecipazioni-pubbliche",
+    label: "Censimento partecipazioni pubbliche",
+    owner: "MEF · Dipartimento dell'Economia",
+    sourceUrl: "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html",
+    cadence: "annuale",
+    cadenceNote: "Rilevazione annuale con ritardo di pubblicazione variabile; discovery giornaliera.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: null,
+    timeoutMs: 60_000,
+    maxRetries: 1,
+    tags: ["source:partecipazioni-pubbliche", "domain:public-holdings"],
+  },
+  bancaditalia: {
+    id: "bancaditalia",
+    label: "Banca d'Italia · debito pubblico",
+    owner: "Banca d'Italia",
+    sourceUrl: "https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html",
+    cadence: "mensile",
+    cadenceNote: "Stock, flussi, detentori e vita residua sono pubblicati mensilmente con ritardo atteso di circa 45 giorni.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 75 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:bancaditalia", "domain:public-debt"],
+  },
+  eurostat: {
+    id: "eurostat",
+    label: "Eurostat · interessi sul debito",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote: "Interessi e spesa pubblica totale sono dati annuali di contabilità nazionale.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat", "domain:public-debt"],
+  },
+  "eurostat-hicp": {
+    id: "eurostat-hicp",
+    label: "Eurostat · IPCA mensile",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+    cadence: "mensile",
+    cadenceNote: "L'IPCA viene pubblicato mensilmente; totale, dettaglio ECOICOP e aggregati europei possono avere l'ultimo mese disponibile diverso e restano separati.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 70 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat-hicp", "domain:inflation", "domain:government-scorecard"],
+  },
+  "eurostat-gdp": {
+    id: "eurostat-gdp",
+    label: "Eurostat · PIL e conti nazionali",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+    cadence: "trimestrale",
+    cadenceNote:
+      "I conti nazionali trimestrali e annuali vengono rivisti: lo snapshot resta bloccato sulle risposte JSON-stat verificate e si aggiorna solo dopo nuova acquisizione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 120 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat-gdp", "domain:national-accounts", "domain:economy"],
+  },
+  "oecd-taxing-wages": {
+    id: "oecd-taxing-wages",
+    label: "OECD · Taxing Wages (cuneo fiscale)",
+    owner: "OECD",
+    sourceUrl: "https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html",
+    cadence: "annuale",
+    cadenceNote:
+      "Taxing Wages è annuale: lo snapshot resta bloccato sui CSV SDMX verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione delle componenti.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:oecd-taxing-wages", "domain:labour-taxation"],
+  },
+  "eurostat-cofog": {
+    id: "eurostat-cofog",
+    label: "Eurostat · spesa per funzione (COFOG)",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti delle Amministrazioni pubbliche per funzione sono annuali e vengono rivisti: lo snapshot resta bloccato sui byte verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-cofog", "domain:public-spending"],
+  },
+  "eurostat-gov-main": {
+    id: "eurostat-gov-main",
+    label: "Eurostat · entrate e uscite delle Amministrazioni pubbliche",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti delle Amministrazioni pubbliche sono annuali e vengono rivisti: lo snapshot resta bloccato sui byte verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-gov-main", "domain:public-finance"],
+  },
+  "istat-cofog": {
+    id: "istat-cofog",
+    label: "ISTAT · consumi finali della PA per funzione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti nazionali per funzione escono annualmente e vengono rivisti: lo snapshot fissa una edizione di rilascio e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-cofog", "domain:public-spending"],
+  },
+  "istat-epea": {
+    id: "istat-epea",
+    label: "ISTAT · spesa per la protezione dell'ambiente (EPEA)",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "I conti EPEA escono annualmente e vengono rivisti: lo snapshot fissa l'edizione 2025M2 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-epea", "domain:public-spending"],
+  },
+  "istat-poverta": {
+    id: "istat-poverta",
+    label: "ISTAT · povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli indicatori di povertà escono annualmente. Lo snapshot fissa la serie corrente post-revisione (34_727, dal 2014) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta", "domain:social-conditions"],
+  },
+  "istat-poverta-relativa": {
+    id: "istat-poverta-relativa",
+    label: "ISTAT · povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli indicatori di povertà escono annualmente. Lo snapshot fissa la serie corrente post-revisione (34_727, dal 2014) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-relativa", "domain:social-conditions"],
+  },
+  "istat-bes-economico": {
+    id: "istat-bes-economico",
+    label: "ISTAT · BES dei territori, benessere economico",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Il BES dei territori esce annualmente e viene rivisto per edizioni: lo snapshot fissa l'edizione 2025 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-economico", "domain:social-conditions"],
+  },
+  "istat-bes-salute": {
+    id: "istat-bes-salute",
+    label: "ISTAT · BES dei territori, Salute",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-salute", "domain:health"],
+  },
+  "istat-bes-istruzione": {
+    id: "istat-bes-istruzione",
+    label: "ISTAT · BES dei territori, Istruzione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-istruzione", "domain:education"],
+  },
+  "istat-bes-lavoro": {
+    id: "istat-bes-lavoro",
+    label: "ISTAT · BES dei territori, Lavoro",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-lavoro", "domain:work"],
+  },
+  "istat-bes-relazioni": {
+    id: "istat-bes-relazioni",
+    label: "ISTAT · BES dei territori, Relazioni sociali",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-relazioni", "domain:social-relationships"],
+  },
+  "istat-bes-politica": {
+    id: "istat-bes-politica",
+    label: "ISTAT · BES dei territori, Politica e istituzioni",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-politica", "domain:politics-institutions"],
+  },
+  "inps-naspi": {
+    id: "inps-naspi",
+    label: "INPS · NASpI beneficiari e trattamenti",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Gli osservatori NASpI sono pubblicati per anno sul portale open data; lo snapshot resta bloccato sui nove package verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-naspi", "domain:social-benefits"],
+  },
+  "inps-assegno-unico": {
+    id: "inps-assegno-unico",
+    label: "INPS · Assegno Unico (nuclei e figli)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Due package CKAN 2022-2024 (AUU a domanda, esclusi RdC). Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-assegno-unico", "domain:social-benefits", "domain:family"],
+  },
+  "inps-integrazioni-salariali": {
+    id: "inps-integrazioni-salariali",
+    label: "INPS · integrazioni salariali (lavoratori, domande, mensilità)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Tre package CKAN del report annuale 2023 Ammortizzatori Sociali. Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package. Conteggi, non euro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-integrazioni-salariali", "domain:social-benefits", "domain:labour"],
+  },
+  "inps-cig-fondi-solidarieta": {
+    id: "inps-cig-fondi-solidarieta",
+    label: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
+    owner: "INPS — Istituto Nazionale della Previdenza Sociale",
+    sourceUrl: "https://opendata.inps.it/opendata",
+    cadence: "annuale",
+    cadenceNote:
+      "Package CKAN cig-fondi-di-solidarieta-2023-2024. Snapshot aggiornabile solo dopo nuova acquisizione CSV e validazione offline; licenza cc-by per package. Ore autorizzate, non euro.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
+  },
+  "aifa-spesa-consumi": {
+    id: "aifa-spesa-consumi",
+    label: "AIFA · spesa e consumo farmaci per ATC",
+    owner: "AIFA — Agenzia Italiana del Farmaco",
+    sourceUrl:
+      "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti",
+    cadence: "annuale",
+    cadenceNote:
+      "Quattro rilasci annuali 2022-2025 (il 2025 in zip). Snapshot aggiornabile solo dopo nuova acquisizione dei CSV e validazione offline; licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA. Tracciabilità e convenzionata restano canali distinti.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:aifa-spesa-consumi", "domain:health", "domain:pharmaceuticals"],
+  },
+  "inl-vigilanza": {
+    id: "inl-vigilanza",
+    label: "INL · vigilanza ispettiva 2025",
+    owner: "Ispettorato Nazionale del Lavoro",
+    sourceUrl: "https://www.ispettorato.gov.it/",
+    cadence: "annuale",
+    cadenceNote:
+      "Relazione annuale e rapporto vigilanza 2025 (PDF). Snapshot aggiornabile solo dopo nuova acquisizione PDF e validazione offline; licenza CC BY 3.0 IT.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:inl-vigilanza", "domain:labour", "domain:enforcement"],
+  },
+  "mef-iva": {
+    id: "mef-iva",
+    label: "MEF · principali grandezze IVA",
+    owner: "MEF - Dipartimento delle Finanze",
+    sourceUrl: "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201",
+    cadence: "annuale",
+    cadenceNote: "Dichiarazioni 2024 e 2025, anni di imposta 2023 e 2024. Quattro export verificati per regione e attività, aggiornabili solo dopo nuova acquisizione e validazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-iva", "domain:taxation"],
+  },
+  "eu-vat-gap-italy": {
+    id: "eu-vat-gap-italy",
+    label: "DG TAXUD · VAT gap Italia",
+    owner: "Commissione europea, DG TAXUD",
+    sourceUrl: "https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en",
+    cadence: "annuale",
+    cadenceNote: "Foglio IT del workbook Country Chapters 2025: 2019-2023 e 2024 stima rapida. Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eu-vat-gap-italy", "domain:taxation"],
+  },
+  "mef-tax-gap-nazionale": {
+    id: "mef-tax-gap-nazionale",
+    label: "MEF · tax gap nazionale (Relazione evasione 2025)",
+    owner: "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+    sourceUrl: "https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/",
+    cadence: "annuale",
+    cadenceNote: "Tab. I.1 e I.2 della Relazione 2025: gap e propensione 2018-2022 (2022 semi-definitivo). Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline del PDF.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-tax-gap-nazionale", "domain:taxation"],
+  },
+  "eurostat-taxag": {
+    id: "eurostat-taxag",
+    label: "Eurostat · aggregati fiscali PA (gov_10a_taxag)",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote: "Gettito SEC 2010 Italia 2014-2025 per voce e sottosettore ESA. Snapshot aggiornabile solo dopo nuova acquisizione JSON-stat e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-taxag", "domain:taxation", "domain:government-finance"],
+  },
+  "eurostat-sha-health": {
+    id: "eurostat-sha-health",
+    label: "Eurostat · spesa sanitaria SHA per schema di finanziamento",
+    owner: "Eurostat (Commissione europea)",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote: "hlth_sha11_hf Italia 2014-2025 (2025 provvisorio). Snapshot aggiornabile solo dopo nuova acquisizione JSON-stat e validazione offline.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:eurostat-sha-health", "domain:health"],
+  },
+  "mef-irpef-dettaglio": {
+    id: "mef-irpef-dettaglio",
+    label: "MEF \u00b7 dettaglio IRPEF per regione, et\u00e0 e sesso",
+    owner: "MEF - Dipartimento delle Finanze",
+    sourceUrl: "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+    cadence: "annuale",
+    cadenceNote:
+      "Il catalogo pubblica un file per anno di imposta e famiglia; lo snapshot resta bloccato sui 79 file verificati e si aggiorna solo dopo nuova acquisizione e riconciliazione.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:mef-irpef-dettaglio", "domain:taxation"],
+  },
+};
+
+export const SOURCE_IDS = Object.freeze(Object.keys(SOURCE_POLICIES) as SourceId[]);
+export const ACTIVE_SOURCE_IDS = Object.freeze(
+  SOURCE_IDS.filter((sourceId) => SOURCE_POLICIES[sourceId].integration !== "configured"),
+);
+
+export function getSourcePolicy(sourceId: SourceId): SourcePolicy {
+  return SOURCE_POLICIES[sourceId];
+}

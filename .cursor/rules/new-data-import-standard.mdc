@@ -1,0 +1,14 @@
+---
+description: Enforce the standard import schema for every new dataset
+alwaysApply: true
+---
+
+# New Data Import Standard
+
+When work adds or changes a dataset, treat the common import schema as mandatory.
+
+- Require an official source with canonical public URLs before publishing data.
+- Prefer the integrated corpus as the entry point for official tables; otherwise keep an equivalent adapter that preserves `headers`, string cells, `evidence`, `sourceUrls`, and content hashes.
+- Require the three semantic fields `soldi`, `periodo`, and `provenance` in the published reading model, keeping the relevant dates distinct.
+- Keep every dataset import fail-closed: unexpected schema, unofficial provenance, incoherent license or period, hash drift, duplicates, invalid money values, or broken reconciliations must stop the import.
+- Do not merge PRs, including external contributions, that add data without this schema. If the source cannot satisfy it yet, limit the contribution to cataloging, proof artifacts, or documentation of the gap instead of inventing values.

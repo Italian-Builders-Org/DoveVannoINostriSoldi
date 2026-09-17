@@ -1,0 +1,156 @@
+.evidence {
+  display: inline-flex;
+  width: max-content;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.osservato {
+  color: var(--color-positive);
+  background: var(--color-positive-bg);
+}
+
+.collegato {
+  color: var(--color-neutral-800);
+  background: var(--color-neutral-200);
+}
+
+.derivato {
+  color: var(--color-accent-800);
+  background: var(--color-accent-100);
+}
+
+.mancante {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.missing,
+.panel {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.works {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.work {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.workHead {
+  display: grid;
+  gap: 4px;
+}
+
+.workHead strong {
+  font-size: 13px;
+}
+
+.workHead span,
+.workHead small {
+  color: var(--color-neutral-700);
+  overflow-wrap: anywhere;
+}
+
+.workHead small {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.costFacts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.costFacts > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.costFacts dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.costFacts dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.costFacts small {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.note,
+.provenance {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.provenanceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.provenanceGrid > div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.provenanceGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.provenanceGrid dd {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (max-width: 760px) {
+  .costFacts,
+  .provenanceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

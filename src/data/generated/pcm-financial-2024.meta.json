@@ -1,0 +1,30 @@
+{
+  "asset": {
+    "bytes": 146215,
+    "sha256": "7944cb81a7e9f151b44bb5577d380cd8adf9671ddbebcc1ad530b91b90615603"
+  },
+  "dataArtifact": {
+    "bytes": 3138,
+    "path": "src/data/generated/pcm-financial-2024.data.json",
+    "sha256": "13fae574e4e575ee2d30f244fec054fb320920ed5dd5be99401f5ae9c820daa6"
+  },
+  "schemaVersion": 1,
+  "source": {
+    "acquiredAt": "2026-08-22T16:54:00Z",
+    "approvedAt": "2025-06-10",
+    "format": "xlsx",
+    "landingUrl": "https://presidenza.governo.it/AmministrazioneTrasparente/Bilanci/BilancioPreventivoConsultivo/ContoFinanziario/2024/index.html",
+    "licenseStatus": "not-declared",
+    "owner": "Presidenza del Consiglio dei ministri",
+    "publishedAt": "2025-06-19",
+    "referencePeriod": "2024",
+    "resourceUrl": "https://presidenza.governo.it/AmministrazioneTrasparente/Bilanci/BilancioPreventivoConsultivo/ContoFinanziario/2024/Conto%20finanziario%202024.xlsx",
+    "rightsNote": "La pagina ufficiale non dichiara una licenza per il workbook.",
+    "sourceRecordId": "pcm:conto-finanziario:2024"
+  },
+  "transformation": {
+    "description": "Esclusa una riga vuota; importi convertiti in centesimi; missioni aggregate e riconciliate con i totali.",
+    "headers": 32,
+    "version": 1
+  }
+}

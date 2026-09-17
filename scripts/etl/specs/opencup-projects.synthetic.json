@@ -1,0 +1,20 @@
+{
+  "dataKind": "opencup-projects",
+  "datasetId": "opencup-progetti-bulk",
+  "delimiter": ";",
+  "encoding": "utf-8",
+  "evidenceLabel": "synthetic-fixture",
+  "fixtureOnly": true,
+  "licenseStatus": "unverified",
+  "maxMemberBytes": 8388608,
+  "maxMembers": 8,
+  "maxTotalBytes": 16777216,
+  "moneyFormat": "integer-eur-exact-v1",
+  "moneyUnit": "EUR",
+  "observedAt": null,
+  "publishedAt": null,
+  "schemaVersion": 1,
+  "sourceUrls": [
+    "https://www.opencup.gov.it/portale/web/opencup/accesso-agli-open-data"
+  ]
+}

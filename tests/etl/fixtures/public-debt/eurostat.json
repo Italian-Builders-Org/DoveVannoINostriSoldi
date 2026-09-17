@@ -1,0 +1,18 @@
+{
+  "version": "2.0",
+  "class": "dataset",
+  "label": "Government revenue, expenditure and main aggregates",
+  "source": "ESTAT",
+  "updated": "2026-07-21T11:00:00+0200",
+  "id": ["geo", "time", "na_item", "unit", "freq", "sector"],
+  "size": [1, 5, 2, 1, 1, 1],
+  "dimension": {
+    "geo": {"label": "Geopolitical entity", "category": {"index": {"IT": 0}, "label": {"IT": "Italy"}}},
+    "time": {"label": "Time", "category": {"index": {"2021": 0, "2022": 1, "2023": 2, "2024": 3, "2025": 4}, "label": {"2021": "2021", "2022": "2022", "2023": "2023", "2024": "2024", "2025": "2025"}}},
+    "na_item": {"label": "National accounts indicator", "category": {"index": {"D41PAY": 0, "TE": 1}, "label": {"D41PAY": "Interest, expenditure", "TE": "Total general government expenditure"}}},
+    "unit": {"label": "Unit of measure", "category": {"index": {"MIO_EUR": 0}, "label": {"MIO_EUR": "Million euro"}}},
+    "freq": {"label": "Time frequency", "category": {"index": {"A": 0}, "label": {"A": "Annual"}}},
+    "sector": {"label": "Institutional sector", "category": {"index": {"S13": 0}, "label": {"S13": "General government"}}}
+  },
+  "value": [70000, 900000, 75000, 950000, 80000, 1000000, 85483, 1109804, 87146, 1155309]
+}

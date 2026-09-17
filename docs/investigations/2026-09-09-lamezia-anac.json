@@ -1,0 +1,120 @@
+{
+  "sourceSpecSha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d",
+  "codiceIpa": "c_m208",
+  "codiceFiscaleEnte": "00301390795",
+  "registry": {
+    "0000161199": {
+      "cf": "00301390795",
+      "start_date": "2025-12-22",
+      "end_date": "2099-12-31",
+      "status": "ATTIVO"
+    }
+  },
+  "months": [
+    {
+      "month": 1,
+      "archiveSha256": "8133cd5ea2b592b4e48afa1eb0ec2db1a831f00a254de077518f8263818a371c",
+      "rawRows": 9,
+      "primaryRows": 9,
+      "ausa-outside-registry-interval": 9
+    },
+    {
+      "month": 2,
+      "archiveSha256": "ddeb33a5c46fd3f1c4f2988c73e28ca148628670848b8a2a86fd12bffd02045f",
+      "rawRows": 4,
+      "primaryRows": 4,
+      "ausa-outside-registry-interval": 4
+    },
+    {
+      "month": 3,
+      "archiveSha256": "231c2f7713af92c1aef4314a42ccafddb2914d5a6730d8159d13bd54590f3a1f",
+      "rawRows": 9,
+      "primaryRows": 9,
+      "ausa-outside-registry-interval": 9
+    },
+    {
+      "month": 4,
+      "archiveSha256": "2b8651f49312bca7e356a63b29dc47da5945dfbf7b78bed57ce9aaff54ba1055",
+      "rawRows": 4,
+      "primaryRows": 4,
+      "ausa-outside-registry-interval": 4
+    },
+    {
+      "month": 5,
+      "archiveSha256": "8f4ef20c3d7a3bf43ff2181341b063e86abc10e0e09232cffd11d3e193aac7b4",
+      "rawRows": 14,
+      "primaryRows": 14,
+      "ausa-outside-registry-interval": 14
+    },
+    {
+      "month": 6,
+      "archiveSha256": "9006c457b0604f7040a2826ba0294da55379f75cd2756dcf1ad93a90276ebf34",
+      "rawRows": 10,
+      "primaryRows": 10,
+      "ausa-outside-registry-interval": 10
+    },
+    {
+      "month": 7,
+      "archiveSha256": "ad0c6265c81e78749d703e6a474e387e043ec69f2e5400264fcd4f91599315e8",
+      "rawRows": 16,
+      "primaryRows": 16,
+      "ausa-outside-registry-interval": 16
+    },
+    {
+      "month": 8,
+      "archiveSha256": "c16e7aa06d6fb0e0880cf797e6d04fdedf37e076c2fd83563dc4f4973e6b539f",
+      "rawRows": 8,
+      "primaryRows": 8,
+      "ausa-outside-registry-interval": 8
+    },
+    {
+      "month": 9,
+      "archiveSha256": "1b7d009a7120b92444f9ffc8d986a75bdd008cf86623721692e7f74bbf9ff154",
+      "rawRows": 13,
+      "primaryRows": 13,
+      "ausa-outside-registry-interval": 13
+    },
+    {
+      "month": 10,
+      "archiveSha256": "6e7e467cbb008cc846ee096d3b8e1955fe338d3426a913f0750218bca52901d5",
+      "rawRows": 7,
+      "primaryRows": 7,
+      "ausa-outside-registry-interval": 7
+    },
+    {
+      "month": 11,
+      "archiveSha256": "cb40213cb6b294650099bf6a6ccd656d9139c374796c903302d17359accc2e60",
+      "rawRows": 9,
+      "primaryRows": 9,
+      "ausa-outside-registry-interval": 9
+    },
+    {
+      "month": 12,
+      "archiveSha256": "6f696155e0b2ab4b2d608fe403e1bdc88a8a2c0d08812de325dd97ddedc6013a",
+      "rawRows": 34,
+      "primaryRows": 30,
+      "ausa-and-cf": 10,
+      "ausa-outside-registry-interval": 20,
+      "nonPrimaryRows": 4
+    }
+  ],
+  "rawPrimaryCigs": 133,
+  "resolvedCigs": 10,
+  "publishedSummary": {
+    "attributedAwardValue": "552507.84",
+    "awardCount": 10,
+    "awardValue": "714881.45",
+    "awardeeCount": 12,
+    "awardsWithStableAwardees": 10,
+    "awardsWithoutStableAwardees": 0,
+    "multipartOrAmbiguousAwards": 2,
+    "positiveAwardCount": 10,
+    "procedureCount": 10,
+    "singleOperatorAwards": 8,
+    "unattributedAwardValue": "162373.61"
+  },
+  "reasons": {
+    "ausa-outside-registry-interval": 123,
+    "ausa-and-cf": 10
+  }
+}

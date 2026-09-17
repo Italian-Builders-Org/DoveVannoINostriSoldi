@@ -1,0 +1,73 @@
+name: Parliamentary source monitor
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/etl/parliament_sources.py
+      - src/lib/data/parliament-contract.ts
+      - src/data/generated/parliament-overview.json
+      - src/data/generated/parliament-source-manifest.json
+      - tests/parliament-contract.test.mjs
+      - tests/etl/test_parliament_sources.py
+      - tests/fixtures/parliament/**
+      - .github/workflows/parliament-sources.yml
+  schedule:
+    - cron: "37 */6 * * *"
+  workflow_dispatch:
+
+# contents: read — least-privilege: only read repository contents.
+permissions:
+  contents: read
+
+concurrency:
+  group: parliament-sources-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+      - name: Test offline parsers
+        run: python -m unittest tests/etl/test_parliament_sources.py
+      - name: Validate committed data offline
+        run: python scripts/etl/parliament_sources.py --check
+      - name: Check official document registers
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          status=2
+          for attempt in 1 2 3; do
+            set +e
+            output=$(python scripts/etl/parliament_sources.py 2>&1)
+            status=$?
+            set -e
+            printf '%s\n' "$output"
+
+            case "$status" in
+              0) exit 0 ;;
+              1) exit 1 ;;
+              2)
+                if [ "$attempt" -lt 3 ]; then
+                  echo "::notice::Fonte parlamentare non verificabile. Nuovo tentativo $((attempt + 1)) di 3."
+                  sleep $((attempt * 10))
+                fi
+                ;;
+              *) exit "$status" ;;
+            esac
+          done
+
+          echo "::warning title=Fonte parlamentare non verificabile::Lo snapshot verificato resta valido. Il controllo live verrà ripetuto alla prossima esecuzione."
+          {
+            echo "### Fonte parlamentare temporaneamente non verificabile"
+            echo "Lo snapshot verificato non è stato modificato e questo tentativo non conta come controllo riuscito."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1

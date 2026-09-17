@@ -1,0 +1,206 @@
+# SIOPE: ASL, Province, Regioni e Città metropolitane
+
+Questa release espone i pagamenti di cassa SIOPE delle ASL e di Province, Regioni comprese
+le Province autonome e Città metropolitane per il 2024–2026. I Comuni rimangono nel contratto SIOPE
+municipale, che conserva separati pagamenti e incassi.
+
+## Perimetro e fonti
+
+La proiezione legge `SIOPE_ANAGRAFICHE.zip`, `SIOPE_USCITE.<anno>.zip` e il registro IPA
+ufficiale. Il titolare SIOPE è la Ragioneria Generale dello Stato, con banca dati gestita da
+Banca d'Italia. La licenza e la data di pubblicazione non sono dichiarate dalle risorse usate;
+la release le conserva rispettivamente come `not-declared` e `null`.
+
+I tipi ed i comparti sono intenzionalmente distinti:
+
+| Dataset | Tipo SIOPE | Comparto | Contenuto |
+| --- | --- | --- | --- |
+| `siope-inventario-enti` | tutti | tutti | censimento annuale e diagnostiche pubbliche |
+| `siope-uscite-asl` | `ASL` | `SAN` | pagamenti mensili per voce sanitaria |
+| `siope-uscite-province` | `PROVINCIA` | `PRO` | pagamenti mensili |
+| `siope-uscite-regioni` | `REGIONE` | `REG` | pagamenti mensili, incluse Province autonome |
+| `siope-uscite-citta-metropolitane` | `CITTA_METROP` | `PRO` | pagamenti mensili |
+
+Gli altri tipi restano nel solo inventario. Il dataset ASL comprende esclusivamente il tipo
+`ASL` di ANAG, non aziende ospedaliere, IRCCS o tutti gli enti del SSN. Non esistono in questa
+release copertura universale della PA, consolidamenti geografici, importi pro capite o classifiche.
+
+Per il comparto `SAN`, le voci hanno codici a quattro cifre: codice e descrizione vengono
+risolti nell'anagrafica gestionale ufficiale, per comparto e validità del mese. Le colonne
+`titleCode` e `titleLabel` conservano in questo dataset il codice e la descrizione della singola
+voce SAN, senza convertirli nei titoli di bilancio di Province e Regioni. La scheda raccoglie
+queste voci in un dettaglio espandibile e le riconcilia integralmente con i movimenti pubblici.
+I pagamenti SIOPE sono distinti dai costi di competenza economica del Conto Economico SSN:
+nessuna somma, confronto diretto o join implicito fra i due perimetri.
+
+Le righe dei pagamenti usano centesimi interi e hanno una identità temporale SIOPE. Il join
+con IPA è ammesso soltanto con codice fiscale esatto e una sola corrispondenza; le righe
+unmatched o ambigue non vengono attribuite a un codice IPA. Il 2026 conserva soltanto i mesi
+presenti nel file nazionale: non è trattato come anno completo. Un valore `0` è un movimento
+osservato, mentre `null` nella vista compatta indica assenza di movimenti osservati.
+La vista delle schede include soltanto identità valide in almeno una delle annualità
+pubblicate. I codici delle Province cessate prima del 2024 non vengono elencati come
+codici inclusi nelle schede delle Città metropolitane subentrate; eventuali conflitti
+di tipo entro il periodo 2024–2026 continuano a interrompere la generazione.
+
+## Artefatti e consultazione
+
+Le righe pubbliche complete, il catalogo e le ricevute sono parte del corpus integrato.
+Il file `src/data/generated/siope-nonmunicipal-detail.json` è la vista compatta server-only
+per le schede ente; non contiene le righe raw del corpus. Il file
+`src/data/generated/siope-nonmunicipal-view-proof.json` lega la vista al catalogo, alle cinque
+ricevute, agli hash delle righe canoniche e alla release integrata. Il manifest separato
+`src/data/generated/siope-nonmunicipal-provenance.json` è un input del sigillo:
+la ricostruzione del proof non può modificarlo o ricavarlo dalla vista.
+
+La release corrente conserva il manifest nativo completo di versione 2,
+inclusa la ricevuta dei cinque input ufficiali verificata prima del parsing.
+La riacquisizione del 6 settembre 2026 riproduce byte per byte i tre dataset
+dei pagamenti e conserva tutti gli importi della vista compatta. L'inventario
+esplicita anche i movimenti che non ricadono nella validità anagrafica: 1.764
+righe nel 2024, 64 nel 2025 e 17 nel 2026. Questi scarti non sono attribuiti
+arbitrariamente a un ente o a un tipo. Rispetto all'inventario precedente cambiano
+solo stato e nota di copertura; restano 201 righe e tutti i conteggi invariati.
+Il formato storico `historical-not-reattested` resta leggibile senza inventare
+ricevute retroattive. Per le nuove release,
+fonti, hash, date e proiezioni determinano il `releaseId`. Il catalogo dati usa le stesse
+righe complete e il MCP le espone con gli identificativi `siope_inventario_enti`, `siope_asl`,
+`siope_province`, `siope_regioni` e `siope_citta_metropolitane`.
+
+L'estensione ASL del 7 settembre 2026 riacquisisce gli stessi cinque input: tutti gli hash
+coincidono con la release del 6 settembre. Aggiunge 334.479 movimenti (123.782 nel 2024,
+123.660 nel 2025 e 87.037 nel 2026) e 116 schede con join IPA esatto. Le sette identità
+SIOPE annuali prive di join IPA restano nel corpus e nell'inventario. Il 2026 osserva
+mesi da gennaio a settembre, senza dichiarare completo il mese più recente. L'inventario
+cambia solo lo stato delle tre righe ASL da `census-only` a `published-payments`.
+I tre dataset territoriali e le loro ricevute si riproducono byte per byte; il catalogo
+aggiorna la data di acquisizione e verifica delle fonti. Corpus: 90 dataset, 14.166.458 righe sorgente e 1.184.112 righe
+pubbliche (delta: +1 dataset e +334.479 righe). Tutti gli altri dataset restano invariati.
+
+Ogni dataset dichiara release, fonti, hash, data di acquisizione e caveat nel catalogo e
+nella ricevuta `data/source-ledger/datasets/`. Il percorso `/spese/sanita` collega le schede ASL e `/dati/siope-uscite-asl`.
+Le pagine ente usano la vista snapshot e non
+dipendono dalla disponibilità live di IPA.
+
+## Rigenerazione e controlli
+
+Acquisire i cinque input ufficiali in una directory locale e creare separatamente una ricevuta
+immutabile e canonica. La ricevuta ha `schemaVersion: 1`, scope
+`non-municipal-payments-inputs` e una voce per ogni file con URL ufficiale esatto, byte,
+SHA-256, `acquisitionDate`, `etag` e `lastModified` (gli ultimi due possono essere `null`).
+URL, dimensione, hash e data sono verificati **prima** di aprire ZIP o CSV. La pipeline non
+calcola né aggiorna i valori attesi della ricevuta: un input divergente interrompe il lavoro e
+richiede una nuova acquisizione esplicitamente revisionata.
+
+Generare quindi la proiezione candidata:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/etl/siope_nonmunicipal.py \
+  --input-dir /percorso/input-siope \
+  --input-receipt /percorso/input-receipt.json \
+  --output-dir /percorso/candidato \
+  --acquired-at 2026-09-06T08:00:00+00:00
+```
+
+Il builder valida schema, provenienza e riconciliazione tra vista e PSV. Il manifest
+nativo conserva la ricevuta acquisita prima del parsing e hash, byte e righe di ogni
+proiezione. Il reader della specifica corpus usa questo manifest per i soli cinque
+dataset SIOPE: cambiano misure e date di osservazione, mentre header, natura contabile,
+URL, licenza e caveat restano nella specifica revisionata. I valori `expected` nella
+specifica conservano la baseline; per i refresh SIOPE il riferimento operativo è il
+manifest nativo, validato anche dal contratto indipendente TypeScript.
+
+Il contratto aggregato conserva un contributo fisso per tutti gli altri dataset e
+aggiunge le sole righe delle cinque proiezioni riconciliate. `catalog-only` e
+`derived-only` restano fissi. Le ricevute e i chunk vengono comunque ricalcolati e
+verificati integralmente: il manifest non sostituisce il parsing o la riconciliazione.
+Se un'altra issue aggiunge un dataset al corpus, i contributi non-SIOPE in
+`siope_nonmunicipal_contract.py` e `integrated-source-contract.ts` vanno revisionati
+insieme ai consueti conteggi di release. Il bot SIOPE non può scrivere questi file.
+
+I test di promozione esercitano sia il contratto manuale di una specifica custom sia
+il refresh automatico con più o meno righe, senza aggiornamenti manuali degli attesi.
+Un errore durante il sigillo ripristina catalogo, chunk, ricevute, manifest e proof.
+Dopo la promozione eseguire i gate completi di `CONTRIBUTING.md`: i tre comandi
+seguenti sono soltanto il controllo rapido degli artifact.
+
+La promozione completa inserisce i dataset alla prima acquisizione o li sostituisce in un
+refresh. Conserva byte per byte tutti gli altri artifact e non richiede i loro raw storici;
+rimuove i vecchi chunk dei soli dataset selezionati, ricrea catalogo, ricevute, proof integrata,
+manifest nativo, vista compatta e proof della vista, quindi esegue le riconciliazioni prima di concludere:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/etl/siope_nonmunicipal_corpus.py \
+  --source-root /percorso/candidato \
+  --dataset siope-inventario-enti \
+  --dataset siope-uscite-asl \
+  --dataset siope-uscite-province \
+  --dataset siope-uscite-regioni \
+  --dataset siope-uscite-citta-metropolitane
+```
+
+Un input invariato produce la stessa proiezione; un candidato con output mancanti viene
+rifiutato prima delle scritture e i chunk obsoleti dei dataset selezionati vengono rimossi.
+Qualunque errore di scrittura, verifica o sigillo ripristina tutti i file della release
+precedente. Per controllare gli artifact promossi non servono rete né input raw:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/etl/siope_nonmunicipal.py --check
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/etl/integrated_curated_datasets.py check
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/etl/integrated_source_release.py --check
+```
+
+## Refresh mensile tramite data bot
+
+Il workflow `siope-nonmunicipal-refresh.yml` controlla la fonte il giorno 8 del mese
+alle 05:17 UTC, oltre all'avvio manuale. È una cadenza DVNS proporzionata ai movimenti
+mensili e alle revisioni dei file annuali; non è una promessa di rilascio della fonte.
+Owner: `metaforismo`. Il job usa `source-operations` e le credenziali del data bot già
+gestite; non introduce segreti, push diretti su main o merge automatici. La branch
+`automation/data/siope-nonmunicipal` contiene soltanto una proposta da revisionare.
+La configurazione del cron non dimostra un'esecuzione: protezioni dell'environment,
+credenziali e risultati vanno verificati nel run effettivo. Questa slice non attesta
+un refresh schedulato né cambia gli snapshot economici correnti. Refs #189.
+
+```sh
+PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/siope_nonmunicipal_refresh.py
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
+python3 scripts/ci/check-siope-nonmunicipal-refresh.py
+```
+
+L'acquisizione accetta soltanto i cinque URL canonici; un redirect, un errore HTTP,
+un file incompleto o uno schema inatteso interrompono il job. Limiti: 160 MiB per
+file movimenti, 32 MiB per anagrafica o IPA, 512 MiB complessivi, 30 secondi di timeout
+per lettura e 12 minuti per l'acquisizione; nessun retry implicito. Gli ZIP ammettono
+al massimo 100 membri univoci per archivio e 3 GiB espansi complessivi. Servono almeno
+2 GiB liberi per lo staging; gli ZIP vengono letti senza estrazione su disco. La
+ricevuta committata del 7 settembre misura circa 216 MB scaricati: è un'osservazione,
+non una garanzia sui rilasci futuri. Il job completo ha timeout di 45 minuti.
+
+A hash e byte invariati il risultato è `NO_CHANGE`: non cambiano file o date solo
+perché è trascorso tempo o è cambiato un ETag. Un input nuovo rigenera tutte e cinque
+le proiezioni, poi il promotore valida e aggiorna insieme gli artifact correlati.
+La concorrenza del workflow è isolata da quella comunale e non cancella un refresh
+in corso. Un avanzamento di main durante la generazione fa fallire il publisher;
+il run va ripetuto sulla nuova base.
+
+L'allowlist è chiusa in `scripts/ci/siope_publication_paths.py`: tre JSON SIOPE,
+cinque ricevute esatte, chunk `part-NNNNN` dei soli cinque dataset, catalogo,
+dataset-proof, release-proof e inventario generato. Il publisher verifica i blob
+compressi come byte, inclusi i chunk aggiunti e rimossi; non ottiene accesso generico
+ad altri ledger, specifiche o codice. Gli altri dataset sono preservati e ricontrollati.
+
+Prima del publisher sono obbligatori i contratti offline SIOPE, corpus e release,
+i test ETL della fonte e i contratti Node. Prima del merge restano CI completa e
+review. Per rollback chiudere la proposta oppure revertire il suo merge completo:
+non ripristinare soltanto la vista o uno dei proof. Un job fallito non pubblica
+artifact parziali; main conserva l'ultimo rilascio validato.
+
+Restano espliciti il perimetro 2024–2026 e la necessità di revisione per aggiungere
+annualità, tipi di ente, URL, schemi o licenze. Il refresh giornaliero comunale non
+viene modificato; i mesi mancanti e i join IPA non risolti non vengono inventati.

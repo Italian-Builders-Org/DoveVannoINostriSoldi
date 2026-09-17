@@ -1,0 +1,46 @@
+name: OpenCoesione national snapshot
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: opencoesione-national-snapshot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: refresh
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    environment: source-operations
+    env:
+      PYTHONPATH: scripts/etl
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Refresh official snapshot
+        run: python scripts/etl/opencoesione_snapshot.py
+
+      - name: Validate offline fallback
+        run: python scripts/etl/opencoesione_snapshot.py --check
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: opencoesione
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

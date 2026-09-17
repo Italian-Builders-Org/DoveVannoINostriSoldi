@@ -1,0 +1,51 @@
+.latest {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.scrollHint {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+}
+
+@media (min-width: 621px) {
+  .scrollHint { display: none; }
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+.principles p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-neutral-800);
+}
+
+.linkList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-2);
+}
+.linkList a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 11px 14px;
+  border: 1px solid var(--color-neutral-300);
+  color: var(--color-text);
+  font-size: 13px;
+}
+.linkList a:hover {
+  color: var(--color-accent-700);
+  border-color: var(--color-accent);
+  background: var(--color-accent-100);
+}
+.linkList i { font-style: normal; color: var(--color-neutral-600); }

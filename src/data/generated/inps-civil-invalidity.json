@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-20T22:30:00+02:00",
+  "scope": "civil-invalidity-benefits",
+  "spending": {
+    "unit": "euro-cents",
+    "measure": "Uscite INPS per prestazioni di invalidità civile nella sezione inclusione sociale",
+    "series": [
+      { "year": 2021, "amountCents": 1892900000000 },
+      { "year": 2022, "amountCents": 2053500000000 },
+      { "year": 2023, "amountCents": 2161900000000 },
+      { "year": 2024, "amountCents": 2285600000000 },
+      { "year": 2025, "amountCents": 2361600000000 }
+    ],
+    "latestChangeCents": 76000000000,
+    "latestChangePercent": 3.3,
+    "sourceId": "rendiconto-civ-2025"
+  },
+  "managementDetail2024": {
+    "unit": "million-euros-rounded",
+    "scope": "Gestione n. 25, prestazioni istituzionali agli invalidi civili",
+    "civilInvalidityPensions": 4457,
+    "attendanceAllowances": 14865,
+    "sourceId": "gestione-25-2024",
+    "warning": "Il dettaglio della Gestione n. 25 ha un perimetro contabile più ristretto della voce complessiva di inclusione sociale e non deve essere sottratto o sommato ad essa. Gli importi sono arrotondati al milione di euro nella relazione descrittiva."
+  },
+  "benefitsStock": {
+    "asOf": "2024-12-31",
+    "totalBenefits": 3414007,
+    "attendanceAllowances": 2361982,
+    "civilInvalidityPensions": 1052025,
+    "sourceId": "analysis-2026"
+  },
+  "regionalNewPensions": {
+    "measure": "Nuove pensioni di invalidità civile con decorrenza nell'anno",
+    "unit": "benefits",
+    "years": [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+    "provisionalYears": [2024],
+    "excludedRegions": ["Trentino-Alto Adige", "Valle d'Aosta"],
+    "regions": [
+      { "region": "Abruzzo", "values": [3055, 2980, 3078, 3175, 2619, 3079, 3148, 3285, 3079] },
+      { "region": "Basilicata", "values": [1459, 1369, 1379, 1370, 1225, 1486, 1515, 1698, 1701] },
+      { "region": "Calabria", "values": [6560, 7261, 7630, 7537, 6176, 7141, 7986, 8789, 8055] },
+      { "region": "Campania", "values": [17165, 17671, 18645, 19039, 16702, 19707, 20334, 21332, 19603] },
+      { "region": "Emilia-Romagna", "values": [4462, 4675, 4654, 4734, 4333, 5122, 5741, 6026, 6109] },
+      { "region": "Friuli-Venezia Giulia", "values": [1269, 1343, 1480, 1435, 1249, 1399, 1466, 1522, 1571] },
+      { "region": "Lazio", "values": [12772, 13085, 13526, 13253, 11207, 12418, 13371, 13929, 13471] },
+      { "region": "Liguria", "values": [2191, 2301, 2168, 2239, 1785, 2111, 2242, 2641, 2599] },
+      { "region": "Lombardia", "values": [10899, 11115, 11349, 11575, 9348, 11397, 12660, 13390, 13860] },
+      { "region": "Marche", "values": [2233, 2343, 2354, 2353, 1991, 2245, 2510, 2740, 2769] },
+      { "region": "Molise", "values": [709, 633, 732, 698, 530, 660, 676, 772, 840] },
+      { "region": "Piemonte", "values": [5547, 5540, 5890, 5790, 4717, 5530, 5864, 6350, 6129] },
+      { "region": "Puglia", "values": [12511, 12809, 13873, 14235, 12462, 15246, 16028, 17150, 15430] },
+      { "region": "Sardegna", "values": [4124, 4141, 4325, 4519, 3729, 4426, 4406, 4506, 3960] },
+      { "region": "Sicilia", "values": [14878, 15017, 15875, 15897, 12925, 14688, 15284, 16472, 15338] },
+      { "region": "Toscana", "values": [4249, 4430, 4557, 4656, 3961, 4417, 4952, 5155, 5085] },
+      { "region": "Umbria", "values": [2084, 2027, 2181, 2209, 1903, 2209, 2281, 2440, 2422] },
+      { "region": "Veneto", "values": [5750, 5734, 5576, 5677, 4997, 5627, 6020, 6112, 6036] }
+    ],
+    "nationalTotals": [111917, 114474, 119272, 120391, 101859, 118908, 126484, 134309, 128057],
+    "sourceId": "analysis-2026",
+    "warning": "I dati 2024 sono parziali. I valori sono conteggi di nuove decorrenze, non beneficiari unici, spesa territoriale, tassi standardizzati o indicatori di frode."
+  },
+  "territorialAvailability": {
+    "publicStructuredLevel": "region",
+    "province": "Rendiconti sociali provinciali pubblicati come documenti, non ancora normalizzati in questo snapshot.",
+    "municipality": "Il Welfare Analytics Gate dichiara filtri comunali ma richiede abilitazione dell'ente; non è un open data pubblico anonimo.",
+    "individuals": "Nessun dato individuale, sanitario o relativo a medici è incluso o inferibile da questo snapshot."
+  },
+  "methodology": {
+    "definitions": "Prestazioni, pensioni, indennità e beneficiari sono misure diverse e restano separate.",
+    "comparability": "La spesa nazionale di inclusione sociale non è una ripartizione territoriale e non va distribuita in proporzione ai conteggi regionali.",
+    "interpretation": "Differenze territoriali grezze possono riflettere età, salute, reddito, copertura amministrativa e tempi di liquidazione. Non provano frode, corruzione o responsabilità individuali.",
+    "perCapita": "Non viene calcolata una graduatoria pro capite finché non è integrato un denominatore ISTAT coerente per anno e non sono standardizzate almeno le differenze di età."
+  },
+  "sources": [
+    {
+      "id": "rendiconto-civ-2025",
+      "title": "Relazione sul Rendiconto generale INPS 2025",
+      "owner": "Consiglio di Indirizzo e Vigilanza INPS",
+      "url": "https://www.inps.it/content/dam/inps-site/pdf/allegati/2026/Relazione_rendiconto_generale_2025.pdf",
+      "documentDate": "2026-07-01",
+      "dateNote": "Data di modifica incorporata nel PDF.",
+      "locator": "p. 54, tavola Uscite per prestazioni di inclusione sociale",
+      "observedAt": "2026-08-20T22:00:00+02:00",
+      "sha256": "9bf9f4b91319f75815ba790a0330106cc87134235dd4b2463b3151981f6ef268",
+      "rightsNote": "Documento istituzionale INPS; non presentato come dataset IODL."
+    },
+    {
+      "id": "gestione-25-2024",
+      "title": "Rendiconto 2024 della Gestione n. 25",
+      "owner": "INPS",
+      "url": "https://www.inps.it/content/dam/inps-site/pdf/datiebilanci/bilanci-e-rendiconti/rendicontigenerali/documents/2024/CA2025_0087_Rend_2024_38_Del_All_25_Inv_Civ.pdf",
+      "documentDate": "2025-05-13",
+      "dateNote": "Data di creazione incorporata nel PDF.",
+      "locator": "pp. 4-5, Spese per prestazioni istituzionali",
+      "observedAt": "2026-08-20T22:00:00+02:00",
+      "sha256": "9bb8b1697647442fbbf4a45ca6ca78ce993c2a394288dfa818f67a808c62ee48",
+      "rightsNote": "Documento istituzionale INPS; non presentato come dataset IODL."
+    },
+    {
+      "id": "analysis-2026",
+      "title": "Analisi delle pensioni di invalidità civile 2016-2024",
+      "owner": "Coordinamento Generale Statistico Attuariale INPS",
+      "url": "https://www.inps.it/content/dam/inps-site/pdf/dati-analisi-bilanci/osservatori-statistici/Analisi_pensioni_invalidita_civile_27gen2026.pdf",
+      "documentDate": "2026-01-27",
+      "dateNote": "Data riportata nel documento e nei metadati PDF.",
+      "locator": "pp. 1-3, stock delle prestazioni e Tabella 2",
+      "observedAt": "2026-08-20T22:00:00+02:00",
+      "sha256": "d4682dbd8e8e2816b5d9047627c4789c16a9544864241efb2455be092e959276",
+      "rightsNote": "Documento statistico istituzionale INPS; non presentato come dataset IODL."
+    }
+  ]
+}

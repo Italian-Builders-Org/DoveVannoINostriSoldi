@@ -1,0 +1,466 @@
+/**
+ * Primary navigation and footer sitemap. One source so header submenus and the
+ * footer map stay aligned.
+ */
+
+export type NavLink = Readonly<{
+  href: string;
+  label: string;
+  children?: readonly NavLink[];
+}>;
+
+export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "economy" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+
+export type NavSection = Readonly<{
+  href: string;
+  label: string;
+  icon: NavIcon;
+  aliases?: readonly string[];
+  children?: readonly NavLink[];
+}>;
+
+export const PRIMARY_NAV: readonly NavSection[] = [
+  { href: "/", label: "Home", icon: "home" },
+  {
+    href: "/imprese",
+    label: "Imprese",
+    icon: "business",
+    children: [
+      { href: "/imprese", label: "Panoramica" },
+      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
+      { href: "/imprese?metric=employees", label: "Addetti" },
+      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
+      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
+      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+    ],
+  },
+  {
+    href: "/istruzione",
+    label: "Istruzione",
+    icon: "education",
+    children: [
+      { href: "/istruzione", label: "Atlante della scuola" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
+  {
+    href: "/poverta",
+    label: "Povertà",
+    icon: "society",
+    children: [{ href: "/poverta", label: "Assoluta e relativa" }],
+  },
+  {
+    href: "/spese",
+    label: "Soldi",
+    icon: "money",
+    aliases: ["/stato", "/entrate"],
+    children: [
+      { href: "/spese", label: "Pagamenti comunali" },
+      { href: "/entrate", label: "Incassi comunali" },
+      { href: "/spese/servizi-generali", label: "Servizi generali PA" },
+      {
+        href: "/spese/sanita",
+        label: "Sanità",
+        children: [
+          { href: "/spese/sanita/storico", label: "Serie storica" },
+        ],
+      },
+      { href: "/spese/cultura", label: "Cultura e tempo libero" },
+      { href: "/spese/sport", label: "Sport" },
+      { href: "/spese/difesa", label: "Difesa" },
+      { href: "/spese/invalidita", label: "Invalidità INPS" },
+      { href: "/spese/pensioni", label: "Pensioni e pensionati" },
+      { href: "/spese/ambiente", label: "Protezione dell’ambiente" },
+      { href: "/spese/sicurezza", label: "Ordine pubblico e sicurezza" },
+      { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/spese/territoriale", label: "Spesa statale per territorio" },
+      { href: "/spese/operative", label: "Spese operative" },
+      {
+        href: "/stato",
+        label: "Amministrazioni centrali",
+        children: [
+          { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
+          { href: "/stato/legislature", label: "Spesa per legislatura" },
+        ],
+      },
+      { href: "/debito", label: "Debito pubblico" },
+    ],
+  },
+  {
+    href: "/economia",
+    label: "Economia",
+    icon: "economy",
+    aliases: ["/inflazione", "/cuneo-fiscale", "/pil", "/disuguaglianza"],
+    children: [
+      { href: "/economia", label: "Panoramica" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
+      { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
+      { href: "/pil", label: "PIL e conti nazionali" },
+      { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" },
+    ],
+  },
+  {
+    href: "/territori",
+    label: "Territori",
+    icon: "map",
+    children: [
+      { href: "/territori", label: "Panoramica" },
+      { href: "/territori/irpef", label: "Redditi IRPEF" },
+      { href: "/territori/fisco", label: "Entrate e spese" },
+      { href: "/territori/confronto", label: "Confronto Comuni" },
+    ],
+  },
+  {
+    href: "/coesione",
+    label: "Fondi e progetti",
+    icon: "projects",
+    aliases: ["/confronti", "/pnrr", "/progetti", "/opere", "/coesione/logistica-mercati"],
+    children: [
+      {
+        href: "/coesione",
+        label: "Coesione e PNRR",
+        children: [
+          { href: "/pnrr", label: "Tutti i progetti PNRR" },
+          { href: "/coesione/asili", label: "Asili e prima infanzia" },
+          { href: "/coesione/logistica-mercati", label: "Logistica mercati agroalimentari" },
+          { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
+        ],
+      },
+      { href: "/opere", label: "Opere pubbliche" },
+      { href: "/confronti", label: "Confronti verificati" },
+    ],
+  },
+  {
+    href: "/istituzioni",
+    label: "Istituzioni",
+    icon: "institutions",
+    aliases: ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
+    children: [
+      { href: "/istituzioni", label: "Panoramica" },
+      { href: "/parlamento", label: "Parlamento" },
+      { href: "/palazzo-chigi", label: "Palazzo Chigi" },
+      { href: "/governi", label: "Pagella dei governi" },
+      { href: "/ministeri", label: "Ministeri" },
+      { href: "/regioni", label: "Regioni" },
+    ],
+  },
+  {
+    href: "/enti",
+    label: "Enti e società",
+    icon: "entities",
+    aliases: ["/partecipazioni"],
+    children: [
+      { href: "/enti", label: "Registro enti" },
+      { href: "/partecipazioni", label: "Partecipazioni" },
+    ],
+  },
+  {
+    href: "/controlli",
+    label: "Cosa controllare",
+    icon: "checks",
+    aliases: ["/appalti", "/incarichi", "/dati", "/trasparenza", "/controlli/sintesi"],
+    children: [
+      {
+        href: "/appalti",
+        label: "Appalti",
+        children: [
+          { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
+          { href: "/appalti/ted", label: "Avvisi TED" },
+          { href: "/appalti/dettaglio", label: "Dettaglio e fornitori" },
+        ],
+      },
+      {
+        href: "/incarichi",
+        label: "Incarichi",
+        children: [
+          { href: "/incarichi/dettaglio", label: "Dettaglio" },
+        ],
+      },
+      { href: "/dati", label: "Catalogo dati" },
+      { href: "/controlli", label: "Segnali" },
+      { href: "/controlli/sintesi", label: "Sintesi" },
+      { href: "/esplora", label: "Esplora relazioni" },
+      { href: "/esplora/serie", label: "Confronta serie ufficiali" },
+    ],
+  },
+  { href: "/assistente", label: "Assistente", icon: "assistant" },
+  {
+    href: "/fonti",
+    label: "Fonti",
+    icon: "sources",
+    aliases: ["/metodologia"],
+    children: [
+      { href: "/fonti", label: "Elenco fonti" },
+      { href: "/fonti/calendario", label: "Calendario documenti" },
+      { href: "/fonti/stato", label: "Stato delle fonti" },
+      { href: "/fonti/copertura", label: "Copertura integrata" },
+      { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
+      { href: "/metodologia", label: "Metodo" },
+    ],
+  },
+  { href: "/report", label: "Report", icon: "news" },
+  { href: "/studi", label: "Studi", icon: "research", aliases: ["/paper"] },
+] as const;
+
+export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] = [
+  { title: "Home", links: [{ href: "/", label: "Home" }] },
+  { title: "Studi", links: [{ href: "/studi", label: "Paper di ricerca" }] },
+  {
+    title: "Report",
+    links: [
+      { href: "/report", label: "Archivio dei report" },
+      { href: "/report/bilancio-stato-2025", label: "Spesa pubblica: costi evitabili, anomalie ed errori" },
+      { href: "/report/2026-08", label: "Agosto 2026: Imprese e territori" },
+    ],
+  },
+  {
+    title: "Imprese",
+    links: [
+      { href: "/imprese", label: "Panoramica" },
+      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
+      { href: "/imprese?metric=employees", label: "Addetti" },
+      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
+      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
+      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+    ],
+  },
+  {
+    title: "Istruzione",
+    links: [
+      { href: "/istruzione", label: "Atlante Istruzione" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
+  {
+    title: "Povertà",
+    links: [{ href: "/poverta", label: "Assoluta e relativa" }],
+  },
+  {
+    title: "Soldi",
+    links: [
+      { href: "/spese", label: "Pagamenti comunali" },
+      { href: "/entrate", label: "Incassi comunali" },
+      { href: "/spese/servizi-generali", label: "Servizi generali PA" },
+      { href: "/spese/sanita", label: "Sanità" },
+      { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
+      { href: "/spese/cultura", label: "Cultura e tempo libero" },
+      { href: "/spese/sport", label: "Sport" },
+      { href: "/spese/difesa", label: "Difesa" },
+      { href: "/spese/invalidita", label: "Invalidità INPS" },
+      { href: "/spese/pensioni", label: "Pensioni e pensionati" },
+      { href: "/spese/ambiente", label: "Protezione dell’ambiente" },
+      { href: "/spese/sicurezza", label: "Ordine pubblico e sicurezza" },
+      { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/spese/territoriale", label: "Spesa statale per territorio" },
+      { href: "/spese/operative", label: "Spese operative" },
+      { href: "/stato", label: "Amministrazioni centrali" },
+      { href: "/debito", label: "Debito pubblico" },
+      { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
+      { href: "/stato/legislature", label: "Spesa per legislatura" },
+    ],
+  },
+  {
+    title: "Economia",
+    links: [
+      { href: "/economia", label: "Panoramica" },
+      { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
+      { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
+      { href: "/pil", label: "PIL e conti nazionali" },
+      { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" },
+    ],
+  },
+  {
+    title: "Territori",
+    links: [
+      { href: "/territori", label: "Panoramica" },
+      { href: "/territori/irpef", label: "Redditi IRPEF" },
+      { href: "/territori/fisco", label: "Entrate e spese" },
+      { href: "/territori/confronto", label: "Confronto Comuni" },
+    ],
+  },
+  {
+    title: "Fondi e progetti",
+    links: [
+      { href: "/coesione", label: "Coesione e PNRR" },
+      { href: "/pnrr", label: "Tutti i progetti PNRR" },
+      { href: "/coesione/asili", label: "Asili e prima infanzia" },
+      { href: "/coesione/logistica-mercati", label: "Logistica mercati agroalimentari" },
+      { href: "/opere", label: "Opere pubbliche" },
+      { href: "/confronti", label: "Confronti verificati" },
+      { href: "/pnrr/incarichi", label: "Incarichi PNRR INDIRE" },
+    ],
+  },
+  {
+    title: "Istituzioni",
+    links: [
+      { href: "/istituzioni", label: "Panoramica" },
+      { href: "/parlamento", label: "Parlamento" },
+      { href: "/palazzo-chigi", label: "Palazzo Chigi" },
+      { href: "/governi", label: "Pagella dei governi" },
+      { href: "/ministeri", label: "Ministeri" },
+      { href: "/regioni", label: "Regioni" },
+    ],
+  },
+  {
+    title: "Enti e società",
+    links: [
+      { href: "/enti", label: "Registro enti" },
+      { href: "/partecipazioni", label: "Partecipazioni" },
+    ],
+  },
+  {
+    title: "Cosa controllare",
+    links: [
+      { href: "/appalti", label: "Appalti" },
+      { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
+      { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
+      { href: "/appalti/ted", label: "Avvisi TED" },
+      { href: "/incarichi", label: "Incarichi" },
+      { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
+      { href: "/dati", label: "Catalogo dati" },
+      { href: "/controlli", label: "Segnali" },
+      { href: "/controlli/sintesi", label: "Sintesi" },
+      { href: "/trasparenza", label: "Trasparenza e verifiche" },
+    ],
+  },
+  {
+    title: "Strumenti",
+    links: [
+      { href: "/assistente", label: "Assistente" },
+      { href: "/mcp", label: "Istruzioni MCP" },
+      { href: "/supporto", label: "Supporto" },
+      { href: "/supporter", label: "Chi ci sostiene" },
+    ],
+  },
+  {
+    title: "Fonti e metodo",
+    links: [
+      { href: "/fonti", label: "Elenco fonti" },
+      { href: "/fonti/calendario", label: "Calendario documenti" },
+      { href: "/fonti/stato", label: "Stato delle fonti" },
+      { href: "/fonti/copertura", label: "Copertura integrata" },
+      { href: "/fonti/catalogo", label: "Catalogo delle fonti" },
+      { href: "/metodologia", label: "Metodo" },
+    ],
+  },
+  {
+    title: "Legale",
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/termini", label: "Termini" },
+    ],
+  },
+] as const;
+
+/** Footer map: main sections only, in reading order; CSS balances them into columns. */
+export const FOOTER_SITEMAP_GROUPS: readonly { title: string; links: readonly NavLink[] }[] =
+  SITE_MAP_GROUPS.filter((group) => group.title !== "Home" && group.title !== "Legale");
+
+export const FOOTER_SITEMAP_COLUMNS = 4;
+
+type NavigationLocation = Readonly<{
+  pathname: string;
+  searchParams: URLSearchParams;
+}>;
+
+function parseNavigationLocation(value: string, search = ""): NavigationLocation {
+  const [pathname = "/", inlineSearch = ""] = value.split("?", 2);
+  return {
+    pathname: pathname || "/",
+    searchParams: new URLSearchParams(search || inlineSearch),
+  };
+}
+
+function pathMatches(pathname: string, target: string): boolean {
+  return pathname === target || pathname.startsWith(`${target}/`);
+}
+
+function hrefMatchesLocation(
+  location: NavigationLocation,
+  href: string,
+): boolean {
+  const target = parseNavigationLocation(href);
+  if (!pathMatches(location.pathname, target.pathname)) return false;
+
+  for (const [key, value] of target.searchParams) {
+    if (location.searchParams.get(key) !== value) return false;
+  }
+  return true;
+}
+
+function isMoreSpecificHref(candidateHref: string, currentHref: string): boolean {
+  const candidate = parseNavigationLocation(candidateHref);
+  const current = parseNavigationLocation(currentHref);
+  if (candidate.pathname.length !== current.pathname.length) {
+    return candidate.pathname.length > current.pathname.length;
+  }
+  return candidate.searchParams.size > current.searchParams.size;
+}
+
+function navLinkMatchesLocation(location: NavigationLocation, link: NavLink): boolean {
+  if (hrefMatchesLocation(location, link.href)) return true;
+  return link.children?.some((child) => navLinkMatchesLocation(location, child)) ?? false;
+}
+
+/** Flat list of links for section footers and tests, parents before their nested pages. */
+export function flattenNavLinks(links: readonly NavLink[]): NavLink[] {
+  const out: NavLink[] = [];
+  for (const link of links) {
+    out.push({ href: link.href, label: link.label });
+    if (link.children?.length) {
+      out.push(...flattenNavLinks(link.children));
+    }
+  }
+  return out;
+}
+
+export function isNavSectionActive(pathname: string, item: NavSection): boolean {
+  const location = parseNavigationLocation(pathname);
+  if (item.href === "/") return location.pathname === "/";
+  if (pathMatches(location.pathname, item.href)) return true;
+  if (item.aliases?.some((alias) => pathMatches(location.pathname, alias))) return true;
+  return item.children?.some((child) => navLinkMatchesLocation(location, child)) ?? false;
+}
+
+export function activeNavSection(pathname: string): NavSection | null {
+  if (parseNavigationLocation(pathname).pathname === "/") return null;
+  return (
+    PRIMARY_NAV.filter((item) => item.children && item.children.length > 0)
+      .filter((item) => isNavSectionActive(pathname, item))
+      .sort((left, right) => right.href.length - left.href.length)[0] ?? null
+  );
+}
+
+export function isNavChildActive(
+  pathname: string,
+  childHref: string,
+  siblings: readonly NavLink[],
+  search = "",
+): boolean {
+  const location = parseNavigationLocation(pathname, search);
+  const queryKeys = new Set(
+    siblings.flatMap((child) => [...parseNavigationLocation(child.href).searchParams.keys()]),
+  );
+  const matches = siblings.filter((child) => {
+    if (!hrefMatchesLocation(location, child.href)) return false;
+
+    // A queryless overview is the fallback only when the URL is not choosing a
+    // query-backed sibling. This prevents "Panoramica" from being announced
+    // as current while, for example, ?metric=employees is selected.
+    const target = parseNavigationLocation(child.href);
+    return (
+      target.searchParams.size > 0 ||
+      ![...queryKeys].some((key) => location.searchParams.has(key))
+    );
+  });
+  if (matches.length === 0) return false;
+  const best = matches.reduce((current, candidate) =>
+    isMoreSpecificHref(candidate.href, current.href) ? candidate : current,
+  );
+  return best.href === childHref;
+}
+
+/** True when this link or any nested child matches the current location. */
+export function isNavBranchActive(pathname: string, link: NavLink, search = ""): boolean {
+  return navLinkMatchesLocation(parseNavigationLocation(pathname, search), link);
+}

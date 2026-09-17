@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T12:00:00+02:00",
+  "scope": "inps-administered-pensions",
+  "asOf": "2026-01-01",
+  "stock": {
+    "measure": "Pensioni erogate dall'INPS vigenti al 1 gennaio, inclusa la Gestione dipendenti pubblici",
+    "unit": "benefits",
+    "pensionCount": 21257999,
+    "amountMillionTenths": 3534803,
+    "amountUnit": "million-euros-tenths",
+    "amountNote": "Importo complessivo annuo in milioni di euro con un decimale, come pubblicato. La fonte avverte che gli arrotondamenti possono impedire la quadratura al decimo.",
+    "sourceId": "statistiche-in-breve-1037"
+  },
+  "nature": {
+    "sourceId": "statistiche-in-breve-1037",
+    "items": [
+      {
+        "id": "previdenziali",
+        "label": "Previdenziali",
+        "pensionCount": 16840238,
+        "sharePercent": 79.2,
+        "amountMillionTenths": 3249629
+      },
+      {
+        "id": "assistenziali",
+        "label": "Assistenziali",
+        "pensionCount": 4417761,
+        "sharePercent": 20.8,
+        "amountMillionTenths": 285173
+      }
+    ]
+  },
+  "categories": {
+    "sourceId": "statistiche-in-breve-1037",
+    "items": [
+      { "id": "vecchiaia", "label": "Vecchiaia e anticipate", "nature": "previdenziali", "pensionCount": 11902815, "amountMillionTenths": 2657612 },
+      { "id": "superstiti", "label": "Superstiti", "nature": "previdenziali", "pensionCount": 4116714, "amountMillionTenths": 469918 },
+      { "id": "invalidita-previdenziale", "label": "Invalidità previdenziale", "nature": "previdenziali", "pensionCount": 820709, "amountMillionTenths": 122099 },
+      { "id": "invalidi-civili", "label": "Invalidi civili", "nature": "assistenziali", "pensionCount": 3503140, "amountMillionTenths": 219060 },
+      { "id": "pensioni-assegni-sociali", "label": "Pensioni e assegni sociali", "nature": "assistenziali", "pensionCount": 914621, "amountMillionTenths": 66114 }
+    ]
+  },
+  "managementGroups": {
+    "sourceId": "statistiche-in-breve-1037",
+    "items": [
+      { "id": "fpld", "label": "Fondo pensioni lavoratori dipendenti", "pensionCount": 7797892, "amountMillionTenths": 1469848 },
+      { "id": "dipendenti-pubblici", "label": "Gestione dipendenti pubblici", "pensionCount": 3171265, "amountMillionTenths": 939654 },
+      { "id": "autonomi-parasubordinati", "label": "Autonomi e parasubordinati", "pensionCount": 5075306, "amountMillionTenths": 636716 },
+      { "id": "fondi-sostitutivi", "label": "Fondi sostitutivi e integrativi", "pensionCount": 463197, "amountMillionTenths": 115105 },
+      { "id": "assistenziali", "label": "Prestazioni assistenziali", "pensionCount": 4417761, "amountMillionTenths": 285173 },
+      { "id": "cumulo-totalizzazione", "label": "Cumulo, totalizzazione e facoltative", "pensionCount": 332578, "amountMillionTenths": 88306 }
+    ]
+  },
+  "stockSeries": {
+    "measure": "Numero di pensioni vigenti al 1 gennaio",
+    "unit": "benefits",
+    "sourceId": "statistiche-in-breve-1037",
+    "warning": "La serie dei conteggi è quella pubblicata per gli anni 2012-2026. Gli importi della stessa tavola sono a prezzi 2012 e non sono usati in questo snapshot.",
+    "observations": [
+      { "year": 2012, "previdenziali": 17559533, "assistenziali": 3561770, "total": 21121303 },
+      { "year": 2013, "previdenziali": 17427407, "assistenziali": 3630337, "total": 21057744 },
+      { "year": 2014, "previdenziali": 17266299, "assistenziali": 3674367, "total": 20940666 },
+      { "year": 2015, "previdenziali": 17107043, "assistenziali": 3731626, "total": 20838669 },
+      { "year": 2016, "previdenziali": 17118799, "assistenziali": 3837802, "total": 20956601 },
+      { "year": 2017, "previdenziali": 16957720, "assistenziali": 3915126, "total": 20872846 },
+      { "year": 2018, "previdenziali": 16843186, "assistenziali": 3907487, "total": 20750673 },
+      { "year": 2019, "previdenziali": 16781596, "assistenziali": 3959858, "total": 20741454 },
+      { "year": 2020, "previdenziali": 16853010, "assistenziali": 4030438, "total": 20883448 },
+      { "year": 2021, "previdenziali": 16846422, "assistenziali": 3982678, "total": 20829100 },
+      { "year": 2022, "previdenziali": 16849558, "assistenziali": 3982674, "total": 20832232 },
+      { "year": 2023, "previdenziali": 16793458, "assistenziali": 4033210, "total": 20826668 },
+      { "year": 2024, "previdenziali": 16770564, "assistenziali": 4142774, "total": 20913338 },
+      { "year": 2025, "previdenziali": 16843177, "assistenziali": 4298814, "total": 21141991 },
+      { "year": 2026, "previdenziali": 16840238, "assistenziali": 4417761, "total": 21257999 }
+    ]
+  },
+  "awardedIn2025": {
+    "measure": "Pensioni liquidate nel 2025",
+    "pensionCount": 1540943,
+    "sourceId": "statistiche-in-breve-1037",
+    "warning": "Le liquidazioni dell'anno sono un flusso. Non coincidono con lo stock vigente né con la tavola per anno di decorrenza."
+  },
+  "vintageCube": {
+    "osservatorioId": "388",
+    "title": "Pensioni per anno di decorrenza",
+    "url": "https://servizi2.inps.it/servizi/osservatoristatistici/6/37/o/388",
+    "parentArea": "Pensioni erogate dall'INPS, pensioni vigenti",
+    "stockYears": [2022, 2023, 2024, 2025, 2026],
+    "dimensions": [
+      "anno di stock",
+      "anno di decorrenza",
+      "sesso",
+      "categoria",
+      "sottocategoria",
+      "tipo gestione",
+      "gestione"
+    ],
+    "measures": [
+      "numero pensioni",
+      "età media",
+      "età media alla decorrenza",
+      "importo medio mensile",
+      "importo medio mensile alla decorrenza"
+    ],
+    "sourceId": "osservatorio-388",
+    "warning": "La tavola classifica lo stock vigente per anno di inizio della pensione. Non è una serie di nuove liquidazioni e non è il Casellario ISTAT."
+  },
+  "methodology": {
+    "definitions": "Stock al 1 gennaio, liquidazioni dell'anno e classificazione per anno di decorrenza sono misure diverse. Restano separate.",
+    "perimeter": "Solo pensioni erogate dall'INPS, inclusa la Gestione dipendenti pubblici. Sono escluse le pensioni della Gestione Ex Inpgi. Non coincide con il Casellario ISTAT, che copre tutti gli enti osservati.",
+    "amounts": "L'importo complessivo annuo moltiplica per 13 mensilità l'importo di gennaio, 12 se indennità di accompagnamento. Gli importi della serie 2012-2026 a prezzi 2012 non sono mescolati con l'importo corrente 2026.",
+    "rounding": "Nella fonte, per effetto degli arrotondamenti, i totali in milioni di euro possono non coincidere con la somma delle componenti."
+  },
+  "sources": [
+    {
+      "id": "osservatorio-388",
+      "title": "INPS · Pensioni per anno di decorrenza",
+      "owner": "INPS · Osservatori statistici",
+      "url": "https://servizi2.inps.it/servizi/osservatoristatistici/6/37/o/388",
+      "documentDate": "2026-03-23",
+      "dateNote": "Data del PDF di sintesi dello stesso osservatorio; lo schema della tavola 388 è stato osservato il 1 settembre 2026.",
+      "locator": "Area tematica 6, pensioni vigenti, osservatorio 388",
+      "observedAt": "2026-09-01T12:00:00+02:00",
+      "sha256": "182b6cfd54f3b309a7113407463a0d54b8378c1cc93aaa2ce2a8903289cd9784",
+      "rightsNote": "Tavola navigabile e documento istituzionale INPS; non presentato come dataset IODL."
+    },
+    {
+      "id": "statistiche-in-breve-1037",
+      "title": "INPS · Statistiche in breve sulle pensioni erogate dall'INPS",
+      "owner": "Coordinamento Generale Statistico Attuariale INPS",
+      "url": "https://servizi2.inps.it/servizi/osservatoristatistici/api/getAllegato/?idAllegato=1037",
+      "documentDate": "2026-03-23",
+      "dateNote": "Data di creazione incorporata nel PDF.",
+      "locator": "Tavole 1, 3, 4 e 7; pensioni vigenti all'1.1.2026 e serie 2012-2026",
+      "observedAt": "2026-09-01T12:00:00+02:00",
+      "sha256": "e8d1e0c35bd6c2049ac92509e3cae6aa26699de36ee1765f01b87b0cc38c655a",
+      "rightsNote": "Documento statistico istituzionale INPS; non presentato come dataset IODL."
+    },
+    {
+      "id": "nota-metodologica-1036",
+      "title": "INPS · Nota metodologica dell'osservatorio sulle pensioni",
+      "owner": "Coordinamento Generale Statistico Attuariale INPS",
+      "url": "https://servizi2.inps.it/servizi/osservatoristatistici/api/getAllegato/?idAllegato=1036",
+      "documentDate": "2026-03-23",
+      "dateNote": "Data di creazione incorporata nel PDF.",
+      "locator": "Definizioni di stock, liquidazione, decorrenza e importo complessivo annuo",
+      "observedAt": "2026-09-01T12:00:00+02:00",
+      "sha256": "060c1aae0ab5d373850bbe88bebef01f78bd5baf3d5171d172b19fd22bb16067",
+      "rightsNote": "Documento metodologico istituzionale INPS; non presentato come dataset IODL."
+    }
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "note": "Official CC BY 4.0 FC50TOT 2018 sample; source lock in scripts/etl/specs/opencivitas-2018.source.json.",
+  "username": "RM091SIF11US",
+  "entity": {
+    "istatCode": "058091",
+    "name": "ROMA",
+    "province": "ROMA",
+    "region": "LAZIO"
+  },
+  "indicators": {
+    "DESCR_NON_VALUTABILE_OUT_TOT": {
+      "value": "",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "DESCR_NON_VALUTABILE_SPESA_TOT": {
+      "value": "",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "DIFF_OUT_PERC_TOT": {
+      "value": "4,0355691722",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "FST_RIPROPORZIONATO_BI": {
+      "value": "2815410309,4",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "FST_RIPROPORZIONATO_BI_PROAB": {
+      "value": "998,29492299",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "POSIZIONE_OUTPUT_PERC_TOT": {
+      "value": "6",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "POSIZIONE_SPESA_PERC_TOT": {
+      "value": "7",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "SPESA_STORICA": {
+      "value": "2996931208,1",
+      "anomaly": "",
+      "privacy": ""
+    },
+    "SPESA_STORICA_PROAB": {
+      "value": "1062,6590375",
+      "anomaly": "",
+      "privacy": ""
+    }
+  },
+  "definitions": [
+    {
+      "VAR_IND_COD": "FST_RIPROPORZIONATO_BI_PROAB",
+      "VAR_IND_DES": "Spesa standard - Euro per abitante",
+      "VAR_IND_TIP": "FS",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "1.0"
+    },
+    {
+      "VAR_IND_COD": "FST_RIPROPORZIONATO_BI",
+      "VAR_IND_DES": "Spesa standard - Euro",
+      "VAR_IND_TIP": "FS",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "2.0"
+    },
+    {
+      "VAR_IND_COD": "SPESA_STORICA_PROAB",
+      "VAR_IND_DES": "Spesa storica - Euro per abitante",
+      "VAR_IND_TIP": "FS",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "3.0"
+    },
+    {
+      "VAR_IND_COD": "SPESA_STORICA",
+      "VAR_IND_DES": "Spesa storica - euro",
+      "VAR_IND_TIP": "FS",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "4.0"
+    },
+    {
+      "VAR_IND_COD": "DIFF_OUT_PERC_TOT",
+      "VAR_IND_DES": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "6.0"
+    },
+    {
+      "VAR_IND_COD": "POSIZIONE_SPESA_PERC_TOT",
+      "VAR_IND_DES": "Livello della spesa - Da 0 a 10",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "7.0"
+    },
+    {
+      "VAR_IND_COD": "DESCR_NON_VALUTABILE_SPESA_TOT",
+      "VAR_IND_DES": "Motivo di non valutabilità per la spesa",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "8.0"
+    },
+    {
+      "VAR_IND_COD": "POSIZIONE_OUTPUT_PERC_TOT",
+      "VAR_IND_DES": "Livello dei servizi erogati - Da 0 a 10",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "9.0"
+    },
+    {
+      "VAR_IND_COD": "DESCR_NON_VALUTABILE_OUT_TOT",
+      "VAR_IND_DES": "Motivo di non valutabilità per i servizi offerti",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "10.0"
+    },
+    {
+      "VAR_IND_COD": "COORD_SPESA",
+      "VAR_IND_DES": "Coordinata di posizionamento performance - Spesa (Da -5 a +5)",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "11.0"
+    },
+    {
+      "VAR_IND_COD": "COORD_OUT",
+      "VAR_IND_DES": "Coordinata di posizionamento performance - Servizi svolti (Da -5 a +5)",
+      "VAR_IND_TIP": "LQP",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "12.0"
+    },
+    {
+      "VAR_IND_COD": "FL_DIF_OUTPUT_MAG_0",
+      "VAR_IND_DES": "Maggiori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "13.0"
+    },
+    {
+      "VAR_IND_COD": "FL_DIF_OUTPUT_MIN_0",
+      "VAR_IND_DES": "Minori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "14.0"
+    },
+    {
+      "VAR_IND_COD": "FL_DIF_SPESA_MAG_0",
+      "VAR_IND_DES": "Spesa storica maggiore della spesa standard",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "15.0"
+    },
+    {
+      "VAR_IND_COD": "FL_DIF_SPESA_MIN_0",
+      "VAR_IND_DES": "Spesa storica minore della spesa standard",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "16.0"
+    },
+    {
+      "VAR_IND_COD": "FL_SPESA_PIU_OUT_PIU",
+      "VAR_IND_DES": "Spesa storica maggiore della spesa standard e maggiori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "17.0"
+    },
+    {
+      "VAR_IND_COD": "FL_SPESA_PIU_OUT_MENO",
+      "VAR_IND_DES": "Spesa storica maggiore della spesa standard e minori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "18.0"
+    },
+    {
+      "VAR_IND_COD": "FL_SPESA_MENO_OUT_MENO",
+      "VAR_IND_DES": "Spesa storica minore della spesa standard e minori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "19.0"
+    },
+    {
+      "VAR_IND_COD": "FL_SPESA_MENO_OUT_PIU",
+      "VAR_IND_DES": "Spesa storica minore della spesa standard e maggiori servizi",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "20.0"
+    },
+    {
+      "VAR_IND_COD": "FL_NO_VALUTABILE",
+      "VAR_IND_DES": "Spesa e/o servizi offerti non valutabili",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "21.0"
+    },
+    {
+      "VAR_IND_COD": "SERV_NO_VALUT_SPESA_TOT",
+      "VAR_IND_DES": "Spesa non valutabile",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "22.0"
+    },
+    {
+      "VAR_IND_COD": "SERV_NO_VALUT_OUT_TOT",
+      "VAR_IND_DES": "Servizi offerti non valutabili",
+      "VAR_IND_TIP": "NAVIGA",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "23.0"
+    },
+    {
+      "VAR_IND_COD": "T21",
+      "VAR_IND_DES": "Costo medio del lavoro - Euro per addetto",
+      "VAR_IND_TIP": "INDICATORI",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "24.0"
+    },
+    {
+      "VAR_IND_COD": "COSTO_LAVORO_PROAB",
+      "VAR_IND_DES": "Costo medio del lavoro - Euro per abitante",
+      "VAR_IND_TIP": "INDICATORI",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "25.0"
+    },
+    {
+      "VAR_IND_COD": "DIPENDENTI_X1000AB",
+      "VAR_IND_DES": "Dipendenti - N. per 1.000 abitanti",
+      "VAR_IND_TIP": "INDICATORI",
+      "VAR_IND_LINGUA": "IT",
+      "VAR_IND_FUNZIONE": "TOTALE",
+      "VAR_IND_ORD": "26.0"
+    }
+  ]
+}

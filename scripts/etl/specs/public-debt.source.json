@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "bancaditalia": {
+    "owner": "Banca d'Italia",
+    "title": "Finanza pubblica: fabbisogno e debito",
+    "landingUrl": "https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html",
+    "bdsUrl": "https://www.bancaditalia.it/statistiche/basi-dati/bds/",
+    "termsUrl": "https://www.bancaditalia.it/statistiche/condizioni-utilizzo/",
+    "exportTemplate": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/{cube}",
+    "allowedHost": "a2a.bancaditalia.it",
+    "cadence": "mensile",
+    "expectedLagDays": 45,
+    "csv": {
+      "encoding": "utf-8",
+      "delimiter": ";",
+      "dataDateHeader": "DATA_OSS",
+      "structureHeaders": ["Cubo", "Variabile", "Descrizione", "Tipologia", "Dominio", "Valori di dominio"],
+      "domainHeaders": ["Dominio", "Elemento", "Descrizione"],
+      "legendHeaders": ["Tipologia di oggetto", "Codice", "Descrizione"]
+    },
+    "cubes": {
+      "TCCE0175": {
+        "role": "stock e strumenti",
+        "series": [
+          {"field": "total", "id": "FPI_FP.M.IT.S13.MGD.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "currencyAndDeposits", "id": "FPI_FP.M.IT.S13.F2.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: monete e depositi passivi in valuta nazionale", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "shortTermSecurities", "id": "FPI_FP.M.IT.S13.F31.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: titoli a breve termine", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "mediumLongTermSecurities", "id": "FPI_FP.M.IT.S13.F32.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: titoli a medio e a lungo termine", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "otherLiabilities", "id": "FPI_FP.M.IT.S13.F4.SBI2.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: altre passività", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "mfiLoans", "id": "FPI_FP.M.IT.S13.F4.SBI51.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: prestiti di banche e fondi monetari", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "euLoans", "id": "FPI_FP.M.IT.S1311.F42.S212.101.112.FAV.EUR.EDP", "description": "Amministrazioni Centrali: Prestiti a medio e a lungo termine di Istituzioni europee", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"}
+        ]
+      },
+      "TCCE0125": {
+        "role": "fabbisogno e finanziamento netto",
+        "series": [
+          {"field": "debtInstrumentTransactions", "id": "FPI_FP.M.IT.S13.MGD.SBI3.103.115.COV.EUR.FPBI", "description": "Amministrazioni pubbliche: transazioni in strumenti del debito", "frequency": "M", "unit": "EUR", "scale": "6", "method": "FPBI", "valueType": "money-flow"},
+          {"field": "rawLiquidityChange", "id": "FPI_FP.M.IT.S13.F2BI1.S12BI19.103.115.COV.EUR.FPBI", "description": "Amministrazioni pubbliche: disponibilità liquide del Tesoro – variazioni", "frequency": "M", "unit": "EUR", "scale": "6", "method": "FPBI", "valueType": "money-flow"},
+          {"field": "borrowingRequirement", "id": "FPI_FP.M.IT.S13.FAB.SBI3.103.115.COV.EUR.FPBI", "description": "Amministrazioni pubbliche: finanziamento del fabbisogno lordo", "frequency": "M", "unit": "EUR", "scale": "6", "method": "FPBI", "valueType": "money-flow"},
+          {"field": "netShortTermSecurities", "id": "FPI_FP.M.IT.S13.F31.SBI3.103.115.COV.EUR.FPBI", "description": "Amministrazioni pubbliche: emissioni nette di titoli a breve termine", "frequency": "M", "unit": "EUR", "scale": "6", "method": "FPBI", "valueType": "money-flow"},
+          {"field": "netMediumLongTermSecurities", "id": "FPI_FP.M.IT.S13.F32.SBI3.103.115.COV.EUR.FPBI", "description": "Amministrazioni pubbliche: emissioni nette di titoli a medio e lungo termine", "frequency": "M", "unit": "EUR", "scale": "6", "method": "FPBI", "valueType": "money-flow"}
+        ]
+      },
+      "TCCE0200": {
+        "role": "settori detentori",
+        "series": [
+          {"field": "total", "id": "FPI_FP.M.IT.S13.MGD.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "bankitaliaAmount", "id": "FPI_FP.M.IT.S13.MGD.S121.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da Banca d'Italia", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "bankitaliaShare", "id": "FPI_FP.M.IT.S13.MGD.S121.101.112.FAV.PT.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da Banca d'Italia (quota)", "frequency": "M", "unit": "PT", "scale": "-2", "method": "EDP", "valueType": "share"},
+          {"field": "otherMfiAmount", "id": "FPI_FP.M.IT.S13.MGD.S12BI1.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altre istituzioni finanziarie monetarie", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "otherMfiShare", "id": "FPI_FP.M.IT.S13.MGD.S12BI1.101.112.FAV.PT.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altre istituzioni finanziarie monetarie (quota)", "frequency": "M", "unit": "PT", "scale": "-2", "method": "EDP", "valueType": "share"},
+          {"field": "otherFinancialAmount", "id": "FPI_FP.M.IT.S13.MGD.S12BI2.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altre istituzioni finanziarie", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "otherFinancialShare", "id": "FPI_FP.M.IT.S13.MGD.S12BI2.101.112.FAV.PT.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altre istituzioni finanziarie (quota)", "frequency": "M", "unit": "PT", "scale": "-2", "method": "EDP", "valueType": "share"},
+          {"field": "nonResidentsAmount", "id": "FPI_FP.M.IT.S13.MGD.S2.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da non residenti", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "nonResidentsShare", "id": "FPI_FP.M.IT.S13.MGD.S2.101.112.FAV.PT.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da non residenti (quota)", "frequency": "M", "unit": "PT", "scale": "-2", "method": "EDP", "valueType": "share"},
+          {"field": "otherResidentsAmount", "id": "FPI_FP.M.IT.S13.MGD.SBI1.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altri residenti", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "otherResidentsShare", "id": "FPI_FP.M.IT.S13.MGD.SBI1.101.112.FAV.PT.EDP", "description": "Amministrazioni pubbliche: debito lordo detenuto da altri residenti (quota)", "frequency": "M", "unit": "PT", "scale": "-2", "method": "EDP", "valueType": "share"}
+        ]
+      },
+      "TCCE0325": {
+        "role": "vita residua",
+        "series": [
+          {"field": "total", "id": "FPI_FP.M.IT.S13.MGD.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "upToOneYear", "id": "FPI_FP.M.IT.S13.MGD05.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo con vita residua fino a 1 anno", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "oneToFiveYears", "id": "FPI_FP.M.IT.S13.MGD06.SBI3.101.112.FAV.EUR.EDP", "description": "Amministrazioni pubbliche: debito lordo con vita residua tra 1 e 5 anni", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "overFiveYears", "id": "FPI_FP.M.IT.S13.MGD07.SBI3.101.112.FAV.EUR.EDP", "description": "Debito lordo con vita residua maggiore di 5 anni", "frequency": "M", "unit": "EUR", "scale": "6", "method": "EDP", "valueType": "money-stock"},
+          {"field": "averageYears", "id": "FPI_FP.M.IT.S13.MGD10.SBI3.101.112.FAV.AA.EDP", "description": "Amministrazioni pubbliche: vita media residua del debito lordo", "frequency": "M", "unit": "AA", "scale": "-2", "method": "EDP", "valueType": "years"}
+        ]
+      }
+    }
+  },
+  "eurostat": {
+    "owner": "Eurostat",
+    "title": "Government revenue, expenditure and main aggregates",
+    "datasetCode": "gov_10a_main",
+    "datasetUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+    "apiUrl": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?lang=en&freq=A&unit=MIO_EUR&sector=S13&na_item=D41PAY&na_item=TE&geo=IT&sinceTimePeriod=2021",
+    "apiPath": "/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "allowedHost": "ec.europa.eu",
+    "cadence": "annuale",
+    "dimensions": {
+      "freq": {"code": "A", "label": "Annual"},
+      "unit": {"code": "MIO_EUR", "label": "Million euro"},
+      "sector": {"code": "S13", "label": "General government"},
+      "na_item": {
+        "codes": ["D41PAY", "TE"],
+        "labels": {
+          "D41PAY": "Interest, expenditure",
+          "TE": "Total general government expenditure"
+        }
+      },
+      "geo": {"code": "IT", "label": "Italy"}
+    },
+    "historyYears": 5
+  }
+}

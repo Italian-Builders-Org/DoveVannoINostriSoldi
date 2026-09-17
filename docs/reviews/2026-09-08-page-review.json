@@ -1,0 +1,805 @@
+{
+  "base": "9a616572997f8cfa1794a883153cfa3dbbe30939",
+  "scope": "Browser review during editing; screenshots inspected for representative layouts. Final production checks recorded separately.",
+  "routes": [
+    {
+      "path": "/",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/affidamenti-diretti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/consip-da-confrontare",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/dettaglio",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/fornitori",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/rinnovi-proroghe",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/appalti/ted",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/assistente",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/assistente/anteprima",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/cerca",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/cerca?q=Roma",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/coesione",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/coesione/asili",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/confronti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/confronti/catalogo",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/controlli",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/controlli/corte-dei-conti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/controlli/segnalazioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/controlli/sintesi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/controlli/working-set",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/affidamenti-diretti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/affitti-immobili",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/auto-welfare",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/benchmark-consulenze",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/benchmark-contratti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/benchmark-istituzioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/buchi-organico",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/buchi-trasparenza",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/c8-a",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/c8-b",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/c8-c",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/c8-d",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/campagne-pubblicita",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/capitoli-consulenze",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/capitoli-consulenze-copertura",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cataloghi-url-supplementari",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/catalogo-url-trasparenza",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cdp-compensi-sedi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cig-aggiudicatari-extra",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cig-autorita",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cig-ministeri",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/collaboratori-extra",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/collaboratori-frammenti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/comparazione-ue",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/comparazione-ue-staff-funzioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-contratti-riconciliati",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-ranking",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-snapshot-strutturati",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-winners-2024",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-winners-2025",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consip-winners-2026",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consulenze-legali",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/consulenze-pnrr",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/corte-conti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/cv-incarichi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/eventi-convegni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/fuori-consip",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/gruppi-vincitori",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/incarichi-nominativi-buchi-copertura",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/incarichi-nominativi-buchi-riga",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/incarichi-nominativi-shard",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/indennita-organi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/indice-enti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/istat-misura-comune-dipendenza-anziani",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/istat-misura-comune-dipendenza-strutturale",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/istat-misura-comune-vecchiaia",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/mim-scuole-statali-comuni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/missioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/missioni-cdp",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/missioni-cdp-buchi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/nominativi-incarichi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/openbdap-capitoli-2024-2026",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/openbdap-consulenze-ce",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/openbdap-personale-piani-gestione",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/opencup-census-window",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/opencup-metadati",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/opencup-progetti-bulk",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/opencup-soggetti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/opencup-trend-area-soggetto",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/partecipate-at-focus",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/partecipate-statali-focus",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/partecipate-statali-perimetro",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/parti-atti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/personale",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/pnrr-progetti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/problemi-trasparenza",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-affidamenti-c1-extra",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-atti-mimit",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-difesa-direzioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-difesa-procedimenti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-indici-mimit",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-mimit-dork",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/procurement-partecipate",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/rimborsi-spese",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/rimborsi-spese-buchi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/rinnovi-proroghe",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/salute-posti-letto-2023",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/segnalazioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/segnalazioni-card",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/segnalazioni-parti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/siope-inventario-enti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/siope-uscite-asl",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/siope-uscite-citta-metropolitane",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/siope-uscite-province",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/siope-uscite-regioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/staff-funzioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/ted-avvisi-italia-2026-08",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/trasparenza-parchi-l38",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/url-morti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/vincitori",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati/vincitori-cig",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati?vista=ambito",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/dati?vista=tutti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/debito",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/enti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/enti/agid",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/enti/c_f205",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/enti/c_h501/appalti?view=summary",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/entrate",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/esplora",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/fonti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/fonti/calendario",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/fonti/catalogo",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/fonti/copertura",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/fonti/stato",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/governi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/governi/confronta",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/governi/meloni-i",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/imprese",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/imprese?metric=active_enterprises",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/imprese?metric=active_local_units",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/imprese?metric=employees",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/imprese?metric=production_value_band_count",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi/consulenze-legali",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi/dettaglio",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi/nominativi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi/personale-organi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/incarichi/pnrr",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/istituzioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/istruzione",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/istruzione/universita-ricerca",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/mcp",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/metodologia",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/ministeri",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/palazzo-chigi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/paper",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/parlamento",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/partecipazioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/pnrr",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/pnrr/incarichi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/poverta",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/privacy",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/progetti/B11B21001610005",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/regioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/report",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/report/2026-08",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/affitti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/ambiente",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/auto-welfare",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/campagne",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/capitoli-progetti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/consulenze",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/eventi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/invalidita",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/legge-di-bilancio",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/missioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/operative",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/pensioni",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/rimborsi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/sanita",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/sanita/storico",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/sport",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/spese/territoriale",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/stato",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/stato/amministrazioni/2",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/stato/legislature",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/studi",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/studi/dai-fondi-ai-posti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/supporter",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/supporto",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/termini",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/territori",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/territori/confronto",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/territori/fisco",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/territori/irpef",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/trasparenza",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/trasparenza/documenti-mancanti",
+      "review": "Browser content and page structure inspected"
+    },
+    {
+      "path": "/trasparenza/perimetro-enti",
+      "review": "Browser content and page structure inspected"
+    }
+  ],
+  "additionalQueries": [
+    "/imprese?metric=turnover",
+    "/imprese?metric=istat_value_added_per_employee"
+  ],
+  "finalBuild": {
+    "buildId": "Mrpv9mWTtBL7jfQENfiew",
+    "productFingerprint": "629cf2420823ff2466076cb3adc219bc0ea30c38717c3ab05baa9e1351396cd9",
+    "localPreview": "http://localhost:3416",
+    "productFilesManifest": "artifacts/browser/ui-clarity/final-build.json"
+  },
+  "finalVerification": {
+    "status": "PASS_LOCAL",
+    "coreScenarios": 170,
+    "editorialRoutes": 21,
+    "editorialWidths": [
+      390,
+      1280
+    ],
+    "lighthouse": {
+      "accessibility": 1,
+      "bestPractices": 1,
+      "seo": 1,
+      "performance": 0.94,
+      "cls": 0,
+      "lcp": 3096.4575000000004,
+      "fcp": 1206.2954,
+      "tbt": 8.5
+    },
+    "productionRunMode": "Completed in blocks on the same product build, with affected browser groups rerun after test synchronization and selector corrections.",
+    "report": "2026-09-07-main-ui-polish.md"
+  }
+}

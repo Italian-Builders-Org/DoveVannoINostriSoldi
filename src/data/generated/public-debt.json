@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "bancaditalia": {
+      "id": "bancaditalia",
+      "owner": "Banca d'Italia",
+      "title": "Finanza pubblica: fabbisogno e debito",
+      "landingUrl": "https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html",
+      "bdsUrl": "https://www.bancaditalia.it/statistiche/basi-dati/bds/",
+      "termsUrl": "https://www.bancaditalia.it/statistiche/condizioni-utilizzo/",
+      "retrievedAt": "2026-08-24T09:41:59Z",
+      "cadence": "mensile",
+      "expectedLagDays": 45,
+      "cubes": [
+        {
+          "id": "TCCE0125",
+          "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0125",
+          "bytes": 23481,
+          "sha256": "dc6e8f2254ab155dc5b912a5cca2140fdaaad1c7b8326a39c7c12a5dc024db73"
+        },
+        {
+          "id": "TCCE0175",
+          "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0175",
+          "bytes": 38487,
+          "sha256": "1dd97196dce00770118a9a0a18d251182a9bcbd20b6a6517c057205384341eab"
+        },
+        {
+          "id": "TCCE0200",
+          "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0200",
+          "bytes": 46809,
+          "sha256": "884cd2f2aa47f5cccc2e052be9784b6e083fecea730b0817daef017bdc4a44de"
+        },
+        {
+          "id": "TCCE0325",
+          "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0325",
+          "bytes": 24909,
+          "sha256": "92cef6e249400327ea22a8f34c3cb02e8cbb739f11f40e35c7ed88e029f63e71"
+        }
+      ]
+    },
+    "eurostat": {
+      "id": "eurostat",
+      "owner": "Eurostat",
+      "title": "Government revenue, expenditure and main aggregates",
+      "datasetCode": "gov_10a_main",
+      "datasetUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
+      "apiUrl": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?lang=en&freq=A&unit=MIO_EUR&sector=S13&na_item=D41PAY&na_item=TE&geo=IT&sinceTimePeriod=2021",
+      "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+      "retrievedAt": "2026-08-24T09:21:43Z",
+      "upstreamUpdatedAt": "2026-07-21T11:00:00+0200",
+      "cadence": "annuale",
+      "bytes": 2994,
+      "sha256": "165cf429d82081b4f1a6f079d9a7b2803c1fe5824c053766b8854f6c56bba44a"
+    }
+  },
+  "stock": {
+    "referenceDate": "2026-06-30",
+    "totalCents": 320724730000000,
+    "previousMonthCents": 318106340000000,
+    "changeCents": 2618390000000,
+    "history": [
+      {
+        "referenceDate": "2025-06-30",
+        "totalCents": 307136690000000
+      },
+      {
+        "referenceDate": "2025-07-31",
+        "totalCents": 305611340000000
+      },
+      {
+        "referenceDate": "2025-08-31",
+        "totalCents": 308142730000000
+      },
+      {
+        "referenceDate": "2025-09-30",
+        "totalCents": 308103160000000
+      },
+      {
+        "referenceDate": "2025-10-31",
+        "totalCents": 313099490000000
+      },
+      {
+        "referenceDate": "2025-11-30",
+        "totalCents": 312432220000000
+      },
+      {
+        "referenceDate": "2025-12-31",
+        "totalCents": 309588760000000
+      },
+      {
+        "referenceDate": "2026-01-31",
+        "totalCents": 311199030000000
+      },
+      {
+        "referenceDate": "2026-02-28",
+        "totalCents": 313880840000000
+      },
+      {
+        "referenceDate": "2026-03-31",
+        "totalCents": 315819060000000
+      },
+      {
+        "referenceDate": "2026-04-30",
+        "totalCents": 315447230000000
+      },
+      {
+        "referenceDate": "2026-05-31",
+        "totalCents": 318106340000000
+      },
+      {
+        "referenceDate": "2026-06-30",
+        "totalCents": 320724730000000
+      }
+    ],
+    "instruments": {
+      "currencyAndDepositsCents": 18652690000000,
+      "securitiesCents": 269649030000000,
+      "loansAndOtherLiabilitiesCents": 32423010000000
+    }
+  },
+  "change": {
+    "referenceDate": "2026-06-30",
+    "borrowingRequirementCents": 1325920000000,
+    "debtInstrumentTransactionsCents": 2303520000000,
+    "rawLiquidityChangeCents": -977600000000,
+    "liquidityContributionCents": 977600000000,
+    "otherEffectsCents": 314870000000,
+    "netShortTermSecuritiesCents": 512560000000,
+    "netMediumLongTermSecuritiesCents": 3178690000000
+  },
+  "holders": {
+    "referenceDate": "2026-05-31",
+    "totalCents": 318106340000000,
+    "sectors": [
+      {
+        "id": "bankitalia",
+        "label": "Banca d'Italia",
+        "amountCents": 54629110000000,
+        "shareBasisPoints": 1720
+      },
+      {
+        "id": "other-mfi",
+        "label": "Altre istituzioni finanziarie monetarie",
+        "amountCents": 64589320000000,
+        "shareBasisPoints": 2030
+      },
+      {
+        "id": "other-financial",
+        "label": "Altre istituzioni finanziarie",
+        "amountCents": 38625100000000,
+        "shareBasisPoints": 1210
+      },
+      {
+        "id": "other-residents",
+        "label": "Altri residenti",
+        "amountCents": 46196500000000,
+        "shareBasisPoints": 1450
+      },
+      {
+        "id": "non-residents",
+        "label": "Non residenti",
+        "amountCents": 114066310000000,
+        "shareBasisPoints": 3590
+      }
+    ]
+  },
+  "residualMaturity": {
+    "referenceDate": "2026-06-30",
+    "totalCents": 320724730000000,
+    "upToOneYearCents": 58390520000000,
+    "oneToFiveYearsCents": 103271970000000,
+    "overFiveYearsCents": 159062240000000,
+    "averageYears": 7.9
+  },
+  "annualInterest": {
+    "referenceYear": 2025,
+    "previousYear": 2024,
+    "interestExpenseCents": 8714600000000,
+    "previousInterestExpenseCents": 8548300000000,
+    "totalGovernmentExpenditureCents": 115530900000000,
+    "previousTotalGovernmentExpenditureCents": 110980400000000,
+    "interestShareBasisPoints": 754,
+    "previousInterestShareBasisPoints": 770,
+    "history": [
+      {
+        "year": 2021,
+        "interestExpenseCents": 6300400000000,
+        "totalGovernmentExpenditureCents": 103252900000000,
+        "interestShareBasisPoints": 610
+      },
+      {
+        "year": 2022,
+        "interestExpenseCents": 8161400000000,
+        "totalGovernmentExpenditureCents": 109762700000000,
+        "interestShareBasisPoints": 744
+      },
+      {
+        "year": 2023,
+        "interestExpenseCents": 7777900000000,
+        "totalGovernmentExpenditureCents": 114908400000000,
+        "interestShareBasisPoints": 677
+      },
+      {
+        "year": 2024,
+        "interestExpenseCents": 8548300000000,
+        "totalGovernmentExpenditureCents": 110980400000000,
+        "interestShareBasisPoints": 770
+      },
+      {
+        "year": 2025,
+        "interestExpenseCents": 8714600000000,
+        "totalGovernmentExpenditureCents": 115530900000000,
+        "interestShareBasisPoints": 754
+      }
+    ]
+  },
+  "caveats": [
+    "I dati recenti possono essere provvisori e soggetti a revisione.",
+    "Il debito è uno stock a fine mese; gli interessi sono una spesa annuale e hanno una periodicità diversa."
+  ]
+}

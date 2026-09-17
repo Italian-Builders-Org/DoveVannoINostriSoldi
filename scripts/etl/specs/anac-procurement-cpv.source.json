@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-procurement-cpv",
+  "kind": "derived-index",
+  "referencePeriod": "2025",
+  "acquiredAt": "2026-09-07",
+  "sourceLock": {
+    "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+    "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+  },
+  "profiles": {
+    "path": "src/data/generated/anac-entity-procurement-page/meta.json",
+    "sha256": "9e81be0fd8734c7927cbe38af6a3a6e5ba537f6c7d63d83c9442337fe2770f87"
+  },
+  "contract": {
+    "join": "exact-cig-primary-row-to-published-profile",
+    "sourceFields": ["cig", "cod_cpv", "descrizione_cpv"],
+    "filter": "eight-digits-from-source-code-with-optional-check-digit",
+    "unclassified": "empty-or-unrecognized-format-or-all-zero-code",
+    "descriptions": "source-verbatim-not-an-identity",
+    "shards": 256
+  },
+  "limitations": [
+    "CPV dichiarato da ANAC, non riclassificato dal titolo",
+    "il formato non certifica l'appartenenza alla nomenclatura CPV o la cifra di controllo",
+    "stessa categoria CPV non implica enti o mercati comparabili",
+    "CIG, aggiudicazioni e anagrafiche restano snapshot cross-temporali",
+    "gli importi sono aggiudicazioni dichiarate, non pagamenti"
+  ]
+}

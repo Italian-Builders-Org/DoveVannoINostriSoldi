@@ -1,0 +1,14 @@
+level,metric,share
+Procedure,Data aggiudicazione,0.6967553773240978
+Procedure,Tipo contratto,0.9642726941305141
+Procedure,CIG,0.9663142544659132
+Procedure,Importo a base,0.9994166970470288
+Procedure,Importo aggiudicato,0.9994166970470288
+Procedure,Tipo procedura,0.9994166970470288
+Procedure,Data pubblicazione,1.0
+Progetti,Data fine effettiva,0.09865771812080537
+Progetti,Data inizio effettiva,0.9322147651006711
+Progetti,Almeno una procedura,0.9449664429530201
+Progetti,Fase disponibile,0.9570469798657718
+Progetti,Regione,1.0
+Progetti,Finanziamento totale,1.0

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "transformVersion": 2,
+  "observedAt": "2026-08-20T14:00:00.000Z",
+  "unit": "million-euro",
+  "rounding": "Gli importi sono espressi in milioni di euro. Conserviamo la precisione verificata disponibile; le altre categorie restano al decimo di milione e la UI mostra un decimale.",
+  "chambers": [
+    {
+      "id": "camera",
+      "name": "Camera dei deputati",
+      "structuredStatus": "structured-summary",
+      "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
+      "statements": [
+        {
+          "kind": "account",
+          "year": 2025,
+          "title": "Conto consuntivo 2025",
+          "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+          "values": {
+            "totalCommitments": 1261.6,
+            "effectiveCommitments": 960.5,
+            "effectivePayments": 861.96876895,
+            "finalAdministrationSurplus": 496.7,
+            "annualStateContribution": 943.16
+          },
+          "categories": [
+            { "id": "deputies", "label": "Deputati", "paid": 87.0 },
+            { "id": "employees", "label": "Personale dipendente", "paid": 204.11385629 },
+            { "id": "other-staff", "label": "Altro personale", "paid": 25.5 },
+            { "id": "goods-services", "label": "Beni e servizi", "paid": 61.4 },
+            { "id": "transfers", "label": "Trasferimenti", "paid": 31.2 },
+            { "id": "parliamentary-bodies", "label": "Attività degli organi parlamentari", "paid": 2.7 },
+            { "id": "common-costs", "label": "Oneri comuni", "paid": 24.7 },
+            { "id": "capital", "label": "Investimenti", "paid": 6.9 },
+            {
+              "id": "pensions",
+              "label": "Spese previdenziali",
+              "paid": 418.22631632,
+              "components": [
+                {
+                  "id": "former-deputies",
+                  "label": "Deputati cessati dal mandato",
+                  "paid": 96.48449618
+                },
+                {
+                  "id": "retired-staff",
+                  "label": "Personale in quiescenza",
+                  "paid": 321.74182014
+                }
+              ],
+              "caveat": "Il Titolo III non equivale ai soli vitalizi. Il conto consuntivo non separa i pagamenti effettivi delle singole sottovoci interne alle due categorie."
+            }
+          ],
+          "categoryReconciliationTolerance": 0.5,
+          "meaning": "Il totale degli impegni comprende anche le partite di giro. Pagamenti e categorie si riferiscono alla spesa effettiva dei titoli I, II e III."
+        },
+        {
+          "kind": "budget",
+          "year": 2026,
+          "title": "Bilancio 2026 e bilancio pluriennale 2026-2028",
+          "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/008/INTERO.pdf",
+          "values": {
+            "plannedExpenditure": 996.7,
+            "functioningExpenditure": 524.6,
+            "annualStateContribution": 943.16,
+            "plannedRevenue": 975.2
+          },
+          "highlights": [
+            { "id": "employees", "label": "Personale dipendente", "value": 207.3 },
+            { "id": "other-staff", "label": "Altro personale", "value": 31.2 },
+            { "id": "goods-services", "label": "Beni e servizi", "value": 90.9 }
+          ],
+          "meaning": "Sono previsioni approvate, non pagamenti già effettuati. Gli importi evidenziati non formano una ripartizione completa del totale."
+        }
+      ]
+    }
+  ],
+  "methodology": {
+    "comparability": "Camera e Senato hanno bilanci autonomi e documenti con strutture diverse. I loro importi non vengono sommati automaticamente.",
+    "missingData": "Pubblichiamo un ramo parlamentare soltanto quando i valori ufficiali sono stati normalizzati e verificati. Un valore mancante non viene stimato.",
+    "publicationCheck": "Le pagine ufficiali vengono controllate per individuare nuovi documenti. Ogni nuova struttura deve superare il contratto dati prima della pubblicazione."
+  }
+}

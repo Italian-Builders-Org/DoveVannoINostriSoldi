@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.5 r10040"
+   width="237"
+   height="254"
+   version="1.0"
+   sodipodi:docname="Stemma Molise.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     inkscape:window-height="1001"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="249.1994"
+     inkscape:cy="246.72101"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:current-layer="svg2"
+     showgrid="false"
+     inkscape:window-maximized="1" />
+  <path
+     style="fill:#d71919;fill-opacity:1;stroke:#bebebe;stroke-width:12;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     d="m 6,7 8.6e-5,32.891628 C 6.0388438,98.466249 19.201531,216.47157 118.5,247.5 217.79964,216.47121 230.96146,98.46346 230.99992,39.889551 L 231,7"
+     id="path3049"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccc" />
+  <path
+     sodipodi:type="star"
+     style="fill:#bebebe;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     id="path2784"
+     sodipodi:sides="8"
+     sodipodi:cx="-120.44562"
+     sodipodi:cy="-4.2015915"
+     sodipodi:r1="36.231537"
+     sodipodi:r2="21.412838"
+     sodipodi:arg1="0.78539816"
+     sodipodi:arg2="1.1780972"
+     inkscape:flatsided="false"
+     inkscape:rounded="0"
+     inkscape:randomized="0"
+     d="m -94.826052,21.417974 -17.425228,-5.836683 -8.19434,16.448654 -8.19434,-16.448653 -17.42522,5.836682 5.83668,-17.4252263 -16.44865,-8.1943391 16.44865,-8.1943376 -5.83668,-17.425228 17.42522,5.836683 8.19434,-16.448654 8.19434,16.448653 17.425228,-5.836682 -5.836688,17.425226 16.448659,8.1943394 -16.448649,8.1943376 z"
+     transform="matrix(0.81472105,0,0,0.81355632,150.27719,54.56679)" />
+  <path
+     style="fill:#bebebe;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     d="M 203.45367,11.23086 36.930294,170.18169 c 6.87661,15.95951 15.58882,30.36494 26.635463,41.18288 L 228.75091,53.68845 228.08243,11.861158 z"
+     id="path2781"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="cccccc" />
+  <rect
+     style="fill:#bebebe;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     id="rect2986"
+     width="236.93327"
+     height="12"
+     x="0.042705558"
+     y="0.49975443" />
+</svg>

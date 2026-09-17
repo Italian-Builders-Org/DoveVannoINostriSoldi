@@ -1,0 +1,98 @@
+.page > *,
+.columns > *,
+.context > * {
+  min-width: 0;
+}
+
+.note {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.filters label {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.filters select {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.total {
+  margin-block: var(--space-3);
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary p:last-child,
+.context p:last-child {
+  margin-bottom: 0;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.context {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.history caption,
+.budgetDetails caption {
+  color: var(--color-neutral-600);
+  text-align: left;
+  padding-block: var(--space-3);
+}
+
+.history tr[data-selected="true"] {
+  background: var(--color-neutral-100);
+  font-weight: 600;
+}
+
+.bar {
+  display: block;
+  margin-top: var(--space-2);
+  height: 4px;
+  background: var(--chart-data-track);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--chart-data-primary);
+}
+
+.budgetAmount {
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.budgetDetails summary {
+  min-height: 44px;
+  padding-block: var(--space-3);
+  cursor: pointer;
+}
+
+.sources code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

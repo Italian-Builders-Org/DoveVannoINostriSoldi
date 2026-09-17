@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-procurement-peers",
+  "kind": "derived-index",
+  "referencePeriod": "2025",
+  "geographyReferenceDate": "2025-12-31",
+  "populationYear": 2024,
+  "inputs": {
+    "profiles": {
+      "path": "src/data/generated/anac-entity-procurement-page/meta.json",
+      "sha256": "9e81be0fd8734c7927cbe38af6a3a6e5ba537f6c7d63d83c9442337fe2770f87"
+    },
+    "cpv": {
+      "path": "src/data/generated/anac-procurement-cpv/meta.json",
+      "sha256": "71a43e9d3fa179e9378d108b7cc232bff9bc088d6458ee50357e1700989f3979"
+    },
+    "cpvSpec": {
+      "path": "scripts/etl/specs/anac-procurement-cpv.source.json",
+      "sha256": "1a5bf34253ca4114397e05eaa76859a6149608aa12837bf3f68365a4519bda54"
+    },
+    "geography": {
+      "path": "src/data/generated/istat-municipality-geography.json",
+      "sha256": "0f7f042f631c81bb879160e2a5543132c031160e80d96b0340526697e773bb41"
+    }
+  },
+  "method": {
+    "version": 1,
+    "minimumAwards": 30,
+    "minimumOtherMunicipalities": 10,
+    "minimumCoveragePercent": 90,
+    "populationFactor": 2,
+    "procedureCountFactor": 2,
+    "minimumCpvOverlapPercent": 80,
+    "cpvGrouping": "first-two-digits-of-valid-source-code",
+    "percentile": "midrank-excluding-target",
+    "median": "exact-average-of-middle-two-for-even-cohorts",
+    "valueCoverage": "positive-single-operator-awards-and-attributed-positive-value"
+  },
+  "limitations": [
+    "CIG pubblicati 2025, snapshot cross-temporale, non copertura nazionale corrente",
+    "Solo Comuni collegati univocamente per codice fiscale a ISTAT SITUAS 2025",
+    "Popolazione residente riferita al 2024; valori assenti non imputati",
+    "Gruppi descrittivi selezionati con soglie editoriali, senza inferenza causale o giudizio di integrita",
+    "CPV di tutte le procedure; non composizione economica degli acquisti",
+    "Importi dichiarati di aggiudicazione, non pagamenti"
+  ]
+}

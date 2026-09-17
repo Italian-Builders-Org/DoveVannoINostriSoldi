@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eu-vat-gap-italy",
+  "geography": {
+    "code": "IT",
+    "label": "Italia"
+  },
+  "period": {
+    "from": 2019,
+    "to": 2024
+  },
+  "units": {
+    "money": "euro-cents",
+    "sourceMoney": "million-euro",
+    "complianceGapShare": "millionths-of-unity",
+    "gapChange": "tenths-of-a-percentage-point"
+  },
+  "caveats": [
+    "Il VAT compliance gap DG TAXUD è una stima di compliance rispetto al VTTL, non evasione accertata e non un pagamento o uno stanziamento.",
+    "Questa slice pubblica soltanto il foglio IT: nessuna media UE e nessun confronto con altri paesi ricostruito qui.",
+    "Il 2024 è una stima rapida (etichetta sorgente «2024 (e)»); non è omogeneo ai valori 2019-2023 senza avvertenza.",
+    "VTTL, gettito IVA (VAT revenue) e gap sono nature distinte della stessa tavola: non si sommano ad altre fonti (MEF IVA dichiarata, tax gap MEF, ISTAT economia non osservata).",
+    "Le celle vuote e il marcatore «X» restano non osservate: non diventano zero e non si ricostruiscono per differenza.",
+    "La somma delle componenti o/w del VTTL può scostarsi di ±1 milione di euro rispetto al VTTL pubblicato (arrotondamento della fonte); VTTL − VAT revenue = compliance gap resta esatto.",
+    "La licenza del workbook XLSX non è dichiarata sul file; il PDF documentale è citato come evidenza CC BY 4.0 senza inventare un license id per l'XLSX."
+  ],
+  "years": [
+    {
+      "year": 2019,
+      "estimateKind": "standard",
+      "sourceYearLabel": "2019",
+      "vttlCents": {
+        "value": 14083200000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 11368700000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2714500000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 193000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": 10302000000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": 160500000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": 2262900000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": 1555700000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": -197900000000,
+            "status": "observed"
+          }
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "estimateKind": "standard",
+      "sourceYearLabel": "2020",
+      "vttlCents": {
+        "value": 12766400000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 10258000000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2508400000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 196000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": 8846400000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": 225500000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": 2306200000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": 1573300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": -185000000000,
+            "status": "observed"
+          }
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "estimateKind": "standard",
+      "sourceYearLabel": "2021",
+      "vttlCents": {
+        "value": 13752100000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 11671200000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2080900000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 151000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": 9382300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": 234400000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": 2351300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": 1968500000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": -184400000000,
+            "status": "observed"
+          }
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "estimateKind": "standard",
+      "sourceYearLabel": "2022",
+      "vttlCents": {
+        "value": 15581900000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 13323200000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2258700000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 145000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": 10755500000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": 259100000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": 2535300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": 2233300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": -201200000000,
+            "status": "observed"
+          }
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "estimateKind": "standard",
+      "sourceYearLabel": "2023",
+      "vttlCents": {
+        "value": 16621100000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 14119900000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2501200000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 150000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": 11478500000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": 251400000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": 2497300000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": 2614600000000,
+            "status": "observed"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": -220800000000,
+            "status": "observed"
+          }
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "estimateKind": "rapid-estimate",
+      "sourceYearLabel": "2024 (e)",
+      "vttlCents": {
+        "value": 17137200000000,
+        "status": "observed"
+      },
+      "vatRevenueCents": {
+        "value": 14517800000000,
+        "status": "observed"
+      },
+      "complianceGapCents": {
+        "value": 2619400000000,
+        "status": "observed"
+      },
+      "complianceGapShareMillionths": {
+        "value": 153000,
+        "status": "observed"
+      },
+      "vttlComposition": [
+        {
+          "id": "household-final-consumption",
+          "sourceLabel": "o/w liability on household final consumption",
+          "amountCents": {
+            "value": null,
+            "status": "unavailable"
+          }
+        },
+        {
+          "id": "government-npish-final-consumption",
+          "sourceLabel": "o/w liability on gov. and NPISH final consumption",
+          "amountCents": {
+            "value": null,
+            "status": "unavailable"
+          }
+        },
+        {
+          "id": "intermediate-consumption",
+          "sourceLabel": "o/w liability on intermediate consumption",
+          "amountCents": {
+            "value": null,
+            "status": "unavailable"
+          }
+        },
+        {
+          "id": "gfcf",
+          "sourceLabel": "o/w liability on GFCF",
+          "amountCents": {
+            "value": null,
+            "status": "unavailable"
+          }
+        },
+        {
+          "id": "net-adjustments",
+          "sourceLabel": "o/w net adjustments",
+          "amountCents": {
+            "value": null,
+            "status": "unavailable"
+          }
+        }
+      ]
+    }
+  ],
+  "gapChangeSince2019": {
+    "asOfYear": 2023,
+    "sourceLabel": "VAT compliance gap change since 2019 ",
+    "valueTenthsOfPp": {
+      "value": -42,
+      "status": "observed"
+    },
+    "sourceText": "-4.2pp"
+  }
+}

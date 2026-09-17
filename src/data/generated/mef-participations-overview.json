@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "transformVersion": 1,
+  "referenceYear": 2023,
+  "referenceDate": "2023-12-31",
+  "publishedAt": "2026-03-10",
+  "generatedAt": "2026-08-20T10:12:54.480623Z",
+  "source": {
+    "owner": "MEF · Dipartimento dell'Economia",
+    "landingUrl": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/dati_partecipazioni_2023.html",
+    "assetUrl": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/partecipazioni_2023/dati_partecipazioni_anno_2023.csv",
+    "license": "CC BY 4.0",
+    "rawSha256": "c3c29c9d982879248e5f8dfa49b5cf6b63f6703e8839245ed017afe2dd278d2b",
+    "detectedEncoding": "cp1252",
+    "delimiter": ";"
+  },
+  "totals": {
+    "participationRecords": 53656,
+    "declaringAdministrations": 8360,
+    "participatedOrganizations": 7979,
+    "directParticipationRecords": 38419,
+    "indirectParticipationRecords": 15237
+  },
+  "declaredEvidence": {
+    "analogControlRecords": 8414,
+    "directAwardRecords": 17273,
+    "bothSignalsRecords": 4995,
+    "legalMeaning": "Dichiarazioni riferite alla rilevazione 2023; non certificano uno status in-house corrente."
+  },
+  "topCompaniesByDeclaringAdministrations": [
+    {
+      "taxCode": "12236141003",
+      "name": "ASMEL CONSORTILE SOC. CONS. A R.L.",
+      "declaringAdministrations": 743
+    },
+    {
+      "taxCode": "04042120230",
+      "name": "VIVERACQUA S.C. A R.L.",
+      "declaringAdministrations": 438
+    },
+    {
+      "taxCode": "02770891204",
+      "name": "LEPIDA S.C.P.A.",
+      "declaringAdministrations": 435
+    },
+    {
+      "taxCode": "02934390929",
+      "name": "ABBANOA S.P.A",
+      "declaringAdministrations": 302
+    },
+    {
+      "taxCode": "07937540016",
+      "name": "SOCIETA' METROPOLITANA ACQUE TORINO S.P.A. IN ALTERNATIVA SMA TORINO S.P.A. OVVERO SMAT S.P.A.",
+      "declaringAdministrations": 283
+    },
+    {
+      "taxCode": "05166621218",
+      "name": "ASMENET SOC. CONS. A R. L.",
+      "declaringAdministrations": 233
+    },
+    {
+      "taxCode": "03274810237",
+      "name": "CONSORZIO CEV",
+      "declaringAdministrations": 232
+    },
+    {
+      "taxCode": "03299640163",
+      "name": "UNIACQUE S.P.A.",
+      "declaringAdministrations": 231
+    },
+    {
+      "taxCode": "02234900187",
+      "name": "PAVIA ACQUE S.C.A R.L.",
+      "declaringAdministrations": 227
+    },
+    {
+      "taxCode": "94005970028",
+      "name": "S.I.I. - S.P.A. - SERVIZIO IDRICO INTEGRATO DEL BIELLESE E VERCELLESE SIGLABILE 'S.I.I. - S.P.A.'",
+      "declaringAdministrations": 218
+    },
+    {
+      "taxCode": "02729450797",
+      "name": "ASMENET CALABRIA SOC. CONS. A R.L.",
+      "declaringAdministrations": 213
+    },
+    {
+      "taxCode": "04245520376",
+      "name": "HERA S.P.A.",
+      "declaringAdministrations": 193
+    },
+    {
+      "taxCode": "13187590156",
+      "name": "CAP HOLDING S.P.A.",
+      "declaringAdministrations": 187
+    },
+    {
+      "taxCode": "01533550222",
+      "name": "CONSORZIO DEI COMUNI TRENTINI - SOCIETA' COOPERATIVA",
+      "declaringAdministrations": 183
+    },
+    {
+      "taxCode": "00990320228",
+      "name": "TRENTINO DIGITALE S.P.A.",
+      "declaringAdministrations": 181
+    },
+    {
+      "taxCode": "02002380224",
+      "name": "TRENTINO RISCOSSIONI S.P.A.",
+      "declaringAdministrations": 179
+    },
+    {
+      "taxCode": "01932800228",
+      "name": "SOCIETA' ELETTRICA TRENTINA PER LA DISTRIBUZIONE DI ENERGIA ELETTRICA S.P.A. IN SIGLA SET DISTRIBUZIONE S.P.A.",
+      "declaringAdministrations": 170
+    },
+    {
+      "taxCode": "02778560041",
+      "name": "MONDO ACQUA SPA",
+      "declaringAdministrations": 168
+    },
+    {
+      "taxCode": "02622940233",
+      "name": "BANCA POPOLARE ETICA SOCIETA' COOPERATIVA PER AZIONI O IN FORMA ABBREVIATA 'BANCA ETICA' O 'BPE'.",
+      "declaringAdministrations": 166
+    },
+    {
+      "taxCode": "00110640224",
+      "name": "FEDERAZIONE TRENTINA DELLA COOPERAZIONE SOCIETA' COOPERATIVA IN SIGLA COOPERAZIONE TRENTINA",
+      "declaringAdministrations": 165
+    }
+  ]
+}

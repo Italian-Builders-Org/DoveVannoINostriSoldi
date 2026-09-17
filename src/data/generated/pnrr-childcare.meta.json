@@ -1,0 +1,76 @@
+{
+  "coverage": {
+    "awardeeRows": 18250,
+    "locationRows": 3842,
+    "municipalities": 2700,
+    "projectRows": 3841,
+    "projectsWithAwardees": 3591,
+    "projectsWithLocations": 3841,
+    "projectsWithTenders": 3672,
+    "tenderRows": 18851,
+    "uniqueProjects": 3841,
+    "unmatchedAwardeeRows": 2
+  },
+  "dataset": "pnrr_asili",
+  "generatedAt": "2026-08-21T12:15:00Z",
+  "observedAt": "2026-08-21T12:15:00Z",
+  "integrity": {
+    "algorithm": "sha256",
+    "dataArtifact": {
+      "bytes": 18591740,
+      "sha256": "5693cfe012b8de38c065852f0d040e54fda982ca98704e7faaf3a2566c3e0da2"
+    },
+    "sourceLockSha256": "d2aa2bbf3fa42f11c2bacb310e902c1d667244b87c4a59cd9601190d3a6dca90"
+  },
+  "methodology": {
+    "fundingWarning": "Il finanziamento PNRR non è un pagamento osservato e l'importo di gara non è necessariamente spesa erogata.",
+    "join": "Progetti e localizzazioni per CUP; gare e aggiudicatari restano collegabili per CUP + CIG + Codice interno PDA + Codice procedura utente.",
+    "territorialWarning": "Un CUP può avere più localizzazioni; le righe territoriali non vanno sommate come progetti distinti.",
+    "validationWarning": "L'esito di validazione proviene dalla fonte e va mostrato senza trasformarlo in un giudizio sul progetto."
+  },
+  "referenceDate": "2026-06-13",
+  "schemaVersion": 1,
+  "source": {
+    "assets": {
+      "awardees": {
+        "bytes": 63137730,
+        "fileName": "PNRR_Aggiudicatari_Gare.csv",
+        "sha256": "0b2a2956df880c93e75f60026a0e53ebb489a7d1b66f1a7b4fd304d077302818",
+        "url": "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Aggiudicatari_Gare.csv"
+      },
+      "locations": {
+        "bytes": 65665493,
+        "fileName": "PNRR_Localizzazione.csv",
+        "sha256": "0fae9b0252b7e0949d0c11d374c3113178c096da1077462810971a0eac07bbcd",
+        "url": "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Localizzazione.csv"
+      },
+      "projects": {
+        "bytes": 317081292,
+        "fileName": "PNRR_Progetti.csv",
+        "sha256": "1b1913c5b71df0794450522e1563b6d5b637356279779f6134b3af98d90df74d",
+        "url": "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Progetti.csv"
+      },
+      "tenders": {
+        "bytes": 111336940,
+        "fileName": "PNRR_Gare.csv",
+        "sha256": "1154c0796958cb36a7b64addb850eb2812b118ba8a5f8a0b22c32f56be7f8525",
+        "url": "https://www.italiadomani.gov.it/content/dam/sogei-ng/opendata/PNRR_Gare.csv"
+      }
+    },
+    "attribution": "Italia Domani · dati di attuazione del PNRR",
+    "landingUrl": "https://www.italiadomani.gov.it/content/sogei-ng/it/it/catalogo-open-data.html",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "owner": "Presidenza del Consiglio dei Ministri · Italia Domani"
+  },
+  "submeasure": {
+    "code": "M4C1I1.01.00",
+    "label": "Piano per asili nido e scuole dell'infanzia e servizi di educazione e cura per la prima infanzia"
+  },
+  "totals": {
+    "awardAmountCents": 330090124839,
+    "pnrrFundingCents": 437409074065,
+    "tenderAmountCents": 410802405058,
+    "totalFundingCents": 506114534373
+  }
+}

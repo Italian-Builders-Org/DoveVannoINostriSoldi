@@ -1,0 +1,763 @@
+import assert from "node:assert/strict";
+import { successfulMcpToolResult } from "./mcp_test_helpers.mjs";
+
+const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
+const MAX_RESPONSE_BYTES = 750_000;
+const modeIndex = process.argv.indexOf("--mode");
+const mode = modeIndex === -1 ? "complete" : process.argv[modeIndex + 1];
+assert.ok(["contract", "subscription", "pensions", "relazioni", "vat-gap", "mef-tax-gap", "complete"].includes(mode),
+  "--mode deve essere contract, subscription, pensions, relazioni, vat-gap, mef-tax-gap oppure complete");
+let contractPostCount = 0;
+
+function byteLength(value) {
+  return new TextEncoder().encode(value).byteLength;
+}
+
+async function responseText(response, label) {
+  const body = await response.text();
+  assert.ok(
+    byteLength(body) <= MAX_RESPONSE_BYTES,
+    `${label}: risposta oltre ${MAX_RESPONSE_BYTES} byte`,
+  );
+  return body;
+}
+
+async function waitForServer() {
+  const deadline = Date.now() + 45_000;
+  let lastError;
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetch(new URL("/territori/irpef", baseUrl), {
+        redirect: "manual",
+        signal: AbortSignal.timeout(2_000),
+      });
+      if (response.ok) return;
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  throw new Error(`Server non pronto: ${lastError instanceof Error ? lastError.message : "errore"}`);
+}
+
+async function mcpRequest(
+  body,
+  headers = {},
+  pathname = "/api/mcp",
+  expectedContentType = /(?:application\/json|text\/event-stream)/,
+) {
+  contractPostCount += 1;
+  const response = await fetch(new URL(pathname, baseUrl), {
+    method: "POST",
+    headers: {
+      Accept: "application/json, text/event-stream",
+      "Content-Type": "application/json",
+      ...headers,
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10_000),
+  });
+  const text = await responseText(response, `MCP ${body.method}`);
+  assert.equal(response.status, 200, text.slice(0, 500));
+  assert.match(response.headers.get("content-type") ?? "", expectedContentType);
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(response.url, new URL(pathname, baseUrl).href, "MCP alias must not redirect");
+  return text;
+}
+
+async function runMefTaxGapSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/tributi/tax-gap?anno=2022&imposta=totale-entrate-tributarie-e-contributive", baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "mef-tax-gap-range", method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "mef_tax_gap_nazionale", year: 2022, tax: "totale-entrate-tributarie-e-contributive" } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "mef_tax_gap_nazionale").data;
+  assert.equal(dataset, "mef_tax_gap_nazionale");
+  assert.deepEqual(projection, api);
+  assert.equal(api.taxRows.length, 1);
+  assert.equal(api.taxRows[0].series.length, 1);
+  assert.deepEqual(api.taxRows[0].series[0], {
+    year: 2022,
+    gap: { status: "observed", shape: "range", minCents: 98123 * 100_000_000, maxCents: 102482 * 100_000_000, valueCents: null },
+    propensione: { status: "absent", shape: "absent", minTenthsPp: null, maxTenthsPp: null, valueTenthsPp: null },
+  });
+  assert.equal(contractPostCount - before, 1);
+}
+
+async function runVatGapSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/tributi/vat-gap?anno=2024", baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "vat-gap-rapid-estimate", method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "eu_vat_gap_italy", year: 2024 } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "eu_vat_gap_italy").data;
+  assert.equal(dataset, "eu_vat_gap_italy");
+  assert.deepEqual(projection, api);
+  assert.equal(api.years.length, 1);
+  assert.equal(api.years[0].estimateKind, "rapid-estimate");
+  assert.ok(api.years[0].vttlComposition.every(row => row.amountCents.status === "unavailable" && row.amountCents.value === null));
+  assert.equal(api.years[0].vttlCents.value - api.years[0].vatRevenueCents.value, api.years[0].complianceGapCents.value);
+  assert.equal(contractPostCount - before, 1);
+}
+
+async function runRelazioniSmoke() {
+  const before = contractPostCount;
+  const response = await fetch(new URL("/api/territori/bes-relazioni?territorio=ITC33&indicatore=05REL007P&sesso=T&anno=2024", baseUrl), {
+    signal: AbortSignal.timeout(10_000),
+  });
+  assert.equal(response.status, 200);
+  const api = await response.json();
+  const result = await mcpRequest({
+    jsonrpc: "2.0", id: "bes-relazioni-null", method: "tools/call",
+    params: { name: "query_dataset", arguments: {
+      dataset: "istat_bes_relazioni", territory: "ITC33", measure: "05REL007P", sex: "T", year: 2024,
+    } },
+  });
+  const { dataset, ...projection } = successfulMcpToolResult(result, "istat_bes_relazioni").data;
+  assert.equal(dataset, "istat_bes_relazioni");
+  assert.deepEqual(projection, api);
+  assert.deepEqual(api.observations, [{ indicator: "05REL007P", territory: "ITC33", sex: "T", year: 2024, valueTenths: null, status: "n" }]);
+  assert.equal(contractPostCount - before, 1);
+}
+
+async function runPensionSmoke() {
+  const before = contractPostCount;
+  for (const territory of ["IT", "ITF3", "ITG29"]) {
+    const pensionApi = await fetch(new URL(`/api/spese/pensioni?anno=2022&territorio=${territory}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
+    assert.equal(pensionApi.status, 200);
+    const pensionData = await pensionApi.json();
+    assert.equal(pensionData.territory, territory);
+    assert.equal(pensionData.inpsOsservatorio === null, territory !== "IT");
+    for (const [dataset, key] of [["istat_pensioni_prestazioni", "pensionBenefits"], ["istat_pensionati_persone", "pensioners"]]) {
+      const result = await mcpRequest({
+        jsonrpc: "2.0", id: `pensions-${territory}-${key}`, method: "tools/call",
+        params: { name: "query_dataset", arguments: { dataset, year: 2022, territory } },
+      });
+      const data = successfulMcpToolResult(result, dataset).data;
+      assert.equal(data.territory, territory);
+      assert.deepEqual(data[key], pensionData[key]);
+    }
+  }
+
+  assert.equal(contractPostCount - before, 6);
+}
+
+async function runSubscriptionSmoke() {
+  // Exercise the real HTTP path: an internal rewrite may compress and buffer SSE
+  // even when the route-level ReadableStream tests deliver frames immediately.
+  const subscriptionPaths = ["/api/mcp", "/mcp"];
+  for (const pathname of subscriptionPaths) {
+    const caller = new AbortController();
+    const timer = setTimeout(() => caller.abort(), 5_000);
+    let reader;
+    try {
+      const response = await fetch(new URL(pathname, baseUrl), {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/event-stream",
+          "Accept-Encoding": "gzip",
+          "Content-Type": "application/json",
+          "MCP-Protocol-Version": "2026-07-28",
+          "MCP-Method": "subscriptions/listen",
+        },
+        body: JSON.stringify({ jsonrpc: "2.0", id: "subscription-smoke", method: "subscriptions/listen", params: {
+          notifications: { toolsListChanged: true },
+          _meta: { "io.modelcontextprotocol/protocolVersion": "2026-07-28", "io.modelcontextprotocol/clientCapabilities": {} },
+        } }),
+        signal: caller.signal,
+      });
+      assert.equal(response.status, 200, `${pathname}: subscription must succeed`);
+      assert.equal(response.headers.get("cache-control"), "private, no-store, no-transform");
+      assert.equal(response.headers.get("content-encoding"), null, `${pathname}: SSE must not be compressed`);
+      reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let frame = "";
+      while (!frame.includes("\n\n")) {
+        const chunk = await reader.read();
+        assert.equal(chunk.done, false, `${pathname}: stream closed before acknowledgement`);
+        frame += decoder.decode(chunk.value, { stream: true });
+        assert.ok(byteLength(frame) <= 8_192, `${pathname}: oversized acknowledgement`);
+      }
+      const data = frame.split("\n").find((line) => line.startsWith("data: "));
+      assert.ok(data, `${pathname}: missing acknowledgement`);
+      const ack = JSON.parse(data.slice(6));
+      assert.equal(ack.method, "notifications/subscriptions/acknowledged");
+      assert.equal(ack.params.notifications.toolsListChanged, true);
+    } finally {
+      clearTimeout(timer);
+      await reader?.cancel().catch(() => undefined);
+      caller.abort();
+    }
+  }
+  assert.equal(subscriptionPaths.length, 2, "subscription smoke must keep both MCP paths");
+}
+
+async function runContractSmoke() {
+await waitForServer();
+
+const pageResponse = await fetch(new URL("/territori/irpef", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+const page = await responseText(pageResponse, "pagina IRPEF");
+assert.equal(pageResponse.status, 200);
+assert.match(page, /Imposta netta dichiarata/i);
+
+const mcpPageResponse = await fetch(new URL("/mcp", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+const mcpPage = await responseText(mcpPageResponse, "pagina MCP");
+assert.equal(mcpPageResponse.status, 200);
+assert.match(mcpPageResponse.headers.get("content-type") ?? "", /text\/html/);
+assert.match(mcpPage, /Endpoint Streamable HTTP/i);
+assert.match(mcpPage, /\/api\/mcp/);
+
+const sseGetResponse = await fetch(new URL("/mcp", baseUrl), {
+  headers: { Accept: "text/event-stream" },
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(sseGetResponse.status, 405);
+assert.equal(sseGetResponse.headers.get("allow"), "POST, OPTIONS, HEAD");
+assert.equal(sseGetResponse.headers.get("cache-control"), "private, no-store");
+assert.match(sseGetResponse.headers.get("content-type") ?? "", /application\/json/);
+
+const headResponse = await fetch(new URL("/mcp", baseUrl), {
+  method: "HEAD",
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(headResponse.status, 204);
+assert.equal(headResponse.headers.get("allow"), "POST, OPTIONS, HEAD");
+assert.equal(headResponse.headers.get("cache-control"), "private, no-store");
+
+const allowedPreflight = await fetch(new URL("/mcp", baseUrl), {
+  method: "OPTIONS",
+  headers: {
+    Origin: baseUrl.origin,
+    "Access-Control-Request-Method": "POST",
+    "Access-Control-Request-Headers": "content-type,mcp-protocol-version",
+  },
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(allowedPreflight.status, 204);
+assert.equal(allowedPreflight.headers.get("cache-control"), "private, no-store");
+assert.equal(allowedPreflight.headers.get("access-control-allow-origin"), baseUrl.origin);
+assert.match(allowedPreflight.headers.get("access-control-allow-methods") ?? "", /POST/);
+assert.match(
+  allowedPreflight.headers.get("access-control-allow-headers") ?? "",
+  /MCP-Protocol-Version/i,
+);
+
+const rejectedPreflight = await fetch(new URL("/mcp", baseUrl), {
+  method: "OPTIONS",
+  headers: { Origin: "https://attacker.invalid" },
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(rejectedPreflight.status, 403);
+assert.equal(rejectedPreflight.headers.get("access-control-allow-origin"), null);
+
+const oversizedAlias = await fetch(new URL("/mcp", baseUrl), {
+  method: "POST",
+  headers: {
+    Accept: "application/json, text/event-stream",
+    "Content-Type": "application/json",
+  },
+  body: "x".repeat(1_000_001),
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(oversizedAlias.status, 413);
+assert.equal(oversizedAlias.headers.get("cache-control"), "private, no-store");
+
+const apiResponse = await fetch(new URL("/api/territori/irpef?anno=2024&livello=regione", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+const api = await responseText(apiResponse, "API IRPEF");
+assert.equal(apiResponse.status, 200);
+assert.match(api, /"taxYear":2024/);
+assert.match(api, /netTaxDeclared/);
+
+const pnrrApiResponse = await fetch(new URL("/api/pnrr/asili?cup=B11B21001610005", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+const pnrrApi = await responseText(pnrrApiResponse, "API PNRR asili");
+assert.equal(pnrrApiResponse.status, 200);
+assert.match(pnrrApi, /"dataset":"pnrr_asili"/);
+assert.match(pnrrApi, /"cup":"B11B21001610005"/);
+
+const legacyTools = await mcpRequest({ jsonrpc: "2.0", id: 1, method: "tools/list" });
+assert.match(legacyTools, /list_datasets/);
+assert.match(legacyTools, /query_dataset/);
+
+const healthQuery = { dataset: "istat_bes_salute", territory: "ITC45", measure: "01SAL005", sex: "F", year: 2021 };
+const healthResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 281, method: "tools/call",
+  params: { name: "query_dataset", arguments: healthQuery },
+});
+const health = successfulMcpToolResult(healthResponse, "istat_bes_salute").data;
+assert.equal(health.domain.code, "BES_01");
+assert.deepEqual(health.observations, [{ indicator: "01SAL005", territory: "ITC45", sex: "F", year: 2021, valueTenths: null, status: "n" }]);
+assert.equal(health.indicators[0].unit, "STA_RA_PER_10THOU");
+assert.equal(health.reconciliation.totalBetweenSexes, false);
+const healthApiResponse = await fetch(new URL("/api/territori/bes-salute?territorio=ITC45&indicatore=01SAL005&sesso=F&anno=2021", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(healthApiResponse.status, 200);
+const healthApi = JSON.parse(await responseText(healthApiResponse, "API BES Salute"));
+assert.deepEqual(healthApi.observations, health.observations);
+assert.deepEqual(healthApi.source, health.source);
+const invalidHealth = await mcpRequest({
+  jsonrpc: "2.0", id: 282, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_salute", measure: "04BEC001P" } },
+});
+assert.match(invalidHealth, /"isError":true/);
+assert.match(invalidHealth, /Indicatore non riconosciuto/);
+
+const educationQuery = { dataset: "istat_bes_istruzione", territory: "IT108", measure: "02IST004", sex: "F", year: 2017 };
+const educationResponse = await mcpRequest({
+  jsonrpc: "2.0", id: 2812, method: "tools/call",
+  params: { name: "query_dataset", arguments: educationQuery },
+});
+const education = successfulMcpToolResult(educationResponse, "istat_bes_istruzione").data;
+assert.equal(education.domain.code, "BES_02");
+assert.deepEqual(education.observations, [{ indicator: "02IST004", territory: "IT108", sex: "F", year: 2017, valueTenths: null, status: "g" }]);
+assert.equal(education.indicators[0].unit, "SPEC_COHORT_RATE");
+assert.equal(education.reconciliation.totalBetweenSexes, false);
+const educationApiResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT108&indicatore=02IST004&sesso=F&anno=2017", baseUrl), {
+  signal: AbortSignal.timeout(10_000),
+});
+assert.equal(educationApiResponse.status, 200);
+const educationApi = JSON.parse(await responseText(educationApiResponse, "API BES Istruzione"));
+assert.deepEqual(educationApi.observations, education.observations);
+assert.deepEqual(educationApi.source, education.source);
+const invalidEducation = await mcpRequest({
+  jsonrpc: "2.0", id: 2813, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "istat_bes_istruzione", measure: "04BEC001P" } },
+});
+assert.match(invalidEducation, /"isError":true/);
+assert.match(invalidEducation, /Indicatore non riconosciuto/);
+
+const educationPageResponse = await fetch(new URL("/api/territori/bes-istruzione?territorio=IT&limit=2&offset=2", baseUrl), { signal: AbortSignal.timeout(10_000) });
+assert.equal(educationPageResponse.status, 200);
+const educationPage = JSON.parse(await responseText(educationPageResponse, "API BES Istruzione page"));
+assert.equal(educationPage.observations.length, 2);
+assert.equal(educationPage.pagination.nextOffset, 4);
+assert.equal(educationPage.source.licenseId, "not-declared");
+assert.equal(educationPage.semantics.soldi.present, false);
+for (const suffix of ["", "?territorio=015146", "?territorio=IT&limit=101", "?anno=2020&anno=2021"]) {
+  const invalid = await fetch(new URL(`/api/territori/bes-istruzione${suffix}`, baseUrl), { signal: AbortSignal.timeout(10_000) });
+  assert.equal(invalid.status, 400);
+  assert.equal(invalid.headers.get("cache-control"), "no-store");
+  await responseText(invalid, "API BES Istruzione invalid query");
+}
+
+const compatibilityTools = await mcpRequest(
+  { jsonrpc: "2.0", id: 11, method: "tools/list" },
+  {},
+  "/mcp",
+  /text\/event-stream/,
+);
+assert.match(compatibilityTools, /list_datasets/);
+assert.match(compatibilityTools, /query_dataset/);
+
+const legacyDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 2,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: { dataset: "mef_irpef_comunale", level: "region", limit: 20 },
+  },
+});
+assert.match(legacyDataset, /mef_irpef_comunale/);
+assert.match(legacyDataset, /Imposta netta dichiarata/i);
+const legacyData = successfulMcpToolResult(legacyDataset, "mef_irpef_comunale").data;
+assert.equal(legacyData.level, "region");
+assert.equal(legacyData.pagination.returned, 20);
+assert.ok(legacyData.data.every((row) => row.breakdowns === undefined));
+
+for (const [index, mission] of [
+  "Istruzione universitaria e formazione post-universitaria",
+  "Ricerca e innovazione",
+].entries()) {
+  const response = await mcpRequest({
+    jsonrpc: "2.0", id: 40 + index, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "openbdap_legge_bilancio_storico", years: 10, mission } },
+  });
+  const { data } = successfulMcpToolResult(response, "openbdap_legge_bilancio_storico");
+  assert.deepEqual(data.missions, [mission]);
+  assert.equal(data.allocations.length, 10);
+  assert.equal(data.yearOverYearDeltas.length, 9);
+  assert.equal(data.dataMode, "snapshot");
+}
+const invalidMission = await mcpRequest({
+  jsonrpc: "2.0", id: 42, method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "openbdap_legge_bilancio_storico", mission: "Ricerca" } },
+});
+assert.match(invalidMission, /"isError":true/);
+assert.match(invalidMission, /Missione non disponibile/);
+
+const detailedIrpefDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 25,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: {
+      dataset: "mef_irpef_comunale",
+      year: 2024,
+      level: "municipality",
+      region: "Lombardia",
+      detail: "all",
+      limit: 100,
+    },
+  },
+});
+const detailedIrpefData = successfulMcpToolResult(
+  detailedIrpefDataset,
+  "mef_irpef_comunale",
+).data;
+assert.equal(detailedIrpefData.query.detail, "all");
+assert.equal(detailedIrpefData.pagination.returned, 100);
+assert.ok(detailedIrpefData.data.every((row) =>
+  Object.keys(row.breakdowns.incomeSources).length === 7
+  && Object.keys(row.breakdowns.incomeBands).length === 8
+));
+assert.ok(detailedIrpefData.data.every((row) => {
+  const measure = row.breakdowns.incomeBands.nonPositiveComprehensiveIncome;
+  return (measure.amountCents ?? measure.knownAmountCents) <= 0;
+}));
+assert.match(detailedIrpefData.caveats.join(" "), /non è il gettito fiscale totale/i);
+assert.match(detailedIrpefData.caveats.join(" "), /fonti di reddito si sovrappongono/i);
+
+const unsupportedDetailDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 26,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: { dataset: "siope_comuni", detail: "all" },
+  },
+});
+assert.match(unsupportedDetailDataset, /"isError":true/);
+assert.match(unsupportedDetailDataset, /Filtri non supportati[^\n]*detail/);
+
+const pnrrDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 21,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: { dataset: "pnrr_asili", cup: "B11B21001610005" },
+  },
+});
+const pnrrData = successfulMcpToolResult(pnrrDataset, "pnrr_asili").data;
+assert.equal(pnrrData.pagination.total, 1);
+assert.equal(pnrrData.data[0].cup, "B11B21001610005");
+assert.match(pnrrData.methodology.fundingWarning, /non è un pagamento osservato/i);
+
+const pnrrProjectsDataset = await mcpRequest({
+  jsonrpc: "2.0", id: "pnrr-projects", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "pnrr_progetti", cup: "F81C23001370006", component: "M1C1" } },
+});
+const pnrrProjectsData = successfulMcpToolResult(pnrrProjectsDataset, "pnrr_progetti").data;
+assert.equal(pnrrProjectsData.matchedRows, 2);
+assert.deepEqual(pnrrProjectsData.rows.map((row) => row.cells["Codice Locale Progetto"]), ["F81C23001370006", "TERF81C23001370006"]);
+assert.equal(pnrrProjectsData.rows[0].cells.CUP, "F81C23001370006");
+assert.equal(pnrrProjectsData.rows[0].cells["Finanziamento PNRR"], "2299193,71");
+assert.equal(pnrrProjectsData.dataset.id, "pnrr-progetti");
+
+const integratedDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 22,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: {
+      dataset: "spesa_pa_dettaglio",
+      code: "consulenze-legali",
+      query: "2024",
+      limit: 5,
+    },
+  },
+});
+const integratedData = successfulMcpToolResult(
+  integratedDataset,
+  "spesa_pa_dettaglio",
+).data;
+assert.equal(integratedData.dataset.id, "consulenze-legali");
+assert.equal(integratedData.limit, 5);
+assert.ok(integratedData.rows.length > 0 && integratedData.rows.length <= 5);
+assert.equal(integratedData.matchedRows, null);
+assert.equal(typeof integratedData.pagination.nextCursor, "string");
+
+const educationDataset = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 23,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: {
+      dataset: "education_students_by_pathway",
+      period: "202425",
+      schoolType: "state",
+      pathway: "SCIENTIFICO",
+      limit: 2,
+      offset: 0,
+    },
+  },
+});
+const educationData = successfulMcpToolResult(
+  educationDataset,
+  "education_students_by_pathway",
+).data;
+assert.equal(educationData.dataset, "education_students_by_pathway");
+assert.equal(educationData.query.period, "202425");
+assert.equal(educationData.query.schoolType, "state");
+assert.equal(educationData.query.pathway, "SCIENTIFICO");
+assert.equal(educationData.pagination.offset, 0);
+assert.equal(educationData.pagination.limit, 2);
+assert.equal(educationData.pagination.returned, 2);
+assert.ok(educationData.pagination.total > educationData.pagination.returned);
+assert.equal(educationData.pagination.nextOffset, 2);
+assert.equal(educationData.data.length, 2);
+assert.ok(educationData.data.every((row) =>
+  row.period === "202425"
+  && row.schoolType === "state"
+  && row.pathwayCode === "SCIENTIFICO"
+  && row.studentCount === row.maleCount + row.femaleCount
+));
+assert.equal(educationData.provenance.length, 12);
+assert.ok(educationData.provenance.every((source) =>
+  typeof source.url === "string"
+  && typeof source.publishedAt === "string"
+  && typeof source.dataAsOf === "string"
+  && /^[a-f0-9]{64}$/.test(source.sha256)
+  && Number.isInteger(source.bytes)
+  && Number.isInteger(source.rows)
+));
+assert.ok(educationData.sources.every((source) =>
+  source.license === "IODL 2.0"
+  && source.licenseUrl === "http://www.dati.gov.it/iodl/2.0/"
+));
+assert.match(educationData.caveat, /non misurano qualità/i);
+
+const educationNextPage = await mcpRequest({
+  jsonrpc: "2.0",
+  id: 24,
+  method: "tools/call",
+  params: {
+    name: "query_dataset",
+    arguments: {
+      dataset: "education_students_by_pathway",
+      period: "202425",
+      schoolType: "state",
+      pathway: "SCIENTIFICO",
+      limit: 2,
+      offset: educationData.pagination.nextOffset,
+    },
+  },
+});
+const educationNextData = successfulMcpToolResult(
+  educationNextPage,
+  "education_students_by_pathway",
+).data;
+assert.equal(educationNextData.pagination.offset, 2);
+assert.equal(educationNextData.pagination.returned, 2);
+assert.notDeepEqual(educationNextData.data, educationData.data);
+
+const meta = {
+  "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+  "io.modelcontextprotocol/clientCapabilities": {},
+};
+const modernDiscovery = await mcpRequest(
+  {
+    jsonrpc: "2.0",
+    id: 3,
+    method: "server/discover",
+    params: { _meta: meta },
+  },
+  { "MCP-Protocol-Version": "2026-07-28", "MCP-Method": "server/discover" },
+);
+assert.match(modernDiscovery, /2026-07-28/);
+assert.match(modernDiscovery, /"resultType":"complete"/);
+
+const compatibilityDiscovery = await mcpRequest(
+  {
+    jsonrpc: "2.0",
+    id: 31,
+    method: "server/discover",
+    params: { _meta: meta },
+  },
+  { "MCP-Protocol-Version": "2026-07-28", "MCP-Method": "server/discover" },
+  "/mcp",
+);
+assert.match(compatibilityDiscovery, /2026-07-28/);
+assert.match(compatibilityDiscovery, /"resultType":"complete"/);
+
+const modernDataset = await mcpRequest(
+  {
+    jsonrpc: "2.0",
+    id: 4,
+    method: "tools/call",
+    params: {
+      _meta: meta,
+      name: "query_dataset",
+      arguments: { dataset: "mef_irpef_comunale", level: "region", limit: 20 },
+    },
+  },
+  {
+    "MCP-Protocol-Version": "2026-07-28",
+    "MCP-Method": "tools/call",
+    "MCP-Name": "query_dataset",
+  },
+);
+assert.match(modernDataset, /"resultType":"complete"/);
+assert.match(modernDataset, /mef_irpef_comunale/);
+const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", {
+  requireComplete: true,
+}).data;
+assert.equal(modernData.level, "region");
+assert.equal(modernData.pagination.returned, 20);
+
+const fc40ApiResponse = await fetch(new URL("/api/spese/opencivitas-2017?codice=058091&anno=2017", baseUrl));
+assert.equal(fc40ApiResponse.status, 200);
+const fc40ApiData = JSON.parse(await responseText(fc40ApiResponse, "FC40 API"));
+const fc40McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc40-2017", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2017", code: "058091", year: 2017 } },
+});
+const fc40McpData = successfulMcpToolResult(fc40McpResult, "opencivitas_fabbisogni_2017").data;
+assert.deepEqual(fc40McpData, fc40ApiData);
+assert.equal(fc40ApiData.referenceYear, 2017);
+assert.equal(fc40ApiData.family, "FC40TOT");
+assert.equal(fc40ApiData.coverage.municipalities, 6627);
+assert.equal(fc40ApiData.data[0].historicalSpendingCents, 302180645180);
+assert.equal(fc40ApiData.provenance.sha256.data, "266a1dd568df603039e0615cbbf6e9f9484abaeaa03b0dce0deca1ded35729d6");
+const fc50ApiResponse = await fetch(new URL("/api/spese/opencivitas-2018?codice=058091&anno=2018", baseUrl));
+assert.equal(fc50ApiResponse.status, 200);
+const fc50ApiData = JSON.parse(await responseText(fc50ApiResponse, "FC50 API"));
+const fc50McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc50-2018", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year: 2018 } },
+});
+const fc50McpData = successfulMcpToolResult(fc50McpResult, "opencivitas_fabbisogni_2018").data;
+assert.deepEqual(fc50McpData, fc50ApiData);
+assert.equal(fc50ApiData.referenceYear, 2018);
+assert.equal(fc50ApiData.family, "FC50TOT");
+assert.equal(fc50ApiData.coverage.municipalities, 6606);
+assert.equal(fc50ApiData.data[0].historicalSpendingCents, 299693120810);
+assert.equal(fc50ApiData.provenance.sha256.data, "78107746fe7edac1791ac61d3d6b09ba5bd4d65f80db896c1c6c450e5bca55c0");
+for (const year of [2019, 2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc50-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2018", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2018?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
+const fc60ApiResponse = await fetch(new URL("/api/spese/opencivitas-2019?codice=058091&anno=2019", baseUrl));
+assert.equal(fc60ApiResponse.status, 200);
+const fc60ApiData = JSON.parse(await responseText(fc60ApiResponse, "FC60 API"));
+const fc60McpResult = await mcpRequest({
+  jsonrpc: "2.0", id: "fc60-2019", method: "tools/call",
+  params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year: 2019 } },
+});
+const fc60McpData = successfulMcpToolResult(fc60McpResult, "opencivitas_fabbisogni_2019").data;
+assert.deepEqual(fc60McpData, fc60ApiData);
+assert.equal(fc60ApiData.referenceYear, 2019);
+assert.equal(fc60ApiData.family, "FC60TOT");
+assert.equal(fc60ApiData.coverage.municipalities, 6567);
+assert.equal(fc60ApiData.data[0].historicalSpendingCents, 308248360020);
+assert.equal(fc60ApiData.provenance.sha256.data, "5292914fcbda4b26047020fa11bc9cdca70ff7cf93e5b4a0bd33b5153cb1a8d1");
+for (const year of [2020, 2021, 2022]) {
+  const invalid = await mcpRequest({
+    jsonrpc: "2.0", id: `fc60-wrong-${year}`, method: "tools/call",
+    params: { name: "query_dataset", arguments: { dataset: "opencivitas_fabbisogni_2019", code: "058091", year } },
+  });
+  assert.match(invalid, /"isError":true/);
+  const invalidApi = await fetch(new URL(`/api/spese/opencivitas-2019?codice=058091&anno=${year}`, baseUrl));
+  assert.equal(invalidApi.status, 400);
+  assert.equal(invalidApi.headers.get("cache-control"), "no-store");
+}
+
+assert.equal(contractPostCount, 30, "contract smoke must keep exactly 30 POST requests");
+}
+
+if (mode === "mef-tax-gap") {
+  await waitForServer();
+  await runMefTaxGapSmoke();
+} else if (mode === "vat-gap") {
+  await waitForServer();
+  await runVatGapSmoke();
+} else if (mode === "relazioni") {
+  await waitForServer();
+  await runRelazioniSmoke();
+} else if (mode === "pensions") {
+  await waitForServer();
+  await runPensionSmoke();
+} else if (mode === "subscription") {
+  await waitForServer();
+  await runSubscriptionSmoke();
+} else {
+  await runContractSmoke();
+  if (mode === "complete") {
+    // Let the existing public-client rate-limit window expire before the extra probes.
+    await new Promise((resolve) => setTimeout(resolve, 60_100));
+    await runPensionSmoke();
+    await runRelazioniSmoke();
+    await runVatGapSmoke();
+    await runMefTaxGapSmoke();
+    await runSubscriptionSmoke();
+  }
+}
+
+const checks = mode === "mef-tax-gap"
+  ? ["mef-tax-gap-api-mcp-range-parity"]
+  : mode === "vat-gap"
+  ? ["vat-gap-api-mcp-parity"]
+  : mode === "relazioni"
+  ? ["bes-relazioni-api-mcp-parity"]
+  : mode === "pensions"
+  ? ["pension-territories-api-mcp-parity"]
+  : mode === "subscription"
+  ? ["modern-subscriptions", "compatibility-modern-subscriptions"]
+  : [
+    "page",
+    "mcp-page",
+    "mcp-sse-get",
+    "api",
+    "mcp-alias-preflight",
+    "mcp-alias-security",
+    "legacy-tools",
+    "compatibility-tools",
+    "legacy-query",
+    "irpef-detail-query-budget-caveats",
+    "unsupported-detail-filter",
+    "integrated-query",
+    "education-query-pagination-provenance",
+    ...(mode === "complete" ? ["pension-territories-api-mcp-parity", "bes-relazioni-api-mcp-parity", "vat-gap-api-mcp-parity"] : []),
+    "modern-discovery",
+    "compatibility-modern-discovery",
+    "modern-query",
+    "fc40-2017-api-mcp-provenance-year-separation",
+    "fc50-2018-api-mcp-provenance-year-separation",
+    "fc60-2019-api-mcp-provenance-year-separation",
+    ...(mode === "complete" ? ["modern-subscriptions", "compatibility-modern-subscriptions"] : []),
+  ];
+
+console.log(JSON.stringify({
+  ok: true,
+  baseUrl: baseUrl.origin,
+  mode,
+  contractPostCount,
+  checks,
+}));

@@ -1,0 +1,4544 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "packageId": "e0be9f03-134b-446d-8e6c-cb5c14ddc11c",
+    "resourceId": "32750",
+    "title": "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato",
+    "license": "Creative Commons Attribution",
+    "licenseUrl": "http://www.opendefinition.org/licenses/cc-by",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20",
+    "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e0be9f03-134b-446d-8e6c-cb5c14ddc11c.csv",
+    "catalogSha256": "sha256:c29936b96b538c669f47f62319c051724cd10ce8105b38906eed85f06c696e0c",
+    "catalogBytes": 6283,
+    "csvSha256": "sha256:5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338",
+    "csvBytes": 3422462,
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "quoteChar": "\"",
+    "lineEnding": "CRLF",
+    "observedAt": "2026-08-28T23:26:32.000Z"
+  },
+  "series": {
+    "dataMode": "snapshot",
+    "dataset": {
+      "packageId": "e0be9f03-134b-446d-8e6c-cb5c14ddc11c",
+      "name": "legge_di_bilancio_pubblicata_serie_storica_spese_per_amministrazione_missione_programma_macroaggregato_new",
+      "title": "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato",
+      "notes": "Prodotto contenente la serie storica dei dati della Legge di Bilancio Spese aggregati per Amministrazione Missione Programma Macroaggregato - [LBF_SPE_CRU_AMPMA_001]",
+      "metadataModified": "2026-01-02T17:37:34.000000",
+      "license": "Creative Commons Attribution",
+      "licenseUrl": "http://www.opendefinition.org/licenses/cc-by",
+      "resourceId": "32750",
+      "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e0be9f03-134b-446d-8e6c-cb5c14ddc11c.csv",
+      "apiUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=e0be9f03-134b-446d-8e6c-cb5c14ddc11c"
+    },
+    "minStableMissionYear": 2017,
+    "years": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "missions": [
+      "Agricoltura, politiche agroalimentari e pesca",
+      "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+      "Casa e assetto urbanistico",
+      "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+      "Competitivita' e sviluppo delle imprese",
+      "Comunicazioni",
+      "Debito pubblico",
+      "Difesa e sicurezza del territorio",
+      "Diritti sociali, politiche sociali e famiglia",
+      "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+      "Energia e diversificazione delle fonti energetiche",
+      "Fondi da ripartire",
+      "Giovani e sport",
+      "Giustizia",
+      "Immigrazione, accoglienza e garanzia dei diritti",
+      "Infrastrutture pubbliche e logistica",
+      "Istruzione scolastica",
+      "Istruzione universitaria e formazione post-universitaria",
+      "L'Italia in Europa e nel mondo",
+      "Ordine pubblico e sicurezza",
+      "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+      "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+      "Politiche per il lavoro",
+      "Politiche previdenziali",
+      "Regolazione dei mercati",
+      "Relazioni finanziarie con le autonomie territoriali",
+      "Ricerca e innovazione",
+      "Servizi istituzionali e generali delle amministrazioni pubbliche",
+      "Soccorso civile",
+      "Sviluppo e riequilibrio territoriale",
+      "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+      "Turismo",
+      "Tutela della salute",
+      "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici"
+    ],
+    "allocations": [
+      {
+        "year": 2017,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 842539905
+      },
+      {
+        "year": 2017,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 570816675
+      },
+      {
+        "year": 2017,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 255924488
+      },
+      {
+        "year": 2017,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 271584407
+      },
+      {
+        "year": 2017,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 19982134248
+      },
+      {
+        "year": 2017,
+        "mission": "Comunicazioni",
+        "amountEur": 740787286
+      },
+      {
+        "year": 2017,
+        "mission": "Debito pubblico",
+        "amountEur": 326419848865
+      },
+      {
+        "year": 2017,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 19824756018
+      },
+      {
+        "year": 2017,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 32371088052
+      },
+      {
+        "year": 2017,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 11249159440
+      },
+      {
+        "year": 2017,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 226192520
+      },
+      {
+        "year": 2017,
+        "mission": "Fondi da ripartire",
+        "amountEur": 12247081892
+      },
+      {
+        "year": 2017,
+        "mission": "Giovani e sport",
+        "amountEur": 787235404
+      },
+      {
+        "year": 2017,
+        "mission": "Giustizia",
+        "amountEur": 8207234414
+      },
+      {
+        "year": 2017,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3184054935
+      },
+      {
+        "year": 2017,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 5106162021
+      },
+      {
+        "year": 2017,
+        "mission": "Istruzione scolastica",
+        "amountEur": 45906467667
+      },
+      {
+        "year": 2017,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 7936106705
+      },
+      {
+        "year": 2017,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 26083347597
+      },
+      {
+        "year": 2017,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 10252916646
+      },
+      {
+        "year": 2017,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2371382555
+      },
+      {
+        "year": 2017,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 86632448434
+      },
+      {
+        "year": 2017,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 9939436533
+      },
+      {
+        "year": 2017,
+        "mission": "Politiche previdenziali",
+        "amountEur": 93785616690
+      },
+      {
+        "year": 2017,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 15638394
+      },
+      {
+        "year": 2017,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 116948426883
+      },
+      {
+        "year": 2017,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 2761236019
+      },
+      {
+        "year": 2017,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 2542647849
+      },
+      {
+        "year": 2017,
+        "mission": "Soccorso civile",
+        "amountEur": 4837524874
+      },
+      {
+        "year": 2017,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 3489320085
+      },
+      {
+        "year": 2017,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 1214786500
+      },
+      {
+        "year": 2017,
+        "mission": "Turismo",
+        "amountEur": 46269171
+      },
+      {
+        "year": 2017,
+        "mission": "Tutela della salute",
+        "amountEur": 2028850731
+      },
+      {
+        "year": 2017,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 1968361905
+      },
+      {
+        "year": 2018,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 804558443
+      },
+      {
+        "year": 2018,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 572812878
+      },
+      {
+        "year": 2018,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 322621230
+      },
+      {
+        "year": 2018,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 254621715
+      },
+      {
+        "year": 2018,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 24606278095
+      },
+      {
+        "year": 2018,
+        "mission": "Comunicazioni",
+        "amountEur": 558589667
+      },
+      {
+        "year": 2018,
+        "mission": "Debito pubblico",
+        "amountEur": 299686806700
+      },
+      {
+        "year": 2018,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 20446291580
+      },
+      {
+        "year": 2018,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 33980023981
+      },
+      {
+        "year": 2018,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 13321593893
+      },
+      {
+        "year": 2018,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 200258050
+      },
+      {
+        "year": 2018,
+        "mission": "Fondi da ripartire",
+        "amountEur": 11308777074
+      },
+      {
+        "year": 2018,
+        "mission": "Giovani e sport",
+        "amountEur": 801847527
+      },
+      {
+        "year": 2018,
+        "mission": "Giustizia",
+        "amountEur": 8466946490
+      },
+      {
+        "year": 2018,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3658467447
+      },
+      {
+        "year": 2018,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 5930897157
+      },
+      {
+        "year": 2018,
+        "mission": "Istruzione scolastica",
+        "amountEur": 46312578958
+      },
+      {
+        "year": 2018,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 8230963932
+      },
+      {
+        "year": 2018,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 25877950729
+      },
+      {
+        "year": 2018,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 10757540277
+      },
+      {
+        "year": 2018,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2238276890
+      },
+      {
+        "year": 2018,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 89121392176
+      },
+      {
+        "year": 2018,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 10737155780
+      },
+      {
+        "year": 2018,
+        "mission": "Politiche previdenziali",
+        "amountEur": 93553833295
+      },
+      {
+        "year": 2018,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 16208393
+      },
+      {
+        "year": 2018,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 118080825591
+      },
+      {
+        "year": 2018,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 2977760910
+      },
+      {
+        "year": 2018,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 3204035098
+      },
+      {
+        "year": 2018,
+        "mission": "Soccorso civile",
+        "amountEur": 5797608278
+      },
+      {
+        "year": 2018,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 4902617945
+      },
+      {
+        "year": 2018,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 1205165398
+      },
+      {
+        "year": 2018,
+        "mission": "Turismo",
+        "amountEur": 46763624
+      },
+      {
+        "year": 2018,
+        "mission": "Tutela della salute",
+        "amountEur": 2109577690
+      },
+      {
+        "year": 2018,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2278177809
+      },
+      {
+        "year": 2019,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 843905497
+      },
+      {
+        "year": 2019,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 609586520
+      },
+      {
+        "year": 2019,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 313078722
+      },
+      {
+        "year": 2019,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 264245047
+      },
+      {
+        "year": 2019,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 24757468783
+      },
+      {
+        "year": 2019,
+        "mission": "Comunicazioni",
+        "amountEur": 740568484
+      },
+      {
+        "year": 2019,
+        "mission": "Debito pubblico",
+        "amountEur": 303050130200
+      },
+      {
+        "year": 2019,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 20763731816
+      },
+      {
+        "year": 2019,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 40288375037
+      },
+      {
+        "year": 2019,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 11372203893
+      },
+      {
+        "year": 2019,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 219614927
+      },
+      {
+        "year": 2019,
+        "mission": "Fondi da ripartire",
+        "amountEur": 11137598652
+      },
+      {
+        "year": 2019,
+        "mission": "Giovani e sport",
+        "amountEur": 786178975
+      },
+      {
+        "year": 2019,
+        "mission": "Giustizia",
+        "amountEur": 8766798623
+      },
+      {
+        "year": 2019,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3379769865
+      },
+      {
+        "year": 2019,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 3601153442
+      },
+      {
+        "year": 2019,
+        "mission": "Istruzione scolastica",
+        "amountEur": 48376017822
+      },
+      {
+        "year": 2019,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 8369238112
+      },
+      {
+        "year": 2019,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 25286607676
+      },
+      {
+        "year": 2019,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 11222733593
+      },
+      {
+        "year": 2019,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2286139199
+      },
+      {
+        "year": 2019,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 90413597584
+      },
+      {
+        "year": 2019,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 10493245172
+      },
+      {
+        "year": 2019,
+        "mission": "Politiche previdenziali",
+        "amountEur": 96401599168
+      },
+      {
+        "year": 2019,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 45294320
+      },
+      {
+        "year": 2019,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 119993146637
+      },
+      {
+        "year": 2019,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 3316411278
+      },
+      {
+        "year": 2019,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 3234435916
+      },
+      {
+        "year": 2019,
+        "mission": "Soccorso civile",
+        "amountEur": 7620067578
+      },
+      {
+        "year": 2019,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 6374732242
+      },
+      {
+        "year": 2019,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 1191166663
+      },
+      {
+        "year": 2019,
+        "mission": "Turismo",
+        "amountEur": 44332450
+      },
+      {
+        "year": 2019,
+        "mission": "Tutela della salute",
+        "amountEur": 1290111337
+      },
+      {
+        "year": 2019,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2645705675
+      },
+      {
+        "year": 2020,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 1077895667
+      },
+      {
+        "year": 2020,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 661165723
+      },
+      {
+        "year": 2020,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 331821146
+      },
+      {
+        "year": 2020,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 286264527
+      },
+      {
+        "year": 2020,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 22641874351
+      },
+      {
+        "year": 2020,
+        "mission": "Comunicazioni",
+        "amountEur": 1035338334
+      },
+      {
+        "year": 2020,
+        "mission": "Debito pubblico",
+        "amountEur": 305437483200
+      },
+      {
+        "year": 2020,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 22586815206
+      },
+      {
+        "year": 2020,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 41287073342
+      },
+      {
+        "year": 2020,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 14168811601
+      },
+      {
+        "year": 2020,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 356114895
+      },
+      {
+        "year": 2020,
+        "mission": "Fondi da ripartire",
+        "amountEur": 12195024531
+      },
+      {
+        "year": 2020,
+        "mission": "Giovani e sport",
+        "amountEur": 766226617
+      },
+      {
+        "year": 2020,
+        "mission": "Giustizia",
+        "amountEur": 9153437087
+      },
+      {
+        "year": 2020,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3176865121
+      },
+      {
+        "year": 2020,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 7138102915
+      },
+      {
+        "year": 2020,
+        "mission": "Istruzione scolastica",
+        "amountEur": 48495155335
+      },
+      {
+        "year": 2020,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 8709859781
+      },
+      {
+        "year": 2020,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 25491099616
+      },
+      {
+        "year": 2020,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 11567012887
+      },
+      {
+        "year": 2020,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2350010304
+      },
+      {
+        "year": 2020,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 95563754717
+      },
+      {
+        "year": 2020,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 11523613453
+      },
+      {
+        "year": 2020,
+        "mission": "Politiche previdenziali",
+        "amountEur": 102312391254
+      },
+      {
+        "year": 2020,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 44878586
+      },
+      {
+        "year": 2020,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 123842112575
+      },
+      {
+        "year": 2020,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 3793075215
+      },
+      {
+        "year": 2020,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 3364741068
+      },
+      {
+        "year": 2020,
+        "mission": "Soccorso civile",
+        "amountEur": 5469412148
+      },
+      {
+        "year": 2020,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 6910767975
+      },
+      {
+        "year": 2020,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 1965397909
+      },
+      {
+        "year": 2020,
+        "mission": "Turismo",
+        "amountEur": 43328095
+      },
+      {
+        "year": 2020,
+        "mission": "Tutela della salute",
+        "amountEur": 1408220734
+      },
+      {
+        "year": 2020,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2268453986
+      },
+      {
+        "year": 2021,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 1699745009
+      },
+      {
+        "year": 2021,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 861170187
+      },
+      {
+        "year": 2021,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 669256711
+      },
+      {
+        "year": 2021,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 871752708
+      },
+      {
+        "year": 2021,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 38294914834
+      },
+      {
+        "year": 2021,
+        "mission": "Comunicazioni",
+        "amountEur": 1017641126
+      },
+      {
+        "year": 2021,
+        "mission": "Debito pubblico",
+        "amountEur": 363405820200
+      },
+      {
+        "year": 2021,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 24336148468
+      },
+      {
+        "year": 2021,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 45779928022
+      },
+      {
+        "year": 2021,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 15413012166
+      },
+      {
+        "year": 2021,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 326679048
+      },
+      {
+        "year": 2021,
+        "mission": "Fondi da ripartire",
+        "amountEur": 19050124312
+      },
+      {
+        "year": 2021,
+        "mission": "Giovani e sport",
+        "amountEur": 1107638288
+      },
+      {
+        "year": 2021,
+        "mission": "Giustizia",
+        "amountEur": 9242365356
+      },
+      {
+        "year": 2021,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3180806318
+      },
+      {
+        "year": 2021,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 4706659106
+      },
+      {
+        "year": 2021,
+        "mission": "Istruzione scolastica",
+        "amountEur": 50423647815
+      },
+      {
+        "year": 2021,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 9827135442
+      },
+      {
+        "year": 2021,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 63779598764
+      },
+      {
+        "year": 2021,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 12147348455
+      },
+      {
+        "year": 2021,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2426487903
+      },
+      {
+        "year": 2021,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 96942068829
+      },
+      {
+        "year": 2021,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 20287312172
+      },
+      {
+        "year": 2021,
+        "mission": "Politiche previdenziali",
+        "amountEur": 109226926641
+      },
+      {
+        "year": 2021,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 44800059
+      },
+      {
+        "year": 2021,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 132581086335
+      },
+      {
+        "year": 2021,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4254981883
+      },
+      {
+        "year": 2021,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4010196780
+      },
+      {
+        "year": 2021,
+        "mission": "Soccorso civile",
+        "amountEur": 6291674936
+      },
+      {
+        "year": 2021,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 10192667975
+      },
+      {
+        "year": 2021,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 2899793489
+      },
+      {
+        "year": 2021,
+        "mission": "Turismo",
+        "amountEur": 158014460
+      },
+      {
+        "year": 2021,
+        "mission": "Tutela della salute",
+        "amountEur": 2559944184
+      },
+      {
+        "year": 2021,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2680059584
+      },
+      {
+        "year": 2022,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 1827355055
+      },
+      {
+        "year": 2022,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 715668169
+      },
+      {
+        "year": 2022,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 1371389213
+      },
+      {
+        "year": 2022,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 542695658
+      },
+      {
+        "year": 2022,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 31358058976
+      },
+      {
+        "year": 2022,
+        "mission": "Comunicazioni",
+        "amountEur": 1359128305
+      },
+      {
+        "year": 2022,
+        "mission": "Debito pubblico",
+        "amountEur": 347851751723
+      },
+      {
+        "year": 2022,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 25598679568
+      },
+      {
+        "year": 2022,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 50401068512
+      },
+      {
+        "year": 2022,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 15589125845
+      },
+      {
+        "year": 2022,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 3733384148
+      },
+      {
+        "year": 2022,
+        "mission": "Fondi da ripartire",
+        "amountEur": 19562125840
+      },
+      {
+        "year": 2022,
+        "mission": "Giovani e sport",
+        "amountEur": 1085921995
+      },
+      {
+        "year": 2022,
+        "mission": "Giustizia",
+        "amountEur": 10441887641
+      },
+      {
+        "year": 2022,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3198390852
+      },
+      {
+        "year": 2022,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 6630493350
+      },
+      {
+        "year": 2022,
+        "mission": "Istruzione scolastica",
+        "amountEur": 50916371530
+      },
+      {
+        "year": 2022,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 10319959268
+      },
+      {
+        "year": 2022,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 85893802017
+      },
+      {
+        "year": 2022,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 12138028837
+      },
+      {
+        "year": 2022,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 2932343251
+      },
+      {
+        "year": 2022,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 103625673000
+      },
+      {
+        "year": 2022,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 17246843034
+      },
+      {
+        "year": 2022,
+        "mission": "Politiche previdenziali",
+        "amountEur": 107596884342
+      },
+      {
+        "year": 2022,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 50692903
+      },
+      {
+        "year": 2022,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 141062507025
+      },
+      {
+        "year": 2022,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4882640225
+      },
+      {
+        "year": 2022,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4288513778
+      },
+      {
+        "year": 2022,
+        "mission": "Soccorso civile",
+        "amountEur": 6190755227
+      },
+      {
+        "year": 2022,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 15438667975
+      },
+      {
+        "year": 2022,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 4130869638
+      },
+      {
+        "year": 2022,
+        "mission": "Turismo",
+        "amountEur": 258902050
+      },
+      {
+        "year": 2022,
+        "mission": "Tutela della salute",
+        "amountEur": 2131146446
+      },
+      {
+        "year": 2022,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 3584553161
+      },
+      {
+        "year": 2023,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 2474996283
+      },
+      {
+        "year": 2023,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 870575005
+      },
+      {
+        "year": 2023,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 1053455179
+      },
+      {
+        "year": 2023,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 530386868
+      },
+      {
+        "year": 2023,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 35518909891
+      },
+      {
+        "year": 2023,
+        "mission": "Comunicazioni",
+        "amountEur": 1092651226
+      },
+      {
+        "year": 2023,
+        "mission": "Debito pubblico",
+        "amountEur": 385125520200
+      },
+      {
+        "year": 2023,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 27540445122
+      },
+      {
+        "year": 2023,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 60769879090
+      },
+      {
+        "year": 2023,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 16557402082
+      },
+      {
+        "year": 2023,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 20369442587
+      },
+      {
+        "year": 2023,
+        "mission": "Fondi da ripartire",
+        "amountEur": 19515597829
+      },
+      {
+        "year": 2023,
+        "mission": "Giovani e sport",
+        "amountEur": 929507071
+      },
+      {
+        "year": 2023,
+        "mission": "Giustizia",
+        "amountEur": 11351039828
+      },
+      {
+        "year": 2023,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3157128681
+      },
+      {
+        "year": 2023,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 8214761393
+      },
+      {
+        "year": 2023,
+        "mission": "Istruzione scolastica",
+        "amountEur": 51879597050
+      },
+      {
+        "year": 2023,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 11005637074
+      },
+      {
+        "year": 2023,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 91179737910
+      },
+      {
+        "year": 2023,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 13306393625
+      },
+      {
+        "year": 2023,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 3080296739
+      },
+      {
+        "year": 2023,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 107600738359
+      },
+      {
+        "year": 2023,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 18793782353
+      },
+      {
+        "year": 2023,
+        "mission": "Politiche previdenziali",
+        "amountEur": 113598442822
+      },
+      {
+        "year": 2023,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 93727547
+      },
+      {
+        "year": 2023,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 143150452492
+      },
+      {
+        "year": 2023,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4999289704
+      },
+      {
+        "year": 2023,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4136169624
+      },
+      {
+        "year": 2023,
+        "mission": "Soccorso civile",
+        "amountEur": 5020010206
+      },
+      {
+        "year": 2023,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 9712894975
+      },
+      {
+        "year": 2023,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 4330215885
+      },
+      {
+        "year": 2023,
+        "mission": "Turismo",
+        "amountEur": 402946820
+      },
+      {
+        "year": 2023,
+        "mission": "Tutela della salute",
+        "amountEur": 2807986876
+      },
+      {
+        "year": 2023,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 3553945698
+      },
+      {
+        "year": 2024,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 2484923815
+      },
+      {
+        "year": 2024,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 881989230
+      },
+      {
+        "year": 2024,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 862856941
+      },
+      {
+        "year": 2024,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 496962095
+      },
+      {
+        "year": 2024,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 63632503207
+      },
+      {
+        "year": 2024,
+        "mission": "Comunicazioni",
+        "amountEur": 1370932888
+      },
+      {
+        "year": 2024,
+        "mission": "Debito pubblico",
+        "amountEur": 418396469300
+      },
+      {
+        "year": 2024,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 29015481469
+      },
+      {
+        "year": 2024,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 63174291104
+      },
+      {
+        "year": 2024,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 17641083463
+      },
+      {
+        "year": 2024,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 1109236772
+      },
+      {
+        "year": 2024,
+        "mission": "Fondi da ripartire",
+        "amountEur": 23530295417
+      },
+      {
+        "year": 2024,
+        "mission": "Giovani e sport",
+        "amountEur": 936829064
+      },
+      {
+        "year": 2024,
+        "mission": "Giustizia",
+        "amountEur": 11455745829
+      },
+      {
+        "year": 2024,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3229680696
+      },
+      {
+        "year": 2024,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 8207214934
+      },
+      {
+        "year": 2024,
+        "mission": "Istruzione scolastica",
+        "amountEur": 52090015362
+      },
+      {
+        "year": 2024,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 11446297146
+      },
+      {
+        "year": 2024,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 32571563749
+      },
+      {
+        "year": 2024,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 12952972008
+      },
+      {
+        "year": 2024,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 3053697868
+      },
+      {
+        "year": 2024,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 118889885081
+      },
+      {
+        "year": 2024,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 17744578083
+      },
+      {
+        "year": 2024,
+        "mission": "Politiche previdenziali",
+        "amountEur": 135110959542
+      },
+      {
+        "year": 2024,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 41966727
+      },
+      {
+        "year": 2024,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 147385933337
+      },
+      {
+        "year": 2024,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4992141904
+      },
+      {
+        "year": 2024,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4426000341
+      },
+      {
+        "year": 2024,
+        "mission": "Soccorso civile",
+        "amountEur": 5814302381
+      },
+      {
+        "year": 2024,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 13486779000
+      },
+      {
+        "year": 2024,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 3088009836
+      },
+      {
+        "year": 2024,
+        "mission": "Turismo",
+        "amountEur": 347441592
+      },
+      {
+        "year": 2024,
+        "mission": "Tutela della salute",
+        "amountEur": 1930062815
+      },
+      {
+        "year": 2024,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 3286989285
+      },
+      {
+        "year": 2025,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 1937575590
+      },
+      {
+        "year": 2025,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 937813231
+      },
+      {
+        "year": 2025,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 714263424
+      },
+      {
+        "year": 2025,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 377440469
+      },
+      {
+        "year": 2025,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 78299307665
+      },
+      {
+        "year": 2025,
+        "mission": "Comunicazioni",
+        "amountEur": 1006510881
+      },
+      {
+        "year": 2025,
+        "mission": "Debito pubblico",
+        "amountEur": 383045780633
+      },
+      {
+        "year": 2025,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 30963026058
+      },
+      {
+        "year": 2025,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 66209694223
+      },
+      {
+        "year": 2025,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 17104263289
+      },
+      {
+        "year": 2025,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 908290583
+      },
+      {
+        "year": 2025,
+        "mission": "Fondi da ripartire",
+        "amountEur": 21582556939
+      },
+      {
+        "year": 2025,
+        "mission": "Giovani e sport",
+        "amountEur": 1092162701
+      },
+      {
+        "year": 2025,
+        "mission": "Giustizia",
+        "amountEur": 11732038897
+      },
+      {
+        "year": 2025,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3514431503
+      },
+      {
+        "year": 2025,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 6318881227
+      },
+      {
+        "year": 2025,
+        "mission": "Istruzione scolastica",
+        "amountEur": 56820927328
+      },
+      {
+        "year": 2025,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 11582732317
+      },
+      {
+        "year": 2025,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 38421873720
+      },
+      {
+        "year": 2025,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 13071028220
+      },
+      {
+        "year": 2025,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 3694072248
+      },
+      {
+        "year": 2025,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 121512519411
+      },
+      {
+        "year": 2025,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 17571766911
+      },
+      {
+        "year": 2025,
+        "mission": "Politiche previdenziali",
+        "amountEur": 122496387143
+      },
+      {
+        "year": 2025,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 37518068
+      },
+      {
+        "year": 2025,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 151105039641
+      },
+      {
+        "year": 2025,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4294506484
+      },
+      {
+        "year": 2025,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4388221944
+      },
+      {
+        "year": 2025,
+        "mission": "Soccorso civile",
+        "amountEur": 5643555987
+      },
+      {
+        "year": 2025,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 14864641000
+      },
+      {
+        "year": 2025,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 2936708252
+      },
+      {
+        "year": 2025,
+        "mission": "Turismo",
+        "amountEur": 404624025
+      },
+      {
+        "year": 2025,
+        "mission": "Tutela della salute",
+        "amountEur": 1992903661
+      },
+      {
+        "year": 2025,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2961658132
+      },
+      {
+        "year": 2026,
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "amountEur": 1642995560
+      },
+      {
+        "year": 2026,
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "amountEur": 831952023
+      },
+      {
+        "year": 2026,
+        "mission": "Casa e assetto urbanistico",
+        "amountEur": 925439653
+      },
+      {
+        "year": 2026,
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "amountEur": 647106629
+      },
+      {
+        "year": 2026,
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "amountEur": 74692981391
+      },
+      {
+        "year": 2026,
+        "mission": "Comunicazioni",
+        "amountEur": 956262682
+      },
+      {
+        "year": 2026,
+        "mission": "Debito pubblico",
+        "amountEur": 430697270323
+      },
+      {
+        "year": 2026,
+        "mission": "Difesa e sicurezza del territorio",
+        "amountEur": 31829105305
+      },
+      {
+        "year": 2026,
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "amountEur": 69266444883
+      },
+      {
+        "year": 2026,
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "amountEur": 14493031540
+      },
+      {
+        "year": 2026,
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "amountEur": 1047283706
+      },
+      {
+        "year": 2026,
+        "mission": "Fondi da ripartire",
+        "amountEur": 29787684586
+      },
+      {
+        "year": 2026,
+        "mission": "Giovani e sport",
+        "amountEur": 1355443771
+      },
+      {
+        "year": 2026,
+        "mission": "Giustizia",
+        "amountEur": 11631822047
+      },
+      {
+        "year": 2026,
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "amountEur": 3182322552
+      },
+      {
+        "year": 2026,
+        "mission": "Infrastrutture pubbliche e logistica",
+        "amountEur": 7896788894
+      },
+      {
+        "year": 2026,
+        "mission": "Istruzione scolastica",
+        "amountEur": 57798431887
+      },
+      {
+        "year": 2026,
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "amountEur": 11432211698
+      },
+      {
+        "year": 2026,
+        "mission": "L'Italia in Europa e nel mondo",
+        "amountEur": 43212548564
+      },
+      {
+        "year": 2026,
+        "mission": "Ordine pubblico e sicurezza",
+        "amountEur": 12959714566
+      },
+      {
+        "year": 2026,
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "amountEur": 3372834997
+      },
+      {
+        "year": 2026,
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "amountEur": 124689414429
+      },
+      {
+        "year": 2026,
+        "mission": "Politiche per il lavoro",
+        "amountEur": 17097889113
+      },
+      {
+        "year": 2026,
+        "mission": "Politiche previdenziali",
+        "amountEur": 112702982381
+      },
+      {
+        "year": 2026,
+        "mission": "Regolazione dei mercati",
+        "amountEur": 37230952
+      },
+      {
+        "year": 2026,
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "amountEur": 156924366499
+      },
+      {
+        "year": 2026,
+        "mission": "Ricerca e innovazione",
+        "amountEur": 4254614396
+      },
+      {
+        "year": 2026,
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "amountEur": 4575916004
+      },
+      {
+        "year": 2026,
+        "mission": "Soccorso civile",
+        "amountEur": 6575562591
+      },
+      {
+        "year": 2026,
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "amountEur": 8506770000
+      },
+      {
+        "year": 2026,
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "amountEur": 2878091846
+      },
+      {
+        "year": 2026,
+        "mission": "Turismo",
+        "amountEur": 253498210
+      },
+      {
+        "year": 2026,
+        "mission": "Tutela della salute",
+        "amountEur": 2121265432
+      },
+      {
+        "year": 2026,
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "amountEur": 2884184579
+      }
+    ],
+    "yearOverYearDeltas": [
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 842539905,
+        "toAmountEur": 804558443,
+        "deltaEur": -37981462,
+        "deltaPct": -4.507971880572232
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 804558443,
+        "toAmountEur": 843905497,
+        "deltaEur": 39347054,
+        "deltaPct": 4.890515330780016
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 843905497,
+        "toAmountEur": 1077895667,
+        "deltaEur": 233990170,
+        "deltaPct": 27.727058400710952
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 1077895667,
+        "toAmountEur": 1699745009,
+        "deltaEur": 621849342,
+        "deltaPct": 57.691051280568885
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 1699745009,
+        "toAmountEur": 1827355055,
+        "deltaEur": 127610046,
+        "deltaPct": 7.507599394280675
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 1827355055,
+        "toAmountEur": 2474996283,
+        "deltaEur": 647641228,
+        "deltaPct": 35.44145546471263
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 2474996283,
+        "toAmountEur": 2484923815,
+        "deltaEur": 9927532,
+        "deltaPct": 0.4011130064392101
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 2484923815,
+        "toAmountEur": 1937575590,
+        "deltaEur": -547348225,
+        "deltaPct": -22.02676080835903
+      },
+      {
+        "mission": "Agricoltura, politiche agroalimentari e pesca",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 1937575590,
+        "toAmountEur": 1642995560,
+        "deltaEur": -294580030,
+        "deltaPct": -15.203537426893368
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 570816675,
+        "toAmountEur": 572812878,
+        "deltaEur": 1996203,
+        "deltaPct": 0.3497100010261613
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 572812878,
+        "toAmountEur": 609586520,
+        "deltaEur": 36773642,
+        "deltaPct": 6.419835065230499
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 609586520,
+        "toAmountEur": 661165723,
+        "deltaEur": 51579203,
+        "deltaPct": 8.46134245225764
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 661165723,
+        "toAmountEur": 861170187,
+        "deltaEur": 200004464,
+        "deltaPct": 30.25027720621869
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 861170187,
+        "toAmountEur": 715668169,
+        "deltaEur": -145502018,
+        "deltaPct": -16.895849414722015
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 715668169,
+        "toAmountEur": 870575005,
+        "deltaEur": 154906836,
+        "deltaPct": 21.645064390169907
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 870575005,
+        "toAmountEur": 881989230,
+        "deltaEur": 11414225,
+        "deltaPct": 1.3111133370983927
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 881989230,
+        "toAmountEur": 937813231,
+        "deltaEur": 55824001,
+        "deltaPct": 6.329329100764642
+      },
+      {
+        "mission": "Amministrazione generale e supporto alla rappresentanza generale di Governo e dello Stato sul territorio",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 937813231,
+        "toAmountEur": 831952023,
+        "deltaEur": -105861208,
+        "deltaPct": -11.288090688070064
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 255924488,
+        "toAmountEur": 322621230,
+        "deltaEur": 66696742,
+        "deltaPct": 26.06110205444662
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 322621230,
+        "toAmountEur": 313078722,
+        "deltaEur": -9542508,
+        "deltaPct": -2.9578053496355463
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 313078722,
+        "toAmountEur": 331821146,
+        "deltaEur": 18742424,
+        "deltaPct": 5.9864892383200665
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 331821146,
+        "toAmountEur": 669256711,
+        "deltaEur": 337435565,
+        "deltaPct": 101.69200157002652
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 669256711,
+        "toAmountEur": 1371389213,
+        "deltaEur": 702132502,
+        "deltaPct": 104.91228409960614
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 1371389213,
+        "toAmountEur": 1053455179,
+        "deltaEur": -317934034,
+        "deltaPct": -23.18335531489994
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 1053455179,
+        "toAmountEur": 862856941,
+        "deltaEur": -190598238,
+        "deltaPct": -18.092676537119193
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 862856941,
+        "toAmountEur": 714263424,
+        "deltaEur": -148593517,
+        "deltaPct": -17.22110699228877
+      },
+      {
+        "mission": "Casa e assetto urbanistico",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 714263424,
+        "toAmountEur": 925439653,
+        "deltaEur": 211176229,
+        "deltaPct": 29.565594695774315
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 271584407,
+        "toAmountEur": 254621715,
+        "deltaEur": -16962692,
+        "deltaPct": -6.245826918921748
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 254621715,
+        "toAmountEur": 264245047,
+        "deltaEur": 9623332,
+        "deltaPct": 3.7794624075955188
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 264245047,
+        "toAmountEur": 286264527,
+        "deltaEur": 22019480,
+        "deltaPct": 8.332977382164518
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 286264527,
+        "toAmountEur": 871752708,
+        "deltaEur": 585488181,
+        "deltaPct": 204.5269761977879
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 871752708,
+        "toAmountEur": 542695658,
+        "deltaEur": -329057050,
+        "deltaPct": -37.746604854825414
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 542695658,
+        "toAmountEur": 530386868,
+        "deltaEur": -12308790,
+        "deltaPct": -2.268083375747222
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 530386868,
+        "toAmountEur": 496962095,
+        "deltaEur": -33424773,
+        "deltaPct": -6.301960892440498
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 496962095,
+        "toAmountEur": 377440469,
+        "deltaEur": -119521626,
+        "deltaPct": -24.05045117173373
+      },
+      {
+        "mission": "Commercio internazionale ed internazionalizzazione del sistema produttivo",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 377440469,
+        "toAmountEur": 647106629,
+        "deltaEur": 269666160,
+        "deltaPct": 71.44601126489168
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 19982134248,
+        "toAmountEur": 24606278095,
+        "deltaEur": 4624143847,
+        "deltaPct": 23.141391152763514
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 24606278095,
+        "toAmountEur": 24757468783,
+        "deltaEur": 151190688,
+        "deltaPct": 0.6144394833557619
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 24757468783,
+        "toAmountEur": 22641874351,
+        "deltaEur": -2115594432,
+        "deltaPct": -8.545277590949432
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 22641874351,
+        "toAmountEur": 38294914834,
+        "deltaEur": 15653040483,
+        "deltaPct": 69.13314790261023
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 38294914834,
+        "toAmountEur": 31358058976,
+        "deltaEur": -6936855858,
+        "deltaPct": -18.11430026171814
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 31358058976,
+        "toAmountEur": 35518909891,
+        "deltaEur": 4160850915,
+        "deltaPct": 13.26884077290792
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 35518909891,
+        "toAmountEur": 63632503207,
+        "deltaEur": 28113593316,
+        "deltaPct": 79.15105897752677
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 63632503207,
+        "toAmountEur": 78299307665,
+        "deltaEur": 14666804458,
+        "deltaPct": 23.049233833042976
+      },
+      {
+        "mission": "Competitivita' e sviluppo delle imprese",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 78299307665,
+        "toAmountEur": 74692981391,
+        "deltaEur": -3606326274,
+        "deltaPct": -4.605821407041684
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 740787286,
+        "toAmountEur": 558589667,
+        "deltaEur": -182197619,
+        "deltaPct": -24.59513310275684
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 558589667,
+        "toAmountEur": 740568484,
+        "deltaEur": 181978817,
+        "deltaPct": 32.57826410884898
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 740568484,
+        "toAmountEur": 1035338334,
+        "deltaEur": 294769850,
+        "deltaPct": 39.80318584553755
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 1035338334,
+        "toAmountEur": 1017641126,
+        "deltaEur": -17697208,
+        "deltaPct": -1.7093164059353763
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 1017641126,
+        "toAmountEur": 1359128305,
+        "deltaEur": 341487179,
+        "deltaPct": 33.55673923500611
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 1359128305,
+        "toAmountEur": 1092651226,
+        "deltaEur": -266477079,
+        "deltaPct": -19.606469677636507
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 1092651226,
+        "toAmountEur": 1370932888,
+        "deltaEur": 278281662,
+        "deltaPct": 25.468480277896106
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 1370932888,
+        "toAmountEur": 1006510881,
+        "deltaEur": -364422007,
+        "deltaPct": -26.582045714261106
+      },
+      {
+        "mission": "Comunicazioni",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 1006510881,
+        "toAmountEur": 956262682,
+        "deltaEur": -50248199,
+        "deltaPct": -4.992315527684792
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 326419848865,
+        "toAmountEur": 299686806700,
+        "deltaEur": -26733042165,
+        "deltaPct": -8.189772239020977
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 299686806700,
+        "toAmountEur": 303050130200,
+        "deltaEur": 3363323500,
+        "deltaPct": 1.1222794680337191
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 303050130200,
+        "toAmountEur": 305437483200,
+        "deltaEur": 2387353000,
+        "deltaPct": 0.7877749461531167
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 305437483200,
+        "toAmountEur": 363405820200,
+        "deltaEur": 57968337000,
+        "deltaPct": 18.978789503069084
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 363405820200,
+        "toAmountEur": 347851751723,
+        "deltaEur": -15554068477,
+        "deltaPct": -4.28008237964924
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 347851751723,
+        "toAmountEur": 385125520200,
+        "deltaEur": 37273768477,
+        "deltaPct": 10.715417787138731
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 385125520200,
+        "toAmountEur": 418396469300,
+        "deltaEur": 33270949100,
+        "deltaPct": 8.638988421936315
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 418396469300,
+        "toAmountEur": 383045780633,
+        "deltaEur": -35350688667,
+        "deltaPct": -8.44908866610266
+      },
+      {
+        "mission": "Debito pubblico",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 383045780633,
+        "toAmountEur": 430697270323,
+        "deltaEur": 47651489690,
+        "deltaPct": 12.440155224071079
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 19824756018,
+        "toAmountEur": 20446291580,
+        "deltaEur": 621535562,
+        "deltaPct": 3.135148606296457
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 20446291580,
+        "toAmountEur": 20763731816,
+        "deltaEur": 317440236,
+        "deltaPct": 1.552556534557647
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 20763731816,
+        "toAmountEur": 22586815206,
+        "deltaEur": 1823083390,
+        "deltaPct": 8.78013358174458
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 22586815206,
+        "toAmountEur": 24336148468,
+        "deltaEur": 1749333262,
+        "deltaPct": 7.744931040721953
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 24336148468,
+        "toAmountEur": 25598679568,
+        "deltaEur": 1262531100,
+        "deltaPct": 5.187883783911505
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 25598679568,
+        "toAmountEur": 27540445122,
+        "deltaEur": 1941765554,
+        "deltaPct": 7.58541294617138
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 27540445122,
+        "toAmountEur": 29015481469,
+        "deltaEur": 1475036347,
+        "deltaPct": 5.355891455151913
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 29015481469,
+        "toAmountEur": 30963026058,
+        "deltaEur": 1947544589,
+        "deltaPct": 6.712087790377518
+      },
+      {
+        "mission": "Difesa e sicurezza del territorio",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 30963026058,
+        "toAmountEur": 31829105305,
+        "deltaEur": 866079247,
+        "deltaPct": 2.7971401935252023
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 32371088052,
+        "toAmountEur": 33980023981,
+        "deltaEur": 1608935929,
+        "deltaPct": 4.970286838723032
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 33980023981,
+        "toAmountEur": 40288375037,
+        "deltaEur": 6308351056,
+        "deltaPct": 18.564881118174984
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 40288375037,
+        "toAmountEur": 41287073342,
+        "deltaEur": 998698305,
+        "deltaPct": 2.478874623468473
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 41287073342,
+        "toAmountEur": 45779928022,
+        "deltaEur": 4492854680,
+        "deltaPct": 10.881988759008415
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 45779928022,
+        "toAmountEur": 50401068512,
+        "deltaEur": 4621140490,
+        "deltaPct": 10.094250230754547
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 50401068512,
+        "toAmountEur": 60769879090,
+        "deltaEur": 10368810578,
+        "deltaPct": 20.572600708914113
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 60769879090,
+        "toAmountEur": 63174291104,
+        "deltaEur": 2404412014,
+        "deltaPct": 3.9565851537059555
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 63174291104,
+        "toAmountEur": 66209694223,
+        "deltaEur": 3035403119,
+        "deltaPct": 4.80480756642445
+      },
+      {
+        "mission": "Diritti sociali, politiche sociali e famiglia",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 66209694223,
+        "toAmountEur": 69266444883,
+        "deltaEur": 3056750660,
+        "deltaPct": 4.616772054111288
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 11249159440,
+        "toAmountEur": 13321593893,
+        "deltaEur": 2072434453,
+        "deltaPct": 18.423016084479997
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 13321593893,
+        "toAmountEur": 11372203893,
+        "deltaEur": -1949390000,
+        "deltaPct": -14.633309014353992
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 11372203893,
+        "toAmountEur": 14168811601,
+        "deltaEur": 2796607708,
+        "deltaPct": 24.591607170545128
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 14168811601,
+        "toAmountEur": 15413012166,
+        "deltaEur": 1244200565,
+        "deltaPct": 8.781262677754762
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 15413012166,
+        "toAmountEur": 15589125845,
+        "deltaEur": 176113679,
+        "deltaPct": 1.1426298578320346
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 15589125845,
+        "toAmountEur": 16557402082,
+        "deltaEur": 968276237,
+        "deltaPct": 6.211228561674364
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 16557402082,
+        "toAmountEur": 17641083463,
+        "deltaEur": 1083681381,
+        "deltaPct": 6.544996465225057
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 17641083463,
+        "toAmountEur": 17104263289,
+        "deltaEur": -536820174,
+        "deltaPct": -3.0430113610987344
+      },
+      {
+        "mission": "Diritto alla mobilita' e sviluppo dei sistemi di trasporto",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 17104263289,
+        "toAmountEur": 14493031540,
+        "deltaEur": -2611231749,
+        "deltaPct": -15.266554921890855
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 226192520,
+        "toAmountEur": 200258050,
+        "deltaEur": -25934470,
+        "deltaPct": -11.465662082901769
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 200258050,
+        "toAmountEur": 219614927,
+        "deltaEur": 19356877,
+        "deltaPct": 9.665966986096189
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 219614927,
+        "toAmountEur": 356114895,
+        "deltaEur": 136499968,
+        "deltaPct": 62.15423052732659
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 356114895,
+        "toAmountEur": 326679048,
+        "deltaEur": -29435847,
+        "deltaPct": -8.265828644993913
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 326679048,
+        "toAmountEur": 3733384148,
+        "deltaEur": 3406705100,
+        "deltaPct": 1042.829382801434
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 3733384148,
+        "toAmountEur": 20369442587,
+        "deltaEur": 16636058439,
+        "deltaPct": 445.6026430580966
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 20369442587,
+        "toAmountEur": 1109236772,
+        "deltaEur": -19260205815,
+        "deltaPct": -94.55440782307943
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 1109236772,
+        "toAmountEur": 908290583,
+        "deltaEur": -200946189,
+        "deltaPct": -18.11571650637633
+      },
+      {
+        "mission": "Energia e diversificazione delle fonti energetiche",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 908290583,
+        "toAmountEur": 1047283706,
+        "deltaEur": 138993123,
+        "deltaPct": 15.302715408643625
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 12247081892,
+        "toAmountEur": 11308777074,
+        "deltaEur": -938304818,
+        "deltaPct": -7.661456225036892
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 11308777074,
+        "toAmountEur": 11137598652,
+        "deltaEur": -171178422,
+        "deltaPct": -1.5136775699076797
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 11137598652,
+        "toAmountEur": 12195024531,
+        "deltaEur": 1057425879,
+        "deltaPct": 9.49419989029786
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 12195024531,
+        "toAmountEur": 19050124312,
+        "deltaEur": 6855099781,
+        "deltaPct": 56.21226725353604
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 19050124312,
+        "toAmountEur": 19562125840,
+        "deltaEur": 512001528,
+        "deltaPct": 2.687654524529698
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 19562125840,
+        "toAmountEur": 19515597829,
+        "deltaEur": -46528011,
+        "deltaPct": -0.23784741689403222
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 19515597829,
+        "toAmountEur": 23530295417,
+        "deltaEur": 4014697588,
+        "deltaPct": 20.57173765916715
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 23530295417,
+        "toAmountEur": 21582556939,
+        "deltaEur": -1947738478,
+        "deltaPct": -8.277577665229021
+      },
+      {
+        "mission": "Fondi da ripartire",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 21582556939,
+        "toAmountEur": 29787684586,
+        "deltaEur": 8205127647,
+        "deltaPct": 38.01740298978761
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 787235404,
+        "toAmountEur": 801847527,
+        "deltaEur": 14612123,
+        "deltaPct": 1.8561313332396825
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 801847527,
+        "toAmountEur": 786178975,
+        "deltaEur": -15668552,
+        "deltaPct": -1.9540562853166972
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 786178975,
+        "toAmountEur": 766226617,
+        "deltaEur": -19952358,
+        "deltaPct": -2.5378900523255536
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 766226617,
+        "toAmountEur": 1107638288,
+        "deltaEur": 341411671,
+        "deltaPct": 44.557532122379925
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 1107638288,
+        "toAmountEur": 1085921995,
+        "deltaEur": -21716293,
+        "deltaPct": -1.9605942874376332
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 1085921995,
+        "toAmountEur": 929507071,
+        "deltaEur": -156414924,
+        "deltaPct": -14.403882113097819
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 929507071,
+        "toAmountEur": 936829064,
+        "deltaEur": 7321993,
+        "deltaPct": 0.7877285959882709
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 936829064,
+        "toAmountEur": 1092162701,
+        "deltaEur": 155333637,
+        "deltaPct": 16.580787570441984
+      },
+      {
+        "mission": "Giovani e sport",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 1092162701,
+        "toAmountEur": 1355443771,
+        "deltaEur": 263281070,
+        "deltaPct": 24.10639639670317
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 8207234414,
+        "toAmountEur": 8466946490,
+        "deltaEur": 259712076,
+        "deltaPct": 3.16442863575311
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 8466946490,
+        "toAmountEur": 8766798623,
+        "deltaEur": 299852133,
+        "deltaPct": 3.5414435812738914
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 8766798623,
+        "toAmountEur": 9153437087,
+        "deltaEur": 386638464,
+        "deltaPct": 4.410258300967933
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 9153437087,
+        "toAmountEur": 9242365356,
+        "deltaEur": 88928269,
+        "deltaPct": 0.9715287072470158
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 9242365356,
+        "toAmountEur": 10441887641,
+        "deltaEur": 1199522285,
+        "deltaPct": 12.978520527986797
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 10441887641,
+        "toAmountEur": 11351039828,
+        "deltaEur": 909152187,
+        "deltaPct": 8.706780021556833
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 11351039828,
+        "toAmountEur": 11455745829,
+        "deltaEur": 104706001,
+        "deltaPct": 0.9224353238697842
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 11455745829,
+        "toAmountEur": 11732038897,
+        "deltaEur": 276293068,
+        "deltaPct": 2.4118295929765603
+      },
+      {
+        "mission": "Giustizia",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 11732038897,
+        "toAmountEur": 11631822047,
+        "deltaEur": -100216850,
+        "deltaPct": -0.8542151187857591
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 3184054935,
+        "toAmountEur": 3658467447,
+        "deltaEur": 474412512,
+        "deltaPct": 14.8996333821106
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 3658467447,
+        "toAmountEur": 3379769865,
+        "deltaEur": -278697582,
+        "deltaPct": -7.617877869284756
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 3379769865,
+        "toAmountEur": 3176865121,
+        "deltaEur": -202904744,
+        "deltaPct": -6.003507697409451
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 3176865121,
+        "toAmountEur": 3180806318,
+        "deltaEur": 3941197,
+        "deltaPct": 0.12405931161343754
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 3180806318,
+        "toAmountEur": 3198390852,
+        "deltaEur": 17584534,
+        "deltaPct": 0.5528325915504548
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 3198390852,
+        "toAmountEur": 3157128681,
+        "deltaEur": -41262171,
+        "deltaPct": -1.2900915775880915
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 3157128681,
+        "toAmountEur": 3229680696,
+        "deltaEur": 72552015,
+        "deltaPct": 2.298037943040688
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 3229680696,
+        "toAmountEur": 3514431503,
+        "deltaEur": 284750807,
+        "deltaPct": 8.81668603811725
+      },
+      {
+        "mission": "Immigrazione, accoglienza e garanzia dei diritti",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 3514431503,
+        "toAmountEur": 3182322552,
+        "deltaEur": -332108951,
+        "deltaPct": -9.449862679540178
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 5106162021,
+        "toAmountEur": 5930897157,
+        "deltaEur": 824735136,
+        "deltaPct": 16.15176198107561
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 5930897157,
+        "toAmountEur": 3601153442,
+        "deltaEur": -2329743715,
+        "deltaPct": -39.28147215047047
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 3601153442,
+        "toAmountEur": 7138102915,
+        "deltaEur": 3536949473,
+        "deltaPct": 98.2171276499581
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 7138102915,
+        "toAmountEur": 4706659106,
+        "deltaEur": -2431443809,
+        "deltaPct": -34.06288530655067
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 4706659106,
+        "toAmountEur": 6630493350,
+        "deltaEur": 1923834244,
+        "deltaPct": 40.87473090089563
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 6630493350,
+        "toAmountEur": 8214761393,
+        "deltaEur": 1584268043,
+        "deltaPct": 23.89366762580344
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 8214761393,
+        "toAmountEur": 8207214934,
+        "deltaEur": -7546459,
+        "deltaPct": -0.09186461589049347
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 8207214934,
+        "toAmountEur": 6318881227,
+        "deltaEur": -1888333707,
+        "deltaPct": -23.008215602800977
+      },
+      {
+        "mission": "Infrastrutture pubbliche e logistica",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 6318881227,
+        "toAmountEur": 7896788894,
+        "deltaEur": 1577907667,
+        "deltaPct": 24.971313913256434
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 45906467667,
+        "toAmountEur": 46312578958,
+        "deltaEur": 406111291,
+        "deltaPct": 0.8846494004850961
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 46312578958,
+        "toAmountEur": 48376017822,
+        "deltaEur": 2063438864,
+        "deltaPct": 4.455460936155798
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 48376017822,
+        "toAmountEur": 48495155335,
+        "deltaEur": 119137513,
+        "deltaPct": 0.24627391497656453
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 48495155335,
+        "toAmountEur": 50423647815,
+        "deltaEur": 1928492480,
+        "deltaPct": 3.976670384243857
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 50423647815,
+        "toAmountEur": 50916371530,
+        "deltaEur": 492723715,
+        "deltaPct": 0.9771679288411673
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 50916371530,
+        "toAmountEur": 51879597050,
+        "deltaEur": 963225520,
+        "deltaPct": 1.8917795810183884
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 51879597050,
+        "toAmountEur": 52090015362,
+        "deltaEur": 210418312,
+        "deltaPct": 0.4055897192054232
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 52090015362,
+        "toAmountEur": 56820927328,
+        "deltaEur": 4730911966,
+        "deltaPct": 9.082185776146327
+      },
+      {
+        "mission": "Istruzione scolastica",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 56820927328,
+        "toAmountEur": 57798431887,
+        "deltaEur": 977504559,
+        "deltaPct": 1.7203248960674897
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 7936106705,
+        "toAmountEur": 8230963932,
+        "deltaEur": 294857227,
+        "deltaPct": 3.7153888923170673
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 8230963932,
+        "toAmountEur": 8369238112,
+        "deltaEur": 138274180,
+        "deltaPct": 1.679926933738871
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 8369238112,
+        "toAmountEur": 8709859781,
+        "deltaEur": 340621669,
+        "deltaPct": 4.069924459570688
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 8709859781,
+        "toAmountEur": 9827135442,
+        "deltaEur": 1117275661,
+        "deltaPct": 12.827711227191799
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 9827135442,
+        "toAmountEur": 10319959268,
+        "deltaEur": 492823826,
+        "deltaPct": 5.0149286016119206
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 10319959268,
+        "toAmountEur": 11005637074,
+        "deltaEur": 685677806,
+        "deltaPct": 6.644191010774056
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 11005637074,
+        "toAmountEur": 11446297146,
+        "deltaEur": 440660072,
+        "deltaPct": 4.00394878585472
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 11446297146,
+        "toAmountEur": 11582732317,
+        "deltaEur": 136435171,
+        "deltaPct": 1.1919590174860903
+      },
+      {
+        "mission": "Istruzione universitaria e formazione post-universitaria",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 11582732317,
+        "toAmountEur": 11432211698,
+        "deltaEur": -150520619,
+        "deltaPct": -1.299526008894124
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 26083347597,
+        "toAmountEur": 25877950729,
+        "deltaEur": -205396868,
+        "deltaPct": -0.7874636000465827
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 25877950729,
+        "toAmountEur": 25286607676,
+        "deltaEur": -591343053,
+        "deltaPct": -2.2851231892072286
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 25286607676,
+        "toAmountEur": 25491099616,
+        "deltaEur": 204491940,
+        "deltaPct": 0.8086966137181271
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 25491099616,
+        "toAmountEur": 63779598764,
+        "deltaEur": 38288499148,
+        "deltaPct": 150.20340324576446
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 63779598764,
+        "toAmountEur": 85893802017,
+        "deltaEur": 22114203253,
+        "deltaPct": 34.67284787229208
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 85893802017,
+        "toAmountEur": 91179737910,
+        "deltaEur": 5285935893,
+        "deltaPct": 6.154036459992554
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 91179737910,
+        "toAmountEur": 32571563749,
+        "deltaEur": -58608174161,
+        "deltaPct": -64.27762955279589
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 32571563749,
+        "toAmountEur": 38421873720,
+        "deltaEur": 5850309971,
+        "deltaPct": 17.961403437928624
+      },
+      {
+        "mission": "L'Italia in Europa e nel mondo",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 38421873720,
+        "toAmountEur": 43212548564,
+        "deltaEur": 4790674844,
+        "deltaPct": 12.468613266786823
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 10252916646,
+        "toAmountEur": 10757540277,
+        "deltaEur": 504623631,
+        "deltaPct": 4.9217568856065
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 10757540277,
+        "toAmountEur": 11222733593,
+        "deltaEur": 465193316,
+        "deltaPct": 4.324346495774686
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 11222733593,
+        "toAmountEur": 11567012887,
+        "deltaEur": 344279294,
+        "deltaPct": 3.067695505262093
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 11567012887,
+        "toAmountEur": 12147348455,
+        "deltaEur": 580335568,
+        "deltaPct": 5.017160209549268
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 12147348455,
+        "toAmountEur": 12138028837,
+        "deltaEur": -9319618,
+        "deltaPct": -0.07672141813108135
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 12138028837,
+        "toAmountEur": 13306393625,
+        "deltaEur": 1168364788,
+        "deltaPct": 9.625655068790968
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 13306393625,
+        "toAmountEur": 12952972008,
+        "deltaEur": -353421617,
+        "deltaPct": -2.656028575135436
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 12952972008,
+        "toAmountEur": 13071028220,
+        "deltaEur": 118056212,
+        "deltaPct": 0.9114218105859122
+      },
+      {
+        "mission": "Ordine pubblico e sicurezza",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 13071028220,
+        "toAmountEur": 12959714566,
+        "deltaEur": -111313654,
+        "deltaPct": -0.8516059496350777
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 2371382555,
+        "toAmountEur": 2238276890,
+        "deltaEur": -133105665,
+        "deltaPct": -5.612998405480806
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 2238276890,
+        "toAmountEur": 2286139199,
+        "deltaEur": 47862309,
+        "deltaPct": 2.1383551433620887
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 2286139199,
+        "toAmountEur": 2350010304,
+        "deltaEur": 63871105,
+        "deltaPct": 2.793841469843062
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 2350010304,
+        "toAmountEur": 2426487903,
+        "deltaEur": 76477599,
+        "deltaPct": 3.254351645600274
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 2426487903,
+        "toAmountEur": 2932343251,
+        "deltaEur": 505855348,
+        "deltaPct": 20.8472231563398
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 2932343251,
+        "toAmountEur": 3080296739,
+        "deltaEur": 147953488,
+        "deltaPct": 5.045571931237732
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 3080296739,
+        "toAmountEur": 3053697868,
+        "deltaEur": -26598871,
+        "deltaPct": -0.8635165133030386
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 3053697868,
+        "toAmountEur": 3694072248,
+        "deltaEur": 640374380,
+        "deltaPct": 20.970456400109065
+      },
+      {
+        "mission": "Organi costituzionali, a rilevanza costituzionale e Presidenza del Consiglio dei ministri",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 3694072248,
+        "toAmountEur": 3372834997,
+        "deltaEur": -321237251,
+        "deltaPct": -8.696019715746502
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 86632448434,
+        "toAmountEur": 89121392176,
+        "deltaEur": 2488943742,
+        "deltaPct": 2.8729924952960033
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 89121392176,
+        "toAmountEur": 90413597584,
+        "deltaEur": 1292205408,
+        "deltaPct": 1.4499385349009228
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 90413597584,
+        "toAmountEur": 95563754717,
+        "deltaEur": 5150157133,
+        "deltaPct": 5.696219673390582
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 95563754717,
+        "toAmountEur": 96942068829,
+        "deltaEur": 1378314112,
+        "deltaPct": 1.4422979884807827
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 96942068829,
+        "toAmountEur": 103625673000,
+        "deltaEur": 6683604171,
+        "deltaPct": 6.894431129574382
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 103625673000,
+        "toAmountEur": 107600738359,
+        "deltaEur": 3975065359,
+        "deltaPct": 3.8359850835419906
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 107600738359,
+        "toAmountEur": 118889885081,
+        "deltaEur": 11289146722,
+        "deltaPct": 10.491700051662097
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 118889885081,
+        "toAmountEur": 121512519411,
+        "deltaEur": 2622634330,
+        "deltaPct": 2.2059356254009264
+      },
+      {
+        "mission": "Politiche economico-finanziarie e di bilancio e tutela della finanza pubblica",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 121512519411,
+        "toAmountEur": 124689414429,
+        "deltaEur": 3176895018,
+        "deltaPct": 2.6144590149222187
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 9939436533,
+        "toAmountEur": 10737155780,
+        "deltaEur": 797719247,
+        "deltaPct": 8.025799494282056
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 10737155780,
+        "toAmountEur": 10493245172,
+        "deltaEur": -243910608,
+        "deltaPct": -2.2716500812471216
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 10493245172,
+        "toAmountEur": 11523613453,
+        "deltaEur": 1030368281,
+        "deltaPct": 9.81934820077794
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 11523613453,
+        "toAmountEur": 20287312172,
+        "deltaEur": 8763698719,
+        "deltaPct": 76.04991919195713
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 20287312172,
+        "toAmountEur": 17246843034,
+        "deltaEur": -3040469138,
+        "deltaPct": -14.987047629682424
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 17246843034,
+        "toAmountEur": 18793782353,
+        "deltaEur": 1546939319,
+        "deltaPct": 8.969405681668245
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 18793782353,
+        "toAmountEur": 17744578083,
+        "deltaEur": -1049204270,
+        "deltaPct": -5.582720126757871
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 17744578083,
+        "toAmountEur": 17571766911,
+        "deltaEur": -172811172,
+        "deltaPct": -0.9738815495734996
+      },
+      {
+        "mission": "Politiche per il lavoro",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 17571766911,
+        "toAmountEur": 17097889113,
+        "deltaEur": -473877798,
+        "deltaPct": -2.696813589664398
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 93785616690,
+        "toAmountEur": 93553833295,
+        "deltaEur": -231783395,
+        "deltaPct": -0.24714172938281076
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 93553833295,
+        "toAmountEur": 96401599168,
+        "deltaEur": 2847765873,
+        "deltaPct": 3.0439863046768383
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 96401599168,
+        "toAmountEur": 102312391254,
+        "deltaEur": 5910792086,
+        "deltaPct": 6.131425346688705
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 102312391254,
+        "toAmountEur": 109226926641,
+        "deltaEur": 6914535387,
+        "deltaPct": 6.758258019631293
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 109226926641,
+        "toAmountEur": 107596884342,
+        "deltaEur": -1630042299,
+        "deltaPct": -1.4923447442200013
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 107596884342,
+        "toAmountEur": 113598442822,
+        "deltaEur": 6001558480,
+        "deltaPct": 5.5778180908323165
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 113598442822,
+        "toAmountEur": 135110959542,
+        "deltaEur": 21512516720,
+        "deltaPct": 18.937334161973023
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 135110959542,
+        "toAmountEur": 122496387143,
+        "deltaEur": -12614572399,
+        "deltaPct": -9.336453861153055
+      },
+      {
+        "mission": "Politiche previdenziali",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 122496387143,
+        "toAmountEur": 112702982381,
+        "deltaEur": -9793404762,
+        "deltaPct": -7.994851922095761
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 15638394,
+        "toAmountEur": 16208393,
+        "deltaEur": 569999,
+        "deltaPct": 3.64486915983828
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 16208393,
+        "toAmountEur": 45294320,
+        "deltaEur": 29085927,
+        "deltaPct": 179.44978876067478
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 45294320,
+        "toAmountEur": 44878586,
+        "deltaEur": -415734,
+        "deltaPct": -0.917850185188783
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 44878586,
+        "toAmountEur": 44800059,
+        "deltaEur": -78527,
+        "deltaPct": -0.17497654672096843
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 44800059,
+        "toAmountEur": 50692903,
+        "deltaEur": 5892844,
+        "deltaPct": 13.15365231996681
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 50692903,
+        "toAmountEur": 93727547,
+        "deltaEur": 43034644,
+        "deltaPct": 84.89283795800765
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 93727547,
+        "toAmountEur": 41966727,
+        "deltaEur": -51760820,
+        "deltaPct": -55.22476759153848
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 41966727,
+        "toAmountEur": 37518068,
+        "deltaEur": -4448659,
+        "deltaPct": -10.600443060522686
+      },
+      {
+        "mission": "Regolazione dei mercati",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 37518068,
+        "toAmountEur": 37230952,
+        "deltaEur": -287116,
+        "deltaPct": -0.7652739474751205
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 116948426883,
+        "toAmountEur": 118080825591,
+        "deltaEur": 1132398708,
+        "deltaPct": 0.9682889613666186
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 118080825591,
+        "toAmountEur": 119993146637,
+        "deltaEur": 1912321046,
+        "deltaPct": 1.6195017577398738
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 119993146637,
+        "toAmountEur": 123842112575,
+        "deltaEur": 3848965938,
+        "deltaPct": 3.207654808523179
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 123842112575,
+        "toAmountEur": 132581086335,
+        "deltaEur": 8738973760,
+        "deltaPct": 7.056544480947538
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 132581086335,
+        "toAmountEur": 141062507025,
+        "deltaEur": 8481420690,
+        "deltaPct": 6.3971573355263684
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 141062507025,
+        "toAmountEur": 143150452492,
+        "deltaEur": 2087945467,
+        "deltaPct": 1.4801562165841564
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 143150452492,
+        "toAmountEur": 147385933337,
+        "deltaEur": 4235480845,
+        "deltaPct": 2.9587617581835457
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 147385933337,
+        "toAmountEur": 151105039641,
+        "deltaEur": 3719106304,
+        "deltaPct": 2.523379416064226
+      },
+      {
+        "mission": "Relazioni finanziarie con le autonomie territoriali",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 151105039641,
+        "toAmountEur": 156924366499,
+        "deltaEur": 5819326858,
+        "deltaPct": 3.85117986258151
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 2761236019,
+        "toAmountEur": 2977760910,
+        "deltaEur": 216524891,
+        "deltaPct": 7.8415930224760695
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 2977760910,
+        "toAmountEur": 3316411278,
+        "deltaEur": 338650368,
+        "deltaPct": 11.37265140605261
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 3316411278,
+        "toAmountEur": 3793075215,
+        "deltaEur": 476663937,
+        "deltaPct": 14.37288373013427
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 3793075215,
+        "toAmountEur": 4254981883,
+        "deltaEur": 461906668,
+        "deltaPct": 12.177630071066229
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 4254981883,
+        "toAmountEur": 4882640225,
+        "deltaEur": 627658342,
+        "deltaPct": 14.751140175418698
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 4882640225,
+        "toAmountEur": 4999289704,
+        "deltaEur": 116649479,
+        "deltaPct": 2.3890656207421057
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 4999289704,
+        "toAmountEur": 4992141904,
+        "deltaEur": -7147800,
+        "deltaPct": -0.14297631110037387
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 4992141904,
+        "toAmountEur": 4294506484,
+        "deltaEur": -697635420,
+        "deltaPct": -13.974671261668526
+      },
+      {
+        "mission": "Ricerca e innovazione",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 4294506484,
+        "toAmountEur": 4254614396,
+        "deltaEur": -39892088,
+        "deltaPct": -0.9289097163696353
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 2542647849,
+        "toAmountEur": 3204035098,
+        "deltaEur": 661387249,
+        "deltaPct": 26.011751853884036
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 3204035098,
+        "toAmountEur": 3234435916,
+        "deltaEur": 30400818,
+        "deltaPct": 0.9488291192245859
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 3234435916,
+        "toAmountEur": 3364741068,
+        "deltaEur": 130305152,
+        "deltaPct": 4.028682446772583
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 3364741068,
+        "toAmountEur": 4010196780,
+        "deltaEur": 645455712,
+        "deltaPct": 19.1829237066274
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 4010196780,
+        "toAmountEur": 4288513778,
+        "deltaEur": 278316998,
+        "deltaPct": 6.940232942883166
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 4288513778,
+        "toAmountEur": 4136169624,
+        "deltaEur": -152344154,
+        "deltaPct": -3.552376461549985
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 4136169624,
+        "toAmountEur": 4426000341,
+        "deltaEur": 289830717,
+        "deltaPct": 7.007225122448219
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 4426000341,
+        "toAmountEur": 4388221944,
+        "deltaEur": -37778397,
+        "deltaPct": -0.8535561249293632
+      },
+      {
+        "mission": "Servizi istituzionali e generali delle amministrazioni pubbliche",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 4388221944,
+        "toAmountEur": 4575916004,
+        "deltaEur": 187694060,
+        "deltaPct": 4.277223494965504
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 4837524874,
+        "toAmountEur": 5797608278,
+        "deltaEur": 960083404,
+        "deltaPct": 19.846583304617443
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 5797608278,
+        "toAmountEur": 7620067578,
+        "deltaEur": 1822459300,
+        "deltaPct": 31.434674655678762
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 7620067578,
+        "toAmountEur": 5469412148,
+        "deltaEur": -2150655430,
+        "deltaPct": -28.22357423980315
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 5469412148,
+        "toAmountEur": 6291674936,
+        "deltaEur": 822262788,
+        "deltaPct": 15.03384213421687
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 6291674936,
+        "toAmountEur": 6190755227,
+        "deltaEur": -100919709,
+        "deltaPct": -1.6040197566875696
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 6190755227,
+        "toAmountEur": 5020010206,
+        "deltaEur": -1170745021,
+        "deltaPct": -18.91118253058982
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 5020010206,
+        "toAmountEur": 5814302381,
+        "deltaEur": 794292175,
+        "deltaPct": 15.822521118595512
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 5814302381,
+        "toAmountEur": 5643555987,
+        "deltaEur": -170746394,
+        "deltaPct": -2.936661749102794
+      },
+      {
+        "mission": "Soccorso civile",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 5643555987,
+        "toAmountEur": 6575562591,
+        "deltaEur": 932006604,
+        "deltaPct": 16.514527474289057
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 3489320085,
+        "toAmountEur": 4902617945,
+        "deltaEur": 1413297860,
+        "deltaPct": 40.50353150676918
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 4902617945,
+        "toAmountEur": 6374732242,
+        "deltaEur": 1472114297,
+        "deltaPct": 30.02710620152148
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 6374732242,
+        "toAmountEur": 6910767975,
+        "deltaEur": 536035733,
+        "deltaPct": 8.408756833241123
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 6910767975,
+        "toAmountEur": 10192667975,
+        "deltaEur": 3281900000,
+        "deltaPct": 47.48965689301702
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 10192667975,
+        "toAmountEur": 15438667975,
+        "deltaEur": 5246000000,
+        "deltaPct": 51.468369350076856
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 15438667975,
+        "toAmountEur": 9712894975,
+        "deltaEur": -5725773000,
+        "deltaPct": -37.08722157424336
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 9712894975,
+        "toAmountEur": 13486779000,
+        "deltaEur": 3773884025,
+        "deltaPct": 38.85436869968832
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 13486779000,
+        "toAmountEur": 14864641000,
+        "deltaEur": 1377862000,
+        "deltaPct": 10.216390436886376
+      },
+      {
+        "mission": "Sviluppo e riequilibrio territoriale",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 14864641000,
+        "toAmountEur": 8506770000,
+        "deltaEur": -6357871000,
+        "deltaPct": -42.77177632476963
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 1214786500,
+        "toAmountEur": 1205165398,
+        "deltaEur": -9621102,
+        "deltaPct": -0.7919994171815375
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 1205165398,
+        "toAmountEur": 1191166663,
+        "deltaEur": -13998735,
+        "deltaPct": -1.161561311271567
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 1191166663,
+        "toAmountEur": 1965397909,
+        "deltaEur": 774231246,
+        "deltaPct": 64.99772618300685
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 1965397909,
+        "toAmountEur": 2899793489,
+        "deltaEur": 934395580,
+        "deltaPct": 47.54231068025421
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 2899793489,
+        "toAmountEur": 4130869638,
+        "deltaEur": 1231076149,
+        "deltaPct": 42.45392486292323
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 4130869638,
+        "toAmountEur": 4330215885,
+        "deltaEur": 199346247,
+        "deltaPct": 4.82576949817558
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 4330215885,
+        "toAmountEur": 3088009836,
+        "deltaEur": -1242206049,
+        "deltaPct": -28.68693113669089
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 3088009836,
+        "toAmountEur": 2936708252,
+        "deltaEur": -151301584,
+        "deltaPct": -4.899647087782139
+      },
+      {
+        "mission": "Sviluppo sostenibile e tutela del territorio e dell'ambiente",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 2936708252,
+        "toAmountEur": 2878091846,
+        "deltaEur": -58616406,
+        "deltaPct": -1.995990100823948
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 46269171,
+        "toAmountEur": 46763624,
+        "deltaEur": 494453,
+        "deltaPct": 1.0686446057138133
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 46763624,
+        "toAmountEur": 44332450,
+        "deltaEur": -2431174,
+        "deltaPct": -5.198857128780268
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 44332450,
+        "toAmountEur": 43328095,
+        "deltaEur": -1004355,
+        "deltaPct": -2.265507545827041
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 43328095,
+        "toAmountEur": 158014460,
+        "deltaEur": 114686365,
+        "deltaPct": 264.6928395998024
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 158014460,
+        "toAmountEur": 258902050,
+        "deltaEur": 100887590,
+        "deltaPct": 63.84706184484635
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 258902050,
+        "toAmountEur": 402946820,
+        "deltaEur": 144044770,
+        "deltaPct": 55.636782327525026
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 402946820,
+        "toAmountEur": 347441592,
+        "deltaEur": -55505228,
+        "deltaPct": -13.77482715957406
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 347441592,
+        "toAmountEur": 404624025,
+        "deltaEur": 57182433,
+        "deltaPct": 16.458142696974516
+      },
+      {
+        "mission": "Turismo",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 404624025,
+        "toAmountEur": 253498210,
+        "deltaEur": -151125815,
+        "deltaPct": -37.34968901068096
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 2028850731,
+        "toAmountEur": 2109577690,
+        "deltaEur": 80726959,
+        "deltaPct": 3.978950139925301
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 2109577690,
+        "toAmountEur": 1290111337,
+        "deltaEur": -819466353,
+        "deltaPct": -38.84504263030958
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 1290111337,
+        "toAmountEur": 1408220734,
+        "deltaEur": 118109397,
+        "deltaPct": 9.154977063812904
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 1408220734,
+        "toAmountEur": 2559944184,
+        "deltaEur": 1151723450,
+        "deltaPct": 81.78571882893468
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 2559944184,
+        "toAmountEur": 2131146446,
+        "deltaEur": -428797738,
+        "deltaPct": -16.750276849004926
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 2131146446,
+        "toAmountEur": 2807986876,
+        "deltaEur": 676840430,
+        "deltaPct": 31.759451879544837
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 2807986876,
+        "toAmountEur": 1930062815,
+        "deltaEur": -877924061,
+        "deltaPct": -31.265248014642072
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 1930062815,
+        "toAmountEur": 1992903661,
+        "deltaEur": 62840846,
+        "deltaPct": 3.255896414956837
+      },
+      {
+        "mission": "Tutela della salute",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 1992903661,
+        "toAmountEur": 2121265432,
+        "deltaEur": 128361771,
+        "deltaPct": 6.440942104325835
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2017,
+        "toYear": 2018,
+        "fromAmountEur": 1968361905,
+        "toAmountEur": 2278177809,
+        "deltaEur": 309815904,
+        "deltaPct": 15.739783584157507
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2018,
+        "toYear": 2019,
+        "fromAmountEur": 2278177809,
+        "toAmountEur": 2645705675,
+        "deltaEur": 367527866,
+        "deltaPct": 16.132536474899883
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2019,
+        "toYear": 2020,
+        "fromAmountEur": 2645705675,
+        "toAmountEur": 2268453986,
+        "deltaEur": -377251689,
+        "deltaPct": -14.25901953360704
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2020,
+        "toYear": 2021,
+        "fromAmountEur": 2268453986,
+        "toAmountEur": 2680059584,
+        "deltaEur": 411605598,
+        "deltaPct": 18.144762932828563
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2021,
+        "toYear": 2022,
+        "fromAmountEur": 2680059584,
+        "toAmountEur": 3584553161,
+        "deltaEur": 904493577,
+        "deltaPct": 33.74900999962245
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2022,
+        "toYear": 2023,
+        "fromAmountEur": 3584553161,
+        "toAmountEur": 3553945698,
+        "deltaEur": -30607463,
+        "deltaPct": -0.8538710858862333
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2023,
+        "toYear": 2024,
+        "fromAmountEur": 3553945698,
+        "toAmountEur": 3286989285,
+        "deltaEur": -266956413,
+        "deltaPct": -7.511550138490608
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2024,
+        "toYear": 2025,
+        "fromAmountEur": 3286989285,
+        "toAmountEur": 2961658132,
+        "deltaEur": -325331153,
+        "deltaPct": -9.897542242824803
+      },
+      {
+        "mission": "Tutela e valorizzazione dei beni e attivita' culturali e paesaggistici",
+        "fromYear": 2025,
+        "toYear": 2026,
+        "fromAmountEur": 2961658132,
+        "toAmountEur": 2884184579,
+        "deltaEur": -77473553,
+        "deltaPct": -2.6158843980983826
+      }
+    ],
+    "observedAt": "2026-08-28T23:26:32.000Z"
+  }
+}

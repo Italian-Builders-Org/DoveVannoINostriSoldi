@@ -1,0 +1,592 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding-top: var(--space-4);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.breadcrumb strong {
+  color: var(--color-neutral-900);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.hero {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 36ch;
+  margin: 12px 0;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+}
+
+.hero p {
+  margin: 0;
+  color: var(--color-neutral-600);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  margin: var(--space-4) 0 var(--space-6);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+  font-size: 11px;
+}
+
+.legend > span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.evidence {
+  display: inline-flex;
+  width: max-content;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.osservato {
+  color: var(--color-positive);
+  background: var(--color-positive-bg);
+}
+
+.collegato {
+  color: var(--color-neutral-800);
+  background: var(--color-neutral-200);
+}
+
+.derivato {
+  color: var(--color-accent-800);
+  background: var(--color-accent-100);
+}
+
+.mancante {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.sectionHeading {
+  margin-bottom: var(--space-4);
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.flow {
+  margin-bottom: var(--space-6);
+}
+
+.flowGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-300);
+}
+
+.flowGrid > div {
+  display: flex;
+  min-width: 0;
+  min-height: 160px;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space-4);
+  border-right: 1px solid var(--color-neutral-300);
+}
+
+.flowGrid > div:last-child {
+  border-right: 0;
+}
+
+.flowGrid > div > span:first-child {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.flowGrid strong {
+  margin: auto 0 8px;
+  font-size: clamp(18px, 2.5vw, 29px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.caveat {
+  max-width: 100ch;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.twoColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+  margin-bottom: var(--space-6);
+}
+
+.definitionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.definitionGrid div {
+  min-width: 0;
+}
+
+.definitionGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.definitionGrid dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.subheading {
+  margin: var(--space-5) 0 var(--space-3);
+  font-size: 15px;
+}
+
+.locationList,
+.awardeeList,
+.mopList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.locationList li,
+.awardeeList li,
+.mopList li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-neutral-300);
+  font-size: 12px;
+}
+
+.locationList span,
+.awardeeList span,
+.mopList span {
+  color: var(--color-neutral-700);
+  overflow-wrap: anywhere;
+}
+
+.locationList small,
+.mopList small {
+  color: var(--color-neutral-600);
+  overflow-wrap: anywhere;
+}
+
+.mopPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mopOnlyNotice {
+  margin-bottom: var(--space-4);
+}
+
+.mopEvidence,
+.mopMissing {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.mopWorks {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.mopWork {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.mopWorkHead {
+  display: grid;
+  gap: 4px;
+}
+
+.mopWorkHead strong {
+  font-size: 13px;
+}
+
+.mopWorkHead span,
+.mopWorkHead small {
+  color: var(--color-neutral-700);
+  overflow-wrap: anywhere;
+}
+
+.mopWorkHead small {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.mopCostFacts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.mopCostFacts > div {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.mopCostFacts dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mopCostFacts dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.mopCostFacts small {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.mopCostNote,
+.mopProvenance {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.mopProvenanceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+
+.mopProvenanceGrid > div {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.mopProvenanceGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mopProvenanceGrid dd {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .mopCostFacts,
+  .mopProvenanceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+}
+
+.timeline div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px;
+  padding: 12px;
+  background: var(--color-neutral-100);
+}
+
+.timeline dt {
+  grid-column: 1 / -1;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.timeline dd {
+  margin: 0;
+  font-weight: 800;
+}
+
+.procurement {
+  margin-bottom: var(--space-6);
+}
+
+.tenderList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.tenderList details {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.tenderList summary {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) 180px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: 16px 4px;
+  cursor: pointer;
+}
+
+.tenderList summary span {
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.tenderList summary strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.tenderList summary small {
+  color: var(--color-neutral-600);
+  text-align: right;
+}
+
+.tenderBody {
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+}
+
+.tenderBody h3 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: 15px;
+}
+
+.unmatched {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--color-warning-border);
+  background: var(--color-warning-bg);
+}
+
+.unmatched > strong {
+  margin-right: 8px;
+}
+
+.unmatched p {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
+.mopList {
+  margin: var(--space-3) 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.openCupPanel,
+.openCupUnavailable {
+  margin-bottom: var(--space-6);
+}
+
+.openCupPanel > .sectionHeading p {
+  margin: 8px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.openCupRecord {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.openCupRecord summary {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 140px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: 16px 4px;
+  cursor: pointer;
+}
+
+.openCupRecord summary span,
+.openCupRecord summary small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.openCupRecord summary strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.openCupRecord summary small {
+  text-align: right;
+}
+
+.openCupRecordBody {
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+}
+
+.liveStatus {
+  min-height: 1.4em;
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupProvenance {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.openCupProvenance p {
+  margin: 4px 0;
+}
+
+.openCupProvenance code {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .flowGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .flowGrid > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .flowGrid > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .flowGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .flowGrid > div,
+  .flowGrid > div:nth-child(2) {
+    min-height: 130px;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .flowGrid > div:last-child {
+    border-bottom: 0;
+  }
+
+  .definitionGrid,
+  .timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .tenderList summary {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .openCupRecord summary {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .openCupRecord summary small {
+    text-align: left;
+  }
+
+  .tenderList summary small {
+    text-align: left;
+  }
+
+  .legend {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+}

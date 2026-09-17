@@ -1,0 +1,1029 @@
+# Fonti dati
+
+Questa è la mappa iniziale delle fonti. Il criterio è semplice: prima fonti istituzionali nazionali, strutturate e con identificativi stabili; poi portali territoriali e documenti meno standardizzati.
+
+## Registro integrato row-level
+
+Oltre alle pipeline istituzionali descritte sotto, il repository contiene un
+rilascio integrato di 79 dataset curati. Prima delle viste applicative sono
+stati chiusi tre registri: 51.303 elementi inventariati, 34.071 identità di fonte e
+13.321.128 righe sorgente. Le equazioni, tutti i dataset, gli stati di licenza
+e i comandi di verifica sono documentati in
+[INTEGRATED_SOURCE_LEDGER.md](INTEGRATED_SOURCE_LEDGER.md).
+
+Il catalogo non promuove una nota secondaria a fonte ufficiale: conserva i
+collegamenti pubblicabili e mette in quarantena valori locali, malformed,
+sensibili o di processo senza eliminare l'identità. La proiezione row-level
+mantiene 338.782 righe interrogabili; `not-declared` resta una cautela di riuso,
+non un gate che nasconde la riga.
+
+La UI non usa il catalogo come esperienza primaria: 21 percorsi editoriali
+e un'anteprima nella pagina Partecipazioni coprono tutti i 79 insiemi,
+partendo da anteprime nelle pagine esistenti e arrivando a risultati, limiti,
+prime righe, fonte e drill-down completo. Il registro tecnico resta espandibile
+per chi deve controllare schema e stato di
+pubblicazione. Le schede dataset espongono titolare, periodo di riferimento,
+pubblicazione, acquisizione, ultimo controllo e frequenza. I campi non presenti
+nel materiale sono indicati come non disponibili, senza ricostruzioni; quando
+una riga non porta un URL puntuale, la UI usa il portale canonico dichiarato o
+segnala esplicitamente che l’URL non è disponibile. Ricevute e hash del dataset
+restano verificabili nel registro di copertura senza creare link circolari.
+
+Per aggiungere una nuova fonte in modo ripetibile (contributor o agente), usa
+[DATA_IMPORT_STANDARD.md](DATA_IMPORT_STANDARD.md).
+
+## Pagella politico-economica dei governi
+
+### Confronto di serie esistenti
+
+`/esplora/serie` permette di confrontare da due a quattro serie della stessa
+famiglia: undici funzioni COFOG Italia (`gov_10a_exp`, annuale 2014–2024), in
+milioni di euro correnti oppure % del PIL, e IPCA totale IT/FR/DE/ES
+(`prc_hicp_minr`, `RCH_A`, mensile 1997-01–2026-08). Usa gli snapshot già
+validati e non acquisisce nuove fonti. Fonte, copertura, unità, date e hash
+restano associati a ogni selezione; i flag stimati/provvisori e le interruzioni
+non vengono eliminati. Unità, frequenze o definizioni incompatibili bloccano
+il confronto; lacune e zero restano distinti. Specifica e limiti in
+[CONFRONTO_SERIE.md](CONFRONTO_SERIE.md).
+
+### Serie della pagella
+
+La pagina `/governi` combina due perimetri che non vanno confusi:
+
+- **voto:** sei serie annuali AMECO della Commissione europea, per Italia,
+  Francia, Germania e Spagna; il vintage Spring 2026 contiene osservazioni fino
+  al 2024 e previsioni dal 2025, ma il punteggio usa solo le osservazioni;
+- **lettura del mandato:** nove grafici AMECO/Eurostat, con frequenza annuale,
+  trimestrale o mensile, più un contesto curato da fonti istituzionali. Questi
+  dati non cambiano il voto.
+
+I dataset Eurostat sono `prc_hicp_minr`, `une_rt_m`, `lfsi_emp_q`,
+`namq_10_pc`, `gov_10dd_edpt1`, `gov_10q_ggdebt`, `gov_10q_ggnfa`,
+`namq_10_gdp` e `nama_10_pe`. Le query sono limitate a IT, FR, DE ed ES e i
+filtri di unità, settore, voce e destagionalizzazione sono bloccati nel source
+spec. Le risposte JSON-stat e lo ZIP CSV AMECO conservano byte, dimensione,
+data di acquisizione e SHA-256.
+
+Le serie non misurano la causalità delle decisioni di governo. Il confronto con
+gli altri tre paesi riduce alcuni shock comuni, ma non assegna meriti o colpe.
+Debito, saldo primario, investimenti, PIL, occupazione e prezzi mantengono unità
+e frequenze distinte; non vengono sommati. I valori mancanti non sono
+interpolati.
+
+Il riuso segue la [CC BY 4.0 della Commissione europea salvo diversa
+indicazione](https://commission.europa.eu/legal-notice_en) e la
+[policy di riuso Eurostat](https://ec.europa.eu/eurostat/web/main/help/copyright-notice),
+incluse le eccezioni dichiarate dalla fonte. Il refresh controlla le origini
+ogni settimana, mentre la pubblicazione effettiva segue la cadenza di ciascun
+dataset e passa sempre da una PR.
+
+Contratto, formule, ultimi periodi disponibili e procedura di manutenzione sono
+documentati in
+[PAGELLA_POLITICO_ECONOMICA.md](PAGELLA_POLITICO_ECONOMICA.md).
+
+## Inflazione IPCA / HICP
+
+La pagina `/inflazione` usa uno snapshot tipizzato dedicato di Eurostat, separato
+dalla lettura sintetica presente in `/governi`. La fonte principale è
+`prc_hicp_minr` (ECOICOP v2): per l'Italia conserva da gennaio 2022 ad agosto
+2026 indice con base 2025=100, variazione annua e variazione mensile. Il dato
+di agosto 2026 porta il flag Eurostat `e` e viene quindi mostrato come stima.
+
+Il confronto con UE27 e area euro e le 13 divisioni ECOICOP v2 usano luglio
+2026, ultimo mese comune completo osservato al controllo del 10 settembre 2026.
+I pesi italiani 2025-2026 arrivano dal dataset `prc_hicp_iw` e sono pubblicati
+in per mille: le 13 divisioni riconciliano a 1000 entro il solo errore di
+arrotondamento a due decimali. Tasso per divisione e peso del paniere restano
+due misure distinte; DVNS non li moltiplica per costruire un presunto contributo
+italiano all'inflazione. Eurostat pubblica una serie ufficiale di contributi
+all'inflazione annua per l'area euro, ma non è la stessa cosa e non viene usata
+come scorciatoia per l'Italia.
+
+IPCA misura prezzi al consumo e non denaro pubblico: non entra nei totali SIOPE,
+nei bilanci o nei conti COFOG. NIC e FOI sono indici nazionali ISTAT con pesi,
+popolazioni di riferimento e finalità differenti; la pagina rimanda alla nota
+ISTAT 2026 invece di trattarli come sinonimi dell'IPCA. Differenze di inflazione
+tra paesi o periodi non sono attribuite automaticamente al governo in carica.
+
+Le quattro risposte JSON-stat sono source-locked per endpoint ufficiale,
+struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
+è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
+`scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
+
+## Cuneo fiscale · OECD Taxing Wages
+
+La pagina `/cuneo-fiscale` pubblica il cuneo fiscale italiano da OECD Taxing
+Wages (dataflow `DSD_TAX_WAGES_COMP@DF_TW_COMP` v2.1). Il profilo prodotto è
+persona single senza figli al 100% del salario medio (`S_C0`, `AW100`): non è
+una busta paga reale, non è IRPEF MEF territoriale e non è un pagamento SIOPE.
+
+Il cuneo medio (`AV_TW`) è in percentuale del costo del lavoro. Le componenti
+IRPEF e contributi lavoratore/datore restano in percentuale del lordo: i due
+denominatori non vengono confusi. Per ogni anno italiano lo snapshot verifica
+che `(IRPEF + SSC lavoratore + SSC datore) / (100 + SSC datore)` riconcili
+`AV_TW` entro un milionesimo di punto. Il confronto con Francia, Germania,
+Spagna e media OECD usa lo stesso profilo dal 2015 al 2025. La serie AW67 è
+conservata solo come controllo rispetto a Eurostat `earn_nt_taxwedge`.
+
+La pubblicazione [Taxing Wages 2025](https://doi.org/10.1787/b3a95829-en) è
+CC BY 4.0. I quattro CSV SDMX sono source-locked per URL, byte e SHA-256.
+Controllo offline: `python3 scripts/etl/oecd_taxing_wages_snapshot.py --check`.
+
+## PIL e conti nazionali · Eurostat
+
+La pagina `/pil` pubblica il prodotto interno lordo italiano da Eurostat SEC 2010
+(`namq_10_gdp` trimestrale e `nama_10_gdp` annuale). Livelli nominali
+(`CP_MEUR`) e reali a volumi concatenati 2020 (`CLV20_MEUR`), crescita a/a e
+t/t, quote della domanda (`P3`, `P51G`, `P6`, `P7` in `PC_GDP`) e confronto di
+crescita reale con Francia, Germania e Spagna restano nature e serie distinte.
+
+Non è cassa SIOPE né uno stanziamento di bilancio. L’export netto mostrato in UI
+è solo la differenza ufficiale P6 − P7, dichiarata come derivata. Nessuna
+attribuzione automatica al governo in carica: la stessa famiglia macro della
+pagella `/governi` viene letta qui senza voto.
+
+Le cinque risposte JSON-stat sono source-locked per endpoint ufficiale, struttura
+SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline è
+`python3 scripts/etl/eurostat_gdp_snapshot.py --check`; il source lock è
+`scripts/etl/specs/eurostat-gdp-2015-2026.source.json`.
+
+## Disuguaglianza del reddito · Eurostat EU-SILC
+
+Il corpus integrato pubblica per l'Italia due indicatori annuali della
+distribuzione del reddito disponibile equivalizzato: `gini` (coefficiente di
+Gini, scala da 0 a 100) e `s80s20` (rapporto tra il quintile superiore e quello
+inferiore). Sono 24 righe per gli anni di indagine EU-SILC 2014-2025. `Anno
+redditi` conserva separatamente il 2013-2024 di riferimento: per l'Italia
+Eurostat usa il precedente anno solare.
+
+Le risposte JSON-stat ufficiali `ilc_di12` e `ilc_di11` sono fissate per URL,
+filtri, dimensioni, struttura SDMX, `sourceUpdated`, byte e SHA-256. Il parser
+legge i numeri come decimali e genera il PSV con le colonne `Indicatore`, `Anno
+rilevazione`, `Anno redditi`, `Valore`, `Unità`, `Stato` e `URL fonte`; uno zero
+resta distinto da una cella mancante e il flag Eurostat `b` viene conservato.
+La fonte dichiara aggiornamento 8 giugno 2026; la data di pubblicazione della
+distribuzione non è dichiarata.
+
+Il riuso riguarda i dati statistici Eurostat secondo la Decisione 2011/833/UE
+e il copyright notice della fonte, senza estendere una licenza ai contenuti
+editoriali. L'indicatore è separato dalle serie di povertà e BES, non misura
+spesa pubblica e non costruisce classifiche. Controllo offline:
+`python3 scripts/etl/eurostat_inequality_corpus.py check`; source lock:
+`scripts/etl/specs/eurostat-inequality.source.json`.
+
+Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
+ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
+`dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto
+esplicito di un aggregato derivato. Gli anni presenti solo in testo libero o
+negli URL non vengono usati. I 47 dataset senza un confine non ambiguo restano
+quindi su “Non disponibile”; gli estremi futuri degli incarichi descrivono la
+durata dichiarata del record e non una data di pubblicazione o acquisizione.
+
+Due insiemi `catalog-only` espongono anche il denominatore fisico usato nella
+verifica. OpenCUP contiene 11.942.784 record CSV, mentre 11.991.275 è il numero
+di linee fisiche di dati: il delta di 48.491 deriva da newline dentro campi
+quotati. Consip conserva 1.028.559 unità fisiche, formate da 1.028.557 record
+validi e 2 frammenti malformati che non vengono ricostruiti.
+
+## Tier 1: infrastrutture nazionali
+
+### SIOPE / SIOPE+
+**Titolari/gestori:** RGS e Banca d'Italia.  
+**Uso:** incassi e pagamenti degli enti pubblici.  
+**Join:** ente, periodo, codifica gestionale/contabile.  
+**Nota:** SIOPE contiene dati per oltre 10.000 enti. SIOPE+ è l'infrastruttura degli ordinativi di pagamento e incasso; non va confusa la frequenza del flusso operativo con la frequenza del dato pubblico esposto dalla dashboard.
+
+Nelle graduatorie comunali, la Provincia viene dall'associazione tra `ANAG_ENTI_SIOPE` e `ANAG_REG_PROV` del registro ufficiale SIOPE. La Regione è quella della sede legale ottenuta tramite codice fiscale da IPA: non indica necessariamente il luogo fisico in cui ogni pagamento produce effetti.
+
+La pipeline tipizzata comprende ora **incassi e pagamenti COMUNE 2024-2026**, da ZIP distinti
+`https://www.siope.it/documenti/siope2/open/last/SIOPE_ENTRATE.<anno>.zip` e
+`SIOPE_USCITE.<anno>.zip`, con lo stesso registro `SIOPE_ANAGRAFICHE.zip` e il medesimo join
+esatto IPA su codice fiscale. Il core ETL è condiviso, gli artifact e i contratti runtime no.
+Gli incassi sono flussi mensili di cassa: **non accertamenti o entrate di competenza**.
+Non si calcolano saldi, residui fiscali o indicatori di efficienza; il 2026 può essere parziale.
+Assenza di movimento osservato (`null`) e valore osservato zero restano distinti.
+
+Il refresh è unico e **giornaliero alle 04:29 UTC**, non orario. Hash SHA-256 riguardano tutti
+i byte acquisiti; data di acquisizione e controllo sono distinte dai validator HTTP e da una
+data di pubblicazione non dichiarata (`publicationDate: null`). Per questi ZIP entrate la
+licenza non è verificata: `license: not-declared`, senza attribuire quella di altri dataset.
+Spec, vocabolario dei titoli, coperture e comandi offline sono descritti in
+[SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md).
+
+Province, Regioni comprese le Province autonome e Città metropolitane usano gli stessi ZIP
+ufficiali delle uscite, ma una proiezione separata con comparti rispettivamente `PRO`, `REG`
+e `PRO`. Il censimento include tutti i tipi SIOPE, mentre i pagamenti pubblicati sono solo
+dei tre perimetri territoriali e delle ASL (comparto `SAN`). Le ASL conservano le voci
+gestionali sanitarie originali e sono accessibili da `/spese/sanita` e `/dati/siope-uscite-asl`;
+sono pagamenti di cassa, distinti e non sommabili al Conto Economico SSN. Le identità sono unite a IPA esclusivamente per codice fiscale
+esatto e intervallo temporale; zero osservato, assenza di movimenti e errore di join restano
+distinti. File, hash, provenienza, release e comando di rigenerazione sono in
+[SIOPE_NON_MUNICIPAL.md](SIOPE_NON_MUNICIPAL.md).
+L'acquisizione e la pubblicazione di queste proiezioni sono manuali: la cadenza dei file
+ufficiali non modifica né sostituisce il refresh giornaliero dei flussi comunali.
+
+### OpenBDAP
+**Titolare:** Ragioneria Generale dello Stato.  
+**Uso:** bilancio dello Stato, spesa, SIOPE, opere pubbliche, PNRR e altri domini.  
+**Accesso:** catalogo e API OData ufficiali.
+**Endpoint implementati:** pagamenti dello Stato e `GET /api/opere?cup=...` per le opere pubbliche MOP.
+
+Per i pagamenti dello Stato, i rilasci `PBS_SPE_Mxx_*` sono mensili e cumulati dal 1° gennaio al mese contabile indicato. I rilasci `PBS_SPE_RND_*` sono consuntivi annuali: per una query con il solo anno vengono preferiti quando disponibili, mentre query mensili e storico restano esclusivamente sulla serie mensile. Le serie non vengono sommate o mescolate.
+
+La pagina Ministeri usa invece `2025_RND_SPE_ELB_CAP_001`, rendiconto elaborabile per capitolo: 5.395 righe, 41 colonne e 15 amministrazioni. L'ETL `scripts/etl/rgs_ministries_account.py` blocca la pubblicazione se cambiano file, schema, anno, amministrazioni o identità contabili. CP (competenza), RS (residui) e CS (cassa) restano campi distinti. La scheda di questo specifico rilascio dichiara CC BY 3.0; la licenza non viene estesa ad altri dataset RGS.
+
+Il connettore MOP legge prima i metadati e lo schema ufficiale. Gli alias tecnici delle colonne vengono scoperti a ogni controllo e accettati soltanto se nome, significato e tipo restano quelli previsti dal contratto. Questo evita di pubblicare valori nella colonna sbagliata dopo una modifica della fonte.
+
+Al controllo del 3 agosto 2026, lo schema dichiarava 560.245 codici locali di progetto e 541.539 CUP distinti. La ricerca usa il CUP esatto e interroga soltanto le righe necessarie: non scarica oltre mezzo milione di opere durante una richiesta web.
+
+Per ogni opera manteniamo distinti:
+
+- costo previsto e costo effettivo;
+- finanziamenti statali, europei, territoriali, privati e altre fonti;
+- finanziamenti ancora da trovare;
+- date previste e date effettive;
+- avvisi sulla qualità del dato.
+
+La sezione `/opere` (menu Fondi e progetti → Opere pubbliche) offre:
+
+1. riepilogo grafico (avanzamento; previsto vs effettivo per settore in scala
+   logaritmica) e subito sotto l’elenco sfogliabile offline del sottoinsieme
+   **confrontabile** (previsto e effettivo entrambi &gt; 0), con filtri settore /
+   categoria / avanzamento / stato;
+2. ricerca CUP live su OpenBDAP sotto l’elenco, per confronti fuori snapshot.
+
+Ogni riga mostra se l’opera è in corso o conclusa e, quando disponibili, le
+date di esecuzione previste ed effettive: su un’opera in corso lo scostamento
+non è un bilancio finale.
+
+Lo snapshot `mop-comparable-browse` non è l'intero catalogo nazionale e **non
+contiene regioni**: le colonne ufficiali MOP non le espongono. Sulla scheda
+`/progetti/[cup]` resta il blocco costi previsto/effettivo. API live:
+`GET /api/opere?cup=…`. Anteprima fuori snapshot asili: `/progetti/[cup]?fonte=mop`.
+
+Gli avvisi su tempi, costi o copertura finanziaria hanno uso di screening. Indicano cosa verificare e includono spiegazioni alternative plausibili. Non classificano automaticamente un'opera come spreco, irregolarità o illecito.
+
+### Rendiconto RGS: consulenze e lavoro parasubordinato
+
+La pagina `/spese/consulenze` usa i rendiconti elaborabili per piano di
+gestione 2024 e 2025, risorse `spd_rnd_spe_elb_pig_01_2024` e
+`spd_rnd_spe_elb_pig_01_2025`. I due CSV ufficiali sono bloccati per URL,
+dimensione, SHA-256 e schema; le landing collegate dichiarano CC BY 3.0.
+
+La selezione contiene 268 righe contabili e mantiene distinti anno,
+amministrazione, centro di responsabilità, missione, programma, capitolo e
+piano di gestione. `Pagato CS` ammonta a 113.570.396,41 euro; 153 righe hanno
+uno zero osservato. Sono aggregati di rendiconto, non contratti, beneficiari o
+prestazioni individuali, e il confronto fra amministrazioni non è una
+classifica di efficienza.
+
+### Spesa del Bilancio dello Stato per territorio destinatario 2023
+
+La pagina `/spese/territoriale` usa il record RGS
+`SRS_SPE_BIL_SPESR_001`: 20.268 righe sorgente, organizzate in 5.067
+combinazioni territorio/titolo/categoria/missione con quattro misure separate.
+Il CSV CP1252 da 3.933.609 byte è bloccato con SHA-256; la singola landing non
+dichiara una licenza e il portale non gliene attribuisce una.
+
+Italia, cinque macroaree e venti Regioni sono livelli sovrapposti e non vengono
+sommati. Valore assoluto, quota di PIL, euro per abitante ed euro per km²
+restano misure distinte; i denominatori delle ultime tre sono calcolati
+dall'editore ma non versionati nel record. Una riga assente non diventa zero.
+
+### Conto Economico degli enti del SSN 2024
+
+**Dataset:** `spd_ssn_cce_elb_voccn_01_2024`, Modello di rilevazione del Conto Economico degli enti del SSN.
+**Titolare:** Ragioneria Generale dello Stato · Data Warehouse RGS.
+**Periodo:** consuntivo 2024; i dati sono osservati al 10 febbraio 2026. Il catalogo package è stato creato/modificato l'11 febbraio 2026; le tre pagine di landing risultano aggiornate il 16 febbraio 2026.
+**Licenza catalogata:** Creative Commons Attribution (`cc-by`); la pagina metadati collega alla [CC BY 3.0 Unported](https://creativecommons.org/licenses/by/3.0/). Non viene attribuita una versione diversa da quella indicata dalla fonte.
+**Formato:** CSV UTF-8, separatore `;`, virgolette doppie, terminatori CRLF; 76.124 righe dati e 11 colonne. La risorsa CSV e l'identificativo OData sono registrati nel source lock `scripts/etl/specs/ssn-cce-2024.source.json` insieme a dimensione e SHA-256.
+
+**Landing ufficiali:** [enti](https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn), [nazionale](https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn-livello-nazionale), [regionale](https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn-livello-regionale). Il [package_show OpenBDAP](https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_show?id=94083af2-a542-482d-8ad6-5877d04cd1ca) fornisce licenza e metadati del pacchetto. La risorsa collegata per le definizioni del modello è il [report ufficiale PDF](https://bdap-opendata.rgs.mef.gov.it/sites/default/files/metadata_updfile/report/5424_Modello%20di%20rilevazione%20del%20Conto%20Economico.pdf); CSV e OData restano le risorse machine-readable usate dall'ETL.
+
+Il dato è un **Conto Economico consuntivo** e quindi una contabilità economica: non è una serie di pagamenti di cassa SIOPE. La pagina e l'API mantengono le voci contabili pubblicate dalla fonte:
+
+- `BA2080` · `Totale Costo del personale`;
+- `BA1350` · `B.2.A.15) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro sanitarie e sociosanitarie`;
+- `BA1750` · `B.2.B.2) Consulenze, Collaborazioni, Interinale e altre prestazioni di lavoro non sanitarie`;
+- `BA0390` · `B.2) Acquisti di servizi`;
+- `BZ9999` · `Totale costi della produzione (B)`.
+
+La fonte non pubblica una categoria chiamata “gettonisti” o “cooperative”: non usiamo queste parole come sinonimi e non deduciamo il tipo di contratto dal nome della voce. Il totale nazionale proviene esclusivamente da `SSN_CCE_NAZ_VOCCN_001`; gli aggregati regionali esclusivamente da `SSN_CCE_REG_VOCCN_001`. Il CSV enti (`SSN_CCE_ELB_VOCCN_001`) alimenta soltanto il dettaglio: le 21 righe `Codice Ente SSN = 999` sono escluse dall'elenco e usate per controllare gli aggregati regionali, evitando il doppio conteggio. I codici 041 e 042 sono mantenuti separati perché la fonte distingue le due Province autonome. Non sono classifiche di efficienza, qualità sanitaria, fabbisogno o frode.
+
+La rigenerazione offline è fail-closed:
+
+```bash
+python3 scripts/etl/ssn_cce_snapshot.py \
+  --input /percorso/94083af2-a542-482d-8ad6-5877d04cd1ca.csv \
+  --national-input /percorso/SSN_CCE_NAZ_VOCCN_001.json \
+  --regional-input /percorso/SSN_CCE_REG_VOCCN_001.json \
+  --output src/data/generated/ssn-cce-2024.json \
+  --generated-at 2026-08-22T00:00:00Z
+python3 scripts/etl/ssn_cce_snapshot.py --check
+```
+
+Il refresh interrompe l'operazione se cambiano URL, hash, dimensione, colonne, tipo di rilevazione, codici delle voci, righe duplicate o riconciliazioni nazionale/Regione/ente.
+
+Il monitor delle fonti non scarica questi input durante una richiesta del sito: l'health endpoint
+riporta per ciascuno dei tre dataset lo stato dell'ultimo source lock verificato, dimensione, SHA-256,
+righe attese e landing ufficiale. L'artifact JSON viene inoltre vincolato a bytes e SHA-256 in fase
+di import. Se il lock, lo schema, l'hash o l'artifact non coincidono, l'import e la pubblicazione
+falliscono chiusi; nessun refresh silenzioso sostituisce lo snapshot.
+
+### BDNCP / ANAC
+**Titolare:** ANAC.  
+**Uso:** contratti pubblici, CIG, stazioni appaltanti, aggiudicazioni e ciclo di vita.  
+**Accesso ufficiale:** [catalogo open data](https://dati.anticorruzione.it/opendata/dataset), [Analytics appalti](https://dati.anticorruzione.it/superset/dashboard/appalti/), [documentazione OCDS](https://dati.anticorruzione.it/opendata/ocds_it) e [Swagger OCDS](https://dati.anticorruzione.it/opendata/ocds/api/ui).
+**Freschezza:** gli open data sono pubblicati mensilmente, dal 2023 anche tramite file delta; il cruscotto Analytics dichiara aggiornamento settimanale e ANAC documenta endpoint API OCDS. Il portale non garantisce qui la disponibilità runtime di tali endpoint.
+**Licenza della distribuzione CIG 2025 usata nella replica:** CC BY-SA 4.0, come dichiarato nelle pagine delle singole risorse CSV.
+**Stato:** l'applicazione pubblica il profilo minimizzato di ogni ente IPA con codice fiscale valido e univoco, inclusi quelli senza CIG nella coorte, nell'artifact `src/data/generated/anac-entity-procurement-page/` (meta più 256 shard). I dati ANAC entrano nel profilo soltanto dopo il join esatto e risolto tra AUSA e CF dell'amministrazione; il valore AUSA e i CF degli operatori non sono pubblicati. La scheda `/enti/[codice]` mostra il riepilogo e `/enti/[codice]/appalti` il drill-down SSR paginato con ranking per numero e valore attribuibile, stati di conflitto/assenza e link al dettaglio CIG ufficiale. Il perimetro è CIG pubblicati nel 2025, tutti i dodici mesi, snapshot cross-temporale: non è copertura nazionale corrente e l'importo è quello di aggiudicazione dichiarato, non un pagamento. Il loader verifica offline source spec, parent lock, provenance, hash/bytes dei 256 shard, schema, privacy e riconciliazioni; assenza, identity drift o tampering non diventano zeri. Il [contratto separato](./research/ANAC_AWARDEES_COVERAGE.md) resta aggregate-only e misura i full snapshot `aggiudicatari`/`aggiudicazioni`, il codice fiscale e il join `CIG + id_aggiudicazione`; non va confuso con l'artifact pagina.
+
+I file CIG, aggiudicazioni, aggiudicatari ed esecuzione restano dataset distinti. Verranno collegati solo tramite identificativi ufficiali, in particolare `CIG` e `id_aggiudicazione`: il nome testuale di un fornitore non è una chiave affidabile. In caso di RTI o più aggiudicatari, l'importo di aggiudicazione non deve essere contato una volta per ogni componente.
+
+### IPA
+**Titolare:** AgID.  
+**Uso:** anagrafe canonica degli enti, Codice IPA, codice fiscale, sito istituzionale, categoria.  
+**Freschezza:** dataset Enti con aggiornamento giornaliero.  
+
+**Ruolo:** base per scoprire i siti istituzionali e alimentare il crawler di Amministrazione Trasparente.
+
+Risorse integrate:
+
+- Enti: chiave `Codice_IPA`, con codice fiscale e codici territoriali come identificativi separati;
+- Unità Organizzative: chiave globale `Codice_uni_uo`, relazione all'ente via `Codice_IPA` e gerarchia dichiarata via `Codice_uni_uo_padre`;
+- Aree Organizzative Omogenee: chiave globale `Codice_uni_aoo`, relazione all'ente via `Codice_IPA`;
+- amministrazioni centrali: categoria IPA `C1`; i ministeri vengono distinti dalla PCM con i codici natura, non dal testo della denominazione.
+
+Le UO non hanno un campo semantico che certifichi “dipartimento”, “direzione generale” o “ufficio”. Queste qualifiche richiedono un crosswalk ufficiale con regolamenti e sezioni Amministrazione Trasparente.
+
+### Bilanci consuntivi Istat delle Regioni 2024
+
+**Titolare:** Istat.
+
+**Periodo:** consuntivo definitivo 2024, pubblicato il 5 maggio 2026.
+
+**Perimetro:** 22 amministrazioni individuali: 15 Regioni ordinarie, 5 Regioni speciali e 2 Province autonome. I tre fogli aggregati Italia/ordinario/speciale servono solo come contesto e non vengono sommati alle amministrazioni.
+
+**Misura pubblicata:** impegni per Titolo. Pagamenti di competenza e sui residui restano fuori da questa vista.
+**Licenza:** non dichiarata sulla pagina o nell'archivio verificato; non ne viene attribuita una.
+
+L'ETL `scripts/etl/istat_regions_account.py` blocca archivio ZIP, workbook spese, 25 fogli, coordinate e totali ufficiali. Per ogni amministrazione i sei Titoli devono riconciliarsi con il `TOTALE GENERALE DELLE SPESE`. La pagina non usa una mappa perché 22 amministrazioni non corrispondono alle 20 geometrie regionali e non calcola valori pro capite finché popolazione e mapping non sono bloccati sullo stesso periodo.
+
+## Tier 2: trasparenza distribuita
+
+### Conti Pubblici Territoriali
+**Titolare:** Dipartimento per le Politiche di Coesione e per il Sud.
+
+**Uso:** entrate e spese effettivamente incassate e pagate, territorializzate nello stesso conto consolidato.
+
+**Accesso:** [Catalogo Open CPT](https://politichecoesione.governo.it/it/politica-di-coesione/misurazione-valutazione-e-trasparenza/la-misurazione-delle-politiche-di-coesione/conti-pubblici-territoriali-cpt/i-dati/catalogo-open-cpt/).
+**Copertura integrata:** serie 2000-2023 del perimetro Pubblica Amministrazione consolidata, 19 Regioni e Province autonome di Trento e Bolzano.
+
+Lo snapshot unisce soltanto `EN_PA_CEMACRO` e `SP_PA_CEMACRO`, appartenenti alla stessa release e base di cassa. Gli input sono bloccati con SHA-256; una modifica della fonte interrompe l'ETL finché schema e risultati non vengono ricontrollati. Il valore derivato è `entrate meno spese`. È chiamato saldo contabile territoriale e non residuo fiscale: non misura pressione fiscale, qualità dei servizi, merito politico o trasferimenti netti tra territori. Il pro capite 2023 usa la popolazione residente ISTAT al 31 dicembre 2023; per gli altri anni resta `null` finché non viene integrata una serie demografica annuale verificata. I 21 denominatori sono una normalizzazione manuale della tavola ufficiale: oltre all'hash del PDF, l'ETL blocca il mapping ordinato con un secondo SHA-256 per rendere visibile qualunque modifica o scambio fra territori. Le condizioni di riuso sono registrate come nota per ciascun input e vanno controllate sulla relativa scheda ufficiale: le note legali generali del sito non sostituiscono eventuali indicazioni specifiche della risorsa.
+
+La rigenerazione è intenzionalmente fail-closed: scaricare le tre distribuzioni dagli URL registrati nel manifest corrente, quindi eseguire:
+
+```bash
+python3 scripts/etl/cpt_regional_fiscal_snapshot.py \
+  --revenue /percorso/en_pa_cemacro.csv \
+  --expenditure /percorso/sp_pa_cemacro.csv \
+  --population /percorso/CENSIMENTO-E-DINAMICA-DELLA-POPOLAZIONE-2023.pdf \
+  --output src/data/generated/cpt-regional-fiscal.json \
+  --observed-at 2026-08-20T22:46:15Z
+```
+
+`--observed-at` indica quando gli input sono stati verificati, non l'anno di aggiornamento dei dati. Se URL, hash, dimensione, schema o copertura cambiano, l'ETL deve fallire: prima di aggiornare le costanti occorre ricontrollare la nuova release e rieseguire l'intera suite.
+
+### Redditi e variabili IRPEF comunali MEF
+
+**Titolare:** MEF – Dipartimento delle Finanze.
+
+**Uso:** contribuenti, reddito complessivo e imponibile, imposta netta dichiarata e addizionali dovute su base comunale.
+
+**Release integrata:** anno d'imposta 2024, dichiarazioni 2025, pubblicata il 23 aprile 2026.
+
+**Licenza:** CC BY 3.0.
+
+Il CSV ufficiale contiene 7.896 Comuni e una riga residuale `Mancante/errata`.
+Quest'ultima partecipa soltanto alla riconciliazione nazionale e non viene
+distribuita artificialmente. Le celle oscurate dal MEF per segreto statistico
+restano `null`: gli aggregati interessati espongono un subtotale noto e lo
+stato parziale, non un totale stimato.
+
+L'imposta netta è un valore dichiarato/calcolato, non gettito totale o cassa
+riscossa. Non viene sottratta alle spese o al saldo CPT e non consente inferenze
+su evasione, frode, responsabilità individuali o qualità amministrativa.
+Manifest, hash, schema, definizioni e procedura di refresh sono documentati in
+[MEF_IRPEF_COMUNALE.md](MEF_IRPEF_COMUNALE.md).
+
+### Principali grandezze IVA MEF
+
+**Issue #388.** Quattro export ufficiali della Navigazione dinamica del
+Dipartimento delle Finanze: dichiarazioni 2024 e 2025 (anni d’imposta 2023 e
+2024), classificazioni Regione e Sezione di attività, mantenute separate.
+Pubblicazioni del 16 aprile 2025 e 23 aprile 2026, acquisite e controllate
+l’11 settembre 2026. Licenza **CC BY 3.0 IT**, verificata sulle singole tabelle.
+
+Il bundle espone 93 righe, compresi i totali pubblicati dalla fonte. Ammontare
+e media, originariamente in migliaia di euro, sono convertiti esattamente in
+centesimi; frequenze e numero contribuenti restano conteggi distinti. Celle
+soppresse, mancanti e zeri osservati sono stati diversi. I codici attività
+sono qualificati per edizione; Trento e Bolzano hanno ID distinti anche quando
+condividono il codice sorgente `04`.
+
+Sono dichiarazioni, non incassi, stime di evasione o valore aggiunto dei conti
+nazionali. Non è disponibile un incrocio regione × attività. IRES e IRAP non
+sono inclusi. Questa integrazione espone fonte, API e MCP, senza nuova UI.
+
+- API: `/api/tributi/iva?anno=2025&taglio=regione&limit=50&offset=0`.
+- MCP: `query_dataset` con `dataset: "mef_iva"`, `year: 2025`,
+  `breakdown: "regione"` (oppure `"attivita"`). Anno e taglio obbligatori.
+- [Contratto, URL, acquisizione e verifiche](research/MEF_IVA.md).
+- [Tabella ufficiale 2025 per regione](https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201).
+
+### VAT gap Italia DG TAXUD
+
+**Issue #387 (fonte #4).** Workbook ufficiale *VAT-GAP-2025-Tables-of-Country-Chapters.xlsx*
+della Commissione europea (DG TAXUD), foglio **IT** soltanto. Report 2025,
+pubblicazione 8 dicembre 2025; acquisizione e controllo 13 settembre 2026.
+Byte 102793, SHA-256
+`7662fdd6da02d5acca385cca5f1ed5a5fbad3655105f8f0f490d433e472c75fa`.
+
+Lo snapshot tipizzato espone VTTL, VAT revenue e VAT compliance gap per
+2019–2023 più la stima rapida 2024 (`2024 (e)`), con composizione o/w del VTTL
+dove la fonte la pubblica (nel 2024 le componenti sono `X` → `unavailable`).
+Gli importi in milioni di euro diventano centesimi esatti; la quota gap sul
+VTTL è in milionesimi di unità. Licenza XLSX: `not-declared` (evidenza PDF
+CC BY 4.0 citata senza inventare un id sul workbook).
+
+Non è evasione accertata, non è il tax gap MEF e non è l’economia non osservata
+ISTAT. Nessuna media UE in questa slice. Fonte + API + MCP, senza pagina UI.
+
+- API: `/api/tributi/vat-gap` e `/api/tributi/vat-gap?anno=2023`.
+- MCP: `query_dataset` con `dataset: "eu_vat_gap_italy"` e `year` opzionale.
+- [Contratto, celle e verifiche](research/EU_VAT_GAP_ITALY.md).
+- [Landing ufficiale VAT gap](https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en).
+
+### Tax gap nazionale MEF (Relazione evasione 2025)
+
+**Issue #474 (epic #387, fonte #1).** PDF ufficiale *Relazione sull'economia non
+osservata e sull'evasione fiscale e contributiva 2025*, versione del file
+23 ottobre 2025 (data di pubblicazione non verificata); acquisizione e controllo 13 settembre 2026. Byte 3840500,
+SHA-256
+`6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef`.
+
+Lo snapshot tipizzato espone Tab. I.1 (gap in milioni di euro) e Tab. I.2
+(propensione) per gli anni 2018–2022, solo livello nazionale. Gli importi
+diventano centesimi; la propensione è in decimi di punto percentuale. Le
+forchette min/max restano forchette. Licenza PDF: `not-declared`.
+
+Non è evasione accertata, non è il VAT gap UE e non è l’economia non osservata
+ISTAT. Fonte + API + MCP, senza pagina UI.
+
+- API: `/api/tributi/tax-gap`, `/api/tributi/tax-gap?anno=2022`,
+  `/api/tributi/tax-gap?anno=2022&imposta=iva`.
+- MCP: `query_dataset` con `dataset: "mef_tax_gap_nazionale"` e filtri
+  opzionali `year` / `tax`.
+- [Contratto, pagine e verifiche](research/MEF_TAX_GAP_NAZIONALE.md).
+- [PDF ufficiale](https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf).
+
+### Aggregati fiscali PA · Eurostat `gov_10a_taxag`
+
+**Issue #486 (epic #484).** Statistics API JSON-stat 2.0, Italia, settori
+`S13` / `S1311` / `S1313` / `S1314`, anni 2014–2025. Asset pinnato:
+60 453 byte, SHA-256
+`bf54d20f263e6e3083a19e2ca48580639cc2ec90930050c8bc6ec073884802a1`,
+`updated` 2026-07-21, struttura `GOV_10A_TAXAG` 68.0. Acquisizione e
+controllo 14 settembre 2026. Licenza `CC-BY-4.0`.
+
+Lo snapshot tipizzato espone 14 voci (totale imposte+contributi, gettito
+fiscale, IVA, imposte sul reddito persone/società, contributi, ecc.) in
+centesimi di euro. Le celle non pubblicate dalla fonte (es. imposte su
+`S1314`) restano assenti. Riconciliazioni fail-closed:
+`D2_D5_D91 = D2 + D5 + D91` e totale = tasse + `D61` dove entrambe le parti
+esistono.
+
+Non è cassa SIOPE `/entrate`, non sono dichiarazioni MEF, non è tax gap.
+`S1311` non significa denaro trattenuto a Roma. Fonte + API + MCP, senza UI.
+
+- API: `/api/tributi/taxag`, `/api/tributi/taxag?anno=2025&settore=S13&voce=D211`.
+- MCP: `query_dataset` con `dataset: "eurostat_taxag"` e filtri opzionali
+  `year` / `sector` / `tax`.
+- Source lock: `scripts/etl/specs/eurostat-taxag-2014-2025.source.json`.
+- Offline: `python3 scripts/etl/eurostat_taxag_snapshot.py --check`.
+- Guida API: [Eurostat API getting started](https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started).
+
+### Spesa sanitaria per schema di finanziamento · Eurostat `hlth_sha11_hf`
+
+**Issue #488 (epic #484).** Statistics API JSON-stat 2.0, Italia, unità
+`MIO_EUR`, anni 2014–2025. Asset pinnato: 5 951 byte, SHA-256
+`b9601fbbb402abbad1471a071c08eda56d0819d41a2add43ddc8d57236fd066e`,
+`updated` 2026-09-09T23:00:00+0200, struttura `HLTH_SHA11_HF` 70.0.
+Acquisizione e controllo 14 settembre 2026. Licenza `CC-BY-4.0`.
+
+Lo snapshot tipizzato espone 13 schemi pubblicati per l’Italia
+(`TOT_HF`, `HF1`…`HF3`, `HF_UNK`; non pubblicati: `HF31`, `HF32`, `HF4`)
+in centesimi di euro (156 celle). Riconciliazioni fail-closed:
+`TOT_HF = HF1+HF2+HF3+HF_UNK`, `HF1 = HF11+HF12_13`,
+`HF2 = HF21+HF22+HF23`. L’anno 2025 porta il flag Eurostat `p`
+(provvisorio).
+
+Distinto dal Conto Economico SSN OpenBDAP e da COFOG GF07: i tre
+perimetri non si sommano. UI: pannello su `/spese/sanita` allineato
+all’anno COFOG selezionato (2014–2024).
+
+- API: `/api/sanita/sha`, `/api/sanita/sha?anno=2024&schema=HF3`.
+- MCP: `query_dataset` con `dataset: "eurostat_sha_health"` e filtri
+  opzionali `year` / `code` (schema SHA).
+- Source lock: `scripts/etl/specs/eurostat-sha-health-2014-2025.source.json`.
+- Offline: `python3 scripts/etl/eurostat_sha_health_snapshot.py --check`.
+
+### Assegno Unico · INPS open data (nuclei e figli)
+
+**Issue #261 (seconda fetta dopo NASpI).** Due package CKAN
+`assegno-unico-nuclei-2022-2024` e
+`assegno-unico-figli-con-disabilita-2022-2024`, aggiornati
+2026-01-17. Licenza **`cc-by` per package** (non IODL 2.0 della fetta
+NASpI). Acquisizione CSV 14 settembre 2026.
+
+Asset pinnati:
+
+- nuclei: 46 264 byte, SHA-256
+  `327d3b10fa83bc932a17d6e77c6105fbe3afe4ab0c59caf7aaa68320ab58740d`
+- figli: 440 364 byte, SHA-256
+  `b4277d427bb455ed23c6953aa89fd769c65fdea1fd79923e722f4dc7b7e5001f`
+
+Perimetro dichiarato dalla fonte: **AUU a domanda — esclusi beneficiari
+RdC**. 106 province × anni 2022–2024; 636 + 3 816 = 4 452 righe. Importi
+erogati in **millesimi di euro** (49 valori non esatti in centesimi non
+vengono arrotondati). Nuclei, figli e mesi restano nature distinte; in
+`nuclei` la colonna `numero_figli` resta con unità non documentata dalla
+fonte. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/famiglia/assegno-unico`, filtri `anno` / `tabella` /
+  `provincia` / `regione`.
+- MCP: `query_dataset` con `dataset: "inps_assegno_unico"`.
+- Source lock: `scripts/etl/specs/inps-assegno-unico-2022-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_assegno_unico_snapshot.py --check`.
+
+### Integrazioni salariali · INPS open data (lavoratori, domande, mensilità)
+
+**Issue #261 (terza fetta dopo NASpI e Assegno Unico).** Tre package CKAN
+del report annuale Ammortizzatori Sociali 2023:
+
+- `integrazioni-salariali-lavoratori-2023`
+- `integrazioni-salariali-domande-2023`
+- `integrazioni-salariali-mensilita-2023`
+
+Licenza **`cc-by` per package**. Acquisizione CSV 15 settembre 2026.
+Asset pinnati: 27 149 / 26 404 / 27 168 byte (SHA-256 nel source lock).
+
+Conteggi mensili per 20 regioni e sei tipi di intervento (`CIGD`, `CIGO`,
+`CIGS`, `FIS`, `FONDI_Centrali`, `FONDI_Territorio`). **Nessun importo**:
+lavoratori, domande e mensilità restano nature distinte e non si sommano.
+Copertura chiavi non identica fra tabelle (790 / 759 / 790). Superficie
+fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/integrazioni-salariali`, filtri `anno` / `tabella` /
+  `mese` / `regione` / `tipo`.
+- MCP: `query_dataset` con `dataset: "inps_integrazioni_salariali"`;
+  il mese italiano va in `period`, il tipo intervento in `code`.
+- Source lock: `scripts/etl/specs/inps-integrazioni-salariali-2023.source.json`.
+- Offline: `python3 scripts/etl/inps_integrazioni_salariali_snapshot.py --check`.
+
+### INPS · CIG Fondi di Solidarietà 2023–2024
+
+Ore autorizzate mensili per 20 regioni, gestioni `FIS` / `Altri fondi` e quattro
+rami di attività. **Nessun importo**: le ore non sono lavoratori, domande,
+mensilità né euro. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/cig-fondi-solidarieta`, filtri `anno` / `mese` / `regione` /
+  `gestione` / `ramo`.
+- MCP: `query_dataset` con `dataset: "inps_cig_fondi_solidarieta"`;
+  il mese italiano va in `period`, la gestione fondi in `code`, il ramo in `sector`.
+- Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
+- Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
+
+### AIFA · spesa e consumo farmaci per ATC 2022–2025
+
+Quattro rilasci annuali del flusso «spesa e consumo» (il 2025 dentro uno zip, con
+anche il CSV interno vincolato per byte e SHA-256). Lo snapshot pubblica
+l'aggregato annuale per regione, classe di rimborsabilità e ATC di II livello:
+21.208 righe su 21 territori. Il dettaglio mensile e di IV livello resta nella
+fonte e non viene ricostruito.
+
+I due canali restano separati e **non si sommano**: la tracciabilità è il sell-in
+alle strutture sanitarie pubbliche (inclusa distribuzione diretta e per conto, al
+lordo dell'IVA), la convenzionata è la spesa lorda in farmacia a prezzo al
+pubblico. Gli importi sono al lordo dei payback, quindi non sono la spesa netta
+del Servizio sanitario nazionale e non si sommano al Conto economico SSN, a
+SIOPE sanità o alla funzione COFOG GF07. Una cella vuota significa canale assente
+e resta distinta da zero; i valori negativi esistono solo sulla tracciabilità
+(resi e note di credito) e sono conservati. Le confezioni non sono dosi (DDD).
+
+Scarto noto: per il 2024 la convenzionata del rilascio open data supera di circa
+297 milioni di euro (+3,1%) il dato che il Rapporto OsMed 2024 ricava dalle
+Distinte Contabili Riepilogative; la causa non è documentata dalla fonte. Per la
+tracciabilità 2024 i due valori coincidono (18.068 contro 18.065 milioni della
+Tabella 1.1.2). Gli anni 2016–2021 restano esclusi: chiavi duplicate, confezioni
+non intere, zeri al posto delle celle vuote e nomi di regione troncati.
+
+La licenza CC BY 4.0 è dichiarata sulla pagina Open Data di AIFA, non sulla
+scheda del dataset: è registrata come licenza di catalogo. Superficie fonte + API
+(`/api/spese/sanita/farmaci`) + MCP (`aifa_farmaci_spesa`), senza UI.
+
+### INL · Relazione annuale e rapporto vigilanza 2025
+
+Ispezioni e verifiche avviate, esiti con tasso di irregolarità e recuperi di
+contributi/premi dalla Relazione ufficiale INL. **Il tasso misura controlli
+mirati**, non la irregolarità dell’economia. Superficie fonte + API + MCP, senza UI.
+
+- API: `/api/lavoro/vigilanza-inl`, filtri `anno` / `tabella` / `territorio` /
+  `settore`.
+- MCP: `query_dataset` con `dataset: "inl_vigilanza"`; `table` =
+  `inspectionsStarted` | `inspectionsOutcome` | `recovery`.
+- Source lock: `scripts/etl/specs/inl-vigilanza-2025.source.json`.
+- Offline: `python3 scripts/etl/inl_vigilanza_snapshot.py --check`.
+
+### Dati sui pagamenti art. 4-bis
+Nel 2026 ANAC ha pubblicato uno schema di riferimento per i dati sui pagamenti nella sezione “Amministrazione Trasparente”.
+
+Campi centrali dello schema:
+
+```text
+amministrazione.codiceFiscale
+amministrazione.denominazione
+dataPrimaPubblicazione
+dataUltimaModifica
+anno
+trimestre
+categoria
+tipologia
+importo
+beneficiario
+```
+
+Strategia:
+
+1. enumerare gli enti IPA;
+2. ottenere il sito istituzionale;
+3. individuare la sezione Amministrazione Trasparente;
+4. cercare le risorse art. 4-bis;
+5. preferire JSON/CSV/XML;
+6. validare rispetto allo schema;
+7. salvare fonte e hash;
+8. non fare OCR di PDF se esiste un formato strutturato;
+9. pubblicare un indice di copertura separato dalla spesa.
+
+ANAC TrasparenzAI dimostra che il monitoraggio automatico della struttura di Amministrazione Trasparente è tecnicamente applicabile su scala IPA. DoveVannoINostriSoldi non deve duplicare il giudizio di conformità ANAC: deve usare la stessa idea di discovery per aggregare i dati effettivamente pubblicati.
+
+## Tier 3: investimenti
+
+### ReGiS / PNRR
+Italia Domani pubblica estrazioni periodiche dei dati di attuazione PNRR. Il catalogo nazionale `/pnrr` espone tutte le 291.398 registrazioni del rilascio 13/06/2026, con 285.992 CUP validi distinti, finanziamenti e localizzazioni; contratto e riproduzione in [PNRR_PROJECTS.md](PNRR_PROJECTS.md). Il verticale curato asili copre la submisura `M4C1I1.01.00`, relativa ad asili nido, scuole dell'infanzia e servizi di educazione e cura per la prima infanzia.
+
+Lo snapshot asili unisce quattro CSV ufficiali: progetti e localizzazioni tramite CUP; gare e aggiudicatari conservano inoltre CIG, Codice interno PDA e Codice procedura utente. Non vengono usati nomi testuali come chiavi. La release estratta il 13 giugno 2026 comprende 3.841 CUP, 3.842 localizzazioni, 18.851 gare e 18.250 righe aggiudicatario. Due righe aggiudicatario non hanno una chiave gara completa corrispondente e restano esplicitamente non collegate.
+
+Gli importi sono distinti per significato: finanziamento PNRR, finanziamento totale, importo di gara e importo di aggiudicazione. Lo snapshot non contiene i pagamenti ReGiS e quindi non trasforma nessuno di questi valori in “spesa erogata”. Hash, dimensioni, copertura, rigenerazione e limiti sono documentati in [PNRR_CHILDCARE.md](PNRR_CHILDCARE.md).
+
+### OpenCoesione
+L'API e gli open data espongono progetti e soggetti, con tabelle relazionali per localizzazioni, pagamenti, impegni, fasi e indicatori. I dati sono pubblicati con licenza CC BY 4.0.
+
+La prima integrazione usa l’aggregato nazionale ufficiale `/it/api/aggregati/`, che espone costo pubblico, pagamenti, numero di progetti, stati, temi, nature, serie annuale e data del rilascio. Lo snapshot viene controllato ogni 6 ore e committato soltanto quando cambia il payload normalizzato, esclusi i timestamp di osservazione.
+
+Ogni dimensione deve riconciliarsi con il totale nazionale, sia per i valori generali sia per la componente coesione: sono tollerati al massimo 2 euro di scarto monetario dovuto agli arrotondamenti della fonte e nessuno scarto nel conteggio dei progetti. Le aggregazioni territoriali non sono ancora sommate perché i progetti multilocalizzati possono comparire in più territori e rendere i valori non additivi.
+
+### OpenCUP
+
+OpenCUP è l'anagrafe nazionale dei progetti di investimento pubblico promossa
+dal DIPE della Presidenza del Consiglio dei Ministri. Il CUP permette di
+collegare fonti diverse tramite un identificativo esatto, senza corrispondenze
+testuali.
+
+Il rilascio Progetti osservato il 7 settembre 2026 è uno ZIP ufficiale da
+2.203.779.590 byte con 11.973.988 record CSV. Il formato reale è UTF-8,
+separato da punto e virgola e diviso in sette membri; newline interne a campi
+quotati non sono record aggiuntivi. Il source lock conserva URL, SHA-256,
+header, dialetto, mapping, licenza CC BY 4.0 e conteggi osservati.
+
+La pipeline offline e l'indice per CUP esatto sono implementati, ma il prodotto
+resta spento. Gli oggetti redatti devono essere caricati nello storage R2 del
+progetto e superare una prova di backup e ripristino prima di comparire in UI,
+API, stato fonti o MCP. Dettagli e campi ancora da aggiornare sono in
+[ADR-002](architecture/ADR-002-opencup-object-storage.md).
+
+Il dataset OpenCUP che segnala candidati PNRR non certifica l'ammissione al finanziamento. Per i progetti PNRR effettivi resta necessaria la fonte ReGiS o l'elenco ufficiale dell'amministrazione responsabile.
+
+### OpenCivitas
+
+OpenCivitas pubblica dati comunali su fabbisogni standard, spesa storica e servizi. La prima integrazione usa il rilascio 2022 dei servizi totali e copre 6.557 Comuni delle 15 Regioni a statuto ordinario.
+
+Sono disponibili anche snapshot storici separati: FC70TOT 2021 (6.565 Comuni)
+e FC60TOT 2019, versione 2 (6.567 Comuni). La fetta 2019 espone
+`/api/spese/opencivitas-2019` e MCP `opencivitas_fabbisogni_2019`, con filtro
+obbligatorio per regione o codice ISTAT e paginazione. I valori sono interrogabili
+per una sola annualità; non si sommano né si confrontano silenziosamente famiglie
+diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
+totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
+della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
+
+È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
+Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
+
+È integrato anche FC50TOT 2018 versione 1 (6.606 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2018` e MCP `opencivitas_fabbisogni_2018`.
+Fonte, lock, denominatori e differenze dai metadati 2019 sono documentati in
+[OpenCivitas 2018](OPENCIVITAS_2018.md). Gli anni restano separati.
+
+Per ogni Comune conserviamo:
+
+- codice ISTAT, nome, provincia e regione;
+- spesa storica e spesa standard;
+- differenza totale, per abitante e percentuale;
+- livello della spesa e dei servizi su scala 0-10;
+- differenza dei servizi rispetto ai Comuni della stessa fascia di popolazione;
+- motivi di non valutabilità e avvisi della fonte.
+
+La differenza monetaria non è una prova di spreco. Un Comune può avere costi diversi o offrire più o meno servizi. Per questo l'API non ordina i risultati per differenza assoluta senza una richiesta esplicita e restituisce sempre le note metodologiche.
+
+Il join con IPA e SIOPE usa il codice ISTAT del Comune. Le Regioni a statuto speciale e le Province autonome non sono trattate come dati mancanti: sono fuori dal perimetro dichiarato da questa pubblicazione.
+
+### ISTAT SITUAS · caratteristiche geografiche comunali
+
+La normalizzazione territoriale usa uno snapshot annuale dei report ufficiali SITUAS “Comuni - Dimensione”, “Comuni - Caratteristiche del territorio” e “Identificativi dei Comuni”. Le annualità 2022–2026 sono collegate esclusivamente con il codice ISTAT a sei cifre o, per SIOPE, con il codice fiscale comunale ufficiale. Lo snapshot conserva superficie, popolazione residente e anno della popolazione, densità, zona altimetrica, altitudine, grado di urbanizzazione, litoraneità e insularità, insieme a URL, dimensione e SHA-256 di ogni risposta acquisita.
+
+`Euro per km²` è calcolato come importo in centesimi diviso per la superficie ISTAT espressa in km², con arrotondamento al centesimo. Se il denominatore non è disponibile o non è positivo, il valore resta `null`; per l'aggregato nazionale anche numeratore e superficie devono avere copertura completa. La metrica non è un giudizio di efficienza: rende confrontabile l'intensità finanziaria rispetto all'estensione amministrata. I confronti tra pari mantengono sempre fasce dichiarate di popolazione e superficie, pubblicano l'anno della popolazione ISTAT distinto dall'anno SIOPE e rilassano progressivamente gli altri fattori soltanto per ottenere almeno dieci osservazioni.
+
+## Tier 4: incarichi e istituzioni
+
+### Partecipazioni pubbliche MEF
+
+La prima integrazione usa il CSV annuale del Dipartimento dell'Economia riferito al 2023. Il file sorgente è delimitato da `;` e usa byte Windows-1252 nonostante header HTTP incoerenti osservati: l'ETL rileva la codifica e conserva l'hash SHA-256.
+
+Lo snapshot pubblico contiene aggregati nazionali e le organizzazioni dichiarate dal maggior numero di amministrazioni. La relazione è identificata tramite codice fiscale dell'amministrazione e della partecipata, insieme all'anno. Non pubblichiamo un booleano “in-house corrente”: controllo analogo e affidamento diretto restano dichiarazioni riferite all'anno di rilevazione.
+
+L'elenco ANAC ex art. 192 è trattato come archivio storico perché ANAC lo dichiara non più operativo dal 1° luglio 2023. AUSA identifica stazioni appaltanti, ma non certifica la natura in-house. Registro Imprese resta fuori dall'ingestione open: l'accesso è contrattuale e le condizioni standard limitano redistribuzione e diffusione.
+
+### Classificazione ISTAT S13
+
+S13 e IPA hanno perimetri diversi. Finché la pubblicazione ufficiale corrente non espone una distribuzione analitica machine-readable verificabile, il portale mantiene S13 come fonte censita e non deduce l'appartenenza dal solo `Codice_ISTAT` presente in IPA.
+
+### Consulenti Pubblici
+Il Dipartimento della Funzione Pubblica pubblica gli incarichi comunicati dalle amministrazioni nell'Anagrafe delle prestazioni. Sono esposti, tra gli altri, compenso lordo, ammontare erogato e data di aggiornamento del singolo incarico.
+
+La prima integrazione usa l'endpoint JSON pubblico impiegato dal portale per le statistiche nazionali. Lo snapshot contiene, dal 2023:
+
+- incarichi esterni, incarichi conclusi e somme erogate comunicate;
+- conteggi dei percettori persone fisiche e organizzazioni;
+- incarichi conferiti o autorizzati ai dipendenti pubblici;
+- ripartizione degli incarichi ai dipendenti tra dirigenti e non dirigenti.
+
+Gli importi vengono convertiti in centesimi interi. Per gli incarichi ai dipendenti, dirigenti e non dirigenti devono riconciliarsi esattamente con il totale annuale. L'anno corrente resta esplicitamente parziale. Il campo tecnico `paConferenteCount` non viene reinterpretato come numero di amministrazioni distinte.
+
+### Camera dei deputati
+Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone il conto consuntivo 2025 e il bilancio 2026 come documenti distinti.
+
+Per il consuntivo conserviamo gli importi effettivi estratti e li arrotondiamo
+soltanto nella presentazione. Il PDF è bloccato nel manifesto con dimensione,
+SHA-256 e riferimenti alle pagine usate. Il totale degli impegni comprende anche
+le partite di giro, mentre le categorie pubblicate riguardano la spesa
+effettiva. Per il bilancio 2026 gli importi sono previsioni, non pagamenti già
+effettuati.
+
+Il Titolo III “Spese previdenziali” del consuntivo 2025 è composto dalla
+Categoria XII “Deputati cessati dal mandato” e dalla Categoria XIII “Personale
+in quiescenza”. Non equivale ai soli vitalizi: il documento include anche
+pensioni dirette e di reversibilità, rimborsi, accantonamenti e oneri del
+personale in quiescenza. Le sottovoci non espongono una colonna separata di
+pagamenti effettivi, quindi non ne stimiamo l'importo.
+
+### Senato della Repubblica
+La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazioni sul trattamento economico dei senatori. Il monitor interno controlla i metadati dei nuovi documenti ufficiali e li registra nel manifesto della pipeline.
+
+I valori del Senato non sono ancora normalizzati e non compaiono nell'API o nella pagina pubblica. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera e Senato hanno bilanci autonomi e non verranno sommati automaticamente.
+
+### Presidenza del Consiglio dei ministri
+
+La sezione Amministrazione trasparente della PCM pubblica bilanci di previsione e conti finanziari. La prima integrazione usa il workbook ufficiale del Rendiconto 2024, approvato il 10 giugno 2025 e pubblicato il 19 giugno 2025.
+
+Il file contiene 572 righe di capitolo. La pipeline conserva separati stanziamento definitivo di competenza, impegni, pagamenti in conto competenza e pagamenti in conto residui. Il totale pagato della pagina è la somma dichiarata delle due colonne di pagamento; non è sommato agli impegni o agli stanziamenti. Tutte le righe riconciliano `impegnato = pagato C/C + rimasto da pagare C/C`.
+
+Il perimetro è la sola Presidenza del Consiglio. Non viene unito al bilancio dello Stato, ai Ministeri o ai bilanci autonomi di Camera e Senato. La pagina ufficiale non dichiara una licenza per il workbook; il portale non ne inventa una. Manifesto, checksum, trasformazione e comandi di verifica sono documentati in `docs/PCM_FINANCIAL_2024.md`.
+
+## Fonti successive
+
+### Anagrafe delle opere incompiute
+
+Il Ministero delle Infrastrutture e dei Trasporti pubblica una rilevazione annuale nazionale e le anagrafi regionali. La pubblicazione contiene CUP, stazione appaltante, importi, oneri per completare l'opera, stato e percentuale di avanzamento.
+
+La fonte è registrata ma non ancora importata. Il rilascio nazionale corrente è un PDF: serve un estrattore versionato con fixture reali e arresto esplicito quando cambia il layout. Il CUP consentirà il collegamento esatto con MOP senza confronti incerti sul nome dell'opera.
+
+### Estensioni Conti Pubblici Territoriali
+
+CPT permette anche di leggere i conti per settore, categoria economica, tipo di soggetto e perimetro del Settore Pubblico Allargato. Queste dimensioni sono ulteriori rispetto allo snapshot PA macroeconomico già integrato.
+
+Non vanno sommate a SIOPE o allo snapshot corrente: perimetro, classificazione e regole di consolidamento sono diversi. Ogni estensione richiederà un dataset autonomo, lo stesso blocco di provenienza e test di riconciliazione dedicati.
+
+### ReNDiS
+
+ISPRA e MASE raccolgono dati tecnici, finanziari e attuativi sugli interventi contro il dissesto idrogeologico. Il CUP permette di collegare un intervento a OpenBDAP MOP e, in seguito, a OpenCUP e ai contratti ANAC.
+
+La piattaforma dichiara aggiornamento continuo e sincronizzazione settimanale con BDAP per gli interventi associati a CUP. L'adapter resta da implementare: prima vanno identificati il canale open data stabile, la licenza della singola risorsa e le regole per distinguere interventi MASE ed extra-MASE.
+
+Altre fonti da valutare nella fase 2:
+
+- sovvenzioni e contributi art. 26/27 D.Lgs. 33/2013;
+- patrimonio e partecipazioni pubbliche;
+- tempi di pagamento e debiti commerciali;
+- personale pubblico;
+- sanità;
+- dati regionali e comunali con maggiore granularità;
+- ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
+  totali 2018, 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
+- Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
+
+### MIM · scuole statali per Comune
+
+Il CSV ufficiale 2026/27 al 1 settembre 2026, licenza IODL 2.0, fornisce
+50.273 codici scuola. La proiezione conta 39.713 codici marcati come sedi in
+6.648 Comuni e conserva separatamente gli altri codici. Il raccordo catastale /
+ISTAT usa le identità MEF verificate (CC BY 3.0 IT), senza confronto dei nomi.
+La scheda Comune distingue zero osservato, nessun record e territori esclusi
+(Aosta, Trento, Bolzano); il conteggio non misura qualità o accessibilità.
+Dati interrogabili anche in `/dati/mim-scuole-statali-comuni`, API e MCP.
+[Contratto, fonte, licenze e riproduzione](MIM_SCHOOL_SERVICES.md).
+
+### ISTAT A misura di Comune
+
+Il corpus integra tre indicatori demografici comunali del sistema sperimentale
+ISTAT: indice di vecchiaia, dipendenza anziani e dipendenza strutturale. Ogni
+serie contiene 7.896 Comuni e i valori al 31 dicembre dal 2014 al 2024, sulla
+geografia comunale al 31 dicembre 2024 ricostruita dalla fonte.
+
+Sono rapporti per 100 con denominatori distinti, non spesa pubblica o un indice
+composito di benessere. `..` (dato non ricostruibile) e `N.C.` (denominatore
+nullo) rimangono distinti da zero. Catalogo, API e MCP usano le stesse righe;
+non viene aggiunto un indicatore aggregato alle schede Comune. Vedi
+[fonte, caveat e riproduzione](ISTAT_MISURA_COMUNE.md).
+
+### ISTAT · economia non osservata
+
+Il corpus integra le Tavole 1 e 3 del workbook ISTAT pubblicato il 17 ottobre
+2025: 104 righe di componenti nazionali e 624 righe di incidenza dell'economia
+sommersa per branca, entrambe dal 2011 al 2023. Valori, unità e denominatori
+restano distinti; le celle decimali sono conservate senza arrotondamento.
+
+Aggiunge inoltre la Tav. 6 dei Conti economici territoriali (landing
+22 dicembre 2025): 108 righe di incidenza percentuale 2023 sul valore aggiunto
+per 19 regioni, 2 province autonome, Italia e cinque ripartizioni pubblicate.
+Sono percentuali, non euro; Italia e ripartizioni non si ricostruiscono
+sommando le regioni.
+
+Sono stime di contabilità nazionale o territoriale, non evasione accertata o
+risultati dei controlli. Catalogo, API e MCP interrogano gli stessi dataset
+integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSERVATA.md).
+
+
+### Eurostat Dissemination API · epic #484 (chiuso)
+
+Backlog di coordinamento sulle aggregazioni Eurostat via Statistics API
+(JSON-stat 2.0). **Tutte le figlie sono pubblicate su `main`:**
+
+| Figlia | Snapshot / MCP | Stato |
+| --- | --- | --- |
+| #485 | `eurostat-gov-main` → `eurostat_conti_pa` | chiusa |
+| #486 | `eurostat-taxag` → `eurostat_taxag` | chiusa |
+| #487 | `eurostat-cofog` (sottofunzioni GF04–GF10 IT) | chiusa |
+| #488 | `eurostat-sha-health` → `eurostat_sha_health` | chiusa |
+
+Vincoli dell’epic rispettati: URL ufficiali + hash, `soldi`/`periodo`/`provenance`
+distinti, competenza SEC ≠ cassa SIOPE, superficie fonte + API + MCP (UI solo dove
+la figlia lo richiede). Regressione: `tests/eurostat-dissemination-epic.test.mjs`.
+
+### Eurostat gov_10a_main · entrate e uscite delle Amministrazioni pubbliche
+
+Lo snapshot `eurostat-gov-main-1995-2025` (#485, figlia dell'epic #484) usa `gov_10a_main` per
+l'Italia, settore S13, dal 1995 al 2025, in milioni di euro e in quota di PIL. Il lock blocca le
+due risposte intere della Statistics API, senza filtro su `na_item`; il contratto pubblica i
+totali `TR`, `TE` e `B9`, le 8 componenti di entrata e le 12 di spesa delle identità SEC e gli
+interessi `D41PAY` come voce «di cui» di `D4PAY`.
+
+Le identità `TR = Σ entrate`, `TE = Σ uscite` e `B9 = TR − TE` sono verificate entro 0,5 milioni
+di euro e 0,65 punti di PIL; su 1995-2025 lo scarto osservato è 0,1 milioni e 0,3 punti. I totali
+restano quelli della fonte. `D41PAY` e `TE` devono coincidere al centesimo con `public-debt.json`
+sugli anni in comune: è la stessa voce usata su `/debito`, non una seconda fonte.
+
+Competenza economica SEC: non è confrontabile con i pagamenti SIOPE di `/entrate` né sommabile a
+CPT, OpenBDAP o COFOG. Superficie v1: API `/api/finanza-pubblica/conti-pa` e dataset MCP
+`eurostat_conti_pa`, nessuna pagina.
+
+### Eurostat COFOG · dettaglio italiano delle dieci divisioni
+
+Lo snapshot `eurostat-cofog-2014-2024` usa `gov_10a_exp`, settore S13 e spesa totale TE.
+Oltre a totale e dieci divisioni per le geografie già pubblicate, conserva le sottofunzioni
+ufficiali italiane dal 2014 al 2024 di tutte le divisioni: GF01 (otto voci), GF02 (cinque),
+GF03 (sei), GF04 (nove), GF05 (sei), GF06 (sei), GF07 (sei), GF08 (sei), GF09 (otto) e
+GF10 (nove). GF01, GF02, GF03 e GF08 sono stati acquisiti l'11 settembre 2026, le altre
+sei divisioni il 14 settembre 2026 dallo stesso rilascio (`updated` 2026-07-21). Le celle di
+dettaglio per unità sono obbligatorie e riconciliano con il rispettivo parent entro la sola
+tolleranza di arrotondamento, 0,5 nell'unità della fonte: nove parti più il parent, arrotondati
+indipendentemente a un decimale. Una cella assente ferma la pubblicazione.
+
+`/api/spese/cofog` e il dataset MCP `eurostat_cofog` accettano nel filtro funzione anche un
+codice di secondo livello (per esempio `GF1002`, vecchiaia), solo per l'Italia. GF10 non è
+la sola spesa pensionistica, GF07 non si somma al Conto economico SSN e GF05 non si somma ai
+conti ambientali EPEA: sono classificazioni COFOG con perimetri propri.
+
+La pagina `/spese/servizi-generali` espone GF0101–GF0108 senza trasformare GF01 in «debito».
+In particolare GF0107, *Public debt transactions*, non coincide con la sola spesa per
+interessi D.41: il manuale COFOG Eurostat registra in 01.7 sia D.41 sia il consumo
+intermedio P.2 relativo al FISIM, mentre i costi amministrativi di gestione del debito
+sono classificati in 01.1. La pagina `/debito` resta quindi un approfondimento distinto
+su stock, detentori, scadenze e interessi e non una scomposizione dell'intero GF01.
+
+Le pagine `/spese/difesa`, `/spese/sicurezza` e `/spese/cultura` espongono rispettivamente
+GF0201–GF0205, GF0301–GF0306 e GF0801–GF0806 senza stimare residui, missioni estere,
+qualità dei servizi o una categoria «spettacolo» assente dalla fonte.
+
+Gli importi sono spesa delle Amministrazioni pubbliche in competenza economica SEC 2010,
+non pagamenti SIOPE né stanziamenti del bilancio dello Stato. Il secondo livello viene
+pubblicato solo per l'Italia: assenze osservate per altre geografie non sono convertite in zero.
+
+### Debito pubblico italiano
+
+La pagina `/debito` usa esclusivamente i cubi BDS di Banca d'Italia
+`TCCE0125`, `TCCE0175`, `TCCE0200`, `TCCE0325` e il dataset Eurostat
+`gov_10a_main`, limitato a `D41PAY` e `TE` per l'Italia. Gli importi sono
+convertiti da milioni di euro a centesimi interi sicuri e riconciliati prima
+della pubblicazione. Stock mensile, detentori, vita residua e interessi annuali
+mantengono date distinte; non vengono prodotti valori pro capite o previsioni.
+
+Il primo snapshot, acquisito il 24 agosto 2026, è stato confrontato con le
+Tavole 2, 4, 5 e 7 della [pubblicazione Banca d'Italia del 14 agosto
+2026](https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/2026-finanza-pubblica/statistiche_FPI_20260814.pdf). I
+valori BDS di giugno coincidono con il PDF, tenendo conto dell'arrotondamento
+del PDF al milione: debito 3.207.247,3 milioni di euro, variazione mensile
+26.183,9 milioni, fabbisogno 13.259,2 milioni, transazioni 23.035,2 milioni,
+variazione della liquidità −9.776,0 milioni e vita media residua 7,9 anni. I
+detentori completi restano correttamente riferiti a maggio 2026.
+
+Nello stesso controllo, il Data Browser e la Statistics API Eurostat
+`gov_10a_main` esponevano per il 2025 interessi `D41PAY` pari a 87.146 milioni
+di euro e spesa totale `TE` pari a 1.155.309 milioni, da cui la quota half-up
+del 7,54%. La versione upstream dichiarata era
+`2026-07-21T11:00:00+0200`. Questi numeri documentano la caratterizzazione del
+primo rilascio: il runtime continua a leggere lo snapshot aggiornabile e non li
+usa come costanti dell'interfaccia.
+
+## TED: avvisi con committenti in Italia
+
+La pagina `/appalti/ted` e il dataset integrato `ted-avvisi-italia-2026-08`
+collegano 2.825 avvisi pubblicati nella GUUE ad agosto 2026, con almeno un
+committente che dichiara paese Italia. Fonte: Ufficio delle pubblicazioni
+dell’Unione europea, Search API TED. Dodici risposte complete, hash pinnati,
+acquisizione 6 settembre 2026 e riproduzione offline.
+
+Avvisi, non contratti o pagamenti; comprendono tipi diversi e tre avvisi con
+committenti di più paesi. Nessuna somma o join CIG con ANAC. Riuso degli avvisi
+GUUE verificato nella nota TED, salvo diversa indicazione, e metadati CC0 1.0.
+Pagina, API e MCP consumano lo stesso corpus. [Fonte, date, condizioni di riuso e riproduzione](TED_NOTICES.md).
+
+### Conto Annuale RGS · personale e costo del lavoro 2020
+
+Le distribuzioni ufficiali DFP, CC BY 4.0, aggiungono 244.566 righe di costo e
+101.546 di personale al corpus pubblico. Snapshot storico 2020, con anno e
+chiave amministrazione RGS; coperture distinte, nessun totale sintetico né
+assimilazione a SIOPE cassa. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md).
+
+### ISTAT Bes dei territori · Salute
+
+Il dominio completo `BES_01`, edizione 2025, aggiunge sei indicatori e 46.157
+osservazioni su 135 territori, di cui 107 province. Periodi e unità distinti per
+indicatore; flag di significatività conservato, nessun dato comunale o indice
+composito. Fonte `istat-bes-salute`, API e MCP con selettore condiviso e pagine
+di massimo 100 righe. [Lock, denominatori, geografia e riproduzione](research/ISTAT_BES_SALUTE.md).
+
+### ISTAT BES dei territori — Istruzione e formazione
+
+Dominio BES_02, edizione 2025: nove indicatori, 14.952 osservazioni e 139
+territori (111 province), con periodi e denominatori propri. Percentuali e
+tasso specifico di coorte, non spesa o efficienza; 76 celle ignote `g`, nessuna
+imputazione comunale. Fonte `istat-bes-istruzione`, API/MCP paginati.
+[Lock, definizioni e limiti](research/ISTAT_BES_ISTRUZIONE.md).
+
+### ISTAT BES dei territori — Relazioni sociali
+
+Dominio BES_05, edizione 2025: due indicatori, 1.330 osservazioni e 135
+territori (107 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 8 celle non significative `n`, nessuna imputazione. Fonte
+`istat-bes-relazioni`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_RELAZIONI.md).
+
+### ISTAT BES dei territori — Politica e istituzioni
+
+Dominio BES_06, edizione 2025: sette indicatori, 15.818 osservazioni e 139
+territori (111 province), con periodi e unità propri. Solo `SEX=T` nel payload
+ufficiale; 2.115 celle senza valore restano null senza flag inventato. Fonte
+`istat-bes-politica`, API/MCP paginati, nessuna UI in questa tranche.
+[Lock, definizioni e limiti](research/ISTAT_BES_POLITICA.md).

@@ -1,0 +1,56 @@
+.figure {
+  margin: var(--space-3) 0 0;
+}
+
+.chart {
+  width: 100%;
+  min-height: 240px;
+}
+
+.tooltip {
+  max-width: 280px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-text);
+  color: var(--color-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip strong,
+.tooltip span {
+  display: block;
+}
+
+.tooltip strong {
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.tooltip span {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip span + span {
+  margin-top: 4px;
+}
+
+.empty {
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .chart {
+    min-height: 300px;
+  }
+}

@@ -1,0 +1,9 @@
+.figure { margin: 24px 0 0; }
+.chart {
+  width: 100%;
+  height: 320px;
+  min-height: 240px;
+  overflow: hidden;
+}
+.figure figcaption { color: var(--color-neutral-600); font-size: 14px; margin-top: 8px; }
+@media (max-width: 520px) { .chart { height: 260px; } }

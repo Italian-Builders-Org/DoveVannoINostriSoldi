@@ -1,0 +1,258 @@
+.stack {
+  display: grid;
+  gap: 0;
+  align-items: start;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  padding: var(--space-4);
+  min-width: 0;
+}
+
+.progressFigure {
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.figure figcaption {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.figure figcaption strong {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.figure figcaption span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+.chart {
+  width: 100%;
+  min-width: 0;
+  min-height: 180px;
+}
+
+.chart :global(.recharts-cartesian-axis-tick-value) {
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip {
+  max-width: 280px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-text);
+  color: var(--color-on-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip strong,
+.tooltip span,
+.tooltip b {
+  display: block;
+}
+
+.tooltip strong {
+  margin-bottom: 6px;
+  color: var(--color-on-strong);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.tooltip b {
+  color: var(--color-on-strong);
+  font-size: 14px;
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+}
+
+.swatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+
+.swatchPlanned {
+  background: var(--chart-secondary);
+}
+
+.swatchActual {
+  background: var(--chart-data-primary);
+}
+
+.sectorLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.sectorLegend span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sectorList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sectorRow {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.sectorRow:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.sectorName {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: var(--font-heading-weight);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.sectorMeta {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sectorBars {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+
+.barLabel {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.track {
+  min-width: 0;
+  height: 10px;
+  background: var(--color-neutral-200);
+}
+
+.barPlanned,
+.barActual {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+}
+
+.barPlanned {
+  background: var(--chart-secondary);
+}
+
+.barActual {
+  background: var(--chart-data-primary);
+}
+
+.barValue {
+  margin: 0;
+  min-width: 5.5rem;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tableSlot {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .stack {
+    grid-template-columns: minmax(16rem, 0.34fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .progressFigure {
+    border-bottom: 0;
+    border-right: 1px solid var(--color-neutral-300);
+  }
+}
+
+@media (max-width: 640px) {
+  .figure {
+    padding: var(--space-3);
+  }
+
+  .figure figcaption strong {
+    font-size: 15px;
+  }
+
+  .sectorName {
+    font-size: 12.5px;
+  }
+
+  .sectorList {
+    gap: var(--space-3);
+  }
+
+  .barRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  .barLabel {
+    grid-column: 1 / -1;
+  }
+
+  .barValue {
+    min-width: 0;
+    font-size: 11px;
+  }
+
+  .track {
+    height: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}

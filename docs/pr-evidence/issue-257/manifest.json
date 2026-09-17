@@ -1,0 +1,50 @@
+{
+  "applicationCommit": "34b3d34df945e3883c7ca70f316765828a1cb640",
+  "build": "next build; next start, Node 22.23.2",
+  "viewports": {
+    "desktop": [
+      1440,
+      1000
+    ],
+    "tablet": [
+      768,
+      1024
+    ],
+    "mobile": [
+      390,
+      844
+    ]
+  },
+  "screenshots": {
+    "desktop-costo.png": {
+      "source": "conto-annuale-costo-anteprima.png",
+      "sha256": "9851027632194f65431d6726fd13db900a737e42870e87cb831634ed16c6a525"
+    },
+    "desktop-personale.png": {
+      "source": "conto-annuale-personale-anteprima.png",
+      "sha256": "34424e7f160d4c42ed616725ccd62626aa99ce85ad4890afc9753e01fff590bc"
+    },
+    "tablet-costo.png": {
+      "source": "tablet/conto-annuale-costo-anteprima.png",
+      "sha256": "b2d83a038f681b8a27e14b7c8038e40c71043fd0712013a3b14c4a527b21f50d"
+    },
+    "mobile-costo.png": {
+      "source": "mobile/conto-annuale-costo-anteprima.png",
+      "sha256": "a1ce834b6872d35c3b32420a7125105acc628292a1fb524864c591db8717c1be"
+    },
+    "mobile-catalogo-costo.png": {
+      "source": "mobile/rgs-conto-annuale-costo-2020.png",
+      "sha256": "7ba22f4ff970fee7727546bed46b5287ee9712344238f95733a0677df4c386cb"
+    }
+  },
+  "checks": [
+    "catalog and both Conto Annuale datasets: UI/API parity, search, pagination, keyboard scrolling, empty and invalid cursor states on all three viewports",
+    "both editorial previews: keyboard disclosure, three real rows, no global overflow or browser errors",
+    "source ledger, thematic hubs and MCP access: desktop and mobile",
+    "MCP HTTP wire smoke: pass"
+  ],
+  "limits": [
+    "Local production build; screenshots do not prove hosted API execution.",
+    "Source replacement characters are preserved. Mobile tables scroll horizontally."
+  ]
+}

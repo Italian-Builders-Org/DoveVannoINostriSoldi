@@ -1,0 +1,473 @@
+import http from "node:http";
+import https from "node:https";
+import { setTimeout as delay } from "node:timers/promises";
+import { APP_USER_AGENT, IPA_USER_AGENT } from "@/lib/app-version";
+import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
+import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
+import { getSourcePolicy, type SourceId } from "@/lib/data/source-policy";
+
+export type SourceFetchKind = "discovery" | "data";
+
+type NextFetchOptions = RequestInit & {
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
+};
+
+type SourceFetchOptions = Omit<NextFetchOptions, "next" | "signal" | "cache"> & {
+  kind?: SourceFetchKind;
+  signal?: AbortSignal;
+  revalidateSeconds?: number;
+  tags?: readonly string[];
+  /** Cannot exceed the source policy. Use 0 to fail on the first retryable status. */
+  maxRetries?: number;
+  /** Cannot exceed the source policy. Floor is 1 second. */
+  timeoutMs?: number;
+  /**
+   * `revalidate` (default) uses Next data cache tags.
+   * `no-store` is for interactive UI paths: avoids associating upstream 4xx/5xx
+   * (especially 429) with the document response in the App Router.
+   */
+  cacheMode?: "revalidate" | "no-store";
+  /**
+   * When true, non-OK HTTP statuses cancel the body and throw SourceFetchError
+   * instead of returning the Response. Prefer this for Server Components.
+   */
+  rejectHttpError?: boolean;
+};
+
+const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
+  ipa: ["indicepa.gov.it", "www.indicepa.gov.it"],
+  "ipa-struttura": ["indicepa.gov.it", "www.indicepa.gov.it"],
+  openbdap: ["bdap-opendata.rgs.mef.gov.it", "openbdap.rgs.mef.gov.it"],
+  anac: [
+    "dati.anticorruzione.it",
+    "api.anticorruzione.it",
+    "www.anticorruzione.it",
+    "anticorruzione.it",
+  ],
+  inps: ["www.inps.it", "inps.it", "serviziweb2.inps.it", "servizi2.inps.it"],
+  cpt: ["politichecoesione.governo.it", "www.politichecoesione.governo.it"],
+  istat: ["situas.istat.it", "situas-servizi.istat.it", "www.istat.it"],
+  // Snapshot-only: the SDMX payload is acquired and pinned by ETL, never fetched at runtime.
+  "istat-casellario-pensioni": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-cofog": [],
+  // Snapshot-only: la risposta SDMX EPEA è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-epea": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-poverta": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-poverta-relativa": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-bes-economico": [],
+  "istat-bes-salute": [],
+  "istat-bes-istruzione": [],
+  "istat-bes-lavoro": [],
+  "istat-bes-relazioni": [],
+  "istat-bes-politica": [],
+  // Snapshot-only: le risposte SDMX-ML sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "inps-naspi": [],
+  // Snapshot-only: i CSV AUU sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  "inps-assegno-unico": [],
+  // Snapshot-only: i CSV integrazioni salariali sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  "inps-integrazioni-salariali": [],
+  // Snapshot-only: il CSV CIG Fondi di Solidarietà è acquisito e vincolato dall'ETL, mai scaricato a runtime.
+  "inps-cig-fondi-solidarieta": [],
+  // Snapshot-only: il PDF INL è acquisito e vincolato dall'ETL, mai scaricato a runtime.
+  "inl-vigilanza": [],
+  // Snapshot-only: i quattro CSV annuali AIFA sono acquisiti e vincolati dall'ETL.
+  "aifa-spesa-consumi": [],
+  // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  "mef-irpef-dettaglio": [],
+  // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.
+  "mef-iva": [],
+  // Snapshot-only: il workbook DG TAXUD VAT gap è acquisito e vincolato dall'ETL.
+  "eu-vat-gap-italy": [],
+  "mef-tax-gap-nazionale": [],
+  // Snapshot-only: la risposta JSON-stat gov_10a_taxag è acquisita e vincolata dall'ETL.
+  "eurostat-taxag": [],
+  // Snapshot-only: la risposta JSON-stat hlth_sha11_hf è acquisita e vincolata dall'ETL.
+  "eurostat-sha-health": [],
+  // Snapshot-only: i CSV Consip sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  consip: [],
+  "mef-irpef": MEF_IRPEF_SOURCE.allowedHosts,
+  siope: [
+    "www.siope.it",
+    "siope.it",
+    "www.bancaditalia.it",
+    "bancaditalia.it",
+    "bdap-opendata.rgs.mef.gov.it",
+  ],
+  opencoesione: ["opencoesione.gov.it", "www.opencoesione.gov.it"],
+  // The runtime checks the pinned normalized artifact, never the upstream bulk archive.
+  opencup: [],
+  italiadomani: PNRR_CHILDCARE_SOURCE.allowedHosts,
+  opencivitas: ["opencivitas.it", "www.opencivitas.it", "docs.opencivitas.it"],
+  consulenti: [
+    "consulentipubblici.dfp.gov.it",
+    "adp-api.perlapa.gov.it",
+    "www.perlapa.gov.it",
+  ],
+  camera: ["trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"],
+  senato: ["www.senato.it", "senato.it", "dati.senato.it"],
+  pcm: ["presidenza.governo.it"],
+  "partecipazioni-pubbliche": ["www.de.mef.gov.it", "de.mef.gov.it"],
+  // These sources are snapshot-only at runtime; their Python ETL owns network access.
+  ameco: [],
+  "governi-presidenza": [],
+  bancaditalia: [],
+  eurostat: [],
+  "eurostat-hicp": [],
+  // Snapshot-only: le risposte JSON-stat PIL sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "eurostat-gdp": [],
+  // Snapshot-only: i CSV SDMX OECD Taxing Wages sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
+  "oecd-taxing-wages": [],
+  // Snapshot-only: le risposte JSON-stat sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "eurostat-cofog": [],
+  // Snapshot-only: le risposte JSON-stat di gov_10a_main sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
+  "eurostat-gov-main": [],
+};
+
+const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
+const RETRY_DELAY_MS = 300;
+const USER_AGENT = APP_USER_AGENT;
+
+const SOURCE_USER_AGENTS: Partial<Readonly<Record<SourceId, string>>> = {
+  ipa: IPA_USER_AGENT,
+  "ipa-struttura": IPA_USER_AGENT,
+};
+
+export class SourceFetchError extends Error {
+  readonly sourceId: SourceId;
+  readonly cause?: unknown;
+  readonly httpStatus?: number;
+
+  constructor(
+    message: string,
+    sourceId: SourceId,
+    cause?: unknown,
+    httpStatus?: number,
+  ) {
+    super(message);
+    this.name = "SourceFetchError";
+    this.sourceId = sourceId;
+    this.cause = cause;
+    this.httpStatus = httpStatus;
+  }
+}
+
+/** True when the upstream asked us to back off (do not issue a second IPA call). */
+export function isUpstreamOverloadedError(error: unknown): boolean {
+  if (error instanceof SourceFetchError) {
+    return (
+      error.httpStatus === 429
+      || error.httpStatus === 500
+      || error.httpStatus === 502
+      || error.httpStatus === 503
+      || error.httpStatus === 504
+    );
+  }
+  if (!(error instanceof Error)) return false;
+  return /\bHTTP (429|500|502|503|504)\b/.test(error.message);
+}
+
+/**
+ * Interactive `no-store` paths must not use Next's patched `fetch`: an upstream
+ * 429/5xx Response can still be associated with the App Router document status
+ * and surface as Vercel's "Too Many Requests" page even after we throw locally.
+ * Node's http(s) client keeps that status off the flight response.
+ *
+ * Tests that mock `globalThis.fetch` set `DVNS_SOURCE_FETCH_USE_GLOBAL=1`.
+ */
+function shouldBypassNextFetch(cacheMode: "revalidate" | "no-store"): boolean {
+  if (cacheMode !== "no-store") return false;
+  return process.env.DVNS_SOURCE_FETCH_USE_GLOBAL !== "1";
+}
+
+// Interactive IPA pages are bounded to at most 500 records. A 16 MiB ceiling
+// leaves ample room for those responses without buffering an unbounded body.
+const NATIVE_RESPONSE_MAX_BYTES = 16 * 1024 * 1024;
+
+function fetchViaNodeHttp(
+  url: URL,
+  init: Readonly<{
+    method: string;
+    headers: Headers;
+    signal?: AbortSignal;
+  }>,
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    if (init.signal?.aborted) {
+      reject(init.signal.reason ?? new DOMException("The operation was aborted.", "AbortError"));
+      return;
+    }
+
+    const transport = url.protocol === "https:" ? https : http;
+    const requestHeaders: Record<string, string> = {};
+    init.headers.forEach((value, key) => {
+      requestHeaders[key] = value;
+    });
+
+    let settled = false;
+    const fail = (error: unknown) => {
+      if (settled) return;
+      settled = true;
+      init.signal?.removeEventListener("abort", onAbort);
+      req?.destroy();
+      reject(error);
+    };
+    const onAbort = () => fail(
+      init.signal?.reason ?? new DOMException("The operation was aborted.", "AbortError"),
+    );
+
+    const req = transport.request(
+      url,
+      {
+        method: init.method,
+        headers: requestHeaders,
+      },
+      (incoming) => {
+        const chunks: Buffer[] = [];
+        let bytes = 0;
+        let ended = false;
+        incoming.on("data", (chunk: Buffer | string) => {
+          if (settled) return;
+          const buffer = typeof chunk === "string" ? Buffer.from(chunk) : chunk;
+          bytes += buffer.length;
+          if (bytes > NATIVE_RESPONSE_MAX_BYTES) {
+            chunks.length = 0;
+            fail(new Error("Interactive source response exceeds the 16 MiB limit"));
+            incoming.destroy();
+            return;
+          }
+          chunks.push(buffer);
+        });
+        incoming.on("error", fail);
+        incoming.on("aborted", () => fail(new Error("Source response ended prematurely")));
+        incoming.on("close", () => {
+          if (!ended) fail(new Error("Source response closed before completion"));
+        });
+        incoming.on("end", () => {
+          ended = true;
+          if (settled) return;
+          try {
+            const headers = new Headers();
+            for (const [key, value] of Object.entries(incoming.headers)) {
+              if (value === undefined) continue;
+              if (Array.isArray(value)) {
+                for (const item of value) headers.append(key, item);
+              } else {
+                headers.set(key, value);
+              }
+            }
+            const status = incoming.statusCode ?? 0;
+            const bodyless = init.method === "HEAD" || [204, 205, 304].includes(status);
+            const response = new Response(bodyless ? null : Buffer.concat(chunks), {
+              status,
+              statusText: incoming.statusMessage,
+              headers,
+            });
+            settled = true;
+            init.signal?.removeEventListener("abort", onAbort);
+            resolve(response);
+          } catch (error) {
+            fail(error);
+          }
+        });
+      },
+    );
+
+    init.signal?.addEventListener("abort", onAbort, { once: true });
+    req.on("error", fail);
+    if (init.signal?.aborted) onAbort();
+    else {
+      try {
+        req.end();
+      } catch (error) {
+        fail(error);
+      }
+    }
+  });
+}
+
+function assertOfficialUrl(sourceId: SourceId, rawUrl: string): URL {
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch (error) {
+    throw new SourceFetchError(`URL non valido per la fonte ${sourceId}`, sourceId, error);
+  }
+
+  if (url.protocol !== "https:") {
+    throw new SourceFetchError(
+      `Protocollo non consentito per la fonte ${sourceId}: ${url.protocol}`,
+      sourceId,
+    );
+  }
+
+  const hostname = url.hostname.toLowerCase();
+  if (!ALLOWED_HOSTS[sourceId].includes(hostname)) {
+    throw new SourceFetchError(
+      `Host non consentito per la fonte ${sourceId}: ${hostname}`,
+      sourceId,
+    );
+  }
+
+  return url;
+}
+
+function composedSignal(callerSignal: AbortSignal | undefined, timeoutMs: number): AbortSignal {
+  const timeout = AbortSignal.timeout(timeoutMs);
+  return callerSignal ? AbortSignal.any([callerSignal, timeout]) : timeout;
+}
+
+function revalidateFor(sourceId: SourceId, kind: SourceFetchKind): number {
+  const policy = getSourcePolicy(sourceId);
+  return kind === "discovery"
+    ? policy.discoveryRevalidateSeconds
+    : policy.dataRevalidateSeconds;
+}
+
+function requestHeaders(sourceId: SourceId, input: HeadersInit | undefined): Headers {
+  const headers = new Headers(input);
+  if (!headers.has("Accept")) {
+    headers.set(
+      "Accept",
+      "application/json, text/csv;q=0.9, text/plain;q=0.8, */*;q=0.5",
+    );
+  }
+  if (!headers.has("User-Agent")) {
+    headers.set("User-Agent", SOURCE_USER_AGENTS[sourceId] ?? USER_AGENT);
+  }
+  return headers;
+}
+
+/**
+ * Server-only read helper for official upstreams.
+ *
+ * Network and cache policy live here; schema validation stays inside each
+ * adapter. Callers cannot override the Next.js cache mode directly: they may
+ * only select discovery/data semantics or an explicit positive revalidation
+ * interval. This avoids conflicting `cache` + `revalidate` configurations.
+ */
+export async function fetchOfficialSource(
+  sourceId: SourceId,
+  rawUrl: string,
+  options: SourceFetchOptions = {},
+): Promise<Response> {
+  const policy = getSourcePolicy(sourceId);
+  const url = assertOfficialUrl(sourceId, rawUrl);
+  const kind = options.kind ?? "data";
+  const retries = Math.max(
+    0,
+    Math.min(policy.maxRetries, options.maxRetries ?? policy.maxRetries),
+  );
+  const timeoutMs = Math.max(
+    1_000,
+    Math.min(policy.timeoutMs, options.timeoutMs ?? policy.timeoutMs),
+  );
+  const cacheTags = [...new Set([...policy.tags, ...(options.tags ?? [])])];
+  const requestedRevalidate = options.revalidateSeconds ?? revalidateFor(sourceId, kind);
+  const revalidate = Math.max(1, Math.trunc(requestedRevalidate));
+  const cacheMode = options.cacheMode ?? "revalidate";
+  const rejectHttpError = options.rejectHttpError === true;
+
+  const {
+    kind: _kind,
+    revalidateSeconds: _revalidateSeconds,
+    tags: _tags,
+    maxRetries: _maxRetries,
+    timeoutMs: _timeoutMs,
+    cacheMode: _cacheMode,
+    rejectHttpError: _rejectHttpError,
+    signal: callerSignal,
+    headers,
+    ...requestOptions
+  } = options;
+  void _kind;
+  void _revalidateSeconds;
+  void _tags;
+  void _maxRetries;
+  void _timeoutMs;
+  void _cacheMode;
+  void _rejectHttpError;
+
+  const method = (requestOptions.method ?? "GET").toUpperCase();
+  if (method !== "GET" && method !== "HEAD") {
+    throw new SourceFetchError(
+      `Metodo ${method} non consentito dal fetch layer read-only`,
+      sourceId,
+    );
+  }
+
+  let lastError: unknown;
+
+  const requestHeadersValue = requestHeaders(sourceId, headers);
+  const bypassNextFetch = shouldBypassNextFetch(cacheMode);
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    if (callerSignal?.aborted) throw callerSignal.reason;
+
+    try {
+      const requestSignal = composedSignal(callerSignal, timeoutMs);
+      const response = bypassNextFetch
+        ? await fetchViaNodeHttp(url, {
+            method,
+            headers: requestHeadersValue,
+            signal: requestSignal,
+          })
+        : await fetch(url, {
+            ...requestOptions,
+            method,
+            headers: requestHeadersValue,
+            redirect: requestOptions.redirect ?? "error",
+            signal: requestSignal,
+            ...(cacheMode === "no-store"
+              ? { cache: "no-store" as const }
+              : {
+                  next: {
+                    revalidate,
+                    tags: cacheTags,
+                  },
+                }),
+          });
+
+      if (!RETRYABLE_STATUS.has(response.status) || attempt === retries) {
+        if (rejectHttpError && !response.ok) {
+          const status = response.status;
+          await response.body?.cancel().catch(() => undefined);
+          throw new SourceFetchError(
+            `Fonte ${sourceId} HTTP ${status}`,
+            sourceId,
+            undefined,
+            status,
+          );
+        }
+        return response;
+      }
+
+      await response.body?.cancel();
+    } catch (error) {
+      if (error instanceof SourceFetchError) throw error;
+      lastError = error;
+      if (callerSignal?.aborted) throw callerSignal.reason;
+      if (attempt === retries) {
+        throw new SourceFetchError(
+          `Errore di rete verso ${sourceId} dopo ${attempt + 1} tentativo/i`,
+          sourceId,
+          error,
+        );
+      }
+    }
+
+    await delay(
+      RETRY_DELAY_MS * (attempt + 1),
+      undefined,
+      callerSignal ? { signal: callerSignal } : undefined,
+    );
+  }
+
+  throw new SourceFetchError(`Impossibile interrogare la fonte ${sourceId}`, sourceId, lastError);
+}

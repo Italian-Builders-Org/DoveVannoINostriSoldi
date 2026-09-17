@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "year": "2020",
+  "acquisitionDate": "2026-09-07",
+  "license": "CC-BY-4.0",
+  "sources": [
+    {
+      "kind": "costo",
+      "datasetId": "rgs-conto-annuale-costo-2020",
+      "url": "https://dati-coll.dfp.gov.it/dataset/1308c340-624a-46e0-8ea2-888d3d72c4d2/resource/65172182-a08a-46d9-a1ba-675316f7ffd5/download/costo_lavoro_2020.csv",
+      "packageUrl": "https://dati-coll.dfp.gov.it/dataset/costo_lavoro",
+      "resourceId": "65172182-a08a-46d9-a1ba-675316f7ffd5",
+      "resourceName": "costo_lavoro_2020.csv",
+      "publicationDate": "2022-09-23",
+      "bytes": 28344416,
+      "sha256": "29e9a94a7b5e5acebb30db19d7ad700855fd1677d540f0c68f89beee33fe6a44",
+      "rows": 244566,
+      "institutions": 10785,
+      "repeatedDimensionKeys": 0,
+      "replacementCharacters": 3602,
+      "headers": [
+        "codi_istituzione",
+        "desc_istituzione",
+        "codi_fiscale",
+        "codi_tipo_istituzione",
+        "desc_tipo_istituzione",
+        "contratto",
+        "voce_spesa",
+        "desc_voce_spesa",
+        "flag_segno",
+        "totale_spesa"
+      ],
+      "fields": {
+        "codi_istituzione": "Codice istituzione",
+        "desc_istituzione": "Amministrazione",
+        "codi_tipo_istituzione": "Tipo istituzione",
+        "desc_tipo_istituzione": "Descrizione tipo",
+        "contratto": "Contratto",
+        "voce_spesa": "Voce spesa",
+        "desc_voce_spesa": "Descrizione voce",
+        "flag_segno": "Segno fonte",
+        "totale_spesa": "Importo euro"
+      },
+      "fixture": {
+        "path": "tests/fixtures/conto-annuale/costo_lavoro_2020.csv.gz",
+        "bytes": 2228611,
+        "sha256": "98ece4d3500743026b4a18ff45bb4807b0decd3ed92bf5584c144811ff3e1a61"
+      },
+      "metadataFixture": {
+        "path": "tests/fixtures/conto-annuale/catalog-search.response.json.gz",
+        "bytes": 14413,
+        "sha256": "ea35f5a8f6f5027463ccdd2c2083da71e70ab15af63c05b7c8b50849d4216b8b"
+      },
+      "dictionaryFixture": {
+        "path": "tests/fixtures/conto-annuale/costo.dictionary.json.gz",
+        "bytes": 288,
+        "sha256": "5a91af143fd1780f183d964cbdc1cae8487208dfccfe6122911e3027c37f8feb"
+      },
+      "packageName": "costo_lavoro"
+    },
+    {
+      "kind": "occupazione",
+      "datasetId": "rgs-conto-annuale-personale-2020",
+      "url": "https://dati-coll.dfp.gov.it/dataset/80b49214-fa00-4e25-aafb-2c122a523df6/resource/f4e810e7-72d9-4041-9d63-9e819823e3e0/download/occupazione_2020.csv",
+      "packageUrl": "https://dati-coll.dfp.gov.it/dataset/occupazione",
+      "resourceId": "f4e810e7-72d9-4041-9d63-9e819823e3e0",
+      "resourceName": "occupazione_2020.csv",
+      "publicationDate": "2022-09-23",
+      "bytes": 27282059,
+      "sha256": "907c5230fefc3cc8aacb122e1c65482a1651a3a6df75d58c87f6d42e9cb59194",
+      "rows": 101546,
+      "institutions": 10330,
+      "repeatedDimensionKeys": 220,
+      "replacementCharacters": 250,
+      "headers": [
+        "codi_istituzione",
+        "desc_istituzione",
+        "codi_fiscale",
+        "codi_comparto",
+        "desc_comparto",
+        "contratto",
+        "desc_contratto",
+        "categoria",
+        "desc_categoria",
+        "qualifica",
+        "desc_qualifica",
+        "codi_macrocategoria",
+        "desc_macrocategoria",
+        "codi_aggregato",
+        "desc_aggregato",
+        "codi_tipo_istituzione",
+        "desc_tipo_istituzione",
+        "personale_tempo_pieno_uomini",
+        "personale_tempo_pieno_donne",
+        "part_time_inf50percento_uomini",
+        "part_time_inf50percento_donne",
+        "part_time_sup50percento_uomini",
+        "part_time_sup50percento_donne"
+      ],
+      "fields": {
+        "codi_istituzione": "Codice istituzione",
+        "desc_istituzione": "Amministrazione",
+        "codi_comparto": "Comparto",
+        "desc_comparto": "Descrizione comparto",
+        "contratto": "Contratto",
+        "desc_contratto": "Descrizione contratto",
+        "categoria": "Categoria",
+        "desc_categoria": "Descrizione categoria",
+        "qualifica": "Qualifica",
+        "desc_qualifica": "Descrizione qualifica",
+        "codi_macrocategoria": "Macrocategoria",
+        "desc_macrocategoria": "Descrizione macrocategoria",
+        "codi_aggregato": "Aggregato",
+        "desc_aggregato": "Descrizione aggregato",
+        "codi_tipo_istituzione": "Tipo istituzione",
+        "desc_tipo_istituzione": "Descrizione tipo",
+        "personale_tempo_pieno_uomini": "Tempo pieno uomini",
+        "personale_tempo_pieno_donne": "Tempo pieno donne",
+        "part_time_inf50percento_uomini": "Part time <50% uomini",
+        "part_time_inf50percento_donne": "Part time <50% donne",
+        "part_time_sup50percento_uomini": "Part time >50% uomini",
+        "part_time_sup50percento_donne": "Part time >50% donne"
+      },
+      "fixture": {
+        "path": "tests/fixtures/conto-annuale/occupazione_2020.csv.gz",
+        "bytes": 1104921,
+        "sha256": "1b56a8379af596a1f0197f7b71f7165f629c585cd983cf37ebfcf91fae7b942a"
+      },
+      "metadataFixture": {
+        "path": "tests/fixtures/conto-annuale/catalog-search.response.json.gz",
+        "bytes": 14413,
+        "sha256": "ea35f5a8f6f5027463ccdd2c2083da71e70ab15af63c05b7c8b50849d4216b8b"
+      },
+      "dictionaryFixture": {
+        "path": "tests/fixtures/conto-annuale/occupazione.dictionary.json.gz",
+        "bytes": 469,
+        "sha256": "ca337611ac555d9836068bdaad4124887893e620179c1137174ab3eba806a3d6"
+      },
+      "packageName": "occupazione"
+    }
+  ],
+  "coverage": {
+    "commonInstitutions": 10310,
+    "costOnlyInstitutions": 475,
+    "personnelOnlyInstitutions": 20
+  },
+  "references": [
+    {
+      "title": "Circolare RGS 18/2021, allegato Conto Annuale 2020",
+      "url": "https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/CIRCOLARI/2021/18/allegato-2020.pdf",
+      "bytes": 6706331,
+      "sha256": "a05de84f2c9938ee8dffb450aaa8f4f3f0e909d5797d4b21764669e588a75b60",
+      "scope": "Istruzioni sulle spese: importi in euro interi, arrotondati dalla fonte."
+    }
+  ]
+}

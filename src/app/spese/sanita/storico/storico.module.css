@@ -1,0 +1,73 @@
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-6);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.breadcrumb a:hover {
+  color: var(--color-accent-700);
+}
+
+.summary {
+  margin: var(--space-4) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.note {
+  margin: var(--space-4) 0;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.provenance {
+  margin-top: var(--space-6);
+}
+
+.provenanceIntro {
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.provenanceList {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.provenanceRow {
+  display: grid;
+  grid-template-columns: 4rem 1fr 1fr;
+  gap: var(--space-2) var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-200);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.provenanceRow strong {
+  grid-row: span 2;
+  color: var(--color-text);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.provenanceRow a {
+  color: var(--color-accent-700);
+}
+
+@media (max-width: 620px) {
+  .provenanceRow {
+    grid-template-columns: 3rem 1fr;
+  }
+
+  .provenanceRow strong {
+    grid-row: span 4;
+  }
+}

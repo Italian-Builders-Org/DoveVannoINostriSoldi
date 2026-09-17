@@ -1,0 +1,1760 @@
+{
+  "assignments": [
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Giorgio",
+      "id": "indire-pnrr-8599a780b901ee49",
+      "lastName": "Alessandri",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 117,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Angelo",
+      "id": "indire-pnrr-17a030aacd14da62",
+      "lastName": "Alessandrini",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 118,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Flavia",
+      "id": "indire-pnrr-ccfe4a07199d18f3",
+      "lastName": "Barletta",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 119,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Maria Cristina",
+      "id": "indire-pnrr-cbdee5a72508e0d6",
+      "lastName": "Bevilacqua",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 120,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Laura",
+      "id": "indire-pnrr-0df8ee2c9f34e4aa",
+      "lastName": "Birtolo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 121,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Fulvia",
+      "id": "indire-pnrr-fdde68cfb461692b",
+      "lastName": "Bonifazio",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 122,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Ilaria",
+      "id": "indire-pnrr-df27019142b4eed4",
+      "lastName": "Calì",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 123,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Susanna",
+      "id": "indire-pnrr-6d20c23e19968221",
+      "lastName": "Callegari",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 124,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Vincent",
+      "id": "indire-pnrr-5a3715414b10330c",
+      "lastName": "Cardinale",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 125,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Federica",
+      "id": "indire-pnrr-9b7722c8d62ab076",
+      "lastName": "Carlomagno",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 126,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Roberto",
+      "id": "indire-pnrr-4e9f238b7bbadf1f",
+      "lastName": "Carnevali",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 127,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Valentina",
+      "id": "indire-pnrr-4b2064a48bc8305b",
+      "lastName": "Cedrone",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 128,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Andrea",
+      "id": "indire-pnrr-b59babaa2fe457ed",
+      "lastName": "Cenderello",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 129,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Valentina",
+      "id": "indire-pnrr-3aff68feb498ce13",
+      "lastName": "Ciampini",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 130,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Luca",
+      "id": "indire-pnrr-2d5ef47e447b289c",
+      "lastName": "Ciarambino",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 131,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Federica",
+      "id": "indire-pnrr-17ca8a97a1636309",
+      "lastName": "Cicala",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 132,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Giulia",
+      "id": "indire-pnrr-5c64665f64517f9c",
+      "lastName": "Contessa",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 133,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Palma",
+      "id": "indire-pnrr-7ba8fd3b68b68231",
+      "lastName": "Cordiano",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 134,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Fabio",
+      "id": "indire-pnrr-3f4bf42e3941ec63",
+      "lastName": "Croci",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 135,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Alessandra",
+      "id": "indire-pnrr-31e1e55fa29a7500",
+      "lastName": "Curreli",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 136,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Francesco",
+      "id": "indire-pnrr-499405a7a5c223c5",
+      "lastName": "De Vitto",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 137,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Francesca",
+      "id": "indire-pnrr-3e55ed250cbc1768",
+      "lastName": "Del Conte",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 138,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Sara",
+      "id": "indire-pnrr-b29d9ce7f9009305",
+      "lastName": "D'elia",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 139,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Irene",
+      "id": "indire-pnrr-abf83dcfd99b4375",
+      "lastName": "Di Donato",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 140,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Alba",
+      "id": "indire-pnrr-b5973746b3d29c78",
+      "lastName": "Di Filippo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 141,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Lorena Elisabetta",
+      "id": "indire-pnrr-5814368022675745",
+      "lastName": "Di Leo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 142,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Miriam",
+      "id": "indire-pnrr-4a5dd8f1a2ea0ca9",
+      "lastName": "Di Paolo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 143,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Luca Antonio Piero",
+      "id": "indire-pnrr-6627481f7ff320a4",
+      "lastName": "Di Salvo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 144,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Giacomo",
+      "id": "indire-pnrr-f02ba7de1a9dc438",
+      "lastName": "Fabbian",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 145,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 10646118
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Alessandro",
+      "id": "indire-pnrr-75d5c61d04aa06d3",
+      "lastName": "Falsina",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 146,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Matilde",
+      "id": "indire-pnrr-da47fb1567da2f83",
+      "lastName": "Ferraro",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 147,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Gian Luca",
+      "id": "indire-pnrr-5eac35efaf043111",
+      "lastName": "Filippi",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 148,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Lorenzo",
+      "id": "indire-pnrr-3db4ad193bd1457b",
+      "lastName": "Floresta",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 149,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Stefano",
+      "id": "indire-pnrr-80495d83f9bdf7ec",
+      "lastName": "Fogliata",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 150,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Lorenzo",
+      "id": "indire-pnrr-7e9501fb0291a34f",
+      "lastName": "Galli",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 151,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Nadia",
+      "id": "indire-pnrr-7e024f6095a72f8a",
+      "lastName": "Gatto",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 152,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Maurizio Claudio",
+      "id": "indire-pnrr-47dc2d7a3f0fee06",
+      "lastName": "Gerardini",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 153,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Alfredo",
+      "id": "indire-pnrr-a3d3e30225225b6c",
+      "lastName": "Giordano",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 154,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Lorenzo",
+      "id": "indire-pnrr-083911ec32ea290c",
+      "lastName": "Innocenti",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 155,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Benedetta",
+      "id": "indire-pnrr-b9b69f65032d1a2e",
+      "lastName": "Juon",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 156,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Liana",
+      "id": "indire-pnrr-31132d7c15aebedc",
+      "lastName": "La Bella",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 157,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Riccardo",
+      "id": "indire-pnrr-4832677dbfcd4d2f",
+      "lastName": "Lancioni",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 158,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Beatrice",
+      "id": "indire-pnrr-da2f0eeea3e56336",
+      "lastName": "Landi",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 159,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Elisabetta",
+      "id": "indire-pnrr-2fdbece258b2a158",
+      "lastName": "Leone",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 160,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Zaira",
+      "id": "indire-pnrr-0e1887cf8c640d2a",
+      "lastName": "Maranelli",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 161,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Margherita",
+      "id": "indire-pnrr-9ee1795b73b343ed",
+      "lastName": "Mare",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 162,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Alessandro",
+      "id": "indire-pnrr-ec0cc054fc1ec720",
+      "lastName": "Martignano",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 163,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Fabrizio",
+      "id": "indire-pnrr-6c1ae56bc41d9c7a",
+      "lastName": "Mascali",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 164,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Loredana",
+      "id": "indire-pnrr-3fe608e04f4f6e95",
+      "lastName": "Matarrese",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 165,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Paolo",
+      "id": "indire-pnrr-259d67825427556e",
+      "lastName": "Montana",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 166,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Sonia Sara",
+      "id": "indire-pnrr-d2a0e66faa96bd4c",
+      "lastName": "Mussari",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 167,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Salvatore",
+      "id": "indire-pnrr-bb06cc4fa101db06",
+      "lastName": "Nizzolino",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 168,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 10646118
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Marco",
+      "id": "indire-pnrr-44ee9fbb35f45440",
+      "lastName": "Palmigiani",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 169,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Sara",
+      "id": "indire-pnrr-a8107018dccb72fd",
+      "lastName": "Peruch",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 170,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Daniela",
+      "id": "indire-pnrr-3aada963c1d41ce4",
+      "lastName": "Pili",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 171,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Giovanni",
+      "id": "indire-pnrr-42cdf1ca646fbf9e",
+      "lastName": "Ricciardulli",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 172,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Sergio Francesco",
+      "id": "indire-pnrr-475682e9f9f75fe4",
+      "lastName": "Rizzo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 173,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Erica",
+      "id": "indire-pnrr-8171315babaf86d4",
+      "lastName": "Ruggeri",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 174,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Luisa",
+      "id": "indire-pnrr-3812d0c62071c1fd",
+      "lastName": "Russo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 175,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Paola",
+      "id": "indire-pnrr-d0cbb01b87e52796",
+      "lastName": "Russo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 176,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Claudia",
+      "id": "indire-pnrr-0d06653361dfda46",
+      "lastName": "Scelzo",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 177,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Catia",
+      "id": "indire-pnrr-0f7ff332ed9161dd",
+      "lastName": "Segnini",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 178,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Luciano",
+      "id": "indire-pnrr-457eccfac141052f",
+      "lastName": "Spinella",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 179,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Chiara",
+      "id": "indire-pnrr-e5ec3be21172e16d",
+      "lastName": "Spizzichino",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 180,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 10646118
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Angela",
+      "id": "indire-pnrr-770d0ade73aef3cb",
+      "lastName": "Visconti",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 181,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 8387550
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 47821 del 14/10/2024",
+      "endDate": "2026-04-30",
+      "firstName": "Matilde",
+      "id": "indire-pnrr-fc92c753f10512d7",
+      "lastName": "Zanella",
+      "location": null,
+      "programId": "m4c1-i3-1",
+      "programLabel": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi",
+      "selection": "SEL 11/24",
+      "sourceRow": 182,
+      "startDate": "2024-10-17"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Maria Consilia",
+      "id": "indire-pnrr-ac5200870213351c",
+      "lastName": "Antonelli",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 183,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Sonia",
+      "id": "indire-pnrr-487480a65813e9a8",
+      "lastName": "Calamiello",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 184,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Manuela",
+      "id": "indire-pnrr-339977937be72a2a",
+      "lastName": "Carastro",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 185,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Sergio Vito",
+      "id": "indire-pnrr-390c7b56ce27dd0b",
+      "lastName": "De Luca",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 186,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Domenico",
+      "id": "indire-pnrr-591bc26675975188",
+      "lastName": "De Lucia",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 187,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Sara",
+      "id": "indire-pnrr-a90ffa0ce263c9b4",
+      "lastName": "Di Crescenzio",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 188,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Sergio",
+      "id": "indire-pnrr-96ea8a14896075fc",
+      "lastName": "Di Marco",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 189,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Maria Chiara",
+      "id": "indire-pnrr-e5ecf365662cd1ed",
+      "lastName": "Di Stanislao",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 190,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Floriana Anna Maria",
+      "id": "indire-pnrr-60198914173acc98",
+      "lastName": "Filippone",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 191,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Anna",
+      "id": "indire-pnrr-5dc7ec338cff47f5",
+      "lastName": "Infante",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 192,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1716750
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54036 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Greta",
+      "id": "indire-pnrr-233b9ad3c82c8d0c",
+      "lastName": "Landahl",
+      "location": "RM",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 11/24",
+      "sourceRow": 193,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1716750
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54036 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Marius Orlando",
+      "id": "indire-pnrr-9484ed9e3cf6864e",
+      "lastName": "Luca",
+      "location": "RM",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 11/24",
+      "sourceRow": 194,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Claudia",
+      "id": "indire-pnrr-56d59d441e7d4f5c",
+      "lastName": "Luciano",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 195,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Elena",
+      "id": "indire-pnrr-cd2733d8c09b6c89",
+      "lastName": "Mazzoni",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 196,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Clementina",
+      "id": "indire-pnrr-31a9d1f3db9832d5",
+      "lastName": "Miggiano",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 197,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Ioana Antonia",
+      "id": "indire-pnrr-0610c50bed5a598d",
+      "lastName": "Nistor",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 198,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Vanessa",
+      "id": "indire-pnrr-4865e2f315c1a4c8",
+      "lastName": "Palmigiani",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 199,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Stefano",
+      "id": "indire-pnrr-50ead5c667880f11",
+      "lastName": "Palumbo",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 200,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Stefania",
+      "id": "indire-pnrr-b55023f04a1b3416",
+      "lastName": "Piccolo",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 201,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Massimiliano",
+      "id": "indire-pnrr-69336f9b3108a9b2",
+      "lastName": "Sassetti",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 202,
+      "startDate": "2025-10-20"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 1435000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Patrizia",
+      "id": "indire-pnrr-f19643d8be6630a0",
+      "lastName": "Soffiati",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 203,
+      "startDate": "2025-10-22"
+    },
+    {
+      "compensation": {
+        "basis": "contract_total",
+        "valueCents": 2100000
+      },
+      "conflictCheckPublished": true,
+      "cvPublished": true,
+      "decree": "Decr. prot. n. 54040 del 06/10/2025",
+      "endDate": "2026-04-30",
+      "firstName": "Elisa",
+      "id": "indire-pnrr-616fca5dcc4b0b44",
+      "lastName": "Tomaselli",
+      "location": "FI",
+      "programId": "m4c1-r2-1",
+      "programLabel": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale",
+      "selection": "SEL 9/24",
+      "sourceRow": 205,
+      "startDate": "2025-10-20"
+    }
+  ],
+  "coverage": {
+    "compensationKnown": 88,
+    "latestEndDate": "2026-04-30",
+    "pnrrAssignments": 88,
+    "uniquePeople": 88,
+    "workbookAssignments": 201
+  },
+  "dataset": "indire_pnrr_external_assignments",
+  "generatedAt": "2026-08-23",
+  "methodology": {
+    "compensation": "Ogni importo è indicato dalla fonte per l'intera durata contrattuale; non è un compenso annuo.",
+    "filter": "Righe il cui oggetto contiene il riferimento esplicito al PNRR.",
+    "scope": "Incarichi retribuiti di prestazione d'opera professionale conferiti a soggetti esterni da INDIRE.",
+    "warning": "Lo snapshot descrive gli incarichi elencati nell'aggiornamento di aprile 2026; non misura pagamenti effettuati né prova sprechi o irregolarità."
+  },
+  "programs": [
+    {
+      "assignments": 66,
+      "compensationCents": 560354004,
+      "id": "m4c1-i3-1",
+      "label": "M4C1 · Investimento 3.1 · Nuove competenze e nuovi linguaggi"
+    },
+    {
+      "assignments": 22,
+      "compensationCents": 37453500,
+      "id": "m4c1-r2-1",
+      "label": "M4C1 · Riforma 2.1 · Formazione alla transizione digitale"
+    }
+  ],
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "assignments": 68,
+      "code": "SEL 11/24"
+    },
+    {
+      "assignments": 20,
+      "code": "SEL 9/24"
+    }
+  ],
+  "source": {
+    "asset": {
+      "bytes": 54421,
+      "dimension": "A1:L205",
+      "sha256": "d31dadc85a79b2b913608845202e146d0114469abeafe98a6d491d75f7f77a66",
+      "sheet": "Table 1"
+    },
+    "format": "XLSX",
+    "landingUrl": "https://www.indire.it/amministrazione/titolari-di-incarichi-di-collaborazione-o-consulenza/",
+    "licenseStatus": "not-declared",
+    "owner": "Istituto Nazionale di Documentazione, Innovazione e Ricerca Educativa (INDIRE)",
+    "referencePeriod": "aggiornamento aprile 2026",
+    "resourceUrl": "https://www.indire.it/wp-content/uploads/2026/05/Elenco-incarichi-di-prestazione-dopera_aprile-2026-3-1-1.xlsx"
+  },
+  "tiers": [
+    {
+      "assignments": 3,
+      "compensationCents": 10646118,
+      "totalCents": 31938354
+    },
+    {
+      "assignments": 63,
+      "compensationCents": 8387550,
+      "totalCents": 528415650
+    },
+    {
+      "assignments": 8,
+      "compensationCents": 2100000,
+      "totalCents": 16800000
+    },
+    {
+      "assignments": 2,
+      "compensationCents": 1716750,
+      "totalCents": 3433500
+    },
+    {
+      "assignments": 12,
+      "compensationCents": 1435000,
+      "totalCents": 17220000
+    }
+  ],
+  "totals": {
+    "contractCompensationCents": 597807504
+  }
+}

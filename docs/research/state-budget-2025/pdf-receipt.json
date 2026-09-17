@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "readerManuscriptSha256": "92caade8cbaaf1abfa0402bc74df33e74906ad5591284de331745b49f2e4eacd",
+  "legacyManuscriptGitBlob": "b5ff933bc27d3c2d21393c6e8011fb1efcb23b96",
+  "pdfSha256": "023ebb62bd73a940a70a89ccae4b0614a01422f875d526b3e43318aea4b00adf",
+  "pdfBytes": 155517,
+  "readerPath": "src/content/reports/state-budget-reader.json",
+  "pdfPath": "public/report/bilancio-stato-2025.pdf",
+  "rendering": {
+    "logoPath": "public/brand/icon-48.png",
+    "logoSha256": "4c30c44314fd8670788b448b62fb5e650b9b75124584c85c8de26838fddee151",
+    "font": "Helvetica (PDF); token del progetto sul sito",
+    "layout": "continuous-flow; vector data charts; no forced case page breaks",
+    "palette": {
+      "ink": "#182b3a",
+      "teal": "#176575",
+      "accent": "#b42332",
+      "paper": "#f3f5f7"
+    }
+  },
+  "sourcesOriginalBytesAcquired": false
+}

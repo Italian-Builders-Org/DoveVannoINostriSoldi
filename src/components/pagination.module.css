@@ -1,0 +1,157 @@
+/*
+ * Shared pagination.
+ *
+ * Every paginated list in the registry uses this one control, so a reader
+ * learns the shape once: where they are, how far the list goes, and every
+ * destination in reach. Numbers are links, not decoration, and the row wraps
+ * inside its panel instead of pushing the page sideways.
+ */
+
+.pagination {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 14px 18px;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.summary strong {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: var(--font-heading-weight);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The numbers stay a single unbroken strip so their order reads as a range. */
+.page,
+.step { text-decoration: none; }
+
+.page {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transition: color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.page:hover {
+  color: var(--color-text);
+  background: var(--color-neutral-200);
+}
+
+.page[aria-current="page"] {
+  color: var(--color-raised);
+  background: var(--color-accent-700);
+  border-color: var(--color-accent-700);
+}
+
+.page[aria-current="page"]:hover {
+  color: var(--color-raised);
+  background: var(--color-accent-800);
+}
+
+.stepLabel {
+  display: inline;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.step:hover {
+  color: var(--color-text);
+  background: var(--color-neutral-200);
+}
+
+/* A disabled end of the range keeps its slot so the row does not shift when
+   the reader moves between the first and second page. */
+.step[data-disabled="true"] {
+  color: var(--color-neutral-500);
+  border-color: var(--color-neutral-300);
+}
+
+.gap {
+  min-width: 22px;
+  color: var(--color-neutral-500);
+  text-align: center;
+  font-weight: 700;
+  user-select: none;
+}
+
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-200);
+  font-size: 12px;
+  color: var(--color-neutral-700);
+}
+
+.jump label {
+  font-weight: 700;
+  color: var(--color-neutral-700);
+}
+
+.jump input {
+  /* Wide enough for the largest page number plus the browser's own spinner. */
+  width: 11ch;
+  font-variant-numeric: tabular-nums;
+}
+
+.jumpRange {
+  color: var(--color-neutral-600);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Below the tablet break the far anchors carry the reader to the ends of the
+   list and the near neighbours are what get dropped, not the reverse. */
+@media (max-width: 620px) {
+  .pagination { padding: 14px; }
+  .pageItem[data-distance="2"] { display: none; }
+  .page { min-width: 40px; padding-inline: 6px; }
+}
+
+@media (max-width: 420px) {
+  .stepLabel { display: none; }
+  .step { padding-inline: var(--space-2); }
+  .jump { width: 100%; }
+  .jump button { flex: 1; }
+}

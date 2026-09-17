@@ -1,0 +1,54 @@
+.section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.note,
+.breakdownValue {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.breakdown {
+  display: grid;
+  gap: var(--space-5);
+  margin: var(--space-5) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.breakdown li {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.breakdownHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.breakdownHeading strong {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: block;
+  height: 6px;
+  background: var(--chart-data-track);
+}
+
+.bar > span {
+  display: block;
+  height: 100%;
+  background: var(--chart-data-primary);
+}
+
+@media (max-width: 620px) {
+  .breakdownHeading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}

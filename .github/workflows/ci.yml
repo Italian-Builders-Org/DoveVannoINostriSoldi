@@ -1,0 +1,324 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Event-aware concurrency:
+# - PR: a new commit cancels the previous run (same PR number → same group).
+# - main: every commit completes its own verification (unique SHA → unique group,
+#   so a newer push can never cancel an older one).
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  static:
+    name: static
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          # Keep commit ancestry for whitespace checks without downloading every
+          # historical dataset version. Git fetches comparison blobs on demand.
+          filter: blob:none
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check changed whitespace
+        shell: bash
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: bash scripts/ci/check-whitespace.sh
+
+      - name: Lint, typecheck, design and brand checks
+        run: npm run ci:static
+
+      - name: Actionlint (checksum-verified)
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA256="8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+          URL="https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz"
+          curl -sSL -o /tmp/actionlint.tar.gz "$URL"
+          ACTUAL_SHA256="$(sha256sum /tmp/actionlint.tar.gz | awk '{print $1}')"
+          if [[ "$ACTUAL_SHA256" != "$EXPECTED_SHA256" ]]; then
+            echo "ERROR: actionlint checksum mismatch" >&2
+            echo "  expected: $EXPECTED_SHA256" >&2
+            echo "  actual:   $ACTUAL_SHA256" >&2
+            exit 1
+          fi
+          echo "actionlint checksum verified ✓"
+          tar -xzf /tmp/actionlint.tar.gz -C /tmp
+          /tmp/actionlint -color
+
+      - name: Check action SHA pins
+        run: npm run ci:action-pins
+
+  security:
+    name: Zizmor security scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      # contents: read — required for checkout.
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Zizmor workflow security scan
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        with:
+          persona: auditor
+          # advanced-security: false — blocking mode. Findings cause job failure
+          # instead of being uploaded as non-blocking SARIF to Code Scanning.
+          advanced-security: false
+          # annotations: true — emit GitHub annotations for findings (console output).
+          annotations: true
+          # version — pin the zizmor CLI version, not just the wrapper action.
+          version: "1.29.0"
+
+  node:
+    name: node
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Node test suite
+        run: npm run test:node
+
+  etl:
+    name: etl
+    runs-on: ubuntu-24.04
+    # Full ETL and artifact checks reached 30 minutes in CI. Leave room for
+    # pinned Node setup and the operator derivative verification to complete.
+    timeout-minutes: 45
+    env:
+      # PYTHONPATH for ETL scripts that import sibling modules.
+      # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,
+      # AFTER dependency installation, so pip can reach PyPI.
+      PYTHONPATH: scripts/etl:scripts/ci
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      # The operator ranking derivative shares the TypeScript runtime validators.
+      - name: Setup Node for snapshot checks
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install snapshot check dependencies
+        run: npm ci
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned ETL dependencies
+        run: >-
+          python -m pip install --no-deps --only-binary=:all:
+          --require-hashes -r requirements-etl.txt
+
+      - name: ETL test suite (offline)
+        env:
+          DVNS_OFFLINE_GUARD: "1"
+        run: npm run test:etl
+
+      - name: Validate committed generated artifacts (offline)
+        env:
+          DVNS_OFFLINE_GUARD: "1"
+        run: npm run test:snapshots
+
+      - name: ETL gate summary
+        if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [[ "$JOB_STATUS" == "success" ]]; then
+            RESULT="✅ PASS"
+          else
+            RESULT="❌ FAIL"
+          fi
+          {
+            echo "## ETL gate"
+            echo ""
+            echo "| Check | Result |"
+            echo "|-------|--------|"
+            echo "| ETL test suite (offline) | $RESULT |"
+            echo "| Generated-artifact registry + offline checks | $RESULT |"
+            echo "| Application-level network guard | active (loopback only) |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  production:
+    name: production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Conserva solo lo stato del compilatore. I test di produzione leggono
+      # risposte aggiornate; ogni run ricostruisce e verifica il proprio codice.
+      - name: Ripristina cache compilatore Next
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .next/cache/turbopack
+          key: ${{ runner.os }}-${{ runner.arch }}-next-v1-${{ hashFiles('package-lock.json', '.nvmrc', 'next.config.ts') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-next-v1-${{ hashFiles('package-lock.json', '.nvmrc', 'next.config.ts') }}-
+
+      - name: Build
+        run: npm run build
+
+      - name: Production gates (server readiness, MCP, browser, Lighthouse)
+        run: bash scripts/ci/run-production-gates.sh
+
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: browser-diagnostics
+          path: artifacts/browser/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload procurement award-year screenshots
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: procurement-award-year-screenshots
+          path: artifacts/browser/procurement-award-year/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload home composition layout evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: home-composition-layout
+          path: artifacts/browser/home-composition/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload health spending history evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: health-spending-history
+          path: artifacts/browser/health-history/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: lighthouse-irpef
+          path: |
+            .lighthouseci/*.json
+            .lighthouseci/*.html
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload production server log on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: production-server-log
+          path: artifacts/production/next.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  required:
+    name: required
+    needs: [static, security, node, etl, production]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Aggregate gate results
+        shell: bash
+        env:
+          STATIC_RESULT: ${{ needs.static.result }}
+          SECURITY_RESULT: ${{ needs.security.result }}
+          NODE_RESULT: ${{ needs.node.result }}
+          ETL_RESULT: ${{ needs.etl.result }}
+          PRODUCTION_RESULT: ${{ needs.production.result }}
+        run: |
+          {
+            echo "| Gate | Result |"
+            echo "|------|--------|"
+            echo "| static | ${STATIC_RESULT} |"
+            echo "| security | ${SECURITY_RESULT} |"
+            echo "| node | ${NODE_RESULT} |"
+            echo "| etl | ${ETL_RESULT} |"
+            echo "| production | ${PRODUCTION_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in "$STATIC_RESULT" "$SECURITY_RESULT" "$NODE_RESULT" "$ETL_RESULT" "$PRODUCTION_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "ERROR: gate result '${result}' is not success — CI / required fails." >&2
+              exit 1
+            fi
+          done
+
+          echo "All gates passed — CI / required is green."

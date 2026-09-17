@@ -1,0 +1,1507 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef-iva",
+  "period": {
+    "from": 2024,
+    "to": 2025
+  },
+  "taxPeriod": {
+    "from": 2023,
+    "to": 2024
+  },
+  "source": {
+    "owner": "MEF - Dipartimento delle Finanze",
+    "landingUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025",
+    "licenseId": "CC-BY-3.0-IT",
+    "licenseUrl": "http://creativecommons.org/licenses/by/3.0/it/",
+    "acquiredAt": "2026-09-11",
+    "checkedAt": "2026-09-11",
+    "encoding": "utf-8-sig",
+    "delimiter": ";"
+  },
+  "tables": [
+    {
+      "id": "2024CIVATOT020201",
+      "declarationYear": 2024,
+      "taxYear": 2023,
+      "breakdown": "regione",
+      "publicationDate": "2025-04-16",
+      "classificationEdition": "mef-iva-2024",
+      "sourceUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020201&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+      "header": [
+        "Regione",
+        "Codice",
+        "Numero contribuenti IVA",
+        "Volume d'affari - Frequenza",
+        "Volume d'affari - Ammontare",
+        "Volume d'affari - Media",
+        "Totale acquisti ed importazioni - Frequenza",
+        "Totale acquisti ed importazioni - Ammontare",
+        "Totale acquisti ed importazioni - Media",
+        "Valore aggiunto fiscale - Frequenza",
+        "Valore aggiunto fiscale - Ammontare",
+        "Valore aggiunto fiscale - Media",
+        "Imposta dovuta - Frequenza",
+        "Imposta dovuta - Ammontare",
+        "Imposta dovuta - Media",
+        "Imposta a credito - Frequenza",
+        "Imposta a credito - Ammontare",
+        "Imposta a credito - Media",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Frequenza",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Ammontare",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Media",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Frequenza",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Ammontare",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Media",
+        "Versamenti periodici dovuti e saldo annuale a debito - Frequenza",
+        "Versamenti periodici dovuti e saldo annuale a debito - Ammontare",
+        "Versamenti periodici dovuti e saldo annuale a debito - Media",
+        "Totale rimborsi richiesti - Frequenza",
+        "Totale rimborsi richiesti - Ammontare",
+        "Totale rimborsi richiesti - Media",
+        "Credito riportato all'anno successivo - Frequenza",
+        "Credito riportato all'anno successivo - Ammontare",
+        "Credito riportato all'anno successivo - Media",
+        ""
+      ],
+      "preamble": [
+        [
+          "Analisi statistiche - Dichiarazioni 2024 - Anno d'imposta 2023"
+        ],
+        [
+          "Anno presentazione:",
+          "2024"
+        ],
+        [
+          "Tipo di imposta:",
+          "IVA"
+        ],
+        [
+          "Modello:",
+          ""
+        ],
+        [
+          "Tipologia contribuente:",
+          "Totale"
+        ],
+        [
+          "Tematica:",
+          "Principali grandezze IVA"
+        ],
+        [
+          "Classificazione:",
+          "Regione"
+        ],
+        [
+          "Data ultimo aggiornamento:",
+          "16 Aprile 2025"
+        ],
+        []
+      ],
+      "dictionary": [
+        {
+          "id": "regione:01",
+          "sourceCode": "01",
+          "label": "Piemonte",
+          "sourceLabel": "Piemonte",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:02",
+          "sourceCode": "02",
+          "label": "Valle d'Aosta",
+          "sourceLabel": "Valle d'Aosta",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:03",
+          "sourceCode": "03",
+          "label": "Lombardia",
+          "sourceLabel": "Lombardia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:07",
+          "sourceCode": "07",
+          "label": "Liguria",
+          "sourceLabel": "Liguria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:04-trento",
+          "sourceCode": "04",
+          "label": "Trentino Alto Adige (P.A. Trento)",
+          "sourceLabel": "Trentino Alto Adige (P.A. Trento)",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:04-bolzano",
+          "sourceCode": "04",
+          "label": "Trentino Alto Adige (P.A. Bolzano)",
+          "sourceLabel": "Trentino Alto Adige (P.A. Bolzano)",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:05",
+          "sourceCode": "05",
+          "label": "Veneto",
+          "sourceLabel": "Veneto",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:06",
+          "sourceCode": "06",
+          "label": "Friuli Venezia Giulia",
+          "sourceLabel": "Friuli Venezia Giulia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:08",
+          "sourceCode": "08",
+          "label": "Emilia Romagna",
+          "sourceLabel": "Emilia Romagna",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:09",
+          "sourceCode": "09",
+          "label": "Toscana",
+          "sourceLabel": "Toscana",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:10",
+          "sourceCode": "10",
+          "label": "Umbria",
+          "sourceLabel": "Umbria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:11",
+          "sourceCode": "11",
+          "label": "Marche",
+          "sourceLabel": "Marche",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:12",
+          "sourceCode": "12",
+          "label": "Lazio",
+          "sourceLabel": "Lazio",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:13",
+          "sourceCode": "13",
+          "label": "Abruzzo",
+          "sourceLabel": "Abruzzo",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:14",
+          "sourceCode": "14",
+          "label": "Molise",
+          "sourceLabel": "Molise",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:15",
+          "sourceCode": "15",
+          "label": "Campania",
+          "sourceLabel": "Campania",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:16",
+          "sourceCode": "16",
+          "label": "Puglia",
+          "sourceLabel": "Puglia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:17",
+          "sourceCode": "17",
+          "label": "Basilicata",
+          "sourceLabel": "Basilicata",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:18",
+          "sourceCode": "18",
+          "label": "Calabria",
+          "sourceLabel": "Calabria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:19",
+          "sourceCode": "19",
+          "label": "Sicilia",
+          "sourceLabel": "Sicilia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:20",
+          "sourceCode": "20",
+          "label": "Sardegna",
+          "sourceLabel": "Sardegna",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:00",
+          "sourceCode": "00",
+          "label": "Non indicata",
+          "sourceLabel": "Non indicata",
+          "kind": "unspecified"
+        },
+        {
+          "id": "regione:0",
+          "sourceCode": "0",
+          "label": "TOTALE",
+          "sourceLabel": "TOTALE",
+          "kind": "total"
+        }
+      ],
+      "measures": [
+        {
+          "id": "volume-affari",
+          "label": "Volume d'affari",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "acquisti-importazioni",
+          "label": "Totale acquisti ed importazioni",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "valore-aggiunto-fiscale",
+          "label": "Valore aggiunto fiscale",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": true
+        },
+        {
+          "id": "imposta-dovuta",
+          "label": "Imposta dovuta",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "imposta-credito",
+          "label": "Imposta a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-debito",
+          "label": "Saldo  IVA della dichiarazione annuale -Totale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-credito",
+          "label": "Saldo IVA della dichiarazione annuale -Totale a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "versamenti-dovuti",
+          "label": "Versamenti periodici dovuti e saldo annuale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "rimborsi-richiesti",
+          "label": "Totale rimborsi richiesti",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "credito-riportato",
+          "label": "Credito riportato all'anno successivo",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        }
+      ],
+      "receipts": {
+        "csv": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020201&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+          "sha256": "8d61d95bd892f3906dd542bd8be1c0eeb77c18cda6ef739a0a8f8490569327c5",
+          "bytes": 7592,
+          "filename": "2024CIVATOT020201.csv"
+        },
+        "html": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020201&page=1&media=media&personalizza=no",
+          "sha256": "7bd5419c74d0a488edfc24f8fb8b0caa1efaf955da45d5664c3c95cace8f4e18",
+          "bytes": 201126,
+          "filename": "2024CIVATOT020201.html"
+        }
+      }
+    },
+    {
+      "id": "2024CIVATOT020202",
+      "declarationYear": 2024,
+      "taxYear": 2023,
+      "breakdown": "attivita",
+      "publicationDate": "2025-04-16",
+      "classificationEdition": "mef-iva-2024",
+      "sourceUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020202&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+      "header": [
+        "Sezione di attivita'",
+        "Codice",
+        "Numero contribuenti IVA",
+        "Volume d'affari - Frequenza",
+        "Volume d'affari - Ammontare",
+        "Volume d'affari - Media",
+        "Totale acquisti ed importazioni - Frequenza",
+        "Totale acquisti ed importazioni - Ammontare",
+        "Totale acquisti ed importazioni - Media",
+        "Valore aggiunto fiscale - Frequenza",
+        "Valore aggiunto fiscale - Ammontare",
+        "Valore aggiunto fiscale - Media",
+        "Imposta dovuta - Frequenza",
+        "Imposta dovuta - Ammontare",
+        "Imposta dovuta - Media",
+        "Imposta a credito - Frequenza",
+        "Imposta a credito - Ammontare",
+        "Imposta a credito - Media",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Frequenza",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Ammontare",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Media",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Frequenza",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Ammontare",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Media",
+        "Versamenti periodici dovuti e saldo annuale a debito - Frequenza",
+        "Versamenti periodici dovuti e saldo annuale a debito - Ammontare",
+        "Versamenti periodici dovuti e saldo annuale a debito - Media",
+        "Totale rimborsi richiesti - Frequenza",
+        "Totale rimborsi richiesti - Ammontare",
+        "Totale rimborsi richiesti - Media",
+        "Credito riportato all'anno successivo - Frequenza",
+        "Credito riportato all'anno successivo - Ammontare",
+        "Credito riportato all'anno successivo - Media",
+        ""
+      ],
+      "preamble": [
+        [
+          "Analisi statistiche - Dichiarazioni 2024 - Anno d'imposta 2023"
+        ],
+        [
+          "Anno presentazione:",
+          "2024"
+        ],
+        [
+          "Tipo di imposta:",
+          "IVA"
+        ],
+        [
+          "Modello:",
+          ""
+        ],
+        [
+          "Tipologia contribuente:",
+          "Totale"
+        ],
+        [
+          "Tematica:",
+          "Principali grandezze IVA"
+        ],
+        [
+          "Classificazione:",
+          "Sezione di attivita'"
+        ],
+        [
+          "Data ultimo aggiornamento:",
+          "16 Aprile 2025"
+        ],
+        []
+      ],
+      "dictionary": [
+        {
+          "id": "attivita:2024:01",
+          "sourceCode": "01",
+          "label": "Agricoltura, silvicoltura e pesca",
+          "sourceLabel": "Agricoltura, silvicoltura e pesca",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:02",
+          "sourceCode": "02",
+          "label": "Estrazione di minerali da cave e miniere",
+          "sourceLabel": "Estrazione di minerali da cave e miniere",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:03",
+          "sourceCode": "03",
+          "label": "Attività manifatturiere",
+          "sourceLabel": "Attivita' manifatturiere",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:04",
+          "sourceCode": "04",
+          "label": "Fornitura di energia elettrica, gas, vapore e aria condizionata",
+          "sourceLabel": "Fornitura di energia elettrica, gas, vapore e aria condizionata",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:05",
+          "sourceCode": "05",
+          "label": "Fornitura di acqua; reti fognarie, attività gestione rifiuti e risanamento",
+          "sourceLabel": "Fornitura di acqua; reti fognarie, attivita' gestione rifiuti e risanamento",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:06",
+          "sourceCode": "06",
+          "label": "Costruzioni",
+          "sourceLabel": "Costruzioni",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:07",
+          "sourceCode": "07",
+          "label": "Commercio all'ingrosso e al dettaglio; riparazione di autoveicoli e motocicli",
+          "sourceLabel": "Commercio all'ingrosso e al dettaglio; riparazione di autoveicoli e motocicli",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:08",
+          "sourceCode": "08",
+          "label": "Trasporto e magazzinaggio",
+          "sourceLabel": "Trasporto e magazzinaggio",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:09",
+          "sourceCode": "09",
+          "label": "Attività dei servizi di alloggio e di ristorazione",
+          "sourceLabel": "Attivita' dei servizi di alloggio e di ristorazione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:10",
+          "sourceCode": "10",
+          "label": "Servizi di informazione e comunicazione",
+          "sourceLabel": "Servizi di informazione e comunicazione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:11",
+          "sourceCode": "11",
+          "label": "Attività finanziarie e assicurative",
+          "sourceLabel": "Attivita' finanziarie e assicurative",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:12",
+          "sourceCode": "12",
+          "label": "Attività immobiliari",
+          "sourceLabel": "Attivita' immobiliari",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:13",
+          "sourceCode": "13",
+          "label": "Attività professionali, scientifiche e tecniche",
+          "sourceLabel": "Attivita' professionali, scientifiche e tecniche",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:14",
+          "sourceCode": "14",
+          "label": "Noleggio, agenzie di viaggio, servizi di supporto alle imprese",
+          "sourceLabel": "Noleggio, agenzie di viaggio, servizi di supporto alle imprese",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:15",
+          "sourceCode": "15",
+          "label": "Amministrazione pubblica e difesa; assicurazione sociale obbligatoria",
+          "sourceLabel": "Amministrazione pubblica e difesa; assicurazione sociale obbligatoria",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:16",
+          "sourceCode": "16",
+          "label": "Istruzione",
+          "sourceLabel": "Istruzione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:17",
+          "sourceCode": "17",
+          "label": "Sanità e assistenza sociale",
+          "sourceLabel": "Sanita' e assistenza sociale",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:18",
+          "sourceCode": "18",
+          "label": "Attività artistiche, sportive, di intrattenimento e divertimento",
+          "sourceLabel": "Attivita' artistiche, sportive, di intrattenimento e divertimento",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:19",
+          "sourceCode": "19",
+          "label": "Altre attività di servizi",
+          "sourceLabel": "Altre attivita' di servizi",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:20",
+          "sourceCode": "20",
+          "label": "Attività di famiglie e convivenze",
+          "sourceLabel": "Attivita' di famiglie e convivenze",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:21",
+          "sourceCode": "21",
+          "label": "Organizzazioni ed organismi extraterritoriali",
+          "sourceLabel": "Organizzazioni ed organismi extraterritoriali",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2024:22",
+          "sourceCode": "22",
+          "label": "Attività non classificabile",
+          "sourceLabel": "Attivita' non classificabile",
+          "kind": "unspecified"
+        },
+        {
+          "id": "attivita:2024:0",
+          "sourceCode": "0",
+          "label": "TOTALE",
+          "sourceLabel": "TOTALE",
+          "kind": "total"
+        }
+      ],
+      "measures": [
+        {
+          "id": "volume-affari",
+          "label": "Volume d'affari",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "acquisti-importazioni",
+          "label": "Totale acquisti ed importazioni",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "valore-aggiunto-fiscale",
+          "label": "Valore aggiunto fiscale",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": true
+        },
+        {
+          "id": "imposta-dovuta",
+          "label": "Imposta dovuta",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "imposta-credito",
+          "label": "Imposta a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-debito",
+          "label": "Saldo  IVA della dichiarazione annuale -Totale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-credito",
+          "label": "Saldo IVA della dichiarazione annuale -Totale a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "versamenti-dovuti",
+          "label": "Versamenti periodici dovuti e saldo annuale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "rimborsi-richiesti",
+          "label": "Totale rimborsi richiesti",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "credito-riportato",
+          "label": "Credito riportato all'anno successivo",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        }
+      ],
+      "receipts": {
+        "csv": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020202&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+          "sha256": "412a7fbdcf0547b638222bca64b9a544ab96f412b04a8383594f22f815df9016",
+          "bytes": 7942,
+          "filename": "2024CIVATOT020202.csv"
+        },
+        "html": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2024CIVATOT020202&page=1&media=media&personalizza=no",
+          "sha256": "9a95893cbf157df4077bbc0883eed33dfc38194f6deebe959919661805424712",
+          "bytes": 203988,
+          "filename": "2024CIVATOT020202.html"
+        }
+      }
+    },
+    {
+      "id": "2025CIVATOT020201",
+      "declarationYear": 2025,
+      "taxYear": 2024,
+      "breakdown": "regione",
+      "publicationDate": "2026-04-23",
+      "classificationEdition": "mef-iva-2025",
+      "sourceUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+      "header": [
+        "Regione",
+        "Codice",
+        "Numero contribuenti IVA",
+        "Volume d'affari - Frequenza",
+        "Volume d'affari - Ammontare",
+        "Volume d'affari - Media",
+        "Totale acquisti ed importazioni - Frequenza",
+        "Totale acquisti ed importazioni - Ammontare",
+        "Totale acquisti ed importazioni - Media",
+        "Valore aggiunto fiscale - Frequenza",
+        "Valore aggiunto fiscale - Ammontare",
+        "Valore aggiunto fiscale - Media",
+        "Imposta dovuta - Frequenza",
+        "Imposta dovuta - Ammontare",
+        "Imposta dovuta - Media",
+        "Imposta a credito - Frequenza",
+        "Imposta a credito - Ammontare",
+        "Imposta a credito - Media",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Frequenza",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Ammontare",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Media",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Frequenza",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Ammontare",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Media",
+        "Versamenti periodici dovuti e saldo annuale a debito - Frequenza",
+        "Versamenti periodici dovuti e saldo annuale a debito - Ammontare",
+        "Versamenti periodici dovuti e saldo annuale a debito - Media",
+        "Totale rimborsi richiesti - Frequenza",
+        "Totale rimborsi richiesti - Ammontare",
+        "Totale rimborsi richiesti - Media",
+        "Credito riportato all'anno successivo - Frequenza",
+        "Credito riportato all'anno successivo - Ammontare",
+        "Credito riportato all'anno successivo - Media",
+        ""
+      ],
+      "preamble": [
+        [
+          "Analisi statistiche - Dichiarazioni 2025 - Anno d'imposta 2024"
+        ],
+        [
+          "Anno presentazione:",
+          "2025"
+        ],
+        [
+          "Tipo di imposta:",
+          "IVA"
+        ],
+        [
+          "Modello:",
+          ""
+        ],
+        [
+          "Tipologia contribuente:",
+          "Totale"
+        ],
+        [
+          "Tematica:",
+          "Principali grandezze IVA"
+        ],
+        [
+          "Classificazione:",
+          "Regione"
+        ],
+        [
+          "Data ultimo aggiornamento:",
+          "23 Aprile 2026"
+        ],
+        []
+      ],
+      "dictionary": [
+        {
+          "id": "regione:01",
+          "sourceCode": "01",
+          "label": "Piemonte",
+          "sourceLabel": "Piemonte",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:02",
+          "sourceCode": "02",
+          "label": "Valle d'Aosta",
+          "sourceLabel": "Valle d'Aosta",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:03",
+          "sourceCode": "03",
+          "label": "Lombardia",
+          "sourceLabel": "Lombardia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:07",
+          "sourceCode": "07",
+          "label": "Liguria",
+          "sourceLabel": "Liguria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:04-trento",
+          "sourceCode": "04",
+          "label": "Trentino Alto Adige (P.A. Trento)",
+          "sourceLabel": "Trentino Alto Adige (P.A. Trento)",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:04-bolzano",
+          "sourceCode": "04",
+          "label": "Trentino Alto Adige (P.A. Bolzano)",
+          "sourceLabel": "Trentino Alto Adige (P.A. Bolzano)",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:05",
+          "sourceCode": "05",
+          "label": "Veneto",
+          "sourceLabel": "Veneto",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:06",
+          "sourceCode": "06",
+          "label": "Friuli Venezia Giulia",
+          "sourceLabel": "Friuli Venezia Giulia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:08",
+          "sourceCode": "08",
+          "label": "Emilia Romagna",
+          "sourceLabel": "Emilia Romagna",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:09",
+          "sourceCode": "09",
+          "label": "Toscana",
+          "sourceLabel": "Toscana",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:10",
+          "sourceCode": "10",
+          "label": "Umbria",
+          "sourceLabel": "Umbria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:11",
+          "sourceCode": "11",
+          "label": "Marche",
+          "sourceLabel": "Marche",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:12",
+          "sourceCode": "12",
+          "label": "Lazio",
+          "sourceLabel": "Lazio",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:13",
+          "sourceCode": "13",
+          "label": "Abruzzo",
+          "sourceLabel": "Abruzzo",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:14",
+          "sourceCode": "14",
+          "label": "Molise",
+          "sourceLabel": "Molise",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:15",
+          "sourceCode": "15",
+          "label": "Campania",
+          "sourceLabel": "Campania",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:16",
+          "sourceCode": "16",
+          "label": "Puglia",
+          "sourceLabel": "Puglia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:17",
+          "sourceCode": "17",
+          "label": "Basilicata",
+          "sourceLabel": "Basilicata",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:18",
+          "sourceCode": "18",
+          "label": "Calabria",
+          "sourceLabel": "Calabria",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:19",
+          "sourceCode": "19",
+          "label": "Sicilia",
+          "sourceLabel": "Sicilia",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:20",
+          "sourceCode": "20",
+          "label": "Sardegna",
+          "sourceLabel": "Sardegna",
+          "kind": "territory"
+        },
+        {
+          "id": "regione:00",
+          "sourceCode": "00",
+          "label": "Non indicata",
+          "sourceLabel": "Non indicata",
+          "kind": "unspecified"
+        },
+        {
+          "id": "regione:0",
+          "sourceCode": "0",
+          "label": "TOTALE",
+          "sourceLabel": "TOTALE",
+          "kind": "total"
+        }
+      ],
+      "measures": [
+        {
+          "id": "volume-affari",
+          "label": "Volume d'affari",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "acquisti-importazioni",
+          "label": "Totale acquisti ed importazioni",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "valore-aggiunto-fiscale",
+          "label": "Valore aggiunto fiscale",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": true
+        },
+        {
+          "id": "imposta-dovuta",
+          "label": "Imposta dovuta",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "imposta-credito",
+          "label": "Imposta a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-debito",
+          "label": "Saldo  IVA della dichiarazione annuale -Totale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-credito",
+          "label": "Saldo IVA della dichiarazione annuale -Totale a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "versamenti-dovuti",
+          "label": "Versamenti periodici dovuti e saldo annuale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "rimborsi-richiesti",
+          "label": "Totale rimborsi richiesti",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "credito-riportato",
+          "label": "Credito riportato all'anno successivo",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        }
+      ],
+      "receipts": {
+        "csv": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+          "sha256": "029a4618492d5e0e835c2059db33cffe66e0f6818b929f5a14970592987a9a12",
+          "bytes": 7577,
+          "filename": "2025CIVATOT020201.csv"
+        },
+        "html": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020201&page=1&media=media&personalizza=no",
+          "sha256": "f48349ce41971a1da715971868ee47d1beae6d17a0bc8f1bc0d3548ef8a35f37",
+          "bytes": 198225,
+          "filename": "2025CIVATOT020201.html"
+        }
+      }
+    },
+    {
+      "id": "2025CIVATOT020202",
+      "declarationYear": 2025,
+      "taxYear": 2024,
+      "breakdown": "attivita",
+      "publicationDate": "2026-04-23",
+      "classificationEdition": "mef-iva-2025",
+      "sourceUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020202&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+      "header": [
+        "Sezione di attivita'",
+        "Codice",
+        "Numero contribuenti IVA",
+        "Volume d'affari - Frequenza",
+        "Volume d'affari - Ammontare",
+        "Volume d'affari - Media",
+        "Totale acquisti ed importazioni - Frequenza",
+        "Totale acquisti ed importazioni - Ammontare",
+        "Totale acquisti ed importazioni - Media",
+        "Valore aggiunto fiscale - Frequenza",
+        "Valore aggiunto fiscale - Ammontare",
+        "Valore aggiunto fiscale - Media",
+        "Imposta dovuta - Frequenza",
+        "Imposta dovuta - Ammontare",
+        "Imposta dovuta - Media",
+        "Imposta a credito - Frequenza",
+        "Imposta a credito - Ammontare",
+        "Imposta a credito - Media",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Frequenza",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Ammontare",
+        "Saldo  IVA della dichiarazione annuale -Totale a debito - Media",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Frequenza",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Ammontare",
+        "Saldo IVA della dichiarazione annuale -Totale a credito - Media",
+        "Versamenti periodici dovuti e saldo annuale a debito - Frequenza",
+        "Versamenti periodici dovuti e saldo annuale a debito - Ammontare",
+        "Versamenti periodici dovuti e saldo annuale a debito - Media",
+        "Totale rimborsi richiesti - Frequenza",
+        "Totale rimborsi richiesti - Ammontare",
+        "Totale rimborsi richiesti - Media",
+        "Credito riportato all'anno successivo - Frequenza",
+        "Credito riportato all'anno successivo - Ammontare",
+        "Credito riportato all'anno successivo - Media",
+        ""
+      ],
+      "preamble": [
+        [
+          "Analisi statistiche - Dichiarazioni 2025 - Anno d'imposta 2024"
+        ],
+        [
+          "Anno presentazione:",
+          "2025"
+        ],
+        [
+          "Tipo di imposta:",
+          "IVA"
+        ],
+        [
+          "Modello:",
+          ""
+        ],
+        [
+          "Tipologia contribuente:",
+          "Totale"
+        ],
+        [
+          "Tematica:",
+          "Principali grandezze IVA"
+        ],
+        [
+          "Classificazione:",
+          "Sezione di attivita'"
+        ],
+        [
+          "Data ultimo aggiornamento:",
+          "23 Aprile 2026"
+        ],
+        []
+      ],
+      "dictionary": [
+        {
+          "id": "attivita:2025:01",
+          "sourceCode": "01",
+          "label": "Agricoltura, silvicoltura e pesca",
+          "sourceLabel": "Agricoltura, silvicoltura e pesca",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:02",
+          "sourceCode": "02",
+          "label": "Attività estrattive",
+          "sourceLabel": "Attivita' estrattive",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:03",
+          "sourceCode": "03",
+          "label": "Attività manifatturiere",
+          "sourceLabel": "Attivita' manifatturiere",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:04",
+          "sourceCode": "04",
+          "label": "Fornitura di energia elettrica, gas, vapore e aria condizionata",
+          "sourceLabel": "Fornitura di energia elettrica, gas, vapore e aria condizionata",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:05",
+          "sourceCode": "05",
+          "label": "Fornitura di acqua; gestione di reti fognarie, attività di trattamento dei rifiuti e risanamento",
+          "sourceLabel": "Fornitura di acqua; gestione di reti fognarie, attivita' di trattamento dei rifiuti e risanamento",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:06",
+          "sourceCode": "06",
+          "label": "Costruzioni",
+          "sourceLabel": "Costruzioni",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:07",
+          "sourceCode": "07",
+          "label": "Commercio all'ingrosso e al dettaglio",
+          "sourceLabel": "Commercio all'ingrosso e al dettaglio",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:08",
+          "sourceCode": "08",
+          "label": "Trasporto e magazzinaggio",
+          "sourceLabel": "Trasporto e magazzinaggio",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:09",
+          "sourceCode": "09",
+          "label": "Attività dei servizi di alloggio e di ristorazione",
+          "sourceLabel": "Attivita' dei servizi di alloggio e di ristorazione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:10",
+          "sourceCode": "10",
+          "label": "Attività editoriali, trasmissioni radiofoniche e produzione e distribuzione di contenuti",
+          "sourceLabel": "Attivita' editoriali, trasmissioni radiofoniche e produzione e distribuzione di contenuti",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:11",
+          "sourceCode": "11",
+          "label": "Telecomunicazioni, programmazione e consulenza informatica, infrastrutture informatiche e altre attività dei servizi d'informazione",
+          "sourceLabel": "Telecomunicazioni, programmazione e consulenza informatica, infrastrutture informatiche e altre attivita' dei servizi d'informazione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:12",
+          "sourceCode": "12",
+          "label": "Attività finanziarie e assicurative",
+          "sourceLabel": "Attivita' finanziarie e assicurative",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:13",
+          "sourceCode": "13",
+          "label": "Attività immobiliari",
+          "sourceLabel": "Attivita' immobiliari",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:14",
+          "sourceCode": "14",
+          "label": "Attività professionali, scientifiche e tecniche",
+          "sourceLabel": "Attivita' professionali, scientifiche e tecniche",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:15",
+          "sourceCode": "15",
+          "label": "Attività amministrative e di servizi di supporto",
+          "sourceLabel": "Attivita' amministrative e di servizi di supporto",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:16",
+          "sourceCode": "16",
+          "label": "Amministrazione pubblica e difesa; assicurazione sociale obbligatoria",
+          "sourceLabel": "Amministrazione pubblica e difesa; assicurazione sociale obbligatoria",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:17",
+          "sourceCode": "17",
+          "label": "Istruzione e formazione",
+          "sourceLabel": "Istruzione e formazione",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:18",
+          "sourceCode": "18",
+          "label": "Attività per la salute umana e di assistenza sociale",
+          "sourceLabel": "Attivita' per la salute umana e di assistenza sociale",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:19",
+          "sourceCode": "19",
+          "label": "Attività artistiche, sportive e di divertimento",
+          "sourceLabel": "Attivita' artistiche, sportive e di divertimento",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:20",
+          "sourceCode": "20",
+          "label": "Altre attività di servizi",
+          "sourceLabel": "Altre attivita' di servizi",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:21",
+          "sourceCode": "21",
+          "label": "Attività di famiglie e convivenze come datori di lavoro per personale domestico e produzione di beni e servizi indifferenziati per uso proprio da parte di famiglie e convivenze",
+          "sourceLabel": "Attivita' di famiglie e convivenze come datori di lavoro per personale domestico e produzione di beni e servizi indifferenziati per uso proprio da parte di famiglie e convivenze",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:22",
+          "sourceCode": "22",
+          "label": "Attività di organizzazioni e organismi extraterritoriali",
+          "sourceLabel": "Attivita' di organizzazioni e organismi extraterritoriali",
+          "kind": "activity"
+        },
+        {
+          "id": "attivita:2025:23",
+          "sourceCode": "23",
+          "label": "Attività non classificabile",
+          "sourceLabel": "Attivita' non classificabile",
+          "kind": "unspecified"
+        },
+        {
+          "id": "attivita:2025:0",
+          "sourceCode": "0",
+          "label": "TOTALE",
+          "sourceLabel": "TOTALE",
+          "kind": "total"
+        }
+      ],
+      "measures": [
+        {
+          "id": "volume-affari",
+          "label": "Volume d'affari",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "acquisti-importazioni",
+          "label": "Totale acquisti ed importazioni",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "valore-aggiunto-fiscale",
+          "label": "Valore aggiunto fiscale",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": true
+        },
+        {
+          "id": "imposta-dovuta",
+          "label": "Imposta dovuta",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "imposta-credito",
+          "label": "Imposta a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-debito",
+          "label": "Saldo  IVA della dichiarazione annuale -Totale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "saldo-credito",
+          "label": "Saldo IVA della dichiarazione annuale -Totale a credito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "versamenti-dovuti",
+          "label": "Versamenti periodici dovuti e saldo annuale a debito",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "rimborsi-richiesti",
+          "label": "Totale rimborsi richiesti",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        },
+        {
+          "id": "credito-riportato",
+          "label": "Credito riportato all'anno successivo",
+          "frequencyUnit": "count",
+          "amountUnit": "euro-cents",
+          "meanUnit": "euro-cents",
+          "sourceUnit": "thousand-euros",
+          "amountDecimals": 0,
+          "meanDecimals": 2,
+          "allowNegative": false
+        }
+      ],
+      "receipts": {
+        "csv": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020202&page=1&media=media&personalizza=no&export=3&aggiornato=1615465800",
+          "sha256": "00ca5fafaef0b3f7d9c06051f91f16df87c0fa8dd2bb913d7e19d0929b5e337a",
+          "bytes": 8496,
+          "filename": "2025CIVATOT020202.csv"
+        },
+        "html": {
+          "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025CIVATOT020202&page=1&media=media&personalizza=no",
+          "sha256": "0f89d144e089a7826536da2609b9280405b158959ba47381328fd7819c16ee54",
+          "bytes": 203658,
+          "filename": "2025CIVATOT020202.html"
+        }
+      }
+    }
+  ],
+  "integrity": {
+    "lockSha256": "2d6fa40555f410d85cc37b40dec8809cfa3cc0c9ddc2dfad6cf1d41f9d226b6c"
+  },
+  "dataCanonicalSha256": "0107a9efe328bd6891e49bbda2634e65eebab8554a7b6db23726aecc01167df6"
+}

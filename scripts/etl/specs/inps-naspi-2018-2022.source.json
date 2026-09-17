@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "inps-naspi",
+  "period": {
+    "from": 2018,
+    "to": 2022
+  },
+  "source": {
+    "owner": "INPS — Istituto Nazionale della Previdenza Sociale",
+    "landingUrl": "https://opendata.inps.it/opendata",
+    "catalogApi": "https://opendata.inps.it/opendata/api/3/action/package_show",
+    "licenseId": "IODL-2.0",
+    "licenseNote": "Italian Open Data License 2.0, dichiarata dalla fonte per OGNI package pubblicato (license_id = https://www.dati.gov.it/content/italian-open-data-license-v20), verificata il 2026-09-04. Non estesa agli altri package del catalogo INPS.",
+    "distributionChoice": {
+      "used": "SDMX-ML 2.1 GenericData",
+      "rejectedCsv": "La distribuzione CSV non contiene alcun byte di controllo: zero newline, record concatenati e riconoscibili solo dal token INPS:DFB_ST_. Non e' CSV valido e non viene ricomposta.",
+      "rejectedJson": "La distribuzione SDMX-JSON scrive le celle soppresse come underscore NUDO (\"observations\":{\"0\":[_,0]}), che rende il file JSON non valido: 212 celle in trattamenti_01 e 389 in trattamenti_03. Gli altri sette file sono validi solo perche' non hanno soppressioni. Il formato si rompe esattamente dove c'e' privacy da proteggere."
+    },
+    "sdmxTestFlag": "Tutti e nove i messaggi dichiarano <Test>true</Test> nell'header SDMX. E' la convenzione della fonte su dati comunque pubblicati come open data, non un'anomalia del singolo file: lo registriamo senza interpretarlo.",
+    "acquisition": {
+      "acquiredAt": "2026-09-04",
+      "checkedAt": "2026-09-04",
+      "note": "Nove risposte SDMX-ML scaricate dagli URL canonici del portale open data INPS."
+    }
+  },
+  "expected": {
+    "years": [
+      2018,
+      2019,
+      2020,
+      2021,
+      2022
+    ],
+    "tables": {
+      "beneficiari_01": {
+        "package": "dfb_st_naspi_beneficiari_01_inps_1_0",
+        "measure": "beneficiari",
+        "title": "Naspi Beneficiari per Ripartizioni, Classi di età e  Sesso",
+        "dimensions": [
+          "CLASSI_ETA",
+          "SESSO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "ripartizione",
+        "territories": 5,
+        "observations": 450,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_01_inps_1_0/filesystem/Beneficiari NASPI per Ripartizioni, Classi di età e Sesso.xml",
+        "bytes": 74470,
+        "sha256": "0e0d771ed2f9ddfea5faf9bcd9716ca2a9d944d77daa395e07f2929c7e10203e",
+        "sdmxPrepared": "2024-12-17T14:21:21"
+      },
+      "beneficiari_02": {
+        "package": "dfb_st_naspi_beneficiari_02_inps_1_0",
+        "measure": "beneficiari",
+        "title": "Naspi Beneficiari per Regione e Sesso",
+        "dimensions": [
+          "SESSO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "regione",
+        "territories": 21,
+        "observations": 210,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_02_inps_1_0/filesystem/Naspi Beneficiari per Regione e Sesso.xml",
+        "bytes": 33425,
+        "sha256": "e04e7ae9b6f86265e4b2d86b4887f24b5f29d33d3b35427651b73670940b934d",
+        "sdmxPrepared": "2024-12-17T14:26:09"
+      },
+      "beneficiari_03": {
+        "package": "dfb_st_naspi_beneficiari_03_inps_1_0",
+        "measure": "beneficiari",
+        "title": "Naspi Beneficiari per Regione e Classi di età",
+        "dimensions": [
+          "CLASSI_ETA",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "regione",
+        "territories": 21,
+        "observations": 945,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_03_inps_1_0/filesystem/NASPI Beneficiari per Regione e Classi di età.xml",
+        "bytes": 147534,
+        "sha256": "4381291588ab156d2c754bfda2d1bb3650b9b7d9119b2543fe4662820aab1d0b",
+        "sdmxPrepared": "2024-12-17T14:28:45"
+      },
+      "beneficiari_04": {
+        "package": "dfb_st_naspi_beneficiari_04_inps_1_0",
+        "measure": "beneficiari",
+        "title": "Naspi Beneficiari per Provincia",
+        "dimensions": [
+          "TERRITORIO"
+        ],
+        "territoryLevel": "provincia",
+        "territories": 103,
+        "observations": 515,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_beneficiari_04_inps_1_0/filesystem/NASPI Beneficiari per Provincia.xml",
+        "bytes": 76290,
+        "sha256": "8e5b4112e076d74cd8884ba8402c3b8571011d84fc989056d76522b8f418d1a0",
+        "sdmxPrepared": "2024-12-17T14:30:47"
+      },
+      "trattamenti_01": {
+        "package": "dfb_st_naspi_trattamenti_01_inps_1_0",
+        "measure": "trattamenti",
+        "title": "Naspi Trattamenti per Classi di età, Sesso e Durata teorica in mesi della prestazione",
+        "dimensions": [
+          "CLASSI_ETA",
+          "DURATA_MESI_TEO",
+          "SESSO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "ripartizione",
+        "territories": 5,
+        "observations": 10423,
+        "suppressed": 212,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_01_inps_1_0/filesystem/NASPI Trattamenti per Classi di età, Sesso e Durata teorica in mesi della prestazione.xml",
+        "bytes": 1812702,
+        "sha256": "da7e5da2e767688024cec61812346cdaa46dd6b5d736a5e573151ce448997bf6",
+        "sdmxPrepared": "2024-12-17T14:32:55"
+      },
+      "trattamenti_02": {
+        "package": "dfb_st_naspi_trattamenti_02_inps_1_0",
+        "measure": "trattamenti",
+        "title": "Naspi Trattamenti per Regione, Sesso e Durata teorica in mesi della prestazione",
+        "dimensions": [
+          "DURATA_MESI_TEO",
+          "SESSO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "regione",
+        "territories": 21,
+        "observations": 5040,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_02_inps_1_0/filesystem/NASPI Trattamenti per Regione, Sesso e Durata teorica in mesi della prestazione.xml",
+        "bytes": 817640,
+        "sha256": "6cff199dada6db8981645dca02fc22c7d1b5c38c039be5a5980167a8d29c4fee",
+        "sdmxPrepared": "2024-12-17T14:34:32"
+      },
+      "trattamenti_03": {
+        "package": "dfb_st_naspi_trattamenti_03_inps_1_0",
+        "measure": "trattamenti",
+        "title": "Naspi Trattamenti per Regione, Classi di età e Durata teorica in mesi della prestazione",
+        "dimensions": [
+          "CLASSI_ETA",
+          "DURATA_MESI_TEO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "regione",
+        "territories": 21,
+        "observations": 21529,
+        "suppressed": 389,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_03_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Durata teorica in mesi della prestazione.xml",
+        "bytes": 3569809,
+        "sha256": "bc90d4746c951261c6e45decd399aedb96404f63f83b935057da266acdbd2be4",
+        "sdmxPrepared": "2024-12-17T14:36:19"
+      },
+      "trattamenti_04": {
+        "package": "dfb_st_naspi_trattamenti_04_inps_1_0",
+        "measure": "trattamenti",
+        "title": "Naspi Trattamenti per Regione, Classi di età e Sesso",
+        "dimensions": [
+          "CLASSI_ETA",
+          "SESSO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "regione",
+        "territories": 21,
+        "observations": 1890,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_04_inps_1_0/filesystem/NASPI Trattamenti per Regione, Classi di età e Sesso.xml",
+        "bytes": 307609,
+        "sha256": "de16b0f1f1398436a6ededf9bc22ad42b300e7e70d3d4939a1b89b6533caf6af",
+        "sdmxPrepared": "2024-12-17T14:37:48"
+      },
+      "trattamenti_05": {
+        "package": "dfb_st_naspi_trattamenti_05_inps_1_0",
+        "measure": "trattamenti",
+        "title": "Naspi Trattamenti per Provincia e Durata teorica in mesi della prestazione",
+        "dimensions": [
+          "DURATA_MESI_TEO",
+          "TERRITORIO"
+        ],
+        "territoryLevel": "provincia",
+        "territories": 103,
+        "observations": 12360,
+        "suppressed": 0,
+        "url": "https://opendata.inps.it/download/dataset/dfb_st_naspi_trattamenti_05_inps_1_0/filesystem/NASPI Trattamenti per Provincia e Durata teorica in mesi della prestazione.xml",
+        "bytes": 1907832,
+        "sha256": "010dc93c4854c01d7e3c5bce6393f309fb9eb56df210c0eb8b543a9142495da6",
+        "sdmxPrepared": "2024-12-17T14:39:20"
+      }
+    },
+    "observations": 53362,
+    "suppressed": 601,
+    "suppressionMarker": {
+      "obsValue": "_",
+      "attribute": "MIS_PRIVACY",
+      "attributeValue": "(*)"
+    }
+  },
+  "reconciliation": {
+    "note": "Le tabelle sono internamente esatte: nessuna tolleranza di arrotondamento e' necessaria e il contratto pretende l'uguaglianza. Verificato il 2026-09-04 su tutte le chiavi.",
+    "checks": [
+      {
+        "id": "beneficiari-sesso-vs-eta",
+        "kind": "cross-table",
+        "whole": "beneficiari_02",
+        "parts": [
+          "beneficiari_03"
+        ],
+        "by": [
+          "TERRITORIO",
+          "TIME_PERIOD"
+        ],
+        "note": "Stessa popolazione tagliata per sesso e per classe di eta': i totali devono coincidere."
+      },
+      {
+        "id": "ripartizioni-vs-regioni",
+        "kind": "territorial",
+        "whole": "beneficiari_01",
+        "parts": [
+          "beneficiari_02"
+        ],
+        "by": [
+          "TERRITORIO",
+          "TIME_PERIOD"
+        ],
+        "note": "Le regioni sommano alla ripartizione che le contiene (prefisso NUTS di tre caratteri)."
+      },
+      {
+        "id": "regioni-vs-province",
+        "kind": "territorial",
+        "whole": "beneficiari_02",
+        "parts": [
+          "beneficiari_04"
+        ],
+        "by": [
+          "TERRITORIO",
+          "TIME_PERIOD"
+        ],
+        "note": "Le province sommano alla regione che le contiene (prefisso NUTS di quattro caratteri)."
+      }
+    ]
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/inps-naspi-2018-2022.data.json",
+      "bytes": 7312525,
+      "sha256": "e55709eba8997216de2803023aeb95ed03d4c5e4f26b429f72451aa00d80765a"
+    },
+    "lockSha256": "d8e9eaf120ffd80ecf1f24c91aa5381d9ba106270ef288ea868a6a92c0ff2d1b"
+  }
+}

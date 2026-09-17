@@ -1,0 +1,201 @@
+.section {
+  width: 100%;
+  padding: 44px 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 24px;
+}
+
+.header span {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .1em;
+}
+
+.header h2 {
+  margin: 6px 0 0;
+  color: var(--color-text);
+  font-size: 27px;
+  font-weight: 560;
+  letter-spacing: -.03em;
+}
+
+.header p {
+  max-width: 590px;
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.62;
+  text-align: right;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 18px;
+  border-top: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.metrics > div {
+  padding: 18px 22px 18px 0;
+  border-right: 1px solid var(--color-neutral-200);
+}
+
+.metrics > div + div {
+  padding-left: 22px;
+}
+
+.metrics > div:last-child {
+  border-right: 0;
+}
+
+.metrics span,
+.metrics strong,
+.metrics small {
+  display: block;
+}
+
+.metrics span {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 710;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.metrics strong {
+  margin: 9px 0 4px;
+  color: var(--color-text);
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -.025em;
+}
+
+.metrics small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.methodology {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1fr;
+  gap: 24px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.coverageNote {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--color-warning);
+  color: var(--color-text);
+  background: var(--color-warning-bg);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.methodology div {
+  min-width: 0;
+}
+
+.methodology span,
+.methodology strong,
+.methodology a {
+  display: block;
+}
+
+.methodology span {
+  margin-bottom: 5px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 710;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.methodology strong,
+.methodology a {
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 560;
+  line-height: 1.55;
+}
+
+.methodology a:hover {
+  color: var(--color-accent-700);
+}
+
+.loadingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.loadingGrid div {
+  min-height: 410px;
+  border: 1px solid var(--color-neutral-200);
+    background: var(--color-neutral-100);
+}
+
+.error {
+  padding: 26px 0;
+  border-top: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.error strong {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--color-text);
+  font-size: 15px;
+}
+
+.error p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 920px) {
+  .header {
+    display: block;
+  }
+
+  .header p {
+    margin-top: 9px;
+    text-align: left;
+  }
+
+  .metrics,
+  .methodology,
+  .loadingGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics > div,
+  .metrics > div + div {
+    padding: 15px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+
+  .metrics > div:last-child {
+    border-bottom: 0;
+  }
+
+  .loadingGrid div {
+    min-height: 330px;
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "coverage": {
+    "note": "Trimestrale Italia e peer fino al 2026-Q2; annuale Italia fino al 2025.",
+    "observedAt": "2026-09-12"
+  },
+  "datasetId": "eurostat-gdp",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 21198,
+      "path": "src/data/generated/eurostat-gdp-2015-2026.data.json",
+      "sha256": "57d09f6544fe4f66b5aedba0030db7a8ebb147a3de8de98b3ec9a8e9cd14b56f"
+    },
+    "sourceLockSha256": "198218249f6e4899f58861fc11c5ae70a79fd86802d033986822abffc7ece094"
+  },
+  "observedAt": "2026-09-12",
+  "period": {
+    "annual": {
+      "from": "2015",
+      "to": "2025"
+    },
+    "peers": {
+      "from": "2019-Q1",
+      "to": "2026-Q2"
+    },
+    "quarterly": {
+      "from": "2015-Q1",
+      "to": "2026-Q2"
+    }
+  },
+  "referencePeriod": "trimestrale Italia 2015-Q1/2026-Q2; annuale Italia 2015/2025; peer 2019-Q1/2026-Q2",
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Ogni blocco conserva il periodo realmente disponibile nella risposta Eurostat acquisita.",
+      "referencePeriod": "trimestrale 2015-Q1/2026-Q2; annuale 2015/2025"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-12",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/web/national-accounts/information-data",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CP_MEUR&unit=CLV20_MEUR&s_adj=SCA&na_item=B1GQ&geo=IT&sinceTimePeriod=2015-Q1",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CLV_PCH_SM&unit=CLV_PCH_PRE&s_adj=SCA&na_item=B1GQ&geo=IT&sinceTimePeriod=2015-Q1",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CLV_PCH_SM&s_adj=SCA&na_item=B1GQ&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2019-Q1",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=PC_GDP&s_adj=SCA&na_item=P3&na_item=P51G&na_item=P6&na_item=P7&geo=IT&sinceTimePeriod=2015-Q1",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_gdp?format=JSON&lang=EN&freq=A&unit=CP_MEUR&unit=CLV20_MEUR&unit=CLV_PCH_PRE&na_item=B1GQ&geo=IT&sinceTimePeriod=2015"
+      ],
+      "checkedAt": "2026-09-12",
+      "hashes": "SHA-256 per ciascuna risposta JSON-stat nel source lock e per l'artefatto normalizzato",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-09-08T23:00:00+0200"
+    },
+    "soldi": {
+      "applicable": true,
+      "nature": "conti nazionali SEC 2010 (competenza economica), non cassa pubblica",
+      "note": "Nessun totale SIOPE, stanziamento o missione di bilancio viene derivato da queste serie.",
+      "unit": "milioni di euro (livelli); punti percentuali (variazioni e quote sul PIL)"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-12",
+      "checkedAt": "2026-09-12"
+    },
+    "annualLandingUrl": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table?lang=en",
+    "assets": {
+      "italy-annual": {
+        "bytes": 3712,
+        "datasetCode": "nama_10_gdp",
+        "filename": "nama_10_gdp-italy-annual.json",
+        "sha256": "bc1ab9e66476a87e181fe3d57514188787aba1df15a4f177ffc9b46d78069416",
+        "sourceUpdated": "2026-09-08T11:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "NAMA_10_GDP",
+          "version": "138.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_gdp?format=JSON&lang=EN&freq=A&unit=CP_MEUR&unit=CLV20_MEUR&unit=CLV_PCH_PRE&na_item=B1GQ&geo=IT&sinceTimePeriod=2015"
+      },
+      "italy-components": {
+        "bytes": 6572,
+        "datasetCode": "namq_10_gdp",
+        "filename": "namq_10_gdp-italy-components.json",
+        "sha256": "21fe8ae4dc503c91f77ca8fd2ef786313433746716d66f2fe03013c0372e0ea0",
+        "sourceUpdated": "2026-09-08T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "NAMQ_10_GDP",
+          "version": "166.1"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=PC_GDP&s_adj=SCA&na_item=P3&na_item=P51G&na_item=P6&na_item=P7&geo=IT&sinceTimePeriod=2015-Q1"
+      },
+      "italy-growth": {
+        "bytes": 5507,
+        "datasetCode": "namq_10_gdp",
+        "filename": "namq_10_gdp-italy-growth.json",
+        "sha256": "e043705eb088220036a6a946639ed301d0fb105b92f50bad3cc71dd95f0c4c85",
+        "sourceUpdated": "2026-09-08T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "NAMQ_10_GDP",
+          "version": "166.1"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CLV_PCH_SM&unit=CLV_PCH_PRE&s_adj=SCA&na_item=B1GQ&geo=IT&sinceTimePeriod=2015-Q1"
+      },
+      "italy-levels": {
+        "bytes": 5874,
+        "datasetCode": "namq_10_gdp",
+        "filename": "namq_10_gdp-italy-levels.json",
+        "sha256": "907d7bf25bcbcc81c844f4968ba9ef3ab1f86201c8a2e6cef5b31fa826295b86",
+        "sourceUpdated": "2026-09-08T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "NAMQ_10_GDP",
+          "version": "166.1"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CP_MEUR&unit=CLV20_MEUR&s_adj=SCA&na_item=B1GQ&geo=IT&sinceTimePeriod=2015-Q1"
+      },
+      "peers-growth": {
+        "bytes": 5542,
+        "datasetCode": "namq_10_gdp",
+        "filename": "namq_10_gdp-peers-growth.json",
+        "sha256": "e81a5a65c769d516e12f5d048e974dd6092a0632a6176968238075c9da158e3c",
+        "sourceUpdated": "2026-09-08T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "NAMQ_10_GDP",
+          "version": "166.1"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?format=JSON&lang=EN&freq=Q&unit=CLV_PCH_SM&s_adj=SCA&na_item=B1GQ&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2019-Q1"
+      }
+    },
+    "informationUrl": "https://ec.europa.eu/eurostat/web/national-accounts/information-data",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-12.",
+    "owner": "Eurostat (Commissione europea)",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "domain": "parliament",
+  "subjectId": "senato",
+  "title": "Senato della Repubblica",
+  "coverage": {
+    "kind": "metadata-only",
+    "note": "I documenti sono censiti, ma gli importi non sono ancora estratti e verificati."
+  },
+  "sources": [
+    {
+      "id": "senato-account-2024",
+      "sourceId": "senato",
+      "sourceRecordId": "52803",
+      "owner": "Senato della Repubblica",
+      "officialUrl": "https://dati.senato.it/documento/52803",
+      "format": "html",
+      "sourceCreatedAt": null,
+      "sourceUpdatedAt": null,
+      "publishedAt": "2025-12-16",
+      "acquiredAt": "2026-08-20T14:14:16Z",
+      "rawSha256": null,
+      "transformVersion": 1,
+      "transformation": "Acquisizione dei soli metadati ufficiali del documento.",
+      "locator": "Documento VIII n. 5, XIX legislatura",
+      "license": { "status": "not-declared", "name": null, "url": null },
+      "rightsNote": "Metadati istituzionali; importi non pubblicati dal portale."
+    }
+  ],
+  "facts": []
+}

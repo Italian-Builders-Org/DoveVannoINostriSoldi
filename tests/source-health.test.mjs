@@ -1,0 +1,283 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import "./helpers/register-ts-alias.mjs";
+
+process.env.DVNS_SOURCE_FETCH_USE_GLOBAL = "1";
+
+const { ACTIVE_SOURCE_IDS, SOURCE_IDS, SOURCE_POLICIES } = await import("../src/lib/data/source-policy.ts");
+const {
+  getSnapshotManagedSourceHealth,
+  getSourceHealthOverview,
+  orderSourceHealth,
+  SOURCE_HEALTH_ADAPTERS,
+} = await import(
+  "../src/lib/data/source-health.ts"
+);
+const { validateIstatMunicipalityGeographyMetadata, buildSourceHealthSnapshots } = await import("../src/lib/data/source-health-snapshots.ts");
+
+test("il riepilogo runtime coincide con gli snapshot validati e ricalcola la freschezza", (context) => {
+  context.mock.timers.enable({ apis: ["Date"], now: Date.parse("2100-01-01T00:00:00Z") });
+  const expected = buildSourceHealthSnapshots();
+  const sources = getSnapshotManagedSourceHealth();
+  assert.deepEqual(sources.map(({ sourceId, freshness, detail, recordCount }) => ({
+    sourceId, sourceTimestamp: freshness.sourceTimestamp, detail, recordCount,
+  })), expected);
+  assert.ok(sources.every((source) => source.checkedAt === "2100-01-01T00:00:00.000Z"));
+  assert.equal(sources.find((source) => source.sourceId === "eurostat-cofog").freshness.state, "stale");
+});
+
+test("source status page uses the persistent five-minute health cache", () => {
+  const page = readFileSync("src/app/fonti/stato/page.tsx", "utf8");
+  const route = readFileSync("src/app/api/fonti/stato/route.ts", "utf8");
+  const cache = readFileSync("src/lib/data/cached-source-health.ts", "utf8");
+  assert.match(page, /getCachedSourceHealthOverview\(\)/);
+  assert.match(page, /Ultimo controllo delle fonti:/);
+  assert.doesNotMatch(page, /raggiungibili ora|Risponde ora\?|risponde in questo\s*\n?\s*momento/);
+  assert.match(route, /observedAt:\s*checkedAt/);
+  assert.doesNotMatch(route, /const observedAt = new Date\(\)\.toISOString\(\)/);
+  assert.match(cache, /SOURCE_HEALTH_CACHE_SECONDS = 300/);
+  assert.match(cache, /return \{ checkedAt: new Date\(\)\.toISOString\(\), sources \}/);
+});
+
+test("source health applies one global deadline and aborts every live probe", async () => {
+  const originalFetch = globalThis.fetch;
+  const signals = [];
+  globalThis.fetch = async (_input, init = {}) => {
+    signals.push(init.signal);
+    return new Promise((resolve, reject) => {
+      // Keep a wide gap between the abort deadline and the synthetic upstream
+      // response. The full suite hashes multi-gigabyte fixtures in parallel,
+      // so a sub-100ms wall-clock assertion is scheduler-sensitive even when
+      // every request is correctly aborted.
+      const timer = setTimeout(() => resolve(new Response("upstream slow", { status: 503 })), 2_000);
+      const onAbort = () => {
+        clearTimeout(timer);
+        reject(init.signal.reason);
+      };
+      if (init.signal.aborted) onAbort();
+      else init.signal.addEventListener("abort", onAbort, { once: true });
+    });
+  };
+
+  try {
+    const started = performance.now();
+    const overview = await getSourceHealthOverview({ deadlineMs: 5 });
+    const elapsed = performance.now() - started;
+    assert.deepEqual(overview.map((entry) => entry.sourceId), ACTIVE_SOURCE_IDS);
+    assert.ok(signals.length > 0);
+    assert.ok(signals.every((signal) => signal.aborted));
+    assert.ok(elapsed < 1_500, `global source-health deadline was cosmetic: ${elapsed}ms`);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+function fakeLiveHealth(sourceId) {
+  const policy = SOURCE_POLICIES[sourceId];
+  return {
+    sourceId,
+    label: policy.label,
+    owner: policy.owner,
+    integration: "active",
+    reachability: "up",
+    freshness: {
+      state: "unknown",
+      sourceTimestamp: null,
+      ageSeconds: null,
+      staleAfterSeconds: policy.staleAfterSeconds,
+      checkedAt: "2026-08-20T00:00:00.000Z",
+    },
+    checkedAt: "2026-08-20T00:00:00.000Z",
+    latencyMs: 0,
+    detail: null,
+    recordCount: null,
+    policy: {
+      cadence: policy.cadence,
+      cadenceNote: policy.cadenceNote,
+      discoveryRevalidateSeconds: policy.discoveryRevalidateSeconds,
+      dataRevalidateSeconds: policy.dataRevalidateSeconds,
+      staleAfterSeconds: policy.staleAfterSeconds,
+      sourceUrl: policy.sourceUrl,
+    },
+  };
+}
+
+test("BES health keeps acquisition distinct from an unknown source publication date", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-salute"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 46157);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.equal(health.freshness.state, "unknown");
+});
+
+test("source health registry covers every operational source, including ANAC, INPS and CPT", async () => {
+  assert.deepEqual(Object.keys(SOURCE_HEALTH_ADAPTERS), SOURCE_IDS);
+  assert.ok(Object.values(SOURCE_HEALTH_ADAPTERS).every((adapter) => typeof adapter === "function"));
+  const snapshots = getSnapshotManagedSourceHealth();
+  for (const snapshot of snapshots) {
+    const health = await SOURCE_HEALTH_ADAPTERS[snapshot.sourceId]();
+    assert.equal(health.sourceId, snapshot.sourceId);
+  }
+  const snapshotIds = new Set(snapshots.map((entry) => entry.sourceId));
+  for (const sourceId of ["istat-bes-salute", "istat-bes-istruzione"]) {
+    assert.equal(
+      snapshotIds.has(sourceId),
+      true,
+      `${sourceId} must be classified as snapshot-managed`,
+    );
+  }
+  const live = ACTIVE_SOURCE_IDS
+    .filter((sourceId) => !snapshotIds.has(sourceId))
+    .map(fakeLiveHealth);
+  const overview = orderSourceHealth([...live, ...snapshots]);
+
+  assert.deepEqual(overview.map((entry) => entry.sourceId), ACTIVE_SOURCE_IDS);
+  const anac = overview.find((entry) => entry.sourceId === "anac");
+  assert.equal(anac?.reachability, "not-probed");
+  assert.equal(anac?.recordCount, 1_453_918);
+  assert.match(anac?.detail ?? "", /12 distribuzioni mensili/);
+  assert.equal(anac?.freshness.sourceTimestamp, "2026-01-16");
+  assert.notEqual(anac?.freshness.sourceTimestamp, "2026-08-20");
+  const inps = overview.find((entry) => entry.sourceId === "inps");
+  assert.equal(inps?.reachability, "not-probed");
+  assert.equal(inps?.recordCount, 167);
+  assert.match(inps?.detail ?? "", /spesa nazionale 2021-2025/);
+  const cpt = overview.find((entry) => entry.sourceId === "cpt");
+  assert.equal(cpt?.reachability, "not-probed");
+  assert.equal(cpt?.recordCount, 504);
+  assert.match(cpt?.detail ?? "", /21 territori/);
+  assert.match(cpt?.detail ?? "", /dati 2000-2023/);
+  assert.equal(cpt?.freshness.state, "unknown");
+  assert.equal(cpt?.freshness.sourceTimestamp, null);
+  const consulenti = overview.find((entry) => entry.sourceId === "consulenti");
+  const camera = overview.find((entry) => entry.sourceId === "camera");
+  const senate = overview.find((entry) => entry.sourceId === "senato");
+  const pcm = overview.find((entry) => entry.sourceId === "pcm");
+  assert.equal(consulenti?.freshness.sourceTimestamp, null);
+  assert.equal(camera?.freshness.sourceTimestamp, null);
+  assert.match(consulenti?.detail ?? "", /Snapshot estratto il/);
+  assert.match(camera?.detail ?? "", /Snapshot verificato il/);
+  assert.equal(senate?.recordCount, 2);
+  assert.match(senate?.detail ?? "", /importi esclusi/);
+  assert.equal(pcm?.recordCount, 572);
+  assert.match(pcm?.detail ?? "", /workbook XLSX verificato/);
+  const mefIrpef = overview.find((entry) => entry.sourceId === "mef-irpef");
+  assert.equal(mefIrpef?.reachability, "not-probed");
+  assert.equal(mefIrpef?.recordCount, 7_896);
+  assert.equal(mefIrpef?.freshness.sourceTimestamp, "2026-04-23");
+  assert.match(mefIrpef?.detail ?? "", /7\.897 righe fonte/);
+  assert.match(mefIrpef?.detail ?? "", /Mancante\/errata separata/);
+  const pnrr = overview.find((entry) => entry.sourceId === "italiadomani");
+  assert.equal(pnrr?.reachability, "not-probed");
+  assert.equal(pnrr?.recordCount, 291_398);
+  assert.equal(pnrr?.freshness.sourceTimestamp, "2026-06-13");
+  assert.match(pnrr?.detail ?? "", /285992 CUP validi/);
+  assert.match(pnrr?.detail ?? "", /senza pagamenti/);
+  const openCup = overview.find((entry) => entry.sourceId === "opencup");
+  assert.equal(openCup, undefined);
+  assert.equal(SOURCE_POLICIES.opencup.integration, "configured");
+  assert.equal(SOURCE_POLICIES.opencup.cadence, "mensile");
+  assert.equal(SOURCE_POLICIES.opencup.discoveryRevalidateSeconds, 86_400);
+  assert.equal(SOURCE_POLICIES.opencup.staleAfterSeconds, 62 * 86_400);
+  const istat = overview.find((entry) => entry.sourceId === "istat");
+  assert.equal(istat?.reachability, "not-probed");
+  assert.equal(istat?.recordCount, 7_894);
+  assert.equal(istat?.freshness.sourceTimestamp, "2026-08-25");
+  assert.match(istat?.detail ?? "", /SITUAS/);
+  assert.match(istat?.detail ?? "", /generato il 2026-08-25/);
+  assert.match(istat?.detail ?? "", /dati al 2026-08-25/);
+  assert.match(istat?.detail ?? "", /7894 comuni/);
+  const istatPensions = overview.find((entry) => entry.sourceId === "istat-casellario-pensioni");
+  assert.equal(istatPensions?.reachability, "not-probed");
+  // 12.224 righe pensioni + 1.537 pensionati su 142 territori.
+  assert.equal(istatPensions?.recordCount, 13_761);
+  assert.equal(istatPensions?.freshness.sourceTimestamp, "2026-09-12T11:00:00+02:00");
+  assert.match(istatPensions?.detail ?? "", /pensioni e pensionati separati/);
+  assert.match(istatPensions?.detail ?? "", /142 territori, di cui 111 province/);
+  assert.match(istatPensions?.detail ?? "", /check offline-source-lock-and-snapshot-contract/);
+  const eurostat = overview.find((entry) => entry.sourceId === "eurostat");
+  assert.equal(eurostat?.freshness.sourceTimestamp, "2025-12-31");
+  assert.match(eurostat?.detail ?? "", /interessi e spesa totale 2025/);
+  assert.equal(eurostat?.recordCount, 5);
+  const eurostatHicp = overview.find((entry) => entry.sourceId === "eurostat-hicp");
+  assert.equal(eurostatHicp?.freshness.sourceTimestamp, "2026-09-01T23:00:00+0200");
+  assert.match(eurostatHicp?.detail ?? "", /totale Italia 2022-01\/2026-08/);
+  assert.match(eurostatHicp?.detail ?? "", /divisioni e confronto 2026-07/);
+  assert.match(eurostatHicp?.detail ?? "", /prezzi, non spesa pubblica/);
+  assert.equal(eurostatHicp?.recordCount, 210);
+  const ameco = overview.find((entry) => entry.sourceId === "ameco");
+  assert.match(ameco?.detail ?? "", /previsioni 2025-2027 escluse dal voto/);
+});
+
+test("ISTAT health metadata fails closed on sidecar drift", () => {
+  assert.throws(
+    () => validateIstatMunicipalityGeographyMetadata({
+      schemaVersion: 1,
+      datasetId: "istat-municipality-geography",
+      generatedAt: "2026-08-25T00:00:00Z",
+      availableYears: [2026],
+      latest: {
+        year: 2025,
+        sourceTimestamp: "25/08/2026",
+        municipalities: 7_894,
+      },
+    }),
+    /Metadati health ISTAT SITUAS non validi/,
+  );
+});
+
+test("SIOPE health probes both cash flows and never hides missing or stale receipts", async () => {
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  try {
+    globalThis.fetch = async (url, init) => {
+      calls.push(String(url));
+      assert.equal(new Headers(init.headers).get("range"), "bytes=0-0");
+      return new Response("x", { status: 206, headers: {
+        "last-modified": String(url).includes("ENTRATE")
+          ? "Mon, 10 Aug 2026 00:00:00 GMT" : "Thu, 27 Aug 2026 00:00:00 GMT",
+      } });
+    };
+    const healthy = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(healthy.reachability, "up");
+    assert.ok(calls.some((url) => url.includes("SIOPE_ENTRATE.")));
+    assert.ok(calls.some((url) => url.includes("SIOPE_USCITE.")));
+    assert.match(healthy.freshness.sourceTimestamp, /2026-08-10|10 Aug 2026/);
+    assert.match(healthy.detail, /incassi e pagamenti/);
+    globalThis.fetch = async (url) => new Response("x", {
+      status: String(url).includes("ENTRATE") ? 404 : 206,
+    });
+    const unavailable = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(unavailable.reachability, "down");
+    assert.match(unavailable.detail, /entrate HTTP 404/);
+    globalThis.fetch = async () => new Response("x", { status: 206 });
+    const undated = await SOURCE_HEALTH_ADAPTERS.siope();
+    assert.equal(undated.freshness.sourceTimestamp, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("source health registry fails closed when an adapter is omitted", () => {
+  const snapshots = getSnapshotManagedSourceHealth();
+  const snapshotIds = new Set(snapshots.map((entry) => entry.sourceId));
+  const live = ACTIVE_SOURCE_IDS
+    .filter((sourceId) => !snapshotIds.has(sourceId))
+    .map(fakeLiveHealth);
+  const complete = [...live, ...snapshots];
+  assert.deepEqual(orderSourceHealth(complete).map((entry) => entry.sourceId), ACTIVE_SOURCE_IDS);
+  const incomplete = complete.filter(
+    (entry) => entry.sourceId !== "anac",
+  );
+  assert.throws(() => orderSourceHealth(incomplete), /Adapter operativo senza probe: anac/);
+});
+
+
+test("BES Istruzione source health reports a snapshot without inventing publication freshness", async () => {
+  const health = await SOURCE_HEALTH_ADAPTERS["istat-bes-istruzione"]();
+  assert.equal(health.reachability, "not-probed");
+  assert.equal(health.recordCount, 14952);
+  assert.equal(health.freshness.sourceTimestamp, null);
+  assert.match(health.detail, /76 celle ignote/);
+});

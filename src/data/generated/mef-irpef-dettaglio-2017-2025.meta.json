@@ -1,0 +1,665 @@
+{
+  "availability": {
+    "bonus_irpef": {
+      "classeEta": {
+        "2017": "sa167687fac",
+        "2019": "sa167687fac",
+        "2020": "sa167687fac",
+        "2021": "sbc52a129b4",
+        "2022": "seaa68bb14d",
+        "2023": "seaa68bb14d",
+        "2024": "seaa68bb14d",
+        "2025": "seaa68bb14d"
+      },
+      "regione": {
+        "2017": "seb94457b11",
+        "2018": "seb94457b11",
+        "2019": "seb94457b11",
+        "2020": "seb94457b11",
+        "2021": "s862eade231",
+        "2022": "s0970fcf42f",
+        "2023": "s0970fcf42f",
+        "2024": "s0970fcf42f",
+        "2025": "s0970fcf42f"
+      },
+      "sesso": {
+        "2017": "s18f9901975",
+        "2018": "s18f9901975",
+        "2019": "s18f9901975",
+        "2020": "s18f9901975",
+        "2021": "s8c5068038a",
+        "2022": "s721290656b",
+        "2023": "s721290656b",
+        "2024": "s721290656b",
+        "2025": "s721290656b"
+      }
+    },
+    "calcolo_irpef": {
+      "classeEta": {
+        "2017": "sc818e4ab72",
+        "2019": "sc818e4ab72",
+        "2020": "sc818e4ab72",
+        "2021": "sc818e4ab72",
+        "2022": "sc818e4ab72",
+        "2023": "sc818e4ab72",
+        "2024": "sc818e4ab72",
+        "2025": "sc818e4ab72"
+      },
+      "regione": {
+        "2017": "sddd7cd3dec",
+        "2018": "sddd7cd3dec",
+        "2019": "sddd7cd3dec",
+        "2020": "sddd7cd3dec",
+        "2021": "sddd7cd3dec",
+        "2022": "sddd7cd3dec",
+        "2023": "sddd7cd3dec",
+        "2024": "sddd7cd3dec",
+        "2025": "sddd7cd3dec"
+      },
+      "sesso": {
+        "2017": "sde8da9d6c8",
+        "2018": "sde8da9d6c8",
+        "2019": "sde8da9d6c8",
+        "2020": "sde8da9d6c8",
+        "2021": "sde8da9d6c8",
+        "2022": "sde8da9d6c8",
+        "2023": "sde8da9d6c8",
+        "2024": "sde8da9d6c8",
+        "2025": "sde8da9d6c8"
+      }
+    },
+    "tipo_reddito": {
+      "classeEta": {
+        "2017": "s898e6edec8",
+        "2018": "s898e6edec8",
+        "2019": "sec424c3df1",
+        "2020": "sec424c3df1",
+        "2021": "sec424c3df1",
+        "2022": "sec424c3df1",
+        "2023": "sec424c3df1",
+        "2024": "sec424c3df1",
+        "2025": "sec424c3df1"
+      },
+      "regione": {
+        "2017": "s7e676f6941",
+        "2018": "s7e676f6941",
+        "2019": "sbdddc8d0b1",
+        "2020": "s7e676f6941",
+        "2021": "s7e676f6941",
+        "2022": "s7e676f6941",
+        "2023": "sbdddc8d0b1",
+        "2024": "sbdddc8d0b1",
+        "2025": "sbdddc8d0b1"
+      },
+      "sesso": {
+        "2017": "sd042d7a5b1",
+        "2018": "sd042d7a5b1",
+        "2019": "s53bc7c836b",
+        "2020": "s53bc7c836b",
+        "2021": "s53bc7c836b",
+        "2022": "s53bc7c836b",
+        "2023": "s53bc7c836b",
+        "2024": "s53bc7c836b",
+        "2025": "s53bc7c836b"
+      }
+    }
+  },
+  "datasetId": "mef-irpef-dettaglio",
+  "instruments": {
+    "bonus": {
+      "label": "Bonus IRPEF",
+      "years": "2017-2021"
+    },
+    "note": "Gli anni qui indicati sono anni di dichiarazione: 2021 si riferisce all'anno di imposta 2020 e contiene Bonus IRPEF e Trattamento integrativo. Le due misure non sono concatenabili in una serie unica.",
+    "trattamento": {
+      "label": "Trattamento integrativo",
+      "years": "2021-2025"
+    }
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 5444337,
+      "path": "src/data/generated/mef-irpef-dettaglio-2017-2025.data.json",
+      "sha256": "9284293a0d19d7b92fdd326e918f981e3dd147693786e1831659ef1615ec18f0"
+    },
+    "sourceLockSha256": "7be55cf0d582e5e26c9a9f121f1a33a45d068d3e49a18ba4208d3a4b23007887"
+  },
+  "observedAt": "2026-09-05",
+  "period": {
+    "from": 2017,
+    "to": 2025
+  },
+  "periodBasis": "declaration-year",
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "note": "Anni di imposta 2016-2024, distinti dagli anni di dichiarazione 2017-2025 usati nei filtri. La corrispondenza e la data di pubblicazione vengono dalle schede del catalogo ufficiale. Due file delle dichiarazioni 2018 sono elencati dal catalogo ma rispondono 404: quegli anni restano assenti e dichiarati. La famiglia bonus espone entrambi gli strumenti nelle dichiarazioni 2021 (anno di imposta 2020); le serie non sono concatenabili.",
+      "referencePeriod": "2016-2024"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-05",
+      "canonicalUrls": [
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2025.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2017.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2018.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2019.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2020.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2021.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2022.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2023.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2024.csv",
+        "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2025.csv"
+      ],
+      "checkedAt": "2026-09-05",
+      "hashes": "SHA-256 per file in source.files; artefatto in integrity.dataArtifact",
+      "holder": "MEF - Dipartimento delle Finanze",
+      "license": "CC-BY-3.0-IT"
+    },
+    "soldi": {
+      "nature": "imposta e redditi DICHIARATI nelle dichiarazioni dei redditi, non gettito riscosso: non e' cassa, non e' spesa, non e' un bilancio",
+      "note": "Frequenza, Ammontare e Numero contribuenti sono tre nature distinte e non si sommano. Cella vuota non e' zero. I negativi esistono e restano col loro segno.",
+      "unit": "euro (colonne Ammontare) e conteggi di contribuenti (colonne Frequenza e Numero contribuenti)"
+    }
+  },
+  "source": {
+    "acquisition": {
+      "acquiredAt": "2026-09-05",
+      "checkedAt": "2026-09-05",
+      "note": "79 CSV scaricati dagli URL canonici del catalogo open data del Dipartimento delle Finanze."
+    },
+    "catalogReceipt": {
+      "acquiredAt": "2026-09-05",
+      "bytes": 1083183,
+      "note": "Anno di dichiarazione, anno di imposta e data pubblicazione letti dalle schede del catalogo; non inferiti dal nome del CSV.",
+      "sha256": "44e1df25552a76d9f8088460c64d8d661928a6695e9bbd45c0b0286adca7dcad",
+      "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes"
+    },
+    "delimiter": ";",
+    "emptyReleases": {
+      "REG_bonus_irpef_2024.csv": "Pubblicato dal catalogo con la sola intestazione e nessuna riga di dati (512 byte) al 2026-09-05: rilascio vuoto dichiarato, mai interpretato come assenza di fenomeno ne' come zeri."
+    },
+    "encoding": "utf-8",
+    "files": {
+      "REG_bonus_irpef_2017": {
+        "bytes": 57751,
+        "sha256": "c044449e318f1967f00dcc1918d25cc7a62be2f43e1400164eea1461e99e9675",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2017.csv"
+      },
+      "REG_bonus_irpef_2018": {
+        "bytes": 57795,
+        "sha256": "fef358f1013d0e4df361f63fc14ceed1bed571d63e8a57f1865a3aa314eed15f",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2018.csv"
+      },
+      "REG_bonus_irpef_2019": {
+        "bytes": 56702,
+        "sha256": "78ea923cf944bb7d7b36d5372b4f5a96419213bbe58a4b756f12986be36b1f44",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2019.csv"
+      },
+      "REG_bonus_irpef_2020": {
+        "bytes": 57294,
+        "sha256": "cf350a86cc37263a358249da8d7eb6046dbc7a6eb0fe0cbcab0141f169eb3bf0",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2020.csv"
+      },
+      "REG_bonus_irpef_2021": {
+        "bytes": 85073,
+        "sha256": "525fffa2b19785fe22b35eb76c313aceb28289f5c28b5498e799152c089f0729",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2021.csv"
+      },
+      "REG_bonus_irpef_2022": {
+        "bytes": 57667,
+        "sha256": "60c94aedb931dec298fa0e68bd6a4a71177c65e01ed886f60cb727ee42de6b35",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2022.csv"
+      },
+      "REG_bonus_irpef_2023": {
+        "bytes": 56579,
+        "sha256": "b3f135ded3929e3ab278783a760485f8da2113fbb26909ae2eab807942de62a1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2023.csv"
+      },
+      "REG_bonus_irpef_2024": {
+        "bytes": 512,
+        "sha256": "4e2112c83debec207fd42b69797c41797cde2afc2b1f7aa80d10543c6e37936d",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2024.csv"
+      },
+      "REG_bonus_irpef_2025": {
+        "bytes": 56385,
+        "sha256": "fbc1d682928b7fc2717403472bacc7b93fee80916c99f9b1132ef041c0b732c3",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_bonus_irpef_2025.csv"
+      },
+      "REG_calcolo_irpef_2017": {
+        "bytes": 194696,
+        "sha256": "bae8338bc1c0b4c36327937be498c7ce6e7a7722d7710e07450d5b1308b139f3",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2017.csv"
+      },
+      "REG_calcolo_irpef_2018": {
+        "bytes": 194767,
+        "sha256": "8cef175e4286e1c434756084add6c81b43e70347b507aa4d8fefdc589bd9f1c1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2018.csv"
+      },
+      "REG_calcolo_irpef_2019": {
+        "bytes": 193578,
+        "sha256": "fdfe4557f0ab536f246bece9f979956dbf62d16f1f60bfeeb5f07449ef13fa02",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2019.csv"
+      },
+      "REG_calcolo_irpef_2020": {
+        "bytes": 193777,
+        "sha256": "10786ccfde0fd55e914423e63e1da00bf00390bc2fc9863f22a3f39632fecfa1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2020.csv"
+      },
+      "REG_calcolo_irpef_2021": {
+        "bytes": 193335,
+        "sha256": "2b8eaf2f61be8eac1c2b507973130df65e0fe8fa8077da9d2b5dfba9ff51687e",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2021.csv"
+      },
+      "REG_calcolo_irpef_2022": {
+        "bytes": 193954,
+        "sha256": "30c396a713eb1ebd486e5783993eec38c16ec5e5d9c3db7decf77e45ff3214af",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2022.csv"
+      },
+      "REG_calcolo_irpef_2023": {
+        "bytes": 194809,
+        "sha256": "b20ebb9d723b1ca477de5658b492292559afdb22c65b1b5068405690cc83d5fd",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2023.csv"
+      },
+      "REG_calcolo_irpef_2024": {
+        "bytes": 194624,
+        "sha256": "b0ac92afd86082279838b8f4a120615ad643e93bba8088c34674c588a925ad0b",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2024.csv"
+      },
+      "REG_calcolo_irpef_2025": {
+        "bytes": 194125,
+        "sha256": "39236db2f8c71fca75e7db97c8f927cde3ea5aa4bdf0c63f86a2c5ed8f461bfe",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_calcolo_irpef_2025.csv"
+      },
+      "REG_tipo_reddito_2017": {
+        "bytes": 207346,
+        "sha256": "2b4f372891dab2cf458bfaa6b3a7e4b0a69487d93c6056cc45728be8122ef796",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2017.csv"
+      },
+      "REG_tipo_reddito_2018": {
+        "bytes": 208731,
+        "sha256": "3ac2efa8c54ad7c9fb5db4ad99728021cc1371ffe1b8304d3491357d4db879b0",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2018.csv"
+      },
+      "REG_tipo_reddito_2019": {
+        "bytes": 194372,
+        "sha256": "3394342aa9e8e23070c7b2e3a2fe2caaabb5c5ac11e5d6cc3b48bd8ae5d6688e",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2019.csv"
+      },
+      "REG_tipo_reddito_2020": {
+        "bytes": 195259,
+        "sha256": "f2f71d8a23cb25f0b474467d83030b61bf50a78d85c0e3a22a0e9f39eddfc4d2",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2020.csv"
+      },
+      "REG_tipo_reddito_2021": {
+        "bytes": 195000,
+        "sha256": "7e8f736518fafcca31322af2236d16d09350d9c0ef500b9c85df4c5e8c4bacb1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2021.csv"
+      },
+      "REG_tipo_reddito_2022": {
+        "bytes": 194882,
+        "sha256": "92c1f64dabd7c4c7c8d1378bcdabcf030aa5253c088fdbf123ce194ba2f813fc",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2022.csv"
+      },
+      "REG_tipo_reddito_2023": {
+        "bytes": 192110,
+        "sha256": "d5791a9840521362a588ddf226f00d5a4f6bfd8336818caf3f2201c62fbcc29d",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2023.csv"
+      },
+      "REG_tipo_reddito_2024": {
+        "bytes": 191255,
+        "sha256": "2e39ae301a91080ea5dc601689b5e424c1b282dca4a7ac617c97c302bfd4e51f",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2024.csv"
+      },
+      "REG_tipo_reddito_2025": {
+        "bytes": 190370,
+        "sha256": "7a31be66b19c0932d26675e8e948cc413ff8ed807e214b80c03fb7c406d50643",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/REG_tipo_reddito_2025.csv"
+      },
+      "cla_anno_bonus_irpef_2017": {
+        "bytes": 12733,
+        "sha256": "fdfd4a9b7884fd3d595f8c17febf2380774b0965f8e2fc45ce9f65c6657cc9db",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2017.csv"
+      },
+      "cla_anno_bonus_irpef_2019": {
+        "bytes": 12551,
+        "sha256": "05d9cd48ebaf73cd7f6a460fc67989d4ce4fcf6effb8f34671cb2643428129f3",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2019.csv"
+      },
+      "cla_anno_bonus_irpef_2020": {
+        "bytes": 12732,
+        "sha256": "9cb0f5cb4f5506bbefa9fcda3ff7b19a3aaf6b24100b7cf3b81ec976d256aafc",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2020.csv"
+      },
+      "cla_anno_bonus_irpef_2021": {
+        "bytes": 19272,
+        "sha256": "63c9c2b144e36f4aafeccc8a98d4707b46ae2ef4007d6e49e317e587558630da",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2021.csv"
+      },
+      "cla_anno_bonus_irpef_2022": {
+        "bytes": 12815,
+        "sha256": "d718c0268a6d74563bae60d819ed476bffa699bce2e3ea0d91241045ab1c553a",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2022.csv"
+      },
+      "cla_anno_bonus_irpef_2023": {
+        "bytes": 12651,
+        "sha256": "4e9129a14e9936abe1f404b944494582fa8c95ee54279d2dfce7e1271ae750fa",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2023.csv"
+      },
+      "cla_anno_bonus_irpef_2024": {
+        "bytes": 12628,
+        "sha256": "75bcf109892ed1b781223b13489de86a720acbd8067a101036a07cf4afa2bf7a",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2024.csv"
+      },
+      "cla_anno_bonus_irpef_2025": {
+        "bytes": 12642,
+        "sha256": "27134583bf30a32a8671128be9ef991e373981fb7c836efadd5968d8c92f02a9",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_bonus_irpef_2025.csv"
+      },
+      "cla_anno_calcolo_irpef_2017": {
+        "bytes": 43857,
+        "sha256": "a085e2bb1a34d9cd07409ddff956f54a736514a4fb3263446669569971fd11c8",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2017.csv"
+      },
+      "cla_anno_calcolo_irpef_2019": {
+        "bytes": 43065,
+        "sha256": "c4e514081726bffd6f50807c103be4f508a3f3af8abd8fc3a4e53e417e9bfe19",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2019.csv"
+      },
+      "cla_anno_calcolo_irpef_2020": {
+        "bytes": 43596,
+        "sha256": "16c1ebc009f2febeed541196ae27084e7cce3f0dac2457a6d6fbf4530f5dd9f4",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2020.csv"
+      },
+      "cla_anno_calcolo_irpef_2021": {
+        "bytes": 43270,
+        "sha256": "9a4895a0af1d253562ccc881c3a11cbd9b616c74586bac91504671bee8a7100a",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2021.csv"
+      },
+      "cla_anno_calcolo_irpef_2022": {
+        "bytes": 42995,
+        "sha256": "dfd916560140c2e06ea4896a01ff48fb0fd6bfbbed5385646d379b83fff270ad",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2022.csv"
+      },
+      "cla_anno_calcolo_irpef_2023": {
+        "bytes": 43278,
+        "sha256": "cc6b08e92136bdac986fa580ab12e802bf48d5fd0892451366b49784d802622c",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2023.csv"
+      },
+      "cla_anno_calcolo_irpef_2024": {
+        "bytes": 43390,
+        "sha256": "772b1ccc95b8a665a5bdf5496801586cd9b8a6e9ee82d1b5befc7d9aacd11b89",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2024.csv"
+      },
+      "cla_anno_calcolo_irpef_2025": {
+        "bytes": 43719,
+        "sha256": "0c143cc8f9046f4a6043582f1a7f8de70590dc981582ad24e8407610b3873547",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_calcolo_irpef_2025.csv"
+      },
+      "cla_anno_tipo_reddito_2017": {
+        "bytes": 46982,
+        "sha256": "ac55cd90ce889c3fa20dbf72e793d5393ce240f13e02bbc06df1d45a7d6ccbe5",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2017.csv"
+      },
+      "cla_anno_tipo_reddito_2018": {
+        "bytes": 47279,
+        "sha256": "33c934567bb053eb6d19a421549029918e403c02816f5b1b5118f8cc426beca0",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2018.csv"
+      },
+      "cla_anno_tipo_reddito_2019": {
+        "bytes": 44362,
+        "sha256": "c1dc4f6c03903b0c7a2527179124e17e70275c212d8c761804f661483155d9d2",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2019.csv"
+      },
+      "cla_anno_tipo_reddito_2020": {
+        "bytes": 43766,
+        "sha256": "d3bea7cb38e0cf3fccccbd597a45e0d5a99bbe5f98055eba0c6281a08ce1a3a1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2020.csv"
+      },
+      "cla_anno_tipo_reddito_2021": {
+        "bytes": 43639,
+        "sha256": "7bdf1c2f90bae30d6ce47b72039e877997506e760c21d80c25ce62a05c57069d",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2021.csv"
+      },
+      "cla_anno_tipo_reddito_2022": {
+        "bytes": 43696,
+        "sha256": "1ea39aa3d629c037d1908e69119a3bfa6598caba4d58c3a0625fd87e7b5948fc",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2022.csv"
+      },
+      "cla_anno_tipo_reddito_2023": {
+        "bytes": 43873,
+        "sha256": "3c400d5fb887a9c198d5c15ffc08f6c5f7431a39643133889a3b9e8319a12db9",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2023.csv"
+      },
+      "cla_anno_tipo_reddito_2024": {
+        "bytes": 43654,
+        "sha256": "c4a4aaab0f552f9e5d250dd29ee52427b28cc32f0dcbc24fc56ced270ff1c074",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2024.csv"
+      },
+      "cla_anno_tipo_reddito_2025": {
+        "bytes": 43480,
+        "sha256": "fca1ae6bb5d3dd5bb15084f5b3da67c27bae04f7270c6bd6ef3e0bdc50024224",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/cla_anno_tipo_reddito_2025.csv"
+      },
+      "sesso_bonus_irpef_2017": {
+        "bytes": 6257,
+        "sha256": "3ed4745ccd678765e8b630ae717109a6f7ef05b678ce47f5921bf4a0cf2c52ca",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2017.csv"
+      },
+      "sesso_bonus_irpef_2018": {
+        "bytes": 6271,
+        "sha256": "eeebe1b5c5f6ed2225bb3210c9d2609d7da603502608f9662fef1a0f16a8a09f",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2018.csv"
+      },
+      "sesso_bonus_irpef_2019": {
+        "bytes": 6131,
+        "sha256": "ac25e2d31f1781b7c77128ac4be6937feab22f346c1e31f7a931c0d1b7c9e2c1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2019.csv"
+      },
+      "sesso_bonus_irpef_2020": {
+        "bytes": 6182,
+        "sha256": "27580f1d1ed1778adaeea54327318eff3278db568405f64859bdf4ee51fa6abe",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2020.csv"
+      },
+      "sesso_bonus_irpef_2021": {
+        "bytes": 9960,
+        "sha256": "57889eff7b4ecffe625b43b9e1b862c727c86f1dedae134fc726a2d25580e4bb",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2021.csv"
+      },
+      "sesso_bonus_irpef_2022": {
+        "bytes": 6315,
+        "sha256": "b01b7d40f0d6fffbdb49c5872de27a5125f518b70beb153506707c214ef956f8",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2022.csv"
+      },
+      "sesso_bonus_irpef_2023": {
+        "bytes": 6186,
+        "sha256": "0b044a1e33a7194c4a89c74a6d0e7e919bb7958ec22607eba0c0e91aea490bcb",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2023.csv"
+      },
+      "sesso_bonus_irpef_2024": {
+        "bytes": 6151,
+        "sha256": "e0cd5d59800d808e923a194a19ab635b5eb60fa363e0129e1e571ca7142c0fa2",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2024.csv"
+      },
+      "sesso_bonus_irpef_2025": {
+        "bytes": 6142,
+        "sha256": "88ec9f9aaded07611b7144f31808832ed64321abf70a162624b6ef947f1a6989",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_bonus_irpef_2025.csv"
+      },
+      "sesso_calcolo_irpef_2017": {
+        "bytes": 22076,
+        "sha256": "e7ba313f644529cc0e2b2ab818d5185c924717ee3d331380dbfa87cc7d4366ae",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2017.csv"
+      },
+      "sesso_calcolo_irpef_2018": {
+        "bytes": 22178,
+        "sha256": "a578aa5193cbd2c22d0095481c9ec155c5b324826a99166f823f21c0f4b22b32",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2018.csv"
+      },
+      "sesso_calcolo_irpef_2019": {
+        "bytes": 22023,
+        "sha256": "c8b0c4ec80da9e1abcdff1015289c3f104971980dd635d2d90750a999008bfa2",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2019.csv"
+      },
+      "sesso_calcolo_irpef_2020": {
+        "bytes": 22088,
+        "sha256": "19fc4f51160c0f54a824975569d57d381327618f2e9116cc7b19f4d02bdaa573",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2020.csv"
+      },
+      "sesso_calcolo_irpef_2021": {
+        "bytes": 22038,
+        "sha256": "22a301b9c8ec31c59a2e7e4ced13d1920754a9996a134a16eaf78b6812334fb1",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2021.csv"
+      },
+      "sesso_calcolo_irpef_2022": {
+        "bytes": 22073,
+        "sha256": "f339d3954a302693fb585dcad80b20b372e27b1fbeb2e8f6e056224d9406bc58",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2022.csv"
+      },
+      "sesso_calcolo_irpef_2023": {
+        "bytes": 22036,
+        "sha256": "e66f5819d8171ef3f9468677d7353e78a809d13bf622fbd0be7823dcdffd4e4e",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2023.csv"
+      },
+      "sesso_calcolo_irpef_2024": {
+        "bytes": 22044,
+        "sha256": "61f9c510ca948f3785658597724faa74026620ae51542037f839f5792aa80d1a",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2024.csv"
+      },
+      "sesso_calcolo_irpef_2025": {
+        "bytes": 22029,
+        "sha256": "5a7149df51aa0afa11c70344e674613fdf6e4c442264144e13cec075f3c0d07f",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_calcolo_irpef_2025.csv"
+      },
+      "sesso_tipo_reddito_2017": {
+        "bytes": 26428,
+        "sha256": "779d77ce041a25639d23497ea549403b3ba100b2abb17df8b0d1d878c8db4fb2",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2017.csv"
+      },
+      "sesso_tipo_reddito_2018": {
+        "bytes": 26531,
+        "sha256": "a6c822ab4f655e468357f334a9f61c27061256d1efe74117cf1ff3881c375d7b",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2018.csv"
+      },
+      "sesso_tipo_reddito_2019": {
+        "bytes": 24738,
+        "sha256": "8be1557efcf53c47a6865e737592483674810e47b822bf6e81eedc2f3a38fa75",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2019.csv"
+      },
+      "sesso_tipo_reddito_2020": {
+        "bytes": 24643,
+        "sha256": "95682bb5f0a2a2671823e95fbf122bbcae0e788985c79c70368ef53dda62ed0a",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2020.csv"
+      },
+      "sesso_tipo_reddito_2021": {
+        "bytes": 24517,
+        "sha256": "aab03e63f761cdfc43c6e8e22b62698dcaa2b7e28d2cb43d8e6bd55e7d260b7b",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2021.csv"
+      },
+      "sesso_tipo_reddito_2022": {
+        "bytes": 24537,
+        "sha256": "a39f20cf0701d03cbf3bfef6d85eaa76cd06bc19ee0867580a2598309cdbf94d",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2022.csv"
+      },
+      "sesso_tipo_reddito_2023": {
+        "bytes": 24348,
+        "sha256": "7efdbad3991f42d1053f17c2dc6d12c315adede918f0dc1fd87ead822a118212",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2023.csv"
+      },
+      "sesso_tipo_reddito_2024": {
+        "bytes": 24209,
+        "sha256": "6fb81aa3c90a062928beb2bbbed8160107eff9e14c4458dcd472ae093a101292",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2024.csv"
+      },
+      "sesso_tipo_reddito_2025": {
+        "bytes": 24231,
+        "sha256": "3f3a5545dae47e00f88620526c300572367323869366b651ff94a6fac299f7aa",
+        "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/sesso_tipo_reddito_2025.csv"
+      }
+    },
+    "landingUrl": "https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?opendata=yes",
+    "licenseId": "CC-BY-3.0-IT",
+    "licenseNote": "Licenza dichiarata PER DATASET nel catalogo: 124 schede, 124 link a http://creativecommons.org/licenses/by/3.0/it/. Il link e' reso come immagine (ccby.png dentro un <a>), quindi un'estrazione testuale del catalogo vede il campo vuoto e porterebbe a marcarla not-declared per errore. Verificata sul markup il 2026-09-05.",
+    "missingFiles": {
+      "cla_anno_bonus_irpef_2018.csv": "Elencato nel catalogo ma HTTP 404 al 2026-09-05: anno assente e dichiarato, nessuna imputazione.",
+      "cla_anno_calcolo_irpef_2018.csv": "Elencato nel catalogo ma HTTP 404 al 2026-09-05: anno assente e dichiarato, nessuna imputazione."
+    },
+    "numberNote": "I valori sono interi con il punto come separatore delle migliaia e NESSUN decimale (verificato su tutte le 686426 celle): la conversione e' esatta. Una virgola decimale in un rilascio futuro e' una deriva e deve fermare la build.",
+    "owner": "MEF - Dipartimento delle Finanze"
+  },
+  "taxPeriod": {
+    "from": 2016,
+    "to": 2024
+  }
+}

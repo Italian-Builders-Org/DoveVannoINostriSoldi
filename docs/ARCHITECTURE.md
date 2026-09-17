@@ -1,0 +1,121 @@
+# Architettura
+
+DVNS rende leggibili i dati pubblici mantenendo fonte, periodo, perimetro e
+limiti contabili. È un'applicazione Next.js App Router: pagine server,
+componenti interattivi React, route HTTP e un endpoint MCP in sola lettura.
+Non richiede un database locale, Docker o un servizio di ingestione per avviarsi.
+
+## Dove passa il dato
+
+1. **Acquisizione**: `scripts/etl/` legge le fonti ufficiali. Source lock e
+   specifiche in `scripts/etl/specs/` definiscono input, licenze e perimetri.
+2. **Snapshot**: `src/data/generated/` contiene gli artifact versionati insieme
+   al codice. Il registro `scripts/ci/generated-artifacts.json` collega ciascun
+   gruppo a generatore, verifica offline e workflow di refresh.
+3. **Contratti**: `src/lib/data/*-contract.ts` e i contratti specifici degli
+   atlanti validano gli artifact prima del consumo. Controlli Python e
+   TypeScript proteggono confini diversi: trasformazione e pubblicazione.
+4. **Lettura e aggregazione**: i moduli in `src/lib/` espongono le viste usate da
+   pagine, API e adapter MCP. Le query pubbliche limitano filtri e paginazione.
+5. **Presentazione**: `src/app/` contiene pagine e API, `src/components/` i
+   componenti condivisi. Gli snapshot completi restano sul server; i Client
+   Component ricevono le serie e i metadati necessari alla visualizzazione.
+
+## Tre percorsi di lettura
+
+- **Snapshot tipizzati**, per esempio SIOPE, IRPEF, sanità e debito: un adapter
+  valida il dato versionato e fornisce aggregazioni coerenti a UI, API e MCP.
+  IRPEF riconcilia Comune → Provincia → Regione e mantiene le celle oscurate.
+- **Corpus integrato**: `integrated-sources.ts` verifica prove, catalogo e chunk
+  compressi. `integrated-public-view.ts` è il confine pubblico: applica
+  visibilità, cursori, limiti e cancellazione. `data/source-ledger/` lega gli
+  artifact a hash, ricevute e provenienza. Non aggirare questo percorso
+  importando direttamente i chunk in una route.
+- **Fonti live**, soprattutto IPA e OpenBDAP: `data/source-fetch.ts` e
+  `data/source-policy.ts` governano accesso e policy; gli adapter gestiscono
+  parsing e cache. Le route applicano budget e limiti di concorrenza. Un errore
+  della fonte deve restare visibile, senza trasformarsi in zero o successo.
+
+Lo stato delle fonti legge `source-health-snapshots.json`, una proiezione dei
+metadati riconciliata durante il build dagli adapter in
+`data/source-health-snapshots.ts`. Non ricarica tutti i dataset per contarne le
+righe. `data/source-health.ts` applica le policy correnti e i probe live;
+`data/cached-source-health.ts` conserva il controllo per cinque minuti.
+Il limite condiviso per le letture degli oggetti è in `integrated-load-limiter.ts`,
+senza dipendere dal lettore del corpus integrato.
+
+`src/lib/mcp/catalog.ts` descrive i dataset; `datasets.ts` li collega alle
+funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
+`OPTIONS /mcp` sono alias supportati; `GET /mcp` resta la pagina informativa.
+La chat in `src/lib/assistant/` usa AI per ogni domanda. La route `/api/assistant/chat` usa la quota gratuita Regolo oppure la chiave personale ricevuta nella singola richiesta
+per Regolo, OpenAI, Anthropic o OpenRouter. Il modello propone al massimo due query, validate
+con lo stesso schema MCP e il catalogo prima di chiamare `queryPublicDataset`.
+La risposta viene trasmessa in streaming SSE. Le fonti sono aggiunte dall'applicazione; testo, chiave e conversazione non sono
+persistiti. Dettagli e limiti: `docs/ASSISTENTE.md`.
+
+## Invarianti
+
+- Pagamenti, stanziamenti, costi previsti e stock di debito sono misure diverse.
+- Zero, assenza di dato e valore oscurato restano distinti.
+- Date di riferimento, pubblicazione, osservazione e ingestione non si scambiano.
+- IPA, codice fiscale, CIG, CUP e ISTAT mantengono il significato della fonte.
+  Un nome simile non basta a stabilire l'identità di un ente.
+- Hash, licenza, copertura, duplicati e riconciliazioni fanno parte del contratto.
+  Un outlier non si elimina soltanto perché è insolito.
+- Un segnale non dimostra colpa, frode, spreco o causalità politica.
+- Cancellazione, timeout e cache condivise devono preservare l'isolamento dei
+  chiamanti e liberare gli slot anche in caso di errore.
+
+## Storage e verifica
+
+La regola generale è [Git per gli artifact del prodotto](architecture/ADR-001-generated-artifacts-storage.md).
+Per OpenCUP è proposta una
+[eccezione su Cloudflare R2](architecture/ADR-002-opencup-object-storage.md),
+ancora inattiva finché provisioning e ripristino non saranno verificati.
+Supabase PostgreSQL conserva soltanto i contatori della quota gratuita dell’assistente;
+non serve per leggere gli snapshot, usare BYOK o avviare il sito locale.
+Le credenziali dei refresh e dell'App GitHub per le segnalazioni sono soltanto
+server-side; l'avvio locale non le richiede.
+
+Per setup, test mirati, build, browser e worktree vedi
+[CONTRIBUTING.md](../CONTRIBUTING.md). Per una nuova fonte parti dallo
+[standard di import](DATA_IMPORT_STANDARD.md); per significato e limiti dei dati
+vedi [principi legali ed etici](LEGAL_AND_ETHICS.md).
+
+### Confronti appalti tra Comuni
+
+`anac_procurement_peers.py` deriva un indice compatto dai profili ANAC, dal
+loro CPV e dalla geografia ISTAT SITUAS già verificati. Il loader e selettore
+`src/lib/data/anac-procurement-peers.ts` servono la pagina
+`/enti/[codice]/appalti/confronti`, con copertura e gruppi minimi espliciti.
+Il corpus integrato non cambia: l’indice non aggiunge righe raw e i valori
+rimandano alle aggiudicazioni esistenti. Metodo, denominatori e comandi sono
+in [ANAC_PROCUREMENT_PEERS.md](research/ANAC_PROCUREMENT_PEERS.md).
+
+### Storico completo degli operatori ANAC
+
+`anac_operator_history_build.py` deriva lo storico dagli stessi archivi bloccati
+per aggiudicazioni, aggiudicatari e CIG 2007–2025. SQLite è temporaneo e serve solo
+all’ETL. Non contiene stato necessario al sito e non viene distribuito.
+I riepiloghi riconciliano tutte le relazioni operatore/aggiudicazione, le serie
+annuali e gli enti identificati; lo screening 2025 conta CIG unici classificabili.
+Gli importi discordanti della stessa aggiudicazione vengono esclusi dal valore,
+conservando l’affidamento nel conteggio.
+Le somme mantengono tutti i decimali della fonte, indipendentemente dalla
+precisione Decimal del processo. Gli enti sono deduplicati per codice fiscale
+valido; i riferimenti opachi pubblicati sono relativi allo snapshot, come quelli
+degli operatori, e non costituiscono identificativi persistenti tra refresh.
+
+`anac-operator-history.ts` legge uno shard di riepiloghi e soltanto i blocchi
+compressi necessari alla pagina (25 righe). Il selettore applica i filtri a un
+indice compatto per operatore; nessun archivio completo raggiunge il browser.
+Il manifest e gli hash dei blocchi proteggono il confine dello snapshot. La
+verifica offline riconcilia contatori, copertura dei file e blocchi senza buchi.
+
+### Quota gratuita dell’assistente
+
+Il client legge `/api/assistant/quota` e invia richieste esplicite `mode: free` a
+`/api/assistant/chat`. `free-quota.ts` (server-only) valida cookie firmato e IP Vercel,
+prenota atomicamente un credito tramite RPC PostgreSQL su Supabase e fornisce la chiave Regolo soltanto al
+client HTTP del server. Il catalogo/query/evidence e il protocollo SSE sono condivisi
+con BYOK. Configurazione e limiti: `docs/ASSISTENTE.md`.

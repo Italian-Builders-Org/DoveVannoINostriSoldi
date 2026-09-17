@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef-tax-gap-nazionale",
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/474",
+  "period": {
+    "from": 2018,
+    "to": 2022
+  },
+  "source": {
+    "owner": "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+    "landingUrl": "https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/",
+    "url": "https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "filename": "Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "path": "tests/fixtures/mef-evasione/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "bytes": 3840500,
+    "sha256": "6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef",
+    "licenseId": "not-declared",
+    "licenseNote": "Il PDF ufficiale non dichiara una licenza di riuso sul file. Si pubblica not-declared senza inferenze.",
+    "publicationDate": null,
+    "acquiredAt": "2026-09-13",
+    "checkedAt": "2026-09-13",
+    "geography": "Italia (solo nazionale in questa slice)",
+    "updateFrequency": "annuale",
+    "versionDate": "2025-10-23"
+  },
+  "pdf": {
+    "tableI1PageIndex": 8,
+    "tableI2PageIndex": 9,
+    "tableI1Title": "TABELLA I.1: GAP DELLE ENTRATE TRIBUTARIE E CONTRIBUTIVE IN MILIONI DI EURO",
+    "tableI2Title": "TABELLA I.2: PROPENSIONE AL GAP NELL’IMPOSTA",
+    "tableI1TextSha256": "0726bf530df80d6616aa72ea6a073c4aaf60dd38180c4120d218dcbdba59e79a",
+    "tableI2TextSha256": "f132e804ef028028cb50da652281ea95e33e017a2f87dd10f2476019858978fa"
+  },
+  "expected": {
+    "taxRowIds": [
+      "irpef-lavoro-dipendente-irregolare",
+      "addizionali-locali-irpef-lavoro-dipendente",
+      "irpef-lavoro-autonomo-impresa",
+      "ires",
+      "iva",
+      "irap",
+      "locazioni",
+      "canone-rai",
+      "accise-prodotti-energetici",
+      "imu-tasi",
+      "totale-entrate-tributarie",
+      "totale-entrate-tributarie-netto-accise-imu",
+      "entrate-contributive-carico-lavoratore",
+      "entrate-contributive-carico-datore",
+      "totale-entrate-contributive",
+      "totale-entrate-tributarie-e-contributive"
+    ]
+  },
+  "dataCanonicalSha256": "7a7075e39bfbfe5f3f18d2f396f8d3848ab61063dac9958abc1e40b1f7076e16",
+  "integrity": {
+    "lockSha256": "9e544a422b63ecdaf95587fa27030f1047d913352e4fc23e9267f05e66807ac4"
+  }
+}

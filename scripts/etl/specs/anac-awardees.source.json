@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "dataset": "anac-awardees-coverage",
+  "distributionKind": "full-snapshot",
+  "catalogObservedAt": "2026-08-30T18:30:00Z",
+  "catalogMetadataModifiedAt": "2026-08-06T08:13:37Z",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://w3id.org/italia/controlled-vocabulary/licences/A31_CCBYSA40"
+  },
+  "inputs": {
+    "awardees": {
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicatari/resource/18033246-5cb4-453f-bee5-90da185cdc70",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicatari/filesystem/aggiudicatari_csv.zip",
+      "resourceId": "18033246-5cb4-453f-bee5-90da185cdc70",
+      "sourceLastModified": "2026-01-23",
+      "archiveBytes": 151222321,
+      "archiveSha256": "6908a361f581824ce144414116301234fc113230230634b0942b988f9173d60f",
+      "member": {
+        "name": "aggiudicatari_csv.csv",
+        "bytes": 800016719,
+        "sha256": "8cf5e7ebae4a1ac2d7b8fabcd4e1c63c26242dcb4b10564e7d80d8704d70ca2b",
+        "crc32": "652c6c14"
+      },
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "ruolo",
+        "codice_fiscale",
+        "denominazione",
+        "tipo_soggetto",
+        "id_aggiudicazione"
+      ]
+    },
+    "awards": {
+      "datasetPageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni",
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/aggiudicazioni/resource/5709b639-3626-483c-b485-106d7d448376",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/aggiudicazioni/filesystem/aggiudicazioni_csv.zip",
+      "resourceId": "5709b639-3626-483c-b485-106d7d448376",
+      "sourceLastModified": "2026-01-15",
+      "archiveBytes": 151402917,
+      "archiveSha256": "70f2e7ccad625f3db3d3a2285c65aaa8eac35bf70b25570774224ac869f8d631",
+      "member": {
+        "name": "aggiudicazioni_csv.csv",
+        "bytes": 758859815,
+        "sha256": "90e7e5f7c7bc932d9721296b0c5bf1aba2236cbd4a377d90714ef09eb7874665",
+        "crc32": "d6b70d44"
+      },
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "headers": [
+        "cig",
+        "data_aggiudicazione_definitiva",
+        "esito",
+        "criterio_aggiudicazione",
+        "data_comunicazione_esito",
+        "numero_offerte_ammesse",
+        "numero_offerte_escluse",
+        "importo_aggiudicazione",
+        "ribasso_aggiudicazione",
+        "num_imprese_offerenti",
+        "flag_subappalto",
+        "id_aggiudicazione",
+        "cod_esito",
+        "num_imprese_richiedenti",
+        "asta_elettronica",
+        "num_imprese_invitate",
+        "massimo_ribasso",
+        "minimo_ribasso",
+        "FLAG_SCOMPUTO",
+        "COD_PRESTAZIONI_COMPRESE",
+        "PRESTAZIONI_COMPRESE",
+        "CIG_PROG_ESTERNA",
+        "DATA_INCARICO_PROG",
+        "DATA_CONS_PROG",
+        "COD_MODO_RIAGGIUDICAZIONE",
+        "MODO_RIAGGIUDICAZIONE",
+        "FLAG_PROC_ACCELERATA",
+        "N_MANIF_INTERESSE"
+      ]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "masaf-logistica-mercati",
+  "measure": {
+    "pnrrCode": "M2C1I2.01",
+    "line": "mercati",
+    "holder": "Ministero dell'agricoltura, della sovranità alimentare e delle foreste (MASAF)",
+    "gestore": "Invitalia S.p.A."
+  },
+  "landingUrl": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/19279",
+  "period": {
+    "from": 2022,
+    "to": 2026,
+    "avvisoYear": 2022,
+    "regisExtractionDate": "2026-06-13"
+  },
+  "source": {
+    "owner": "Ministero dell'agricoltura, della sovranità alimentare e delle foreste (MASAF)",
+    "landingUrl": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/19279",
+    "licenseId": "not-declared",
+    "acquisitionDate": "2026-09-10",
+    "checkedAt": "2026-09-10",
+    "observedAt": "2026-09-10T13:17:05.382013+00:00",
+    "assets": {
+      "seed": {
+        "path": "scripts/etl/fixtures/masaf-logistica-mercati.seed.json",
+        "bytes": 62265,
+        "sha256": "be24d22f07d2a6fd7ac11403aa523d3c2ad4b1ac77e35bce548d4139f2f75d62"
+      }
+    }
+  },
+  "coverage": {
+    "projects": 36,
+    "withCup": 24,
+    "withGranted": 23,
+    "withRegis": 24,
+    "denials": 3
+  },
+  "caveats": [
+    "Perimetro: sola linea Mercati. Imprese e Porti restano fuori.",
+    "Erogazioni e pagamenti restano nulli: assenza pubblica, non zero osservato."
+  ]
+}

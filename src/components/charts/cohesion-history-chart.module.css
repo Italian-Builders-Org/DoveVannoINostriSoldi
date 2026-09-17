@@ -1,0 +1,147 @@
+.figure {
+  margin: 0;
+}
+
+.chart {
+  width: 100%;
+  height: 380px;
+}
+
+.tooltip {
+  max-width: 300px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-neutral-100);
+  background: var(--color-text);
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip strong,
+.tooltip span {
+  display: block;
+}
+
+.tooltip strong {
+  margin-bottom: 7px;
+  color: var(--color-raised);
+  font-size: 13px;
+}
+
+.tooltip span {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 5px;
+  color: var(--color-neutral-400);
+  font-size: 11px;
+}
+
+.tooltip b {
+  color: var(--color-raised);
+  font-weight: 650;
+  text-align: right;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend i {
+  width: 16px;
+  height: 2px;
+}
+
+.commitments { background: var(--chart-secondary); }
+.payments { background: var(--chart-primary); }
+
+.figure figcaption {
+  max-width: 76ch;
+  margin-top: 14px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.tableWrap {
+  max-height: 426px;
+  overflow: auto;
+}
+
+.tableWrap table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableWrap caption {
+  padding: 0 0 9px;
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  text-align: left;
+}
+
+.tableWrap th,
+.tableWrap td {
+  padding: 10px;
+  border-bottom: 1px solid var(--color-neutral-200);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 520;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tableWrap th:first-child {
+  text-align: left;
+}
+
+.tableWrap thead th {
+  color: var(--color-neutral-600);
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .chart {
+    height: 320px;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.tabs button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-bottom-color: var(--chart-primary);
+  color: var(--color-text);
+  font-weight: 650;
+}

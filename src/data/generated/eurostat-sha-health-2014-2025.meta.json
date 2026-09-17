@@ -1,0 +1,76 @@
+{
+  "coverage": {
+    "observedCells": 156,
+    "provisionalYears": [
+      2025
+    ],
+    "publishedSchemes": 13,
+    "years": 12
+  },
+  "datasetId": "eurostat-sha-health",
+  "integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON, chiavi ordinate, separatori compatti",
+    "dataArtifact": {
+      "bytes": 31960,
+      "path": "src/data/generated/eurostat-sha-health-2014-2025.data.json",
+      "sha256": "c56ade92e6d6377d8ef9ad0b90b27d4f892da34b4c39112987b4e1c4fdb062ac"
+    },
+    "sourceLockSha256": "d0e4f58f50cb319fd9c2f19ad28592900a89941943933ee960b2fd82428fdb64"
+  },
+  "observedAt": "2026-09-14",
+  "period": {
+    "from": 2014,
+    "to": 2025
+  },
+  "schemaVersion": 1,
+  "semantics": {
+    "periodo": {
+      "frequency": "annuale",
+      "provisionalYear": 2025,
+      "referencePeriod": "2014-2025"
+    },
+    "provenance": {
+      "acquisitionDate": "2026-09-14",
+      "canonicalUrls": [
+        "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+        "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/hlth_sha11_hf?format=JSON&lang=EN&freq=A&unit=MIO_EUR&geo=IT&sinceTimePeriod=2014"
+      ],
+      "checkedAt": "2026-09-14",
+      "holder": "Eurostat (Commissione europea)",
+      "license": "CC-BY-4.0",
+      "publicationDate": "2026-09-09"
+    },
+    "soldi": {
+      "nature": "spesa sanitaria SHA per schema di finanziamento; non CE SSN né COFOG",
+      "sourceUnit": "million-euro",
+      "unit": "euro-cents"
+    }
+  },
+  "source": {
+    "acquiredAt": "2026-09-14",
+    "assets": {
+      "mio-eur": {
+        "bytes": 5951,
+        "sha256": "b9601fbbb402abbad1471a071c08eda56d0819d41a2add43ddc8d57236fd066e",
+        "sourceUpdated": "2026-09-09T23:00:00+0200",
+        "structure": {
+          "agencyId": "ESTAT",
+          "id": "HLTH_SHA11_HF",
+          "version": "70.0"
+        },
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/hlth_sha11_hf?format=JSON&lang=EN&freq=A&unit=MIO_EUR&geo=IT&sinceTimePeriod=2014"
+      }
+    },
+    "checkedAt": "2026-09-14",
+    "datasetCode": "hlth_sha11_hf",
+    "datasetLabel": "Health care expenditure by financing scheme",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche; verifica del 2026-09-14.",
+    "owner": "Eurostat (Commissione europea)",
+    "publicationDate": "2026-09-09",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "updateFrequency": "annuale"
+  }
+}

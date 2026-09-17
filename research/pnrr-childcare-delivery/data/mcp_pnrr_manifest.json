@@ -1,0 +1,41 @@
+{
+  "endpoint": "https://www.dovevannoinostrisoldi.com/api/mcp",
+  "tool": "query_dataset",
+  "arguments": {
+    "dataset": "pnrr_asili",
+    "limit": 1
+  },
+  "queried_at": "2026-08-29",
+  "reference_date": "2026-06-13",
+  "coverage": {
+    "projects": 3841,
+    "municipalities": 2700,
+    "awardee_rows": 18250,
+    "location_rows": 3842,
+    "projects_with_awardees": 3591,
+    "projects_with_locations": 3841,
+    "projects_with_tenders": 3672,
+    "tender_rows": 18851,
+    "unmatched_awardee_rows": 2
+  },
+  "totals_cents": {
+    "award_amount": 330090124839,
+    "pnrr_funding": 437409074065,
+    "tender_amount": 410802405058,
+    "total_funding": 506114534373
+  },
+  "source_assets": {
+    "projects_sha256": "1b1913c5b71df0794450522e1563b6d5b637356279779f6134b3af98d90df74d",
+    "tenders_sha256": "1154c0796958cb36a7b64addb850eb2812b118ba8a5f8a0b22c32f56be7f8525",
+    "locations_sha256": "0fae9b0252b7e0949d0c11d374c3113178c096da1077462810971a0eac07bbcd",
+    "awardees_sha256": "0b2a2956df880c93e75f60026a0e53ebb489a7d1b66f1a7b4fd304d077302818"
+  },
+  "local_snapshot_sha256": "5693cfe012b8de38c065852f0d040e54fda982ca98704e7faaf3a2566c3e0da2",
+  "interpretation_warnings": [
+    "Il finanziamento osservato non equivale a pagamenti effettuati.",
+    "L'importo di gara non equivale necessariamente a risorse erogate.",
+    "Lo stato amministrativo del progetto non misura i posti creati o certificati.",
+    "Un progetto puo avere piu localizzazioni e piu procedure di gara.",
+    "L'esito di validazione del record non e un giudizio di merito sul progetto."
+  ]
+}

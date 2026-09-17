@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "expectedArchive": {
+    "bytes": 10139244307,
+    "sha256": "6e4bd9e9edc27c71703f33448038df4311d58d911a227cf37db69f649c3cd80e"
+  },
+  "expectedCorpus": {
+    "entries": 51303,
+    "regular": 46438,
+    "hardlink": 4860,
+    "symlink": 5
+  },
+  "idPrefix": "ae-",
+  "idWidth": 6,
+  "shardSize": 10000,
+  "defaultFamily": "uncategorized",
+  "familyRules": [
+    {"family": "collection-gaps", "patterns": ["*/buchi/*", "*/errors/*", "*/failed/*"]},
+    {"family": "transparency", "patterns": ["*at-catalog*", "*trasparenz*", "*foia*", "*accesso*civic*"]},
+    {"family": "procurement", "patterns": ["*affidament*", "*cig*", "*consip*", "*fornitor*", "*vincitor*"]},
+    {"family": "assignments", "patterns": ["*consulenz*", "*incarich*", "*collaborator*", "*rinnovi*", "*prorogh*", "*/cv/*", "*cv-*", "*_cv*"]},
+    {"family": "personnel-operations", "patterns": ["*personale*", "*staff*", "*indennit*", "*missioni*", "*rimbors*", "*affitti*", "*immobili*", "*auto-welfare*"]},
+    {"family": "communications-events", "patterns": ["*eventi*", "*convegni*", "*campagne*", "*pubblicit*"]},
+    {"family": "benchmarks-controls", "patterns": ["*benchmark*", "*segnalaz*", "*corte*conti*"]},
+    {"family": "projects", "patterns": ["*opencup*", "*open-cup*", "*/cup/*", "*c8a*", "*c8b*", "*c8c*", "*c8d*"]},
+    {"family": "participations", "patterns": ["*partecipat*", "*visure*"]},
+    {"family": "administrations", "patterns": ["*/ipa/*", "*inventario*ipa*", "*amministrazioni*"]},
+    {"family": "prototypes-releases", "patterns": ["*/releases/*", "*/voce-della-spesa/*", "*/prototype/*", "*/prototipo/*"]}
+  ],
+  "contentRules": [
+    {"contentClass": "browser-or-session-state", "patterns": ["*/browser/*", "*/session/*", "*cookies*", "*.har", "*/.playwright-*/*"]},
+    {"contentClass": "error-or-failed-attempt", "patterns": ["*/buchi/*", "*/errors/*", "*/failed/*", "*error-log*", "*traceback*"]},
+    {"contentClass": "backup-or-superseded", "patterns": ["*.bak", "*.backup", "*~", "*/backup/*", "*/old/*", "*/superseded/*"]},
+    {"contentClass": "draft-or-candidate", "patterns": ["*.draft", "*/draft/*", "*stub*", "*/candidate/*"]},
+    {"contentClass": "quality-control", "patterns": ["*/qa/*", "*/quality/*", "*validation*", "*checksums*", "*manifest*"]},
+    {"contentClass": "tooling-or-presentation", "patterns": ["*.py", "*.js", "*.mjs", "*.cjs", "*.ts", "*.tsx", "*.jsx", "*.css", "*.scss", "*.woff", "*.woff2", "*.ttf", "*.otf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.svg", "*.webp", "*/node_modules/*", "*/.git/*"]},
+    {"contentClass": "derived-data", "patterns": ["*/generated/*", "*/derived/*", "*/output/*", "*/releases/*", "*card*.json", "*card*.tsv"]},
+    {"contentClass": "curated-dataset", "patterns": ["*.csv", "*.tsv", "*.json", "*.jsonl", "*.xlsx", "*.xls", "*.ods", "*.parquet", "*.sqlite", "*.db"]},
+    {"contentClass": "source-document", "patterns": ["*.pdf", "*.html", "*.htm", "*.txt", "*.md", "*.doc", "*.docx", "*.rtf", "*.xml", "*.zip"]}
+  ],
+  "contentClassDefaults": {
+    "official-source-candidate": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "manifest-only"},
+    "secondary-source": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "manifest-only"},
+    "curated-dataset": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "manifest-only"},
+    "derived-data": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "manifest-only"},
+    "source-document": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "manifest-only"},
+    "backup-or-superseded": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "non-product"},
+    "draft-or-candidate": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "non-product"},
+    "error-or-failed-attempt": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "non-product"},
+    "quality-control": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "non-product"},
+    "tooling-or-presentation": {"authority": "unknown", "license": "unknown", "privacy": "review-required", "disposition": "non-product"},
+    "browser-or-session-state": {"authority": "unknown", "license": "restricted", "privacy": "restricted", "disposition": "private-quarantine"}
+  }
+}

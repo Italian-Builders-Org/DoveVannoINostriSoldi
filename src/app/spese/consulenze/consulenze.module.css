@@ -1,0 +1,197 @@
+.page {
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-accent-700);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.stats:global(.stat-strip) :global(.stat-value) {
+  overflow-wrap: anywhere;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.sectionHead :global(.panel-title) {
+  margin-bottom: 4px;
+}
+
+.sectionHead p {
+  max-width: 76ch;
+  margin: 0;
+  color: var(--color-neutral-700);
+}
+
+.filterPanel,
+.tablePanel,
+.sourcePanel,
+.caveatPanel {
+  min-width: 0;
+}
+
+.filterForm {
+  display: grid;
+  grid-template-columns: minmax(130px, .35fr) minmax(280px, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.filterForm label {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.filterForm select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 36px 0 12px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+}
+
+.administrationField {
+  min-width: 0;
+}
+
+.error {
+  margin: var(--space-3) 0 0;
+  color: var(--color-negative);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dataTable {
+  border: 1px solid var(--color-neutral-300);
+}
+
+.dataTable table {
+  min-width: 1040px;
+}
+
+.dataTable caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dataTable td small,
+.dataTable th small {
+  display: block;
+  margin-top: 5px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.amount {
+  min-width: 190px;
+  font-variant-numeric: tabular-nums;
+}
+
+.observedZero {
+  color: var(--color-neutral-700);
+  font-weight: 700;
+}
+
+.observedZero small {
+  color: var(--color-neutral-600);
+  font-weight: 400;
+}
+
+.sourceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-300);
+}
+
+.sourceGrid article {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4);
+}
+
+.sourceGrid article + article {
+  border-left: 1px solid var(--color-neutral-300);
+}
+
+.sourceGrid h3,
+.sourceGrid p {
+  margin: 0;
+}
+
+.sourceGrid a {
+  color: var(--color-accent-700);
+  font-weight: 700;
+}
+
+.hash {
+  margin-top: var(--space-2);
+  overflow-wrap: anywhere;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+}
+
+.licenseNote {
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.caveatPanel ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-neutral-800);
+}
+
+@media (max-width: 860px) {
+  .sectionHead {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterForm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .stats:global(.stat-strip) {
+    grid-template-columns: 1fr;
+  }
+
+  .sourceGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sourceGrid article + article {
+    border-left: 0;
+    border-top: 1px solid var(--color-neutral-300);
+  }
+
+    }

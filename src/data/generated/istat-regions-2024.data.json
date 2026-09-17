@@ -1,0 +1,902 @@
+{
+  "accountingFrame": "commitments",
+  "coverage": {
+    "autonomousProvinces": 2,
+    "entitiesReconciled": 22,
+    "individualAdministrations": 22,
+    "ordinaryRegions": 15,
+    "specialRegions": 5,
+    "workbookSheets": 25
+  },
+  "definitions": {
+    "comparisonLimit": "Valori assoluti: nessun confronto pro capite senza una popolazione Istat bloccata sullo stesso periodo.",
+    "geographyLimit": "Ventidue amministrazioni non corrispondono alle venti geometrie regionali; la mappa non viene usata.",
+    "measure": "Impegni 2024, tenuti separati dai pagamenti di competenza e sui residui.",
+    "scope": "Bilanci consuntivi delle singole amministrazioni regionali e Province autonome."
+  },
+  "entities": [
+    {
+      "commitmentsCents": 1633987543655,
+      "id": "piemonte",
+      "label": "Piemonte",
+      "sourceLabel": "PIEMONTE",
+      "sourceSheet": "PIEMONTE",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1237626260301,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 101424628552,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 34482163059,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 33297154722,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 227157337021,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 586779836114,
+      "id": "liguria",
+      "label": "Liguria",
+      "sourceLabel": "LIGURIA",
+      "sourceSheet": "LIGURIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 458532844610,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 41634666128,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 7523072642,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 14121324301,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 64967928433,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 3732831543979,
+      "id": "lombardia",
+      "label": "Lombardia",
+      "sourceLabel": "LOMBARDIA",
+      "sourceSheet": "LOMBARDIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 2862841665603,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 262744563785,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 26291769815,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 8961757323,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 571991787453,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1721397502020,
+      "id": "veneto",
+      "label": "Veneto",
+      "sourceLabel": "VENETO",
+      "sourceSheet": "VENETO",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1371360589878,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 107296103935,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 26403542896,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 11803927109,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 204533338202,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1614350703954,
+      "id": "emilia-romagna",
+      "label": "Emilia-Romagna",
+      "sourceLabel": "EMILIA-ROMAGNA",
+      "sourceSheet": "EMILIA-ROMAGNA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1297548942930,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 92563103494,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 12406599894,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 5227674462,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 206604383174,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1348194938143,
+      "id": "toscana",
+      "label": "Toscana",
+      "sourceLabel": "TOSCANA",
+      "sourceSheet": "TOSCANA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1063559626889,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 77608373234,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 2912647565,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 10650600904,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 193463689551,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 322829042667,
+      "id": "umbria",
+      "label": "Umbria",
+      "sourceLabel": "UMBRIA",
+      "sourceSheet": "UMBRIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 258527538233,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 24026839224,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 3817772974,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 1368291925,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 35088600311,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 534993571223,
+      "id": "marche",
+      "label": "Marche",
+      "sourceLabel": "MARCHE",
+      "sourceSheet": "MARCHE",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 415142188904,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 41421257415,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 13252353189,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 2137393418,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 63040378297,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1978917981233,
+      "id": "lazio",
+      "label": "Lazio",
+      "sourceLabel": "LAZIO",
+      "sourceSheet": "LAZIO",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1699082673759,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 125979189562,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 878693315,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 45883412439,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 107094012158,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 470327599430,
+      "id": "abruzzo",
+      "label": "Abruzzo",
+      "sourceLabel": "ABRUZZO",
+      "sourceSheet": "ABRUZZO",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 370893953123,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 50574399934,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 2617379668,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 1988720144,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 44253146561,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 135390395691,
+      "id": "molise",
+      "label": "Molise",
+      "sourceLabel": "MOLISE",
+      "sourceSheet": "MOLISE",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 99438851812,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 13743636092,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 397477696,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 2387380249,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 19423049842,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 3142029859766,
+      "id": "campania",
+      "label": "Campania",
+      "sourceLabel": "CAMPANIA",
+      "sourceSheet": "CAMPANIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1547382383230,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 359561448089,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 1001399038185,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 70280955933,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 163406034329,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1537700431438,
+      "id": "puglia",
+      "label": "Puglia",
+      "sourceLabel": "PUGLIA",
+      "sourceSheet": "PUGLIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1122956433872,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 138132075091,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 27531236253,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 5721982245,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 243358703977,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 258817380704,
+      "id": "basilicata",
+      "label": "Basilicata",
+      "sourceLabel": "BASILICATA",
+      "sourceSheet": "BASILICATA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 183883374049,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 45124296569,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 3836999581,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 2044919333,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 23927791172,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 776031158500,
+      "id": "calabria",
+      "label": "Calabria",
+      "sourceLabel": "CALABRIA",
+      "sourceSheet": "CALABRIA",
+      "status": "ordinary",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 535524500500,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 127140198534,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 37686796725,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 6322949065,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 69356713676,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 170977926349,
+      "id": "valle-aosta",
+      "label": "Valle d'Aosta/Vallée d'Aoste",
+      "sourceLabel": "VALLE D'AOSTA/Vallée d'Aoste",
+      "sourceSheet": "VALLE D'AOSTA - Vallée d'Aoste",
+      "status": "special",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 126616515382,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 26553464109,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 3436488660,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 5148683495,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 9222774703,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 40533198147,
+      "id": "trentino-alto-adige",
+      "label": "Trentino-Alto Adige/Südtirol",
+      "sourceLabel": "TRENTINO-ALTO ADIGE/Südtirol",
+      "sourceSheet": "TRENTINO-ALTO ADIGE - Südtirol",
+      "status": "special",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 36795634845,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 2586596432,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 0,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 0,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 1150966870,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 847890310656,
+      "id": "friuli-venezia-giulia",
+      "label": "Friuli-Venezia Giulia",
+      "sourceLabel": "FRIULI-VENEZIA GIULIA",
+      "sourceSheet": "FRIULI-VENEZIA GIULIA",
+      "status": "special",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 616472328864,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 195227089621,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 16267987304,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 3763806727,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 16159098140,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 3015984340872,
+      "id": "sicilia",
+      "label": "Sicilia",
+      "sourceLabel": "SICILIA",
+      "sourceSheet": "SICILIA",
+      "status": "special",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 1765019384691,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 201570141672,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 13289398025,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 23674514752,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 1012430901732,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 1046510567383,
+      "id": "sardegna",
+      "label": "Sardegna",
+      "sourceLabel": "SARDEGNA",
+      "sourceSheet": "SARDEGNA",
+      "status": "special",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 879692526630,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 124031737837,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 10601041323,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 7658735714,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 24526525879,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 761701251959,
+      "id": "bolzano",
+      "label": "Provincia autonoma di Bolzano/Bozen",
+      "sourceLabel": "BOLZANO/Bozen",
+      "sourceSheet": "BOLZANO - Bozen",
+      "status": "autonomous-province",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 547093575815,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 147554376363,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 13088791817,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 2839159922,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 51125348042,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    },
+    {
+      "commitmentsCents": 598782073005,
+      "id": "trento",
+      "label": "Provincia autonoma di Trento",
+      "sourceLabel": "TRENTO",
+      "sourceSheet": "TRENTO",
+      "status": "autonomous-province",
+      "titles": [
+        {
+          "code": "1",
+          "commitmentsCents": 431465257160,
+          "label": "Titolo 1 - Spese correnti"
+        },
+        {
+          "code": "2",
+          "commitmentsCents": 134535267944,
+          "label": "Titolo 2 - Spese in conto capitale"
+        },
+        {
+          "code": "3",
+          "commitmentsCents": 209296777,
+          "label": "Titolo 3 - Spese per incremento attività finanziarie"
+        },
+        {
+          "code": "4",
+          "commitmentsCents": 838935703,
+          "label": "Titolo 4 - Rimborso di Prestiti"
+        },
+        {
+          "code": "5",
+          "commitmentsCents": 0,
+          "label": "Titolo 5 - Chiusura Anticipazioni ricevute da istituto tesoriere/cassiere"
+        },
+        {
+          "code": "7",
+          "commitmentsCents": 31733315421,
+          "label": "Titolo 7 - Uscite per conto terzi e partite di giro"
+        }
+      ]
+    }
+  ],
+  "referenceYear": 2024,
+  "schemaVersion": 1,
+  "unit": "euro_cents"
+}

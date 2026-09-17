@@ -1,0 +1,157 @@
+import type { Metadata } from "next";
+import styles from "../legal-page.module.css";
+
+export const metadata: Metadata = {
+  title: "Privacy",
+  description: "Come trattiamo i dati tecnici necessari a erogare il sito.",
+};
+
+export default function PrivacyPage() {
+  return (
+    <main className={`shell page ${styles.page}`}>
+      <div className="page-intro">
+        <h1>Informativa privacy</h1>
+        <p>
+          Questa pagina descrive i dati tecnici necessari a erogare il sito. Il portale legge fonti
+          pubbliche e non chiede un account.
+        </p>
+      </div>
+
+      <section className="panel">
+        <h2 className="panel-title">Dati tecnici</h2>
+        <p>
+          Vercel, il provider di hosting, può trattare log tecnici, come indirizzo IP, user
+          agent, orario e percorso richiesto, per consegnare, proteggere e diagnosticare il
+          servizio. L&apos;applicazione non aggiunge ai log il contenuto delle richieste MCP. I log
+          runtime restano disponibili secondo il piano Vercel attivo: un&apos;ora su Hobby, un
+          giorno su Pro, tre giorni su Enterprise oppure fino a 30 giorni con Observability
+          Plus. Consulta i limiti aggiornati dei{" "}
+          <a href="https://vercel.com/docs/logs/runtime" target="_blank" rel="noreferrer">
+            log runtime di Vercel
+          </a>{" "}
+          e il relativo{" "}
+          <a href="https://vercel.com/legal/dpa" target="_blank" rel="noreferrer">
+            accordo sul trattamento dei dati
+          </a>. La home può
+          ricavare dal provider una Regione approssimativa per proporre la mappa iniziale:
+          l&apos;applicazione non mostra né salva l&apos;indirizzo IP e puoi cambiare Regione in ogni
+          momento.
+        </p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">Misurazione delle visite</h2>
+        <p>
+          Il sito usa Google Analytics 4 (Google tag) per capire quali pagine vengono lette. Google
+          tratta i dati secondo la propria informativa; consulta{" "}
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
+            Privacy Policy di Google
+          </a>{" "}
+          e, se disponibile nel tuo browser,{" "}
+          <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noreferrer">
+            il componente aggiuntivo per disattivare Google Analytics
+          </a>. Non usiamo il tag per profilazione pubblicitaria sul sito.
+        </p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">Server MCP e assistenti esterni</h2>
+        <p>
+          L&apos;endpoint MCP è pubblico, senza account o autenticazione e in sola lettura. Riceve
+          richieste tecniche, filtri e parametri necessari a interrogare i dataset;
+          l&apos;applicazione non crea un profilo utente né un archivio delle conversazioni. Restano
+          possibili i log tecnici Vercel descritti sopra. Se colleghi l&apos;endpoint tramite un
+          client o un gateway esterno, per esempio ChatGPT, Claude o Manufact, quel servizio
+          tratta la richiesta secondo la propria informativa, conservazione e impostazioni:
+          controllale prima di inviare testo o contesto. I tool DVNS espongono soltanto dati
+          pubblici e non hanno bisogno di dati personali. Collegando direttamente il server,
+          Manufact inoltra le richieste all&apos;endpoint DVNS; attivando proxy, analytics o cattura
+          dei payload può trattare anche metadati e contenuto delle richieste secondo la sua{" "}
+          <a href="https://manufact.com/privacy" target="_blank" rel="noreferrer">
+            informativa privacy
+          </a>.
+        </p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">Assistente del portale e dettatura</h2>
+        <p>
+          L&apos;assistente in <a href="/assistente">/assistente</a> permette di conversare con un
+          provider AI usando la tua API key Regolo, OpenRouter, OpenAI o Anthropic, oppure usare dieci domande gratuite al giorno con Regolo, quando disponibili.
+          Collegando un provider autorizzi l’invio della domanda, di un contesto limitato della
+          conversazione, degli allegati che scegli di inviare e degli estratti dei dataset pubblici necessari alla risposta. Chiave e
+          contenuti transitano attraverso il backend DVNS e il servizio selezionato; OpenRouter
+          può inoltrare la richiesta al fornitore del modello scelto.
+        </p>
+        <p>
+          I documenti vengono letti sul dispositivo: si invia il testo estratto; le immagini vengono ottimizzate prima dell’invio. L’anteprima mostra contenuto e limiti: grafici e immagini dentro PDF, Word e fogli di calcolo non vengono estratti. I file originali non vengono caricati in un archivio remoto. La chiave, gli allegati e la conversazione restano nella memoria della scheda, senza salvataggio in
+          cookie o archivi del browser. L’applicazione non li archivia sul server, non li scrive
+          nei propri log e non li usa per analytics. “Nuova chat” svuota la conversazione;
+          “Scollega e rimuovi chiave”, il ricaricamento o l’uscita dalla pagina rimuovono la
+          configurazione. I normali log tecnici dell’hosting possono essere conservati come
+          descritto sopra. Le risposte AI sono indicate come tali e possono contenere errori.
+        </p>
+        <p>
+          Con una chiave personale, i consumi sono a carico del tuo conto presso il provider. L’abbonamento ChatGPT non
+          include i consumi delle API OpenAI. La conservazione da parte del provider dipende
+          dalle sue condizioni e dalle impostazioni del tuo conto: consulta le informative di{" "}
+          <a href="https://openrouter.ai/privacy" target="_blank" rel="noreferrer">OpenRouter</a>,{" "}
+          <a href="https://developers.openai.com/api/docs/guides/your-data" target="_blank" rel="noreferrer">OpenAI</a> e{" "}
+          <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noreferrer">Anthropic</a> e <a href="https://regolo.ai/privacy-policy/" target="_blank" rel="noreferrer">Regolo</a>.
+          Non inserire dati personali, informazioni riservate o altre credenziali nelle domande.
+        </p>
+        <p>
+          Per le domande gratuite, dopo il tuo consenso inviamo domanda, contesto e allegati a Regolo.
+          Regolo dichiara di non conservare domande, risposte e allegati né usarli per il training
+          (<a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">zero data retention</a>).
+          Un cookie tecnico giornaliero firmato e non leggibile dagli script della pagina mantiene
+          il contatore del browser. Per limitare gli abusi, il server controlla anche la rete:
+          chi condivide la stessa rete può condividerne il limite. Il contatore riparte a mezzanotte,
+          ora italiana; anche gli invii interrotti o falliti dopo l’accettazione consumano una domanda.
+          Ricaricare la pagina o iniziare una nuova chat non azzera la quota.
+          Il database Supabase conserva solo contatori e identificativi pseudonimi
+          derivati con HMAC, diversi ogni giorno, senza indirizzi IP in chiaro, credenziali o
+          conversazioni. I contatori vengono rimossi dal processo di pulizia ogni dieci minuti dopo la scadenza giornaliera;
+          i blocchi tecnici temporanei cessano entro 90 secondi. Consulta l’<a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">informativa di Supabase</a>.
+        </p>
+        <p>
+          La dettatura facoltativa usa il riconoscimento locale del browser, quando disponibile per
+          l’italiano. Il microfono richiede un’azione esplicita e il permesso del browser; si ferma
+          entro 30 secondi, alla chiusura della finestra o quando lasci la pagina. L’applicazione
+          non registra né invia audio e non usa un servizio remoto di trascrizione. Il testo resta
+          nella domanda per essere modificato; solo il pulsante di invio o il tasto Invio lo
+          invia all’assistente. Resta nella memoria della pagina, senza un archivio delle domande.
+          L’eventuale pacchetto italiano viene scaricato e gestito dal browser solo su tua richiesta;
+          il download contatta il servizio del browser e può proseguire dopo la chiusura della finestra.
+        </p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">Modulo «Segnala un problema»</h2>
+        <p>
+          Il modulo presente in ogni pagina crea una issue <strong>pubblica</strong> nel repository
+          GitHub del progetto. Oltre al testo che scrivi, allega il percorso e il titolo della
+          pagina, data e ora dell&apos;invio, la dimensione della finestra e la stringa del browser
+          (user agent), utili a riprodurre il problema. Non chiede nome o email e non accetta
+          allegati. L&apos;indirizzo IP è usato dal server solo in forma non reversibile e in
+          memoria per limitare gli invii ripetuti; non viene scritto nella issue né nei log
+          applicativi, che non registrano il contenuto della segnalazione. Il testo inviato è
+          conservato da GitHub secondo le sue condizioni: non inserire dati personali.
+        </p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">I tuoi diritti</h2>
+        <p>
+          Per accesso, correzione, cancellazione, limitazione, portabilità quando applicabile o
+          opposizione, usa il canale privato{" "}
+          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>.
+          Invia soltanto le informazioni necessarie a gestire la richiesta, senza password o
+          altre credenziali. Le issue GitHub sono pubbliche: non usarle per richieste privacy o
+          dati personali. Puoi presentare reclamo al Garante per la protezione dei dati personali.
+          Per assistenza tecnica consulta la pagina <a href="/supporto">Supporto</a>.
+        </p>
+      </section>
+    </main>
+  );
+}

@@ -1,0 +1,2013 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef-tax-gap-nazionale",
+  "geography": {
+    "code": "IT",
+    "label": "Italia"
+  },
+  "period": {
+    "from": 2018,
+    "to": 2022
+  },
+  "units": {
+    "money": "euro-cents",
+    "sourceMoney": "million-euro",
+    "propensione": "tenths-of-a-percentage-point"
+  },
+  "caveats": [
+    "Il tax gap MEF è una stima con ipotesi di modello: non è evasione accertata, né recupero, né gettito riscosso.",
+    "Il 2022 è semi-definitivo nella Relazione 2025; le forchette min/max restano forchette e non vanno collassate in un unico punto.",
+    "Questa slice è solo nazionale (Tab. I.1 e I.2). Non pubblica ripartizioni, regioni o province e non le inventa.",
+    "Non si somma né si confronta in silenzio con il VAT compliance gap DG TAXUD, con l'economia non osservata ISTAT o con i risultati di vigilanza INL.",
+    "Le stime delle entrate contributive convivono con quelle tributarie ma restano nature distinte: i totali pubblicati dalla fonte non vengono ricostruiti sommando pezzi assenti.",
+    "La revisione dei conti nazionali può rendere edizioni precedenti non confrontabili senza avvertenza: questa fetta pubblica solo i valori della Relazione 2025.",
+    "Valori dell’edizione iniziale della Relazione 2025 (2018-2022). L’aggiornamento MEF successivo per il 2019-2023 rivede anche il 2022 e non è incluso in questo snapshot.",
+    "La licenza del PDF non è dichiarata sul file: resta not-declared, senza inferenze."
+  ],
+  "taxRows": [
+    {
+      "id": "irpef-lavoro-dipendente-irregolare",
+      "sourceLabel": "IRPEF lavoro dipendente (irregolare)",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 326700000000,
+            "maxCents": 453200000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 21,
+            "maxTenthsPp": 29,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 332400000000,
+            "maxCents": 467500000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 21,
+            "maxTenthsPp": 29,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 273800000000,
+            "maxCents": 388200000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 17,
+            "maxTenthsPp": 24,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 295700000000,
+            "maxCents": 399700000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 18,
+            "maxTenthsPp": 24,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 261600000000,
+            "maxCents": 360600000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 15,
+            "maxTenthsPp": 21,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -65000000000,
+          "maxCents": -92600000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": -6,
+          "maxTenthsPp": -8,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 298100000000,
+          "maxCents": 413800000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": 18,
+          "maxTenthsPp": 25,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "addizionali-locali-irpef-lavoro-dipendente",
+      "sourceLabel": "Addizionali locali IRPEF (lavoro dipendente)",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 59200000000,
+            "maxCents": 80100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 53,
+            "maxTenthsPp": 71,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 58300000000,
+            "maxCents": 80400000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 52,
+            "maxTenthsPp": 70,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 49500000000,
+            "maxCents": 69100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 46,
+            "maxTenthsPp": 63,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 51400000000,
+            "maxCents": 68000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 44,
+            "maxTenthsPp": 58,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 55200000000,
+            "maxCents": 73300000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 44,
+            "maxTenthsPp": 57,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -4000000000,
+          "maxCents": -6800000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": -10,
+          "maxTenthsPp": -14,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 54700000000,
+          "maxCents": 74200000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": 48,
+          "maxTenthsPp": 64,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "irpef-lavoro-autonomo-impresa",
+      "sourceLabel": "IRPEF lavoro autonomo e impresa",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3594100000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 602
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3506400000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 625
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3362000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 639
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3533300000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 609
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3695200000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 598
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 101000000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -4
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 3538200000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 615
+        }
+      }
+    },
+    {
+      "id": "ires",
+      "sourceLabel": "IRES",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 872300000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 232
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 917100000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 241
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 820500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 240
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 760700000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 181
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 1032000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 195
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 159700000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -37
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 880500000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 218
+        }
+      }
+    },
+    {
+      "id": "iva",
+      "sourceLabel": "IVA",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3213700000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 234
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 3107100000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 223
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 2664700000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 216
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 2794500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 198
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 2896600000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 184
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -317100000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -50
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 2935300000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 211
+        }
+      }
+    },
+    {
+      "id": "irap",
+      "sourceLabel": "IRAP",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 535400000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 189
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 504000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 175
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 449200000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 171
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 492000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 164
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 361700000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 120
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -173700000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -69
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 468500000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 164
+        }
+      }
+    },
+    {
+      "id": "locazioni",
+      "sourceLabel": "LOCAZIONI",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 97000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 113
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 93500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 109
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 71600000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 90
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 62500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 78
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 87500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 101
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -9500000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -12
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 82400000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 98
+        }
+      }
+    },
+    {
+      "id": "canone-rai",
+      "sourceLabel": "CANONE RAI",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 23900000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 108
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 24100000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 109
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 24800000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 112
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 22500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 102
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 20900000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 94
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -3000000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -14
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 23200000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 105
+        }
+      }
+    },
+    {
+      "id": "accise-prodotti-energetici",
+      "sourceLabel": "ACCISE sui prodotti energetici (benzina e gasolio)",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 149800000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 78
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 191400000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 97
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 172200000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 108
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 175300000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 95
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 71200000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 51
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -78600000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -27
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 152000000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 86
+        }
+      }
+    },
+    {
+      "id": "imu-tasi",
+      "sourceLabel": "IMU-TASI",
+      "shape": "point",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 537700000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 228
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 538100000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 228
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 511000000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 222
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 497600000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 214
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "point",
+            "minCents": null,
+            "maxCents": null,
+            "valueCents": 492500000000
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "point",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": 209
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": -45200000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": -19
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "point",
+          "minCents": null,
+          "maxCents": null,
+          "valueCents": 515400000000
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "point",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": 220
+        }
+      }
+    },
+    {
+      "id": "totale-entrate-tributarie",
+      "sourceLabel": "Totale entrate tributarie",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 9409800000000,
+            "maxCents": 9557300000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 195,
+            "maxTenthsPp": 197,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 9272400000000,
+            "maxCents": 9429600000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 190,
+            "maxTenthsPp": 192,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8399500000000,
+            "maxCents": 8533500000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 184,
+            "maxTenthsPp": 187,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8685400000000,
+            "maxCents": 8806000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 173,
+            "maxTenthsPp": 175,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8974400000000,
+            "maxCents": 9091400000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 169,
+            "maxTenthsPp": 170,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -435500000000,
+          "maxCents": -465900000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": -26,
+          "maxTenthsPp": -27,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 8948300000000,
+          "maxCents": 9083500000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": 182,
+          "maxTenthsPp": 184,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "totale-entrate-tributarie-netto-accise-imu",
+      "sourceLabel": "Totale entrate tributarie (al netto delle accise e dell'IMU)",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8722300000000,
+            "maxCents": 8869800000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 198,
+            "maxTenthsPp": 201,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8542900000000,
+            "maxCents": 8700100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 192,
+            "maxTenthsPp": 195,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 7716200000000,
+            "maxCents": 7850200000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 185,
+            "maxTenthsPp": 188,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8012500000000,
+            "maxCents": 8133100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 174,
+            "maxTenthsPp": 176,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 8410700000000,
+            "maxCents": 8527700000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "observed",
+            "shape": "range",
+            "minTenthsPp": 170,
+            "maxTenthsPp": 172,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -311600000000,
+          "maxCents": -342000000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": -28,
+          "maxTenthsPp": -29,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 8280900000000,
+          "maxCents": 8416200000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "observed",
+          "shape": "range",
+          "minTenthsPp": 184,
+          "maxTenthsPp": 186,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "entrate-contributive-carico-lavoratore",
+      "sourceLabel": "Entrate contributive carico lavoratore dipendente",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 211400000000,
+            "maxCents": 300100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 208500000000,
+            "maxCents": 301900000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 175300000000,
+            "maxCents": 257100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 189300000000,
+            "maxCents": 262000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 202100000000,
+            "maxCents": 279000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -9300000000,
+          "maxCents": -21100000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 197300000000,
+          "maxCents": 280000000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "entrate-contributive-carico-datore",
+      "sourceLabel": "Entrate contributive carico datore di lavoro",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 693500000000,
+            "maxCents": 983000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 708900000000,
+            "maxCents": 1024000000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 589300000000,
+            "maxCents": 860800000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 598400000000,
+            "maxCents": 827400000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 635900000000,
+            "maxCents": 877900000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -57600000000,
+          "maxCents": -105200000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 645200000000,
+          "maxCents": 914600000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "totale-entrate-contributive",
+      "sourceLabel": "Totale entrate contributive",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 904800000000,
+            "maxCents": 1283100000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 917400000000,
+            "maxCents": 1325900000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 764600000000,
+            "maxCents": 1117900000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 787700000000,
+            "maxCents": 1089300000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 838000000000,
+            "maxCents": 1156800000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -66900000000,
+          "maxCents": -126300000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 842500000000,
+          "maxCents": 1194600000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      }
+    },
+    {
+      "id": "totale-entrate-tributarie-e-contributive",
+      "sourceLabel": "Totale entrate tributarie e contributive",
+      "shape": "range",
+      "series": [
+        {
+          "year": 2018,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 10314700000000,
+            "maxCents": 10840400000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2019,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 10189800000000,
+            "maxCents": 10755500000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2020,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 9164100000000,
+            "maxCents": 9651400000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2021,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 9473100000000,
+            "maxCents": 9895300000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        },
+        {
+          "year": 2022,
+          "gap": {
+            "status": "observed",
+            "shape": "range",
+            "minCents": 9812300000000,
+            "maxCents": 10248200000000,
+            "valueCents": null
+          },
+          "propensione": {
+            "status": "absent",
+            "shape": "absent",
+            "minTenthsPp": null,
+            "maxTenthsPp": null,
+            "valueTenthsPp": null
+          }
+        }
+      ],
+      "difference2022vs2018": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": -502400000000,
+          "maxCents": -592200000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      },
+      "average2018to2022": {
+        "gap": {
+          "status": "observed",
+          "shape": "range",
+          "minCents": 9790800000000,
+          "maxCents": 10278200000000,
+          "valueCents": null
+        },
+        "propensione": {
+          "status": "absent",
+          "shape": "absent",
+          "minTenthsPp": null,
+          "maxTenthsPp": null,
+          "valueTenthsPp": null
+        }
+      }
+    }
+  ]
+}

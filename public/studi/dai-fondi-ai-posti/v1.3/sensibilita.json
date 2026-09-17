@@ -1,0 +1,84 @@
+{
+  "leave_one_out": [
+    {
+      "indicator": "Quota almeno in collaudo",
+      "rho": 0.5851824407815235,
+      "loo_min": 0.5300570935899963,
+      "loo_max": 0.6862659721645316
+    },
+    {
+      "indicator": "Quota conclusa",
+      "rho": 0.6679203180128442,
+      "loo_min": 0.6283458261762207,
+      "loo_max": 0.7424309622138028
+    },
+    {
+      "indicator": "Fondi totali per bambino",
+      "rho": -0.5814216281800998,
+      "loo_min": -0.6529180093227768,
+      "loo_max": -0.5432207631327941
+    }
+  ],
+  "funding_basis": [
+    {
+      "tier": "<20",
+      "funding_basis": "total_funding_eur",
+      "mature_share": 0.3707200967296151
+    },
+    {
+      "tier": "<20",
+      "funding_basis": "pnrr_funding_eur",
+      "mature_share": 0.3703290179958638
+    },
+    {
+      "tier": "20--32,9",
+      "funding_basis": "total_funding_eur",
+      "mature_share": 0.4266610738403367
+    },
+    {
+      "tier": "20--32,9",
+      "funding_basis": "pnrr_funding_eur",
+      "mature_share": 0.4195933831626063
+    },
+    {
+      "tier": "33--39,9",
+      "funding_basis": "total_funding_eur",
+      "mature_share": 0.583188752993141
+    },
+    {
+      "tier": "33--39,9",
+      "funding_basis": "pnrr_funding_eur",
+      "mature_share": 0.5710491597440112
+    },
+    {
+      "tier": ">=40",
+      "funding_basis": "total_funding_eur",
+      "mature_share": 0.5901491337053729
+    },
+    {
+      "tier": ">=40",
+      "funding_basis": "pnrr_funding_eur",
+      "mature_share": 0.5906877281414982
+    }
+  ],
+  "timing_caps": [
+    {
+      "cap_days": 365,
+      "n": 6850,
+      "median": 14.0
+    },
+    {
+      "cap_days": 730,
+      "n": 6892,
+      "median": 14.0
+    },
+    {
+      "cap_days": null,
+      "n": 6902,
+      "median": 14.0
+    }
+  ],
+  "unknown_phase": 128,
+  "mature_lower": 0.4842281879194631,
+  "mature_upper_unknown": 0.5271812080536913
+}

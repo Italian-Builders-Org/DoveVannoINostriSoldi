@@ -1,0 +1,339 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.breadcrumb a {
+  color: var(--color-neutral-700);
+}
+
+.breadcrumb a:hover {
+  color: var(--color-accent-800);
+}
+
+.scopeBand {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.scopeBand > div {
+  min-width: 0;
+  padding: var(--space-4);
+  border-right: 1px solid var(--color-neutral-300);
+}
+
+.scopeBand > div:last-child {
+  border-right: 0;
+}
+
+.scopeBand span,
+.scopeBand strong {
+  display: block;
+}
+
+.scopeBand span {
+  margin-bottom: 6px;
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.scopeBand strong {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.finding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.finding h2,
+.sectionHead h2,
+.interpretation h2,
+.sources h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 21px;
+}
+
+.finding p,
+.sectionHead p,
+.interpretation p,
+.sources p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--color-neutral-700);
+}
+
+.finding dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.finding dl > div {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.finding dt,
+.signalGrid dt {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.finding dd,
+.signalGrid dd {
+  margin: 4px 0 0;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-5);
+  align-items: flex-start;
+  margin-bottom: var(--space-5);
+}
+
+.amountList {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.amountHeading,
+.amountFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.amountHeading > div {
+  min-width: 0;
+}
+
+.amountHeading span,
+.amountHeading small {
+  display: block;
+}
+
+.amountHeading span {
+  font-weight: 700;
+}
+
+.amountHeading small,
+.amountFoot,
+.legend {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.amountHeading strong {
+  flex: 0 0 auto;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  height: 18px;
+  margin: var(--space-2) 0;
+  background: var(--color-neutral-200);
+}
+
+.track i {
+  display: block;
+  height: 100%;
+  background: var(--chart-primary);
+}
+
+.track b {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--color-text);
+  transform: translateX(-1px);
+}
+
+.legend {
+  margin: var(--space-5) 0 0;
+}
+
+.signalGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.signalGrid article {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.signalGrid h3,
+.signalGrid p,
+.signalGrid dl {
+  margin: 0;
+}
+
+.signalValue {
+  font-family: var(--font-heading);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.signalGrid dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-200);
+}
+
+.signalGrid a {
+  justify-self: start;
+  font-weight: 700;
+}
+
+.interpretation {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.methodList {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 80ch;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--color-neutral-700);
+}
+
+.exactTable {
+  min-width: 760px;
+}
+
+.tableHint {
+  display: none;
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.sources .sectionHead {
+  margin-bottom: var(--space-4);
+}
+
+.sources ul {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-neutral-300);
+  list-style: none;
+}
+
+.sources li {
+  display: grid;
+  grid-template-columns: minmax(210px, .65fr) minmax(0, 1.35fr);
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.sources li a {
+  font-weight: 700;
+}
+
+.sources li span {
+  color: var(--color-neutral-700);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .scopeBand {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scopeBand > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .scopeBand > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .finding {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .tableHint {
+    display: block;
+  }
+
+  .scopeBand,
+  .signalGrid,
+  .signalGrid dl,
+  .sources li {
+    grid-template-columns: 1fr;
+  }
+
+  .scopeBand > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .scopeBand > div:last-child {
+    border-bottom: 0;
+  }
+
+  .sectionHead,
+  .amountHeading,
+  .amountFoot {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 620px) {
+  .finding dl { grid-template-columns: minmax(0, 1fr); }
+}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "mef-tax-gap-nazionale",
+  "period": {
+    "from": 2018,
+    "to": 2022
+  },
+  "observedAt": "2026-09-13",
+  "source": {
+    "owner": "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+    "landingUrl": "https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/",
+    "url": "https://www.mef.gov.it/export/sites/MEF/documenti-pubblicazioni/rapporti-relazioni/documenti/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "filename": "Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "versionDate": "2025-10-23",
+    "licenseId": "not-declared",
+    "licenseNote": "Il PDF ufficiale non dichiara una licenza di riuso sul file. Si pubblica not-declared senza inferenze.",
+    "publicationDate": null,
+    "acquiredAt": "2026-09-13",
+    "checkedAt": "2026-09-13",
+    "bytes": 3840500,
+    "sha256": "6d45f5de74f65dbd6a6df1eb61cdc5102641978ddfb58bc34c12cff4ef1bd4ef",
+    "path": "tests/fixtures/mef-evasione/Relazione-evasione-fiscale-e-contributiva-2025_2310_ore1230.pdf",
+    "geography": "Italia (solo nazionale in questa slice)",
+    "updateFrequency": "annuale"
+  },
+  "coverage": {
+    "years": 5,
+    "taxRows": 16,
+    "propensioneRows": 12,
+    "tables": [
+      "I.1",
+      "I.2"
+    ]
+  },
+  "pdf": {
+    "tableI1PageIndex": 8,
+    "tableI2PageIndex": 9,
+    "tableI1Title": "TABELLA I.1: GAP DELLE ENTRATE TRIBUTARIE E CONTRIBUTIVE IN MILIONI DI EURO",
+    "tableI2Title": "TABELLA I.2: PROPENSIONE AL GAP NELL’IMPOSTA",
+    "tableI1TextSha256": "0726bf530df80d6616aa72ea6a073c4aaf60dd38180c4120d218dcbdba59e79a",
+    "tableI2TextSha256": "f132e804ef028028cb50da652281ea95e33e017a2f87dd10f2476019858978fa"
+  },
+  "integrity": {
+    "sourceLockSha256": "9e544a422b63ecdaf95587fa27030f1047d913352e4fc23e9267f05e66807ac4",
+    "dataSha256": "df33db72d6d95b29f304171d624c83defe9ced2e8ec60e7145f1236743e8b1a4",
+    "dataBytes": 52829
+  },
+  "semantics": {
+    "soldi": {
+      "unit": "euro-cents",
+      "sourceUnit": "million-euro",
+      "nature": "stima tax gap MEF (tributario/contributivo); non accertamento né recupero"
+    },
+    "periodo": {
+      "referencePeriod": "2018-2022",
+      "semiDefinitiveYear": 2022
+    },
+    "provenance": {
+      "holder": "MEF — Commissione ex art. 10-bis.1 L. 196/2009",
+      "publicationDate": null,
+      "acquiredAt": "2026-09-13",
+      "checkedAt": "2026-09-13"
+    }
+  }
+}

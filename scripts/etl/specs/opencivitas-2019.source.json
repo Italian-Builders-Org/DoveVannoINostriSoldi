@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2019,
+  "family": "FC60TOT",
+  "releaseVersion": 2,
+  "publishedAt": "2023-05-30",
+  "modifiedAt": "2024-05-30",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2019_Ind_FC60TOT_2_csv.zip",
+      "bytes": 4631408,
+      "sha256": "5292914fcbda4b26047020fa11bc9cdca70ff7cf93e5b4a0bd33b5153cb1a8d1"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2019_xlsx.zip",
+      "bytes": 423591,
+      "sha256": "bae9771f05dbaf05686553ab5c3110d7b0eb5083c0e3322fb960afff09c1a30c"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2019_Metadati_Ind_FC60TOT_2_xlsx.zip",
+      "bytes": 8919,
+      "sha256": "63bbd57d9106934a03da81e2ede394c51549b98e5aee8b170c2c14bd2f2c6cf7"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "municipalities": 6567,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 404,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 328,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1507,
+    "MARCHE": 228,
+    "MOLISE": 136,
+    "PIEMONTE": 1181,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 563
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

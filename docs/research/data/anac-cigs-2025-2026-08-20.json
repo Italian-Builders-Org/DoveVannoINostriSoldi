@@ -1,0 +1,300 @@
+{
+  "anacPublishedScopeProxy": {
+    "definition": "CIG attivi; SERVIZI o FORNITURE; 5000 < importo_lotto < 25000000; affidamenti diretti sotto 140000 divisi per gli stessi affidamenti più le procedure non dirette da 140000 in su",
+    "denominatorRecords": 917245,
+    "directAwardSharePercent": 93.00067,
+    "directBelowThresholdRecords": 853044,
+    "nonDirectAboveThresholdRecords": 64201
+  },
+  "coverage": {
+    "completeYear": true,
+    "missingMonths": [],
+    "observedMonths": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "exactContractAmounts": {
+    "139000": 3776,
+    "139900": 1782,
+    "39900": 7924
+  },
+  "inputs": [
+    {
+      "bytes": 20798988,
+      "name": "cig_csv_2025_01.zip",
+      "observedMonths": [
+        1
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a1a4be23-11f5-4a95-93d0-5e3267ec6c3f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_01.zip",
+      "sha256": "8133cd5ea2b592b4e48afa1eb0ec2db1a831f00a254de077518f8263818a371c",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 21674004,
+      "name": "cig_csv_2025_02.zip",
+      "observedMonths": [
+        2
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a87a23dd-44a3-4b49-a7ad-b96566476979",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_02.zip",
+      "sha256": "ddeb33a5c46fd3f1c4f2988c73e28ca148628670848b8a2a86fd12bffd02045f",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 22468395,
+      "name": "cig_csv_2025_03.zip",
+      "observedMonths": [
+        3
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/dab282d9-f5c5-4595-9a9b-e17cdae7c98f",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_03.zip",
+      "sha256": "231c2f7713af92c1aef4314a42ccafddb2914d5a6730d8159d13bd54590f3a1f",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 23640461,
+      "name": "cig_csv_2025_04.zip",
+      "observedMonths": [
+        4
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/a047f20f-84e4-48ac-8c54-f69127075d67",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_04.zip",
+      "sha256": "2b8651f49312bca7e356a63b29dc47da5945dfbf7b78bed57ce9aaff54ba1055",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 23204302,
+      "name": "cig_csv_2025_05.zip",
+      "observedMonths": [
+        5
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/28288080-14c7-45d1-8ff5-26e25fb4159a",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_05.zip",
+      "sha256": "8f4ef20c3d7a3bf43ff2181341b063e86abc10e0e09232cffd11d3e193aac7b4",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 22724612,
+      "name": "cig_csv_2025_06.zip",
+      "observedMonths": [
+        6
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/039b8d17-756e-454b-a1a2-dda46237c6ea",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_06.zip",
+      "sha256": "9006c457b0604f7040a2826ba0294da55379f75cd2756dcf1ad93a90276ebf34",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 24551620,
+      "name": "cig_csv_2025_07.zip",
+      "observedMonths": [
+        7
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/f99292f4-87a0-4e78-bf57-1c54bc4ba5ba",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_07.zip",
+      "sha256": "ad0c6265c81e78749d703e6a474e387e043ec69f2e5400264fcd4f91599315e8",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 14864424,
+      "name": "cig_csv_2025_08.zip",
+      "observedMonths": [
+        8
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/fffb1c60-ff4e-43d4-b36f-1596eef7f079",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_08.zip",
+      "sha256": "c16e7aa06d6fb0e0880cf797e6d04fdedf37e076c2fd83563dc4f4973e6b539f",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 22343431,
+      "name": "cig_csv_2025_09.zip",
+      "observedMonths": [
+        9
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/bd56cf08-e8a1-4b96-8c41-bfcdf05d3c9c",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_09.zip",
+      "sha256": "1b7d009a7120b92444f9ffc8d986a75bdd008cf86623721692e7f74bbf9ff154",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 25872938,
+      "name": "cig_csv_2025_10.zip",
+      "observedMonths": [
+        10
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/12b9c75f-cc6c-43c7-aeb9-f73f262b3a23",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_10.zip",
+      "sha256": "6e7e467cbb008cc846ee096d3b8e1955fe338d3426a913f0750218bca52901d5",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 21871608,
+      "name": "cig_csv_2025_11.zip",
+      "observedMonths": [
+        11
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/8bc58a13-f600-4198-ad10-38738d4b4cc0",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_11.zip",
+      "sha256": "cb40213cb6b294650099bf6a6ccd656d9139c374796c903302d17359accc2e60",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    },
+    {
+      "bytes": 32708524,
+      "name": "cig_csv_2025_12.zip",
+      "observedMonths": [
+        12
+      ],
+      "resourcePageUrl": "https://dati.anticorruzione.it/opendata/dataset/cig-2025/resource/ebf0b0df-0ce0-4242-b297-a0b9c5cecac7",
+      "resourceUrl": "https://dati.anticorruzione.it/opendata/download/dataset/cig-2025/filesystem/cig_csv_2025_12.zip",
+      "sha256": "6f696155e0b2ab4b2d608fe403e1bdc88a8a2c0d08812de325dd97ddedc6013a",
+      "sourceLastModified": "2026-01-16",
+      "sourcePublishedAt": null
+    }
+  ],
+  "interpretationLimits": [
+    "importo_lotto è il valore del lotto dichiarato nella BDNCP; non è un prezzo unitario né l'importo finale",
+    "un addensamento vicino a una soglia è un segnale statistico, non prova un frazionamento",
+    "la scelta della procedura non dimostra da sola spreco, illecito o cattiva qualità",
+    "questi file non bastano per misurare la concentrazione per fornitore"
+  ],
+  "population": {
+    "cigsWithoutPrevalentCpv": 2,
+    "inactiveRecordsExcluded": 0,
+    "nonPositiveAmountRecords": 8249,
+    "rawRows": 1475581,
+    "records": 1453918,
+    "servicesAndSupplies": 1290218,
+    "uniqueCigs": 1453918
+  },
+  "procedureChoice": {
+    "allLabels": {
+      "ACCORDO QUADRO": 7,
+      "AFFIDAMENTO DIRETTO": 1192083,
+      "AFFIDAMENTO DIRETTO A SOCIETA' IN HOUSE": 13201,
+      "AFFIDAMENTO DIRETTO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE": 15269,
+      "ALTRA PROCEDURA A FASE UNICA": 22643,
+      "ALTRA PROCEDURA A PIU' FASI": 2555,
+      "CONFRONTO COMPETITIVO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE": 168,
+      "DIALOGO COMPETITIVO": 112,
+      "ND": 3,
+      "ND AD2_25": 30,
+      "ND AD2_26": 4,
+      "ND AD2_28": 4,
+      "ND P1_15_2": 74,
+      "ND P1_19": 508,
+      "ND P1_20": 92,
+      "ND P1_21": 8,
+      "ND P2_16": 11,
+      "ND P2_18": 10,
+      "ND P2_19": 648,
+      "ND P3_1": 304,
+      "ND P4_1": 17,
+      "ND P4_4": 2,
+      "ND P4_5": 25,
+      "ND P7_1_3": 10,
+      "ND P7_2": 146,
+      "PARTERNARIATO PER L’INNOVAZIONE": 6,
+      "PROCEDURA APERTA": 72098,
+      "PROCEDURA DI GARA": 7269,
+      "PROCEDURA NEGOZIATA CON PREVIA INDIZIONE DI GARA (SETTORI SPECIALI)": 8881,
+      "PROCEDURA NEGOZIATA PER AFFIDAMENTI SOTTO SOGLIA": 3139,
+      "PROCEDURA NEGOZIATA SENZA PREVIA PUBBLICAZIONE": 88185,
+      "PROCEDURA RISTRETTA": 26406
+    },
+    "allLabelsAmountEuroCents": {
+      "ACCORDO QUADRO": 115481742,
+      "AFFIDAMENTO DIRETTO": 23938909526365,
+      "AFFIDAMENTO DIRETTO A SOCIETA' IN HOUSE": 4296810141758,
+      "AFFIDAMENTO DIRETTO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE": 484750610773,
+      "ALTRA PROCEDURA A FASE UNICA": 442281914784,
+      "ALTRA PROCEDURA A PIU' FASI": 479197599483,
+      "CONFRONTO COMPETITIVO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE": 12695232698,
+      "DIALOGO COMPETITIVO": 8968030934,
+      "ND": 1184108581,
+      "ND AD2_25": 2690202709,
+      "ND AD2_26": 17601207,
+      "ND AD2_28": 5492067,
+      "ND P1_15_2": 0,
+      "ND P1_19": 2293015192190,
+      "ND P1_20": 41290991231,
+      "ND P1_21": 10881524494,
+      "ND P2_16": 413486022,
+      "ND P2_18": 241137554,
+      "ND P2_19": 48559477306,
+      "ND P3_1": 1597671897,
+      "ND P4_1": 55623456646,
+      "ND P4_4": 3827423600,
+      "ND P4_5": 71695580662,
+      "ND P7_1_3": 191776970,
+      "ND P7_2": 3104269570,
+      "PARTERNARIATO PER L’INNOVAZIONE": 426743597,
+      "PROCEDURA APERTA": 17682184472338,
+      "PROCEDURA DI GARA": 178563850957,
+      "PROCEDURA NEGOZIATA CON PREVIA INDIZIONE DI GARA (SETTORI SPECIALI)": 1440586333468,
+      "PROCEDURA NEGOZIATA PER AFFIDAMENTI SOTTO SOGLIA": 289271781400,
+      "PROCEDURA NEGOZIATA SENZA PREVIA PUBBLICAZIONE": 3771463562428,
+      "PROCEDURA RISTRETTA": 6837101224268
+    },
+    "amountMeaning": "Somma di importo_lotto > 0 per etichetta; i CIG con importo non positivo restano nel conteggio ma non nel totale euro.",
+    "directAward": {
+      "amountEuroCents": 23938909526365,
+      "amountSharePercent": 38.365072,
+      "records": 1192083,
+      "sharePercent": 81.991075
+    },
+    "directAwardFamily": {
+      "amountEuroCents": 28720470278896,
+      "amountSharePercent": 46.028116,
+      "meaning": "Etichette che iniziano con AFFIDAMENTO DIRETTO; non sono tutte equivalenti.",
+      "records": 1220553,
+      "sharePercent": 83.949232
+    },
+    "openProcedure": {
+      "amountEuroCents": 17682184472338,
+      "amountSharePercent": 28.337894,
+      "records": 72098,
+      "sharePercent": 4.958877
+    },
+    "totalPositiveAmountEuroCents": 62397665899699
+  },
+  "referenceYear": 2025,
+  "schemaVersion": 1,
+  "servicesAndSuppliesBelow140000": {
+    "directAwardFamilyRecords": 1026701,
+    "directAwardFamilySharePercent": 88.513285,
+    "directAwardRecords": 1005189,
+    "directAwardSharePercent": 86.658706,
+    "records": 1159940
+  },
+  "thresholdBand135000To140000": {
+    "directAwardRecords": 15697,
+    "interval": "[135000, 140000)",
+    "servicesAndSuppliesRecords": 18955,
+    "strictContractDefinition": "SERVIZI o FORNITURE; AFFIDAMENTO DIRETTO; CONTRATTO D'APPALTO; importo_lotto tra 135000 incluso e 140000 escluso",
+    "strictContractRecords": 13393
+  }
+}

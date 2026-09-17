@@ -1,0 +1,48 @@
+name: Public debt snapshot
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-debt-snapshot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    name: refresh
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    environment: source-operations
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Refresh official inputs atomically
+        run: python3 scripts/etl/public_debt_snapshot.py
+      - name: Validate generated contract
+        run: |
+          python3 -m unittest tests/etl/test_public_debt_snapshot.py
+          python3 scripts/etl/public_debt_snapshot.py --check
+          node --experimental-strip-types --test tests/public-debt-contract.test.mjs
+          git diff --check
+      - name: Publish generated data
+        uses: ./.github/actions/publish-data-refresh
+        with:
+          artifact-id: public-debt
+          app-client-id: ${{ vars.DATA_BOT_APP_CLIENT_ID }}
+          app-private-key: ${{ secrets.DATA_BOT_APP_PRIVATE_KEY }}

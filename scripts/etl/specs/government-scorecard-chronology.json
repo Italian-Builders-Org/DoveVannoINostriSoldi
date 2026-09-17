@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "registryVersion": "quirinale-government-oaths-v1",
+  "verifiedAt": "2026-09-01",
+  "asOfDate": "2026-08-29",
+  "eventDefinition": "Giuramento del Presidente del Consiglio e dei ministri nelle mani del Presidente della Repubblica",
+  "constitutionalSourceUrl": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-i/articolo-93",
+  "governments": [
+    {
+      "id": "dini-i",
+      "name": "Dini I",
+      "startDate": "1995-01-17",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Dini 17 gennaio 1995'"
+    },
+    {
+      "id": "prodi-i",
+      "name": "Prodi I",
+      "startDate": "1996-05-18",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Prodi - 1 18 maggio 1996'"
+    },
+    {
+      "id": "dalema-i",
+      "name": "D'Alema I",
+      "startDate": "1998-10-21",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'D'Alema - 1 21 ottobre 1998'"
+    },
+    {
+      "id": "dalema-ii",
+      "name": "D'Alema II",
+      "startDate": "1999-12-22",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'D'Alema - 2 22 dicembre 1999'"
+    },
+    {
+      "id": "amato-ii",
+      "name": "Amato II",
+      "startDate": "2000-04-26",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Amato - 2 26 aprile 2000'"
+    },
+    {
+      "id": "berlusconi-ii",
+      "name": "Berlusconi II",
+      "startDate": "2001-06-11",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Berlusconi - 2 11 giugno 2001'"
+    },
+    {
+      "id": "berlusconi-iii",
+      "name": "Berlusconi III",
+      "startDate": "2005-04-23",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Berlusconi - 3 23 aprile 2005'"
+    },
+    {
+      "id": "prodi-ii",
+      "name": "Prodi II",
+      "startDate": "2006-05-17",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Prodi - 2 17 maggio 2006'"
+    },
+    {
+      "id": "berlusconi-iv",
+      "name": "Berlusconi IV",
+      "startDate": "2008-05-08",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Berlusconi - 4 8 maggio 2008'"
+    },
+    {
+      "id": "monti-i",
+      "name": "Monti I",
+      "startDate": "2011-11-16",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Monti 16 novembre 2011'"
+    },
+    {
+      "id": "letta-i",
+      "name": "Letta I",
+      "startDate": "2013-04-28",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Letta 28 aprile 2013'"
+    },
+    {
+      "id": "renzi-i",
+      "name": "Renzi I",
+      "startDate": "2014-02-22",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://archivio.quirinale.it/comunicati/Quaderno-comunicati-16-marzo.pdf",
+      "sourceLocator": "PDF page index 143; printed page 144; table 'Presidenza Governo Data del giuramento'; row 'Renzi 22 febbraio 2014'"
+    },
+    {
+      "id": "gentiloni-i",
+      "name": "Gentiloni I",
+      "startDate": "2016-12-12",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+      "sourceLocator": "Section 'Nomine di Presidenti del Consiglio'; row 'Governo Gentiloni | 11 dicembre 2016 | 12 dicembre 2016'"
+    },
+    {
+      "id": "conte-i",
+      "name": "Conte I",
+      "startDate": "2018-06-01",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+      "sourceLocator": "Section 'Nomine di Presidenti del Consiglio'; first Conte row 'Governo Conte | 31 maggio 2018 | 1 giugno 2018'"
+    },
+    {
+      "id": "conte-ii",
+      "name": "Conte II",
+      "startDate": "2019-09-05",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+      "sourceLocator": "Section 'Nomine di Presidenti del Consiglio'; second Conte row 'Governo Conte | 4 settembre 2019 | 5 settembre 2019'"
+    },
+    {
+      "id": "draghi-i",
+      "name": "Draghi I",
+      "startDate": "2021-02-13",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
+      "sourceLocator": "Section 'Nomine di Presidenti del Consiglio'; row 'Governo Draghi | 12 febbraio 2021 | 13 febbraio 2021'"
+    },
+    {
+      "id": "meloni-i",
+      "name": "Meloni I",
+      "startDate": "2022-10-22",
+      "sourceOwner": "Presidenza della Repubblica",
+      "sourceUrl": "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
+      "sourceLocator": "Page title 'Cerimonia di giuramento del Governo Meloni'; dateline 'Roma, 22/10/2022 (II mandato)'"
+    }
+  ]
+}

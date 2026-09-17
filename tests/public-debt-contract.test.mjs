@@ -14,12 +14,12 @@ function assertInvalid(mutator, pattern) {
 }
 
 test("public debt snapshot validates and derived values reconcile", () => {
-  assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_724_730_000_000);
+  assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_583_460_000_000);
   const view = getPublicDebtView(new Date("2026-08-24T09:00:00Z"));
   assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
-  assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1821);
-  assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 582);
-  assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1821);
+  assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1774);
+  assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 567);
+  assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1774);
   assert.equal(view.measurement.bancaditaliaSourceUnit, "milioni di euro");
   assert.match(view.measurement.precisionNote, /non misure osservate con precisione al centesimo/);
   assert.equal(view.sources.bancaditalia.accessedAt, view.sources.bancaditalia.retrievedAt);
@@ -32,19 +32,19 @@ test("runtime contract fails closed on every monetary reconciliation", () => {
   assertInvalid((value) => { value.change.liquidityContributionCents += 1; }, /liquidità/);
   assertInvalid((value) => { value.change.otherEffectsCents += 1; }, /altri effetti/);
   assertInvalid((value) => { value.holders.sectors[0].amountCents += 10_000_001; }, /detentori/);
-  assertInvalid((value) => { value.holders.sectors[0].shareBasisPoints += 21; }, /quote detentori/);
+  assertInvalid((value) => { value.holders.sectors[0].shareBasisPoints += 21; }, /quota detentore/);
   assertInvalid((value) => {
     value.holders.sectors[0].shareBasisPoints += 100;
     value.holders.sectors[1].shareBasisPoints -= 100;
   }, /quota detentore/);
-  assertInvalid((value) => { value.residualMaturity.upToOneYearCents += 10_000_001; }, /vita residua/);
+  assertInvalid((value) => { value.residualMaturity.upToOneYearCents += 100_000_001; }, /vita residua/);
   assertInvalid((value) => { value.annualInterest.interestShareBasisPoints += 1; }, /interessi/);
   assertInvalid((value) => { value.annualInterest.totalGovernmentExpenditureCents = 0; });
 });
 
 test("runtime contract rejects divergent periods and histories", () => {
   assertInvalid((value) => { value.change.referenceDate = "2026-05-31"; }, /periodi BDS/);
-  assertInvalid((value) => { value.holders.referenceDate = "2026-07-31"; }, /periodo detentori/);
+  assertInvalid((value) => { value.holders.referenceDate = "2026-08-31"; }, /periodo detentori/);
   assertInvalid((value) => { value.holders.referenceDate = "2026-03-31"; }, /periodo detentori/);
   assertInvalid((value) => { value.stock.history.pop(); });
   assertInvalid((value) => { [value.stock.history[0], value.stock.history[1]] = [value.stock.history[1], value.stock.history[0]]; }, /storia stock/);

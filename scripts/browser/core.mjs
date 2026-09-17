@@ -1357,7 +1357,7 @@ try {
         assertTextMatches(text, /Redditi e imposte dei residenti/i, label);
         assertTextMatches(text, /Spesa e servizi a confronto/i, label);
         assertTextMatches(text, /Progetti PNRR per asili e prima infanzia/i, label);
-        assertTextMatches(text, /Da gennaio ad agosto 2026/i, label);
+        assertTextMatches(text, /Da gennaio a settembre 2026/i, label);
         assertTextMatches(text, /Dati parziali/i, label);
         assertTextMatches(text, /Per cosa ha pagato il Comune/i, label);
         assertTextMatches(text, /Costi di funzionamento quotidiano/i, label);
@@ -1385,7 +1385,7 @@ try {
           label: element.textContent,
         }));
         assert.notEqual(summaryPresentation.background, "rgba(0, 0, 0, 0)");
-        assert.match(summaryPresentation.label, /Per abitante\s*1\.402 €/i);
+        assert.match(summaryPresentation.label, /Per abitante\s*1\.517 €/i);
 
         const trendBars = await page.$$eval("[data-siope-history-chart] > li", (rows) => rows.map((row) => ({
           height: row.querySelector("[aria-hidden='true'] > span")?.style.getPropertyValue("--bar-height"),
@@ -1418,7 +1418,7 @@ try {
         await page.keyboard.press("Enter");
         assert.equal(await historySummary.evaluate((element) => element.parentElement?.open), true);
         const historyText = await page.$eval("details[data-payment-history]", (element) => element.innerText);
-        assert.match(historyText, /Da gennaio ad agosto · dati parziali/i);
+        assert.match(historyText, /Da gennaio a settembre · dati parziali/i);
         assert.match(historyText, /Anno completo/i);
 
         const titleSummary = await page.$("details[data-siope-titles] summary");
@@ -1454,7 +1454,7 @@ try {
           "details[data-municipality-information]",
           (element) => element.innerText,
         );
-        assert.match(informationText, /Dati verificati al.*25 agosto 2026/is);
+        assert.match(informationText, /Dati verificati al.*17 settembre 2026/is);
         assert.match(informationText, /Uffici non disponibili in questa scheda/i);
         assert.match(informationText, /Indice PA · Enti/i);
         assert.deepEqual(await page.evaluate(() => performance.getEntriesByType("resource")

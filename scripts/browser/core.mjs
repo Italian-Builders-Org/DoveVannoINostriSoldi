@@ -1454,7 +1454,7 @@ try {
           "details[data-municipality-information]",
           (element) => element.innerText,
         );
-        assert.match(informationText, /Dati verificati al.*25 agosto 2026/is);
+        assert.match(informationText, /Dati verificati al.*17 settembre 2026/is);
         assert.match(informationText, /Uffici non disponibili in questa scheda/i);
         assert.match(informationText, /Indice PA · Enti/i);
         assert.deepEqual(await page.evaluate(() => performance.getEntriesByType("resource")

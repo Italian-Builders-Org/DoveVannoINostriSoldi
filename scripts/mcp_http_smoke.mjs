@@ -627,6 +627,13 @@ assert.equal(modernData.pagination.returned, 20);
 
 // Nessuna chiamata MCP per il 2015: lo smoke contrattuale resta a 30 POST esatti,
 // quanto consente il limitatore. La parità API/MCP è coperta dai test Node.
+const fc30ApiResponse = await fetch(new URL("/api/spese/opencivitas-2016?codice=058091&anno=2016", baseUrl));
+assert.equal(fc30ApiResponse.status, 200);
+const fc30ApiData = JSON.parse(await responseText(fc30ApiResponse, "FC30 API"));
+assert.equal(fc30ApiData.referenceYear, 2016);
+assert.equal(fc30ApiData.family, "FC30TOT");
+assert.equal(fc30ApiData.coverage.municipalities, 6647);
+
 const fc20ApiResponse = await fetch(new URL("/api/spese/opencivitas-2015?codice=058091&anno=2015", baseUrl));
 assert.equal(fc20ApiResponse.status, 200);
 const fc20ApiData = JSON.parse(await responseText(fc20ApiResponse, "FC20 API"));

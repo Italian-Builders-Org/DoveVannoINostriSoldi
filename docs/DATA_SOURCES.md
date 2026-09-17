@@ -735,6 +735,15 @@ totale nazionale della spesa storica: la differenza aggregata è nulla per
 costruzione e non va letta come risultato. Fonte, lock e perimetro sono
 documentati in [OpenCivitas 2015](OPENCIVITAS_2015.md).
 
+È integrato anche FC30TOT 2016 versione 1 (6.647 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2016` e MCP `opencivitas_fabbisogni_2016`.
+Come il 2015, il rilascio 2016 pubblica il CSV in cp1252 con il punto come
+separatore decimale e riproporziona il fabbisogno standard sul totale nazionale
+della spesa storica: la differenza aggregata è nulla per costruzione. Fonte,
+lock e perimetro sono documentati in [OpenCivitas 2016](OPENCIVITAS_2016.md).
+Con questa annualità la serie ufficiale è coperta per intero: 2015, 2016, 2017,
+2018, 2019, 2021 e 2022; il 2020 non esiste nell'indice della fonte.
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).

@@ -300,6 +300,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_fabbisogni_2016": {
+      const { queryOpenCivitas2016 } = await import("@/lib/opencivitas-2016-snapshot");
+      if (query.year !== undefined && query.year !== 2016) {
+        throw new Error("OpenCivitas FC30TOT è disponibile per il 2016. Le altre annualità restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2016({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2017": {
       const { queryOpenCivitas2017 } = await import("@/lib/opencivitas-2017-snapshot");
       if (query.year !== undefined && query.year !== 2017) {

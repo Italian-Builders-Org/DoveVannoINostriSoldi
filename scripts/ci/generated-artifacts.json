@@ -669,6 +669,32 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2015.source.json"
     },
     {
+      "id": "opencivitas-2016",
+      "owner": "OpenCivitas municipal 2016 FC30TOT",
+      "files": [
+        "src/data/generated/opencivitas-2016.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2016_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2016_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2016-contract.test.mjs",
+        "tests/opencivitas-2016-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2016_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC30TOT 2016 (versione 1) vincolati per byte/SHA-256 nella spec e in issue 537. Il CSV e' cp1252 con punto decimale, dichiarati nel lock e non dedotti. Contratto distinto dalle altre annualita'. Join di 6647 Comuni RSO; i 30 aggregati sovracomunali sono esclusi. Il fabbisogno riproporziona sul totale nazionale della spesa storica: l'invariante e' vincolata nella spec, la differenza aggregata non e' un risultato. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2016.source.json"
+    },
+    {
       "id": "opencivitas-2017",
       "owner": "OpenCivitas municipal 2017 FC40TOT",
       "files": [

@@ -77,6 +77,7 @@ const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.meta.json",
 ];
 const openCivitas2015RuntimeFiles = ["src/data/generated/opencivitas-2015.json"];
+const openCivitas2016RuntimeFiles = ["src/data/generated/opencivitas-2016.json"];
 const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
 const naspiRuntimeFiles = ["src/data/generated/inps-naspi-2018-2022.data.json"];
 const assegnoUnicoRuntimeFiles = ["src/data/generated/inps-assegno-unico-2022-2024.data.json"];
@@ -172,6 +173,7 @@ const nextConfig: NextConfig = {
     "/spese/pensioni": pensionsRuntimeFiles,
     "/api/spese/pensioni": pensionsRuntimeFiles,
     "/api/spese/opencivitas-2015": openCivitas2015RuntimeFiles,
+    "/api/spese/opencivitas-2016": openCivitas2016RuntimeFiles,
     "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
 
     "/appalti/operatori": [
@@ -236,6 +238,7 @@ const nextConfig: NextConfig = {
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/mcp": [
@@ -260,6 +263,7 @@ const nextConfig: NextConfig = {
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/api/mcp": [
@@ -284,6 +288,7 @@ const nextConfig: NextConfig = {
       ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
       ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
   },

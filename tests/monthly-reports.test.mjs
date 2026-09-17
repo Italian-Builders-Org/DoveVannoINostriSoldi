@@ -38,7 +38,7 @@ const provenance = {
 function generatedDraft() {
   return buildMonthlyReportDraft({
     month: "2026-08",
-    cutoff: "2026-09-05",
+    cutoff: "2026-09-17",
     snapshots: {
       companies: structuredClone(companySnapshot),
       debt: structuredClone(debtSnapshot),
@@ -59,7 +59,7 @@ function publishedReport(issueMonth = "2026-08") {
     ...body,
     issueMonth,
     status: "published",
-    publication: { publishedOn: "2026-09-10", dataCutoff: "2026-09-05" },
+    publication: { publishedOn: "2026-09-17", dataCutoff: "2026-09-17" },
     lead: section("La storia del mese"),
     rubrics: {
       numbers: section("Numeri da ricordare"),
@@ -82,7 +82,7 @@ test("report:new rifiuta mesi e cutoff non semantici", () => {
 test("il generatore congela i fatti, le due figure e le venti regioni", () => {
   const companies = structuredClone(companySnapshot);
   const draft = buildMonthlyReportDraft({
-    month: "2026-08", cutoff: "2026-09-05",
+    month: "2026-08", cutoff: "2026-09-17",
     snapshots: { companies, debt: structuredClone(debtSnapshot), municipal: structuredClone(municipalSnapshot) },
     provenance,
   });
@@ -90,9 +90,10 @@ test("il generatore congela i fatti, le due figure e le venti regioni", () => {
   assert.equal(draft.figures[0].rows.length, 16);
   assert.equal(draft.figures[1].rows.length, 20);
   assert.equal(draft.facts.find((fact) => fact.id === "active-stock-latest").value.value, 5_022_940);
-  assert.equal(draft.facts.find((fact) => fact.id === "public-debt-latest").value.cents, 320_724_730_000_000);
-  assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd").referencePeriod.completeness, "partial");
-  assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd").referencePeriod.to, "2026-08-25");
+  assert.equal(draft.facts.find((fact) => fact.id === "public-debt-latest").value.cents, 320_583_460_000_000);
+  // Lo snapshot SIOPE 2026 ora arriva a settembre: fuori dal mese raccontato (agosto),
+  // quindi i pagamenti comunali non entrano nella bozza di agosto.
+  assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd"), undefined);
   const frozen = JSON.stringify(draft.figures);
   companies.observations[0].value = 999_999_999;
   assert.equal(JSON.stringify(draft.figures), frozen);
@@ -176,7 +177,7 @@ test("il contratto pubblicato accetta solo capsule complete e verificabili", () 
   }
 
   const lateEvidence = structuredClone(valid);
-  lateEvidence.evidence[0].checkedOn = "2026-09-06";
+  lateEvidence.evidence[0].checkedOn = "2026-09-18";
   assert.throws(() => validatePublishedMonthlyReport(lateEvidence), /dopo il cutoff/);
 
   const missingCaveat = structuredClone(valid);

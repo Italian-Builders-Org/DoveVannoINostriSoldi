@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-08-25T03:29:59+00:00",
+  "generatedAt": "2026-09-17T13:11:53+00:00",
   "scope": "municipalities",
   "year": 2025,
   "latestMonth": 12,
@@ -17,8 +17,8 @@
     "withoutRegion": 4,
     "paymentsWithoutRegion": 58230342.67,
     "unmatchedToIpaRegion": 10,
-    "movementRows": 8714275,
-    "includedMovementRows": 7069308,
+    "movementRows": 8714308,
+    "includedMovementRows": 7069338,
     "malformedRows": 0,
     "withPopulation": 7893,
     "withoutPopulation": 3
@@ -283,22 +283,22 @@
     {
       "code": "1",
       "label": "Spese correnti",
-      "value": 64280787192.01
+      "value": 64280902991.19
     },
     {
       "code": "2",
       "label": "Spese in conto capitale",
-      "value": 25017833369.24
+      "value": 25017833469.24
     },
     {
       "code": "7",
       "label": "Uscite per conto terzi e partite di giro",
-      "value": 17998704205.28
+      "value": 17998731161.98
     },
     {
       "code": "4",
       "label": "Rimborso prestiti",
-      "value": 2842277712.29
+      "value": 2842314552.97
     },
     {
       "code": "5",
@@ -313,7 +313,7 @@
     {
       "code": "0",
       "label": "Pagamenti da regolarizzare",
-      "value": 15860081.1
+      "value": 15680384.54
     }
   ],
   "topMunicipalities": [
@@ -3053,8 +3053,8 @@
       "paymentsWithPopulationWithoutRegion": 58230342.67,
       "titlePaymentsWithPopulationWithoutRegion": 18963272.34
     },
-    "nationalShareAll": 0.56288963,
-    "nationalShareCovered": 0.56290052,
+    "nationalShareAll": 0.56289065,
+    "nationalShareCovered": 0.56290154,
     "perCapita": {
       "municipalityWeighted": {
         "p10": 629.7,
@@ -3067,7 +3067,7 @@
         "p10": 628.75,
         "p25": 747.93,
         "p50": 949.34,
-        "p75": 1283.76,
+        "p75": 1284.02,
         "p90": 1987.65
       }
     },
@@ -3077,9 +3077,9 @@
         "label": "Meno di 1.000",
         "municipalities": 2017,
         "population": 1080429,
-        "titleAmount": 1648576117.49,
+        "titleAmount": 1648581190.96,
         "totalAmount": 4325616160.22,
-        "share": 0.38111937,
+        "share": 0.38112055,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 825.44,
@@ -3102,9 +3102,9 @@
         "label": "1.000–4.999",
         "municipalities": 3500,
         "population": 8588650,
-        "titleAmount": 8773279999.08,
+        "titleAmount": 8773298737.55,
         "totalAmount": 18289519071.87,
-        "share": 0.47968894,
+        "share": 0.47968996,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 626.74,
@@ -3127,9 +3127,9 @@
         "label": "5.000–19.999",
         "municipalities": 1864,
         "population": 17829728,
-        "titleAmount": 15546973821.94,
+        "titleAmount": 15547065809.18,
         "totalAmount": 28357051008.56,
-        "share": 0.54825778,
+        "share": 0.54826102,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 565.62,
@@ -3350,9 +3350,9 @@
         "region": "Campania",
         "municipalities": 549,
         "population": 5576133,
-        "titleAmount": 4966468241.91,
+        "titleAmount": 4966561019.36,
         "totalAmount": 9712319783.45,
-        "share": 0.51135757,
+        "share": 0.51136712,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 558.59,
@@ -3470,9 +3470,9 @@
         "region": "Lombardia",
         "municipalities": 1501,
         "population": 10011929,
-        "titleAmount": 10536715828.37,
+        "titleAmount": 10536714913.37,
         "totalAmount": 16846624712.21,
-        "share": 0.62544967,
+        "share": 0.62544961,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 610.64,
@@ -3590,9 +3590,9 @@
         "region": "Sardegna",
         "municipalities": 376,
         "population": 1568210,
-        "titleAmount": 2411010202.97,
+        "titleAmount": 2411028941.44,
         "totalAmount": 3903038507.19,
-        "share": 0.61772647,
+        "share": 0.61773127,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 1218.32,
@@ -3614,9 +3614,9 @@
         "region": "Sicilia",
         "municipalities": 391,
         "population": 4797359,
-        "titleAmount": 4908757674.07,
+        "titleAmount": 4908757798.86,
         "totalAmount": 9790764994.59,
-        "share": 0.5013661,
+        "share": 0.50136611,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 716.23,
@@ -3734,9 +3734,9 @@
         "region": "Veneto",
         "municipalities": 558,
         "population": 4846305,
-        "titleAmount": 4321273046.94,
+        "titleAmount": 4321278120.41,
         "totalAmount": 7303260229.85,
-        "share": 0.59169096,
+        "share": 0.59169165,
         "perCapita": {
           "municipalityWeighted": {
             "p10": 481.55,
@@ -3759,16 +3759,16 @@
       "siopeMovementsUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
       "siopeRegistryUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
       "ipaUrl": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
-      "siopeMovementsLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
-      "siopeRegistryLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
-      "ipaLastModified": "Tue, 25 Aug 2026 03:14:28 GMT",
-      "siopeMovementsEtag": "\"48fea17-6597f0aa86235\"",
-      "siopeRegistryEtag": "\"d17de-6597f0a9fafa7\"",
-      "ipaEtag": "\"1787627668.480965-8585750-185014459\"",
-      "siopeMovementsSha256": "074c7b382543df2212a6603d4cbfb2c9696f9ff4f92f607da2d4de75c1324007",
-      "siopeRegistrySha256": "bf5ec3331ce62be671d5d2789e22e18009ab48526cec30f9ae31e649195244c3",
-      "ipaSha256": "b5380d5a461177cfe0709259bf6ac485d868203a077a9516eaa3cac95324d7bc",
-      "observedAt": "2026-08-25T03:29:59+00:00"
+      "siopeMovementsLastModified": "Thu, 10 Sep 2026 18:51:59 GMT",
+      "siopeRegistryLastModified": "Thu, 10 Sep 2026 18:51:59 GMT",
+      "ipaLastModified": "Thu, 10 Sep 2026 03:18:39 GMT",
+      "siopeMovementsEtag": "\"492aa36-65b25767804c5\"",
+      "siopeRegistryEtag": "\"d25b5-65b25766cf8a9\"",
+      "ipaEtag": "\"1789010319.5838697-8581006-185014459\"",
+      "siopeMovementsSha256": "800d627f2ef77cf8bbf5b50d7c7ecb859c3e065560419a7b7d87d085a9e0e58d",
+      "siopeRegistrySha256": "4a777ae31b37040883603a84ba23386b2916c78f2b335b8d319dab035cb3bb43",
+      "ipaSha256": "77a09cc5497925eed96f3ca93c629b6721a3dc2b939aa2f6802545e03a2d7afb",
+      "observedAt": "2026-09-17T13:11:53+00:00"
     }
   },
   "source": {
@@ -3776,16 +3776,16 @@
     "siopeMovementsUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_USCITE.2025.zip",
     "siopeRegistryUrl": "https://www.siope.it/documenti/siope2/open/last/SIOPE_ANAGRAFICHE.zip",
     "ipaUrl": "https://indicepa.gov.it/ipa-dati/dataset/502ff370-1b2c-4310-94c7-f39ceb7500e3/resource/3ed63523-ff9c-41f6-a6fe-980f3d9e501f/download/amministrazioni.txt",
-    "siopeMovementsLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
-    "siopeRegistryLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
-    "ipaLastModified": "Tue, 25 Aug 2026 03:14:28 GMT",
-    "siopeMovementsEtag": "\"48fea17-6597f0aa86235\"",
-    "siopeRegistryEtag": "\"d17de-6597f0a9fafa7\"",
-    "ipaEtag": "\"1787627668.480965-8585750-185014459\"",
-    "siopeMovementsSha256": "074c7b382543df2212a6603d4cbfb2c9696f9ff4f92f607da2d4de75c1324007",
-    "siopeRegistrySha256": "bf5ec3331ce62be671d5d2789e22e18009ab48526cec30f9ae31e649195244c3",
-    "ipaSha256": "b5380d5a461177cfe0709259bf6ac485d868203a077a9516eaa3cac95324d7bc",
-    "observedAt": "2026-08-25T03:29:59+00:00"
+    "observedAt": "2026-09-17T13:11:53+00:00",
+    "siopeMovementsLastModified": "Thu, 10 Sep 2026 18:51:59 GMT",
+    "siopeMovementsEtag": "\"492aa36-65b25767804c5\"",
+    "siopeMovementsSha256": "800d627f2ef77cf8bbf5b50d7c7ecb859c3e065560419a7b7d87d085a9e0e58d",
+    "siopeRegistryLastModified": "Thu, 10 Sep 2026 18:51:59 GMT",
+    "siopeRegistryEtag": "\"d25b5-65b25766cf8a9\"",
+    "siopeRegistrySha256": "4a777ae31b37040883603a84ba23386b2916c78f2b335b8d319dab035cb3bb43",
+    "ipaLastModified": "Thu, 10 Sep 2026 03:18:39 GMT",
+    "ipaEtag": "\"1789010319.5838697-8581006-185014459\"",
+    "ipaSha256": "77a09cc5497925eed96f3ca93c629b6721a3dc2b939aa2f6802545e03a2d7afb"
   },
   "methodology": {
     "measure": "pagamenti di cassa SIOPE dei Comuni",
@@ -3793,7 +3793,7 @@
     "territorialJoin": "codice fiscale SIOPE → Regione della sede legale in IPA; Provincia pubblicata nell'anagrafica enti SIOPE",
     "populationSource": "popolazione riportata nell'anagrafica enti SIOPE",
     "populationReference": "data di riferimento non dichiarata dalla fonte",
-    "populationSourceLastModified": "Thu, 20 Aug 2026 18:53:54 GMT",
+    "populationSourceLastModified": "Thu, 10 Sep 2026 18:51:59 GMT",
     "perCapitaCoverage": "numeratore e denominatore includono soltanto i Comuni con popolazione valida",
     "warning": "Il totale regionale rappresenta i pagamenti dei Comuni con sede nella regione; non misura tutta la spesa pubblica effettuata fisicamente nel territorio. Il valore pro capite usa la popolazione dell'anagrafica SIOPE: turismo, pendolarismo, ricostruzioni e servizi sovracomunali possono alterare il confronto."
   }

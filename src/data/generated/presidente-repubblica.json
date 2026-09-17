@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "office": {
+    "id": "presidente-della-repubblica",
+    "role": "Presidente della Repubblica",
+    "institutionLabel": "Presidenza della Repubblica",
+    "officialPage": "https://www.quirinale.it/pagine/il-presidente",
+    "since": "2015-02-03",
+    "secondTermSince": "2022-02-03",
+    "electedOn": "2015-01-31",
+    "reelectedOn": "2022-01-29"
+  },
+  "holder": {
+    "personaId": "23870",
+    "uri": "http://dati.camera.it/ocd/persona.rdf/p23870",
+    "firstName": "Sergio",
+    "lastName": "Mattarella",
+    "displayName": "Sergio Mattarella",
+    "photoUrl": "https://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=23870&legislatura=15",
+    "photoCredit": "Camera dei deputati — archivio ufficiale dei deputati",
+    "officialPage": "https://www.quirinale.it/pagine/il-presidente",
+    "biography": "Presidente della Repubblica dal 3 febbraio 2015, nel secondo mandato dal 3 febbraio 2022. Capo dello Stato e Presidente del Consiglio superiore della magistratura; nomina il Presidente del Consiglio dei ministri e i ministri, promulga le leggi e può sciogliere le Camere. Prima dell'elezione al Quirinale è stato deputato per sette legislature, ministro e giudice della Corte costituzionale.",
+    "sameAs": [
+      "http://dbpedia.org/resource/Sergio_Mattarella",
+      "http://it.dbpedia.org/resource/Sergio_Mattarella",
+      "http://rdf.freebase.com/ns/m.03cp19r",
+      "http://wikidata.org/entity/Q3956186",
+      "http://yago-knowledge.org/resource/Sergio_Mattarella"
+    ]
+  },
+  "provenance": {
+    "identity": "official-sparql",
+    "identityEndpoint": "https://dati.camera.it/sparql",
+    "office": "declared-institutional-fact",
+    "officeLandingUrl": "https://www.quirinale.it/pagine/il-presidente",
+    "gap": "La titolarità della carica è dichiarata nella spec: quirinale.it risponde 403 a ogni richiesta programmatica e non pubblica un elenco machine-readable da validare."
+  },
+  "source": {
+    "owner": "Presidenza della Repubblica (carica) e Camera dei deputati (identità e ritratto)",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://www.quirinale.it/pagine/il-presidente",
+    "license": "CC BY 4.0 (dati.camera.it); contenuti quirinale.it riutilizzabili citando la fonte",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "observedDate": "2026-09-17",
+    "acquiredAt": "2026-09-17T19:09:42+00:00",
+    "responses": {
+      "identity": {
+        "bytes": 2914,
+        "sha256": "76ad7a8f0b2b2efb0722b19fb13b2d3f57c2f9e6c07491fc2f6c9124c3b5898a"
+      }
+    },
+    "cadence": "revisione manuale a ogni cambio di carica"
+  },
+  "caveats": [
+    "La titolarità della carica è dichiarata in questa spec e verificabile sulla pagina ufficiale del Quirinale: non è acquisita automaticamente.",
+    "Nome, identificativo persona e ritratto provengono dall'archivio ufficiale della Camera dei deputati, dove il Presidente compare come ex deputato: il ritratto non è una fotografia attuale del Quirinale.",
+    "Le date di elezione e di giuramento sono dichiarate: qualsiasi variazione della carica richiede una nuova revisione della spec."
+  ]
+}

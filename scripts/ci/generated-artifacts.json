@@ -2335,7 +2335,7 @@
     },
     {
       "id": "politici-camera-xix",
-      "owner": "Camera dei deputati — deputati e gruppi parlamentari XIX legislatura",
+      "owner": "Camera dei deputati — deputati, gruppi, organi e uffici di presidenza XIX legislatura",
       "files": [
         "src/data/generated/politici-camera-xix.json"
       ],
@@ -2359,11 +2359,11 @@
       },
       "sourceSpec": "scripts/etl/specs/politici-camera-xix.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Snapshot SPARQL ufficiale dati.camera.it (OCD) pinnato per byte/SHA-256 della risposta. Include solo deputati con adesione aperta, espone capienza e vacanze senza reinserire ex membri. --check offline riconcilia coverage, memberCount e URI; --write richiede rete."
+      "trustModel": "Quattro sorgenti ufficiali pinnate separatamente: tre risposte SPARQL di dati.camera.it (roster con gruppo, incarichi di gruppo, appartenenze agli organi) e il digest aggregato delle schede personali su camera.it, da cui arrivano anagrafica, circoscrizione, collegio, coalizione, note professionali e uffici parlamentari. Include solo adesioni aperte, espone capienza e seggi vacanti senza reinserire ex membri, richiede foto ufficiale e scheda per ogni deputato e verifica che il Presidente della Camera sia unico. --check offline riconcilia coverage, memberCount, organi e URI; --write richiede rete."
     },
     {
       "id": "politici-senato-xix",
-      "owner": "Senato della Repubblica — senatori in carica e gruppi XIX legislatura",
+      "owner": "Senato della Repubblica — senatori, gruppi, incarichi e Consiglio di Presidenza XIX legislatura",
       "files": [
         "src/data/generated/politici-senato-xix.json"
       ],
@@ -2387,7 +2387,59 @@
       },
       "sourceSpec": "scripts/etl/specs/politici-senato-xix.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Tre export JSON ufficiali dati.senato.it pinnati separatamente per byte/SHA-256: anagrafica della legislatura, roster in carica alla data e composizione gruppi alla stessa data. L'import deduplica soltanto cariche multiple della medesima URI, blocca identità o gruppi ambigui e riconcilia tutti i senatori correnti, inclusi quelli a vita."
+      "trustModel": "Quattro risposte ufficiali pinnate per byte/SHA-256: tre export JSON di dati.senato.it (anagrafica della legislatura, roster in carica alla data, composizione gruppi con cariche) e una query all'endpoint SPARQL ufficiale per professione, regione e collegio di elezione, tipo di elezione e Consiglio di Presidenza. L'import deduplica solo formulazioni multiple della stessa professione o cariche multiple della medesima URI, blocca identità o gruppi ambigui, verifica che il Presidente del Senato sia unico e che i senatori a vita non abbiano regione di elezione."
+    },
+    {
+      "id": "governo-meloni",
+      "owner": "Governo in carica — incarichi, dicasteri e componenti",
+      "files": [
+        "src/data/generated/governo-meloni.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/governo_meloni_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_governo_meloni_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/governo_meloni_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/governo-meloni.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Due risposte ufficiali pinnate: la query SPARQL di dati.camera.it che pubblica gli incarichi di governo in corso con ruolo, dicastero, data di nomina e identificativo persona, e l'elenco pubblico di governo.it usato solo per la scheda istituzionale di ciascun componente. L'identità persona della Camera collega gli incarichi ai mandati parlamentari senza confronti sui nomi. L'import rifiuta ruoli non previsti, incarichi duplicati, più di un Presidente del Consiglio e schede ufficiali sotto soglia; i componenti cessati non compaiono."
+    },
+    {
+      "id": "presidente-repubblica",
+      "owner": "Presidente della Repubblica in carica — identità ufficiale e titolarità della carica",
+      "files": [
+        "src/data/generated/presidente-repubblica.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/presidente_repubblica_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_presidente_repubblica_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/presidente_repubblica_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/presidente-repubblica.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Nodo di vertice con provenance mista dichiarata: nome, identificativo persona e ritratto arrivano dall'archivio ufficiale della Camera dei deputati via SPARQL, pinnato per byte/SHA-256, mentre la titolarità della carica è dichiarata nella spec perché quirinale.it risponde 403 a ogni richiesta programmatica, robots.txt incluso. Il validator impone che il divario resti dichiarato nel payload e che il nome della spec corrisponda all'identità ufficiale; ogni cambio di carica richiede una revisione manuale della spec."
     }
   ]
 }

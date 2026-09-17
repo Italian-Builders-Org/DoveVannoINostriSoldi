@@ -1,0 +1,55 @@
+{
+  "datasetId": "presidente-repubblica",
+  "title": "Presidente della Repubblica in carica — identità ufficiale e titolarità della carica",
+  "landingUrl": "https://www.quirinale.it/pagine/il-presidente",
+  "period": {
+    "kind": "point-in-time",
+    "label": "Carica in corso",
+    "observedDate": "2026-09-17"
+  },
+  "source": {
+    "owner": "Presidenza della Repubblica (carica) e Camera dei deputati (identità e ritratto)",
+    "landingUrl": "https://www.quirinale.it/pagine/il-presidente",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "identityUri": "http://dati.camera.it/ocd/persona.rdf/p23870",
+    "license": "CC BY 4.0 (dati.camera.it); contenuti quirinale.it riutilizzabili citando la fonte",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "committedResponses": {
+      "identity": {
+        "bytes": 2914,
+        "sha256": "76ad7a8f0b2b2efb0722b19fb13b2d3f57c2f9e6c07491fc2f6c9124c3b5898a"
+      }
+    }
+  },
+  "declaredOffice": {
+    "role": "Presidente della Repubblica",
+    "holderName": "Sergio Mattarella",
+    "personaId": "23870",
+    "since": "2015-02-03",
+    "secondTermSince": "2022-02-03",
+    "electedOn": "2015-01-31",
+    "reelectedOn": "2022-01-29",
+    "officialPage": "https://www.quirinale.it/pagine/il-presidente"
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo la titolarità della carica e l'identità ufficiale della persona."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-17"
+    },
+    "provenance": {
+      "kind": "official-sparql-identity-with-declared-office",
+      "identity": "https://dati.camera.it/sparql",
+      "office": "https://www.quirinale.it/pagine/il-presidente",
+      "gap": "quirinale.it risponde 403 a ogni richiesta programmatica, incluso robots.txt: la titolarità non è acquisibile da fonte machine-readable e resta dichiarata in questa spec."
+    }
+  },
+  "caveats": [
+    "La titolarità della carica è dichiarata in questa spec e verificabile sulla pagina ufficiale del Quirinale: non è acquisita automaticamente.",
+    "Nome, identificativo persona e ritratto provengono dall'archivio ufficiale della Camera dei deputati, dove il Presidente compare come ex deputato: il ritratto non è una fotografia attuale del Quirinale.",
+    "Le date di elezione e di giuramento sono dichiarate: qualsiasi variazione della carica richiede una nuova revisione della spec."
+  ]
+}

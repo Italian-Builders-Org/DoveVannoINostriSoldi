@@ -81,6 +81,7 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /HomeItalyTrendChart/);
   assert.match(page, /HomeItalyCompositionChart/);
   assert.match(page, /ItalyRegionsMap/);
+  assert.match(page, /SpendingComposition/);
   assert.match(page, /monthList/);
   assert.match(page, /Spesa pubblica totale/);
   assert.match(page, /Dove va, in grandi voci/);
@@ -94,7 +95,6 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /action="\/cerca"/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Perimetri diversi/);
-  assert.doesNotMatch(page, /SpendingComposition/);
   assert.doesNotMatch(page, /Parti da qui/);
   assert.doesNotMatch(page, /numeri restano sotto mano/);
   assert.doesNotMatch(page, /Dove andare subito/);
@@ -103,6 +103,7 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(css, /\.primaryGrid \{/);
   assert.match(css, /\.italyBand \{/);
   assert.match(css, /\.mapStage/);
+  assert.match(css, /\.monthList/);
   assert.match(chartCss, /--chart-data-primary/);
   assert.doesNotMatch(charts, /HomeShareStrip|SpendingBarChart|chartColor/);
   assert.doesNotMatch(page, /striscia/);

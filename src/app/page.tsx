@@ -9,6 +9,7 @@ import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/hom
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
+import { SpendingComposition, type CompositionFamily } from "@/components/spending-composition";
 import { getHomeAnomalySignals, type AuditSignal } from "@/lib/audit-data";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import {
@@ -25,6 +26,7 @@ import {
 } from "@/lib/global-search-contract";
 import { buildHomeItalyFunnel } from "@/lib/home-italy-funnel";
 import {
+  HOME_SPENDING_BUCKETS,
   PASS_THROUGH_TITLE_CODE,
 } from "@/lib/siope-titles";
 import {
@@ -42,6 +44,14 @@ export const metadata: Metadata = {
   description:
     "Spesa pubblica, imprese e territori: dati ufficiali italiani con fonti e perimetri espliciti.",
 };
+
+const COMPOSITION_FAMILIES: CompositionFamily[] = [
+  "services",
+  "investment",
+  "pass-through",
+  "financing",
+  "other",
+];
 
 const HOME_ANOMALY_PRESENTATION = {
   "procurement-direct-awards-2025": {
@@ -170,6 +180,16 @@ export default async function HomePage({
   const lastCompleted = settledMonths[settledMonths.length - 1] ?? null;
   const runningMonth = partialMonth(siope);
   const maxFlow = Math.max(...siope.monthly.map((point) => point.flow), 0);
+  const valueByCode = new Map(siope.titles.map((title) => [title.code, title.value]));
+  const buckets = HOME_SPENDING_BUCKETS.map((bucket, index) => {
+    const value = bucket.codes.reduce((sum, code) => sum + (valueByCode.get(code) ?? 0), 0);
+    return {
+      ...bucket,
+      id: bucket.codes.join("-"),
+      value,
+      family: COMPOSITION_FAMILIES[index],
+    };
+  });
   const anomalySignals = getHomeAnomalySignals();
 
   return (
@@ -357,6 +377,31 @@ export default async function HomePage({
                 </dd>
               </div>
             </dl>
+            <div className={styles.panelHead}>
+              <h3 className="panel-title">Come si compone il totale</h3>
+            </div>
+            <SpendingComposition
+              state={{
+                kind: "ready",
+                totalEuro: siope.totalPaid,
+                items: buckets.map((bucket) => ({
+                  id: bucket.id,
+                  label: bucket.name,
+                  shortLabel: bucket.shortName,
+                  valueEuro: bucket.value,
+                  explanation: bucket.explanation,
+                  family: bucket.family,
+                })),
+              }}
+              period={`Da gennaio a ${siope.latestMonthLabel.toLocaleLowerCase("it-IT")} ${siope.year}`}
+              scope="Pagamenti di cassa dei Comuni in tutta Italia"
+              denominator="totale dei pagamenti SIOPE dei Comuni nel periodo"
+              source={{
+                label: "SIOPE · RGS / Banca d’Italia",
+                href: siope.source.siopeMovementsUrl,
+                observedAt: longDate(siope.source.observedAt),
+              }}
+            />
             <Link className={`btn btn-block ${styles.detailLink}`} href={`/spese?anno=${year}`}>
               Dettaglio delle spese
             </Link>

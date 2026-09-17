@@ -1,0 +1,3938 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-bes-ambiente",
+  "domain": {
+    "code": "BES_10",
+    "label": "Ambiente",
+    "edition": "2025"
+  },
+  "period": {
+    "from": 2004,
+    "to": 2023
+  },
+  "periodNote": "Il periodo complessivo non vale per tutti: 10AMB001P copre 2013–2023; 10AMB002P copre 2013–2023; 10AMB003 copre 2005–2022; 10AMB008 copre 2011–2023; 10AMB011 copre 2017–2020; 10AMB012 copre 2017–2020; 10AMB014 copre 2021–2022; 10AMB016 copre 2013–2023; 10AMB018P copre 2012–2023; 10AMB024P copre 2010–2023; la copertura territoriale è dichiarata per ogni anno.",
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    "dataflowId": "DF_BES_TERRIT_10",
+    "dataflowVersion": "1.0",
+    "dataStructure": "BES_TERRIT v1.1",
+    "dataflowLastUpdate": "2025-06-30T15:22:06.201Z",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non dichiara una licenza; le condizioni generali ISTAT CC BY 4.0 sono documentate separatamente e non vengono promosse a licenza incorporata nel payload.",
+    "reuseTermsEvidence": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "publicationDate": "2025-07-01",
+    "acquisitionDate": "2026-09-16",
+    "checkedAt": "2026-09-16",
+    "assets": {
+      "csv": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,DF_BES_TERRIT_10,1.0/A..BES_10..T.2025",
+        "requestHeaders": {
+          "Accept": "text/csv"
+        },
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 1438056,
+        "sha256": "c84d70c0b40b0a7be099cdbea3e857d7bbc4c6da6f185fad01a528abba8bacec"
+      },
+      "structure": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/DF_BES_TERRIT_10/1.0?references=all",
+        "format": "SDMX-ML Structure 2.1",
+        "bytes": 13319259,
+        "sha256": "049de92a0654495694f9ca2bf1c5b6841378258e3ca447877e8ec0a1d6c7b8bd"
+      }
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Non è spesa pubblica: sono indicatori ambientali (concentrazioni, percentuali, densità), non importi o efficienza amministrativa."
+    },
+    "periodo": {
+      "referencePeriod": "2004–2023, intervalli per indicatore",
+      "note": "Edizione, aggiornamento del dataflow, pubblicazione, acquisizione e anni delle osservazioni restano date distinte."
+    },
+    "provenance": {
+      "holder": "ISTAT",
+      "publicationEdition": "2025",
+      "publicationDate": "2025-07-01",
+      "dataflowLastUpdate": "2025-06-30T15:22:06.201Z",
+      "acquisitionDate": "2026-09-16",
+      "checkedAt": "2026-09-16",
+      "license": "not-declared"
+    }
+  },
+  "headers": [
+    "DATAFLOW",
+    "FREQ",
+    "REF_AREA",
+    "DOMAIN",
+    "DATA_TYPE",
+    "SEX",
+    "EDITION",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_STATUS",
+    "NOTE_DS",
+    "NOTE_REF_AREA",
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE",
+    "NOTE_DATA_TYPE",
+    "NOTE_DATA_TYPE_DESCR",
+    "NOTE_DATA_TYPE_SOURCE",
+    "NOTE_TIME_PERIOD",
+    "BASE_PER",
+    "UNIT_MEAS",
+    "UNIT_MULT"
+  ],
+  "fixedDimensions": {
+    "DATAFLOW": "IT1:DF_BES_TERRIT_10(1.0)",
+    "FREQ": "A",
+    "DOMAIN": "BES_10",
+    "EDITION": "2025"
+  },
+  "attributes": {
+    "NOTE_DS": [
+      ""
+    ],
+    "NOTE_REF_AREA": [
+      ""
+    ],
+    "NOTE_ISTAT_TERR_OFFICIAL_CODE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE": [
+      ""
+    ],
+    "NOTE_DATA_TYPE_DESCR": [
+      "",
+      "10AMB001P",
+      "10AMB002P",
+      "10AMB003",
+      "10AMB008",
+      "10AMB011",
+      "10AMB012",
+      "10AMB014",
+      "10AMB016",
+      "10AMB017",
+      "10AMB018P",
+      "10AMB024P"
+    ],
+    "NOTE_DATA_TYPE_SOURCE": [
+      "",
+      "10AMB001P_SOU",
+      "10AMB002P_SOU",
+      "10AMB003_SOU",
+      "10AMB008_SOU",
+      "10AMB011_SOU",
+      "10AMB012_SOU",
+      "10AMB014_SOU",
+      "10AMB016_SOU",
+      "10AMB017_SOU",
+      "10AMB018P_SOU",
+      "10AMB024P_SOU"
+    ],
+    "NOTE_TIME_PERIOD": [
+      ""
+    ],
+    "BASE_PER": [
+      ""
+    ],
+    "UNIT_MULT": [
+      ""
+    ]
+  },
+  "indicators": [
+    {
+      "code": "10AMB001P",
+      "label": "concentrazione media annua di pm10",
+      "description": "valore più elevato della concentrazione media annua di pm10 rilevato tra tutte le centraline fisse per il monitoraggio della qualita' dell'aria nei comuni capoluogo di provincia. per i valori regionali, ripartizionali e italia si indica il numero di comuni capoluogo con valore superiore al limite definito dall'organizzazione mondiale della sanità (oms) per la protezione della salute umana (20 µg/m³).",
+      "sourceLabel": "istat - indagine dati ambientali nelle città",
+      "unit": "MICROGRAMS_PER_M3",
+      "unitLabel": "Microgrammi per m3",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2013,
+        "to": 2023
+      },
+      "observations": 1485,
+      "coverage": {
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135
+      }
+    },
+    {
+      "code": "10AMB002P",
+      "label": "concentrazione media annua di pm2.5",
+      "description": "valore più elevato della concentrazione media annua di pm2.5 rilevato tra tutte le centraline fisse per il monitoraggio della qualita' dell'aria nei comuni capoluogo di provincia. per i valori regionali, ripartizionali e italia si indica il numero di comuni capoluogo con valore superiore al limite definito dall'organizzazione mondiale della sanità (oms) per la protezione della salute umana (10 µg/m³).",
+      "sourceLabel": "istat - indagine dati ambientali nelle città",
+      "unit": "MICROGRAMS_PER_M3",
+      "unitLabel": "Microgrammi per m3",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2013,
+        "to": 2023
+      },
+      "observations": 1432,
+      "coverage": {
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 82
+      }
+    },
+    {
+      "code": "10AMB003",
+      "label": "dispersione da rete idrica comunale",
+      "description": "percentuale del volume complessivo delle perdite idriche totali nelle reti comunali di distribuzione dell'acqua potabile (differenza fra volume immesso in rete e volume erogato autorizzato) sul totale dell'acqua immessa.",
+      "sourceLabel": "istat - censimento delle acque per uso civile",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2005,
+        "to": 2022
+      },
+      "observations": 834,
+      "coverage": {
+        "T/2005": 135,
+        "T/2008": 91,
+        "T/2012": 98,
+        "T/2015": 135,
+        "T/2018": 105,
+        "T/2020": 135,
+        "T/2022": 135
+      }
+    },
+    {
+      "code": "10AMB008",
+      "label": "disponibilità di verde urbano",
+      "description": "metri quadrati di verde urbano per abitante nei comuni capoluogo di provincia/città metropolitana.",
+      "sourceLabel": "istat - indagine dati ambientali nelle città",
+      "unit": "M2_PER_INHA",
+      "unitLabel": "M2 per abitante",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2011,
+        "to": 2023
+      },
+      "observations": 1739,
+      "coverage": {
+        "T/2011": 126,
+        "T/2012": 135,
+        "T/2013": 128,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135
+      }
+    },
+    {
+      "code": "10AMB011",
+      "label": "popolazione esposta al rischio di frane",
+      "description": "percentuale di popolazione residente in aree con pericolosità da frana elevata e molto elevata, individuate sulla base della mosaicatura nazionale ispra dei piani di assetto idrogeologico (pai) e dei relativi aggiornamenti. la popolazione considerata è quella del censimento 2011.",
+      "sourceLabel": "ispra - dissesto idrogeologico in italia: pericolosità e indicatori di rischio",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2017,
+        "to": 2020
+      },
+      "observations": 270,
+      "coverage": {
+        "T/2017": 135,
+        "T/2020": 135
+      }
+    },
+    {
+      "code": "10AMB012",
+      "label": "popolazione esposta al rischio di alluvioni",
+      "description": "percentuale di popolazione residente in aree a pericolosità idraulica media (tempo di ritorno 100-200 anni ex d. lgs. 49/2010), individuate sulla base della mosaicatura nazionale ispra dei piani di assetto idrogeologico (pai) e dei relativi aggiornamenti, con riferimento allo scenario di rischio p2. la popolazione considerata è quella del censimento 2011.",
+      "sourceLabel": "ispra - dissesto idrogeologico in italia: pericolosità e indicatori di rischio",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2017,
+        "to": 2020
+      },
+      "observations": 270,
+      "coverage": {
+        "T/2017": 135,
+        "T/2020": 135
+      }
+    },
+    {
+      "code": "10AMB014",
+      "label": "aree protette",
+      "description": "percentuale di superficie territoriale coperta da aree naturali protette terrestri incluse nell'elenco ufficiale delle aree protette (euap) o appartenenti alla rete natura 2000.",
+      "sourceLabel": "istat - elaborazione su dati ministero dell'ambiente e della sicurezza energetica",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2021,
+        "to": 2022
+      },
+      "observations": 270,
+      "coverage": {
+        "T/2021": 135,
+        "T/2022": 135
+      }
+    },
+    {
+      "code": "10AMB016",
+      "label": "energia elettrica da fonti rinnovabili",
+      "description": "percentuale di consumi di energia elettrica coperti da fonti rinnovabili sul totale dei consumi interni lordi. l'indicatore è ottenuto come rapporto tra la produzione lorda elettrica da fer effettiva (non normalizzata) e il consumo interno lordo di energia elettrica (pari alla produzione lorda di energia elettrica al lordo della produzione da apporti di pompaggio più il saldo scambi con l'estero o tra le regioni).",
+      "sourceLabel": "terna s.p.a. - statistica annuale della produzione e del consumo di energia elettrica in italia",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2013,
+        "to": 2023
+      },
+      "observations": 1409,
+      "coverage": {
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 59,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135
+      }
+    },
+    {
+      "code": "10AMB017",
+      "label": "raccolta differenziata dei rifiuti urbani",
+      "description": "percentuale di rifiuti urbani oggetto di raccolta differenziata sul totale dei rifiuti urbani raccolti.",
+      "sourceLabel": "istat - elaborazione su dati ispra",
+      "unit": "VAL_PERC",
+      "unitLabel": "Valori percentuali",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2004,
+        "to": 2023
+      },
+      "observations": 2494,
+      "coverage": {
+        "T/2004": 139,
+        "T/2005": 139,
+        "T/2006": 139,
+        "T/2007": 119,
+        "T/2008": 139,
+        "T/2009": 75,
+        "T/2010": 139,
+        "T/2011": 139,
+        "T/2012": 139,
+        "T/2013": 115,
+        "T/2014": 139,
+        "T/2015": 139,
+        "T/2016": 139,
+        "T/2017": 139,
+        "T/2018": 86,
+        "T/2019": 90,
+        "T/2020": 139,
+        "T/2021": 63,
+        "T/2022": 139,
+        "T/2023": 139
+      }
+    },
+    {
+      "code": "10AMB018P",
+      "label": "impermeabilizzazione del suolo da copertura artificiale",
+      "description": "percentuale di suolo impermeabilizzato sul totale della superficie territoriale.",
+      "sourceLabel": "ispra - consumo di suolo, dinamiche territoriali e servizi ecosistemici",
+      "unit": "",
+      "unitLabel": "Valori percentuali (unità assente nel payload CSV; da definizione indicatore)",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2012,
+        "to": 2023
+      },
+      "observations": 1330,
+      "coverage": {
+        "T/2012": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 115,
+        "T/2023": 135
+      }
+    },
+    {
+      "code": "10AMB024P",
+      "label": "rifiuti urbani prodotti",
+      "description": "rifiuti urbani prodotti per abitante (in kg)",
+      "sourceLabel": "istat - elaborazione su dati ispra",
+      "unit": "KG_PER_INHA",
+      "unitLabel": "Kg per abitante",
+      "sexes": [
+        "T"
+      ],
+      "period": {
+        "from": 2010,
+        "to": 2023
+      },
+      "observations": 1890,
+      "coverage": {
+        "T/2010": 135,
+        "T/2011": 135,
+        "T/2012": 135,
+        "T/2013": 135,
+        "T/2014": 135,
+        "T/2015": 135,
+        "T/2016": 135,
+        "T/2017": 135,
+        "T/2018": 135,
+        "T/2019": 135,
+        "T/2020": 135,
+        "T/2021": 135,
+        "T/2022": 135,
+        "T/2023": 135
+      }
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "italia",
+      "depth": 0,
+      "parent": null
+    },
+    {
+      "code": "IT108",
+      "label": "Monza e della Brianza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "IT109",
+      "label": "Fermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "IT110",
+      "label": "Barletta-Andria-Trani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "IT111",
+      "label": "Sud Sardegna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITC",
+      "label": "Nord-ovest",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITC1",
+      "label": "Piemonte",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC11",
+      "label": "Torino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC12",
+      "label": "Vercelli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC13",
+      "label": "Biella",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC14",
+      "label": "Verbano-Cusio-Ossola",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC15",
+      "label": "Novara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC16",
+      "label": "Cuneo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC17",
+      "label": "Asti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC18",
+      "label": "Alessandria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC1"
+    },
+    {
+      "code": "ITC2",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC20",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC2"
+    },
+    {
+      "code": "ITC3",
+      "label": "Liguria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC31",
+      "label": "Imperia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC32",
+      "label": "Savona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC33",
+      "label": "Genova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC34",
+      "label": "La Spezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC3"
+    },
+    {
+      "code": "ITC4",
+      "label": "Lombardia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC41",
+      "label": "Varese",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC42",
+      "label": "Como",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC43",
+      "label": "Lecco",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC44",
+      "label": "Sondrio",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC45",
+      "label": "Milano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC46",
+      "label": "Bergamo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC47",
+      "label": "Brescia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC48",
+      "label": "Pavia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC49",
+      "label": "Lodi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4A",
+      "label": "Cremona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITC4B",
+      "label": "Mantova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITC4"
+    },
+    {
+      "code": "ITCD",
+      "label": "Nord",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITC",
+        "ITD"
+      ]
+    },
+    {
+      "code": "ITD",
+      "label": "Nord-est",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITD10",
+      "label": "Bolzano / Bozen",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD1"
+    },
+    {
+      "code": "ITD20",
+      "label": "Trento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": null,
+      "parentOutsideDataset": "ITD2"
+    },
+    {
+      "code": "ITD3",
+      "label": "Veneto",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD31",
+      "label": "Verona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD32",
+      "label": "Vicenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD33",
+      "label": "Belluno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD34",
+      "label": "Treviso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD35",
+      "label": "Venezia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD36",
+      "label": "Padova",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD37",
+      "label": "Rovigo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD3"
+    },
+    {
+      "code": "ITD4",
+      "label": "Friuli-Venezia Giulia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD41",
+      "label": "Pordenone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD42",
+      "label": "Udine",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD43",
+      "label": "Gorizia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD44",
+      "label": "Trieste",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD4"
+    },
+    {
+      "code": "ITD5",
+      "label": "Emilia-Romagna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD51",
+      "label": "Piacenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD52",
+      "label": "Parma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD53",
+      "label": "Reggio nell'Emilia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD54",
+      "label": "Modena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD55",
+      "label": "Bologna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD56",
+      "label": "Ferrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD57",
+      "label": "Ravenna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD58",
+      "label": "Forlì-Cesena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITD59",
+      "label": "Rimini",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITD5"
+    },
+    {
+      "code": "ITDA",
+      "label": "Trentino Alto Adige / Südtirol",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITD"
+    },
+    {
+      "code": "ITE",
+      "label": "Centro",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITE1",
+      "label": "Toscana",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE11",
+      "label": "Massa-Carrara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE12",
+      "label": "Lucca",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE13",
+      "label": "Pistoia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE14",
+      "label": "Firenze",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE15",
+      "label": "Prato",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE16",
+      "label": "Livorno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE17",
+      "label": "Pisa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE18",
+      "label": "Arezzo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE19",
+      "label": "Siena",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE1A",
+      "label": "Grosseto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE1"
+    },
+    {
+      "code": "ITE2",
+      "label": "Umbria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE21",
+      "label": "Perugia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE22",
+      "label": "Terni",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE2"
+    },
+    {
+      "code": "ITE3",
+      "label": "Marche",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE31",
+      "label": "Pesaro e Urbino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE32",
+      "label": "Ancona",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE33",
+      "label": "Macerata",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE34",
+      "label": "Ascoli Piceno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE3"
+    },
+    {
+      "code": "ITE4",
+      "label": "Lazio",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE41",
+      "label": "Viterbo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE42",
+      "label": "Rieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE43",
+      "label": "Roma",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE44",
+      "label": "Latina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITE45",
+      "label": "Frosinone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITE4"
+    },
+    {
+      "code": "ITF",
+      "label": "Sud",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITF1",
+      "label": "Abruzzo",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF11",
+      "label": "L'Aquila",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF12",
+      "label": "Teramo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF13",
+      "label": "Pescara",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF14",
+      "label": "Chieti",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF1"
+    },
+    {
+      "code": "ITF2",
+      "label": "Molise",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF21",
+      "label": "Isernia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF22",
+      "label": "Campobasso",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF2"
+    },
+    {
+      "code": "ITF3",
+      "label": "Campania",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF31",
+      "label": "Caserta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF32",
+      "label": "Benevento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF33",
+      "label": "Napoli",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF34",
+      "label": "Avellino",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF35",
+      "label": "Salerno",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF3"
+    },
+    {
+      "code": "ITF4",
+      "label": "Puglia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF41",
+      "label": "Foggia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF42",
+      "label": "Bari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF43",
+      "label": "Taranto",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF44",
+      "label": "Brindisi",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF45",
+      "label": "Lecce",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF4"
+    },
+    {
+      "code": "ITF5",
+      "label": "Basilicata",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF51",
+      "label": "Potenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF52",
+      "label": "Matera",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF5"
+    },
+    {
+      "code": "ITF6",
+      "label": "Calabria",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF61",
+      "label": "Cosenza",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF62",
+      "label": "Crotone",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF63",
+      "label": "Catanzaro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF64",
+      "label": "Vibo Valentia",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITF65",
+      "label": "Reggio di Calabria",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITF6"
+    },
+    {
+      "code": "ITFG",
+      "label": "Mezzogiorno",
+      "kind": "composite",
+      "depth": 1,
+      "parent": "IT",
+      "parts": [
+        "ITF",
+        "ITG"
+      ]
+    },
+    {
+      "code": "ITG",
+      "label": "Isole",
+      "kind": "ripartizione",
+      "depth": 1,
+      "parent": "IT"
+    },
+    {
+      "code": "ITG1",
+      "label": "Sicilia",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG11",
+      "label": "Trapani",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG12",
+      "label": "Palermo",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG13",
+      "label": "Messina",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG14",
+      "label": "Agrigento",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG15",
+      "label": "Caltanissetta",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG16",
+      "label": "Enna",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG17",
+      "label": "Catania",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG18",
+      "label": "Ragusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG19",
+      "label": "Siracusa",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG1"
+    },
+    {
+      "code": "ITG2",
+      "label": "Sardegna",
+      "kind": "regione",
+      "depth": 2,
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG25",
+      "label": "Sassari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG26",
+      "label": "Nuoro",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG27",
+      "label": "Cagliari",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG28",
+      "label": "Oristano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG29",
+      "label": "Olbia-Tempio",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG2A",
+      "label": "Ogliastra",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG2B",
+      "label": "Medio Campidano",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    },
+    {
+      "code": "ITG2C",
+      "label": "Carbonia-Iglesias",
+      "kind": "provincia",
+      "depth": 3,
+      "parent": "ITG2"
+    }
+  ],
+  "flags": [
+    {
+      "code": "g",
+      "meaning": "il fenomeno esiste, ma i dati non si conoscono per qualsiasi ragione"
+    }
+  ],
+  "caveats": [
+    "Non è spesa pubblica: sono indicatori ambientali, non importi, qualità amministrativa o efficienza.",
+    "Nell'edizione 2025 il dataflow DF_BES_TERRIT_10 pubblica undici indicatori nel payload acquisito; altri codici 10AMB* restano fuori da questa fetta.",
+    "Il payload espone solo il sesso T: non si inventano serie F/M.",
+    "Concentrazioni, percentuali, m²/abitante e kg/abitante hanno unità e periodi distinti: non si sommano né formano un indice composito.",
+    "Per 10AMB018P il CSV lascia UNIT_MEAS vuoto: l’unità resta dichiarata nel lock dalla definizione (percentuale), senza inventare un codice SDMX assente nel payload.",
+    "Per 10AMB018P il CSV lascia vuoti anche NOTE_DATA_TYPE_DESCR e NOTE_DATA_TYPE_SOURCE: non si inventano riferimenti assenti nel payload.",
+    "Il flag g rende la cella null, distinto da zero osservato e da una riga assente; nessuna imputazione.",
+    "Nord e Mezzogiorno sono compositi sovrapposti alle parti; Bolzano e Trento hanno padri esterni dichiarati. Dati provinciali, non comunali, con geografia non costante."
+  ],
+  "reconciliation": {
+    "totalBetweenSexes": false,
+    "territorialSum": false,
+    "note": "Nessuna riconciliazione economica o F+M=T: gli indicatori non sono sommabili fra territori né fra sessi."
+  },
+  "observations": 13423,
+  "nullCells": [
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2016
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2017
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2018
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "IT109",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2016
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2017
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2018
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2021
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITC31",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITE11",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITE19",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITE31",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITE44",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF14",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF14",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF14",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITF14",
+      "T",
+      2016
+    ],
+    [
+      "10AMB001P",
+      "ITF2",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2017
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2018
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2021
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITF21",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF22",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITF32",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITF43",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF45",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF45",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2016
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2017
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2018
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2021
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITF52",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF61",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF61",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITF61",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF62",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF63",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITF63",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF64",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF64",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF64",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITF65",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITF65",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITF65",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITF65",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITG11",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITG12",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITG13",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITG13",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITG13",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITG13",
+      "T",
+      2021
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2013
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2014
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2015
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2016
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2017
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2018
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "ITG14",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITG15",
+      "T",
+      2022
+    ],
+    [
+      "10AMB001P",
+      "ITG17",
+      "T",
+      2019
+    ],
+    [
+      "10AMB001P",
+      "ITG17",
+      "T",
+      2020
+    ],
+    [
+      "10AMB001P",
+      "ITG26",
+      "T",
+      2023
+    ],
+    [
+      "10AMB001P",
+      "ITG28",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "IT109",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "IT111",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITC11",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITC17",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITC18",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITC31",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITC44",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITC48",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITD44",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITD44",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITD57",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE11",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE11",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITE11",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITE12",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITE13",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITE18",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITE19",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITE31",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE33",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITE33",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITE33",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF12",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF12",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF12",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF12",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF12",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF14",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF14",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF14",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF14",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF2",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITF21",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF22",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF31",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF31",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF31",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF31",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF32",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF34",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF34",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF41",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF42",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF42",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF43",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF45",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF5",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF51",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITF52",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF61",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF61",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF62",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITF63",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF63",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITF64",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF64",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF64",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITF65",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITF65",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITF65",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITF65",
+      "T",
+      2023
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG11",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG12",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG13",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG14",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITG15",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITG16",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG16",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG16",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG16",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG16",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2015
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2016
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG17",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG19",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG19",
+      "T",
+      2014
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2013
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2017
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITG26",
+      "T",
+      2022
+    ],
+    [
+      "10AMB002P",
+      "ITG28",
+      "T",
+      2018
+    ],
+    [
+      "10AMB002P",
+      "ITG28",
+      "T",
+      2019
+    ],
+    [
+      "10AMB002P",
+      "ITG28",
+      "T",
+      2020
+    ],
+    [
+      "10AMB002P",
+      "ITG28",
+      "T",
+      2021
+    ],
+    [
+      "10AMB002P",
+      "ITG28",
+      "T",
+      2023
+    ],
+    [
+      "10AMB012",
+      "ITC",
+      "T",
+      2017
+    ],
+    [
+      "10AMB012",
+      "ITD",
+      "T",
+      2017
+    ],
+    [
+      "10AMB012",
+      "ITF",
+      "T",
+      2017
+    ],
+    [
+      "10AMB012",
+      "ITG",
+      "T",
+      2017
+    ],
+    [
+      "10AMB016",
+      "IT111",
+      "T",
+      2013
+    ],
+    [
+      "10AMB016",
+      "IT111",
+      "T",
+      2014
+    ],
+    [
+      "10AMB016",
+      "IT111",
+      "T",
+      2015
+    ],
+    [
+      "10AMB016",
+      "IT111",
+      "T",
+      2016
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2017
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2018
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2019
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2021
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2022
+    ],
+    [
+      "10AMB016",
+      "ITG29",
+      "T",
+      2023
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2017
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2018
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2019
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2021
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2022
+    ],
+    [
+      "10AMB016",
+      "ITG2A",
+      "T",
+      2023
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2017
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2018
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2019
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2021
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2022
+    ],
+    [
+      "10AMB016",
+      "ITG2B",
+      "T",
+      2023
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2017
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2018
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2019
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2021
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2022
+    ],
+    [
+      "10AMB016",
+      "ITG2C",
+      "T",
+      2023
+    ],
+    [
+      "10AMB017",
+      "IT108",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "IT108",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "IT108",
+      "T",
+      2006
+    ],
+    [
+      "10AMB017",
+      "IT108",
+      "T",
+      2007
+    ],
+    [
+      "10AMB017",
+      "IT108",
+      "T",
+      2008
+    ],
+    [
+      "10AMB017",
+      "IT109",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "IT109",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "IT109",
+      "T",
+      2006
+    ],
+    [
+      "10AMB017",
+      "IT109",
+      "T",
+      2007
+    ],
+    [
+      "10AMB017",
+      "IT109",
+      "T",
+      2008
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2006
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2007
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2008
+    ],
+    [
+      "10AMB017",
+      "IT110",
+      "T",
+      2009
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2006
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2007
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2008
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2010
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2011
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2012
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2013
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2014
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2015
+    ],
+    [
+      "10AMB017",
+      "IT111",
+      "T",
+      2016
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2017
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2020
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2022
+    ],
+    [
+      "10AMB017",
+      "ITG29",
+      "T",
+      2023
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2017
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2018
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2019
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2020
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2022
+    ],
+    [
+      "10AMB017",
+      "ITG2A",
+      "T",
+      2023
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2017
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2020
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2021
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2022
+    ],
+    [
+      "10AMB017",
+      "ITG2B",
+      "T",
+      2023
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2004
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2005
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2017
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2018
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2019
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2020
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2022
+    ],
+    [
+      "10AMB017",
+      "ITG2C",
+      "T",
+      2023
+    ]
+  ],
+  "integrity": {
+    "sourceLockSha256": "1c81225c8e787f83784755a1d089eca1a50ebb87fcc16a25ba3f7bcda8eff5bb",
+    "dataArtifact": {
+      "path": "src/data/generated/istat-bes-ambiente-2004-2023.data.json",
+      "bytes": 1418356,
+      "sha256": "c0e8705bd81473ab497a68ff099c36b3c444e2bb45f10abc82591083e64d0d46"
+    }
+  }
+}

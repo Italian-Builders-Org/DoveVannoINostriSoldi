@@ -47,6 +47,10 @@ import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-
 import { istatBesLavoroData, istatBesLavoroMetadata } from "@/lib/istat-bes-lavoro-snapshot";
 import { istatBesRelazioniData, istatBesRelazioniMetadata } from "@/lib/istat-bes-relazioni-snapshot";
 import { istatBesPoliticaData, istatBesPoliticaMetadata } from "@/lib/istat-bes-politica-snapshot";
+import { istatBesSicurezzaData, istatBesSicurezzaMetadata } from "@/lib/istat-bes-sicurezza-snapshot";
+import { istatBesPaesaggioData, istatBesPaesaggioMetadata } from "@/lib/istat-bes-paesaggio-snapshot";
+import { istatBesServiziData, istatBesServiziMetadata } from "@/lib/istat-bes-servizi-snapshot";
+import { istatBesAmbienteData, istatBesAmbienteMetadata } from "@/lib/istat-bes-ambiente-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -647,6 +651,54 @@ function snapshotManagedIstatBesPolitica(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesSicurezza(): SourceHealth {
+  const { source } = istatBesSicurezzaMetadata;
+  return {
+    ...baseHealth("istat-bes-sicurezza"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-sicurezza", source.publicationDate),
+    latencyMs: null,
+    detail: "Sei indicatori BES_07 Sicurezza, edizione 2025; 14.481 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 1 cella ignota. Solo SEX=T; indicatori non sommabili, non spesa COFOG GF03 né dato comunale.",
+    recordCount: istatBesSicurezzaData.observations.length,
+  };
+}
+
+function snapshotManagedIstatBesPaesaggio(): SourceHealth {
+  const { source } = istatBesPaesaggioMetadata;
+  return {
+    ...baseHealth("istat-bes-paesaggio"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-paesaggio", source.publicationDate),
+    latencyMs: null,
+    detail: "Tre indicatori BES_09 Paesaggio e patrimonio culturale, edizione 2025; 3.760 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 3 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesPaesaggioData.observations.length,
+  };
+}
+
+function snapshotManagedIstatBesServizi(): SourceHealth {
+  const { source } = istatBesServiziMetadata;
+  return {
+    ...baseHealth("istat-bes-servizi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-servizi", source.publicationDate),
+    latencyMs: null,
+    detail: "Otto indicatori BES_12 Qualità dei servizi, edizione 2025; 15.858 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2024; 76 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesServiziData.observations.length,
+  };
+}
+
+function snapshotManagedIstatBesAmbiente(): SourceHealth {
+  const { source } = istatBesAmbienteMetadata;
+  return {
+    ...baseHealth("istat-bes-ambiente"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-ambiente", source.publicationDate),
+    latencyMs: null,
+    detail: "Undici indicatori BES_10 Ambiente, edizione 2025; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 412 celle ignote. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesAmbienteData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -700,6 +752,10 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-lavoro": snapshotManagedIstatBesLavoro,
   "istat-bes-relazioni": snapshotManagedIstatBesRelazioni,
   "istat-bes-politica": snapshotManagedIstatBesPolitica,
+  "istat-bes-sicurezza": snapshotManagedIstatBesSicurezza,
+  "istat-bes-paesaggio": snapshotManagedIstatBesPaesaggio,
+  "istat-bes-servizi": snapshotManagedIstatBesServizi,
+  "istat-bes-ambiente": snapshotManagedIstatBesAmbiente,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,

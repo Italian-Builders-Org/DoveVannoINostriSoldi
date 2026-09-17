@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 78
+- Artefatti nel registro: 82
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 61 (PR umana dopo revisione)
+- manuale: 65 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -104,6 +104,10 @@ La revisione e il merge restano umani.
 | `istat-bes-lavoro-2008-2024` | 2008-2024 | 2026-09-12 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_lavoro.py --check` |
 | `istat-bes-relazioni-2011-2024` | 2011-2024 | 2026-09-13 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_relazioni.py --check` |
 | `istat-bes-politica-2004-2024` | 2004-2024 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_politica.py --check` |
+| `istat-bes-sicurezza-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_sicurezza.py --check` |
+| `istat-bes-paesaggio-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_paesaggio.py --check` |
+| `istat-bes-servizi-2004-2024` | 2004-2024 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_servizi.py --check` |
+| `istat-bes-ambiente-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_ambiente.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `inps-assegno-unico-2022-2024` | 2022-2024 | 2026-09-14 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_assegno_unico_snapshot.py --check` |

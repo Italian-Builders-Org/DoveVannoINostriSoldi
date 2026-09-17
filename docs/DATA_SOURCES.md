@@ -727,6 +727,14 @@ diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
 totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
 della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
 
+È integrato anche FC20TOT 2015 versione 2 (6.664 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2015` e MCP `opencivitas_fabbisogni_2015`.
+Il rilascio 2015 pubblica il CSV in cp1252 con il punto come separatore decimale,
+dichiarati nel lock e non dedotti, e riproporziona il fabbisogno standard sul
+totale nazionale della spesa storica: la differenza aggregata è nulla per
+costruzione e non va letta come risultato. Fonte, lock e perimetro sono
+documentati in [OpenCivitas 2015](OPENCIVITAS_2015.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).

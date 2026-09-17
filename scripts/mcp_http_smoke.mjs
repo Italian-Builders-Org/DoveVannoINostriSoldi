@@ -625,6 +625,16 @@ const modernData = successfulMcpToolResult(modernDataset, "mef_irpef_comunale", 
 assert.equal(modernData.level, "region");
 assert.equal(modernData.pagination.returned, 20);
 
+// Nessuna chiamata MCP per il 2015: lo smoke contrattuale resta a 30 POST esatti,
+// quanto consente il limitatore. La parità API/MCP è coperta dai test Node.
+const fc20ApiResponse = await fetch(new URL("/api/spese/opencivitas-2015?codice=058091&anno=2015", baseUrl));
+assert.equal(fc20ApiResponse.status, 200);
+const fc20ApiData = JSON.parse(await responseText(fc20ApiResponse, "FC20 API"));
+assert.equal(fc20ApiData.referenceYear, 2015);
+assert.equal(fc20ApiData.family, "FC20TOT");
+assert.equal(fc20ApiData.coverage.municipalities, 6664);
+assert.equal(fc20ApiData.data[0].historicalSpendingCents, 318080551380);
+
 const fc40ApiResponse = await fetch(new URL("/api/spese/opencivitas-2017?codice=058091&anno=2017", baseUrl));
 assert.equal(fc40ApiResponse.status, 200);
 const fc40ApiData = JSON.parse(await responseText(fc40ApiResponse, "FC40 API"));

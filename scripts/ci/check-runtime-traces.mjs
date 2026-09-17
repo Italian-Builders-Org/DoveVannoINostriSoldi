@@ -98,6 +98,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-pensions-2012-2022.data.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-pensions-2012-2022.meta.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["opencivitas-2015.json", ["api/spese/opencivitas-2015/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["opencivitas-2017.json", ["api/spese/opencivitas-2017/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-assegno-unico-2022-2024.data.json", ["fonti/page", "api/famiglia/assegno-unico/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],

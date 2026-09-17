@@ -182,6 +182,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "misura"],
   },
   {
+    slug: "istat-poverta-soglia-assoluta",
+    name: "ISTAT · soglia di povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; dataflow 34_211 fissato",
+    coverage:
+      "Soglie monetarie mensili 2005–2024 per territorio, tipologia familiare e ampiezza demografica; 36.078 osservazioni di cui 6.050 null",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Soglia monetaria mensile in euro (centesimi nello snapshot), NON spesa pubblica e NON confrontabile/sommabile con le incidenze 34_727. La soglia relativa 34_212 è chiusa al 2013 e fuori perimetro. Celle con OBS_VALUE vuoto restano null ≠ zero. Nord e Mezzogiorno sono compositi che sovrappongono parti. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    joinKeys: ["territorio", "anno", "tipologia familiare", "ampiezza demografica"],
+  },
+  {
     slug: "istat-bes-economico",
     name: "ISTAT · BES dei territori, benessere economico",
     owner: "ISTAT — Istituto nazionale di statistica",

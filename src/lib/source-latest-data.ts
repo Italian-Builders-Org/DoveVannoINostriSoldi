@@ -18,6 +18,7 @@ import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData } from "@/lib/istat-poverta-relativa-snapshot";
+import { istatPovertaSogliaAssolutaData } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatBesData } from "@/lib/istat-bes-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
@@ -99,6 +100,10 @@ const exhaustiveLatestDataBySlug = {
   "istat-poverta-relativa": {
     kind: "period",
     label: `${istatPovertaRelativaData.period.from}-${istatPovertaRelativaData.period.to}`,
+  },
+  "istat-poverta-soglia-assoluta": {
+    kind: "period",
+    label: `${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to}`,
   },
   "istat-bes-economico": {
     kind: "period",

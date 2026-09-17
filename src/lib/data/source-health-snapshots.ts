@@ -41,6 +41,10 @@ import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
+import {
+  istatPovertaSogliaAssolutaData,
+  istatPovertaSogliaAssolutaMetadata,
+} from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -578,6 +582,20 @@ function snapshotManagedIstatPovertaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaSogliaAssoluta(): SourceHealth {
+  const { source } = istatPovertaSogliaAssolutaMetadata;
+  const asset = source.assets.csv;
+  const nullCount = istatPovertaSogliaAssolutaData.observations.filter((row) => row.valueHundredths === null).length;
+  return {
+    ...baseHealth("istat-poverta-soglia-assoluta"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-soglia-assoluta", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · soglia monetaria di povertà assoluta ${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaAssolutaData.observations.length.toLocaleString("it-IT")} osservazioni di cui ${nullCount.toLocaleString("it-IT")} null · ${istatPovertaSogliaAssolutaData.territories.length} territori · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
+    recordCount: istatPovertaSogliaAssolutaData.observations.length,
+  };
+}
+
 function snapshotManagedIstatBesEconomico(): SourceHealth {
   const { source, observedAt } = istatBesMetadata;
   const asset = Object.values(source.assets)[0];
@@ -759,6 +777,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
+  "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,

@@ -33,6 +33,7 @@ export type SourceId =
   | "istat-epea"
   | "istat-poverta"
   | "istat-poverta-relativa"
+  | "istat-poverta-soglia-assoluta"
   | "istat-bes-economico"
   | "istat-bes-salute"
   | "istat-bes-istruzione"
@@ -573,6 +574,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta-relativa", "domain:social-conditions"],
+  },
+  "istat-poverta-soglia-assoluta": {
+    id: "istat-poverta-soglia-assoluta",
+    label: "ISTAT · soglia di povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Le soglie monetarie escono annualmente. Lo snapshot fissa il dataflow 34_211 (2005–2024) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-soglia-assoluta", "domain:social-conditions"],
   },
   "istat-bes-economico": {
     id: "istat-bes-economico",

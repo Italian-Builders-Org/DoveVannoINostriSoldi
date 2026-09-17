@@ -1064,3 +1064,13 @@ territori (107 province). Solo `SEX=T`; nessuna cella `n`/`g`; valori in decimi;
 `11RIC025` resta firmato. `DF_BES_TERRIT_8` assente dal catalogo IstatData.
 Fonte `istat-bes-innovazione`, API/MCP paginati, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_BES_INNOVAZIONE.md).
+
+### ISTAT · soglia di povertà assoluta (34_211)
+
+Soglie monetarie mensili di povertà assoluta, anni 2005–2024: 36.078
+osservazioni (6.050 null), 23 territori, tipologie familiari e ampiezze
+demografiche. Valori in centesimi di euro; `soldi.present` true ma **non** è
+spesa pubblica né confrontabile con le incidenze. Fonte
+`istat-poverta-soglia-assoluta`, API `/api/territori/poverta-soglia-assoluta`,
+MCP `istat_poverta_soglia_assoluta`, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md).

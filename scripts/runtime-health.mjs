@@ -58,6 +58,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-epea",
   "istat-poverta",
   "istat-poverta-relativa",
+  "istat-poverta-soglia-assoluta",
   "istat-bes-economico",
   "istat-bes-salute",
   "istat-bes-istruzione",

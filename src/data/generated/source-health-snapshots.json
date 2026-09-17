@@ -168,6 +168,12 @@
     "recordCount": 616
   },
   {
+    "sourceId": "istat-poverta-soglia-assoluta",
+    "sourceTimestamp": "2026-09-17",
+    "detail": "Snapshot ETL attivo · soglia monetaria di povertà assoluta 2005-2024 (dataflow 34_211) · 36.078 osservazioni di cui 6050 null · 23 territori · 2.799.511 byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.",
+    "recordCount": 36078
+  },
+  {
     "sourceId": "istat-bes-economico",
     "sourceTimestamp": "2026-09-06",
     "detail": "Snapshot ETL attivo · BES dei territori, benessere economico (edizione 2025, DF_BES_TERRIT_4) · 19.592 osservazioni su 5 indicatori e 139 territori, di cui 111 province · 2.107.955 byte CSV pinnato. Medie pro capite, non spesa pubblica e non sommabili fra territori.",

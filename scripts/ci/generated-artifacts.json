@@ -1804,6 +1804,32 @@
       "trustModel": "Lock dedicato BES_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Quattro indicatori, 5.413 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Nessuna cella n/g nel payload. 11RIC025 ammette valori negativi firmati. Scale factor 10 (decimi). Quattro province sarde storiche assenti dal payload. Indicatori non sommabili. Licenza not-declared."
     },
     {
+      "id": "istat-poverta-soglia-assoluta-2005-2024",
+      "owner": "ISTAT soglia monetaria di povertà assoluta (dataflow 34_211)",
+      "files": [
+        "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.data.json",
+        "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_assoluta.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_soglia_assoluta.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta-soglia-assoluta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_assoluta.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-soglia-assoluta-2005-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato 34_211: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVASS (valori medi), 36.078 osservazioni, 23 territori, 83 tipologie familiari, 6 ampiezze demografiche. 6.050 celle con OBS_VALUE vuoto restano null ≠ zero. Scale factor 100 (centesimi di euro mensili). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia relativa 34_212 (chiusa). UNIT_MEAS vuoto nel payload. Licenza not-declared."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

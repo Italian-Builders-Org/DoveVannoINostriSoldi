@@ -67,6 +67,10 @@ const istatBesInnovazioneRuntimeFiles = [
   "src/data/generated/istat-bes-innovazione-2004-2023.data.json",
 ];
 
+const istatPovertaSogliaAssolutaRuntimeFiles = [
+  "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
@@ -208,6 +212,7 @@ const nextConfig: NextConfig = {
     "/api/territori/bes-servizi": istatBesServiziRuntimeFiles,
     "/api/territori/bes-ambiente": istatBesAmbienteRuntimeFiles,
     "/api/territori/bes-innovazione": istatBesInnovazioneRuntimeFiles,
+    "/api/territori/poverta-soglia-assoluta": istatPovertaSogliaAssolutaRuntimeFiles,
     "/api/assistant/chat": [
       ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
@@ -219,6 +224,7 @@ const nextConfig: NextConfig = {
       ...istatBesServiziRuntimeFiles,
       ...istatBesAmbienteRuntimeFiles,
       ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -241,6 +247,7 @@ const nextConfig: NextConfig = {
       ...istatBesServiziRuntimeFiles,
       ...istatBesAmbienteRuntimeFiles,
       ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -263,6 +270,7 @@ const nextConfig: NextConfig = {
       ...istatBesServiziRuntimeFiles,
       ...istatBesAmbienteRuntimeFiles,
       ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,

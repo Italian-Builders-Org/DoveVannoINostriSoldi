@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Government roster snapshot from the official governo.it institutional page.
+"""Government in office: appointments, departments and people.
 
-Offline --check validates the committed artifact. Live refresh reads the public
-roster of Presidency, ministries, vice ministers and undersecretaries and fails
-closed on unexpected markup, unknown role captions or coverage below floor.
+The authoritative structure comes from the Camera dei deputati open data (OCD):
+it publishes every current government appointment with its role, department and
+the stable `persona` identity that also links deputies and senators. The public
+roster on governo.it adds the institutional page of each member. Offline --check
+validates the committed artifact; --write fails closed on unknown roles, missing
+departments or coverage below floor.
 """
 
 from __future__ import annotations
@@ -13,10 +16,12 @@ import hashlib
 import json
 import re
 import ssl
+import time
 import unicodedata
 import urllib.error
+import urllib.parse
 import urllib.request
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -27,35 +32,56 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = ROOT / "scripts/etl/specs/governo-meloni.source.json"
 OUTPUT = ROOT / "src/data/generated/governo-meloni.json"
 DATASET = "governo-meloni"
-LANDING = "https://www.governo.it/it/ministri-e-sottosegretari"
-LICENSE_URL = "https://www.governo.it/it/note-legali"
+ENDPOINT = "https://dati.camera.it/sparql"
+LANDING = "https://dati.camera.it/"
+ROSTER_URL = "https://www.governo.it/it/ministri-e-sottosegretari"
+LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
+LEGISLATURE_URI = "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19"
 MEMBER_URL_RE = re.compile(r"^https://www\.governo\.it/it/governo/meloni/([a-z-]+)/([a-z0-9-]+)$")
+GOVERNMENT_RE = re.compile(r"/governo\.rdf/(g\d+)$")
+ORGAN_RE = re.compile(r"/organoGoverno\.rdf/(og\d+_\d+)$")
+PERSON_RE = re.compile(r"/persona\.rdf/p(\d+)$")
 SHA_RE = re.compile(r"^[0-9a-f]{64}$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-CONTENT_MARKER = '<div class="region region-content">'
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 
-PRESIDENCY_ID = "presidenza-del-consiglio"
-PRESIDENCY_LABEL = "Presidenza del Consiglio dei Ministri"
+ROLES = {
+    "PRESIDENTE DEL CONSIGLIO": ("presidente-del-consiglio", "Presidente del Consiglio dei ministri"),
+    "VICEPRESIDENTE DEL CONSIGLIO": ("vice-presidente", "Vicepresidente del Consiglio dei ministri"),
+    "MINISTRO": ("ministro", "Ministro"),
+    "MINISTRO SENZA PORTAFOGLIO": ("ministro-senza-portafoglio", "Ministro senza portafoglio"),
+    "VICE MINISTRO": ("vice-ministro", "Vice ministro"),
+    "SOTTOSEGRETARIO DI STATO": ("sottosegretario", "Sottosegretario di Stato"),
+}
+ROLE_RANK = {kind: index for index, (kind, _) in enumerate(ROLES.values())}
 
-ROLE_KINDS = {
-    "presidente del consiglio dei ministri": ("presidente-del-consiglio", "Presidente del Consiglio dei Ministri"),
-    "vice presidente": ("vice-presidente", "Vice Presidente del Consiglio dei Ministri"),
-    "ministro": ("ministro", "Ministro"),
-    "vice ministro": ("vice-ministro", "Vice Ministro"),
-    "sottosegretario di stato": ("sottosegretario", "Sottosegretario di Stato"),
+MEMBERS_QUERY = """
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?governo ?governoLabel ?membro ?ruolo ?nome ?cognome ?persona ?organo ?organoLabel ?inizio ?interim
+WHERE {
+  ?governo a ocd:governo ;
+           ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19> ;
+           rdfs:label ?governoLabel ;
+           ocd:rif_membroGoverno ?membro .
+  ?membro ocd:membroGoverno ?ruolo ;
+          foaf:firstName ?nome ;
+          foaf:surname ?cognome ;
+          ocd:rif_persona ?persona ;
+          ocd:rif_organoGoverno ?organo ;
+          ocd:startDate ?inizio .
+  ?organo rdfs:label ?organoLabel .
+  OPTIONAL { ?membro ocd:interim ?interim }
+  FILTER NOT EXISTS { ?membro ocd:endDate ?fine }
 }
-ROLE_RANK = {
-    "presidente-del-consiglio": 0,
-    "vice-presidente": 1,
-    "ministro": 2,
-    "vice-ministro": 3,
-    "sottosegretario": 4,
-}
+ORDER BY ?cognome ?nome ?ruolo
+""".strip()
 
 
 class SnapshotError(ValueError):
-    """Official roster or committed artifact failed validation."""
+    """Official payload or committed artifact failed validation."""
 
 
 def require(condition: bool, message: str) -> None:
@@ -71,36 +97,91 @@ def load_spec(path: Path = SPEC) -> dict[str, Any]:
     spec = json.loads(path.read_text(encoding="utf-8"))
     require(spec.get("datasetId") == DATASET, "dataset identity differs")
     source = spec.get("source") or {}
-    require(source.get("landingUrl") == LANDING, "landing diverge")
+    require(source.get("endpointUrl") == ENDPOINT, "endpoint diverge")
+    require(source.get("rosterUrl") == ROSTER_URL, "roster URL diverge")
     require(source.get("licenseUrl") == LICENSE_URL, "license URL diverge")
+    require(source.get("legislatureUri") == LEGISLATURE_URI, "legislature diverge")
     return spec
 
 
-def slugify(label: str) -> str:
-    folded = unicodedata.normalize("NFKD", label.replace("’", "'"))
-    ascii_only = "".join(char for char in folded if not unicodedata.combining(char))
-    slug = re.sub(r"[^a-z0-9]+", "-", ascii_only.casefold()).strip("-")
-    require(bool(slug), f"slug vuoto per: {label}")
-    return slug
+def slugify(value: str) -> str:
+    folded = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", folded.casefold())).strip("-")
 
 
-def area_label(section: str) -> str | None:
-    """Short area name derived from the official section heading."""
-    for prefix in ("Ministero degli ", "Ministero della ", "Ministero delle ", "Ministero del ", "Ministero dell'", "Ministero di ", "Ministro per i ", "Ministro per il ", "Ministro per la ", "Ministro per le ", "Ministro per gli ", "Ministro per lo ", "Ministro per l'"):
-        if section.startswith(prefix):
-            rest = section[len(prefix):].strip()
-            return rest[:1].upper() + rest[1:] if rest else None
-    return None
+def title_case_name(value: str) -> str:
+    def fix(token: str) -> str:
+        return re.sub(r"(^|['’\-])([a-zà-ü])", lambda m: m.group(1) + m.group(2).upper(), token.casefold())
+
+    return " ".join(fix(part) for part in value.strip().split())
+
+
+def value_of(row: dict[str, Any], key: str) -> str | None:
+    cell = row.get(key)
+    if not isinstance(cell, dict):
+        return None
+    raw = cell.get("value")
+    return raw.strip() if isinstance(raw, str) and raw.strip() else None
+
+
+def parse_uri(uri: str, pattern: re.Pattern[str], kind: str) -> str:
+    match = pattern.search(uri)
+    require(match is not None, f"{kind} URI non riconosciuto: {uri}")
+    assert match is not None
+    return match.group(1)
+
+
+def compact_date(value: str) -> str:
+    require(bool(re.fullmatch(r"\d{8}", value)), f"data OCD inattesa: {value!r}")
+    return f"{value[0:4]}-{value[4:6]}-{value[6:8]}"
+
+
+ACCENTED_ENDINGS = {"A'": "À", "I'": "Ì", "O'": "Ò", "U'": "Ù"}
+PROPER_NOUNS = {"pnrr": "PNRR", "made in italy": "Made in Italy", "parlamento": "Parlamento"}
+MONTHS_IT = (
+    "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+    "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre",
+)
+
+
+def italian_long_date(iso: str) -> str:
+    year, month, day = (int(part) for part in iso.split("-"))
+    return f"{day} {MONTHS_IT[month - 1]} {year}"
+
+
+def humanize_institution(label: str) -> str:
+    """Official labels are uppercase: restore sentence case, accents and proper nouns."""
+    text = " ".join(label.split())
+    for ending, accented in ACCENTED_ENDINGS.items():
+        text = re.sub(rf"{re.escape(ending)}(?=\s|$|,)", accented, text)
+    text = text.casefold()
+    for needle, replacement in PROPER_NOUNS.items():
+        text = re.sub(rf"\b{re.escape(needle)}\b", replacement, text)
+    return text[:1].upper() + text[1:]
+
+
+def classify_department(label: str) -> tuple[str, str]:
+    upper = label.upper()
+    if upper.startswith("PRESIDENZA DEL CONSIGLIO"):
+        return "presidenza", "Presidenza del Consiglio dei ministri"
+    if upper.startswith("MINISTERO"):
+        return "ministero", humanize_institution(label)
+    return "delega", humanize_institution(label)
+
+
+# --------------------------------------------------------------------------- #
+# governo.it roster (institutional pages of the members)
+# --------------------------------------------------------------------------- #
 
 
 class RosterParser(HTMLParser):
-    """Collect person links and captions of the roster in document order."""
+    """Collect the person links of the official roster in document order."""
 
     CAPTION_TAGS = {"h3", "h4", "p"}
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
-        self.events: list[tuple[str, str, str]] = []
+        self.people: list[tuple[str, str]] = []
         self._capture: str | None = None
         self._buffer: list[str] = []
         self._href: str | None = None
@@ -118,10 +199,8 @@ class RosterParser(HTMLParser):
         if tag != self._capture:
             return
         text = re.sub(r"\s+", " ", "".join(self._buffer)).strip()
-        if text and self._href:
-            self.events.append(("person", text, self._href.strip()))
-        elif text:
-            self.events.append(("caption", text, tag))
+        if text and self._href and MEMBER_URL_RE.match(self._href.strip()):
+            self.people.append((text, self._href.strip()))
         self._capture = None
         self._buffer = []
         self._href = None
@@ -131,302 +210,369 @@ class RosterParser(HTMLParser):
             self._buffer.append(data)
 
 
-def parse_roster(html: str) -> list[dict[str, Any]]:
-    """Turn the official page into ordered appointments with role and section."""
-    start = html.find(CONTENT_MARKER)
-    require(start >= 0, "regione di contenuto governo.it non trovata")
-    end = html.find("<footer", start)
-    require(end > start, "chiusura contenuto governo.it non trovata")
+def parse_roster_pages(html: str) -> dict[str, str]:
+    """Map the slug of every member published on governo.it to their page."""
     parser = RosterParser()
-    parser.feed(html[start:end])
+    parser.feed(html)
+    require(len(parser.people) >= 50, f"roster governo.it troppo corto: {len(parser.people)}")
+    pages: dict[str, str] = {}
+    for name, url in parser.people:
+        match = MEMBER_URL_RE.match(url)
+        assert match is not None
+        pages.setdefault(slugify(name), url)
+        pages.setdefault(re.sub(r"-\d+$", "", match.group(2)), url)
+    return pages
 
+
+def match_official_page(display_name: str, pages: dict[str, str]) -> str | None:
+    """governo.it may publish a longer legal name: accept a unique prefix match."""
+    slug = slugify(display_name)
+    if slug in pages:
+        return pages[slug]
+    candidates = sorted({url for key, url in pages.items() if key.startswith(f"{slug}-")})
+    return candidates[0] if len(candidates) == 1 else None
+
+
+# --------------------------------------------------------------------------- #
+# Snapshot assembly
+# --------------------------------------------------------------------------- #
+
+
+def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster_raw: bytes) -> dict[str, Any]:
+    rows = (payload.get("results") or {}).get("bindings") or []
+    require(len(rows) >= 50, f"incarichi di governo insufficienti: {len(rows)}")
+
+    governments = {
+        (value_of(row, "governo") or "", value_of(row, "governoLabel") or "")
+        for row in rows
+    }
+    require(len(governments) == 1, f"governi ambigui nella legislatura XIX: {sorted(governments)}")
+    government_uri, government_label = next(iter(governments))
+    government_id = parse_uri(government_uri, GOVERNMENT_RE, "governo")
+
+    pages = parse_roster_pages(roster_html)
+
+    departments: dict[str, dict[str, Any]] = {}
     appointments: list[dict[str, Any]] = []
-    section: str | None = None
-    pending: dict[str, Any] | None = None
+    people: dict[str, dict[str, Any]] = {}
+    seen: set[str] = set()
 
-    for kind, text, extra in parser.events:
-        if kind == "person":
-            if pending is not None:
-                appointments.append(pending)
-            match = MEMBER_URL_RE.match(extra)
-            require(match is not None, f"URL componente inatteso: {extra}")
-            assert match is not None
-            pending = {
-                "displayName": text,
-                "officialPage": extra,
-                "slug": match.group(2),
-                "section": section,
-                "roleCaption": None,
-            }
-            continue
-        if pending is not None and pending["roleCaption"] is None and text.casefold() in ROLE_KINDS:
-            pending["roleCaption"] = text
-            continue
-        if pending is not None:
-            appointments.append(pending)
-            pending = None
-        section = text
-    if pending is not None:
-        appointments.append(pending)
+    for row in rows:
+        role_raw = value_of(row, "ruolo")
+        require(role_raw is not None, "incarico senza ruolo")
+        assert role_raw is not None
+        role = " ".join(role_raw.split()).upper()
+        require(role in ROLES, f"ruolo di governo inatteso: {role!r}")
+        role_kind, role_label = ROLES[role]
 
-    require(len(appointments) >= 1, "nessun componente del governo trovato")
-    for index, appointment in enumerate(appointments):
-        caption = appointment["roleCaption"] or appointment["section"]
+        organ_uri = value_of(row, "organo")
+        organ_label = value_of(row, "organoLabel")
+        person_uri = value_of(row, "persona")
+        first = value_of(row, "nome")
+        last = value_of(row, "cognome")
+        member_uri = value_of(row, "membro")
+        since_raw = value_of(row, "inizio")
         require(
-            isinstance(caption, str) and caption.casefold() in ROLE_KINDS,
-            f"ruolo non riconosciuto per {appointment['displayName']}: {caption!r}",
+            None not in (organ_uri, organ_label, person_uri, first, last, member_uri, since_raw),
+            f"incarico incompleto: {member_uri}",
         )
-        appointment["roleCaption"] = caption
-        appointment["order"] = index
-    return appointments
+        assert organ_uri and organ_label and person_uri and first and last and member_uri and since_raw
 
+        department_id = parse_uri(organ_uri, ORGAN_RE, "organoGoverno")
+        kind, display = classify_department(" ".join(organ_label.split()))
+        departments.setdefault(department_id, {
+            "id": department_id,
+            "uri": organ_uri,
+            "label": " ".join(organ_label.split()),
+            "displayLabel": display,
+            "kind": kind,
+        })
 
-def build_snapshot(html: str, raw: bytes, *, observed_date: str) -> dict[str, Any]:
-    require(DATE_RE.match(observed_date) is not None, "observedDate non ISO")
-    appointments = parse_roster(html)
+        person_id = parse_uri(person_uri, PERSON_RE, "persona")
+        display_name = f"{title_case_name(first)} {title_case_name(last)}"
+        appointment_id = member_uri.rsplit("/", 1)[-1]
+        require(appointment_id not in seen, f"incarico duplicato: {appointment_id}")
+        seen.add(appointment_id)
 
-    departments: list[dict[str, Any]] = [
-        {"id": PRESIDENCY_ID, "label": PRESIDENCY_LABEL, "kind": "presidenza", "order": 0}
-    ]
-    department_index = {PRESIDENCY_ID: departments[0]}
-    members: list[dict[str, Any]] = []
-    seen_member_ids: set[str] = set()
-
-    for appointment in appointments:
-        section = appointment["section"]
-        require(isinstance(section, str) and section.strip(), f"{appointment['slug']}: sezione ufficiale assente")
-        assert isinstance(section, str)
-        if section.startswith("Ministero"):
-            department_id = slugify(section)
-            if department_id not in department_index:
-                entry = {
-                    "id": department_id,
-                    "label": section,
-                    "kind": "ministero",
-                    "order": len(departments),
-                }
-                departments.append(entry)
-                department_index[department_id] = entry
-        else:
-            department_id = PRESIDENCY_ID
-
-        role_kind, role_label = ROLE_KINDS[appointment["roleCaption"].casefold()]
-        member_id = f"{role_kind}-{appointment['slug']}"
-        require(member_id not in seen_member_ids, f"incarico duplicato: {member_id}")
-        seen_member_ids.add(member_id)
-        members.append({
-            "id": member_id,
-            "personSlug": appointment["slug"],
-            "displayName": appointment["displayName"].replace("’", "'"),
-            "officialPage": appointment["officialPage"],
+        appointment = {
+            "id": appointment_id,
+            "uri": member_uri,
+            "personaId": person_id,
+            "personName": display_name,
+            "role": role,
             "roleKind": role_kind,
             "roleLabel": role_label,
             "departmentId": department_id,
-            "sectionLabel": section,
-            "areaLabel": area_label(section),
-            "order": appointment["order"],
+            "since": compact_date(since_raw),
+            "interim": (value_of(row, "interim") or "0") == "1",
+        }
+        appointments.append(appointment)
+
+        person = people.setdefault(person_id, {
+            "personaId": person_id,
+            "uri": person_uri,
+            "firstName": title_case_name(first),
+            "lastName": title_case_name(last),
+            "displayName": display_name,
+            "appointmentIds": [],
+            "officialPage": match_official_page(display_name, pages),
         })
+        person["appointmentIds"].append(appointment_id)
 
-    people: list[dict[str, Any]] = []
-    by_slug: dict[str, dict[str, Any]] = {}
-    for member in members:
-        person = by_slug.get(member["personSlug"])
-        if person is None:
-            person = {
-                "slug": member["personSlug"],
-                "displayName": member["displayName"],
-                "officialPage": member["officialPage"],
-                "appointmentIds": [],
-            }
-            by_slug[member["personSlug"]] = person
-            people.append(person)
-        require(
-            person["displayName"] == member["displayName"],
-            f"{member['personSlug']}: nomi divergenti tra incarichi",
-        )
-        person["appointmentIds"].append(member["id"])
-    for person in people:
-        ranked = sorted(
-            (member for member in members if member["id"] in person["appointmentIds"]),
-            key=lambda item: ROLE_RANK[item["roleKind"]],
-        )
-        person["primaryRoleKind"] = ranked[0]["roleKind"]
-        person["primaryAppointmentId"] = ranked[0]["id"]
+    appointments.sort(key=lambda item: (ROLE_RANK[item["roleKind"]], item["personName"], item["id"]))
+    by_id = {item["id"]: item for item in appointments}
 
-    kinds = Counter(member["roleKind"] for member in members)
+    for person in people.values():
+        person["appointmentIds"] = sorted(
+            person["appointmentIds"],
+            key=lambda item: (ROLE_RANK[by_id[item]["roleKind"]], by_id[item]["since"]),
+        )
+        primary = by_id[person["appointmentIds"][0]]
+        person["primaryRoleKind"] = primary["roleKind"]
+        person["primaryRoleLabel"] = primary["roleLabel"]
+        person["primaryDepartmentId"] = primary["departmentId"]
+        person["since"] = min(by_id[item]["since"] for item in person["appointmentIds"])
+        person["biography"] = build_biography(person, by_id, departments)
+
+    for department in departments.values():
+        department["memberCount"] = sum(1 for item in appointments if item["departmentId"] == department["id"])
+
+    role_counts = Counter(item["roleKind"] for item in appointments)
     snapshot = {
-        "schemaVersion": 1,
-        "institution": "governo",
+        "schemaVersion": 2,
         "government": {
-            "id": "meloni",
-            "label": "Governo Meloni",
-            "landingUrl": LANDING,
+            "id": government_id,
+            "uri": government_uri,
+            "label": re.sub(r"\s*\(.*\)$", "", government_label).strip(),
+            "startDate": min(item["since"] for item in appointments if item["roleKind"] == "presidente-del-consiglio"),
+            "legislatureUri": LEGISLATURE_URI,
+            "landingUrl": ROSTER_URL,
         },
         "coverage": {
-            "appointments": len(members),
+            "appointments": len(appointments),
             "people": len(people),
             "departments": len(departments),
-            "ministries": sum(1 for entry in departments if entry["kind"] == "ministero"),
-            "presidentOfCouncil": kinds["presidente-del-consiglio"],
-            "vicePresidents": kinds["vice-presidente"],
-            "ministers": kinds["ministro"],
-            "viceMinisters": kinds["vice-ministro"],
-            "undersecretaries": kinds["sottosegretario"],
-            "ministersWithoutPortfolio": sum(
-                1 for member in members
-                if member["roleKind"] == "ministro" and member["departmentId"] == PRESIDENCY_ID
-            ),
+            "ministries": sum(1 for item in departments.values() if item["kind"] == "ministero"),
+            "ministers": role_counts["ministro"] + role_counts["ministro-senza-portafoglio"],
+            "viceMinisters": role_counts["vice-ministro"],
+            "undersecretaries": role_counts["sottosegretario"],
+            "peopleWithOfficialPage": sum(1 for item in people.values() if item["officialPage"]),
         },
         "source": {
-            "owner": "Presidenza del Consiglio dei Ministri",
-            "title": "governo.it — Vice Presidenti, Ministri e Sottosegretari",
+            "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
+            "title": "Open Data Camera — incarichi di governo in corso; governo.it — elenco ministri e sottosegretari",
+            "endpointUrl": ENDPOINT,
             "landingUrl": LANDING,
-            "license": "Riuso consentito citando la fonte (nota legale governo.it)",
+            "rosterUrl": ROSTER_URL,
+            "legislatureUri": LEGISLATURE_URI,
+            "license": "CC BY 4.0 (dati.camera.it); riuso con citazione della fonte (governo.it)",
             "licenseUrl": LICENSE_URL,
-            "observedDate": observed_date,
             "acquiredAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-            "responseBytes": len(raw),
-            "responseSha256": sha256_bytes(raw),
-            "cadence": "aggiornamento a ogni variazione della compagine di governo",
+            "responses": {
+                "members": {"bytes": len(raw), "sha256": sha256_bytes(raw)},
+                "roster": {"bytes": len(roster_raw), "sha256": sha256_bytes(roster_raw)},
+            },
+            "cadence": "continuo / aggiornamento RDF Camera a ogni decreto di nomina",
         },
         "caveats": [
-            "Elenco degli incarichi in corso pubblicato da governo.it: chi cumula due incarichi resta una sola persona con più incarichi dichiarati.",
-            "I ministri senza portafoglio sono ricondotti alla Presidenza del Consiglio con la delega indicata dalla fonte ufficiale.",
-            "governo.it non pubblica fotografie in questo elenco: le immagini provengono dai portali ufficiali di Camera e Senato solo per chi siede in Parlamento.",
-            "Non contiene importi: la spesa dei ministeri è pubblicata in /governi e nelle viste RGS.",
+            "Sono esposti solo gli incarichi senza data di fine: i componenti cessati non compaiono.",
+            "Chi cumula due incarichi compare una volta come persona con più incarichi, ordinati per rango istituzionale.",
+            "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
+            "L'identità persona è quella pubblicata dalla Camera: consente di collegare gli incarichi ai mandati parlamentari senza confronti sui nomi.",
+            "Le schede su governo.it non coprono tutti i componenti: quando mancano, il collegamento resta vuoto invece di essere dedotto.",
+            "Nessun importo in questo snapshot: per la spesa dei ministeri usare /governi e le viste RGS.",
         ],
-        "departments": departments,
-        "members": members,
-        "people": people,
+        "departments": sorted(departments.values(), key=lambda item: (item["kind"] != "presidenza", item["displayLabel"])),
+        "appointments": appointments,
+        "people": sorted(people.values(), key=lambda item: (ROLE_RANK[item["primaryRoleKind"]], item["lastName"], item["firstName"])),
     }
     validate_snapshot(snapshot)
     return snapshot
 
 
-def validate_snapshot(payload: dict[str, Any], *, expected_sha: str | None = None) -> None:
-    require(payload.get("schemaVersion") == 1, "schemaVersion inattesa")
-    require(payload.get("institution") == "governo", "institution inattesa")
+def build_biography(
+    person: dict[str, Any],
+    by_id: dict[str, dict[str, Any]],
+    departments: dict[str, dict[str, Any]],
+) -> str:
+    parts: list[str] = []
+    for appointment_id in person["appointmentIds"]:
+        appointment = by_id[appointment_id]
+        department = departments[appointment["departmentId"]]
+        if department["kind"] == "ministero":
+            where = f" — {department['displayLabel']}"
+        elif department["kind"] == "delega":
+            where = f" con delega: {department['displayLabel']}"
+        else:
+            where = " presso la Presidenza del Consiglio dei ministri"
+        interim = " (incarico ad interim)" if appointment["interim"] else ""
+        parts.append(f"{appointment['roleLabel']}{where}, dal {italian_long_date(appointment['since'])}{interim}.")
+    return " ".join(parts)
+
+
+def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = None) -> None:
+    require(payload.get("schemaVersion") == 2, "schemaVersion inattesa")
     government = payload.get("government") or {}
-    require(government.get("id") == "meloni", "government.id inatteso")
-    require(government.get("landingUrl") == LANDING, "government.landingUrl diverge")
-
-    members = payload.get("members") or []
-    people = payload.get("people") or []
-    departments = payload.get("departments") or []
-    require(isinstance(members, list) and len(members) >= 40, "incarichi assenti o troppo pochi")
-    require(isinstance(people, list) and len(people) >= 40, "persone assenti o troppo poche")
-    require(isinstance(departments, list) and len(departments) >= 10, "dicasteri assenti")
-
-    department_ids = {entry["id"] for entry in departments}
-    require(len(department_ids) == len(departments), "dicasteri duplicati")
-    require(PRESIDENCY_ID in department_ids, "Presidenza del Consiglio assente")
-    for entry in departments:
-        require(entry.get("kind") in {"presidenza", "ministero"}, f"{entry.get('id')}: kind inatteso")
-        require(isinstance(entry.get("label"), str) and entry["label"].strip(), f"{entry.get('id')}: label")
-
-    member_ids: set[str] = set()
-    for member in members:
-        mid = member.get("id")
-        require(isinstance(mid, str) and mid not in member_ids, f"incarico duplicato: {mid}")
-        member_ids.add(str(mid))
-        require(member.get("roleKind") in ROLE_RANK, f"{mid}: roleKind inatteso")
-        require(member.get("departmentId") in department_ids, f"{mid}: dicastero sconosciuto")
-        require(isinstance(member.get("displayName"), str) and member["displayName"].strip(), f"{mid}: nome")
-        parsed = urlparse(str(member.get("officialPage") or ""))
-        require(parsed.scheme == "https" and parsed.netloc == "www.governo.it", f"{mid}: pagina ufficiale")
-        require(MEMBER_URL_RE.match(str(member["officialPage"])) is not None, f"{mid}: URL fuori schema")
-
-    slugs = {person["slug"] for person in people}
-    require(len(slugs) == len(people), "persone duplicate")
-    require(slugs == {member["personSlug"] for member in members}, "persone e incarichi non riconciliano")
-    linked = sorted(pid for person in people for pid in person["appointmentIds"])
-    require(linked == sorted(member_ids), "collegamenti incarico-persona non riconciliano")
-    for person in people:
-        require(person.get("primaryRoleKind") in ROLE_RANK, f"{person.get('slug')}: ruolo principale")
-        require(person.get("primaryAppointmentId") in member_ids, f"{person.get('slug')}: incarico principale")
-
-    coverage = payload.get("coverage") or {}
-    require(coverage.get("appointments") == len(members), "coverage.appointments non riconcilia")
-    require(coverage.get("people") == len(people), "coverage.people non riconcilia")
-    require(coverage.get("departments") == len(departments), "coverage.departments non riconcilia")
-    kinds = Counter(member["roleKind"] for member in members)
-    for key, role in (
-        ("presidentOfCouncil", "presidente-del-consiglio"),
-        ("vicePresidents", "vice-presidente"),
-        ("ministers", "ministro"),
-        ("viceMinisters", "vice-ministro"),
-        ("undersecretaries", "sottosegretario"),
-    ):
-        require(coverage.get(key) == kinds[role], f"coverage.{key} non riconcilia")
-    require(coverage.get("presidentOfCouncil") == 1, "Presidente del Consiglio non unico")
-    require(coverage.get("vicePresidents", 0) >= 1, "Vice Presidenti assenti")
-    require(coverage.get("ministries") == sum(1 for entry in departments if entry["kind"] == "ministero"), "coverage.ministries")
-    require(sum(kinds.values()) == len(members), "somma ruoli non riconcilia")
+    require(bool(GOVERNMENT_RE.search(str(government.get("uri") or ""))), "government.uri")
+    require(government.get("legislatureUri") == LEGISLATURE_URI, "government.legislatureUri")
+    require(bool(DATE_RE.match(str(government.get("startDate") or ""))), "government.startDate")
+    require(isinstance(government.get("label"), str) and government["label"].strip(), "government.label")
 
     source = payload.get("source") or {}
-    require(source.get("landingUrl") == LANDING, "source.landingUrl diverge")
-    require(source.get("licenseUrl") == LICENSE_URL, "source.licenseUrl diverge")
-    require(DATE_RE.match(str(source.get("observedDate") or "")) is not None, "observedDate invalida")
-    require(isinstance(source.get("responseBytes"), int) and source["responseBytes"] > 0, "responseBytes")
-    require(SHA_RE.match(str(source.get("responseSha256") or "")) is not None, "responseSha256 invalido")
-    require(isinstance(payload.get("caveats"), list) and payload["caveats"], "caveats assenti")
-    if expected_sha:
-        require(source["responseSha256"] == expected_sha, "responseSha256 diverge dal source lock")
+    for key, expected in (("endpointUrl", ENDPOINT), ("landingUrl", LANDING), ("rosterUrl", ROSTER_URL), ("licenseUrl", LICENSE_URL)):
+        require(source.get(key) == expected, f"source.{key} diverge")
+    responses = source.get("responses") or {}
+    require(set(responses) == {"members", "roster"}, "response set inatteso")
+    for key, response in responses.items():
+        require(isinstance(response.get("bytes"), int) and response["bytes"] > 0, f"{key}.bytes")
+        require(bool(SHA_RE.match(str(response.get("sha256") or ""))), f"{key}.sha256")
+        if locks:
+            require(response == locks.get(key), f"{key}: source lock diverge")
+
+    departments = payload.get("departments") or []
+    appointments = payload.get("appointments") or []
+    people = payload.get("people") or []
+    require(isinstance(departments, list) and len(departments) >= 15, "dicasteri insufficienti")
+    require(isinstance(appointments, list) and len(appointments) >= 50, "incarichi insufficienti")
+    require(isinstance(people, list) and len(people) >= 50, "componenti insufficienti")
+
+    department_ids = {item["id"] for item in departments}
+    require(len(department_ids) == len(departments), "dicasteri duplicati")
+    presidency = [item for item in departments if item["kind"] == "presidenza"]
+    require(len(presidency) == 1, "Presidenza del Consiglio non unica")
+    for department in departments:
+        require(item_kind := department.get("kind") in {"presidenza", "ministero", "delega"}, "kind dicastero")
+        require(isinstance(department.get("displayLabel"), str) and department["displayLabel"].strip(), "displayLabel")
+        counted = sum(1 for item in appointments if item["departmentId"] == department["id"])
+        require(department.get("memberCount") == counted, f"{department['id']}: memberCount non riconcilia")
+
+    appointment_ids = {item["id"] for item in appointments}
+    require(len(appointment_ids) == len(appointments), "incarichi duplicati")
+    premiers = [item for item in appointments if item["roleKind"] == "presidente-del-consiglio"]
+    require(len(premiers) == 1, f"Presidente del Consiglio non unico: {len(premiers)}")
+    for appointment in appointments:
+        require(appointment.get("roleKind") in ROLE_RANK, "roleKind inatteso")
+        require(appointment.get("role") in ROLES, "role inatteso")
+        require(ROLES[appointment["role"]] == (appointment["roleKind"], appointment["roleLabel"]), "ruolo incoerente")
+        require(appointment.get("departmentId") in department_ids, "dicastero sconosciuto")
+        require(bool(DATE_RE.match(str(appointment.get("since") or ""))), "since non ISO")
+        require(isinstance(appointment.get("interim"), bool), "interim non booleano")
+        require(str(appointment.get("personaId") or "").isdigit(), "personaId invalido")
+
+    person_ids = {item["personaId"] for item in people}
+    require(len(person_ids) == len(people), "persone duplicate")
+    require({item["personaId"] for item in appointments} == person_ids, "persone e incarichi non riconciliano")
+    for person in people:
+        pid = person["personaId"]
+        for field in ("firstName", "lastName", "displayName", "biography"):
+            require(isinstance(person.get(field), str) and person[field].strip(), f"{pid}.{field}")
+        ids = person.get("appointmentIds") or []
+        require(bool(ids) and all(item in appointment_ids for item in ids), f"{pid}: incarichi sconosciuti")
+        require(person.get("primaryRoleKind") in ROLE_RANK, f"{pid}: primaryRoleKind")
+        require(person.get("primaryDepartmentId") in department_ids, f"{pid}: primaryDepartmentId")
+        require(bool(DATE_RE.match(str(person.get("since") or ""))), f"{pid}: since")
+        page = person.get("officialPage")
+        if page is not None:
+            require(bool(MEMBER_URL_RE.match(str(page))), f"{pid}: scheda governo.it fuori schema")
+
+    coverage = payload.get("coverage") or {}
+    require(coverage.get("appointments") == len(appointments), "coverage.appointments")
+    require(coverage.get("people") == len(people), "coverage.people")
+    require(coverage.get("departments") == len(departments), "coverage.departments")
+    role_counts = Counter(item["roleKind"] for item in appointments)
+    require(coverage.get("ministers") == role_counts["ministro"] + role_counts["ministro-senza-portafoglio"], "coverage.ministers")
+    require(coverage.get("viceMinisters") == role_counts["vice-ministro"], "coverage.viceMinisters")
+    require(coverage.get("undersecretaries") == role_counts["sottosegretario"], "coverage.undersecretaries")
+    require(
+        coverage.get("peopleWithOfficialPage") == sum(1 for item in people if item.get("officialPage")),
+        "coverage.peopleWithOfficialPage non riconcilia",
+    )
+    require(coverage.get("peopleWithOfficialPage", 0) >= int(len(people) * 0.8), "schede governo.it sotto soglia")
+
+    caveats = payload.get("caveats") or []
+    require(isinstance(caveats, list) and len(caveats) >= 4, "caveats assenti")
 
 
-def fetch_landing() -> tuple[str, bytes]:
+# --------------------------------------------------------------------------- #
+# Official fetching
+# --------------------------------------------------------------------------- #
+
+
+def fetch_sparql(query: str) -> tuple[dict[str, Any], bytes]:
+    body = urllib.parse.urlencode({"query": query, "format": "application/sparql-results+json"}).encode("utf-8")
     request = urllib.request.Request(
-        LANDING,
+        ENDPOINT,
+        data=body,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/sparql-results+json",
+            "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+        },
+        method="POST",
+    )
+    last_error: Exception | None = None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(request, context=ssl.create_default_context(), timeout=180) as response:
+                raw = response.read()
+            return json.loads(raw), raw
+        except (urllib.error.URLError, json.JSONDecodeError) as error:
+            last_error = error
+            time.sleep(3 * (attempt + 1))
+    raise SnapshotError(f"SPARQL Camera non raggiungibile: {last_error}")
+
+
+def fetch_roster() -> tuple[str, bytes]:
+    request = urllib.request.Request(
+        ROSTER_URL,
         headers={"User-Agent": USER_AGENT, "Accept": "text/html"},
         method="GET",
     )
-    try:
-        with urllib.request.urlopen(request, context=ssl.create_default_context(), timeout=120) as response:
-            raw = response.read()
-    except urllib.error.URLError as error:
-        raise SnapshotError(f"governo.it non raggiungibile: {error}") from error
-    require(len(raw) > 20000, "risposta governo.it troppo breve")
-    return raw.decode("utf-8"), raw
+    last_error: Exception | None = None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(request, context=ssl.create_default_context(), timeout=120) as response:
+                raw = response.read()
+            require(len(raw) > 20000, "elenco governo.it troppo breve")
+            return raw.decode("utf-8", errors="replace"), raw
+        except urllib.error.URLError as error:
+            last_error = error
+            time.sleep(3 * (attempt + 1))
+    raise SnapshotError(f"elenco governo.it non raggiungibile: {last_error}")
 
 
 def check_committed(spec: dict[str, Any]) -> None:
     payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    lock = (spec.get("source") or {}).get("committedResponse") or {}
-    expected_sha = str(lock.get("sha256") or "")
-    validate_snapshot(payload, expected_sha=expected_sha or None)
-    if lock.get("bytes"):
-        require(payload["source"]["responseBytes"] == lock["bytes"], "responseBytes diverge dal lock")
-    require(payload["source"]["observedDate"] == spec["period"]["observedDate"], "observedDate diverge dallo spec")
+    locks = (spec.get("source") or {}).get("committedResponses") or None
+    validate_snapshot(payload, locks=locks)
     floor = spec.get("coverageFloor") or {}
     coverage = payload["coverage"]
-    require(coverage["appointments"] >= floor.get("appointments", 60), "appointments sotto floor")
-    require(coverage["people"] >= floor.get("people", 58), "people sotto floor")
-    require(coverage["ministries"] >= floor.get("ministries", 14), "ministries sotto floor")
-    require(coverage["ministers"] >= floor.get("ministers", 20), "ministers sotto floor")
+    for key, minimum in floor.items():
+        require(coverage.get(key, 0) >= int(minimum), f"coverage {key} sotto floor")
     print(
         f"OK governo-meloni: {coverage['appointments']} incarichi, {coverage['people']} persone, "
-        f"{coverage['ministries']} ministeri"
+        f"{coverage['departments']} strutture, {coverage['peopleWithOfficialPage']} schede ufficiali"
     )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="valida lo snapshot committato senza rete")
-    parser.add_argument("--write", action="store_true", help="scarica governo.it e riscrive lo snapshot")
+    parser.add_argument("--check", action="store_true")
+    parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
     if args.check == args.write:
-        raise SystemExit("specificare esattamente una azione: --check oppure --write")
+        raise SystemExit("specificare esattamente --check oppure --write")
 
     spec = load_spec()
     if args.check:
         check_committed(spec)
         return 0
 
-    html, raw = fetch_landing()
-    snapshot = build_snapshot(html, raw, observed_date=datetime.now(timezone.utc).date().isoformat())
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    payload, raw = fetch_sparql(MEMBERS_QUERY)
+    roster_html, roster_raw = fetch_roster()
+    snapshot = build_snapshot(payload, raw, roster_html, roster_raw)
     OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['appointments']} incarichi)")
+    print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['appointments']} appointments)")
     return 0
 
 

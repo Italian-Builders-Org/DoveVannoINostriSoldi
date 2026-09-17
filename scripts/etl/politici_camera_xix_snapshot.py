@@ -52,6 +52,12 @@ ITALIAN_MONTHS = {
     "gennaio": 1, "febbraio": 2, "marzo": 3, "aprile": 4, "maggio": 5, "giugno": 6,
     "luglio": 7, "agosto": 8, "settembre": 9, "ottobre": 10, "novembre": 11, "dicembre": 12,
 }
+MONTH_NAMES = tuple(ITALIAN_MONTHS)
+
+
+def italian_long_date(iso: str) -> str:
+    year, month, day = (int(part) for part in iso.split("-"))
+    return f"{day} {MONTH_NAMES[month - 1]} {year}"
 
 GROUP_ROLE_LABELS = {
     "PRESIDENTE": "Presidente del gruppo",
@@ -359,7 +365,9 @@ def build_biography(person: dict[str, Any]) -> str:
             where += f" ({person['college']})"
         parts.append(where + ".")
     if person.get("birthDate") and person.get("birthPlace"):
-        parts.append(f"Nascita: {person['birthDate']}, {person['birthPlace']}.")
+        place = " ".join(part.capitalize() for part in person["birthPlace"].split())
+        parts.append(f"Nata a {place} il {italian_long_date(person['birthDate'])}." if female
+                     else f"Nato a {place} il {italian_long_date(person['birthDate'])}.")
     if person.get("professionNote"):
         parts.append(f"Formazione o note professionali: {person['professionNote']}.")
     return " ".join(parts)

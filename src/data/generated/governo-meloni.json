@@ -1,1597 +1,2131 @@
 {
-  "schemaVersion": 1,
-  "institution": "governo",
+  "schemaVersion": 2,
   "government": {
-    "id": "meloni",
-    "label": "Governo Meloni",
+    "id": "g202",
+    "uri": "http://dati.camera.it/ocd/governo.rdf/g202",
+    "label": "I Governo Meloni",
+    "startDate": "2022-10-21",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
     "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari"
   },
   "coverage": {
-    "appointments": 67,
-    "people": 65,
-    "departments": 16,
+    "appointments": 68,
+    "people": 66,
+    "departments": 25,
     "ministries": 15,
-    "presidentOfCouncil": 1,
-    "vicePresidents": 2,
     "ministers": 24,
     "viceMinisters": 7,
-    "undersecretaries": 33,
-    "ministersWithoutPortfolio": 9
+    "undersecretaries": 34,
+    "peopleWithOfficialPage": 65
   },
   "source": {
-    "owner": "Presidenza del Consiglio dei Ministri",
-    "title": "governo.it — Vice Presidenti, Ministri e Sottosegretari",
-    "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
-    "license": "Riuso consentito citando la fonte (nota legale governo.it)",
-    "licenseUrl": "https://www.governo.it/it/note-legali",
-    "observedDate": "2026-09-17",
-    "acquiredAt": "2026-09-17T16:59:58+00:00",
-    "responseBytes": 105506,
-    "responseSha256": "5b964389ef4be0117e27389cff7c1ed232c0e20832ceee0261affa77b9468e48",
-    "cadence": "aggiornamento a ogni variazione della compagine di governo"
+    "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
+    "title": "Open Data Camera — incarichi di governo in corso; governo.it — elenco ministri e sottosegretari",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://dati.camera.it/",
+    "rosterUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "license": "CC BY 4.0 (dati.camera.it); riuso con citazione della fonte (governo.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "acquiredAt": "2026-09-17T19:06:32+00:00",
+    "responses": {
+      "members": {
+        "bytes": 69836,
+        "sha256": "5371203721327e1bb6a0b2b2c4b05f50f49d79e5aa4e9ea6b4a46fd1006849ba"
+      },
+      "roster": {
+        "bytes": 105504,
+        "sha256": "198f3f6732ee53a1c4b953328157f739478492129fd3d1855ca172a6720c8568"
+      }
+    },
+    "cadence": "continuo / aggiornamento RDF Camera a ogni decreto di nomina"
   },
   "caveats": [
-    "Elenco degli incarichi in corso pubblicato da governo.it: chi cumula due incarichi resta una sola persona con più incarichi dichiarati.",
-    "I ministri senza portafoglio sono ricondotti alla Presidenza del Consiglio con la delega indicata dalla fonte ufficiale.",
-    "governo.it non pubblica fotografie in questo elenco: le immagini provengono dai portali ufficiali di Camera e Senato solo per chi siede in Parlamento.",
-    "Non contiene importi: la spesa dei ministeri è pubblicata in /governi e nelle viste RGS."
+    "Sono esposti solo gli incarichi senza data di fine: i componenti cessati non compaiono.",
+    "Chi cumula due incarichi compare una volta come persona con più incarichi, ordinati per rango istituzionale.",
+    "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
+    "L'identità persona è quella pubblicata dalla Camera: consente di collegare gli incarichi ai mandati parlamentari senza confronti sui nomi.",
+    "Le schede su governo.it non coprono tutti i componenti: quando mancano, il collegamento resta vuoto invece di essere dedotto.",
+    "Nessun importo in questo snapshot: per la spesa dei ministeri usare /governi e le viste RGS."
   ],
   "departments": [
     {
-      "id": "presidenza-del-consiglio",
-      "label": "Presidenza del Consiglio dei Ministri",
+      "id": "og202_1",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_1",
+      "label": "PRESIDENZA DEL CONSIGLIO DEI MINISTRI",
+      "displayLabel": "Presidenza del Consiglio dei ministri",
       "kind": "presidenza",
-      "order": 0
+      "memberCount": 11
     },
     {
-      "id": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
-      "label": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
-      "kind": "ministero",
-      "order": 1
+      "id": "og202_745",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_745",
+      "label": "AFFARI EUROPEI, IL PNRR E LE POLITICHE DI COESIONE",
+      "displayLabel": "Affari europei, il PNRR e le politiche di coesione",
+      "kind": "delega",
+      "memberCount": 1
     },
     {
-      "id": "ministero-dell-interno",
-      "label": "Ministero dell'Interno",
-      "kind": "ministero",
-      "order": 2
+      "id": "og202_424",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_424",
+      "label": "AFFARI REGIONALI E AUTONOMIE",
+      "displayLabel": "Affari regionali e autonomie",
+      "kind": "delega",
+      "memberCount": 1
     },
     {
-      "id": "ministero-della-giustizia",
-      "label": "Ministero della Giustizia",
-      "kind": "ministero",
-      "order": 3
+      "id": "og202_646",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_646",
+      "label": "DISABILITA'",
+      "displayLabel": "Disabilità",
+      "kind": "delega",
+      "memberCount": 1
     },
     {
-      "id": "ministero-della-difesa",
-      "label": "Ministero della Difesa",
-      "kind": "ministero",
-      "order": 4
+      "id": "og202_687",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_687",
+      "label": "FAMIGLIA, NATALITÀ E PARI OPPORTUNITÀ",
+      "displayLabel": "Famiglia, natalità e pari opportunità",
+      "kind": "delega",
+      "memberCount": 1
     },
     {
-      "id": "ministero-dell-economia-e-delle-finanze",
-      "label": "Ministero dell'Economia e delle Finanze",
+      "id": "og202_504",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_504",
+      "label": "MINISTERO DEGLI AFFARI ESTERI E DELLA COOPERAZIONE INTERNAZIONALE",
+      "displayLabel": "Ministero degli affari esteri e della cooperazione internazionale",
       "kind": "ministero",
-      "order": 5
+      "memberCount": 4
     },
     {
-      "id": "ministero-delle-imprese-e-del-made-in-italy",
-      "label": "Ministero delle Imprese e del Made in Italy",
+      "id": "og202_285",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_285",
+      "label": "MINISTERO DEL LAVORO E DELLE POLITICHE SOCIALI",
+      "displayLabel": "Ministero del lavoro e delle politiche sociali",
       "kind": "ministero",
-      "order": 6
+      "memberCount": 3
     },
     {
-      "id": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
-      "label": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
+      "id": "og202_665",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_665",
+      "label": "MINISTERO DEL TURISMO",
+      "displayLabel": "Ministero del turismo",
       "kind": "ministero",
-      "order": 7
+      "memberCount": 1
     },
     {
-      "id": "ministero-dell-ambiente-e-della-sicurezza-energetica",
-      "label": "Ministero dell'Ambiente e della Sicurezza energetica",
+      "id": "og202_705",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_705",
+      "label": "MINISTERO DELL'AGRICOLTURA, DELLA SOVRANITÀ ALIMENTARE E DELLE FORESTE",
+      "displayLabel": "Ministero dell'agricoltura, della sovranità alimentare e delle foreste",
       "kind": "ministero",
-      "order": 8
+      "memberCount": 3
     },
     {
-      "id": "ministero-delle-infrastrutture-e-dei-trasporti",
-      "label": "Ministero delle Infrastrutture e dei Trasporti",
+      "id": "og202_706",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_706",
+      "label": "MINISTERO DELL'AMBIENTE E DELLA SICUREZZA ENERGETICA",
+      "displayLabel": "Ministero dell'ambiente e della sicurezza energetica",
       "kind": "ministero",
-      "order": 9
+      "memberCount": 3
     },
     {
-      "id": "ministero-del-lavoro-e-delle-politiche-sociali",
-      "label": "Ministero del Lavoro e delle Politiche Sociali",
+      "id": "og202_52",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_52",
+      "label": "MINISTERO DELL'ECONOMIA E DELLE FINANZE",
+      "displayLabel": "Ministero dell'economia e delle finanze",
       "kind": "ministero",
-      "order": 10
+      "memberCount": 5
     },
     {
-      "id": "ministero-dell-istruzione-e-del-merito",
-      "label": "Ministero dell'Istruzione e del Merito",
+      "id": "og202_15",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_15",
+      "label": "MINISTERO DELL'INTERNO",
+      "displayLabel": "Ministero dell'interno",
       "kind": "ministero",
-      "order": 11
+      "memberCount": 4
     },
     {
-      "id": "ministero-dell-universita-e-della-ricerca",
-      "label": "Ministero dell'Università e della Ricerca",
+      "id": "og202_708",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_708",
+      "label": "MINISTERO DELL'ISTRUZIONE E DEL MERITO",
+      "displayLabel": "Ministero dell'istruzione e del merito",
       "kind": "ministero",
-      "order": 12
+      "memberCount": 2
     },
     {
-      "id": "ministero-della-cultura",
-      "label": "Ministero della Cultura",
+      "id": "og202_626",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_626",
+      "label": "MINISTERO DELL'UNIVERSITA' E DELLA RICERCA",
+      "displayLabel": "Ministero dell'università e della ricerca",
       "kind": "ministero",
-      "order": 13
+      "memberCount": 1
     },
     {
-      "id": "ministero-del-turismo",
-      "label": "Ministero del Turismo",
+      "id": "og202_664",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_664",
+      "label": "MINISTERO DELLA CULTURA",
+      "displayLabel": "Ministero della cultura",
       "kind": "ministero",
-      "order": 14
+      "memberCount": 3
     },
     {
-      "id": "ministero-della-salute",
-      "label": "Ministero della Salute",
+      "id": "og202_6",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_6",
+      "label": "MINISTERO DELLA DIFESA",
+      "displayLabel": "Ministero della difesa",
       "kind": "ministero",
-      "order": 15
+      "memberCount": 3
+    },
+    {
+      "id": "og202_49",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_49",
+      "label": "MINISTERO DELLA GIUSTIZIA",
+      "displayLabel": "Ministero della giustizia",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_264",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_264",
+      "label": "MINISTERO DELLA SALUTE",
+      "displayLabel": "Ministero della salute",
+      "kind": "ministero",
+      "memberCount": 2
+    },
+    {
+      "id": "og202_704",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_704",
+      "label": "MINISTERO DELLE IMPRESE E DEL MADE IN ITALY",
+      "displayLabel": "Ministero delle imprese e del Made in Italy",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_707",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_707",
+      "label": "MINISTERO DELLE INFRASTRUTTURE E DEI TRASPORTI",
+      "displayLabel": "Ministero delle infrastrutture e dei trasporti",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_724",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_724",
+      "label": "PROTEZIONE CIVILE E LE POLITICHE DEL MARE",
+      "displayLabel": "Protezione civile e le politiche del mare",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_545",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_545",
+      "label": "PUBBLICA AMMINISTRAZIONE",
+      "displayLabel": "Pubblica amministrazione",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_524",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_524",
+      "label": "RAPPORTI CON IL PARLAMENTO",
+      "displayLabel": "Rapporti con il Parlamento",
+      "kind": "delega",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_725",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_725",
+      "label": "RIFORME ISTITUZIONALI E LA SEMPLIFICAZIONE NORMATIVA",
+      "displayLabel": "Riforme istituzionali e la semplificazione normativa",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_686",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_686",
+      "label": "SPORT E GIOVANI",
+      "displayLabel": "Sport e giovani",
+      "kind": "delega",
+      "memberCount": 1
     }
   ],
-  "members": [
+  "appointments": [
     {
-      "id": "presidente-del-consiglio-giorgia-meloni",
-      "personSlug": "giorgia-meloni",
-      "displayName": "Giorgia Meloni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
+      "id": "mg302103_1_202_1_20221021",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302103_1_202_1_20221021",
+      "personaId": "302103",
+      "personName": "Giorgia Meloni",
+      "role": "PRESIDENTE DEL CONSIGLIO",
       "roleKind": "presidente-del-consiglio",
-      "roleLabel": "Presidente del Consiglio dei Ministri",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Presidente del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 0
+      "roleLabel": "Presidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-21",
+      "interim": false
     },
     {
-      "id": "vice-presidente-antonio-tajani",
-      "personSlug": "antonio-tajani",
-      "displayName": "Antonio Tajani",
-      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "id": "mg308838_2_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308838_2_202_1_20221023",
+      "personaId": "308838",
+      "personName": "Antonio Tajani",
+      "role": "VICEPRESIDENTE DEL CONSIGLIO",
       "roleKind": "vice-presidente",
-      "roleLabel": "Vice Presidente del Consiglio dei Ministri",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Presidente del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 1
+      "roleLabel": "Vicepresidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "vice-presidente-matteo-salvini",
-      "personSlug": "matteo-salvini",
-      "displayName": "Matteo Salvini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
+      "id": "mg302741_2_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_2_202_1_20221023",
+      "personaId": "302741",
+      "personName": "Matteo Salvini",
+      "role": "VICEPRESIDENTE DEL CONSIGLIO",
       "roleKind": "vice-presidente",
-      "roleLabel": "Vice Presidente del Consiglio dei Ministri",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Presidente del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 2
+      "roleLabel": "Vicepresidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "sottosegretario-alfredo-mantovano",
-      "personSlug": "alfredo-mantovano",
-      "displayName": "Alfredo Mantovano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 3
-    },
-    {
-      "id": "sottosegretario-alessio-butti",
-      "personSlug": "alessio-butti",
-      "displayName": "Alessio Butti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 4
-    },
-    {
-      "id": "sottosegretario-alberto-barachini",
-      "personSlug": "alberto-barachini",
-      "displayName": "Alberto Barachini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 5
-    },
-    {
-      "id": "sottosegretario-alessandro-morelli",
-      "personSlug": "alessandro-morelli",
-      "displayName": "Alessandro Morelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 6
-    },
-    {
-      "id": "sottosegretario-giovanbattista-fazzolari",
-      "personSlug": "giovanbattista-fazzolari",
-      "displayName": "Giovanbattista Fazzolari",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 7
-    },
-    {
-      "id": "sottosegretario-luigi-sbarra",
-      "personSlug": "luigi-sbarra",
-      "displayName": "Luigi Sbarra",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
-      "areaLabel": null,
-      "order": 8
-    },
-    {
-      "id": "ministro-luca-ciriani",
-      "personSlug": "luca-ciriani",
-      "displayName": "Luca Ciriani",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "id": "mg39200_3_202_704_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg39200_3_202_704_20221112",
+      "personaId": "39200",
+      "personName": "Adolfo Urso",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
-      "areaLabel": "Rapporti con il Parlamento",
-      "order": 9
+      "departmentId": "og202_704",
+      "since": "2022-11-12",
+      "interim": false
     },
     {
-      "id": "sottosegretario-giuseppina-castiello",
-      "personSlug": "giuseppina-castiello",
-      "displayName": "Giuseppina Castiello",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
-      "areaLabel": "Rapporti con il Parlamento",
-      "order": 10
-    },
-    {
-      "id": "sottosegretario-matilde-siracusano",
-      "personSlug": "matilde-siracusano",
-      "displayName": "Matilde Siracusano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
-      "areaLabel": "Rapporti con il Parlamento",
-      "order": 11
-    },
-    {
-      "id": "sottosegretario-paolo-barelli",
-      "personSlug": "paolo-barelli",
-      "displayName": "Paolo Barelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
-      "areaLabel": "Rapporti con il Parlamento",
-      "order": 12
-    },
-    {
-      "id": "ministro-paolo-zangrillo",
-      "personSlug": "paolo-zangrillo",
-      "displayName": "Paolo Zangrillo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "id": "mg309180_3_202_664_20240906",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309180_3_202_664_20240906",
+      "personaId": "309180",
+      "personName": "Alessandro Giuli",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per la Pubblica Amministrazione",
-      "areaLabel": "Pubblica Amministrazione",
-      "order": 13
+      "departmentId": "og202_664",
+      "since": "2024-09-06",
+      "interim": false
     },
     {
-      "id": "ministro-roberto-calderoli",
-      "personSlug": "roberto-calderoli",
-      "displayName": "Roberto Calderoli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "id": "mg302841_3_202_626_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302841_3_202_626_20221023",
+      "personaId": "302841",
+      "personName": "Anna Maria Bernini",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per gli Affari regionali e le Autonomie",
-      "areaLabel": "Affari regionali e le Autonomie",
-      "order": 14
+      "departmentId": "og202_626",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "ministro-sebastiano-musumeci",
-      "personSlug": "sebastiano-musumeci",
-      "displayName": "Nello Musumeci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "id": "mg308838_3_202_504_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308838_3_202_504_20221023",
+      "personaId": "308838",
+      "personName": "Antonio Tajani",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per la Protezione civile e le Politiche del Mare",
-      "areaLabel": "Protezione civile e le Politiche del Mare",
-      "order": 15
+      "departmentId": "og202_504",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "ministro-andrea-abodi",
-      "personSlug": "andrea-abodi",
-      "displayName": "Andrea Abodi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "id": "mg308798_3_202_49_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308798_3_202_49_20221023",
+      "personaId": "308798",
+      "personName": "Carlo Nordio",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per lo Sport e i Giovani",
-      "areaLabel": "Sport e i Giovani",
-      "order": 16
+      "departmentId": "og202_49",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "ministro-eugenia-maria-roccella",
-      "personSlug": "eugenia-maria-roccella",
-      "displayName": "Eugenia Maria Roccella",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "id": "mg307463_3_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307463_3_202_705_20221112",
+      "personaId": "307463",
+      "personName": "Francesco Lollobrigida",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per la Famiglia, la Natalità e le Pari opportunità",
-      "areaLabel": "Famiglia, la Natalità e le Pari opportunità",
-      "order": 17
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
     },
     {
-      "id": "ministro-maria-elisabetta-alberti-casellati",
-      "personSlug": "maria-elisabetta-alberti-casellati",
-      "displayName": "Maria Elisabetta Alberti Casellati",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "id": "mg50115_3_202_52_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50115_3_202_52_20221023",
+      "personaId": "50115",
+      "personName": "Giancarlo Giorgetti",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per le Riforme istituzionali e la Semplificazione normativa",
-      "areaLabel": "Riforme istituzionali e la Semplificazione normativa",
-      "order": 18
+      "departmentId": "og202_52",
+      "since": "2022-10-23",
+      "interim": false
     },
     {
-      "id": "ministro-alessandra-locatelli",
-      "personSlug": "alessandra-locatelli",
-      "displayName": "Alessandra Locatelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "id": "mg308860_3_202_665_20260403",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308860_3_202_665_20260403",
+      "personaId": "308860",
+      "personName": "Gianmarco Mazzi",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per le disabilità",
-      "areaLabel": "Disabilità",
-      "order": 19
+      "departmentId": "og202_665",
+      "since": "2026-04-03",
+      "interim": false
     },
     {
-      "id": "ministro-tommaso-foti-0",
-      "personSlug": "tommaso-foti-0",
-      "displayName": "Tommaso Foti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "id": "mg303089_3_202_706_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg303089_3_202_706_20221112",
+      "personaId": "303089",
+      "personName": "Gilberto Pichetto Fratin",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "presidenza-del-consiglio",
-      "sectionLabel": "Ministro per gli Affari europei, il PNRR e le Politiche di coesione",
-      "areaLabel": "Affari europei, il PNRR e le Politiche di coesione",
-      "order": 20
+      "departmentId": "og202_706",
+      "since": "2022-11-12",
+      "interim": false
     },
     {
-      "id": "ministro-antonio-tajani",
-      "personSlug": "antonio-tajani",
-      "displayName": "Antonio Tajani",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/antonio-tajani",
+      "id": "mg300613_3_202_708_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300613_3_202_708_20221112",
+      "personaId": "300613",
+      "personName": "Giuseppe Valditara",
+      "role": "MINISTRO",
       "roleKind": "ministro",
       "roleLabel": "Ministro",
-      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
-      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
-      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
-      "order": 21
+      "departmentId": "og202_708",
+      "since": "2022-11-12",
+      "interim": false
     },
     {
-      "id": "vice-ministro-edmondo-cirielli",
-      "personSlug": "edmondo-cirielli",
-      "displayName": "Edmondo Cirielli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "id": "mg300356_3_202_6_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300356_3_202_6_20221023",
+      "personaId": "300356",
+      "personName": "Guido Crosetto",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_6",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309044_3_202_285_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309044_3_202_285_20221023",
+      "personaId": "309044",
+      "personName": "Marina Elvira Calderone",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_285",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309042_3_202_15_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309042_3_202_15_20221023",
+      "personaId": "309042",
+      "personName": "Matteo Piantedosi",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_15",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg302741_3_202_707_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_3_202_707_20221112",
+      "personaId": "302741",
+      "personName": "Matteo Salvini",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_707",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg309048_3_202_264_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309048_3_202_264_20221023",
+      "personaId": "309048",
+      "personName": "Orazio Schillaci",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_264",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307622_6_202_646_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307622_6_202_646_20221023",
+      "personaId": "307622",
+      "personName": "Alessandra Locatelli",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_646",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309040_6_202_686_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309040_6_202_686_20221023",
+      "personaId": "309040",
+      "personName": "Andrea Abodi",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_686",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg302748_6_202_687_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302748_6_202_687_20221023",
+      "personaId": "302748",
+      "personName": "Eugenia Maria Roccella",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_687",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307774_6_202_524_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307774_6_202_524_20221023",
+      "personaId": "307774",
+      "personName": "Luca Ciriani",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_524",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg200012_6_202_725_20221110",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg200012_6_202_725_20221110",
+      "personaId": "200012",
+      "personName": "Maria Elisabetta Alberti",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_725",
+      "since": "2022-11-10",
+      "interim": false
+    },
+    {
+      "id": "mg307492_6_202_545_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307492_6_202_545_20221023",
+      "personaId": "307492",
+      "personName": "Paolo Zangrillo",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_545",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg32530_6_202_424_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg32530_6_202_424_20221023",
+      "personaId": "32530",
+      "personName": "Roberto Calderoli",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_424",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg304860_6_202_724_20221110",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg304860_6_202_724_20221110",
+      "personaId": "304860",
+      "personName": "Sebastiano Musumeci",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_724",
+      "since": "2022-11-10",
+      "interim": false
+    },
+    {
+      "id": "mg50204_6_202_745_20241203",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50204_6_202_745_20241203",
+      "personaId": "50204",
+      "personName": "Tommaso Foti",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_745",
+      "since": "2024-12-03",
+      "interim": false
+    },
+    {
+      "id": "mg300319_29_202_504_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300319_29_202_504_20221215",
+      "personaId": "300319",
+      "personName": "Edmondo Cirielli",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
-      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
-      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
-      "order": 22
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_504",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-maria-tripodi",
-      "personSlug": "maria-tripodi",
-      "displayName": "Maria Tripodi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
-      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
-      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
-      "order": 23
-    },
-    {
-      "id": "sottosegretario-massimo-dellutri",
-      "personSlug": "massimo-dellutri",
-      "displayName": "Massimo Dell'Utri",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
-      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
-      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
-      "order": 24
-    },
-    {
-      "id": "ministro-matteo-piantedosi",
-      "personSlug": "matteo-piantedosi",
-      "displayName": "Matteo Piantedosi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-interno",
-      "sectionLabel": "Ministero dell'Interno",
-      "areaLabel": "Interno",
-      "order": 25
-    },
-    {
-      "id": "sottosegretario-wanda-ferro",
-      "personSlug": "wanda-ferro",
-      "displayName": "Wanda Ferro",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-interno",
-      "sectionLabel": "Ministero dell'Interno",
-      "areaLabel": "Interno",
-      "order": 26
-    },
-    {
-      "id": "sottosegretario-nicola-molteni",
-      "personSlug": "nicola-molteni",
-      "displayName": "Nicola Molteni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-interno",
-      "sectionLabel": "Ministero dell'Interno",
-      "areaLabel": "Interno",
-      "order": 27
-    },
-    {
-      "id": "sottosegretario-emanuele-prisco",
-      "personSlug": "emanuele-prisco",
-      "displayName": "Emanuele Prisco",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-interno",
-      "sectionLabel": "Ministero dell'Interno",
-      "areaLabel": "Interno",
-      "order": 28
-    },
-    {
-      "id": "ministro-carlo-nordio",
-      "personSlug": "carlo-nordio",
-      "displayName": "Carlo Nordio",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-della-giustizia",
-      "sectionLabel": "Ministero della Giustizia",
-      "areaLabel": "Giustizia",
-      "order": 29
-    },
-    {
-      "id": "vice-ministro-francesco-paolo-sisto",
-      "personSlug": "francesco-paolo-sisto",
-      "displayName": "Francesco Paolo Sisto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "id": "mg304521_29_202_707_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg304521_29_202_707_20221215",
+      "personaId": "304521",
+      "personName": "Edoardo Rixi",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-della-giustizia",
-      "sectionLabel": "Ministero della Giustizia",
-      "areaLabel": "Giustizia",
-      "order": 30
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_707",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-andrea-ostellari",
-      "personSlug": "andrea-ostellari",
-      "displayName": "Andrea Ostellari",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-giustizia",
-      "sectionLabel": "Ministero della Giustizia",
-      "areaLabel": "Giustizia",
-      "order": 31
-    },
-    {
-      "id": "sottosegretario-alberto-balboni",
-      "personSlug": "alberto-balboni",
-      "displayName": "Alberto Balboni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-giustizia",
-      "sectionLabel": "Ministero della Giustizia",
-      "areaLabel": "Giustizia",
-      "order": 32
-    },
-    {
-      "id": "ministro-guido-crosetto",
-      "personSlug": "guido-crosetto",
-      "displayName": "Guido Crosetto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-della-difesa",
-      "sectionLabel": "Ministero della Difesa",
-      "areaLabel": "Difesa",
-      "order": 33
-    },
-    {
-      "id": "sottosegretario-matteo-perego",
-      "personSlug": "matteo-perego",
-      "displayName": "Matteo Perego di Cremnago",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-difesa",
-      "sectionLabel": "Ministero della Difesa",
-      "areaLabel": "Difesa",
-      "order": 34
-    },
-    {
-      "id": "sottosegretario-isabella-rauti",
-      "personSlug": "isabella-rauti",
-      "displayName": "Isabella Rauti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-difesa",
-      "sectionLabel": "Ministero della Difesa",
-      "areaLabel": "Difesa",
-      "order": 35
-    },
-    {
-      "id": "ministro-giancarlo-giorgetti",
-      "personSlug": "giancarlo-giorgetti",
-      "displayName": "Giancarlo Giorgetti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-economia-e-delle-finanze",
-      "sectionLabel": "Ministero dell'Economia e delle Finanze",
-      "areaLabel": "Economia e delle Finanze",
-      "order": 36
-    },
-    {
-      "id": "vice-ministro-maurizio-leo",
-      "personSlug": "maurizio-leo",
-      "displayName": "Maurizio Leo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "id": "mg302886_29_202_49_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302886_29_202_49_20221215",
+      "personaId": "302886",
+      "personName": "Francesco Paolo Sisto",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-dell-economia-e-delle-finanze",
-      "sectionLabel": "Ministero dell'Economia e delle Finanze",
-      "areaLabel": "Economia e delle Finanze",
-      "order": 37
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_49",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-lucia-albano",
-      "personSlug": "lucia-albano",
-      "displayName": "Lucia Albano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-economia-e-delle-finanze",
-      "sectionLabel": "Ministero dell'Economia e delle Finanze",
-      "areaLabel": "Economia e delle Finanze",
-      "order": 38
-    },
-    {
-      "id": "sottosegretario-federico-freni",
-      "personSlug": "federico-freni",
-      "displayName": "Federico Freni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-economia-e-delle-finanze",
-      "sectionLabel": "Ministero dell'Economia e delle Finanze",
-      "areaLabel": "Economia e delle Finanze",
-      "order": 39
-    },
-    {
-      "id": "sottosegretario-sandra-savino",
-      "personSlug": "sandra-savino",
-      "displayName": "Sandra Savino",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-economia-e-delle-finanze",
-      "sectionLabel": "Ministero dell'Economia e delle Finanze",
-      "areaLabel": "Economia e delle Finanze",
-      "order": 40
-    },
-    {
-      "id": "ministro-adolfo-urso",
-      "personSlug": "adolfo-urso",
-      "displayName": "Adolfo Urso",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
-      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
-      "areaLabel": "Imprese e del Made in Italy",
-      "order": 41
-    },
-    {
-      "id": "vice-ministro-valentino-valentini",
-      "personSlug": "valentino-valentini",
-      "displayName": "Valentino Valentini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "id": "mg307426_29_202_285_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307426_29_202_285_20221215",
+      "personaId": "307426",
+      "personName": "Maria Teresa Bellucci",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
-      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
-      "areaLabel": "Imprese e del Made in Italy",
-      "order": 42
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_285",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-fausta-bergamotto",
-      "personSlug": "fausta-bergamotto",
-      "displayName": "Fausta Bergamotto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
-      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
-      "areaLabel": "Imprese e del Made in Italy",
-      "order": 43
-    },
-    {
-      "id": "sottosegretario-mara-bizzotto",
-      "personSlug": "mara-bizzotto",
-      "displayName": "Mara Bizzotto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
-      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
-      "areaLabel": "Imprese e del Made in Italy",
-      "order": 44
-    },
-    {
-      "id": "ministro-francesco-lollobrigida",
-      "personSlug": "francesco-lollobrigida",
-      "displayName": "Francesco Lollobrigida",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
-      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
-      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
-      "order": 45
-    },
-    {
-      "id": "sottosegretario-luigi-d-eramo",
-      "personSlug": "luigi-d-eramo",
-      "displayName": "Luigi D'Eramo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
-      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
-      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
-      "order": 46
-    },
-    {
-      "id": "sottosegretario-patrizio-giacomo-la-pietra",
-      "personSlug": "patrizio-giacomo-la-pietra",
-      "displayName": "Patrizio Giacomo La Pietra",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
-      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
-      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
-      "order": 47
-    },
-    {
-      "id": "ministro-gilberto-pichetto-fratin",
-      "personSlug": "gilberto-pichetto-fratin",
-      "displayName": "Gilberto Pichetto Fratin",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
-      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
-      "areaLabel": "Ambiente e della Sicurezza energetica",
-      "order": 48
-    },
-    {
-      "id": "vice-ministro-vannia-gava",
-      "personSlug": "vannia-gava",
-      "displayName": "Vannia Gava",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "id": "mg300444_29_202_52_20221111",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300444_29_202_52_20221111",
+      "personaId": "300444",
+      "personName": "Maurizio Leo",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
-      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
-      "areaLabel": "Ambiente e della Sicurezza energetica",
-      "order": 49
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_52",
+      "since": "2022-11-11",
+      "interim": false
     },
     {
-      "id": "sottosegretario-claudio-barbaro",
-      "personSlug": "claudio-barbaro",
-      "displayName": "Claudio Barbaro",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
-      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
-      "areaLabel": "Ambiente e della Sicurezza energetica",
-      "order": 50
-    },
-    {
-      "id": "ministro-matteo-salvini",
-      "personSlug": "matteo-salvini",
-      "displayName": "Matteo Salvini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-salvini",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
-      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
-      "areaLabel": "Infrastrutture e dei Trasporti",
-      "order": 51
-    },
-    {
-      "id": "vice-ministro-edoardo-rixi",
-      "personSlug": "edoardo-rixi",
-      "displayName": "Edoardo Rixi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "id": "mg301559_29_202_704_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301559_29_202_704_20221215",
+      "personaId": "301559",
+      "personName": "Valentino Valentini",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
-      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
-      "areaLabel": "Infrastrutture e dei Trasporti",
-      "order": 52
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_704",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-tullio-ferrante",
-      "personSlug": "tullio-ferrante",
-      "displayName": "Tullio Ferrante",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
-      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
-      "areaLabel": "Infrastrutture e dei Trasporti",
-      "order": 53
-    },
-    {
-      "id": "sottosegretario-antonio-iannone",
-      "personSlug": "antonio-iannone",
-      "displayName": "Antonio Iannone",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
-      "roleKind": "sottosegretario",
-      "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
-      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
-      "areaLabel": "Infrastrutture e dei Trasporti",
-      "order": 54
-    },
-    {
-      "id": "ministro-maria-elvira-calderone",
-      "personSlug": "maria-elvira-calderone",
-      "displayName": "Marina Elvira Calderone",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
-      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
-      "areaLabel": "Lavoro e delle Politiche Sociali",
-      "order": 55
-    },
-    {
-      "id": "vice-ministro-maria-teresa-bellucci",
-      "personSlug": "maria-teresa-bellucci",
-      "displayName": "Maria Teresa Bellucci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "id": "mg307138_29_202_706_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307138_29_202_706_20221215",
+      "personaId": "307138",
+      "personName": "Vannia Gava",
+      "role": "VICE MINISTRO",
       "roleKind": "vice-ministro",
-      "roleLabel": "Vice Ministro",
-      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
-      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
-      "areaLabel": "Lavoro e delle Politiche Sociali",
-      "order": 56
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_706",
+      "since": "2022-12-15",
+      "interim": false
     },
     {
-      "id": "sottosegretario-claudio-durigon",
-      "personSlug": "claudio-durigon",
-      "displayName": "Claudio Durigon",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "id": "mg300624_5_202_49_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300624_5_202_49_20260422",
+      "personaId": "300624",
+      "personName": "Alberto Balboni",
+      "role": "SOTTOSEGRETARIO DI STATO",
       "roleKind": "sottosegretario",
       "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
-      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
-      "areaLabel": "Lavoro e delle Politiche Sociali",
-      "order": 57
+      "departmentId": "og202_49",
+      "since": "2026-04-22",
+      "interim": false
     },
     {
-      "id": "ministro-giuseppe-valditara",
-      "personSlug": "giuseppe-valditara",
-      "displayName": "Giuseppe Valditara",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-istruzione-e-del-merito",
-      "sectionLabel": "Ministero dell'Istruzione e del Merito",
-      "areaLabel": "Istruzione e del Merito",
-      "order": 58
-    },
-    {
-      "id": "sottosegretario-paola-frassinetti",
-      "personSlug": "paola-frassinetti",
-      "displayName": "Paola Frassinetti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "id": "mg307750_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307750_5_202_1_20221031",
+      "personaId": "307750",
+      "personName": "Alberto Barachini",
+      "role": "SOTTOSEGRETARIO DI STATO",
       "roleKind": "sottosegretario",
       "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-dell-istruzione-e-del-merito",
-      "sectionLabel": "Ministero dell'Istruzione e del Merito",
-      "areaLabel": "Istruzione e del Merito",
-      "order": 59
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
     },
     {
-      "id": "ministro-anna-maria-bernini",
-      "personSlug": "anna-maria-bernini",
-      "displayName": "Anna Maria Bernini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-dell-universita-e-della-ricerca",
-      "sectionLabel": "Ministero dell'Università e della Ricerca",
-      "areaLabel": "Università e della Ricerca",
-      "order": 60
-    },
-    {
-      "id": "ministro-alessandro-giuli",
-      "personSlug": "alessandro-giuli",
-      "displayName": "Alessandro Giuli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-della-cultura",
-      "sectionLabel": "Ministero della Cultura",
-      "areaLabel": "Cultura",
-      "order": 61
-    },
-    {
-      "id": "sottosegretario-lucia-borgonzoni",
-      "personSlug": "lucia-borgonzoni",
-      "displayName": "Lucia Borgonzoni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "id": "mg307668_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307668_5_202_1_20221031",
+      "personaId": "307668",
+      "personName": "Alessandro Morelli",
+      "role": "SOTTOSEGRETARIO DI STATO",
       "roleKind": "sottosegretario",
       "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-cultura",
-      "sectionLabel": "Ministero della Cultura",
-      "areaLabel": "Cultura",
-      "order": 62
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
     },
     {
-      "id": "sottosegretario-pietro-cannella",
-      "personSlug": "pietro-cannella",
-      "displayName": "Pietro Cannella",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "id": "mg32500_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg32500_5_202_1_20221031",
+      "personaId": "32500",
+      "personName": "Alessio Butti",
+      "role": "SOTTOSEGRETARIO DI STATO",
       "roleKind": "sottosegretario",
       "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-cultura",
-      "sectionLabel": "Ministero della Cultura",
-      "areaLabel": "Cultura",
-      "order": 63
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
     },
     {
-      "id": "ministro-gianmarco-mazzi",
-      "personSlug": "gianmarco-mazzi",
-      "displayName": "Gianmarco Mazzi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-del-turismo",
-      "sectionLabel": "Ministero del Turismo",
-      "areaLabel": "Turismo",
-      "order": 64
-    },
-    {
-      "id": "ministro-orazio-schillaci",
-      "personSlug": "orazio-schillaci",
-      "displayName": "Orazio Schillaci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
-      "roleKind": "ministro",
-      "roleLabel": "Ministro",
-      "departmentId": "ministero-della-salute",
-      "sectionLabel": "Ministero della Salute",
-      "areaLabel": "Salute",
-      "order": 65
-    },
-    {
-      "id": "sottosegretario-marcello-gemmato",
-      "personSlug": "marcello-gemmato",
-      "displayName": "Marcello Gemmato",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "id": "mg50236_5_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50236_5_202_1_20221023",
+      "personaId": "50236",
+      "personName": "Alfredo Mantovano",
+      "role": "SOTTOSEGRETARIO DI STATO",
       "roleKind": "sottosegretario",
       "roleLabel": "Sottosegretario di Stato",
-      "departmentId": "ministero-della-salute",
-      "sectionLabel": "Ministero della Salute",
-      "areaLabel": "Salute",
-      "order": 66
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307855_5_202_49_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307855_5_202_49_20221031",
+      "personaId": "307855",
+      "personName": "Andrea Ostellari",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_49",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307820_5_202_707_20250331",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307820_5_202_707_20250331",
+      "personaId": "307820",
+      "personName": "Antonio Iannone",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_707",
+      "since": "2025-03-31",
+      "interim": false
+    },
+    {
+      "id": "mg302945_5_202_706_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302945_5_202_706_20221112",
+      "personaId": "302945",
+      "personName": "Claudio Barbaro",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_706",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307468_5_202_285_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307468_5_202_285_20221031",
+      "personaId": "307468",
+      "personName": "Claudio Durigon",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_285",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307452_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307452_5_202_15_20221031",
+      "personaId": "307452",
+      "personName": "Emanuele Prisco",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg309060_5_202_704_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309060_5_202_704_20221112",
+      "personaId": "309060",
+      "personName": "Fausta Bergamotto",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_704",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg308837_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308837_5_202_52_20221031",
+      "personaId": "308837",
+      "personName": "Federico Freni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307139_5_202_1_20260213",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307139_5_202_1_20260213",
+      "personaId": "307139",
+      "personName": "Giorgio Silli",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2026-02-13",
+      "interim": false
+    },
+    {
+      "id": "mg307802_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307802_5_202_1_20221031",
+      "personaId": "307802",
+      "personName": "Giovanbattista Fazzolari",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg301573_5_202_524_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301573_5_202_524_20221112",
+      "personaId": "301573",
+      "personName": "Giuseppina Castiello",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_524",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307879_5_202_6_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307879_5_202_6_20221031",
+      "personaId": "307879",
+      "personName": "Isabella Rauti",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_6",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg308421_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308421_5_202_52_20221031",
+      "personaId": "308421",
+      "personName": "Lucia Albano",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307758_5_202_664_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307758_5_202_664_20221031",
+      "personaId": "307758",
+      "personName": "Lucia Borgonzoni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_664",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307242_5_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307242_5_202_705_20221112",
+      "personaId": "307242",
+      "personName": "Luigi D'Eramo",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg309240_5_202_1_20250612",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309240_5_202_1_20250612",
+      "personaId": "309240",
+      "personName": "Luigi Sbarra",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2025-06-12",
+      "interim": false
+    },
+    {
+      "id": "mg308966_5_202_704_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308966_5_202_704_20260422",
+      "personaId": "308966",
+      "personName": "Mara Bizzotto",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_704",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307332_5_202_264_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307332_5_202_264_20221031",
+      "personaId": "307332",
+      "personName": "Marcello Gemmato",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_264",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307728_5_202_504_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307728_5_202_504_20221031",
+      "personaId": "307728",
+      "personName": "Maria Tripodi",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_504",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg309340_5_202_504_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309340_5_202_504_20260422",
+      "personaId": "309340",
+      "personName": "Massimo Dell'Utri",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_504",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307402_5_202_524_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307402_5_202_524_20221112",
+      "personaId": "307402",
+      "personName": "Matilde Siracusano",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_524",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307643_5_202_6_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307643_5_202_6_20221031",
+      "personaId": "307643",
+      "personName": "Matteo Perego Di Cremnago",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_6",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg302762_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302762_5_202_15_20221031",
+      "personaId": "302762",
+      "personName": "Nicola Molteni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg301457_5_202_708_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301457_5_202_708_20221112",
+      "personaId": "301457",
+      "personName": "Paola Frassinetti",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_708",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300497_5_202_1_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300497_5_202_1_20260422",
+      "personaId": "300497",
+      "personName": "Paolo Barelli",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307824_5_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307824_5_202_705_20221112",
+      "personaId": "307824",
+      "personName": "Patrizio Giacomo La Pietra",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300640_5_202_664_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300640_5_202_664_20260422",
+      "personaId": "300640",
+      "personName": "Pietro Cannella",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_664",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg305684_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg305684_5_202_52_20221031",
+      "personaId": "305684",
+      "personName": "Sandra Savino",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg308876_5_202_707_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308876_5_202_707_20221112",
+      "personaId": "308876",
+      "personName": "Tullio Ferrante",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_707",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307567_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307567_5_202_15_20221031",
+      "personaId": "307567",
+      "personName": "Wanda Ferro",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
     }
   ],
   "people": [
     {
-      "slug": "giorgia-meloni",
+      "personaId": "302103",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302103",
+      "firstName": "Giorgia",
+      "lastName": "Meloni",
       "displayName": "Giorgia Meloni",
+      "appointmentIds": [
+        "mg302103_1_202_1_20221021"
+      ],
       "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
-      "appointmentIds": [
-        "presidente-del-consiglio-giorgia-meloni"
-      ],
       "primaryRoleKind": "presidente-del-consiglio",
-      "primaryAppointmentId": "presidente-del-consiglio-giorgia-meloni"
+      "primaryRoleLabel": "Presidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-21",
+      "biography": "Presidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 21 ottobre 2022."
     },
     {
-      "slug": "antonio-tajani",
-      "displayName": "Antonio Tajani",
-      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
-      "appointmentIds": [
-        "vice-presidente-antonio-tajani",
-        "ministro-antonio-tajani"
-      ],
-      "primaryRoleKind": "vice-presidente",
-      "primaryAppointmentId": "vice-presidente-antonio-tajani"
-    },
-    {
-      "slug": "matteo-salvini",
+      "personaId": "302741",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302741",
+      "firstName": "Matteo",
+      "lastName": "Salvini",
       "displayName": "Matteo Salvini",
+      "appointmentIds": [
+        "mg302741_2_202_1_20221023",
+        "mg302741_3_202_707_20221112"
+      ],
       "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
-      "appointmentIds": [
-        "vice-presidente-matteo-salvini",
-        "ministro-matteo-salvini"
-      ],
       "primaryRoleKind": "vice-presidente",
-      "primaryAppointmentId": "vice-presidente-matteo-salvini"
+      "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Vicepresidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022. Ministro — Ministero delle infrastrutture e dei trasporti, dal 12 novembre 2022."
     },
     {
-      "slug": "alfredo-mantovano",
-      "displayName": "Alfredo Mantovano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "personaId": "308838",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308838",
+      "firstName": "Antonio",
+      "lastName": "Tajani",
+      "displayName": "Antonio Tajani",
       "appointmentIds": [
-        "sottosegretario-alfredo-mantovano"
+        "mg308838_2_202_1_20221023",
+        "mg308838_3_202_504_20221023"
       ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-alfredo-mantovano"
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "primaryRoleKind": "vice-presidente",
+      "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Vicepresidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022. Ministro — Ministero degli affari esteri e della cooperazione internazionale, dal 23 ottobre 2022."
     },
     {
-      "slug": "alessio-butti",
-      "displayName": "Alessio Butti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
-      "appointmentIds": [
-        "sottosegretario-alessio-butti"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-alessio-butti"
-    },
-    {
-      "slug": "alberto-barachini",
-      "displayName": "Alberto Barachini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
-      "appointmentIds": [
-        "sottosegretario-alberto-barachini"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-alberto-barachini"
-    },
-    {
-      "slug": "alessandro-morelli",
-      "displayName": "Alessandro Morelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
-      "appointmentIds": [
-        "sottosegretario-alessandro-morelli"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-alessandro-morelli"
-    },
-    {
-      "slug": "giovanbattista-fazzolari",
-      "displayName": "Giovanbattista Fazzolari",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
-      "appointmentIds": [
-        "sottosegretario-giovanbattista-fazzolari"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-giovanbattista-fazzolari"
-    },
-    {
-      "slug": "luigi-sbarra",
-      "displayName": "Luigi Sbarra",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
-      "appointmentIds": [
-        "sottosegretario-luigi-sbarra"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-luigi-sbarra"
-    },
-    {
-      "slug": "luca-ciriani",
-      "displayName": "Luca Ciriani",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
-      "appointmentIds": [
-        "ministro-luca-ciriani"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-luca-ciriani"
-    },
-    {
-      "slug": "giuseppina-castiello",
-      "displayName": "Giuseppina Castiello",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
-      "appointmentIds": [
-        "sottosegretario-giuseppina-castiello"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-giuseppina-castiello"
-    },
-    {
-      "slug": "matilde-siracusano",
-      "displayName": "Matilde Siracusano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
-      "appointmentIds": [
-        "sottosegretario-matilde-siracusano"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-matilde-siracusano"
-    },
-    {
-      "slug": "paolo-barelli",
-      "displayName": "Paolo Barelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
-      "appointmentIds": [
-        "sottosegretario-paolo-barelli"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-paolo-barelli"
-    },
-    {
-      "slug": "paolo-zangrillo",
-      "displayName": "Paolo Zangrillo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
-      "appointmentIds": [
-        "ministro-paolo-zangrillo"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-paolo-zangrillo"
-    },
-    {
-      "slug": "roberto-calderoli",
-      "displayName": "Roberto Calderoli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
-      "appointmentIds": [
-        "ministro-roberto-calderoli"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-roberto-calderoli"
-    },
-    {
-      "slug": "sebastiano-musumeci",
-      "displayName": "Nello Musumeci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
-      "appointmentIds": [
-        "ministro-sebastiano-musumeci"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-sebastiano-musumeci"
-    },
-    {
-      "slug": "andrea-abodi",
-      "displayName": "Andrea Abodi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
-      "appointmentIds": [
-        "ministro-andrea-abodi"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-andrea-abodi"
-    },
-    {
-      "slug": "eugenia-maria-roccella",
-      "displayName": "Eugenia Maria Roccella",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
-      "appointmentIds": [
-        "ministro-eugenia-maria-roccella"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-eugenia-maria-roccella"
-    },
-    {
-      "slug": "maria-elisabetta-alberti-casellati",
-      "displayName": "Maria Elisabetta Alberti Casellati",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
-      "appointmentIds": [
-        "ministro-maria-elisabetta-alberti-casellati"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-maria-elisabetta-alberti-casellati"
-    },
-    {
-      "slug": "alessandra-locatelli",
-      "displayName": "Alessandra Locatelli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
-      "appointmentIds": [
-        "ministro-alessandra-locatelli"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-alessandra-locatelli"
-    },
-    {
-      "slug": "tommaso-foti-0",
-      "displayName": "Tommaso Foti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
-      "appointmentIds": [
-        "ministro-tommaso-foti-0"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-tommaso-foti-0"
-    },
-    {
-      "slug": "edmondo-cirielli",
-      "displayName": "Edmondo Cirielli",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
-      "appointmentIds": [
-        "vice-ministro-edmondo-cirielli"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-edmondo-cirielli"
-    },
-    {
-      "slug": "maria-tripodi",
-      "displayName": "Maria Tripodi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
-      "appointmentIds": [
-        "sottosegretario-maria-tripodi"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-maria-tripodi"
-    },
-    {
-      "slug": "massimo-dellutri",
-      "displayName": "Massimo Dell'Utri",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
-      "appointmentIds": [
-        "sottosegretario-massimo-dellutri"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-massimo-dellutri"
-    },
-    {
-      "slug": "matteo-piantedosi",
-      "displayName": "Matteo Piantedosi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
-      "appointmentIds": [
-        "ministro-matteo-piantedosi"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-matteo-piantedosi"
-    },
-    {
-      "slug": "wanda-ferro",
-      "displayName": "Wanda Ferro",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
-      "appointmentIds": [
-        "sottosegretario-wanda-ferro"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-wanda-ferro"
-    },
-    {
-      "slug": "nicola-molteni",
-      "displayName": "Nicola Molteni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
-      "appointmentIds": [
-        "sottosegretario-nicola-molteni"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-nicola-molteni"
-    },
-    {
-      "slug": "emanuele-prisco",
-      "displayName": "Emanuele Prisco",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
-      "appointmentIds": [
-        "sottosegretario-emanuele-prisco"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-emanuele-prisco"
-    },
-    {
-      "slug": "carlo-nordio",
-      "displayName": "Carlo Nordio",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
-      "appointmentIds": [
-        "ministro-carlo-nordio"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-carlo-nordio"
-    },
-    {
-      "slug": "francesco-paolo-sisto",
-      "displayName": "Francesco Paolo Sisto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
-      "appointmentIds": [
-        "vice-ministro-francesco-paolo-sisto"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-francesco-paolo-sisto"
-    },
-    {
-      "slug": "andrea-ostellari",
-      "displayName": "Andrea Ostellari",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
-      "appointmentIds": [
-        "sottosegretario-andrea-ostellari"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-andrea-ostellari"
-    },
-    {
-      "slug": "alberto-balboni",
-      "displayName": "Alberto Balboni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
-      "appointmentIds": [
-        "sottosegretario-alberto-balboni"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-alberto-balboni"
-    },
-    {
-      "slug": "guido-crosetto",
-      "displayName": "Guido Crosetto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
-      "appointmentIds": [
-        "ministro-guido-crosetto"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-guido-crosetto"
-    },
-    {
-      "slug": "matteo-perego",
-      "displayName": "Matteo Perego di Cremnago",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
-      "appointmentIds": [
-        "sottosegretario-matteo-perego"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-matteo-perego"
-    },
-    {
-      "slug": "isabella-rauti",
-      "displayName": "Isabella Rauti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
-      "appointmentIds": [
-        "sottosegretario-isabella-rauti"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-isabella-rauti"
-    },
-    {
-      "slug": "giancarlo-giorgetti",
-      "displayName": "Giancarlo Giorgetti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
-      "appointmentIds": [
-        "ministro-giancarlo-giorgetti"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-giancarlo-giorgetti"
-    },
-    {
-      "slug": "maurizio-leo",
-      "displayName": "Maurizio Leo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
-      "appointmentIds": [
-        "vice-ministro-maurizio-leo"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-maurizio-leo"
-    },
-    {
-      "slug": "lucia-albano",
-      "displayName": "Lucia Albano",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
-      "appointmentIds": [
-        "sottosegretario-lucia-albano"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-lucia-albano"
-    },
-    {
-      "slug": "federico-freni",
-      "displayName": "Federico Freni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
-      "appointmentIds": [
-        "sottosegretario-federico-freni"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-federico-freni"
-    },
-    {
-      "slug": "sandra-savino",
-      "displayName": "Sandra Savino",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
-      "appointmentIds": [
-        "sottosegretario-sandra-savino"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-sandra-savino"
-    },
-    {
-      "slug": "adolfo-urso",
-      "displayName": "Adolfo Urso",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
-      "appointmentIds": [
-        "ministro-adolfo-urso"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-adolfo-urso"
-    },
-    {
-      "slug": "valentino-valentini",
-      "displayName": "Valentino Valentini",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
-      "appointmentIds": [
-        "vice-ministro-valentino-valentini"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-valentino-valentini"
-    },
-    {
-      "slug": "fausta-bergamotto",
-      "displayName": "Fausta Bergamotto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
-      "appointmentIds": [
-        "sottosegretario-fausta-bergamotto"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-fausta-bergamotto"
-    },
-    {
-      "slug": "mara-bizzotto",
-      "displayName": "Mara Bizzotto",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
-      "appointmentIds": [
-        "sottosegretario-mara-bizzotto"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-mara-bizzotto"
-    },
-    {
-      "slug": "francesco-lollobrigida",
-      "displayName": "Francesco Lollobrigida",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
-      "appointmentIds": [
-        "ministro-francesco-lollobrigida"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-francesco-lollobrigida"
-    },
-    {
-      "slug": "luigi-d-eramo",
-      "displayName": "Luigi D'Eramo",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
-      "appointmentIds": [
-        "sottosegretario-luigi-d-eramo"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-luigi-d-eramo"
-    },
-    {
-      "slug": "patrizio-giacomo-la-pietra",
-      "displayName": "Patrizio Giacomo La Pietra",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
-      "appointmentIds": [
-        "sottosegretario-patrizio-giacomo-la-pietra"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-patrizio-giacomo-la-pietra"
-    },
-    {
-      "slug": "gilberto-pichetto-fratin",
-      "displayName": "Gilberto Pichetto Fratin",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
-      "appointmentIds": [
-        "ministro-gilberto-pichetto-fratin"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-gilberto-pichetto-fratin"
-    },
-    {
-      "slug": "vannia-gava",
-      "displayName": "Vannia Gava",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
-      "appointmentIds": [
-        "vice-ministro-vannia-gava"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-vannia-gava"
-    },
-    {
-      "slug": "claudio-barbaro",
-      "displayName": "Claudio Barbaro",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
-      "appointmentIds": [
-        "sottosegretario-claudio-barbaro"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-claudio-barbaro"
-    },
-    {
-      "slug": "edoardo-rixi",
-      "displayName": "Edoardo Rixi",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
-      "appointmentIds": [
-        "vice-ministro-edoardo-rixi"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-edoardo-rixi"
-    },
-    {
-      "slug": "tullio-ferrante",
-      "displayName": "Tullio Ferrante",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
-      "appointmentIds": [
-        "sottosegretario-tullio-ferrante"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-tullio-ferrante"
-    },
-    {
-      "slug": "antonio-iannone",
-      "displayName": "Antonio Iannone",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
-      "appointmentIds": [
-        "sottosegretario-antonio-iannone"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-antonio-iannone"
-    },
-    {
-      "slug": "maria-elvira-calderone",
-      "displayName": "Marina Elvira Calderone",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
-      "appointmentIds": [
-        "ministro-maria-elvira-calderone"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-maria-elvira-calderone"
-    },
-    {
-      "slug": "maria-teresa-bellucci",
-      "displayName": "Maria Teresa Bellucci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
-      "appointmentIds": [
-        "vice-ministro-maria-teresa-bellucci"
-      ],
-      "primaryRoleKind": "vice-ministro",
-      "primaryAppointmentId": "vice-ministro-maria-teresa-bellucci"
-    },
-    {
-      "slug": "claudio-durigon",
-      "displayName": "Claudio Durigon",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
-      "appointmentIds": [
-        "sottosegretario-claudio-durigon"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-claudio-durigon"
-    },
-    {
-      "slug": "giuseppe-valditara",
-      "displayName": "Giuseppe Valditara",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
-      "appointmentIds": [
-        "ministro-giuseppe-valditara"
-      ],
-      "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-giuseppe-valditara"
-    },
-    {
-      "slug": "paola-frassinetti",
-      "displayName": "Paola Frassinetti",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
-      "appointmentIds": [
-        "sottosegretario-paola-frassinetti"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-paola-frassinetti"
-    },
-    {
-      "slug": "anna-maria-bernini",
+      "personaId": "302841",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302841",
+      "firstName": "Anna Maria",
+      "lastName": "Bernini",
       "displayName": "Anna Maria Bernini",
+      "appointmentIds": [
+        "mg302841_3_202_626_20221023"
+      ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
-      "appointmentIds": [
-        "ministro-anna-maria-bernini"
-      ],
       "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-anna-maria-bernini"
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_626",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'università e della ricerca, dal 23 ottobre 2022."
     },
     {
-      "slug": "alessandro-giuli",
+      "personaId": "309044",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309044",
+      "firstName": "Marina Elvira",
+      "lastName": "Calderone",
+      "displayName": "Marina Elvira Calderone",
+      "appointmentIds": [
+        "mg309044_3_202_285_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero del lavoro e delle politiche sociali, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "300356",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300356",
+      "firstName": "Guido",
+      "lastName": "Crosetto",
+      "displayName": "Guido Crosetto",
+      "appointmentIds": [
+        "mg300356_3_202_6_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della difesa, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "50115",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50115",
+      "firstName": "Giancarlo",
+      "lastName": "Giorgetti",
+      "displayName": "Giancarlo Giorgetti",
+      "appointmentIds": [
+        "mg50115_3_202_52_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'economia e delle finanze, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "309180",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309180",
+      "firstName": "Alessandro",
+      "lastName": "Giuli",
       "displayName": "Alessandro Giuli",
+      "appointmentIds": [
+        "mg309180_3_202_664_20240906"
+      ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
-      "appointmentIds": [
-        "ministro-alessandro-giuli"
-      ],
       "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-alessandro-giuli"
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_664",
+      "since": "2024-09-06",
+      "biography": "Ministro — Ministero della cultura, dal 6 settembre 2024."
     },
     {
-      "slug": "lucia-borgonzoni",
-      "displayName": "Lucia Borgonzoni",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "personaId": "307463",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307463",
+      "firstName": "Francesco",
+      "lastName": "Lollobrigida",
+      "displayName": "Francesco Lollobrigida",
       "appointmentIds": [
-        "sottosegretario-lucia-borgonzoni"
+        "mg307463_3_202_705_20221112"
       ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-lucia-borgonzoni"
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
     },
     {
-      "slug": "pietro-cannella",
-      "displayName": "Pietro Cannella",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
-      "appointmentIds": [
-        "sottosegretario-pietro-cannella"
-      ],
-      "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-pietro-cannella"
-    },
-    {
-      "slug": "gianmarco-mazzi",
+      "personaId": "308860",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308860",
+      "firstName": "Gianmarco",
+      "lastName": "Mazzi",
       "displayName": "Gianmarco Mazzi",
+      "appointmentIds": [
+        "mg308860_3_202_665_20260403"
+      ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
-      "appointmentIds": [
-        "ministro-gianmarco-mazzi"
-      ],
       "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-gianmarco-mazzi"
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_665",
+      "since": "2026-04-03",
+      "biography": "Ministro — Ministero del turismo, dal 3 aprile 2026."
     },
     {
-      "slug": "orazio-schillaci",
+      "personaId": "308798",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308798",
+      "firstName": "Carlo",
+      "lastName": "Nordio",
+      "displayName": "Carlo Nordio",
+      "appointmentIds": [
+        "mg308798_3_202_49_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della giustizia, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "309042",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309042",
+      "firstName": "Matteo",
+      "lastName": "Piantedosi",
+      "displayName": "Matteo Piantedosi",
+      "appointmentIds": [
+        "mg309042_3_202_15_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'interno, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "303089",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p303089",
+      "firstName": "Gilberto",
+      "lastName": "Pichetto Fratin",
+      "displayName": "Gilberto Pichetto Fratin",
+      "appointmentIds": [
+        "mg303089_3_202_706_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'ambiente e della sicurezza energetica, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309048",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309048",
+      "firstName": "Orazio",
+      "lastName": "Schillaci",
       "displayName": "Orazio Schillaci",
-      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
       "appointmentIds": [
-        "ministro-orazio-schillaci"
+        "mg309048_3_202_264_20221023"
       ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
       "primaryRoleKind": "ministro",
-      "primaryAppointmentId": "ministro-orazio-schillaci"
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_264",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della salute, dal 23 ottobre 2022."
     },
     {
-      "slug": "marcello-gemmato",
-      "displayName": "Marcello Gemmato",
-      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "personaId": "39200",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p39200",
+      "firstName": "Adolfo",
+      "lastName": "Urso",
+      "displayName": "Adolfo Urso",
       "appointmentIds": [
-        "sottosegretario-marcello-gemmato"
+        "mg39200_3_202_704_20221112"
       ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero delle imprese e del Made in Italy, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "300613",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300613",
+      "firstName": "Giuseppe",
+      "lastName": "Valditara",
+      "displayName": "Giuseppe Valditara",
+      "appointmentIds": [
+        "mg300613_3_202_708_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_708",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'istruzione e del merito, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309040",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309040",
+      "firstName": "Andrea",
+      "lastName": "Abodi",
+      "displayName": "Andrea Abodi",
+      "appointmentIds": [
+        "mg309040_6_202_686_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_686",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Sport e giovani, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "200012",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p200012",
+      "firstName": "Maria Elisabetta",
+      "lastName": "Alberti",
+      "displayName": "Maria Elisabetta Alberti",
+      "appointmentIds": [
+        "mg200012_6_202_725_20221110"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_725",
+      "since": "2022-11-10",
+      "biography": "Ministro senza portafoglio con delega: Riforme istituzionali e la semplificazione normativa, dal 10 novembre 2022."
+    },
+    {
+      "personaId": "32530",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p32530",
+      "firstName": "Roberto",
+      "lastName": "Calderoli",
+      "displayName": "Roberto Calderoli",
+      "appointmentIds": [
+        "mg32530_6_202_424_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_424",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Affari regionali e autonomie, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307774",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307774",
+      "firstName": "Luca",
+      "lastName": "Ciriani",
+      "displayName": "Luca Ciriani",
+      "appointmentIds": [
+        "mg307774_6_202_524_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Rapporti con il Parlamento, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "50204",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50204",
+      "firstName": "Tommaso",
+      "lastName": "Foti",
+      "displayName": "Tommaso Foti",
+      "appointmentIds": [
+        "mg50204_6_202_745_20241203"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_745",
+      "since": "2024-12-03",
+      "biography": "Ministro senza portafoglio con delega: Affari europei, il PNRR e le politiche di coesione, dal 3 dicembre 2024."
+    },
+    {
+      "personaId": "307622",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307622",
+      "firstName": "Alessandra",
+      "lastName": "Locatelli",
+      "displayName": "Alessandra Locatelli",
+      "appointmentIds": [
+        "mg307622_6_202_646_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_646",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Disabilità, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "304860",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p304860",
+      "firstName": "Sebastiano",
+      "lastName": "Musumeci",
+      "displayName": "Sebastiano Musumeci",
+      "appointmentIds": [
+        "mg304860_6_202_724_20221110"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_724",
+      "since": "2022-11-10",
+      "biography": "Ministro senza portafoglio con delega: Protezione civile e le politiche del mare, dal 10 novembre 2022."
+    },
+    {
+      "personaId": "302748",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302748",
+      "firstName": "Eugenia Maria",
+      "lastName": "Roccella",
+      "displayName": "Eugenia Maria Roccella",
+      "appointmentIds": [
+        "mg302748_6_202_687_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_687",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Famiglia, natalità e pari opportunità, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307492",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307492",
+      "firstName": "Paolo",
+      "lastName": "Zangrillo",
+      "displayName": "Paolo Zangrillo",
+      "appointmentIds": [
+        "mg307492_6_202_545_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_545",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Pubblica amministrazione, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307426",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307426",
+      "firstName": "Maria Teresa",
+      "lastName": "Bellucci",
+      "displayName": "Maria Teresa Bellucci",
+      "appointmentIds": [
+        "mg307426_29_202_285_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero del lavoro e delle politiche sociali, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "300319",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300319",
+      "firstName": "Edmondo",
+      "lastName": "Cirielli",
+      "displayName": "Edmondo Cirielli",
+      "appointmentIds": [
+        "mg300319_29_202_504_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_504",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero degli affari esteri e della cooperazione internazionale, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "307138",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307138",
+      "firstName": "Vannia",
+      "lastName": "Gava",
+      "displayName": "Vannia Gava",
+      "appointmentIds": [
+        "mg307138_29_202_706_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero dell'ambiente e della sicurezza energetica, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "300444",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300444",
+      "firstName": "Maurizio",
+      "lastName": "Leo",
+      "displayName": "Maurizio Leo",
+      "appointmentIds": [
+        "mg300444_29_202_52_20221111"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-11-11",
+      "biography": "Vice ministro — Ministero dell'economia e delle finanze, dal 11 novembre 2022."
+    },
+    {
+      "personaId": "304521",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p304521",
+      "firstName": "Edoardo",
+      "lastName": "Rixi",
+      "displayName": "Edoardo Rixi",
+      "appointmentIds": [
+        "mg304521_29_202_707_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_707",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero delle infrastrutture e dei trasporti, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "302886",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302886",
+      "firstName": "Francesco Paolo",
+      "lastName": "Sisto",
+      "displayName": "Francesco Paolo Sisto",
+      "appointmentIds": [
+        "mg302886_29_202_49_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero della giustizia, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "301559",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301559",
+      "firstName": "Valentino",
+      "lastName": "Valentini",
+      "displayName": "Valentino Valentini",
+      "appointmentIds": [
+        "mg301559_29_202_704_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero delle imprese e del Made in Italy, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "308421",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308421",
+      "firstName": "Lucia",
+      "lastName": "Albano",
+      "displayName": "Lucia Albano",
+      "appointmentIds": [
+        "mg308421_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
       "primaryRoleKind": "sottosegretario",
-      "primaryAppointmentId": "sottosegretario-marcello-gemmato"
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "300624",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300624",
+      "firstName": "Alberto",
+      "lastName": "Balboni",
+      "displayName": "Alberto Balboni",
+      "appointmentIds": [
+        "mg300624_5_202_49_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_49",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero della giustizia, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307750",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307750",
+      "firstName": "Alberto",
+      "lastName": "Barachini",
+      "displayName": "Alberto Barachini",
+      "appointmentIds": [
+        "mg307750_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "302945",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302945",
+      "firstName": "Claudio",
+      "lastName": "Barbaro",
+      "displayName": "Claudio Barbaro",
+      "appointmentIds": [
+        "mg302945_5_202_706_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'ambiente e della sicurezza energetica, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "300497",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300497",
+      "firstName": "Paolo",
+      "lastName": "Barelli",
+      "displayName": "Paolo Barelli",
+      "appointmentIds": [
+        "mg300497_5_202_1_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "309060",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309060",
+      "firstName": "Fausta",
+      "lastName": "Bergamotto",
+      "displayName": "Fausta Bergamotto",
+      "appointmentIds": [
+        "mg309060_5_202_704_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero delle imprese e del Made in Italy, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308966",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308966",
+      "firstName": "Mara",
+      "lastName": "Bizzotto",
+      "displayName": "Mara Bizzotto",
+      "appointmentIds": [
+        "mg308966_5_202_704_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_704",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero delle imprese e del Made in Italy, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307758",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307758",
+      "firstName": "Lucia",
+      "lastName": "Borgonzoni",
+      "displayName": "Lucia Borgonzoni",
+      "appointmentIds": [
+        "mg307758_5_202_664_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_664",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della cultura, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "32500",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p32500",
+      "firstName": "Alessio",
+      "lastName": "Butti",
+      "displayName": "Alessio Butti",
+      "appointmentIds": [
+        "mg32500_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "300640",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300640",
+      "firstName": "Pietro",
+      "lastName": "Cannella",
+      "displayName": "Pietro Cannella",
+      "appointmentIds": [
+        "mg300640_5_202_664_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_664",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero della cultura, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "301573",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301573",
+      "firstName": "Giuseppina",
+      "lastName": "Castiello",
+      "displayName": "Giuseppina Castiello",
+      "appointmentIds": [
+        "mg301573_5_202_524_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato con delega: Rapporti con il Parlamento, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307242",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307242",
+      "firstName": "Luigi",
+      "lastName": "D'Eramo",
+      "displayName": "Luigi D'Eramo",
+      "appointmentIds": [
+        "mg307242_5_202_705_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309340",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309340",
+      "firstName": "Massimo",
+      "lastName": "Dell'Utri",
+      "displayName": "Massimo Dell'Utri",
+      "appointmentIds": [
+        "mg309340_5_202_504_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_504",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero degli affari esteri e della cooperazione internazionale, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307468",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307468",
+      "firstName": "Claudio",
+      "lastName": "Durigon",
+      "displayName": "Claudio Durigon",
+      "appointmentIds": [
+        "mg307468_5_202_285_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero del lavoro e delle politiche sociali, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307802",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307802",
+      "firstName": "Giovanbattista",
+      "lastName": "Fazzolari",
+      "displayName": "Giovanbattista Fazzolari",
+      "appointmentIds": [
+        "mg307802_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "308876",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308876",
+      "firstName": "Tullio",
+      "lastName": "Ferrante",
+      "displayName": "Tullio Ferrante",
+      "appointmentIds": [
+        "mg308876_5_202_707_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_707",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero delle infrastrutture e dei trasporti, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307567",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307567",
+      "firstName": "Wanda",
+      "lastName": "Ferro",
+      "displayName": "Wanda Ferro",
+      "appointmentIds": [
+        "mg307567_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "301457",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301457",
+      "firstName": "Paola",
+      "lastName": "Frassinetti",
+      "displayName": "Paola Frassinetti",
+      "appointmentIds": [
+        "mg301457_5_202_708_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_708",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'istruzione e del merito, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308837",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308837",
+      "firstName": "Federico",
+      "lastName": "Freni",
+      "displayName": "Federico Freni",
+      "appointmentIds": [
+        "mg308837_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307332",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307332",
+      "firstName": "Marcello",
+      "lastName": "Gemmato",
+      "displayName": "Marcello Gemmato",
+      "appointmentIds": [
+        "mg307332_5_202_264_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_264",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della salute, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307820",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307820",
+      "firstName": "Antonio",
+      "lastName": "Iannone",
+      "displayName": "Antonio Iannone",
+      "appointmentIds": [
+        "mg307820_5_202_707_20250331"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_707",
+      "since": "2025-03-31",
+      "biography": "Sottosegretario di Stato — Ministero delle infrastrutture e dei trasporti, dal 31 marzo 2025."
+    },
+    {
+      "personaId": "307824",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307824",
+      "firstName": "Patrizio Giacomo",
+      "lastName": "La Pietra",
+      "displayName": "Patrizio Giacomo La Pietra",
+      "appointmentIds": [
+        "mg307824_5_202_705_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "50236",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50236",
+      "firstName": "Alfredo",
+      "lastName": "Mantovano",
+      "displayName": "Alfredo Mantovano",
+      "appointmentIds": [
+        "mg50236_5_202_1_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "302762",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302762",
+      "firstName": "Nicola",
+      "lastName": "Molteni",
+      "displayName": "Nicola Molteni",
+      "appointmentIds": [
+        "mg302762_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307668",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307668",
+      "firstName": "Alessandro",
+      "lastName": "Morelli",
+      "displayName": "Alessandro Morelli",
+      "appointmentIds": [
+        "mg307668_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307855",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307855",
+      "firstName": "Andrea",
+      "lastName": "Ostellari",
+      "displayName": "Andrea Ostellari",
+      "appointmentIds": [
+        "mg307855_5_202_49_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della giustizia, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307643",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307643",
+      "firstName": "Matteo",
+      "lastName": "Perego Di Cremnago",
+      "displayName": "Matteo Perego Di Cremnago",
+      "appointmentIds": [
+        "mg307643_5_202_6_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della difesa, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307452",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307452",
+      "firstName": "Emanuele",
+      "lastName": "Prisco",
+      "displayName": "Emanuele Prisco",
+      "appointmentIds": [
+        "mg307452_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307879",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307879",
+      "firstName": "Isabella",
+      "lastName": "Rauti",
+      "displayName": "Isabella Rauti",
+      "appointmentIds": [
+        "mg307879_5_202_6_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della difesa, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "305684",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305684",
+      "firstName": "Sandra",
+      "lastName": "Savino",
+      "displayName": "Sandra Savino",
+      "appointmentIds": [
+        "mg305684_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "309240",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309240",
+      "firstName": "Luigi",
+      "lastName": "Sbarra",
+      "displayName": "Luigi Sbarra",
+      "appointmentIds": [
+        "mg309240_5_202_1_20250612"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2025-06-12",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 12 giugno 2025."
+    },
+    {
+      "personaId": "307139",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307139",
+      "firstName": "Giorgio",
+      "lastName": "Silli",
+      "displayName": "Giorgio Silli",
+      "appointmentIds": [
+        "mg307139_5_202_1_20260213"
+      ],
+      "officialPage": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2026-02-13",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 13 febbraio 2026."
+    },
+    {
+      "personaId": "307402",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307402",
+      "firstName": "Matilde",
+      "lastName": "Siracusano",
+      "displayName": "Matilde Siracusano",
+      "appointmentIds": [
+        "mg307402_5_202_524_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato con delega: Rapporti con il Parlamento, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307728",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307728",
+      "firstName": "Maria",
+      "lastName": "Tripodi",
+      "displayName": "Maria Tripodi",
+      "appointmentIds": [
+        "mg307728_5_202_504_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_504",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero degli affari esteri e della cooperazione internazionale, dal 31 ottobre 2022."
     }
   ]
 }

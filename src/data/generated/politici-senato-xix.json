@@ -32,7 +32,7 @@
     "license": "CC BY 3.0 (dichiarata dal portale dati.senato.it)",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
     "observedDate": "2026-09-17",
-    "acquiredAt": "2026-09-17T19:02:41+00:00",
+    "acquiredAt": "2026-09-17T19:07:38+00:00",
     "responses": {
       "legislatureRoster": {
         "bytes": 290829,
@@ -150,8 +150,8 @@
       "college": "BASILICATA - U01 (POTENZA)",
       "profession": "Avvocato",
       "birthDate": "1946-08-12",
-      "birthPlace": "Rovigo, Rovigo, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Basilicata (BASILICATA - U01 (POTENZA)). Nascita: 1946-08-12, Rovigo, Rovigo, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Rovigo",
+      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Basilicata (BASILICATA - U01 (POTENZA)). Nata a Rovigo il 12 agosto 1946. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32578",
@@ -175,8 +175,8 @@
       "college": null,
       "profession": "Altra professione intellettuale o scientifica",
       "birthDate": "1972-02-02",
-      "birthPlace": "Varese, Varese, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lombardia. Nascita: 1972-02-02, Varese, Varese, Italia. Professione dichiarata: Altra professione intellettuale o scientifica."
+      "birthPlace": "Varese",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lombardia. Nato a Varese il 2 febbraio 1972. Professione dichiarata: Altra professione intellettuale o scientifica."
     },
     {
       "id": "s36381",
@@ -200,8 +200,8 @@
       "college": null,
       "profession": "Medico, dirigente, insegnante",
       "birthDate": "1946-12-15",
-      "birthPlace": "Muro Lucano, Potenza, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nascita: 1946-12-15, Muro Lucano, Potenza, Italia. Professione dichiarata: Medico, dirigente, insegnante."
+      "birthPlace": "Muro Lucano, Potenza",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nata a Muro Lucano, Potenza il 15 dicembre 1946. Professione dichiarata: Medico, dirigente, insegnante."
     },
     {
       "id": "s36382",
@@ -225,8 +225,8 @@
       "college": "PIEMONTE - U02 (MONCALIERI)",
       "profession": "Funzionario consiglio regionale piemonte",
       "birthDate": "1970-12-02",
-      "birthPlace": "Torino, Torino, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Piemonte (PIEMONTE - U02 (MONCALIERI)). Nascita: 1970-12-02, Torino, Torino, Italia. Professione dichiarata: Funzionario consiglio regionale piemonte."
+      "birthPlace": "Torino",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Piemonte (PIEMONTE - U02 (MONCALIERI)). Nata a Torino il 2 dicembre 1970. Professione dichiarata: Funzionario consiglio regionale piemonte."
     },
     {
       "id": "s31010",
@@ -250,8 +250,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1961-05-23",
-      "birthPlace": "Rovigo, Rovigo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nascita: 1961-05-23, Rovigo, Rovigo, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Rovigo",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nato a Rovigo il 23 maggio 1961. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s36383",
@@ -275,8 +275,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1956-03-19",
-      "birthPlace": "Crema, Cremona, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nascita: 1956-03-19, Crema, Cremona, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Crema, Cremona",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nato a Crema, Cremona il 19 marzo 1956. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s17542",
@@ -300,8 +300,8 @@
       "college": "EMILIA-ROMAGNA - U04 (RAVENNA)",
       "profession": "Avvocato",
       "birthDate": "1959-06-19",
-      "birthPlace": "Ferrara, Ferrara, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna (EMILIA-ROMAGNA - U04 (RAVENNA)). Nascita: 1959-06-19, Ferrara, Ferrara, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Ferrara",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna (EMILIA-ROMAGNA - U04 (RAVENNA)). Nato a Ferrara il 19 giugno 1959. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32583",
@@ -325,8 +325,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1972-08-21",
-      "birthPlace": "Pisa, Pisa, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di tesoriere del gruppo. Eletto in Lombardia. Nascita: 1972-08-21, Pisa, Pisa, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Pisa",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di tesoriere del gruppo. Eletto in Lombardia. Nato a Pisa il 21 agosto 1972. Professione dichiarata: Giornalista."
     },
     {
       "id": "s36431",
@@ -350,8 +350,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1979-02-07",
-      "birthPlace": "MODENA, Modena, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna. Nascita: 1979-02-07, MODENA, Modena, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "MODENA",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna. Nato a MODENA il 7 febbraio 1979. Professione dichiarata: Avvocato."
     },
     {
       "id": "s29270",
@@ -375,8 +375,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1976-02-19",
-      "birthPlace": "Genova, Genova, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletto in Liguria. Nascita: 1976-02-19, Genova, Genova, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Genova",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletto in Liguria. Nato a Genova il 19 febbraio 1976. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s29273",
@@ -400,8 +400,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1969-12-15",
-      "birthPlace": "Brescia, Brescia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente vicario del gruppo. Eletto in Lombardia. Nascita: 1969-12-15, Brescia, Brescia, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Brescia",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente vicario del gruppo. Eletto in Lombardia. Nato a Brescia il 15 dicembre 1969. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32586",
@@ -425,8 +425,8 @@
       "college": "PIEMONTE - U05 (CUNEO)",
       "profession": "Dirigente industria",
       "birthDate": "1963-11-22",
-      "birthPlace": "Bra, Cuneo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Piemonte (PIEMONTE - U05 (CUNEO)). Nascita: 1963-11-22, Bra, Cuneo, Italia. Professione dichiarata: Dirigente industria."
+      "birthPlace": "Bra, Cuneo",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Piemonte (PIEMONTE - U05 (CUNEO)). Nato a Bra, Cuneo il 22 novembre 1963. Professione dichiarata: Dirigente industria."
     },
     {
       "id": "s25558",
@@ -450,8 +450,8 @@
       "college": "VENETO - U03 (PADOVA)",
       "profession": "Docente universitario (professore associato) di diritto pubblico comparato presso la facoltà di economia dell'università di bologna, avvocato (diritto commerciale-amministrativo)",
       "birthDate": "1965-08-17",
-      "birthPlace": "Bologna, Bologna, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Veneto (VENETO - U03 (PADOVA)). Nascita: 1965-08-17, Bologna, Bologna, Italia. Professione dichiarata: Docente universitario (professore associato) di diritto pubblico comparato presso la facoltà di economia dell'università di bologna, avvocato (diritto commerciale-amministrativo)."
+      "birthPlace": "Bologna",
+      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Veneto (VENETO - U03 (PADOVA)). Nata a Bologna il 17 agosto 1965. Professione dichiarata: Docente universitario (professore associato) di diritto pubblico comparato presso la facoltà di economia dell'università di bologna, avvocato (diritto commerciale-amministrativo)."
     },
     {
       "id": "s36384",
@@ -475,8 +475,8 @@
       "college": "LIGURIA - U01 (GENOVA: MUNICIPIO VII - PONENTE)",
       "profession": "Avvocato",
       "birthDate": "1964-05-07",
-      "birthPlace": "San Remo, Imperia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Liguria (LIGURIA - U01 (GENOVA: MUNICIPIO VII - PONENTE)). Nascita: 1964-05-07, San Remo, Imperia, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "San Remo, Imperia",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Liguria (LIGURIA - U01 (GENOVA: MUNICIPIO VII - PONENTE)). Nato a San Remo, Imperia il 7 maggio 1964. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36385",
@@ -500,8 +500,8 @@
       "college": "SICILIA - U01 (PALERMO: QUARTIERE 11 - SETTE CANNOLI)",
       "profession": "Giornalista, specializzata in recruiting e formazione, specializzata in normativa privacy, antiriciclaggio e tutela del consumatore",
       "birthDate": "1974-08-27",
-      "birthPlace": "Partinico, Palermo, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di tesoriere del gruppo. Eletta in Sicilia (SICILIA - U01 (PALERMO: QUARTIERE 11 - SETTE CANNOLI)). Nascita: 1974-08-27, Partinico, Palermo, Italia. Professione dichiarata: Giornalista, specializzata in recruiting e formazione, specializzata in normativa privacy, antiriciclaggio e tutela del consumatore."
+      "birthPlace": "Partinico, Palermo",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di tesoriere del gruppo. Eletta in Sicilia (SICILIA - U01 (PALERMO: QUARTIERE 11 - SETTE CANNOLI)). Nata a Partinico, Palermo il 27 agosto 1974. Professione dichiarata: Giornalista, specializzata in recruiting e formazione, specializzata in normativa privacy, antiriciclaggio e tutela del consumatore."
     },
     {
       "id": "s22871",
@@ -525,8 +525,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U02 (ROVERETO)",
       "profession": "Ceo e founder bauking srl",
       "birthDate": "1970-12-28",
-      "birthPlace": "Bolzano, Bolzano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di presidente del gruppo. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U02 (ROVERETO)). Nascita: 1970-12-28, Bolzano, Bolzano, Italia. Professione dichiarata: Ceo e founder bauking srl."
+      "birthPlace": "Bolzano",
+      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di presidente del gruppo. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U02 (ROVERETO)). Nata a Bolzano il 28 dicembre 1970. Professione dichiarata: Ceo e founder bauking srl."
     },
     {
       "id": "s32851",
@@ -550,8 +550,8 @@
       "college": null,
       "profession": "Avvocato penalista",
       "birthDate": "1982-06-15",
-      "birthPlace": "BATTIPAGLIA, Salerno, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nascita: 1982-06-15, BATTIPAGLIA, Salerno, Italia. Professione dichiarata: Avvocato penalista."
+      "birthPlace": "BATTIPAGLIA, Salerno",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nata a BATTIPAGLIA, Salerno il 15 giugno 1982. Professione dichiarata: Avvocato penalista."
     },
     {
       "id": "s36386",
@@ -575,8 +575,8 @@
       "college": "VENETO - U04 (VICENZA)",
       "profession": null,
       "birthDate": "1972-06-03",
-      "birthPlace": "Bassano Del Grappa, Vicenza, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Veneto (VENETO - U04 (VICENZA)). Nascita: 1972-06-03, Bassano Del Grappa, Vicenza, Italia."
+      "birthPlace": "Bassano Del Grappa, Vicenza",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Veneto (VENETO - U04 (VICENZA)). Nata a Bassano Del Grappa, Vicenza il 3 giugno 1972."
     },
     {
       "id": "s25555",
@@ -600,8 +600,8 @@
       "college": null,
       "profession": "Professore in economia delle amministrazioni pubbliche",
       "birthDate": "1968-03-18",
-      "birthPlace": "Bisceglie, Barletta-Andria-Trani, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di presidente del gruppo. Eletto in Puglia. Nascita: 1968-03-18, Bisceglie, Barletta-Andria-Trani, Italia. Professione dichiarata: Professore in economia delle amministrazioni pubbliche."
+      "birthPlace": "Bisceglie, Barletta-Andria-Trani",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di presidente del gruppo. Eletto in Puglia. Nato a Bisceglie, Barletta-Andria-Trani il 18 marzo 1968. Professione dichiarata: Professore in economia delle amministrazioni pubbliche."
     },
     {
       "id": "s22877",
@@ -625,8 +625,8 @@
       "college": "LAZIO - U03 (ROMA: MUNICIPIO V)",
       "profession": "Avvocato",
       "birthDate": "1966-03-22",
-      "birthPlace": "Palermo, Palermo, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lazio (LAZIO - U03 (ROMA: MUNICIPIO V)). Nascita: 1966-03-22, Palermo, Palermo, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Palermo",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lazio (LAZIO - U03 (ROMA: MUNICIPIO V)). Nata a Palermo il 22 marzo 1966. Professione dichiarata: Avvocato."
     },
     {
       "id": "s29291",
@@ -651,7 +651,7 @@
       "profession": "Docente universitario",
       "birthDate": "1981-04-14",
       "birthPlace": "CORDOBA, Argentina",
-      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di tesoriere del gruppo. Eletto in AMERICA MERIDIONALE. Nascita: 1981-04-14, CORDOBA, Argentina. Professione dichiarata: Docente universitario."
+      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di tesoriere del gruppo. Eletto in AMERICA MERIDIONALE. Nato a CORDOBA, Argentina il 14 aprile 1981. Professione dichiarata: Docente universitario."
     },
     {
       "id": "s29292",
@@ -675,8 +675,8 @@
       "college": "LOMBARDIA - U08 (BRESCIA)",
       "profession": "Dottore commercialista e revisore legale",
       "birthDate": "1977-09-16",
-      "birthPlace": "Brescia, Brescia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia (LOMBARDIA - U08 (BRESCIA)). Nascita: 1977-09-16, Brescia, Brescia, Italia. Professione dichiarata: Dottore commercialista e revisore legale."
+      "birthPlace": "Brescia",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia (LOMBARDIA - U08 (BRESCIA)). Nato a Brescia il 16 settembre 1977. Professione dichiarata: Dottore commercialista e revisore legale."
     },
     {
       "id": "s33070",
@@ -700,8 +700,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1970-06-06",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Toscana. Nascita: 1970-06-06, Milano, Milano, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Toscana. Nato a Milano il 6 giugno 1970. Professione dichiarata: Giornalista."
     },
     {
       "id": "s29293",
@@ -725,8 +725,8 @@
       "college": null,
       "profession": "Dirigente",
       "birthDate": "1967-08-06",
-      "birthPlace": "Premosello-Chiovenda, Verbano Cusio Ossola, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletto in Piemonte. Nascita: 1967-08-06, Premosello-Chiovenda, Verbano Cusio Ossola, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Premosello-Chiovenda, Verbano Cusio Ossola",
+      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletto in Piemonte. Nato a Premosello-Chiovenda, Verbano Cusio Ossola il 6 agosto 1967. Professione dichiarata: Dirigente."
     },
     {
       "id": "s32590",
@@ -750,8 +750,8 @@
       "college": null,
       "profession": "Amministratore locale",
       "birthDate": "1976-09-18",
-      "birthPlace": "Bologna, Bologna, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Emilia-Romagna. Nascita: 1976-09-18, Bologna, Bologna, Italia. Professione dichiarata: Amministratore locale."
+      "birthPlace": "Bologna",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Emilia-Romagna. Nata a Bologna il 18 settembre 1976. Professione dichiarata: Amministratore locale."
     },
     {
       "id": "s32856",
@@ -775,8 +775,8 @@
       "college": null,
       "profession": "Dirigente",
       "birthDate": "1963-06-27",
-      "birthPlace": "Barcellona Pozzo Di Gotto, Messina, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Sicilia. Nascita: 1963-06-27, Barcellona Pozzo Di Gotto, Messina, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Barcellona Pozzo Di Gotto, Messina",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Sicilia. Nata a Barcellona Pozzo Di Gotto, Messina il 27 giugno 1963. Professione dichiarata: Dirigente."
     },
     {
       "id": "s407",
@@ -800,8 +800,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1964-10-15",
-      "birthPlace": "Como, Como, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nascita: 1964-10-15, Como, Como, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Como",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nato a Como il 15 ottobre 1964. Professione dichiarata: Consulente."
     },
     {
       "id": "s34485",
@@ -825,8 +825,8 @@
       "college": null,
       "profession": "Consulente legale, revisore legale",
       "birthDate": "1966-11-05",
-      "birthPlace": "Latina, Latina, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio. Nascita: 1966-11-05, Latina, Latina, Italia. Professione dichiarata: Consulente legale, revisore legale."
+      "birthPlace": "Latina",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio. Nato a Latina il 5 novembre 1966. Professione dichiarata: Consulente legale, revisore legale."
     },
     {
       "id": "s422",
@@ -850,8 +850,8 @@
       "college": null,
       "profession": "Medico chirurgo maxillo - facciale",
       "birthDate": "1956-04-18",
-      "birthPlace": "Bergamo, Bergamo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia. Nascita: 1956-04-18, Bergamo, Bergamo, Italia. Professione dichiarata: Medico chirurgo maxillo - facciale."
+      "birthPlace": "Bergamo",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia. Nato a Bergamo il 18 aprile 1956. Professione dichiarata: Medico chirurgo maxillo - facciale."
     },
     {
       "id": "s30110",
@@ -875,8 +875,8 @@
       "college": null,
       "profession": "Amministratore o manager",
       "birthDate": "1973-04-09",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Misto. Eletto in Sicilia. Nascita: 1973-04-09, Roma, Roma, Italia. Professione dichiarata: Amministratore o manager."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Misto. Eletto in Sicilia. Nato a Roma il 9 aprile 1973. Professione dichiarata: Amministratore o manager."
     },
     {
       "id": "s36432",
@@ -901,7 +901,7 @@
       "profession": "Avvocato",
       "birthDate": "1966-02-03",
       "birthPlace": "Tripoli, Libia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Toscana. Nascita: 1966-02-03, Tripoli, Libia. Professione dichiarata: Avvocato."
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Toscana. Nata a Tripoli, Libia il 3 febbraio 1966. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36392",
@@ -925,8 +925,8 @@
       "college": null,
       "profession": "Sindacalista o esponente di associazione",
       "birthDate": "1955-08-14",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Campania. Nascita: 1955-08-14, Milano, Milano, Italia. Professione dichiarata: Sindacalista o esponente di associazione."
+      "birthPlace": "Milano",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Campania. Nata a Milano il 14 agosto 1955. Professione dichiarata: Sindacalista o esponente di associazione."
     },
     {
       "id": "s32862",
@@ -950,8 +950,8 @@
       "college": null,
       "profession": "Assicuratore",
       "birthDate": "1968-02-02",
-      "birthPlace": "Napoli, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Campania. Nascita: 1968-02-02, Napoli, Napoli, Italia. Professione dichiarata: Assicuratore."
+      "birthPlace": "Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Campania. Nato a Napoli il 2 febbraio 1968. Professione dichiarata: Assicuratore."
     },
     {
       "id": "s32598",
@@ -975,8 +975,8 @@
       "college": null,
       "profession": "Dirigente",
       "birthDate": "1964-12-21",
-      "birthPlace": "Varese, Varese, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lombardia. Nascita: 1964-12-21, Varese, Varese, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Varese",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lombardia. Nata a Varese il 21 dicembre 1964. Professione dichiarata: Dirigente."
     },
     {
       "id": "s520",
@@ -1000,8 +1000,8 @@
       "college": "EMILIA-ROMAGNA - U03 (BOLOGNA)",
       "profession": "Dirigente",
       "birthDate": "1955-12-03",
-      "birthPlace": "Bologna, Bologna, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna (EMILIA-ROMAGNA - U03 (BOLOGNA)). Nascita: 1955-12-03, Bologna, Bologna, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Bologna",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna (EMILIA-ROMAGNA - U03 (BOLOGNA)). Nato a Bologna il 3 dicembre 1955. Professione dichiarata: Dirigente."
     },
     {
       "id": "s36388",
@@ -1025,8 +1025,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1965-11-30",
-      "birthPlace": "Siena, Siena, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Marche. Nascita: 1965-11-30, Siena, Siena, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Siena",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Marche. Nato a Siena il 30 novembre 1965. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32600",
@@ -1054,8 +1054,8 @@
       "college": "CAMPANIA - U05 (GIUGLIANO IN CAMPANIA)",
       "profession": "Medico, ricercatore cnr",
       "birthDate": "1975-04-03",
-      "birthPlace": "Villaricca, Napoli, Italia",
-      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania (CAMPANIA - U05 (GIUGLIANO IN CAMPANIA)). Nascita: 1975-04-03, Villaricca, Napoli, Italia. Professione dichiarata: Medico, ricercatore cnr."
+      "birthPlace": "Villaricca, Napoli",
+      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania (CAMPANIA - U05 (GIUGLIANO IN CAMPANIA)). Nata a Villaricca, Napoli il 3 aprile 1975. Professione dichiarata: Medico, ricercatore cnr."
     },
     {
       "id": "s33065",
@@ -1079,8 +1079,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1960-04-15",
-      "birthPlace": "Ascoli Piceno, Ascoli Piceno, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Marche. Nascita: 1960-04-15, Ascoli Piceno, Ascoli Piceno, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Ascoli Piceno",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Marche. Nato a Ascoli Piceno il 15 aprile 1960. Professione dichiarata: Avvocato."
     },
     {
       "id": "s30511",
@@ -1104,8 +1104,8 @@
       "college": null,
       "profession": "Professore ordinario di farmacologia",
       "birthDate": "1962-10-22",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatrice a vita. Gruppo Per le Autonomie (SVP-PATT, Campobase). Nascita: 1962-10-22, Milano, Milano, Italia. Professione dichiarata: Professore ordinario di farmacologia."
+      "birthPlace": "Milano",
+      "biography": "Senatrice a vita. Gruppo Per le Autonomie (SVP-PATT, Campobase). Nata a Milano il 22 ottobre 1962. Professione dichiarata: Professore ordinario di farmacologia."
     },
     {
       "id": "s29067",
@@ -1133,8 +1133,8 @@
       "college": "LOMBARDIA - U10 (PAVIA)",
       "profession": "Direttore commerciale",
       "birthDate": "1971-10-31",
-      "birthPlace": "Pavia, Pavia, Italia",
-      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia (LOMBARDIA - U10 (PAVIA)). Nascita: 1971-10-31, Pavia, Pavia, Italia. Professione dichiarata: Direttore commerciale."
+      "birthPlace": "Pavia",
+      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia (LOMBARDIA - U10 (PAVIA)). Nato a Pavia il 31 ottobre 1971. Professione dichiarata: Direttore commerciale."
     },
     {
       "id": "s32603",
@@ -1158,8 +1158,8 @@
       "college": "FRIULI-VENEZIA GIULIA - U01 (TRIESTE)",
       "profession": "Impiegato",
       "birthDate": "1967-01-26",
-      "birthPlace": "Pordenone, Pordenone, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Friuli-Venezia Giulia (FRIULI-VENEZIA GIULIA - U01 (TRIESTE)). Nascita: 1967-01-26, Pordenone, Pordenone, Italia. Professione dichiarata: Impiegato."
+      "birthPlace": "Pordenone",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Friuli-Venezia Giulia (FRIULI-VENEZIA GIULIA - U01 (TRIESTE)). Nato a Pordenone il 26 gennaio 1967. Professione dichiarata: Impiegato."
     },
     {
       "id": "s22910",
@@ -1183,8 +1183,8 @@
       "college": "CAMPANIA - U02 (BENEVENTO)",
       "profession": "Dirigente",
       "birthDate": "1968-01-25",
-      "birthPlace": "Napoli, Napoli, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Campania (CAMPANIA - U02 (BENEVENTO)). Nascita: 1968-01-25, Napoli, Napoli, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Napoli",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Campania (CAMPANIA - U02 (BENEVENTO)). Nata a Napoli il 25 gennaio 1968. Professione dichiarata: Dirigente."
     },
     {
       "id": "s22914",
@@ -1208,8 +1208,8 @@
       "college": "SICILIA - U03 (GELA)",
       "profession": "Altra professione intellettuale o scientifica",
       "birthDate": "1960-10-25",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di presidente del gruppo. Eletta in Sicilia (SICILIA - U03 (GELA)). Nascita: 1960-10-25, Milano, Milano, Italia. Professione dichiarata: Altra professione intellettuale o scientifica."
+      "birthPlace": "Milano",
+      "biography": "Senatrice della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di presidente del gruppo. Eletta in Sicilia (SICILIA - U03 (GELA)). Nata a Milano il 25 ottobre 1960. Professione dichiarata: Altra professione intellettuale o scientifica."
     },
     {
       "id": "s36387",
@@ -1233,8 +1233,8 @@
       "college": null,
       "profession": "Docente universitario",
       "birthDate": "1954-09-14",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in EUROPA. Nascita: 1954-09-14, Roma, Roma, Italia. Professione dichiarata: Docente universitario."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in EUROPA. Nato a Roma il 14 settembre 1954. Professione dichiarata: Docente universitario."
     },
     {
       "id": "s32608",
@@ -1262,8 +1262,8 @@
       "college": null,
       "profession": "Altra professione intellettuale o scientifica",
       "birthDate": "1972-09-17",
-      "birthPlace": "Rimini, Rimini, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Emilia-Romagna. Nascita: 1972-09-17, Rimini, Rimini, Italia. Professione dichiarata: Altra professione intellettuale o scientifica."
+      "birthPlace": "Rimini",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Emilia-Romagna. Nato a Rimini il 17 settembre 1972. Professione dichiarata: Altra professione intellettuale o scientifica."
     },
     {
       "id": "s36390",
@@ -1287,8 +1287,8 @@
       "college": "TOSCANA - U04 (FIRENZE)",
       "profession": "Libero professionista",
       "birthDate": "1974-06-22",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Misto. Eletta in Toscana (TOSCANA - U04 (FIRENZE)). Nascita: 1974-06-22, Roma, Roma, Italia. Professione dichiarata: Libero professionista."
+      "birthPlace": "Roma",
+      "biography": "Senatrice della XIX legislatura. Gruppo Misto. Eletta in Toscana (TOSCANA - U04 (FIRENZE)). Nata a Roma il 22 giugno 1974. Professione dichiarata: Libero professionista."
     },
     {
       "id": "s31875",
@@ -1312,8 +1312,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1963-07-31",
-      "birthPlace": "Potenza, Potenza, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletta in Lazio. Nascita: 1963-07-31, Potenza, Potenza, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Potenza",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletta in Lazio. Nata a Potenza il 31 luglio 1963. Professione dichiarata: Consulente."
     },
     {
       "id": "s36391",
@@ -1337,8 +1337,8 @@
       "college": null,
       "profession": "Altra professione intellettuale o scientifica",
       "birthDate": "1972-02-05",
-      "birthPlace": "Gela, Caltanissetta, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di vicepresidente vicario del gruppo. Eletta in Sicilia. Nascita: 1972-02-05, Gela, Caltanissetta, Italia. Professione dichiarata: Altra professione intellettuale o scientifica."
+      "birthPlace": "Gela, Caltanissetta",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di vicepresidente vicario del gruppo. Eletta in Sicilia. Nata a Gela, Caltanissetta il 5 febbraio 1972. Professione dichiarata: Altra professione intellettuale o scientifica."
     },
     {
       "id": "s32747",
@@ -1362,8 +1362,8 @@
       "college": null,
       "profession": "Impiegato",
       "birthDate": "1974-06-21",
-      "birthPlace": "Barletta, Barletta-Andria-Trani, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia. Nascita: 1974-06-21, Barletta, Barletta-Andria-Trani, Italia. Professione dichiarata: Impiegato."
+      "birthPlace": "Barletta, Barletta-Andria-Trani",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia. Nato a Barletta, Barletta-Andria-Trani il 21 giugno 1974. Professione dichiarata: Impiegato."
     },
     {
       "id": "s32898",
@@ -1387,8 +1387,8 @@
       "college": "VENETO - U02 (TREVISO)",
       "profession": "Commerciante",
       "birthDate": "1972-08-07",
-      "birthPlace": "Pieve Di Cadore, Belluno, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto (VENETO - U02 (TREVISO)). Nascita: 1972-08-07, Pieve Di Cadore, Belluno, Italia. Professione dichiarata: Commerciante."
+      "birthPlace": "Pieve Di Cadore, Belluno",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto (VENETO - U02 (TREVISO)). Nato a Pieve Di Cadore, Belluno il 7 agosto 1972. Professione dichiarata: Commerciante."
     },
     {
       "id": "s22918",
@@ -1412,8 +1412,8 @@
       "college": null,
       "profession": "Funzionario di partito",
       "birthDate": "1971-06-26",
-      "birthPlace": "Napoli, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Misto, con incarico di presidente del gruppo. Eletto in Lazio. Nascita: 1971-06-26, Napoli, Napoli, Italia. Professione dichiarata: Funzionario di partito."
+      "birthPlace": "Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo Misto, con incarico di presidente del gruppo. Eletto in Lazio. Nato a Napoli il 26 giugno 1971. Professione dichiarata: Funzionario di partito."
     },
     {
       "id": "s22814",
@@ -1441,8 +1441,8 @@
       "college": "MARCHE - U02 (ANCONA)",
       "profession": "Impiegato",
       "birthDate": "1960-10-04",
-      "birthPlace": "Vicenza, Vicenza, Italia",
-      "biography": "Questore del Senato nella XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di vicepresidente del gruppo. Eletto in Marche (MARCHE - U02 (ANCONA)). Nascita: 1960-10-04, Vicenza, Vicenza, Italia. Professione dichiarata: Impiegato."
+      "birthPlace": "Vicenza",
+      "biography": "Questore del Senato nella XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di vicepresidente del gruppo. Eletto in Marche (MARCHE - U02 (ANCONA)). Nato a Vicenza il 4 ottobre 1960. Professione dichiarata: Impiegato."
     },
     {
       "id": "s36393",
@@ -1466,8 +1466,8 @@
       "college": null,
       "profession": "Incaricato giuridico di imprese",
       "birthDate": "1971-05-24",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio. Nascita: 1971-05-24, Roma, Roma, Italia. Professione dichiarata: Incaricato giuridico di imprese."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio. Nato a Roma il 24 maggio 1971. Professione dichiarata: Incaricato giuridico di imprese."
     },
     {
       "id": "s36394",
@@ -1491,8 +1491,8 @@
       "college": "CAMPANIA - U07 (ACERRA)",
       "profession": "Appartenente alle forze dell'ordine e di sicurezza",
       "birthDate": "1978-06-20",
-      "birthPlace": "Pompei, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Campania (CAMPANIA - U07 (ACERRA)). Nascita: 1978-06-20, Pompei, Napoli, Italia. Professione dichiarata: Appartenente alle forze dell'ordine e di sicurezza."
+      "birthPlace": "Pompei, Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Campania (CAMPANIA - U07 (ACERRA)). Nato a Pompei, Napoli il 20 giugno 1978. Professione dichiarata: Appartenente alle forze dell'ordine e di sicurezza."
     },
     {
       "id": "s36395",
@@ -1516,8 +1516,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1975-10-29",
-      "birthPlace": "Termoli, Campobasso, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Molise. Nascita: 1975-10-29, Termoli, Campobasso, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Termoli, Campobasso",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Molise. Nato a Termoli, Campobasso il 29 ottobre 1975. Professione dichiarata: Avvocato."
     },
     {
       "id": "s28670",
@@ -1541,8 +1541,8 @@
       "college": null,
       "profession": "Ricercatore, medico",
       "birthDate": "1960-04-27",
-      "birthPlace": "Reggio Nell'Emilia, Reggio nell'Emilia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna. Nascita: 1960-04-27, Reggio Nell'Emilia, Reggio nell'Emilia, Italia. Professione dichiarata: Ricercatore, medico."
+      "birthPlace": "Reggio Nell'Emilia",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna. Nato a Reggio Nell'Emilia il 27 aprile 1960. Professione dichiarata: Ricercatore, medico."
     },
     {
       "id": "s32619",
@@ -1566,8 +1566,8 @@
       "college": null,
       "profession": "Imprenditrice",
       "birthDate": "1977-05-15",
-      "birthPlace": "Sulmona, L'Aquila, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Abruzzo. Nascita: 1977-05-15, Sulmona, L'Aquila, Italia. Professione dichiarata: Imprenditrice."
+      "birthPlace": "Sulmona, L'Aquila",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Abruzzo. Nata a Sulmona, L'Aquila il 15 maggio 1977. Professione dichiarata: Imprenditrice."
     },
     {
       "id": "s36396",
@@ -1591,8 +1591,8 @@
       "college": null,
       "profession": "Direttore commerciale",
       "birthDate": "1969-03-18",
-      "birthPlace": "Spilimbergo, Pordenone, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Friuli-Venezia Giulia. Nascita: 1969-03-18, Spilimbergo, Pordenone, Italia. Professione dichiarata: Direttore commerciale."
+      "birthPlace": "Spilimbergo, Pordenone",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Friuli-Venezia Giulia. Nato a Spilimbergo, Pordenone il 18 marzo 1969. Professione dichiarata: Direttore commerciale."
     },
     {
       "id": "s33096",
@@ -1616,8 +1616,8 @@
       "college": "LAZIO - U01 (VITERBO)",
       "profession": "Dirigente azienda",
       "birthDate": "1971-09-10",
-      "birthPlace": "Latina, Latina, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lazio (LAZIO - U01 (VITERBO)). Nascita: 1971-09-10, Latina, Latina, Italia. Professione dichiarata: Dirigente azienda."
+      "birthPlace": "Latina",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lazio (LAZIO - U01 (VITERBO)). Nato a Latina il 10 settembre 1971. Professione dichiarata: Dirigente azienda."
     },
     {
       "id": "s32624",
@@ -1645,8 +1645,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U06 (BRESSANONE/BRIXEN)",
       "profession": "Avvocato",
       "birthDate": "1976-12-12",
-      "birthPlace": "Brunico, Bolzano, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase). Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U06 (BRESSANONE/BRIXEN)). Nascita: 1976-12-12, Brunico, Bolzano, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Brunico, Bolzano",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase). Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U06 (BRESSANONE/BRIXEN)). Nato a Brunico, Bolzano il 12 dicembre 1976. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36398",
@@ -1670,8 +1670,8 @@
       "college": "PUGLIA - U01 (FOGGIA)",
       "profession": "Imprenditore agricolo/turistico",
       "birthDate": "1968-05-19",
-      "birthPlace": "Foggia, Foggia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Puglia (PUGLIA - U01 (FOGGIA)). Nascita: 1968-05-19, Foggia, Foggia, Italia. Professione dichiarata: Imprenditore agricolo/turistico."
+      "birthPlace": "Foggia",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Puglia (PUGLIA - U01 (FOGGIA)). Nata a Foggia il 19 maggio 1968. Professione dichiarata: Imprenditore agricolo/turistico."
     },
     {
       "id": "s36397",
@@ -1695,8 +1695,8 @@
       "college": "EMILIA-ROMAGNA - U05 (RIMINI)",
       "profession": "Amministratore locale",
       "birthDate": "1962-01-01",
-      "birthPlace": "Brisighella, Ravenna, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U05 (RIMINI)). Nascita: 1962-01-01, Brisighella, Ravenna, Italia. Professione dichiarata: Amministratore locale."
+      "birthPlace": "Brisighella, Ravenna",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U05 (RIMINI)). Nata a Brisighella, Ravenna il 1 gennaio 1962. Professione dichiarata: Amministratore locale."
     },
     {
       "id": "s32628",
@@ -1720,8 +1720,8 @@
       "college": null,
       "profession": "Libero professionista",
       "birthDate": "1972-02-24",
-      "birthPlace": "Messina, Messina, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia. Nascita: 1972-02-24, Messina, Messina, Italia. Professione dichiarata: Libero professionista."
+      "birthPlace": "Messina",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia. Nato a Messina il 24 febbraio 1972. Professione dichiarata: Libero professionista."
     },
     {
       "id": "s4192",
@@ -1745,8 +1745,8 @@
       "college": "LAZIO - U06 (LATINA)",
       "profession": "Imprenditore, funzionario polizia di stato in pensione, avvocato",
       "birthDate": "1961-10-07",
-      "birthPlace": "Fondi, Latina, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lazio (LAZIO - U06 (LATINA)). Nascita: 1961-10-07, Fondi, Latina, Italia. Professione dichiarata: Imprenditore, funzionario polizia di stato in pensione, avvocato."
+      "birthPlace": "Fondi, Latina",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lazio (LAZIO - U06 (LATINA)). Nato a Fondi, Latina il 7 ottobre 1961. Professione dichiarata: Imprenditore, funzionario polizia di stato in pensione, avvocato."
     },
     {
       "id": "s30294",
@@ -1770,8 +1770,8 @@
       "college": null,
       "profession": "Esperto per il ministero del lavoro e delle politiche sociali",
       "birthDate": "1978-09-30",
-      "birthPlace": "Avezzano, L'Aquila, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Abruzzo. Nascita: 1978-09-30, Avezzano, L'Aquila, Italia. Professione dichiarata: Esperto per il ministero del lavoro e delle politiche sociali."
+      "birthPlace": "Avezzano, L'Aquila",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Abruzzo. Nato a Avezzano, L'Aquila il 30 settembre 1978. Professione dichiarata: Esperto per il ministero del lavoro e delle politiche sociali."
     },
     {
       "id": "s36399",
@@ -1795,8 +1795,8 @@
       "college": null,
       "profession": "Titolare di scuola di lingue e formazione, formatrice di pdl, linguista ricercatrice, psicodrammatista per le aree psicosociali e pedagogiche",
       "birthDate": "1967-05-06",
-      "birthPlace": "Verona, Verona, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase). Eletta in Veneto. Nascita: 1967-05-06, Verona, Verona, Italia. Professione dichiarata: Titolare di scuola di lingue e formazione, formatrice di pdl, linguista ricercatrice, psicodrammatista per le aree psicosociali e pedagogiche."
+      "birthPlace": "Verona",
+      "biography": "Senatrice della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase). Eletta in Veneto. Nata a Verona il 6 maggio 1967. Professione dichiarata: Titolare di scuola di lingue e formazione, formatrice di pdl, linguista ricercatrice, psicodrammatista per le aree psicosociali e pedagogiche."
     },
     {
       "id": "s32634",
@@ -1820,8 +1820,8 @@
       "college": null,
       "profession": "Docente di lettere (scuola secondaria di ii grado)",
       "birthDate": "1977-02-05",
-      "birthPlace": "Messina, Messina, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Sicilia. Nascita: 1977-02-05, Messina, Messina, Italia. Professione dichiarata: Docente di lettere (scuola secondaria di ii grado)."
+      "birthPlace": "Messina",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Sicilia. Nata a Messina il 5 febbraio 1977. Professione dichiarata: Docente di lettere (scuola secondaria di ii grado)."
     },
     {
       "id": "s36400",
@@ -1845,8 +1845,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1970-08-16",
-      "birthPlace": "Pistoia, Pistoia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Toscana. Nascita: 1970-08-16, Pistoia, Pistoia, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Pistoia",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Toscana. Nato a Pistoia il 16 agosto 1970. Professione dichiarata: Avvocato."
     },
     {
       "id": "s5799",
@@ -1870,8 +1870,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1958-10-19",
-      "birthPlace": "Ferrara, Ferrara, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Campania. Nascita: 1958-10-19, Ferrara, Ferrara, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Ferrara",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Campania. Nato a Ferrara il 19 ottobre 1958. Professione dichiarata: Avvocato."
     },
     {
       "id": "s29406",
@@ -1895,8 +1895,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1972-01-25",
-      "birthPlace": "Torino, Torino, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di segretario del gruppo. Eletta in Emilia-Romagna. Nascita: 1972-01-25, Torino, Torino, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Torino",
+      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di segretario del gruppo. Eletta in Emilia-Romagna. Nata a Torino il 25 gennaio 1972. Professione dichiarata: Avvocato."
     },
     {
       "id": "s31725",
@@ -1920,8 +1920,8 @@
       "college": null,
       "profession": "Sindacalista o esponente di associazione",
       "birthDate": "1958-04-24",
-      "birthPlace": "Genova, Genova, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di segretario del gruppo. Eletta in Sicilia. Nascita: 1958-04-24, Genova, Genova, Italia. Professione dichiarata: Sindacalista o esponente di associazione."
+      "birthPlace": "Genova",
+      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di segretario del gruppo. Eletta in Sicilia. Nata a Genova il 24 aprile 1958. Professione dichiarata: Sindacalista o esponente di associazione."
     },
     {
       "id": "s32637",
@@ -1945,8 +1945,8 @@
       "college": "LOMBARDIA - U06",
       "profession": "Amministratore di società",
       "birthDate": "1944-07-30",
-      "birthPlace": "Monza, Monza e Brianza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lombardia (LOMBARDIA - U06). Nascita: 1944-07-30, Monza, Monza e Brianza, Italia. Professione dichiarata: Amministratore di società."
+      "birthPlace": "Monza, Monza e Brianza",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lombardia (LOMBARDIA - U06). Nato a Monza, Monza e Brianza il 30 luglio 1944. Professione dichiarata: Amministratore di società."
     },
     {
       "id": "s22963",
@@ -1970,8 +1970,8 @@
       "college": null,
       "profession": "Consulente aziendale",
       "birthDate": "1968-04-08",
-      "birthPlace": "Cuggiono, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Piemonte. Nascita: 1968-04-08, Cuggiono, Milano, Italia. Professione dichiarata: Consulente aziendale."
+      "birthPlace": "Cuggiono, Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Piemonte. Nato a Cuggiono, Milano il 8 aprile 1968. Professione dichiarata: Consulente aziendale."
     },
     {
       "id": "s18121",
@@ -1995,8 +1995,8 @@
       "college": "LOMBARDIA - U11 (CREMONA)",
       "profession": "Imprenditore",
       "birthDate": "1961-04-07",
-      "birthPlace": "Cuneo, Cuneo, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia (LOMBARDIA - U11 (CREMONA)). Nascita: 1961-04-07, Cuneo, Cuneo, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Cuneo",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia (LOMBARDIA - U11 (CREMONA)). Nata a Cuneo il 7 aprile 1961. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s1103",
@@ -2020,8 +2020,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1956-07-18",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lazio. Nascita: 1956-07-18, Roma, Roma, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Lazio. Nato a Roma il 18 luglio 1956. Professione dichiarata: Giornalista."
     },
     {
       "id": "s32640",
@@ -2045,8 +2045,8 @@
       "college": null,
       "profession": "Docente di discipline economico-aziendali e marketing (scuola secondaria di ii grado)",
       "birthDate": "1966-01-09",
-      "birthPlace": "Albanella, Salerno, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nascita: 1966-01-09, Albanella, Salerno, Italia. Professione dichiarata: Docente di discipline economico-aziendali e marketing (scuola secondaria di ii grado)."
+      "birthPlace": "Albanella, Salerno",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Campania. Nata a Albanella, Salerno il 9 gennaio 1966. Professione dichiarata: Docente di discipline economico-aziendali e marketing (scuola secondaria di ii grado)."
     },
     {
       "id": "s36433",
@@ -2070,8 +2070,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1975-06-12",
-      "birthPlace": "VERONA, Verona, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nascita: 1975-06-12, VERONA, Verona, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "VERONA",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nato a VERONA il 12 giugno 1975. Professione dichiarata: Consulente."
     },
     {
       "id": "s22966",
@@ -2095,8 +2095,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1973-07-01",
-      "birthPlace": "Leno, Brescia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletta in Toscana. Nascita: 1973-07-01, Leno, Brescia, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Leno, Brescia",
+      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletta in Toscana. Nata a Leno, Brescia il 1 luglio 1973. Professione dichiarata: Avvocato."
     },
     {
       "id": "s1116",
@@ -2120,8 +2120,8 @@
       "college": null,
       "profession": "Dirigente",
       "birthDate": "1976-04-12",
-      "birthPlace": "Messina, Messina, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di vicepresidente del gruppo. Eletto in Sicilia. Nascita: 1976-04-12, Messina, Messina, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Messina",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di vicepresidente del gruppo. Eletto in Sicilia. Nato a Messina il 12 aprile 1976. Professione dichiarata: Dirigente."
     },
     {
       "id": "s29105",
@@ -2145,8 +2145,8 @@
       "college": null,
       "profession": "Docente universitario",
       "birthDate": "1958-07-10",
-      "birthPlace": "Catania, Catania, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in AFRICA ASIA OCEANIA ANTARTIDE. Nascita: 1958-07-10, Catania, Catania, Italia. Professione dichiarata: Docente universitario."
+      "birthPlace": "Catania",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in AFRICA ASIA OCEANIA ANTARTIDE. Nato a Catania il 10 luglio 1958. Professione dichiarata: Docente universitario."
     },
     {
       "id": "s29425",
@@ -2170,8 +2170,8 @@
       "college": "PIEMONTE - U01 (TORINO: CIRCOSCRIZIONE 2 - SANTA RITA - MIRAFIORI NORD - MIRAFIORI SUD)",
       "profession": "Professore di diritto costituzionale - facoltà di giurisprudenza, università di torino",
       "birthDate": "1965-04-12",
-      "birthPlace": "Torino, Torino, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Piemonte (PIEMONTE - U01 (TORINO: CIRCOSCRIZIONE 2 - SANTA RITA - MIRAFIORI NORD - MIRAFIORI SUD)). Nascita: 1965-04-12, Torino, Torino, Italia. Professione dichiarata: Professore di diritto costituzionale - facoltà di giurisprudenza, università di torino."
+      "birthPlace": "Torino",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Piemonte (PIEMONTE - U01 (TORINO: CIRCOSCRIZIONE 2 - SANTA RITA - MIRAFIORI NORD - MIRAFIORI SUD)). Nato a Torino il 12 aprile 1965. Professione dichiarata: Professore di diritto costituzionale - facoltà di giurisprudenza, università di torino."
     },
     {
       "id": "s1227",
@@ -2195,8 +2195,8 @@
       "college": null,
       "profession": "Medico chirurgo",
       "birthDate": "1945-06-13",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletto in Umbria. Nascita: 1945-06-13, Roma, Roma, Italia. Professione dichiarata: Medico chirurgo."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletto in Umbria. Nato a Roma il 13 giugno 1945. Professione dichiarata: Medico chirurgo."
     },
     {
       "id": "s32644",
@@ -2220,8 +2220,8 @@
       "college": null,
       "profession": "Operatrice socio sanitaria",
       "birthDate": "1975-09-21",
-      "birthPlace": "Bassano Del Grappa, Vicenza, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Veneto. Nascita: 1975-09-21, Bassano Del Grappa, Vicenza, Italia. Professione dichiarata: Operatrice socio sanitaria."
+      "birthPlace": "Bassano Del Grappa, Vicenza",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Veneto. Nata a Bassano Del Grappa, Vicenza il 21 settembre 1975. Professione dichiarata: Operatrice socio sanitaria."
     },
     {
       "id": "s32645",
@@ -2245,8 +2245,8 @@
       "college": "CAMPANIA - U03 (SALERNO)",
       "profession": "Imprenditore",
       "birthDate": "1975-09-18",
-      "birthPlace": "Torre Del Greco, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di tesoriere del gruppo. Eletto in Campania (CAMPANIA - U03 (SALERNO)). Nascita: 1975-09-18, Torre Del Greco, Napoli, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Torre Del Greco, Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di tesoriere del gruppo. Eletto in Campania (CAMPANIA - U03 (SALERNO)). Nato a Torre Del Greco, Napoli il 18 settembre 1975. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s36401",
@@ -2270,8 +2270,8 @@
       "college": null,
       "profession": "Architetto",
       "birthDate": "1982-01-05",
-      "birthPlace": "Reggio di Calabria, Reggio di Calabria, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario d'aula del gruppo. Eletto in Calabria. Nascita: 1982-01-05, Reggio di Calabria, Reggio di Calabria, Italia. Professione dichiarata: Architetto."
+      "birthPlace": "Reggio di Calabria",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario d'aula del gruppo. Eletto in Calabria. Nato a Reggio di Calabria il 5 gennaio 1982. Professione dichiarata: Architetto."
     },
     {
       "id": "s29447",
@@ -2296,7 +2296,7 @@
       "profession": "Docente universitario",
       "birthDate": "1975-10-30",
       "birthPlace": "TORONTO, Canada",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in AMERICA SETTENTRIONALE E CENTRALE. Nascita: 1975-10-30, TORONTO, Canada. Professione dichiarata: Docente universitario."
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in AMERICA SETTENTRIONALE E CENTRALE. Nata a TORONTO, Canada il 30 ottobre 1975. Professione dichiarata: Docente universitario."
     },
     {
       "id": "s32650",
@@ -2320,8 +2320,8 @@
       "college": "TOSCANA - U03 (PRATO)",
       "profession": "Imprenditore",
       "birthDate": "1961-04-10",
-      "birthPlace": "Pistoia, Pistoia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Toscana (TOSCANA - U03 (PRATO)). Nascita: 1961-04-10, Pistoia, Pistoia, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Pistoia",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Toscana (TOSCANA - U03 (PRATO)). Nato a Pistoia il 10 aprile 1961. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s1275",
@@ -2349,8 +2349,8 @@
       "college": "LOMBARDIA - U05 (COLOGNO MONZESE)",
       "profession": "Avvocato cassazionista",
       "birthDate": "1947-07-18",
-      "birthPlace": "Paterno', Catania, Italia",
-      "biography": "Presidente del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia (LOMBARDIA - U05 (COLOGNO MONZESE)). Nascita: 1947-07-18, Paterno', Catania, Italia. Professione dichiarata: Avvocato cassazionista."
+      "birthPlace": "Paterno', Catania",
+      "biography": "Presidente del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia (LOMBARDIA - U05 (COLOGNO MONZESE)). Nato a Paterno', Catania il 18 luglio 1947. Professione dichiarata: Avvocato cassazionista."
     },
     {
       "id": "s36402",
@@ -2374,8 +2374,8 @@
       "college": "MARCHE - U01 (ASCOLI PICENO)",
       "profession": "Amministratore locale",
       "birthDate": "1975-05-03",
-      "birthPlace": "Recanati, Macerata, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Marche (MARCHE - U01 (ASCOLI PICENO)). Nascita: 1975-05-03, Recanati, Macerata, Italia. Professione dichiarata: Amministratore locale."
+      "birthPlace": "Recanati, Macerata",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Marche (MARCHE - U01 (ASCOLI PICENO)). Nata a Recanati, Macerata il 3 maggio 1975. Professione dichiarata: Amministratore locale."
     },
     {
       "id": "s32653",
@@ -2399,8 +2399,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1963-10-11",
-      "birthPlace": "Sassari, Sassari, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Toscana. Nascita: 1963-10-11, Sassari, Sassari, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Sassari",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Toscana. Nato a Sassari il 11 ottobre 1963. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36434",
@@ -2424,8 +2424,8 @@
       "college": null,
       "profession": "Assistente amministrativo",
       "birthDate": "1971-06-04",
-      "birthPlace": "ASSEMINI, Cagliari, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di segretario del gruppo. Eletta in Sardegna. Nascita: 1971-06-04, ASSEMINI, Cagliari, Italia. Professione dichiarata: Assistente amministrativo."
+      "birthPlace": "ASSEMINI, Cagliari",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di segretario del gruppo. Eletta in Sardegna. Nata a ASSEMINI, Cagliari il 4 giugno 1971. Professione dichiarata: Assistente amministrativo."
     },
     {
       "id": "s36403",
@@ -2449,8 +2449,8 @@
       "college": "ABRUZZO - U01 (PESCARA)",
       "profession": "Medico epidemiologo e del lavoro",
       "birthDate": "1979-06-12",
-      "birthPlace": "L'Aquila, L'Aquila, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Abruzzo (ABRUZZO - U01 (PESCARA)). Nascita: 1979-06-12, L'Aquila, L'Aquila, Italia. Professione dichiarata: Medico epidemiologo e del lavoro."
+      "birthPlace": "L'Aquila",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Abruzzo (ABRUZZO - U01 (PESCARA)). Nato a L'Aquila il 12 giugno 1979. Professione dichiarata: Medico epidemiologo e del lavoro."
     },
     {
       "id": "s36435",
@@ -2474,8 +2474,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1977-03-15",
-      "birthPlace": "BOLOGNA, Bologna, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna. Nascita: 1977-03-15, BOLOGNA, Bologna, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "BOLOGNA",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Emilia-Romagna. Nato a BOLOGNA il 15 marzo 1977. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36436",
@@ -2503,8 +2503,8 @@
       "college": null,
       "profession": "Docente universitario",
       "birthDate": "1981-01-02",
-      "birthPlace": "LOCRI, Reggio di Calabria, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Misto. Eletto in Lombardia. Nascita: 1981-01-02, LOCRI, Reggio di Calabria, Italia. Professione dichiarata: Docente universitario."
+      "birthPlace": "LOCRI, Reggio di Calabria",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Misto. Eletto in Lombardia. Nato a LOCRI, Reggio di Calabria il 2 gennaio 1981. Professione dichiarata: Docente universitario."
     },
     {
       "id": "s36404",
@@ -2528,8 +2528,8 @@
       "college": "CAMPANIA - U04 (NAPOLI: QUARTIERE 19 - FUORIGROTTA)",
       "profession": "Avvocato",
       "birthDate": "1971-09-06",
-      "birthPlace": "Napoli, Napoli, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di segretario del gruppo. Eletta in Campania (CAMPANIA - U04 (NAPOLI: QUARTIERE 19 - FUORIGROTTA)). Nascita: 1971-09-06, Napoli, Napoli, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Napoli",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di segretario del gruppo. Eletta in Campania (CAMPANIA - U04 (NAPOLI: QUARTIERE 19 - FUORIGROTTA)). Nata a Napoli il 6 settembre 1971. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32655",
@@ -2557,8 +2557,8 @@
       "college": null,
       "profession": "Impiegato pubblico",
       "birthDate": "1967-07-18",
-      "birthPlace": "Gela, Caltanissetta, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Sicilia. Nascita: 1967-07-18, Gela, Caltanissetta, Italia. Professione dichiarata: Impiegato pubblico."
+      "birthPlace": "Gela, Caltanissetta",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Sicilia. Nato a Gela, Caltanissetta il 18 luglio 1967. Professione dichiarata: Impiegato pubblico."
     },
     {
       "id": "s25474",
@@ -2582,8 +2582,8 @@
       "college": null,
       "profession": "Dirigente",
       "birthDate": "1971-10-14",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletta in Veneto. Nascita: 1971-10-14, Roma, Roma, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Roma",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletta in Veneto. Nata a Roma il 14 ottobre 1971. Professione dichiarata: Dirigente."
     },
     {
       "id": "s18055",
@@ -2607,8 +2607,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1970-07-01",
-      "birthPlace": "Brindisi, Brindisi, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Marche. Nascita: 1970-07-01, Brindisi, Brindisi, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Brindisi",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Marche. Nato a Brindisi il 1 luglio 1970. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36405",
@@ -2632,8 +2632,8 @@
       "college": "MOLISE - U01 (CAMPOBASSO)",
       "profession": "Imprenditore",
       "birthDate": "1957-05-09",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Molise (MOLISE - U01 (CAMPOBASSO)). Nascita: 1957-05-09, Roma, Roma, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Molise (MOLISE - U01 (CAMPOBASSO)). Nato a Roma il 9 maggio 1957. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s33946",
@@ -2661,8 +2661,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1951-11-02",
-      "birthPlace": "Orzinuovi, Brescia, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nascita: 1951-11-02, Orzinuovi, Brescia, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Orzinuovi, Brescia",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nato a Orzinuovi, Brescia il 2 novembre 1951. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s36437",
@@ -2686,8 +2686,8 @@
       "college": null,
       "profession": "Sindacalista o esponente di associazione",
       "birthDate": "1947-06-29",
-      "birthPlace": "BARZAGO, Lecco, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Misto, con incarico di tesoriere del gruppo. Eletto in Lombardia. Nascita: 1947-06-29, BARZAGO, Lecco, Italia. Professione dichiarata: Sindacalista o esponente di associazione."
+      "birthPlace": "BARZAGO, Lecco",
+      "biography": "Senatore della XIX legislatura. Gruppo Misto, con incarico di tesoriere del gruppo. Eletto in Lombardia. Nato a BARZAGO, Lecco il 29 giugno 1947. Professione dichiarata: Sindacalista o esponente di associazione."
     },
     {
       "id": "s32658",
@@ -2711,8 +2711,8 @@
       "college": null,
       "profession": "Insegnante",
       "birthDate": "1974-07-24",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Lazio. Nascita: 1974-07-24, Roma, Roma, Italia. Professione dichiarata: Insegnante."
+      "birthPlace": "Roma",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Lazio. Nata a Roma il 24 luglio 1974. Professione dichiarata: Insegnante."
     },
     {
       "id": "s1407",
@@ -2736,8 +2736,8 @@
       "college": null,
       "profession": "Insegnante, funzionario di partito",
       "birthDate": "1960-07-30",
-      "birthPlace": "Luserna San Giovanni, Torino, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di presidente del gruppo. Eletto in Piemonte. Nascita: 1960-07-30, Luserna San Giovanni, Torino, Italia. Professione dichiarata: Insegnante, funzionario di partito."
+      "birthPlace": "Luserna San Giovanni, Torino",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di presidente del gruppo. Eletto in Piemonte. Nato a Luserna San Giovanni, Torino il 30 luglio 1960. Professione dichiarata: Insegnante, funzionario di partito."
     },
     {
       "id": "s29467",
@@ -2761,8 +2761,8 @@
       "college": null,
       "profession": "Insegnante",
       "birthDate": "1972-08-22",
-      "birthPlace": "Cernusco Sul Naviglio, Milano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Lombardia. Nascita: 1972-08-22, Cernusco Sul Naviglio, Milano, Italia. Professione dichiarata: Insegnante."
+      "birthPlace": "Cernusco Sul Naviglio, Milano",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Lombardia. Nata a Cernusco Sul Naviglio, Milano il 22 agosto 1972. Professione dichiarata: Insegnante."
     },
     {
       "id": "s32660",
@@ -2786,8 +2786,8 @@
       "college": null,
       "profession": "Funzionario",
       "birthDate": "1969-05-16",
-      "birthPlace": "Imola, Bologna, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna. Nascita: 1969-05-16, Imola, Bologna, Italia. Professione dichiarata: Funzionario."
+      "birthPlace": "Imola, Bologna",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Emilia-Romagna. Nato a Imola, Bologna il 16 maggio 1969. Professione dichiarata: Funzionario."
     },
     {
       "id": "s36438",
@@ -2811,8 +2811,8 @@
       "college": null,
       "profession": "Consulente del lavoro",
       "birthDate": "1973-11-04",
-      "birthPlace": "ASOLA, Mantova, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia. Nascita: 1973-11-04, ASOLA, Mantova, Italia. Professione dichiarata: Consulente del lavoro."
+      "birthPlace": "ASOLA, Mantova",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia. Nata a ASOLA, Mantova il 4 novembre 1973. Professione dichiarata: Consulente del lavoro."
     },
     {
       "id": "s36439",
@@ -2836,8 +2836,8 @@
       "college": null,
       "profession": "Agente di assicurazione",
       "birthDate": "1961-03-23",
-      "birthPlace": "FIRENZE, Firenze, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Toscana. Nascita: 1961-03-23, FIRENZE, Firenze, Italia. Professione dichiarata: Agente di assicurazione."
+      "birthPlace": "FIRENZE",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Toscana. Nato a FIRENZE il 23 marzo 1961. Professione dichiarata: Agente di assicurazione."
     },
     {
       "id": "s17924",
@@ -2861,8 +2861,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1968-08-27",
-      "birthPlace": "Portogruaro, Venezia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Veneto. Nascita: 1968-08-27, Portogruaro, Venezia, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Portogruaro, Venezia",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Veneto. Nato a Portogruaro, Venezia il 27 agosto 1968. Professione dichiarata: Consulente."
     },
     {
       "id": "s29480",
@@ -2886,8 +2886,8 @@
       "college": "PUGLIA - U05 (LECCE)",
       "profession": "Imprenditore",
       "birthDate": "1974-06-11",
-      "birthPlace": "Lecce, Lecce, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Puglia (PUGLIA - U05 (LECCE)). Nascita: 1974-06-11, Lecce, Lecce, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Lecce",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Puglia (PUGLIA - U05 (LECCE)). Nato a Lecce il 11 giugno 1974. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s29132",
@@ -2911,8 +2911,8 @@
       "college": null,
       "profession": "Artigiano",
       "birthDate": "1969-09-28",
-      "birthPlace": "Varedo, Monza e Brianza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Lombardia. Nascita: 1969-09-28, Varedo, Monza e Brianza, Italia. Professione dichiarata: Artigiano."
+      "birthPlace": "Varedo, Monza e Brianza",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Lombardia. Nato a Varedo, Monza e Brianza il 28 settembre 1969. Professione dichiarata: Artigiano."
     },
     {
       "id": "s36440",
@@ -2940,8 +2940,8 @@
       "college": null,
       "profession": "Amministratore locale",
       "birthDate": "1965-05-19",
-      "birthPlace": "BENEVENTO, Benevento, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Campania. Nascita: 1965-05-19, BENEVENTO, Benevento, Italia. Professione dichiarata: Amministratore locale."
+      "birthPlace": "BENEVENTO",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Campania. Nato a BENEVENTO il 19 maggio 1965. Professione dichiarata: Amministratore locale."
     },
     {
       "id": "s36406",
@@ -2965,8 +2965,8 @@
       "college": "CAMPANIA - U06 (TORRE DEL GRECO)",
       "profession": "Odontoiatra, libero professionista",
       "birthDate": "1965-09-30",
-      "birthPlace": "Cercola, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Campania (CAMPANIA - U06 (TORRE DEL GRECO)). Nascita: 1965-09-30, Cercola, Napoli, Italia. Professione dichiarata: Odontoiatra, libero professionista."
+      "birthPlace": "Cercola, Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Campania (CAMPANIA - U06 (TORRE DEL GRECO)). Nato a Cercola, Napoli il 30 settembre 1965. Professione dichiarata: Odontoiatra, libero professionista."
     },
     {
       "id": "s36407",
@@ -2990,8 +2990,8 @@
       "college": "PUGLIA - U03 (BARI)",
       "profession": "Funzionario pubblico",
       "birthDate": "1966-05-07",
-      "birthPlace": "Bari, Bari, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia (PUGLIA - U03 (BARI)). Nascita: 1966-05-07, Bari, Bari, Italia. Professione dichiarata: Funzionario pubblico."
+      "birthPlace": "Bari",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia (PUGLIA - U03 (BARI)). Nato a Bari il 7 maggio 1966. Professione dichiarata: Funzionario pubblico."
     },
     {
       "id": "s29490",
@@ -3019,8 +3019,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1971-06-16",
-      "birthPlace": "Quartu Sant'Elena, Cagliari, Italia",
-      "biography": "Questore del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Sardegna. Nascita: 1971-06-16, Quartu Sant'Elena, Cagliari, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Quartu Sant'Elena, Cagliari",
+      "biography": "Questore del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Sardegna. Nato a Quartu Sant'Elena, Cagliari il 16 giugno 1971. Professione dichiarata: Avvocato."
     },
     {
       "id": "s1558",
@@ -3044,8 +3044,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1961-12-03",
-      "birthPlace": "Pieve Di Cadore, Belluno, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Liguria. Nascita: 1961-12-03, Pieve Di Cadore, Belluno, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Pieve Di Cadore, Belluno",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Liguria. Nato a Pieve Di Cadore, Belluno il 3 dicembre 1961. Professione dichiarata: Giornalista."
     },
     {
       "id": "s34558",
@@ -3070,7 +3070,7 @@
       "profession": "Avvocato",
       "birthDate": "1976-04-17",
       "birthPlace": "Southampton, Regno Unito",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio (LAZIO - U02 (ROMA: MUNICIPIO XIV)). Nascita: 1976-04-17, Southampton, Regno Unito. Professione dichiarata: Avvocato."
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio (LAZIO - U02 (ROMA: MUNICIPIO XIV)). Nata a Southampton, Regno Unito il 17 aprile 1976. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36408",
@@ -3094,8 +3094,8 @@
       "college": "LAZIO - U04 (ROMA: MUNICIPIO VII)",
       "profession": "Giornalista",
       "birthDate": "1976-04-22",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio (LAZIO - U04 (ROMA: MUNICIPIO VII)). Nascita: 1976-04-22, Roma, Roma, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Roma",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio (LAZIO - U04 (ROMA: MUNICIPIO VII)). Nata a Roma il 22 aprile 1976. Professione dichiarata: Giornalista."
     },
     {
       "id": "s36013",
@@ -3119,8 +3119,8 @@
       "college": "CALABRIA - U02 (REGGIO DI CALABRIA)",
       "profession": "Avvocato",
       "birthDate": "1960-07-24",
-      "birthPlace": "Reggio Di Calabria, Reggio di Calabria, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di vicepresidente vicario del gruppo. Eletta in Calabria (CALABRIA - U02 (REGGIO DI CALABRIA)). Nascita: 1960-07-24, Reggio Di Calabria, Reggio di Calabria, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Reggio Di Calabria",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di vicepresidente vicario del gruppo. Eletta in Calabria (CALABRIA - U02 (REGGIO DI CALABRIA)). Nata a Reggio Di Calabria il 24 luglio 1960. Professione dichiarata: Avvocato."
     },
     {
       "id": "s29138",
@@ -3144,8 +3144,8 @@
       "college": null,
       "profession": "Funzionario di partito",
       "birthDate": "1960-02-09",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletto in Lombardia. Nascita: 1960-02-09, Milano, Milano, Italia. Professione dichiarata: Funzionario di partito."
+      "birthPlace": "Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletto in Lombardia. Nato a Milano il 9 febbraio 1960. Professione dichiarata: Funzionario di partito."
     },
     {
       "id": "s23011",
@@ -3169,8 +3169,8 @@
       "college": "LOMBARDIA - U03 (MILANO: NIL 21 - BUENOS AIRES - VENEZIA)",
       "profession": "Consulente",
       "birthDate": "1968-09-04",
-      "birthPlace": "Bergamo, Bergamo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lombardia (LOMBARDIA - U03 (MILANO: NIL 21 - BUENOS AIRES - VENEZIA)). Nascita: 1968-09-04, Bergamo, Bergamo, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Bergamo",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lombardia (LOMBARDIA - U03 (MILANO: NIL 21 - BUENOS AIRES - VENEZIA)). Nato a Bergamo il 4 settembre 1968. Professione dichiarata: Consulente."
     },
     {
       "id": "s28543",
@@ -3194,8 +3194,8 @@
       "college": null,
       "profession": "Professore universitario",
       "birthDate": "1943-03-19",
-      "birthPlace": "Varese, Varese, Italia",
-      "biography": "Senatore a vita. Gruppo Misto. Nascita: 1943-03-19, Varese, Varese, Italia. Professione dichiarata: Professore universitario."
+      "birthPlace": "Varese",
+      "biography": "Senatore a vita. Gruppo Misto. Nato a Varese il 19 marzo 1943. Professione dichiarata: Professore universitario."
     },
     {
       "id": "s32988",
@@ -3219,8 +3219,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1977-05-09",
-      "birthPlace": "VIZZOLO PREDABISSI, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia. Nascita: 1977-05-09, VIZZOLO PREDABISSI, Milano, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "VIZZOLO PREDABISSI, Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lombardia. Nato a VIZZOLO PREDABISSI, Milano il 9 maggio 1977. Professione dichiarata: Giornalista."
     },
     {
       "id": "s33110",
@@ -3248,8 +3248,8 @@
       "college": "EMILIA-ROMAGNA - U01 (PARMA)",
       "profession": "Consulente sui finanziamenti europei - docente a contratto informatica aziendale",
       "birthDate": "1975-07-29",
-      "birthPlace": "Piacenza, Piacenza, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U01 (PARMA)). Nascita: 1975-07-29, Piacenza, Piacenza, Italia. Professione dichiarata: Consulente sui finanziamenti europei - docente a contratto informatica aziendale."
+      "birthPlace": "Piacenza",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U01 (PARMA)). Nata a Piacenza il 29 luglio 1975. Professione dichiarata: Consulente sui finanziamenti europei - docente a contratto informatica aziendale."
     },
     {
       "id": "s36409",
@@ -3273,8 +3273,8 @@
       "college": "SICILIA - U06 (MESSINA)",
       "profession": "Avvocato",
       "birthDate": "1974-12-04",
-      "birthPlace": "Messina, Messina, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di vicepresidente del gruppo. Eletta in Sicilia (SICILIA - U06 (MESSINA)). Nascita: 1974-12-04, Messina, Messina, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Messina",
+      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di vicepresidente del gruppo. Eletta in Sicilia (SICILIA - U06 (MESSINA)). Nata a Messina il 4 dicembre 1974. Professione dichiarata: Avvocato."
     },
     {
       "id": "s28306",
@@ -3298,8 +3298,8 @@
       "college": "SICILIA - U04 (CATANIA)",
       "profession": "Bancario unicredit, giornalista",
       "birthDate": "1955-01-21",
-      "birthPlace": "Militello In Val Di Catania, Catania, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia (SICILIA - U04 (CATANIA)). Nascita: 1955-01-21, Militello In Val Di Catania, Catania, Italia. Professione dichiarata: Bancario unicredit, giornalista."
+      "birthPlace": "Militello In Val Di Catania, Catania",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia (SICILIA - U04 (CATANIA)). Nato a Militello In Val Di Catania, Catania il 21 gennaio 1955. Professione dichiarata: Bancario unicredit, giornalista."
     },
     {
       "id": "s25446",
@@ -3327,8 +3327,8 @@
       "college": "PIEMONTE - U03 (NOVARA)",
       "profession": "Agente generali ass.",
       "birthDate": "1968-03-18",
-      "birthPlace": "Boscoreale, Napoli, Italia",
-      "biography": "Questore del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Piemonte (PIEMONTE - U03 (NOVARA)). Nascita: 1968-03-18, Boscoreale, Napoli, Italia. Professione dichiarata: Agente generali ass.."
+      "birthPlace": "Boscoreale, Napoli",
+      "biography": "Questore del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Piemonte (PIEMONTE - U03 (NOVARA)). Nato a Boscoreale, Napoli il 18 marzo 1968. Professione dichiarata: Agente generali ass.."
     },
     {
       "id": "s32673",
@@ -3352,8 +3352,8 @@
       "college": null,
       "profession": "Insegnante",
       "birthDate": "1969-06-03",
-      "birthPlace": "San Giovanni Rotondo, Foggia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Puglia. Nascita: 1969-06-03, San Giovanni Rotondo, Foggia, Italia. Professione dichiarata: Insegnante."
+      "birthPlace": "San Giovanni Rotondo, Foggia",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Puglia. Nata a San Giovanni Rotondo, Foggia il 3 giugno 1969. Professione dichiarata: Insegnante."
     },
     {
       "id": "s36410",
@@ -3377,8 +3377,8 @@
       "college": null,
       "profession": "Professore informatica scuola superiore",
       "birthDate": "1970-05-13",
-      "birthPlace": "Villaricca, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Campania. Nascita: 1970-05-13, Villaricca, Napoli, Italia. Professione dichiarata: Professore informatica scuola superiore."
+      "birthPlace": "Villaricca, Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Campania. Nato a Villaricca, Napoli il 13 maggio 1970. Professione dichiarata: Professore informatica scuola superiore."
     },
     {
       "id": "s36411",
@@ -3402,8 +3402,8 @@
       "college": null,
       "profession": "Ordinario di politica economica",
       "birthDate": "1968-02-10",
-      "birthPlace": "Siracusa, Siracusa, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletto in Sicilia. Nascita: 1968-02-10, Siracusa, Siracusa, Italia. Professione dichiarata: Ordinario di politica economica."
+      "birthPlace": "Siracusa",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di vicepresidente del gruppo. Eletto in Sicilia. Nato a Siracusa il 10 febbraio 1968. Professione dichiarata: Ordinario di politica economica."
     },
     {
       "id": "s36412",
@@ -3427,8 +3427,8 @@
       "college": "PUGLIA - U04 (TARANTO)",
       "profession": "Imprenditore",
       "birthDate": "1974-12-12",
-      "birthPlace": "Santeramo in Colle, Bari, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Puglia (PUGLIA - U04 (TARANTO)). Nascita: 1974-12-12, Santeramo in Colle, Bari, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Santeramo in Colle, Bari",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Puglia (PUGLIA - U04 (TARANTO)). Nata a Santeramo in Colle, Bari il 12 dicembre 1974. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s36413",
@@ -3452,8 +3452,8 @@
       "college": null,
       "profession": "Architetto",
       "birthDate": "1964-01-06",
-      "birthPlace": "Cosenza, Cosenza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Calabria. Nascita: 1964-01-06, Cosenza, Cosenza, Italia. Professione dichiarata: Architetto."
+      "birthPlace": "Cosenza",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Calabria. Nato a Cosenza il 6 gennaio 1964. Professione dichiarata: Architetto."
     },
     {
       "id": "s36414",
@@ -3477,8 +3477,8 @@
       "college": null,
       "profession": "Amministratore o manager",
       "birthDate": "1971-08-18",
-      "birthPlace": "Cosenza, Cosenza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Calabria. Nascita: 1971-08-18, Cosenza, Cosenza, Italia. Professione dichiarata: Amministratore o manager."
+      "birthPlace": "Cosenza",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Calabria. Nato a Cosenza il 18 agosto 1971. Professione dichiarata: Amministratore o manager."
     },
     {
       "id": "s32677",
@@ -3502,8 +3502,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1974-03-17",
-      "birthPlace": "Campo San Martino, Padova, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Veneto. Nascita: 1974-03-17, Campo San Martino, Padova, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Campo San Martino, Padova",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Veneto. Nato a Campo San Martino, Padova il 17 marzo 1974. Professione dichiarata: Avvocato."
     },
     {
       "id": "s34243",
@@ -3531,8 +3531,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1974-12-03",
-      "birthPlace": "Roncoferraro, Mantova, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lazio. Nascita: 1974-12-03, Roncoferraro, Mantova, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Roncoferraro, Mantova",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Lazio. Nato a Roncoferraro, Mantova il 3 dicembre 1974. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s33005",
@@ -3556,8 +3556,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1974-11-23",
-      "birthPlace": "LA SPEZIA, La Spezia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di presidente del gruppo. Eletta in Lazio. Nascita: 1974-11-23, LA SPEZIA, La Spezia, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "LA SPEZIA",
+      "biography": "Senatrice della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di presidente del gruppo. Eletta in Lazio. Nata a LA SPEZIA il 23 novembre 1974. Professione dichiarata: Giornalista."
     },
     {
       "id": "s4512",
@@ -3581,8 +3581,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1962-03-30",
-      "birthPlace": "Brescia, Brescia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente del gruppo. Eletto in Lombardia. Nascita: 1962-03-30, Brescia, Brescia, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Brescia",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente del gruppo. Eletto in Lombardia. Nato a Brescia il 30 marzo 1962. Professione dichiarata: Avvocato."
     },
     {
       "id": "s29521",
@@ -3606,8 +3606,8 @@
       "college": null,
       "profession": "Impiegato",
       "birthDate": "1973-10-17",
-      "birthPlace": "Vinci, Firenze, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Toscana. Nascita: 1973-10-17, Vinci, Firenze, Italia. Professione dichiarata: Impiegato."
+      "birthPlace": "Vinci, Firenze",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Toscana. Nato a Vinci, Firenze il 17 ottobre 1973. Professione dichiarata: Impiegato."
     },
     {
       "id": "s36415",
@@ -3631,8 +3631,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U01 (TRENTO)",
       "profession": "Dirigente",
       "birthDate": "1957-12-28",
-      "birthPlace": "Trento, Trento, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di tesoriere del gruppo. Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U01 (TRENTO)). Nascita: 1957-12-28, Trento, Trento, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Trento",
+      "biography": "Senatore della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di tesoriere del gruppo. Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U01 (TRENTO)). Nato a Trento il 28 dicembre 1957. Professione dichiarata: Dirigente."
     },
     {
       "id": "s32681",
@@ -3656,8 +3656,8 @@
       "college": null,
       "profession": "Ingegnere, libero professionista",
       "birthDate": "1974-06-08",
-      "birthPlace": "Trieste, Trieste, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Lazio. Nascita: 1974-06-08, Trieste, Trieste, Italia. Professione dichiarata: Ingegnere, libero professionista."
+      "birthPlace": "Trieste",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Lazio. Nato a Trieste il 8 giugno 1974. Professione dichiarata: Ingegnere, libero professionista."
     },
     {
       "id": "s35489",
@@ -3681,8 +3681,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1975-07-17",
-      "birthPlace": "Poggiardo, Lecce, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio. Nascita: 1975-07-17, Poggiardo, Lecce, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Poggiardo, Lecce",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lazio. Nata a Poggiardo, Lecce il 17 luglio 1975. Professione dichiarata: Consulente."
     },
     {
       "id": "s3900",
@@ -3706,8 +3706,8 @@
       "college": "SARDEGNA - U02 (SASSARI)",
       "profession": "Professore ordinario di filosofia della scienza - università di pisa",
       "birthDate": "1943-01-28",
-      "birthPlace": "Lucca, Lucca, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sardegna (SARDEGNA - U02 (SASSARI)). Nascita: 1943-01-28, Lucca, Lucca, Italia. Professione dichiarata: Professore ordinario di filosofia della scienza - università di pisa."
+      "birthPlace": "Lucca",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sardegna (SARDEGNA - U02 (SASSARI)). Nato a Lucca il 28 gennaio 1943. Professione dichiarata: Professore ordinario di filosofia della scienza - università di pisa."
     },
     {
       "id": "s25429",
@@ -3731,8 +3731,8 @@
       "college": "CAMPANIA - U01 (CASERTA)",
       "profession": "Storico dell'arte, dirigente ministero beni culturali in pensione",
       "birthDate": "1956-07-06",
-      "birthPlace": "Casal Di Principe, Caserta, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di segretario del gruppo. Eletta in Campania (CAMPANIA - U01 (CASERTA)). Nascita: 1956-07-06, Casal Di Principe, Caserta, Italia. Professione dichiarata: Storico dell'arte, dirigente ministero beni culturali in pensione."
+      "birthPlace": "Casal Di Principe, Caserta",
+      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di segretario del gruppo. Eletta in Campania (CAMPANIA - U01 (CASERTA)). Nata a Casal Di Principe, Caserta il 6 luglio 1956. Professione dichiarata: Storico dell'arte, dirigente ministero beni culturali in pensione."
     },
     {
       "id": "s36416",
@@ -3756,8 +3756,8 @@
       "college": "TOSCANA - U01 (AREZZO)",
       "profession": "Altra professione intellettuale o scientifica",
       "birthDate": "1971-04-17",
-      "birthPlace": "Grosseto, Grosseto, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Toscana (TOSCANA - U01 (AREZZO)). Nascita: 1971-04-17, Grosseto, Grosseto, Italia. Professione dichiarata: Altra professione intellettuale o scientifica."
+      "birthPlace": "Grosseto",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Toscana (TOSCANA - U01 (AREZZO)). Nata a Grosseto il 17 aprile 1971. Professione dichiarata: Altra professione intellettuale o scientifica."
     },
     {
       "id": "s30512",
@@ -3781,8 +3781,8 @@
       "college": null,
       "profession": "Architetto",
       "birthDate": "1937-09-14",
-      "birthPlace": "Genova, Genova, Italia",
-      "biography": "Senatore a vita. Gruppo Misto. Nascita: 1937-09-14, Genova, Genova, Italia. Professione dichiarata: Architetto."
+      "birthPlace": "Genova",
+      "biography": "Senatore a vita. Gruppo Misto. Nato a Genova il 14 settembre 1937. Professione dichiarata: Architetto."
     },
     {
       "id": "s36417",
@@ -3806,8 +3806,8 @@
       "college": null,
       "profession": "Artista o professionista dello spettacolo",
       "birthDate": "1981-06-08",
-      "birthPlace": "Genova, Genova, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di presidente del gruppo. Eletto in Liguria. Nascita: 1981-06-08, Genova, Genova, Italia. Professione dichiarata: Artista o professionista dello spettacolo."
+      "birthPlace": "Genova",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle, con incarico di presidente del gruppo. Eletto in Liguria. Nato a Genova il 8 giugno 1981. Professione dichiarata: Artista o professionista dello spettacolo."
     },
     {
       "id": "s18562",
@@ -3831,8 +3831,8 @@
       "college": "LOMBARDIA - U07 (BERGAMO)",
       "profession": "Sindaco di misano di gera d'adda (bg)",
       "birthDate": "1977-12-19",
-      "birthPlace": "Romano Di Lombardia, Bergamo, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lombardia (LOMBARDIA - U07 (BERGAMO)). Nascita: 1977-12-19, Romano Di Lombardia, Bergamo, Italia. Professione dichiarata: Sindaco di misano di gera d'adda (bg)."
+      "birthPlace": "Romano Di Lombardia, Bergamo",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Lombardia (LOMBARDIA - U07 (BERGAMO)). Nata a Romano Di Lombardia, Bergamo il 19 dicembre 1977. Professione dichiarata: Sindaco di misano di gera d'adda (bg)."
     },
     {
       "id": "s32691",
@@ -3856,8 +3856,8 @@
       "college": null,
       "profession": "Tecnico della ricerca università di torino",
       "birthDate": "1973-07-15",
-      "birthPlace": "Torino, Torino, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Piemonte. Nascita: 1973-07-15, Torino, Torino, Italia. Professione dichiarata: Tecnico della ricerca università di torino."
+      "birthPlace": "Torino",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Piemonte. Nata a Torino il 15 luglio 1973. Professione dichiarata: Tecnico della ricerca università di torino."
     },
     {
       "id": "s36441",
@@ -3881,8 +3881,8 @@
       "college": null,
       "profession": "Dottore commercialista",
       "birthDate": "1972-03-03",
-      "birthPlace": "CATANIA, Catania, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia. Nascita: 1972-03-03, CATANIA, Catania, Italia. Professione dichiarata: Dottore commercialista."
+      "birthPlace": "CATANIA",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia. Nato a CATANIA il 3 marzo 1972. Professione dichiarata: Dottore commercialista."
     },
     {
       "id": "s33022",
@@ -3906,8 +3906,8 @@
       "college": "TOSCANA - U02 (LIVORNO)",
       "profession": "Avvocato",
       "birthDate": "1976-07-21",
-      "birthPlace": "Cecina, Livorno, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Toscana (TOSCANA - U02 (LIVORNO)). Nascita: 1976-07-21, Cecina, Livorno, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Cecina, Livorno",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Toscana (TOSCANA - U02 (LIVORNO)). Nato a Cecina, Livorno il 21 luglio 1976. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32697",
@@ -3931,8 +3931,8 @@
       "college": "LIGURIA - U02 (LA SPEZIA)",
       "profession": "Amministratore locale",
       "birthDate": "1967-03-06",
-      "birthPlace": "Sarzana, La Spezia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Liguria (LIGURIA - U02 (LA SPEZIA)). Nascita: 1967-03-06, Sarzana, La Spezia, Italia. Professione dichiarata: Amministratore locale."
+      "birthPlace": "Sarzana, La Spezia",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Liguria (LIGURIA - U02 (LA SPEZIA)). Nata a Sarzana, La Spezia il 6 marzo 1967. Professione dichiarata: Amministratore locale."
     },
     {
       "id": "s36418",
@@ -3956,8 +3956,8 @@
       "college": "EMILIA-ROMAGNA - U02 (MODENA)",
       "profession": "Avvocato",
       "birthDate": "1958-06-09",
-      "birthPlace": "Niscemi, Caltanissetta, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U02 (MODENA)). Nascita: 1958-06-09, Niscemi, Caltanissetta, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Niscemi, Caltanissetta",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Emilia-Romagna (EMILIA-ROMAGNA - U02 (MODENA)). Nata a Niscemi, Caltanissetta il 9 giugno 1958. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36419",
@@ -3981,8 +3981,8 @@
       "college": "CALABRIA - U01 (CORIGLIANO-ROSSANO)",
       "profession": "Architetto",
       "birthDate": "1967-05-02",
-      "birthPlace": "Rossano, Cosenza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Calabria (CALABRIA - U01 (CORIGLIANO-ROSSANO)). Nascita: 1967-05-02, Rossano, Cosenza, Italia. Professione dichiarata: Architetto."
+      "birthPlace": "Rossano, Cosenza",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Calabria (CALABRIA - U01 (CORIGLIANO-ROSSANO)). Nato a Rossano, Cosenza il 2 maggio 1967. Professione dichiarata: Architetto."
     },
     {
       "id": "s36442",
@@ -4006,8 +4006,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1966-01-17",
-      "birthPlace": "NAPOLI, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Campania. Nascita: 1966-01-17, NAPOLI, Napoli, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "NAPOLI",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Campania. Nato a NAPOLI il 17 gennaio 1966. Professione dichiarata: Avvocato."
     },
     {
       "id": "s32699",
@@ -4031,8 +4031,8 @@
       "college": "LOMBARDIA - U04 (SESTO SAN GIOVANNI)",
       "profession": "Giornalista professionista, docente, ufficiale riserva selezionata e.i.",
       "birthDate": "1962-11-17",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia (LOMBARDIA - U04 (SESTO SAN GIOVANNI)). Nascita: 1962-11-17, Roma, Roma, Italia. Professione dichiarata: Giornalista professionista, docente, ufficiale riserva selezionata e.i.."
+      "birthPlace": "Roma",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Lombardia (LOMBARDIA - U04 (SESTO SAN GIOVANNI)). Nata a Roma il 17 novembre 1962. Professione dichiarata: Giornalista professionista, docente, ufficiale riserva selezionata e.i.."
     },
     {
       "id": "s30742",
@@ -4056,8 +4056,8 @@
       "college": null,
       "profession": "Dirigente d'azienda",
       "birthDate": "1975-01-11",
-      "birthPlace": "Firenze, Firenze, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletto in Campania. Nascita: 1975-01-11, Firenze, Firenze, Italia. Professione dichiarata: Dirigente d'azienda."
+      "birthPlace": "Firenze",
+      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletto in Campania. Nato a Firenze il 11 gennaio 1975. Professione dichiarata: Dirigente d'azienda."
     },
     {
       "id": "s32703",
@@ -4081,8 +4081,8 @@
       "college": null,
       "profession": "Critica letteraria e scrittrice, libero professionista",
       "birthDate": "1961-10-26",
-      "birthPlace": "Trieste, Trieste, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Friuli-Venezia Giulia. Nascita: 1961-10-26, Trieste, Trieste, Italia. Professione dichiarata: Critica letteraria e scrittrice, libero professionista."
+      "birthPlace": "Trieste",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Friuli-Venezia Giulia. Nata a Trieste il 26 ottobre 1961. Professione dichiarata: Critica letteraria e scrittrice, libero professionista."
     },
     {
       "id": "s32706",
@@ -4106,8 +4106,8 @@
       "college": "LOMBARDIA - U01 (VARESE)",
       "profession": "Consulente automobilistico",
       "birthDate": "1971-01-22",
-      "birthPlace": "Monza, Monza e Brianza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di presidente del gruppo. Eletto in Lombardia (LOMBARDIA - U01 (VARESE)). Nascita: 1971-01-22, Monza, Monza e Brianza, Italia. Professione dichiarata: Consulente automobilistico."
+      "birthPlace": "Monza, Monza e Brianza",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione, con incarico di presidente del gruppo. Eletto in Lombardia (LOMBARDIA - U01 (VARESE)). Nato a Monza, Monza e Brianza il 22 gennaio 1971. Professione dichiarata: Consulente automobilistico."
     },
     {
       "id": "s32707",
@@ -4135,8 +4135,8 @@
       "college": "LOMBARDIA - U02 (COMO)",
       "profession": "Dirigente",
       "birthDate": "1975-09-14",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Lombardia (LOMBARDIA - U02 (COMO)). Nascita: 1975-09-14, Milano, Milano, Italia. Professione dichiarata: Dirigente."
+      "birthPlace": "Milano",
+      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletta in Lombardia (LOMBARDIA - U02 (COMO)). Nata a Milano il 14 settembre 1975. Professione dichiarata: Dirigente."
     },
     {
       "id": "s36420",
@@ -4160,8 +4160,8 @@
       "college": null,
       "profession": "Commercialista",
       "birthDate": "1965-03-27",
-      "birthPlace": "Potenza, Potenza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Basilicata. Nascita: 1965-03-27, Potenza, Potenza, Italia. Professione dichiarata: Commercialista."
+      "birthPlace": "Potenza",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Basilicata. Nato a Potenza il 27 marzo 1965. Professione dichiarata: Commercialista."
     },
     {
       "id": "s32779",
@@ -4185,8 +4185,8 @@
       "college": null,
       "profession": "Immobiliarista, giornalista pubblicista",
       "birthDate": "1967-08-16",
-      "birthPlace": "TORINO, Torino, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente vicario del gruppo. Eletto in Piemonte. Nascita: 1967-08-16, TORINO, Torino, Italia. Professione dichiarata: Immobiliarista, giornalista pubblicista."
+      "birthPlace": "TORINO",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente vicario del gruppo. Eletto in Piemonte. Nato a TORINO il 16 agosto 1967. Professione dichiarata: Immobiliarista, giornalista pubblicista."
     },
     {
       "id": "s25411",
@@ -4214,8 +4214,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1963-06-30",
-      "birthPlace": "Torino, Torino, Italia",
-      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Piemonte. Nascita: 1963-06-30, Torino, Torino, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Torino",
+      "biography": "Vice Presidente del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Piemonte. Nata a Torino il 30 giugno 1963. Professione dichiarata: Avvocato."
     },
     {
       "id": "s30510",
@@ -4239,8 +4239,8 @@
       "college": null,
       "profession": "Ricercatore",
       "birthDate": "1934-03-31",
-      "birthPlace": "Gorizia, Gorizia, Italia",
-      "biography": "Senatore a vita. Gruppo Per le Autonomie (SVP-PATT, Campobase). Nascita: 1934-03-31, Gorizia, Gorizia, Italia. Professione dichiarata: Ricercatore."
+      "birthPlace": "Gorizia",
+      "biography": "Senatore a vita. Gruppo Per le Autonomie (SVP-PATT, Campobase). Nato a Gorizia il 31 marzo 1934. Professione dichiarata: Ricercatore."
     },
     {
       "id": "s36421",
@@ -4264,8 +4264,8 @@
       "college": "SICILIA - U02 (MARSALA)",
       "profession": "Dirigente regione siciliana",
       "birthDate": "1971-03-03",
-      "birthPlace": "Palermo, Palermo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia (SICILIA - U02 (MARSALA)). Nascita: 1971-03-03, Palermo, Palermo, Italia. Professione dichiarata: Dirigente regione siciliana."
+      "birthPlace": "Palermo",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sicilia (SICILIA - U02 (MARSALA)). Nato a Palermo il 3 marzo 1971. Professione dichiarata: Dirigente regione siciliana."
     },
     {
       "id": "s36422",
@@ -4289,8 +4289,8 @@
       "college": "SICILIA - U05 (SIRACUSA)",
       "profession": "Avvocato",
       "birthDate": "1977-01-31",
-      "birthPlace": "Vittoria, Ragusa, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletto in Sicilia (SICILIA - U05 (SIRACUSA)). Nascita: 1977-01-31, Vittoria, Ragusa, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Vittoria, Ragusa",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletto in Sicilia (SICILIA - U05 (SIRACUSA)). Nato a Vittoria, Ragusa il 31 gennaio 1977. Professione dichiarata: Avvocato."
     },
     {
       "id": "s25407",
@@ -4314,8 +4314,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1973-03-09",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Puglia. Nascita: 1973-03-09, Milano, Milano, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Puglia. Nato a Milano il 9 marzo 1973. Professione dichiarata: Giornalista."
     },
     {
       "id": "s36443",
@@ -4339,8 +4339,8 @@
       "college": null,
       "profession": "Imprenditore ambito arredamento",
       "birthDate": "1968-02-10",
-      "birthPlace": "COLLEFERRO, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di vicepresidente del gruppo. Eletto in Piemonte. Nascita: 1968-02-10, COLLEFERRO, Roma, Italia. Professione dichiarata: Imprenditore ambito arredamento."
+      "birthPlace": "COLLEFERRO, Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare, con incarico di vicepresidente del gruppo. Eletto in Piemonte. Nato a COLLEFERRO, Roma il 10 febbraio 1968. Professione dichiarata: Imprenditore ambito arredamento."
     },
     {
       "id": "s36444",
@@ -4364,8 +4364,8 @@
       "college": null,
       "profession": "Dirigente medico ospedaliero",
       "birthDate": "1965-01-22",
-      "birthPlace": "ROMA, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sardegna. Nascita: 1965-01-22, ROMA, Roma, Italia. Professione dichiarata: Dirigente medico ospedaliero."
+      "birthPlace": "ROMA",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Sardegna. Nato a ROMA il 22 gennaio 1965. Professione dichiarata: Dirigente medico ospedaliero."
     },
     {
       "id": "s25402",
@@ -4393,8 +4393,8 @@
       "college": null,
       "profession": "Dipendente anci veneto",
       "birthDate": "1971-09-30",
-      "birthPlace": "Latiano, Brindisi, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletta in Veneto. Nascita: 1971-09-30, Latiano, Brindisi, Italia. Professione dichiarata: Dipendente anci veneto."
+      "birthPlace": "Latiano, Brindisi",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Italia Viva - Casa Riformista. Eletta in Veneto. Nata a Latiano, Brindisi il 30 settembre 1971. Professione dichiarata: Dipendente anci veneto."
     },
     {
       "id": "s29573",
@@ -4418,8 +4418,8 @@
       "college": null,
       "profession": "Direttore risorse umane",
       "birthDate": "1965-08-16",
-      "birthPlace": "Pescara, Pescara, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di tesoriere del gruppo. Eletto in Piemonte. Nascita: 1965-08-16, Pescara, Pescara, Italia. Professione dichiarata: Direttore risorse umane."
+      "birthPlace": "Pescara",
+      "biography": "Senatore della XIX legislatura. Gruppo Italia Viva - Casa Riformista, con incarico di tesoriere del gruppo. Eletto in Piemonte. Nato a Pescara il 16 agosto 1965. Professione dichiarata: Direttore risorse umane."
     },
     {
       "id": "s36423",
@@ -4443,8 +4443,8 @@
       "college": null,
       "profession": "Magistrato",
       "birthDate": "1952-01-14",
-      "birthPlace": "Caltanissetta, Caltanissetta, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Calabria. Nascita: 1952-01-14, Caltanissetta, Caltanissetta, Italia. Professione dichiarata: Magistrato."
+      "birthPlace": "Caltanissetta",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Calabria. Nato a Caltanissetta il 14 gennaio 1952. Professione dichiarata: Magistrato."
     },
     {
       "id": "s33863",
@@ -4468,8 +4468,8 @@
       "college": null,
       "profession": "Consulente",
       "birthDate": "1967-05-18",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletto in Lazio. Nascita: 1967-05-18, Roma, Roma, Italia. Professione dichiarata: Consulente."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletto in Lazio. Nato a Roma il 18 maggio 1967. Professione dichiarata: Consulente."
     },
     {
       "id": "s32435",
@@ -4493,8 +4493,8 @@
       "college": null,
       "profession": "Imprenditrice",
       "birthDate": "1930-09-10",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatrice a vita. Gruppo Misto. Nascita: 1930-09-10, Milano, Milano, Italia. Professione dichiarata: Imprenditrice."
+      "birthPlace": "Milano",
+      "biography": "Senatrice a vita. Gruppo Misto. Nata a Milano il 10 settembre 1930. Professione dichiarata: Imprenditrice."
     },
     {
       "id": "s27622",
@@ -4518,8 +4518,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1968-03-04",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lazio. Nascita: 1968-03-04, Roma, Roma, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Roma",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Lazio. Nato a Roma il 4 marzo 1968. Professione dichiarata: Giornalista."
     },
     {
       "id": "s36424",
@@ -4543,8 +4543,8 @@
       "college": null,
       "profession": "Architetto",
       "birthDate": "1974-09-29",
-      "birthPlace": "Vasto, Chieti, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Abruzzo. Nascita: 1974-09-29, Vasto, Chieti, Italia. Professione dichiarata: Architetto."
+      "birthPlace": "Vasto, Chieti",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Abruzzo. Nato a Vasto, Chieti il 29 settembre 1974. Professione dichiarata: Architetto."
     },
     {
       "id": "s36445",
@@ -4568,8 +4568,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1971-10-22",
-      "birthPlace": "ARZANO, Napoli, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Campania. Nascita: 1971-10-22, ARZANO, Napoli, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "ARZANO, Napoli",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Campania. Nato a ARZANO, Napoli il 22 ottobre 1971. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s33137",
@@ -4597,8 +4597,8 @@
       "college": "LAZIO - U05 (GUIDONIA MONTECELIO)",
       "profession": "Pubblicista",
       "birthDate": "1962-11-08",
-      "birthPlace": "Roma, Roma, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio (LAZIO - U05 (GUIDONIA MONTECELIO)). Nascita: 1962-11-08, Roma, Roma, Italia. Professione dichiarata: Pubblicista."
+      "birthPlace": "Roma",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lazio (LAZIO - U05 (GUIDONIA MONTECELIO)). Nato a Roma il 8 novembre 1962. Professione dichiarata: Pubblicista."
     },
     {
       "id": "s36425",
@@ -4622,8 +4622,8 @@
       "college": null,
       "profession": "Avvocato e mediatore civile",
       "birthDate": "1961-02-18",
-      "birthPlace": "Milano, Milano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Lombardia. Nascita: 1961-02-18, Milano, Milano, Italia. Professione dichiarata: Avvocato e mediatore civile."
+      "birthPlace": "Milano",
+      "biography": "Senatrice della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletta in Lombardia. Nata a Milano il 18 febbraio 1961. Professione dichiarata: Avvocato e mediatore civile."
     },
     {
       "id": "s36446",
@@ -4647,8 +4647,8 @@
       "college": null,
       "profession": "Direttore d'azienda",
       "birthDate": "1968-04-12",
-      "birthPlace": "BOLLATE, Milano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nascita: 1968-04-12, BOLLATE, Milano, Italia. Professione dichiarata: Direttore d'azienda."
+      "birthPlace": "BOLLATE, Milano",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia. Nato a BOLLATE, Milano il 12 aprile 1968. Professione dichiarata: Direttore d'azienda."
     },
     {
       "id": "s22263",
@@ -4672,8 +4672,8 @@
       "college": "PUGLIA - U02 (ANDRIA)",
       "profession": "Avvocato, docente universitario",
       "birthDate": "1955-04-27",
-      "birthPlace": "Bari, Bari, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia (PUGLIA - U02 (ANDRIA)). Nascita: 1955-04-27, Bari, Bari, Italia. Professione dichiarata: Avvocato, docente universitario."
+      "birthPlace": "Bari",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia (PUGLIA - U02 (ANDRIA)). Nato a Bari il 27 aprile 1955. Professione dichiarata: Avvocato, docente universitario."
     },
     {
       "id": "s36426",
@@ -4697,8 +4697,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U04 (BOLZANO/BOZEN)",
       "profession": "Dirigente pubblico",
       "birthDate": "1960-02-10",
-      "birthPlace": "Bolzano, Bolzano, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di vicepresidente vicario del gruppo. Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U04 (BOLZANO/BOZEN)). Nascita: 1960-02-10, Bolzano, Bolzano, Italia. Professione dichiarata: Dirigente pubblico."
+      "birthPlace": "Bolzano",
+      "biography": "Senatore della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di vicepresidente vicario del gruppo. Eletto in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U04 (BOLZANO/BOZEN)). Nato a Bolzano il 10 febbraio 1960. Professione dichiarata: Dirigente pubblico."
     },
     {
       "id": "s36427",
@@ -4722,8 +4722,8 @@
       "college": "VALLE D'AOSTA - U01 (AOSTA)",
       "profession": "Avvocato",
       "birthDate": "1971-07-28",
-      "birthPlace": "Aosta, Aosta, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Valle D'Aosta (VALLE D'AOSTA - U01 (AOSTA)). Nascita: 1971-07-28, Aosta, Aosta, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Aosta",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Valle D'Aosta (VALLE D'AOSTA - U01 (AOSTA)). Nata a Aosta il 28 luglio 1971. Professione dichiarata: Avvocato."
     },
     {
       "id": "s36428",
@@ -4747,8 +4747,8 @@
       "college": "VENETO - U01 (VENEZIA)",
       "profession": "Amministratore o manager",
       "birthDate": "1971-10-07",
-      "birthPlace": "Venezia, Venezia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente vicario del gruppo. Eletto in Veneto (VENETO - U01 (VENEZIA)). Nascita: 1971-10-07, Venezia, Venezia, Italia. Professione dichiarata: Amministratore o manager."
+      "birthPlace": "Venezia",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente vicario del gruppo. Eletto in Veneto (VENETO - U01 (VENEZIA)). Nato a Venezia il 7 ottobre 1971. Professione dichiarata: Amministratore o manager."
     },
     {
       "id": "s36447",
@@ -4772,8 +4772,8 @@
       "college": null,
       "profession": "Collaboratore amministrativo",
       "birthDate": "1969-01-08",
-      "birthPlace": "SAMMICHELE DI BARI, Bari, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Emilia-Romagna. Nascita: 1969-01-08, SAMMICHELE DI BARI, Bari, Italia. Professione dichiarata: Collaboratore amministrativo."
+      "birthPlace": "SAMMICHELE DI BARI, Bari",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Emilia-Romagna. Nata a SAMMICHELE DI BARI, Bari il 8 gennaio 1969. Professione dichiarata: Collaboratore amministrativo."
     },
     {
       "id": "s29185",
@@ -4801,8 +4801,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1971-07-18",
-      "birthPlace": "Valdagno, Vicenza, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Veneto. Nascita: 1971-07-18, Valdagno, Vicenza, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Valdagno, Vicenza",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Veneto. Nata a Valdagno, Vicenza il 18 luglio 1971. Professione dichiarata: Avvocato."
     },
     {
       "id": "s37739",
@@ -4826,8 +4826,8 @@
       "college": null,
       "profession": "Ricercatrice e docente universitaria",
       "birthDate": "1978-11-28",
-      "birthPlace": "Terlizzi, Bari, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Lombardia. Nascita: 1978-11-28, Terlizzi, Bari, Italia. Professione dichiarata: Ricercatrice e docente universitaria."
+      "birthPlace": "Terlizzi, Bari",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Lombardia. Nata a Terlizzi, Bari il 28 novembre 1978. Professione dichiarata: Ricercatrice e docente universitaria."
     },
     {
       "id": "s37415",
@@ -4855,8 +4855,8 @@
       "college": null,
       "profession": "Imprenditore",
       "birthDate": "1975-05-09",
-      "birthPlace": "Siracusa, Siracusa, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente del gruppo. Eletta in Sicilia. Nascita: 1975-05-09, Siracusa, Siracusa, Italia. Professione dichiarata: Imprenditore."
+      "birthPlace": "Siracusa",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE, con incarico di vicepresidente del gruppo. Eletta in Sicilia. Nata a Siracusa il 9 maggio 1975. Professione dichiarata: Imprenditore."
     },
     {
       "id": "s28550",
@@ -4880,8 +4880,8 @@
       "college": "LOMBARDIA - U09 (TREVIGLIO)",
       "profession": "Diplomatico",
       "birthDate": "1946-06-09",
-      "birthPlace": "Bergamo, Bergamo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia (LOMBARDIA - U09 (TREVIGLIO)). Nascita: 1946-06-09, Bergamo, Bergamo, Italia. Professione dichiarata: Diplomatico."
+      "birthPlace": "Bergamo",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Lombardia (LOMBARDIA - U09 (TREVIGLIO)). Nato a Bergamo il 9 giugno 1946. Professione dichiarata: Diplomatico."
     },
     {
       "id": "s32721",
@@ -4905,8 +4905,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U03 (PERGINE VALSUGANA)",
       "profession": "Imprenditrice",
       "birthDate": "1973-07-20",
-      "birthPlace": "Cavalese, Trento, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U03 (PERGINE VALSUGANA)). Nascita: 1973-07-20, Cavalese, Trento, Italia. Professione dichiarata: Imprenditrice."
+      "birthPlace": "Cavalese, Trento",
+      "biography": "Senatrice della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U03 (PERGINE VALSUGANA)). Nata a Cavalese, Trento il 20 luglio 1973. Professione dichiarata: Imprenditrice."
     },
     {
       "id": "s30915",
@@ -4930,8 +4930,8 @@
       "college": "VENETO - U05 (VERONA)",
       "profession": null,
       "birthDate": "1972-09-08",
-      "birthPlace": "Negrar, Verona, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Veneto (VENETO - U05 (VERONA)). Nascita: 1972-09-08, Negrar, Verona, Italia."
+      "birthPlace": "Negrar, Verona",
+      "biography": "Senatore della XIX legislatura. Gruppo Lega Salvini Premier - Partito Sardo d'Azione. Eletto in Veneto (VENETO - U05 (VERONA)). Nato a Negrar, Verona il 8 settembre 1972."
     },
     {
       "id": "s36448",
@@ -4955,8 +4955,8 @@
       "college": null,
       "profession": "Energy manager università del salento",
       "birthDate": "1976-01-26",
-      "birthPlace": "COPERTINO, Lecce, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia. Nascita: 1976-01-26, COPERTINO, Lecce, Italia. Professione dichiarata: Energy manager università del salento."
+      "birthPlace": "COPERTINO, Lecce",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Puglia. Nato a COPERTINO, Lecce il 26 gennaio 1976. Professione dichiarata: Energy manager università del salento."
     },
     {
       "id": "s36449",
@@ -4980,8 +4980,8 @@
       "college": null,
       "profession": "Libero professionista - subagente assicurativo",
       "birthDate": "1982-08-06",
-      "birthPlace": "MONFALCONE, Gorizia, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Friuli-Venezia Giulia. Nascita: 1982-08-06, MONFALCONE, Gorizia, Italia. Professione dichiarata: Libero professionista - subagente assicurativo."
+      "birthPlace": "MONFALCONE, Gorizia",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia. Eletta in Friuli-Venezia Giulia. Nata a MONFALCONE, Gorizia il 6 agosto 1982. Professione dichiarata: Libero professionista - subagente assicurativo."
     },
     {
       "id": "s32726",
@@ -5005,8 +5005,8 @@
       "college": null,
       "profession": "Professore di economia aziendale presso il dipartimento di scienze dell'economia di unisalento, dottore commercialista e revisore dei conti",
       "birthDate": "1968-06-14",
-      "birthPlace": "Taranto, Taranto, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Basilicata. Nascita: 1968-06-14, Taranto, Taranto, Italia. Professione dichiarata: Professore di economia aziendale presso il dipartimento di scienze dell'economia di unisalento, dottore commercialista e revisore dei conti."
+      "birthPlace": "Taranto",
+      "biography": "Senatore della XIX legislatura. Gruppo MoVimento 5 Stelle. Eletto in Basilicata. Nato a Taranto il 14 giugno 1968. Professione dichiarata: Professore di economia aziendale presso il dipartimento di scienze dell'economia di unisalento, dottore commercialista e revisore dei conti."
     },
     {
       "id": "s32727",
@@ -5030,8 +5030,8 @@
       "college": "TRENTINO-ALTO ADIGE/SÜDTIROL - U05 (MERANO/MERAN)",
       "profession": "Avvocata",
       "birthDate": "1962-09-05",
-      "birthPlace": "Merano, Bolzano, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di presidente del gruppo. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U05 (MERANO/MERAN)). Nascita: 1962-09-05, Merano, Bolzano, Italia. Professione dichiarata: Avvocata."
+      "birthPlace": "Merano, Bolzano",
+      "biography": "Senatrice della XIX legislatura. Gruppo Per le Autonomie (SVP-PATT, Campobase), con incarico di presidente del gruppo. Eletta in Trentino-Alto Adige (TRENTINO-ALTO ADIGE/SÜDTIROL - U05 (MERANO/MERAN)). Nata a Merano, Bolzano il 5 settembre 1962. Professione dichiarata: Avvocata."
     },
     {
       "id": "s2444",
@@ -5055,8 +5055,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1957-07-12",
-      "birthPlace": "Padova, Padova, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nascita: 1957-07-12, Padova, Padova, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Padova",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Veneto. Nato a Padova il 12 luglio 1957. Professione dichiarata: Giornalista."
     },
     {
       "id": "s29604",
@@ -5084,8 +5084,8 @@
       "college": null,
       "profession": "Avvocato",
       "birthDate": "1976-09-16",
-      "birthPlace": "Napoli, Napoli, Italia",
-      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Puglia. Nascita: 1976-09-16, Napoli, Napoli, Italia. Professione dichiarata: Avvocato."
+      "birthPlace": "Napoli",
+      "biography": "Segretario della Presidenza del Senato nella XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletta in Puglia. Nata a Napoli il 16 settembre 1976. Professione dichiarata: Avvocato."
     },
     {
       "id": "s28924",
@@ -5109,8 +5109,8 @@
       "college": null,
       "profession": "Docente universitario (università degli studi di macerata)",
       "birthDate": "1972-10-05",
-      "birthPlace": "Fermo, Fermo, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Piemonte. Nascita: 1972-10-05, Fermo, Fermo, Italia. Professione dichiarata: Docente universitario (università degli studi di macerata)."
+      "birthPlace": "Fermo",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Piemonte. Nato a Fermo il 5 ottobre 1972. Professione dichiarata: Docente universitario (università degli studi di macerata)."
     },
     {
       "id": "s25377",
@@ -5134,8 +5134,8 @@
       "college": null,
       "profession": "Giornalista, dirigente di partito",
       "birthDate": "1956-01-17",
-      "birthPlace": "Citta' Di Castello, Perugia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Umbria. Nascita: 1956-01-17, Citta' Di Castello, Perugia, Italia. Professione dichiarata: Giornalista, dirigente di partito."
+      "birthPlace": "Citta' Di Castello, Perugia",
+      "biography": "Senatore della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista. Eletto in Umbria. Nato a Citta' Di Castello, Perugia il 17 gennaio 1956. Professione dichiarata: Giornalista, dirigente di partito."
     },
     {
       "id": "s33027",
@@ -5159,8 +5159,8 @@
       "college": null,
       "profession": "Professionista dello sport",
       "birthDate": "1977-05-20",
-      "birthPlace": "Reggio Di Calabria, Reggio di Calabria, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletta in Lombardia. Nascita: 1977-05-20, Reggio Di Calabria, Reggio di Calabria, Italia. Professione dichiarata: Professionista dello sport."
+      "birthPlace": "Reggio Di Calabria",
+      "biography": "Senatrice della XIX legislatura. Gruppo Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare. Eletta in Lombardia. Nata a Reggio Di Calabria il 20 maggio 1977. Professione dichiarata: Professionista dello sport."
     },
     {
       "id": "s32732",
@@ -5184,8 +5184,8 @@
       "college": "UMBRIA - U01 (PERUGIA)",
       "profession": "Quadro direttivo bancario, sindacalista o esponente di associazione",
       "birthDate": "1955-03-09",
-      "birthPlace": "Spoleto, Perugia, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Umbria (UMBRIA - U01 (PERUGIA)). Nascita: 1955-03-09, Spoleto, Perugia, Italia. Professione dichiarata: Quadro direttivo bancario, sindacalista o esponente di associazione."
+      "birthPlace": "Spoleto, Perugia",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Umbria (UMBRIA - U01 (PERUGIA)). Nato a Spoleto, Perugia il 9 marzo 1955. Professione dichiarata: Quadro direttivo bancario, sindacalista o esponente di associazione."
     },
     {
       "id": "s36429",
@@ -5209,8 +5209,8 @@
       "college": null,
       "profession": "Professoressa universitaria",
       "birthDate": "1974-06-27",
-      "birthPlace": "Pisa, Pisa, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di tesoriere del gruppo. Eletta in Toscana. Nascita: 1974-06-27, Pisa, Pisa, Italia. Professione dichiarata: Professoressa universitaria."
+      "birthPlace": "Pisa",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di tesoriere del gruppo. Eletta in Toscana. Nata a Pisa il 27 giugno 1974. Professione dichiarata: Professoressa universitaria."
     },
     {
       "id": "s24016",
@@ -5234,8 +5234,8 @@
       "college": null,
       "profession": "Giornalista",
       "birthDate": "1956-05-16",
-      "birthPlace": "Mercato Saraceno, Forli'-Cesena, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletta in Emilia-Romagna. Nascita: 1956-05-16, Mercato Saraceno, Forli'-Cesena, Italia. Professione dichiarata: Giornalista."
+      "birthPlace": "Mercato Saraceno, Forli'-Cesena",
+      "biography": "Senatrice della XIX legislatura. Gruppo Partito Democratico - Italia Democratica e Progressista, con incarico di segretario del gruppo. Eletta in Emilia-Romagna. Nata a Mercato Saraceno, Forli'-Cesena il 16 maggio 1956. Professione dichiarata: Giornalista."
     },
     {
       "id": "s17811",
@@ -5259,8 +5259,8 @@
       "college": null,
       "profession": "Avvocato, revisore contabile",
       "birthDate": "1961-07-13",
-      "birthPlace": "Vicenza, Vicenza, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Veneto. Nascita: 1961-07-13, Vicenza, Vicenza, Italia. Professione dichiarata: Avvocato, revisore contabile."
+      "birthPlace": "Vicenza",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Veneto. Nato a Vicenza il 13 luglio 1961. Professione dichiarata: Avvocato, revisore contabile."
     },
     {
       "id": "s33038",
@@ -5284,8 +5284,8 @@
       "college": "PIEMONTE - U04 (ALESSANDRIA)",
       "profession": "Amministratore o manager",
       "birthDate": "1961-12-03",
-      "birthPlace": "Genova, Genova, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Piemonte (PIEMONTE - U04 (ALESSANDRIA)). Nascita: 1961-12-03, Genova, Genova, Italia. Professione dichiarata: Amministratore o manager."
+      "birthPlace": "Genova",
+      "biography": "Senatore della XIX legislatura. Gruppo Forza Italia - Berlusconi Presidente - PPE. Eletto in Piemonte (PIEMONTE - U04 (ALESSANDRIA)). Nato a Genova il 3 dicembre 1961. Professione dichiarata: Amministratore o manager."
     },
     {
       "id": "s36430",
@@ -5309,8 +5309,8 @@
       "college": "SARDEGNA - U01 (CAGLIARI)",
       "profession": "Assicuratore, consulente",
       "birthDate": "1976-01-17",
-      "birthPlace": "Cagliari, Cagliari, Italia",
-      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletta in Sardegna (SARDEGNA - U01 (CAGLIARI)). Nascita: 1976-01-17, Cagliari, Cagliari, Italia. Professione dichiarata: Assicuratore, consulente."
+      "birthPlace": "Cagliari",
+      "biography": "Senatrice della XIX legislatura. Gruppo Fratelli d'Italia, con incarico di vicepresidente del gruppo. Eletta in Sardegna (SARDEGNA - U01 (CAGLIARI)). Nata a Cagliari il 17 gennaio 1976. Professione dichiarata: Assicuratore, consulente."
     },
     {
       "id": "s36450",
@@ -5334,8 +5334,8 @@
       "college": null,
       "profession": "Medico chirurgo",
       "birthDate": "1959-08-20",
-      "birthPlace": "CASSANO DELLE MURGE, Bari, Italia",
-      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia. Nascita: 1959-08-20, CASSANO DELLE MURGE, Bari, Italia. Professione dichiarata: Medico chirurgo."
+      "birthPlace": "CASSANO DELLE MURGE, Bari",
+      "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia. Nato a CASSANO DELLE MURGE, Bari il 20 agosto 1959. Professione dichiarata: Medico chirurgo."
     }
   ]
 }

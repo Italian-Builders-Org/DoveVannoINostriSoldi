@@ -83,6 +83,17 @@ GROUP_ROLE_LABELS = {
 }
 GROUP_ROLE_RANK = {role: index for index, role in enumerate(GROUP_ROLE_LABELS)}
 
+MONTHS_IT = (
+    "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+    "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre",
+)
+
+
+def italian_long_date(iso: str) -> str:
+    year, month, day = (int(part) for part in iso.split("-"))
+    return f"{day} {MONTHS_IT[month - 1]} {year}"
+
+
 ELECTION_METHODS = {
     "Eletto uninominale dalla XVIII legislatura": "uninominale",
     "Eletto proporzionale dalla XVIII legislatura": "proporzionale",
@@ -253,7 +264,13 @@ def build_snapshot(
         birth_city = value(detail, "cittaNascita")
         birth_province = value(detail, "provinciaNascita")
         birth_country = value(detail, "nazioneNascita")
-        birthplace = ", ".join(part for part in (birth_city, birth_province, birth_country) if part)
+        # The export repeats the province when it matches the city and always states the country.
+        place_parts = [birth_city]
+        if birth_province and birth_province.casefold() != (birth_city or "").casefold():
+            place_parts.append(birth_province)
+        if birth_country and birth_country.casefold() != "italia":
+            place_parts.append(birth_country)
+        birthplace = ", ".join(part for part in place_parts if part)
 
         profile = profiles[sid]
         require(len(profile["colleges"]) <= 1, f"{sid}: collegi divergenti {sorted(profile['colleges'])}")
@@ -289,7 +306,8 @@ def build_snapshot(
                 where += f" ({college})"
             bio_parts.append(where + ".")
         if birth_date and birthplace:
-            bio_parts.append(f"Nascita: {birth_date}, {birthplace}.")
+            born = "Nata" if female else "Nato"
+            bio_parts.append(f"{born} a {birthplace} il {italian_long_date(birth_date)}.")
         if profession:
             bio_parts.append(f"Professione dichiarata: {profession}.")
 

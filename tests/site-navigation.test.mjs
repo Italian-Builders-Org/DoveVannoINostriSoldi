@@ -111,7 +111,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(site, /https:\/\/www\.threads\.com\/@dovevannoinostrisoldi/);
   assert.match(site, /https:\/\/www\.facebook\.com\/profile\.php\?id=61593922084084/);
   assert.match(site, /https:\/\/www\.instagram\.com\/dovevannoinostrisoldi\//);
-  assert.match(site, /https:\/\/www\.tiktok\.com\/@dovevannoinostrisoldi/);
+  assert.match(site, /https:\/\/www\.tiktok\.com\/@dvn_soldi/);
   assert.match(site, /https:\/\/x\.com\/DVNSoldi/);
   assert.match(footer, /SOCIAL_LINKS/);
   assert.match(footer, /footer-social/);

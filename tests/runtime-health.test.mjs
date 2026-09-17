@@ -28,7 +28,7 @@ const SOURCE_IDS = [
   "ipa", "ipa-struttura", "openbdap", "anac", "inps", "cpt", "mef-irpef", "siope",
   "istat", "istat-casellario-pensioni",
   "consip", "opencoesione", "italiadomani", "opencivitas", "consulenti", "camera", "senato",
-  "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-gdp", "oecd-taxing-wages", "eurostat-cofog", "eurostat-gov-main", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "istat-bes-salute", "istat-bes-istruzione",   "istat-bes-lavoro", "istat-bes-relazioni", "istat-bes-politica", "istat-bes-sicurezza", "istat-bes-paesaggio", "istat-bes-servizi", "istat-bes-ambiente", "inps-naspi", "inps-assegno-unico", "inps-integrazioni-salariali", "inps-cig-fondi-solidarieta", "inl-vigilanza", "aifa-spesa-consumi", "mef-irpef-dettaglio", "ameco",
+  "pcm", "partecipazioni-pubbliche", "bancaditalia", "eurostat", "eurostat-hicp", "eurostat-gdp", "oecd-taxing-wages", "eurostat-cofog", "eurostat-gov-main", "istat-cofog", "istat-epea", "istat-poverta", "istat-poverta-relativa", "istat-bes-economico", "istat-bes-salute", "istat-bes-istruzione",   "istat-bes-lavoro", "istat-bes-relazioni", "istat-bes-politica", "istat-bes-sicurezza", "istat-bes-paesaggio", "istat-bes-servizi", "istat-bes-ambiente", "istat-bes-innovazione", "inps-naspi", "inps-assegno-unico", "inps-integrazioni-salariali", "inps-cig-fondi-solidarieta", "inl-vigilanza", "aifa-spesa-consumi", "mef-irpef-dettaglio", "ameco",
   "governi-presidenza",
   "mef-iva",
   "eu-vat-gap-italy",

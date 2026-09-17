@@ -1778,6 +1778,32 @@
       "trustModel": "Lock dedicato BES_10: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Undici indicatori, 13.423 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Per 10AMB018P UNIT_MEAS e NOTE_* restano vuoti come nel payload. 412 celle g restano null. Scale factor 100 (centesimi). Indicatori non sommabili. Licenza not-declared."
     },
     {
+      "id": "istat-bes-innovazione-2004-2023",
+      "owner": "ISTAT BesT BES_11 Innovazione, ricerca e creatività, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-innovazione-2004-2023.data.json",
+        "src/data/generated/istat-bes-innovazione-2004-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_innovazione.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_innovazione.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-innovazione.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_innovazione.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-innovazione-2004-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Quattro indicatori, 5.413 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Nessuna cella n/g nel payload. 11RIC025 ammette valori negativi firmati. Scale factor 10 (decimi). Quattro province sarde storiche assenti dal payload. Indicatori non sommabili. Licenza not-declared."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

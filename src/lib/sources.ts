@@ -303,6 +303,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {
+    slug: "istat-bes-innovazione",
+    name: "ISTAT · BES dei territori, Innovazione, ricerca e creatività",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Quattro indicatori BES_11; 5.413 osservazioni e 135 territori, di cui 107 province. Periodi propri fra 2004 e 2023; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Brevetti, addetti culturali, comuni online e mobilità laureati con unità proprie: non sono spesa e non si sommano. Solo SEX=T; nessuna cella n/g nel payload. 11RIC025 resta firmato (saldi negativi). Valori in decimi. Quattro province sarde storiche assenti. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
     slug: "inps-naspi",
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",

@@ -43,6 +43,7 @@ export type SourceId =
   | "istat-bes-paesaggio"
   | "istat-bes-servizi"
   | "istat-bes-ambiente"
+  | "istat-bes-innovazione"
   | "inps-naspi"
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
@@ -713,6 +714,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-bes-ambiente", "domain:environment"],
+  },
+  "istat-bes-innovazione": {
+    id: "istat-bes-innovazione",
+    label: "ISTAT · BES dei territori, Innovazione, ricerca e creatività",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-innovazione", "domain:innovation"],
   },
   "inps-naspi": {
     id: "inps-naspi",

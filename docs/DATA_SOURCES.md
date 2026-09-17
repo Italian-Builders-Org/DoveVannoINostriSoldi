@@ -1056,3 +1056,11 @@ Dominio BES_10, edizione 2025: undici indicatori, 13.423 osservazioni e 139
 territori (111 province). Solo `SEX=T`; 412 celle `g`; valori in centesimi.
 Fonte `istat-bes-ambiente`, API/MCP paginati, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_BES_AMBIENTE.md).
+
+### ISTAT BES dei territori — Innovazione, ricerca e creatività
+
+Dominio BES_11, edizione 2025: quattro indicatori, 5.413 osservazioni e 135
+territori (107 province). Solo `SEX=T`; nessuna cella `n`/`g`; valori in decimi;
+`11RIC025` resta firmato. `DF_BES_TERRIT_8` assente dal catalogo IstatData.
+Fonte `istat-bes-innovazione`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_INNOVAZIONE.md).

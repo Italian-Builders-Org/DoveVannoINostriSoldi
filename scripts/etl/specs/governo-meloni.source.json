@@ -1,0 +1,44 @@
+{
+  "datasetId": "governo-meloni",
+  "title": "Governo Meloni — Presidenza del Consiglio, ministeri, vice ministri e sottosegretari in carica",
+  "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+  "period": {
+    "label": "Governo in carica",
+    "observedDate": "2026-09-17"
+  },
+  "source": {
+    "owner": "Presidenza del Consiglio dei Ministri",
+    "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+    "license": "Il portale governo.it dichiara i contenuti riutilizzabili citando la fonte (nota legale governo.it).",
+    "licenseUrl": "https://www.governo.it/it/note-legali",
+    "committedResponse": {
+      "bytes": 105506,
+      "sha256": "5b964389ef4be0117e27389cff7c1ed232c0e20832ceee0261affa77b9468e48"
+    }
+  },
+  "coverageFloor": {
+    "appointments": 60,
+    "people": 58,
+    "ministries": 14,
+    "ministers": 20
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo incarichi di governo e articolazione istituzionale. Per la spesa dei ministeri usare /governi e le viste RGS."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-17"
+    },
+    "provenance": {
+      "kind": "official-html-roster",
+      "holder": "Presidenza del Consiglio dei Ministri"
+    }
+  },
+  "caveats": [
+    "La pagina ufficiale elenca gli incarichi in corso: chi cumula due incarichi compare due volte e viene esposto come persona unica con più incarichi.",
+    "governo.it non pubblica fotografie nell'elenco: le immagini dei componenti che siedono in Parlamento arrivano dai portali ufficiali di Camera e Senato.",
+    "I ministri senza portafoglio sono ricondotti alla Presidenza del Consiglio con la delega dichiarata dalla fonte."
+  ]
+}

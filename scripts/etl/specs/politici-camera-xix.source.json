@@ -1,6 +1,6 @@
 {
   "datasetId": "politici-camera-xix",
-  "title": "Camera dei deputati — deputati e gruppi parlamentari XIX legislatura",
+  "title": "Camera dei deputati — deputati, gruppi, organi e uffici di presidenza XIX legislatura",
   "landingUrl": "https://dati.camera.it/",
   "period": {
     "legislature": "repubblica_19",
@@ -12,33 +12,54 @@
     "endpointUrl": "https://dati.camera.it/sparql",
     "landingUrl": "https://dati.camera.it/",
     "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "profileBaseUrl": "https://www.camera.it/deputati/elenco/19-",
+    "photoBaseUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d",
     "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-    "committedResponse": {
-      "bytes": 281334,
-      "sha256": "328c32bc6648551a351af1718bd212c8641c2bb94da8e96a6e25a4d2adcd3f46"
+    "committedResponses": {
+      "roster": {
+        "bytes": 231582,
+        "sha256": "41af7c2b18279770bde2834f7da73653524ac0c529acc7587c89462a740102ca"
+      },
+      "groupRoles": {
+        "bytes": 23622,
+        "sha256": "f17701f461d8c50fece0a145fc3425a24eb877b10ad6631530b7ef7383f9f7c4"
+      },
+      "organs": {
+        "bytes": 555441,
+        "sha256": "b2fec8a3afb2c0fea5893bcb28a679d88101a73ca146871e9a4b208eb83ab4f7"
+      },
+      "profiles": {
+        "count": 398,
+        "bytes": 10729984,
+        "sha256": "c3a58a0be554c2d4e93f40263b1ca2e849b81be6a915aad54373e8fa446b9d74"
+      }
     }
   },
   "coverageFloor": {
     "deputies": 390,
-    "groups": 5
+    "groups": 5,
+    "organs": 14
   },
   "semantics": {
     "soldi": {
       "present": false,
-      "note": "Nessun importo: solo appartenenze formali e schede ufficiali Camera."
+      "note": "Nessun importo: solo appartenenze formali, cariche ufficiali e schede pubbliche della Camera."
     },
     "periodo": {
       "kind": "legislature",
       "id": "repubblica_19"
     },
     "provenance": {
-      "kind": "official-sparql",
-      "endpoint": "https://dati.camera.it/sparql"
+      "kind": "official-sparql-and-official-profiles",
+      "endpoint": "https://dati.camera.it/sparql",
+      "profiles": "https://www.camera.it/deputati/elenco"
     }
   },
   "caveats": [
-    "Solo Camera XIX; il Senato è acquisito e validato in un artefatto distinto prima della vista Parlamento.",
-    "L'emiciclo include soltanto adesioni aperte: ex deputati e adesioni concluse non occupano seggi."
+    "L'emiciclo include soltanto adesioni aperte: ex deputati e adesioni concluse non occupano seggi.",
+    "Le cariche interne ai gruppi e gli uffici parlamentari sono quelli senza data di fine alla data di acquisizione.",
+    "Anagrafica, collegio, coalizione e note professionali provengono dalle schede personali su camera.it: il grafo RDF non le pubblica.",
+    "Le schede personali sono pinnate con un digest aggregato in ordine di identità: qualsiasi variazione richiede una nuova revisione."
   ]
 }

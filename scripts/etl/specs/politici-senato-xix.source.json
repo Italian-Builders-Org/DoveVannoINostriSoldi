@@ -1,6 +1,6 @@
 {
   "datasetId": "politici-senato-xix",
-  "title": "Senato della Repubblica — senatori in carica e gruppi della XIX legislatura",
+  "title": "Senato della Repubblica — senatori, gruppi, incarichi e Consiglio di Presidenza XIX legislatura",
   "landingUrl": "https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11",
   "period": {
     "legislature": "19",
@@ -13,6 +13,8 @@
     "landingUrl": "https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11",
     "groupsLandingUrl": "https://dati.senato.it/DatiSenato/browse/6?legislatura=19&testo_generico=11&active_tab_78=80",
     "endpointUrl": "https://dati.senato.it/DatiSenato/virtuoso_bridge/query/execute",
+    "sparqlEndpointUrl": "https://dati.senato.it/sparql",
+    "presidencyOrganUri": "http://dati.senato.it/presidenza/19",
     "license": "CC BY 3.0 (dichiarata dal portale dati.senato.it)",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
     "committedResponses": {
@@ -27,12 +29,17 @@
       "currentGroups": {
         "bytes": 172524,
         "sha256": "c690f02c47532c3e2c4b1391a56101c1d7be7c9778e4646e7f4175eab8a68826"
+      },
+      "profiles": {
+        "bytes": 205592,
+        "sha256": "8d96dc4152fb114b50b294457b84a0091e4a306b912b085c8173a46dbf16672b"
       }
     }
   },
   "coverageFloor": {
     "senators": 200,
-    "groups": 5
+    "groups": 5,
+    "presidencyRoles": 15
   },
   "semantics": {
     "soldi": {
@@ -45,12 +52,15 @@
       "observedDate": "2026-09-17"
     },
     "provenance": {
-      "kind": "official-json-exports",
-      "holder": "Senato della Repubblica"
+      "kind": "official-json-exports-and-official-sparql",
+      "holder": "Senato della Repubblica",
+      "sparqlEndpoint": "https://dati.senato.it/sparql"
     }
   },
   "caveats": [
     "La composizione è puntuale alla data osservata e include i senatori a vita in carica.",
-    "Le righe multiple per cariche diverse nello stesso gruppo sono deduplicate per identità ufficiale."
+    "Le righe multiple per cariche diverse nello stesso gruppo sono deduplicate per identità ufficiale.",
+    "Professione, collegio e tipo di elezione arrivano dall'endpoint SPARQL ufficiale: valori multipli per la stessa persona non vengono fusi.",
+    "Il Consiglio di Presidenza è letto dall'organo ufficiale presidenza/19 con le sole afferenze aperte."
   ]
 }

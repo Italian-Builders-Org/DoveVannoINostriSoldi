@@ -1,0 +1,1597 @@
+{
+  "schemaVersion": 1,
+  "institution": "governo",
+  "government": {
+    "id": "meloni",
+    "label": "Governo Meloni",
+    "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari"
+  },
+  "coverage": {
+    "appointments": 67,
+    "people": 65,
+    "departments": 16,
+    "ministries": 15,
+    "presidentOfCouncil": 1,
+    "vicePresidents": 2,
+    "ministers": 24,
+    "viceMinisters": 7,
+    "undersecretaries": 33,
+    "ministersWithoutPortfolio": 9
+  },
+  "source": {
+    "owner": "Presidenza del Consiglio dei Ministri",
+    "title": "governo.it — Vice Presidenti, Ministri e Sottosegretari",
+    "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+    "license": "Riuso consentito citando la fonte (nota legale governo.it)",
+    "licenseUrl": "https://www.governo.it/it/note-legali",
+    "observedDate": "2026-09-17",
+    "acquiredAt": "2026-09-17T16:59:58+00:00",
+    "responseBytes": 105506,
+    "responseSha256": "5b964389ef4be0117e27389cff7c1ed232c0e20832ceee0261affa77b9468e48",
+    "cadence": "aggiornamento a ogni variazione della compagine di governo"
+  },
+  "caveats": [
+    "Elenco degli incarichi in corso pubblicato da governo.it: chi cumula due incarichi resta una sola persona con più incarichi dichiarati.",
+    "I ministri senza portafoglio sono ricondotti alla Presidenza del Consiglio con la delega indicata dalla fonte ufficiale.",
+    "governo.it non pubblica fotografie in questo elenco: le immagini provengono dai portali ufficiali di Camera e Senato solo per chi siede in Parlamento.",
+    "Non contiene importi: la spesa dei ministeri è pubblicata in /governi e nelle viste RGS."
+  ],
+  "departments": [
+    {
+      "id": "presidenza-del-consiglio",
+      "label": "Presidenza del Consiglio dei Ministri",
+      "kind": "presidenza",
+      "order": 0
+    },
+    {
+      "id": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
+      "label": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
+      "kind": "ministero",
+      "order": 1
+    },
+    {
+      "id": "ministero-dell-interno",
+      "label": "Ministero dell'Interno",
+      "kind": "ministero",
+      "order": 2
+    },
+    {
+      "id": "ministero-della-giustizia",
+      "label": "Ministero della Giustizia",
+      "kind": "ministero",
+      "order": 3
+    },
+    {
+      "id": "ministero-della-difesa",
+      "label": "Ministero della Difesa",
+      "kind": "ministero",
+      "order": 4
+    },
+    {
+      "id": "ministero-dell-economia-e-delle-finanze",
+      "label": "Ministero dell'Economia e delle Finanze",
+      "kind": "ministero",
+      "order": 5
+    },
+    {
+      "id": "ministero-delle-imprese-e-del-made-in-italy",
+      "label": "Ministero delle Imprese e del Made in Italy",
+      "kind": "ministero",
+      "order": 6
+    },
+    {
+      "id": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
+      "label": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
+      "kind": "ministero",
+      "order": 7
+    },
+    {
+      "id": "ministero-dell-ambiente-e-della-sicurezza-energetica",
+      "label": "Ministero dell'Ambiente e della Sicurezza energetica",
+      "kind": "ministero",
+      "order": 8
+    },
+    {
+      "id": "ministero-delle-infrastrutture-e-dei-trasporti",
+      "label": "Ministero delle Infrastrutture e dei Trasporti",
+      "kind": "ministero",
+      "order": 9
+    },
+    {
+      "id": "ministero-del-lavoro-e-delle-politiche-sociali",
+      "label": "Ministero del Lavoro e delle Politiche Sociali",
+      "kind": "ministero",
+      "order": 10
+    },
+    {
+      "id": "ministero-dell-istruzione-e-del-merito",
+      "label": "Ministero dell'Istruzione e del Merito",
+      "kind": "ministero",
+      "order": 11
+    },
+    {
+      "id": "ministero-dell-universita-e-della-ricerca",
+      "label": "Ministero dell'Università e della Ricerca",
+      "kind": "ministero",
+      "order": 12
+    },
+    {
+      "id": "ministero-della-cultura",
+      "label": "Ministero della Cultura",
+      "kind": "ministero",
+      "order": 13
+    },
+    {
+      "id": "ministero-del-turismo",
+      "label": "Ministero del Turismo",
+      "kind": "ministero",
+      "order": 14
+    },
+    {
+      "id": "ministero-della-salute",
+      "label": "Ministero della Salute",
+      "kind": "ministero",
+      "order": 15
+    }
+  ],
+  "members": [
+    {
+      "id": "presidente-del-consiglio-giorgia-meloni",
+      "personSlug": "giorgia-meloni",
+      "displayName": "Giorgia Meloni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
+      "roleKind": "presidente-del-consiglio",
+      "roleLabel": "Presidente del Consiglio dei Ministri",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Presidente del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 0
+    },
+    {
+      "id": "vice-presidente-antonio-tajani",
+      "personSlug": "antonio-tajani",
+      "displayName": "Antonio Tajani",
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "roleKind": "vice-presidente",
+      "roleLabel": "Vice Presidente del Consiglio dei Ministri",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Presidente del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 1
+    },
+    {
+      "id": "vice-presidente-matteo-salvini",
+      "personSlug": "matteo-salvini",
+      "displayName": "Matteo Salvini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
+      "roleKind": "vice-presidente",
+      "roleLabel": "Vice Presidente del Consiglio dei Ministri",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Presidente del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 2
+    },
+    {
+      "id": "sottosegretario-alfredo-mantovano",
+      "personSlug": "alfredo-mantovano",
+      "displayName": "Alfredo Mantovano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 3
+    },
+    {
+      "id": "sottosegretario-alessio-butti",
+      "personSlug": "alessio-butti",
+      "displayName": "Alessio Butti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 4
+    },
+    {
+      "id": "sottosegretario-alberto-barachini",
+      "personSlug": "alberto-barachini",
+      "displayName": "Alberto Barachini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 5
+    },
+    {
+      "id": "sottosegretario-alessandro-morelli",
+      "personSlug": "alessandro-morelli",
+      "displayName": "Alessandro Morelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 6
+    },
+    {
+      "id": "sottosegretario-giovanbattista-fazzolari",
+      "personSlug": "giovanbattista-fazzolari",
+      "displayName": "Giovanbattista Fazzolari",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 7
+    },
+    {
+      "id": "sottosegretario-luigi-sbarra",
+      "personSlug": "luigi-sbarra",
+      "displayName": "Luigi Sbarra",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Sottosegretari alla Presidenza del Consiglio dei Ministri",
+      "areaLabel": null,
+      "order": 8
+    },
+    {
+      "id": "ministro-luca-ciriani",
+      "personSlug": "luca-ciriani",
+      "displayName": "Luca Ciriani",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
+      "areaLabel": "Rapporti con il Parlamento",
+      "order": 9
+    },
+    {
+      "id": "sottosegretario-giuseppina-castiello",
+      "personSlug": "giuseppina-castiello",
+      "displayName": "Giuseppina Castiello",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
+      "areaLabel": "Rapporti con il Parlamento",
+      "order": 10
+    },
+    {
+      "id": "sottosegretario-matilde-siracusano",
+      "personSlug": "matilde-siracusano",
+      "displayName": "Matilde Siracusano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
+      "areaLabel": "Rapporti con il Parlamento",
+      "order": 11
+    },
+    {
+      "id": "sottosegretario-paolo-barelli",
+      "personSlug": "paolo-barelli",
+      "displayName": "Paolo Barelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per i Rapporti con il Parlamento",
+      "areaLabel": "Rapporti con il Parlamento",
+      "order": 12
+    },
+    {
+      "id": "ministro-paolo-zangrillo",
+      "personSlug": "paolo-zangrillo",
+      "displayName": "Paolo Zangrillo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per la Pubblica Amministrazione",
+      "areaLabel": "Pubblica Amministrazione",
+      "order": 13
+    },
+    {
+      "id": "ministro-roberto-calderoli",
+      "personSlug": "roberto-calderoli",
+      "displayName": "Roberto Calderoli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per gli Affari regionali e le Autonomie",
+      "areaLabel": "Affari regionali e le Autonomie",
+      "order": 14
+    },
+    {
+      "id": "ministro-sebastiano-musumeci",
+      "personSlug": "sebastiano-musumeci",
+      "displayName": "Nello Musumeci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per la Protezione civile e le Politiche del Mare",
+      "areaLabel": "Protezione civile e le Politiche del Mare",
+      "order": 15
+    },
+    {
+      "id": "ministro-andrea-abodi",
+      "personSlug": "andrea-abodi",
+      "displayName": "Andrea Abodi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per lo Sport e i Giovani",
+      "areaLabel": "Sport e i Giovani",
+      "order": 16
+    },
+    {
+      "id": "ministro-eugenia-maria-roccella",
+      "personSlug": "eugenia-maria-roccella",
+      "displayName": "Eugenia Maria Roccella",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per la Famiglia, la Natalità e le Pari opportunità",
+      "areaLabel": "Famiglia, la Natalità e le Pari opportunità",
+      "order": 17
+    },
+    {
+      "id": "ministro-maria-elisabetta-alberti-casellati",
+      "personSlug": "maria-elisabetta-alberti-casellati",
+      "displayName": "Maria Elisabetta Alberti Casellati",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per le Riforme istituzionali e la Semplificazione normativa",
+      "areaLabel": "Riforme istituzionali e la Semplificazione normativa",
+      "order": 18
+    },
+    {
+      "id": "ministro-alessandra-locatelli",
+      "personSlug": "alessandra-locatelli",
+      "displayName": "Alessandra Locatelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per le disabilità",
+      "areaLabel": "Disabilità",
+      "order": 19
+    },
+    {
+      "id": "ministro-tommaso-foti-0",
+      "personSlug": "tommaso-foti-0",
+      "displayName": "Tommaso Foti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "presidenza-del-consiglio",
+      "sectionLabel": "Ministro per gli Affari europei, il PNRR e le Politiche di coesione",
+      "areaLabel": "Affari europei, il PNRR e le Politiche di coesione",
+      "order": 20
+    },
+    {
+      "id": "ministro-antonio-tajani",
+      "personSlug": "antonio-tajani",
+      "displayName": "Antonio Tajani",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/antonio-tajani",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
+      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
+      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
+      "order": 21
+    },
+    {
+      "id": "vice-ministro-edmondo-cirielli",
+      "personSlug": "edmondo-cirielli",
+      "displayName": "Edmondo Cirielli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
+      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
+      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
+      "order": 22
+    },
+    {
+      "id": "sottosegretario-maria-tripodi",
+      "personSlug": "maria-tripodi",
+      "displayName": "Maria Tripodi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
+      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
+      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
+      "order": 23
+    },
+    {
+      "id": "sottosegretario-massimo-dellutri",
+      "personSlug": "massimo-dellutri",
+      "displayName": "Massimo Dell'Utri",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-degli-affari-esteri-e-della-cooperazione-internazionale",
+      "sectionLabel": "Ministero degli Affari Esteri e della Cooperazione Internazionale",
+      "areaLabel": "Affari Esteri e della Cooperazione Internazionale",
+      "order": 24
+    },
+    {
+      "id": "ministro-matteo-piantedosi",
+      "personSlug": "matteo-piantedosi",
+      "displayName": "Matteo Piantedosi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-interno",
+      "sectionLabel": "Ministero dell'Interno",
+      "areaLabel": "Interno",
+      "order": 25
+    },
+    {
+      "id": "sottosegretario-wanda-ferro",
+      "personSlug": "wanda-ferro",
+      "displayName": "Wanda Ferro",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-interno",
+      "sectionLabel": "Ministero dell'Interno",
+      "areaLabel": "Interno",
+      "order": 26
+    },
+    {
+      "id": "sottosegretario-nicola-molteni",
+      "personSlug": "nicola-molteni",
+      "displayName": "Nicola Molteni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-interno",
+      "sectionLabel": "Ministero dell'Interno",
+      "areaLabel": "Interno",
+      "order": 27
+    },
+    {
+      "id": "sottosegretario-emanuele-prisco",
+      "personSlug": "emanuele-prisco",
+      "displayName": "Emanuele Prisco",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-interno",
+      "sectionLabel": "Ministero dell'Interno",
+      "areaLabel": "Interno",
+      "order": 28
+    },
+    {
+      "id": "ministro-carlo-nordio",
+      "personSlug": "carlo-nordio",
+      "displayName": "Carlo Nordio",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-della-giustizia",
+      "sectionLabel": "Ministero della Giustizia",
+      "areaLabel": "Giustizia",
+      "order": 29
+    },
+    {
+      "id": "vice-ministro-francesco-paolo-sisto",
+      "personSlug": "francesco-paolo-sisto",
+      "displayName": "Francesco Paolo Sisto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-della-giustizia",
+      "sectionLabel": "Ministero della Giustizia",
+      "areaLabel": "Giustizia",
+      "order": 30
+    },
+    {
+      "id": "sottosegretario-andrea-ostellari",
+      "personSlug": "andrea-ostellari",
+      "displayName": "Andrea Ostellari",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-giustizia",
+      "sectionLabel": "Ministero della Giustizia",
+      "areaLabel": "Giustizia",
+      "order": 31
+    },
+    {
+      "id": "sottosegretario-alberto-balboni",
+      "personSlug": "alberto-balboni",
+      "displayName": "Alberto Balboni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-giustizia",
+      "sectionLabel": "Ministero della Giustizia",
+      "areaLabel": "Giustizia",
+      "order": 32
+    },
+    {
+      "id": "ministro-guido-crosetto",
+      "personSlug": "guido-crosetto",
+      "displayName": "Guido Crosetto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-della-difesa",
+      "sectionLabel": "Ministero della Difesa",
+      "areaLabel": "Difesa",
+      "order": 33
+    },
+    {
+      "id": "sottosegretario-matteo-perego",
+      "personSlug": "matteo-perego",
+      "displayName": "Matteo Perego di Cremnago",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-difesa",
+      "sectionLabel": "Ministero della Difesa",
+      "areaLabel": "Difesa",
+      "order": 34
+    },
+    {
+      "id": "sottosegretario-isabella-rauti",
+      "personSlug": "isabella-rauti",
+      "displayName": "Isabella Rauti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-difesa",
+      "sectionLabel": "Ministero della Difesa",
+      "areaLabel": "Difesa",
+      "order": 35
+    },
+    {
+      "id": "ministro-giancarlo-giorgetti",
+      "personSlug": "giancarlo-giorgetti",
+      "displayName": "Giancarlo Giorgetti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-economia-e-delle-finanze",
+      "sectionLabel": "Ministero dell'Economia e delle Finanze",
+      "areaLabel": "Economia e delle Finanze",
+      "order": 36
+    },
+    {
+      "id": "vice-ministro-maurizio-leo",
+      "personSlug": "maurizio-leo",
+      "displayName": "Maurizio Leo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-dell-economia-e-delle-finanze",
+      "sectionLabel": "Ministero dell'Economia e delle Finanze",
+      "areaLabel": "Economia e delle Finanze",
+      "order": 37
+    },
+    {
+      "id": "sottosegretario-lucia-albano",
+      "personSlug": "lucia-albano",
+      "displayName": "Lucia Albano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-economia-e-delle-finanze",
+      "sectionLabel": "Ministero dell'Economia e delle Finanze",
+      "areaLabel": "Economia e delle Finanze",
+      "order": 38
+    },
+    {
+      "id": "sottosegretario-federico-freni",
+      "personSlug": "federico-freni",
+      "displayName": "Federico Freni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-economia-e-delle-finanze",
+      "sectionLabel": "Ministero dell'Economia e delle Finanze",
+      "areaLabel": "Economia e delle Finanze",
+      "order": 39
+    },
+    {
+      "id": "sottosegretario-sandra-savino",
+      "personSlug": "sandra-savino",
+      "displayName": "Sandra Savino",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-economia-e-delle-finanze",
+      "sectionLabel": "Ministero dell'Economia e delle Finanze",
+      "areaLabel": "Economia e delle Finanze",
+      "order": 40
+    },
+    {
+      "id": "ministro-adolfo-urso",
+      "personSlug": "adolfo-urso",
+      "displayName": "Adolfo Urso",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
+      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
+      "areaLabel": "Imprese e del Made in Italy",
+      "order": 41
+    },
+    {
+      "id": "vice-ministro-valentino-valentini",
+      "personSlug": "valentino-valentini",
+      "displayName": "Valentino Valentini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
+      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
+      "areaLabel": "Imprese e del Made in Italy",
+      "order": 42
+    },
+    {
+      "id": "sottosegretario-fausta-bergamotto",
+      "personSlug": "fausta-bergamotto",
+      "displayName": "Fausta Bergamotto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
+      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
+      "areaLabel": "Imprese e del Made in Italy",
+      "order": 43
+    },
+    {
+      "id": "sottosegretario-mara-bizzotto",
+      "personSlug": "mara-bizzotto",
+      "displayName": "Mara Bizzotto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-delle-imprese-e-del-made-in-italy",
+      "sectionLabel": "Ministero delle Imprese e del Made in Italy",
+      "areaLabel": "Imprese e del Made in Italy",
+      "order": 44
+    },
+    {
+      "id": "ministro-francesco-lollobrigida",
+      "personSlug": "francesco-lollobrigida",
+      "displayName": "Francesco Lollobrigida",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
+      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
+      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
+      "order": 45
+    },
+    {
+      "id": "sottosegretario-luigi-d-eramo",
+      "personSlug": "luigi-d-eramo",
+      "displayName": "Luigi D'Eramo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
+      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
+      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
+      "order": 46
+    },
+    {
+      "id": "sottosegretario-patrizio-giacomo-la-pietra",
+      "personSlug": "patrizio-giacomo-la-pietra",
+      "displayName": "Patrizio Giacomo La Pietra",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-agricoltura-della-sovranita-alimentare-e-delle-foreste",
+      "sectionLabel": "Ministero dell'Agricoltura, della Sovranità alimentare e delle Foreste",
+      "areaLabel": "Agricoltura, della Sovranità alimentare e delle Foreste",
+      "order": 47
+    },
+    {
+      "id": "ministro-gilberto-pichetto-fratin",
+      "personSlug": "gilberto-pichetto-fratin",
+      "displayName": "Gilberto Pichetto Fratin",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
+      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
+      "areaLabel": "Ambiente e della Sicurezza energetica",
+      "order": 48
+    },
+    {
+      "id": "vice-ministro-vannia-gava",
+      "personSlug": "vannia-gava",
+      "displayName": "Vannia Gava",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
+      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
+      "areaLabel": "Ambiente e della Sicurezza energetica",
+      "order": 49
+    },
+    {
+      "id": "sottosegretario-claudio-barbaro",
+      "personSlug": "claudio-barbaro",
+      "displayName": "Claudio Barbaro",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-ambiente-e-della-sicurezza-energetica",
+      "sectionLabel": "Ministero dell'Ambiente e della Sicurezza energetica",
+      "areaLabel": "Ambiente e della Sicurezza energetica",
+      "order": 50
+    },
+    {
+      "id": "ministro-matteo-salvini",
+      "personSlug": "matteo-salvini",
+      "displayName": "Matteo Salvini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-salvini",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
+      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
+      "areaLabel": "Infrastrutture e dei Trasporti",
+      "order": 51
+    },
+    {
+      "id": "vice-ministro-edoardo-rixi",
+      "personSlug": "edoardo-rixi",
+      "displayName": "Edoardo Rixi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
+      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
+      "areaLabel": "Infrastrutture e dei Trasporti",
+      "order": 52
+    },
+    {
+      "id": "sottosegretario-tullio-ferrante",
+      "personSlug": "tullio-ferrante",
+      "displayName": "Tullio Ferrante",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
+      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
+      "areaLabel": "Infrastrutture e dei Trasporti",
+      "order": 53
+    },
+    {
+      "id": "sottosegretario-antonio-iannone",
+      "personSlug": "antonio-iannone",
+      "displayName": "Antonio Iannone",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-delle-infrastrutture-e-dei-trasporti",
+      "sectionLabel": "Ministero delle Infrastrutture e dei Trasporti",
+      "areaLabel": "Infrastrutture e dei Trasporti",
+      "order": 54
+    },
+    {
+      "id": "ministro-maria-elvira-calderone",
+      "personSlug": "maria-elvira-calderone",
+      "displayName": "Marina Elvira Calderone",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
+      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
+      "areaLabel": "Lavoro e delle Politiche Sociali",
+      "order": 55
+    },
+    {
+      "id": "vice-ministro-maria-teresa-bellucci",
+      "personSlug": "maria-teresa-bellucci",
+      "displayName": "Maria Teresa Bellucci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice Ministro",
+      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
+      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
+      "areaLabel": "Lavoro e delle Politiche Sociali",
+      "order": 56
+    },
+    {
+      "id": "sottosegretario-claudio-durigon",
+      "personSlug": "claudio-durigon",
+      "displayName": "Claudio Durigon",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-del-lavoro-e-delle-politiche-sociali",
+      "sectionLabel": "Ministero del Lavoro e delle Politiche Sociali",
+      "areaLabel": "Lavoro e delle Politiche Sociali",
+      "order": 57
+    },
+    {
+      "id": "ministro-giuseppe-valditara",
+      "personSlug": "giuseppe-valditara",
+      "displayName": "Giuseppe Valditara",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-istruzione-e-del-merito",
+      "sectionLabel": "Ministero dell'Istruzione e del Merito",
+      "areaLabel": "Istruzione e del Merito",
+      "order": 58
+    },
+    {
+      "id": "sottosegretario-paola-frassinetti",
+      "personSlug": "paola-frassinetti",
+      "displayName": "Paola Frassinetti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-dell-istruzione-e-del-merito",
+      "sectionLabel": "Ministero dell'Istruzione e del Merito",
+      "areaLabel": "Istruzione e del Merito",
+      "order": 59
+    },
+    {
+      "id": "ministro-anna-maria-bernini",
+      "personSlug": "anna-maria-bernini",
+      "displayName": "Anna Maria Bernini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-dell-universita-e-della-ricerca",
+      "sectionLabel": "Ministero dell'Università e della Ricerca",
+      "areaLabel": "Università e della Ricerca",
+      "order": 60
+    },
+    {
+      "id": "ministro-alessandro-giuli",
+      "personSlug": "alessandro-giuli",
+      "displayName": "Alessandro Giuli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-della-cultura",
+      "sectionLabel": "Ministero della Cultura",
+      "areaLabel": "Cultura",
+      "order": 61
+    },
+    {
+      "id": "sottosegretario-lucia-borgonzoni",
+      "personSlug": "lucia-borgonzoni",
+      "displayName": "Lucia Borgonzoni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-cultura",
+      "sectionLabel": "Ministero della Cultura",
+      "areaLabel": "Cultura",
+      "order": 62
+    },
+    {
+      "id": "sottosegretario-pietro-cannella",
+      "personSlug": "pietro-cannella",
+      "displayName": "Pietro Cannella",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-cultura",
+      "sectionLabel": "Ministero della Cultura",
+      "areaLabel": "Cultura",
+      "order": 63
+    },
+    {
+      "id": "ministro-gianmarco-mazzi",
+      "personSlug": "gianmarco-mazzi",
+      "displayName": "Gianmarco Mazzi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-del-turismo",
+      "sectionLabel": "Ministero del Turismo",
+      "areaLabel": "Turismo",
+      "order": 64
+    },
+    {
+      "id": "ministro-orazio-schillaci",
+      "personSlug": "orazio-schillaci",
+      "displayName": "Orazio Schillaci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "ministero-della-salute",
+      "sectionLabel": "Ministero della Salute",
+      "areaLabel": "Salute",
+      "order": 65
+    },
+    {
+      "id": "sottosegretario-marcello-gemmato",
+      "personSlug": "marcello-gemmato",
+      "displayName": "Marcello Gemmato",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "ministero-della-salute",
+      "sectionLabel": "Ministero della Salute",
+      "areaLabel": "Salute",
+      "order": 66
+    }
+  ],
+  "people": [
+    {
+      "slug": "giorgia-meloni",
+      "displayName": "Giorgia Meloni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
+      "appointmentIds": [
+        "presidente-del-consiglio-giorgia-meloni"
+      ],
+      "primaryRoleKind": "presidente-del-consiglio",
+      "primaryAppointmentId": "presidente-del-consiglio-giorgia-meloni"
+    },
+    {
+      "slug": "antonio-tajani",
+      "displayName": "Antonio Tajani",
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "appointmentIds": [
+        "vice-presidente-antonio-tajani",
+        "ministro-antonio-tajani"
+      ],
+      "primaryRoleKind": "vice-presidente",
+      "primaryAppointmentId": "vice-presidente-antonio-tajani"
+    },
+    {
+      "slug": "matteo-salvini",
+      "displayName": "Matteo Salvini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
+      "appointmentIds": [
+        "vice-presidente-matteo-salvini",
+        "ministro-matteo-salvini"
+      ],
+      "primaryRoleKind": "vice-presidente",
+      "primaryAppointmentId": "vice-presidente-matteo-salvini"
+    },
+    {
+      "slug": "alfredo-mantovano",
+      "displayName": "Alfredo Mantovano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "appointmentIds": [
+        "sottosegretario-alfredo-mantovano"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-alfredo-mantovano"
+    },
+    {
+      "slug": "alessio-butti",
+      "displayName": "Alessio Butti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
+      "appointmentIds": [
+        "sottosegretario-alessio-butti"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-alessio-butti"
+    },
+    {
+      "slug": "alberto-barachini",
+      "displayName": "Alberto Barachini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
+      "appointmentIds": [
+        "sottosegretario-alberto-barachini"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-alberto-barachini"
+    },
+    {
+      "slug": "alessandro-morelli",
+      "displayName": "Alessandro Morelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
+      "appointmentIds": [
+        "sottosegretario-alessandro-morelli"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-alessandro-morelli"
+    },
+    {
+      "slug": "giovanbattista-fazzolari",
+      "displayName": "Giovanbattista Fazzolari",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
+      "appointmentIds": [
+        "sottosegretario-giovanbattista-fazzolari"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-giovanbattista-fazzolari"
+    },
+    {
+      "slug": "luigi-sbarra",
+      "displayName": "Luigi Sbarra",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
+      "appointmentIds": [
+        "sottosegretario-luigi-sbarra"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-luigi-sbarra"
+    },
+    {
+      "slug": "luca-ciriani",
+      "displayName": "Luca Ciriani",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "appointmentIds": [
+        "ministro-luca-ciriani"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-luca-ciriani"
+    },
+    {
+      "slug": "giuseppina-castiello",
+      "displayName": "Giuseppina Castiello",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
+      "appointmentIds": [
+        "sottosegretario-giuseppina-castiello"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-giuseppina-castiello"
+    },
+    {
+      "slug": "matilde-siracusano",
+      "displayName": "Matilde Siracusano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
+      "appointmentIds": [
+        "sottosegretario-matilde-siracusano"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-matilde-siracusano"
+    },
+    {
+      "slug": "paolo-barelli",
+      "displayName": "Paolo Barelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
+      "appointmentIds": [
+        "sottosegretario-paolo-barelli"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-paolo-barelli"
+    },
+    {
+      "slug": "paolo-zangrillo",
+      "displayName": "Paolo Zangrillo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "appointmentIds": [
+        "ministro-paolo-zangrillo"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-paolo-zangrillo"
+    },
+    {
+      "slug": "roberto-calderoli",
+      "displayName": "Roberto Calderoli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "appointmentIds": [
+        "ministro-roberto-calderoli"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-roberto-calderoli"
+    },
+    {
+      "slug": "sebastiano-musumeci",
+      "displayName": "Nello Musumeci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "appointmentIds": [
+        "ministro-sebastiano-musumeci"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-sebastiano-musumeci"
+    },
+    {
+      "slug": "andrea-abodi",
+      "displayName": "Andrea Abodi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "appointmentIds": [
+        "ministro-andrea-abodi"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-andrea-abodi"
+    },
+    {
+      "slug": "eugenia-maria-roccella",
+      "displayName": "Eugenia Maria Roccella",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "appointmentIds": [
+        "ministro-eugenia-maria-roccella"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-eugenia-maria-roccella"
+    },
+    {
+      "slug": "maria-elisabetta-alberti-casellati",
+      "displayName": "Maria Elisabetta Alberti Casellati",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "appointmentIds": [
+        "ministro-maria-elisabetta-alberti-casellati"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-maria-elisabetta-alberti-casellati"
+    },
+    {
+      "slug": "alessandra-locatelli",
+      "displayName": "Alessandra Locatelli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "appointmentIds": [
+        "ministro-alessandra-locatelli"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-alessandra-locatelli"
+    },
+    {
+      "slug": "tommaso-foti-0",
+      "displayName": "Tommaso Foti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "appointmentIds": [
+        "ministro-tommaso-foti-0"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-tommaso-foti-0"
+    },
+    {
+      "slug": "edmondo-cirielli",
+      "displayName": "Edmondo Cirielli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "appointmentIds": [
+        "vice-ministro-edmondo-cirielli"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-edmondo-cirielli"
+    },
+    {
+      "slug": "maria-tripodi",
+      "displayName": "Maria Tripodi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
+      "appointmentIds": [
+        "sottosegretario-maria-tripodi"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-maria-tripodi"
+    },
+    {
+      "slug": "massimo-dellutri",
+      "displayName": "Massimo Dell'Utri",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
+      "appointmentIds": [
+        "sottosegretario-massimo-dellutri"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-massimo-dellutri"
+    },
+    {
+      "slug": "matteo-piantedosi",
+      "displayName": "Matteo Piantedosi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
+      "appointmentIds": [
+        "ministro-matteo-piantedosi"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-matteo-piantedosi"
+    },
+    {
+      "slug": "wanda-ferro",
+      "displayName": "Wanda Ferro",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
+      "appointmentIds": [
+        "sottosegretario-wanda-ferro"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-wanda-ferro"
+    },
+    {
+      "slug": "nicola-molteni",
+      "displayName": "Nicola Molteni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
+      "appointmentIds": [
+        "sottosegretario-nicola-molteni"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-nicola-molteni"
+    },
+    {
+      "slug": "emanuele-prisco",
+      "displayName": "Emanuele Prisco",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
+      "appointmentIds": [
+        "sottosegretario-emanuele-prisco"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-emanuele-prisco"
+    },
+    {
+      "slug": "carlo-nordio",
+      "displayName": "Carlo Nordio",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
+      "appointmentIds": [
+        "ministro-carlo-nordio"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-carlo-nordio"
+    },
+    {
+      "slug": "francesco-paolo-sisto",
+      "displayName": "Francesco Paolo Sisto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "appointmentIds": [
+        "vice-ministro-francesco-paolo-sisto"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-francesco-paolo-sisto"
+    },
+    {
+      "slug": "andrea-ostellari",
+      "displayName": "Andrea Ostellari",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
+      "appointmentIds": [
+        "sottosegretario-andrea-ostellari"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-andrea-ostellari"
+    },
+    {
+      "slug": "alberto-balboni",
+      "displayName": "Alberto Balboni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
+      "appointmentIds": [
+        "sottosegretario-alberto-balboni"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-alberto-balboni"
+    },
+    {
+      "slug": "guido-crosetto",
+      "displayName": "Guido Crosetto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
+      "appointmentIds": [
+        "ministro-guido-crosetto"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-guido-crosetto"
+    },
+    {
+      "slug": "matteo-perego",
+      "displayName": "Matteo Perego di Cremnago",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
+      "appointmentIds": [
+        "sottosegretario-matteo-perego"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-matteo-perego"
+    },
+    {
+      "slug": "isabella-rauti",
+      "displayName": "Isabella Rauti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
+      "appointmentIds": [
+        "sottosegretario-isabella-rauti"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-isabella-rauti"
+    },
+    {
+      "slug": "giancarlo-giorgetti",
+      "displayName": "Giancarlo Giorgetti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
+      "appointmentIds": [
+        "ministro-giancarlo-giorgetti"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-giancarlo-giorgetti"
+    },
+    {
+      "slug": "maurizio-leo",
+      "displayName": "Maurizio Leo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "appointmentIds": [
+        "vice-ministro-maurizio-leo"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-maurizio-leo"
+    },
+    {
+      "slug": "lucia-albano",
+      "displayName": "Lucia Albano",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
+      "appointmentIds": [
+        "sottosegretario-lucia-albano"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-lucia-albano"
+    },
+    {
+      "slug": "federico-freni",
+      "displayName": "Federico Freni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
+      "appointmentIds": [
+        "sottosegretario-federico-freni"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-federico-freni"
+    },
+    {
+      "slug": "sandra-savino",
+      "displayName": "Sandra Savino",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
+      "appointmentIds": [
+        "sottosegretario-sandra-savino"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-sandra-savino"
+    },
+    {
+      "slug": "adolfo-urso",
+      "displayName": "Adolfo Urso",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
+      "appointmentIds": [
+        "ministro-adolfo-urso"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-adolfo-urso"
+    },
+    {
+      "slug": "valentino-valentini",
+      "displayName": "Valentino Valentini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "appointmentIds": [
+        "vice-ministro-valentino-valentini"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-valentino-valentini"
+    },
+    {
+      "slug": "fausta-bergamotto",
+      "displayName": "Fausta Bergamotto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
+      "appointmentIds": [
+        "sottosegretario-fausta-bergamotto"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-fausta-bergamotto"
+    },
+    {
+      "slug": "mara-bizzotto",
+      "displayName": "Mara Bizzotto",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
+      "appointmentIds": [
+        "sottosegretario-mara-bizzotto"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-mara-bizzotto"
+    },
+    {
+      "slug": "francesco-lollobrigida",
+      "displayName": "Francesco Lollobrigida",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
+      "appointmentIds": [
+        "ministro-francesco-lollobrigida"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-francesco-lollobrigida"
+    },
+    {
+      "slug": "luigi-d-eramo",
+      "displayName": "Luigi D'Eramo",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
+      "appointmentIds": [
+        "sottosegretario-luigi-d-eramo"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-luigi-d-eramo"
+    },
+    {
+      "slug": "patrizio-giacomo-la-pietra",
+      "displayName": "Patrizio Giacomo La Pietra",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
+      "appointmentIds": [
+        "sottosegretario-patrizio-giacomo-la-pietra"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-patrizio-giacomo-la-pietra"
+    },
+    {
+      "slug": "gilberto-pichetto-fratin",
+      "displayName": "Gilberto Pichetto Fratin",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
+      "appointmentIds": [
+        "ministro-gilberto-pichetto-fratin"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-gilberto-pichetto-fratin"
+    },
+    {
+      "slug": "vannia-gava",
+      "displayName": "Vannia Gava",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "appointmentIds": [
+        "vice-ministro-vannia-gava"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-vannia-gava"
+    },
+    {
+      "slug": "claudio-barbaro",
+      "displayName": "Claudio Barbaro",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
+      "appointmentIds": [
+        "sottosegretario-claudio-barbaro"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-claudio-barbaro"
+    },
+    {
+      "slug": "edoardo-rixi",
+      "displayName": "Edoardo Rixi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "appointmentIds": [
+        "vice-ministro-edoardo-rixi"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-edoardo-rixi"
+    },
+    {
+      "slug": "tullio-ferrante",
+      "displayName": "Tullio Ferrante",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
+      "appointmentIds": [
+        "sottosegretario-tullio-ferrante"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-tullio-ferrante"
+    },
+    {
+      "slug": "antonio-iannone",
+      "displayName": "Antonio Iannone",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
+      "appointmentIds": [
+        "sottosegretario-antonio-iannone"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-antonio-iannone"
+    },
+    {
+      "slug": "maria-elvira-calderone",
+      "displayName": "Marina Elvira Calderone",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
+      "appointmentIds": [
+        "ministro-maria-elvira-calderone"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-maria-elvira-calderone"
+    },
+    {
+      "slug": "maria-teresa-bellucci",
+      "displayName": "Maria Teresa Bellucci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "appointmentIds": [
+        "vice-ministro-maria-teresa-bellucci"
+      ],
+      "primaryRoleKind": "vice-ministro",
+      "primaryAppointmentId": "vice-ministro-maria-teresa-bellucci"
+    },
+    {
+      "slug": "claudio-durigon",
+      "displayName": "Claudio Durigon",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "appointmentIds": [
+        "sottosegretario-claudio-durigon"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-claudio-durigon"
+    },
+    {
+      "slug": "giuseppe-valditara",
+      "displayName": "Giuseppe Valditara",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
+      "appointmentIds": [
+        "ministro-giuseppe-valditara"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-giuseppe-valditara"
+    },
+    {
+      "slug": "paola-frassinetti",
+      "displayName": "Paola Frassinetti",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "appointmentIds": [
+        "sottosegretario-paola-frassinetti"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-paola-frassinetti"
+    },
+    {
+      "slug": "anna-maria-bernini",
+      "displayName": "Anna Maria Bernini",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
+      "appointmentIds": [
+        "ministro-anna-maria-bernini"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-anna-maria-bernini"
+    },
+    {
+      "slug": "alessandro-giuli",
+      "displayName": "Alessandro Giuli",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
+      "appointmentIds": [
+        "ministro-alessandro-giuli"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-alessandro-giuli"
+    },
+    {
+      "slug": "lucia-borgonzoni",
+      "displayName": "Lucia Borgonzoni",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "appointmentIds": [
+        "sottosegretario-lucia-borgonzoni"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-lucia-borgonzoni"
+    },
+    {
+      "slug": "pietro-cannella",
+      "displayName": "Pietro Cannella",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "appointmentIds": [
+        "sottosegretario-pietro-cannella"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-pietro-cannella"
+    },
+    {
+      "slug": "gianmarco-mazzi",
+      "displayName": "Gianmarco Mazzi",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
+      "appointmentIds": [
+        "ministro-gianmarco-mazzi"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-gianmarco-mazzi"
+    },
+    {
+      "slug": "orazio-schillaci",
+      "displayName": "Orazio Schillaci",
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
+      "appointmentIds": [
+        "ministro-orazio-schillaci"
+      ],
+      "primaryRoleKind": "ministro",
+      "primaryAppointmentId": "ministro-orazio-schillaci"
+    },
+    {
+      "slug": "marcello-gemmato",
+      "displayName": "Marcello Gemmato",
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "appointmentIds": [
+        "sottosegretario-marcello-gemmato"
+      ],
+      "primaryRoleKind": "sottosegretario",
+      "primaryAppointmentId": "sottosegretario-marcello-gemmato"
+    }
+  ]
+}

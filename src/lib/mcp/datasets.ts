@@ -548,6 +548,21 @@ export async function queryPublicDataset(
         ...queryIstatPovertaRelativa({ territory: query.territory, year: query.year, measure: query.measure }),
       });
     }
+    case "istat_poverta_soglia_assoluta": {
+      options.signal?.throwIfAborted();
+      const { queryIstatPovertaSogliaAssoluta } = await import("@/lib/istat-poverta-soglia-assoluta-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaSogliaAssoluta({
+          territory: query.territory,
+          year: query.year,
+          householdTypology: query.family,
+          municipalitySize: query.band,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
     case "istat_bes_economico": {
       const { queryIstatBes } = await import("@/lib/istat-bes-snapshot");
       return jsonSafe({
@@ -637,6 +652,15 @@ export async function queryPublicDataset(
       return jsonSafe({
         dataset: query.dataset,
         ...queryIstatBesAmbiente({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_innovazione": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesInnovazione } = await import("@/lib/istat-bes-innovazione-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesInnovazione({ territory: query.territory, year: query.year, indicator: query.measure,
           sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }

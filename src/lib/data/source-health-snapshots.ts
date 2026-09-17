@@ -41,6 +41,10 @@ import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
+import {
+  istatPovertaSogliaAssolutaData,
+  istatPovertaSogliaAssolutaMetadata,
+} from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -51,6 +55,7 @@ import { istatBesSicurezzaData, istatBesSicurezzaMetadata } from "@/lib/istat-be
 import { istatBesPaesaggioData, istatBesPaesaggioMetadata } from "@/lib/istat-bes-paesaggio-snapshot";
 import { istatBesServiziData, istatBesServiziMetadata } from "@/lib/istat-bes-servizi-snapshot";
 import { istatBesAmbienteData, istatBesAmbienteMetadata } from "@/lib/istat-bes-ambiente-snapshot";
+import { istatBesInnovazioneData, istatBesInnovazioneMetadata } from "@/lib/istat-bes-innovazione-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -577,6 +582,20 @@ function snapshotManagedIstatPovertaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaSogliaAssoluta(): SourceHealth {
+  const { source } = istatPovertaSogliaAssolutaMetadata;
+  const asset = source.assets.csv;
+  const nullCount = istatPovertaSogliaAssolutaData.observations.filter((row) => row.valueHundredths === null).length;
+  return {
+    ...baseHealth("istat-poverta-soglia-assoluta"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-soglia-assoluta", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · soglia monetaria di povertà assoluta ${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaAssolutaData.observations.length.toLocaleString("it-IT")} osservazioni di cui ${nullCount.toLocaleString("it-IT")} null · ${istatPovertaSogliaAssolutaData.territories.length} territori · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
+    recordCount: istatPovertaSogliaAssolutaData.observations.length,
+  };
+}
+
 function snapshotManagedIstatBesEconomico(): SourceHealth {
   const { source, observedAt } = istatBesMetadata;
   const asset = Object.values(source.assets)[0];
@@ -699,6 +718,18 @@ function snapshotManagedIstatBesAmbiente(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesInnovazione(): SourceHealth {
+  const { source } = istatBesInnovazioneMetadata;
+  return {
+    ...baseHealth("istat-bes-innovazione"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-innovazione", source.publicationDate),
+    latencyMs: null,
+    detail: "Quattro indicatori BES_11 Innovazione, ricerca e creatività, edizione 2025; 5.413 osservazioni e 135 territori, di cui 107 province. Periodi distinti fra 2004 e 2023; nessuna cella n/g. Solo SEX=T; 11RIC025 firmato; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesInnovazioneData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -746,6 +777,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
+  "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
@@ -756,6 +788,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-paesaggio": snapshotManagedIstatBesPaesaggio,
   "istat-bes-servizi": snapshotManagedIstatBesServizi,
   "istat-bes-ambiente": snapshotManagedIstatBesAmbiente,
+  "istat-bes-innovazione": snapshotManagedIstatBesInnovazione,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,

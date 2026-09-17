@@ -182,6 +182,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "misura"],
   },
   {
+    slug: "istat-poverta-soglia-assoluta",
+    name: "ISTAT · soglia di povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; dataflow 34_211 fissato",
+    coverage:
+      "Soglie monetarie mensili 2005–2024 per territorio, tipologia familiare e ampiezza demografica; 36.078 osservazioni di cui 6.050 null",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Soglia monetaria mensile in euro (centesimi nello snapshot), NON spesa pubblica e NON confrontabile/sommabile con le incidenze 34_727. La soglia relativa 34_212 è chiusa al 2013 e fuori perimetro. Celle con OBS_VALUE vuoto restano null ≠ zero. Nord e Mezzogiorno sono compositi che sovrappongono parti. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    joinKeys: ["territorio", "anno", "tipologia familiare", "ampiezza demografica"],
+  },
+  {
     slug: "istat-bes-economico",
     name: "ISTAT · BES dei territori, benessere economico",
     owner: "ISTAT — Istituto nazionale di statistica",
@@ -300,6 +313,18 @@ export const sourceCatalog: PublicSource[] = [
     format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
     url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
     note: "Concentrazioni, percentuali, m²/abitante e kg/abitante con unità proprie: non sono spesa e non si sommano. Solo SEX=T; flag g resta null. Valori in centesimi. Per 10AMB018P UNIT_MEAS e note restano vuoti come nel payload. Licenza del payload non dichiarata.",
+    joinKeys: ["territorio", "anno", "indicatore", "sesso"],
+  },
+  {
+    slug: "istat-bes-innovazione",
+    name: "ISTAT · BES dei territori, Innovazione, ricerca e creatività",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Benessere equo e sostenibile dei territori",
+    cadence: "Annuale, per edizioni; edizione 2025 fissata",
+    coverage: "Quattro indicatori BES_11; 5.413 osservazioni e 135 territori, di cui 107 province. Periodi propri fra 2004 e 2023; payload solo SEX=T.",
+    format: "SDMX-CSV e codelist ufficiali · snapshot verificato",
+    url: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    note: "Brevetti, addetti culturali, comuni online e mobilità laureati con unità proprie: non sono spesa e non si sommano. Solo SEX=T; nessuna cella n/g nel payload. 11RIC025 resta firmato (saldi negativi). Valori in decimi. Quattro province sarde storiche assenti. Licenza del payload non dichiarata.",
     joinKeys: ["territorio", "anno", "indicatore", "sesso"],
   },
   {

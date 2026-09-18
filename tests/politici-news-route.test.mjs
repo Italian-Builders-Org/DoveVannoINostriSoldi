@@ -51,7 +51,7 @@ test("politici news maps only safe Google News article metadata", async () => {
       { params: Promise.resolve({ id: "dep-302103" }) },
     );
     assert.equal(response.status, 200);
-    assert.match(requestedUrl, /news\.google\.com\/rss\/search/);
+    assert.match(requestedUrl, /^https:\/\/news\.google\.com\/rss\/search(?:\?|$)/);
     assert.match(new URL(requestedUrl).searchParams.get("q"), /"Giorgia Meloni"/);
     const body = await response.json();
     assert.equal(body.ok, true);

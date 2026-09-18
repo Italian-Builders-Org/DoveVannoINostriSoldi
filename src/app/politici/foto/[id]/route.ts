@@ -44,9 +44,14 @@ export async function GET(request: Request, context: RouteContext<"/politici/fot
           Accept: "image/jpeg,image/png,image/*",
           // The Senate CDN answers an empty 202 to generic browser and bot user
           // agents; Wikimedia instead requires a project that identifies itself.
-          "User-Agent": new URL(photoUrl).hostname.endsWith("wikimedia.org")
-            ? "DoveVannoINostriSoldi/1.0 (+https://www.dovevannoinostrisoldi.com)"
-            : "curl/8.7.1 (+https://www.dovevannoinostrisoldi.com)",
+          "User-Agent": (() => {
+            const host = new URL(photoUrl).hostname.toLowerCase();
+            const wikimedia =
+              host === "wikimedia.org" || host.endsWith(".wikimedia.org");
+            return wikimedia
+              ? "DoveVannoINostriSoldi/1.0 (+https://www.dovevannoinostrisoldi.com)"
+              : "curl/8.7.1 (+https://www.dovevannoinostrisoldi.com)";
+          })(),
         },
       });
       if (!response.ok) throw new Error(`ritratto ufficiale HTTP ${response.status}`);

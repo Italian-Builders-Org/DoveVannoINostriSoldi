@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { RepublicMap, RepublicMapPerson, RepublicProfile } from "@/lib/politici-repubblica";
 import {
   bridge,
@@ -35,6 +35,29 @@ type Hover = { personId: string; x: number; y: number; frameWidth: number } | nu
 const MIN_SCALE = 1;
 const MAX_SCALE = 5;
 const EMPTY_CONNECTIONS: NewsConnection[] = [];
+const STACKED_MEDIA = "(max-width: 899px)";
+
+function subscribeStackedMedia(onChange: () => void): () => void {
+  const media = window.matchMedia(STACKED_MEDIA);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function stackedMediaSnapshot(): OverviewLayout {
+  return window.matchMedia(STACKED_MEDIA).matches ? "stacked" : "wide";
+}
+
+function useOverviewLayout(): OverviewLayout {
+  return useSyncExternalStore(subscribeStackedMedia, stackedMediaSnapshot, () => "wide");
+}
+
+function useClientHydrated(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+}
 
 export function portraitPath(personId: string): string {
   return `/politici/foto/${personId}`;
@@ -200,8 +223,8 @@ export function RepubblicaGraph({
 
   const [selection, setSelection] = useState<GraphSelection>(initialSelection);
   const [scene, setScene] = useState<Scene>(() => sceneForSelection(initialSelection, peopleById, groupById));
-  const [overviewLayout, setOverviewLayout] = useState<OverviewLayout>("wide");
-  const [layoutReady, setLayoutReady] = useState(false);
+  const overviewLayout = useOverviewLayout();
+  const layoutReady = useClientHydrated();
   const [hover, setHover] = useState<Hover>(null);
   const [profiles, setProfiles] = useState<Record<string, RepublicProfile> | null>(null);
   const [profilesFailed, setProfilesFailed] = useState(false);
@@ -232,15 +255,6 @@ export function RepubblicaGraph({
     scene === "camera" ? cameraScene : scene === "senato" ? senatoScene : null;
 
   const selectedPerson = selection.kind === "person" ? peopleById.get(selection.id) ?? null : null;
-
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 899px)");
-    const sync = () => setOverviewLayout(media.matches ? "stacked" : "wide");
-    sync();
-    setLayoutReady(true);
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -669,7 +683,7 @@ export function RepubblicaGraph({
         <p className={styles.desktopExperienceNote} role="note">
           <strong>Su telefono vedi una panoramica semplificata.</strong>
           {" "}
-          L’esperienza completa della mappa — zoom, collegamenti e vista radiale — è pensata per il desktop.
+          L’esperienza completa della mappa (zoom, collegamenti e vista radiale) è pensata per il desktop.
         </p>
         <div className={styles.toolbar}>
           <div className={styles.search}>

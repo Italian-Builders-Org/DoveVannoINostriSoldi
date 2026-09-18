@@ -1070,8 +1070,14 @@ function buildCameraAttendanceRanking(peopleById: Map<string, RepublicPerson>): 
       if (right.presenceValue !== left.presenceValue) return right.presenceValue - left.presenceValue;
       return left.name.localeCompare(right.name, "it");
     })
-    .map(({ presenceValue: _presenceValue, ...row }, index) => ({
-      ...row,
+    .map((row, index) => ({
+      personId: row.personId,
+      name: row.name,
+      groupLabel: row.groupLabel,
+      presencePercent: row.presencePercent,
+      presenceTotal: row.presenceTotal,
+      absences: row.absences,
+      absencesPercent: row.absencesPercent,
       rank: index + 1,
     }));
 

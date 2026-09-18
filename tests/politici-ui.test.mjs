@@ -48,7 +48,7 @@ test("explorer keeps overview drill-down, shareable selection and official portr
 });
 
 test("navigation and discovery keep /politici and point the map to the subdomain", () => {
-  assert.match(nav, /PUBLIC_POLITICI_URL/);
+  assert.match(nav, /https:\/\/politici\.dovevannoinostrisoldi\.com/);
   assert.match(nav, /Mappa della politica/);
   assert.match(discovery, /"\/politici"/);
   assert.match(page, /PUBLIC_SITE_URL/);

@@ -1,9 +1,10 @@
 /**
  * Primary navigation and footer sitemap. One source so header submenus and the
  * footer map stay aligned.
+ *
+ * Politici map URL is inlined (same value as PUBLIC_POLITICI_URL in ./site.ts)
+ * so Node strip-types tests can import this module without path aliases.
  */
-
-import { PUBLIC_POLITICI_URL } from "./site.ts";
 
 export type NavLink = Readonly<{
   href: string;
@@ -140,7 +141,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
-      { href: PUBLIC_POLITICI_URL, label: "Mappa della politica" },
+      { href: "https://politici.dovevannoinostrisoldi.com", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
       { href: "/ministeri", label: "Ministeri" },
@@ -297,7 +298,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Istituzioni",
     links: [
       { href: "/istituzioni", label: "Panoramica" },
-      { href: PUBLIC_POLITICI_URL, label: "Mappa della politica" },
+      { href: "https://politici.dovevannoinostrisoldi.com", label: "Mappa della politica" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },

@@ -227,3 +227,14 @@ test("studies and their alias select a single dedicated primary section", () => 
     assert.deepEqual(PRIMARY_NAV.filter((item) => isNavSectionActive(path, item)).map((item) => item.href), ["/studi"]);
   }
 });
+
+test("mappa della politica nav points at the public politici host", async () => {
+  const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
+  const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
+  const mapLinks = flattenNavLinks(institutions?.children ?? []).filter((link) =>
+    link.label === "Mappa della politica",
+  );
+  assert.equal(mapLinks.length, 1);
+  assert.equal(mapLinks[0]?.href, PUBLIC_POLITICI_URL);
+  assert.match(navigationSource, new RegExp(PUBLIC_POLITICI_URL.replaceAll(".", "\\.")));
+});

@@ -108,11 +108,11 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(globals, /\.footer-disclaimer \{/);
   assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
   assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
-  assert.match(site, /https:\/\/www\.threads\.com\/@dovevannoinostrisoldi/);
-  assert.match(site, /https:\/\/www\.facebook\.com\/profile\.php\?id=61593922084084/);
-  assert.match(site, /https:\/\/www\.instagram\.com\/dovevannoinostrisoldi\//);
-  assert.match(site, /https:\/\/www\.tiktok\.com\/@dvn_soldi/);
-  assert.match(site, /https:\/\/x\.com\/DVNSoldi/);
+  assert.ok(site.includes("https://www.threads.com/@dovevannoinostrisoldi"));
+  assert.ok(site.includes("https://www.facebook.com/profile.php?id=61593922084084"));
+  assert.ok(site.includes("https://www.instagram.com/dovevannoinostrisoldi/"));
+  assert.ok(site.includes("https://www.tiktok.com/@dvn_soldi"));
+  assert.ok(site.includes("https://x.com/DVNSoldi"));
   assert.match(footer, /SOCIAL_LINKS/);
   assert.match(footer, /footer-social/);
   assert.match(footer, /Canali/);
@@ -228,13 +228,16 @@ test("studies and their alias select a single dedicated primary section", () => 
   }
 });
 
-test("mappa della politica nav points at the public politici host", async () => {
+test("mappa della politica nav keeps same-origin /politici; homepage uses the subdomain", async () => {
   const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
+  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
   const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
   const mapLinks = flattenNavLinks(institutions?.children ?? []).filter((link) =>
     link.label === "Mappa della politica",
   );
   assert.equal(mapLinks.length, 1);
-  assert.equal(mapLinks[0]?.href, PUBLIC_POLITICI_URL);
-  assert.ok(navigationSource.includes(PUBLIC_POLITICI_URL));
+  assert.equal(mapLinks[0]?.href, "/politici");
+  assert.match(navigationSource, /href: "\/politici", label: "Mappa della politica"/);
+  assert.ok(home.includes("PUBLIC_POLITICI_URL"));
+  assert.equal(PUBLIC_POLITICI_URL, "https://politici.dovevannoinostrisoldi.com");
 });

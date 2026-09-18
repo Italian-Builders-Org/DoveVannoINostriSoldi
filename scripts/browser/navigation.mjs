@@ -20,6 +20,10 @@ const linkResults = [];
 // Give serialization time to complete; all other destinations retain 30 seconds.
 const historyDestinations = new Set(['/spese/sanita/storico', '/stato/legislature']);
 for (const href of destinations) {
+  if (/^https?:\/\//i.test(href)) {
+    // External menu targets (other hosts) are not served by this Next process.
+    continue;
+  }
   try {
     const response = await fetch(new URL(href, baseUrl), {
       signal: AbortSignal.timeout(historyDestinations.has(href) ? 60_000 : 30_000),

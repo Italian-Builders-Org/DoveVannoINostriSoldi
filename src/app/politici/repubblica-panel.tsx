@@ -941,7 +941,7 @@ function ActRow({ act }: { act: RepublicActSummary }) {
         <span key={vote.id} className={styles.actMeta}>
           Votazione finale del {longDate(vote.date)}: {vote.approved ? "approvata" : "non approvata"}
           {vote.confidenceVote ? ", con questione di fiducia" : ""}
-          {" — posizione registrata: "}
+          {": posizione registrata: "}
           <strong>{OWN_VOTE_LABELS[vote.ownVote]}</strong>
         </span>
       ))}
@@ -1061,7 +1061,7 @@ function LegislativeActsSection({
         <p className={styles.cardNote}>
           Fonte:{" "}
           <a href={source.sourceUrl} rel="noreferrer">
-            Camera dei deputati — Open Data (dati.camera.it)
+            Camera dei deputati, Open Data (dati.camera.it)
           </a>
           , {source.licenseLabel}. Periodo: {source.periodLabel}.
         </p>

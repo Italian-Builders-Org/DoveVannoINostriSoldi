@@ -107,12 +107,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /possibili errori/);
   assert.match(globals, /\.footer-disclaimer \{/);
   assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
-  assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
-  assert.ok(site.includes("https://www.threads.com/@dovevannoinostrisoldi"));
-  assert.ok(site.includes("https://www.facebook.com/profile.php?id=61593922084084"));
-  assert.ok(site.includes("https://www.instagram.com/dovevannoinostrisoldi/"));
-  assert.ok(site.includes("https://www.tiktok.com/@dvn_soldi"));
-  assert.ok(site.includes("https://x.com/DVNSoldi"));
+  assert.match(site, /BUY_ME_A_COFFEE_URL = /);
   assert.match(footer, /SOCIAL_LINKS/);
   assert.match(footer, /footer-social/);
   assert.match(footer, /Canali/);
@@ -123,6 +118,21 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(globals, /\.footer-backer \{/);
   assert.doesNotMatch(footer, /cdnjs\.buymeacoffee\.com/);
   assert.match(navigationSource, /href: "\/supporter", label: "Chi ci sostiene"/);
+});
+
+test("site.ts exports the expected social and coffee URLs", async () => {
+  const { BUY_ME_A_COFFEE_URL, SOCIAL_LINKS } = await import("../src/lib/site.ts");
+  assert.equal(BUY_ME_A_COFFEE_URL, "https://www.buymeacoffee.com/dovevannoinostrisoldi");
+  assert.deepEqual(
+    SOCIAL_LINKS.map((link) => [link.id, link.href]),
+    [
+      ["threads", "https://www.threads.com/@dovevannoinostrisoldi"],
+      ["facebook", "https://www.facebook.com/profile.php?id=61593922084084"],
+      ["instagram", "https://www.instagram.com/dovevannoinostrisoldi/"],
+      ["tiktok", "https://www.tiktok.com/@dvn_soldi"],
+      ["x", "https://x.com/DVNSoldi"],
+    ],
+  );
 });
 
 test("Google Analytics loads only on the public site hostname", async () => {

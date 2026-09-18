@@ -1,0 +1,54 @@
+name: Politici isolated workspace
+
+on:
+  push:
+    branches: [feat/politici-parliament-explorer]
+    paths: [.github/workflows/politici-workspace.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  workspace:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Package public source and installed tooling for offline UI verification
+        run: |
+          mkdir -p /tmp/politici-workspace
+          python3 - <<'PY'
+          import pathlib, subprocess, tarfile
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0')
+          with tarfile.open('/tmp/politici-workspace/source.tar.gz', 'w:gz') as archive:
+              for name in paths:
+                  if not name:
+                      continue
+                  path = pathlib.Path(name)
+                  if not path.is_file() or path.stat().st_size > 12_000_000:
+                      continue
+                  if name.startswith(('data/', '.audit/')):
+                      continue
+                  if name.startswith('src/data/generated/') and not any(word in name.lower() for word in ('politic', 'repubblic', 'parlament', 'camera', 'senato', 'europe')):
+                      continue
+                  archive.add(path, arcname=name, recursive=False)
+          pathlib.Path('/tmp/politici-workspace/revision.txt').write_text(subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode())
+          pathlib.Path('/tmp/politici-workspace/tracked-paths.txt').write_text('\n'.join(paths))
+          PY
+          tar -czf /tmp/politici-workspace/tooling.tar.gz node_modules
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: politici-offline-workspace
+          path: /tmp/politici-workspace/
+          retention-days: 2
+          if-no-files-found: error

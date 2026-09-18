@@ -1,13 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import type {
   RepublicLegislativeSource,
   RepublicMap,
   RepublicMapPerson,
   RepublicProfile,
 } from "@/lib/politici-repubblica";
+import {
+  clampRailWidth,
+  maxRailWidth,
+  parseStoredRailWidth,
+  RAIL_WIDTH_DEFAULT,
+  RAIL_WIDTH_MIN,
+  RAIL_WIDTH_STORAGE_KEY,
+} from "@/lib/politici-rail-width";
 import {
   bridge,
   buildChamberScene,
@@ -234,6 +252,10 @@ export function RepubblicaGraph({
   const [profiles, setProfiles] = useState<Record<string, RepublicProfile> | null>(null);
   const [legislativeSource, setLegislativeSource] = useState<RepublicLegislativeSource | null>(null);
   const [profilesFailed, setProfilesFailed] = useState(false);
+  const [railWidth, setRailWidth] = useState(RAIL_WIDTH_DEFAULT);
+  const [railMax, setRailMax] = useState(640);
+  const [railResizing, setRailResizing] = useState(false);
+  const railDragRef = useRef<{ pointerId: number; startX: number; startWidth: number } | null>(null);
   const [query, setQuery] = useState("");
   const [familyFilter, setFamilyFilter] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("tutti");
@@ -297,6 +319,18 @@ export function RepubblicaGraph({
       if (window.cancelIdleCallback && typeof idle === "number") window.cancelIdleCallback(idle);
       else window.clearTimeout(idle as number);
     };
+  }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setRailMax(maxRailWidth(window.innerWidth));
+      const stored = parseStoredRailWidth(
+        window.localStorage.getItem(RAIL_WIDTH_STORAGE_KEY),
+        window.innerWidth,
+      );
+      if (stored !== null) setRailWidth(stored);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -685,11 +719,64 @@ export function RepubblicaGraph({
       : null,
   });
 
+  const persistRailWidth = useCallback((width: number) => {
+    try {
+      window.localStorage.setItem(RAIL_WIDTH_STORAGE_KEY, String(width));
+    } catch {
+      // storage unavailable: the rail stays resizable for the session only
+    }
+  }, []);
+
+  const onRailPointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    railDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startWidth: railWidth,
+    };
+    setRailResizing(true);
+  }, [railWidth]);
+
+  const onRailPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = railDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    setRailWidth(clampRailWidth(drag.startWidth + event.clientX - drag.startX, window.innerWidth));
+  }, []);
+
+  const onRailPointerEnd = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = railDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    railDragRef.current = null;
+    setRailResizing(false);
+    persistRailWidth(clampRailWidth(drag.startWidth + event.clientX - drag.startX, window.innerWidth));
+  }, [persistRailWidth]);
+
+  const onRailKeyDown = useCallback((event: ReactKeyboardEvent<HTMLDivElement>) => {
+    let next: number | null = null;
+    if (event.key === "ArrowLeft") next = railWidth - 16;
+    else if (event.key === "ArrowRight") next = railWidth + 16;
+    else if (event.key === "Home") next = RAIL_WIDTH_MIN;
+    else if (event.key === "End") next = maxRailWidth(window.innerWidth);
+    if (next === null) return;
+    event.preventDefault();
+    const clamped = clampRailWidth(next, window.innerWidth);
+    setRailWidth(clamped);
+    persistRailWidth(clamped);
+  }, [persistRailWidth, railWidth]);
+
+  const onRailDoubleClick = useCallback(() => {
+    setRailWidth(RAIL_WIDTH_DEFAULT);
+    persistRailWidth(RAIL_WIDTH_DEFAULT);
+  }, [persistRailWidth]);
+
   const mobileHub = layoutReady && overviewLayout === "stacked" && scene === "overview" && mode === "mappa";
 
   return (
     <div
       className={styles.explorer}
+      style={{ "--rail-width": `${railWidth}px` } as CSSProperties}
+      data-resizing={railResizing ? "true" : undefined}
       data-mobile-hub={mobileHub ? "true" : "false"}
       data-filters-open={filtersOpen ? "true" : "false"}
       data-mode={mode}
@@ -909,6 +996,24 @@ export function RepubblicaGraph({
           }
         />
       </aside>
+
+      <div
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Ridimensiona il pannello"
+        aria-valuemin={RAIL_WIDTH_MIN}
+        aria-valuemax={railMax}
+        aria-valuenow={railWidth}
+        aria-valuetext={`${railWidth} pixel`}
+        tabIndex={0}
+        className={styles.railResizer}
+        onPointerDown={onRailPointerDown}
+        onPointerMove={onRailPointerMove}
+        onPointerUp={onRailPointerEnd}
+        onPointerCancel={onRailPointerEnd}
+        onKeyDown={onRailKeyDown}
+        onDoubleClick={onRailDoubleClick}
+      />
 
       <div className={styles.stageRow}>
         <div className={mode === "mappa" ? styles.stageColumn : styles.stageColumnHidden}>

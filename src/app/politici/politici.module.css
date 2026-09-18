@@ -136,8 +136,9 @@
 }
 
 .explorer {
+  --rail-width: 320px;
   display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, var(--rail-width)) minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
     "top top"
@@ -166,6 +167,41 @@
   overscroll-behavior: contain;
   border-right: 1px solid color-mix(in srgb, var(--graph-institution) 14%, transparent);
   background: color-mix(in srgb, var(--graph-canvas-inset) 94%, transparent);
+}
+
+.railResizer {
+  grid-area: side;
+  justify-self: end;
+  display: flex;
+  justify-content: center;
+  width: 10px;
+  margin-right: -5px;
+  cursor: col-resize;
+  z-index: 5;
+  touch-action: none;
+}
+
+.railResizer::after {
+  content: "";
+  width: 2px;
+  background: color-mix(in srgb, var(--graph-institution) 18%, transparent);
+}
+
+.railResizer:hover::after,
+.railResizer:focus-visible::after,
+.explorer[data-resizing="true"] .railResizer::after {
+  width: 3px;
+  background: color-mix(in srgb, var(--graph-institution) 55%, transparent);
+}
+
+.railResizer:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--graph-institution) 65%, transparent);
+  outline-offset: -2px;
+}
+
+.explorer[data-resizing="true"] * {
+  user-select: none;
+  transition: none;
 }
 
 /* — toolbar — */
@@ -2865,6 +2901,10 @@
     min-height: 0;
     max-height: none;
     overflow: visible;
+  }
+
+  .railResizer {
+    display: none;
   }
 
   .stageRow {

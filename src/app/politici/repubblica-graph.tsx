@@ -43,7 +43,12 @@ import {
   type Wedge,
 } from "./graph-geometry";
 import styles from "./politici.module.css";
-import { RepubblicaPanel, type NewsConnection, type NewsState } from "./repubblica-panel";
+import { RepubblicaPanel, type JudicialState, type NewsConnection, type NewsState } from "./repubblica-panel";
+
+type JudicialPayload = {
+  coverageNote: string;
+  byPerson: Record<string, import("@/lib/data/parlamento-giudiziario-contract").GiudiziarioCase[]>;
+};
 
 export type GraphSelection =
   | { kind: "overview" }
@@ -230,9 +235,12 @@ export function Portrait({
 export function RepubblicaGraph({
   map,
   initialSelection,
+  judicialPersonIds,
 }: {
   map: RepublicMap;
   initialSelection: GraphSelection;
+  /** People with at least one documented proceeding: marks the node, never ranks it. */
+  judicialPersonIds: readonly string[];
 }) {
   const peopleById = useMemo(
     () => new Map(map.people.map((person) => [person.id, person])),
@@ -264,6 +272,9 @@ export function RepubblicaGraph({
   const [view, setView] = useState({ scale: 1, x: 0, y: 0 });
   const [news, setNews] = useState<Record<string, NewsState>>({});
   const [newsTick, setNewsTick] = useState(0);
+  const [judicial, setJudicial] = useState<JudicialPayload | null>(null);
+  const [judicialFailed, setJudicialFailed] = useState(false);
+  const judicialIds = useMemo(() => new Set(judicialPersonIds), [judicialPersonIds]);
 
   const frameRef = useRef<HTMLDivElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
@@ -283,6 +294,20 @@ export function RepubblicaGraph({
     scene === "camera" ? cameraScene : scene === "senato" ? senatoScene : null;
 
   const selectedPerson = selection.kind === "person" ? peopleById.get(selection.id) ?? null : null;
+
+  const currentJudicial: JudicialState | null = !selectedPerson
+    ? null
+    : judicialFailed
+      ? { status: "error" }
+      : judicial
+        ? {
+            status: "ready",
+            cases: judicial.byPerson[selectedPerson.id] ?? [],
+            coverageNote: judicial.coverageNote,
+          }
+        : judicialIds.has(selectedPerson.id)
+          ? { status: "loading" }
+          : null;
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -332,6 +357,29 @@ export function RepubblicaGraph({
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
+
+  useEffect(() => {
+    if (judicialPersonIds.length === 0) return;
+    let cancelled = false;
+    const load = () => {
+      fetch("/api/politici/giudiziario", { headers: { Accept: "application/json" } })
+        .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
+        .then((payload: JudicialPayload) => {
+          if (cancelled) return;
+          if (!payload.byPerson) throw new Error("payload inatteso");
+          setJudicial(payload);
+        })
+        .catch(() => {
+          if (!cancelled) setJudicialFailed(true);
+        });
+    };
+    const idle = window.requestIdleCallback?.(load, { timeout: 1600 }) ?? window.setTimeout(load, 400);
+    return () => {
+      cancelled = true;
+      if (window.cancelIdleCallback && typeof idle === "number") window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle as number);
+    };
+  }, [judicialPersonIds.length]);
 
   useEffect(() => {
     const personId = selectedPerson?.id;
@@ -961,6 +1009,7 @@ export function RepubblicaGraph({
           legislativeSource={legislativeSource}
           profilesFailed={profilesFailed}
           news={currentNews}
+          judicial={currentJudicial}
           onSelect={(next) => {
             if (next.kind === "person") {
               focusPerson(next.id);
@@ -1117,6 +1166,7 @@ export function RepubblicaGraph({
                       connections={connections}
                       connectionById={connectionById}
                       selectedPerson={selectedPerson}
+                      judicialIds={judicialIds}
                     />
                   ) : null}
                   </div>
@@ -1176,6 +1226,7 @@ function RelationLegend({ scene, hasSelection }: { scene: Scene; hasSelection: b
         <>
           <li><span className={styles.relationSample} data-kind="family" /> Stesso gruppo nell’altro ramo</li>
           <li><span className={styles.relationSample} data-kind="news" /> Co-citazioni nelle notizie{hasSelection ? "" : " (seleziona una persona)"}</li>
+          <li><span className={styles.judicialSample} /> Ha procedimenti giudiziari documentati: apri la scheda per stato e fonti. Il segno indica dove guardare, non una colpevolezza</li>
         </>
       )}
     </ul>
@@ -1614,6 +1665,7 @@ function ChamberSceneView({
   connections,
   connectionById,
   selectedPerson,
+  judicialIds,
 }: {
   map: RepublicMap;
   chamber: ChamberScene;
@@ -1626,6 +1678,8 @@ function ChamberSceneView({
   connections: NewsConnection[];
   connectionById: Map<string, NewsConnection>;
   selectedPerson: RepublicMapPerson | null;
+  /** People with a documented proceeding: the marker states presence, not gravity. */
+  judicialIds: ReadonlySet<string>;
 }) {
   const institution = institutionById.get(chamber.chamberId)!;
   const selectedSeat: Seat | null = selectedPerson
@@ -1723,6 +1777,7 @@ function ChamberSceneView({
                 data-government={person.government ? "true" : "false"}
                 data-selected={selection.kind === "person" && selection.id === person.id ? "true" : "false"}
                 data-connected={connectionById.has(person.id) ? "true" : "false"}
+                data-giudiziario={judicialIds.has(person.id) ? "true" : "false"}
               >
                 <title>{`${person.name} · ${person.roleLabel}${group ? ` (${group.shortLabel})` : ""}`}</title>
               </circle>

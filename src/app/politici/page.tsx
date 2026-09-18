@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { getParlamentoGiudiziario, graphPeopleWithDocumentedCases } from "@/lib/parlamento-giudiziario";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import { RepubblicaGraph, type GraphSelection } from "./repubblica-graph";
@@ -19,6 +20,8 @@ type PoliticiPageProps = {
 export default async function PoliticiPage({ searchParams }: PoliticiPageProps) {
   const graph = getRepubblicaGraph();
   const map = getRepubblicaMap();
+  const judicial = getParlamentoGiudiziario();
+  const judicialPersonIds = graphPeopleWithDocumentedCases();
   const params = await searchParams;
 
   const requestedPerson = params.person ?? (params.deputy ? `dep-${params.deputy}` : undefined);
@@ -44,7 +47,7 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
           <ThemeToggle />
         </div>
       </header>
-      <RepubblicaGraph map={map} initialSelection={initialSelection} />
+      <RepubblicaGraph map={map} initialSelection={initialSelection} judicialPersonIds={judicialPersonIds} />
       <details className={styles.immersiveDetails}>
         <summary>Fonti e limiti · {graph.legislature.label}</summary>
         <ul>
@@ -57,6 +60,11 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
           {graph.caveats.slice(0, 3).map((caveat) => (
             <li key={caveat}>{caveat}</li>
           ))}
+          <li>
+            Procedimenti giudiziari: raccolta curata su {judicial.coverage.membersExamined} parlamentari, verificata al{" "}
+            {judicial.coverage.checkedAt}. Ogni caso ha un atto pubblicato dell&apos;autorità competente oppure almeno due
+            editori indipendenti. {judicial.caveats[0]} {judicial.caveats[2]}
+          </li>
         </ul>
         <p>
           <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>

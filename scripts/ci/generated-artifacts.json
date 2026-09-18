@@ -2549,6 +2549,33 @@
       "sourceSpec": "scripts/etl/specs/camera-trattamento-economico.source.json",
       "refreshWorkflow": null,
       "trustModel": "Pagina ufficiale del trattamento economico dei deputati pinnata per byte/SHA-256. Pubblica solo aliquote istituzionali estratte da frasi letterali (indennità, diaria, rimborso): non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
+    },
+    {
+      "id": "parlamento-giudiziario-xix",
+      "owner": "DoveVannoINostriSoldi — procedimenti penali e contabili dei parlamentari della XIX legislatura, raccolta curata",
+      "files": [
+        "src/data/generated/parlamento-giudiziario-xix.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_parlamento_giudiziario_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/parlamento-giudiziario-contract.test.mjs",
+        "tests/parlamento-giudiziario-route.test.mjs",
+        "tests/parlamento-giudiziario-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/parlamento-giudiziario-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "La raccolta non e una tabella ufficiale: in Italia il casellario giudiziale non e pubblico e gran parte delle sentenze di merito non viene pubblicata. L'input verificato e committato in data/parlamento-giudiziario/casi-verificati.json e bloccato per byte e sha256 nello spec; --check lo riproietta e fallisce se lo snapshot committato diverge, se un caso non ha un atto ufficiale o due editori indipendenti, se l'etichetta official-finding compare senza condanna definitiva con atto, se un bucket non coincide con lo stato, se un importo non e in centesimi interi o se la copertura non torna. Il controllo offline dimostra la coerenza interna e il rispetto delle regole di evidenza, non la veridicita delle sentenze citate: quella resta affidata alle fonti elencate caso per caso."
     }
   ]
 }

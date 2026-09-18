@@ -2985,3 +2985,111 @@
 @media (prefers-reduced-motion: reduce) {
   .stage, .seat { transition: none; }
 }
+
+/* Procedimenti giudiziari documentati.
+   Il marcatore sul nodo segnala la presenza di un procedimento: stessa forma per
+   tutti, nessuna scala di gravita, perche un segnale non e una colpa. */
+.seat[data-giudiziario="true"] {
+  stroke: var(--graph-institution);
+  stroke-width: 1.4;
+  stroke-dasharray: 1.6 1.2;
+}
+
+.seat[data-giudiziario="true"][data-selected="true"] {
+  stroke: var(--color-raised);
+}
+
+.judicialSample {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px dashed var(--graph-institution);
+  vertical-align: middle;
+}
+
+.judicialBlock {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  padding: 0.85rem 0.9rem;
+  background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+  border-radius: 14px;
+}
+
+.judicialLead,
+.judicialFooter {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--color-neutral-600);
+}
+
+.judicialList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.judicialCase {
+  display: grid;
+  gap: 0.35rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+}
+
+.judicialCase:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.judicialTitle {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.judicialStatus {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--graph-institution) 12%, transparent);
+  color: var(--graph-institution);
+}
+
+.judicialStatus[data-outcome="condannato"] {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent-strong, var(--color-accent));
+}
+
+.judicialMeta,
+.judicialOffence,
+.judicialSources,
+.judicialNote {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--color-neutral-600);
+}
+
+.judicialSteps {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: var(--color-neutral-600);
+}
+
+.judicialSources a {
+  color: inherit;
+}

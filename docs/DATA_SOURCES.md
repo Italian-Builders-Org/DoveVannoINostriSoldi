@@ -1091,3 +1091,15 @@ spesa pubblica né confrontabile con le incidenze. Fonte
 `istat-poverta-soglia-assoluta`, API `/api/territori/poverta-soglia-assoluta`,
 MCP `istat_poverta_soglia_assoluta`, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md).
+
+### Procedimenti giudiziari dei parlamentari (XIX legislatura)
+
+Raccolta curata, non tabella ufficiale: 626 parlamentari esaminati, procedimenti
+penali e della Corte dei conti con stato del giudizio, gradi, pena dell'ultima
+sentenza e fonti caso per caso. Ogni caso richiede un atto pubblicato
+dell'autorità competente oppure due editori indipendenti. Non misura la
+colpevolezza né la totalità dei procedimenti, e l'assenza di casi non è un
+attestato. Chiavi di join `d<numero>_19` e `s<id>`, le stesse dei roster Camera e
+Senato. Snapshot `parlamento-giudiziario-xix`, API
+`/api/politici/giudiziario`, UI nella scheda personale di `/politici`, nessun
+dataset MCP. [Perimetro, regole di evidenza e limiti](PARLAMENTO_GIUDIZIARIO.md).

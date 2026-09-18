@@ -186,6 +186,7 @@ export const politiciRepubblicaSchema = z
         z.object({
           id: z.string().min(1),
           label: z.string().min(1),
+          shortLabel: z.string().min(1),
           memberCount: z.number().int().positive(),
           chamberIds: z.array(chamberIdSchema).min(1),
         }),

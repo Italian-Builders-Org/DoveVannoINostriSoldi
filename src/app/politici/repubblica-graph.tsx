@@ -793,10 +793,12 @@ export function RepubblicaGraph({
                 type="button"
                 className={styles.legendItem}
                 aria-pressed={familyFilter === family.id}
+                aria-label={`${family.label}, ${family.memberCount} person${family.memberCount === 1 ? "a" : "e"}`}
+                title={family.label}
                 onClick={() => setFamilyFilter(familyFilter === family.id ? null : family.id)}
               >
                 <span className={styles.legendSwatch} data-family={family.id} aria-hidden="true" />
-                <span className={styles.legendLabel}>{family.label}</span>
+                <span className={styles.legendLabel}>{family.shortLabel}</span>
                 <span className={styles.legendCount}>{family.memberCount}</span>
               </button>
             </li>

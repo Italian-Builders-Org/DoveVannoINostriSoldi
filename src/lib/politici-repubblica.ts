@@ -54,21 +54,21 @@ function require(condition: boolean, message: string): void {
 // Party families: the only bridge between the two chambers
 // --------------------------------------------------------------------------- //
 
-const PARTY_FAMILIES: Array<{ test: RegExp; id: string; label: string; badge: string }> = [
-  { test: /fratelli d['’]italia/iu, id: "fratelli-italia", label: "Fratelli d’Italia", badge: "FdI" },
-  { test: /partito democratico/iu, id: "partito-democratico", label: "Partito Democratico", badge: "PD" },
-  { test: /lega/iu, id: "lega", label: "Lega", badge: "Lega" },
-  { test: /forza italia/iu, id: "forza-italia", label: "Forza Italia", badge: "FI" },
-  { test: /movimento 5 stelle/iu, id: "movimento-5-stelle", label: "MoVimento 5 Stelle", badge: "M5S" },
-  { test: /alleanza verdi e sinistra/iu, id: "alleanza-verdi-sinistra", label: "Alleanza Verdi e Sinistra", badge: "AVS" },
-  { test: /italia viva/iu, id: "italia-viva", label: "Italia Viva — Casa Riformista", badge: "IV" },
-  { test: /azione/iu, id: "azione", label: "Azione — Popolari europeisti riformatori", badge: "Az" },
-  { test: /noi moderati|civici d['’]italia/iu, id: "noi-moderati", label: "Noi Moderati / Civici d’Italia", badge: "NM" },
-  { test: /autonomie/iu, id: "autonomie", label: "Per le Autonomie", badge: "Aut" },
-  { test: /^misto$/iu, id: "misto", label: "Misto", badge: "Misto" },
+const PARTY_FAMILIES: Array<{ test: RegExp; id: string; label: string; shortLabel: string; badge: string }> = [
+  { test: /fratelli d['’]italia/iu, id: "fratelli-italia", label: "Fratelli d’Italia", shortLabel: "Fratelli d’Italia", badge: "FdI" },
+  { test: /partito democratico/iu, id: "partito-democratico", label: "Partito Democratico", shortLabel: "PD", badge: "PD" },
+  { test: /lega/iu, id: "lega", label: "Lega", shortLabel: "Lega", badge: "Lega" },
+  { test: /forza italia/iu, id: "forza-italia", label: "Forza Italia", shortLabel: "Forza Italia", badge: "FI" },
+  { test: /movimento 5 stelle/iu, id: "movimento-5-stelle", label: "MoVimento 5 Stelle", shortLabel: "M5S", badge: "M5S" },
+  { test: /alleanza verdi e sinistra/iu, id: "alleanza-verdi-sinistra", label: "Alleanza Verdi e Sinistra", shortLabel: "AVS", badge: "AVS" },
+  { test: /italia viva/iu, id: "italia-viva", label: "Italia Viva — Casa Riformista", shortLabel: "Italia Viva", badge: "IV" },
+  { test: /azione/iu, id: "azione", label: "Azione — Popolari europeisti riformatori", shortLabel: "Azione", badge: "Az" },
+  { test: /noi moderati|civici d['’]italia/iu, id: "noi-moderati", label: "Noi Moderati / Civici d’Italia", shortLabel: "Noi Moderati", badge: "NM" },
+  { test: /autonomie/iu, id: "autonomie", label: "Per le Autonomie", shortLabel: "Autonomie", badge: "Aut" },
+  { test: /^misto$/iu, id: "misto", label: "Misto", shortLabel: "Misto", badge: "Misto" },
 ];
 
-function partyFamily(label: string): { id: string; label: string; badge: string } {
+function partyFamily(label: string): { id: string; label: string; shortLabel: string; badge: string } {
   const match = PARTY_FAMILIES.find(({ test }) => test.test(label));
   require(match !== undefined, `famiglia politica non classificata: ${label}`);
   return match!;
@@ -865,12 +865,16 @@ export function getRepubblicaGraph(): PoliticiRepubblicaGraph {
   }
 
   const partyFamilies = [...familyCounts.entries()]
-    .map(([id, entry]) => ({
-      id,
-      label: PARTY_FAMILIES.find((family) => family.id === id)!.label,
-      memberCount: entry.members,
-      chamberIds: [...entry.chambers].sort(),
-    }))
+    .map(([id, entry]) => {
+      const family = PARTY_FAMILIES.find((candidate) => candidate.id === id)!;
+      return {
+        id,
+        label: family.label,
+        shortLabel: family.shortLabel,
+        memberCount: entry.members,
+        chamberIds: [...entry.chambers].sort(),
+      };
+    })
     .sort((a, b) => b.memberCount - a.memberCount || a.label.localeCompare(b.label, "it"));
 
   const withoutPhoto = people.filter((person) => person.photoUrl === null);

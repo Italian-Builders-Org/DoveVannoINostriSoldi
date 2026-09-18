@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
 
 from politici_camera_xix_snapshot import OUTPUT, SnapshotError, check_committed, load_spec, validate_snapshot
 import json

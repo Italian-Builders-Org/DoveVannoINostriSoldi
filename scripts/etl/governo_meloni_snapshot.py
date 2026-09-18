@@ -670,13 +670,9 @@ def check_committed(spec: dict[str, Any]) -> None:
     appointments = int(coverage.get("appointments", 0))
     people = int(coverage.get("people", 0))
     departments = int(coverage.get("departments", 0))
-    people_with_official_page = int(coverage.get("peopleWithOfficialPage", 0))
-    people_with_photo = int(coverage.get("peopleWithPhoto", 0))
-    print(
-        f"OK governo-meloni: {appointments} incarichi, {people} persone, "
-        f"{departments} strutture, {people_with_official_page} schede ufficiali, "
-        f"{people_with_photo} ritratti"
-    )
+    # Coverage floors for schede/ritratti are checked above; avoid logging those
+    # counters (CodeQL treats the coverage object as potentially sensitive).
+    print(f"OK governo-meloni: {appointments} incarichi, {people} persone, {departments} strutture")
 
 
 def main() -> int:

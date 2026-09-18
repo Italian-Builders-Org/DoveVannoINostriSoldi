@@ -236,5 +236,5 @@ test("mappa della politica nav points at the public politici host", async () => 
   );
   assert.equal(mapLinks.length, 1);
   assert.equal(mapLinks[0]?.href, PUBLIC_POLITICI_URL);
-  assert.match(navigationSource, new RegExp(PUBLIC_POLITICI_URL.replaceAll(".", "\\.")));
+  assert.ok(navigationSource.includes(PUBLIC_POLITICI_URL));
 });

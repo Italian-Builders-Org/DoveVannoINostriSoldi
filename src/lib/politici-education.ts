@@ -71,7 +71,7 @@ const RULES: Array<{ area: Exclude<EducationArea, "undeclared">; id: string; pat
   {
     area: "legal",
     id: "legal-degree",
-    patterns: [/\b(giurisprudenz|avvocat|notar[iai]|magistrat|giurist)/i],
+    patterns: [/\b(giurisprudenz|avvocat|notar(?:io|ia|i)?|magistrat|giurist)/i],
   },
   {
     area: "economic",

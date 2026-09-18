@@ -16,7 +16,6 @@ import json
 import re
 import ssl
 import time
-import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request

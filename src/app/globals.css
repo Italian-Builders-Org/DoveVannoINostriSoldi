@@ -371,6 +371,7 @@ nav li a { text-decoration: none; }
 .mobile-navigation .sidebar-toolbar { padding-top: max(12px, env(safe-area-inset-top)); border-bottom: 1px solid var(--color-neutral-300); }
 /* Keep «Qualcosa non torna?» pinned: only the link list scrolls when nested menus grow. */
 .mobile-navigation .primary-nav { flex: 1; }
+body:has(.mobile-navigation:modal) { overflow: hidden; }
 html[data-immersive="politici"] .site-content {
   margin-left: 0;
   padding: 0;

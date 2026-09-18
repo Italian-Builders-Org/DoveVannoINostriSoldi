@@ -961,8 +961,10 @@
 .seat[data-government="true"] { stroke: var(--graph-institution); stroke-width: 1.1; }
 
 .canvas[data-focused="true"] .seat[data-lit="false"] {
-  fill: var(--graph-seat-empty);
-  opacity: 0.16;
+  fill: color-mix(in srgb, var(--family-color, var(--graph-seat-empty)) 42%, var(--graph-seat-dim));
+  stroke: color-mix(in srgb, var(--graph-institution) 22%, var(--graph-canvas));
+  stroke-width: 0.55;
+  opacity: 1;
 }
 
 .seat[data-connected="true"] { stroke: var(--color-accent); stroke-width: 1.4; }

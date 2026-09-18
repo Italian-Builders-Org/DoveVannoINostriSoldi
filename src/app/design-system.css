@@ -153,7 +153,8 @@
   --graph-institution-soft: #4a5f70;
   --graph-canvas: #eef2f5;
   --graph-canvas-inset: #e2e9ee;
-  --graph-seat-empty: #c3ced6;
+  --graph-seat-empty: #8a9aa8;
+  --graph-seat-dim: color-mix(in srgb, #4a5f70 34%, #eef2f5);
   --graph-link: color-mix(in srgb, #182b3a 26%, transparent);
   --graph-link-strong: color-mix(in srgb, #182b3a 62%, transparent);
   --graph-focus-halo: color-mix(in srgb, #b42332 22%, transparent);
@@ -260,6 +261,7 @@
   --graph-canvas: #121014;
   --graph-canvas-inset: #1a171c;
   --graph-seat-empty: #4a4444;
+  --graph-seat-dim: color-mix(in srgb, #a89f9f 28%, #121014);
   --graph-link: color-mix(in srgb, #f3eeee 22%, transparent);
   --graph-link-strong: color-mix(in srgb, #f3eeee 58%, transparent);
   --graph-focus-halo: color-mix(in srgb, #ff8897 26%, transparent);

@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import opencivitas_2017_snapshot as snapshot
 
-FC50_SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2018-source-sample.json").read_text())
+FC50_SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2018-source-sample.json").read_text(encoding="utf-8"))
 
 
 class FC40ReleaseTests(unittest.TestCase):
@@ -50,7 +50,7 @@ class FC40ReleaseTests(unittest.TestCase):
         for key in ("data", "entities", "indicators"):
             with self.assertRaisesRegex(snapshot.StructuralError, "byte/SHA-256"):
                 snapshot.verify_bytes(b"PK-invalid", key)
-        original = json.loads(snapshot.OUTPUT.read_text())
+        original = json.loads(snapshot.OUTPUT.read_text(encoding="utf-8"))
         snapshot.validate_snapshot(original)
         for change in ("amount", "period", "license", "hash", "coverage"):
             altered = copy.deepcopy(original)
@@ -65,7 +65,7 @@ class FC40ReleaseTests(unittest.TestCase):
                 snapshot.validate_snapshot(altered)
 
     def test_two_non_evaluable_municipalities_remain_source_coded(self):
-        committed = json.loads(snapshot.OUTPUT.read_text())
+        committed = json.loads(snapshot.OUTPUT.read_text(encoding="utf-8"))
         rows = [dict(zip(committed["municipalityColumns"], row)) for row in committed["municipalityRows"]]
         unavailable = [row for row in rows if row["servicesAssessmentReason"] is not None]
         self.assertEqual([row["istatCode"] for row in unavailable], ["001316", "079110"])

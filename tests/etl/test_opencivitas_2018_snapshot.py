@@ -7,7 +7,7 @@ from unittest.mock import patch
 import opencivitas_2018_snapshot as snapshot
 from opencivitas_common import normalize_municipality
 
-SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2018-source-sample.json").read_text())
+SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2018-source-sample.json").read_text(encoding="utf-8"))
 
 
 class FC50ReleaseTests(unittest.TestCase):
@@ -74,7 +74,7 @@ class FC50ReleaseTests(unittest.TestCase):
         for key in ("data", "entities", "indicators"):
             with self.assertRaisesRegex(snapshot.StructuralError, "byte/SHA-256"):
                 snapshot.verify_bytes(b"PK-invalid", key)
-        original = json.loads(snapshot.OUTPUT.read_text())
+        original = json.loads(snapshot.OUTPUT.read_text(encoding="utf-8"))
         snapshot.validate_snapshot(original)
         for change in ("amounts", "period", "license", "hash", "null", "coverage"):
             altered = copy.deepcopy(original)
@@ -93,7 +93,7 @@ class FC50ReleaseTests(unittest.TestCase):
             snapshot.validate_snapshot(original)
 
     def test_fc50_metadata_is_distinct_from_fc60_and_reasons_remain_text(self):
-        fc60 = json.loads(Path("tests/fixtures/opencivitas-2019-source-sample.json").read_text())
+        fc60 = json.loads(Path("tests/fixtures/opencivitas-2019-source-sample.json").read_text(encoding="utf-8"))
         self.assertEqual(len(SAMPLE["definitions"]), 25)
         self.assertEqual(len(fc60["definitions"]), 27)
         fc50_codes = {row["VAR_IND_COD"]: row for row in SAMPLE["definitions"]}

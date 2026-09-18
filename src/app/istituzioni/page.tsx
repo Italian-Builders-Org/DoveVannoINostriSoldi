@@ -5,7 +5,7 @@ import styles from "./istituzioni.module.css";
 export const metadata: Metadata = {
   title: "Istituzioni pubbliche",
   description:
-    "Percorsi separati per Parlamento, grafo politici, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
+    "Percorsi separati per Parlamento, mappa della politica, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
 };
 
 const dossiers = [
@@ -18,10 +18,10 @@ const dossiers = [
   },
   {
     href: "/politici",
-    title: "Grafo politici",
-    period: "Camera · XIX legislatura · open data ufficiali",
+    title: "Mappa della politica",
+    period: "XIX legislatura · open data ufficiali",
     description:
-      "Deputati e gruppi parlamentari collegati in un grafo consultabile, solo da dati.camera.it.",
+      "Presidenza della Repubblica, Governo, Camera e Senato in una sola mappa: ruoli, gruppi, ritratti ufficiali e notizie recenti.",
   },
   {
     href: "/palazzo-chigi",

@@ -16,7 +16,9 @@
     "ministers": 24,
     "viceMinisters": 7,
     "undersecretaries": 34,
-    "peopleWithOfficialPage": 65
+    "peopleWithOfficialPage": 65,
+    "peopleWithPhoto": 44,
+    "peopleWithProfessionNote": 36
   },
   "source": {
     "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
@@ -27,11 +29,15 @@
     "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
     "license": "CC BY 4.0 (dati.camera.it); riuso con citazione della fonte (governo.it)",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-    "acquiredAt": "2026-09-17T19:06:32+00:00",
+    "acquiredAt": "2026-09-17T19:20:03+00:00",
     "responses": {
       "members": {
         "bytes": 69836,
         "sha256": "5371203721327e1bb6a0b2b2c4b05f50f49d79e5aa4e9ea6b4a46fd1006849ba"
+      },
+      "identities": {
+        "bytes": 16073,
+        "sha256": "92098c9f5ccc533fb747d8f93423d4cec3658d748bed459e25a201e94dde6ae6"
       },
       "roster": {
         "bytes": 105504,
@@ -46,6 +52,8 @@
     "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
     "L'identità persona è quella pubblicata dalla Camera: consente di collegare gli incarichi ai mandati parlamentari senza confronti sui nomi.",
     "Le schede su governo.it non coprono tutti i componenti: quando mancano, il collegamento resta vuoto invece di essere dedotto.",
+    "Il ritratto proviene dall'archivio Camera della legislatura del mandato parlamentare più recente ed è verificato una richiesta alla volta: chi non è mai stato deputato resta senza fotografia ufficiale invece di riceverne una non verificabile.",
+    "La nota di studi e professione è il testo pubblicato dalla Camera sulla persona: la fonte lo tronca a ottanta caratteri e non viene integrato.",
     "Nessun importo in questo snapshot: per la spesa dei ministeri usare /governi e le viste RGS."
   ],
   "departments": [
@@ -1079,6 +1087,9 @@
         "mg302103_1_202_1_20221021"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302103.jpg",
+      "professionNote": "Diploma di liceo linguistico; Giornalista",
       "primaryRoleKind": "presidente-del-consiglio",
       "primaryRoleLabel": "Presidente del Consiglio dei ministri",
       "primaryDepartmentId": "og202_1",
@@ -1096,6 +1107,9 @@
         "mg302741_3_202_707_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
+      "cameraLegislature": 17,
+      "photoUrl": "https://documenti.camera.it/_dati/leg17/schededeputatinuovosito/fotoDefinitivo/big/d302741.jpg",
+      "professionNote": null,
       "primaryRoleKind": "vice-presidente",
       "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
       "primaryDepartmentId": "og202_1",
@@ -1113,6 +1127,9 @@
         "mg308838_3_202_504_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308838.jpg",
+      "professionNote": "Laurea in giurisprudenza; Giornalista professionista",
       "primaryRoleKind": "vice-presidente",
       "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
       "primaryDepartmentId": "og202_1",
@@ -1129,6 +1146,9 @@
         "mg302841_3_202_626_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d302841.jpg",
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_626",
@@ -1145,6 +1165,9 @@
         "mg309044_3_202_285_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_285",
@@ -1161,6 +1184,9 @@
         "mg300356_3_202_6_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d300356.jpg",
+      "professionNote": "Maturità classica; Imprenditore",
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_6",
@@ -1177,6 +1203,9 @@
         "mg50115_3_202_52_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d50115.jpg",
+      "professionNote": "Laurea in economia aziendale",
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_52",
@@ -1193,6 +1222,9 @@
         "mg309180_3_202_664_20240906"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_664",
@@ -1209,6 +1241,9 @@
         "mg307463_3_202_705_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307463.jpg",
+      "professionNote": "Laurea in giurisprudenza",
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_705",
@@ -1225,6 +1260,9 @@
         "mg308860_3_202_665_20260403"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308860.jpg",
+      "professionNote": "Laurea in giurisprudenza; Manager del settore artistico",
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_665",
@@ -1241,6 +1279,9 @@
         "mg308798_3_202_49_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308798.jpg",
+      "professionNote": "Laurea in giurisprudenza; Procuratore aggiunto della Repubblica",
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_49",
@@ -1257,6 +1298,9 @@
         "mg309042_3_202_15_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_15",
@@ -1273,6 +1317,9 @@
         "mg303089_3_202_706_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d303089.jpg",
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_706",
@@ -1289,6 +1336,9 @@
         "mg309048_3_202_264_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_264",
@@ -1305,6 +1355,9 @@
         "mg39200_3_202_704_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d39200.jpg",
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_704",
@@ -1321,6 +1374,9 @@
         "mg300613_3_202_708_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro",
       "primaryRoleLabel": "Ministro",
       "primaryDepartmentId": "og202_708",
@@ -1337,6 +1393,9 @@
         "mg309040_6_202_686_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_686",
@@ -1353,6 +1412,9 @@
         "mg200012_6_202_725_20221110"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_725",
@@ -1369,6 +1431,9 @@
         "mg32530_6_202_424_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "cameraLegislature": 13,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_424",
@@ -1385,6 +1450,9 @@
         "mg307774_6_202_524_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_524",
@@ -1401,6 +1469,9 @@
         "mg50204_6_202_745_20241203"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d50204.jpg",
+      "professionNote": "Diploma di liceo scientifico; Dirigente di azienda privata",
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_745",
@@ -1417,6 +1488,9 @@
         "mg307622_6_202_646_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307622.jpg",
+      "professionNote": "Laurea in sociologia; Assessore comunale",
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_646",
@@ -1433,6 +1507,9 @@
         "mg304860_6_202_724_20221110"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_724",
@@ -1449,6 +1526,9 @@
         "mg302748_6_202_687_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302748.jpg",
+      "professionNote": "Laurea in lettere, Dottorato di ricerca; Giornalista",
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_687",
@@ -1465,6 +1545,9 @@
         "mg307492_6_202_545_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307492.jpg",
+      "professionNote": "Laurea in giurisprudenza; Dirigente di azienda privata",
       "primaryRoleKind": "ministro-senza-portafoglio",
       "primaryRoleLabel": "Ministro senza portafoglio",
       "primaryDepartmentId": "og202_545",
@@ -1481,6 +1564,9 @@
         "mg307426_29_202_285_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307426.jpg",
+      "professionNote": "Laurea in psicologia, Specializzazione in psicoterapia sistemico-relazionale e familiare, Master interuniversitario di II livello in organizzazione e funzionamento della pubblica amministrazione; Psicologa, Psicoterapeuta",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_285",
@@ -1497,6 +1583,9 @@
         "mg300319_29_202_504_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300319.jpg",
+      "professionNote": "Laurea in giurisprudenza, Laurea in scienze politiche, Laurea in scienze della sicurezza interna ed esterna; Generale di Brigata dell'Arma dei Carabinieri in Ausiliaria",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_504",
@@ -1513,6 +1602,9 @@
         "mg307138_29_202_706_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307138.jpg",
+      "professionNote": null,
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_706",
@@ -1529,6 +1621,9 @@
         "mg300444_29_202_52_20221111"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300444.jpg",
+      "professionNote": "Laurea in giurisprudenza, Specializzazione in studi europei; Prorettore della scuola superiore dell'economia e delle finanze presso il ministero dell'economia e delle finanze",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_52",
@@ -1545,6 +1640,9 @@
         "mg304521_29_202_707_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d304521.jpg",
+      "professionNote": "Laurea in economia e commercio",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_707",
@@ -1561,6 +1659,9 @@
         "mg302886_29_202_49_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d302886.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato penalista, Docente universitario",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_49",
@@ -1577,6 +1678,9 @@
         "mg301559_29_202_704_20221215"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d301559.jpg",
+      "professionNote": "Laurea di interprete, Master in business administration; Funzionario del parlamento europeo",
       "primaryRoleKind": "vice-ministro",
       "primaryRoleLabel": "Vice ministro",
       "primaryDepartmentId": "og202_704",
@@ -1593,6 +1697,9 @@
         "mg308421_5_202_52_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308421.jpg",
+      "professionNote": "Laurea in economia e commercio; Dottore commercialista, docente in informatica",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_52",
@@ -1609,6 +1716,9 @@
         "mg300624_5_202_49_20260422"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_49",
@@ -1625,6 +1735,9 @@
         "mg307750_5_202_1_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1641,6 +1754,9 @@
         "mg302945_5_202_706_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d302945.jpg",
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_706",
@@ -1657,6 +1773,9 @@
         "mg300497_5_202_1_20260422"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300497.jpg",
+      "professionNote": "Imprenditore",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1673,6 +1792,9 @@
         "mg309060_5_202_704_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_704",
@@ -1689,6 +1811,9 @@
         "mg308966_5_202_704_20260422"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_704",
@@ -1705,6 +1830,9 @@
         "mg307758_5_202_664_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_664",
@@ -1721,6 +1849,9 @@
         "mg32500_5_202_1_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d32500.jpg",
+      "professionNote": "Diploma di istituto tecnico industriale; Amministratore di società e cooperative sociali",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1737,6 +1868,9 @@
         "mg300640_5_202_664_20260422"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d300640.jpg",
+      "professionNote": "Diploma di liceo scientifico; Giornalista professionista",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_664",
@@ -1753,6 +1887,9 @@
         "mg301573_5_202_524_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d301573.jpg",
+      "professionNote": "Laurea in lettere moderne",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_524",
@@ -1769,6 +1906,9 @@
         "mg307242_5_202_705_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307242.jpg",
+      "professionNote": "Diploma di istituto tecnico commerciale; Commerciante",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_705",
@@ -1785,6 +1925,9 @@
         "mg309340_5_202_504_20260422"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_504",
@@ -1801,6 +1944,9 @@
         "mg307468_5_202_285_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307468.jpg",
+      "professionNote": "Dirigente di associazione sindacale",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_285",
@@ -1817,6 +1963,9 @@
         "mg307802_5_202_1_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1833,6 +1982,9 @@
         "mg308876_5_202_707_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308876.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato. Senior Associate",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_707",
@@ -1849,6 +2001,9 @@
         "mg307567_5_202_15_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307567.jpg",
+      "professionNote": "Laurea in lettere moderne",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_15",
@@ -1865,6 +2020,9 @@
         "mg301457_5_202_708_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d301457.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_708",
@@ -1881,6 +2039,9 @@
         "mg308837_5_202_52_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308837.jpg",
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_52",
@@ -1897,6 +2058,9 @@
         "mg307332_5_202_264_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307332.jpg",
+      "professionNote": "Specializzato in farmacia ospedaliera; Farmacista",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_264",
@@ -1913,6 +2077,9 @@
         "mg307820_5_202_707_20250331"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_707",
@@ -1929,6 +2096,9 @@
         "mg307824_5_202_705_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_705",
@@ -1945,6 +2115,9 @@
         "mg50236_5_202_1_20221023"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d50236.jpg",
+      "professionNote": "Laurea in giurisprudenza; Magistrato di cassazione",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1961,6 +2134,9 @@
         "mg302762_5_202_15_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302762.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_15",
@@ -1977,6 +2153,9 @@
         "mg307668_5_202_1_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307668.jpg",
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -1993,6 +2172,9 @@
         "mg307855_5_202_49_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_49",
@@ -2009,6 +2191,9 @@
         "mg307643_5_202_6_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307643.jpg",
+      "professionNote": "Laurea in filosofia; imprenditore",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_6",
@@ -2025,6 +2210,9 @@
         "mg307452_5_202_15_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307452.jpg",
+      "professionNote": "Laurea in giurisprudenza; Funzionario amministrativo Corpo nazionale dei vigili del fuoco",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_15",
@@ -2041,6 +2229,9 @@
         "mg307879_5_202_6_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_6",
@@ -2057,6 +2248,9 @@
         "mg305684_5_202_52_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d305684.jpg",
+      "professionNote": "Diploma di istituto tecnico commerciale; Imprenditore del settore dei servizi",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_52",
@@ -2073,6 +2267,9 @@
         "mg309240_5_202_1_20250612"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -2089,6 +2286,9 @@
         "mg307139_5_202_1_20260213"
       ],
       "officialPage": null,
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307139.jpg",
+      "professionNote": "Laurea in scienze politiche e relazioni internazionali, 110L; Perito industriale",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_1",
@@ -2105,6 +2305,9 @@
         "mg307402_5_202_524_20221112"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307402.jpg",
+      "professionNote": "Laurea in scienze politiche; Master affari politici italiani",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_524",
@@ -2121,6 +2324,9 @@
         "mg307728_5_202_504_20221031"
       ],
       "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307728.jpg",
+      "professionNote": "Laurea specialistica in scienze politiche - relazioni internazionali; Consulente presso enti pubblici",
       "primaryRoleKind": "sottosegretario",
       "primaryRoleLabel": "Sottosegretario di Stato",
       "primaryDepartmentId": "og202_504",

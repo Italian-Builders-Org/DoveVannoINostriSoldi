@@ -6,13 +6,33 @@ const { GET } = await import("../src/app/politici/foto/[id]/route.ts");
 
 test("politici photo rejects unknown identities without fetching", async () => {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = () => { throw new Error("fetch should not run"); };
+  globalThis.fetch = () => {
+    throw new Error("fetch should not run");
+  };
   try {
     const response = await GET(
       new Request("http://localhost/politici/foto/unknown"),
       { params: Promise.resolve({ id: "unknown" }) },
     );
     assert.equal(response.status, 404);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("politici photo returns 404 for declared portrait gaps without fetching", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = () => {
+    throw new Error("fetch should not run");
+  };
+  try {
+    const response = await GET(
+      new Request("http://localhost/politici/foto/gov-309060"),
+      { params: Promise.resolve({ id: "gov-309060" }) },
+    );
+    assert.equal(response.status, 404);
+    const body = await response.json();
+    assert.match(body.error, /non disponibile/i);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -29,14 +49,14 @@ test("politici photo proxies only bounded official image responses", async () =>
   };
   try {
     const response = await GET(
-      new Request("http://localhost/politici/foto/senato%3As17542"),
-      { params: Promise.resolve({ id: "senato:s17542" }) },
+      new Request("http://localhost/politici/foto/sen-s32"),
+      { params: Promise.resolve({ id: "sen-s32" }) },
     );
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("content-type"), "image/jpeg");
     assert.match(response.headers.get("cache-control"), /s-maxage=86400/);
     assert.equal(new Uint8Array(await response.arrayBuffer()).length, 4);
-    assert.equal(requestedUrl, "https://www.senato.it/leg/19/Immagini/Senatori/00017542.jpg");
+    assert.equal(requestedUrl, "https://www.senato.it/leg/19/Immagini/Senatori/00000032.jpg");
   } finally {
     globalThis.fetch = originalFetch;
   }

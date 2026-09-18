@@ -79,6 +79,36 @@ WHERE {
 ORDER BY ?cognome ?nome ?ruolo
 """.strip()
 
+# Portraits and study/profession notes live on the `persona` resource shared with
+# the parliamentary mandates: the most recent Camera legislature tells us which
+# archive of official portraits contains the picture of that person.
+IDENTITIES_QUERY = """
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?persona ?descrizione (MAX(?legNum) AS ?ultimaLegislatura)
+WHERE {
+  ?governo a ocd:governo ;
+           ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19> ;
+           ocd:rif_membroGoverno ?membro .
+  ?membro ocd:rif_persona ?persona .
+  FILTER NOT EXISTS { ?membro ocd:endDate ?fine }
+  OPTIONAL { ?persona dc:description ?descrizione }
+  OPTIONAL {
+    ?persona ocd:rif_mandatoCamera ?mandato .
+    ?mandato ocd:rif_leg ?legislatura .
+    BIND(xsd:integer(REPLACE(STR(?legislatura), "^.*repubblica_", "")) AS ?legNum)
+  }
+}
+GROUP BY ?persona ?descrizione
+""".strip()
+
+PHOTO_TEMPLATE = "https://documenti.camera.it/_dati/leg{legislature}/schededeputatinuovosito/fotoDefinitivo/big/d{persona}.jpg"
+PHOTO_RE = re.compile(
+    r"^https://documenti\.camera\.it/_dati/leg(1[3-9])/schededeputatinuovosito/fotoDefinitivo/big/d\d+\.jpg$"
+)
+
 
 class SnapshotError(ValueError):
     """Official payload or committed artifact failed validation."""
@@ -224,6 +254,35 @@ def parse_roster_pages(html: str) -> dict[str, str]:
     return pages
 
 
+def parse_identities(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Map every persona to its most recent Camera legislature and study note."""
+    identities: dict[str, dict[str, Any]] = {}
+    for row in (payload.get("results") or {}).get("bindings") or []:
+        persona_uri = value_of(row, "persona")
+        require(persona_uri is not None, "identita senza persona")
+        assert persona_uri is not None
+        persona_id = parse_uri(persona_uri, PERSON_RE, "persona")
+        legislature = value_of(row, "ultimaLegislatura")
+        note = value_of(row, "descrizione")
+        entry = identities.setdefault(persona_id, {"legislature": None, "professionNote": None})
+        if legislature and legislature.isdigit():
+            number = int(legislature)
+            require(13 <= number <= 19, f"legislatura di mandato fuori intervallo: {number}")
+            entry["legislature"] = max(number, entry["legislature"] or 0)
+        if note:
+            entry["professionNote"] = re.sub(r"\s+", " ", note).strip().rstrip(".;")
+    return identities
+
+
+def official_photo_url(persona_id: str, legislature: int | None) -> str | None:
+    """Only publish a portrait we can actually see in the official archive."""
+    if legislature is None:
+        return None
+    url = PHOTO_TEMPLATE.format(legislature=legislature, persona=persona_id)
+    require(bool(PHOTO_RE.match(url)), f"URL ritratto fuori schema: {url}")
+    return url if photo_exists(url) else None
+
+
 def match_official_page(display_name: str, pages: dict[str, str]) -> str | None:
     """governo.it may publish a longer legal name: accept a unique prefix match."""
     slug = slugify(display_name)
@@ -238,7 +297,14 @@ def match_official_page(display_name: str, pages: dict[str, str]) -> str | None:
 # --------------------------------------------------------------------------- #
 
 
-def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster_raw: bytes) -> dict[str, Any]:
+def build_snapshot(
+    payload: dict[str, Any],
+    raw: bytes,
+    roster_html: str,
+    roster_raw: bytes,
+    identities_payload: dict[str, Any],
+    identities_raw: bytes,
+) -> dict[str, Any]:
     rows = (payload.get("results") or {}).get("bindings") or []
     require(len(rows) >= 50, f"incarichi di governo insufficienti: {len(rows)}")
 
@@ -251,6 +317,7 @@ def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster
     government_id = parse_uri(government_uri, GOVERNMENT_RE, "governo")
 
     pages = parse_roster_pages(roster_html)
+    identities = parse_identities(identities_payload)
 
     departments: dict[str, dict[str, Any]] = {}
     appointments: list[dict[str, Any]] = []
@@ -308,15 +375,21 @@ def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster
         }
         appointments.append(appointment)
 
-        person = people.setdefault(person_id, {
-            "personaId": person_id,
-            "uri": person_uri,
-            "firstName": title_case_name(first),
-            "lastName": title_case_name(last),
-            "displayName": display_name,
-            "appointmentIds": [],
-            "officialPage": match_official_page(display_name, pages),
-        })
+        if person_id not in people:
+            identity = identities.get(person_id) or {"legislature": None, "professionNote": None}
+            people[person_id] = {
+                "personaId": person_id,
+                "uri": person_uri,
+                "firstName": title_case_name(first),
+                "lastName": title_case_name(last),
+                "displayName": display_name,
+                "appointmentIds": [],
+                "officialPage": match_official_page(display_name, pages),
+                "cameraLegislature": identity["legislature"],
+                "photoUrl": official_photo_url(person_id, identity["legislature"]),
+                "professionNote": identity["professionNote"],
+            }
+        person = people[person_id]
         person["appointmentIds"].append(appointment_id)
 
     appointments.sort(key=lambda item: (ROLE_RANK[item["roleKind"]], item["personName"], item["id"]))
@@ -357,6 +430,8 @@ def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster
             "viceMinisters": role_counts["vice-ministro"],
             "undersecretaries": role_counts["sottosegretario"],
             "peopleWithOfficialPage": sum(1 for item in people.values() if item["officialPage"]),
+            "peopleWithPhoto": sum(1 for item in people.values() if item["photoUrl"]),
+            "peopleWithProfessionNote": sum(1 for item in people.values() if item["professionNote"]),
         },
         "source": {
             "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
@@ -370,6 +445,7 @@ def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster
             "acquiredAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             "responses": {
                 "members": {"bytes": len(raw), "sha256": sha256_bytes(raw)},
+                "identities": {"bytes": len(identities_raw), "sha256": sha256_bytes(identities_raw)},
                 "roster": {"bytes": len(roster_raw), "sha256": sha256_bytes(roster_raw)},
             },
             "cadence": "continuo / aggiornamento RDF Camera a ogni decreto di nomina",
@@ -380,6 +456,8 @@ def build_snapshot(payload: dict[str, Any], raw: bytes, roster_html: str, roster
             "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
             "L'identità persona è quella pubblicata dalla Camera: consente di collegare gli incarichi ai mandati parlamentari senza confronti sui nomi.",
             "Le schede su governo.it non coprono tutti i componenti: quando mancano, il collegamento resta vuoto invece di essere dedotto.",
+            "Il ritratto proviene dall'archivio Camera della legislatura del mandato parlamentare più recente ed è verificato una richiesta alla volta: chi non è mai stato deputato resta senza fotografia ufficiale invece di riceverne una non verificabile.",
+            "La nota di studi e professione è il testo pubblicato dalla Camera sulla persona: la fonte lo tronca a ottanta caratteri e non viene integrato.",
             "Nessun importo in questo snapshot: per la spesa dei ministeri usare /governi e le viste RGS.",
         ],
         "departments": sorted(departments.values(), key=lambda item: (item["kind"] != "presidenza", item["displayLabel"])),
@@ -422,7 +500,7 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
     for key, expected in (("endpointUrl", ENDPOINT), ("landingUrl", LANDING), ("rosterUrl", ROSTER_URL), ("licenseUrl", LICENSE_URL)):
         require(source.get(key) == expected, f"source.{key} diverge")
     responses = source.get("responses") or {}
-    require(set(responses) == {"members", "roster"}, "response set inatteso")
+    require(set(responses) == {"members", "identities", "roster"}, "response set inatteso")
     for key, response in responses.items():
         require(isinstance(response.get("bytes"), int) and response["bytes"] > 0, f"{key}.bytes")
         require(bool(SHA_RE.match(str(response.get("sha256") or ""))), f"{key}.sha256")
@@ -474,6 +552,17 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         page = person.get("officialPage")
         if page is not None:
             require(bool(MEMBER_URL_RE.match(str(page))), f"{pid}: scheda governo.it fuori schema")
+        photo = person.get("photoUrl")
+        legislature = person.get("cameraLegislature")
+        if legislature is not None:
+            require(isinstance(legislature, int) and 13 <= legislature <= 19, f"{pid}: legislatura mandato")
+        if photo is not None:
+            require(bool(PHOTO_RE.match(str(photo))), f"{pid}: ritratto fuori schema")
+            require(str(photo).endswith(f"d{pid}.jpg"), f"{pid}: ritratto di un'altra persona")
+            require(f"/leg{legislature}/" in str(photo), f"{pid}: ritratto e legislatura incoerenti")
+        note = person.get("professionNote")
+        if note is not None:
+            require(isinstance(note, str) and note.strip() == note and note, f"{pid}: nota professionale")
 
     coverage = payload.get("coverage") or {}
     require(coverage.get("appointments") == len(appointments), "coverage.appointments")
@@ -488,6 +577,14 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         "coverage.peopleWithOfficialPage non riconcilia",
     )
     require(coverage.get("peopleWithOfficialPage", 0) >= int(len(people) * 0.8), "schede governo.it sotto soglia")
+    require(
+        coverage.get("peopleWithPhoto") == sum(1 for item in people if item.get("photoUrl")),
+        "coverage.peopleWithPhoto non riconcilia",
+    )
+    require(
+        coverage.get("peopleWithProfessionNote") == sum(1 for item in people if item.get("professionNote")),
+        "coverage.peopleWithProfessionNote non riconcilia",
+    )
 
     caveats = payload.get("caveats") or []
     require(isinstance(caveats, list) and len(caveats) >= 4, "caveats assenti")
@@ -522,6 +619,28 @@ def fetch_sparql(query: str) -> tuple[dict[str, Any], bytes]:
     raise SnapshotError(f"SPARQL Camera non raggiungibile: {last_error}")
 
 
+def photo_exists(url: str) -> bool:
+    """A HEAD on the portrait archive: absent pictures answer 404, never a stub."""
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": USER_AGENT, "Accept": "image/jpeg"},
+        method="HEAD",
+    )
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, context=ssl.create_default_context(), timeout=30) as response:
+                content_type = (response.headers.get("Content-Type") or "").split(";")[0].strip()
+                length = int(response.headers.get("Content-Length") or 0)
+                return content_type == "image/jpeg" and length > 1000
+        except urllib.error.HTTPError as error:
+            if error.code == 404:
+                return False
+            time.sleep(2 * (attempt + 1))
+        except urllib.error.URLError:
+            time.sleep(2 * (attempt + 1))
+    raise SnapshotError(f"archivio ritratti Camera non raggiungibile: {url}")
+
+
 def fetch_roster() -> tuple[str, bytes]:
     request = urllib.request.Request(
         ROSTER_URL,
@@ -551,7 +670,8 @@ def check_committed(spec: dict[str, Any]) -> None:
         require(coverage.get(key, 0) >= int(minimum), f"coverage {key} sotto floor")
     print(
         f"OK governo-meloni: {coverage['appointments']} incarichi, {coverage['people']} persone, "
-        f"{coverage['departments']} strutture, {coverage['peopleWithOfficialPage']} schede ufficiali"
+        f"{coverage['departments']} strutture, {coverage['peopleWithOfficialPage']} schede ufficiali, "
+        f"{coverage['peopleWithPhoto']} ritratti"
     )
 
 
@@ -569,8 +689,9 @@ def main() -> int:
         return 0
 
     payload, raw = fetch_sparql(MEMBERS_QUERY)
+    identities_payload, identities_raw = fetch_sparql(IDENTITIES_QUERY)
     roster_html, roster_raw = fetch_roster()
-    snapshot = build_snapshot(payload, raw, roster_html, roster_raw)
+    snapshot = build_snapshot(payload, raw, roster_html, roster_raw, identities_payload, identities_raw)
     OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['appointments']} appointments)")
     return 0

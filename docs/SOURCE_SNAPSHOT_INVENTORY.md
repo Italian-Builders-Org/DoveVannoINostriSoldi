@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 88
+- Artefatti nel registro: 93
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 71 (PR umana dopo revisione)
+- manuale: 76 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -129,8 +129,13 @@ La revisione e il merge restano umani.
 | `eurostat-taxag-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_taxag_snapshot.py --check` |
 | `eurostat-sha-health-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_sha_health_snapshot.py --check` |
 | `aifa-spesa-consumi-2022-2025` | 2022-2025 | 2026-09-16 | https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti | nessuno | nessuno | manuale | `python3 scripts/etl/aifa_spesa_consumi_snapshot.py --check` |
-| `politici-camera-xix` | non dichiarato nello snapshot | 2026-09-17T16:17:12+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/politici_camera_xix_snapshot.py --check` |
-| `politici-senato-xix` | non dichiarato nello snapshot | 2026-09-17T16:19:00+00:00 | https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11 | nessuno | nessuno | manuale | `python3 scripts/etl/politici_senato_xix_snapshot.py --check` |
+| `politici-camera-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:04+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/politici_camera_xix_snapshot.py --check` |
+| `politici-senato-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:38+00:00 | https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11 | nessuno | nessuno | manuale | `python3 scripts/etl/politici_senato_xix_snapshot.py --check` |
+| `governo-meloni` | non dichiarato nello snapshot | 2026-09-17T19:20:03+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/governo_meloni_snapshot.py --check` |
+| `presidente-repubblica` | non dichiarato nello snapshot | 2026-09-17T19:09:42+00:00 | https://www.quirinale.it/pagine/il-presidente | nessuno | nessuno | manuale | `python3 scripts/etl/presidente_repubblica_snapshot.py --check` |
+| `ritratti-liberi` | non dichiarato nello snapshot | 2026-09-17T20:12:24+00:00 | https://commons.wikimedia.org/ | nessuno | nessuno | manuale | `python3 scripts/etl/ritratti_liberi_snapshot.py --check` |
+| `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
+| `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 
 ## Prossimo passo
 

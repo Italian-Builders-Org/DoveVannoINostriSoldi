@@ -2351,7 +2351,8 @@
         "tests/politici-camera-contract.test.mjs",
         "tests/politici-news-route.test.mjs",
         "tests/politici-photo-route.test.mjs",
-        "tests/politici-ui.test.mjs"
+        "tests/politici-ui.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs"
       ],
       "generator": {
         "command": "python3 scripts/etl/politici_camera_xix_snapshot.py --write",
@@ -2376,7 +2377,7 @@
         "tests/etl/test_politici_senato_xix_snapshot.py"
       ],
       "nodeTests": [
-        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
         "tests/politici-news-route.test.mjs",
         "tests/politici-photo-route.test.mjs",
         "tests/politici-ui.test.mjs"
@@ -2404,7 +2405,7 @@
         "tests/etl/test_governo_meloni_snapshot.py"
       ],
       "nodeTests": [
-        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
         "tests/politici-ui.test.mjs"
       ],
       "generator": {
@@ -2430,7 +2431,7 @@
         "tests/etl/test_presidente_repubblica_snapshot.py"
       ],
       "nodeTests": [
-        "tests/politici-parlamento-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
         "tests/politici-ui.test.mjs"
       ],
       "generator": {
@@ -2440,6 +2441,86 @@
       "sourceSpec": "scripts/etl/specs/presidente-repubblica.source.json",
       "refreshWorkflow": null,
       "trustModel": "Nodo di vertice con provenance mista dichiarata: nome, identificativo persona e ritratto arrivano dall'archivio ufficiale della Camera dei deputati via SPARQL, pinnato per byte/SHA-256, mentre la titolarità della carica è dichiarata nella spec perché quirinale.it risponde 403 a ogni richiesta programmatica, robots.txt incluso. Il validator impone che il divario resti dichiarato nel payload e che il nome della spec corrisponda all'identità ufficiale; ogni cambio di carica richiede una revisione manuale della spec."
+    },
+    {
+      "id": "ritratti-liberi",
+      "owner": "Ritratti a licenza libera dei membri del Governo mai eletti in Parlamento",
+      "files": [
+        "src/data/generated/ritratti-liberi.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/ritratti_liberi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_ritratti_liberi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/ritratti_liberi_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/ritratti-liberi.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Unica fonte non istituzionale della mappa e limitata alle immagini. Ogni ritratto parte da un identificativo Wikidata dichiarato nella spec e verificato sull'etichetta dell'elemento, quindi dal file collegato su Wikimedia Commons: l'import pubblica soltanto file con licenza libera riconosciuta, autore dichiarato, tipo immagine atteso e firma binaria coerente, e rifiuta la stessa immagine usata per due persone. Chi non ha un file libero resta elencato senza ritratto e nell'interfaccia mantiene il monogramma."
+    },
+    {
+      "id": "camera-partecipazione-voto",
+      "owner": "Camera dei deputati — partecipazione al voto (presenze per deputato)",
+      "files": [
+        "src/data/generated/camera-partecipazione-voto.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_partecipazione_voto_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-partecipazione-voto-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_partecipazione_voto_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-partecipazione-voto.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Una sola risposta HTML ufficiale pinnata (vista cumulativa partecipazione al voto XIX legislatura): tabella pubblica con voti, missioni, presenze e assenze per deputato. Il match al roster Camera avviene solo se univoco; le righe senza collegamento restano nello snapshot senza personaId. Il Senato non ha prodotto ufficiale equivalente e non viene ricostruito."
+    },
+    {
+      "id": "camera-trattamento-economico",
+      "owner": "Camera dei deputati — trattamento economico istituzionale",
+      "files": [
+        "src/data/generated/camera-trattamento-economico.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_trattamento_economico_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_trattamento_economico_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-trattamento-economico-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_trattamento_economico_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-trattamento-economico.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Pagina ufficiale del trattamento economico dei deputati pinnata per byte/SHA-256. Pubblica solo aliquote istituzionali estratte da frasi letterali (indennità, diaria, rimborso): non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
     }
   ]
 }

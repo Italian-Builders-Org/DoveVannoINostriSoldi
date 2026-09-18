@@ -371,7 +371,27 @@ nav li a { text-decoration: none; }
 .mobile-navigation .sidebar-toolbar { padding-top: max(12px, env(safe-area-inset-top)); border-bottom: 1px solid var(--color-neutral-300); }
 /* Keep «Qualcosa non torna?» pinned: only the link list scrolls when nested menus grow. */
 .mobile-navigation .primary-nav { flex: 1; }
-body:has(.mobile-navigation:modal) { overflow: hidden; }
+html[data-immersive="politici"] .site-content {
+  margin-left: 0;
+  padding: 0;
+}
+html[data-immersive="politici"] .desktop-sidebar,
+html[data-immersive="politici"] .mobile-menu-trigger,
+html[data-immersive="politici"] .header,
+html[data-immersive="politici"] .site-header,
+html[data-immersive="politici"] header.site-header {
+  display: none !important;
+}
+html[data-immersive="politici"] body {
+  background: var(--graph-canvas);
+  overflow: hidden;
+}
+html[data-immersive="politici"] #contenuto-principale {
+  min-height: 100dvh;
+  height: 100dvh;
+  padding: 0;
+  max-width: none;
+}
 
 @media (min-width: 1100px) {
   body { --sidebar-width: 232px; --sidebar-open-width: 232px; --sidebar-rail-width: 68px; --site-header-height: 64px; }

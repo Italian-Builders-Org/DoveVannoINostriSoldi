@@ -1,62 +1,65 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getPoliticiParlamentoSnapshot } from "@/lib/politici-parlamento";
-import { PoliticiGraphExplorer, type PoliticiSelection } from "./politici-graph";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
+import { RepubblicaGraph, type GraphSelection } from "./repubblica-graph";
+import styles from "./politici.module.css";
 
 export const metadata: Metadata = {
-  title: "Grafo politici",
+  title: "Mappa della politica italiana",
   description:
-    "Doppio emiciclo di Camera e Senato nella XIX legislatura, con gruppi, schede ufficiali e co-citazioni nelle notizie.",
+    "Presidenza della Repubblica, Governo, Camera e Senato della XIX legislatura in una sola mappa: 626 persone, ruoli istituzionali, gruppi parlamentari, ritratti ufficiali e notizie recenti.",
 };
 
 type PoliticiPageProps = {
-  searchParams: Promise<{ person?: string; deputy?: string; group?: string }>;
+  searchParams: Promise<{ person?: string; group?: string; istituzione?: string; deputy?: string }>;
 };
 
 export default async function PoliticiPage({ searchParams }: PoliticiPageProps) {
-  const snapshot = getPoliticiParlamentoSnapshot();
+  const graph = getRepubblicaGraph();
+  const map = getRepubblicaMap();
   const params = await searchParams;
-  const requestedPerson = params.person ?? (params.deputy ? `camera:${params.deputy}` : undefined);
-  const initialSelection: PoliticiSelection = requestedPerson && snapshot.people.some((item) => item.id === requestedPerson)
-    ? { kind: "person", personId: requestedPerson }
-    : params.group && snapshot.groups.some((item) => item.id === params.group)
-      ? { kind: "group", groupId: params.group }
-      : { kind: "overview" };
+
+  const requestedPerson = params.person ?? (params.deputy ? `dep-${params.deputy}` : undefined);
+  const initialSelection: GraphSelection =
+    requestedPerson && map.people.some((person) => person.id === requestedPerson)
+      ? { kind: "person", id: requestedPerson }
+      : params.group && map.groups.some((group) => group.id === params.group)
+        ? { kind: "group", id: params.group }
+        : params.istituzione && map.institutions.some((institution) => institution.id === params.istituzione)
+          ? { kind: "institution", id: params.istituzione }
+          : { kind: "overview" };
 
   return (
-    <main className="shell page">
-      <section className="page-intro">
-        <p className="eyebrow">Istituzioni · Parlamento italiano</p>
-        <h1>Grafo politici</h1>
-        <p>
-          Esplora Camera e Senato nello stesso doppio emiciclo della {snapshot.legislature.label}.
-          Le linee tra i rami collegano gruppi omologhi; selezionando una persona emergono le co-citazioni nelle notizie.
-        </p>
-      </section>
-
-      <PoliticiGraphExplorer snapshot={snapshot} initialSelection={initialSelection} />
-
-      <details className="data-details">
-        <summary>Come leggere il grafo, fonti e limiti</summary>
-        <p>
-          Fonti: {snapshot.chambers.map((chamber, index) => (
-            <span key={chamber.id}>
-              {index ? " · " : null}
-              <a href={chamber.sourceUrl}>{chamber.sourceTitle}</a> ({chamber.license}, osservata {chamber.observedDate})
-            </span>
-          ))}.
-        </p>
+    <main className={styles.immersivePage}>
+      <header className={styles.immersiveChrome}>
+        <Link className={styles.immersiveBrand} href="/">
+          DoveVannoINostriSoldi
+        </Link>
+        <div className={styles.immersiveActions}>
+          <ThemeToggle />
+        </div>
+      </header>
+      <RepubblicaGraph map={map} initialSelection={initialSelection} />
+      <details className={styles.immersiveDetails}>
+        <summary>Fonti e limiti · {graph.legislature.label}</summary>
         <ul>
-          {snapshot.caveats.map((caveat) => <li key={caveat}>{caveat}</li>)}
-          <li>
-            Le notizie sono una ricerca live nei metadati GDELT degli ultimi tre mesi:
-            non costituiscono una rassegna completa e restano attribuite ai rispettivi editori.
-          </li>
+          {graph.sources.map((source, index) => (
+            <li key={`${source.url}#${index}`}>
+              <a href={source.url}>{source.label}</a> — {source.license}, osservata il {source.observedDate}.
+              {source.gap ? <> Limite: {source.gap}</> : null}
+            </li>
+          ))}
+          {graph.caveats.slice(0, 3).map((caveat) => (
+            <li key={caveat}>{caveat}</li>
+          ))}
         </ul>
         <p>
-          Collegamenti utili: <Link href="/parlamento">spesa del Parlamento</Link>,{" "}
-          <Link href="/governi">pagella dei governi</Link>,{" "}
-          <Link href="/esplora">relazioni da incarichi pubblici</Link>.
+          <Link href="/parlamento">Parlamento</Link>
+          {" · "}
+          <Link href="/governi">Governi</Link>
+          {" · "}
+          <Link href="/">DoveVannoINostriSoldi</Link>
         </p>
       </details>
     </main>

@@ -1,4 +1,4 @@
-import { findParliamentPerson } from "@/lib/politici-parlamento";
+import { findRepublicPerson } from "@/lib/politici-repubblica";
 import { runWithRequestBudget } from "@/lib/search/request-budget";
 
 export const runtime = "nodejs";
@@ -18,23 +18,35 @@ function detectImageType(bytes: Uint8Array): string | null {
 
 export async function GET(request: Request, context: RouteContext<"/politici/foto/[id]">) {
   const { id } = await context.params;
-  const person = findParliamentPerson(id);
+  const person = findRepublicPerson(id);
   if (!person) {
     return Response.json(
       { ok: false, error: "Persona non trovata." },
       { status: 404, headers: { "Cache-Control": "no-store" } },
     );
   }
+  if (person.photoUrl === null) {
+    // The institutional sources publish no portrait for this person: the client
+    // renders a monogram instead of a picture inferred from somewhere else.
+    return Response.json(
+      { ok: false, error: "Ritratto ufficiale non disponibile." },
+      { status: 404, headers: { "Cache-Control": "public, s-maxage=86400" } },
+    );
+  }
 
+  const photoUrl = person.photoUrl;
   try {
     const outcome = await runWithRequestBudget(request.signal, REQUEST_TIMEOUT_MS, async (signal) => {
-      const response = await fetch(person.photoUrl, {
+      const response = await fetch(photoUrl, {
         signal,
         cache: "no-store",
         headers: {
           Accept: "image/jpeg,image/png,image/*",
-          // The Senate CDN returns an empty 202 to generic browser/bot UAs.
-          "User-Agent": "curl/8.7.1 (+https://www.dovevannoinostrisoldi.com)",
+          // The Senate CDN answers an empty 202 to generic browser and bot user
+          // agents; Wikimedia instead requires a project that identifies itself.
+          "User-Agent": new URL(photoUrl).hostname.endsWith("wikimedia.org")
+            ? "DoveVannoINostriSoldi/1.0 (+https://www.dovevannoinostrisoldi.com)"
+            : "curl/8.7.1 (+https://www.dovevannoinostrisoldi.com)",
         },
       });
       if (!response.ok) throw new Error(`ritratto ufficiale HTTP ${response.status}`);

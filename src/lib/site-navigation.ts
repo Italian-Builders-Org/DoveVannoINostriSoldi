@@ -138,7 +138,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
-      { href: "/politici", label: "Grafo politici" },
+      { href: "/politici", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
       { href: "/ministeri", label: "Ministeri" },
@@ -295,7 +295,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Istituzioni",
     links: [
       { href: "/istituzioni", label: "Panoramica" },
-      { href: "/politici", label: "Grafo politici" },
+      { href: "/politici", label: "Mappa della politica" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
+import { ChromeUnlessImmersive, ImmersiveDocumentFlag } from "@/components/immersive-chrome";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 import { Navigation } from "@/components/navigation";
@@ -54,12 +55,19 @@ export default function RootLayout({
       </head>
       <body>
         <GoogleAnalytics />
+        <ImmersiveDocumentFlag />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
-        <Navigation announcements={announcements} />
+        <ChromeUnlessImmersive>
+          <Navigation announcements={announcements} />
+        </ChromeUnlessImmersive>
         <div className="site-content">
-          <SectionNav />
+          <ChromeUnlessImmersive>
+            <SectionNav />
+          </ChromeUnlessImmersive>
           <div id="contenuto-principale" tabIndex={-1}>{children}</div>
-          <SiteFooter />
+          <ChromeUnlessImmersive>
+            <SiteFooter />
+          </ChromeUnlessImmersive>
         </div>
       </body>
     </html>

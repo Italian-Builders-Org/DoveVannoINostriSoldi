@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "chamber": "camera",
+  "period": {
+    "label": "Misure in vigore pubblicate dalla Camera (indennità ferma dal 2012; diaria e rimborsi prorogati)",
+    "observedDate": "2026-09-18"
+  },
+  "coverage": {
+    "components": 4
+  },
+  "soldi": {
+    "present": true,
+    "unit": "EUR-cent",
+    "nature": "institutional-rate",
+    "note": "Aliquote istituzionali dell'Ufficio di Presidenza, non cedolini individuali."
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "title": "Camera dei deputati — trattamento economico istituzionale dei deputati",
+    "pageUrl": "https://www.camera.it/deputati/trattamento-economico",
+    "landingUrl": "https://www.camera.it/deputati/trattamento-economico",
+    "license": "Riuso con citazione della fonte (Camera dei deputati)",
+    "licenseUrl": "https://www.camera.it/",
+    "observedDate": "2026-09-18",
+    "acquiredAt": "2026-09-18T07:54:38Z",
+    "responses": {
+      "page": {
+        "bytes": 31254,
+        "sha256": "f2e29d117e0bfc2edc7bf5218127a98a36e4dfdeddf14d68a13697f4152e3801"
+      }
+    },
+    "cadence": "pagina istituzionale (indennità ferma dal 2012 salvo delibere)"
+  },
+  "provenance": {
+    "kind": "official-html-page",
+    "page": "https://www.camera.it/deputati/trattamento-economico",
+    "gap": "Pagina Senato del trattamento economico non acquisibile in modo ripetibile (challenge WAF): nessun importo senatorio in questo snapshot."
+  },
+  "summary": {
+    "indemnityGrossMonthlyCents": 1043500,
+    "indemnityNetBeforeLocalSurtaxesMonthlyCents": 529071,
+    "diariaMonthlyCents": 350311,
+    "constituentAllowanceMonthlyCents": 369000
+  },
+  "components": [
+    {
+      "id": "indennita-parlamentare-lordo",
+      "label": "Indennità parlamentare (lordo mensile)",
+      "amountEuro": "10.435,00",
+      "amountCents": 1043500,
+      "currency": "EUR",
+      "frequency": "monthly",
+      "grossNet": "gross",
+      "appliesTo": "deputato"
+    },
+    {
+      "id": "indennita-parlamentare-netto-prima-addizionali",
+      "label": "Indennità parlamentare (netto mensile prima delle addizionali)",
+      "amountEuro": "5.290,71",
+      "amountCents": 529071,
+      "currency": "EUR",
+      "frequency": "monthly",
+      "grossNet": "net-before-local-surtaxes",
+      "appliesTo": "deputato"
+    },
+    {
+      "id": "diaria",
+      "label": "Diaria (rimborso forfetario mensile)",
+      "amountEuro": "3.503,11",
+      "amountCents": 350311,
+      "currency": "EUR",
+      "frequency": "monthly",
+      "grossNet": "allowance",
+      "appliesTo": "deputato"
+    },
+    {
+      "id": "rimborso-eletti-elettori",
+      "label": "Rimborso spese inerenti al rapporto eletto–elettori (mensile)",
+      "amountEuro": "3.690,00",
+      "amountCents": 369000,
+      "currency": "EUR",
+      "frequency": "monthly",
+      "grossNet": "allowance",
+      "appliesTo": "deputato"
+    }
+  ],
+  "caveats": [
+    "Sono tassi istituzionali uguali per tutti i deputati (salvo le riduzioni per chi ha un'altra attività lavorativa): non è la busta paga della singola persona.",
+    "Il netto dichiarato dalla Camera (5.290,71 €) è prima delle addizionali regionali e comunali, che variano per domicilio fiscale.",
+    "Il Senato pubblica una pagina di trattamento economico ma le richieste programmatiche ricevono una challenge WAF: finché non si può fissare hash e testo, non si pubblica l'importo senatorio.",
+    "Non si inventano stipendi di ministri, sottosegretari o del Presidente della Repubblica da fonti non acquisite."
+  ]
+}

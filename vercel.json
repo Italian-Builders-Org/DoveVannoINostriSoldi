@@ -4,6 +4,13 @@
   "buildCommand": "npm run build",
   "installCommand": "PUPPETEER_SKIP_DOWNLOAD=true npm ci",
   "ignoreCommand": "node scripts/ci/vercel-ignore-build.mjs",
+  "rewrites": [
+    {
+      "has": [{ "type": "host", "value": "politici.dovevannoinostrisoldi.com" }],
+      "source": "/",
+      "destination": "/politici"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

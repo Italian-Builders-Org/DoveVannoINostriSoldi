@@ -4,7 +4,7 @@ import "./helpers/register-ts-alias.mjs";
 
 const { GET } = await import("../src/app/api/politici/[id]/news/route.ts");
 
-test("politici news rejects unknown people without contacting GDELT", async () => {
+test("politici news rejects unknown people without contacting news indexes", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = () => {
     throw new Error("fetch should not run");
@@ -21,57 +21,51 @@ test("politici news rejects unknown people without contacting GDELT", async () =
   }
 });
 
-test("politici news maps only safe GDELT article metadata", async () => {
+test("politici news maps only safe Google News article metadata", async () => {
   const originalFetch = globalThis.fetch;
   let requestedUrl = "";
   globalThis.fetch = async (input) => {
     requestedUrl = String(input);
-    return new Response(JSON.stringify({
-      articles: [
-        {
-          url: "https://example.test/politica/notizia",
-          title: " Giorgia Meloni e Lorenzo Fontana: titolo verificabile ",
-          seendate: "20260917T120000Z",
-          socialimage: "https://example.test/image.jpg",
-          domain: "example.test",
-          language: "Italian",
-          sourcecountry: "Italy",
-        },
-        {
-          url: "javascript:alert(1)",
-          title: "URL non sicuro",
-        },
-        {
-          url: "https://example.test/politica/notizia",
-          title: "Duplicato",
-        },
-      ],
-    }), { headers: { "content-type": "application/json" } });
+    const rss = `<?xml version="1.0" encoding="UTF-8"?>
+      <rss version="2.0"><channel>
+        <item>
+          <title>Giorgia Meloni e Lorenzo Fontana: titolo verificabile - Example Test</title>
+          <link>https://example.test/politica/notizia</link>
+          <pubDate>Wed, 17 Sep 2026 12:00:00 GMT</pubDate>
+          <source url="https://example.test">Example Test</source>
+        </item>
+        <item>
+          <title>URL non sicuro</title>
+          <link>javascript:alert(1)</link>
+        </item>
+        <item>
+          <title>Duplicato - Example Test</title>
+          <link>https://example.test/politica/notizia</link>
+        </item>
+      </channel></rss>`;
+    return new Response(rss, { headers: { "content-type": "application/rss+xml" } });
   };
   try {
     const response = await GET(
-      new Request("http://localhost/api/politici/camera%3Ad302103_19/news"),
-      { params: Promise.resolve({ id: "camera:d302103_19" }) },
+      new Request("http://localhost/api/politici/dep-302103/news"),
+      { params: Promise.resolve({ id: "dep-302103" }) },
     );
     assert.equal(response.status, 200);
-    assert.match(requestedUrl, /api\.gdeltproject\.org/);
-    assert.match(new URL(requestedUrl).searchParams.get("query"), /"Giorgia Meloni"/);
+    assert.match(requestedUrl, /news\.google\.com\/rss\/search/);
+    assert.match(new URL(requestedUrl).searchParams.get("q"), /"Giorgia Meloni"/);
     const body = await response.json();
     assert.equal(body.ok, true);
     assert.equal(body.person.name, "Giorgia Meloni");
+    assert.equal(body.provider.id, "google-news");
     assert.equal(body.articles.length, 1);
-    assert.deepEqual(body.articles[0], {
-      title: "Giorgia Meloni e Lorenzo Fontana: titolo verificabile",
-      url: "https://example.test/politica/notizia",
-      source: "example.test",
-      publishedAt: "2026-09-17T12:00:00Z",
-      imageUrl: "https://example.test/image.jpg",
-      language: "Italian",
-      sourceCountry: "Italy",
-    });
+    assert.equal(body.articles[0].title, "Giorgia Meloni e Lorenzo Fontana: titolo verificabile");
+    assert.equal(body.articles[0].url, "https://example.test/politica/notizia");
+    assert.equal(body.articles[0].source, "Example Test");
     assert.equal(body.connections.length, 1);
     assert.equal(body.connections[0].person.name, "Lorenzo Fontana");
     assert.equal(body.connections[0].person.chamber, "camera");
+    assert.deepEqual(body.connections[0].articleUrls, ["https://example.test/politica/notizia"]);
+    assert.equal(body.connections[0].articleCount, 1);
     assert.match(response.headers.get("cache-control"), /s-maxage=1800/);
   } finally {
     globalThis.fetch = originalFetch;

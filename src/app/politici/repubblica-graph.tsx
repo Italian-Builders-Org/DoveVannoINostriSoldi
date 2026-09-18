@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import type { RepublicMap, RepublicMapPerson, RepublicProfile } from "@/lib/politici-repubblica";
+import type {
+  RepublicLegislativeSource,
+  RepublicMap,
+  RepublicMapPerson,
+  RepublicProfile,
+} from "@/lib/politici-repubblica";
 import {
   bridge,
   buildChamberScene,
@@ -227,6 +232,7 @@ export function RepubblicaGraph({
   const layoutReady = useClientHydrated();
   const [hover, setHover] = useState<Hover>(null);
   const [profiles, setProfiles] = useState<Record<string, RepublicProfile> | null>(null);
+  const [legislativeSource, setLegislativeSource] = useState<RepublicLegislativeSource | null>(null);
   const [profilesFailed, setProfilesFailed] = useState(false);
   const [query, setQuery] = useState("");
   const [familyFilter, setFamilyFilter] = useState<string | null>(null);
@@ -272,10 +278,14 @@ export function RepubblicaGraph({
     const load = () => {
       fetch("/api/politici/profili", { headers: { Accept: "application/json" } })
         .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
-        .then((payload: { profiles?: Record<string, RepublicProfile> }) => {
+        .then((payload: {
+          profiles?: Record<string, RepublicProfile>;
+          legislativeSource?: RepublicLegislativeSource;
+        }) => {
           if (cancelled) return;
           if (!payload.profiles) throw new Error("payload inatteso");
           setProfiles(payload.profiles);
+          setLegislativeSource(payload.legislativeSource ?? null);
         })
         .catch(() => {
           if (!cancelled) setProfilesFailed(true);
@@ -861,6 +871,7 @@ export function RepubblicaGraph({
           map={map}
           selection={selection}
           profiles={profiles}
+          legislativeSource={legislativeSource}
           profilesFailed={profilesFailed}
           news={currentNews}
           onSelect={(next) => {

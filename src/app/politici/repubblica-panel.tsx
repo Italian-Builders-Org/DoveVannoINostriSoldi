@@ -4,7 +4,15 @@ import { useState } from "react";
 import type { EducationDistribution } from "@/lib/politici-education";
 import { formatPercent } from "@/lib/politici-education";
 import { programForGroup } from "@/lib/politici-electoral-programs";
-import type { CameraAttendanceRanking, RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
+import type {
+  CameraAttendanceRanking,
+  RepublicActSummary,
+  RepublicActVote,
+  RepublicLegislativeActivity,
+  RepublicLegislativeSource,
+  RepublicMap,
+  RepublicProfile,
+} from "@/lib/politici-repubblica";
 import styles from "./politici.module.css";
 import { Portrait, type GraphSelection } from "./repubblica-graph";
 
@@ -78,6 +86,7 @@ export function RepubblicaPanel({
   map,
   selection,
   profiles,
+  legislativeSource,
   profilesFailed,
   news,
   onSelect,
@@ -86,6 +95,7 @@ export function RepubblicaPanel({
   map: RepublicMap;
   selection: GraphSelection;
   profiles: Record<string, RepublicProfile> | null;
+  legislativeSource: RepublicLegislativeSource | null;
   profilesFailed: boolean;
   news: NewsState | null;
   onSelect: (selection: GraphSelection) => void;
@@ -98,6 +108,7 @@ export function RepubblicaPanel({
           map={map}
           personId={selection.id}
           profile={profiles?.[selection.id] ?? null}
+          legislativeSource={legislativeSource}
           profilesFailed={profilesFailed}
           news={news}
           onSelect={onSelect}
@@ -356,6 +367,7 @@ function PersonCard({
   map,
   personId,
   profile,
+  legislativeSource,
   profilesFailed,
   news,
   onSelect,
@@ -364,6 +376,7 @@ function PersonCard({
   map: RepublicMap;
   personId: string;
   profile: RepublicProfile | null;
+  legislativeSource: RepublicLegislativeSource | null;
   profilesFailed: boolean;
   news: NewsState | null;
   onSelect: (selection: GraphSelection) => void;
@@ -463,6 +476,14 @@ function PersonCard({
         <p className={styles.cardNote}>
           Per i senatori non esiste una tabella ufficiale di % presenza equivalente a quella della Camera.
         </p>
+      ) : null}
+
+      {profile?.legislativeActivity && legislativeSource ? (
+        <LegislativeActsSection
+          personId={person.id}
+          activity={profile.legislativeActivity}
+          source={legislativeSource}
+        />
       ) : null}
 
       <h3 className={styles.cardSection}>Collegamenti tipizzati</h3>
@@ -884,6 +905,175 @@ function AttendanceRanking({
           Mostra solo i primi 25
         </button>
       ) : null}
+    </section>
+  );
+}
+
+const OWN_VOTE_LABELS: Record<RepublicActVote, string> = {
+  F: "favorevole",
+  C: "contrario",
+  A: "astenuto/a",
+  N: "non ha votato",
+  V: "voto segreto",
+  "non-rilevato": "voto non rilevato nella fonte",
+};
+
+type MoreActsState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "error" }
+  | { status: "ready"; firstSigned: RepublicActSummary[]; coSigned: RepublicActSummary[] };
+
+function ActRow({ act }: { act: RepublicActSummary }) {
+  return (
+    <li className={styles.actItem}>
+      <a href={act.officialPage} rel="noreferrer" className={styles.actTitle}>
+        {act.title ?? `Proposta n. ${act.number}`}
+      </a>
+      <span className={styles.actMeta}>
+        n. {act.number}
+        {act.presentedDate ? ` · presentata il ${longDate(act.presentedDate)}` : ""}
+        {act.currentState
+          ? ` · ${act.currentState}${act.currentStateDate ? ` (${longDate(act.currentStateDate)})` : ""}`
+          : ""}
+      </span>
+      {act.finalVotes.map((vote) => (
+        <span key={vote.id} className={styles.actMeta}>
+          Votazione finale del {longDate(vote.date)}: {vote.approved ? "approvata" : "non approvata"}
+          {vote.confidenceVote ? ", con questione di fiducia" : ""}
+          {" — posizione registrata: "}
+          <strong>{OWN_VOTE_LABELS[vote.ownVote]}</strong>
+        </span>
+      ))}
+    </li>
+  );
+}
+
+function LegislativeActsSection({
+  personId,
+  activity,
+  source,
+}: {
+  personId: string;
+  activity: RepublicLegislativeActivity;
+  source: RepublicLegislativeSource;
+}) {
+  const [more, setMore] = useState<MoreActsState>({ status: "idle" });
+  const counts = activity.counts;
+  const outcomeLabels = new Map(source.outcomeClasses.map((item) => [item.id, item.label]));
+
+  async function loadAll() {
+    setMore({ status: "loading" });
+    try {
+      const response = await fetch(`/api/politici/${personId}/atti`);
+      const body = await response.json();
+      if (!response.ok || !body.ok) throw new Error(String(response.status));
+      setMore({
+        status: "ready",
+        firstSigned: body.firstSigned as RepublicActSummary[],
+        coSigned: body.coSigned as RepublicActSummary[],
+      });
+    } catch {
+      setMore({ status: "error" });
+    }
+  }
+
+  return (
+    <section className={styles.officialFacts} aria-label="Proposte di legge firmate">
+      <div className={styles.officialFact}>
+        <h3 className={styles.cardSection}>Proposte di legge</h3>
+        <p className={styles.factKind}>
+          <strong>
+            {counts.firstSigned} a prima firma · {counts.coSigned} cofirmate · {counts.becameLaw} divenute legge
+          </strong>
+          {` (${counts.withFinalVote} con votazione finale alla Camera).`}
+        </p>
+        <p className={styles.cardNote}>
+          Mediana Camera: {activity.comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
+          {activity.comparison.groupMedianFirstSigned !== null && activity.comparison.groupLabel
+            ? ` · mediana ${activity.comparison.groupLabel}: ${activity.comparison.groupMedianFirstSigned.toLocaleString("it-IT")}`
+            : ""}
+          .
+        </p>
+        {counts.firstSigned > 0 ? (
+          <p className={styles.cardNote}>
+            Ha presentato più proposte a prima firma del {activity.comparison.firstSignedPercentile}% dei{" "}
+            {activity.comparison.chamberSize} deputati in carica.
+          </p>
+        ) : null}
+        {counts.byOutcome.length > 0 ? (
+          <details className={styles.actDetails}>
+            <summary>Esito per classe</summary>
+            <dl className={styles.detailList}>
+              {counts.byOutcome.map((row) => (
+                <div key={row.outcomeClass}>
+                  <dt>{outcomeLabels.get(row.outcomeClass) ?? row.outcomeClass}</dt>
+                  <dd>
+                    {row.firstSigned} a prima firma · {row.coSigned} cofirmate
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </details>
+        ) : null}
+        {more.status !== "ready" ? (
+          activity.recentFirstSigned.length > 0 ? (
+            <ul className={styles.plainList}>
+              {activity.recentFirstSigned.map((act) => (
+                <ActRow key={act.id} act={act} />
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.cardNote}>Nessuna proposta a prima firma nel periodo.</p>
+          )
+        ) : null}
+        {more.status === "idle" && counts.total > activity.recentFirstSigned.length ? (
+          <button type="button" className={styles.rankingMore} onClick={loadAll}>
+            Tutti gli atti ({counts.total})
+          </button>
+        ) : null}
+        {more.status === "loading" ? (
+          <p className={styles.cardNote}>Caricamento degli atti…</p>
+        ) : null}
+        {more.status === "error" ? (
+          <p className={styles.cardNote}>Gli atti non sono disponibili in questo momento.</p>
+        ) : null}
+        {more.status === "ready" ? (
+          more.firstSigned.length + more.coSigned.length === 0 ? (
+            <p className={styles.cardNote}>Nessun atto firmato nel periodo.</p>
+          ) : (
+            <>
+              <h4 className={styles.cardSection}>A prima firma ({more.firstSigned.length})</h4>
+              <ul className={styles.plainList}>
+                {more.firstSigned.map((act) => (
+                  <ActRow key={act.id} act={act} />
+                ))}
+              </ul>
+              <h4 className={styles.cardSection}>Cofirmate ({more.coSigned.length})</h4>
+              <ul className={styles.plainList}>
+                {more.coSigned.map((act) => (
+                  <ActRow key={act.id} act={act} />
+                ))}
+              </ul>
+            </>
+          )
+        ) : null}
+        <p className={styles.cardNote}>
+          Fonte:{" "}
+          <a href={source.sourceUrl} rel="noreferrer">
+            Camera dei deputati — Open Data (dati.camera.it)
+          </a>
+          , {source.licenseLabel}. Periodo: {source.periodLabel}.
+        </p>
+        <details className={styles.actDetails}>
+          <summary>Cosa non misura</summary>
+          <ul className={styles.plainList}>
+            {source.caveats.map((caveat) => (
+              <li key={caveat}>{caveat}</li>
+            ))}
+          </ul>
+        </details>
+      </div>
     </section>
   );
 }

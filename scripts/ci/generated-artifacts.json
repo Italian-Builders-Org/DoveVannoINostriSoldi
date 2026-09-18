@@ -2496,6 +2496,34 @@
       "trustModel": "Una sola risposta HTML ufficiale pinnata (vista cumulativa partecipazione al voto XIX legislatura): tabella pubblica con voti, missioni, presenze e assenze per deputato. Il match al roster Camera avviene solo se univoco; le righe senza collegamento restano nello snapshot senza personaId. Il Senato non ha prodotto ufficiale equivalente e non viene ricostruito."
     },
     {
+      "id": "camera-atti-voti-xix",
+      "owner": "Camera dei deputati — Open Data Camera (OCD), atti, iter e votazioni",
+      "files": [
+        "src/data/generated/camera-atti-voti-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_atti_voti_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-atti-voti-contract.test.mjs",
+        "tests/politici-atti-route.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_atti_voti_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-atti-voti-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Cinque risposte SPARQL lockate dall'endpoint ufficiale dati.camera.it (atti, cofirme, stati iter, votazioni finali, voti nominali). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap di 10.000 righe dell'endpoint; le cofirme paginano per chiave (keyset) perché l'OFFSET non supera il limite. Il perimetro è l'iniziativa parlamentare: gli atti a prima firma di un membro del Governo sono esclusi e conteggiati in coverage, così come le votazioni finali su quegli atti. Le identità ufficiali della Camera sono verificate strict: votanti = favorevoli + contrari, presenti = votanti + astenuti, approvato solo se i favorevoli superano la maggioranza, e i conteggi nominali F/C/A riconciliano con i totali dichiarati."
+    },
+    {
       "id": "camera-trattamento-economico",
       "owner": "Camera dei deputati — trattamento economico istituzionale",
       "files": [

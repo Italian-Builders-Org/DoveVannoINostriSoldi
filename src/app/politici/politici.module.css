@@ -1955,6 +1955,24 @@
   border-bottom: 1px solid var(--color-neutral-200);
 }
 
+.actItem { display: grid; gap: 2px; }
+
+.actTitle {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actMeta { font-size: 0.75rem; color: var(--color-neutral-600); }
+
+.actDetails summary {
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
 .personHeader { display: flex; gap: var(--space-3); align-items: flex-start; }
 
 .officialFacts {

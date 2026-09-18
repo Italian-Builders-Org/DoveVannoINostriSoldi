@@ -13,7 +13,7 @@ import istat_misura_comune as etl
 class MunicipalStructureTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.spec = json.loads(etl.SPEC.read_text())
+        cls.spec = json.loads(etl.SPEC.read_text(encoding="utf-8"))
         cls.members = etl.read_members(etl.ROOT / cls.spec["fixture"]["path"], cls.spec)
         cls.payloads = etl.projections(cls.spec, cls.members)
 

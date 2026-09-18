@@ -153,7 +153,7 @@ class MunicipalReceiptsTests(unittest.TestCase):
                 self.write_registry(rows)
                 self.build()
         self.write_registry(self.registry_rows)
-        self.ipa.write_text("cf;regione;cod_amm\n00000000001;Piemonte\n")
+        self.ipa.write_text("cf;regione;cod_amm\n00000000001;Piemonte\n", encoding="utf-8")
         with self.assertRaises(RuntimeError):
             self.build()
 
@@ -170,13 +170,13 @@ class MunicipalReceiptsTests(unittest.TestCase):
             path = self.root / names[key]
             path.write_bytes(fixture.read_bytes())
             metadata = self.validators()[key] | {"url": receipts.source_urls(2026)[key], "byteSize": path.stat().st_size}
-            path.with_name(path.name + ".metadata.json").write_text(json.dumps(metadata))
+            path.with_name(path.name + ".metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
         paths, validators = receipts.acquired_inputs(self.root, 2026, offline=True)
         self.assertEqual(validators["movements"]["sha256"], hashlib.sha256(paths["movements"].read_bytes()).hexdigest())
         sidecar = paths["movements"].with_name(paths["movements"].name + ".metadata.json")
-        original = json.loads(sidecar.read_text())
+        original = json.loads(sidecar.read_text(encoding="utf-8"))
         for changes in ({"url": "https://example.com/other.zip"}, {"sha256": "a" * 64}, {"byteSize": 0}, {"acquisitionDate": None}, {"acquisitionDate": "2026-09-05"}):
-            sidecar.write_text(json.dumps(original | changes))
+            sidecar.write_text(json.dumps(original | changes), encoding="utf-8")
             with self.subTest(changes=changes), self.assertRaises(RuntimeError):
                 receipts.acquired_inputs(self.root, 2026, offline=True)
 
@@ -237,15 +237,15 @@ class MunicipalReceiptsTests(unittest.TestCase):
     def test_skip_requires_both_valid_contracts_and_http_validators(self):
         summary, detail = self.build()
         output, detail_output = self.root / "summary.json", self.root / "detail.json"
-        output.write_text(json.dumps(summary))
-        detail_output.write_text(json.dumps(detail))
+        output.write_text(json.dumps(summary), encoding="utf-8")
+        detail_output.write_text(json.dumps(detail), encoding="utf-8")
         validators = self.validators()
         self.assertTrue(receipts.is_unchanged(output, detail_output, 2026, validators))
         validators["movements"]["etag"] = '"changed"'
         self.assertFalse(receipts.is_unchanged(output, detail_output, 2026, validators))
         validators = self.validators()
         detail["municipalities"][0][6] += 1
-        detail_output.write_text(json.dumps(detail))
+        detail_output.write_text(json.dumps(detail), encoding="utf-8")
         self.assertFalse(receipts.is_unchanged(output, detail_output, 2026, validators))
         detail_output.unlink()
         self.assertFalse(receipts.is_unchanged(output, detail_output, 2026, validators))
@@ -270,7 +270,7 @@ class MunicipalReceiptsTests(unittest.TestCase):
         self.assertTrue(all(item["municipalities"] > 7000 for item in result))
 
     def test_joint_refresh_manifest_and_source_spec(self):
-        manifest = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        manifest = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))
         artifact = next(item for item in manifest["artifacts"] if item["id"] == "siope-municipal")
         for year in (2024, 2025, 2026):
             for path in receipts.paths_for_year(year):
@@ -287,7 +287,7 @@ class MunicipalReceiptsTests(unittest.TestCase):
             self.assertEqual(sources["ipa"]["url"], urls["ipa"])
         self.assertEqual(sources["movements"]["maximumAbsoluteCents"], core.MAX_SAFE_CENTS)
         self.assertEqual(spec.SPEC["refreshCronUtc"], "29 4 * * *")
-        workflow = (ROOT / ".github/workflows/siope-refresh.yml").read_text()
+        workflow = (ROOT / ".github/workflows/siope-refresh.yml").read_text(encoding="utf-8")
         self.assertIn("npm ci --ignore-scripts", workflow)
         self.assertIn("tests/siope-receipts.test.mjs", workflow)
 

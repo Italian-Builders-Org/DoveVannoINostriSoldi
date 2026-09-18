@@ -182,7 +182,7 @@ def main() -> int:
     args = parser.parse_args()
     if not args.output_dir and not args.check:
         parser.error('specificare --output-dir o --check')
-    payloads = projections(json.loads(SPEC.read_text()))
+    payloads = projections(json.loads(SPEC.read_text(encoding="utf-8")))
     if args.output_dir:
         args.output_dir.mkdir(parents=True, exist_ok=True)
         for dataset_id, payload in payloads.items():

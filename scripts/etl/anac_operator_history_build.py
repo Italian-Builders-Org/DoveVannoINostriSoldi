@@ -239,7 +239,7 @@ def write_summaries(
             for path in sorted(output.glob("*.pack"))
         ],
     }
-    (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
 def main() -> None:

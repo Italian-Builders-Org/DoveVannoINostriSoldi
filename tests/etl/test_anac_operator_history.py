@@ -212,7 +212,7 @@ class OperatorHistoryTests(unittest.TestCase):
             spec_path.mkdir(parents=True)
             (spec_path / "anac-cig-2007-2025.source.json").write_text(
                 json.dumps({"resources": [resource]})
-            )
+            , encoding="utf-8")
             with patch("anac_operator_history_build.ROOT", root):
                 coverage = load_cigs(db, root)
             self.assertEqual(coverage["matchedCigs"], 1)

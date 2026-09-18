@@ -111,7 +111,7 @@ class PovertaSogliaAssolutaTests(unittest.TestCase):
             data_path.write_bytes(soglia.DATA.read_bytes())
             meta = json.loads(soglia.META.read_bytes())
             meta["source"]["licenseId"] = "CC-BY-4.0"
-            meta_path.write_text(json.dumps(meta))
+            meta_path.write_text(json.dumps(meta), encoding="utf-8")
             with self.assertRaises(soglia.SnapshotError):
                 soglia.check(soglia.SPEC, data_path, meta_path)
 

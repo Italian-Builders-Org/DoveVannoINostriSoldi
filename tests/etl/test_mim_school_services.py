@@ -14,7 +14,7 @@ import mim_school_services as etl
 class SchoolServicesTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.spec = json.loads(etl.SPEC.read_text())
+        cls.spec = json.loads(etl.SPEC.read_text(encoding="utf-8"))
         cls.rows = etl.read_registry(cls.spec)
         cls.identities = etl.municipal_identities(cls.spec)
 

@@ -268,7 +268,7 @@ def build_snapshot(payload: bytes, acquired_at: str) -> tuple[dict, dict]:
 def validate_committed() -> None:
     data_bytes = DATA_PATH.read_bytes()
     data = json.loads(data_bytes)
-    meta = json.loads(META_PATH.read_text())
+    meta = json.loads(META_PATH.read_text(encoding="utf-8"))
     artifact = meta["dataArtifact"]
     if len(data_bytes) != artifact["bytes"] or hashlib.sha256(data_bytes).hexdigest() != artifact["sha256"]:
         raise ValueError("Artefatto Ministeri non legato al manifesto")

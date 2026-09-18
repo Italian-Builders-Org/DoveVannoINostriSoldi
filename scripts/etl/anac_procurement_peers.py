@@ -128,7 +128,7 @@ def build(check: bool = False) -> None:
             staging = Path(temporary) / "output"
             staging.mkdir()
             (staging / "snapshot.json.gz").write_bytes(compressed)
-            (staging / "meta.json").write_text(json.dumps(metadata, indent=2) + "\n")
+            (staging / "meta.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
             verify_output(staging, raw)
             backup = cpv.profiles.atomic_publish(staging, OUTPUT)
             try:

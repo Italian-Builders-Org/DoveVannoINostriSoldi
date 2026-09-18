@@ -53,7 +53,7 @@ def lock_sha(spec: dict) -> str:
 
 
 def load_spec(path: Path = DEFAULT_SPEC) -> dict:
-    spec = json.loads(path.read_text())
+    spec = json.loads(path.read_text(encoding="utf-8"))
     if spec['schemaVersion'] != 1 or spec['datasetId'] != 'mef-iva' or spec['integrity']['lockSha256'] != lock_sha(spec):
         raise SnapshotError('Invalid source lock')
     if spec['source']['licenseId'] != 'CC-BY-3.0-IT' or spec['source']['licenseUrl'] != 'http://creativecommons.org/licenses/by/3.0/it/':
@@ -195,7 +195,7 @@ def check(spec_path: Path = DEFAULT_SPEC, data_path: Path = DEFAULT_DATA, meta_p
     payload = data_path.read_bytes()
     data = json.loads(payload)
     validate_data(data, spec)
-    if json.loads(meta_path.read_text()) != metadata(spec, payload, data):
+    if json.loads(meta_path.read_text(encoding="utf-8")) != metadata(spec, payload, data):
         raise SnapshotError('Metadata or artifact hash drift')
     if spec.get('dataCanonicalSha256') != sha(canonical(data)):
         raise SnapshotError('Data differs from pinned source projection')
@@ -220,7 +220,7 @@ def main() -> None:
         raise SnapshotError('Data differs from pinned source projection')
     payload = (json.dumps(data, ensure_ascii=False, indent=2) + '\n').encode()
     DEFAULT_DATA.write_bytes(payload)
-    DEFAULT_META.write_text(json.dumps(metadata(spec, payload, data), ensure_ascii=False, indent=2) + '\n')
+    DEFAULT_META.write_text(json.dumps(metadata(spec, payload, data), ensure_ascii=False, indent=2) + '\n', encoding="utf-8")
     check()
 
 

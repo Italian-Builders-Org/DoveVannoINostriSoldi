@@ -65,7 +65,7 @@ class WorkflowGovernanceTests(unittest.TestCase):
         self.assertNotIn("${{ secrets.REFRESH_URL }}", text)
         self.assertIn("scripts/source-health.mjs", text)
         self.assertIn("persist-credentials: false", text)
-        probe = (ROOT / "scripts" / "source-health.mjs").read_text()
+        probe = (ROOT / "scripts" / "source-health.mjs").read_text(encoding="utf-8")
         for fragment in (
             "payload?.ok",
             "Array.isArray(payload.sources)",

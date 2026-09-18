@@ -21,7 +21,7 @@ class AnacCpvTests(unittest.TestCase):
                 output = Path(directory) / "output"
                 if existing:
                     output.mkdir()
-                    (output / "previous").write_text("valid previous snapshot")
+                    (output / "previous").write_text("valid previous snapshot", encoding="utf-8")
                 spec = {"dataset": "anac-procurement-cpv", "profiles": {"path": "fixture/meta.json"}}
                 with patch.object(cpv, "read_spec", return_value=(spec, {}, {"shards": []})), \
                      patch.object(cpv.profiles, "check_artifact"), \
@@ -31,11 +31,11 @@ class AnacCpvTests(unittest.TestCase):
                         cpv.build(Path(directory), output)
                 self.assertEqual(output.exists(), existing)
                 if existing:
-                    self.assertEqual((output / "previous").read_text(), "valid previous snapshot")
+                    self.assertEqual((output / "previous").read_text(encoding="utf-8"), "valid previous snapshot")
                     self.assertEqual([p.name for p in output.iterdir()], ["previous"])
 
     def source(self, directory: Path, *, duplicate=False, invalid_period=False):
-        source = copy.deepcopy(json.loads((cpv.ROOT / "scripts/etl/specs/anac-entity-procurement.source.json").read_text()))
+        source = copy.deepcopy(json.loads((cpv.ROOT / "scripts/etl/specs/anac-entity-procurement.source.json").read_text(encoding="utf-8")))
         for entry in source["inputs"]["cig"]:
             month = entry["month"]
             row = {key: "" for key in cpv.profiles.base.CIG_HEADERS}

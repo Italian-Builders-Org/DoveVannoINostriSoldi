@@ -19,14 +19,14 @@ class ProcurementPeersTests(unittest.TestCase):
                 output = Path(temporary) / "output"
                 if existing:
                     output.mkdir()
-                    (output / "previous").write_text("preserved")
+                    (output / "previous").write_text("preserved", encoding="utf-8")
                 snapshot = {"municipalProfiles": 0, "ambiguousProfilesExcluded": 0}
                 with patch.object(peers, "OUTPUT", output), patch.object(peers, "derive", return_value=snapshot), patch.object(peers, "verify_output", side_effect=[None, ValueError("failed post-publish check")]):
                     with self.assertRaises(ValueError):
                         peers.build()
                 self.assertEqual(output.exists(), existing)
                 if existing:
-                    self.assertEqual((output / "previous").read_text(), "preserved")
+                    self.assertEqual((output / "previous").read_text(encoding="utf-8"), "preserved")
 
     def test_real_profile_keeps_missing_population_distinct_and_rejects_wrong_cpv_cohort(self):
         code = "c_l780"
@@ -36,7 +36,7 @@ class ProcurementPeersTests(unittest.TestCase):
                 return next(r for line in stream if (r := json.loads(line))["codiceIpa"] == code)
         profile = record(peers.ROOT / f"src/data/generated/anac-entity-procurement-page/entities/{shard}.jsonl.gz")
         classification = record(peers.ROOT / f"src/data/generated/anac-procurement-cpv/{shard}.jsonl.gz")
-        geography = json.loads((peers.ROOT / peers.INPUTS["geography"]).read_text())
+        geography = json.loads((peers.ROOT / peers.INPUTS["geography"]).read_text(encoding="utf-8"))
         municipality = next(r for y in geography["years"] if y["year"] == 2025 for r in y["rows"] if r[1] == profile["codiceFiscaleEnte"])
         derived = peers.derive_row(profile, classification, municipality)
         self.assertEqual(derived["population"], 19511)

@@ -234,7 +234,7 @@ def main() -> None:
         raw = canonical_bytes(data)
         DATA.write_bytes(raw)
         META.write_bytes(canonical_bytes(metadata(spec, raw)))
-        SPEC.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n")
+        SPEC.write_text(json.dumps(spec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         check()
     print(f"{DATASET}: {len(data['observations'])} observations, {len(raw)} bytes")
 

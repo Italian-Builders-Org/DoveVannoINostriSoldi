@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
+import { PUBLIC_SITE_URL } from "@/lib/site";
 import { RepubblicaGraph, type GraphSelection } from "./repubblica-graph";
 import styles from "./politici.module.css";
 
@@ -33,10 +34,13 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
   return (
     <main className={styles.immersivePage}>
       <header className={styles.immersiveChrome}>
-        <Link className={styles.immersiveBrand} href="/">
+        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL}>
           DoveVannoINostriSoldi
         </Link>
         <div className={styles.immersiveActions}>
+          <Link className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>
+            Torna al sito
+          </Link>
           <ThemeToggle />
         </div>
       </header>
@@ -55,11 +59,11 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
           ))}
         </ul>
         <p>
-          <Link href="/parlamento">Parlamento</Link>
+          <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>
           {" · "}
-          <Link href="/governi">Governi</Link>
+          <Link href={`${PUBLIC_SITE_URL}/governi`}>Governi</Link>
           {" · "}
-          <Link href="/">DoveVannoINostriSoldi</Link>
+          <Link href={PUBLIC_SITE_URL}>DoveVannoINostriSoldi</Link>
         </p>
       </details>
     </main>

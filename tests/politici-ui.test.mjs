@@ -47,10 +47,12 @@ test("explorer keeps overview drill-down, shareable selection and official portr
   assert.doesNotMatch(graph, /neo4j|force-directed|d3\./i);
 });
 
-test("navigation and discovery expose /politici without inventing a subdomain route", () => {
-  assert.match(nav, /href: "\/politici"/);
+test("navigation and discovery keep /politici and point the map to the subdomain", () => {
+  assert.match(nav, /PUBLIC_POLITICI_URL/);
   assert.match(nav, /Mappa della politica/);
   assert.match(discovery, /"\/politici"/);
+  assert.match(page, /PUBLIC_SITE_URL/);
+  assert.match(page, /Torna al sito/);
   assert.match(styles, /\.explorer\s*\{/);
   assert.match(styles, /\.sideRail/);
   assert.match(styles, /\.topBar/);
@@ -60,5 +62,6 @@ test("navigation and discovery expose /politici without inventing a subdomain ro
   assert.match(styles, /\.relationLegend/);
   assert.match(styles, /\.immersivePage/);
   assert.match(styles, /\.immersiveChrome/);
+  assert.match(styles, /\.immersiveHomeLink/);
   assert.match(graph, /Viceministri e sottosegretari/);
 });

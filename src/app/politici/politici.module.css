@@ -34,6 +34,19 @@
 .immersiveBrand:hover { color: var(--color-accent); }
 .immersiveBrand:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
+.immersiveHomeLink {
+  font-size: 0.78rem;
+  font-weight: 550;
+  color: color-mix(in srgb, var(--graph-institution) 78%, transparent);
+  text-decoration: none;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 16%, transparent);
+  background: color-mix(in srgb, var(--graph-canvas) 70%, var(--color-raised));
+}
+
+.immersiveHomeLink:hover { color: var(--color-accent); border-color: color-mix(in srgb, var(--color-accent) 35%, transparent); }
+.immersiveHomeLink:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
 .immersiveActions {
   display: flex;
   align-items: center;

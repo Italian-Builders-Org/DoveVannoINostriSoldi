@@ -3,6 +3,8 @@
  * footer map stay aligned.
  */
 
+import { PUBLIC_POLITICI_URL } from "@/lib/site";
+
 export type NavLink = Readonly<{
   href: string;
   label: string;
@@ -138,7 +140,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
-      { href: "/politici", label: "Mappa della politica" },
+      { href: PUBLIC_POLITICI_URL, label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
       { href: "/ministeri", label: "Ministeri" },
@@ -295,7 +297,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Istituzioni",
     links: [
       { href: "/istituzioni", label: "Panoramica" },
-      { href: "/politici", label: "Mappa della politica" },
+      { href: PUBLIC_POLITICI_URL, label: "Mappa della politica" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },

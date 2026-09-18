@@ -35,6 +35,7 @@ import {
   getSiopeMunicipalSnapshot,
   partialMonth,
 } from "@/lib/siope-snapshot";
+import { PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -89,6 +90,11 @@ const PRIMARY_DESTINATIONS: readonly Destination[] = [
     href: "/spese",
     title: "Soldi",
     description: "Pagamenti comunali, sanità, pensioni e bilancio dello Stato.",
+  },
+  {
+    href: PUBLIC_POLITICI_URL,
+    title: "Mappa della politica",
+    description: "Presidenza, Governo, Camera e Senato: chi c’è e come si collega.",
   },
 ];
 

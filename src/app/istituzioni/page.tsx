@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./istituzioni.module.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ const dossiers = [
       "Bilanci e documenti di Camera e Senato, con la copertura disponibile per ciascuna istituzione.",
   },
   {
-    href: "/politici",
+    href: PUBLIC_POLITICI_URL,
     title: "Mappa della politica",
     period: "XIX legislatura · open data ufficiali",
     description:

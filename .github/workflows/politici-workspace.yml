@@ -21,15 +21,15 @@ jobs:
           node-version-file: .nvmrc
       - name: Package tracked public files and exact Node runtime
         run: |
-          mkdir -p /tmp/politici-workspace
-          git archive --format=tar HEAD | gzip -1 > /tmp/politici-workspace/repository.tar.gz
-          gzip -c "$(command -v node)" > /tmp/politici-workspace/node.gz
-          git rev-parse HEAD > /tmp/politici-workspace/revision.txt
+          mkdir -p /tmp/politici-meta
+          git archive --format=tar HEAD | gzip -1 | split -b 400M - /tmp/source-
+          gzip -c "$(command -v node)" > /tmp/politici-meta/node.gz
+          git rev-parse HEAD > /tmp/politici-meta/revision.txt
       - name: Observe official European Parliament directory
         run: |
           python3 - <<'PY'
           import datetime, hashlib, json, pathlib, urllib.request
-          folder = pathlib.Path('/tmp/politici-workspace')
+          folder = pathlib.Path('/tmp/politici-meta')
           for label, url in {
               'europarl': 'https://www.europarl.europa.eu/meps/it/full-list/xml',
               'europarl-legal': 'https://www.europarl.europa.eu/legal-notice/it/',
@@ -49,7 +49,30 @@ jobs:
           PY
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: politici-full-source
-          path: /tmp/politici-workspace/
+          name: politici-meta
+          path: /tmp/politici-meta/
           retention-days: 2
-          if-no-files-found: error
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: politici-source-aa
+          path: /tmp/source-aa
+          retention-days: 2
+          compression-level: 0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: politici-source-ab
+          path: /tmp/source-ab
+          retention-days: 2
+          compression-level: 0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: politici-source-ac
+          path: /tmp/source-ac
+          retention-days: 2
+          compression-level: 0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: politici-source-ad
+          path: /tmp/source-ad
+          retention-days: 2
+          compression-level: 0

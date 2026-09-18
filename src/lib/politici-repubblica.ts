@@ -1042,7 +1042,7 @@ export type RepublicProfile = {
 };
 
 function parsePresencePercent(value: string): number {
-  const parsed = Number.parseFloat(value.replace("%", "").replace(",", "."));
+  const parsed = Number.parseFloat(value.replaceAll("%", "").replace(",", "."));
   require(Number.isFinite(parsed), `percentuale presenza non numerica: ${value}`);
   return parsed;
 }

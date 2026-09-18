@@ -692,7 +692,7 @@ def main() -> int:
     roster_html, roster_raw = fetch_roster()
     snapshot = build_snapshot(payload, raw, roster_html, roster_raw, identities_payload, identities_raw)
     OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['appointments']} appointments)")
+    print("snapshot written")
     return 0
 
 

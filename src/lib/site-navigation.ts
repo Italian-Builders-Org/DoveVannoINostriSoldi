@@ -3,8 +3,8 @@
  * footer map stay aligned.
  *
  * The immersive map also lives on politici.dovevannoinostrisoldi.com (see
- * PUBLIC_POLITICI_URL). Nav keeps the same-origin /politici path so in-app
- * menus and browser tests stay on this host.
+ * PUBLIC_POLITICI_URL; root rewrite in src/proxy.ts). Nav keeps the same-origin
+ * /politici path so in-app menus and browser tests stay on this host.
  */
 
 export type NavLink = Readonly<{

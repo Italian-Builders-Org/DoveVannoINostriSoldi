@@ -3,6 +3,8 @@ import { NextResponse } from "next/server.js";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent)(?:\/|[ );]|$)/i;
+// Keep in sync with PUBLIC_POLITICI_URL (Node tests cannot resolve @/ aliases).
+const POLITICI_HOST = "politici.dovevannoinostrisoldi.com";
 
 // Local fallback only; Vercel WAF enforces the cross-instance limits.
 const PER_IP_WINDOW_MS = 60_000;
@@ -76,10 +78,22 @@ function rateLimit(request: NextRequest, state: RateState, perIpMax: number): Ne
   return null;
 }
 
+function requestHostname(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const raw = forwarded || request.headers.get("host") || request.nextUrl.hostname;
+  return raw.split(":")[0]!.toLowerCase();
+}
+
 // ── Proxy handler ───────────────────────────────────────────────────
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  // vercel.json host rewrites lose to the existing `/` page; rewrite here instead.
+  if (pathname === "/" && requestHostname(request) === POLITICI_HOST) {
+    const destination = request.nextUrl.clone();
+    destination.pathname = "/politici";
+    return NextResponse.rewrite(destination);
+  }
   if (pathname.startsWith("/api/")) {
     const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
@@ -108,5 +122,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/mcp", "/enti/:path*", "/api/:path*"],
+  matcher: ["/", "/mcp", "/enti/:path*", "/api/:path*"],
 };

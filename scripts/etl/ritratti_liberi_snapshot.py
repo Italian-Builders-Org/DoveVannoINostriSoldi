@@ -172,7 +172,9 @@ def fetch_commons(titles: list[str], width: int) -> tuple[dict[str, Any], bytes]
 def canonical_url(value: str) -> str:
     """Commons hands out tracking parameters and a rotating host: keep neither."""
     parsed = urllib.parse.urlsplit(value)
-    host = "upload.wikimedia.org" if parsed.netloc.endswith("wikimedia.org") else parsed.netloc
+    hostname = parsed.hostname or ""
+    is_wikimedia = hostname == "wikimedia.org" or hostname.endswith(".wikimedia.org")
+    host = "upload.wikimedia.org" if is_wikimedia else parsed.netloc
     return urllib.parse.urlunsplit(("https", host, parsed.path, "", ""))
 
 

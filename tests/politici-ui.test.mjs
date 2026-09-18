@@ -66,5 +66,27 @@ test("navigation and discovery keep /politici and point the map to the subdomain
   assert.match(styles, /\.immersivePage/);
   assert.match(styles, /\.immersiveChrome/);
   assert.match(styles, /\.immersiveHomeLink/);
-  assert.match(graph, /Viceministri e sottosegretari/);
+  assert.match(graph, /hintDesktop|hintMobile|pizzica per zoom/);
+  assert.match(graph, /chamberEnterCompact|compact=\{overview\.layout === "stacked"\}/);
+  assert.match(graph, /chamberEnterCtaPill/);
+  assert.match(graph, /data-mobile-hub|MobileHub|filtersOpen|filtersToggle/);
+  assert.match(graph, /Scegli un’istituzione/);
+  assert.match(graph, /desktopExperienceNote|esperienza completa della mappa/);
+  assert.match(styles, /\.hintMobile/);
+  assert.match(styles, /\.chamberEnterCompact/);
+  assert.match(styles, /\.chamberEnterCtaPill/);
+  assert.match(styles, /\.mobileHub/);
+  assert.match(styles, /\.filtersToggle/);
+  assert.match(styles, /\.desktopExperienceNote/);
+  assert.match(styles, /\.cvBlock|\.rankingBlock/);
+  assert.match(styles, /minmax\(140px, 22dvh\)/);
+  assert.match(geometry, /cardH = layout === "stacked" \? 150/);
+});
+
+test("person panel exposes institutional CV and Camera attendance ranking", async () => {
+  const panel = await readFile(new URL("../src/app/politici/repubblica-panel.tsx", import.meta.url), "utf8");
+  assert.match(panel, /Curriculum istituzionale/);
+  assert.match(panel, /Classifica presenze/);
+  assert.match(panel, /AttendanceRanking|cameraAttendanceRanking/);
+  assert.match(panel, /Senato non pubblica/);
 });

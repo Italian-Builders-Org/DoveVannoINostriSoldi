@@ -29,15 +29,15 @@ export const OVERVIEW = {
 /** Narrow screens keep the same radial language, slightly tighter. */
 export const OVERVIEW_STACKED = {
   width: 900,
-  height: 1100,
+  height: 980,
   cx: 450,
-  cy: 560,
+  cy: 500,
   rAuthority: 64,
-  rExecutive: 160,
-  rCabinet: 268,
-  rJunior: 328,
-  rChambers: 385,
-  rOuter: 425,
+  rExecutive: 150,
+  rCabinet: 248,
+  rJunior: 308,
+  rChambers: 365,
+  rOuter: 405,
 } as const;
 
 export type OverviewLayout = "wide" | "stacked";
@@ -461,7 +461,7 @@ export function buildOverviewGeometry(map: RepublicMap, layout: OverviewLayout =
     canvas.rCabinet,
     executiveArc.start + 0.08,
     executiveArc.end - 0.08,
-    16,
+    layout === "stacked" ? 18 : 16,
   ).map((point, index) => ({ personId: ministerPeople[index]!.id, ...point }));
 
   const juniorPeople = map.people.filter(
@@ -474,7 +474,7 @@ export function buildOverviewGeometry(map: RepublicMap, layout: OverviewLayout =
     canvas.rJunior,
     executiveArc.start + 0.05,
     executiveArc.end - 0.05,
-    10,
+    layout === "stacked" ? 12 : 10,
   ).map((point, index) => ({ personId: juniorPeople[index]!.id, ...point }));
 
   const apexByPerson = new Map<string, ApexNode>();
@@ -482,13 +482,17 @@ export function buildOverviewGeometry(map: RepublicMap, layout: OverviewLayout =
     if (node) apexByPerson.set(node.personId, node);
   }
 
-  const cardW = layout === "stacked" ? 230 : 288;
-  const cardH = layout === "stacked" ? 204 : 232;
+  const cardW = layout === "stacked" ? 210 : 288;
+  // Stacked cards are CTA tiles (no mini-hemicycle under the header).
+  const cardH = layout === "stacked" ? 150 : 232;
   const cameraAnchor = polar(cx, cy, canvas.rOuter - 36, (legislativeArcs.camera.start + legislativeArcs.camera.end) / 2);
   const senatoAnchor = polar(cx, cy, canvas.rOuter - 36, (legislativeArcs.senato.start + legislativeArcs.senato.end) / 2);
   const placeCard = (anchorX: number, anchorY: number) => ({
     x: Math.max(10, Math.min(canvas.width - cardW - 10, Math.round(anchorX - cardW / 2))),
-    y: Math.max(56, Math.min(canvas.height - cardH - 10, Math.round(anchorY - cardH * 0.38))),
+    y: Math.max(
+      layout === "stacked" ? 28 : 56,
+      Math.min(canvas.height - cardH - 10, Math.round(anchorY - cardH * (layout === "stacked" ? 0.55 : 0.38))),
+    ),
   });
   const cameraOrigin = placeCard(cameraAnchor.x, cameraAnchor.y);
   const senatoOrigin = placeCard(senatoAnchor.x, senatoAnchor.y);

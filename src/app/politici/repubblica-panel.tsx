@@ -1,6 +1,7 @@
 "use client";
 
-import type { RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
+import { useState } from "react";
+import type { CameraAttendanceRanking, RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
 import styles from "./politici.module.css";
 import { Portrait, type GraphSelection } from "./repubblica-graph";
 
@@ -136,7 +137,7 @@ function OverviewCard({ map, onSelect }: { map: RepublicMap; onSelect: (selectio
       <p className={styles.cardLead}>
         Dall’alto verso il basso: il Capo dello Stato, il Governo che ha la fiducia delle Camere e i due rami del
         Parlamento, ciascuno diviso nei gruppi che lo compongono. Ogni pallino è una persona: selezionala per vedere
-        ruoli, gruppo, territorio, notizie recenti e chi viene citato insieme a lei.
+        curriculum istituzionale, incarichi, territorio, notizie recenti e chi viene citato insieme a lei.
       </p>
       <ul className={styles.institutionList}>
         {map.institutions.map((institution) => (
@@ -158,6 +159,7 @@ function OverviewCard({ map, onSelect }: { map: RepublicMap; onSelect: (selectio
         <div><dt>Gruppi parlamentari</dt><dd>{map.coverage.groups}</dd></div>
         <div><dt>Con ritratto ufficiale</dt><dd>{map.coverage.peopleWithPhoto}</dd></div>
       </dl>
+      <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
       <p className={styles.cardNote}>Dati ufficiali osservati il {longDate(map.updatedAt)}.</p>
     </div>
   );
@@ -213,6 +215,14 @@ function InstitutionCard({
             ))}
           </ul>
         </>
+      ) : null}
+      {institutionId === "camera" ? (
+        <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
+      ) : institutionId === "senato" ? (
+        <p className={styles.cardNote}>
+          Il Senato non pubblica una tabella ufficiale di partecipazione al voto equivalente a quella della Camera:
+          non mostriamo una classifica inventata.
+        </p>
       ) : null}
       {departments.length > 0 ? (
         <>
@@ -376,14 +386,13 @@ function PersonCard({
         <section className={styles.officialFacts} aria-label="Presenze ufficiali in Aula">
           <div className={styles.officialFact}>
             <h3 className={styles.cardSection}>Presenze in Aula</h3>
-            <p className={styles.factKind}>
-              Dato <strong>individuale</strong> pubblicato dalla Camera dei deputati: per ogni deputato, quanto ha
-              partecipato alle <strong>votazioni elettroniche in Aula</strong> dall’inizio della XIX legislatura.
-              Non misura le sedute di commissione né la presenza fisica senza voto.
+            <p className={styles.rankBadge} aria-label={`Posizione ${profile.voteAttendance.rank} su ${profile.voteAttendance.rankedAmong}`}>
+              <strong>{profile.voteAttendance.rank}°</strong>
+              <span>su {profile.voteAttendance.rankedAmong} deputati con dato ufficiale (dal più presente al più assente)</span>
             </p>
             <p className={styles.factKind}>
-              Come le legge la Camera: una <strong>presenza</strong> è un voto espresso <em>oppure</em> una missione
-              ufficiale; il resto sono assenze (con colonna separata per quelle giustificate).
+              Dato <strong>individuale</strong> pubblicato dalla Camera dei deputati: partecipazione alle{" "}
+              <strong>votazioni elettroniche in Aula</strong>. Non misura le commissioni né la presenza senza voto.
             </p>
             <dl className={styles.figures}>
               <div>
@@ -409,14 +418,18 @@ function PersonCard({
               {` ${profile.voteAttendance.absences.toLocaleString("it-IT")} assenze`}
               {` di cui ${profile.voteAttendance.justifiedAbsences.toLocaleString("it-IT")} giustificate`}.
               {" "}Periodo: {profile.voteAttendance.periodLabel}.
-              {" "}Fonte ufficiale:{" "}
+              {" "}Fonte:{" "}
               <a href={profile.voteAttendance.sourceUrl} rel="noreferrer">
                 {profile.voteAttendance.sourceLabel}
               </a>
-              {" "}(tabella pubblica «Partecipazione al voto»).
+              .
             </p>
           </div>
         </section>
+      ) : person.chamberId === "senato" ? (
+        <p className={styles.cardNote}>
+          Per i senatori non esiste una tabella ufficiale di % presenza equivalente a quella della Camera.
+        </p>
       ) : null}
 
       <h3 className={styles.cardSection}>Collegamenti tipizzati</h3>
@@ -481,39 +494,74 @@ function PersonCard({
 
       {profile ? (
         <>
-          <h3 className={styles.cardSection}>Incarichi in corso</h3>
-          <ul className={styles.roleList}>
-            {profile.roles.map((role) => (
-              <li key={`${role.kind}-${role.label}-${role.organLabel ?? ""}`}>
-                <strong>{role.label}</strong>
-                {role.organLabel ? <span>{role.organLabel}</span> : null}
-                {role.since ? <span className={styles.mutedInline}>dal {longDate(role.since)}</span> : null}
+          <section className={styles.cvBlock} aria-label="Curriculum istituzionale">
+            <h3 className={styles.cardSection}>Curriculum istituzionale</h3>
+            <p className={styles.cvLead}>
+              Sintesi dalle schede ufficiali di Camera, Senato e Governo: non è un curriculum personale completo
+              (studi, carriera pre-parlamentare o CV privati non risultano in open data nominativo verificabile).
+            </p>
+            <ul className={styles.cvSummary}>
+              <li>
+                <strong>In carica come</strong>
+                <span>{person.roleLabel}</span>
               </li>
-            ))}
-          </ul>
+              {group ? (
+                <li>
+                  <strong>Gruppo</strong>
+                  <span>{group.label}{profile.groupRoleLabel ? ` · ${profile.groupRoleLabel}` : ""}</span>
+                </li>
+              ) : null}
+              {profile.profession ? (
+                <li>
+                  <strong>Studi e professione</strong>
+                  <span>{profile.profession}</span>
+                </li>
+              ) : null}
+              {profile.constituency || profile.college ? (
+                <li>
+                  <strong>{person.chamberId === "senato" ? "Territorio" : "Elezione"}</strong>
+                  <span>
+                    {[profile.constituency, profile.college].filter(Boolean).join(" · ")}
+                  </span>
+                </li>
+              ) : null}
+              {departments.length > 0 ? (
+                <li>
+                  <strong>Dicasteri e deleghe</strong>
+                  <span>{departments.map((department) => department.label).join(" · ")}</span>
+                </li>
+              ) : null}
+              {profile.organLabels.length > 0 ? (
+                <li>
+                  <strong>Organi parlamentari</strong>
+                  <span>{profile.organLabels.join(" · ")}</span>
+                </li>
+              ) : null}
+              {profile.birthDate ? (
+                <li>
+                  <strong>Nascita</strong>
+                  <span>
+                    {longDate(profile.birthDate)}
+                    {profile.birthPlace ? ` · ${profile.birthPlace}` : ""}
+                  </span>
+                </li>
+              ) : null}
+            </ul>
 
-          <h3 className={styles.cardSection}>Scheda</h3>
-          <dl className={styles.detailList}>
-            {profile.constituency ? (
-              <div><dt>{person.chamberId === "senato" ? "Regione" : "Circoscrizione"}</dt><dd>{profile.constituency}</dd></div>
-            ) : null}
-            {profile.college ? <div><dt>Collegio</dt><dd>{profile.college}</dd></div> : null}
-            {profile.profession ? <div><dt>Studi e professione</dt><dd>{profile.profession}</dd></div> : null}
-            {profile.birthDate ? (
-              <div>
-                <dt>Nascita</dt>
-                <dd>{longDate(profile.birthDate)}{profile.birthPlace ? ` · ${profile.birthPlace}` : ""}</dd>
-              </div>
-            ) : null}
-            {departments.length > 0 ? (
-              <div><dt>Dicasteri e deleghe</dt><dd>{departments.map((department) => department.label).join(" · ")}</dd></div>
-            ) : null}
-            {profile.organLabels.length > 0 ? (
-              <div><dt>Organi parlamentari</dt><dd>{profile.organLabels.join(" · ")}</dd></div>
-            ) : null}
-          </dl>
+            <h4 className={styles.cvSubheading}>Incarichi in corso</h4>
+            <ul className={styles.roleList}>
+              {profile.roles.map((role) => (
+                <li key={`${role.kind}-${role.label}-${role.organLabel ?? ""}`}>
+                  <strong>{role.label}</strong>
+                  {role.organLabel ? <span>{role.organLabel}</span> : null}
+                  {role.since ? <span className={styles.mutedInline}>dal {longDate(role.since)}</span> : null}
+                </li>
+              ))}
+            </ul>
 
-          <p className={styles.biography}>{profile.biography}</p>
+            <h4 className={styles.cvSubheading}>Riassunto ufficiale</h4>
+            <p className={styles.biography}>{profile.biography}</p>
+          </section>
 
           <ul className={styles.linkList}>
             {profile.officialPages.map((page) => (
@@ -622,5 +670,63 @@ function PersonCard({
         <p className={styles.cardNote}>Dati istituzionali osservati il {longDate(map.updatedAt)}.</p>
       ) : null}
     </div>
+  );
+}
+
+function AttendanceRanking({
+  ranking,
+  onSelect,
+}: {
+  ranking: CameraAttendanceRanking;
+  onSelect: (selection: GraphSelection) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? ranking.rows : ranking.rows.slice(0, 25);
+  const hiddenCount = Math.max(0, ranking.rows.length - visible.length);
+
+  return (
+    <section className={styles.rankingBlock} aria-label="Classifica presenze Camera">
+      <h3 className={styles.cardSection}>Classifica presenze · Camera</h3>
+      <p className={styles.factKind}>{ranking.caveat}</p>
+      <p className={styles.cardNote}>
+        Periodo: {ranking.periodLabel}. Fonte:{" "}
+        <a href={ranking.sourceUrl} rel="noreferrer">{ranking.sourceLabel}</a>
+        {`. ${ranking.matchedCount} deputati in classifica`}
+        {ranking.unmatchedRows > 0 ? ` · ${ranking.unmatchedRows} righe senza match` : ""}
+        {ranking.rosterWithoutRow > 0 ? ` · ${ranking.rosterWithoutRow} deputati senza riga` : ""}
+        .
+      </p>
+      <ol className={styles.rankingList}>
+        {visible.map((row) => (
+          <li key={row.personId}>
+            <button
+              type="button"
+              className={styles.rankingRow}
+              onClick={() => onSelect({ kind: "person", id: row.personId })}
+            >
+              <span className={styles.rankingPos} aria-hidden="true">{row.rank}</span>
+              <span className={styles.rankingText}>
+                <strong>{row.name}</strong>
+                <span>{row.groupLabel}</span>
+              </span>
+              <span className={styles.rankingPct}>
+                <strong>{row.presencePercent}</strong>
+                <span>{row.absencesPercent} assenze</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      {hiddenCount > 0 ? (
+        <button type="button" className={styles.rankingMore} onClick={() => setExpanded(true)}>
+          Mostra tutti ({ranking.rows.length})
+        </button>
+      ) : null}
+      {expanded && ranking.rows.length > 25 ? (
+        <button type="button" className={styles.rankingMore} onClick={() => setExpanded(false)}>
+          Mostra solo i primi 25
+        </button>
+      ) : null}
+    </section>
   );
 }

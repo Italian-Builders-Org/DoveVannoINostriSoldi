@@ -201,6 +201,7 @@ export function RepubblicaGraph({
   const [selection, setSelection] = useState<GraphSelection>(initialSelection);
   const [scene, setScene] = useState<Scene>(() => sceneForSelection(initialSelection, peopleById, groupById));
   const [overviewLayout, setOverviewLayout] = useState<OverviewLayout>("wide");
+  const [layoutReady, setLayoutReady] = useState(false);
   const [hover, setHover] = useState<Hover>(null);
   const [profiles, setProfiles] = useState<Record<string, RepublicProfile> | null>(null);
   const [profilesFailed, setProfilesFailed] = useState(false);
@@ -208,6 +209,7 @@ export function RepubblicaGraph({
   const [familyFilter, setFamilyFilter] = useState<string | null>(null);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("tutti");
   const [mode, setMode] = useState<"mappa" | "elenco">("mappa");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [view, setView] = useState({ scale: 1, x: 0, y: 0 });
   const [news, setNews] = useState<Record<string, NewsState>>({});
   const [newsTick, setNewsTick] = useState(0);
@@ -235,6 +237,7 @@ export function RepubblicaGraph({
     const media = window.matchMedia("(max-width: 899px)");
     const sync = () => setOverviewLayout(media.matches ? "stacked" : "wide");
     sync();
+    setLayoutReady(true);
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
@@ -658,9 +661,16 @@ export function RepubblicaGraph({
       : null,
   });
 
+  const mobileHub = layoutReady && overviewLayout === "stacked" && scene === "overview" && mode === "mappa";
+
   return (
-    <div className={styles.explorer}>
+    <div className={styles.explorer} data-mobile-hub={mobileHub ? "true" : "false"} data-filters-open={filtersOpen ? "true" : "false"}>
       <div className={styles.topBar}>
+        <p className={styles.desktopExperienceNote} role="note">
+          <strong>Su telefono vedi una panoramica semplificata.</strong>
+          {" "}
+          L’esperienza completa della mappa — zoom, collegamenti e vista radiale — è pensata per il desktop.
+        </p>
         <div className={styles.toolbar}>
           <div className={styles.search}>
             <label className={styles.searchLabel} htmlFor="politici-search">Cerca una persona o un gruppo</label>
@@ -736,7 +746,11 @@ export function RepubblicaGraph({
                 Senato
               </button>
             </fieldset>
-            <fieldset className={styles.filterSet}>
+            <fieldset
+              className={`${styles.filterSet} ${styles.filterSetExtra}`}
+              id="politici-extra-filters"
+              data-open={filtersOpen || overviewLayout !== "stacked" ? "true" : "false"}
+            >
               <legend>Incarico</legend>
               {(["tutti", "governo", "presidenza", "capigruppo"] as RoleFilter[]).map((value) => {
                 const count =
@@ -778,18 +792,32 @@ export function RepubblicaGraph({
                 );
               })}
             </fieldset>
-            <div className={styles.modeSwitch}>
-              <button type="button" className={styles.chip} aria-pressed={mode === "mappa"} onClick={() => setMode("mappa")}>
-                Mappa
-              </button>
-              <button type="button" className={styles.chip} aria-pressed={mode === "elenco"} onClick={() => setMode("elenco")}>
-                Elenco
+            <div className={styles.filterTools}>
+              <div className={styles.modeSwitch}>
+                <button type="button" className={styles.chip} aria-pressed={mode === "mappa"} onClick={() => setMode("mappa")}>
+                  Mappa
+                </button>
+                <button type="button" className={styles.chip} aria-pressed={mode === "elenco"} onClick={() => setMode("elenco")}>
+                  Elenco
+                </button>
+              </div>
+              <button
+                type="button"
+                className={styles.filtersToggle}
+                aria-expanded={filtersOpen}
+                aria-controls="politici-extra-filters"
+                onClick={() => setFiltersOpen((open) => !open)}
+              >
+                Filtri{filtersActive ? " · on" : ""}
               </button>
             </div>
           </div>
         </div>
 
-        <ul className={styles.legend}>
+        <ul
+          className={styles.legend}
+          data-open={filtersOpen || overviewLayout !== "stacked" ? "true" : "false"}
+        >
           {map.partyFamilies.map((family) => (
             <li key={family.id}>
               <button
@@ -854,114 +882,136 @@ export function RepubblicaGraph({
 
       <div className={styles.stageRow}>
         <div className={mode === "mappa" ? styles.stageColumn : styles.stageColumnHidden}>
-          <div className={styles.canvasControls}>
-            {scene !== "overview" ? (
-              <button type="button" className={styles.backButton} onClick={backToOverview}>
-                ← Torna alla panoramica
-              </button>
-            ) : (
-              <p className={styles.canvasHint}>
-                Clicca Camera o Senato · trascina · ⌘/Ctrl + rotella
-              </p>
-            )}
-            <div className={styles.zoomButtons}>
-              <button type="button" className={styles.zoomButton} onClick={() => zoomAt(1.3)} aria-label="Ingrandisci">+</button>
-              <button type="button" className={styles.zoomButton} onClick={() => zoomAt(1 / 1.3)} aria-label="Riduci">−</button>
-              <button type="button" className={styles.zoomButton} onClick={resetView} aria-label="Reimposta la vista">Reset</button>
-            </div>
-          </div>
+          {mobileHub ? (
+            <>
+              <MobileHub
+                map={map}
+                peopleById={peopleById}
+                institutionById={institutionById}
+                selection={selection}
+                onOpenChamber={(chamberId) => openScene(chamberId, { kind: "institution", id: chamberId })}
+                onSelectInstitution={(id) => select({ kind: "institution", id })}
+                onSelectPerson={focusPerson}
+              />
+              <div className={styles.stageFooter}>
+                <p className={styles.status} role="status" aria-live="polite">{statusMessage}</p>
+              </div>
+            </>
+          ) : !layoutReady ? (
+            <div className={styles.stagePending} aria-busy="true" aria-label="Caricamento panoramica" />
+          ) : (
+            <>
+              <div className={styles.canvasControls}>
+                {scene !== "overview" ? (
+                  <button type="button" className={styles.backButton} onClick={backToOverview}>
+                    ← Torna alla panoramica
+                  </button>
+                ) : (
+                  <p className={styles.canvasHint}>
+                    <span className={styles.hintDesktop}>Clicca Camera o Senato · trascina · ⌘/Ctrl + rotella</span>
+                    <span className={styles.hintMobile}>Tocca Camera o Senato · trascina · pizzica per zoom</span>
+                  </p>
+                )}
+                <div className={styles.zoomButtons}>
+                  <button type="button" className={styles.zoomButton} onClick={() => zoomAt(1.3)} aria-label="Ingrandisci">+</button>
+                  <button type="button" className={styles.zoomButton} onClick={() => zoomAt(1 / 1.3)} aria-label="Riduci">−</button>
+                  <button type="button" className={styles.zoomButton} onClick={resetView} aria-label="Reimposta la vista">Reset</button>
+                </div>
+              </div>
 
-          <div
-            className={styles.frame}
-            ref={frameRef}
-            data-zoomed={view.scale > 1 ? "true" : "false"}
-            data-scene={scene}
-            data-filtered={filtersActive ? "true" : "false"}
-            data-layout={scene === "overview" ? overviewLayout : undefined}
-            onPointerDown={onPointerDown}
-            onPointerMove={onCanvasMove}
-            onPointerUp={onPointerUp}
-            onPointerCancel={onPointerUp}
-            onPointerLeave={(event) => {
-              onPointerUp(event);
-              setHover(null);
-            }}
-            onClick={onCanvasClick}
-            onDoubleClick={(event) => {
-              const rect = frameRef.current?.getBoundingClientRect();
-              zoomAt(1.6, rect ? event.clientX - rect.left : undefined, rect ? event.clientY - rect.top : undefined);
-            }}
-            onWheel={onWheel}
-            onKeyDown={onKeyDown}
-            tabIndex={0}
-            role="group"
-            aria-label={
-              scene === "overview"
-                ? "Panoramica istituzionale: clicca Camera o Senato per entrare nell’emiciclo"
-                : `Emiciclo ${scene === "camera" ? "della Camera" : "del Senato"}: frecce per i seggi, Esc per tornare indietro`
-            }
-          >
-            <div
-              className={styles.stage}
-              style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})` }}
-            >
               <div
-                className={styles.stageBoard}
+                className={styles.frame}
+                ref={frameRef}
+                data-zoomed={view.scale > 1 ? "true" : "false"}
                 data-scene={scene}
+                data-filtered={filtersActive ? "true" : "false"}
                 data-layout={scene === "overview" ? overviewLayout : undefined}
-              >
-              {scene === "overview" ? (
-                <OverviewScene
-                  map={map}
-                  overview={overview}
-                  peopleById={peopleById}
-                  groupById={groupById}
-                  institutionById={institutionById}
-                  selection={selection}
-                  litIds={litIds}
-                  highlightedGroupIds={highlightedGroupIds}
-                />
-              ) : activeChamber ? (
-                <ChamberSceneView
-                  map={map}
-                  chamber={activeChamber}
-                  peopleById={peopleById}
-                  groupById={groupById}
-                  institutionById={institutionById}
-                  selection={selection}
-                  litIds={litIds}
-                  highlightedGroupIds={highlightedGroupIds}
-                  connections={connections}
-                  connectionById={connectionById}
-                  selectedPerson={selectedPerson}
-                />
-              ) : null}
-              </div>
-            </div>
-
-            {hoveredPerson ? (
-              <div
-                className={styles.tooltip}
-                style={{
-                  left: `${clamp(hover!.x, 130, Math.max(130, hover!.frameWidth - 130))}px`,
-                  top: `${Math.max(12, hover!.y - 18)}px`,
+                onPointerDown={onPointerDown}
+                onPointerMove={onCanvasMove}
+                onPointerUp={onPointerUp}
+                onPointerCancel={onPointerUp}
+                onPointerLeave={(event) => {
+                  onPointerUp(event);
+                  setHover(null);
                 }}
-                role="presentation"
+                onClick={onCanvasClick}
+                onDoubleClick={(event) => {
+                  const rect = frameRef.current?.getBoundingClientRect();
+                  zoomAt(1.6, rect ? event.clientX - rect.left : undefined, rect ? event.clientY - rect.top : undefined);
+                }}
+                onWheel={onWheel}
+                onKeyDown={onKeyDown}
+                tabIndex={0}
+                role="group"
+                aria-label={
+                  scene === "overview"
+                    ? "Panoramica istituzionale: clicca Camera o Senato per entrare nell’emiciclo"
+                    : `Emiciclo ${scene === "camera" ? "della Camera" : "del Senato"}: frecce per i seggi, Esc per tornare indietro`
+                }
               >
-                <span className={styles.tooltipAvatar}><Portrait person={hoveredPerson} size={48} /></span>
-                <span className={styles.tooltipText}>
-                  <strong>{hoveredPerson.name}</strong>
-                  <span>{hoveredPerson.roleLabel}</span>
-                  {hoveredGroup ? <span className={styles.tooltipGroup}>{hoveredGroup.label}</span> : null}
-                </span>
-              </div>
-            ) : null}
-          </div>
+                <div
+                  className={styles.stage}
+                  style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})` }}
+                >
+                  <div
+                    className={styles.stageBoard}
+                    data-scene={scene}
+                    data-layout={scene === "overview" ? overviewLayout : undefined}
+                  >
+                  {scene === "overview" ? (
+                    <OverviewScene
+                      map={map}
+                      overview={overview}
+                      peopleById={peopleById}
+                      groupById={groupById}
+                      institutionById={institutionById}
+                      selection={selection}
+                      litIds={litIds}
+                      highlightedGroupIds={highlightedGroupIds}
+                    />
+                  ) : activeChamber ? (
+                    <ChamberSceneView
+                      map={map}
+                      chamber={activeChamber}
+                      peopleById={peopleById}
+                      groupById={groupById}
+                      institutionById={institutionById}
+                      selection={selection}
+                      litIds={litIds}
+                      highlightedGroupIds={highlightedGroupIds}
+                      connections={connections}
+                      connectionById={connectionById}
+                      selectedPerson={selectedPerson}
+                    />
+                  ) : null}
+                  </div>
+                </div>
 
-          <div className={styles.stageFooter}>
-            <p className={styles.status} role="status" aria-live="polite">{statusMessage}</p>
-            <RelationLegend scene={scene} hasSelection={selection.kind !== "overview"} />
-          </div>
+                {hoveredPerson ? (
+                  <div
+                    className={styles.tooltip}
+                    style={{
+                      left: `${clamp(hover!.x, 130, Math.max(130, hover!.frameWidth - 130))}px`,
+                      top: `${Math.max(12, hover!.y - 18)}px`,
+                    }}
+                    role="presentation"
+                  >
+                    <span className={styles.tooltipAvatar}><Portrait person={hoveredPerson} size={48} /></span>
+                    <span className={styles.tooltipText}>
+                      <strong>{hoveredPerson.name}</strong>
+                      <span>{hoveredPerson.roleLabel}</span>
+                      {hoveredGroup ? <span className={styles.tooltipGroup}>{hoveredGroup.label}</span> : null}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={styles.stageFooter}>
+                <p className={styles.status} role="status" aria-live="polite">{statusMessage}</p>
+                <RelationLegend scene={scene} hasSelection={selection.kind !== "overview"} />
+              </div>
+            </>
+          )}
         </div>
 
         {mode === "elenco" ? (
@@ -994,6 +1044,116 @@ function RelationLegend({ scene, hasSelection }: { scene: Scene; hasSelection: b
         </>
       )}
     </ul>
+  );
+}
+
+function MobileHub({
+  map,
+  peopleById,
+  institutionById,
+  selection,
+  onOpenChamber,
+  onSelectInstitution,
+  onSelectPerson,
+}: {
+  map: RepublicMap;
+  peopleById: Map<string, RepublicMapPerson>;
+  institutionById: Map<string, RepublicMap["institutions"][number]>;
+  selection: GraphSelection;
+  onOpenChamber: (chamberId: ChamberId) => void;
+  onSelectInstitution: (id: string) => void;
+  onSelectPerson: (personId: string) => void;
+}) {
+  const quirinale = institutionById.get("presidenza-repubblica")!;
+  const governo = institutionById.get("governo")!;
+  const camera = institutionById.get("camera")!;
+  const senato = institutionById.get("senato")!;
+  const quirinaleLeader = quirinale.leaderPersonId ? peopleById.get(quirinale.leaderPersonId) ?? null : null;
+  const governoLeader = governo.leaderPersonId ? peopleById.get(governo.leaderPersonId) ?? null : null;
+  const cameraLeader = camera.leaderPersonId ? peopleById.get(camera.leaderPersonId) ?? null : null;
+  const senatoLeader = senato.leaderPersonId ? peopleById.get(senato.leaderPersonId) ?? null : null;
+
+  return (
+    <nav className={styles.mobileHub} aria-label={`Panoramica della ${map.legislature.label}`}>
+      <p className={styles.mobileHubIntro}>Scegli un’istituzione. Camera e Senato aprono l’emiciclo. La classifica presenze Camera è nel pannello sotto.</p>
+
+      <button
+        type="button"
+        className={styles.mobileHubCard}
+        data-kind="presidenza"
+        aria-pressed={selection.kind === "institution" && selection.id === quirinale.id}
+        onClick={() => {
+          if (quirinaleLeader) onSelectPerson(quirinaleLeader.id);
+          else onSelectInstitution(quirinale.id);
+        }}
+      >
+        <span className={styles.mobileHubEyebrow}>Presidenza della Repubblica</span>
+        <span className={styles.mobileHubRow}>
+          {quirinaleLeader ? (
+            <span className={styles.mobileHubAvatar}><Portrait person={quirinaleLeader} size={56} eager /></span>
+          ) : null}
+          <span className={styles.mobileHubCopy}>
+            <strong>{quirinaleLeader?.name ?? quirinale.label}</strong>
+            <span>{quirinaleLeader?.roleLabel ?? quirinale.shortLabel}</span>
+          </span>
+        </span>
+      </button>
+
+      <button
+        type="button"
+        className={styles.mobileHubCard}
+        data-kind="governo"
+        aria-pressed={selection.kind === "institution" && selection.id === governo.id}
+        onClick={() => onSelectInstitution(governo.id)}
+      >
+        <span className={styles.mobileHubEyebrow}>Governo</span>
+        <span className={styles.mobileHubRow}>
+          {governoLeader ? (
+            <span className={styles.mobileHubAvatar}><Portrait person={governoLeader} size={56} eager /></span>
+          ) : null}
+          <span className={styles.mobileHubCopy}>
+            <strong>{governoLeader?.name ?? governo.label}</strong>
+            <span>
+              {governoLeader?.roleLabel ?? governo.shortLabel}
+              {` · ${governo.memberCount} componenti`}
+            </span>
+          </span>
+        </span>
+      </button>
+
+      <div className={styles.mobileHubChambers}>
+        {([
+          { institution: camera, leader: cameraLeader },
+          { institution: senato, leader: senatoLeader },
+        ] as const).map(({ institution, leader }) => (
+          <button
+            key={institution.id}
+            type="button"
+            className={styles.mobileHubChamber}
+            data-enter-chamber={institution.id}
+            aria-label={`${institution.label}: apri emiciclo`}
+            onClick={() => onOpenChamber(institution.id as ChamberId)}
+          >
+            <span className={styles.mobileHubChamberTitle}>{institution.shortLabel}</span>
+            <span className={styles.mobileHubChamberMeta}>
+              {institution.vacantSeats
+                ? `${institution.memberCount} in carica · ${institution.vacantSeats} vacanti`
+                : `${institution.memberCount} in carica`}
+            </span>
+            {leader ? (
+              <span className={styles.mobileHubRow}>
+                <span className={styles.mobileHubAvatar}><Portrait person={leader} size={44} eager /></span>
+                <span className={styles.mobileHubCopy}>
+                  <strong>{leader.name}</strong>
+                  <span>{leader.roleLabel}</span>
+                </span>
+              </span>
+            ) : null}
+            <span className={styles.mobileHubCta}>Apri emiciclo</span>
+          </button>
+        ))}
+      </div>
+    </nav>
   );
 }
 
@@ -1117,9 +1277,11 @@ function OverviewScene({
           </g>
         ) : null}
 
-        {overview.cards.map((card) => (
-          <ChamberCardSvg key={card.chamberId} card={card} groupById={groupById} highlightedGroupIds={highlightedGroupIds} />
-        ))}
+        {overview.layout === "wide"
+          ? overview.cards.map((card) => (
+              <ChamberCardSvg key={card.chamberId} card={card} groupById={groupById} highlightedGroupIds={highlightedGroupIds} />
+            ))
+          : null}
       </svg>
 
       <div className={styles.overlay}>
@@ -1195,6 +1357,7 @@ function OverviewScene({
             people={peopleById}
             canvasWidth={overview.width}
             canvasHeight={overview.height}
+            compact={overview.layout === "stacked"}
           />
         ))}
       </div>
@@ -1256,26 +1419,30 @@ function ChamberEnterCard({
   people,
   canvasWidth,
   canvasHeight,
+  compact = false,
 }: {
   card: ChamberCard;
   institution: RepublicMap["institutions"][number];
   people: Map<string, RepublicMapPerson>;
   canvasWidth: number;
   canvasHeight: number;
+  compact?: boolean;
 }) {
   const leader = institution.leaderPersonId ? people.get(institution.leaderPersonId) ?? null : null;
-  const headerHeight = Math.min(152, card.height * 0.68);
+  const headerHeight = compact
+    ? Math.max(72, card.height - 10)
+    : Math.min(152, card.height * 0.68);
   return (
     <button
       type="button"
-      className={styles.chamberEnter}
+      className={compact ? `${styles.chamberEnter} ${styles.chamberEnterCompact}` : styles.chamberEnter}
       data-enter-chamber={card.chamberId}
       aria-label={`${institution.label}: apri emiciclo`}
       style={{
         left: `${((card.x + card.width / 2) / canvasWidth) * 100}%`,
         top: `${((card.y + 4) / canvasHeight) * 100}%`,
-        width: `${(card.width / canvasWidth) * 100}%`,
-        height: `${(headerHeight / canvasHeight) * 100}%`,
+        width: compact ? undefined : `${(card.width / canvasWidth) * 100}%`,
+        height: compact ? undefined : `${(headerHeight / canvasHeight) * 100}%`,
       }}
     >
       <span className={styles.chamberEnterTitle}>{institution.shortLabel}</span>
@@ -1286,15 +1453,16 @@ function ChamberEnterCard({
       </span>
       {leader ? (
         <span className={styles.chamberEnterLeader}>
-          <span className={styles.chamberEnterAvatar}><Portrait person={leader} size={40} eager /></span>
+          <span className={styles.chamberEnterAvatar}><Portrait person={leader} size={compact ? 36 : 40} eager /></span>
           <span className={styles.chamberEnterLeaderText}>
             <strong>{leader.name}</strong>
-            <span>Apri emiciclo →</span>
+            {compact ? null : <span>Apri emiciclo →</span>}
           </span>
         </span>
-      ) : (
+      ) : compact ? null : (
         <span className={styles.chamberEnterCta}>Apri emiciclo →</span>
       )}
+      {compact ? <span className={styles.chamberEnterCtaPill}>Apri emiciclo</span> : null}
     </button>
   );
 }

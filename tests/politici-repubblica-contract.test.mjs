@@ -34,6 +34,19 @@ test("compact map keeps only navigation fields and matches person ids", () => {
   assert.equal(map.groups.length, graph.groups.length);
   assert.ok(map.people.every((person) => typeof person.photo === "boolean"));
   assert.ok(map.people.every((person) => findRepublicPerson(person.id)));
+  assert.equal(map.cameraAttendanceRanking.chamber, "camera");
+  assert.ok(map.cameraAttendanceRanking.rows.length >= 390);
+  assert.equal(map.cameraAttendanceRanking.rows[0]?.rank, 1);
+  const percents = map.cameraAttendanceRanking.rows.map((row) =>
+    Number.parseFloat(row.presencePercent.replace("%", "")),
+  );
+  for (let index = 1; index < percents.length; index += 1) {
+    assert.ok(
+      (percents[index] ?? Number.POSITIVE_INFINITY) <= (percents[index - 1] ?? Number.NEGATIVE_INFINITY),
+      "ranking must be descending by presence",
+    );
+  }
+  assert.match(map.cameraAttendanceRanking.caveat, /Senato/);
 });
 
 test("declared portrait gaps stay without invented photos", () => {

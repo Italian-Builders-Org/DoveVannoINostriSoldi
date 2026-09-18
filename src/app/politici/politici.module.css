@@ -517,6 +517,10 @@
   pointer-events: none;
 }
 
+.hintMobile {
+  display: none;
+}
+
 .backButton {
   padding: 6px 12px;
   font: inherit;
@@ -606,8 +610,8 @@
 }
 
 .frame[data-scene="overview"][data-layout="stacked"] .stageBoard {
-  width: min(100cqw, calc(100cqh * 900 / 1100));
-  height: min(100cqh, calc(100cqw * 1100 / 900));
+  width: min(100cqw, calc(100cqh * 900 / 980));
+  height: min(100cqh, calc(100cqw * 980 / 900));
 }
 
 .canvas {
@@ -1456,6 +1460,82 @@
   color: var(--color-accent);
 }
 
+.chamberEnterCompact {
+  gap: 0.35rem;
+  justify-items: stretch;
+  align-content: space-between;
+  width: min(36vw, 8.75rem);
+  min-height: 7.25rem;
+  height: auto;
+  padding: 0.55rem 0.65rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--graph-legislative) 42%, transparent);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--graph-institution) 14%, transparent);
+  overflow: hidden;
+  z-index: 4;
+}
+
+.chamberEnterCompact .chamberEnterTitle {
+  font-size: 1rem;
+  text-align: left;
+}
+
+.chamberEnterCompact .chamberEnterMeta {
+  font-size: 0.72rem;
+  text-align: left;
+  color: var(--graph-institution-soft);
+}
+
+.chamberEnterCompact .chamberEnterLeader {
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+
+.chamberEnterCompact .chamberEnterAvatar {
+  width: 2rem;
+  height: 2rem;
+}
+
+.chamberEnterCompact .chamberEnterLeaderText strong {
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chamberEnterCtaPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.2rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--color-on-strong);
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+
+.filtersToggle {
+  display: none;
+}
+
+.filterTools {
+  display: contents;
+}
+
+.mobileHub {
+  display: none;
+}
+
+.stagePending {
+  flex: 1;
+  min-height: 12rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--graph-canvas-inset) 88%, transparent), transparent 70%),
+    var(--graph-canvas);
+}
+
 @media (max-width: 899px) {
   .chamberEnterLeaderText span,
   .chamberEnterMeta {
@@ -1920,7 +2000,186 @@
 .detailList dt { color: var(--color-neutral-600); }
 .detailList dd { margin: 0; }
 
-.biography { margin: 0; font-size: 0.875rem; line-height: 1.55; }
+.biography {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.cvBlock {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+  padding: 0.85rem 0.9rem;
+  background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+  border-radius: 14px;
+}
+
+.cvLead {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--graph-institution-soft);
+}
+
+.cvSummary {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cvSummary li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.cvSummary strong {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.cvSummary span {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--graph-institution);
+}
+
+.cvSubheading {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.rankBadge {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0 0 0.35rem;
+  padding: 0.55rem 0.7rem;
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-raised));
+  border-radius: 10px;
+}
+
+.rankBadge strong {
+  font-size: 1.15rem;
+}
+
+.rankBadge span {
+  font-size: 0.78rem;
+  color: var(--graph-institution-soft);
+}
+
+.rankingBlock {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.rankingList {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(48vh, 28rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rankingRow {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+  font: inherit;
+  color: var(--graph-institution);
+  background: color-mix(in srgb, var(--graph-canvas) 50%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 10%, transparent);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.rankingRow:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.rankingPos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--graph-institution-soft);
+}
+
+.rankingText {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.rankingText strong {
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.rankingText span {
+  font-size: 0.72rem;
+  color: var(--graph-institution-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rankingPct {
+  display: grid;
+  gap: 0.1rem;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.rankingPct strong {
+  font-size: 0.9rem;
+}
+
+.rankingPct span {
+  font-size: 0.68rem;
+  color: var(--graph-institution-soft);
+}
+
+.rankingMore {
+  justify-self: start;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--color-accent);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.desktopExperienceNote {
+  display: none;
+}
 
 .linkList { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: 0.8125rem; }
 
@@ -1986,26 +2245,430 @@
 /* On a narrow screen the map becomes an overview: the labels that would fall
    below reading size step aside and the panel carries the detail. */
 @media (max-width: 899px) {
+  .immersiveChrome {
+    padding: 0.35rem 0.65rem;
+    gap: 0.5rem;
+  }
+
+  .immersiveBrand {
+    font-size: 0.82rem;
+  }
+
+  .immersiveHomeLink {
+    font-size: 0.72rem;
+    padding: 0.28rem 0.45rem;
+  }
+
+  .immersiveDetails {
+    padding: 0.35rem 0.65rem 0.45rem;
+    font-size: 0.68rem;
+    max-height: 22dvh;
+  }
+
   .explorer {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 52dvh) minmax(0, 1fr);
+    /* Map first for space; panel keeps a usable strip below (was collapsing to ~1px). */
+    grid-template-rows: auto minmax(0, 1fr) minmax(140px, 22dvh);
     grid-template-areas:
       "top"
       "main"
       "side";
   }
 
+  .explorer[data-mobile-hub="true"] {
+    grid-template-rows: auto minmax(0, 1fr) minmax(120px, 18dvh);
+  }
+
   .toolbar {
     grid-template-columns: 1fr;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem 0.4rem;
+  }
+
+  .desktopExperienceNote {
+    display: block;
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--graph-institution);
+    background: color-mix(in srgb, var(--color-accent) 10%, var(--color-raised));
+    border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
+  }
+
+  .searchLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .searchInput {
+    padding: 0.7rem 0.85rem;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    background: var(--color-raised);
+    border-color: color-mix(in srgb, var(--graph-institution) 14%, transparent);
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "vista tools"
+      "role role";
+    gap: 0.45rem;
+    align-items: stretch;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .filterSet {
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.22rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+    border: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+    border-radius: 12px;
+  }
+
+  .filterSet:nth-of-type(1) {
+    grid-area: vista;
+  }
+
+  .filterSetExtra {
+    grid-area: role;
+  }
+
+  .filterSetExtra[data-open="false"] {
+    display: none;
+  }
+
+  .filtersToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0.4rem 0.75rem;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 650;
+    color: var(--graph-institution);
+    background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+    border: 1px solid color-mix(in srgb, var(--graph-institution) 16%, transparent);
+    border-radius: 12px;
+  }
+
+  .filtersToggle[aria-expanded="true"] {
+    background: var(--graph-institution);
+    color: var(--graph-canvas);
+    border-color: transparent;
+  }
+
+  .filterSet::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterSet legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .modeSwitch {
+    display: flex;
+    margin-left: 0;
+    flex: none;
+    gap: 0.2rem;
+    padding: 0.22rem;
+    background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+    border: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+    border-radius: 12px;
+  }
+
+  .filterTools {
+    grid-area: tools;
+    display: flex;
+    align-items: stretch;
+    gap: 0.35rem;
+  }
+
+  .chip {
+    flex: none;
+    min-height: 2rem;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+  }
+
+  .chip[aria-pressed="true"] {
+    background: var(--graph-institution);
+    color: var(--graph-canvas);
+  }
+
+  .chipCount {
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.78;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+    padding: 0.15rem 0.7rem 0.55rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .legend[data-open="false"] {
+    display: none;
+  }
+
+  .legend::-webkit-scrollbar {
+    display: none;
+  }
+
+  .legendItem {
+    flex: none;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    background: var(--color-raised);
+    border-color: color-mix(in srgb, var(--family-color, var(--color-neutral-400)) 45%, transparent);
+  }
+
+  .legendItem[aria-pressed="true"] {
+    box-shadow: inset 0 0 0 1.5px var(--family-color, var(--color-text));
+  }
+
+  .legendSwatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 0.2rem;
+  }
+
+  .legendCount {
+    font-size: 0.68rem;
+    opacity: 0.72;
+  }
+
+  .explorer[data-mobile-hub="true"] .stageColumn {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .mobileHub {
+    display: grid;
+    gap: 0.7rem;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0.75rem 0.75rem 0.35rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobileHubIntro {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: var(--graph-institution-soft);
+  }
+
+  .cvBlock {
+    padding: 0.75rem 0.8rem;
+  }
+
+  .biography {
+    font-size: 0.92rem;
+  }
+
+  .rankingList {
+    max-height: min(42vh, 22rem);
+  }
+
+  .mobileHubCard,
+  .mobileHubChamber {
+    display: grid;
+    gap: 0.55rem;
+    width: 100%;
+    margin: 0;
+    padding: 0.85rem 0.9rem;
+    text-align: left;
+    font: inherit;
+    color: var(--graph-institution);
+    background: color-mix(in srgb, var(--graph-canvas) 42%, var(--color-raised));
+    border: 1px solid color-mix(in srgb, var(--graph-institution) 14%, transparent);
+    border-radius: 16px;
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--graph-institution) 8%, transparent);
+  }
+
+  .mobileHubCard[aria-pressed="true"],
+  .mobileHubChamber:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .mobileHubCard[data-kind="presidenza"] {
+    border-color: color-mix(in srgb, var(--graph-authority, var(--graph-institution)) 28%, transparent);
+  }
+
+  .mobileHubCard[data-kind="governo"] {
+    border-color: color-mix(in srgb, var(--graph-executive, var(--color-accent)) 32%, transparent);
+  }
+
+  .mobileHubEyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--graph-institution-soft);
+  }
+
+  .mobileHubRow {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.7rem;
+    align-items: center;
+  }
+
+  .mobileHubAvatar {
+    display: block;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--color-raised);
+  }
+
+  .mobileHubChamber .mobileHubAvatar {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .mobileHubCopy {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .mobileHubCopy strong {
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .mobileHubCopy span {
+    font-size: 0.8rem;
+    color: var(--graph-institution-soft);
+  }
+
+  .mobileHubChambers {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  @media (min-width: 420px) {
+    .mobileHubChambers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .mobileHubChamber {
+    min-height: 100%;
+    border-color: color-mix(in srgb, var(--graph-legislative) 36%, transparent);
+  }
+
+  .mobileHubChamberTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .mobileHubChamberMeta {
+    font-size: 0.74rem;
+    color: var(--graph-institution-soft);
+  }
+
+  .mobileHubCta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.15rem;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 650;
+    color: var(--color-on-strong);
+    background: var(--color-accent);
+    border-radius: 999px;
   }
 
   .sideRail {
     border-right: 0;
     border-top: 1px solid color-mix(in srgb, var(--graph-institution) 14%, transparent);
+    min-height: 140px;
   }
 
   .stageRow {
     min-height: 0;
+  }
+
+  .canvasHint {
+    max-width: min(72%, 280px);
+    padding: 0.3rem 0.55rem;
+    font-size: 0.68rem;
+  }
+
+  .hintDesktop {
+    display: none;
+  }
+
+  .hintMobile {
+    display: inline;
+  }
+
+  .canvasControls {
+    top: 0.35rem;
+    left: 0.35rem;
+    right: 0.35rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .zoomButton {
+    min-width: 2rem;
+    min-height: 2rem;
+  }
+
+  .stageFooter {
+    padding: 0.25rem 0.5rem;
+    gap: 0.25rem 0.5rem;
   }
 
   .rowLabel { display: none; }
@@ -2016,7 +2679,16 @@
   .plaqueLeaderText strong { font-size: 2.4cqw; }
   .plaqueLeaderText span { display: none; }
   .chamberEnterTitle { font-size: 3cqw; }
+  .chamberEnterCompact .chamberEnterTitle { font-size: 1rem; }
   .chamberFocusTitle { font-size: 3.2cqw; }
+
+  .card {
+    padding: var(--space-3);
+  }
+
+  .cardTitle {
+    font-size: 1.15rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

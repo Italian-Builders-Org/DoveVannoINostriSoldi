@@ -24,6 +24,9 @@ test("deputy profiles expose attendance only when matched; senators never do", (
   assert.ok(meloni.voteAttendance);
   assert.equal(meloni.voteAttendance.chamber, "camera");
   assert.match(meloni.voteAttendance.presencePercent, /%$/);
+  assert.equal(typeof meloni.voteAttendance.rank, "number");
+  assert.ok(meloni.voteAttendance.rank >= 1);
+  assert.ok(meloni.voteAttendance.rankedAmong >= meloni.voteAttendance.rank);
 
   const senator = Object.values(profiles).find((profile) =>
     profile.roles.some((role) => role.kind === "senatore" || role.kind === "senatore-a-vita"),

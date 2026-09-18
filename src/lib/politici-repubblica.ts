@@ -968,6 +968,32 @@ export type RepublicMap = {
   partyFamilies: PoliticiRepubblicaGraph["partyFamilies"];
   edges: PoliticiRepubblicaGraph["edges"];
   people: RepublicMapPerson[];
+  /** Official Camera ranking only; Senato has no equivalent published table. */
+  cameraAttendanceRanking: CameraAttendanceRanking;
+};
+
+export type CameraAttendanceRankRow = {
+  rank: number;
+  personId: string;
+  name: string;
+  groupLabel: string;
+  presencePercent: string;
+  presenceTotal: number;
+  absences: number;
+  absencesPercent: string;
+};
+
+export type CameraAttendanceRanking = {
+  chamber: "camera";
+  periodLabel: string;
+  observedDate: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  matchedCount: number;
+  unmatchedRows: number;
+  rosterWithoutRow: number;
+  caveat: string;
+  rows: CameraAttendanceRankRow[];
 };
 
 export type RepublicVoteAttendance = {
@@ -986,6 +1012,9 @@ export type RepublicVoteAttendance = {
   justifiedAbsencesPercent: string;
   sourceUrl: string;
   sourceLabel: string;
+  /** 1 = most present among matched Camera deputies with an official row. */
+  rank: number;
+  rankedAmong: number;
 };
 
 export type RepublicProfile = {
@@ -1012,11 +1041,64 @@ export type RepublicProfile = {
   voteAttendance: RepublicVoteAttendance | null;
 };
 
-function profileAttendanceFor(person: RepublicPerson): RepublicVoteAttendance | null {
+function parsePresencePercent(value: string): number {
+  const parsed = Number.parseFloat(value.replace("%", "").replace(",", "."));
+  require(Number.isFinite(parsed), `percentuale presenza non numerica: ${value}`);
+  return parsed;
+}
+
+function buildCameraAttendanceRanking(peopleById: Map<string, RepublicPerson>): CameraAttendanceRanking {
+  const ranked = cameraAttendance.deputies
+    .filter((row): row is CameraPartecipazioneDeputy & { numericId: string } => row.numericId !== null)
+    .map((row) => {
+      const personId = `dep-${row.numericId}`;
+      const person = peopleById.get(personId);
+      if (!person) return null;
+      return {
+        personId,
+        name: person.displayName,
+        groupLabel: row.groupLabel,
+        presencePercent: row.presencePercent,
+        presenceTotal: row.presenceTotal,
+        absences: row.absences,
+        absencesPercent: row.absencesPercent,
+        presenceValue: parsePresencePercent(row.presencePercent),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => row !== null)
+    .sort((left, right) => {
+      if (right.presenceValue !== left.presenceValue) return right.presenceValue - left.presenceValue;
+      return left.name.localeCompare(right.name, "it");
+    })
+    .map(({ presenceValue: _presenceValue, ...row }, index) => ({
+      ...row,
+      rank: index + 1,
+    }));
+
+  return {
+    chamber: "camera",
+    periodLabel: cameraAttendance.period.label,
+    observedDate: cameraAttendance.period.observedDate,
+    sourceUrl: cameraAttendance.source.pageUrl,
+    sourceLabel: "Camera dei deputati — partecipazione al voto",
+    matchedCount: ranked.length,
+    unmatchedRows: cameraAttendance.coverage.unmatchedRows,
+    rosterWithoutRow: cameraAttendance.coverage.rosterDeputiesWithoutRow,
+    caveat:
+      "Classifica solo sui deputati della Camera con riga ufficiale collegata. Il Senato non pubblica una tabella equivalente: i senatori non compaiono. Misura le votazioni elettroniche in Aula (voto o missione), non le commissioni.",
+    rows: ranked,
+  };
+}
+
+function profileAttendanceFor(
+  person: RepublicPerson,
+  rankingByPersonId: Map<string, CameraAttendanceRankRow>,
+): RepublicVoteAttendance | null {
   if (person.chamberId !== "camera" || !person.id.startsWith("dep-")) return null;
   const numericId = person.id.slice("dep-".length);
   const row = attendanceByNumericId.get(numericId);
-  if (!row) return null;
+  const ranked = rankingByPersonId.get(person.id);
+  if (!row || !ranked) return null;
   return {
     chamber: "camera",
     periodLabel: cameraAttendance.period.label,
@@ -1033,11 +1115,15 @@ function profileAttendanceFor(person: RepublicPerson): RepublicVoteAttendance | 
     justifiedAbsencesPercent: row.justifiedAbsencesPercent,
     sourceUrl: cameraAttendance.source.pageUrl,
     sourceLabel: "Camera dei deputati — partecipazione al voto",
+    rank: ranked.rank,
+    rankedAmong: rankingByPersonId.size,
   };
 }
 
 export function getRepubblicaMap(): RepublicMap {
   const graph = getRepubblicaGraph();
+  const peopleById = new Map(graph.people.map((person) => [person.id, person]));
+  const cameraAttendanceRanking = buildCameraAttendanceRanking(peopleById);
   return {
     legislature: graph.legislature,
     updatedAt: graph.updatedAt,
@@ -1087,11 +1173,17 @@ export function getRepubblicaMap(): RepublicMap {
       groupLeader: person.isGroupLeader,
       photo: person.photoUrl !== null,
     })),
+    cameraAttendanceRanking,
   };
 }
 
 export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
-  const entries = getRepubblicaGraph().people.map((person) => [
+  const graph = getRepubblicaGraph();
+  const peopleById = new Map(graph.people.map((person) => [person.id, person]));
+  const rankingByPersonId = new Map(
+    buildCameraAttendanceRanking(peopleById).rows.map((row) => [row.personId, row]),
+  );
+  const entries = graph.people.map((person) => [
     person.id,
     {
       firstName: person.firstName,
@@ -1113,8 +1205,8 @@ export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
       birthPlace: person.birthPlace,
       socialLinks: person.socialLinks,
       biography: person.biography,
-      voteAttendance: profileAttendanceFor(person),
+      voteAttendance: profileAttendanceFor(person, rankingByPersonId),
     } satisfies RepublicProfile,
-  ] as const);
+  ]);
   return Object.fromEntries(entries);
 }

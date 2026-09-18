@@ -10,6 +10,7 @@ import { longDate } from "./atlas-model";
 import type { NewsData, Resource } from "./atlas-data";
 import { PersonRow, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
+import extra from "./atlas-enhancements.module.css";
 
 type Select = (selection: GraphSelection) => void;
 
@@ -48,20 +49,16 @@ export function EducationBlock({ distribution }: { distribution: EducationDistri
 
 export function AttendanceRanking({ ranking, onSelect }: { ranking: CameraAttendanceRanking; onSelect: Select; }) {
   const [limit, setLimit] = useState(25);
-  return <section className={styles.factBlock} aria-label="Classifica presenze Camera">
+  const rows = ranking.rows.toSorted((a, b) => a.name.localeCompare(b.name, "it") || a.personId.localeCompare(b.personId));
+  return <section className={styles.factBlock} aria-label="Partecipazione al voto Camera">
     <h3>Partecipazione al voto · Camera</h3>
     <p className={styles.note}>
       {ranking.periodLabel}
     </p>
-    <p className={styles.note}>
-      {ranking.caveat}
-    </p>
-    {ranking.rows.length ? <ol className={styles.rankingList}>
-      {ranking.rows.slice(0, limit).map((row) => <li key={row.personId}>
-        <button type="button" className={styles.rankingRow} onClick={() => onSelect({ kind: "person", id: row.personId })}>
-          <span className={styles.rankNumber}>
-            {row.rank}
-          </span>
+    <p className={styles.note}>Ordine alfabetico. Votazioni elettroniche in Aula: voti espressi e missioni, non attività nelle commissioni. La base dati qui consultata non contiene una serie equivalente per il Senato.</p>
+    {rows.length ? <ul className={styles.rankingList}>
+      {rows.slice(0, limit).map((row) => <li key={row.personId}>
+        <button type="button" className={`${styles.rankingRow} ${extra.attendanceRow}`} onClick={() => onSelect({ kind: "person", id: row.personId })}>
           <span>
             <strong>
               {row.name}
@@ -76,7 +73,7 @@ export function AttendanceRanking({ ranking, onSelect }: { ranking: CameraAttend
           </span>
         </button>
       </li>)}
-    </ol> : <Status title="Classifica non disponibile">Non ci sono righe ufficiali collegate nello snapshot.</Status>}
+    </ul> : <Status title="Dati di partecipazione non disponibili">Non ci sono righe ufficiali collegate nello snapshot.</Status>}
     {limit < ranking.rows.length ? <button className={styles.secondaryButton} type="button" onClick={() => setLimit((value) => value + 25)}>Mostra altri {Math.min(25, ranking.rows.length - limit)} <span>({Math.min(limit, ranking.rows.length)}/{ranking.rows.length})</span></button> : null}
     {limit > 25 ? <button className={styles.textButton} type="button" onClick={() => setLimit(25)}>Riduci elenco</button> : null}
     <p className={styles.note}>{ranking.matchedCount} deputati con dato · {ranking.rosterWithoutRow} senza riga collegata · {ranking.unmatchedRows} righe non associate.</p>
@@ -135,7 +132,7 @@ export function VoteAttendance({ attendance }: { attendance: NonNullable<Republi
       <strong>
         {attendance.presencePercent}
       </strong>
-      <span>voti espressi + missioni<br /><small>{attendance.rank}° su {attendance.rankedAmong} con dato</small></span>
+      <span>voti espressi + missioni</span>
     </div>
     <dl className={styles.metrics}>
       <div>

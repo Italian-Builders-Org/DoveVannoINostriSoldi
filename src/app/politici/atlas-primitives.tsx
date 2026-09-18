@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { AtlasImage } from "./atlas-image";
 import type { RepublicMapPerson } from "@/lib/politici-repubblica";
 import { initialsOf, isSafeExternalUrl } from "./atlas-model";
 import styles from "./politici.module.css";
@@ -37,21 +37,12 @@ export function Icon({ name, size = 20 }: { name: "search" | "arrow" | "close" |
 }
 
 export function Portrait({ person, size = 48, eager = false }: { person: Pick<RepublicMapPerson, "id" | "name" | "photo">; size?: number; eager?: boolean; }) {
-  const [failedId, setFailedId] = useState<string | null>(null);
-  const [loadedId, setLoadedId] = useState<string | null>(null);
-  return <span className={`${styles.portrait} ${extra.portrait}`} style={{ width: size, height: size }} data-loaded={loadedId === person.id && failedId !== person.id ? "true" : "false"} aria-hidden="true">
-    <span>{initialsOf(person.name)}</span>
-    {person.photo && failedId !== person.id ? <Image
-      key={person.id}
-      src={`/politici/foto/${encodeURIComponent(person.id)}`}
-      alt=""
-      width={size}
-      height={size}
-      sizes={`${size}px`}
-      loading={eager ? "eager" : "lazy"}
-      onLoad={() => setLoadedId(person.id)}
-      onError={() => setFailedId(person.id)} /> : null}
-  </span>;
+  return <AtlasImage
+    src={person.photo ? `/politici/foto/${encodeURIComponent(person.id)}` : null}
+    fallback={initialsOf(person.name)}
+    size={size}
+    eager={eager}
+    className={`${styles.portrait} ${extra.portrait}`} />;
 }
 
 export function SourceLink({ href, children, className }: { href: string; children: ReactNode; className?: string; }) {
@@ -72,9 +63,9 @@ export function Status({ kind = "empty", title, children, onRetry }: { kind?: "l
     <strong>
       {title}
     </strong>
-    {children ? <p>
+    {children ? <div className={extra.statusContent}>
       {children}
-    </p> : null}
+    </div> : null}
     {onRetry ? <button type="button" className={styles.secondaryButton} onClick={onRetry}>Riprova</button> : null}
   </div>;
 }

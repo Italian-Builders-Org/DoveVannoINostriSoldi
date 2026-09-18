@@ -48,7 +48,7 @@
 .symbolHeading { display: flex; align-items: center; gap: 12px; margin: 22px 0 12px; }
 .symbolHeading h2 { margin: 0; }
 .legend button > span { min-width: 0; overflow-wrap: anywhere; }
-.seatTooltip { position: fixed; z-index: 55; width: 264px; max-width: calc(100vw - 16px); max-height: min(230px, calc(100dvh - 16px)); overflow: auto; border: 1px solid var(--atlas-line); border-radius: 14px; padding: 18px; background: var(--atlas-raised); color: var(--atlas-ink); box-shadow: var(--atlas-shadow); }
+.seatTooltip { position: fixed; z-index: 55; width: 264px; max-width: calc(100vw - 16px); max-height: calc(100dvh - 16px); box-sizing: border-box; overflow-wrap: anywhere; overflow: auto; border: 1px solid var(--atlas-line); border-radius: 14px; padding: 18px; background: var(--atlas-raised); color: var(--atlas-ink); box-shadow: var(--atlas-shadow); }
 .seatTooltip > div { display: flex; gap: 12px; align-items: center; }
 .seatTooltip strong { display: block; font-size: 14px; line-height: 1.4; }
 .seatTooltip p { font-size: 12px; color: var(--atlas-muted); line-height: 1.5; margin-top: 8px; }
@@ -65,3 +65,8 @@
   .directory { grid-template-columns: 1fr; }
   .heading { flex-wrap: wrap; }
 }
+
+.statusContent { font-size: 13px; line-height: 1.7; color: var(--atlas-muted); }
+.attendanceRow { grid-template-columns: minmax(0, 1fr) auto; }
+.seatTooltip > div > strong { min-width: 0; }
+@media (prefers-reduced-motion: reduce) { .portrait[data-loaded] img { transition: none; } }

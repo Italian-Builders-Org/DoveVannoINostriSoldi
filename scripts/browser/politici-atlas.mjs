@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { atlasTargets, clickText, hoverSeat, waitForAtlas } from "./politici-atlas-driver.mjs";
 import "../ci/register-source-alias.mjs";
 const { getRepubblicaMap, getRepubblicaLegislativeActs } = await import("../../src/lib/politici-repubblica.ts");
 import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitForServer } from "./harness.mjs";
@@ -8,20 +9,16 @@ import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitF
 // Run against the real Next server. Only the final failure scenario intercepts API
 // responses; the main scenarios reconcile the actual published roster and profile API.
 const map = getRepubblicaMap();
-const urls = [process.env.DVNS_POLITICI_URL ?? new URL("/politici", defaultBaseUrl()).href,
-  process.env.DVNS_POLITICI_ALIAS_URL].filter(Boolean);
+const targets = atlasTargets(
+  process.env.DVNS_POLITICI_URL ?? new URL("/politici", defaultBaseUrl()).href,
+  process.env.DVNS_POLITICI_ALIAS_URL,
+  "politici.dovevannoinostrisoldi.com",
+);
+const urls = targets.urls;
 const output = path.join(defaultArtifactsDir(), "politici-atlas");
 await mkdir(output, { recursive: true });
 const results = [];
-const browser = await launchBrowser();
-
-async function clickText(page, label) {
-  const handle = await page.evaluateHandle((text) => [...document.querySelectorAll("button")]
-    .find((element) => element.textContent.trim() === text && element.getClientRects().length), label);
-  const element = handle.asElement();
-  assert.ok(element, `Pulsante non trovato: ${label}`);
-  try { await element.click(); } finally { await handle.dispose(); }
-}
+const browser = await launchBrowser({ extraArgs: targets.extraArgs });
 
 async function noOverflow(page) {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true, "Overflow orizzontale del documento");
@@ -31,22 +28,42 @@ async function scenario(label, url, width, validate) {
   const context = await browser.createBrowserContext();
   const page = await context.newPage();
   const errors = [];
-  page.on("pageerror", (error) => errors.push(error.message));
+  const consoleMessages = [];
+  const hydrationWarnings = [];
+  let phase = "navigation";
+  let serverHtml = "";
+  page.on("pageerror", (error) => errors.push(error.stack ?? error.message));
+  page.on("console", (message) => {
+    if (message.type() !== "error" && message.type() !== "warn") return;
+    const text = message.text();
+    consoleMessages.push({ type: message.type(), text, location: message.location() });
+    if (/hydrat|server rendered|validateDOMNesting|cannot be a descendant/i.test(text)) hydrationWarnings.push(text);
+  });
   await page.setViewport({ width, height: 900, deviceScaleFactor: 1, hasTouch: width < 900, isMobile: width < 900 });
   page.setDefaultTimeout(15_000);
   try {
     const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
     assert.ok(response?.ok(), `Pagina: HTTP ${response?.status()}`);
-    await page.waitForSelector("[data-politici-atlas]");
+    serverHtml = await response.text();
+    phase = "hydration";
+    await waitForAtlas(page);
+    assert.deepEqual(errors, [], "Errori JavaScript prima delle interazioni");
+    assert.deepEqual(hydrationWarnings, [], "Errori di idratazione prima delle interazioni");
+    phase = "interactions";
     await validate(page);
     await noOverflow(page);
     assert.deepEqual(errors, [], "Errori JavaScript");
+    assert.deepEqual(hydrationWarnings, [], "Errori di idratazione");
     await page.screenshot({ path: path.join(output, `${label}.png`), fullPage: false });
     results.push({ label, status: "pass", url, width });
     console.log(`PASS ${label}`);
   } catch (error) {
     await page.screenshot({ path: path.join(output, `${label}-failure.png`), fullPage: false }).catch(() => {});
-    results.push({ label, status: "fail", url, width, error: String(error), pageErrors: errors });
+    const clientHtml = await page.content().catch(() => "");
+    await writeFile(path.join(output, `${label}-server.html`), serverHtml);
+    await writeFile(path.join(output, `${label}-client.html`), clientHtml);
+    await writeFile(path.join(output, `${label}-console.json`), JSON.stringify(consoleMessages, null, 2));
+    results.push({ label, status: "fail", url, width, phase, error: String(error), pageErrors: errors, hydrationWarnings });
     console.error(`FAIL ${label}: ${error}`);
   } finally { await context.close(); }
 }
@@ -55,7 +72,7 @@ try {
   for (const [siteIndex, url] of urls.entries()) {
     const parsed = new URL(url);
     assert.ok(["http:", "https:"].includes(parsed.protocol));
-    await waitForServer(parsed.origin, { readyPath: parsed.pathname });
+    if (url !== targets.localAlias) await waitForServer(parsed.origin, { readyPath: parsed.pathname });
     for (const width of [320, 390, 768, 1280, 1920]) {
       await scenario(`site-${siteIndex}-${width}`, url, width, async (page) => {
         await page.click('[data-scope-button="camera"]');
@@ -74,7 +91,7 @@ try {
 
         const person = map.people.find((item) => item.chamberId === "camera");
         await page.type('input[role="combobox"]', person.name);
-        await page.waitForSelector('[role="listbox"] [role="option"]');
+        await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
         await page.keyboard.press("ArrowDown");
         await page.keyboard.press("Enter");
         await page.waitForSelector(`[data-profile-id="${person.id}"]`);
@@ -114,7 +131,7 @@ try {
   for (const width of [390, 1280]) {
     await scenario(`legislative-acts-${width}`, urls[0], width, async (page) => {
       await page.type('input[role="combobox"]', deputy.name);
-      await page.waitForSelector('[role="listbox"] [role="option"]');
+      await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
       await page.keyboard.press("ArrowDown");
       await page.keyboard.press("Enter");
       await page.waitForSelector(`[data-profile-id="${deputy.id}"]`);
@@ -140,6 +157,7 @@ try {
     await page.keyboard.press("ArrowRight");
     await page.waitForFunction((selector, expected) => Number(document.querySelector(selector).getAttribute("aria-valuenow")) === expected, {}, selector, initial + 16);
     await page.reload({ waitUntil: "domcontentloaded" });
+    await waitForAtlas(page);
     await page.waitForFunction((selector, expected) => Number(document.querySelector(selector)?.getAttribute("aria-valuenow")) === expected, {}, selector, initial + 16);
     const box = await (await page.$(selector)).boundingBox();
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
@@ -151,8 +169,7 @@ try {
     await page.keyboard.press("End");
     await noOverflow(page);
     await page.click('[data-scope-button="camera"]');
-    const seat = await page.$('[data-seat-person][tabindex="0"]');
-    await seat.hover();
+    await hoverSeat(page);
     await page.waitForSelector('[role="tooltip"]');
     assert.equal(await page.$eval('[role="tooltip"]', (element) => { const box = element.getBoundingClientRect(); return box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight; }), true);
     await page.keyboard.press("Escape");
@@ -177,7 +194,7 @@ try {
       } else void request.continue();
     });
     await page.type('input[role="combobox"]', person.name);
-    await page.waitForSelector('[role="listbox"] [role="option"]');
+    await page.waitForSelector('[role="listbox"] [role="option"]', { visible: true });
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
     await page.waitForSelector('[data-state="error"]');

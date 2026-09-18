@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
 import { AtlasInspector, AtlasSearch } from "./atlas-controls";
 import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
@@ -16,9 +16,14 @@ import extra from "./atlas-enhancements.module.css";
 
 export type { GraphSelection } from "./atlas-model";
 
+const subscribeReady = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
+
 export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false }: {
   map: RepublicMap; initialState: AtlasState; invalidSelection?: boolean; initialDetailsOpen?: boolean;
 }) {
+  const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
   const rail = useAtlasRail();
   const [state, setState] = useState(initialState);
   const stateRef = useRef(initialState);
@@ -77,6 +82,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   return <div
     className={`${styles.explorer} ${rail.resizing ? extra.resizing : ""}`}
     data-politici-atlas
+    data-atlas-ready={ready ? "true" : "false"}
     data-resizing={rail.resizing ? "true" : undefined}
     style={rail.style}
     data-mode={state.mode}

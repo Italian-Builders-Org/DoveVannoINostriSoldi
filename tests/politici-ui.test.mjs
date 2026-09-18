@@ -65,7 +65,7 @@ test("atlas: responsive inspector uses native modality, focus restoration and sc
 
 test("atlas: rich facts keep attendance, education, programs, CV, news and caveats", () => {
   for (const token of ["AttendanceRanking", "EducationBlock", "ProgramBlock", "VoteAttendance", "ProfileFacts", "NewsBlock", "InstitutionalRelations"]) assert.ok(panel.includes(token), token);
-  for (const token of ["stemShareOfDeclared", "undeclared", "rankedAmong", "justifiedAbsences", "officialPages", "socialLinks", "photoCredit", "articleUrls", "observedAt"]) assert.ok(facts.includes(token), token);
+  for (const token of ["stemShareOfDeclared", "undeclared", "presencePercent", "votesCastPercent", "missionsPercent", "absencesPercent", "justifiedAbsences", "officialPages", "socialLinks", "photoCredit", "articleUrls", "observedAt"]) assert.ok(facts.includes(token), token);
   assert.match(facts, /missioni non sono presenze fisiche/);
   assert.match(facts, /non dimostrano|non dimostra|non implicano|non prova/);
   assert.match(graph, /eurodeputati non sono ancora integrate/);
@@ -80,9 +80,25 @@ test("atlas: resource failures remain failures, bounded retries and URLs remain 
 });
 
 test("atlas: every referenced CSS module class exists", async () => {
-  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx"].map((name) => read(`src/app/politici/${name}`)));
+  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-image.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx"].map((name) => read(`src/app/politici/${name}`)));
   const files = [graph, controls, diagram, facts, panel, page, ...extra];
   const combinedStyles = styles + await read("src/app/politici/atlas-enhancements.module.css");
   const classes = new Set([...combinedStyles.matchAll(/\.([A-Za-z][\w-]*)/g)].map((match) => match[1]));
   for (const text of files) for (const match of text.matchAll(/(?:styles|extra)\.([A-Za-z][\w]*)/g)) assert.ok(classes.has(match[1]), `Missing CSS class: ${match[1]}`);
+});
+
+
+test("atlas: attendance remains sourced data without ordinal ratings", () => {
+  assert.match(facts, /ranking\.rows\.toSorted/);
+  assert.match(facts, /a\.name\.localeCompare\(b\.name, "it"\)/);
+  assert.match(facts, /Ordine alfabetico/);
+  assert.doesNotMatch(facts, /\{(?:row|attendance)\.rank(?:edAmong)?\}/);
+  for (const field of ["periodLabel", "observedDate", "sourceUrl", "rosterWithoutRow", "unmatchedRows"]) assert.ok(facts.includes(field), field);
+});
+
+test("atlas: the interactive-ready marker does not disable SSR or hide hydration errors", () => {
+  assert.match(graph, /data-atlas-ready=\{ready \? "true" : "false"\}/);
+  assert.match(graph, /useSyncExternalStore\(subscribeReady, clientReady, serverReady\)/);
+  assert.match(graph, /serverReady = \(\) => false/);
+  assert.doesNotMatch(graph, /suppressHydrationWarning|ssr:\s*false/);
 });

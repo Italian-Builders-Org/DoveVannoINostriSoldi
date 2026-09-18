@@ -1,59 +1,109 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { RepublicMapPerson } from "@/lib/politici-repubblica";
+import { placePreview, type PreviewRect } from "./atlas-preview-placement";
 import { Portrait } from "./atlas-primitives";
 import styles from "./atlas-enhancements.module.css";
 
-type Preview = { personId: string; left: number; top: number; keyboard: boolean };
+type Preview = { personId: string; anchor: PreviewRect; keyboard: boolean };
 
 export function useSeatPreview() {
   const [preview, setPreview] = useState<Preview | null>(null);
+  const current = useRef<Preview | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const cancelTimer = () => { if (timer.current !== null) clearTimeout(timer.current); };
-  const dismiss = () => { cancelTimer(); setPreview(null); };
-  useEffect(() => {
-    const close = () => { if (timer.current !== null) clearTimeout(timer.current); setPreview(null); };
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
-    const scroll = (event: Event) => { if (!(event.target instanceof Element && event.target.closest('[role="tooltip"]'))) close(); };
-    document.addEventListener("keydown", escape);
-    window.addEventListener("resize", close);
-    document.addEventListener("scroll", scroll, true);
-    return () => {
-      if (timer.current !== null) clearTimeout(timer.current);
-      document.removeEventListener("keydown", escape);
-      window.removeEventListener("resize", close);
-      document.removeEventListener("scroll", scroll, true);
-    };
+  const cancelTimer = useCallback(() => {
+    if (timer.current !== null) clearTimeout(timer.current);
+    timer.current = null;
   }, []);
-  const show = (personId: string, element: SVGElement, keyboard: boolean) => {
+  const dismiss = useCallback(() => {
     cancelTimer();
-    // Touch selection opens the inspector directly. There is no hover-only path on mobile.
-    if (!window.matchMedia("(hover: hover) and (min-width: 900px)").matches) return;
-    const place = () => {
-      const box = element.getBoundingClientRect();
-      const width = Math.min(264, innerWidth - 16);
-      const height = Math.min(230, innerHeight - 16);
-      setPreview({ personId, keyboard,
-        left: Math.max(8, Math.min(innerWidth - width - 8, box.left + box.width / 2 - width / 2)),
-        top: Math.max(8, Math.min(innerHeight - height - 8, box.top > height + 12 ? box.top - height - 8 : box.bottom + 8)),
-      });
+    current.current = null;
+    setPreview(null);
+  }, [cancelTimer]);
+  useEffect(() => {
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") dismiss(); };
+    const scroll = (event: Event) => {
+      if (!(event.target instanceof Element && event.target.closest('[role="tooltip"]'))) dismiss();
     };
-    if (keyboard || preview) place(); else timer.current = setTimeout(place, 140);
-  };
-  const leave = () => { cancelTimer(); timer.current = setTimeout(() => setPreview(null), 160); };
+    document.addEventListener("keydown", escape);
+    window.addEventListener("resize", dismiss);
+    document.addEventListener("scroll", scroll, true);
+    window.visualViewport?.addEventListener("resize", dismiss);
+    window.visualViewport?.addEventListener("scroll", dismiss);
+    return () => {
+      cancelTimer();
+      document.removeEventListener("keydown", escape);
+      window.removeEventListener("resize", dismiss);
+      document.removeEventListener("scroll", scroll, true);
+      window.visualViewport?.removeEventListener("resize", dismiss);
+      window.visualViewport?.removeEventListener("scroll", dismiss);
+    };
+  }, [cancelTimer, dismiss]);
+  const show = useCallback((personId: string, element: SVGElement, keyboard: boolean) => {
+    cancelTimer();
+    if (!window.matchMedia("(min-width: 900px)").matches || (!keyboard && !window.matchMedia("(hover: hover)").matches)) return;
+    const reveal = () => {
+      timer.current = null;
+      if (!element.isConnected) return;
+      const { left, top, width, height } = element.getBoundingClientRect();
+      const next = { personId, keyboard, anchor: { left, top, width, height } };
+      current.current = next;
+      setPreview(next);
+    };
+    if (keyboard || current.current) reveal();
+    else timer.current = setTimeout(reveal, 140);
+  }, [cancelTimer]);
+  const leave = useCallback(() => {
+    cancelTimer();
+    timer.current = setTimeout(dismiss, 160);
+  }, [cancelTimer, dismiss]);
   return { preview, show, leave, dismiss, keep: cancelTimer };
 }
 
 export function SeatPreview({ state, person, groupLabel, id }: {
   state: ReturnType<typeof useSeatPreview>; person: RepublicMapPerson; groupLabel: string | null; id: string;
 }) {
-  if (!state.preview) return null;
+  const content = useRef<HTMLDivElement>(null);
+  const preview = state.preview;
+  useLayoutEffect(() => {
+    const element = content.current;
+    if (!element || !preview) return;
+    const measure = () => {
+      const visual = window.visualViewport;
+      const viewport = {
+        left: visual?.offsetLeft ?? 0,
+        top: visual?.offsetTop ?? 0,
+        width: visual?.width ?? window.innerWidth,
+        height: visual?.height ?? window.innerHeight,
+      };
+      element.style.maxWidth = `${Math.max(0, viewport.width - 16)}px`;
+      element.style.maxHeight = `${Math.max(0, viewport.height - 16)}px`;
+      const position = placePreview(preview.anchor, element.getBoundingClientRect(), viewport);
+      element.style.left = `${position.left}px`;
+      element.style.top = `${position.top}px`;
+      element.dataset.side = position.side;
+      element.style.visibility = "visible";
+    };
+    measure();
+    // Includes wrapping changes from late fonts, long names and translated labels.
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [preview, person.name, person.roleLabel, groupLabel]);
+  if (!preview) return null;
   const root = document.querySelector("[data-politici-atlas]");
   if (!root) return null;
-  return createPortal(<div id={id} role="tooltip" className={styles.seatTooltip} data-keyboard={String(state.preview.keyboard)}
-    style={{ left: state.preview.left, top: state.preview.top }} onPointerEnter={state.keep} onPointerLeave={state.leave}>
+  return createPortal(<div
+    ref={content}
+    id={id}
+    role="tooltip"
+    className={styles.seatTooltip}
+    data-keyboard={String(preview.keyboard)}
+    style={{ visibility: "hidden" }}
+    onPointerEnter={state.keep}
+    onPointerLeave={state.leave}>
     <div><Portrait person={person} size={48} eager /><strong>{person.name}</strong></div>
     <p>{person.roleLabel}</p>
     {groupLabel ? <p>{groupLabel}</p> : null}

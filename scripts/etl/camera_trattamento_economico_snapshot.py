@@ -18,6 +18,7 @@ import ssl
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
@@ -95,11 +96,41 @@ def fetch_bytes(url: str) -> bytes:
         raise SnapshotError(f"pagina trattamento economico non raggiungibile: {error}") from error
 
 
+class _VisibleTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self._chunks: list[str] = []
+        self._skip_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() in {"script", "style"}:
+            self._skip_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {"script", "style"} and self._skip_depth > 0:
+            self._skip_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self._skip_depth == 0:
+            self._chunks.append(data)
+
+    def handle_entityref(self, name: str) -> None:
+        if self._skip_depth == 0:
+            self._chunks.append(f"&{name};")
+
+    def handle_charref(self, name: str) -> None:
+        if self._skip_depth == 0:
+            self._chunks.append(f"&#{name};")
+
+    def text(self) -> str:
+        return " ".join(self._chunks)
+
+
 def plain_text(raw_html: str) -> str:
-    text = re.sub(r"<script[\s\S]*?</script>", " ", raw_html, flags=re.I)
-    text = re.sub(r"<style[\s\S]*?</style>", " ", text, flags=re.I)
-    text = html_lib.unescape(text)
-    text = re.sub(r"<[^>]+>", " ", text)
+    parser = _VisibleTextExtractor()
+    parser.feed(raw_html)
+    parser.close()
+    text = html_lib.unescape(parser.text())
     return re.sub(r"\s+", " ", text)
 
 

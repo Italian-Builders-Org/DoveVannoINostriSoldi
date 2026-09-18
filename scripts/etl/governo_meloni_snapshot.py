@@ -26,7 +26,6 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = ROOT / "scripts/etl/specs/governo-meloni.source.json"

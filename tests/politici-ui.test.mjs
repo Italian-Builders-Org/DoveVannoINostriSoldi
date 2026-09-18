@@ -66,6 +66,9 @@ test("navigation and discovery keep /politici and point the map to the subdomain
   assert.match(styles, /\.immersivePage/);
   assert.match(styles, /\.immersiveChrome/);
   assert.match(styles, /\.immersiveHomeLink/);
+  assert.match(styles, /\.immersiveActions\s+:global\(\.header-action\)/);
+  assert.match(styles, /\.immersiveHomeLink\s*\{[^}]*height:\s*2\.25rem/s);
+  assert.match(styles, /\.immersiveActions\s+:global\(\.header-action\)\s*\{[^}]*height:\s*2\.25rem/s);
   assert.match(graph, /hintDesktop|hintMobile|pizzica per zoom/);
   assert.match(graph, /chamberEnterCompact|compact=\{overview\.layout === "stacked"\}/);
   assert.match(graph, /chamberEnterCtaPill/);
@@ -79,11 +82,22 @@ test("navigation and discovery keep /politici and point the map to the subdomain
   assert.match(styles, /\.filtersToggle/);
   assert.match(styles, /\.desktopExperienceNote/);
   assert.match(styles, /\.cvBlock|\.rankingBlock/);
+  assert.match(styles, /\.educationBlock|\.programBlock/);
   assert.match(styles, /grid-template-columns:\s*1fr\s*1fr/);
   assert.match(styles, /position:\s*sticky/);
   assert.match(styles, /\.peopleList[\s\S]*?max-height:\s*none/);
   assert.match(styles, /overflow:\s*visible/);
   assert.match(geometry, /cardH = layout === "stacked" \? 150/);
+});
+
+test("panel exposes education STEM map and electoral program catalog blocks", async () => {
+  const panel = await readFile(new URL("../src/app/politici/repubblica-panel.tsx", import.meta.url), "utf8");
+  assert.match(panel, /EducationDistributionBlock/);
+  assert.match(panel, /ElectoralProgramBlock/);
+  assert.match(panel, /Formazione dichiarata/);
+  assert.match(panel, /Programma elettorale|Programma del gruppo/);
+  assert.match(panel, /educationBadge/);
+  assert.match(panel, /Temi per cercare nelle notizie/);
 });
 
 test("mobile mode switch stays full-width and page scrolls as one surface", () => {

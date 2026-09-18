@@ -20,6 +20,12 @@ import {
 import { parsePoliticiSenatoSnapshot, type SenatoSenator } from "@/lib/data/politici-senato-contract";
 import { parsePresidenteRepubblicaSnapshot } from "@/lib/data/presidente-repubblica-contract";
 import { parseRitrattiLiberiSnapshot } from "@/lib/data/ritratti-liberi-contract";
+import {
+  buildEducationDistribution,
+  classifyEducation,
+  type EducationClassification,
+  type EducationDistribution,
+} from "@/lib/politici-education";
 
 const camera = parsePoliticiCameraSnapshot(cameraJson);
 const senate = parsePoliticiSenatoSnapshot(senateJson);
@@ -970,6 +976,13 @@ export type RepublicMap = {
   people: RepublicMapPerson[];
   /** Official Camera ranking only; Senato has no equivalent published table. */
   cameraAttendanceRanking: CameraAttendanceRanking;
+  /** Formation areas from official profession notes (#549). */
+  education: {
+    all: EducationDistribution;
+    camera: EducationDistribution;
+    senato: EducationDistribution;
+    governo: EducationDistribution;
+  };
 };
 
 export type CameraAttendanceRankRow = {
@@ -1037,6 +1050,8 @@ export type RepublicProfile = {
   birthPlace: string | null;
   socialLinks: RepublicPerson["socialLinks"];
   biography: string;
+  /** Deterministic area from official profession/biography notes (#549). */
+  education: EducationClassification;
   /** Official Camera participation-to-vote row, only when a unique match exists. */
   voteAttendance: RepublicVoteAttendance | null;
 };
@@ -1130,6 +1145,12 @@ export function getRepubblicaMap(): RepublicMap {
   const graph = getRepubblicaGraph();
   const peopleById = new Map(graph.people.map((person) => [person.id, person]));
   const cameraAttendanceRanking = buildCameraAttendanceRanking(peopleById);
+  const educationPeople = graph.people.map((person) => ({
+    profession: person.profession,
+    biography: person.biography,
+    chamberId: person.chamberId,
+    government: person.isGovernmentMember,
+  }));
   return {
     legislature: graph.legislature,
     updatedAt: graph.updatedAt,
@@ -1180,6 +1201,12 @@ export function getRepubblicaMap(): RepublicMap {
       photo: person.photoUrl !== null,
     })),
     cameraAttendanceRanking,
+    education: {
+      all: buildEducationDistribution(educationPeople),
+      camera: buildEducationDistribution(educationPeople.filter((person) => person.chamberId === "camera")),
+      senato: buildEducationDistribution(educationPeople.filter((person) => person.chamberId === "senato")),
+      governo: buildEducationDistribution(educationPeople.filter((person) => person.government)),
+    },
   };
 }
 
@@ -1211,6 +1238,7 @@ export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
       birthPlace: person.birthPlace,
       socialLinks: person.socialLinks,
       biography: person.biography,
+      education: classifyEducation(person.profession, person.biography),
       voteAttendance: profileAttendanceFor(person, rankingByPersonId),
     } satisfies RepublicProfile,
   ]);

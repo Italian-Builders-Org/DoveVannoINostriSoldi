@@ -35,12 +35,20 @@
 .immersiveBrand:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 .immersiveHomeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.7rem;
   font-size: 0.78rem;
   font-weight: 550;
+  line-height: 1;
   color: color-mix(in srgb, var(--graph-institution) 78%, transparent);
   text-decoration: none;
-  padding: 0.3rem 0.55rem;
   border: 1px solid color-mix(in srgb, var(--graph-institution) 16%, transparent);
+  border-radius: 8px;
   background: color-mix(in srgb, var(--graph-canvas) 70%, var(--color-raised));
 }
 
@@ -54,9 +62,19 @@
 }
 
 .immersiveActions :global(.header-action) {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  min-height: 2.25rem;
+  height: 2.25rem;
+  width: 2.25rem;
+  padding: 0;
+  font-size: 0.78rem;
+  line-height: 1;
   color: var(--graph-institution);
   background: color-mix(in srgb, var(--graph-canvas) 70%, var(--color-raised));
   border: 1px solid color-mix(in srgb, var(--graph-institution) 16%, transparent);
+  border-radius: 8px;
 }
 
 .immersiveDetails {
@@ -2077,6 +2095,136 @@
   color: var(--graph-institution-soft);
 }
 
+.educationBlock,
+.programBlock {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding: 0.85rem 0.9rem;
+  background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 12%, transparent);
+  border-radius: 14px;
+}
+
+.educationHighlight {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: baseline;
+  margin: 0;
+}
+
+.educationHighlight strong {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--color-accent);
+}
+
+.educationHighlight span {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--graph-institution-soft);
+}
+
+.educationBars {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.educationBarMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--graph-institution);
+}
+
+.educationBarTrack {
+  height: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--graph-institution) 10%, transparent);
+  overflow: hidden;
+}
+
+.educationBarFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--graph-institution) 55%, var(--color-accent));
+}
+
+.educationBars li[data-area="stem"] .educationBarFill {
+  background: var(--color-accent);
+}
+
+.educationBars li[data-area="undeclared"] .educationBarFill {
+  background: color-mix(in srgb, var(--graph-institution) 28%, transparent);
+}
+
+.educationBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: var(--graph-institution);
+  background: color-mix(in srgb, var(--graph-canvas) 40%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--graph-institution) 16%, transparent);
+  border-radius: 999px;
+}
+
+.educationBadge[data-area="stem"] {
+  color: var(--color-on-strong);
+  background: var(--color-accent);
+  border-color: transparent;
+}
+
+.educationBadge[data-area="undeclared"] {
+  color: var(--graph-institution-soft);
+}
+
+.programLead {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.programThemes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.programThemeChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--graph-institution);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-raised));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border-radius: 999px;
+}
+
+.programCaveats {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--graph-institution-soft);
+}
+
 .rankingBlock {
   display: grid;
   gap: 0.45rem;
@@ -2264,7 +2412,15 @@
 
   .immersiveHomeLink {
     font-size: 0.72rem;
-    padding: 0.28rem 0.45rem;
+    min-height: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.55rem;
+  }
+
+  .immersiveActions :global(.header-action) {
+    min-height: 2.25rem;
+    height: 2.25rem;
+    width: 2.25rem;
   }
 
   .immersiveDetails {
@@ -2538,6 +2694,15 @@
 
   .cvBlock {
     padding: 0.75rem 0.8rem;
+  }
+
+  .educationBlock,
+  .programBlock {
+    padding: 0.75rem 0.8rem;
+  }
+
+  .educationHighlight strong {
+    font-size: 1.55rem;
   }
 
   .biography {

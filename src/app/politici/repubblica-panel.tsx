@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import type { EducationDistribution } from "@/lib/politici-education";
+import { formatPercent } from "@/lib/politici-education";
+import { programForGroup } from "@/lib/politici-electoral-programs";
 import type { CameraAttendanceRanking, RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
 import styles from "./politici.module.css";
 import { Portrait, type GraphSelection } from "./repubblica-graph";
@@ -159,6 +162,10 @@ function OverviewCard({ map, onSelect }: { map: RepublicMap; onSelect: (selectio
         <div><dt>Gruppi parlamentari</dt><dd>{map.coverage.groups}</dd></div>
         <div><dt>Con ritratto ufficiale</dt><dd>{map.coverage.peopleWithPhoto}</dd></div>
       </dl>
+      <EducationDistributionBlock
+        title="Formazione dichiarata · mappa"
+        distribution={map.education.all}
+      />
       <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
       <p className={styles.cardNote}>Dati ufficiali osservati il {longDate(map.updatedAt)}.</p>
     </div>
@@ -202,6 +209,18 @@ function InstitutionCard({
         {institution.seatCapacity ? <div><dt>Seggi</dt><dd>{institution.seatCapacity}</dd></div> : null}
         {institution.vacantSeats !== null ? <div><dt>Vacanti</dt><dd>{institution.vacantSeats}</dd></div> : null}
       </dl>
+      {institutionId === "camera" || institutionId === "senato" || institutionId === "governo" ? (
+        <EducationDistributionBlock
+          title={`Formazione dichiarata · ${institution.shortLabel}`}
+          distribution={
+            institutionId === "camera"
+              ? map.education.camera
+              : institutionId === "senato"
+                ? map.education.senato
+                : map.education.governo
+          }
+        />
+      ) : null}
       {groups.length > 0 ? (
         <>
           <h3 className={styles.cardSection}>Gruppi parlamentari</h3>
@@ -278,6 +297,11 @@ function GroupCard({
         <div><dt>Componenti</dt><dd>{group.memberCount}</dd></div>
         <div><dt>Con incarico di governo</dt><dd>{members.filter((person) => person.government).length}</dd></div>
       </dl>
+      <ElectoralProgramBlock
+        partyFamily={group.partyFamily}
+        shortLabel={group.shortLabel}
+        scope="group"
+      />
       {president ? (
         <button type="button" className={styles.leaderCard} onClick={() => onSelect({ kind: "person", id: president.id })}>
           <span className={styles.leaderAvatar}><Portrait person={president} size={56} /></span>
@@ -381,6 +405,15 @@ function PersonCard({
           {profile?.componentLabel ? <p className={styles.cardNote}>Componente: {profile.componentLabel}</p> : null}
         </div>
       </div>
+
+      {group ? (
+        <ElectoralProgramBlock
+          partyFamily={group.partyFamily}
+          shortLabel={group.shortLabel}
+          scope="person"
+          personName={person.name}
+        />
+      ) : null}
 
       {profile?.voteAttendance ? (
         <section className={styles.officialFacts} aria-label="Presenze ufficiali in Aula">
@@ -517,6 +550,17 @@ function PersonCard({
                   <span>{profile.profession}</span>
                 </li>
               ) : null}
+              <li>
+                <strong>Area formativa (classificata)</strong>
+                <span>
+                  <span className={styles.educationBadge} data-area={profile.education.area}>
+                    {profile.education.label}
+                  </span>
+                  {profile.education.area === "undeclared"
+                    ? " · la fonte ufficiale non espone un titolo o una professione classificabile"
+                    : null}
+                </span>
+              </li>
               {profile.constituency || profile.college ? (
                 <li>
                   <strong>{person.chamberId === "senato" ? "Territorio" : "Elezione"}</strong>
@@ -670,6 +714,119 @@ function PersonCard({
         <p className={styles.cardNote}>Dati istituzionali osservati il {longDate(map.updatedAt)}.</p>
       ) : null}
     </div>
+  );
+}
+
+function EducationDistributionBlock({
+  title,
+  distribution,
+}: {
+  title: string;
+  distribution: EducationDistribution;
+}) {
+  const visibleAreas = distribution.areas.filter((area) => area.count > 0);
+  return (
+    <section className={styles.educationBlock} aria-label={title}>
+      <h3 className={styles.cardSection}>{title}</h3>
+      <p className={styles.educationHighlight}>
+        <strong>{distribution.stemCount}</strong>
+        <span>
+          profili STEM su {distribution.total}
+          {distribution.stemShareOfDeclared !== null
+            ? ` · ${formatPercent(distribution.stemShareOfDeclared)} tra chi ha un’area dichiarata`
+            : ""}
+          {` · ${formatPercent(distribution.stemShareOfTotal)} sul totale`}
+        </span>
+      </p>
+      <p className={styles.factKind}>{distribution.caveat}</p>
+      <ul className={styles.educationBars}>
+        {visibleAreas.map((area) => (
+          <li key={area.area} data-area={area.area}>
+            <div className={styles.educationBarMeta}>
+              <span>{area.label}</span>
+              <span>
+                {area.count}
+                {" · "}
+                {formatPercent(area.shareOfTotal)}
+              </span>
+            </div>
+            <div className={styles.educationBarTrack} aria-hidden="true">
+              <span
+                className={styles.educationBarFill}
+                style={{ width: `${Math.max(area.shareOfTotal * 100, area.count > 0 ? 2 : 0)}%` }}
+              />
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p className={styles.cardNote}>
+        Dichiarati: {distribution.declared} · Non dichiarati: {distribution.undeclared}. Nessuna etichetta inventata
+        dove la fonte tace.
+      </p>
+    </section>
+  );
+}
+
+function ElectoralProgramBlock({
+  partyFamily,
+  shortLabel,
+  scope,
+  personName,
+}: {
+  partyFamily: string | null;
+  shortLabel: string;
+  scope: "group" | "person";
+  personName?: string;
+}) {
+  const program = programForGroup({ partyFamily, shortLabel });
+  if (!program) {
+    return (
+      <section className={styles.programBlock} aria-label="Programma elettorale">
+        <h3 className={styles.cardSection}>Programma elettorale</h3>
+        <p className={styles.cardNote}>
+          Nessun programma ufficiale catalogato ancora per questo gruppo. Non inventiamo testi né punteggi di
+          allineamento.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={styles.programBlock} aria-label="Programma elettorale">
+      <h3 className={styles.cardSection}>
+        {scope === "person" ? "Programma del gruppo" : "Programma elettorale"}
+      </h3>
+      <p className={styles.programLead}>
+        <strong>{program.listLabel}</strong>
+        {" · "}
+        {program.electionLabel}
+      </p>
+      <p className={styles.cardNote}>
+        Fonte:{" "}
+        <a href={program.programUrl} rel="noreferrer">
+          {program.programTitle}
+        </a>
+        {` · osservato il ${longDate(program.observedDate)} · ${program.publisher}`}
+      </p>
+      <h4 className={styles.cvSubheading}>Temi per cercare nelle notizie</h4>
+      <ul className={styles.programThemes}>
+        {program.themes.map((theme) => (
+          <li key={theme.label}>
+            <span className={styles.programThemeChip}>{theme.label}</span>
+          </li>
+        ))}
+      </ul>
+      <p className={styles.factKind}>
+        {scope === "person" && personName
+          ? `Questi temi derivano dal programma ufficiale della lista, non da un giudizio su ${personName}. L’allineamento individuale (voti, atti) non è ancora collegato.`
+          : "I temi sono semi di ricerca notizie presi dal programma ufficiale. Non sono un riassunto completo né un verdetto di coerenza."}
+      </p>
+      <ul className={styles.programCaveats}>
+        {program.caveats.map((caveat) => (
+          <li key={caveat}>{caveat}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

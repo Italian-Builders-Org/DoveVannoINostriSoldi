@@ -47,6 +47,9 @@ test("compact map keeps only navigation fields and matches person ids", () => {
     );
   }
   assert.match(map.cameraAttendanceRanking.caveat, /Senato/);
+  assert.equal(map.education.all.total, map.people.length);
+  assert.ok(map.education.camera.stemCount + map.education.senato.stemCount <= map.education.all.stemCount + map.education.governo.stemCount);
+  assert.ok(map.education.all.areas.some((area) => area.area === "stem"));
 });
 
 test("declared portrait gaps stay without invented photos", () => {

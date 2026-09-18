@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
 
-/** Single-purpose map page: no site chrome — it will live on its own subdomain. */
+/** Single-purpose map page: no site chrome; it will live on its own subdomain. */
 export function isPoliticiImmersive(pathname: string | null): boolean {
   return pathname === "/politici" || Boolean(pathname?.startsWith("/politici/"));
 }

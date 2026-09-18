@@ -50,7 +50,7 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
         <ul>
           {graph.sources.map((source, index) => (
             <li key={`${source.url}#${index}`}>
-              <a href={source.url}>{source.label}</a> — {source.license}, osservata il {source.observedDate}.
+              <a href={source.url}>{source.label}</a> · {source.license}, osservata il {source.observedDate}.
               {source.gap ? <> Limite: {source.gap}</> : null}
             </li>
           ))}

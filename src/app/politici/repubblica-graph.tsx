@@ -1242,7 +1242,7 @@ function ChamberCardSvg({
             data-active={active ? "true" : "false"}
             data-group={group.id}
           >
-            <title>{`${group.label} — ${wedge.seatCount}`}</title>
+            <title>{`${group.label} · ${wedge.seatCount}`}</title>
           </path>
         );
       })}
@@ -1357,7 +1357,7 @@ function ChamberSceneView({
               data-group={group.id}
               data-active={highlighted ? "true" : "false"}
             >
-              <title>{`${group.label} — ${wedge.seatCount} component${wedge.seatCount === 1 ? "e" : "i"}`}</title>
+              <title>{`${group.label} · ${wedge.seatCount} component${wedge.seatCount === 1 ? "e" : "i"}`}</title>
             </path>
           );
         })}
@@ -1421,7 +1421,7 @@ function ChamberSceneView({
                 data-selected={selection.kind === "person" && selection.id === person.id ? "true" : "false"}
                 data-connected={connectionById.has(person.id) ? "true" : "false"}
               >
-                <title>{`${person.name} — ${person.roleLabel}${group ? ` (${group.shortLabel})` : ""}`}</title>
+                <title>{`${person.name} · ${person.roleLabel}${group ? ` (${group.shortLabel})` : ""}`}</title>
               </circle>
             );
           })}
@@ -1536,7 +1536,7 @@ function describeStatus({
     filterBits.push(`${roleLabel} (${roleFilterCount})`);
   }
   if (familyFilter && familyLabel) filterBits.push(`famiglia ${familyLabel}`);
-  const filterSuffix = filterBits.length > 0 ? ` · Filtro: ${filterBits.join(", ")} — gli altri restano in ombra.` : "";
+  const filterSuffix = filterBits.length > 0 ? ` · Filtro: ${filterBits.join(", ")} · gli altri restano in ombra.` : "";
 
   if (selection.kind === "person") {
     const person = people.get(selection.id);
@@ -1639,7 +1639,7 @@ function GovernmentCluster({
           data-person={leader.id}
           data-lit={litIds === null || litIds.has(leader.id) ? "true" : "false"}
           data-selected={selection.kind === "person" && selection.id === leader.id ? "true" : "false"}
-          title={`${leader.name} — ${leader.roleLabel}`}
+          title={`${leader.name} · ${leader.roleLabel}`}
         >
           <Portrait person={leader} size={64} eager />
           <span className={styles.visuallyHidden}>{`${leader.name}, ${leader.roleLabel}`}</span>
@@ -1691,7 +1691,7 @@ function PortraitNode({
         top: `${top}%`,
         width: `${width}%`,
       }}
-      title={`${person.name} — ${person.roleLabel}`}
+      title={`${person.name} · ${person.roleLabel}`}
       suppressHydrationWarning
     >
       <Portrait person={person} size={size} eager={size >= 44} />

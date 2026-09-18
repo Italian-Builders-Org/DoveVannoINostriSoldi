@@ -424,7 +424,7 @@ function PersonCard({
         {group ? (
           <li>
             <strong>Stesso gruppo</strong>
-            {" — "}
+            {" · "}
             <button type="button" className={styles.inlineLink} onClick={() => onSelect({ kind: "group", id: group.id })}>
               {group.label}
             </button>
@@ -434,7 +434,7 @@ function PersonCard({
         {person.chamberId ? (
           <li>
             <strong>Stesso ramo</strong>
-            {" — "}
+            {" · "}
             <button type="button" className={styles.inlineLink} onClick={() => onSelect({ kind: "institution", id: person.chamberId! })}>
               {institution.label}
             </button>
@@ -442,8 +442,8 @@ function PersonCard({
         ) : null}
         {person.government ? (
           <li>
-            <strong>Governo–Parlamento</strong>
-            {" — "}
+            <strong>Governo-Parlamento</strong>
+            {" · "}
             <button type="button" className={styles.inlineLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
               membro del Governo
             </button>
@@ -453,7 +453,7 @@ function PersonCard({
         {group?.relatedGroupIds.length ? (
           <li>
             <strong>Famiglia politica nell’altro ramo</strong>
-            {" — "}
+            {" · "}
             {group.relatedGroupIds.map((relatedId, index) => {
               const related = map.groups.find((candidate) => candidate.id === relatedId);
               if (!related) return null;
@@ -470,7 +470,7 @@ function PersonCard({
         ) : null}
         <li>
           <strong>Co-citazioni</strong>
-          {" — "}
+          {" · "}
           {news?.status === "ready"
             ? news.connections.length > 0
               ? `${news.connections.length} person${news.connections.length === 1 ? "a" : "e"} nelle notizie sotto`
@@ -502,7 +502,7 @@ function PersonCard({
             {profile.birthDate ? (
               <div>
                 <dt>Nascita</dt>
-                <dd>{longDate(profile.birthDate)}{profile.birthPlace ? ` — ${profile.birthPlace}` : ""}</dd>
+                <dd>{longDate(profile.birthDate)}{profile.birthPlace ? ` · ${profile.birthPlace}` : ""}</dd>
               </div>
             ) : null}
             {departments.length > 0 ? (
@@ -570,7 +570,7 @@ function PersonCard({
                           {other ? <span className={styles.memberAvatar}><Portrait person={other} size={36} /></span> : null}
                           <span className={styles.memberText}>
                             <strong>{connection.person.name}</strong>
-                            <span>{connection.person.groupLabel ?? "—"}</span>
+                            <span>{connection.person.groupLabel ?? "n.d."}</span>
                           </span>
                           <span className={styles.connectionCount}>{connection.articleCount}</span>
                         </button>

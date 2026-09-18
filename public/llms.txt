@@ -21,6 +21,7 @@
 - [Enti e società](https://www.dovevannoinostrisoldi.com/enti): ricerca nell'Indice PA e collegamenti alle partecipazioni pubbliche.
 - [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione): studenti aggregati MIM della scuola secondaria di II grado per Regione, tipo di scuola e percorso nel triennio 2022/23-2024/25; copertura e valori mancanti restano espliciti.
 - [Parlamento](https://www.dovevannoinostrisoldi.com/parlamento): documenti e valori strutturati verificati della Camera, quando disponibili.
+- [Mappa della politica](https://www.dovevannoinostrisoldi.com/politici): Presidenza, Governo, Camera e Senato della XIX legislatura in una sola mappa (anche su https://politici.dovevannoinostrisoldi.com).
 - [Pagella economica dei governi](https://www.dovevannoinostrisoldi.com/governi): Core macroeconomico annuale dal 1995, confronto con tre paesi europei, contesto e misure separati dall'attribuzione causale.
 - [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli): indicatori e segnali per orientare verifiche ulteriori.
 - [Fonti](https://www.dovevannoinostrisoldi.com/fonti): registro, copertura, aggiornamento e stato operativo delle fonti.

@@ -3,7 +3,7 @@
  * footer map stay aligned.
  */
 
-import { PUBLIC_POLITICI_URL } from "@/lib/site";
+import { PUBLIC_POLITICI_URL } from "./site.ts";
 
 export type NavLink = Readonly<{
   href: string;

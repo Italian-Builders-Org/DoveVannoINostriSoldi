@@ -1,9 +1,14 @@
 import attendanceJson from "@/data/generated/camera-partecipazione-voto.json";
+import attiVotiJson from "@/data/generated/camera-atti-voti-xix.json";
 import cameraJson from "@/data/generated/politici-camera-xix.json";
 import governmentJson from "@/data/generated/governo-meloni.json";
 import presidentJson from "@/data/generated/presidente-repubblica.json";
 import portraitsJson from "@/data/generated/ritratti-liberi.json";
 import senateJson from "@/data/generated/politici-senato-xix.json";
+import {
+  parseCameraAttiVotiSnapshot,
+  type CameraAct,
+} from "@/lib/data/camera-atti-voti-contract";
 import {
   parseCameraPartecipazioneVotoSnapshot,
   type CameraPartecipazioneDeputy,
@@ -33,6 +38,7 @@ const government = parseGovernoSnapshot(governmentJson);
 const president = parsePresidenteRepubblicaSnapshot(presidentJson);
 const freePortraits = parseRitrattiLiberiSnapshot(portraitsJson);
 const cameraAttendance = parseCameraPartecipazioneVotoSnapshot(attendanceJson);
+const cameraAttiVoti = parseCameraAttiVotiSnapshot(attiVotiJson);
 
 const attendanceByNumericId = new Map(
   cameraAttendance.deputies
@@ -1030,6 +1036,66 @@ export type RepublicVoteAttendance = {
   rankedAmong: number;
 };
 
+export type RepublicActVote = "F" | "C" | "A" | "N" | "V" | "non-rilevato";
+
+export type RepublicActSummary = {
+  id: string;
+  number: string;
+  title: string | null;
+  natureId: CameraAct["natureId"];
+  presentedDate: string | null;
+  role: "primo-firmatario" | "cofirmatario";
+  currentState: string | null;
+  currentStateDate: string | null;
+  outcomeClass: string | null;
+  coSignerCount: number;
+  officialPage: string;
+  finalVotes: Array<{
+    id: string;
+    date: string;
+    approved: boolean;
+    confidenceVote: boolean;
+    favorevoli: number;
+    contrari: number;
+    astenuti: number;
+    ownVote: RepublicActVote;
+  }>;
+};
+
+export type RepublicLegislativeSource = {
+  chamber: "camera";
+  periodLabel: string;
+  observedDate: string;
+  sourceUrl: string;
+  sourceLabel: string;
+  licenseLabel: string;
+  outcomeClasses: Array<{ id: string; label: string }>;
+  caveats: string[];
+};
+
+export type RepublicLegislativeActivity = {
+  counts: {
+    firstSigned: number;
+    coSigned: number;
+    total: number;
+    becameLaw: number;
+    withFinalVote: number;
+    byOutcome: Array<{ outcomeClass: string; firstSigned: number; coSigned: number }>;
+  };
+  comparison: {
+    chamberSize: number;
+    chamberMedianFirstSigned: number;
+    chamberMedianCoSigned: number;
+    groupLabel: string | null;
+    groupSize: number | null;
+    groupMedianFirstSigned: number | null;
+    groupMedianCoSigned: number | null;
+    /** Share of the Camera roster with firstSigned < the person's, 0-100. */
+    firstSignedPercentile: number;
+  };
+  recentFirstSigned: RepublicActSummary[];
+};
+
 export type RepublicProfile = {
   firstName: string;
   lastName: string;
@@ -1054,6 +1120,8 @@ export type RepublicProfile = {
   education: EducationClassification;
   /** Official Camera participation-to-vote row, only when a unique match exists. */
   voteAttendance: RepublicVoteAttendance | null;
+  /** Signed acts, iter and final votes; only for Camera deputies. */
+  legislativeActivity: RepublicLegislativeActivity | null;
 };
 
 function parsePresencePercent(value: string): number {
@@ -1138,6 +1206,217 @@ function profileAttendanceFor(
     sourceLabel: "Camera dei deputati — partecipazione al voto",
     rank: ranked.rank,
     rankedAmong: rankingByPersonId.size,
+  };
+}
+
+// --------------------------------------------------------------------------- //
+// Signed acts and final votes: per-deputy statistics on the whole Camera roster
+// --------------------------------------------------------------------------- //
+
+const attiVoteById = new Map(cameraAttiVoti.finalVotes.map((vote) => [vote.id, vote]));
+const deputyByNumericId = new Map(camera.deputies.map((deputy) => [deputy.numericId, deputy]));
+
+function deputyNumericId(signerId: string): string {
+  return signerId.replace(/^d/u, "").replace(/_19$/u, "");
+}
+
+function compareActsByDate(left: CameraAct, right: CameraAct): number {
+  const dateOrder = (right.presentedDate ?? "").localeCompare(left.presentedDate ?? "");
+  if (dateOrder !== 0) return dateOrder;
+  if (right.baseNumber !== left.baseNumber) return right.baseNumber - left.baseNumber;
+  return right.number.localeCompare(left.number);
+}
+
+function medianOf(values: number[]): number {
+  require(values.length > 0, "mediana su elenco vuoto");
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = sorted.length >> 1;
+  const median = sorted.length % 2 === 1 ? sorted[middle]! : (sorted[middle - 1]! + sorted[middle]!) / 2;
+  return Math.round(median * 10) / 10;
+}
+
+type LegislativeIndex = {
+  firstActsByNumericId: Map<string, CameraAct[]>;
+  coActsByNumericId: Map<string, CameraAct[]>;
+  firstCounts: number[];
+  coCounts: number[];
+  firstCountByNumericId: Map<string, number>;
+  groupStats: Map<string, { size: number; medianFirst: number; medianCo: number }>;
+  chamberMedianFirst: number;
+  chamberMedianCo: number;
+};
+
+let legislativeIndex: LegislativeIndex | null = null;
+
+function getLegislativeIndex(): LegislativeIndex {
+  if (legislativeIndex) return legislativeIndex;
+  const firstActsByNumericId = new Map<string, CameraAct[]>();
+  const coActsByNumericId = new Map<string, CameraAct[]>();
+  for (const act of cameraAttiVoti.acts) {
+    const firstKey = deputyNumericId(act.firstSignerId);
+    firstActsByNumericId.set(firstKey, [...(firstActsByNumericId.get(firstKey) ?? []), act]);
+    for (const signerId of act.coSignerIds) {
+      const key = deputyNumericId(signerId);
+      coActsByNumericId.set(key, [...(coActsByNumericId.get(key) ?? []), act]);
+    }
+  }
+  for (const acts of firstActsByNumericId.values()) acts.sort(compareActsByDate);
+  for (const acts of coActsByNumericId.values()) acts.sort(compareActsByDate);
+
+  const firstCountByNumericId = new Map<string, number>();
+  const coCountByNumericId = new Map<string, number>();
+  const firstCounts: number[] = [];
+  const coCounts: number[] = [];
+  const byGroup = new Map<string, { first: number[]; co: number[] }>();
+  for (const deputy of camera.deputies) {
+    const first = firstActsByNumericId.get(deputy.numericId)?.length ?? 0;
+    const co = coActsByNumericId.get(deputy.numericId)?.length ?? 0;
+    firstCountByNumericId.set(deputy.numericId, first);
+    coCountByNumericId.set(deputy.numericId, co);
+    firstCounts.push(first);
+    coCounts.push(co);
+    const bucket = byGroup.get(deputy.groupId) ?? { first: [], co: [] };
+    bucket.first.push(first);
+    bucket.co.push(co);
+    byGroup.set(deputy.groupId, bucket);
+  }
+  const groupStats = new Map<string, { size: number; medianFirst: number; medianCo: number }>();
+  for (const [groupId, bucket] of byGroup) {
+    groupStats.set(groupId, {
+      size: bucket.first.length,
+      medianFirst: medianOf(bucket.first),
+      medianCo: medianOf(bucket.co),
+    });
+  }
+  legislativeIndex = {
+    firstActsByNumericId,
+    coActsByNumericId,
+    firstCounts,
+    coCounts,
+    firstCountByNumericId,
+    groupStats,
+    chamberMedianFirst: medianOf(firstCounts),
+    chamberMedianCo: medianOf(coCounts),
+  };
+  return legislativeIndex;
+}
+
+function legislativeActSummary(
+  act: CameraAct,
+  role: "primo-firmatario" | "cofirmatario",
+  numericId: string,
+): RepublicActSummary {
+  return {
+    id: act.id,
+    number: act.number,
+    title: act.title,
+    natureId: act.natureId,
+    presentedDate: act.presentedDate,
+    role,
+    currentState: act.currentState?.state ?? null,
+    currentStateDate: act.currentState?.date ?? null,
+    outcomeClass: act.outcomeClass,
+    coSignerCount: act.coSignerIds.length,
+    officialPage: act.officialPage,
+    finalVotes: act.finalVoteIds.map((voteId) => {
+      const vote = attiVoteById.get(voteId);
+      require(vote !== undefined, `votazione finale non risolta: ${voteId}`);
+      return {
+        id: vote!.id,
+        date: vote!.date,
+        approved: vote!.approved,
+        confidenceVote: vote!.confidenceVote,
+        favorevoli: vote!.favorevoli,
+        contrari: vote!.contrari,
+        astenuti: vote!.astenuti,
+        ownVote: (vote!.votes[numericId] ?? "non-rilevato") as RepublicActVote,
+      };
+    }),
+  };
+}
+
+export function getRepubblicaLegislativeActs(
+  personId: string,
+): { firstSigned: RepublicActSummary[]; coSigned: RepublicActSummary[] } | null {
+  const person = findRepublicPerson(personId);
+  if (!person || person.chamberId !== "camera" || !person.id.startsWith("dep-")) return null;
+  const numericId = person.id.slice("dep-".length);
+  const index = getLegislativeIndex();
+  return {
+    firstSigned: (index.firstActsByNumericId.get(numericId) ?? []).map((act) =>
+      legislativeActSummary(act, "primo-firmatario", numericId),
+    ),
+    coSigned: (index.coActsByNumericId.get(numericId) ?? []).map((act) =>
+      legislativeActSummary(act, "cofirmatario", numericId),
+    ),
+  };
+}
+
+export function getRepubblicaLegislativeSource(): RepublicLegislativeSource {
+  return {
+    chamber: "camera",
+    periodLabel: cameraAttiVoti.period.label,
+    observedDate: cameraAttiVoti.period.observedDate,
+    sourceUrl: cameraAttiVoti.provenance.landingUrl,
+    sourceLabel: "Open Data Camera — atti di iniziativa parlamentare, iter e votazioni finali (OCD)",
+    licenseLabel: cameraAttiVoti.provenance.license,
+    outcomeClasses: cameraAttiVoti.outcomeClasses.map(({ id, label }) => ({ id, label })),
+    caveats: cameraAttiVoti.caveats,
+  };
+}
+
+function profileLegislativeActivity(person: RepublicPerson): RepublicLegislativeActivity | null {
+  const acts = getRepubblicaLegislativeActs(person.id);
+  if (!acts) return null;
+  const numericId = person.id.slice("dep-".length);
+  const deputy = deputyByNumericId.get(numericId);
+  require(deputy !== undefined, `deputato Camera assente dal roster: ${numericId}`);
+  const index = getLegislativeIndex();
+
+  const all = [...acts.firstSigned, ...acts.coSigned];
+  const byOutcome = new Map<string, { firstSigned: number; coSigned: number }>();
+  for (const summary of acts.firstSigned) {
+    if (!summary.outcomeClass) continue;
+    const bucket = byOutcome.get(summary.outcomeClass) ?? { firstSigned: 0, coSigned: 0 };
+    bucket.firstSigned += 1;
+    byOutcome.set(summary.outcomeClass, bucket);
+  }
+  for (const summary of acts.coSigned) {
+    if (!summary.outcomeClass) continue;
+    const bucket = byOutcome.get(summary.outcomeClass) ?? { firstSigned: 0, coSigned: 0 };
+    bucket.coSigned += 1;
+    byOutcome.set(summary.outcomeClass, bucket);
+  }
+  const group = index.groupStats.get(deputy!.groupId) ?? null;
+  const myFirst = index.firstCountByNumericId.get(numericId) ?? 0;
+  const strictlyBelow = index.firstCounts.filter((count) => count < myFirst).length;
+
+  return {
+    counts: {
+      firstSigned: acts.firstSigned.length,
+      coSigned: acts.coSigned.length,
+      total: all.length,
+      becameLaw: all.filter((summary) => summary.outcomeClass === "legge").length,
+      withFinalVote: all.filter((summary) => summary.finalVotes.length > 0).length,
+      byOutcome: cameraAttiVoti.outcomeClasses
+        .map((outcomeClass) => ({
+          outcomeClass: outcomeClass.id,
+          firstSigned: byOutcome.get(outcomeClass.id)?.firstSigned ?? 0,
+          coSigned: byOutcome.get(outcomeClass.id)?.coSigned ?? 0,
+        }))
+        .filter((row) => row.firstSigned + row.coSigned > 0),
+    },
+    comparison: {
+      chamberSize: camera.deputies.length,
+      chamberMedianFirstSigned: index.chamberMedianFirst,
+      chamberMedianCoSigned: index.chamberMedianCo,
+      groupLabel: person.groupLabel,
+      groupSize: group?.size ?? null,
+      groupMedianFirstSigned: group?.medianFirst ?? null,
+      groupMedianCoSigned: group?.medianCo ?? null,
+      firstSignedPercentile: Math.round((100 * strictlyBelow) / index.firstCounts.length),
+    },
+    recentFirstSigned: acts.firstSigned.slice(0, 3),
   };
 }
 
@@ -1240,6 +1519,7 @@ export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
       biography: person.biography,
       education: classifyEducation(person.profession, person.biography),
       voteAttendance: profileAttendanceFor(person, rankingByPersonId),
+      legislativeActivity: profileLegislativeActivity(person),
     } satisfies RepublicProfile,
   ]);
   return Object.fromEntries(entries);

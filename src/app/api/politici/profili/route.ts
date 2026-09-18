@@ -1,4 +1,8 @@
-import { getRepubblicaGraph, getRepubblicaProfiles } from "@/lib/politici-repubblica";
+import {
+  getRepubblicaGraph,
+  getRepubblicaLegislativeSource,
+  getRepubblicaProfiles,
+} from "@/lib/politici-repubblica";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
@@ -16,6 +20,7 @@ export async function GET() {
       legislature: graph.legislature,
       updatedAt: graph.updatedAt,
       sources: graph.sources,
+      legislativeSource: getRepubblicaLegislativeSource(),
       profiles: getRepubblicaProfiles(),
     },
     {

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import "../ci/register-source-alias.mjs";
-const { getRepubblicaMap } = await import("../../src/lib/politici-repubblica.ts");
+const { getRepubblicaMap, getRepubblicaLegislativeActs } = await import("../../src/lib/politici-repubblica.ts");
 import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitForServer } from "./harness.mjs";
 
 // Run against the real Next server. Only the final failure scenario intercepts API
@@ -110,9 +110,61 @@ try {
     }
   }
 
+  const deputy = map.people.find((item) => item.chamberId === "camera" && (getRepubblicaLegislativeActs(item.id)?.firstSigned.length ?? 0) > 0);
+  for (const width of [390, 1280]) {
+    await scenario(`legislative-acts-${width}`, urls[0], width, async (page) => {
+      await page.type('input[role="combobox"]', deputy.name);
+      await page.waitForSelector('[role="listbox"] [role="option"]');
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("Enter");
+      await page.waitForSelector(`[data-profile-id="${deputy.id}"]`);
+      await clickText(page, "Atti e voti");
+      await page.waitForSelector(`[data-legislative-person="${deputy.id}"]`);
+      const acts = getRepubblicaLegislativeActs(deputy.id);
+      assert.equal(await page.$$eval("[data-act-id]", (elements) => elements.length), Math.min(8, acts.firstSigned.length));
+      assert.equal(await page.$eval("[data-act-id]", (element) => element.dataset.actId), acts.firstSigned[0].id);
+      await page.click("[data-act-id] > summary");
+      await page.waitForSelector("[data-act-id][open]");
+      await page.type('[aria-label="Proposte di legge firmate"] input[type="search"]', "zzznontrovato98765");
+      await page.waitForFunction(() => document.body.textContent.includes("Nessun atto corrisponde ai filtri"));
+      await page.evaluate(() => [...document.querySelectorAll("button")].find((button) => button.textContent.includes("Azzera ricerca negli atti")).click());
+      await clickText(page, "Cofirme");
+      assert.equal(await page.$$eval("[data-act-id]", (elements) => elements.length), Math.min(8, acts.coSigned.length));
+    });
+  }
+  await scenario("rail-preview-and-persistence", urls[0], 1280, async (page) => {
+    const selector = '[role="separator"][aria-label="Larghezza della scheda"]';
+    await page.waitForSelector(selector);
+    const initial = Number(await page.$eval(selector, (element) => element.getAttribute("aria-valuenow")));
+    await page.focus(selector);
+    await page.keyboard.press("ArrowRight");
+    await page.waitForFunction((selector, expected) => Number(document.querySelector(selector).getAttribute("aria-valuenow")) === expected, {}, selector, initial + 16);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.waitForFunction((selector, expected) => Number(document.querySelector(selector)?.getAttribute("aria-valuenow")) === expected, {}, selector, initial + 16);
+    const box = await (await page.$(selector)).boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 48, box.y + box.height / 2, { steps: 5 });
+    await page.mouse.up();
+    assert.equal(Number(await page.$eval(selector, (element) => element.getAttribute("aria-valuenow"))), initial + 64);
+    await page.focus(selector);
+    await page.keyboard.press("End");
+    await noOverflow(page);
+    await page.click('[data-scope-button="camera"]');
+    const seat = await page.$('[data-seat-person][tabindex="0"]');
+    await seat.hover();
+    await page.waitForSelector('[role="tooltip"]');
+    assert.equal(await page.$eval('[role="tooltip"]', (element) => { const box = element.getBoundingClientRect(); return box.left >= 0 && box.right <= innerWidth && box.top >= 0 && box.bottom <= innerHeight; }), true);
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(() => !document.querySelector('[role="tooltip"]'));
+    await page.focus(selector);
+    await page.keyboard.press("Home");
+    await noOverflow(page);
+  });
   const person = map.people.find((item) => item.chamberId === "camera");
   await scenario("api-errors-retry-empty", urls[0], 390, async (page) => {
     let mode = "error";
+    let initialFailures = 0;
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       const pathname = new URL(request.url()).pathname;
@@ -120,13 +172,19 @@ try {
         const body = mode === "error" ? { ok: false, retry: false }
           : pathname.endsWith("/profili") ? { profiles: {} }
             : { ok: true, articles: [], connections: [], provider: null, observedAt: null };
+        if (mode === "error") initialFailures++;
         void request.respond({ status: mode === "error" ? 503 : 200, contentType: "application/json", body: JSON.stringify(body) });
       } else void request.continue();
     });
     await page.type('input[role="combobox"]', person.name);
+    await page.waitForSelector('[role="listbox"] [role="option"]');
     await page.keyboard.press("ArrowDown");
     await page.keyboard.press("Enter");
     await page.waitForSelector('[data-state="error"]');
+    await page.waitForFunction(() => document.querySelector('[data-state="error"]'));
+    const deadline = Date.now() + 5_000;
+    while (initialFailures < 2 && Date.now() < deadline) await new Promise((resolve) => setTimeout(resolve, 25));
+    assert.ok(initialFailures >= 2, "Both profile and news failures must precede retry");
     mode = "empty";
     await clickText(page, "Riprova");
     await page.waitForFunction(() => document.body.textContent.includes("Scheda non presente nello snapshot"));

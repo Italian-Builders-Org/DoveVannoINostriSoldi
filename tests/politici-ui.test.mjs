@@ -80,7 +80,9 @@ test("atlas: resource failures remain failures, bounded retries and URLs remain 
 });
 
 test("atlas: every referenced CSS module class exists", async () => {
-  const files = [graph, controls, diagram, facts, panel, page, await read("src/app/politici/atlas-primitives.tsx")];
-  const classes = new Set([...styles.matchAll(/\.([A-Za-z][\w-]*)/g)].map((match) => match[1]));
-  for (const text of files) for (const match of text.matchAll(/styles\.([A-Za-z][\w]*)/g)) assert.ok(classes.has(match[1]), `Missing CSS class: ${match[1]}`);
+  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx"].map((name) => read(`src/app/politici/${name}`)));
+  const files = [graph, controls, diagram, facts, panel, page, ...extra];
+  const combinedStyles = styles + await read("src/app/politici/atlas-enhancements.module.css");
+  const classes = new Set([...combinedStyles.matchAll(/\.([A-Za-z][\w-]*)/g)].map((match) => match[1]));
+  for (const text of files) for (const match of text.matchAll(/(?:styles|extra)\.([A-Za-z][\w]*)/g)) assert.ok(classes.has(match[1]), `Missing CSS class: ${match[1]}`);
 });

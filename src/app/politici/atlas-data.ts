@@ -71,7 +71,7 @@ export function waitForRetry(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-function requestDeadline(parent: AbortSignal, milliseconds: number) {
+export function requestDeadline(parent: AbortSignal, milliseconds: number) {
   const controller = new AbortController();
   const abort = () => controller.abort(parent.reason);
   if (parent.aborted) abort();

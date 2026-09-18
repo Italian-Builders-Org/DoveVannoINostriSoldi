@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
 import { AtlasInspector, AtlasSearch } from "./atlas-controls";
+import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
 import { Hemicycle } from "./atlas-hemicycle";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
@@ -11,12 +12,14 @@ import { buildChamberScene, CHAMBER } from "./graph-geometry";
 import { RepubblicaPanel } from "./repubblica-panel";
 import { useAtlasData } from "./use-atlas-data";
 import styles from "./politici.module.css";
+import extra from "./atlas-enhancements.module.css";
 
 export type { GraphSelection } from "./atlas-model";
 
 export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false }: {
   map: RepublicMap; initialState: AtlasState; invalidSelection?: boolean; initialDetailsOpen?: boolean;
 }) {
+  const rail = useAtlasRail();
   const [state, setState] = useState(initialState);
   const stateRef = useRef(initialState);
   const [detailsOpen, setDetailsOpen] = useState(initialDetailsOpen);
@@ -72,8 +75,10 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   const closeDetails = useCallback(() => setDetailsOpen(false), []);
 
   return <div
-    className={styles.explorer}
+    className={`${styles.explorer} ${rail.resizing ? extra.resizing : ""}`}
     data-politici-atlas
+    data-resizing={rail.resizing ? "true" : undefined}
+    style={rail.style}
     data-mode={state.mode}
     data-scope={state.scope}
     data-interaction={interaction}
@@ -90,7 +95,8 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
         onRetryProfiles={data.retryProfiles}
         onRetryNews={data.retryNews} />
     </AtlasInspector>
-    <section className={styles.workspace} aria-label="Esplora la politica italiana">
+    <AtlasRailResizer rail={rail} />
+    <section className={`${styles.workspace} ${extra.workspace}`} aria-label="Esplora la politica italiana">
       <div className={styles.topBar}>
         <nav className={styles.scopeSwitch} aria-label="Istituzione">
           {SCOPES.map((scope) => <button
@@ -102,7 +108,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
             {scope.label}
           </button>)}
         </nav>
-        <div className={styles.workspaceTools}>
+        <div className={`${styles.workspaceTools} ${extra.tools}`}>
           <AtlasSearch
             map={map}
             query={state.query}
@@ -211,7 +217,7 @@ function MemberDirectory({ people, map, selectedId, onSelect, title }: { people:
         {people.length}
       </span>
     </div>
-    <ul className={styles.directoryList}>
+    <ul className={`${styles.directoryList} ${extra.directory}`}>
       {people.slice(0, limit).map((person) => <li key={person.id}>
         <PersonRow
           person={person}

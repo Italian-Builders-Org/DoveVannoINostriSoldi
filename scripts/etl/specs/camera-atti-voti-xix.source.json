@@ -1,0 +1,84 @@
+{
+  "datasetId": "camera-atti-voti-xix",
+  "title": "Camera dei deputati — atti di iniziativa parlamentare, iter e votazioni finali per deputato (XIX legislatura)",
+  "landingUrl": "https://dati.camera.it/",
+  "period": {
+    "legislatures": "repubblica_19",
+    "label": "XIX Legislatura",
+    "startDate": "2022-10-13",
+    "kind": "legislature-to-date"
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://dati.camera.it/",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "committedResponses": {
+      "acts": {
+        "pages": 1,
+        "rows": 4198,
+        "bytes": 2847678,
+        "sha256": "36eb3fadad881e785f462dbb43d648f850c339310d79936c51baea63e8464e4e"
+      },
+      "coSigners": {
+        "pages": 4,
+        "rows": 19623,
+        "bytes": 3682600,
+        "sha256": "8d48f300bf8d0a659f879990fbd50dedb515dd5e4c38235a83a19827cb9864ab"
+      },
+      "iterStates": {
+        "pages": 2,
+        "rows": 9043,
+        "bytes": 2884215,
+        "sha256": "9423feaf3f7db20902b26cab892722100cf39defac0dc543abbfe6e4f366ab08"
+      },
+      "finalVotes": {
+        "pages": 1,
+        "rows": 318,
+        "bytes": 408724,
+        "sha256": "f89de68110ea10c51048ae9e6bc093ca0a8d3c9c47d2091fd837549d8c1aeb85"
+      },
+      "nominalVotes": {
+        "count": 60,
+        "bytes": 3624025,
+        "rows": 23937,
+        "sha256": "381cf4bd81d2935b4501557f119d57765bcf158eea28da9b42790d93321617b3"
+      }
+    }
+  },
+  "coverageFloor": {
+    "acts": 2500,
+    "finalVotes": 50,
+    "finalVotesObserved": 300,
+    "deputiesAsFirstSigner": 300
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Atti, iter e votazioni: nessun importo."
+    },
+    "periodo": {
+      "kind": "legislature-to-date",
+      "id": "repubblica_19",
+      "startDate": "2022-10-13"
+    },
+    "provenance": {
+      "kind": "official-sparql",
+      "endpoint": "https://dati.camera.it/sparql"
+    }
+  },
+  "caveats": [
+    "Sono esclusi i disegni di legge a prima firma di un membro del Governo: il profilo riguarda l'iniziativa parlamentare e le cofirme di deputati su quegli atti non sono conteggiate.",
+    "Le votazioni finali su disegni di legge di iniziativa governativa non sono incluse: compaiono solo le finali sugli atti a prima firma di un deputato.",
+    "La firma di un atto non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
+    "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati iter della Camera.",
+    "I conteggi di firme, atti e voti non misurano produttività o merito dei deputati.",
+    "'Non ha votato' non distingue assenza, missione o scelta: la fonte non espone quel dettaglio in questo endpoint.",
+    "Nel conteggio ufficiale della Camera gli astenuti sono presenti ma non votanti.",
+    "Nelle votazioni segrete il voto individuale non è pubblico: il nominativo risulta 'Ha votato' senza posizione.",
+    "Il Senato non è incluso: pubblica DDL, iter e voti su dati.senato.it con un'ontologia diversa.",
+    "Nessun importo in questo snapshot: per la spesa pubblica usare le sezioni dedicate."
+  ]
+}

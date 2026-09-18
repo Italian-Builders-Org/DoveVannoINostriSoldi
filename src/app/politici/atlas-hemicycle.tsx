@@ -4,13 +4,17 @@ import { useId, useMemo, useRef, useState } from "react";
 import type { RepublicMap } from "@/lib/politici-repubblica";
 import type { GraphSelection } from "./atlas-model";
 import { adjacentSeat, buildChamberScene, CHAMBER, sectorBand, type ChamberId } from "./graph-geometry";
+import { PartySymbol } from "./atlas-symbol";
+import { SeatPreview, useSeatPreview } from "./atlas-seat-preview";
 import { Icon, Portrait } from "./atlas-primitives";
 import styles from "./politici.module.css";
+import extra from "./atlas-enhancements.module.css";
 
 export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: {
   map: RepublicMap; chamberId: ChamberId; selection: GraphSelection; matchingIds: Set<string>; onSelect: (selection: GraphSelection) => void;
 }) {
   const id = useId();
+  const preview = useSeatPreview();
   const scene = useMemo(() => buildChamberScene(map, chamberId), [map, chamberId]);
   const peopleById = useMemo(() => new Map(map.people.map((person) => [person.id, person])), [map.people]);
   const [focusedId, setFocusedId] = useState<string | null>(null);
@@ -20,13 +24,14 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
   const viewport = useRef<HTMLDivElement>(null);
   const focusId = focusedId && scene.seats.some((seat) => seat.id === focusedId) ? focusedId : scene.seats.find((seat) => seat.personId)?.id;
   const hoverPerson = hoverId ? peopleById.get(hoverId) : null;
+  const previewPerson = preview.preview ? peopleById.get(preview.preview.personId) : null;
   const chosenPerson = selection.kind === "person" ? peopleById.get(selection.id) : null;
   const visiblePerson = hoverPerson ?? (chosenPerson?.chamberId === chamberId ? chosenPerson : null);
   const activeGroup = selection.kind === "group" ? selection.id : null;
   const highlightedCount = scene.seats.filter((seat) => seat.personId && matchingIds.has(seat.personId)).length;
 
   return <section className={styles.chamber} aria-label={`Emiciclo ${chamberId === "camera" ? "della Camera" : "del Senato"}`} data-chamber={chamberId}>
-    <div className={styles.chamberHeading}>
+    <div className={`${styles.chamberHeading} ${extra.heading}`}>
       <div>
         <p className={styles.eyebrow}>La composizione dell’Aula</p>
         <h2>
@@ -87,21 +92,25 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
             aria-label={`${person.name}, ${person.roleLabel}`}
             aria-pressed={selected}
             data-seat-person={person.id}
-            className={styles.seat}
+            data-preview={preview.preview?.personId === person.id ? "true" : undefined}
+            aria-describedby={preview.preview?.personId === person.id ? `${id}-preview` : undefined}
+            className={`${styles.seat} ${preview.preview?.personId === person.id ? extra.previewed : ""}`}
             data-family={seat.family ?? undefined}
             data-selected={selected ? "true" : undefined}
             data-dim={dim ? "true" : undefined}
-            onClick={() => onSelect({ kind: "person", id: person.id })}
-            onFocus={() => {
+            onClick={() => { preview.dismiss(); onSelect({ kind: "person", id: person.id }); }}
+            onFocus={(event) => {
+              if (event.currentTarget.matches(":focus-visible")) preview.show(person.id, event.currentTarget, true);
               setFocusedId(seat.id);
               setHoverId(person.id);
             }}
-            onBlur={() => setHoverId(null)}
-            onPointerEnter={(event) => { if (event.pointerType !== "touch") setHoverId(person.id); }}
-            onPointerLeave={() => { if (document.activeElement !== seatsRef.current.get(seat.id)) setHoverId(null); }}
+            onBlur={() => { setHoverId(null); preview.dismiss(); }}
+            onPointerEnter={(event) => { if (event.pointerType !== "touch") { setHoverId(person.id); preview.show(person.id, event.currentTarget, false); } }}
+            onPointerLeave={() => { preview.leave(); if (document.activeElement !== seatsRef.current.get(seat.id)) setHoverId(null); }}
             onKeyDown={(event) => {
               if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
+                preview.dismiss();
                 onSelect({ kind: "person", id: person.id });
                 return;
               }
@@ -119,6 +128,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
         })}
       </svg>
     </div>
+    {previewPerson ? <SeatPreview id={`${id}-preview`} state={preview} person={previewPerson} groupLabel={map.groups.find((group) => group.id === previewPerson.groupId)?.label ?? null} /> : null}
     <div className={styles.diagramFooter}>
       <div className={styles.seatPreview}>
         {visiblePerson ? <>
@@ -171,14 +181,14 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
       <h3>Gruppi parlamentari</h3>
       <span>{highlightedCount}/{scene.members} corrispondono ai filtri</span>
     </div>
-    <ul className={styles.groupLegend} aria-label="Seleziona un gruppo parlamentare">
+    <ul className={`${styles.groupLegend} ${extra.legend}`} aria-label="Seleziona un gruppo parlamentare">
       {scene.wedges.map((wedge) => <li key={wedge.groupId}>
         <button
           type="button"
           aria-pressed={activeGroup === wedge.groupId}
           data-group-id={wedge.groupId}
           onClick={() => onSelect(activeGroup === wedge.groupId ? { kind: "institution", id: chamberId } : { kind: "group", id: wedge.groupId })}>
-          <span className={styles.swatch} data-family={wedge.family} />
+          <PartySymbol family={wedge.family} label={wedge.label} />
           <span>
             {wedge.label}
           </span>
@@ -188,6 +198,6 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
         </button>
       </li>)}
     </ul>
-    <p className={styles.diagramNote}>Rappresentazione stilizzata, non la disposizione reale in Aula. Gruppi in ordine alfabetico. {scene.vacancies !== null ? `Seggi vuoti: ${scene.vacancies}, indicati dal contorno.` : "Dato sui seggi vacanti non disponibile."}</p>
+    <p className={styles.diagramNote}>Rappresentazione stilizzata, non la disposizione reale in Aula. Gruppi in ordine alfabetico. Simboli delle famiglie politiche: fonti e attribuzioni nelle schede dei gruppi. {scene.vacancies !== null ? `Seggi vuoti: ${scene.vacancies}, indicati dal contorno.` : "Dato sui seggi vacanti non disponibile."}</p>
   </section>;
 }

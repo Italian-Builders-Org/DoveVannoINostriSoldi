@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { PartySymbol, SymbolSource } from "./atlas-symbol";
+import { LegislativeActs } from "./atlas-acts";
 import type { RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
 import type { GraphSelection } from "./atlas-model";
 import { longDate } from "./atlas-model";
@@ -8,6 +10,7 @@ import type { NewsData, Resource } from "./atlas-data";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
 import { AttendanceRanking, EducationBlock, InstitutionalRelations, NewsBlock, ProfileFacts, ProgramBlock, VoteAttendance } from "./atlas-facts";
 import styles from "./politici.module.css";
+import extra from "./atlas-enhancements.module.css";
 
 type PanelProps = {
   map: RepublicMap;
@@ -122,7 +125,7 @@ function InstitutionPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSel
       <ul className={styles.groupList}>
         {groups.map((group) => <li key={group.id}>
           <button type="button" onClick={() => onSelect({ kind: "group", id: group.id })}>
-            <span className={styles.swatch} data-family={group.partyFamily} />
+            <PartySymbol family={group.partyFamily} label={group.shortLabel} />
             <span>
               {group.shortLabel}
             </span>
@@ -174,9 +177,10 @@ function GroupPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSelect"> 
       {group.chamberId === "camera" ? "Camera" : "Senato"}
     </button>
     <p className={styles.eyebrow}>Gruppo parlamentare</p>
-    <h2 className={styles.panelTitle} tabIndex={-1}>
-      {group.shortLabel}
-    </h2>
+    <div className={extra.symbolHeading}>
+      <PartySymbol family={group.partyFamily} label={group.shortLabel} size={44} />
+      <h2 className={styles.panelTitle} tabIndex={-1}>{group.shortLabel}</h2>
+    </div>
     {group.label !== group.shortLabel ? <p className={styles.panelLead}>
       {group.label}
     </p> : null}
@@ -199,6 +203,7 @@ function GroupPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSelect"> 
       <PersonRow person={president} onSelect={(personId) => onSelect({ kind: "person", id: personId })} />
     </div> : null}
     <SourceLink href={group.officialPage}>Scheda ufficiale del gruppo</SourceLink>
+    <SymbolSource family={group.partyFamily} />
     <details className={styles.disclosure}>
       <summary>Programma elettorale</summary>
       <ProgramBlock family={group.partyFamily} label={group.shortLabel} />
@@ -233,7 +238,7 @@ function GroupPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSelect"> 
 }
 
 function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles, onRetryNews }: PanelProps & { personId: string; }) {
-  const [tab, setTab] = useState<"profilo" | "notizie">("profilo");
+  const [tab, setTab] = useState<"profilo" | "atti" | "notizie">("profilo");
   const person = map.people.find((candidate) => candidate.id === personId);
   if (!person) return <Status title="Persona non trovata" />;
   const group = map.groups.find((item) => item.id === person.groupId);
@@ -256,7 +261,7 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
       {person.roleLabel}
     </p>
     {group ? <button type="button" className={styles.groupBadge} onClick={() => onSelect({ kind: "group", id: group.id })}>
-      <span className={styles.swatch} data-family={group.partyFamily} />
+      <PartySymbol family={group.partyFamily} label={group.shortLabel} />
       {group.shortLabel}
       <Icon name="arrow" size={14} />
     </button> : <span className={styles.tag}>
@@ -264,9 +269,10 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
     </span>}
     <div className={styles.panelTabs} role="group" aria-label="Contenuto della scheda">
       <button type="button" aria-pressed={tab === "profilo"} onClick={() => setTab("profilo")}>Profilo e incarichi</button>
+      {person.chamberId === "camera" ? <button type="button" aria-pressed={tab === "atti"} onClick={() => setTab("atti")}>Atti e voti</button> : null}
       <button type="button" aria-pressed={tab === "notizie"} onClick={() => setTab("notizie")}>Notizie</button>
     </div>
-    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : <>
+    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} /> : <>
       {person.government ? <button type="button" className={styles.relationshipLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
         <span>Membro del Governo<small>
           {person.chamberId ? "Con mandato anche in Parlamento" : "Senza mandato parlamentare"}

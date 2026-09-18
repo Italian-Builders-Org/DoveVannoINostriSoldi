@@ -3,8 +3,10 @@
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { RepublicMap } from "@/lib/politici-repubblica";
 import { searchAtlas, type GraphSelection } from "./atlas-model";
-import { Icon } from "./atlas-primitives";
+import { PartySymbol } from "./atlas-symbol";
+import { Icon, Portrait } from "./atlas-primitives";
 import styles from "./politici.module.css";
+import extra from "./atlas-enhancements.module.css";
 
 export function AtlasSearch({ map, query, onQuery, onSelect, onResults }: {
   map: RepublicMap; query: string; onQuery: (query: string) => void; onSelect: (selection: GraphSelection) => void; onResults: () => void;
@@ -65,6 +67,7 @@ export function AtlasSearch({ map, query, onQuery, onSelect, onResults }: {
             const step = event.key === "ArrowDown" ? 1 : -1;
             const next = selected < 0 ? (step > 0 ? 0 : hits.length - 1) : (selected + step + hits.length) % hits.length;
             setActive(hits.length ? next : -1);
+            if (hits.length) document.getElementById(`${id}-option-${next}`)?.scrollIntoView({ block: "nearest", behavior: "instant" });
           }
           if (event.key === "Enter") {
             event.preventDefault();
@@ -98,7 +101,11 @@ export function AtlasSearch({ map, query, onQuery, onSelect, onResults }: {
           aria-selected={selected === index}
           onMouseDown={(event) => event.preventDefault()}
           onClick={() => choose(hit.selection)}>
-          <span>
+          {hit.selection.kind === "person" ? (() => {
+            const person = map.people.find((item) => item.id === ("id" in hit.selection ? hit.selection.id : ""));
+            return person ? <Portrait person={person} size={32} /> : null;
+          })() : hit.selection.kind === "group" ? <PartySymbol family={map.groups.find((item) => item.id === ("id" in hit.selection ? hit.selection.id : ""))?.partyFamily ?? null} label={hit.label} size={32} /> : <Icon name="map" size={24} />}
+          <span className={extra.searchResultText}>
             <strong>
               {hit.label}
             </strong>
@@ -158,6 +165,7 @@ function MobileInspector({ open, onClose, selectionKey, children }: { open: bool
   }, [selectionKey, open]);
   return <dialog
     ref={dialog}
+    id="politici-inspector"
     className={styles.mobileSheet}
     aria-label="Dettaglio della selezione"
     onCancel={(event) => {
@@ -214,7 +222,7 @@ export function AtlasInspector({ open, onClose, selectionKey, children }: { open
   return mobile ? <MobileInspector open={open} onClose={onClose} selectionKey={selectionKey}>
     {children}
   </MobileInspector>
-    : <aside ref={rail} className={styles.sideRail} aria-label="Dettaglio della selezione">
+    : <aside id="politici-inspector" ref={rail} className={styles.sideRail} aria-label="Dettaglio della selezione">
       {children}
     </aside>;
 }

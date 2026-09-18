@@ -678,7 +678,12 @@ export function RepubblicaGraph({
   const mobileHub = layoutReady && overviewLayout === "stacked" && scene === "overview" && mode === "mappa";
 
   return (
-    <div className={styles.explorer} data-mobile-hub={mobileHub ? "true" : "false"} data-filters-open={filtersOpen ? "true" : "false"}>
+    <div
+      className={styles.explorer}
+      data-mobile-hub={mobileHub ? "true" : "false"}
+      data-filters-open={filtersOpen ? "true" : "false"}
+      data-mode={mode}
+    >
       <div className={styles.topBar}>
         <p className={styles.desktopExperienceNote} role="note">
           <strong>Su telefono vedi una panoramica semplificata.</strong>
@@ -807,7 +812,7 @@ export function RepubblicaGraph({
               })}
             </fieldset>
             <div className={styles.filterTools}>
-              <div className={styles.modeSwitch}>
+              <div className={styles.modeSwitch} role="group" aria-label="Vista mappa o elenco">
                 <button type="button" className={styles.chip} aria-pressed={mode === "mappa"} onClick={() => setMode("mappa")}>
                   Mappa
                 </button>

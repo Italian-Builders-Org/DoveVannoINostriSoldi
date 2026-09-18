@@ -79,8 +79,35 @@ test("navigation and discovery keep /politici and point the map to the subdomain
   assert.match(styles, /\.filtersToggle/);
   assert.match(styles, /\.desktopExperienceNote/);
   assert.match(styles, /\.cvBlock|\.rankingBlock/);
-  assert.match(styles, /minmax\(140px, 22dvh\)/);
+  assert.match(styles, /grid-template-columns:\s*1fr\s*1fr/);
+  assert.match(styles, /position:\s*sticky/);
+  assert.match(styles, /\.peopleList[\s\S]*?max-height:\s*none/);
+  assert.match(styles, /overflow:\s*visible/);
   assert.match(geometry, /cardH = layout === "stacked" \? 150/);
+});
+
+test("mobile mode switch stays full-width and page scrolls as one surface", () => {
+  assert.match(graph, /data-mode=\{mode\}/);
+  assert.match(graph, /aria-label="Vista mappa o elenco"/);
+  assert.match(graph, /setMode\("mappa"\)/);
+  assert.match(graph, /setMode\("elenco"\)/);
+  const mobileBlock = styles.slice(styles.indexOf("@media (max-width: 899px)"));
+  assert.match(mobileBlock, /\.modeSwitch\s*\{[^}]*grid-template-columns:\s*1fr\s*1fr/s);
+  assert.match(mobileBlock, /\.immersivePage\s*\{[^}]*overflow:\s*visible/s);
+  assert.match(mobileBlock, /\.explorer\s*\{[^}]*overflow:\s*visible/s);
+  assert.match(mobileBlock, /\.peopleList[\s\S]*?max-height:\s*none/);
+  assert.match(mobileBlock, /\.sideRail\s*\{[^}]*overflow:\s*visible/s);
+  assert.match(mobileBlock, /\.topBar\s*\{[^}]*position:\s*sticky/s);
+  assert.doesNotMatch(mobileBlock, /minmax\(140px,\s*22dvh\)/);
+});
+
+test("immersive politici unlocks document scroll only on mobile", async () => {
+  const globals = await readFile(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  assert.match(globals, /html\[data-immersive="politici"\] body\s*\{[^}]*overflow:\s*hidden/s);
+  const mobileImmersive = globals.slice(globals.indexOf("/* Mobile: unlock document scroll"));
+  assert.match(mobileImmersive, /@media \(max-width: 899px\)/);
+  assert.match(mobileImmersive, /overflow-y:\s*auto/);
+  assert.match(mobileImmersive, /#contenuto-principale\s*\{[^}]*height:\s*auto/s);
 });
 
 test("person panel exposes institutional CV and Camera attendance ranking", async () => {

@@ -2245,6 +2245,14 @@
 /* On a narrow screen the map becomes an overview: the labels that would fall
    below reading size step aside and the panel carries the detail. */
 @media (max-width: 899px) {
+  .immersivePage {
+    height: auto;
+    max-height: none;
+    min-height: 100dvh;
+    overflow: visible;
+    grid-template-rows: auto auto auto;
+  }
+
   .immersiveChrome {
     padding: 0.35rem 0.65rem;
     gap: 0.5rem;
@@ -2262,13 +2270,17 @@
   .immersiveDetails {
     padding: 0.35rem 0.65rem 0.45rem;
     font-size: 0.68rem;
-    max-height: 22dvh;
+    max-height: none;
+    overflow: visible;
   }
 
   .explorer {
     grid-template-columns: 1fr;
-    /* Map first for space; panel keeps a usable strip below (was collapsing to ~1px). */
-    grid-template-rows: auto minmax(0, 1fr) minmax(140px, 22dvh);
+    /* Grow with content; the document scrolls, not nested panes. */
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
       "top"
       "main"
@@ -2276,7 +2288,15 @@
   }
 
   .explorer[data-mobile-hub="true"] {
-    grid-template-rows: auto minmax(0, 1fr) minmax(120px, 18dvh);
+    grid-template-rows: auto auto auto;
+  }
+
+  .topBar {
+    position: sticky;
+    top: 0;
+    z-index: 25;
+    background: color-mix(in srgb, var(--graph-canvas-inset) 96%, transparent);
+    backdrop-filter: blur(10px);
   }
 
   .toolbar {
@@ -2318,10 +2338,11 @@
 
   .filters {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 1fr;
     grid-template-areas:
-      "vista tools"
-      "role role";
+      "vista"
+      "tools"
+      "role";
     gap: 0.45rem;
     align-items: stretch;
     overflow: visible;
@@ -2393,10 +2414,14 @@
     border: 0;
   }
 
+  /* Full-width Mappa|Elenco so neither chip can clip off-screen. */
   .modeSwitch {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     margin-left: 0;
     flex: none;
+    width: 100%;
+    min-width: 0;
     gap: 0.2rem;
     padding: 0.22rem;
     background: color-mix(in srgb, var(--graph-canvas) 55%, var(--color-raised));
@@ -2404,11 +2429,20 @@
     border-radius: 12px;
   }
 
+  .modeSwitch .chip {
+    justify-content: center;
+    text-align: center;
+    min-width: 0;
+  }
+
   .filterTools {
     grid-area: tools;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: stretch;
     gap: 0.35rem;
+    width: 100%;
+    min-width: 0;
   }
 
   .chip {
@@ -2483,17 +2517,16 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: auto;
   }
 
   .mobileHub {
     display: grid;
     gap: 0.7rem;
-    flex: 1;
+    flex: none;
     min-height: 0;
-    overflow: auto;
-    overscroll-behavior: contain;
+    overflow: visible;
     padding: 0.75rem 0.75rem 0.35rem;
-    -webkit-overflow-scrolling: touch;
   }
 
   .mobileHubIntro {
@@ -2512,7 +2545,20 @@
   }
 
   .rankingList {
-    max-height: min(42vh, 22rem);
+    max-height: none;
+    overflow: visible;
+  }
+
+  .peopleList,
+  .memberList,
+  .connectionList {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .panel {
+    overflow: visible;
+    max-height: none;
   }
 
   .mobileHubCard,
@@ -2633,11 +2679,33 @@
   .sideRail {
     border-right: 0;
     border-top: 1px solid color-mix(in srgb, var(--graph-institution) 14%, transparent);
-    min-height: 140px;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
   }
 
   .stageRow {
+    height: auto;
+    min-height: min(58dvh, 520px);
+    overflow: visible;
+  }
+
+  .stageRow:has(.stageColumnHidden) {
     min-height: 0;
+  }
+
+  .explorer[data-mobile-hub="true"] .stageRow {
+    min-height: 0;
+  }
+
+  .stageColumn {
+    height: auto;
+    min-height: inherit;
+    grid-template-rows: minmax(52dvh, 1fr) auto;
+  }
+
+  .frame {
+    min-height: min(52dvh, 480px);
   }
 
   .canvasHint {

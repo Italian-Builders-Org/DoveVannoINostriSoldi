@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MedicalDeviceSpendingHistoryChart } from "@/components/charts/medical-device-spending-history-chart";
 import {
   MedicalDeviceQueryError,
   aggregateMedicalDeviceSpending,
@@ -53,6 +54,11 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   const selectedRegion = selectedYear?.regions.find((item) => item.code === region);
   const selectedAggregateYear = filters.years.find((item) => String(item.year) === aggregateYear);
   const selectedAggregateRegion = selectedAggregateYear?.regions.find((item) => item.code === aggregateRegion);
+  const history = await Promise.all(years.map(async (year) => {
+    const annual = await aggregateMedicalDeviceSpending({ year: String(year), limit: 1 });
+    return { year, spending: annual.coverage.spending };
+  }));
+  history.sort((left, right) => left.year - right.year);
   let search: Awaited<ReturnType<typeof searchMedicalDevices>> | null = null;
   let searchError: string | null = null;
   if (q) {
@@ -146,6 +152,12 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
           </ol>
           {search.pagination.nextCursor ? <p><Link className="btn btn-secondary" href={href("/spese/sanita/dispositivi", { q, tipo: type, annoRicerca: searchYear, regione: region, azienda: company, cursoreRicerca: search.pagination.nextCursor })}>Risultati successivi</Link></p> : null}
         </> : null}
+      </section>
+
+      <section className="panel" aria-labelledby="andamento-title">
+        <h2 className="panel-title" id="andamento-title">Spesa rilevata per anno</h2>
+        <p>Totale nazionale pubblicato per ciascun anno. Gli importi includono zeri e rettifiche negative.</p>
+        <MedicalDeviceSpendingHistoryChart data={history} />
       </section>
 
       <section className="panel" id="aggregati" aria-labelledby="aggregati-title">

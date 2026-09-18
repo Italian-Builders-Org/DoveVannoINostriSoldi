@@ -394,6 +394,18 @@ html[data-immersive="politici"] #contenuto-principale {
   max-width: none;
 }
 
+/* Mobile: unlock document scroll so list/panel read as one page, not nested panes. */
+@media (max-width: 899px) {
+  html[data-immersive="politici"] body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  html[data-immersive="politici"] #contenuto-principale {
+    height: auto;
+    min-height: 100dvh;
+  }
+}
+
 @media (min-width: 1100px) {
   body { --sidebar-width: 232px; --sidebar-open-width: 232px; --sidebar-rail-width: 68px; --site-header-height: 64px; }
   body:has([data-announcement]) { --site-header-height: 108px; }

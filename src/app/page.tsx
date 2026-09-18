@@ -253,6 +253,10 @@ export default async function HomePage({
               <Link className={styles.secondaryCard} href={destination.href}>
                 <span className={styles.cardTitle}>{destination.title}</span>
                 <span className={styles.cardCopy}>{destination.description}</span>
+                <span className={styles.cardCta}>
+                  Apri
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
+                </span>
               </Link>
             </li>
           ))}

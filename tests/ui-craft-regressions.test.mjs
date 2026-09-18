@@ -44,9 +44,18 @@ test("the home destination grids stay balanced without empty auto-fit cells", as
     source("../src/app/home.module.css"),
   ]);
 
-  assert.match(css, /grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
+  // Four primary cards → 2×2; six secondary → 3×2. Avoid orphan cells and auto-fit gaps.
+  assert.match(
+    css,
+    /\.primaryGrid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/,
+  );
+  assert.match(
+    css,
+    /\.secondaryGrid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/,
+  );
   assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.doesNotMatch(css, /repeat\(auto-fit, minmax\(280px, 1fr\)\)/);
+  assert.match(page, /SECONDARY_DESTINATIONS\.map[\s\S]*?cardCta[\s\S]*?Apri/);
   const anomalyRule = css.match(/\.anomalyItem \{([\s\S]*?)\n\}/)?.[1] ?? "";
   assert.match(anomalyRule, /min-width: 0/);
   assert.match(css, /\.anomaliesPanel \{[\s\S]*?grid-column: 1 \/ -1;/);

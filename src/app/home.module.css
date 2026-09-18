@@ -80,10 +80,12 @@
   list-style: none;
 }
 
+/* Four primary destinations: 2×2 avoids an orphan cell in a 3-column row. */
 .primaryGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* Six secondary destinations fill two complete rows of three. */
 .secondaryGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -91,8 +93,10 @@
 .primaryCard,
 .secondaryCard {
   display: grid;
+  grid-template-rows: auto 1fr auto;
   gap: var(--space-2);
   height: 100%;
+  min-height: 9.5rem;
   min-width: 0;
   padding: var(--space-4);
   background: var(--color-raised);
@@ -100,10 +104,6 @@
   color: inherit;
   text-decoration: none;
   transition: border-color 120ms ease, background-color 120ms ease;
-}
-
-.primaryCard {
-  grid-template-rows: auto 1fr auto;
 }
 
 .primaryCard:hover,
@@ -606,6 +606,7 @@
     grid-template-columns: 1fr;
   }
 
+  .primaryGrid,
   .secondaryGrid {
     grid-template-columns: 1fr;
   }
@@ -616,6 +617,12 @@
   .anomalyItem,
   .readingPanel {
     padding: var(--space-3);
+    min-height: 0;
+  }
+
+  .cardCta {
+    min-height: 2.75rem;
+    align-items: center;
   }
 
   .headline {

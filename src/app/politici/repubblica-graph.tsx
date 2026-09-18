@@ -218,7 +218,10 @@ export function RepubblicaGraph({
   const pinchOrigin = useRef<{ distance: number; scale: number } | null>(null);
   const moved = useRef(false);
   const newsRef = useRef(news);
-  newsRef.current = news;
+
+  useEffect(() => {
+    newsRef.current = news;
+  }, [news]);
 
   const overview = useMemo(() => buildOverviewGeometry(map, overviewLayout), [map, overviewLayout]);
   const cameraScene = useMemo(() => buildChamberScene(map, "camera"), [map]);
@@ -1474,25 +1477,6 @@ function ChamberSceneView({
       </div>
     </>
   );
-}
-
-function hierarchyPath(
-  source: string,
-  target: string,
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-  _overview: OverviewGeometry,
-): string {
-  if (source === "presidenza-repubblica" && target === "governo") {
-    return curve(from, to, 0.05);
-  }
-  if (source === "governo" && (target === "camera" || target === "senato")) {
-    return curve(from, to, 0.2);
-  }
-  if (source === "presidenza-repubblica" && (target === "camera" || target === "senato")) {
-    return curve(from, to, 0.12);
-  }
-  return curve(from, to, 0.08);
 }
 
 function overviewAnchor(

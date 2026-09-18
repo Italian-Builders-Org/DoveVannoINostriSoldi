@@ -33,6 +33,63 @@ ricostruisce la situazione storica. CND della spesa, CND dell'anagrafica e
 intervalli della classificazione rimangono separati; nessuna conversione CID/EMDN.
 La data `9999/12/31` è convenzionale, non una scadenza commerciale reale.
 
+## Copertura storica
+
+La serie pubblicata in questa integrazione copre il 2018–2021. Gli anni
+precedenti non sono rappresentati come zero:
+
+- il 2012 non contiene il numero di repertorio;
+- il 2013 è diviso in due semestri e non contiene tipo dispositivo o CND;
+- il 2014 contiene il numero di repertorio, ma non tipo dispositivo o CND;
+- il 2015–2017 contiene tipo e numero di repertorio, ma non la CND della riga.
+
+Questi file richiedono contratti distinti prima di entrare nel corpus. Non si
+completano i campi assenti usando lo snapshot corrente. Le
+[versioni storiche della CND](https://www.salute.gov.it/new/it/tema/dispositivi-medici/le-diverse-versioni-e-i-criteri-di-revisione-della-cnd/)
+pubblicate dal Ministero aiutano a interpretare un codice presente nella fonte,
+ma non dimostrano quale classificazione avesse una riga che non lo riporta.
+
+Il Ministero pubblica il
+[dataset completo corrente della BD/RDM](https://www.dati.salute.gov.it/it/dataset/dispositivi-medici/)
+e le
+[variazioni settimanali](https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-variazioni-settimanali/).
+La seconda risorsa conserva sul portale la pubblicazione corrente e le due
+settimane precedenti, quindi non costituisce una serie di snapshot annuali. Il
+[dizionario BD/RDM](https://www.dati.salute.gov.it/dati/documenti/ID_1_16_Dataset_Dispositivi_medici_v2.0.pdf)
+documenta date di validità e un riferimento facoltativo alla notifica
+precedente. Sono informazioni della singola registrazione, non una
+ricostruzione certificata dell'anagrafica per ciascun anno di spesa.
+
+La CND è alla base della
+[EMDN europea](https://health.ec.europa.eu/medical-devices-topics-interest/european-medical-devices-nomenclature-emdn_en),
+ma questo rapporto non equivale a un raccordo riga per riga. La ricognizione
+delle fonti ufficiali, compreso il
+[decreto che adotta la CID](https://www.gazzettaufficiale.it/eli/id/2026/02/13/26A00710/SG),
+è stata chiusa il 18 settembre 2026 senza individuare un crosswalk pubblicato e
+versionato tra CND, EMDN e CID. Il corpus conserva quindi i codici della fonte
+senza convertirli.
+
+## Aggiornamenti e revisioni
+
+Ogni aggiornamento passa da una pull request e dai controlli offline. Non viene
+eseguito alcun download durante le richieste al sito.
+
+- **Nuovo anno:** aggiungere un dataset distinto, bloccare URL, licenza, periodo,
+  byte, hash e schema, quindi profilare e appendere le righe. Gli anni già
+  pubblicati non vengono sostituiti.
+- **Revisione dello stesso anno:** trattare byte diversi per lo stesso periodo
+  come una release candidata. Mantenere la release corrente finché provenienza e
+  precedenza non sono verificate; poi confrontare totali e righe e sostituire la
+  release in un'unica modifica. Due release sovrapposte non si sommano.
+- **Aggiornamento BD/RDM o CND:** registrare un nuovo snapshot e la sua data,
+  lasciare invariati i fatti di spesa e rigenerare raccordi e indici. Le
+  differenze nei collegamenti devono essere visibili nella review. Né la CND
+  della spesa né il ruolo del fabbricante vengono riscritti con valori correnti.
+
+Le annualità 2022 e 2023 restano escluse finché la licenza della singola risorsa
+non è dichiarata. Una licenza generale del portale non viene estesa per
+inferenza agli allegati.
+
 ## Trasformazione e privacy
 
 Le quattro spese e CND conservano tutti i byte CSV. I file 2018 e 2019 hanno

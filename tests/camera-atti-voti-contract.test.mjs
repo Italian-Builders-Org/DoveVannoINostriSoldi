@@ -47,7 +47,7 @@ test("every act's current state belongs to its outcome class official states", (
   }
 });
 
-test("deputy profiles expose legislative activity; senators never do", () => {
+test("deputy profiles expose camera legislative activity", () => {
   const snapshot = parseCameraAttiVotiSnapshot(attiVotiJson);
   const profiles = getRepubblicaProfiles();
   const signerNumericId = snapshot.acts[0].firstSignerId.replace(/^d/, "").replace(/_19$/, "");
@@ -55,6 +55,7 @@ test("deputy profiles expose legislative activity; senators never do", () => {
   assert.ok(profile, `dep-${signerNumericId}`);
   const activity = profile.legislativeActivity;
   assert.ok(activity);
+  assert.equal(activity.chamber, "camera");
   assert.equal(activity.counts.total, activity.counts.firstSigned + activity.counts.coSigned);
   const byOutcomeSum = activity.counts.byOutcome.reduce(
     (sum, row) => sum + row.firstSigned + row.coSigned,
@@ -69,7 +70,18 @@ test("deputy profiles expose legislative activity; senators never do", () => {
   assert.equal(byOutcomeSum, withState);
   assert.ok(activity.comparison.firstSignedPercentile >= 0);
   assert.ok(activity.comparison.firstSignedPercentile <= 100);
+  // percentile = share of the OTHER roster members with fewer first-signed acts
+  const cameraCounts = Object.values(profiles)
+    .filter((candidate) => candidate.legislativeActivity?.chamber === "camera")
+    .map((candidate) => candidate.legislativeActivity.counts.firstSigned);
+  const expectedPercentile = Math.round(
+    (100 * cameraCounts.filter((count) => count < activity.counts.firstSigned).length) /
+      (cameraCounts.length - 1),
+  );
+  assert.equal(activity.comparison.firstSignedPercentile, expectedPercentile);
+  assert.equal(activity.comparison.peerCount, cameraCounts.length - 1);
   assert.ok(activity.recentFirstSigned.length <= 3);
+  assert.ok(activity.recentFirstSigned.every((act) => act.phases === undefined));
   assert.equal(acts.firstSigned.length, activity.counts.firstSigned);
   const voteCodes = new Set(["F", "C", "A", "N", "V", "non-rilevato"]);
   for (const act of [...acts.firstSigned, ...acts.coSigned]) {
@@ -86,8 +98,19 @@ test("deputy profiles expose legislative activity; senators never do", () => {
     candidate.roles.some((role) => role.kind === "senatore" || role.kind === "senatore-a-vita"),
   );
   assert.ok(senator);
-  assert.equal(senator[1].legislativeActivity, null);
-  assert.equal(getRepubblicaLegislativeActs(senator[0]), null);
+  assert.equal(senator[1].legislativeActivity.chamber, "senato");
+  const senatorActs = getRepubblicaLegislativeActs(senator[0]);
+  assert.ok(senatorActs);
+  assert.equal(senatorActs.firstSigned[0]?.chamber ?? "senato", "senato");
+
+  const nonParliamentarian = Object.entries(profiles).find(([, candidate]) =>
+    !candidate.roles.some((role) =>
+      ["deputato", "senatore", "senatore-a-vita"].includes(role.kind),
+    ),
+  );
+  assert.ok(nonParliamentarian);
+  assert.equal(nonParliamentarian[1].legislativeActivity, null);
+  assert.equal(getRepubblicaLegislativeActs(nonParliamentarian[0]), null);
 });
 
 test("tampered snapshot with a broken tally fails the parse", () => {

@@ -86,7 +86,7 @@ export function RepubblicaPanel({
   map,
   selection,
   profiles,
-  legislativeSource,
+  legislativeSources,
   profilesFailed,
   news,
   onSelect,
@@ -95,7 +95,10 @@ export function RepubblicaPanel({
   map: RepublicMap;
   selection: GraphSelection;
   profiles: Record<string, RepublicProfile> | null;
-  legislativeSource: RepublicLegislativeSource | null;
+  legislativeSources: {
+    camera: RepublicLegislativeSource;
+    senato: RepublicLegislativeSource;
+  } | null;
   profilesFailed: boolean;
   news: NewsState | null;
   onSelect: (selection: GraphSelection) => void;
@@ -108,7 +111,7 @@ export function RepubblicaPanel({
           map={map}
           personId={selection.id}
           profile={profiles?.[selection.id] ?? null}
-          legislativeSource={legislativeSource}
+          legislativeSources={legislativeSources}
           profilesFailed={profilesFailed}
           news={news}
           onSelect={onSelect}
@@ -367,7 +370,7 @@ function PersonCard({
   map,
   personId,
   profile,
-  legislativeSource,
+  legislativeSources,
   profilesFailed,
   news,
   onSelect,
@@ -376,7 +379,10 @@ function PersonCard({
   map: RepublicMap;
   personId: string;
   profile: RepublicProfile | null;
-  legislativeSource: RepublicLegislativeSource | null;
+  legislativeSources: {
+    camera: RepublicLegislativeSource;
+    senato: RepublicLegislativeSource;
+  } | null;
   profilesFailed: boolean;
   news: NewsState | null;
   onSelect: (selection: GraphSelection) => void;
@@ -478,11 +484,11 @@ function PersonCard({
         </p>
       ) : null}
 
-      {profile?.legislativeActivity && legislativeSource ? (
+      {profile?.legislativeActivity && legislativeSources ? (
         <LegislativeActsSection
           personId={person.id}
           activity={profile.legislativeActivity}
-          source={legislativeSource}
+          source={legislativeSources[profile.legislativeActivity.chamber]}
         />
       ) : null}
 
@@ -909,13 +915,27 @@ function AttendanceRanking({
   );
 }
 
-const OWN_VOTE_LABELS: Record<RepublicActVote, string> = {
-  F: "favorevole",
-  C: "contrario",
-  A: "astenuto/a",
-  N: "non ha votato",
-  V: "voto segreto",
-  "non-rilevato": "voto non rilevato nella fonte",
+const OWN_VOTE_LABELS: Record<"camera" | "senato", Record<RepublicActVote, string>> = {
+  camera: {
+    F: "favorevole",
+    C: "contrario",
+    A: "astenuto/a",
+    N: "non ha votato",
+    V: "voto segreto",
+    P: "presente, non votante",
+    M: "in congedo o missione",
+    "non-rilevato": "voto non rilevato nella fonte",
+  },
+  senato: {
+    F: "favorevole",
+    C: "contrario",
+    A: "astenuto/a",
+    N: "non ha votato",
+    V: "voto segreto",
+    P: "presente, non votante",
+    M: "in congedo o missione",
+    "non-rilevato": "non presente nella votazione",
+  },
 };
 
 type MoreActsState =
@@ -925,6 +945,12 @@ type MoreActsState =
   | { status: "ready"; firstSigned: RepublicActSummary[]; coSigned: RepublicActSummary[] };
 
 function ActRow({ act }: { act: RepublicActSummary }) {
+  const voteLabels = OWN_VOTE_LABELS[act.chamber];
+  const stateText = act.currentState
+    ? act.currentStateRamo === "C"
+      ? `${act.currentState} (alla Camera${act.currentStateDate ? `, ${longDate(act.currentStateDate)}` : ""})`
+      : `${act.currentState}${act.currentStateDate ? ` (${longDate(act.currentStateDate)})` : ""}`
+    : "";
   return (
     <li className={styles.actItem}>
       <a href={act.officialPage} rel="noreferrer" className={styles.actTitle}>
@@ -933,16 +959,30 @@ function ActRow({ act }: { act: RepublicActSummary }) {
       <span className={styles.actMeta}>
         n. {act.number}
         {act.presentedDate ? ` · presentata il ${longDate(act.presentedDate)}` : ""}
-        {act.currentState
-          ? ` · ${act.currentState}${act.currentStateDate ? ` (${longDate(act.currentStateDate)})` : ""}`
-          : ""}
+        {stateText ? ` · ${stateText}` : ""}
       </span>
+      {act.phases && act.phases.length > 0 ? (
+        <details className={styles.actDetails}>
+          <summary>Fasi dell&apos;iter</summary>
+          <ul className={styles.plainList}>
+            {act.phases.map((phase) => (
+              <li key={`${act.id}-${phase.fase}-${phase.presentedDate}`}>
+                {phase.fase} · {phase.kind === "presentato" ? "presentato" : "trasmesso"} il{" "}
+                {longDate(phase.presentedDate)} · {phase.state}{" "}
+                {phase.ramo === "C"
+                  ? `(alla Camera, ${longDate(phase.stateDate)})`
+                  : `(${longDate(phase.stateDate)})`}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       {act.finalVotes.map((vote) => (
         <span key={vote.id} className={styles.actMeta}>
           Votazione finale del {longDate(vote.date)}: {vote.approved ? "approvata" : "non approvata"}
           {vote.confidenceVote ? ", con questione di fiducia" : ""}
           {": posizione registrata: "}
-          <strong>{OWN_VOTE_LABELS[vote.ownVote]}</strong>
+          <strong>{voteLabels[vote.ownVote]}</strong>
         </span>
       ))}
     </li>
@@ -960,6 +1000,9 @@ function LegislativeActsSection({
 }) {
   const [more, setMore] = useState<MoreActsState>({ status: "idle" });
   const counts = activity.counts;
+  const isSenato = activity.chamber === "senato";
+  const chamberLabel = isSenato ? "Senato" : "Camera";
+  const membersLabel = isSenato ? "senatori" : "deputati";
   const outcomeLabels = new Map(source.outcomeClasses.map((item) => [item.id, item.label]));
 
   async function loadAll() {
@@ -986,10 +1029,10 @@ function LegislativeActsSection({
           <strong>
             {counts.firstSigned} a prima firma · {counts.coSigned} cofirmate · {counts.becameLaw} divenute legge
           </strong>
-          {` (${counts.withFinalVote} con votazione finale alla Camera).`}
+          {` (${counts.withFinalVote} con votazione finale al ${chamberLabel}).`}
         </p>
         <p className={styles.cardNote}>
-          Mediana Camera: {activity.comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
+          Mediana {chamberLabel}: {activity.comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
           {activity.comparison.groupMedianFirstSigned !== null && activity.comparison.groupLabel
             ? ` · mediana ${activity.comparison.groupLabel}: ${activity.comparison.groupMedianFirstSigned.toLocaleString("it-IT")}`
             : ""}
@@ -997,8 +1040,8 @@ function LegislativeActsSection({
         </p>
         {counts.firstSigned > 0 ? (
           <p className={styles.cardNote}>
-            Ha presentato più proposte a prima firma del {activity.comparison.firstSignedPercentile}% dei{" "}
-            {activity.comparison.chamberSize} deputati in carica.
+            Ha presentato più proposte a prima firma del {activity.comparison.firstSignedPercentile}% degli altri{" "}
+            {activity.comparison.peerCount} {membersLabel} in carica.
           </p>
         ) : null}
         {counts.byOutcome.length > 0 ? (
@@ -1061,13 +1104,19 @@ function LegislativeActsSection({
         <p className={styles.cardNote}>
           Fonte:{" "}
           <a href={source.sourceUrl} rel="noreferrer">
-            Camera dei deputati, Open Data (dati.camera.it)
+            {isSenato
+              ? "Senato della Repubblica, Open Data (dati.senato.it)"
+              : "Camera dei deputati, Open Data (dati.camera.it)"}
           </a>
           , {source.licenseLabel}. Periodo: {source.periodLabel}.
         </p>
         <details className={styles.actDetails}>
           <summary>Cosa non misura</summary>
           <ul className={styles.plainList}>
+            <li>
+              Camera e Senato contano presenze e astenuti in modo diverso: i numeri dei due rami non
+              sono confrontabili.
+            </li>
             {source.caveats.map((caveat) => (
               <li key={caveat}>{caveat}</li>
             ))}

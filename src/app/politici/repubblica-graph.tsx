@@ -250,7 +250,10 @@ export function RepubblicaGraph({
   const layoutReady = useClientHydrated();
   const [hover, setHover] = useState<Hover>(null);
   const [profiles, setProfiles] = useState<Record<string, RepublicProfile> | null>(null);
-  const [legislativeSource, setLegislativeSource] = useState<RepublicLegislativeSource | null>(null);
+  const [legislativeSources, setLegislativeSources] = useState<{
+    camera: RepublicLegislativeSource;
+    senato: RepublicLegislativeSource;
+  } | null>(null);
   const [profilesFailed, setProfilesFailed] = useState(false);
   const [railWidth, setRailWidth] = useState(RAIL_WIDTH_DEFAULT);
   const [railMax, setRailMax] = useState(640);
@@ -302,12 +305,15 @@ export function RepubblicaGraph({
         .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
         .then((payload: {
           profiles?: Record<string, RepublicProfile>;
-          legislativeSource?: RepublicLegislativeSource;
+          legislativeSources?: {
+            camera: RepublicLegislativeSource;
+            senato: RepublicLegislativeSource;
+          };
         }) => {
           if (cancelled) return;
           if (!payload.profiles) throw new Error("payload inatteso");
           setProfiles(payload.profiles);
-          setLegislativeSource(payload.legislativeSource ?? null);
+          setLegislativeSources(payload.legislativeSources ?? null);
         })
         .catch(() => {
           if (!cancelled) setProfilesFailed(true);
@@ -958,7 +964,7 @@ export function RepubblicaGraph({
           map={map}
           selection={selection}
           profiles={profiles}
-          legislativeSource={legislativeSource}
+          legislativeSources={legislativeSources}
           profilesFailed={profilesFailed}
           news={currentNews}
           onSelect={(next) => {

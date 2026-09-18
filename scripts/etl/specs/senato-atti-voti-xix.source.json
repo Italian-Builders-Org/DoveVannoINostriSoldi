@@ -1,0 +1,90 @@
+{
+  "datasetId": "senato-atti-voti-xix",
+  "title": "Senato della Repubblica — disegni di legge di iniziativa parlamentare, fasi dell'iter e votazioni finali per senatore (XIX legislatura)",
+  "landingUrl": "https://dati.senato.it/",
+  "period": {
+    "legislatures": "19",
+    "label": "XIX Legislatura",
+    "startDate": "2022-10-13",
+    "kind": "legislature-to-date"
+  },
+  "source": {
+    "owner": "Senato della Repubblica",
+    "endpointUrl": "https://dati.senato.it/sparql",
+    "landingUrl": "https://dati.senato.it/",
+    "legislatureUri": "http://dati.senato.it/legislatura/19",
+    "license": "CC BY 3.0 IT (dichiarata dal portale dati.senato.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "committedResponses": {
+      "phases": {
+        "pages": 1,
+        "rows": 1608,
+        "bytes": 2360477,
+        "sha256": "3df6f0f68a4d8956f9de29abcc6b30f363cc1930052235fd4584ae91f9e8f42f"
+      },
+      "signers": {
+        "pages": 3,
+        "rows": 13200,
+        "bytes": 3755154,
+        "sha256": "c3b5fb291be77ba18736833388a2cf8409ddcbfddf72899d114314bf22d8babd"
+      },
+      "finalVotes": {
+        "pages": 1,
+        "rows": 311,
+        "bytes": 422105,
+        "sha256": "9d73fe6f989334fe6520f64895685f6fff8a3031193b503062239f073766e283"
+      },
+      "disegniXix": {
+        "pages": 1,
+        "rows": 1,
+        "bytes": 225,
+        "sha256": "7e8e0a5aea43cb403a0610a3dc28fa0064f85bf49ea5175fac952ebe7a49643b"
+      },
+      "sessions": {
+        "pages": 2,
+        "rows": 8078,
+        "bytes": 1784685,
+        "sha256": "d39936ec57dd665846218834e00f8c596a977acea3b3cb3e9ebe9c84966a5cb7"
+      },
+      "nominalVotes": {
+        "count": 66,
+        "bytes": 1966794,
+        "rows": 12436,
+        "sha256": "e3f62a7fc266661969979c94c8ab5839d15a88cca35bbba06ba4fd02a6d1c757"
+      }
+    }
+  },
+  "coverageFloor": {
+    "acts": 1400,
+    "senatorsAsFirstSigner": 150,
+    "finalVotes": 40,
+    "finalVotesObserved": 200
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Disegni di legge, fasi e votazioni: nessun importo."
+    },
+    "periodo": {
+      "kind": "legislature-to-date",
+      "id": "19",
+      "startDate": "2022-10-13"
+    },
+    "provenance": {
+      "kind": "official-sparql",
+      "endpoint": "https://dati.senato.it/sparql"
+    }
+  },
+  "caveats": [
+    "Il perimetro è l'iniziativa parlamentare a prima firma di un senatore: sono esclusi i disegni di legge a prima firma di deputati, del Governo, delle Regioni, del CNEL e di iniziativa popolare.",
+    "Le votazioni finali su disegni di legge non a prima firma di un senatore non sono incluse: compaiono solo le finali sugli atti del perimetro.",
+    "La firma di un disegno di legge non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
+    "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati del Senato.",
+    "I conteggi di firme, disegni e voti non misurano produttività o merito dei senatori.",
+    "Nel conteggio ufficiale del Senato gli astenuti contano fra i votanti (alla Camera no): i numeri dei due rami non sono direttamente confrontabili.",
+    "'Non presente' indica l'assenza da tutte le liste ufficiali della votazione, senza distinguere il motivo.",
+    "Nelle votazioni segrete il voto individuale non è pubblico: il nominale non è disponibile.",
+    "La Camera è coperta da uno snapshot separato (camera-atti-voti-xix) con ontologia e regole di conteggio proprie.",
+    "Nessun importo in questo snapshot: per la spesa pubblica usare le sezioni dedicate."
+  ]
+}

@@ -78,7 +78,7 @@
     "'Non ha votato' non distingue assenza, missione o scelta: la fonte non espone quel dettaglio in questo endpoint.",
     "Nel conteggio ufficiale della Camera gli astenuti sono presenti ma non votanti.",
     "Nelle votazioni segrete il voto individuale non è pubblico: il nominativo risulta 'Ha votato' senza posizione.",
-    "Il Senato non è incluso: pubblica DDL, iter e voti su dati.senato.it con un'ontologia diversa.",
+    "Questo snapshot copre la Camera; il Senato ha uno snapshot separato (senato-atti-voti-xix) con ontologia e regole di conteggio proprie.",
     "Nessun importo in questo snapshot: per la spesa pubblica usare le sezioni dedicate."
   ]
 }

@@ -25,7 +25,10 @@ test("politici page is immersive and server-first", () => {
 test("root layout strips site chrome on the immersive map", () => {
   assert.match(layout, /ImmersiveDocumentFlag/);
   assert.match(layout, /ChromeUnlessImmersive/);
+  assert.match(layout, /isImmersiveMapRequest/);
+  assert.match(layout, /data-immersive/);
   assert.match(immersive, /isPoliticiImmersive/);
+  assert.match(immersive, /POLITICI_HOST|politici\.dovevannoinostrisoldi\.com/);
   assert.match(immersive, /dataset\.immersive|data-immersive/);
 });
 

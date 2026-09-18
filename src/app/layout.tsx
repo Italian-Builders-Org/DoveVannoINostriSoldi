@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { ChromeUnlessImmersive, ImmersiveDocumentFlag } from "@/components/immersive-chrome";
+import { isImmersiveMapRequest } from "@/lib/immersive-request";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 import { Navigation } from "@/components/navigation";
@@ -42,13 +43,20 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const immersive = await isImmersiveMapRequest();
   return (
-    <html lang="it" className={geist.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html
+      lang="it"
+      className={geist.variable}
+      data-scroll-behavior="smooth"
+      {...(immersive ? { "data-immersive": "politici" } : {})}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
@@ -57,17 +65,23 @@ export default function RootLayout({
         <GoogleAnalytics />
         <ImmersiveDocumentFlag />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
-        <ChromeUnlessImmersive>
-          <Navigation announcements={announcements} />
-        </ChromeUnlessImmersive>
+        {immersive ? null : (
+          <ChromeUnlessImmersive>
+            <Navigation announcements={announcements} />
+          </ChromeUnlessImmersive>
+        )}
         <div className="site-content">
-          <ChromeUnlessImmersive>
-            <SectionNav />
-          </ChromeUnlessImmersive>
+          {immersive ? null : (
+            <ChromeUnlessImmersive>
+              <SectionNav />
+            </ChromeUnlessImmersive>
+          )}
           <div id="contenuto-principale" tabIndex={-1}>{children}</div>
-          <ChromeUnlessImmersive>
-            <SiteFooter />
-          </ChromeUnlessImmersive>
+          {immersive ? null : (
+            <ChromeUnlessImmersive>
+              <SiteFooter />
+            </ChromeUnlessImmersive>
+          )}
         </div>
       </body>
     </html>

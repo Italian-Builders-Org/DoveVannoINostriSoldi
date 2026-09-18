@@ -7,7 +7,9 @@ import { config, proxy } from "../src/proxy.ts";
 const { getRewrittenUrl, isRewrite } = proxyTesting;
 
 test("MCP compatibility proxy is scoped to the exact public presentation path", () => {
-  assert.deepEqual(config, { matcher: ["/", "/mcp", "/enti/:path*", "/api/:path*"] });
+  assert.deepEqual(config, {
+    matcher: ["/", "/politici", "/politici/:path*", "/mcp", "/enti/:path*", "/api/:path*"],
+  });
 });
 
 test("politici subdomain rewrites the root path to the immersive map", async () => {
@@ -18,6 +20,15 @@ test("politici subdomain rewrites the root path to the immersive map", async () 
   const main = await proxy(new NextRequest("https://www.dovevannoinostrisoldi.com/"));
   assert.equal(isRewrite(main), false);
   assert.equal(main.headers.get("x-middleware-next"), "1");
+});
+
+test("politici paths mark the request immersive for the root layout", async () => {
+  const subdomain = await proxy(new NextRequest("https://politici.dovevannoinostrisoldi.com/"));
+  assert.equal(isRewrite(subdomain), true);
+
+  const sameOrigin = await proxy(new NextRequest("https://www.dovevannoinostrisoldi.com/politici"));
+  assert.equal(isRewrite(sameOrigin), false);
+  assert.equal(sameOrigin.headers.get("x-middleware-next"), "1");
 });
 
 test("training crawlers share an entity allowance without blocking user-initiated fetches", (t) => {

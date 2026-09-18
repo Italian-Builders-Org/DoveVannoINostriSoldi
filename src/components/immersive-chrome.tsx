@@ -2,10 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
+import { POLITICI_HOST } from "@/lib/politici-host";
 
-/** Single-purpose map page: no site chrome; it will live on its own subdomain. */
-export function isPoliticiImmersive(pathname: string | null): boolean {
-  return pathname === "/politici" || Boolean(pathname?.startsWith("/politici/"));
+/** Single-purpose map page: no site chrome; also on its own subdomain at `/`. */
+export function isPoliticiImmersive(
+  pathname: string | null,
+  hostname: string | null = typeof window === "undefined" ? null : window.location.hostname,
+): boolean {
+  if (pathname === "/politici" || Boolean(pathname?.startsWith("/politici/"))) return true;
+  // Proxy rewrites politici.* `/` → `/politici` but the URL bar stays `/`.
+  return hostname === POLITICI_HOST && (pathname === "/" || pathname === "");
 }
 
 /** Marks <html> so CSS can drop sidebar offset and fill the viewport. */

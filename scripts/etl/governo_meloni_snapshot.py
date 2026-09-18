@@ -667,10 +667,15 @@ def check_committed(spec: dict[str, Any]) -> None:
     coverage = payload["coverage"]
     for key, minimum in floor.items():
         require(coverage.get(key, 0) >= int(minimum), f"coverage {key} sotto floor")
+    appointments = int(coverage.get("appointments", 0))
+    people = int(coverage.get("people", 0))
+    departments = int(coverage.get("departments", 0))
+    people_with_official_page = int(coverage.get("peopleWithOfficialPage", 0))
+    people_with_photo = int(coverage.get("peopleWithPhoto", 0))
     print(
-        f"OK governo-meloni: {coverage['appointments']} incarichi, {coverage['people']} persone, "
-        f"{coverage['departments']} strutture, {coverage['peopleWithOfficialPage']} schede ufficiali, "
-        f"{coverage['peopleWithPhoto']} ritratti"
+        f"OK governo-meloni: {appointments} incarichi, {people} persone, "
+        f"{departments} strutture, {people_with_official_page} schede ufficiali, "
+        f"{people_with_photo} ritratti"
     )
 
 

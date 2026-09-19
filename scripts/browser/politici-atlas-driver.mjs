@@ -59,8 +59,11 @@ export async function waitForAtlas(page) {
 }
 
 export async function hoverSeat(page, selector = '[data-seat-person][tabindex="0"]') {
-  const point = await page.$eval(selector, (element) => {
+  const point = await page.$eval(selector, async (element) => {
     element.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+    // Let the scroll events settle before entering the seat: scrolling correctly
+    // dismisses previews, including a pending hover reveal.
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const matrix = element.getScreenCTM();
     if (!matrix) throw new Error("Seggio senza matrice SVG");
     const point = new DOMPoint(0, 0).matrixTransform(matrix);

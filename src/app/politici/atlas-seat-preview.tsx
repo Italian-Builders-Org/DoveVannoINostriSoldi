@@ -43,7 +43,9 @@ export function useSeatPreview() {
   }, [cancelTimer, dismiss]);
   const show = useCallback((personId: string, element: SVGElement, keyboard: boolean) => {
     cancelTimer();
-    if (!window.matchMedia("(min-width: 900px)").matches || (!keyboard && !window.matchMedia("(hover: hover)").matches)) return;
+    // The caller already excludes touch events. A real mouse/pen can hover even
+    // when the device's primary input reports no hover (for example a tablet).
+    if (!window.matchMedia("(min-width: 900px)").matches) return;
     const reveal = () => {
       timer.current = null;
       if (!element.isConnected) return;

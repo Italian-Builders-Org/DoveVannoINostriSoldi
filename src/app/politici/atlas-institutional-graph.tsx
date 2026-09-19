@@ -280,7 +280,7 @@ function ChamberMini({
         d={wedge.bandPath}
         data-family={group.partyFamily}
         data-active={active ? "true" : "false"}>
-        <title>{`${group.label} — ${wedge.seatCount}`}</title>
+        <title>{`${group.label} · ${wedge.seatCount}`}</title>
       </path>;
     })}
   </g>;
@@ -452,7 +452,7 @@ function PersonDot({
     data-selected={selection.kind === "person" && selection.id === person.id ? "true" : "false"}
     aria-pressed={selection.kind === "person" && selection.id === person.id}
     aria-label={`${person.name}, ${person.roleLabel}`}
-    title={`${person.name} — ${person.roleLabel}`}
+    title={`${person.name} · ${person.roleLabel}`}
     onClick={() => onSelect({ kind: "person", id: person.id })}>
     <Portrait person={person} size={size} />
   </button>;

@@ -3,69 +3,80 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
 import { PUBLIC_SITE_URL } from "@/lib/site";
-import { RepubblicaGraph, type GraphSelection } from "./repubblica-graph";
+import { readAtlasState, longDate } from "./atlas-model";
+import { RepubblicaGraph } from "./repubblica-graph";
 import styles from "./politici.module.css";
 
 export const metadata: Metadata = {
-  title: "Mappa della politica italiana",
-  description:
-    "Presidenza della Repubblica, Governo, Camera e Senato della XIX legislatura in una sola mappa: 626 persone, ruoli istituzionali, gruppi parlamentari, ritratti ufficiali e notizie recenti.",
+  title: "Atlante della politica italiana",
+  description: "Esplora Camera, Senato, Governo, Repubblica e il Grafo Istituzionale: emicicli interattivi, persone, incarichi, gruppi, partecipazione al voto e fonti ufficiali.",
 };
 
-type PoliticiPageProps = {
-  searchParams: Promise<{ person?: string; group?: string; istituzione?: string; deputy?: string }>;
-};
+type PoliticiPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>>; };
 
 export default async function PoliticiPage({ searchParams }: PoliticiPageProps) {
   const graph = getRepubblicaGraph();
   const map = getRepubblicaMap();
   const params = await searchParams;
-
-  const requestedPerson = params.person ?? (params.deputy ? `dep-${params.deputy}` : undefined);
-  const initialSelection: GraphSelection =
-    requestedPerson && map.people.some((person) => person.id === requestedPerson)
-      ? { kind: "person", id: requestedPerson }
-      : params.group && map.groups.some((group) => group.id === params.group)
-        ? { kind: "group", id: params.group }
-        : params.istituzione && map.institutions.some((institution) => institution.id === params.istituzione)
-          ? { kind: "institution", id: params.istituzione }
-          : { kind: "overview" };
-
-  return (
-    <main className={styles.immersivePage}>
-      <header className={styles.immersiveChrome}>
-        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL}>
-          DoveVannoINostriSoldi
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    const first = Array.isArray(value) ? value[0] : value;
+    if (first !== undefined) query.set(key, first);
+  }
+  const parsed = readAtlasState(query, map);
+  return <main className={styles.immersivePage}>
+    <a className={styles.skipLink} href="#atlante-politica">Vai all’atlante</a>
+    <header className={styles.immersiveChrome}>
+      <div className={styles.brandLockup}>
+        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
+          DVNS
         </Link>
-        <div className={styles.immersiveActions}>
-          <Link className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>
-            Torna al sito
-          </Link>
-          <ThemeToggle />
-        </div>
-      </header>
-      <RepubblicaGraph map={map} initialSelection={initialSelection} />
-      <details className={styles.immersiveDetails}>
-        <summary>Fonti e limiti · {graph.legislature.label}</summary>
-        <ul>
-          {graph.sources.map((source, index) => (
-            <li key={`${source.url}#${index}`}>
-              <a href={source.url}>{source.label}</a> · {source.license}, osservata il {source.observedDate}.
-              {source.gap ? <> Limite: {source.gap}</> : null}
-            </li>
-          ))}
-          {graph.caveats.slice(0, 3).map((caveat) => (
-            <li key={caveat}>{caveat}</li>
-          ))}
-        </ul>
-        <p>
-          <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>
-          {" · "}
-          <Link href={`${PUBLIC_SITE_URL}/governi`}>Governi</Link>
-          {" · "}
-          <Link href={PUBLIC_SITE_URL}>DoveVannoINostriSoldi</Link>
-        </p>
-      </details>
-    </main>
-  );
+        <h1 className={styles.srOnly}>Atlante della politica italiana</h1>
+      </div>
+      <div className={styles.immersiveActions}>
+        <details className={styles.sourcesDisclosure}>
+          <summary>Fonti e limiti</summary>
+          <div className={styles.sourcesPanel}>
+            <h2>Da dove arrivano i dati</h2>
+            <p>Le rilevazioni non sono simultanee. La data dell’ultimo aggiornamento di una fonte non rende attuali tutte le altre.</p>
+            <ul>
+              {graph.sources.map((source, index) => <li key={`${source.url}#${index}`}>
+                <a href={source.url} target="_blank" rel="noopener noreferrer">
+                  {source.label}
+                  <span className={styles.srOnly}> (nuova scheda)</span>
+                </a>
+                <p>{source.license} · osservata il {longDate(source.observedDate)}.</p>
+                {source.gap ? <p>
+                  {source.gap}
+                </p> : null}
+              </li>)}
+            </ul>
+            <h3>Metodo e limiti</h3>
+            <ul>
+              {graph.caveats.map((caveat) => <li key={caveat}>
+                {caveat}
+              </li>)}
+            </ul>
+            <p>Gli emicicli sono rappresentazioni stilizzate: i gruppi sono disposti in ordine alfabetico, non secondo i posti reali o una misura di orientamento politico. Le co-citazioni nelle notizie non dimostrano relazioni personali.</p>
+            <nav aria-label="Altri approfondimenti">
+              <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>
+              <Link href={`${PUBLIC_SITE_URL}/governi`}>Governi</Link>
+            </nav>
+          </div>
+        </details>
+        <Link className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>Torna al sito <span aria-hidden="true">↗</span></Link>
+        <ThemeToggle />
+      </div>
+    </header>
+    <div id="atlante-politica" className={styles.atlasMount} tabIndex={-1}>
+      <RepubblicaGraph
+        map={map}
+        initialState={parsed.state}
+        invalidSelection={parsed.invalidSelection}
+        initialDetailsOpen={!parsed.invalidSelection && ["person", "group", "deputy"].some((key) => query.has(key))} />
+    </div>
+    <noscript>
+      <p className={styles.noScript}>Per esplorare persone e gruppi serve JavaScript. Le fonti ufficiali restano disponibili in «Fonti e limiti».</p>
+    </noscript>
+  </main>;
 }

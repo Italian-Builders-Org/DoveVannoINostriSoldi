@@ -19,6 +19,7 @@ export const DATASET_IDS = [
   "openbdap_ssn_conto_economico",
   "openbdap_ssn_storico_nazionale",
   "salute_posti_letto",
+  "salute_dispositivi_medici",
   "openbdap_spesa_legislature",
   "openbdap_legge_bilancio_storico",
   "opencivitas_fabbisogni",
@@ -28,6 +29,7 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2017",
   "opencivitas_fabbisogni_2018",
   "opencivitas_fabbisogni_2019",
+  "opencivitas_rifiuti_2022",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -133,6 +135,12 @@ export type DatasetQuery = {
   submeasure?: string;
   schoolType?: string;
   pathway?: string;
+  view?: "search" | "aggregate" | "device" | "facts" | "filters";
+  deviceType?: "1" | "2";
+  deviceNumber?: string;
+  dimension?: "territory" | "classification" | "manufacturer";
+  value?: string;
+  role?: "fabbricante" | "assemblatore";
   limit?: number;
   offset?: number;
   cursor?: string;
@@ -211,6 +219,9 @@ const exampleQueries = {
   openbdap_ssn_conto_economico: { dataset: "openbdap_ssn_conto_economico", year: 2024, region: "Calabria", limit: 20 },
   openbdap_ssn_storico_nazionale: { dataset: "openbdap_ssn_storico_nazionale" },
   salute_posti_letto: { dataset: "salute_posti_letto", query: "PIEMONTE", limit: 20 },
+  salute_dispositivi_medici: {
+    dataset: "salute_dispositivi_medici", view: "search", query: "PRPR0005", year: 2021, limit: 20,
+  },
   openbdap_spesa_legislature: { dataset: "openbdap_spesa_legislature" },
   openbdap_legge_bilancio_storico: { dataset: "openbdap_legge_bilancio_storico", years: 6 },
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
@@ -220,6 +231,7 @@ const exampleQueries = {
   opencivitas_fabbisogni_2018: { dataset: "opencivitas_fabbisogni_2018", region: "LAZIO", year: 2018, limit: 20 },
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
+  opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -371,6 +383,23 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "openbdap_legge_bilancio_storico", title: "Legge di Bilancio per missione, serie storica", summary: "Snapshot verificato degli stanziamenti di competenza per missione nelle Leggi di Bilancio 2017-2026; ultimi sei anni per default, fino a dieci disponibili con years, filtro mission sul nome esatto.", sourceIds: ["openbdap"], freshness: "snapshot", filters: ["years", "mission"], caveat: "È lo stanziamento pubblicato dalla Legge di Bilancio (competenza, primo anno), non le misure della manovra né un pagamento osservato. Euro correnti, non corretti per inflazione. L'MCP usa lo snapshot verificato senza download live; pagina Legge di Bilancio e API dichiarano separatamente l'eventuale modalità live. Ricerca e innovazione (017) comprende anche enti non universitari; Istruzione universitaria e formazione post-universitaria (023) resta una missione distinta. Non isola FFO, bilanci atenei o progetti PRIN/PNRR e non misura qualità o efficienza. Il dataset completo include il rimborso lordo del debito pubblico." },
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencivitas_fabbisogni_2021", title: "Fabbisogni e servizi comunali 2021 (FC70TOT)", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni RSO, annualità 2021, famiglia FC70TOT.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Contratto distinto da FC80TOT 2022: non sommare né confrontare in silenzio le due annualità. La differenza dalla spesa standard non è spreco. RSS fuori perimetro." },
+  {
+    id: "opencivitas_rifiuti_2022",
+    title: "Fabbisogni comunali · Rifiuti 2022 (FC80RIFIUTI)",
+    summary: "Spesa storica, spesa standard e livelli dei servizi sulla funzione Rifiuti per 6.557 Comuni RSO, annualità 2022.",
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Rifiuti 2022 · FC80RIFIUTI",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80RIFIUTI_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "6121df0f0c8f302570b0a977da05ccda0622145c306826d7162a1ec55bfe3204", bytes: 1889844,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali) e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
+  },
   {
     id: "opencivitas_fabbisogni_2015",
     title: "Fabbisogni e servizi comunali 2015 (FC20TOT)",
@@ -631,6 +660,47 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     freshness: "snapshot",
     filters: ["query", "limit", "cursor", "offset"],
     caveat: "Accesso al corpus salute-posti-letto-2023. Conteggi, non euro; geografia delle strutture, non dei pazienti. La dotazione non misura pazienti curati, tempi di attesa o qualità delle cure. Nido escluso; eventuali modelli HSP12/HSP13 non trasmessi limitano la completezza. Il CE 2024 ha anno e perimetro diversi: nessun costo per posto letto o indice di efficienza.",
+  },
+  {
+    id: "salute_dispositivi_medici",
+    title: "Spesa rilevata per dispositivi medici",
+    summary: "Cerca i dispositivi BD/RDM presenti nei dati di spesa dal 2018 al 2021. Restituisce anche aggregati per territorio, CND e fabbricante o assemblatore.",
+    sourceIds: [],
+    customSources: [
+      {
+        id: "salute-spesa-dispositivi-2018", name: "Dispositivi medici · spesa per azienda sanitaria · 2018",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2018-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2018", rows: 718808,
+      },
+      {
+        id: "salute-spesa-dispositivi-2019", name: "Dispositivi medici · spesa per azienda sanitaria · 2019",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2019", rows: 768233,
+      },
+      {
+        id: "salute-spesa-dispositivi-2020", name: "Dispositivi medici · spesa per azienda sanitaria · 2020",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2020-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2023-03-17", period: "2020", rows: 787845,
+      },
+      {
+        id: "salute-spesa-dispositivi-2021", name: "Dispositivi medici · spesa per azienda sanitaria · 2021",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2021-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2023-03-17", period: "2021", rows: 846878,
+      },
+      {
+        id: "salute-dispositivi-bdrdm", name: "Banca dati e Repertorio dei dispositivi medici",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici/",
+        cadence: "snapshot verificato", license: "IODL 2.0", dataAsOf: "2026-09-14", rows: 2416708,
+      },
+      {
+        id: "salute-classificazione-cnd", name: "Classificazione nazionale dei dispositivi medici",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/classificazione-nazionale-dei-dispositivi-medici-cnd/",
+        cadence: "snapshot verificato", license: "IODL 2.0", dataAsOf: "2026-09-01", rows: 11115,
+      },
+    ],
+    freshness: "snapshot",
+    filters: ["view", "query", "deviceType", "deviceNumber", "year", "region", "code", "dimension", "value", "role", "limit", "cursor"],
+    caveat: "La fonte riporta la spesa di acquisto nel perimetro pubblicato. Non riporta prezzi unitari, pagamenti al fabbricante o la spesa completa del SSN. Il fabbricante o assemblatore proviene dalla BD/RDM aggiornata al 14 settembre 2026 e non prova un ruolo storico. Non sommare questi importi con CE SSN, SIOPE o aggiudicazioni.",
   },
   {
     id: "spesa_pa_dettaglio",

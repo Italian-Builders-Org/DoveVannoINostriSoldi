@@ -1,13 +1,48 @@
 import type { NextConfig } from "next";
 
-const integratedSourceRuntimeFiles = [
+const integratedSourceRuntimeFilesWithoutRows = [
   "data/source-ledger/release-proof.json",
   "data/source-ledger/receipt.json",
   "data/source-ledger/sources.jsonl",
   "data/source-ledger/dataset-proof.json",
   "src/data/generated/integrated/catalog.json",
-  "src/data/generated/integrated/rows/*.jsonl.gz",
   "src/data/generated/pnrr-projects-index/*.json.gz",
+];
+
+const integratedSourceRuntimeFiles = [
+  ...integratedSourceRuntimeFilesWithoutRows,
+  "src/data/generated/integrated/rows/*.jsonl.gz",
+];
+
+const medicalDeviceRuntimeRows = [
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.part-*.jsonl.gz",
+  "src/data/generated/integrated/rows/salute-classificazione-cnd.part-*.jsonl.gz",
+];
+
+// Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
+// Anchoring here prevents `/dati` from also matching routes such as `/api/.../dati`.
+const routesWithoutMedicalDeviceRows = [
+  "/app/api/enti/**",
+  "/app/api/fonti/**",
+  "/app/api/governi/**",
+  "/app/api/opencup/**",
+  "/app/api/pnrr/**",
+  "/app/appalti/**",
+  "/app/confronti/**",
+  "/app/controlli/**",
+  "/app/disuguaglianza",
+  "/app/enti/**",
+  "/app/fonti/**",
+  "/app/incarichi/**",
+  "/app/mcp",
+  "/app/partecipazioni",
+  "/app/pnrr",
+  "/app/pnrr/**",
+  "/app/progetti/**",
+  "/app/spese/**",
+  "/app/trasparenza",
+  "/app/trasparenza/**",
 ];
 
 const operatorRuntimeFiles = [
@@ -134,6 +169,9 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    ...Object.fromEntries(
+      routesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
+    ),
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
     "/appalti/operatori/\\[ref\\]": [
       "src/data/generated/anac-operator-awards-index/operators/*",
@@ -199,14 +237,12 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-procurement-cpv.source.json",
       "src/data/generated/istat-municipality-geography.json",
     ],
-    "/dati": integratedSourceRuntimeFiles,
-    "/dati/*": integratedSourceRuntimeFiles,
-    "/api/dati/*": integratedSourceRuntimeFiles,
-    "/pnrr": integratedSourceRuntimeFiles,
-    "/api/pnrr/progetti": integratedSourceRuntimeFiles,
-    "/fonti/copertura": integratedSourceRuntimeFiles,
-    "/fonti/catalogo": integratedSourceRuntimeFiles,
-    "/api/fonti/catalogo": integratedSourceRuntimeFiles,
+    "/dati/\\[dataset\\]": integratedSourceRuntimeFiles,
+    "/pnrr": integratedSourceRuntimeFilesWithoutRows,
+    "/api/pnrr/progetti": integratedSourceRuntimeFilesWithoutRows,
+    "/fonti/copertura": integratedSourceRuntimeFilesWithoutRows,
+    "/fonti/catalogo": integratedSourceRuntimeFilesWithoutRows,
+    "/api/fonti/catalogo": integratedSourceRuntimeFilesWithoutRows,
     "/api/tributi/vat-gap": euVatGapItalyRuntimeFiles,
     "/api/territori/bes-lavoro": istatBesLavoroRuntimeFiles,
     "/api/territori/bes-relazioni": istatBesRelazioniRuntimeFiles,

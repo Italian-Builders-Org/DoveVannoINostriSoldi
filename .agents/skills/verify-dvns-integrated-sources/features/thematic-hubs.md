@@ -32,7 +32,12 @@ Preconditions:
 - **Keep hierarchy clear.** Main pages expose no more than three concise
   previews. The four hubs are expansion pages for the complete thematic paths
   and technical register, not long previews embedded in the main pages.
-- **Check total coverage.** The hubs and surface previews expose 89 dataset links, including Conto Annuale 2020 in `/incarichi/personale-organi`, TED in the procurement catalog and PNRR in `/pnrr`. The three ISTAT municipal series and the MIM school-site dataset are also linked from `/dati?vista=tutti`; the combined coverage is 93 dataset IDs. TED must be reachable from both views.
+- **Check total coverage.** The hubs and surface previews expose 92 dataset links,
+  including Conto Annuale 2020 in `/incarichi/personale-organi`, TED in the
+  procurement catalog and PNRR in `/pnrr`. `/spese/sanita` links the medical
+  device explorer, where all four spending years are selectable. The complete
+  catalog contains 103 unique dataset links and must include the 2018 and 2019
+  medical-device spending datasets. TED must be reachable from both views.
 - **Proof.** Retain one screenshot per hub and `state.json`.
 
 ## Gotchas

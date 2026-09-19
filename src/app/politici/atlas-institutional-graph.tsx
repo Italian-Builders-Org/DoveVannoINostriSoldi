@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
 import type { GraphSelection } from "./atlas-model";
 import { Icon, Portrait } from "./atlas-primitives";
@@ -29,14 +29,37 @@ export function InstitutionalGraph({
   matchingIds: Set<string>;
   onSelect: (selection: GraphSelection) => void;
 }) {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(1);
+  const previousZoom = useRef(1);
   const [layout, setLayout] = useState<OverviewLayout>("wide");
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 899px)");
-    const sync = () => setLayout(media.matches ? "stacked" : "wide");
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setLayout(entry.contentRect.width < 900 ? "stacked" : "wide");
+    });
+    observer.observe(viewport);
+    return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (viewport) {
+      viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+      viewport.scrollTop = zoom === 1 ? 0 : (viewport.scrollTop + viewport.clientHeight / 2) * (zoom / previousZoom.current) - viewport.clientHeight / 2;
+    }
+    previousZoom.current = zoom;
+  }, [layout, zoom]);
+
+  const resetView = () => {
+    setZoom(1);
+    const viewport = viewportRef.current;
+    if (viewport) {
+      viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+      viewport.scrollTop = 0;
+    }
+  };
 
   const overview = useMemo(() => buildOverviewGeometry(map, layout), [map, layout]);
   const peopleById = useMemo(() => new Map(map.people.map((person) => [person.id, person])), [map.people]);
@@ -76,7 +99,18 @@ export function InstitutionalGraph({
     <p className={styles.sectionLead}>
       Presidenza, Governo, Camera e Senato nello stesso schema. Le linee sono rapporti istituzionali della base dati, non una misura di influenza.
     </p>
-    <div className={styles.graphBoard} data-layout={layout} data-focused={litIds !== null ? "true" : "false"}>
+    <div className={styles.graphFrame}>
+      <div className={styles.graphToolbar}>
+        <span className={styles.graphNavigationHint} id="graph-navigation-hint">Ingrandisci e scorri per esplorare</span>
+        <div className={styles.zoomControls} role="group" aria-label="Zoom del grafo">
+          <button type="button" className={styles.iconButton} aria-label="Riduci il grafo" disabled={zoom === 1} onClick={() => setZoom((value) => Math.max(1, value - 0.25))}><Icon name="minus" size={16} /></button>
+          <output className={styles.graphZoomValue} aria-live="polite" aria-label="Livello di zoom">{Math.round(zoom * 100)}%</output>
+          <button type="button" className={styles.iconButton} aria-label="Ingrandisci il grafo" disabled={zoom === 3} onClick={() => setZoom((value) => Math.min(3, value + 0.25))}><Icon name="plus" size={16} /></button>
+          <button type="button" className={styles.graphReset} onClick={resetView} aria-label="Ripristina e centra il grafo"><Icon name="reset" size={15} /><span>Centra</span></button>
+        </div>
+      </div>
+      <div ref={viewportRef} className={styles.graphViewport} data-zoomed={zoom > 1 ? "true" : undefined} tabIndex={0} role="region" aria-label="Area esplorabile del grafo" aria-describedby="graph-navigation-hint">
+    <div className={styles.graphBoard} style={{ width: `${zoom * 100}%` }} data-layout={layout} data-focused={litIds !== null ? "true" : "false"}>
       <svg
         className={styles.graphCanvas}
         viewBox={`0 0 ${overview.width} ${overview.height}`}
@@ -147,6 +181,7 @@ export function InstitutionalGraph({
       <div className={styles.graphOverlay}>
         <HubPlaque
           institution={institutionById.get("presidenza-repubblica")}
+          selection={selection}
           node={overview.headOfState}
           people={peopleById}
           litIds={litIds}
@@ -207,11 +242,13 @@ export function InstitutionalGraph({
         })}
       </div>
     </div>
+      </div>
     <ul className={styles.graphLegend} aria-label="Legenda dei collegamenti">
       <li><span data-kind="nominate" /> Nomina</li>
       <li><span data-kind="confidence" /> Fiducia</li>
       <li><span data-kind="promulgate" /> Promulgazione / scioglimento</li>
     </ul>
+    </div>
     <p className={styles.note}>Clicca Camera o Senato per aprire l’emiciclo. I ritratti aprono la scheda della persona.</p>
   </section>;
 }
@@ -263,7 +300,7 @@ function ChamberPortal({
   onSelect: (selection: GraphSelection) => void;
 }) {
   const leader = institution.leaderPersonId ? people.get(institution.leaderPersonId) ?? null : null;
-  const headerHeight = Math.min(152, card.height * 0.68);
+  const headerHeight = card.height - 8;
   return <button
     type="button"
     className={styles.graphChamberEnter}
@@ -292,6 +329,7 @@ function ChamberPortal({
 }
 
 function HubPlaque({
+  selection,
   institution,
   node,
   people,
@@ -299,6 +337,7 @@ function HubPlaque({
   overview,
   onSelect,
 }: {
+  selection: GraphSelection;
   institution: RepublicMap["institutions"][number] | undefined;
   node: ApexNode | null;
   people: Map<string, RepublicMapPerson>;
@@ -318,6 +357,7 @@ function HubPlaque({
     <button
       type="button"
       className={styles.graphHubPortrait}
+      aria-pressed={selection.kind === "person" && selection.id === leader.id}
       data-lit={litIds === null || litIds.has(leader.id) ? "true" : "false"}
       aria-label={`${leader.name}, ${institution.leaderRoleLabel ?? institution.role}`}
       onClick={() => onSelect({ kind: "person", id: leader.id })}>
@@ -365,6 +405,7 @@ function ExecutiveCluster({
       className={styles.graphExecutivePortrait}
       data-lit={litIds === null || litIds.has(leader.id) ? "true" : "false"}
       data-selected={selection.kind === "person" && selection.id === leader.id ? "true" : "false"}
+      aria-pressed={selection.kind === "person" && selection.id === leader.id}
       aria-label={`${leader.name}, ${leader.roleLabel}`}
       onClick={() => onSelect({ kind: "person", id: leader.id })}>
       <Portrait person={leader} size={56} eager />
@@ -404,11 +445,12 @@ function PersonDot({
     style={{
       left: `${(node.x / overview.width) * 100}%`,
       top: `${(node.y / overview.height) * 100}%`,
-      width: size,
-      height: size,
+      width: `min(${size}px, ${(size / 9).toFixed(3)}cqw)`,
+      height: `min(${size}px, ${(size / 9).toFixed(3)}cqw)`,
     }}
     data-lit={litIds === null || litIds.has(person.id) ? "true" : "false"}
     data-selected={selection.kind === "person" && selection.id === person.id ? "true" : "false"}
+    aria-pressed={selection.kind === "person" && selection.id === person.id}
     aria-label={`${person.name}, ${person.roleLabel}`}
     title={`${person.name} — ${person.roleLabel}`}
     onClick={() => onSelect({ kind: "person", id: person.id })}>

@@ -102,15 +102,16 @@ function polar(cx: number, cy: number, radius: number, angle: number): { x: numb
 }
 
 function arcPath(cx: number, cy: number, rInner: number, rOuter: number, start: number, end: number): string {
+  const sweep = end < start ? 1 : 0;
   const outerStart = polar(cx, cy, rOuter, start);
   const outerEnd = polar(cx, cy, rOuter, end);
   const innerEnd = polar(cx, cy, rInner, end);
   const innerStart = polar(cx, cy, rInner, start);
   return [
     `M ${outerStart.x.toFixed(2)} ${outerStart.y.toFixed(2)}`,
-    `A ${rOuter} ${rOuter} 0 0 1 ${outerEnd.x.toFixed(2)} ${outerEnd.y.toFixed(2)}`,
+    `A ${rOuter} ${rOuter} 0 0 ${sweep} ${outerEnd.x.toFixed(2)} ${outerEnd.y.toFixed(2)}`,
     `L ${innerEnd.x.toFixed(2)} ${innerEnd.y.toFixed(2)}`,
-    `A ${rInner} ${rInner} 0 0 0 ${innerStart.x.toFixed(2)} ${innerStart.y.toFixed(2)}`,
+    `A ${rInner} ${rInner} 0 0 ${1 - sweep} ${innerStart.x.toFixed(2)} ${innerStart.y.toFixed(2)}`,
     "Z",
   ].join(" ");
 }

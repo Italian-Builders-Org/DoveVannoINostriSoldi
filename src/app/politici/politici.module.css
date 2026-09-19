@@ -315,19 +315,45 @@
 .europeLink strong { font-size: 13px; font-weight: 550; }
 .europeLink p { font-size: 12px; color: var(--atlas-muted); margin: 5px 0 10px; }
 
+/* Compact navigation and a bounded, keyboard-scrollable graph canvas. */
+.graphFrame { border: 1px solid var(--atlas-line); border-radius: 16px; overflow: hidden; background: var(--atlas-panel); }
+.graphToolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--atlas-line); }
+.graphNavigationHint { color: var(--atlas-muted); font-size: 11px; }
+.graphToolbar .zoomControls { border: 0; padding: 0; }
+.graphToolbar .iconButton { min-width: 44px; min-height: 44px; }
+.graphZoomValue { min-width: 40px; text-align: center; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--atlas-muted); }
+.graphReset { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 0 12px; margin-left: 8px; border: 1px solid var(--atlas-line); border-radius: 8px; background: var(--atlas-raised); font-size: 11px !important; }
+.graphViewport { max-height: 640px; overflow: auto; scrollbar-width: thin; scrollbar-color: var(--atlas-muted) var(--atlas-panel); overscroll-behavior-x: contain; scroll-padding: 30px; }
+.graphViewport:not([data-zoomed="true"]) { max-height: none; }
+.graphViewport:focus-visible { outline-offset: -3px !important; }
+.graphHubPortrait[aria-pressed="true"], .graphPortraitNode[data-selected="true"], .graphExecutivePortrait[data-selected="true"] { border-color: var(--atlas-accent); box-shadow: 0 0 0 3px var(--atlas-accent-soft), 0 0 0 4px var(--atlas-accent); }
+.graphBoard :where(button):focus-visible { outline: 2px solid var(--atlas-focus); outline-offset: 4px; }
+.graphHubLabel:hover, .graphExecutiveLabel:hover { border-color: var(--atlas-accent); }
+.graphChamberEnterLeader > span { min-width: 0; }
+.graphChamberEnterLeader .portrait { flex-shrink: 0; }
+.scopeSwitch button[aria-current="page"] { color: var(--atlas-accent); }
+.scopeSwitch button[aria-current="page"]::after { background: var(--atlas-accent); }
+@media (max-width: 899px) {
+  .workspaceTools { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  .workspaceTools .searchWrapper { min-width: 0; }
+  .workspaceTools .modeSwitch { grid-column: 1 / -1; }
+  .graphToolbar { padding: 8px 12px; }
+  .graphNavigationHint { flex: 1 1 100%; }
+  .graphToolbar .zoomControls { justify-content: space-between; width: 100%; }
+  .graphViewport { max-height: 560px; }
+  .graphLegend { gap: 12px 18px; }
+}
+
 /* Institutional overview graph (scope = grafo) */
 .graphBoard {
   position: relative;
   width: 100%;
-  max-width: 1120px;
   margin: 0 auto;
   container-type: inline-size;
   aspect-ratio: 1200 / 1000;
   background:
     radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--atlas-ink) 4%, transparent), transparent 58%),
     var(--atlas-panel);
-  border: 1px solid var(--atlas-line);
-  border-radius: 14px;
   overflow: hidden;
 }
 .graphBoard[data-layout="stacked"] { aspect-ratio: 900 / 1100; }
@@ -343,7 +369,7 @@
   fill: none;
   stroke: var(--atlas-line);
   stroke-width: 1;
-  opacity: 0.55;
+  opacity: 0.32;
 }
 .graphSectorExecutive {
   fill: color-mix(in srgb, var(--atlas-ink) 3.5%, transparent);
@@ -361,7 +387,7 @@
   fill: none;
   stroke: var(--atlas-muted);
   stroke-width: 1.4;
-  opacity: 0.55;
+  opacity: 0.72;
 }
 .graphHierarchyLink[data-kind="nominate"] { stroke: var(--atlas-ink); stroke-width: 1.8; opacity: 0.72; }
 .graphHierarchyLink[data-kind="confidence"] { stroke-dasharray: 5 4; opacity: 0.65; }
@@ -416,7 +442,6 @@
 .graphHubPortrait:hover, .graphExecutivePortrait:hover, .graphPortraitNode:hover,
 .graphHubPortrait:focus-visible, .graphExecutivePortrait:focus-visible, .graphPortraitNode:focus-visible {
   border-color: var(--atlas-ink);
-  outline: none;
 }
 .graphPortraitNode {
   position: absolute;
@@ -424,8 +449,8 @@
   z-index: 1;
 }
 .graphPortraitNode[data-selected="true"], .graphExecutivePortrait[data-selected="true"] {
-  border-color: var(--atlas-ink);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--atlas-ink) 25%, transparent);
+  border-color: var(--atlas-accent);
+  box-shadow: 0 0 0 3px var(--atlas-accent-soft), 0 0 0 4px var(--atlas-accent);
 }
 .graphBoard[data-focused="true"] .graphPortraitNode[data-lit="false"],
 .graphBoard[data-focused="true"] .graphHubPortrait[data-lit="false"],
@@ -457,8 +482,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start;
   gap: 4px;
-  padding: 10px 12px;
+  padding: 12px 16px;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -466,8 +492,7 @@
   z-index: 3;
 }
 .graphChamberEnter:hover, .graphChamberEnter:focus-visible {
-  background: color-mix(in srgb, var(--atlas-panel) 80%, transparent);
-  outline: none;
+  background: color-mix(in srgb, var(--atlas-accent) 5%, transparent);
 }
 .graphChamberEnterTitle {
   font-family: Georgia, serif;
@@ -501,8 +526,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 14px 22px;
-  margin: 16px 0 0 !important;
-  padding: 0 !important;
+  margin: 0 !important;
+  padding: 15px 20px !important;
+  border-top: 1px solid var(--atlas-line);
+  background: var(--atlas-panel);
   list-style: none;
   font-size: 11px;
   color: var(--atlas-muted);
@@ -684,3 +711,25 @@
 .institutionalRelations li { padding: 12px 0; border-top: 1px solid var(--atlas-line); }
 .institutionalRelations li > div { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .institutionalRelations li p { font-size: 13px; color: var(--atlas-muted); line-height: 1.6; }
+
+/* Scale the HTML overlays with the drawing, including at the initial fit view. */
+.graphBoard .graphPortraitNode > .portrait { width: 100% !important; height: 100% !important; font-size: clamp(4px, 1.1cqw, 10px); }
+.graphBoard .graphHubPortrait > .portrait { width: min(72px, 8cqw) !important; height: min(72px, 8cqw) !important; }
+.graphBoard .graphExecutivePortrait > .portrait { width: min(56px, 6.22cqw) !important; height: min(56px, 6.22cqw) !important; }
+.graphBoard .graphHub, .graphBoard .graphExecutive { gap: min(8px, .89cqw); }
+.graphBoard .graphHubLabel, .graphBoard .graphExecutiveLabel { padding: min(6px, .67cqw) min(10px, 1.11cqw); max-width: 24cqw; }
+.graphBoard .graphHubLabel strong, .graphBoard .graphExecutiveLabel strong { font-size: clamp(8px, 1.33cqw, 12px); }
+.graphBoard .graphHubLabel span, .graphBoard .graphExecutiveLabel span { font-size: clamp(6px, 1.11cqw, 10px); }
+.graphBoard .graphBandLabel { font-size: clamp(6px, 1.11cqw, 10px); }
+.graphBoard .graphChamberEnter { padding: min(12px, 1.33cqw) min(16px, 1.78cqw); gap: min(4px, .44cqw); }
+.graphBoard .graphChamberEnterTitle { font-size: clamp(12px, 2.44cqw, 22px); }
+.graphBoard .graphChamberEnterMeta, .graphBoard .graphChamberEnterLeader small, .graphBoard .graphChamberEnterCta { font-size: clamp(6px, 1.11cqw, 10px); }
+.graphBoard .graphChamberEnterLeader { gap: min(8px, .89cqw); margin-top: min(6px, .67cqw); }
+.graphBoard .graphChamberEnterLeader strong { font-size: clamp(7px, 1.22cqw, 11px); }
+.graphBoard .graphChamberEnterLeader .portrait { width: min(36px, 4cqw) !important; height: min(36px, 4cqw) !important; font-size: clamp(6px, 1.11cqw, 10px); }
+.graphBoard .graphChamberEnterLeader svg { width: min(12px, 1.33cqw); height: min(12px, 1.33cqw); }
+@container (max-width: 450px) {
+  .graphHubPortrait, .graphExecutivePortrait, .graphPortraitNode { border-width: 1px; }
+  .graphHubPortrait .portrait, .graphExecutivePortrait .portrait { font-size: 9px; }
+  .graphBandLabel[data-inline="true"] { margin-bottom: 0; }
+}

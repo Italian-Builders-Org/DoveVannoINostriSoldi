@@ -29,7 +29,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect, ne
       if (seat.personId) seats.set(seat.personId, seat);
     }
     return seats;
-  }, [scene.seats]);
+  }, [scene]);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -42,7 +42,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect, ne
   const visiblePerson = hoverPerson ?? (chosenPerson?.chamberId === chamberId ? chosenPerson : null);
   const activeGroup = selection.kind === "group" ? selection.id : null;
   const highlightedCount = scene.seats.filter((seat) => seat.personId && matchingIds.has(seat.personId)).length;
-  const connections = news?.status === "ready" ? news.data.connections : [];
+  const connections = useMemo(() => news?.status === "ready" ? news.data.connections : [], [news]);
   const connectionById = useMemo(
     () => new Map(connections.map((connection) => [connection.person.id, connection])),
     [connections],
@@ -72,7 +72,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect, ne
         role="group"
         aria-labelledby={`${id}-title`}
         aria-describedby={`${id}-desc`}>
-        <title id={`${id}-title`}>{chamberId === "camera" ? "Camera dei deputati" : "Senato della Repubblica"}: {scene.members} persone{scene.vacancies !== null ? `, ${scene.vacancies} posti vacanti` : ""}</title>
+        <title id={`${id}-title`}>{`${chamberId === "camera" ? "Camera dei deputati" : "Senato della Repubblica"}: ${scene.members} persone${scene.vacancies !== null ? `, ${scene.vacancies} posti vacanti` : ""}`}</title>
         <desc id={`${id}-desc`}>Un seggio per persona. Gruppi ordinati alfabeticamente, non la disposizione reale in Aula. Usa Tab per entrare, frecce per spostarti, Invio o Spazio per aprire la scheda. L’elenco offre gli stessi dati.</desc>
         <g aria-hidden="true" className={styles.architecture}>
           <path d={sectorBand(366, 375, Math.PI, 0)} className={styles.outerArchitecture} />

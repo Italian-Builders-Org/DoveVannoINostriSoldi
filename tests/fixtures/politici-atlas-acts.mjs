@@ -1,0 +1,5 @@
+/** Synthetic acts for isolated UI and contract tests only. */
+export function legislationFixture(personId = "dep-1") {
+  const act = { id: "ac19_1", number: "1", title: "Tutela della qualità dell’aria", natureId: "proposta_legge_ordinaria", presentedDate: "2026-09-10", role: "primo-firmatario", currentState: "Approvato", currentStateDate: "2026-09-12", outcomeClass: "legge", coSignerCount: 2, officialPage: "https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=1", finalVotes: [{ id: "vs19_1_1", date: "2026-09-12", approved: true, confidenceVote: false, favorevoli: 200, contrari: 30, astenuti: 5, ownVote: "F" }] };
+  return { ok: true, personId, source: { chamber: "camera", periodLabel: "XIX Legislatura", observedDate: "2026-09-18", sourceUrl: "https://dati.camera.it/", sourceLabel: "Open Data Camera", licenseLabel: "CC BY 4.0", outcomeClasses: [{ id: "legge", label: "Divenuto legge" }], caveats: ["Fixture sintetica di test, non dati pubblicati."] }, firstSigned: [act], coSigned: [] };
+}

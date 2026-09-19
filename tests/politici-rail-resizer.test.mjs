@@ -3,15 +3,9 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const {
-  clampRailWidth,
-  maxRailWidth,
-  parseStoredRailWidth,
-  RAIL_WIDTH_MIN,
-} = await import("../src/lib/politici-rail-width.ts");
-
-const graph = await readFile(new URL("../src/app/politici/repubblica-graph.tsx", import.meta.url), "utf8");
-const styles = await readFile(new URL("../src/app/politici/politici.module.css", import.meta.url), "utf8");
+const { clampRailWidth, maxRailWidth, parseStoredRailWidth, RAIL_WIDTH_MIN } = await import("../src/lib/politici-rail-width.ts");
+const read = (name) => readFile(new URL(`../src/app/politici/${name}`, import.meta.url), "utf8");
+const [graph, rail, styles] = await Promise.all(["repubblica-graph.tsx", "atlas-rail.tsx", "atlas-enhancements.module.css"].map(read));
 
 test("rail width clamp respects the floor and the viewport cap", () => {
   assert.equal(clampRailWidth(100, 1280), RAIL_WIDTH_MIN);
@@ -35,18 +29,11 @@ test("stored rail width ignores non-numeric and out-of-range values", () => {
   assert.equal(parseStoredRailWidth("320.7", 1280), 321);
 });
 
-test("explorer wires the separator to pointer, keyboard and persistence", () => {
-  assert.match(graph, /role="separator"/);
-  assert.match(graph, /aria-orientation="vertical"/);
-  assert.match(graph, /aria-valuemin={RAIL_WIDTH_MIN}/);
-  assert.match(graph, /aria-valuemax={railMax}/);
-  assert.match(graph, /onPointerDown={onRailPointerDown}/);
-  assert.match(graph, /onPointerMove={onRailPointerMove}/);
-  assert.match(graph, /onKeyDown={onRailKeyDown}/);
-  assert.match(graph, /onDoubleClick={onRailDoubleClick}/);
-  assert.match(graph, /RAIL_WIDTH_STORAGE_KEY/);
-  assert.match(graph, /setPointerCapture/);
-  assert.match(styles, /--rail-width/);
+test("explorer composes accessible resizer with capture, cancellation, keyboard and optional storage", () => {
+  assert.match(graph, /AtlasRailResizer rail=\{rail\}/);
+  assert.match(graph, /style=\{rail.style\}/);
+  for (const token of ['role="separator"', 'aria-orientation="vertical"', "aria-valuemin", "aria-valuemax", "aria-valuenow", "onPointerDown", "onPointerMove", "onPointerCancel", "onLostPointerCapture", "onKeyDown", "onDoubleClick", "RAIL_WIDTH_STORAGE_KEY", "setPointerCapture", "releasePointerCapture", "ArrowLeft", "ArrowRight", "Home", "End", "Escape"]) assert.ok(rail.includes(token), token);
+  assert.match(rail, /--rail-width/);
   assert.match(styles, /\.railResizer/);
   assert.match(styles, /data-resizing/);
 });

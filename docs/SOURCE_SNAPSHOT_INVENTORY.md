@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 95
+- Artefatti nel registro: 96
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 78 (PR umana dopo revisione)
+- manuale: 79 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -43,6 +43,7 @@ La revisione e il merge restano umani.
 
 | Artefatto | Periodo nello snapshot | Osservazione | URL ufficiale | Controllo DVNS | Workflow | Modo | Validazione |
 |---|---|---|---|---|---|---|---|
+| `medical-device-spending-index` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/medical_device_spending_index.py --check` |
 | `source-health-snapshots` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/ci/source-health-snapshots.mjs` |
 | `anac-procurement-peers` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_peers.py --check` |
 | `anac-procurement-cpv` | 2025 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_procurement_cpv.py --check` |
@@ -71,6 +72,7 @@ La revisione e il merge restano umani.
 | `opencivitas-2016` | 2016 | 2026-09-17T13:57:07Z | https://www.opencivitas.it/it/dataset/2016-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2016_snapshot.py --check` |
 | `opencivitas-2017` | 2017 | 2026-09-12T17:26:20Z | https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2017_snapshot.py --check` |
 | `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
+| `opencivitas-2022-rifiuti` | 2022 | 2026-09-19T07:06:33Z | https://www.opencivitas.it/it/dataset/2022-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --check` |
 | `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
 | `opencoesione` | 2026-04-30 | 2026-08-20T08:51:13+00:00 | https://opencoesione.gov.it/it/api/aggregati/ | `17 */6 * * *` | `.github/workflows/opencoesione-refresh.yml` | PR automatica | `python scripts/etl/opencoesione_snapshot.py --check` |
@@ -137,7 +139,6 @@ La revisione e il merge restano umani.
 | `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
 | `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T17:42:13+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
 | `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
-| `parlamento-giudiziario-xix` | XIX legislatura, dal 2022-10-13 | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/555 | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check` |
 
 ## Prossimo passo
 

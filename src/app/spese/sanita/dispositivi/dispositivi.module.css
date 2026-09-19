@@ -1,0 +1,160 @@
+.links,
+.actions,
+.filters,
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.links,
+.actions {
+  align-items: center;
+}
+
+.filters {
+  align-items: end;
+}
+
+.fields {
+  flex: 1 1 42rem;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  min-width: 10rem;
+  gap: var(--space-1);
+}
+
+.query {
+  flex: 2 1 20rem;
+}
+
+.field input,
+.field select {
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 0;
+  color: var(--color-text);
+  background: var(--color-raised);
+  font: inherit;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.summary p {
+  margin: 0;
+}
+
+.resultList {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.result h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.05rem;
+}
+
+.result p {
+  margin: var(--space-1) 0;
+}
+
+.meta,
+.note {
+  color: var(--color-neutral-700);
+  font-size: 0.875rem;
+}
+
+.blockMeta {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-neutral-700);
+  font-weight: 400;
+}
+
+.money {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.definitionList {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr);
+  margin: 0;
+}
+
+.definitionList dt,
+.definitionList dd {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.definitionList dt {
+  font-weight: 700;
+}
+
+.definitionList dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-neutral-100);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 620px) {
+  .filters,
+  .fields {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .field,
+  .query {
+    min-width: 0;
+  }
+
+  .definitionList {
+    grid-template-columns: 1fr;
+  }
+
+  .definitionList dt {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .result .money {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

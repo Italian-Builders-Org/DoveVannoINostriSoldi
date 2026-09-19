@@ -18,7 +18,7 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
       if (key !== "dataset") assert.ok(dataset.filters.includes(key), `${dataset.id}: ${key}`);
     }
     for (const sourceId of dataset.sourceIds) assert.ok(knownSources.has(sourceId), sourceId);
-    if (dataset.id.startsWith("company_") || dataset.id.startsWith("education_") || dataset.id === "salute_posti_letto" || dataset.id === "anac_operatori") {
+    if (dataset.id.startsWith("company_") || dataset.id.startsWith("education_") || dataset.id === "salute_posti_letto" || dataset.id === "salute_dispositivi_medici" || dataset.id === "anac_operatori") {
       assert.ok(dataset.sources.length > 0, `${dataset.id}: custom source metadata missing`);
     } else {
       assert.equal(dataset.sources.length, dataset.sourceIds.length);
@@ -50,6 +50,50 @@ test("MCP catalog has one descriptor per stable dataset id and valid source refe
   assert.match(pensioners.caveat, /denominatore.*persone/i);
   assert.match(pensioners.caveat, /importi.*lordi/i);
   assert.match(pensioners.caveat, /non.*sommabile/i);
+});
+
+test("il dataset MCP dei dispositivi usa ricerca, aggregati e scheda condivisi", async () => {
+  const search = await queryPublicDataset({
+    dataset: "salute_dispositivi_medici",
+    view: "search",
+    query: "1175175",
+    deviceType: "1",
+    year: 2021,
+    limit: 5,
+  });
+  assert.equal(search.hits[0].number, "1175175");
+  assert.equal(search.hits[0].type, "1");
+  assert.equal(search.provenance.registrySnapshotDate, "2026-09-14");
+  assert.match(search.provenance.sourceSpecSha256, /^[a-f0-9]{64}$/);
+  assert.match(search.provenance.moneyNature, /spesa rilevata/);
+  assert.match(search.provenance.moneyNature, /non incassi, prezzi unitari o fatturato/);
+
+  const aggregate = await queryPublicDataset({
+    dataset: "salute_dispositivi_medici",
+    view: "aggregate",
+    year: 2020,
+    dimension: "territory",
+    limit: 5,
+  });
+  assert.equal(aggregate.scope.year, 2020);
+  assert.equal(aggregate.rows.length, 5);
+  assert.equal(aggregate.coverage.matchedRows + aggregate.coverage.unresolvedRows, aggregate.coverage.rows);
+  assert.match(aggregate.interpretation.denominator, /rettifiche negative e zeri/);
+  assert.match(aggregate.interpretation.joinCoverage, /non la completezza nazionale/);
+  assert.equal(aggregate.interpretation.manufacturerSnapshot, "2026-09-14");
+
+  const detail = await queryPublicDataset({
+    dataset: "salute_dispositivi_medici",
+    view: "device",
+    deviceType: "1",
+    deviceNumber: "1175175",
+    year: 2021,
+    limit: 5,
+  });
+  assert.equal(detail.profile.device.number, "1175175");
+  assert.equal(detail.facts.filters.year, 2021);
+  assert.equal(detail.profile.registrySnapshotDate, "2026-09-14");
+  assert.match(detail.profile.sourceSpecSha256, /^[a-f0-9]{64}$/);
 });
 
 test("configured OpenCUP is registered internally but not advertised before promotion", async () => {

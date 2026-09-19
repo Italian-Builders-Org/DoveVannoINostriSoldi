@@ -6,6 +6,21 @@ const ENTITY = "src/data/generated/anac-entity-procurement-page";
 const CPV = "src/data/generated/anac-procurement-cpv";
 const OPERATOR = "src/data/generated/anac-operator-awards-index";
 const SPEC = "scripts/etl/specs";
+const MEDICAL_DEVICE_ROW_PREFIXES = [
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2020.",
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2021.",
+  "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.",
+  "src/data/generated/integrated/rows/salute-classificazione-cnd.",
+];
+const MEDICAL_DEVICE_QUERY_ROUTES = new Set([
+  "api/assistant/route.js.nft.json",
+  "api/assistant/chat/route.js.nft.json",
+  "api/dati/[dataset]/route.js.nft.json",
+  "api/mcp/route.js.nft.json",
+  "dati/page.js.nft.json",
+  "dati/[dataset]/page.js.nft.json",
+  "mcp/page.js.nft.json",
+]);
 const HISTORY_ROUTES = new Set([
   "spese/sanita/storico/page.js.nft.json",
   "api/spese/sanita/storico/route.js.nft.json",
@@ -21,7 +36,7 @@ function walk(directory) {
 }
 
 /** Check the emitted package, including data opened dynamically at runtime. */
-export function checkTrace(root, manifest, required = [], forbidden = []) {
+export function checkTrace(root, manifest, required = [], forbidden = [], forbiddenFilePrefixes = []) {
   const trace = JSON.parse(readFileSync(manifest, "utf8"));
   if (trace.version !== 1 || !Array.isArray(trace.files)) {
     throw new Error(`Invalid runtime trace: ${manifest}`);
@@ -29,7 +44,8 @@ export function checkTrace(root, manifest, required = [], forbidden = []) {
   const paths = new Set(trace.files.map((file) => resolve(dirname(manifest), file)));
   const files = [...paths].map((file) => relative(root, file).replaceAll("\\", "/"));
   const unexpected = files.filter((file) => /^(tests|docs|research)\//.test(file)
-    || forbidden.some((prefix) => file.startsWith(`${prefix}/`)));
+    || forbidden.some((prefix) => file.startsWith(`${prefix}/`))
+    || forbiddenFilePrefixes.some((prefix) => file.startsWith(prefix)));
   if (unexpected.length) throw new Error(`${relative(root, manifest)} traces unrelated files: ${unexpected.slice(0, 5).join(", ")}`);
   const missing = required.filter((file) => !paths.has(resolve(root, file)));
   if (missing.length) throw new Error(`${relative(root, manifest)} omits runtime files: ${missing.slice(0, 5).join(", ")}`);
@@ -125,7 +141,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
       || route === "api/fonti/stato/route.js.nft.json") {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
-    results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden) });
+    const forbiddenFilePrefixes = MEDICAL_DEVICE_QUERY_ROUTES.has(route) ? [] : MEDICAL_DEVICE_ROW_PREFIXES;
+    results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden, forbiddenFilePrefixes) });
     requirements.delete(route);
   }
   if (requirements.size) throw new Error(`Missing runtime traces: ${[...requirements.keys()].join(", ")}`);

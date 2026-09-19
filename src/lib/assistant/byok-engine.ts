@@ -98,14 +98,14 @@ export async function executeByokChat(
   }));
   const hasAttachments = safeMessages.some((message) => message.attachments?.length);
   const planningPrompt = `${DVNS_AI_SYSTEM_PROMPT}
-Seleziona fino a ${AI_MAX_QUERIES} query pertinenti nel catalogo. Puoi usare due query per confronti, mantenendo scope e misura coerenti.
-Chiama lo strumento query_dvns con queries, clarification e needsReasoning.
-Attiva needsReasoning soltanto se la risposta richiede calcoli a più passaggi, riconciliare incongruenze o confronti complessi. Per letture, somme semplici e riassunti usa false.
-Usa soltanto filtri dichiarati per il dataset. Massimo 5 righe per query; niente cursori; offset massimo 100.
+Scegli fino a ${AI_MAX_QUERIES} query utili. Nei confronti mantieni coerenti scope e misura.
+Chiama query_dvns con queries, clarification e needsReasoning.
+needsReasoning è true solo per calcoli a più passaggi, incongruenze o confronti complessi; altrimenti false.
+Usa solo i filtri del dataset: massimo 5 righe, nessun cursore, offset massimo 100.
 Per contribuenti, reddito complessivo e totali IRPEF territoriali usa mef_irpef_comunale, detail: "summary", level coerente e filtro region, province o code. mef_irpef_dettaglio serve agli incroci per classi di reddito, età o sesso e non offre un filtro per una specifica regione: le prime righe non rappresentano un totale territoriale.
 Se il catalogo non offre un filtro per il territorio richiesto, non interpretare le prime righe come risposta territoriale.
-Per domande su identità, progetto o capacità, restituisci queries: [] e in clarification una breve risposta basata sulla descrizione DVNS sopra, senza inventare funzioni o interrogare dataset.
-Se bastano gli allegati, restituisci queries: [] e clarification: "": la fase successiva risponderà leggendo i file.
+Per identità, progetto o capacità: queries: [] e una breve clarification basata sulla descrizione DVNS, senza inventare funzioni o interrogare dati.
+Se bastano gli allegati: queries: [] e clarification: ""; la fase successiva leggerà i file.
 Non sostituire un anno richiesto non disponibile con quello più recente: chiedi conferma. Se la domanda contiene riferimenti come 'stesso anno' o 'e in Calabria' ma manca una conversazione che chiarisca anno e comparto, chiedi un chiarimento e non scegliere tu il perimetro.
 Se la domanda non è coperta e non ci sono allegati utili, o richiede un chiarimento, restituisci queries: [] e una domanda di chiarimento in una o due frasi semplici, senza parlare di richieste interne e senza cifre inventate.
 Nel catalogo id è il campo dataset della query; t è il titolo, f elenca i filtri ammessi ed e contiene soltanto i filtri di esempio.

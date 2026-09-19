@@ -13,7 +13,7 @@ export const INTEGRATED_DOMAIN_LABELS: Readonly<Record<string, string>> = {
   appointments: "Incarichi nominativi",
   personnel: "Personale e organi",
   operations: "Spese operative",
-  health: "Dotazione sanitaria",
+  health: "Sanità",
   demography: "Contesto demografico",
   "social-conditions": "Condizioni sociali",
   education: "Servizi scolastici",

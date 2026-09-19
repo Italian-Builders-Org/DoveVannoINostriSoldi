@@ -266,7 +266,7 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
         {newsReady && newsReady.articles.length > 0 ? <span className={styles.countMark}>{newsReady.articles.length}</span> : null}
       </button>
     </div>
-    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} /> : <>
+    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} activity={profile?.legislativeActivity ?? null} /> : <>
       {person.government ? <button type="button" className={styles.relationshipLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
         <span>Membro del Governo<small>
           {person.chamberId ? "Con mandato anche in Parlamento" : "Senza mandato parlamentare"}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import type { RepublicActSummary } from "@/lib/politici-repubblica";
+import type { RepublicActSummary, RepublicLegislativeActivity } from "@/lib/politici-repubblica";
 import type { Resource } from "./atlas-data";
 import { filterActs, loadLegislation, OWN_VOTE_LABELS, type LegislativeData } from "./atlas-legislation";
 import { longDate } from "./atlas-model";
@@ -9,7 +9,13 @@ import { Icon, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-export function LegislativeActs({ personId }: { personId: string }) {
+export function LegislativeActs({
+  personId,
+  activity,
+}: {
+  personId: string;
+  activity?: RepublicLegislativeActivity | null;
+}) {
   const [resource, setResource] = useState<Resource<LegislativeData>>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -24,10 +30,10 @@ export function LegislativeActs({ personId }: { personId: string }) {
     setAttempt((value) => value + 1);
   }}>La scheda della persona e le altre sezioni restano consultabili.</Status>;
   if (resource.status !== "ready" || resource.data.personId !== personId) return <Status kind="loading" title="Caricamento degli atti…" />;
-  return <ActsBrowser data={resource.data} />;
+  return <ActsBrowser data={resource.data} activity={activity ?? null} />;
 }
 
-function ActsBrowser({ data }: { data: LegislativeData }) {
+function ActsBrowser({ data, activity }: { data: LegislativeData; activity: RepublicLegislativeActivity | null }) {
   const id = useId();
   const [role, setRole] = useState<"firstSigned" | "coSigned">("firstSigned");
   const [query, setQuery] = useState("");
@@ -37,13 +43,30 @@ function ActsBrowser({ data }: { data: LegislativeData }) {
   const filtered = Boolean(query.trim() || outcome);
   const reset = () => { setQuery(""); setOutcome(""); setLimit(8); };
   const chamberLabel = data.source.chamber === "senato" ? "Senato" : "Camera";
+  const membersLabel = data.source.chamber === "senato" ? "senatori" : "deputati";
+  const comparison = activity?.comparison ?? null;
+  const becameLaw = activity?.counts.becameLaw;
   return <section className={extra.actsSection} aria-label="Proposte di legge firmate" data-legislative-person={data.personId} data-legislative-chamber={data.source.chamber}>
     <div className={styles.sectionHeading}><h3>Proposte di legge</h3><span className={styles.tag}>{chamberLabel}</span></div>
     <p className={styles.note}>{data.source.periodLabel}. Rilevazione: {longDate(data.source.observedDate)}.</p>
     <dl className={styles.metrics}>
       <div><dt>A prima firma</dt><dd>{data.firstSigned.length}</dd></div>
       <div><dt>Cofirmate</dt><dd>{data.coSigned.length}</dd></div>
+      {becameLaw !== undefined ? <div><dt>Divenute legge</dt><dd>{becameLaw}</dd></div> : null}
     </dl>
+    {comparison ? <>
+      <p className={styles.note}>
+        Mediana {chamberLabel}: {comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
+        {comparison.groupMedianFirstSigned !== null && comparison.groupLabel
+          ? ` · mediana ${comparison.groupLabel}: ${comparison.groupMedianFirstSigned.toLocaleString("it-IT")}`
+          : ""}
+        .
+      </p>
+      {data.firstSigned.length > 0 ? <p className={styles.note}>
+        Ha presentato più proposte a prima firma del {comparison.firstSignedPercentile}% degli altri{" "}
+        {comparison.peerCount} {membersLabel} in carica. Non è una classifica di qualità o efficacia.
+      </p> : null}
+    </> : null}
     <p className={styles.note}>Atti di iniziativa parlamentare del perimetro indicato dalla fonte. Il numero di firme non misura qualità o efficacia dell’attività parlamentare.</p>
     <div className={extra.actRoleSwitch} role="group" aria-label="Tipo di firma">
       <button type="button" aria-pressed={role === "firstSigned"} onClick={() => { setRole("firstSigned"); setLimit(8); }}>Prima firma</button>

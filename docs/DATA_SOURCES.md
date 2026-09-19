@@ -744,6 +744,12 @@ lock e perimetro sono documentati in [OpenCivitas 2016](OPENCIVITAS_2016.md).
 Con questa annualità la serie ufficiale è coperta per intero: 2015, 2016, 2017,
 2018, 2019, 2021 e 2022; il 2020 non esiste nell'indice della fonte.
 
+È integrata anche la prima funzione oltre i servizi totali: **FC80RIFIUTI 2022**
+(6.557 Comuni RSO), con contratto distinto, `/api/spese/opencivitas-2022-rifiuti`
+e MCP `opencivitas_rifiuti_2022`. Non si somma né si confronta in silenzio con
+FC80TOT 2022. Fonte, lock e perimetro sono documentati in
+[OpenCivitas 2022 Rifiuti](OPENCIVITAS_2022_RIFIUTI.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -856,8 +862,9 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
-  totali 2018, 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
+- ulteriori funzioni ufficiali OpenCivitas (viabilità, sociale/asili, …) oltre a
+  Rifiuti 2022 e ai servizi totali 2015–2019/2021–2022 già integrati (nessuna
+  imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

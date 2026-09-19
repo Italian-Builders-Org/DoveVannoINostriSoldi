@@ -36,8 +36,9 @@ function ActsBrowser({ data }: { data: LegislativeData }) {
   const acts = filterActs(data[role], query, outcome);
   const filtered = Boolean(query.trim() || outcome);
   const reset = () => { setQuery(""); setOutcome(""); setLimit(8); };
-  return <section className={extra.actsSection} aria-label="Proposte di legge firmate" data-legislative-person={data.personId}>
-    <div className={styles.sectionHeading}><h3>Proposte di legge</h3><span className={styles.tag}>Camera</span></div>
+  const chamberLabel = data.source.chamber === "senato" ? "Senato" : "Camera";
+  return <section className={extra.actsSection} aria-label="Proposte di legge firmate" data-legislative-person={data.personId} data-legislative-chamber={data.source.chamber}>
+    <div className={styles.sectionHeading}><h3>Proposte di legge</h3><span className={styles.tag}>{chamberLabel}</span></div>
     <p className={styles.note}>{data.source.periodLabel}. Rilevazione: {longDate(data.source.observedDate)}.</p>
     <dl className={styles.metrics}>
       <div><dt>A prima firma</dt><dd>{data.firstSigned.length}</dd></div>
@@ -68,9 +69,13 @@ function ActsBrowser({ data }: { data: LegislativeData }) {
 }
 
 function ActCard({ act }: { act: RepublicActSummary }) {
+  const siteLabel = act.chamber === "senato" ? "Senato" : "Camera";
+  const numberLabel = act.chamber === "senato" || act.number.startsWith("S.")
+    ? act.number
+    : `A.C. ${act.number}`;
   return <details className={extra.actCard} data-act-id={act.id}>
     <summary>
-      <span className={extra.actNumber}>A.C. {act.number}<Icon name="plus" size={16} /></span>
+      <span className={extra.actNumber}>{numberLabel}<Icon name="plus" size={16} /></span>
       <strong>{act.title ?? `Proposta n. ${act.number}: titolo non disponibile`}</strong>
       <span className={extra.actDate}>{act.presentedDate ? `Presentata il ${longDate(act.presentedDate)}` : "Data di presentazione non disponibile"}</span>
       <span className={extra.actState}>{act.currentState ?? "Stato dell’iter non disponibile"}</span>
@@ -83,9 +88,9 @@ function ActCard({ act }: { act: RepublicActSummary }) {
         <p>{vote.approved ? "Approvata" : "Non approvata"}{vote.confidenceVote ? " · con questione di fiducia" : ""}</p>
         <p className={extra.ownVote}>Voto individuale: <strong>{OWN_VOTE_LABELS[vote.ownVote]}</strong></p>
         <dl className={extra.voteCounts}><div><dt>Favorevoli</dt><dd>{vote.favorevoli}</dd></div><div><dt>Contrari</dt><dd>{vote.contrari}</dd></div><div><dt>Astenuti</dt><dd>{vote.astenuti}</dd></div></dl>
-        <p className={styles.note}>Esito della votazione alla Camera, non necessariamente approvazione definitiva della legge.</p>
+        <p className={styles.note}>Esito della votazione al {siteLabel}, non necessariamente approvazione definitiva della legge.</p>
       </li>)}</ul> : <p className={styles.note}>Nessuna votazione finale collegata nello snapshot. Non equivale a una bocciatura.</p>}
-      <SourceLink href={act.officialPage}>Atto e iter sul sito della Camera</SourceLink>
+      <SourceLink href={act.officialPage}>Atto e iter sul sito del {siteLabel}</SourceLink>
     </div>
   </details>;
 }

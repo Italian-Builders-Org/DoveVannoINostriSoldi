@@ -10,6 +10,7 @@ import {
   searchMedicalDevices,
 } from "@/lib/medical-device-spending";
 import styles from "./dispositivi.module.css";
+import { TerritoryFilters } from "./territory-filters";
 
 export const metadata: Metadata = {
   title: "Spesa per dispositivi medici",
@@ -50,10 +51,9 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   const aggregateRegion = one(params.regioneAggregati);
   const aggregateCompany = one(params.aziendaAggregati);
   const dimension = one(params.dimensione) ?? "territory";
-  const selectedYear = filters.years.find((item) => String(item.year) === searchYear);
-  const selectedRegion = selectedYear?.regions.find((item) => item.code === region);
-  const selectedAggregateYear = filters.years.find((item) => String(item.year) === aggregateYear);
-  const selectedAggregateRegion = selectedAggregateYear?.regions.find((item) => item.code === aggregateRegion);
+  const filterYears = [...filters.years].sort((left, right) => right.year - left.year);
+  const regionLabels = Object.fromEntries(filters.years.flatMap((item) =>
+    item.regions.map(({ code }) => [code, medicalDeviceRegionLabel(code)])));
   const history = await Promise.all(years.map(async (year) => {
     const annual = await aggregateMedicalDeviceSpending({ year: String(year), limit: 1 });
     return { year, spending: annual.coverage.spending };
@@ -89,7 +89,8 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
     : dimension === "manufacturer" ? "fabbricante o assemblatore" : "territorio";
   const dimensionColumnLabel = dimension === "classification"
     ? "Classificazioni CND"
-    : dimension === "manufacturer" ? "Fabbricanti o assemblatori" : "Regioni";
+    : dimension === "manufacturer" ? "Fabbricanti o assemblatori"
+      : aggregateRegion ? "Aziende sanitarie" : "Regioni";
 
   return (
     <main className="shell page">
@@ -116,21 +117,10 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
                 <option value="">Tutti</option><option value="1">Tipo 1</option><option value="2">Tipo 2</option>
               </select>
             </label>
-            <label className={styles.field}>Anno
-              <select name="annoRicerca" defaultValue={searchYear ?? ""}>
-                <option value="">Tutti</option>{years.map((year) => <option key={year}>{year}</option>)}
-              </select>
-            </label>
-            <label className={styles.field}>Regione
-              <select name="regione" defaultValue={region ?? ""} disabled={!searchYear}>
-                <option value="">Tutte</option>{selectedYear?.regions.map((item) => <option key={item.code} value={item.code}>{medicalDeviceRegionLabel(item.code)}</option>)}
-              </select>
-            </label>
-            <label className={styles.field}>Azienda sanitaria
-              <select name="azienda" defaultValue={company ?? ""} disabled={!region}>
-                <option value="">Tutte</option>{selectedRegion?.companies.map((item) => <option key={item.code} value={item.code}>{item.names[0] ?? item.code}</option>)}
-              </select>
-            </label>
+            <TerritoryFilters key={JSON.stringify([searchYear, region, company])}
+              years={filterYears} regionLabels={regionLabels} allYears
+              names={["annoRicerca", "regione", "azienda"]}
+              initial={[searchYear ?? "", region ?? "", company ?? ""]} />
           </div>
           <button className="btn btn-primary" type="submit">Cerca</button>
         </form>
@@ -147,7 +137,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
               <p className={styles.meta}>Tipo {item.type} · repertorio {item.number}{item.catalog ? ` · catalogo ${item.catalog}` : ""}</p>
               <p>{item.manufacturer ?? "Fabbricante non collegato"}{item.role ? ` · ${item.role}` : ""}</p>
               <p>{item.classification ? `CND ${item.classification}` : "CND non disponibile"}{item.classificationLabel ? ` · ${item.classificationLabel}` : ""}</p>
-              <p className={styles.money}>{Object.entries(item.years).sort(([a], [b]) => b.localeCompare(a)).map(([year, total]) => `${year}: ${euro(total.spending)}`).join(" · ")}</p>
+              <p className={styles.money}>Totali nazionali per anno: {Object.entries(item.years).sort(([a], [b]) => b.localeCompare(a)).map(([year, total]) => `${year}: ${euro(total.spending)}`).join(" · ")}</p>
             </li>)}
           </ol>
           {search.pagination.nextCursor ? <p><Link className="btn btn-secondary" href={href("/spese/sanita/dispositivi", { q, tipo: type, annoRicerca: searchYear, regione: region, azienda: company, cursoreRicerca: search.pagination.nextCursor })}>Risultati successivi</Link></p> : null}
@@ -165,9 +155,10 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
         <p>I totali includono zeri e rettifiche negative. Non sono prezzi unitari né pagamenti al fabbricante.</p>
         <form action="/spese/sanita/dispositivi#aggregati" method="get" className={styles.filters}>
           {q ? <input type="hidden" name="q" value={q} /> : null}
-          <label className={styles.field}>Anno<select name="anno" defaultValue={aggregateYear}>{years.map((year) => <option key={year}>{year}</option>)}</select></label>
-          <label className={styles.field}>Regione<select name="regioneAggregati" defaultValue={aggregateRegion ?? ""}><option value="">Tutte</option>{selectedAggregateYear?.regions.map((item) => <option key={item.code} value={item.code}>{medicalDeviceRegionLabel(item.code)}</option>)}</select></label>
-          <label className={styles.field}>Azienda sanitaria<select name="aziendaAggregati" defaultValue={aggregateCompany ?? ""} disabled={!aggregateRegion}><option value="">Tutte</option>{selectedAggregateRegion?.companies.map((item) => <option key={item.code} value={item.code}>{item.names[0] ?? item.code}</option>)}</select></label>
+          <TerritoryFilters key={JSON.stringify([aggregateYear, aggregateRegion, aggregateCompany])}
+            years={filterYears} regionLabels={regionLabels}
+            names={["anno", "regioneAggregati", "aziendaAggregati"]}
+            initial={[aggregateYear, aggregateRegion ?? "", aggregateCompany ?? ""]} />
           <label className={styles.field}>Raggruppa per<select name="dimensione" defaultValue={dimension}><option value="territory">Territorio</option><option value="classification">Classificazione CND</option><option value="manufacturer">Fabbricante o assemblatore</option></select></label>
           <button className="btn btn-primary" type="submit">Aggiorna</button>
         </form>

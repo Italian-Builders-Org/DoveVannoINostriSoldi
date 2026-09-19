@@ -63,6 +63,10 @@ test("il dataset MCP dei dispositivi usa ricerca, aggregati e scheda condivisi",
   });
   assert.equal(search.hits[0].number, "1175175");
   assert.equal(search.hits[0].type, "1");
+  assert.equal(search.provenance.registrySnapshotDate, "2026-09-14");
+  assert.match(search.provenance.sourceSpecSha256, /^[a-f0-9]{64}$/);
+  assert.match(search.provenance.moneyNature, /spesa rilevata/);
+  assert.match(search.provenance.moneyNature, /non incassi, prezzi unitari o fatturato/);
 
   const aggregate = await queryPublicDataset({
     dataset: "salute_dispositivi_medici",
@@ -74,6 +78,9 @@ test("il dataset MCP dei dispositivi usa ricerca, aggregati e scheda condivisi",
   assert.equal(aggregate.scope.year, 2020);
   assert.equal(aggregate.rows.length, 5);
   assert.equal(aggregate.coverage.matchedRows + aggregate.coverage.unresolvedRows, aggregate.coverage.rows);
+  assert.match(aggregate.interpretation.denominator, /rettifiche negative e zeri/);
+  assert.match(aggregate.interpretation.joinCoverage, /non la completezza nazionale/);
+  assert.equal(aggregate.interpretation.manufacturerSnapshot, "2026-09-14");
 
   const detail = await queryPublicDataset({
     dataset: "salute_dispositivi_medici",
@@ -85,6 +92,8 @@ test("il dataset MCP dei dispositivi usa ricerca, aggregati e scheda condivisi",
   });
   assert.equal(detail.profile.device.number, "1175175");
   assert.equal(detail.facts.filters.year, 2021);
+  assert.equal(detail.profile.registrySnapshotDate, "2026-09-14");
+  assert.match(detail.profile.sourceSpecSha256, /^[a-f0-9]{64}$/);
 });
 
 test("configured OpenCUP is registered internally but not advertised before promotion", async () => {

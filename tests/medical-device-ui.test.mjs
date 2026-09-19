@@ -19,7 +19,8 @@ test("la pagina dispositivi espone ricerca, aggregati, righe e limiti", () => {
   assert.doesNotMatch(index, /Non collegate alla BD\/RDM/);
   assert.match(index, /Righe JSON/);
   assert.match(index, /medicalDeviceRegionName\(row\.code\)/);
-  assert.match(index, /"Fabbricanti o assemblatori" : "Regioni"/);
+  assert.match(index, /aggregateRegion \? "Aziende sanitarie" : "Regioni"/);
+  assert.match(index, /Totali nazionali per anno/);
   assert.match(index, /Non sono prezzi unitari né pagamenti al fabbricante/);
   assert.match(index, /className="btn btn-primary" type="submit">Cerca/);
   assert.doesNotMatch(index, /La ricerca parte solo dopo aver inserito un termine/);

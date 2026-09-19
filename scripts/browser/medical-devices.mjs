@@ -67,6 +67,35 @@ async function inspectEmptyMedicalDevices(page) {
   await page.screenshot({ path: path.join(directory, "ricerca-vuota-pr.png"), fullPage: false });
 }
 
+async function inspectDependentFilters(page) {
+  for (const [year, region, company] of [
+    ["annoRicerca", "regione", "azienda"],
+    ["anno", "regioneAggregati", "aziendaAggregati"],
+  ]) {
+    await page.select(`select[name="${year}"]`, "2018");
+    await page.waitForFunction((name) => document.querySelector(`select[name="${name}"] option[value="030"]`), {}, region);
+    await page.select(`select[name="${region}"]`, "030");
+    await page.select(`select[name="${company}"]`, "030715");
+    await page.select(`select[name="${region}"]`, "010");
+    assert.equal(await page.$eval(`select[name="${company}"]`, (select) => select.value), "");
+    await page.select(`select[name="${region}"]`, "030");
+    await page.select(`select[name="${company}"]`, "030715");
+    await page.select(`select[name="${year}"]`, "2021");
+    assert.equal(await page.$eval(`select[name="${region}"]`, (select) => select.value), "");
+    assert.equal(await page.$eval(`select[name="${company}"]`, (select) => select.value), "");
+    assert.equal(await page.$eval(`select[name="${company}"]`, (select) => select.disabled), true);
+    assert.ok(await page.$(`select[name="${region}"] option[value="10"]`));
+  }
+  await page.select('select[name="regioneAggregati"]', "10");
+  await Promise.all([
+    page.waitForNavigation({ waitUntil: "networkidle0" }),
+    page.click('#aggregati button[type="submit"]'),
+  ]);
+  assert.equal(await page.$eval("#aggregati thead th", (cell) => cell.textContent), "Aziende sanitarie");
+  assert.equal(await page.$('#aggregati [role="alert"]'), null);
+  assert.match(await page.$eval('section[aria-labelledby="ricerca-title"]', (section) => section.innerText), /Totali nazionali per anno/);
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   await waitForServer(defaultBaseUrl());
   const browser = await launchBrowser();
@@ -91,6 +120,14 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       });
       console.log(`PASS dispositivi medici ${width}px`);
     }
+    await runScenario(browser, {
+      label: "Dispositivi medici filtri dipendenti",
+      pathname: "/spese/sanita/dispositivi?q=1175175&tipo=1",
+      width: 1280,
+      validate: inspectDependentFilters,
+      suite: "medical-devices",
+    });
+    console.log("PASS dispositivi medici filtri dipendenti");
   } finally {
     await closeBrowser(browser);
   }

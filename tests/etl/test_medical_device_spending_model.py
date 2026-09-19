@@ -141,7 +141,7 @@ class MedicalDeviceModelTests(TestCase):
     def test_classification_preserves_all_versions_without_historical_rewrite(self):
         _, lock, _, _, _ = self.inputs()
         meta = model.snapshot_metadata(lock["classification"], model.CND_DATASET)
-        rows = list(csv.DictReader(io.StringIO(self.cnd.read_text()), delimiter=";"))
+        rows = list(csv.DictReader(io.StringIO(self.cnd.read_text(encoding="utf-8")), delimiter=";"))
         records = list(model.classification_records(rows, meta))
         self.assertEqual([r["codice"] for r in records], ["A", "A", "A01"])
         self.assertNotEqual(records[0]["key"], records[1]["key"])

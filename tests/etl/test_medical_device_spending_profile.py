@@ -387,6 +387,14 @@ class MedicalDeviceProfileTests(TestCase):
         with self.assertRaisesRegex(etl.SourceError, "soltanto le annualità pilota"):
             candidate.prepare({2021: self.spending, 2022: self.spending}, self.registry, self.cnd, self.root / "candidate")
 
+    def test_candidate_rejects_a_second_release_for_an_existing_year(self):
+        spending, lock_path = self.candidate_inputs()
+        with self.assertRaisesRegex(etl.SourceError, "Dataset già nel corpus"):
+            candidate.prepare(
+                spending, self.registry, self.cnd, self.root / "candidate",
+                lock_path=lock_path,
+            )
+
     def test_historical_candidate_preserves_original_bytes_and_lexical_codes(self):
         spending, lock_path = self.historical_candidate_inputs()
         output = self.root / "historical-candidate"
@@ -429,4 +437,12 @@ class MedicalDeviceProfileTests(TestCase):
             candidate.prepare_historical(
                 {2018: self.spending, 2020: self.spending}, self.registry, self.cnd,
                 self.root / "historical-candidate",
+            )
+
+    def test_historical_candidate_rejects_a_second_release_for_an_existing_year(self):
+        spending, lock_path = self.historical_candidate_inputs()
+        with self.assertRaisesRegex(etl.SourceError, "Annualità storiche già nel corpus"):
+            candidate.prepare_historical(
+                spending, self.registry, self.cnd, self.root / "historical-candidate",
+                lock_path=lock_path,
             )

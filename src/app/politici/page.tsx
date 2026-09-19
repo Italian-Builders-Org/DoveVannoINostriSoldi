@@ -9,7 +9,7 @@ import styles from "./politici.module.css";
 
 export const metadata: Metadata = {
   title: "Atlante della politica italiana",
-  description: "Esplora Camera, Senato, Governo e Presidenza della Repubblica: emicicli interattivi, persone, incarichi, gruppi, partecipazione al voto e fonti ufficiali.",
+  description: "Esplora Camera, Senato, Governo, Repubblica e il Grafo Istituzionale: emicicli interattivi, persone, incarichi, gruppi, partecipazione al voto e fonti ufficiali.",
 };
 
 type PoliticiPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>>; };
@@ -28,9 +28,10 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
     <a className={styles.skipLink} href="#atlante-politica">Vai all’atlante</a>
     <header className={styles.immersiveChrome}>
       <div className={styles.brandLockup}>
-        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">DVNS<span className={styles.brandDot} aria-hidden="true" /></Link>
-        <span className={styles.brandSeparator} aria-hidden="true" />
-        <h1>Atlante della politica</h1>
+        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
+          DVNS
+        </Link>
+        <h1 className={styles.srOnly}>Atlante della politica italiana</h1>
       </div>
       <div className={styles.immersiveActions}>
         <details className={styles.sourcesDisclosure}>

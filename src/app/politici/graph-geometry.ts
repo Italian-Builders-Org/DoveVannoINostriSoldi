@@ -82,6 +82,17 @@ export function buildChamberScene(map: RepublicMap, chamberId: ChamberId): Chamb
   return { seats, wedges, members: people.length, vacancies, capacity: institution?.seatCapacity ?? null };
 }
 
+/** Quadratic arc used for co-citation links between seats (not institutional edges). */
+export function curve(from: { x: number; y: number }, to: { x: number; y: number }, bend = 0.16): string {
+  const midX = (from.x + to.x) / 2;
+  const midY = (from.y + to.y) / 2;
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const controlX = midX - dy * bend;
+  const controlY = midY + dx * bend;
+  return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} Q ${controlX.toFixed(1)} ${controlY.toFixed(1)} ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+}
+
 /** Spatial arrow navigation avoids hundreds of Tab stops in the diagram. */
 export function adjacentSeat(seats: readonly Seat[], currentId: string, key: string): string | null {
   const available = seats.filter((seat) => seat.personId !== null);

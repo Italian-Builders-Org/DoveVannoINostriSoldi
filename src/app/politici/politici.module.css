@@ -19,7 +19,7 @@
   background: var(--atlas-bg);
   color: var(--atlas-ink);
   overflow: hidden;
-  font-family: var(--font-geist, Arial), sans-serif;
+  font-family: var(--font-geist), sans-serif;
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -103,7 +103,7 @@
 .disclosure > summary::after { content: "+"; margin-left: auto; color: var(--atlas-muted); font-size: 18px; font-weight: 400; }
 .disclosure[open] > summary::after { content: "−"; }
 .disclosure > summary > span { color: var(--atlas-muted); font-variant-numeric: tabular-nums; }
-.directory, .governmentView, .republicView, .memberList { min-width: 0; }
+.directory, .governmentView, .republicView, .institutionalGraph, .memberList { min-width: 0; }
 .workspace { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .topBar { padding: 24px 32px 0; z-index: 20; flex: 0 0 auto; }
 .scopeSwitch { display: flex; gap: 4px; border-bottom: 1px solid var(--atlas-line); }
@@ -143,6 +143,21 @@
 .chamberHeading { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 10px 0 0; }
 .chamberHeading h2 { font-family: Georgia, serif; font-weight: 400; font-size: clamp(24px, 2vw, 32px); letter-spacing: -.7px; margin-top: 5px; line-height: 1.2; }
 .tag { display: inline-flex; flex: 0 0 auto; font-size: 10px; color: var(--atlas-muted); border: 1px solid var(--atlas-line); border-radius: 6px; padding: 4px 8px; font-weight: 450; }
+.countMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35em;
+  padding: 1px 6px 0;
+  border-radius: 999px;
+  background: var(--atlas-faint);
+  color: var(--atlas-muted);
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
 .diagramViewport { max-width: 100%; max-height: min(58dvh, 700px); min-height: 240px; margin-top: 5px; overflow: auto; scrollbar-width: thin; }
 .diagramViewport:not([data-zoomed="true"]) { overflow: visible; max-height: none; }
 .diagramViewport:not([data-zoomed="true"]) .hemicycle { max-height: clamp(260px, 46dvh, 560px); }
@@ -153,7 +168,7 @@
 .architecture .tricoloreGreen { stroke: #33755b; stroke-width: 3; }
 .architecture .tricoloreWhite { stroke: #bebcad; stroke-width: 3; }
 .architecture .tricoloreRed { stroke: #b66b62; stroke-width: 3; }
-.hemicycleCaption { fill: var(--atlas-muted); stroke: none; font-size: 8px; letter-spacing: 3px; font-family: var(--font-geist, Arial), sans-serif; }
+.hemicycleCaption { fill: var(--atlas-muted); stroke: none; font-size: 8px; letter-spacing: 3px; font-family: var(--font-geist), sans-serif; }
 .seat, .miniSeat, .swatch, .groupArc { --family: #868a81; }
 .immersivePage [data-family="alleanza-verdi-sinistra"] { --family: #629071; }
 .immersivePage [data-family="azione"] { --family: #99816d; }
@@ -166,6 +181,11 @@
 .immersivePage [data-family="partito-democratico"] { --family: #bd7365; }
 .immersivePage [data-family="autonomie"] { --family: #999261; }
 .seat { fill: var(--family); cursor: pointer; transition: opacity 170ms ease; outline: none !important; }
+.seat[data-connected="true"] .seatHitArea { stroke: var(--color-accent, #b42318); stroke-width: 1.6; }
+.newsLayer { pointer-events: none; }
+.newsLink { fill: none; stroke: var(--color-accent, #b42318); stroke-opacity: 0.9; stroke-linecap: round; }
+.connectionLegend { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 11px; color: var(--atlas-muted); }
+.connectionLegend span[aria-hidden="true"] { width: 28px; height: 2px; background: var(--color-accent, #b42318); border-radius: 2px; flex: 0 0 auto; }
 .seatHitArea { fill: transparent; stroke: transparent; stroke-width: 1.7; }
 .seatBack { stroke: var(--atlas-panel); stroke-width: .65; opacity: .65; fill: none; pointer-events: none; }
 .seat > rect { stroke: color-mix(in srgb, var(--family) 55%, var(--atlas-ink)); stroke-width: .8; }
@@ -245,8 +265,22 @@
 .personHeader { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; margin: 10px 0; }
 .groupBadge { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 9px 12px; background: transparent; border: 1px solid var(--atlas-line); border-radius: 7px; font-size: 11px !important; margin-top: 16px; }
 .panelTabs { display: flex; border-bottom: 1px solid var(--atlas-line); gap: 16px; margin-top: 25px; }
-.panelTabs button { flex: 1; min-height: 49px; padding: 10px 0; background: transparent; border: 0; border-bottom: 2px solid transparent; font-size: 11px; color: var(--atlas-muted); }
+.panelTabs button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 49px;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-size: 11px;
+  color: var(--atlas-muted);
+}
 .panelTabs button[aria-pressed="true"] { border-bottom-color: var(--atlas-ink); color: var(--atlas-ink); font-weight: 550; }
+.panelTabs button[aria-pressed="true"] .countMark { color: var(--atlas-ink); background: color-mix(in srgb, var(--atlas-ink) 8%, transparent); }
 .relationshipLink { display: flex; justify-content: space-between; align-items: center; gap: 14px; width: 100%; padding: 16px 0; margin-top: 8px; background: transparent; border: 0; text-align: left; font-size: 12px !important; }
 .relationshipLink small { display: block; font-size: 10px; color: var(--atlas-muted); margin-top: 3px; }
 .newsList { display: grid; gap: 20px; padding: 12px 0 !important; }
@@ -280,6 +314,210 @@
 .europeMark { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; border: 1px solid var(--atlas-line); border-radius: 50%; font-family: Georgia, serif; font-size: 16px; }
 .europeLink strong { font-size: 13px; font-weight: 550; }
 .europeLink p { font-size: 12px; color: var(--atlas-muted); margin: 5px 0 10px; }
+
+/* Institutional overview graph (scope = grafo) */
+.graphBoard {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  container-type: inline-size;
+  aspect-ratio: 1200 / 1000;
+  background:
+    radial-gradient(ellipse at 50% 48%, color-mix(in srgb, var(--atlas-ink) 4%, transparent), transparent 58%),
+    var(--atlas-panel);
+  border: 1px solid var(--atlas-line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.graphBoard[data-layout="stacked"] { aspect-ratio: 900 / 1100; }
+.graphCanvas { display: block; width: 100%; height: 100%; }
+.graphRings, .graphHierarchy, .graphFamily, .graphChamberMini { pointer-events: none; }
+.graphOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.graphOverlay > * { pointer-events: auto; }
+.graphRingGuide {
+  fill: none;
+  stroke: var(--atlas-line);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+.graphSectorExecutive {
+  fill: color-mix(in srgb, var(--atlas-ink) 3.5%, transparent);
+  stroke: none;
+}
+.graphSectorLegislative {
+  fill: color-mix(in srgb, var(--atlas-ink) 2.5%, transparent);
+  stroke: none;
+}
+.graphHubGlow {
+  fill: color-mix(in srgb, var(--atlas-ink) 4%, transparent);
+  stroke: none;
+}
+.graphHierarchyLink {
+  fill: none;
+  stroke: var(--atlas-muted);
+  stroke-width: 1.4;
+  opacity: 0.55;
+}
+.graphHierarchyLink[data-kind="nominate"] { stroke: var(--atlas-ink); stroke-width: 1.8; opacity: 0.72; }
+.graphHierarchyLink[data-kind="confidence"] { stroke-dasharray: 5 4; opacity: 0.65; }
+.graphHierarchyLink[data-kind="promulgate"] { stroke-dasharray: 2 5; opacity: 0.5; }
+.graphArrowHead { fill: var(--atlas-muted); }
+.graphFamilyLink {
+  fill: none;
+  stroke: var(--family, var(--atlas-muted));
+  stroke-width: 2.4;
+  opacity: 0.85;
+}
+.graphChamberFrame {
+  fill: var(--atlas-raised, var(--atlas-panel));
+  stroke: var(--atlas-line);
+  stroke-width: 1;
+}
+.graphChamberBand { fill: var(--family, #868a81); opacity: 0.88; }
+.graphChamberBand[data-active="false"] { opacity: 0.22; }
+.graphBandLabel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--atlas-muted);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.graphBandLabel[data-inline="true"] {
+  position: static;
+  transform: none;
+  margin-bottom: 6px;
+}
+.graphHub, .graphExecutive {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+.graphHubPortrait, .graphExecutivePortrait, .graphPortraitNode {
+  padding: 0;
+  border: 2px solid var(--atlas-panel);
+  border-radius: 50%;
+  background: var(--atlas-panel);
+  box-shadow: 0 0 0 1px var(--atlas-line);
+  overflow: hidden;
+  line-height: 0;
+}
+.graphHubPortrait:hover, .graphExecutivePortrait:hover, .graphPortraitNode:hover,
+.graphHubPortrait:focus-visible, .graphExecutivePortrait:focus-visible, .graphPortraitNode:focus-visible {
+  border-color: var(--atlas-ink);
+  outline: none;
+}
+.graphPortraitNode {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.graphPortraitNode[data-selected="true"], .graphExecutivePortrait[data-selected="true"] {
+  border-color: var(--atlas-ink);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--atlas-ink) 25%, transparent);
+}
+.graphBoard[data-focused="true"] .graphPortraitNode[data-lit="false"],
+.graphBoard[data-focused="true"] .graphHubPortrait[data-lit="false"],
+.graphBoard[data-focused="true"] .graphExecutivePortrait[data-lit="false"] {
+  opacity: 0.22;
+}
+.graphHubLabel, .graphExecutiveLabel {
+  display: grid;
+  gap: 2px;
+  padding: 6px 10px;
+  border: 1px solid var(--atlas-line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--atlas-panel) 92%, transparent);
+  text-align: center;
+  max-width: 200px;
+}
+.graphHubLabel span, .graphExecutiveLabel span {
+  font-size: 10px;
+  color: var(--atlas-muted);
+}
+.graphHubLabel strong, .graphExecutiveLabel strong {
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.25;
+}
+.graphChamberEnter {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  z-index: 3;
+}
+.graphChamberEnter:hover, .graphChamberEnter:focus-visible {
+  background: color-mix(in srgb, var(--atlas-panel) 80%, transparent);
+  outline: none;
+}
+.graphChamberEnterTitle {
+  font-family: Georgia, serif;
+  font-size: clamp(16px, 2.2cqw, 22px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+.graphChamberEnterMeta {
+  font-size: 10px;
+  color: var(--atlas-muted);
+}
+.graphChamberEnterLeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.graphChamberEnterLeader strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 550;
+}
+.graphChamberEnterLeader small, .graphChamberEnterCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--atlas-muted);
+}
+.graphLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  margin: 16px 0 0 !important;
+  padding: 0 !important;
+  list-style: none;
+  font-size: 11px;
+  color: var(--atlas-muted);
+}
+.graphLegend li { display: inline-flex; align-items: center; gap: 8px; }
+.graphLegend span {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  border-top: 2px solid var(--atlas-muted);
+}
+.graphLegend span[data-kind="nominate"] { border-color: var(--atlas-ink); }
+.graphLegend span[data-kind="confidence"] { border-top-style: dashed; }
+.graphLegend span[data-kind="promulgate"] { border-top-style: dotted; }
+
 .governmentLeaders { display: grid; gap: 12px; margin-bottom: 26px; }
 .governmentLeaders button { display: flex; align-items: center; gap: 24px; width: 100%; min-height: 116px; padding: 20px 24px; background: var(--atlas-panel); border: 1px solid var(--atlas-line); border-radius: 12px; text-align: left; }
 .governmentLeaders button > span { display: grid; gap: 6px; }
@@ -348,7 +586,7 @@
   .workspace { overflow: visible; }
   .topBar { padding: 8px 20px 0; position: sticky; top: 0; background: var(--atlas-bg); border-bottom: 1px solid var(--atlas-line); }
   .scopeSwitch { gap: 0; justify-content: space-between; }
-  .scopeSwitch button { flex: 1; min-height: 46px; padding: 8px 5px 12px; font-size: 12px; }
+  .scopeSwitch button { flex: 1; min-height: 46px; padding: 8px 4px 12px; font-size: 11px; }
   .scopeSwitch button:first-child { padding: 8px 5px 12px; }
   .scopeSwitch button:first-child[aria-current="page"]::after { left: 10px; }
   .workspaceTools { flex-wrap: wrap; gap: 9px; padding: 13px 0; }

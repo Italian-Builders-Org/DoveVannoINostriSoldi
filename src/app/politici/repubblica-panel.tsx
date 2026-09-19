@@ -58,14 +58,8 @@ export function RepubblicaPanel(props: PanelProps) {
         <Icon name="arrow" size={18} />
       </button>)}
     </nav>
-    <details className={styles.disclosure}>
-      <summary>Formazione dichiarata</summary>
-      <EducationBlock distribution={map.education.all} />
-    </details>
-    <details className={styles.disclosure}>
-      <summary>Partecipazione al voto · Camera</summary>
-      <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
-    </details>
+    <EducationBlock distribution={map.education.all} scopeLabel="mappa" />
+    <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
     <p className={styles.note}>Una persona con più incarichi è contata una sola volta. La mappa non misura influenza politica.</p>
     <p className={styles.note}>Rilevazione più recente: {longDate(map.updatedAt)}. Le date delle singole fonti possono differire.</p>
   </div>;
@@ -136,14 +130,8 @@ function InstitutionPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSel
         </li>)}
       </ul>
     </details> : null}
-    {distribution ? <details className={styles.disclosure}>
-      <summary>Formazione dichiarata</summary>
-      <EducationBlock distribution={distribution} />
-    </details> : null}
-    {id === "camera" ? <details className={styles.disclosure}>
-      <summary>Partecipazione al voto</summary>
-      <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} />
-    </details> : null}
+    {distribution ? <EducationBlock distribution={distribution} scopeLabel={institution.shortLabel} /> : null}
+    {id === "camera" ? <AttendanceRanking ranking={map.cameraAttendanceRanking} onSelect={onSelect} /> : null}
     {id === "senato" ? <p className={styles.note}>Nella base dati non è disponibile una tabella del Senato equivalente alla partecipazione al voto della Camera.</p> : null}
     {id === "governo" ? <details className={styles.disclosure}>
       <summary>Ministeri e deleghe <span>
@@ -245,6 +233,7 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
   const profile = profiles.status === "ready" ? profiles.data[personId] : null;
   const institutionId = person.chamberId ?? (person.government ? "governo" : "presidenza-repubblica");
   const institution = map.institutions.find((item) => item.id === institutionId);
+  const newsReady = news.status === "ready" ? news.data : null;
   return <div className={styles.panelContent} data-profile-id={person.id}>
     <button type="button" className={styles.backButton} onClick={() => onSelect({ kind: "institution", id: institutionId })}>
       <Icon name="back" size={16} />
@@ -270,7 +259,10 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
     <div className={styles.panelTabs} role="group" aria-label="Contenuto della scheda">
       <button type="button" aria-pressed={tab === "profilo"} onClick={() => setTab("profilo")}>Profilo e incarichi</button>
       {person.chamberId === "camera" ? <button type="button" aria-pressed={tab === "atti"} onClick={() => setTab("atti")}>Atti e voti</button> : null}
-      <button type="button" aria-pressed={tab === "notizie"} onClick={() => setTab("notizie")}>Notizie</button>
+      <button type="button" aria-pressed={tab === "notizie"} onClick={() => setTab("notizie")}>
+        Notizie
+        {newsReady && newsReady.articles.length > 0 ? <span className={styles.countMark}>{newsReady.articles.length}</span> : null}
+      </button>
     </div>
     {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} /> : <>
       {person.government ? <button type="button" className={styles.relationshipLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
@@ -279,7 +271,7 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
         </small></span>
         <Icon name="arrow" size={18} />
       </button> : null}
-      {group?.relatedGroupIds.length ? <details className={styles.disclosure}>
+      {group?.relatedGroupIds.length ? <details className={styles.disclosure} open>
         <summary>Collegamenti istituzionali</summary>
         <p className={styles.note}>Stessa famiglia politica nell’altro ramo, non una relazione personale.</p>
         {group.relatedGroupIds.map((id) => {
@@ -297,6 +289,30 @@ function PersonPanel({ personId, map, profiles, news, onSelect, onRetryProfiles,
         </p>}
         <ProfileFacts profile={profile} map={map} />
       </> : profiles.status === "error" ? <Status kind="error" title="Scheda completa non disponibile" onRetry={onRetryProfiles}>Nome e incarico restano visibili dai dati della mappa.</Status> : profiles.status === "ready" ? <Status title="Scheda non presente nello snapshot">Il profilo aggiuntivo non è disponibile per questa persona.</Status> : <Status kind="loading" title="Caricamento della scheda…" />}
+      {news.status === "error" ? <Status kind="error" title="Notizie non disponibili" onRetry={onRetryNews}>Puoi comunque consultare incarichi e fonti ufficiali.</Status>
+        : news.status === "loading" || news.status === "idle" ? <Status kind="loading" title="Caricamento delle notizie…">Le co-citazioni sulla mappa compaiono quando l’indice risponde.</Status>
+          : newsReady && newsReady.connections.length > 0 ? <section className={styles.factBlock} aria-label="Citati insieme nelle notizie">
+            <div className={styles.sectionHeading}>
+              <h3>Citati insieme</h3>
+              <span className={styles.countMark}>{newsReady.connections.length}</span>
+            </div>
+            <p className={styles.note}>Nomi presenti negli stessi articoli: non dimostrano relazioni personali. Gli archi rossi sull’emiciclo mostrano gli stessi collegamenti.</p>
+            <ul className={styles.connectionList}>
+              {newsReady.connections.slice(0, 6).map((connection) => {
+                const other = map.people.find((candidate) => candidate.id === connection.person.id);
+                return <li key={connection.person.id}>
+                  {other
+                    ? <PersonRow person={other} detail={`${connection.articleCount} articoli in comune`} onSelect={(id) => onSelect({ kind: "person", id })} />
+                    : <p>{connection.person.name} · {connection.articleCount} articoli</p>}
+                </li>;
+              })}
+            </ul>
+            <button type="button" className={styles.secondaryButton} onClick={() => setTab("notizie")}>
+              Apri tutte le notizie
+              <Icon name="arrow" size={16} />
+            </button>
+          </section>
+            : newsReady ? <p className={styles.note}>Nessuna co-citazione con altre persone della mappa in questi articoli. <button type="button" className={styles.textButton} onClick={() => setTab("notizie")}>Vedi le notizie</button></p> : null}
       {group ? <details className={styles.disclosure}>
         <summary>Programma del gruppo</summary>
         <ProgramBlock family={group.partyFamily} label={group.shortLabel} personName={person.name} />

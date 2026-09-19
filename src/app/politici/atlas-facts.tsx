@@ -14,19 +14,30 @@ import extra from "./atlas-enhancements.module.css";
 
 type Select = (selection: GraphSelection) => void;
 
-export function EducationBlock({ distribution }: { distribution: EducationDistribution; }) {
+export function EducationBlock({ distribution, scopeLabel }: { distribution: EducationDistribution; scopeLabel?: string; }) {
   return <section className={styles.factBlock} aria-label="Formazione dichiarata">
     <div className={styles.sectionHeading}>
-      <h3>Formazione dichiarata</h3>
+      <h3>Formazione dichiarata{scopeLabel ? ` · ${scopeLabel}` : ""}</h3>
       <span className={styles.tag}>Da note ufficiali</span>
     </div>
     <div className={styles.educationHighlight}>
       <strong>
         {distribution.stemCount}
       </strong>
-      <span>profili STEM<br /><small>su {distribution.total} persone</small></span>
+      <span>
+        profili STEM su {distribution.total}
+        <br />
+        <small>
+          {distribution.stemShareOfDeclared !== null
+            ? `${formatPercent(distribution.stemShareOfDeclared)} tra chi ha un’area dichiarata · `
+            : ""}
+          {formatPercent(distribution.stemShareOfTotal)} sul totale
+        </small>
+      </span>
     </div>
-    <p className={styles.note}>{formatPercent(distribution.stemShareOfTotal)} del totale{distribution.stemShareOfDeclared !== null ? ` · ${formatPercent(distribution.stemShareOfDeclared)} dei profili classificati` : ""}.</p>
+    <p className={styles.note}>
+      {distribution.caveat}
+    </p>
     <ul className={styles.educationBars}>
       {distribution.areas.map((area) => <li key={area.area}>
         <div>
@@ -40,22 +51,25 @@ export function EducationBlock({ distribution }: { distribution: EducationDistri
         </div>
       </li>)}
     </ul>
-    <p className={styles.note}>
-      {distribution.caveat}
-    </p>
-    <p className={styles.note}>{distribution.declared} classificati · {distribution.undeclared} non dichiarati. Non è una valutazione delle competenze.</p>
+    <p className={styles.note}>Dichiarati: {distribution.declared} · Non dichiarati: {distribution.undeclared}. Nessuna etichetta inventata dove la fonte tace.</p>
   </section>;
 }
 
 export function AttendanceRanking({ ranking, onSelect }: { ranking: CameraAttendanceRanking; onSelect: Select; }) {
   const [limit, setLimit] = useState(25);
   const rows = ranking.rows.toSorted((a, b) => a.name.localeCompare(b.name, "it") || a.personId.localeCompare(b.personId));
-  return <section className={styles.factBlock} aria-label="Partecipazione al voto Camera">
-    <h3>Partecipazione al voto · Camera</h3>
+  return <section className={styles.factBlock} aria-label="Classifica presenze Camera">
+    <div className={styles.sectionHeading}>
+      <h3>Classifica presenze · Camera</h3>
+      <span className={styles.tag}>{ranking.matchedCount} deputati</span>
+    </div>
+    <p className={styles.note}>
+      Classifica solo sui deputati della Camera con riga ufficiale collegata. Il Senato non pubblica una tabella equivalente: i senatori non compaiono. Misura le votazioni elettroniche in Aula (voto o missione), non le commissioni.
+    </p>
     <p className={styles.note}>
       {ranking.periodLabel}
     </p>
-    <p className={styles.note}>Ordine alfabetico. Votazioni elettroniche in Aula: voti espressi e missioni, non attività nelle commissioni. La base dati qui consultata non contiene una serie equivalente per il Senato.</p>
+    <p className={styles.note}>Ordine alfabetico nell’elenco sotto. I percentuali di presenza restano quelli pubblicati dalla fonte.</p>
     {rows.length ? <ul className={styles.rankingList}>
       {rows.slice(0, limit).map((row) => <li key={row.personId}>
         <button type="button" className={`${styles.rankingRow} ${extra.attendanceRow}`} onClick={() => onSelect({ kind: "person", id: row.personId })}>
@@ -126,8 +140,10 @@ export function ProgramBlock({ family, label, personName }: { family: string | n
 }
 
 export function VoteAttendance({ attendance }: { attendance: NonNullable<RepublicProfile["voteAttendance"]>; }) {
-  return <section className={styles.factBlock} aria-label="Partecipazione individuale al voto">
-    <h3>Partecipazione al voto</h3>
+  return <section className={styles.factBlock} aria-label="Presenze ufficiali in Aula">
+    <div className={styles.sectionHeading}>
+      <h3>Presenze in Aula</h3>
+    </div>
     <div className={styles.attendanceHero}>
       <strong>
         {attendance.presencePercent}

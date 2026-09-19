@@ -5,6 +5,7 @@ import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
 import { AtlasInspector, AtlasSearch } from "./atlas-controls";
 import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
 import { Hemicycle } from "./atlas-hemicycle";
+import { InstitutionalGraph } from "./atlas-institutional-graph";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
 import { atlasUrl, defaultSelection, filteredPeople, longDate, readAtlasState, ROLES, SCOPES, scopeForSelection, validSelection, type AtlasScope, type AtlasState, type GraphSelection } from "./atlas-model";
@@ -197,8 +198,15 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
               chamberId={state.scope}
               selection={state.selection}
               matchingIds={matchingIds}
-              onSelect={select} />
-              : state.scope === "governo" ? <GovernmentView people={people} onSelect={select} /> : <RepublicOverview map={map} people={people} onSelect={select} filtered={filterCount > 0} />}
+              onSelect={select}
+              news={data.news} />
+              : state.scope === "governo" ? <GovernmentView people={people} onSelect={select} />
+                : state.scope === "grafo" ? <InstitutionalGraph
+                  map={map}
+                  selection={state.selection}
+                  matchingIds={matchingIds}
+                  onSelect={select} />
+                  : <RepublicOverview map={map} people={people} onSelect={select} filtered={filterCount > 0} />}
         <div className={styles.workspaceFootnote}>
           <span><span className={styles.liveDot} aria-hidden="true" /> Dati da fonti ufficiali</span>
           <span>Rilevazione più recente: {longDate(map.updatedAt)}</span>

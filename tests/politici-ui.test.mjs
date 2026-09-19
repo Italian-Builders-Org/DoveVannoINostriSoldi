@@ -9,6 +9,9 @@ const [page, graph, controls, diagram, facts, panel, styles, data] = await Promi
   "src/app/politici/atlas-facts.tsx", "src/app/politici/repubblica-panel.tsx",
   "src/app/politici/politici.module.css", "src/app/politici/atlas-data.ts",
 ].map(read));
+const institutional = await read("src/app/politici/atlas-institutional-graph.tsx");
+const overview = await read("src/app/politici/overview-geometry.ts");
+const model = await read("src/app/politici/atlas-model.ts");
 
 // Structural contracts supplement the behavioural model and browser suites.
 // Keep unrelated immersive routing/navigation invariants during the redesign.
@@ -80,11 +83,23 @@ test("atlas: resource failures remain failures, bounded retries and URLs remain 
 });
 
 test("atlas: every referenced CSS module class exists", async () => {
-  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-image.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx"].map((name) => read(`src/app/politici/${name}`)));
+  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-image.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx", "atlas-institutional-graph.tsx"].map((name) => read(`src/app/politici/${name}`)));
   const files = [graph, controls, diagram, facts, panel, page, ...extra];
   const combinedStyles = styles + await read("src/app/politici/atlas-enhancements.module.css");
   const classes = new Set([...combinedStyles.matchAll(/\.([A-Za-z][\w-]*)/g)].map((match) => match[1]));
   for (const text of files) for (const match of text.matchAll(/(?:styles|extra)\.([A-Za-z][\w]*)/g)) assert.ok(classes.has(match[1]), `Missing CSS class: ${match[1]}`);
+});
+
+test("atlas: institutional graph scope restores the radial overview map", () => {
+  assert.match(model, /id: "grafo"/);
+  assert.match(model, /label: "Grafo"/);
+  assert.match(graph, /InstitutionalGraph/);
+  assert.match(graph, /scope === "grafo"/);
+  assert.match(institutional, /Il Grafo Istituzionale/);
+  assert.match(institutional, /buildOverviewGeometry/);
+  assert.match(overview, /export function buildOverviewGeometry/);
+  assert.match(styles, /\.institutionalGraph/);
+  assert.match(styles, /\.graphBoard/);
 });
 
 

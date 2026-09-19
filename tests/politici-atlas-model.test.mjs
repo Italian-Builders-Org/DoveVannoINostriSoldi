@@ -3,6 +3,7 @@ import test from "node:test";
 import { makeMap } from "./fixtures/politici-atlas.mjs";
 import { atlasUrl, belongsToScope, defaultSelection, filteredPeople, initialsOf, isSafeExternalUrl, longDate, matchesRole, normalizeSearch, readAtlasState, searchAtlas, selectionPeople, validSelection } from "../src/app/politici/atlas-model.ts";
 import { adjacentSeat, allocateRows, buildChamberScene, buildSeatGrid, CHAMBER } from "../src/app/politici/graph-geometry.ts";
+import { buildOverviewGeometry, overviewAnchor } from "../src/app/politici/overview-geometry.ts";
 
 const map = makeMap();
 const state = readAtlasState(new URLSearchParams(), map).state;
@@ -12,6 +13,8 @@ test("default is Camera, all controls derive from the same state", () => {
   assert.equal(filteredPeople(map, state).length, 398);
   assert.equal(filteredPeople(map, { ...state, scope: "senato" }).length, 205);
   assert.equal(filteredPeople(map, { ...state, scope: "repubblica" }).length, map.people.length);
+  assert.equal(filteredPeople(map, { ...state, scope: "grafo" }).length, map.people.length);
+  assert.deepEqual(defaultSelection("grafo"), { kind: "overview" });
 });
 
 test("Camera filtering never leaks ministers from the other chamber", () => {
@@ -55,6 +58,9 @@ test("government deep links retain scope; cross-chamber groups resolve their own
   assert.equal(readAtlasState(new URLSearchParams("vista=governo&person=dep-3"), map).state.scope, "governo");
   assert.equal(readAtlasState(new URLSearchParams(`group=${map.groups.find((group) => group.chamberId === "senato").id}`), map).state.scope, "senato");
   assert.equal(readAtlasState(new URLSearchParams("istituzione=presidenza-repubblica"), map).state.scope, "repubblica");
+  assert.equal(readAtlasState(new URLSearchParams("vista=grafo"), map).state.scope, "grafo");
+  assert.equal(readAtlasState(new URLSearchParams("vista=grafo&person=gov-1"), map).state.scope, "grafo");
+  assert.equal(readAtlasState(new URLSearchParams("vista=grafo&istituzione=camera"), map).state.scope, "camera");
 });
 
 test("selection membership, presidency role, and filters remain typed", () => {
@@ -136,4 +142,22 @@ test("keyboard navigation excludes vacant seats and keeps focus in the chamber",
   for (const key of ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]) assert.ok(available.some((seat) => seat.id === adjacentSeat(seats, available[10].id, key)));
   assert.equal(adjacentSeat(seats, available[0].id, "Tab"), null);
   assert.equal(adjacentSeat([], "missing", "Home"), null);
+});
+
+test("institutional overview geometry stays deterministic and anchors hierarchy edges", () => {
+  const wide = buildOverviewGeometry(map, "wide");
+  const again = buildOverviewGeometry(map, "wide");
+  assert.equal(wide.width, 1200);
+  assert.equal(wide.headOfState?.personId, "pres-1");
+  assert.equal(wide.primeMinister?.personId, "gov-1");
+  assert.equal(wide.cards.length, 2);
+  assert.ok(wide.cards.every((card) => card.wedges.every((wedge) => wedge.seatCount > 0 && wedge.bandPath.includes("M "))));
+  assert.deepEqual(wide, again);
+  assert.ok(overviewAnchor("presidenza-repubblica", wide));
+  assert.ok(overviewAnchor("governo", wide));
+  assert.ok(overviewAnchor("camera", wide));
+  assert.equal(overviewAnchor("missing", wide), null);
+  const stacked = buildOverviewGeometry(map, "stacked");
+  assert.equal(stacked.width, 900);
+  assert.ok(stacked.height > wide.height);
 });

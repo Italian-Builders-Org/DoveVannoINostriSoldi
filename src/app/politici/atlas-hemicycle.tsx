@@ -3,20 +3,33 @@
 import { useId, useMemo, useRef, useState } from "react";
 import type { RepublicMap } from "@/lib/politici-repubblica";
 import type { GraphSelection } from "./atlas-model";
-import { adjacentSeat, buildChamberScene, CHAMBER, sectorBand, type ChamberId } from "./graph-geometry";
+import { adjacentSeat, buildChamberScene, CHAMBER, curve, sectorBand, type ChamberId } from "./graph-geometry";
+import type { NewsData, Resource } from "./atlas-data";
 import { PartySymbol } from "./atlas-symbol";
 import { SeatPreview, useSeatPreview } from "./atlas-seat-preview";
 import { Icon, Portrait } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: {
-  map: RepublicMap; chamberId: ChamberId; selection: GraphSelection; matchingIds: Set<string>; onSelect: (selection: GraphSelection) => void;
+export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect, news }: {
+  map: RepublicMap;
+  chamberId: ChamberId;
+  selection: GraphSelection;
+  matchingIds: Set<string>;
+  onSelect: (selection: GraphSelection) => void;
+  news?: Resource<NewsData>;
 }) {
   const id = useId();
   const preview = useSeatPreview();
   const scene = useMemo(() => buildChamberScene(map, chamberId), [map, chamberId]);
   const peopleById = useMemo(() => new Map(map.people.map((person) => [person.id, person])), [map.people]);
+  const seatByPerson = useMemo(() => {
+    const seats = new Map<string, (typeof scene.seats)[number]>();
+    for (const seat of scene.seats) {
+      if (seat.personId) seats.set(seat.personId, seat);
+    }
+    return seats;
+  }, [scene.seats]);
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -29,6 +42,12 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
   const visiblePerson = hoverPerson ?? (chosenPerson?.chamberId === chamberId ? chosenPerson : null);
   const activeGroup = selection.kind === "group" ? selection.id : null;
   const highlightedCount = scene.seats.filter((seat) => seat.personId && matchingIds.has(seat.personId)).length;
+  const connections = news?.status === "ready" ? news.data.connections : [];
+  const connectionById = useMemo(
+    () => new Map(connections.map((connection) => [connection.person.id, connection])),
+    [connections],
+  );
+  const selectedSeat = chosenPerson?.chamberId === chamberId ? seatByPerson.get(chosenPerson.id) ?? null : null;
 
   return <section className={styles.chamber} aria-label={`Emiciclo ${chamberId === "camera" ? "della Camera" : "del Senato"}`} data-chamber={chamberId}>
     <div className={`${styles.chamberHeading} ${extra.heading}`}>
@@ -78,7 +97,11 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
         {scene.seats.map((seat) => {
           const person = seat.personId ? peopleById.get(seat.personId) : null;
           const selected = selection.kind === "person" && selection.id === seat.personId;
-          const dim = person && (!matchingIds.has(person.id) || (activeGroup && activeGroup !== seat.groupId));
+          const connected = Boolean(person && connectionById.has(person.id));
+          const dim = person && (
+            (!matchingIds.has(person.id) || (activeGroup && activeGroup !== seat.groupId))
+            && !(selectedSeat && (selected || connected))
+          );
           const transform = `translate(${seat.x.toFixed(3)} ${seat.y.toFixed(3)}) rotate(${(90 - seat.angle * 180 / Math.PI).toFixed(3)})`;
           if (!person) return <g key={seat.id} transform={transform} className={styles.vacantSeat} aria-hidden="true">
             <rect x="-4.6" y="-5.6" width="9.2" height="11.2" rx="2.4" />
@@ -97,6 +120,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
             className={`${styles.seat} ${preview.preview?.personId === person.id ? extra.previewed : ""}`}
             data-family={seat.family ?? undefined}
             data-selected={selected ? "true" : undefined}
+            data-connected={connected ? "true" : undefined}
             data-dim={dim ? "true" : undefined}
             onClick={() => { preview.dismiss(); onSelect({ kind: "person", id: person.id }); }}
             onFocus={(event) => {
@@ -126,6 +150,19 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
             <path d="M-3.1-2.3h6.2" className={styles.seatBack} />
           </g>;
         })}
+        {selectedSeat && connections.length ? <g className={styles.newsLayer} aria-hidden="true">
+          {connections.map((connection) => {
+            const to = seatByPerson.get(connection.person.id);
+            if (!to) return null;
+            return <path
+              key={connection.person.id}
+              className={styles.newsLink}
+              d={curve({ x: selectedSeat.x, y: selectedSeat.y }, { x: to.x, y: to.y })}
+              style={{ strokeWidth: Math.min(3.5, 1.1 + connection.articleCount * 0.45) }}>
+              <title>{`${connection.person.name}: ${connection.articleCount} notizie in comune`}</title>
+            </path>;
+          })}
+        </g> : null}
       </svg>
     </div>
     {previewPerson ? <SeatPreview id={`${id}-preview`} state={preview} person={previewPerson} groupLabel={map.groups.find((group) => group.id === previewPerson.groupId)?.label ?? null} /> : null}
@@ -177,6 +214,10 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, onSelect }: 
         </button>
       </div>
     </div>
+    {selectedSeat && connections.length > 0 ? <p className={styles.connectionLegend} role="note">
+      <span aria-hidden="true" />
+      Co-citazioni nelle notizie · {connections.length} {connections.length === 1 ? "persona" : "persone"} sulla mappa
+    </p> : null}
     <div className={styles.legendHeading}>
       <h3>Gruppi parlamentari</h3>
       <span>{highlightedCount}/{scene.members} corrispondono ai filtri</span>

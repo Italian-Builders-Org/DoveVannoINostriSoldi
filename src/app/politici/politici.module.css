@@ -863,3 +863,92 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.convictionsView {
+  display: grid;
+  gap: 14px;
+  padding: 8px 4px 28px;
+}
+
+.convictionList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.convictionRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
+  text-align: left;
+  border: 1px solid var(--atlas-line);
+  border-radius: 14px;
+  background: var(--atlas-raised);
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 160ms var(--atlas-ease), background 160ms var(--atlas-ease);
+}
+
+.convictionRow:hover:not(:disabled),
+.convictionRow:focus-visible {
+  border-color: color-mix(in srgb, var(--atlas-accent) 45%, var(--atlas-line));
+  background: color-mix(in srgb, var(--atlas-accent-soft) 55%, var(--atlas-raised));
+}
+
+.convictionRow[data-selected="true"] {
+  border-color: var(--atlas-accent);
+}
+
+.convictionRow:disabled {
+  cursor: default;
+  opacity: 0.92;
+}
+
+.convictionInitials {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--atlas-faint);
+  color: var(--atlas-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.convictionBody {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.convictionName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.convictionName strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.convictionMeta,
+.convictionTitle,
+.convictionOffence {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--atlas-muted);
+}
+
+.convictionTitle {
+  color: var(--atlas-ink);
+  font-weight: 550;
+}
+

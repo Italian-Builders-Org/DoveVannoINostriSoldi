@@ -14,7 +14,9 @@ test("default is Camera, all controls derive from the same state", () => {
   assert.equal(filteredPeople(map, { ...state, scope: "senato" }).length, 205);
   assert.equal(filteredPeople(map, { ...state, scope: "repubblica" }).length, map.people.length);
   assert.equal(filteredPeople(map, { ...state, scope: "grafo" }).length, map.people.length);
+  assert.equal(filteredPeople(map, { ...state, scope: "condanne" }).length, map.people.length);
   assert.deepEqual(defaultSelection("grafo"), { kind: "overview" });
+  assert.deepEqual(defaultSelection("condanne"), { kind: "overview" });
 });
 
 test("Camera filtering never leaks ministers from the other chamber", () => {
@@ -61,6 +63,8 @@ test("government deep links retain scope; cross-chamber groups resolve their own
   assert.equal(readAtlasState(new URLSearchParams("vista=grafo"), map).state.scope, "grafo");
   assert.equal(readAtlasState(new URLSearchParams("vista=grafo&person=gov-1"), map).state.scope, "grafo");
   assert.equal(readAtlasState(new URLSearchParams("vista=grafo&istituzione=camera"), map).state.scope, "camera");
+  assert.equal(readAtlasState(new URLSearchParams("vista=condanne"), map).state.scope, "condanne");
+  assert.equal(readAtlasState(new URLSearchParams("vista=condanne&person=dep-2"), map).state.scope, "condanne");
 });
 
 test("selection membership, presidency role, and filters remain typed", () => {

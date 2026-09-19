@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { getParlamentoGiudiziario, graphPeopleWithDocumentedCases } from "@/lib/parlamento-giudiziario";
+import { getParlamentoGiudiziario, documentedConvictions, graphPeopleWithDocumentedCases, judicialCoverageNote } from "@/lib/parlamento-giudiziario";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import { readAtlasState, longDate } from "./atlas-model";
@@ -10,7 +10,7 @@ import styles from "./politici.module.css";
 
 export const metadata: Metadata = {
   title: "Atlante della politica italiana",
-  description: "Esplora Camera, Senato, Governo, Repubblica e il Grafo Istituzionale: emicicli interattivi, persone, incarichi, gruppi, partecipazione al voto e fonti ufficiali.",
+  description: "Esplora Camera, Senato, Governo, Repubblica, Grafo Istituzionale e Condanne documentate: emicicli interattivi, persone, incarichi, gruppi e fonti ufficiali.",
 };
 
 type PoliticiPageProps = { searchParams: Promise<Record<string, string | string[] | undefined>>; };
@@ -20,6 +20,8 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
   const map = getRepubblicaMap();
   const judicial = getParlamentoGiudiziario();
   const judicialPersonIds = graphPeopleWithDocumentedCases();
+  const convictions = documentedConvictions();
+  const convictionsNote = judicialCoverageNote();
   const params = await searchParams;
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
@@ -82,7 +84,9 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
         initialState={parsed.state}
         invalidSelection={parsed.invalidSelection}
         initialDetailsOpen={!parsed.invalidSelection && ["person", "group", "deputy"].some((key) => query.has(key))}
-        judicialPersonIds={judicialPersonIds} />
+        judicialPersonIds={judicialPersonIds}
+        convictions={convictions}
+        convictionsNote={convictionsNote} />
     </div>
     <noscript>
       <p className={styles.noScript}>Per esplorare persone e gruppi serve JavaScript. Le fonti ufficiali restano disponibili in «Fonti e limiti».</p>

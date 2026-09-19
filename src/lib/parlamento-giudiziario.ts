@@ -155,3 +155,22 @@ export function judicialCoverageNote(): string {
     "non ne ha trovati, non che non ne esistano."
   );
 }
+
+const CONVICTION_BUCKETS = new Set(["condannato", "contabile"]);
+
+/**
+ * Documented convictions for the atlante list: penal and Court of Auditors
+ * convictions only. Non-conviction outcomes stay out of this view so the list
+ * never reads as a full judicial dossier.
+ */
+export function documentedConvictions(): GiudiziarioCase[] {
+  return getParlamentoGiudiziario()
+    .cases.filter((item) => CONVICTION_BUCKETS.has(item.outcomeBucket))
+    .sort(
+      (left, right) =>
+        OUTCOME_ORDER[left.outcomeBucket] - OUTCOME_ORDER[right.outcomeBucket] ||
+        left.displayName.localeCompare(right.displayName, "it") ||
+        right.statusAsOf.localeCompare(left.statusAsOf) ||
+        left.caseId.localeCompare(right.caseId),
+    );
+}

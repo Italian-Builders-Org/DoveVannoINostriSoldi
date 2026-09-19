@@ -5,6 +5,7 @@ import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
 import { AtlasInspector, AtlasSearch } from "./atlas-controls";
 import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
 import { Hemicycle } from "./atlas-hemicycle";
+import { ConvictionsDirectory } from "./atlas-condanne";
 import { InstitutionalGraph } from "./atlas-institutional-graph";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
@@ -12,6 +13,7 @@ import { atlasUrl, defaultSelection, filteredPeople, longDate, readAtlasState, R
 import { buildChamberScene, CHAMBER } from "./graph-geometry";
 import { RepubblicaPanel } from "./repubblica-panel";
 import { useAtlasData } from "./use-atlas-data";
+import type { GiudiziarioCase } from "@/lib/data/parlamento-giudiziario-contract";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
@@ -21,8 +23,14 @@ const subscribeReady = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 
-export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false, judicialPersonIds = [] }: {
-  map: RepublicMap; initialState: AtlasState; invalidSelection?: boolean; initialDetailsOpen?: boolean; judicialPersonIds?: readonly string[];
+export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false, judicialPersonIds = [], convictions = [], convictionsNote = "" }: {
+  map: RepublicMap;
+  initialState: AtlasState;
+  invalidSelection?: boolean;
+  initialDetailsOpen?: boolean;
+  judicialPersonIds?: readonly string[];
+  convictions?: readonly GiudiziarioCase[];
+  convictionsNote?: string;
 }) {
   const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
   const rail = useAtlasRail();
@@ -185,8 +193,15 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
           </span>
           <span>Apri scheda <Icon name="arrow" size={16} /></span>
         </button>
-        {!people.length ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica o incarico.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
-          : state.mode === "elenco" ? <MemberDirectory
+        {!people.length && state.scope !== "condanne" ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica o incarico.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
+          : state.scope === "condanne" ? <ConvictionsDirectory
+            cases={convictions}
+            coverageNote={convictionsNote}
+            map={map}
+            query={state.query}
+            selectedId={selectedId}
+            onSelect={select} />
+            : state.mode === "elenco" ? <MemberDirectory
             key={`${state.scope}:${state.query}:${state.family}:${state.role}`}
             people={people}
             map={map}

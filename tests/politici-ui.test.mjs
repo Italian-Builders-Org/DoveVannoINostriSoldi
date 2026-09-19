@@ -93,8 +93,11 @@ test("atlas: every referenced CSS module class exists", async () => {
 test("atlas: institutional graph scope restores the radial overview map", () => {
   assert.match(model, /id: "grafo"/);
   assert.match(model, /label: "Grafo"/);
+  assert.match(model, /label: "Condanne"/);
   assert.match(graph, /InstitutionalGraph/);
+  assert.match(graph, /ConvictionsDirectory/);
   assert.match(graph, /scope === "grafo"/);
+  assert.match(graph, /scope === "condanne"/);
   assert.match(institutional, /Il Grafo Istituzionale/);
   assert.match(institutional, /buildOverviewGeometry/);
   assert.match(overview, /export function buildOverviewGeometry/);

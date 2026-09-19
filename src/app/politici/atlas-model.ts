@@ -5,7 +5,7 @@ export type GraphSelection =
   | { kind: "person"; id: string; }
   | { kind: "group"; id: string; }
   | { kind: "institution"; id: string; };
-export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo";
+export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo" | "condanne";
 export type AtlasMode = "mappa" | "elenco";
 export type RoleFilter = "tutti" | "governo" | "presidenza" | "capigruppo";
 export type AtlasState = {
@@ -24,6 +24,7 @@ export const SCOPES: ReadonlyArray<{ id: AtlasScope; label: string; }> = [
   { id: "governo", label: "Governo" },
   { id: "repubblica", label: "Repubblica" },
   { id: "grafo", label: "Grafo" },
+  { id: "condanne", label: "Condanne" },
 ];
 export const ROLES: ReadonlyArray<{ id: RoleFilter; label: string; }> = [
   { id: "tutti", label: "Tutti gli incarichi" },
@@ -66,14 +67,22 @@ export function isSafeExternalUrl(value: unknown): value is string {
 }
 
 export function defaultSelection(scope: AtlasScope): GraphSelection {
-  return scope === "repubblica" || scope === "grafo" ? { kind: "overview" } : { kind: "institution", id: scope };
+  return scope === "repubblica" || scope === "grafo" || scope === "condanne"
+    ? { kind: "overview" }
+    : { kind: "institution", id: scope };
 }
 
 export function scopeForSelection(selection: GraphSelection, map: RepublicMap, current: AtlasScope = "camera"): AtlasScope {
-  if (selection.kind === "overview") return current === "grafo" ? "grafo" : "repubblica";
+  if (selection.kind === "overview") {
+    if (current === "grafo") return "grafo";
+    if (current === "condanne") return "condanne";
+    return "repubblica";
+  }
   if (selection.kind === "institution") {
     if (selection.id === "camera" || selection.id === "senato" || selection.id === "governo") return selection.id;
-    return current === "grafo" ? "grafo" : "repubblica";
+    if (current === "grafo") return "grafo";
+    if (current === "condanne") return "condanne";
+    return "repubblica";
   }
   if (selection.kind === "group") {
     return map.groups.find((group) => group.id === selection.id)?.chamberId ?? current;
@@ -81,6 +90,7 @@ export function scopeForSelection(selection: GraphSelection, map: RepublicMap, c
   const person = map.people.find((candidate) => candidate.id === selection.id);
   if (!person) return current;
   if (current === "grafo" && (person.government || person.roleKind === "capo-stato")) return "grafo";
+  if (current === "condanne") return "condanne";
   if (person.government && current === "governo") return "governo";
   return person.chamberId ?? (person.government ? "governo" : current === "grafo" ? "grafo" : "repubblica");
 }
@@ -135,7 +145,7 @@ export function atlasUrl(href: string, state: AtlasState): string {
 }
 
 export function belongsToScope(person: RepublicMapPerson, scope: AtlasScope): boolean {
-  if (scope === "repubblica" || scope === "grafo") return true;
+  if (scope === "repubblica" || scope === "grafo" || scope === "condanne") return true;
   if (scope === "governo") return person.government;
   return person.chamberId === scope;
 }

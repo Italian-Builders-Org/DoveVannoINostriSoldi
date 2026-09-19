@@ -16,7 +16,7 @@ CACHE = args.input_dir
 sys.path.insert(0, str(ROOT / 'scripts/etl'))
 import anac_entity_procurement_coverage as base
 
-spec = json.loads((ROOT / 'scripts/etl/specs/anac-entity-procurement.source.json').read_text())
+spec = json.loads((ROOT / 'scripts/etl/specs/anac-entity-procurement.source.json').read_text(encoding="utf-8"))
 station = CACHE / 'stations.zip'
 base.verify_locked_input(station, base.input_lock_from_spec(spec['inputs']['stations'], base.STATION_HEADERS))
 temporary = tempfile.TemporaryDirectory()

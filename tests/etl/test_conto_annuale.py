@@ -15,7 +15,7 @@ import conto_annuale as etl
 class ContoAnnualeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.spec = json.loads(etl.SPEC.read_text())
+        cls.spec = json.loads(etl.SPEC.read_text(encoding="utf-8"))
 
     def sample(self, index=0):
         source = copy.deepcopy(self.spec['sources'][index])
@@ -111,7 +111,7 @@ class ContoAnnualeTests(unittest.TestCase):
                 entries.append(entry)
                 (rows_dir / etl.corpus.row_chunk_name(item['id'], 0)).write_bytes(etl.corpus.canonical_gzip(published))
                 (receipts_dir / f"{item['id']}.receipt.json").write_bytes(etl.corpus.canonical_json(receipt))
-            (rows_dir.parent / 'catalog.json').write_text(json.dumps({'datasets': entries}))
+            (rows_dir.parent / 'catalog.json').write_text(json.dumps({'datasets': entries}), encoding="utf-8")
             with patch.object(etl, 'ROOT', root), patch.object(etl.corpus, 'load_spec', return_value=(corpus_spec, items)):
                 etl.check_committed(payloads)
                 chunk = rows_dir / etl.corpus.row_chunk_name(items[0]['id'], 0)
@@ -131,7 +131,7 @@ class ContoAnnualeTests(unittest.TestCase):
                 receipt_path = receipts_dir / f"{items[0]['id']}.receipt.json"
                 receipt = json.loads(receipt_path.read_bytes())
                 receipt['publication']['redactions'] = 1
-                receipt_path.write_text(json.dumps(receipt))
+                receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
                 with self.assertRaisesRegex(etl.SourceError, 'ricevuta'):
                     etl.check_committed(payloads)
 

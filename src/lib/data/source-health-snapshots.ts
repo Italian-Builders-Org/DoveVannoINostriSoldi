@@ -27,6 +27,10 @@ import {
   inlVigilanzaData,
   inlVigilanzaMetadata,
 } from "@/lib/inl-vigilanza-snapshot";
+import {
+  aifaSpesaConsumiData,
+  aifaSpesaConsumiMetadata,
+} from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
@@ -37,6 +41,10 @@ import { istatCofogData, istatCofogMetadata } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaData, istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData, istatPovertaMetadata } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData, istatPovertaRelativaMetadata } from "@/lib/istat-poverta-relativa-snapshot";
+import {
+  istatPovertaSogliaAssolutaData,
+  istatPovertaSogliaAssolutaMetadata,
+} from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -45,6 +53,9 @@ import { istatBesRelazioniData, istatBesRelazioniMetadata } from "@/lib/istat-be
 import { istatBesPoliticaData, istatBesPoliticaMetadata } from "@/lib/istat-bes-politica-snapshot";
 import { istatBesSicurezzaData, istatBesSicurezzaMetadata } from "@/lib/istat-bes-sicurezza-snapshot";
 import { istatBesPaesaggioData, istatBesPaesaggioMetadata } from "@/lib/istat-bes-paesaggio-snapshot";
+import { istatBesServiziData, istatBesServiziMetadata } from "@/lib/istat-bes-servizi-snapshot";
+import { istatBesAmbienteData, istatBesAmbienteMetadata } from "@/lib/istat-bes-ambiente-snapshot";
+import { istatBesInnovazioneData, istatBesInnovazioneMetadata } from "@/lib/istat-bes-innovazione-snapshot";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import pnrrProjectsMetadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { PNRR_CHILDCARE_SOURCE } from "@/lib/data/pnrr-childcare-source";
@@ -439,6 +450,19 @@ function snapshotManagedInlVigilanza(): SourceHealth {
   };
 }
 
+function snapshotManagedAifaSpesaConsumi(): SourceHealth {
+  const artifact = aifaSpesaConsumiMetadata.integrity.dataArtifact;
+  const { publishedRows, regions } = aifaSpesaConsumiData.coverage;
+  return {
+    ...baseHealth("aifa-spesa-consumi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("aifa-spesa-consumi", aifaSpesaConsumiMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · spesa e consumo farmaci ${aifaSpesaConsumiData.period.from}-${aifaSpesaConsumiData.period.to} · ${publishedRows.toLocaleString("it-IT")} righe aggregate su ${regions} territori · tracciabilità e convenzionata distinte · ${artifact.bytes.toLocaleString("it-IT")} byte.`,
+    recordCount: publishedRows,
+  };
+}
+
 function snapshotManagedInpsCigFondiSolidarieta(): SourceHealth {
   const artifact = inpsCigFondiSolidarietaMetadata.integrity.dataArtifact;
   return {
@@ -558,6 +582,20 @@ function snapshotManagedIstatPovertaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaSogliaAssoluta(): SourceHealth {
+  const { source } = istatPovertaSogliaAssolutaMetadata;
+  const asset = source.assets.csv;
+  const nullCount = istatPovertaSogliaAssolutaData.observations.filter((row) => row.valueHundredths === null).length;
+  return {
+    ...baseHealth("istat-poverta-soglia-assoluta"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-soglia-assoluta", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · soglia monetaria di povertà assoluta ${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaAssolutaData.observations.length.toLocaleString("it-IT")} osservazioni di cui ${nullCount.toLocaleString("it-IT")} null · ${istatPovertaSogliaAssolutaData.territories.length} territori · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
+    recordCount: istatPovertaSogliaAssolutaData.observations.length,
+  };
+}
+
 function snapshotManagedIstatBesEconomico(): SourceHealth {
   const { source, observedAt } = istatBesMetadata;
   const asset = Object.values(source.assets)[0];
@@ -656,6 +694,42 @@ function snapshotManagedIstatBesPaesaggio(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatBesServizi(): SourceHealth {
+  const { source } = istatBesServiziMetadata;
+  return {
+    ...baseHealth("istat-bes-servizi"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-servizi", source.publicationDate),
+    latencyMs: null,
+    detail: "Otto indicatori BES_12 Qualità dei servizi, edizione 2025; 15.858 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2024; 76 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesServiziData.observations.length,
+  };
+}
+
+function snapshotManagedIstatBesAmbiente(): SourceHealth {
+  const { source } = istatBesAmbienteMetadata;
+  return {
+    ...baseHealth("istat-bes-ambiente"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-ambiente", source.publicationDate),
+    latencyMs: null,
+    detail: "Undici indicatori BES_10 Ambiente, edizione 2025; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 412 celle ignote. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesAmbienteData.observations.length,
+  };
+}
+
+function snapshotManagedIstatBesInnovazione(): SourceHealth {
+  const { source } = istatBesInnovazioneMetadata;
+  return {
+    ...baseHealth("istat-bes-innovazione"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-bes-innovazione", source.publicationDate),
+    latencyMs: null,
+    detail: "Quattro indicatori BES_11 Innovazione, ricerca e creatività, edizione 2025; 5.413 osservazioni e 135 territori, di cui 107 province. Periodi distinti fra 2004 e 2023; nessuna cella n/g. Solo SEX=T; 11RIC025 firmato; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    recordCount: istatBesInnovazioneData.observations.length,
+  };
+}
+
 function snapshotManagedGovernmentScorecard(
   sourceId: "ameco" | "governi-presidenza",
 ): SourceHealth {
@@ -703,6 +777,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-epea": snapshotManagedIstatEpea,
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
+  "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
@@ -711,11 +786,15 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-bes-politica": snapshotManagedIstatBesPolitica,
   "istat-bes-sicurezza": snapshotManagedIstatBesSicurezza,
   "istat-bes-paesaggio": snapshotManagedIstatBesPaesaggio,
+  "istat-bes-servizi": snapshotManagedIstatBesServizi,
+  "istat-bes-ambiente": snapshotManagedIstatBesAmbiente,
+  "istat-bes-innovazione": snapshotManagedIstatBesInnovazione,
   "inps-naspi": snapshotManagedInpsNaspi,
   "inps-assegno-unico": snapshotManagedInpsAssegnoUnico,
   "inps-integrazioni-salariali": snapshotManagedInpsIntegrazioniSalariali,
   "inps-cig-fondi-solidarieta": snapshotManagedInpsCigFondiSolidarieta,
   "inl-vigilanza": snapshotManagedInlVigilanza,
+  "aifa-spesa-consumi": snapshotManagedAifaSpesaConsumi,
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,

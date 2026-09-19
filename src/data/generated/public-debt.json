@@ -8,33 +8,33 @@
       "landingUrl": "https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html",
       "bdsUrl": "https://www.bancaditalia.it/statistiche/basi-dati/bds/",
       "termsUrl": "https://www.bancaditalia.it/statistiche/condizioni-utilizzo/",
-      "retrievedAt": "2026-08-24T09:41:59Z",
+      "retrievedAt": "2026-09-17T13:16:17Z",
       "cadence": "mensile",
       "expectedLagDays": 45,
       "cubes": [
         {
           "id": "TCCE0125",
           "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0125",
-          "bytes": 23481,
-          "sha256": "dc6e8f2254ab155dc5b912a5cca2140fdaaad1c7b8326a39c7c12a5dc024db73"
+          "bytes": 23510,
+          "sha256": "48fff64d744b4e8f69be2a66c668a097475cbe46e7cae818736a2979e1913dc4"
         },
         {
           "id": "TCCE0175",
           "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0175",
-          "bytes": 38487,
-          "sha256": "1dd97196dce00770118a9a0a18d251182a9bcbd20b6a6517c057205384341eab"
+          "bytes": 38533,
+          "sha256": "8ea317831b15764aa217eb3e3d00444b676d6d2aab6d84d1f0143dce1e9430c2"
         },
         {
           "id": "TCCE0200",
           "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0200",
-          "bytes": 46809,
-          "sha256": "884cd2f2aa47f5cccc2e052be9784b6e083fecea730b0817daef017bdc4a44de"
+          "bytes": 46887,
+          "sha256": "ab1281ba559e5da4e477344da110c6584c0f2eff03deb9b3711c903e54265920"
         },
         {
           "id": "TCCE0325",
           "exportUrl": "https://a2a.bancaditalia.it/infostat/dataservices/export/IT/CSV/ALL/CUBE/BANKITALIA/DIFF/TCCE0325",
-          "bytes": 24909,
-          "sha256": "92cef6e249400327ea22a8f34c3cb02e8cbb739f11f40e35c7ed88e029f63e71"
+          "bytes": 24941,
+          "sha256": "b7db62becbcedac9cafd4153a3546d7149839981c99f75d220eaa6fb8bf6ff47"
         }
       ]
     },
@@ -54,15 +54,11 @@
     }
   },
   "stock": {
-    "referenceDate": "2026-06-30",
-    "totalCents": 320724730000000,
-    "previousMonthCents": 318106340000000,
-    "changeCents": 2618390000000,
+    "referenceDate": "2026-07-31",
+    "totalCents": 320583460000000,
+    "previousMonthCents": 320733100000000,
+    "changeCents": -149640000000,
     "history": [
-      {
-        "referenceDate": "2025-06-30",
-        "totalCents": 307136690000000
-      },
       {
         "referenceDate": "2025-07-31",
         "totalCents": 305611340000000
@@ -105,71 +101,75 @@
       },
       {
         "referenceDate": "2026-05-31",
-        "totalCents": 318106340000000
+        "totalCents": 318109660000000
       },
       {
         "referenceDate": "2026-06-30",
-        "totalCents": 320724730000000
+        "totalCents": 320733100000000
+      },
+      {
+        "referenceDate": "2026-07-31",
+        "totalCents": 320583460000000
       }
     ],
     "instruments": {
-      "currencyAndDepositsCents": 18652690000000,
-      "securitiesCents": 269649030000000,
-      "loansAndOtherLiabilitiesCents": 32423010000000
+      "currencyAndDepositsCents": 18192450000000,
+      "securitiesCents": 270060620000000,
+      "loansAndOtherLiabilitiesCents": 32330390000000
     }
   },
   "change": {
-    "referenceDate": "2026-06-30",
-    "borrowingRequirementCents": 1325920000000,
-    "debtInstrumentTransactionsCents": 2303520000000,
-    "rawLiquidityChangeCents": -977600000000,
-    "liquidityContributionCents": 977600000000,
-    "otherEffectsCents": 314870000000,
-    "netShortTermSecuritiesCents": 512560000000,
-    "netMediumLongTermSecuritiesCents": 3178690000000
+    "referenceDate": "2026-07-31",
+    "borrowingRequirementCents": -1606200000000,
+    "debtInstrumentTransactionsCents": -202880000000,
+    "rawLiquidityChangeCents": -1403320000000,
+    "liquidityContributionCents": 1403320000000,
+    "otherEffectsCents": 53240000000,
+    "netShortTermSecuritiesCents": -807300000000,
+    "netMediumLongTermSecuritiesCents": 1163650000000
   },
   "holders": {
-    "referenceDate": "2026-05-31",
-    "totalCents": 318106340000000,
+    "referenceDate": "2026-06-30",
+    "totalCents": 320733100000000,
     "sectors": [
       {
         "id": "bankitalia",
         "label": "Banca d'Italia",
-        "amountCents": 54629110000000,
-        "shareBasisPoints": 1720
+        "amountCents": 53704410000000,
+        "shareBasisPoints": 1670
       },
       {
         "id": "other-mfi",
         "label": "Altre istituzioni finanziarie monetarie",
-        "amountCents": 64589320000000,
-        "shareBasisPoints": 2030
+        "amountCents": 64699350000000,
+        "shareBasisPoints": 2020
       },
       {
         "id": "other-financial",
         "label": "Altre istituzioni finanziarie",
-        "amountCents": 38625100000000,
-        "shareBasisPoints": 1210
+        "amountCents": 39580280000000,
+        "shareBasisPoints": 1230
       },
       {
         "id": "other-residents",
         "label": "Altri residenti",
-        "amountCents": 46196500000000,
-        "shareBasisPoints": 1450
+        "amountCents": 46851780000000,
+        "shareBasisPoints": 1460
       },
       {
         "id": "non-residents",
         "label": "Non residenti",
-        "amountCents": 114066310000000,
-        "shareBasisPoints": 3590
+        "amountCents": 115897280000000,
+        "shareBasisPoints": 3610
       }
     ]
   },
   "residualMaturity": {
-    "referenceDate": "2026-06-30",
-    "totalCents": 320724730000000,
-    "upToOneYearCents": 58390520000000,
-    "oneToFiveYearsCents": 103271970000000,
-    "overFiveYearsCents": 159062240000000,
+    "referenceDate": "2026-07-31",
+    "totalCents": 320583460000000,
+    "upToOneYearCents": 56880950000000,
+    "oneToFiveYearsCents": 104799010000000,
+    "overFiveYearsCents": 158903490000000,
     "averageYears": 7.9
   },
   "annualInterest": {

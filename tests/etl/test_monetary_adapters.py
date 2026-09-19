@@ -94,7 +94,7 @@ class MonetaryAdapterTests(unittest.TestCase):
                     ssn.parse_amount_cents(raw, "Importo riga 7")
 
     def test_existing_opencivitas_monetary_cells_retain_exact_cents(self):
-        snapshot = json.loads((ROOT / "src/data/generated/opencivitas-2022.json").read_text())
+        snapshot = json.loads((ROOT / "src/data/generated/opencivitas-2022.json").read_text(encoding="utf-8"))
         columns = [index for index, name in enumerate(snapshot["municipalityColumns"]) if name.endswith("Cents")]
         for row in snapshot["municipalityRows"]:
             for index in columns:

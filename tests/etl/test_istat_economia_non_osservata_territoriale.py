@@ -18,7 +18,7 @@ import istat_economia_non_osservata_territoriale as noe
 class IstatEconomiaNonOsservataTerritorialeTests(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.spec = json.loads(noe.SPEC.read_text())
+        cls.spec = json.loads(noe.SPEC.read_text(encoding="utf-8"))
         cls.payload = noe.verified_source(cls.spec)
 
     def rows(self, payload: bytes) -> list[dict[str, str]]:

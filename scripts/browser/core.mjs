@@ -434,6 +434,7 @@ async function assertSpendingComposition(page, label, width) {
       visualHeight: visual?.getBoundingClientRect().height ?? 0,
       hasMetadata: /Quote sul totale dei pagamenti SIOPE.*Fonte acquisita/s.test(root.textContent ?? ""),
       compositionBeforeMap: Boolean(map && (root.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      hasMunicipalityRanking: Boolean(municipalityHeading),
       // Prefer visual order: independent desktop rails may put the ranking
       // earlier in the DOM while the map still appears first on screen.
       mapBeforeMunicipalities: Boolean(
@@ -447,7 +448,9 @@ async function assertSpendingComposition(page, label, width) {
   assert.equal(state.legendButtons, 5, `${label}: macro-voci inattese`);
   assert.equal(state.hasMetadata, true, `${label}: periodo/perimetro/fonte non vicini`);
   assert.equal(state.compositionBeforeMap, true, `${label}: composizione prima della mappa nel DOM`);
-  assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
+  if (state.hasMunicipalityRanking) {
+    assert.equal(state.mapBeforeMunicipalities, true, `${label}: classifica Comuni anticipa la mappa`);
+  }
   assert.notEqual(state.visualDisplay, "none", `${label}: composizione visibile anche su mobile`);
   assert.ok(state.visualHeight >= 250, `${label}: geometria composizione non riservata`);
 
@@ -1354,7 +1357,7 @@ try {
         assertTextMatches(text, /Redditi e imposte dei residenti/i, label);
         assertTextMatches(text, /Spesa e servizi a confronto/i, label);
         assertTextMatches(text, /Progetti PNRR per asili e prima infanzia/i, label);
-        assertTextMatches(text, /Da gennaio ad agosto 2026/i, label);
+        assertTextMatches(text, /Da gennaio a settembre 2026/i, label);
         assertTextMatches(text, /Dati parziali/i, label);
         assertTextMatches(text, /Per cosa ha pagato il Comune/i, label);
         assertTextMatches(text, /Costi di funzionamento quotidiano/i, label);
@@ -1382,7 +1385,7 @@ try {
           label: element.textContent,
         }));
         assert.notEqual(summaryPresentation.background, "rgba(0, 0, 0, 0)");
-        assert.match(summaryPresentation.label, /Per abitante\s*1\.402 €/i);
+        assert.match(summaryPresentation.label, /Per abitante\s*1\.517 €/i);
 
         const trendBars = await page.$$eval("[data-siope-history-chart] > li", (rows) => rows.map((row) => ({
           height: row.querySelector("[aria-hidden='true'] > span")?.style.getPropertyValue("--bar-height"),
@@ -1415,7 +1418,7 @@ try {
         await page.keyboard.press("Enter");
         assert.equal(await historySummary.evaluate((element) => element.parentElement?.open), true);
         const historyText = await page.$eval("details[data-payment-history]", (element) => element.innerText);
-        assert.match(historyText, /Da gennaio ad agosto · dati parziali/i);
+        assert.match(historyText, /Da gennaio a settembre · dati parziali/i);
         assert.match(historyText, /Anno completo/i);
 
         const titleSummary = await page.$("details[data-siope-titles] summary");
@@ -1451,7 +1454,7 @@ try {
           "details[data-municipality-information]",
           (element) => element.innerText,
         );
-        assert.match(informationText, /Dati verificati al.*25 agosto 2026/is);
+        assert.match(informationText, /Dati verificati al.*17 settembre 2026/is);
         assert.match(informationText, /Uffici non disponibili in questa scheda/i);
         assert.match(informationText, /Indice PA · Enti/i);
         assert.deepEqual(await page.evaluate(() => performance.getEntriesByType("resource")

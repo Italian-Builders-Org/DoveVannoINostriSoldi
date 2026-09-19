@@ -1,6 +1,10 @@
 /**
  * Primary navigation and footer sitemap. One source so header submenus and the
  * footer map stay aligned.
+ *
+ * The immersive map also lives on politici.dovevannoinostrisoldi.com (see
+ * PUBLIC_POLITICI_URL; root rewrite in src/proxy.ts). Nav keeps the same-origin
+ * /politici path so in-app menus and browser tests stay on this host.
  */
 
 export type NavLink = Readonly<{
@@ -135,10 +139,11 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/istituzioni",
     label: "Istituzioni",
     icon: "institutions",
-    aliases: ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
+    aliases: ["/parlamento", "/politici", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"],
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
+      { href: "/politici", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
       { href: "/ministeri", label: "Ministeri" },
@@ -296,6 +301,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Istituzioni",
     links: [
       { href: "/istituzioni", label: "Panoramica" },
+      { href: "/politici", label: "Mappa della politica" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },

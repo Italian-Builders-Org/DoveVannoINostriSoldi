@@ -61,6 +61,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-poverta-relativa": [],
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "istat-poverta-soglia-assoluta": [],
+  // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-bes-economico": [],
   "istat-bes-salute": [],
   "istat-bes-istruzione": [],
@@ -69,6 +71,9 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "istat-bes-politica": [],
   "istat-bes-sicurezza": [],
   "istat-bes-paesaggio": [],
+  "istat-bes-servizi": [],
+  "istat-bes-ambiente": [],
+  "istat-bes-innovazione": [],
   // Snapshot-only: le risposte SDMX-ML sono acquisite e vincolate dall'ETL, mai scaricate a runtime.
   "inps-naspi": [],
   // Snapshot-only: i CSV AUU sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
@@ -79,6 +84,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "inps-cig-fondi-solidarieta": [],
   // Snapshot-only: il PDF INL è acquisito e vincolato dall'ETL, mai scaricato a runtime.
   "inl-vigilanza": [],
+  // Snapshot-only: i quattro CSV annuali AIFA sono acquisiti e vincolati dall'ETL.
+  "aifa-spesa-consumi": [],
   // Snapshot-only: i CSV sono acquisiti e vincolati dall'ETL, mai scaricati a runtime.
   "mef-irpef-dettaglio": [],
   // Snapshot-only: i CSV IVA sono acquisiti e vincolati dall'ETL.

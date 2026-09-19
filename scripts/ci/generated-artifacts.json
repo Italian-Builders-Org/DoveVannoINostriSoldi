@@ -671,6 +671,58 @@
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },
     {
+      "id": "opencivitas-2015",
+      "owner": "OpenCivitas municipal 2015 FC20TOT",
+      "files": [
+        "src/data/generated/opencivitas-2015.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2015_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2015_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2015-contract.test.mjs",
+        "tests/opencivitas-2015-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2015_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC20TOT 2015 (versione 2) vincolati per byte/SHA-256 nella spec e in issue 282. Il CSV e' cp1252 con punto decimale, dichiarati nel lock e non dedotti. Contratto distinto dalle annualita' 2016-2022. Join di 6664 Comuni RSO; i 30 aggregati sovracomunali sono esclusi. Il fabbisogno riproporziona sul totale nazionale della spesa storica: l'invariante e' vincolata nella spec, la differenza aggregata non e' un risultato. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2015.source.json"
+    },
+    {
+      "id": "opencivitas-2016",
+      "owner": "OpenCivitas municipal 2016 FC30TOT",
+      "files": [
+        "src/data/generated/opencivitas-2016.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2016_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2016_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2016-contract.test.mjs",
+        "tests/opencivitas-2016-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2016_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC30TOT 2016 (versione 1) vincolati per byte/SHA-256 nella spec e in issue 537. Il CSV e' cp1252 con punto decimale, dichiarati nel lock e non dedotti. Contratto distinto dalle altre annualita'. Join di 6647 Comuni RSO; i 30 aggregati sovracomunali sono esclusi. Il fabbisogno riproporziona sul totale nazionale della spesa storica: l'invariante e' vincolata nella spec, la differenza aggregata non e' un risultato. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2016.source.json"
+    },
+    {
       "id": "opencivitas-2017",
       "owner": "OpenCivitas municipal 2017 FC40TOT",
       "files": [
@@ -721,6 +773,32 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC50TOT 2018 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019, FC70TOT 2021 e FC80TOT 2022. Join di 6606 Comuni RSO; aggregati esclusi. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2018.source.json"
+    },
+    {
+      "id": "opencivitas-2022-rifiuti",
+      "owner": "OpenCivitas municipal 2022 FC80RIFIUTI",
+      "files": [
+        "src/data/generated/opencivitas-2022-rifiuti.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_rifiuti_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-rifiuti-contract.test.mjs",
+        "tests/opencivitas-2022-rifiuti-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80RIFIUTI 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT 2022 (servizi totali) e dalle altre funzioni. Join di 6557 Comuni RSO; aggregati esclusi; CSV senza colonna Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-rifiuti.source.json"
     },
     {
       "id": "opencivitas-2019",
@@ -1754,6 +1832,110 @@
       "trustModel": "Lock dedicato BES_09: CSV e struttura ufficiali vincolati. Tre indicatori, 3.760 osservazioni, 139 territori. Solo SEX=T. Scale factor 100 (centesimi). Flag n/g → null. Indicatori non sommabili. Licenza not-declared."
     },
     {
+      "id": "istat-bes-servizi-2004-2024",
+      "owner": "ISTAT BesT BES_12 Qualità dei servizi, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-servizi-2004-2024.data.json",
+        "src/data/generated/istat-bes-servizi-2004-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_servizi.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_servizi.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-servizi.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_servizi.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-servizi-2004-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_12: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Otto indicatori, 15.858 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T nel payload. UNIT_MEAS e NOTE_* presenti nel CSV. 76 celle n/g restano null; zero osservato e riga assente restano distinti. Scale factor 10 (decimi). Indicatori non sommabili; nessuna somma geografica o media F/M/T. Contratti ETL/runtime offline; licenza del payload not-declared con condizioni generali ISTAT documentate separatamente."
+    },
+    {
+      "id": "istat-bes-ambiente-2004-2023",
+      "owner": "ISTAT BesT BES_10 Ambiente, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-ambiente-2004-2023.data.json",
+        "src/data/generated/istat-bes-ambiente-2004-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_ambiente.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_ambiente.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-ambiente.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_ambiente.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-ambiente-2004-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_10: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Undici indicatori, 13.423 osservazioni, 139 territori e 111 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Per 10AMB018P UNIT_MEAS e NOTE_* restano vuoti come nel payload. 412 celle g restano null. Scale factor 100 (centesimi). Indicatori non sommabili. Licenza not-declared."
+    },
+    {
+      "id": "istat-bes-innovazione-2004-2023",
+      "owner": "ISTAT BesT BES_11 Innovazione, ricerca e creatività, edizione 2025",
+      "files": [
+        "src/data/generated/istat-bes-innovazione-2004-2023.data.json",
+        "src/data/generated/istat-bes-innovazione-2004-2023.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_bes_innovazione.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_bes_innovazione.py"
+      ],
+      "nodeTests": [
+        "tests/istat-bes-innovazione.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_bes_innovazione.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-bes-innovazione-2004-2023.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato BES_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Quattro indicatori, 5.413 osservazioni, 135 territori e 107 province. Copertura per indicatore/sesso/anno, gerarchia e compositi espliciti. Solo SEX=T. Nessuna cella n/g nel payload. 11RIC025 ammette valori negativi firmati. Scale factor 10 (decimi). Quattro province sarde storiche assenti dal payload. Indicatori non sommabili. Licenza not-declared."
+    },
+    {
+      "id": "istat-poverta-soglia-assoluta-2005-2024",
+      "owner": "ISTAT soglia monetaria di povertà assoluta (dataflow 34_211)",
+      "files": [
+        "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.data.json",
+        "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_assoluta.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_soglia_assoluta.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta-soglia-assoluta.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_assoluta.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-soglia-assoluta-2005-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato 34_211: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVASS (valori medi), 36.078 osservazioni, 23 territori, 83 tipologie familiari, 6 ampiezze demografiche. 6.050 celle con OBS_VALUE vuoto restano null ≠ zero. Scale factor 100 (centesimi di euro mensili). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia relativa 34_212 (chiusa). UNIT_MEAS vuoto nel payload. Licenza not-declared."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [
@@ -2177,6 +2359,250 @@
       "sourceSpec": "scripts/etl/specs/eurostat-sha-health-2014-2025.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock sulla risposta JSON-stat ufficiale hlth_sha11_hf (URL, struttura SDMX, updated, byte, SHA-256). Pubblica 13 schemi SHA Italia 2014-2025; riconcilia TOT_HF=HF1+HF2+HF3+HF_UNK e le scomposizioni HF1/HF2. Il 2025 è flag p. Distinto da CE SSN e COFOG. CC BY 4.0."
+    },
+    {
+      "id": "aifa-spesa-consumi-2022-2025",
+      "owner": "AIFA spesa e consumo farmaci per ATC 2022-2025",
+      "files": [
+        "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
+        "src/data/generated/aifa-spesa-consumi-2022-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/aifa_spesa_consumi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_aifa_spesa_consumi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/aifa-spesa-consumi.test.mjs",
+        "tests/aifa-spesa-consumi-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/aifa_spesa_consumi_snapshot.py --write --input-dir <cartella con i quattro rilasci annuali>",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/aifa-spesa-consumi-2022-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sui quattro rilasci annuali AIFA (URL, byte, SHA-256; per il 2025 anche il CSV dentro lo zip). Il tracciato a 17 colonne, i 21 territori × 12 mesi, la chiave mese×regione×classe×ATC IV e la gerarchia ATC sono pretesi in modo fail-closed. Pubblica l'aggregato annuale regione×classe×ATC II (21208 righe) riconciliato al centesimo con i totali del rilascio. Tracciabilità e convenzionata restano canali distinti, il canale assente resta null e i negativi solo sulla tracciabilità. Licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA."
+    },
+    {
+      "id": "politici-camera-xix",
+      "owner": "Camera dei deputati — deputati, gruppi, organi e uffici di presidenza XIX legislatura",
+      "files": [
+        "src/data/generated/politici-camera-xix.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/politici_camera_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_politici_camera_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-camera-contract.test.mjs",
+        "tests/politici-news-route.test.mjs",
+        "tests/politici-photo-route.test.mjs",
+        "tests/politici-ui.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/politici_camera_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/politici-camera-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Quattro sorgenti ufficiali pinnate separatamente: tre risposte SPARQL di dati.camera.it (roster con gruppo, incarichi di gruppo, appartenenze agli organi) e il digest aggregato delle schede personali su camera.it, da cui arrivano anagrafica, circoscrizione, collegio, coalizione, note professionali e uffici parlamentari. Include solo adesioni aperte, espone capienza e seggi vacanti senza reinserire ex membri, richiede foto ufficiale e scheda per ogni deputato e verifica che il Presidente della Camera sia unico. --check offline riconcilia coverage, memberCount, organi e URI; --write richiede rete."
+    },
+    {
+      "id": "politici-senato-xix",
+      "owner": "Senato della Repubblica — senatori, gruppi, incarichi e Consiglio di Presidenza XIX legislatura",
+      "files": [
+        "src/data/generated/politici-senato-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/politici_senato_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_politici_senato_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-news-route.test.mjs",
+        "tests/politici-photo-route.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/politici_senato_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/politici-senato-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Quattro risposte ufficiali pinnate per byte/SHA-256: tre export JSON di dati.senato.it (anagrafica della legislatura, roster in carica alla data, composizione gruppi con cariche) e una query all'endpoint SPARQL ufficiale per professione, regione e collegio di elezione, tipo di elezione e Consiglio di Presidenza. L'import deduplica solo formulazioni multiple della stessa professione o cariche multiple della medesima URI, blocca identità o gruppi ambigui, verifica che il Presidente del Senato sia unico e che i senatori a vita non abbiano regione di elezione."
+    },
+    {
+      "id": "governo-meloni",
+      "owner": "Governo in carica — incarichi, dicasteri e componenti",
+      "files": [
+        "src/data/generated/governo-meloni.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/governo_meloni_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_governo_meloni_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/governo_meloni_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/governo-meloni.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Due risposte ufficiali pinnate: la query SPARQL di dati.camera.it che pubblica gli incarichi di governo in corso con ruolo, dicastero, data di nomina e identificativo persona, e l'elenco pubblico di governo.it usato solo per la scheda istituzionale di ciascun componente. L'identità persona della Camera collega gli incarichi ai mandati parlamentari senza confronti sui nomi. L'import rifiuta ruoli non previsti, incarichi duplicati, più di un Presidente del Consiglio e schede ufficiali sotto soglia; i componenti cessati non compaiono."
+    },
+    {
+      "id": "presidente-repubblica",
+      "owner": "Presidente della Repubblica in carica — identità ufficiale e titolarità della carica",
+      "files": [
+        "src/data/generated/presidente-repubblica.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/presidente_repubblica_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_presidente_repubblica_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/presidente_repubblica_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/presidente-repubblica.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Nodo di vertice con provenance mista dichiarata: nome, identificativo persona e ritratto arrivano dall'archivio ufficiale della Camera dei deputati via SPARQL, pinnato per byte/SHA-256, mentre la titolarità della carica è dichiarata nella spec perché quirinale.it risponde 403 a ogni richiesta programmatica, robots.txt incluso. Il validator impone che il divario resti dichiarato nel payload e che il nome della spec corrisponda all'identità ufficiale; ogni cambio di carica richiede una revisione manuale della spec."
+    },
+    {
+      "id": "ritratti-liberi",
+      "owner": "Ritratti a licenza libera dei membri del Governo mai eletti in Parlamento",
+      "files": [
+        "src/data/generated/ritratti-liberi.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/ritratti_liberi_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_ritratti_liberi_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/ritratti_liberi_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/ritratti-liberi.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Unica fonte non istituzionale della mappa e limitata alle immagini. Ogni ritratto parte da un identificativo Wikidata dichiarato nella spec e verificato sull'etichetta dell'elemento, quindi dal file collegato su Wikimedia Commons: l'import pubblica soltanto file con licenza libera riconosciuta, autore dichiarato, tipo immagine atteso e firma binaria coerente, e rifiuta la stessa immagine usata per due persone. Chi non ha un file libero resta elencato senza ritratto e nell'interfaccia mantiene il monogramma."
+    },
+    {
+      "id": "camera-partecipazione-voto",
+      "owner": "Camera dei deputati — partecipazione al voto (presenze per deputato)",
+      "files": [
+        "src/data/generated/camera-partecipazione-voto.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_partecipazione_voto_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-partecipazione-voto-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_partecipazione_voto_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-partecipazione-voto.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Una sola risposta HTML ufficiale pinnata (vista cumulativa partecipazione al voto XIX legislatura): tabella pubblica con voti, missioni, presenze e assenze per deputato. Il match al roster Camera avviene solo se univoco; le righe senza collegamento restano nello snapshot senza personaId. Il Senato non ha prodotto ufficiale equivalente e non viene ricostruito."
+    },
+    {
+      "id": "camera-atti-voti-xix",
+      "owner": "Camera dei deputati — Open Data Camera (OCD), atti, iter e votazioni",
+      "files": [
+        "src/data/generated/camera-atti-voti-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_atti_voti_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-atti-voti-contract.test.mjs",
+        "tests/politici-atti-route.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_atti_voti_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-atti-voti-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Cinque risposte SPARQL lockate dall'endpoint ufficiale dati.camera.it (atti, cofirme, stati iter, votazioni finali, voti nominali). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap di 10.000 righe dell'endpoint; le cofirme paginano per chiave (keyset) perché l'OFFSET non supera il limite. Il perimetro è l'iniziativa parlamentare: gli atti a prima firma di un membro del Governo sono esclusi e conteggiati in coverage, così come le votazioni finali su quegli atti. Le identità ufficiali della Camera sono verificate strict: votanti = favorevoli + contrari, presenti = votanti + astenuti, approvato solo se i favorevoli superano la maggioranza, e i conteggi nominali F/C/A riconciliano con i totali dichiarati."
+    },
+    {
+      "id": "camera-trattamento-economico",
+      "owner": "Camera dei deputati — trattamento economico istituzionale",
+      "files": [
+        "src/data/generated/camera-trattamento-economico.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/camera_trattamento_economico_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_trattamento_economico_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/camera-trattamento-economico-contract.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_trattamento_economico_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/camera-trattamento-economico.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Pagina ufficiale del trattamento economico dei deputati pinnata per byte/SHA-256. Pubblica solo aliquote istituzionali estratte da frasi letterali (indennità, diaria, rimborso): non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
     }
   ]
 }

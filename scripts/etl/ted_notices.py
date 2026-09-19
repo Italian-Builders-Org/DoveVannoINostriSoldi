@@ -136,7 +136,7 @@ def main() -> int:
     args = parser.parse_args()
     if not args.output_dir and not args.check:
         parser.error("specificare --output-dir o --check")
-    spec = json.loads(SPEC.read_text())
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
     payload = projection(read_pages(spec, args.input_dir), spec)
     if args.output_dir:
         args.output_dir.mkdir(parents=True, exist_ok=True)

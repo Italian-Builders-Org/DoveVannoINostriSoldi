@@ -90,11 +90,29 @@ const istatBesPaesaggioRuntimeFiles = [
   "src/data/generated/istat-bes-paesaggio-2004-2023.data.json",
 ];
 
+const istatBesServiziRuntimeFiles = [
+  "src/data/generated/istat-bes-servizi-2004-2024.data.json",
+];
+
+const istatBesAmbienteRuntimeFiles = [
+  "src/data/generated/istat-bes-ambiente-2004-2023.data.json",
+];
+
+const istatBesInnovazioneRuntimeFiles = [
+  "src/data/generated/istat-bes-innovazione-2004-2023.data.json",
+];
+
+const istatPovertaSogliaAssolutaRuntimeFiles = [
+  "src/data/generated/istat-poverta-soglia-assoluta-2005-2024.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
   "src/data/generated/istat-pensions-2012-2022.meta.json",
 ];
+const openCivitas2015RuntimeFiles = ["src/data/generated/opencivitas-2015.json"];
+const openCivitas2016RuntimeFiles = ["src/data/generated/opencivitas-2016.json"];
 const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
 const naspiRuntimeFiles = ["src/data/generated/inps-naspi-2018-2022.data.json"];
 const assegnoUnicoRuntimeFiles = ["src/data/generated/inps-assegno-unico-2022-2024.data.json"];
@@ -106,6 +124,9 @@ const cigFondiSolidarietaRuntimeFiles = [
 ];
 const inlVigilanzaRuntimeFiles = [
   "src/data/generated/inl-vigilanza-2025.data.json",
+];
+const aifaSpesaConsumiRuntimeFiles = [
+  "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
 ];
 
 // Keep this policy observational until browser and production checks show it
@@ -119,7 +140,7 @@ const contentSecurityPolicyReportOnly = [
   "frame-ancestors 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://documenti.camera.it https://www.senato.it https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "font-src 'self'",
   "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "manifest-src 'self'",
@@ -177,16 +198,20 @@ const nextConfig: NextConfig = {
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
     "/api/lavoro/cig-fondi-solidarieta": cigFondiSolidarietaRuntimeFiles,
     "/api/lavoro/vigilanza-inl": inlVigilanzaRuntimeFiles,
+    "/api/spese/sanita/farmaci": aifaSpesaConsumiRuntimeFiles,
     "/fonti": [
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
     ],
     "/spese/pensioni": pensionsRuntimeFiles,
     "/api/spese/pensioni": pensionsRuntimeFiles,
+    "/api/spese/opencivitas-2015": openCivitas2015RuntimeFiles,
+    "/api/spese/opencivitas-2016": openCivitas2016RuntimeFiles,
     "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
 
     "/appalti/operatori": [
@@ -224,6 +249,10 @@ const nextConfig: NextConfig = {
     "/api/territori/bes-politica": istatBesPoliticaRuntimeFiles,
     "/api/territori/bes-sicurezza": istatBesSicurezzaRuntimeFiles,
     "/api/territori/bes-paesaggio": istatBesPaesaggioRuntimeFiles,
+    "/api/territori/bes-servizi": istatBesServiziRuntimeFiles,
+    "/api/territori/bes-ambiente": istatBesAmbienteRuntimeFiles,
+    "/api/territori/bes-innovazione": istatBesInnovazioneRuntimeFiles,
+    "/api/territori/poverta-soglia-assoluta": istatPovertaSogliaAssolutaRuntimeFiles,
     "/api/assistant/chat": [
       ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
@@ -232,13 +261,20 @@ const nextConfig: NextConfig = {
       ...istatBesPoliticaRuntimeFiles,
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
+      ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
+      ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/mcp": [
@@ -250,13 +286,20 @@ const nextConfig: NextConfig = {
       ...istatBesPoliticaRuntimeFiles,
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
+      ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
+      ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
     "/api/mcp": [
@@ -268,13 +311,20 @@ const nextConfig: NextConfig = {
       ...istatBesPoliticaRuntimeFiles,
       ...istatBesSicurezzaRuntimeFiles,
       ...istatBesPaesaggioRuntimeFiles,
+      ...istatBesServiziRuntimeFiles,
+      ...istatBesAmbienteRuntimeFiles,
+      ...istatBesInnovazioneRuntimeFiles,
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
       ...integrazioniSalarialiRuntimeFiles,
       ...cigFondiSolidarietaRuntimeFiles,
       ...inlVigilanzaRuntimeFiles,
+      ...aifaSpesaConsumiRuntimeFiles,
       ...pensionsRuntimeFiles,
+      ...openCivitas2015RuntimeFiles,
+      ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
     ],
   },

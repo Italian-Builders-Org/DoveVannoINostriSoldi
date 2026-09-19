@@ -12,7 +12,7 @@ import ted_notices as etl
 class TedNoticesTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.spec = json.loads(etl.SPEC.read_text())
+        cls.spec = json.loads(etl.SPEC.read_text(encoding="utf-8"))
         cls.pages = etl.read_pages(cls.spec)
 
     def sample(self):

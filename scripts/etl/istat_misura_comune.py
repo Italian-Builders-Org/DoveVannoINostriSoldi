@@ -191,7 +191,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, help="Write the three pipe-separated projections")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    spec = json.loads(SPEC.read_text())
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
     members = read_members(args.input or ROOT / spec["fixture"]["path"], spec, original=args.input is not None)
     payloads = projections(spec, members)
     if args.output_dir:

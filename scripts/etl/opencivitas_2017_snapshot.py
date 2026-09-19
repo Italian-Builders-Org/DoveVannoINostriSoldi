@@ -19,7 +19,7 @@ from opencivitas_common import (
 )
 
 SPEC_PATH = Path(__file__).with_name("specs") / "opencivitas-2017.source.json"
-SPEC = json.loads(SPEC_PATH.read_text())
+SPEC = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
 OUTPUT = Path("src/data/generated/opencivitas-2017.json")
 SEMANTIC_SHA256 = "a22e6c17a06e9fe785276450438320c48747852598a626293ff953b668a0a326"
 
@@ -150,7 +150,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=OUTPUT)
     args = parser.parse_args()
     if args.check:
-        validate_snapshot(json.loads(args.output.read_text()))
+        validate_snapshot(json.loads(args.output.read_text(encoding="utf-8")))
         print("FC40TOT 2017: snapshot verificato offline")
         return
     if args.input_dir is None:
@@ -159,7 +159,7 @@ def main() -> None:
     result = normalize(**payloads, observed_at=datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"))
     validate_snapshot(result)
     if args.output.exists():
-        current = json.loads(args.output.read_text())
+        current = json.loads(args.output.read_text(encoding="utf-8"))
         validate_snapshot(current)
         if semantic_digest(current) == semantic_digest(result):
             print("FC40TOT 2017: nessuna variazione")

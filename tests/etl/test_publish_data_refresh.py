@@ -22,7 +22,7 @@ SPEC.loader.exec_module(publisher)
 
 class PublishDataRefreshTests(TestCase):
     def test_siope_full_release_gate_is_required_for_refresh_and_publication(self) -> None:
-        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))
         item = next(item for item in registry["artifacts"] if item["id"] == "siope-nonmunicipal")
         self.assertEqual(item["offlineCheck"]["command"], "python3 scripts/etl/siope_nonmunicipal.py --check")
         for identifier in ("integrated-catalog", "integrated-rows"):
@@ -31,7 +31,7 @@ class PublishDataRefreshTests(TestCase):
             self.assertIn("tests/etl/test_integrated_source_release.py", integrated["reconciliationTests"])
         artifact = publisher.load_artifact("siope-nonmunicipal")
         self.assertEqual(artifact.offline_command, "python3 scripts/ci/check-siope-nonmunicipal-refresh.py")
-        workflow = (ROOT / artifact.workflow).read_text()
+        workflow = (ROOT / artifact.workflow).read_text(encoding="utf-8")
         self.assertLess(
             workflow.index("python scripts/ci/check-siope-nonmunicipal-refresh.py"),
             workflow.index("uses: ./.github/actions/publish-data-refresh"),
@@ -83,7 +83,7 @@ class PublishDataRefreshTests(TestCase):
                 publisher.allowlisted_paths(replace(artifact, files=(path,)))
 
     def test_registry_has_only_managed_source_publications(self) -> None:
-        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))
         publications = {
             artifact["id"]: artifact["publication"]
             for artifact in registry["artifacts"]
@@ -170,7 +170,7 @@ class PublishDataRefreshTests(TestCase):
         )
 
     def test_publication_upstreams_preserve_order_and_dedupe(self) -> None:
-        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text())
+        registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))
         government = next(item for item in registry["artifacts"] if item["id"] == "government-scorecard")
         primary = government["publication"]["upstreamUrl"]
         government["publication"]["upstreamUrls"] = [
@@ -526,7 +526,7 @@ class PublishDataRefreshTests(TestCase):
         )
 
     def test_no_post_push_main_check_can_orphan_branch(self) -> None:
-        source = SCRIPT.read_text()
+        source = SCRIPT.read_text(encoding="utf-8")
         self.assertNotIn("final_main = latest_main", source)
         self.assertIn("observed_base = latest_main", source)
 
@@ -574,7 +574,7 @@ class PublishDataRefreshTests(TestCase):
         )
 
     def test_state_machine_preserves_create_recovery_and_push_order(self) -> None:
-        source = SCRIPT.read_text()
+        source = SCRIPT.read_text(encoding="utf-8")
         self.assertLess(source.index("push_candidate("), source.index("gh.create_pr(artifact, body)"))
         self.assertIn("managed branch without a relevant pull request", source)
         self.assertNotIn("final_main = latest_main", source)

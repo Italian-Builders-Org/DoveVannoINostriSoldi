@@ -604,6 +604,34 @@ mensilità né euro. Superficie fonte + API + MCP, senza UI.
 - Source lock: `scripts/etl/specs/inps-cig-fondi-solidarieta-2023-2024.source.json`.
 - Offline: `python3 scripts/etl/inps_cig_fondi_solidarieta_snapshot.py --check`.
 
+### AIFA · spesa e consumo farmaci per ATC 2022–2025
+
+Quattro rilasci annuali del flusso «spesa e consumo» (il 2025 dentro uno zip, con
+anche il CSV interno vincolato per byte e SHA-256). Lo snapshot pubblica
+l'aggregato annuale per regione, classe di rimborsabilità e ATC di II livello:
+21.208 righe su 21 territori. Il dettaglio mensile e di IV livello resta nella
+fonte e non viene ricostruito.
+
+I due canali restano separati e **non si sommano**: la tracciabilità è il sell-in
+alle strutture sanitarie pubbliche (inclusa distribuzione diretta e per conto, al
+lordo dell'IVA), la convenzionata è la spesa lorda in farmacia a prezzo al
+pubblico. Gli importi sono al lordo dei payback, quindi non sono la spesa netta
+del Servizio sanitario nazionale e non si sommano al Conto economico SSN, a
+SIOPE sanità o alla funzione COFOG GF07. Una cella vuota significa canale assente
+e resta distinta da zero; i valori negativi esistono solo sulla tracciabilità
+(resi e note di credito) e sono conservati. Le confezioni non sono dosi (DDD).
+
+Scarto noto: per il 2024 la convenzionata del rilascio open data supera di circa
+297 milioni di euro (+3,1%) il dato che il Rapporto OsMed 2024 ricava dalle
+Distinte Contabili Riepilogative; la causa non è documentata dalla fonte. Per la
+tracciabilità 2024 i due valori coincidono (18.068 contro 18.065 milioni della
+Tabella 1.1.2). Gli anni 2016–2021 restano esclusi: chiavi duplicate, confezioni
+non intere, zeri al posto delle celle vuote e nomi di regione troncati.
+
+La licenza CC BY 4.0 è dichiarata sulla pagina Open Data di AIFA, non sulla
+scheda del dataset: è registrata come licenza di catalogo. Superficie fonte + API
+(`/api/spese/sanita/farmaci`) + MCP (`aifa_farmaci_spesa`), senza UI.
+
 ### INL · Relazione annuale e rapporto vigilanza 2025
 
 Ispezioni e verifiche avviate, esiti con tasso di irregolarità e recuperi di
@@ -698,6 +726,29 @@ per una sola annualità; non si sommano né si confrontano silenziosamente famig
 diverse. L'indice ufficiale verificato l'8 settembre 2026 non elenca servizi
 totali 2020: quell'annualità non viene ricostruita. Fonte, lock e riconciliazioni
 della fetta sono descritti in [OpenCivitas 2019](OPENCIVITAS_2019.md).
+
+È integrato anche FC20TOT 2015 versione 2 (6.664 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2015` e MCP `opencivitas_fabbisogni_2015`.
+Il rilascio 2015 pubblica il CSV in cp1252 con il punto come separatore decimale,
+dichiarati nel lock e non dedotti, e riproporziona il fabbisogno standard sul
+totale nazionale della spesa storica: la differenza aggregata è nulla per
+costruzione e non va letta come risultato. Fonte, lock e perimetro sono
+documentati in [OpenCivitas 2015](OPENCIVITAS_2015.md).
+
+È integrato anche FC30TOT 2016 versione 1 (6.647 Comuni RSO), con contratto
+distinto, `/api/spese/opencivitas-2016` e MCP `opencivitas_fabbisogni_2016`.
+Come il 2015, il rilascio 2016 pubblica il CSV in cp1252 con il punto come
+separatore decimale e riproporziona il fabbisogno standard sul totale nazionale
+della spesa storica: la differenza aggregata è nulla per costruzione. Fonte,
+lock e perimetro sono documentati in [OpenCivitas 2016](OPENCIVITAS_2016.md).
+Con questa annualità la serie ufficiale è coperta per intero: 2015, 2016, 2017,
+2018, 2019, 2021 e 2022; il 2020 non esiste nell'indice della fonte.
+
+È integrata anche la prima funzione oltre i servizi totali: **FC80RIFIUTI 2022**
+(6.557 Comuni RSO), con contratto distinto, `/api/spese/opencivitas-2022-rifiuti`
+e MCP `opencivitas_rifiuti_2022`. Non si somma né si confronta in silenzio con
+FC80TOT 2022. Fonte, lock e perimetro sono documentati in
+[OpenCivitas 2022 Rifiuti](OPENCIVITAS_2022_RIFIUTI.md).
 
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
@@ -811,8 +862,9 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori annualità ufficiali e singole funzioni OpenCivitas, oltre ai servizi
-  totali 2018, 2019, 2021 e 2022 già integrati (nessuna imputazione del 2020);
+- ulteriori funzioni ufficiali OpenCivitas (viabilità, sociale/asili, …) oltre a
+  Rifiuti 2022 e ai servizi totali 2015–2019/2021–2022 già integrati (nessuna
+  imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune
@@ -1014,3 +1066,35 @@ Dominio BES_09, edizione 2025: tre indicatori, 3.760 osservazioni e 139
 territori (111 province). Solo `SEX=T`; 3 celle `n`/`g`; valori in centesimi.
 Fonte `istat-bes-paesaggio`, API/MCP paginati, nessuna UI.
 [Lock, definizioni e limiti](research/ISTAT_BES_PAESAGGIO.md).
+
+### ISTAT BES dei territori — Qualità dei servizi
+
+Dominio BES_12, edizione 2025: otto indicatori, 15.858 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 76 celle `n`/`g`; valori in decimi.
+Fonte `istat-bes-servizi`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_SERVIZI.md).
+
+### ISTAT BES dei territori — Ambiente
+
+Dominio BES_10, edizione 2025: undici indicatori, 13.423 osservazioni e 139
+territori (111 province). Solo `SEX=T`; 412 celle `g`; valori in centesimi.
+Fonte `istat-bes-ambiente`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_AMBIENTE.md).
+
+### ISTAT BES dei territori — Innovazione, ricerca e creatività
+
+Dominio BES_11, edizione 2025: quattro indicatori, 5.413 osservazioni e 135
+territori (107 province). Solo `SEX=T`; nessuna cella `n`/`g`; valori in decimi;
+`11RIC025` resta firmato. `DF_BES_TERRIT_8` assente dal catalogo IstatData.
+Fonte `istat-bes-innovazione`, API/MCP paginati, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_BES_INNOVAZIONE.md).
+
+### ISTAT · soglia di povertà assoluta (34_211)
+
+Soglie monetarie mensili di povertà assoluta, anni 2005–2024: 36.078
+osservazioni (6.050 null), 23 territori, tipologie familiari e ampiezze
+demografiche. Valori in centesimi di euro; `soldi.present` true ma **non** è
+spesa pubblica né confrontabile con le incidenze. Fonte
+`istat-poverta-soglia-assoluta`, API `/api/territori/poverta-soglia-assoluta`,
+MCP `istat_poverta_soglia_assoluta`, nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md).

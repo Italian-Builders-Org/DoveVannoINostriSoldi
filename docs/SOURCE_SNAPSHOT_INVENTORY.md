@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 80
+- Artefatti nel registro: 96
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 63 (PR umana dopo revisione)
+- manuale: 79 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -68,8 +68,11 @@ La revisione e il merge restano umani.
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
+| `opencivitas-2015` | 2015 | 2026-09-17T10:10:34Z | https://www.opencivitas.it/it/dataset/2015-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2015_snapshot.py --check` |
+| `opencivitas-2016` | 2016 | 2026-09-17T13:57:07Z | https://www.opencivitas.it/it/dataset/2016-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2016_snapshot.py --check` |
 | `opencivitas-2017` | 2017 | 2026-09-12T17:26:20Z | https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2017_snapshot.py --check` |
 | `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
+| `opencivitas-2022-rifiuti` | 2022 | 2026-09-19T07:06:33Z | https://www.opencivitas.it/it/dataset/2022-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --check` |
 | `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
 | `opencoesione` | 2026-04-30 | 2026-08-20T08:51:13+00:00 | https://opencoesione.gov.it/it/api/aggregati/ | `17 */6 * * *` | `.github/workflows/opencoesione-refresh.yml` | PR automatica | `python scripts/etl/opencoesione_snapshot.py --check` |
@@ -79,12 +82,12 @@ La revisione e il merge restano umani.
 | `masaf-logistica-mercati` | 2022-2026 | non dichiarato | https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/19279 | nessuno | nessuno | manuale | `python3 scripts/etl/masaf_logistica_mercati_snapshot.py --check` |
 | `mop-comparable-browse` | 2026-09-04 | 2026-09-09T10:35:39Z | https://bdap-opendata.rgs.mef.gov.it/content/progetti-opere-pubbliche-mop-totale | nessuno | nessuno | manuale | `python3 scripts/etl/mop_comparable_browse.py --check` |
 | `government-scorecard` | 2024 | 2026-08-29T23:11:43Z | https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en | `37 7 * * 2` | `.github/workflows/government-scorecard-refresh.yml` | PR automatica | `python3 scripts/ci/check-government-scorecard-artifacts.py` |
-| `public-debt` | 2026-06-30 | 2026-08-24T09:41:59Z | https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html | `17 6 * * *` | `.github/workflows/public-debt-refresh.yml` | PR automatica | `python scripts/etl/public_debt_snapshot.py --check` |
+| `public-debt` | 2026-07-31 | 2026-09-17T13:16:17Z | https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html | `17 6 * * *` | `.github/workflows/public-debt-refresh.yml` | PR automatica | `python scripts/etl/public_debt_snapshot.py --check` |
 | `rgs-consulting-payments` | non dichiarato nello snapshot | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `rgs-ministries-2025` | 2025 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/rgs_ministries_account.py --validate-committed` |
 | `rgs-state-budget-territorial-2023` | 2023 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall | nessuno | nessuno | manuale | suite ETL |
 | `siope-nonmunicipal` | 2024-2026 | 2026-09-07T00:11:56+00:00 | https://www.siope.it/documenti/siope2/open/last | `17 5 8 * *` | `.github/workflows/siope-nonmunicipal-refresh.yml` | PR automatica | `python3 scripts/etl/siope_nonmunicipal.py --check` |
-| `siope-municipal` | 2026 | 2026-08-25T03:31:23+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_receipts_check.py --include-expenditure` |
+| `siope-municipal` | 2026 | 2026-09-17T13:13:03+00:00 | https://www.siope.it/documenti/siope2/open/last | `29 4 * * *` | `.github/workflows/siope-refresh.yml` | PR automatica | `python scripts/etl/siope_receipts_check.py --include-expenditure` |
 | `ssn-cce-2024` | 2024 | 2026-08-22T00:00:00Z | https://bdap-opendata.rgs.mef.gov.it/content/2024-modello-di-rilevazione-del-conto-economico-degli-enti-del-ssn | nessuno | nessuno | manuale | `python scripts/etl/ssn_cce_snapshot.py --check` |
 | `ssn-cce-national-history` | non dichiarato nello snapshot | 2026-08-28T12:31:43.000Z | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `vive-roma-restoration` | non dichiarato nello snapshot | 2026-08-22 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
@@ -107,6 +110,10 @@ La revisione e il merge restano umani.
 | `istat-bes-politica-2004-2024` | 2004-2024 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_politica.py --check` |
 | `istat-bes-sicurezza-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_sicurezza.py --check` |
 | `istat-bes-paesaggio-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_paesaggio.py --check` |
+| `istat-bes-servizi-2004-2024` | 2004-2024 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_servizi.py --check` |
+| `istat-bes-ambiente-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_ambiente.py --check` |
+| `istat-bes-innovazione-2004-2023` | 2004-2023 | 2026-09-17 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_innovazione.py --check` |
+| `istat-poverta-soglia-assoluta-2005-2024` | 2005-2024 | 2026-09-17 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_soglia_assoluta.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `inps-assegno-unico-2022-2024` | 2022-2024 | 2026-09-14 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_assegno_unico_snapshot.py --check` |
@@ -123,6 +130,15 @@ La revisione e il merge restano umani.
 | `mef-tax-gap-nazionale` | 2018-2022 | 2026-09-13 | https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/ | nessuno | nessuno | manuale | `python3 scripts/etl/mef_tax_gap_nazionale_snapshot.py --check` |
 | `eurostat-taxag-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_taxag_snapshot.py --check` |
 | `eurostat-sha-health-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_sha_health_snapshot.py --check` |
+| `aifa-spesa-consumi-2022-2025` | 2022-2025 | 2026-09-16 | https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti | nessuno | nessuno | manuale | `python3 scripts/etl/aifa_spesa_consumi_snapshot.py --check` |
+| `politici-camera-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:04+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/politici_camera_xix_snapshot.py --check` |
+| `politici-senato-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:38+00:00 | https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11 | nessuno | nessuno | manuale | `python3 scripts/etl/politici_senato_xix_snapshot.py --check` |
+| `governo-meloni` | non dichiarato nello snapshot | 2026-09-17T19:20:03+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/governo_meloni_snapshot.py --check` |
+| `presidente-repubblica` | non dichiarato nello snapshot | 2026-09-17T19:09:42+00:00 | https://www.quirinale.it/pagine/il-presidente | nessuno | nessuno | manuale | `python3 scripts/etl/presidente_repubblica_snapshot.py --check` |
+| `ritratti-liberi` | non dichiarato nello snapshot | 2026-09-17T20:12:24+00:00 | https://commons.wikimedia.org/ | nessuno | nessuno | manuale | `python3 scripts/etl/ritratti_liberi_snapshot.py --check` |
+| `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
+| `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T17:42:13+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
+| `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 
 ## Prossimo passo
 

@@ -163,7 +163,7 @@ def main() -> int:
     args = parser.parse_args()
     if not args.output_dir and not args.check:
         parser.error("specificare --output-dir o --check")
-    spec = json.loads(SPEC.read_text())
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
     rows = read_registry(spec, args.input)
     payload = projection(rows, municipal_identities(spec), spec)
     if args.output_dir:

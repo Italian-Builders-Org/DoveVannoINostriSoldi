@@ -132,6 +132,41 @@
   --chart-category-green: #386848;
   --chart-category-slate: #405b70;
 
+  /* Parliamentary groups. Hues recall the official identity of each family but
+     stay desaturated and ordered by luminance, so the hemicycle survives
+     greyscale printing and colour-vision deficiencies. Group identity is always
+     repeated as a label or badge: colour never carries it alone. */
+  --party-fratelli-italia: #26496b;
+  --party-partito-democratico: #9e3446;
+  --party-lega: #2f6b4a;
+  --party-forza-italia: #3f7fa6;
+  --party-movimento-5-stelle: #8f7014;
+  --party-alleanza-verdi-sinistra: #6b7f2a;
+  --party-azione: #17656f;
+  --party-italia-viva: #7a4a86;
+  --party-noi-moderati: #7a5a3a;
+  --party-autonomie: #625675;
+  --party-misto: #5a6570;
+
+  /* Institutional layers of the graph: neutral ink, never a party hue. */
+  --graph-institution: #182b3a;
+  --graph-institution-soft: #4a5f70;
+  --graph-canvas: #eef2f5;
+  --graph-canvas-inset: #e2e9ee;
+  --graph-seat-empty: #8a9aa8;
+  --graph-seat-dim: color-mix(in srgb, #4a5f70 34%, #eef2f5);
+  --graph-link: color-mix(in srgb, #182b3a 26%, transparent);
+  --graph-link-strong: color-mix(in srgb, #182b3a 62%, transparent);
+  --graph-focus-halo: color-mix(in srgb, #b42332 22%, transparent);
+  /* Branch accents for the radial map (CivLab-inspired, light). */
+  --graph-executive: #5b4f8a;
+  --graph-executive-soft: color-mix(in srgb, #5b4f8a 22%, transparent);
+  --graph-legislative: #a83d45;
+  --graph-legislative-soft: color-mix(in srgb, #a83d45 20%, transparent);
+  --graph-authority: #9a7a2e;
+  --graph-authority-soft: color-mix(in srgb, #9a7a2e 22%, transparent);
+  --graph-ring: color-mix(in srgb, #182b3a 14%, transparent);
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --focus-ring: var(--color-accent);
 }
@@ -207,6 +242,36 @@
   --chart-category-amber: #e2b672;
   --chart-category-green: #87c89a;
   --chart-category-slate: #9db7ca;
+
+  /* Same families, raised luminance for the ink background. */
+  --party-fratelli-italia: #7fa8cf;
+  --party-partito-democratico: #e08c9b;
+  --party-lega: #7bc39c;
+  --party-forza-italia: #8cc2e0;
+  --party-movimento-5-stelle: #dcc063;
+  --party-alleanza-verdi-sinistra: #bccd7a;
+  --party-azione: #6fc2c9;
+  --party-italia-viva: #c39ed0;
+  --party-noi-moderati: #cba98a;
+  --party-autonomie: #b3a7c4;
+  --party-misto: #a8b3bd;
+
+  --graph-institution: #f3eeee;
+  --graph-institution-soft: #a89f9f;
+  --graph-canvas: #121014;
+  --graph-canvas-inset: #1a171c;
+  --graph-seat-empty: #4a4444;
+  --graph-seat-dim: color-mix(in srgb, #a89f9f 28%, #121014);
+  --graph-link: color-mix(in srgb, #f3eeee 22%, transparent);
+  --graph-link-strong: color-mix(in srgb, #f3eeee 58%, transparent);
+  --graph-focus-halo: color-mix(in srgb, #ff8897 26%, transparent);
+  --graph-executive: #9b8fd4;
+  --graph-executive-soft: color-mix(in srgb, #9b8fd4 28%, transparent);
+  --graph-legislative: #e06b72;
+  --graph-legislative-soft: color-mix(in srgb, #e06b72 26%, transparent);
+  --graph-authority: #e0c06a;
+  --graph-authority-soft: color-mix(in srgb, #e0c06a 28%, transparent);
+  --graph-ring: color-mix(in srgb, #f3eeee 12%, transparent);
 
   --color-announcement-bg: #2b2828;
   --color-announcement-text: #f5f1f1;

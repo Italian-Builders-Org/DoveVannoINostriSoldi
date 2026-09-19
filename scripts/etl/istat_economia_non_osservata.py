@@ -76,7 +76,7 @@ def validate_contract(spec: dict) -> None:
     if source.get("acquiredAt") != "2026-09-12" or source.get("checkedAt") != "2026-09-12":
         raise SourceError("date di acquisizione o controllo divergenti")
 
-    corpus_spec = json.loads(CORPUS_SPEC.read_text())
+    corpus_spec = json.loads(CORPUS_SPEC.read_text(encoding="utf-8"))
     overrides = corpus_spec.get("sourceMetadata", {}).get("overrides", {})
     expected_urls = [source["landingUrl"], source["licenseUrl"], source["url"]]
     for table in spec.get("tables", []):
@@ -377,7 +377,7 @@ def main() -> int:
     args = parser.parse_args()
     if sum(bool(value) for value in (args.output_dir, args.publish, args.check)) != 1:
         parser.error("specificare una sola azione: --output-dir, --publish o --check")
-    spec = json.loads(SPEC.read_text())
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
     payloads = projections(spec, args.input)
     if args.output_dir:
         args.output_dir.mkdir(parents=True, exist_ok=True)

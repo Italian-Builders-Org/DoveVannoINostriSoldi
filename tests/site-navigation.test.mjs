@@ -107,12 +107,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /possibili errori/);
   assert.match(globals, /\.footer-disclaimer \{/);
   assert.match(supporters, /href: "https:\/\/mantoventure\.com"/);
-  assert.match(site, /BUY_ME_A_COFFEE_URL = "https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi"/);
-  assert.match(site, /https:\/\/www\.threads\.com\/@dovevannoinostrisoldi/);
-  assert.match(site, /https:\/\/www\.facebook\.com\/profile\.php\?id=61593922084084/);
-  assert.match(site, /https:\/\/www\.instagram\.com\/dovevannoinostrisoldi\//);
-  assert.match(site, /https:\/\/www\.tiktok\.com\/@dovevannoinostrisoldi/);
-  assert.match(site, /https:\/\/x\.com\/DVNSoldi/);
+  assert.match(site, /BUY_ME_A_COFFEE_URL = /);
   assert.match(footer, /SOCIAL_LINKS/);
   assert.match(footer, /footer-social/);
   assert.match(footer, /Canali/);
@@ -123,6 +118,21 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(globals, /\.footer-backer \{/);
   assert.doesNotMatch(footer, /cdnjs\.buymeacoffee\.com/);
   assert.match(navigationSource, /href: "\/supporter", label: "Chi ci sostiene"/);
+});
+
+test("site.ts exports the expected social and coffee URLs", async () => {
+  const { BUY_ME_A_COFFEE_URL, SOCIAL_LINKS } = await import("../src/lib/site.ts");
+  assert.equal(BUY_ME_A_COFFEE_URL, "https://www.buymeacoffee.com/dovevannoinostrisoldi");
+  assert.deepEqual(
+    SOCIAL_LINKS.map((link) => [link.id, link.href]),
+    [
+      ["threads", "https://www.threads.com/@dovevannoinostrisoldi"],
+      ["facebook", "https://www.facebook.com/profile.php?id=61593922084084"],
+      ["instagram", "https://www.instagram.com/dovevannoinostrisoldi/"],
+      ["tiktok", "https://www.tiktok.com/@dvn_soldi"],
+      ["x", "https://x.com/DVNSoldi"],
+    ],
+  );
 });
 
 test("Google Analytics loads only on the public site hostname", async () => {
@@ -226,4 +236,18 @@ test("studies and their alias select a single dedicated primary section", () => 
   for (const path of ["/studi", "/studi/dai-fondi-ai-posti", "/paper"]) {
     assert.deepEqual(PRIMARY_NAV.filter((item) => isNavSectionActive(path, item)).map((item) => item.href), ["/studi"]);
   }
+});
+
+test("mappa della politica nav keeps same-origin /politici; homepage uses the subdomain", async () => {
+  const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
+  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
+  const mapLinks = flattenNavLinks(institutions?.children ?? []).filter((link) =>
+    link.label === "Mappa della politica",
+  );
+  assert.equal(mapLinks.length, 1);
+  assert.equal(mapLinks[0]?.href, "/politici");
+  assert.match(navigationSource, /href: "\/politici", label: "Mappa della politica"/);
+  assert.ok(home.includes("PUBLIC_POLITICI_URL"));
+  assert.equal(PUBLIC_POLITICI_URL, "https://politici.dovevannoinostrisoldi.com");
 });

@@ -49,7 +49,7 @@ export const datasetQuerySchema = z.object({
     .describe("Id della tabella pubblicata dal dataset selezionato, per esempio beneficiari_02.")
     .optional(),
   family: z.string().max(20)
-    .describe("Famiglia di misure del dataset selezionato, per esempio tipo_reddito o bonus_irpef.")
+    .describe("Famiglia di misure del dataset selezionato, oppure codice tipologia familiare (CL_TIPOLOGIA_FAMILIARE2) per istat_poverta_soglia_assoluta.")
     .optional(),
   breakdown: z.string().max(20)
     .describe("Taglio dimensionale del dataset selezionato, per esempio regione, classeEta o sesso.")
@@ -73,7 +73,7 @@ export const datasetQuerySchema = z.object({
     .describe("Codice settore: ATECO per imprese, CEPA/EPEA per ambiente, oppure ESA S13/S1311/S1313/S1314 per Eurostat taxag.")
     .optional(),
   band: z.string().max(30)
-    .describe("Codice della fascia di valore della produzione, solo per il dataset che la dichiara.")
+    .describe("Codice fascia (produzione imprese) oppure ampiezza demografica (es. 2, INH_OTH_UN5000) per istat_poverta_soglia_assoluta.")
     .optional(),
   years: z.number().int().min(2).max(20)
     .describe("Numero di Leggi di Bilancio più recenti da restituire, da 2 a 20, solo per il dataset che lo dichiara.")

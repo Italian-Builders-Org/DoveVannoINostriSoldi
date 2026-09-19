@@ -307,7 +307,7 @@ def build_snapshot(payload: bytes, source_url: str, acquired_at: str) -> tuple[d
 def validate_committed() -> None:
     data_bytes = DATA_PATH.read_bytes()
     data = json.loads(data_bytes)
-    meta = json.loads(META_PATH.read_text())
+    meta = json.loads(META_PATH.read_text(encoding="utf-8"))
     expected = meta["dataArtifact"]
     if len(data_bytes) != expected["bytes"] or hashlib.sha256(data_bytes).hexdigest() != expected["sha256"]:
         raise ValueError("Artefatto dati PCM non legato al manifesto")

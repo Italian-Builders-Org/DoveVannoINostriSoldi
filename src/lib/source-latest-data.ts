@@ -10,6 +10,7 @@ import { inpsAssegnoUnicoData } from "@/lib/inps-assegno-unico-snapshot";
 import { inpsIntegrazioniSalarialiData } from "@/lib/inps-integrazioni-salariali-snapshot";
 import { inpsCigFondiSolidarietaData } from "@/lib/inps-cig-fondi-solidarieta-snapshot";
 import { inlVigilanzaData } from "@/lib/inl-vigilanza-snapshot";
+import { aifaSpesaConsumiData } from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
@@ -17,6 +18,7 @@ import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData } from "@/lib/istat-poverta-relativa-snapshot";
+import { istatPovertaSogliaAssolutaData } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatBesData } from "@/lib/istat-bes-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
@@ -99,6 +101,10 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: `${istatPovertaRelativaData.period.from}-${istatPovertaRelativaData.period.to}`,
   },
+  "istat-poverta-soglia-assoluta": {
+    kind: "period",
+    label: `${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to}`,
+  },
   "istat-bes-economico": {
     kind: "period",
     label: `${istatBesData.period.from}-${istatBesData.period.to}`,
@@ -131,6 +137,18 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: "2004–2023; periodo distinto per indicatore",
   },
+  "istat-bes-servizi": {
+    kind: "period",
+    label: "2004–2024; periodo distinto per indicatore",
+  },
+  "istat-bes-ambiente": {
+    kind: "period",
+    label: "2004–2023; periodo distinto per indicatore",
+  },
+  "istat-bes-innovazione": {
+    kind: "period",
+    label: "2004–2023; periodo distinto per indicatore",
+  },
   "inps-naspi": {
     kind: "period",
     label: `${inpsNaspiData.period.from}-${inpsNaspiData.period.to}`,
@@ -150,6 +168,10 @@ const exhaustiveLatestDataBySlug = {
   "inl-vigilanza": {
     kind: "period",
     label: `${inlVigilanzaData.period.from} (ispezioni/esiti/recuperi)`,
+  },
+  "aifa-spesa-consumi": {
+    kind: "period",
+    label: `${aifaSpesaConsumiData.period.from}-${aifaSpesaConsumiData.period.to} (spesa e confezioni)`,
   },
   "mef-irpef-dettaglio": {
     kind: "period",

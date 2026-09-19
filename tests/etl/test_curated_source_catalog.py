@@ -1112,18 +1112,18 @@ class CuratedSourceCatalogTests(unittest.TestCase):
                     ETL.write_catalog(built, private_path, public_path, proof_path)
                     if target == "public":
                         entries = [
-                            json.loads(line) for line in public_path.read_text().splitlines()
+                            json.loads(line) for line in public_path.read_text(encoding="utf-8").splitlines()
                         ]
                         entries[0]["occurrences"] += 1
                         public_path.write_bytes(
                             b"".join(ETL.canonical_json(item) + b"\n" for item in entries)
                         )
                     elif target == "proof":
-                        proof = json.loads(proof_path.read_text())
+                        proof = json.loads(proof_path.read_text(encoding="utf-8"))
                         proof["coverage"]["totalOccurrences"] += 1
                         proof_path.write_bytes(ETL.canonical_json(proof) + b"\n")
                     else:
-                        private_map = json.loads(private_path.read_text())
+                        private_map = json.loads(private_path.read_text(encoding="utf-8"))
                         private_map["entries"][0]["value"] += "-mutated"
                         private_path.write_bytes(ETL.canonical_json(private_map) + b"\n")
                         private_path.chmod(0o600)

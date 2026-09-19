@@ -97,7 +97,7 @@ class SiopeNonMunicipalCorpusTests(TestCase):
         (self.source / "new.psv").write_bytes(changed)
         self.write_spec([dataset("old", "old.psv", self.old), dataset("siope-projection", "new.psv", changed)])
         self.append()
-        catalog = json.loads(self.catalog.read_text())
+        catalog = json.loads(self.catalog.read_text(encoding="utf-8"))
         entry = next(item for item in catalog["datasets"] if item["id"] == "siope-projection")
         self.assertEqual(entry["rows"], 1)
         self.assertNotEqual(self.catalog.read_bytes(), first)
@@ -513,11 +513,11 @@ class SiopeCompletePromotionTests(TestCase):
 
     def _assert_promoted(self, builder: ClosedSiopePromotionBuilder, detail, manifest: dict) -> None:
         self.assertEqual(
-            json.loads(builder.release_proof.read_text())["datasets"]["publicRows"],
+            json.loads(builder.release_proof.read_text(encoding="utf-8"))["datasets"]["publicRows"],
             builder.expected_rows(manifest)["publicRows"],
         )
         self.assertEqual(
-            json.loads((builder.generated / "siope-nonmunicipal-provenance.json").read_text()),
+            json.loads((builder.generated / "siope-nonmunicipal-provenance.json").read_text(encoding="utf-8")),
             manifest,
         )
         for name, expected_hash in builder.unrelated_row_hashes.items():
@@ -589,7 +589,7 @@ class SiopeCompletePromotionTests(TestCase):
             builder.build_candidate(2)
             builder.write_spec(include_candidate=True)
             before_update = builder.release_hashes()
-            updated_manifest = json.loads(builder.candidate_manifest.read_text())
+            updated_manifest = json.loads(builder.candidate_manifest.read_text(encoding="utf-8"))
             wrong_update = builder.expected_rows(updated_manifest)
             wrong_update["sourceRows"] -= 1
             stack.enter_context(mock.patch.object(release, "EXPECTED_DATASET_ROWS", wrong_update))

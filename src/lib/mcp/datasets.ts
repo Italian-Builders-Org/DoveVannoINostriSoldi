@@ -353,6 +353,42 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_rifiuti_2022": {
+      const { queryOpenCivitas2022Rifiuti } = await import("@/lib/opencivitas-2022-rifiuti-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80RIFIUTI è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Rifiuti({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_fabbisogni_2015": {
+      const { queryOpenCivitas2015 } = await import("@/lib/opencivitas-2015-snapshot");
+      if (query.year !== undefined && query.year !== 2015) {
+        throw new Error("OpenCivitas FC20TOT è disponibile per il 2015. Le altre annualità restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2015({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_fabbisogni_2016": {
+      const { queryOpenCivitas2016 } = await import("@/lib/opencivitas-2016-snapshot");
+      if (query.year !== undefined && query.year !== 2016) {
+        throw new Error("OpenCivitas FC30TOT è disponibile per il 2016. Le altre annualità restano nei rispettivi dataset.");
+      }
+      return jsonSafe(queryOpenCivitas2016({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2017": {
       const { queryOpenCivitas2017 } = await import("@/lib/opencivitas-2017-snapshot");
       if (query.year !== undefined && query.year !== 2017) {
@@ -534,6 +570,18 @@ export async function queryPublicDataset(
         }),
       });
     }
+    case "aifa_farmaci_spesa": {
+      const { queryAifaSpesaConsumi } = await import("@/lib/aifa-spesa-consumi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryAifaSpesaConsumi({
+          year: query.year,
+          regionCode: query.region,
+          class: query.band,
+          atc2: query.code,
+        }),
+      });
+    }
     case "inps_cig_fondi_solidarieta": {
       const { queryInpsCigFondiSolidarieta } = await import(
         "@/lib/inps-cig-fondi-solidarieta-snapshot"
@@ -587,6 +635,21 @@ export async function queryPublicDataset(
       return jsonSafe({
         dataset: query.dataset,
         ...queryIstatPovertaRelativa({ territory: query.territory, year: query.year, measure: query.measure }),
+      });
+    }
+    case "istat_poverta_soglia_assoluta": {
+      options.signal?.throwIfAborted();
+      const { queryIstatPovertaSogliaAssoluta } = await import("@/lib/istat-poverta-soglia-assoluta-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaSogliaAssoluta({
+          territory: query.territory,
+          year: query.year,
+          householdTypology: query.family,
+          municipalitySize: query.band,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
       });
     }
     case "istat_bes_economico": {
@@ -660,6 +723,33 @@ export async function queryPublicDataset(
       return jsonSafe({
         dataset: query.dataset,
         ...queryIstatBesPaesaggio({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_servizi": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesServizi } = await import("@/lib/istat-bes-servizi-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesServizi({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_ambiente": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesAmbiente } = await import("@/lib/istat-bes-ambiente-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesAmbiente({ territory: query.territory, year: query.year, indicator: query.measure,
+          sex: query.sex, limit: query.limit, offset: query.offset }, options),
+      });
+    }
+    case "istat_bes_innovazione": {
+      options.signal?.throwIfAborted();
+      const { queryIstatBesInnovazione } = await import("@/lib/istat-bes-innovazione-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatBesInnovazione({ territory: query.territory, year: query.year, indicator: query.measure,
           sex: query.sex, limit: query.limit, offset: query.offset }, options),
       });
     }

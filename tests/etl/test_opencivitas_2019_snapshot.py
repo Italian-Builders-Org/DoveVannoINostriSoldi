@@ -7,7 +7,7 @@ from unittest.mock import patch
 import opencivitas_2019_snapshot as snapshot
 from opencivitas_common import normalize_municipality
 
-SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2019-source-sample.json").read_text())
+SAMPLE = json.loads(Path("tests/fixtures/opencivitas-2019-source-sample.json").read_text(encoding="utf-8"))
 
 
 class FC60ReleaseTests(unittest.TestCase):
@@ -74,7 +74,7 @@ class FC60ReleaseTests(unittest.TestCase):
         for key in ("data", "entities", "indicators"):
             with self.assertRaisesRegex(snapshot.StructuralError, "byte/SHA-256"):
                 snapshot.verify_bytes(b"PK-invalid", key)
-        original = json.loads(snapshot.OUTPUT.read_text())
+        original = json.loads(snapshot.OUTPUT.read_text(encoding="utf-8"))
         snapshot.validate_snapshot(original)
         for change in ("amounts", "period", "license", "hash", "null", "coverage"):
             altered = copy.deepcopy(original)

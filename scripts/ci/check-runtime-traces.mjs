@@ -106,16 +106,23 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["istat-bes-politica-2004-2024.data.json", ["api/territori/bes-politica/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-bes-sicurezza-2004-2023.data.json", ["api/territori/bes-sicurezza/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-bes-paesaggio-2004-2023.data.json", ["api/territori/bes-paesaggio/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["istat-bes-servizi-2004-2024.data.json", ["api/territori/bes-servizi/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["istat-bes-ambiente-2004-2023.data.json", ["api/territori/bes-ambiente/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["istat-bes-innovazione-2004-2023.data.json", ["api/territori/bes-innovazione/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["istat-poverta-soglia-assoluta-2005-2024.data.json", ["api/territori/poverta-soglia-assoluta/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["integrated/rows/eurostat-disuguaglianza-redditi.part-00000.jsonl.gz", ["disuguaglianza/page", "dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-pensions-2012-2022.data.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-pensions-2012-2022.meta.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["opencivitas-2015.json", ["api/spese/opencivitas-2015/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["opencivitas-2016.json", ["api/spese/opencivitas-2016/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["opencivitas-2017.json", ["api/spese/opencivitas-2017/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-assegno-unico-2022-2024.data.json", ["fonti/page", "api/famiglia/assegno-unico/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-integrazioni-salariali-2023.data.json", ["fonti/page", "api/lavoro/integrazioni-salariali/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inps-cig-fondi-solidarieta-2023-2024.data.json", ["fonti/page", "api/lavoro/cig-fondi-solidarieta/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["inl-vigilanza-2025.data.json", ["fonti/page", "api/lavoro/vigilanza-inl/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["aifa-spesa-consumi-2022-2025.data.json", ["fonti/page", "api/spese/sanita/farmaci/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
   ]) {
     for (const route of routes) {
       const manifest = `${route}.js.nft.json`;

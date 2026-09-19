@@ -81,7 +81,7 @@ class BesIstruzioneTests(unittest.TestCase):
             data_path.write_bytes(bes.DATA.read_bytes())
             meta = json.loads(bes.META.read_bytes())
             meta["source"]["licenseId"] = "CC-BY-4.0"
-            meta_path.write_text(json.dumps(meta))
+            meta_path.write_text(json.dumps(meta), encoding="utf-8")
             with self.assertRaises(bes.SnapshotError):
                 bes.check(bes.SPEC, data_path, meta_path)
             meta_path.write_bytes(bes.META.read_bytes())

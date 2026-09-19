@@ -132,6 +132,6 @@ class MeasurementContractTests(TestCase):
         manifest = fixture.build()
         manifest["projections"]["siope-uscite-asl"]["rows"] += 1
         path = fixture.output / "siope-nonmunicipal-release.json"
-        path.write_text(json.dumps(manifest))
+        path.write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaisesRegex(refresh.etl.SiopeNonMunicipalError, "release divergente"):
             contract.load_manifest(path)

@@ -27,6 +27,8 @@ function SectionNavContent({
   const section = activeNavSection(pathname);
   const pages = flattenNavLinks(section?.children ?? []);
   if (pages.length < 2) return null;
+  // Immersive map page: no section chrome · the graph needs the viewport.
+  if (pathname === "/politici" || pathname.startsWith("/politici/")) return null;
 
   return (
     <nav

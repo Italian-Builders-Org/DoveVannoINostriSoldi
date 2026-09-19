@@ -21,7 +21,7 @@ CONTENT = ROOT / "src/content/reports/state-budget-2025.json"
 class StateBudgetReportTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.report = json.loads(CONTENT.read_text())
+        cls.report = json.loads(CONTENT.read_text(encoding="utf-8"))
         cls.archive = zipfile.ZipFile(PROOF / "evidence.zip")
         cls.addClassCleanup(cls.archive.close)
 
@@ -32,7 +32,7 @@ class StateBudgetReportTests(unittest.TestCase):
         return list(csv.DictReader(io.StringIO(raw.decode("cp1252")), delimiter=";"))
 
     def test_pdf_contains_all_findings_limits_and_verifiable_source_links(self):
-        report = json.loads((ROOT / "src/content/reports/state-budget-reader.json").read_text())
+        report = json.loads((ROOT / "src/content/reports/state-budget-reader.json").read_text(encoding="utf-8"))
         reader = PdfReader(ROOT / "public/report/bilancio-stato-2025.pdf")
         normalize = lambda value: re.sub(r"\s+", "", unicodedata.normalize("NFKC", value))
         text = normalize("\n".join(page.extract_text() for page in reader.pages))
@@ -72,11 +72,11 @@ class StateBudgetReportTests(unittest.TestCase):
         self.assertTrue(images)
         self.assertEqual(set(images), {(48, 48)})
         logo = (ROOT / "public/brand/icon-48.png").read_bytes()
-        receipt = json.loads((PROOF / "pdf-receipt.json").read_text())
+        receipt = json.loads((PROOF / "pdf-receipt.json").read_text(encoding="utf-8"))
         self.assertEqual(receipt["rendering"]["logoSha256"], hashlib.sha256(logo).hexdigest())
 
     def test_evidence_bytes_and_source_identity(self):
-        manifest = json.loads((PROOF / "evidence-manifest.json").read_text())
+        manifest = json.loads((PROOF / "evidence-manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(set(self.archive.namelist()), {row["path"] for row in manifest["files"]})
         for item in manifest["files"]:
             with self.subTest(path=item["path"]):
@@ -127,8 +127,8 @@ class StateBudgetReportTests(unittest.TestCase):
             self.assertLessEqual(set(control["sourceIds"]), source_ids)
         for source in self.report["sources"]:
             self.assertTrue(source["url"].startswith("https://"))
-        self.assertNotIn("\u2014", CONTENT.read_text())
-        receipt = json.loads((PROOF / "pdf-receipt.json").read_text())
+        self.assertNotIn("\u2014", CONTENT.read_text(encoding="utf-8"))
+        receipt = json.loads((PROOF / "pdf-receipt.json").read_text(encoding="utf-8"))
         legacy = CONTENT.read_bytes()
         legacy_blob = hashlib.sha1(b"blob " + str(len(legacy)).encode() + b"\0" + legacy).hexdigest()
         self.assertEqual(legacy_blob, receipt["legacyManuscriptGitBlob"])

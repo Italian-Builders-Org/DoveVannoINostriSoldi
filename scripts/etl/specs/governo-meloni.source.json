@@ -1,0 +1,65 @@
+{
+  "datasetId": "governo-meloni",
+  "title": "Governo in carica — incarichi, dicasteri, componenti e ritratti (Open Data Camera + governo.it)",
+  "landingUrl": "https://dati.camera.it/",
+  "period": {
+    "label": "Governo in carica",
+    "observedDate": "2026-09-17"
+  },
+  "source": {
+    "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://dati.camera.it/",
+    "rosterUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "license": "CC BY 4.0 (dati.camera.it); riuso con citazione della fonte (governo.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "committedResponses": {
+      "members": {
+        "bytes": 69836,
+        "sha256": "5371203721327e1bb6a0b2b2c4b05f50f49d79e5aa4e9ea6b4a46fd1006849ba"
+      },
+      "identities": {
+        "bytes": 16073,
+        "sha256": "92098c9f5ccc533fb747d8f93423d4cec3658d748bed459e25a201e94dde6ae6"
+      },
+      "roster": {
+        "bytes": 105504,
+        "sha256": "198f3f6732ee53a1c4b953328157f739478492129fd3d1855ca172a6720c8568"
+      }
+    },
+    "photoArchiveUrlTemplate": "https://documenti.camera.it/_dati/leg{legislatura}/schededeputatinuovosito/fotoDefinitivo/big/d{persona}.jpg"
+  },
+  "coverageFloor": {
+    "appointments": 60,
+    "people": 58,
+    "departments": 20,
+    "ministries": 14,
+    "ministers": 20,
+    "peopleWithPhoto": 40,
+    "peopleWithProfessionNote": 30
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo incarichi di governo e articolazione istituzionale. Per la spesa dei ministeri usare /governi e le viste RGS."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-17"
+    },
+    "provenance": {
+      "kind": "official-sparql-and-official-roster",
+      "endpoint": "https://dati.camera.it/sparql",
+      "roster": "https://www.governo.it/it/ministri-e-sottosegretari"
+    }
+  },
+  "caveats": [
+    "La struttura degli incarichi arriva dal grafo RDF della Camera, che pubblica i decreti di nomina con ruolo, dicastero e identità persona.",
+    "governo.it fornisce solo il collegamento alla scheda pubblica: quando la scheda manca, il campo resta vuoto.",
+    "Chi cumula due incarichi compare una volta come persona con più incarichi.",
+    "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
+    "Il ritratto ufficiale viene dall'archivio Camera della legislatura del mandato parlamentare più recente della persona ed è verificato con una richiesta HEAD: chi non è mai stato deputato resta senza fotografia.",
+    "La nota di studi e professione è il testo che la Camera pubblica sulla persona: la fonte lo tronca a ottanta caratteri."
+  ]
+}

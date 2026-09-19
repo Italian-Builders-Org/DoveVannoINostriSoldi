@@ -564,7 +564,7 @@ def main() -> int:
         )
 
     if errors:
-        print(f"\n❌ Registry validation failed ({len(errors)} error(s)):\n", file=sys.stderr)
+        print(f"\n[fail] Registry validation failed ({len(errors)} error(s)):\n", file=sys.stderr)
         for err in errors:
             print(f"  • {err}", file=sys.stderr)
         return 1
@@ -589,7 +589,7 @@ def main() -> int:
         if art.get("offlineCheck", {}).get("coveredBy") == "node-tests"
     )
 
-    print(f"✅ Registry valid: {artifact_count} artifact groups, {file_count} files covered")
+    print(f"[ok] Registry valid: {artifact_count} artifact groups, {file_count} files covered")
     print(f"   Standalone offline checks: {standalone_count}")
     print(f"   Covered by ETL suite: {etl_covered_count}")
     print(f"   Covered by Node tests: {node_covered_count}")
@@ -607,20 +607,20 @@ def main() -> int:
     executed, covered_by_etl, failed = run_offline_checks(registry)
 
     for entry in executed:
-        print(f"  ✓ {entry}")
+        print(f"  [ok] {entry}")
 
     if covered_by_etl:
         print(f"\n--- Covered by ETL suite (not re-run) ---")
         for entry in covered_by_etl:
-            print(f"  → {entry}")
+            print(f"  -> {entry}")
 
     if failed:
-        print(f"\n❌ {len(failed)} offline check(s) FAILED:\n", file=sys.stderr)
+        print(f"\n[fail] {len(failed)} offline check(s) FAILED:\n", file=sys.stderr)
         for entry in failed:
-            print(f"  ✗ {entry}", file=sys.stderr)
+            print(f"  [x] {entry}", file=sys.stderr)
         return 1
 
-    print(f"\n✅ {len(executed)} standalone check(s) passed")
+    print(f"\n[ok] {len(executed)} standalone check(s) passed")
 
     # 4. Worktree cleanliness (content-based: compares working-tree fingerprint
     #    before and after checks to detect any modification, including further
@@ -631,7 +631,7 @@ def main() -> int:
         # Diagnostic: show current working-tree status for investigation
         status = git_porcelain()
         print(
-            "\n❌ Worktree cleanliness check FAILED: "
+            "\n[fail] Worktree cleanliness check FAILED: "
             "offline checks modified the working tree",
             file=sys.stderr,
         )
@@ -641,7 +641,7 @@ def main() -> int:
                 print(f"  {line}", file=sys.stderr)
         return 1
 
-    print("✅ Working tree clean after validation")
+    print("[ok] Working tree clean after validation")
 
     # 5. CI summary
     if args.json:

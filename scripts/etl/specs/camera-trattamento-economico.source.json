@@ -1,0 +1,47 @@
+{
+  "datasetId": "camera-trattamento-economico",
+  "title": "Camera dei deputati — trattamento economico istituzionale dei deputati",
+  "landingUrl": "https://www.camera.it/deputati/trattamento-economico",
+  "period": {
+    "label": "Misure in vigore pubblicate dalla Camera (indennità ferma dal 2012; diaria e rimborsi prorogati)",
+    "observedDate": "2026-09-18"
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "pageUrl": "https://www.camera.it/deputati/trattamento-economico",
+    "landingUrl": "https://www.camera.it/deputati/trattamento-economico",
+    "license": "Riuso con citazione della fonte (Camera dei deputati)",
+    "licenseUrl": "https://www.camera.it/",
+    "committedResponses": {
+      "page": {
+        "bytes": 31254,
+        "sha256": "f2e29d117e0bfc2edc7bf5218127a98a36e4dfdeddf14d68a13697f4152e3801"
+      }
+    }
+  },
+  "coverageFloor": {
+    "components": 4
+  },
+  "semantics": {
+    "soldi": {
+      "present": true,
+      "unit": "EUR-cent",
+      "nature": "institutional-rate",
+      "note": "Aliquote istituzionali dell'Ufficio di Presidenza, non cedolini individuali."
+    },
+    "periodo": {
+      "kind": "point-in-time-published-rates",
+      "observedDate": "2026-09-18"
+    },
+    "provenance": {
+      "kind": "official-html-page",
+      "page": "https://www.camera.it/deputati/trattamento-economico"
+    }
+  },
+  "caveats": [
+    "Sono tassi istituzionali uguali per tutti i deputati (salvo le riduzioni per chi ha un'altra attività lavorativa): non è la busta paga della singola persona.",
+    "Il netto dichiarato dalla Camera (5.290,71 €) è prima delle addizionali regionali e comunali, che variano per domicilio fiscale.",
+    "Il Senato pubblica una pagina di trattamento economico ma le richieste programmatiche ricevono una challenge WAF: finché non si può fissare hash e testo, non si pubblica l'importo senatorio.",
+    "Non si inventano stipendi di ministri, sottosegretari o del Presidente della Repubblica da fonti non acquisite."
+  ]
+}

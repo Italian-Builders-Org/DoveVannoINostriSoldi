@@ -119,7 +119,7 @@ class SsnCceSnapshotTests(unittest.TestCase):
                     ETL.parse_csv(payload, synthetic_lock(payload))
 
     def test_existing_snapshot_values_round_trip_through_the_source_parser(self):
-        snapshot = json.loads((ROOT / "src/data/generated/ssn-cce-2024.json").read_text())
+        snapshot = json.loads((ROOT / "src/data/generated/ssn-cce-2024.json").read_text(encoding="utf-8"))
         for group in [snapshot["national"], *snapshot["regions"], *snapshot["entities"]]:
             for metric, cents in group["values"].items():
                 sign = "-" if cents < 0 else ""

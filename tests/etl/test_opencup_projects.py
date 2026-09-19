@@ -139,7 +139,7 @@ class OpenCupProjectsTests(unittest.TestCase):
         chunks: list[dict[str, object]] = []
         for group in manifest["chunkGroups"]:
             assert isinstance(group, dict)
-            group_payload = json.loads((output / group["object"]["key"]).read_text())
+            group_payload = json.loads((output / group["object"]["key"]).read_text(encoding="utf-8"))
             chunks.extend(group_payload["chunks"])
         return chunks
 
@@ -171,7 +171,7 @@ class OpenCupProjectsTests(unittest.TestCase):
         ):
             self.assertIsNone(first_manifest[field])
         self.assertEqual(len(first_manifest["sourceSpecSha256"]), 64)
-        receipt = json.loads((first / "receipt.json").read_text())
+        receipt = json.loads((first / "receipt.json").read_text(encoding="utf-8"))
         self.assertEqual(
             [(member["name"], member["firstSourceRow"], member["rowCount"]) for member in receipt["members"]],
             [

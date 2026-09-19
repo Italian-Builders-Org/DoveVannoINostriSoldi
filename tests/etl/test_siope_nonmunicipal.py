@@ -124,7 +124,7 @@ class SiopeNonMunicipalTests(TestCase):
         province = self.projection_rows("siope-uscite-province.psv")
         self.assertTrue(all(row["compartment"] == "PRO" for row in province))
         self.assertTrue(any(row["entityCode"] == "500" and row["year"] == "2025" for row in province))
-        detail = json.loads((self.output / "siope-nonmunicipal-detail.json").read_text())
+        detail = json.loads((self.output / "siope-nonmunicipal-detail.json").read_text(encoding="utf-8"))
         provincial = next(entity for entity in detail["entities"] if entity["codiceIpa"] == "prov_test")
         self.assertEqual(provincial["years"][0]["status"], "available")
         self.assertEqual(provincial["years"][0]["monthly"], [{"month": 1, "amountCents": 100}])
@@ -136,7 +136,7 @@ class SiopeNonMunicipalTests(TestCase):
         self.write_input_receipt()
         self.build()
         detail_path = self.output / "siope-nonmunicipal-detail.json"
-        detail = json.loads(detail_path.read_text())
+        detail = json.loads(detail_path.read_text(encoding="utf-8"))
         asl = next(entity for entity in detail["entities"] if entity["codiceIpa"] == "asl_test")
         self.assertEqual(asl["entityType"], "ASL")
         for period in asl["years"]:
@@ -186,7 +186,7 @@ class SiopeNonMunicipalTests(TestCase):
     def test_input_receipt_is_verified_before_parsing_and_never_rewritten(self) -> None:
         first = self.build()
         self.assertRegex(first["sources"]["2024"]["siopeMovementsSha256"], r"^[a-f0-9]{64}$")
-        self.assertEqual(json.loads((self.output / "siope-nonmunicipal-release.json").read_text())["releaseId"], first["releaseId"])
+        self.assertEqual(json.loads((self.output / "siope-nonmunicipal-release.json").read_text(encoding="utf-8"))["releaseId"], first["releaseId"])
         original_receipt = self.receipt.read_bytes()
         zipped(self.input / "SIOPE_USCITE.2024.zip", {"USCITE_2024.csv": [["100", "2024", "01", "1.01", "999"]]})
         with mock.patch.object(etl, "load_identities", wraps=etl.load_identities) as parser:
@@ -215,7 +215,7 @@ class SiopeNonMunicipalTests(TestCase):
             zipped(self.input / f"SIOPE_USCITE.{year}.zip", {f"USCITE_{year}.csv": rows})
         self.write_input_receipt()
         self.build()
-        detail = json.loads((self.output / "siope-nonmunicipal-detail.json").read_text())
+        detail = json.loads((self.output / "siope-nonmunicipal-detail.json").read_text(encoding="utf-8"))
         totals = {
             entity["codiceIpa"]: next(year["amountCents"] for year in entity["years"] if year["year"] == 2024)
             for entity in detail["entities"]
@@ -279,7 +279,7 @@ class SiopeNonMunicipalTests(TestCase):
         detail_path = self.output / "siope-nonmunicipal-detail.json"
         manifest_path = self.output / "siope-nonmunicipal-release.json"
         etl.validate_candidate_detail(detail_path=detail_path, projection_dir=self.output, manifest_path=manifest_path)
-        original = json.loads(detail_path.read_text())
+        original = json.loads(detail_path.read_text(encoding="utf-8"))
 
         tampered = json.loads(json.dumps(original))
         entity = next(item for item in tampered["entities"] if item["codiceIpa"] == "prov_test")
@@ -309,7 +309,7 @@ class SiopeNonMunicipalTests(TestCase):
             etl.validate_candidate_detail(detail_path=detail_path, projection_dir=self.output, manifest_path=manifest_path)
 
     def test_committed_provenance_cannot_be_resealed_after_valid_looking_mutation(self) -> None:
-        original = json.loads(etl.DEFAULT_DETAIL_PATH.read_text())
+        original = json.loads(etl.DEFAULT_DETAIL_PATH.read_text(encoding="utf-8"))
         for field, value in (("siopeMovementsSha256", hashlib.sha256(b"fabricated").hexdigest()), ("acquisitionDate", "2026-09-05T08:00:00+00:00")):
             with self.subTest(field=field):
                 changed = json.loads(json.dumps(original))
@@ -321,7 +321,7 @@ class SiopeNonMunicipalTests(TestCase):
 
     def test_manifest_retains_the_verified_input_receipt(self) -> None:
         manifest = self.build()
-        self.assertEqual(manifest["inputReceipt"], json.loads(self.receipt.read_text()))
+        self.assertEqual(manifest["inputReceipt"], json.loads(self.receipt.read_text(encoding="utf-8")))
         manifest["inputReceipt"]["files"]["SIOPE_USCITE.2026.zip"]["sha256"] = hashlib.sha256(b"fabricated").hexdigest()
         path = self.output / "siope-nonmunicipal-release.json"
         path.write_bytes(etl.canonical_json(manifest) + b"\n")

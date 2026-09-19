@@ -1,0 +1,140 @@
+{
+  "datasetId": "ritratti-liberi",
+  "title": "Ritratti a licenza libera dei membri del Governo mai eletti in Parlamento (Wikidata + Wikimedia Commons)",
+  "landingUrl": "https://commons.wikimedia.org/",
+  "period": {
+    "label": "Ritratti in uso",
+    "observedDate": "2026-09-17"
+  },
+  "source": {
+    "owner": "Wikimedia Commons — autore e licenza dichiarati per ogni singolo file",
+    "wikidataApiUrl": "https://www.wikidata.org/w/api.php",
+    "commonsApiUrl": "https://commons.wikimedia.org/w/api.php",
+    "landingUrl": "https://commons.wikimedia.org/",
+    "license": "una licenza libera per file: CC0, CC BY, CC BY-SA o pubblico dominio",
+    "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing",
+    "thumbnailWidth": 480,
+    "allowedLicenses": [
+      "cc0",
+      "cc-by-2.0",
+      "cc-by-2.5",
+      "cc-by-3.0",
+      "cc-by-3.0-it",
+      "cc-by-4.0",
+      "cc-by-sa-2.0",
+      "cc-by-sa-3.0",
+      "cc-by-sa-3.0-it",
+      "cc-by-sa-4.0",
+      "attribution",
+      "pd"
+    ],
+    "committedResponses": {
+      "wikidata": {
+        "bytes": 205772,
+        "sha256": "3a7473e7782758a644ecde358f8503d66d6cbe16fb1af5ef2f215a6937ad458d"
+      },
+      "commons": {
+        "bytes": 16507,
+        "sha256": "f4f90e8f014bd23e1cb6d87eceae9967574b996d99ec94d9782f149be40ca6bd"
+      }
+    },
+    "people": [
+      {
+        "personaId": "309042",
+        "name": "Matteo Piantedosi",
+        "wikidataId": "Q114796723",
+        "wikidataLabel": "Matteo Piantedosi",
+        "role": "Ministro dell'interno"
+      },
+      {
+        "personaId": "309044",
+        "name": "Marina Elvira Calderone",
+        "wikidataId": "Q114796202",
+        "wikidataLabel": "Marina Elvira Calderone",
+        "role": "Ministro del lavoro e delle politiche sociali"
+      },
+      {
+        "personaId": "309048",
+        "name": "Orazio Schillaci",
+        "wikidataId": "Q57615236",
+        "wikidataLabel": "Orazio Schillaci",
+        "role": "Ministro della salute"
+      },
+      {
+        "personaId": "300613",
+        "name": "Giuseppe Valditara",
+        "wikidataId": "Q3771578",
+        "wikidataLabel": "Giuseppe Valditara",
+        "role": "Ministro dell'istruzione e del merito"
+      },
+      {
+        "personaId": "309180",
+        "name": "Alessandro Giuli",
+        "wikidataId": "Q93223971",
+        "wikidataLabel": "Alessandro Giuli",
+        "role": "Ministro della cultura"
+      },
+      {
+        "personaId": "309040",
+        "name": "Andrea Abodi",
+        "wikidataId": "Q14633628",
+        "wikidataLabel": "Andrea Abodi",
+        "role": "Ministro per lo sport e i giovani"
+      },
+      {
+        "personaId": "304860",
+        "name": "Sebastiano Musumeci",
+        "wikidataId": "Q2002390",
+        "wikidataLabel": "Nello Musumeci",
+        "role": "Ministro per la protezione civile e le politiche del mare"
+      },
+      {
+        "personaId": "309240",
+        "name": "Luigi Sbarra",
+        "wikidataId": "Q104962298",
+        "wikidataLabel": "Luigi Sbarra",
+        "role": "Sottosegretario di Stato alla Presidenza del Consiglio"
+      }
+    ],
+    "knownWithoutPortrait": [
+      {
+        "personaId": "309060",
+        "name": "Fausta Bergamotto",
+        "wikidataId": "Q114969934",
+        "note": "Nessun file libero su Wikimedia Commons alla data di osservazione."
+      },
+      {
+        "personaId": "309340",
+        "name": "Massimo Dell'Utri",
+        "wikidataId": "Q139525709",
+        "note": "Nessun file libero su Wikimedia Commons alla data di osservazione."
+      }
+    ]
+  },
+  "coverageFloor": {
+    "portraits": 8
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo ritratti e attribuzioni. Per la spesa dei ministeri usare /governi e le viste RGS."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-17"
+    },
+    "provenance": {
+      "kind": "free-licensed-third-party-media",
+      "wikidata": "https://www.wikidata.org/",
+      "commons": "https://commons.wikimedia.org/",
+      "gap": "Le istituzioni non pubblicano il ritratto dei membri del Governo che non sono mai stati eletti: l'archivio della Camera copre solo chi ha avuto un mandato parlamentare e governo.it non pubblica fotografie nelle schede."
+    }
+  },
+  "caveats": [
+    "Ogni ritratto è collegato alla persona tramite l'identificativo Wikidata dichiarato in questa spec e verificato sull'etichetta ufficiale dell'elemento: nessun abbinamento avviene per somiglianza di nome.",
+    "Sono accettate solo licenze libere con autore dichiarato: un file senza licenza riconosciuta o senza attribuzione viene scartato e la persona resta senza fotografia.",
+    "L'attribuzione pubblicata riporta autore e licenza come dichiarati su Wikimedia Commons; il collegamento alla pagina del file resta nel dato.",
+    "Chi non ha un file libero disponibile è elencato in knownWithoutPortrait e nell'interfaccia mantiene il monogramma delle iniziali.",
+    "Questa è l'unica fonte non istituzionale della mappa e riguarda soltanto le immagini: nessun ruolo, data o importo viene da qui."
+  ]
+}

@@ -103,8 +103,8 @@
   },
   {
     "sourceId": "bancaditalia",
-    "sourceTimestamp": "2026-06-30",
-    "detail": "Snapshot ETL attivo · stock al 2026-06-30 · quattro cubi BDS riconciliati.",
+    "sourceTimestamp": "2026-07-31",
+    "detail": "Snapshot ETL attivo · stock al 2026-07-31 · quattro cubi BDS riconciliati.",
     "recordCount": 13
   },
   {
@@ -168,6 +168,12 @@
     "recordCount": 616
   },
   {
+    "sourceId": "istat-poverta-soglia-assoluta",
+    "sourceTimestamp": "2026-09-17",
+    "detail": "Snapshot ETL attivo · soglia monetaria di povertà assoluta 2005-2024 (dataflow 34_211) · 36.078 osservazioni di cui 6050 null · 23 territori · 2.799.511 byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.",
+    "recordCount": 36078
+  },
+  {
     "sourceId": "istat-bes-economico",
     "sourceTimestamp": "2026-09-06",
     "detail": "Snapshot ETL attivo · BES dei territori, benessere economico (edizione 2025, DF_BES_TERRIT_4) · 19.592 osservazioni su 5 indicatori e 139 territori, di cui 111 province · 2.107.955 byte CSV pinnato. Medie pro capite, non spesa pubblica e non sommabili fra territori.",
@@ -216,6 +222,24 @@
     "recordCount": 3760
   },
   {
+    "sourceId": "istat-bes-servizi",
+    "sourceTimestamp": "2025-07-01",
+    "detail": "Otto indicatori BES_12 Qualità dei servizi, edizione 2025; 15.858 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2024; 76 celle non disponibili. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    "recordCount": 15858
+  },
+  {
+    "sourceId": "istat-bes-ambiente",
+    "sourceTimestamp": "2025-07-01",
+    "detail": "Undici indicatori BES_10 Ambiente, edizione 2025; 13.423 osservazioni e 139 territori, di cui 111 province. Periodi distinti fra 2004 e 2023; 412 celle ignote. Solo SEX=T; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    "recordCount": 13423
+  },
+  {
+    "sourceId": "istat-bes-innovazione",
+    "sourceTimestamp": "2025-07-01",
+    "detail": "Quattro indicatori BES_11 Innovazione, ricerca e creatività, edizione 2025; 5.413 osservazioni e 135 territori, di cui 107 province. Periodi distinti fra 2004 e 2023; nessuna cella n/g. Solo SEX=T; 11RIC025 firmato; indicatori non sommabili, non spesa pubblica né dato comunale.",
+    "recordCount": 5413
+  },
+  {
     "sourceId": "inps-naspi",
     "sourceTimestamp": "2026-09-04",
     "detail": "Snapshot ETL attivo · NASpI beneficiari e trattamenti 2018-2022 · 9 tabelle SDMX, 53.362 osservazioni di cui 601 soppresse per privacy · riconciliazioni esatte · 7.312.525 byte.",
@@ -238,6 +262,12 @@
     "sourceTimestamp": "2026-09-15",
     "detail": "Snapshot ETL attivo · CIG Fondi di Solidarietà 2023-2024 · 628 righe · ore autorizzate, non euro · 77.728 byte.",
     "recordCount": 628
+  },
+  {
+    "sourceId": "aifa-spesa-consumi",
+    "sourceTimestamp": "2026-09-16",
+    "detail": "Snapshot ETL attivo · spesa e consumo farmaci 2022-2025 · 21.208 righe aggregate su 21 territori · tracciabilità e convenzionata distinte · 4.053.016 byte.",
+    "recordCount": 21208
   },
   {
     "sourceId": "inl-vigilanza",

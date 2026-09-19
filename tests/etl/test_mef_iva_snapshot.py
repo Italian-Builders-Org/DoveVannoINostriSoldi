@@ -14,7 +14,7 @@ class IvaSnapshotTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.spec = iva.load_spec()
-        cls.data = json.loads(iva.DEFAULT_DATA.read_text())
+        cls.data = json.loads(iva.DEFAULT_DATA.read_text(encoding="utf-8"))
 
     def test_committed_snapshot_is_hash_locked(self):
         iva.check()
@@ -79,7 +79,7 @@ class IvaSnapshotTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             dp, mp = Path(tmp)/'data.json', Path(tmp)/'meta.json'
             dp.write_bytes(payload)
-            mp.write_text(json.dumps(iva.metadata(self.spec, payload, data)))
+            mp.write_text(json.dumps(iva.metadata(self.spec, payload, data)), encoding="utf-8")
             with self.assertRaisesRegex(iva.SnapshotError, 'pinned source projection'):
                 iva.check(data_path=dp, meta_path=mp)
 

@@ -1,0 +1,2337 @@
+{
+  "schemaVersion": 2,
+  "government": {
+    "id": "g202",
+    "uri": "http://dati.camera.it/ocd/governo.rdf/g202",
+    "label": "I Governo Meloni",
+    "startDate": "2022-10-21",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "landingUrl": "https://www.governo.it/it/ministri-e-sottosegretari"
+  },
+  "coverage": {
+    "appointments": 68,
+    "people": 66,
+    "departments": 25,
+    "ministries": 15,
+    "ministers": 24,
+    "viceMinisters": 7,
+    "undersecretaries": 34,
+    "peopleWithOfficialPage": 65,
+    "peopleWithPhoto": 44,
+    "peopleWithProfessionNote": 36
+  },
+  "source": {
+    "owner": "Camera dei deputati (struttura) e Presidenza del Consiglio dei ministri (schede)",
+    "title": "Open Data Camera — incarichi di governo in corso; governo.it — elenco ministri e sottosegretari",
+    "endpointUrl": "https://dati.camera.it/sparql",
+    "landingUrl": "https://dati.camera.it/",
+    "rosterUrl": "https://www.governo.it/it/ministri-e-sottosegretari",
+    "legislatureUri": "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19",
+    "license": "CC BY 4.0 (dati.camera.it); riuso con citazione della fonte (governo.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "acquiredAt": "2026-09-17T19:20:03+00:00",
+    "responses": {
+      "members": {
+        "bytes": 69836,
+        "sha256": "5371203721327e1bb6a0b2b2c4b05f50f49d79e5aa4e9ea6b4a46fd1006849ba"
+      },
+      "identities": {
+        "bytes": 16073,
+        "sha256": "92098c9f5ccc533fb747d8f93423d4cec3658d748bed459e25a201e94dde6ae6"
+      },
+      "roster": {
+        "bytes": 105504,
+        "sha256": "198f3f6732ee53a1c4b953328157f739478492129fd3d1855ca172a6720c8568"
+      }
+    },
+    "cadence": "continuo / aggiornamento RDF Camera a ogni decreto di nomina"
+  },
+  "caveats": [
+    "Sono esposti solo gli incarichi senza data di fine: i componenti cessati non compaiono.",
+    "Chi cumula due incarichi compare una volta come persona con più incarichi, ordinati per rango istituzionale.",
+    "I ministri senza portafoglio sono ricondotti alla delega dichiarata dalla fonte, non a un ministero con bilancio.",
+    "L'identità persona è quella pubblicata dalla Camera: consente di collegare gli incarichi ai mandati parlamentari senza confronti sui nomi.",
+    "Le schede su governo.it non coprono tutti i componenti: quando mancano, il collegamento resta vuoto invece di essere dedotto.",
+    "Il ritratto proviene dall'archivio Camera della legislatura del mandato parlamentare più recente ed è verificato una richiesta alla volta: chi non è mai stato deputato resta senza fotografia ufficiale invece di riceverne una non verificabile.",
+    "La nota di studi e professione è il testo pubblicato dalla Camera sulla persona: la fonte lo tronca a ottanta caratteri e non viene integrato.",
+    "Nessun importo in questo snapshot: per la spesa dei ministeri usare /governi e le viste RGS."
+  ],
+  "departments": [
+    {
+      "id": "og202_1",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_1",
+      "label": "PRESIDENZA DEL CONSIGLIO DEI MINISTRI",
+      "displayLabel": "Presidenza del Consiglio dei ministri",
+      "kind": "presidenza",
+      "memberCount": 11
+    },
+    {
+      "id": "og202_745",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_745",
+      "label": "AFFARI EUROPEI, IL PNRR E LE POLITICHE DI COESIONE",
+      "displayLabel": "Affari europei, il PNRR e le politiche di coesione",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_424",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_424",
+      "label": "AFFARI REGIONALI E AUTONOMIE",
+      "displayLabel": "Affari regionali e autonomie",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_646",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_646",
+      "label": "DISABILITA'",
+      "displayLabel": "Disabilità",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_687",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_687",
+      "label": "FAMIGLIA, NATALITÀ E PARI OPPORTUNITÀ",
+      "displayLabel": "Famiglia, natalità e pari opportunità",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_504",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_504",
+      "label": "MINISTERO DEGLI AFFARI ESTERI E DELLA COOPERAZIONE INTERNAZIONALE",
+      "displayLabel": "Ministero degli affari esteri e della cooperazione internazionale",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_285",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_285",
+      "label": "MINISTERO DEL LAVORO E DELLE POLITICHE SOCIALI",
+      "displayLabel": "Ministero del lavoro e delle politiche sociali",
+      "kind": "ministero",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_665",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_665",
+      "label": "MINISTERO DEL TURISMO",
+      "displayLabel": "Ministero del turismo",
+      "kind": "ministero",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_705",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_705",
+      "label": "MINISTERO DELL'AGRICOLTURA, DELLA SOVRANITÀ ALIMENTARE E DELLE FORESTE",
+      "displayLabel": "Ministero dell'agricoltura, della sovranità alimentare e delle foreste",
+      "kind": "ministero",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_706",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_706",
+      "label": "MINISTERO DELL'AMBIENTE E DELLA SICUREZZA ENERGETICA",
+      "displayLabel": "Ministero dell'ambiente e della sicurezza energetica",
+      "kind": "ministero",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_52",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_52",
+      "label": "MINISTERO DELL'ECONOMIA E DELLE FINANZE",
+      "displayLabel": "Ministero dell'economia e delle finanze",
+      "kind": "ministero",
+      "memberCount": 5
+    },
+    {
+      "id": "og202_15",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_15",
+      "label": "MINISTERO DELL'INTERNO",
+      "displayLabel": "Ministero dell'interno",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_708",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_708",
+      "label": "MINISTERO DELL'ISTRUZIONE E DEL MERITO",
+      "displayLabel": "Ministero dell'istruzione e del merito",
+      "kind": "ministero",
+      "memberCount": 2
+    },
+    {
+      "id": "og202_626",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_626",
+      "label": "MINISTERO DELL'UNIVERSITA' E DELLA RICERCA",
+      "displayLabel": "Ministero dell'università e della ricerca",
+      "kind": "ministero",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_664",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_664",
+      "label": "MINISTERO DELLA CULTURA",
+      "displayLabel": "Ministero della cultura",
+      "kind": "ministero",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_6",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_6",
+      "label": "MINISTERO DELLA DIFESA",
+      "displayLabel": "Ministero della difesa",
+      "kind": "ministero",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_49",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_49",
+      "label": "MINISTERO DELLA GIUSTIZIA",
+      "displayLabel": "Ministero della giustizia",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_264",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_264",
+      "label": "MINISTERO DELLA SALUTE",
+      "displayLabel": "Ministero della salute",
+      "kind": "ministero",
+      "memberCount": 2
+    },
+    {
+      "id": "og202_704",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_704",
+      "label": "MINISTERO DELLE IMPRESE E DEL MADE IN ITALY",
+      "displayLabel": "Ministero delle imprese e del Made in Italy",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_707",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_707",
+      "label": "MINISTERO DELLE INFRASTRUTTURE E DEI TRASPORTI",
+      "displayLabel": "Ministero delle infrastrutture e dei trasporti",
+      "kind": "ministero",
+      "memberCount": 4
+    },
+    {
+      "id": "og202_724",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_724",
+      "label": "PROTEZIONE CIVILE E LE POLITICHE DEL MARE",
+      "displayLabel": "Protezione civile e le politiche del mare",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_545",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_545",
+      "label": "PUBBLICA AMMINISTRAZIONE",
+      "displayLabel": "Pubblica amministrazione",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_524",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_524",
+      "label": "RAPPORTI CON IL PARLAMENTO",
+      "displayLabel": "Rapporti con il Parlamento",
+      "kind": "delega",
+      "memberCount": 3
+    },
+    {
+      "id": "og202_725",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_725",
+      "label": "RIFORME ISTITUZIONALI E LA SEMPLIFICAZIONE NORMATIVA",
+      "displayLabel": "Riforme istituzionali e la semplificazione normativa",
+      "kind": "delega",
+      "memberCount": 1
+    },
+    {
+      "id": "og202_686",
+      "uri": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_686",
+      "label": "SPORT E GIOVANI",
+      "displayLabel": "Sport e giovani",
+      "kind": "delega",
+      "memberCount": 1
+    }
+  ],
+  "appointments": [
+    {
+      "id": "mg302103_1_202_1_20221021",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302103_1_202_1_20221021",
+      "personaId": "302103",
+      "personName": "Giorgia Meloni",
+      "role": "PRESIDENTE DEL CONSIGLIO",
+      "roleKind": "presidente-del-consiglio",
+      "roleLabel": "Presidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-21",
+      "interim": false
+    },
+    {
+      "id": "mg308838_2_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308838_2_202_1_20221023",
+      "personaId": "308838",
+      "personName": "Antonio Tajani",
+      "role": "VICEPRESIDENTE DEL CONSIGLIO",
+      "roleKind": "vice-presidente",
+      "roleLabel": "Vicepresidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg302741_2_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_2_202_1_20221023",
+      "personaId": "302741",
+      "personName": "Matteo Salvini",
+      "role": "VICEPRESIDENTE DEL CONSIGLIO",
+      "roleKind": "vice-presidente",
+      "roleLabel": "Vicepresidente del Consiglio dei ministri",
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg39200_3_202_704_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg39200_3_202_704_20221112",
+      "personaId": "39200",
+      "personName": "Adolfo Urso",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_704",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg309180_3_202_664_20240906",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309180_3_202_664_20240906",
+      "personaId": "309180",
+      "personName": "Alessandro Giuli",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_664",
+      "since": "2024-09-06",
+      "interim": false
+    },
+    {
+      "id": "mg302841_3_202_626_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302841_3_202_626_20221023",
+      "personaId": "302841",
+      "personName": "Anna Maria Bernini",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_626",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg308838_3_202_504_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308838_3_202_504_20221023",
+      "personaId": "308838",
+      "personName": "Antonio Tajani",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_504",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg308798_3_202_49_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308798_3_202_49_20221023",
+      "personaId": "308798",
+      "personName": "Carlo Nordio",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_49",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307463_3_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307463_3_202_705_20221112",
+      "personaId": "307463",
+      "personName": "Francesco Lollobrigida",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg50115_3_202_52_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50115_3_202_52_20221023",
+      "personaId": "50115",
+      "personName": "Giancarlo Giorgetti",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_52",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg308860_3_202_665_20260403",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308860_3_202_665_20260403",
+      "personaId": "308860",
+      "personName": "Gianmarco Mazzi",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_665",
+      "since": "2026-04-03",
+      "interim": false
+    },
+    {
+      "id": "mg303089_3_202_706_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg303089_3_202_706_20221112",
+      "personaId": "303089",
+      "personName": "Gilberto Pichetto Fratin",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_706",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300613_3_202_708_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300613_3_202_708_20221112",
+      "personaId": "300613",
+      "personName": "Giuseppe Valditara",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_708",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300356_3_202_6_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300356_3_202_6_20221023",
+      "personaId": "300356",
+      "personName": "Guido Crosetto",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_6",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309044_3_202_285_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309044_3_202_285_20221023",
+      "personaId": "309044",
+      "personName": "Marina Elvira Calderone",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_285",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309042_3_202_15_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309042_3_202_15_20221023",
+      "personaId": "309042",
+      "personName": "Matteo Piantedosi",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_15",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg302741_3_202_707_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_3_202_707_20221112",
+      "personaId": "302741",
+      "personName": "Matteo Salvini",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_707",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg309048_3_202_264_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309048_3_202_264_20221023",
+      "personaId": "309048",
+      "personName": "Orazio Schillaci",
+      "role": "MINISTRO",
+      "roleKind": "ministro",
+      "roleLabel": "Ministro",
+      "departmentId": "og202_264",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307622_6_202_646_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307622_6_202_646_20221023",
+      "personaId": "307622",
+      "personName": "Alessandra Locatelli",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_646",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg309040_6_202_686_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309040_6_202_686_20221023",
+      "personaId": "309040",
+      "personName": "Andrea Abodi",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_686",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg302748_6_202_687_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302748_6_202_687_20221023",
+      "personaId": "302748",
+      "personName": "Eugenia Maria Roccella",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_687",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307774_6_202_524_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307774_6_202_524_20221023",
+      "personaId": "307774",
+      "personName": "Luca Ciriani",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_524",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg200012_6_202_725_20221110",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg200012_6_202_725_20221110",
+      "personaId": "200012",
+      "personName": "Maria Elisabetta Alberti",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_725",
+      "since": "2022-11-10",
+      "interim": false
+    },
+    {
+      "id": "mg307492_6_202_545_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307492_6_202_545_20221023",
+      "personaId": "307492",
+      "personName": "Paolo Zangrillo",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_545",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg32530_6_202_424_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg32530_6_202_424_20221023",
+      "personaId": "32530",
+      "personName": "Roberto Calderoli",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_424",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg304860_6_202_724_20221110",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg304860_6_202_724_20221110",
+      "personaId": "304860",
+      "personName": "Sebastiano Musumeci",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_724",
+      "since": "2022-11-10",
+      "interim": false
+    },
+    {
+      "id": "mg50204_6_202_745_20241203",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50204_6_202_745_20241203",
+      "personaId": "50204",
+      "personName": "Tommaso Foti",
+      "role": "MINISTRO SENZA PORTAFOGLIO",
+      "roleKind": "ministro-senza-portafoglio",
+      "roleLabel": "Ministro senza portafoglio",
+      "departmentId": "og202_745",
+      "since": "2024-12-03",
+      "interim": false
+    },
+    {
+      "id": "mg300319_29_202_504_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300319_29_202_504_20221215",
+      "personaId": "300319",
+      "personName": "Edmondo Cirielli",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_504",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg304521_29_202_707_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg304521_29_202_707_20221215",
+      "personaId": "304521",
+      "personName": "Edoardo Rixi",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_707",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg302886_29_202_49_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302886_29_202_49_20221215",
+      "personaId": "302886",
+      "personName": "Francesco Paolo Sisto",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_49",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg307426_29_202_285_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307426_29_202_285_20221215",
+      "personaId": "307426",
+      "personName": "Maria Teresa Bellucci",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_285",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg300444_29_202_52_20221111",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300444_29_202_52_20221111",
+      "personaId": "300444",
+      "personName": "Maurizio Leo",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_52",
+      "since": "2022-11-11",
+      "interim": false
+    },
+    {
+      "id": "mg301559_29_202_704_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301559_29_202_704_20221215",
+      "personaId": "301559",
+      "personName": "Valentino Valentini",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_704",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg307138_29_202_706_20221215",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307138_29_202_706_20221215",
+      "personaId": "307138",
+      "personName": "Vannia Gava",
+      "role": "VICE MINISTRO",
+      "roleKind": "vice-ministro",
+      "roleLabel": "Vice ministro",
+      "departmentId": "og202_706",
+      "since": "2022-12-15",
+      "interim": false
+    },
+    {
+      "id": "mg300624_5_202_49_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300624_5_202_49_20260422",
+      "personaId": "300624",
+      "personName": "Alberto Balboni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_49",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307750_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307750_5_202_1_20221031",
+      "personaId": "307750",
+      "personName": "Alberto Barachini",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307668_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307668_5_202_1_20221031",
+      "personaId": "307668",
+      "personName": "Alessandro Morelli",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg32500_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg32500_5_202_1_20221031",
+      "personaId": "32500",
+      "personName": "Alessio Butti",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg50236_5_202_1_20221023",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg50236_5_202_1_20221023",
+      "personaId": "50236",
+      "personName": "Alfredo Mantovano",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-23",
+      "interim": false
+    },
+    {
+      "id": "mg307855_5_202_49_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307855_5_202_49_20221031",
+      "personaId": "307855",
+      "personName": "Andrea Ostellari",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_49",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307820_5_202_707_20250331",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307820_5_202_707_20250331",
+      "personaId": "307820",
+      "personName": "Antonio Iannone",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_707",
+      "since": "2025-03-31",
+      "interim": false
+    },
+    {
+      "id": "mg302945_5_202_706_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302945_5_202_706_20221112",
+      "personaId": "302945",
+      "personName": "Claudio Barbaro",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_706",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307468_5_202_285_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307468_5_202_285_20221031",
+      "personaId": "307468",
+      "personName": "Claudio Durigon",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_285",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307452_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307452_5_202_15_20221031",
+      "personaId": "307452",
+      "personName": "Emanuele Prisco",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg309060_5_202_704_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309060_5_202_704_20221112",
+      "personaId": "309060",
+      "personName": "Fausta Bergamotto",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_704",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg308837_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308837_5_202_52_20221031",
+      "personaId": "308837",
+      "personName": "Federico Freni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307139_5_202_1_20260213",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307139_5_202_1_20260213",
+      "personaId": "307139",
+      "personName": "Giorgio Silli",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2026-02-13",
+      "interim": false
+    },
+    {
+      "id": "mg307802_5_202_1_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307802_5_202_1_20221031",
+      "personaId": "307802",
+      "personName": "Giovanbattista Fazzolari",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg301573_5_202_524_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301573_5_202_524_20221112",
+      "personaId": "301573",
+      "personName": "Giuseppina Castiello",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_524",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307879_5_202_6_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307879_5_202_6_20221031",
+      "personaId": "307879",
+      "personName": "Isabella Rauti",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_6",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg308421_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308421_5_202_52_20221031",
+      "personaId": "308421",
+      "personName": "Lucia Albano",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307758_5_202_664_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307758_5_202_664_20221031",
+      "personaId": "307758",
+      "personName": "Lucia Borgonzoni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_664",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307242_5_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307242_5_202_705_20221112",
+      "personaId": "307242",
+      "personName": "Luigi D'Eramo",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg309240_5_202_1_20250612",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309240_5_202_1_20250612",
+      "personaId": "309240",
+      "personName": "Luigi Sbarra",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2025-06-12",
+      "interim": false
+    },
+    {
+      "id": "mg308966_5_202_704_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308966_5_202_704_20260422",
+      "personaId": "308966",
+      "personName": "Mara Bizzotto",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_704",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307332_5_202_264_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307332_5_202_264_20221031",
+      "personaId": "307332",
+      "personName": "Marcello Gemmato",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_264",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg307728_5_202_504_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307728_5_202_504_20221031",
+      "personaId": "307728",
+      "personName": "Maria Tripodi",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_504",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg309340_5_202_504_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg309340_5_202_504_20260422",
+      "personaId": "309340",
+      "personName": "Massimo Dell'Utri",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_504",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307402_5_202_524_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307402_5_202_524_20221112",
+      "personaId": "307402",
+      "personName": "Matilde Siracusano",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_524",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307643_5_202_6_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307643_5_202_6_20221031",
+      "personaId": "307643",
+      "personName": "Matteo Perego Di Cremnago",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_6",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg302762_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302762_5_202_15_20221031",
+      "personaId": "302762",
+      "personName": "Nicola Molteni",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg301457_5_202_708_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg301457_5_202_708_20221112",
+      "personaId": "301457",
+      "personName": "Paola Frassinetti",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_708",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300497_5_202_1_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300497_5_202_1_20260422",
+      "personaId": "300497",
+      "personName": "Paolo Barelli",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_1",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg307824_5_202_705_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307824_5_202_705_20221112",
+      "personaId": "307824",
+      "personName": "Patrizio Giacomo La Pietra",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_705",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg300640_5_202_664_20260422",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg300640_5_202_664_20260422",
+      "personaId": "300640",
+      "personName": "Pietro Cannella",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_664",
+      "since": "2026-04-22",
+      "interim": false
+    },
+    {
+      "id": "mg305684_5_202_52_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg305684_5_202_52_20221031",
+      "personaId": "305684",
+      "personName": "Sandra Savino",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_52",
+      "since": "2022-10-31",
+      "interim": false
+    },
+    {
+      "id": "mg308876_5_202_707_20221112",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308876_5_202_707_20221112",
+      "personaId": "308876",
+      "personName": "Tullio Ferrante",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_707",
+      "since": "2022-11-12",
+      "interim": false
+    },
+    {
+      "id": "mg307567_5_202_15_20221031",
+      "uri": "http://dati.camera.it/ocd/membroGoverno.rdf/mg307567_5_202_15_20221031",
+      "personaId": "307567",
+      "personName": "Wanda Ferro",
+      "role": "SOTTOSEGRETARIO DI STATO",
+      "roleKind": "sottosegretario",
+      "roleLabel": "Sottosegretario di Stato",
+      "departmentId": "og202_15",
+      "since": "2022-10-31",
+      "interim": false
+    }
+  ],
+  "people": [
+    {
+      "personaId": "302103",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302103",
+      "firstName": "Giorgia",
+      "lastName": "Meloni",
+      "displayName": "Giorgia Meloni",
+      "appointmentIds": [
+        "mg302103_1_202_1_20221021"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/presidente-del-consiglio/giorgia-meloni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302103.jpg",
+      "professionNote": "Diploma di liceo linguistico; Giornalista",
+      "primaryRoleKind": "presidente-del-consiglio",
+      "primaryRoleLabel": "Presidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-21",
+      "biography": "Presidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 21 ottobre 2022."
+    },
+    {
+      "personaId": "302741",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302741",
+      "firstName": "Matteo",
+      "lastName": "Salvini",
+      "displayName": "Matteo Salvini",
+      "appointmentIds": [
+        "mg302741_2_202_1_20221023",
+        "mg302741_3_202_707_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/matteo-salvini",
+      "cameraLegislature": 17,
+      "photoUrl": "https://documenti.camera.it/_dati/leg17/schededeputatinuovosito/fotoDefinitivo/big/d302741.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "vice-presidente",
+      "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Vicepresidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022. Ministro — Ministero delle infrastrutture e dei trasporti, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308838",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308838",
+      "firstName": "Antonio",
+      "lastName": "Tajani",
+      "displayName": "Antonio Tajani",
+      "appointmentIds": [
+        "mg308838_2_202_1_20221023",
+        "mg308838_3_202_504_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/vice-presidente/antonio-tajani",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308838.jpg",
+      "professionNote": "Laurea in giurisprudenza; Giornalista professionista",
+      "primaryRoleKind": "vice-presidente",
+      "primaryRoleLabel": "Vicepresidente del Consiglio dei ministri",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Vicepresidente del Consiglio dei ministri presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022. Ministro — Ministero degli affari esteri e della cooperazione internazionale, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "302841",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302841",
+      "firstName": "Anna Maria",
+      "lastName": "Bernini",
+      "displayName": "Anna Maria Bernini",
+      "appointmentIds": [
+        "mg302841_3_202_626_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/anna-maria-bernini",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d302841.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_626",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'università e della ricerca, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "309044",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309044",
+      "firstName": "Marina Elvira",
+      "lastName": "Calderone",
+      "displayName": "Marina Elvira Calderone",
+      "appointmentIds": [
+        "mg309044_3_202_285_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elvira-calderone",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero del lavoro e delle politiche sociali, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "300356",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300356",
+      "firstName": "Guido",
+      "lastName": "Crosetto",
+      "displayName": "Guido Crosetto",
+      "appointmentIds": [
+        "mg300356_3_202_6_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/guido-crosetto",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d300356.jpg",
+      "professionNote": "Maturità classica; Imprenditore",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della difesa, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "50115",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50115",
+      "firstName": "Giancarlo",
+      "lastName": "Giorgetti",
+      "displayName": "Giancarlo Giorgetti",
+      "appointmentIds": [
+        "mg50115_3_202_52_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giancarlo-giorgetti",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d50115.jpg",
+      "professionNote": "Laurea in economia aziendale",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'economia e delle finanze, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "309180",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309180",
+      "firstName": "Alessandro",
+      "lastName": "Giuli",
+      "displayName": "Alessandro Giuli",
+      "appointmentIds": [
+        "mg309180_3_202_664_20240906"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandro-giuli",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_664",
+      "since": "2024-09-06",
+      "biography": "Ministro — Ministero della cultura, dal 6 settembre 2024."
+    },
+    {
+      "personaId": "307463",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307463",
+      "firstName": "Francesco",
+      "lastName": "Lollobrigida",
+      "displayName": "Francesco Lollobrigida",
+      "appointmentIds": [
+        "mg307463_3_202_705_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/francesco-lollobrigida",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307463.jpg",
+      "professionNote": "Laurea in giurisprudenza",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308860",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308860",
+      "firstName": "Gianmarco",
+      "lastName": "Mazzi",
+      "displayName": "Gianmarco Mazzi",
+      "appointmentIds": [
+        "mg308860_3_202_665_20260403"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gianmarco-mazzi",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308860.jpg",
+      "professionNote": "Laurea in giurisprudenza; Manager del settore artistico",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_665",
+      "since": "2026-04-03",
+      "biography": "Ministro — Ministero del turismo, dal 3 aprile 2026."
+    },
+    {
+      "personaId": "308798",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308798",
+      "firstName": "Carlo",
+      "lastName": "Nordio",
+      "displayName": "Carlo Nordio",
+      "appointmentIds": [
+        "mg308798_3_202_49_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/carlo-nordio",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308798.jpg",
+      "professionNote": "Laurea in giurisprudenza; Procuratore aggiunto della Repubblica",
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della giustizia, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "309042",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309042",
+      "firstName": "Matteo",
+      "lastName": "Piantedosi",
+      "displayName": "Matteo Piantedosi",
+      "appointmentIds": [
+        "mg309042_3_202_15_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/matteo-piantedosi",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero dell'interno, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "303089",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p303089",
+      "firstName": "Gilberto",
+      "lastName": "Pichetto Fratin",
+      "displayName": "Gilberto Pichetto Fratin",
+      "appointmentIds": [
+        "mg303089_3_202_706_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/gilberto-pichetto-fratin",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d303089.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'ambiente e della sicurezza energetica, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309048",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309048",
+      "firstName": "Orazio",
+      "lastName": "Schillaci",
+      "displayName": "Orazio Schillaci",
+      "appointmentIds": [
+        "mg309048_3_202_264_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/orazio-schillaci",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_264",
+      "since": "2022-10-23",
+      "biography": "Ministro — Ministero della salute, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "39200",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p39200",
+      "firstName": "Adolfo",
+      "lastName": "Urso",
+      "displayName": "Adolfo Urso",
+      "appointmentIds": [
+        "mg39200_3_202_704_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/adolfo-urso",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d39200.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero delle imprese e del Made in Italy, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "300613",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300613",
+      "firstName": "Giuseppe",
+      "lastName": "Valditara",
+      "displayName": "Giuseppe Valditara",
+      "appointmentIds": [
+        "mg300613_3_202_708_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/giuseppe-valditara",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro",
+      "primaryRoleLabel": "Ministro",
+      "primaryDepartmentId": "og202_708",
+      "since": "2022-11-12",
+      "biography": "Ministro — Ministero dell'istruzione e del merito, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309040",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309040",
+      "firstName": "Andrea",
+      "lastName": "Abodi",
+      "displayName": "Andrea Abodi",
+      "appointmentIds": [
+        "mg309040_6_202_686_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/andrea-abodi",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_686",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Sport e giovani, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "200012",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p200012",
+      "firstName": "Maria Elisabetta",
+      "lastName": "Alberti",
+      "displayName": "Maria Elisabetta Alberti",
+      "appointmentIds": [
+        "mg200012_6_202_725_20221110"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/maria-elisabetta-alberti-casellati",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_725",
+      "since": "2022-11-10",
+      "biography": "Ministro senza portafoglio con delega: Riforme istituzionali e la semplificazione normativa, dal 10 novembre 2022."
+    },
+    {
+      "personaId": "32530",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p32530",
+      "firstName": "Roberto",
+      "lastName": "Calderoli",
+      "displayName": "Roberto Calderoli",
+      "appointmentIds": [
+        "mg32530_6_202_424_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/roberto-calderoli",
+      "cameraLegislature": 13,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_424",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Affari regionali e autonomie, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307774",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307774",
+      "firstName": "Luca",
+      "lastName": "Ciriani",
+      "displayName": "Luca Ciriani",
+      "appointmentIds": [
+        "mg307774_6_202_524_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/luca-ciriani",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Rapporti con il Parlamento, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "50204",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50204",
+      "firstName": "Tommaso",
+      "lastName": "Foti",
+      "displayName": "Tommaso Foti",
+      "appointmentIds": [
+        "mg50204_6_202_745_20241203"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/tommaso-foti-0",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d50204.jpg",
+      "professionNote": "Diploma di liceo scientifico; Dirigente di azienda privata",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_745",
+      "since": "2024-12-03",
+      "biography": "Ministro senza portafoglio con delega: Affari europei, il PNRR e le politiche di coesione, dal 3 dicembre 2024."
+    },
+    {
+      "personaId": "307622",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307622",
+      "firstName": "Alessandra",
+      "lastName": "Locatelli",
+      "displayName": "Alessandra Locatelli",
+      "appointmentIds": [
+        "mg307622_6_202_646_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/alessandra-locatelli",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307622.jpg",
+      "professionNote": "Laurea in sociologia; Assessore comunale",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_646",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Disabilità, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "304860",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p304860",
+      "firstName": "Sebastiano",
+      "lastName": "Musumeci",
+      "displayName": "Sebastiano Musumeci",
+      "appointmentIds": [
+        "mg304860_6_202_724_20221110"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/sebastiano-musumeci",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_724",
+      "since": "2022-11-10",
+      "biography": "Ministro senza portafoglio con delega: Protezione civile e le politiche del mare, dal 10 novembre 2022."
+    },
+    {
+      "personaId": "302748",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302748",
+      "firstName": "Eugenia Maria",
+      "lastName": "Roccella",
+      "displayName": "Eugenia Maria Roccella",
+      "appointmentIds": [
+        "mg302748_6_202_687_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/eugenia-maria-roccella",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302748.jpg",
+      "professionNote": "Laurea in lettere, Dottorato di ricerca; Giornalista",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_687",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Famiglia, natalità e pari opportunità, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307492",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307492",
+      "firstName": "Paolo",
+      "lastName": "Zangrillo",
+      "displayName": "Paolo Zangrillo",
+      "appointmentIds": [
+        "mg307492_6_202_545_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/ministro/paolo-zangrillo",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307492.jpg",
+      "professionNote": "Laurea in giurisprudenza; Dirigente di azienda privata",
+      "primaryRoleKind": "ministro-senza-portafoglio",
+      "primaryRoleLabel": "Ministro senza portafoglio",
+      "primaryDepartmentId": "og202_545",
+      "since": "2022-10-23",
+      "biography": "Ministro senza portafoglio con delega: Pubblica amministrazione, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "307426",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307426",
+      "firstName": "Maria Teresa",
+      "lastName": "Bellucci",
+      "displayName": "Maria Teresa Bellucci",
+      "appointmentIds": [
+        "mg307426_29_202_285_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-teresa-bellucci",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307426.jpg",
+      "professionNote": "Laurea in psicologia, Specializzazione in psicoterapia sistemico-relazionale e familiare, Master interuniversitario di II livello in organizzazione e funzionamento della pubblica amministrazione; Psicologa, Psicoterapeuta",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero del lavoro e delle politiche sociali, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "300319",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300319",
+      "firstName": "Edmondo",
+      "lastName": "Cirielli",
+      "displayName": "Edmondo Cirielli",
+      "appointmentIds": [
+        "mg300319_29_202_504_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edmondo-cirielli",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300319.jpg",
+      "professionNote": "Laurea in giurisprudenza, Laurea in scienze politiche, Laurea in scienze della sicurezza interna ed esterna; Generale di Brigata dell'Arma dei Carabinieri in Ausiliaria",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_504",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero degli affari esteri e della cooperazione internazionale, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "307138",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307138",
+      "firstName": "Vannia",
+      "lastName": "Gava",
+      "displayName": "Vannia Gava",
+      "appointmentIds": [
+        "mg307138_29_202_706_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/vannia-gava",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307138.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero dell'ambiente e della sicurezza energetica, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "300444",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300444",
+      "firstName": "Maurizio",
+      "lastName": "Leo",
+      "displayName": "Maurizio Leo",
+      "appointmentIds": [
+        "mg300444_29_202_52_20221111"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maurizio-leo",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300444.jpg",
+      "professionNote": "Laurea in giurisprudenza, Specializzazione in studi europei; Prorettore della scuola superiore dell'economia e delle finanze presso il ministero dell'economia e delle finanze",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-11-11",
+      "biography": "Vice ministro — Ministero dell'economia e delle finanze, dal 11 novembre 2022."
+    },
+    {
+      "personaId": "304521",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p304521",
+      "firstName": "Edoardo",
+      "lastName": "Rixi",
+      "displayName": "Edoardo Rixi",
+      "appointmentIds": [
+        "mg304521_29_202_707_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/edoardo-rixi",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d304521.jpg",
+      "professionNote": "Laurea in economia e commercio",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_707",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero delle infrastrutture e dei trasporti, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "302886",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302886",
+      "firstName": "Francesco Paolo",
+      "lastName": "Sisto",
+      "displayName": "Francesco Paolo Sisto",
+      "appointmentIds": [
+        "mg302886_29_202_49_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/francesco-paolo-sisto",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d302886.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato penalista, Docente universitario",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero della giustizia, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "301559",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301559",
+      "firstName": "Valentino",
+      "lastName": "Valentini",
+      "displayName": "Valentino Valentini",
+      "appointmentIds": [
+        "mg301559_29_202_704_20221215"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/valentino-valentini",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d301559.jpg",
+      "professionNote": "Laurea di interprete, Master in business administration; Funzionario del parlamento europeo",
+      "primaryRoleKind": "vice-ministro",
+      "primaryRoleLabel": "Vice ministro",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-12-15",
+      "biography": "Vice ministro — Ministero delle imprese e del Made in Italy, dal 15 dicembre 2022."
+    },
+    {
+      "personaId": "308421",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308421",
+      "firstName": "Lucia",
+      "lastName": "Albano",
+      "displayName": "Lucia Albano",
+      "appointmentIds": [
+        "mg308421_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-albano",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308421.jpg",
+      "professionNote": "Laurea in economia e commercio; Dottore commercialista, docente in informatica",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "300624",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300624",
+      "firstName": "Alberto",
+      "lastName": "Balboni",
+      "displayName": "Alberto Balboni",
+      "appointmentIds": [
+        "mg300624_5_202_49_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/alberto-balboni",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_49",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero della giustizia, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307750",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307750",
+      "firstName": "Alberto",
+      "lastName": "Barachini",
+      "displayName": "Alberto Barachini",
+      "appointmentIds": [
+        "mg307750_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alberto-barachini",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "302945",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302945",
+      "firstName": "Claudio",
+      "lastName": "Barbaro",
+      "displayName": "Claudio Barbaro",
+      "appointmentIds": [
+        "mg302945_5_202_706_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-barbaro",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d302945.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_706",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'ambiente e della sicurezza energetica, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "300497",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300497",
+      "firstName": "Paolo",
+      "lastName": "Barelli",
+      "displayName": "Paolo Barelli",
+      "appointmentIds": [
+        "mg300497_5_202_1_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/paolo-barelli",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300497.jpg",
+      "professionNote": "Imprenditore",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "309060",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309060",
+      "firstName": "Fausta",
+      "lastName": "Bergamotto",
+      "displayName": "Fausta Bergamotto",
+      "appointmentIds": [
+        "mg309060_5_202_704_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/fausta-bergamotto",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_704",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero delle imprese e del Made in Italy, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308966",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308966",
+      "firstName": "Mara",
+      "lastName": "Bizzotto",
+      "displayName": "Mara Bizzotto",
+      "appointmentIds": [
+        "mg308966_5_202_704_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/mara-bizzotto",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_704",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero delle imprese e del Made in Italy, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307758",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307758",
+      "firstName": "Lucia",
+      "lastName": "Borgonzoni",
+      "displayName": "Lucia Borgonzoni",
+      "appointmentIds": [
+        "mg307758_5_202_664_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/lucia-borgonzoni",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_664",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della cultura, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "32500",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p32500",
+      "firstName": "Alessio",
+      "lastName": "Butti",
+      "displayName": "Alessio Butti",
+      "appointmentIds": [
+        "mg32500_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessio-butti",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d32500.jpg",
+      "professionNote": "Diploma di istituto tecnico industriale; Amministratore di società e cooperative sociali",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "300640",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p300640",
+      "firstName": "Pietro",
+      "lastName": "Cannella",
+      "displayName": "Pietro Cannella",
+      "appointmentIds": [
+        "mg300640_5_202_664_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/pietro-cannella",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d300640.jpg",
+      "professionNote": "Diploma di liceo scientifico; Giornalista professionista",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_664",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero della cultura, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "301573",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301573",
+      "firstName": "Giuseppina",
+      "lastName": "Castiello",
+      "displayName": "Giuseppina Castiello",
+      "appointmentIds": [
+        "mg301573_5_202_524_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/giuseppina-castiello",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d301573.jpg",
+      "professionNote": "Laurea in lettere moderne",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato con delega: Rapporti con il Parlamento, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307242",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307242",
+      "firstName": "Luigi",
+      "lastName": "D'Eramo",
+      "displayName": "Luigi D'Eramo",
+      "appointmentIds": [
+        "mg307242_5_202_705_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/luigi-d-eramo",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307242.jpg",
+      "professionNote": "Diploma di istituto tecnico commerciale; Commerciante",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "309340",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309340",
+      "firstName": "Massimo",
+      "lastName": "Dell'Utri",
+      "displayName": "Massimo Dell'Utri",
+      "appointmentIds": [
+        "mg309340_5_202_504_20260422"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/massimo-dellutri",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_504",
+      "since": "2026-04-22",
+      "biography": "Sottosegretario di Stato — Ministero degli affari esteri e della cooperazione internazionale, dal 22 aprile 2026."
+    },
+    {
+      "personaId": "307468",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307468",
+      "firstName": "Claudio",
+      "lastName": "Durigon",
+      "displayName": "Claudio Durigon",
+      "appointmentIds": [
+        "mg307468_5_202_285_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/claudio-durigon",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307468.jpg",
+      "professionNote": "Dirigente di associazione sindacale",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_285",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero del lavoro e delle politiche sociali, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307802",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307802",
+      "firstName": "Giovanbattista",
+      "lastName": "Fazzolari",
+      "displayName": "Giovanbattista Fazzolari",
+      "appointmentIds": [
+        "mg307802_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/giovanbattista-fazzolari",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "308876",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308876",
+      "firstName": "Tullio",
+      "lastName": "Ferrante",
+      "displayName": "Tullio Ferrante",
+      "appointmentIds": [
+        "mg308876_5_202_707_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/tullio-ferrante",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308876.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato. Senior Associate",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_707",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero delle infrastrutture e dei trasporti, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307567",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307567",
+      "firstName": "Wanda",
+      "lastName": "Ferro",
+      "displayName": "Wanda Ferro",
+      "appointmentIds": [
+        "mg307567_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/wanda-ferro",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307567.jpg",
+      "professionNote": "Laurea in lettere moderne",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "301457",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p301457",
+      "firstName": "Paola",
+      "lastName": "Frassinetti",
+      "displayName": "Paola Frassinetti",
+      "appointmentIds": [
+        "mg301457_5_202_708_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/paola-frassinetti",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d301457.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_708",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'istruzione e del merito, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "308837",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308837",
+      "firstName": "Federico",
+      "lastName": "Freni",
+      "displayName": "Federico Freni",
+      "appointmentIds": [
+        "mg308837_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/federico-freni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308837.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307332",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307332",
+      "firstName": "Marcello",
+      "lastName": "Gemmato",
+      "displayName": "Marcello Gemmato",
+      "appointmentIds": [
+        "mg307332_5_202_264_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/marcello-gemmato",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307332.jpg",
+      "professionNote": "Specializzato in farmacia ospedaliera; Farmacista",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_264",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della salute, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307820",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307820",
+      "firstName": "Antonio",
+      "lastName": "Iannone",
+      "displayName": "Antonio Iannone",
+      "appointmentIds": [
+        "mg307820_5_202_707_20250331"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/antonio-iannone",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_707",
+      "since": "2025-03-31",
+      "biography": "Sottosegretario di Stato — Ministero delle infrastrutture e dei trasporti, dal 31 marzo 2025."
+    },
+    {
+      "personaId": "307824",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307824",
+      "firstName": "Patrizio Giacomo",
+      "lastName": "La Pietra",
+      "displayName": "Patrizio Giacomo La Pietra",
+      "appointmentIds": [
+        "mg307824_5_202_705_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/patrizio-giacomo-la-pietra",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_705",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato — Ministero dell'agricoltura, della sovranità alimentare e delle foreste, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "50236",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p50236",
+      "firstName": "Alfredo",
+      "lastName": "Mantovano",
+      "displayName": "Alfredo Mantovano",
+      "appointmentIds": [
+        "mg50236_5_202_1_20221023"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alfredo-mantovano",
+      "cameraLegislature": 16,
+      "photoUrl": "https://documenti.camera.it/_dati/leg16/schededeputatinuovosito/fotoDefinitivo/big/d50236.jpg",
+      "professionNote": "Laurea in giurisprudenza; Magistrato di cassazione",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-23",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 23 ottobre 2022."
+    },
+    {
+      "personaId": "302762",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p302762",
+      "firstName": "Nicola",
+      "lastName": "Molteni",
+      "displayName": "Nicola Molteni",
+      "appointmentIds": [
+        "mg302762_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/nicola-molteni",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302762.jpg",
+      "professionNote": "Laurea in giurisprudenza; Avvocato",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307668",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307668",
+      "firstName": "Alessandro",
+      "lastName": "Morelli",
+      "displayName": "Alessandro Morelli",
+      "appointmentIds": [
+        "mg307668_5_202_1_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/alessandro-morelli",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307668.jpg",
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307855",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307855",
+      "firstName": "Andrea",
+      "lastName": "Ostellari",
+      "displayName": "Andrea Ostellari",
+      "appointmentIds": [
+        "mg307855_5_202_49_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/andrea-ostellari",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_49",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della giustizia, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307643",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307643",
+      "firstName": "Matteo",
+      "lastName": "Perego Di Cremnago",
+      "displayName": "Matteo Perego Di Cremnago",
+      "appointmentIds": [
+        "mg307643_5_202_6_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matteo-perego",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307643.jpg",
+      "professionNote": "Laurea in filosofia; imprenditore",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della difesa, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307452",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307452",
+      "firstName": "Emanuele",
+      "lastName": "Prisco",
+      "displayName": "Emanuele Prisco",
+      "appointmentIds": [
+        "mg307452_5_202_15_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/emanuele-prisco",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307452.jpg",
+      "professionNote": "Laurea in giurisprudenza; Funzionario amministrativo Corpo nazionale dei vigili del fuoco",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_15",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'interno, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "307879",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307879",
+      "firstName": "Isabella",
+      "lastName": "Rauti",
+      "displayName": "Isabella Rauti",
+      "appointmentIds": [
+        "mg307879_5_202_6_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/isabella-rauti",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_6",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero della difesa, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "305684",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305684",
+      "firstName": "Sandra",
+      "lastName": "Savino",
+      "displayName": "Sandra Savino",
+      "appointmentIds": [
+        "mg305684_5_202_52_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/sandra-savino",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d305684.jpg",
+      "professionNote": "Diploma di istituto tecnico commerciale; Imprenditore del settore dei servizi",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_52",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero dell'economia e delle finanze, dal 31 ottobre 2022."
+    },
+    {
+      "personaId": "309240",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p309240",
+      "firstName": "Luigi",
+      "lastName": "Sbarra",
+      "displayName": "Luigi Sbarra",
+      "appointmentIds": [
+        "mg309240_5_202_1_20250612"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretari-pcm/luigi-sbarra",
+      "cameraLegislature": null,
+      "photoUrl": null,
+      "professionNote": null,
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2025-06-12",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 12 giugno 2025."
+    },
+    {
+      "personaId": "307139",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307139",
+      "firstName": "Giorgio",
+      "lastName": "Silli",
+      "displayName": "Giorgio Silli",
+      "appointmentIds": [
+        "mg307139_5_202_1_20260213"
+      ],
+      "officialPage": null,
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307139.jpg",
+      "professionNote": "Laurea in scienze politiche e relazioni internazionali, 110L; Perito industriale",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_1",
+      "since": "2026-02-13",
+      "biography": "Sottosegretario di Stato presso la Presidenza del Consiglio dei ministri, dal 13 febbraio 2026."
+    },
+    {
+      "personaId": "307402",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307402",
+      "firstName": "Matilde",
+      "lastName": "Siracusano",
+      "displayName": "Matilde Siracusano",
+      "appointmentIds": [
+        "mg307402_5_202_524_20221112"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/matilde-siracusano",
+      "cameraLegislature": 19,
+      "photoUrl": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307402.jpg",
+      "professionNote": "Laurea in scienze politiche; Master affari politici italiani",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_524",
+      "since": "2022-11-12",
+      "biography": "Sottosegretario di Stato con delega: Rapporti con il Parlamento, dal 12 novembre 2022."
+    },
+    {
+      "personaId": "307728",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307728",
+      "firstName": "Maria",
+      "lastName": "Tripodi",
+      "displayName": "Maria Tripodi",
+      "appointmentIds": [
+        "mg307728_5_202_504_20221031"
+      ],
+      "officialPage": "https://www.governo.it/it/governo/meloni/sottosegretario/maria-tripodi",
+      "cameraLegislature": 18,
+      "photoUrl": "https://documenti.camera.it/_dati/leg18/schededeputatinuovosito/fotoDefinitivo/big/d307728.jpg",
+      "professionNote": "Laurea specialistica in scienze politiche - relazioni internazionali; Consulente presso enti pubblici",
+      "primaryRoleKind": "sottosegretario",
+      "primaryRoleLabel": "Sottosegretario di Stato",
+      "primaryDepartmentId": "og202_504",
+      "since": "2022-10-31",
+      "biography": "Sottosegretario di Stato — Ministero degli affari esteri e della cooperazione internazionale, dal 31 ottobre 2022."
+    }
+  ]
+}

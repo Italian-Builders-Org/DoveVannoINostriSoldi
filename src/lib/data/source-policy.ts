@@ -33,6 +33,7 @@ export type SourceId =
   | "istat-epea"
   | "istat-poverta"
   | "istat-poverta-relativa"
+  | "istat-poverta-soglia-assoluta"
   | "istat-bes-economico"
   | "istat-bes-salute"
   | "istat-bes-istruzione"
@@ -41,11 +42,15 @@ export type SourceId =
   | "istat-bes-politica"
   | "istat-bes-sicurezza"
   | "istat-bes-paesaggio"
+  | "istat-bes-servizi"
+  | "istat-bes-ambiente"
+  | "istat-bes-innovazione"
   | "inps-naspi"
   | "inps-assegno-unico"
   | "inps-integrazioni-salariali"
   | "inps-cig-fondi-solidarieta"
   | "inl-vigilanza"
+  | "aifa-spesa-consumi"
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
@@ -570,6 +575,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     maxRetries: 1,
     tags: ["source:istat-poverta-relativa", "domain:social-conditions"],
   },
+  "istat-poverta-soglia-assoluta": {
+    id: "istat-poverta-soglia-assoluta",
+    label: "ISTAT · soglia di povertà assoluta",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Le soglie monetarie escono annualmente. Lo snapshot fissa il dataflow 34_211 (2005–2024) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-soglia-assoluta", "domain:social-conditions"],
+  },
   "istat-bes-economico": {
     id: "istat-bes-economico",
     label: "ISTAT · BES dei territori, benessere economico",
@@ -683,6 +703,48 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     maxRetries: 1,
     tags: ["source:istat-bes-paesaggio", "domain:landscape-heritage"],
   },
+  "istat-bes-servizi": {
+    id: "istat-bes-servizi",
+    label: "ISTAT · BES dei territori, Qualità dei servizi",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-servizi", "domain:service-quality"],
+  },
+  "istat-bes-ambiente": {
+    id: "istat-bes-ambiente",
+    label: "ISTAT · BES dei territori, Ambiente",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-ambiente", "domain:environment"],
+  },
+  "istat-bes-innovazione": {
+    id: "istat-bes-innovazione",
+    label: "ISTAT · BES dei territori, Innovazione, ricerca e creatività",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://www.istat.it/notizia/bes-dei-territori-edizione-2025/",
+    cadence: "annuale",
+    cadenceNote: "Edizione 2025; nuova acquisizione e verifica di dati e codelist prima di ogni aggiornamento.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-bes-innovazione", "domain:innovation"],
+  },
   "inps-naspi": {
     id: "inps-naspi",
     label: "INPS · NASpI beneficiari e trattamenti",
@@ -742,6 +804,22 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:inps-cig-fondi-solidarieta", "domain:social-benefits", "domain:labour"],
+  },
+  "aifa-spesa-consumi": {
+    id: "aifa-spesa-consumi",
+    label: "AIFA · spesa e consumo farmaci per ATC",
+    owner: "AIFA — Agenzia Italiana del Farmaco",
+    sourceUrl:
+      "https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti",
+    cadence: "annuale",
+    cadenceNote:
+      "Quattro rilasci annuali 2022-2025 (il 2025 in zip). Snapshot aggiornabile solo dopo nuova acquisizione dei CSV e validazione offline; licenza CC BY 4.0 dichiarata sul catalogo Open Data AIFA. Tracciabilità e convenzionata restano canali distinti.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:aifa-spesa-consumi", "domain:health", "domain:pharmaceuticals"],
   },
   "inl-vigilanza": {
     id: "inl-vigilanza",

@@ -1,0 +1,48 @@
+{
+  "datasetId": "camera-partecipazione-voto",
+  "title": "Camera dei deputati — partecipazione al voto (presenze/assenze per deputato, XIX legislatura)",
+  "landingUrl": "https://www.camera.it/deputati/statistiche_voto",
+  "period": {
+    "label": "Dall'inizio della XIX legislatura al mese di febbraio 2026",
+    "observedDate": "2026-02-28",
+    "legislature": 19
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "pageUrl": "https://www.camera.it/deputati/statistiche_voto/vista?leg=19&type=deputati&riepil_mese_end=2026-02-28",
+    "landingUrl": "https://www.camera.it/deputati/statistiche_voto",
+    "license": "Riuso con citazione della fonte (Camera dei deputati)",
+    "licenseUrl": "https://www.camera.it/",
+    "committedResponses": {
+      "vista": {
+        "bytes": 152638,
+        "sha256": "4fc7cf9074259ef8fcf68ff43042c4fda698d99ac9a6a33394582d5f3509d07e"
+      }
+    }
+  },
+  "coverageFloor": {
+    "rows": 390,
+    "matchedDeputies": 380
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Conteggi di partecipazione alle votazioni elettroniche: nessun importo."
+    },
+    "periodo": {
+      "kind": "cumulative-to-month-end",
+      "observedDate": "2026-02-28",
+      "label": "Dall'inizio della XIX legislatura al mese di febbraio 2026"
+    },
+    "provenance": {
+      "kind": "official-html-table",
+      "page": "https://www.camera.it/deputati/statistiche_voto/vista?leg=19&type=deputati&riepil_mese_end=2026-02-28"
+    }
+  },
+  "caveats": [
+    "La tabella ufficiale misura la partecipazione alle votazioni elettroniche e le missioni, non le sedute di commissione.",
+    "Il collegamento al deputato in carica usa cognome unico in aula o corrispondenza sul nome: le righe senza match restano nel snapshot senza personaId.",
+    "Il Senato non pubblica una tabella ufficiale equivalente di percentuale di presenza: non si deriva qui da votazioni aperte.",
+    "La nota della Camera avverte che il sistema di voto non distingue sempre le assenze per malattia o altre cause giustificate oltre alla colonna dedicata."
+  ]
+}

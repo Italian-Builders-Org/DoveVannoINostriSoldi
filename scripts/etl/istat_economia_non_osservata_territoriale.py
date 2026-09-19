@@ -91,7 +91,7 @@ def validate_contract(spec: dict) -> None:
     }:
         raise SourceError("asse provenance divergente")
 
-    corpus_spec = json.loads(CORPUS_SPEC.read_text())
+    corpus_spec = json.loads(CORPUS_SPEC.read_text(encoding="utf-8"))
     overrides = corpus_spec.get("sourceMetadata", {}).get("overrides", {})
     dataset_id = spec["tables"][0]["datasetId"]
     expected_metadata = {
@@ -330,7 +330,7 @@ def main() -> int:
     args = parser.parse_args()
     if sum(bool(value) for value in (args.output_dir, args.publish, args.check)) != 1:
         parser.error("specificare una sola azione: --output-dir, --publish o --check")
-    spec = json.loads(SPEC.read_text())
+    spec = json.loads(SPEC.read_text(encoding="utf-8"))
     # validate_contract needs corpus override present; allow --output-dir before registration
     if args.output_dir:
         payload = verified_source(spec, args.input)

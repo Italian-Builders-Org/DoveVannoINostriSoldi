@@ -3,6 +3,10 @@ import { NextResponse } from "next/server.js";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent)(?:\/|[ );]|$)/i;
+// Keep in sync with PUBLIC_POLITICI_URL / immersive-chrome (Node tests cannot resolve @/).
+const POLITICI_HOST = "politici.dovevannoinostrisoldi.com";
+const IMMERSIVE_REQUEST_HEADER = "x-dvns-immersive";
+const IMMERSIVE_REQUEST_VALUE = "politici";
 
 // Local fallback only; Vercel WAF enforces the cross-instance limits.
 const PER_IP_WINDOW_MS = 60_000;
@@ -76,10 +80,41 @@ function rateLimit(request: NextRequest, state: RateState, perIpMax: number): Ne
   return null;
 }
 
+function requestHostname(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const raw = forwarded || request.headers.get("host") || request.nextUrl.hostname;
+  return raw.split(":")[0]!.toLowerCase();
+}
+
+function withImmersiveRequestHeaders(request: NextRequest): Headers {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(IMMERSIVE_REQUEST_HEADER, IMMERSIVE_REQUEST_VALUE);
+  return requestHeaders;
+}
+
+function isPoliticiMapPath(pathname: string): boolean {
+  return pathname === "/politici" || pathname.startsWith("/politici/");
+}
+
 // ── Proxy handler ───────────────────────────────────────────────────
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  // vercel.json host rewrites lose to the existing `/` page; rewrite here instead.
+  // Mark immersive so the root layout can strip site chrome before hydration
+  // (usePathname stays `/` on the subdomain after rewrite).
+  if (pathname === "/" && requestHostname(request) === POLITICI_HOST) {
+    const destination = request.nextUrl.clone();
+    destination.pathname = "/politici";
+    return NextResponse.rewrite(destination, {
+      request: { headers: withImmersiveRequestHeaders(request) },
+    });
+  }
+  if (isPoliticiMapPath(pathname)) {
+    return NextResponse.next({
+      request: { headers: withImmersiveRequestHeaders(request) },
+    });
+  }
   if (pathname.startsWith("/api/")) {
     const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
@@ -108,5 +143,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/mcp", "/enti/:path*", "/api/:path*"],
+  matcher: ["/", "/politici", "/politici/:path*", "/mcp", "/enti/:path*", "/api/:path*"],
 };

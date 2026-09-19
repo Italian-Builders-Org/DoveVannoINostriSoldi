@@ -260,13 +260,15 @@ function PersonPanel({ personId, map, profiles, news, judicial, onSelect, onRetr
     </span>}
     <div className={styles.panelTabs} role="group" aria-label="Contenuto della scheda">
       <button type="button" aria-pressed={tab === "profilo"} onClick={() => setTab("profilo")}>Profilo e incarichi</button>
-      {person.chamberId === "camera" ? <button type="button" aria-pressed={tab === "atti"} onClick={() => setTab("atti")}>Atti e voti</button> : null}
+      {person.chamberId === "camera" || person.chamberId === "senato"
+        ? <button type="button" aria-pressed={tab === "atti"} onClick={() => setTab("atti")}>Atti e voti</button>
+        : null}
       <button type="button" aria-pressed={tab === "notizie"} onClick={() => setTab("notizie")}>
         Notizie
         {newsReady && newsReady.articles.length > 0 ? <span className={styles.countMark}>{newsReady.articles.length}</span> : null}
       </button>
     </div>
-    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} /> : <>
+    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} activity={profile?.legislativeActivity ?? null} /> : <>
       {person.government ? <button type="button" className={styles.relationshipLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
         <span>Membro del Governo<small>
           {person.chamberId ? "Con mandato anche in Parlamento" : "Senza mandato parlamentare"}

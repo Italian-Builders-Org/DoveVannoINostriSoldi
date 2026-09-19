@@ -31,10 +31,16 @@ test("acts empty response is distinct from error, and filters normalize accents"
 });
 test("acts requests are same origin, match the requested deputy and reject HTTP errors", async (t) => {
   let called;
-  t.mock.method(globalThis, "fetch", async (url, options) => { called = { url, options }; return Response.json(legislationFixture()); });
+  t.mock.method(globalThis, "fetch", async (url, options) => {
+    called = { url, options };
+    const personId = String(url).split("/").at(-2);
+    return Response.json(legislationFixture(personId));
+  });
   await loadLegislation("dep-1", new AbortController().signal);
   assert.equal(called.url, "/api/politici/dep-1/atti");
   assert.ok(called.options.signal instanceof AbortSignal);
+  await loadLegislation("sen-s1", new AbortController().signal);
+  assert.equal(called.url, "/api/politici/sen-s1/atti");
   await assert.rejects(loadLegislation("sen-1", new AbortController().signal));
   globalThis.fetch = async () => new Response(null, { status: 503 });
   await assert.rejects(loadLegislation("dep-1", new AbortController().signal));

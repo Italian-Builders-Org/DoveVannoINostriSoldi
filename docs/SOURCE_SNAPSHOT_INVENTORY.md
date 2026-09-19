@@ -137,7 +137,8 @@ La revisione e il merge restano umani.
 | `presidente-repubblica` | non dichiarato nello snapshot | 2026-09-17T19:09:42+00:00 | https://www.quirinale.it/pagine/il-presidente | nessuno | nessuno | manuale | `python3 scripts/etl/presidente_repubblica_snapshot.py --check` |
 | `ritratti-liberi` | non dichiarato nello snapshot | 2026-09-17T20:12:24+00:00 | https://commons.wikimedia.org/ | nessuno | nessuno | manuale | `python3 scripts/etl/ritratti_liberi_snapshot.py --check` |
 | `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
-| `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T17:42:13+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
+| `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T21:42:19+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
+| `senato-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T21:41:48+00:00 | https://dati.senato.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check` |
 | `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 | `parlamento-giudiziario-xix` | XIX legislatura, dal 2022-10-13 | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/555 | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check` |
 

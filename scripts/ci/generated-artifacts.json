@@ -2578,6 +2578,34 @@
       "trustModel": "Cinque risposte SPARQL lockate dall'endpoint ufficiale dati.camera.it (atti, cofirme, stati iter, votazioni finali, voti nominali). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap di 10.000 righe dell'endpoint; le cofirme paginano per chiave (keyset) perché l'OFFSET non supera il limite. Il perimetro è l'iniziativa parlamentare: gli atti a prima firma di un membro del Governo sono esclusi e conteggiati in coverage, così come le votazioni finali su quegli atti. Le identità ufficiali della Camera sono verificate strict: votanti = favorevoli + contrari, presenti = votanti + astenuti, approvato solo se i favorevoli superano la maggioranza, e i conteggi nominali F/C/A riconciliano con i totali dichiarati."
     },
     {
+      "id": "senato-atti-voti-xix",
+      "owner": "Senato della Repubblica — Open Data (dati.senato.it), atti, iter e votazioni",
+      "files": [
+        "src/data/generated/senato-atti-voti-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_senato_atti_voti_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/senato-atti-voti-contract.test.mjs",
+        "tests/politici-atti-route.test.mjs",
+        "tests/politici-repubblica-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/senato_atti_voti_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/senato-atti-voti-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Sei risposte SPARQL lockate dall'endpoint ufficiale dati.senato.it, interrogate solo via GET (fasi dei disegni, firme, votazioni finali, sedute, voti nominali, conteggio disegni XIX). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap dell'endpoint; firme e nominali paginano per chiave (keyset). L'unità è il disegno di legge via osr:idDdl, con le sue fasi ordinate per progressivoIter. Il perimetro è il disegno la cui fase iniziale è 'presentato' al ramo Senato con un primo firmatario senatore: i disegni a prima firma deputato, Governo, Regioni, CNEL o popolare sono esclusi e conteggiati in coverage, così come le votazioni finali su di essi. Le identità del Senato sono verificate strict: votanti = favorevoli + contrari + astenuti, presenti >= votanti, approvato solo se i favorevoli superano la maggioranza, conteggi nominali F/C/A riconciliati con i totali; il nominale include anche presenteNonVotante (P) e inCongedoMissione (M). Il rapporto presenti = votanti + P non è universale e non è strict."
+    },
+    {
       "id": "camera-trattamento-economico",
       "owner": "Camera dei deputati — trattamento economico istituzionale",
       "files": [

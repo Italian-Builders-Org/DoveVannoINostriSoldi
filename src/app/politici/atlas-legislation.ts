@@ -10,7 +10,13 @@ export type LegislativeData = {
 };
 
 export const OWN_VOTE_LABELS: Record<RepublicActVote, string> = {
-  F: "Favorevole", C: "Contrario", A: "Astenuto/a", N: "Non ha votato", V: "Voto segreto",
+  F: "Favorevole",
+  C: "Contrario",
+  A: "Astenuto/a",
+  N: "Non ha votato",
+  V: "Voto segreto",
+  P: "Presente non votante",
+  M: "In congedo o missione",
   "non-rilevato": "Voto non rilevato nella fonte",
 };
 const object = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -32,7 +38,8 @@ function validAct(value: unknown, role: RepublicActSummary["role"]): boolean {
 export function parseLegislation(payload: unknown, personId: string): LegislativeData {
   if (!object(payload) || payload.ok !== true || payload.personId !== personId || !object(payload.source)) return invalid();
   const source = payload.source;
-  if (source.chamber !== "camera" || !["periodLabel", "observedDate", "sourceLabel", "licenseLabel"].every((key) => text(source[key]))
+  if ((source.chamber !== "camera" && source.chamber !== "senato")
+    || !["periodLabel", "observedDate", "sourceLabel", "licenseLabel"].every((key) => text(source[key]))
     || !isSafeExternalUrl(source.sourceUrl) || !Array.isArray(source.caveats) || !source.caveats.every(text)
     || !Array.isArray(source.outcomeClasses) || !source.outcomeClasses.every((item) => object(item) && text(item.id) && text(item.label))
     || !Array.isArray(payload.firstSigned) || !payload.firstSigned.every((act) => validAct(act, "primo-firmatario"))
@@ -49,7 +56,9 @@ export function filterActs(acts: RepublicActSummary[], query: string, outcome: s
 }
 
 export async function loadLegislation(personId: string, signal: AbortSignal): Promise<LegislativeData> {
-  if (!/^dep-\d+$/u.test(personId)) throw new Error("Perimetro Camera non disponibile");
+  if (!/^(?:dep-\d+|sen-s\d+)$/u.test(personId)) {
+    throw new Error("Atti legislativi disponibili solo per deputati e senatori del perimetro pubblicato");
+  }
   const deadline = requestDeadline(signal, 15_000);
   try {
     deadline.signal.throwIfAborted();

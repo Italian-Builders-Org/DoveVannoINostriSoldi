@@ -2,7 +2,7 @@ import {
   findRepublicPerson,
   getRepubblicaGraph,
   getRepubblicaLegislativeActs,
-  getRepubblicaLegislativeSource,
+  getRepubblicaLegislativeSources,
 } from "@/lib/politici-repubblica";
 
 export const runtime = "nodejs";
@@ -24,13 +24,14 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   const graph = getRepubblicaGraph();
+  const sources = getRepubblicaLegislativeSources();
   return Response.json(
     {
       ok: true,
       personId: person.id,
       legislature: graph.legislature,
       updatedAt: graph.updatedAt,
-      source: getRepubblicaLegislativeSource(),
+      source: person.chamberId === "senato" ? sources.senato : sources.camera,
       firstSigned: acts.firstSigned,
       coSigned: acts.coSigned,
     },

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-const { getRepubblicaMap, getRepubblicaProfiles, getRepubblicaLegislativeActs, getRepubblicaLegislativeSource } = await import("../src/lib/politici-repubblica.ts");
+const { getRepubblicaMap, getRepubblicaProfiles, getRepubblicaLegislativeActs, getRepubblicaLegislativeSources } = await import("../src/lib/politici-repubblica.ts");
 import { buildChamberScene } from "../src/app/politici/graph-geometry.ts";
 import { atlasUrl, filteredPeople, readAtlasState, searchAtlas } from "../src/app/politici/atlas-model.ts";
 const { parseProfiles } = await import("../src/app/politici/atlas-data.ts");
@@ -49,16 +49,17 @@ test("government membership and Camera attendance remain different scopes", () =
 });
 
 
-test("every published deputy's legislative payload validates without dropping acts or vote codes", async () => {
+test("every published deputy and senator's legislative payload validates without dropping acts or vote codes", async () => {
   const { parseLegislation } = await import("../src/app/politici/atlas-legislation.ts");
-  const source = getRepubblicaLegislativeSource();
+  const sources = getRepubblicaLegislativeSources();
   for (const person of map.people) {
     const acts = getRepubblicaLegislativeActs(person.id);
-    if (person.chamberId !== "camera") {
+    if (person.chamberId !== "camera" && person.chamberId !== "senato") {
       assert.equal(acts, null, person.id);
       continue;
     }
     assert.ok(acts, person.id);
+    const source = person.chamberId === "senato" ? sources.senato : sources.camera;
     const parsed = parseLegislation({ ok: true, personId: person.id, source, ...acts }, person.id);
     assert.deepEqual(parsed.firstSigned, acts.firstSigned, person.id);
     assert.deepEqual(parsed.coSigned, acts.coSigned, person.id);

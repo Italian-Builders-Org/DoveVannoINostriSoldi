@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import type { RepublicActSummary } from "@/lib/politici-repubblica";
+import type { RepublicActSummary, RepublicLegislativeActivity } from "@/lib/politici-repubblica";
 import type { Resource } from "./atlas-data";
 import { filterActs, loadLegislation, OWN_VOTE_LABELS, type LegislativeData } from "./atlas-legislation";
 import { longDate } from "./atlas-model";
@@ -9,7 +9,13 @@ import { Icon, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-export function LegislativeActs({ personId }: { personId: string }) {
+export function LegislativeActs({
+  personId,
+  activity,
+}: {
+  personId: string;
+  activity?: RepublicLegislativeActivity | null;
+}) {
   const [resource, setResource] = useState<Resource<LegislativeData>>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
@@ -24,10 +30,10 @@ export function LegislativeActs({ personId }: { personId: string }) {
     setAttempt((value) => value + 1);
   }}>La scheda della persona e le altre sezioni restano consultabili.</Status>;
   if (resource.status !== "ready" || resource.data.personId !== personId) return <Status kind="loading" title="Caricamento degli atti…" />;
-  return <ActsBrowser data={resource.data} />;
+  return <ActsBrowser data={resource.data} activity={activity ?? null} />;
 }
 
-function ActsBrowser({ data }: { data: LegislativeData }) {
+function ActsBrowser({ data, activity }: { data: LegislativeData; activity: RepublicLegislativeActivity | null }) {
   const id = useId();
   const [role, setRole] = useState<"firstSigned" | "coSigned">("firstSigned");
   const [query, setQuery] = useState("");
@@ -36,13 +42,31 @@ function ActsBrowser({ data }: { data: LegislativeData }) {
   const acts = filterActs(data[role], query, outcome);
   const filtered = Boolean(query.trim() || outcome);
   const reset = () => { setQuery(""); setOutcome(""); setLimit(8); };
-  return <section className={extra.actsSection} aria-label="Proposte di legge firmate" data-legislative-person={data.personId}>
-    <div className={styles.sectionHeading}><h3>Proposte di legge</h3><span className={styles.tag}>Camera</span></div>
+  const chamberLabel = data.source.chamber === "senato" ? "Senato" : "Camera";
+  const membersLabel = data.source.chamber === "senato" ? "senatori" : "deputati";
+  const comparison = activity?.comparison ?? null;
+  const becameLaw = activity?.counts.becameLaw;
+  return <section className={extra.actsSection} aria-label="Proposte di legge firmate" data-legislative-person={data.personId} data-legislative-chamber={data.source.chamber}>
+    <div className={styles.sectionHeading}><h3>Proposte di legge</h3><span className={styles.tag}>{chamberLabel}</span></div>
     <p className={styles.note}>{data.source.periodLabel}. Rilevazione: {longDate(data.source.observedDate)}.</p>
     <dl className={styles.metrics}>
       <div><dt>A prima firma</dt><dd>{data.firstSigned.length}</dd></div>
       <div><dt>Cofirmate</dt><dd>{data.coSigned.length}</dd></div>
+      {becameLaw !== undefined ? <div><dt>Divenute legge</dt><dd>{becameLaw}</dd></div> : null}
     </dl>
+    {comparison ? <>
+      <p className={styles.note}>
+        Mediana {chamberLabel}: {comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
+        {comparison.groupMedianFirstSigned !== null && comparison.groupLabel
+          ? ` · mediana ${comparison.groupLabel}: ${comparison.groupMedianFirstSigned.toLocaleString("it-IT")}`
+          : ""}
+        .
+      </p>
+      {data.firstSigned.length > 0 ? <p className={styles.note}>
+        Ha presentato più proposte a prima firma del {comparison.firstSignedPercentile}% degli altri{" "}
+        {comparison.peerCount} {membersLabel} in carica. Non è una classifica di qualità o efficacia.
+      </p> : null}
+    </> : null}
     <p className={styles.note}>Atti di iniziativa parlamentare del perimetro indicato dalla fonte. Il numero di firme non misura qualità o efficacia dell’attività parlamentare.</p>
     <div className={extra.actRoleSwitch} role="group" aria-label="Tipo di firma">
       <button type="button" aria-pressed={role === "firstSigned"} onClick={() => { setRole("firstSigned"); setLimit(8); }}>Prima firma</button>
@@ -68,9 +92,13 @@ function ActsBrowser({ data }: { data: LegislativeData }) {
 }
 
 function ActCard({ act }: { act: RepublicActSummary }) {
+  const siteLabel = act.chamber === "senato" ? "Senato" : "Camera";
+  const numberLabel = act.chamber === "senato" || act.number.startsWith("S.")
+    ? act.number
+    : `A.C. ${act.number}`;
   return <details className={extra.actCard} data-act-id={act.id}>
     <summary>
-      <span className={extra.actNumber}>A.C. {act.number}<Icon name="plus" size={16} /></span>
+      <span className={extra.actNumber}>{numberLabel}<Icon name="plus" size={16} /></span>
       <strong>{act.title ?? `Proposta n. ${act.number}: titolo non disponibile`}</strong>
       <span className={extra.actDate}>{act.presentedDate ? `Presentata il ${longDate(act.presentedDate)}` : "Data di presentazione non disponibile"}</span>
       <span className={extra.actState}>{act.currentState ?? "Stato dell’iter non disponibile"}</span>
@@ -83,9 +111,9 @@ function ActCard({ act }: { act: RepublicActSummary }) {
         <p>{vote.approved ? "Approvata" : "Non approvata"}{vote.confidenceVote ? " · con questione di fiducia" : ""}</p>
         <p className={extra.ownVote}>Voto individuale: <strong>{OWN_VOTE_LABELS[vote.ownVote]}</strong></p>
         <dl className={extra.voteCounts}><div><dt>Favorevoli</dt><dd>{vote.favorevoli}</dd></div><div><dt>Contrari</dt><dd>{vote.contrari}</dd></div><div><dt>Astenuti</dt><dd>{vote.astenuti}</dd></div></dl>
-        <p className={styles.note}>Esito della votazione alla Camera, non necessariamente approvazione definitiva della legge.</p>
+        <p className={styles.note}>Esito della votazione al {siteLabel}, non necessariamente approvazione definitiva della legge.</p>
       </li>)}</ul> : <p className={styles.note}>Nessuna votazione finale collegata nello snapshot. Non equivale a una bocciatura.</p>}
-      <SourceLink href={act.officialPage}>Atto e iter sul sito della Camera</SourceLink>
+      <SourceLink href={act.officialPage}>Atto e iter sul sito del {siteLabel}</SourceLink>
     </div>
   </details>;
 }

@@ -1,6 +1,6 @@
 import {
   getRepubblicaGraph,
-  getRepubblicaLegislativeSource,
+  getRepubblicaLegislativeSources,
   getRepubblicaProfiles,
 } from "@/lib/politici-repubblica";
 
@@ -20,7 +20,7 @@ export async function GET() {
       legislature: graph.legislature,
       updatedAt: graph.updatedAt,
       sources: graph.sources,
-      legislativeSource: getRepubblicaLegislativeSource(),
+      legislativeSources: getRepubblicaLegislativeSources(),
       profiles: getRepubblicaProfiles(),
     },
     {

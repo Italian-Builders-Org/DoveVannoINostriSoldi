@@ -19,6 +19,7 @@ export const DATASET_IDS = [
   "openbdap_ssn_conto_economico",
   "openbdap_ssn_storico_nazionale",
   "salute_posti_letto",
+  "salute_dispositivi_medici",
   "openbdap_spesa_legislature",
   "openbdap_legge_bilancio_storico",
   "opencivitas_fabbisogni",
@@ -134,6 +135,12 @@ export type DatasetQuery = {
   submeasure?: string;
   schoolType?: string;
   pathway?: string;
+  view?: "search" | "aggregate" | "device" | "facts" | "filters";
+  deviceType?: "1" | "2";
+  deviceNumber?: string;
+  dimension?: "territory" | "classification" | "manufacturer";
+  value?: string;
+  role?: "fabbricante" | "assemblatore";
   limit?: number;
   offset?: number;
   cursor?: string;
@@ -212,6 +219,9 @@ const exampleQueries = {
   openbdap_ssn_conto_economico: { dataset: "openbdap_ssn_conto_economico", year: 2024, region: "Calabria", limit: 20 },
   openbdap_ssn_storico_nazionale: { dataset: "openbdap_ssn_storico_nazionale" },
   salute_posti_letto: { dataset: "salute_posti_letto", query: "PIEMONTE", limit: 20 },
+  salute_dispositivi_medici: {
+    dataset: "salute_dispositivi_medici", view: "search", query: "PRPR0005", year: 2021, limit: 20,
+  },
   openbdap_spesa_legislature: { dataset: "openbdap_spesa_legislature" },
   openbdap_legge_bilancio_storico: { dataset: "openbdap_legge_bilancio_storico", years: 6 },
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
@@ -650,6 +660,47 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     freshness: "snapshot",
     filters: ["query", "limit", "cursor", "offset"],
     caveat: "Accesso al corpus salute-posti-letto-2023. Conteggi, non euro; geografia delle strutture, non dei pazienti. La dotazione non misura pazienti curati, tempi di attesa o qualità delle cure. Nido escluso; eventuali modelli HSP12/HSP13 non trasmessi limitano la completezza. Il CE 2024 ha anno e perimetro diversi: nessun costo per posto letto o indice di efficienza.",
+  },
+  {
+    id: "salute_dispositivi_medici",
+    title: "Spesa rilevata per dispositivi medici",
+    summary: "Cerca i dispositivi BD/RDM presenti nei dati di spesa dal 2018 al 2021. Restituisce anche aggregati per territorio, CND e fabbricante o assemblatore.",
+    sourceIds: [],
+    customSources: [
+      {
+        id: "salute-spesa-dispositivi-2018", name: "Dispositivi medici · spesa per azienda sanitaria · 2018",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2018-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2018", rows: 718808,
+      },
+      {
+        id: "salute-spesa-dispositivi-2019", name: "Dispositivi medici · spesa per azienda sanitaria · 2019",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2020-12-28", period: "2019", rows: 768233,
+      },
+      {
+        id: "salute-spesa-dispositivi-2020", name: "Dispositivi medici · spesa per azienda sanitaria · 2020",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2020-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2023-03-17", period: "2020", rows: 787845,
+      },
+      {
+        id: "salute-spesa-dispositivi-2021", name: "Dispositivi medici · spesa per azienda sanitaria · 2021",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2021-spesa-rilevata-azienda-sanitaria/",
+        cadence: "risorsa annuale; promozione manuale", license: "IODL 2.0", publishedAt: "2023-03-17", period: "2021", rows: 846878,
+      },
+      {
+        id: "salute-dispositivi-bdrdm", name: "Banca dati e Repertorio dei dispositivi medici",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici/",
+        cadence: "snapshot verificato", license: "IODL 2.0", dataAsOf: "2026-09-14", rows: 2416708,
+      },
+      {
+        id: "salute-classificazione-cnd", name: "Classificazione nazionale dei dispositivi medici",
+        owner: "Ministero della Salute", url: "https://www.dati.salute.gov.it/it/dataset/classificazione-nazionale-dei-dispositivi-medici-cnd/",
+        cadence: "snapshot verificato", license: "IODL 2.0", dataAsOf: "2026-09-01", rows: 11115,
+      },
+    ],
+    freshness: "snapshot",
+    filters: ["view", "query", "deviceType", "deviceNumber", "year", "region", "code", "dimension", "value", "role", "limit", "cursor"],
+    caveat: "La fonte riporta la spesa di acquisto nel perimetro pubblicato. Non riporta prezzi unitari, pagamenti al fabbricante o la spesa completa del SSN. Il fabbricante o assemblatore proviene dalla BD/RDM aggiornata al 14 settembre 2026 e non prova un ruolo storico. Non sommare questi importi con CE SSN, SIOPE o aggiudicazioni.",
   },
   {
     id: "spesa_pa_dettaglio",

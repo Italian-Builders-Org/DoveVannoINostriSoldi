@@ -99,16 +99,16 @@ class AggregateReleaseProofTests(unittest.TestCase):
             "proofSha256": "6" * 64,
             "catalogBytes": 50,
             "catalogSha256": "7" * 64,
-            "receipts": 97,
-            "rowArtifacts": 379,
-            "artifactCount": 459,
+            "receipts": 103,
+            "rowArtifacts": 7_425,
+            "artifactCount": 7_529,
             "receiptSetSha256": "8" * 64,
             "artifactSetSha256": "9" * 64,
-            "sourceRows": 14_804_828,
-            "publicRows": 1_822_482,
+            "sourceRows": 20_354_415,
+            "publicRows": 7_372_069,
             "catalogOnlyRows": 12_979_505,
             "derivedOnlyRows": 2_841,
-            "sourceBytes": 2_537_014_778,
+            "sourceBytes": 3_813_205_318,
         }
 
     def tearDown(self) -> None:
@@ -450,7 +450,7 @@ class CommittedReleaseProofTests(unittest.TestCase):
         proof = release.check_release()
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
-        self.assertEqual(proof["contract"]["datasets"], 97)
+        self.assertEqual(proof["contract"]["datasets"], 103)
 
 
 if __name__ == "__main__":

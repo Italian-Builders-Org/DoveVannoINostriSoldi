@@ -83,6 +83,7 @@ export default async function HealthSpendingPage({ searchParams }: PageProps<"/s
           <a href="#health-history-title">Andamento della spesa PA ↓</a>
           <a href="#sha-health-title">Chi paga (SHA Eurostat) ↓</a>
           <Link href="/spese/sanita/storico">Serie storica dei costi SSN · 2012-2024 →</Link>
+          <Link href="/spese/sanita/dispositivi">Spesa per dispositivi medici · 2018-2021 →</Link>
           <a href="#ssn-accounting-title">Dettaglio SSN · 2024 ↓</a>
           <Link href={`/?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
         </p>
@@ -148,6 +149,13 @@ export default async function HealthSpendingPage({ searchParams }: PageProps<"/s
       </section>
 
       <HospitalBeds />
+
+      <section className="panel" aria-labelledby="medical-devices-title">
+        <h2 className="panel-title" id="medical-devices-title">Dispositivi medici</h2>
+        <p>Ricerca i dispositivi presenti nella spesa rilevata dalle aziende sanitarie dal 2018 al 2021. Puoi consultare numero di repertorio, anagrafica BD/RDM, classificazione CND e aggregati per territorio o fabbricante.</p>
+        <p>Questi importi non sono prezzi unitari e non vanno sommati automaticamente ai costi del Conto Economico SSN o ai pagamenti SIOPE.</p>
+        <Link className="btn btn-primary" href="/spese/sanita/dispositivi">Esplora i dispositivi medici</Link>
+      </section>
 
       <section className="panel" aria-labelledby="regions-title">
         <div className={styles.sectionHead}>

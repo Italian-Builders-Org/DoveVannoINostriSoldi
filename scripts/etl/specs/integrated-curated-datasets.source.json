@@ -440,6 +440,78 @@
           "https://ec.europa.eu/eurostat/web/income-and-living-conditions/information-data",
           "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
         ]
+      },
+      "salute-classificazione-cnd": {
+        "acquisitionDate": "2026-09-14",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/classificazione-nazionale-dei-dispositivi-medici-cnd/",
+          "https://www.dati.salute.gov.it/sites/default/files/opendata/DISPO_RDM_74_20260901.csv"
+        ],
+        "checkedAt": "2026-09-15",
+        "holder": "Ministero della Salute",
+        "publicationDate": null,
+        "referencePeriod": "2026-09-01",
+        "updateFrequency": "mensile; acquisizione e promozione manuali"
+      },
+      "salute-dispositivi-bdrdm": {
+        "acquisitionDate": "2026-09-14",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici/",
+          "https://www.dati.salute.gov.it/sites/default/files/opendata/DISPO_RDM_1_20260914_csv.zip"
+        ],
+        "checkedAt": "2026-09-15",
+        "holder": "Ministero della Salute",
+        "publicationDate": null,
+        "referencePeriod": "2026-09-14",
+        "updateFrequency": "settimanale; acquisizione e promozione manuali"
+      },
+      "salute-spesa-dispositivi-2020": {
+        "acquisitionDate": "2026-09-15",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2020-spesa-rilevata-azienda-sanitaria/",
+          "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_149_0_upFile.zip"
+        ],
+        "checkedAt": "2026-09-15",
+        "holder": "Ministero della Salute",
+        "publicationDate": "2023-03-17",
+        "referencePeriod": "2020",
+        "updateFrequency": "una tantum (risorsa annuale); acquisizione e promozione manuali"
+      },
+      "salute-spesa-dispositivi-2021": {
+        "acquisitionDate": "2026-09-14",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2021-spesa-rilevata-azienda-sanitaria/",
+          "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_150_0_upFile.zip"
+        ],
+        "checkedAt": "2026-09-15",
+        "holder": "Ministero della Salute",
+        "publicationDate": "2023-03-17",
+        "referencePeriod": "2021",
+        "updateFrequency": "una tantum (risorsa annuale); acquisizione e promozione manuali"
+      },
+      "salute-spesa-dispositivi-2018": {
+        "holder": "Ministero della Salute",
+        "referencePeriod": "2018",
+        "publicationDate": "2020-12-28",
+        "acquisitionDate": "2026-09-16",
+        "checkedAt": "2026-09-16",
+        "updateFrequency": "una tantum (risorsa annuale); acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2018-spesa-rilevata-azienda-sanitaria/",
+          "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_100_0_upFile.zip"
+        ]
+      },
+      "salute-spesa-dispositivi-2019": {
+        "holder": "Ministero della Salute",
+        "referencePeriod": "2019",
+        "publicationDate": "2020-12-28",
+        "acquisitionDate": "2026-09-16",
+        "checkedAt": "2026-09-16",
+        "updateFrequency": "una tantum (risorsa annuale); acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
+          "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_101_0_upFile.zip"
+        ]
       }
     }
   },
@@ -5824,6 +5896,254 @@
           "URL fonte"
         ]
       }
+    },
+    {
+      "authority": "primary",
+      "caveats": [
+        "CostoAcq: euro nel lessico originale italiano; virgola decimale e punto delle migliaia. Conversione esatta con parse_source_euros e somme con monetary.add_decimals, senza float.",
+        "Spesa rilevata nel perimetro pubblicato, non automaticamente tutta la spesa SSN; non sommare con CE, SIOPE o aggiudicazioni. Non misura incassi del fabbricante o prezzi unitari.",
+        "Ogni record originale resta distinto, incluse rettifiche negative, zeri e righe ripetute. Una cella vuota non è uno zero.",
+        "CodASL è contestualizzato da CodRegCommit e Anno; nessun raccordo implicito con IPA, CE o SIOPE.",
+        "CodTipoDM e NumRep formano la chiave composta. L'arricchimento BD/RDM è separato; le righe non abbinate restano nella tabella e nella spesa osservata.",
+        "CodiceCND conserva la classificazione della fonte, senza sostituirla con quella corrente o rinominarla CID/EMDN. Il CSV non dichiara una versione della classificazione.",
+        "Release selezionata: open-data-spesa-2020. La data di pubblicazione è quella del catalogo; la data ZIP non è una data certificata di estrazione ministeriale."
+      ],
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "domain": "health",
+      "encoding": "utf-8-sig",
+      "evidenceLabel": "documented-fact",
+      "expected": {
+        "bytes": 52417226,
+        "columns": 8,
+        "headers": [
+          "Anno",
+          "CodRegCommit",
+          "CodASL",
+          "AziendaSanitaria",
+          "CodTipoDM",
+          "NumRep",
+          "CodiceCND",
+          "CostoAcq"
+        ],
+        "rows": 787845,
+        "sha256": "8dea7b9d99eb688c9b0ed20a9a6ab68b51469aa6d4cfeff9f3e19d4bd4274c31"
+      },
+      "id": "salute-spesa-dispositivi-2020",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "privateFields": [],
+      "publication": "rows",
+      "relativePath": "salute-spesa-dispositivi-2020.csv",
+      "sourceFields": [],
+      "title": "Dispositivi medici · spesa rilevata per azienda sanitaria · 2020"
+    },
+    {
+      "authority": "primary",
+      "caveats": [
+        "CostoAcq: euro nel lessico originale italiano; virgola decimale e punto delle migliaia. Conversione esatta con parse_source_euros e somme con monetary.add_decimals, senza float.",
+        "Spesa rilevata nel perimetro pubblicato, non automaticamente tutta la spesa SSN; non sommare con CE, SIOPE o aggiudicazioni. Non misura incassi del fabbricante o prezzi unitari.",
+        "Ogni record originale resta distinto, incluse rettifiche negative, zeri e righe ripetute. Una cella vuota non è uno zero.",
+        "CodASL è contestualizzato da CodRegCommit e Anno; nessun raccordo implicito con IPA, CE o SIOPE.",
+        "CodTipoDM e NumRep formano la chiave composta. L'arricchimento BD/RDM è separato; le righe non abbinate restano nella tabella e nella spesa osservata.",
+        "CodiceCND conserva la classificazione della fonte, senza sostituirla con quella corrente o rinominarla CID/EMDN. Il CSV non dichiara una versione della classificazione.",
+        "Release selezionata: open-data-spesa-2021. La data di pubblicazione è quella del catalogo; la data ZIP non è una data certificata di estrazione ministeriale."
+      ],
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "domain": "health",
+      "encoding": "utf-8-sig",
+      "evidenceLabel": "documented-fact",
+      "expected": {
+        "bytes": 56316542,
+        "columns": 8,
+        "headers": [
+          "Anno",
+          "CodRegCommit",
+          "CodASL",
+          "AziendaSanitaria",
+          "CodTipoDM",
+          "NumRep",
+          "CodiceCND",
+          "CostoAcq"
+        ],
+        "rows": 846878,
+        "sha256": "bf38c39f48ec1fb0ea5cab16ec0dfc69ea8b71b506fd6ebcee0e987d762905df"
+      },
+      "id": "salute-spesa-dispositivi-2021",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "privateFields": [],
+      "publication": "rows",
+      "relativePath": "salute-spesa-dispositivi-2021.csv",
+      "sourceFields": [],
+      "title": "Dispositivi medici · spesa rilevata per azienda sanitaria · 2021"
+    },
+    {
+      "authority": "primary",
+      "caveats": [
+        "Snapshot BD/RDM corrente al 14 settembre 2026, non storico dell'anno di spesa. Nessuna misura monetaria.",
+        "Chiave composta tipologia_dm + progressivo_dm_ass; iscrizione_repertorio è soltanto un flag S/N.",
+        "Proiezione DVNS: rimosso soltanto il separatore finale dell'intestazione; tutte le righe originali hanno 16 celle. Byte e hash originali nel source lock del pilota.",
+        "Campi fiscali e loro copie oscurati dalla policy condivisa prima degli hash pubblici. PARTITAIVA_VATNUMBER_MAND non viene reinterpretato come partita IVA del fabbricante.",
+        "9999/12/31 è una fine validità convenzionale, non una scadenza commerciale. Nessuna riclassificazione storica o unificazione societaria.",
+        "Fabbricante/assemblatore non significa fornitore contrattuale o beneficiario del pagamento."
+      ],
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "domain": "health",
+      "encoding": "utf-8-sig",
+      "evidenceLabel": "documented-fact",
+      "expected": {
+        "bytes": 521253274,
+        "columns": 16,
+        "headers": [
+          "tipologia_dm",
+          "progressivo_dm_ass",
+          "data_prima_pubblicazione",
+          "dm_riferimento",
+          "gruppo_dm_simili",
+          "iscrizione_repertorio",
+          "data_inizio_validita",
+          "data_fine_validita",
+          "fabbricante_assemblatore",
+          "cod_fiscale",
+          "PARTITAIVA_VATNUMBER_MAND",
+          "cod_catalogo_fabbr_ass",
+          "denominazione_commerciale",
+          "classificazione_cnd",
+          "descrizione_cnd",
+          "data_fine_commercio"
+        ],
+        "rows": 2416708,
+        "sha256": "709496e7a702fcf3e643b8f75889ed607ddc7f9ceffb2a777f1ed92d1ddd60a1"
+      },
+      "id": "salute-dispositivi-bdrdm",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "privateFields": [
+        "PARTITAIVA_VATNUMBER_MAND",
+        "cod_fiscale"
+      ],
+      "publication": "rows",
+      "relativePath": "salute-dispositivi-bdrdm.csv",
+      "sourceFields": [],
+      "title": "Dispositivi medici · anagrafica BD/RDM · 2026-09-14"
+    },
+    {
+      "authority": "primary",
+      "caveats": [
+        "CND: snapshot del 1 settembre 2026, senza misure monetarie. Conservati tutti i codici e intervalli di validità della fonte.",
+        "Uno stesso codice può avere più versioni; codice e sola data iniziale non identificano sempre un intervallo univoco.",
+        "Non sostituisce la CND dei file di spesa; nessuna equivalenza o conversione automatica in CID o EMDN."
+      ],
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "domain": "health",
+      "encoding": "utf-8-sig",
+      "evidenceLabel": "documented-fact",
+      "expected": {
+        "bytes": 932261,
+        "columns": 6,
+        "headers": [
+          "codice_ramo_cnd",
+          "descrizione_ramo_cnd",
+          "livello_finale",
+          "riferimento_civab",
+          "data_inzio_validita",
+          "data_fine_validita"
+        ],
+        "rows": 11115,
+        "sha256": "0e5217c4b9ba8244b32e56d73002a8e705777a36f259f7e6788241bf5194e09a"
+      },
+      "id": "salute-classificazione-cnd",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "privateFields": [],
+      "publication": "rows",
+      "relativePath": "salute-classificazione-cnd.csv",
+      "sourceFields": [],
+      "title": "Dispositivi medici · classificazione CND · 2026-09-01"
+    },
+    {
+      "id": "salute-spesa-dispositivi-2018",
+      "title": "Dispositivi medici · spesa rilevata per azienda sanitaria · 2018",
+      "domain": "health",
+      "authority": "primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "relativePath": "salute-spesa-dispositivi-2018.csv",
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "encoding": "utf-8-sig",
+      "expected": {
+        "bytes": 57424173,
+        "sha256": "a8d1c5f1354fff946f4709a16ad2aa76a403a3806dc5bbc782f1dd1869700477",
+        "rows": 718808,
+        "columns": 9,
+        "headers": [
+          "Anno",
+          "CodRegCommit",
+          "RegioneCommit",
+          "CodASL",
+          "AziendaSanitaria",
+          "CodiceCND",
+          "CodTipoDM",
+          "NumRep",
+          "CostoAcq"
+        ]
+      },
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "CostoAcq: euro nel lessico originale italiano; virgola decimale e punto delle migliaia. Conversione esatta con parse_source_euros e somme con monetary.add_decimals, senza float.",
+        "Spesa rilevata nel perimetro pubblicato, non automaticamente tutta la spesa SSN; non sommare con CE, SIOPE o aggiudicazioni. Non misura incassi del fabbricante o prezzi unitari.",
+        "Ogni record originale resta distinto, incluse rettifiche negative, zeri e righe ripetute. Una cella vuota non è uno zero.",
+        "CodASL è contestualizzato da CodRegCommit e Anno; nessun raccordo implicito con IPA, CE o SIOPE.",
+        "CodTipoDM e NumRep formano la chiave composta. L'arricchimento BD/RDM è separato; le righe non abbinate restano nella tabella e nella spesa osservata.",
+        "CodiceCND conserva la classificazione della fonte, senza sostituirla con quella corrente o rinominarla CID/EMDN. Il CSV non dichiara una versione della classificazione.",
+        "CodRegCommit e CodASL restano stringhe nel lessico della fonte; zeri iniziali e RegioneCommit non vengono riscritti mediante raccordi impliciti.",
+        "Release selezionata: open-data-spesa-2018. La data di pubblicazione è quella del catalogo; la data ZIP non è una data certificata di estrazione ministeriale."
+      ]
+    },
+    {
+      "id": "salute-spesa-dispositivi-2019",
+      "title": "Dispositivi medici · spesa rilevata per azienda sanitaria · 2019",
+      "domain": "health",
+      "authority": "primary",
+      "licenseStatus": "verified-open-iodl-2.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "relativePath": "salute-spesa-dispositivi-2019.csv",
+      "dataKind": "delimited",
+      "delimiter": "semicolon",
+      "encoding": "utf-8-sig",
+      "expected": {
+        "bytes": 58691910,
+        "sha256": "c12a915e2ef13e05e4914eb63dcc67a9b9132683c4084f8656036d949c2912b0",
+        "rows": 768233,
+        "columns": 9,
+        "headers": [
+          "Anno",
+          "CodRegCommit",
+          "RegioneCommit",
+          "CodASL",
+          "AziendaSanitaria",
+          "CodiceCND",
+          "CodTipoDM",
+          "NumRep",
+          "CostoAcq"
+        ]
+      },
+      "sourceFields": [],
+      "privateFields": [],
+      "caveats": [
+        "CostoAcq: euro nel lessico originale italiano; virgola decimale e punto delle migliaia. Conversione esatta con parse_source_euros e somme con monetary.add_decimals, senza float.",
+        "Spesa rilevata nel perimetro pubblicato, non automaticamente tutta la spesa SSN; non sommare con CE, SIOPE o aggiudicazioni. Non misura incassi del fabbricante o prezzi unitari.",
+        "Ogni record originale resta distinto, incluse rettifiche negative, zeri e righe ripetute. Una cella vuota non è uno zero.",
+        "CodASL è contestualizzato da CodRegCommit e Anno; nessun raccordo implicito con IPA, CE o SIOPE.",
+        "CodTipoDM e NumRep formano la chiave composta. L'arricchimento BD/RDM è separato; le righe non abbinate restano nella tabella e nella spesa osservata.",
+        "CodiceCND conserva la classificazione della fonte, senza sostituirla con quella corrente o rinominarla CID/EMDN. Il CSV non dichiara una versione della classificazione.",
+        "CodRegCommit e CodASL restano stringhe nel lessico della fonte; zeri iniziali e RegioneCommit non vengono riscritti mediante raccordi impliciti.",
+        "Release selezionata: open-data-spesa-2019. La data di pubblicazione è quella del catalogo; la data ZIP non è una data certificata di estrazione ministeriale."
+      ]
     }
   ]
 }

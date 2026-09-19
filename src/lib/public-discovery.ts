@@ -80,6 +80,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/spese/legge-di-bilancio",
   "/spese/operative",
   "/spese/sanita",
+  "/spese/sanita/dispositivi",
   "/spese/sanita/storico",
   "/spese/servizi-generali",
   "/spese/sicurezza",

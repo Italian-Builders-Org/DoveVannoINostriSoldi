@@ -67,6 +67,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         label: "Sanità",
         children: [
           { href: "/spese/sanita/storico", label: "Serie storica" },
+          { href: "/spese/sanita/dispositivi", label: "Dispositivi medici" },
         ],
       },
       { href: "/spese/cultura", label: "Cultura e tempo libero" },
@@ -248,6 +249,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
       { href: "/spese/sanita", label: "Sanità" },
       { href: "/spese/sanita/storico", label: "Sanità · serie storica" },
+      { href: "/spese/sanita/dispositivi", label: "Sanità · dispositivi medici" },
       { href: "/spese/cultura", label: "Cultura e tempo libero" },
       { href: "/spese/sport", label: "Sport" },
       { href: "/spese/difesa", label: "Difesa" },

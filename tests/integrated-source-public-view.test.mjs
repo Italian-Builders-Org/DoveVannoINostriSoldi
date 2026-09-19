@@ -38,11 +38,11 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   );
 });
 
-test("all 97 datasets remain visible and only catalog dispositions decide row access", async () => {
+test("all 103 datasets remain visible and only catalog dispositions decide row access", async () => {
   const overview = await view.getIntegratedDataOverview();
   assert.equal(overview.complete, true);
-  assert.equal(overview.datasets.length, 97);
-  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 75);
+  assert.equal(overview.datasets.length, 103);
+  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 81);
   assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), INTEGRATED_CORPUS_CONTRACT.sourceRows);
   assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.ok(overview.datasets.every((dataset) => dataset.sourceMetadata.holder.length > 0));
@@ -274,7 +274,7 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
     )));
   }
-  assert.equal(checked.length, 75);
+  assert.equal(checked.length, 81);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
     INTEGRATED_CORPUS_CONTRACT.publicRows,
@@ -362,10 +362,13 @@ test("the bounded load queue rejects overload and removes an abandoned queued lo
 });
 
 test("enumerating every queryable dataset does not retain all parsed row arrays", async () => {
+  const probeEnvironment = { ...process.env };
+  delete probeEnvironment.NODE_TEST_CONTEXT;
+  const probeDirectory = await mkdtemp(join(tmpdir(), "dvns-integrated-memory-"));
+  const probeOutput = join(probeDirectory, "result.json");
   const registerUrl = new URL("./helpers/register-ts-alias.mjs", import.meta.url).href;
   const loaderUrl = new URL("../src/lib/integrated-sources.ts", import.meta.url).href;
   const program = `
-    await import(${JSON.stringify(registerUrl)});
     const loader = await import(${JSON.stringify(loaderUrl)});
     const collect = () => {
       for (let index = 0; index < 4; index += 1) global.gc();
@@ -383,25 +386,32 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
           loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
         )));
       }
-      if (loaded.length !== 75) throw new Error("Unexpected queryable dataset count");
+      if (loaded.length !== 81) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();
     const diagnostics = loader.getIntegratedDatasetLoaderDiagnosticsForTests();
-    process.stdout.write(JSON.stringify({
+    const { writeFile } = await import("node:fs/promises");
+    await writeFile(process.argv[1], JSON.stringify({
       heapDelta: after.heapUsed - before.heapUsed,
       diagnostics,
     }));
   `;
-  const { stdout } = await execFileAsync(
-    process.execPath,
-    ["--expose-gc", "--experimental-strip-types", "--input-type=module", "--eval", program],
-    {
-      cwd: new URL("..", import.meta.url),
-      maxBuffer: 1024 * 1024,
-    },
-  );
-  const measured = JSON.parse(stdout);
+  let measured;
+  try {
+    await execFileAsync(
+      process.execPath,
+      ["--import", registerUrl, "--expose-gc", "--experimental-strip-types", "--input-type=module", "--eval", program, probeOutput],
+      {
+        cwd: new URL("..", import.meta.url),
+        env: probeEnvironment,
+        maxBuffer: 1024 * 1024,
+      },
+    );
+    measured = JSON.parse(await readFile(probeOutput, "utf8"));
+  } finally {
+    await rm(probeDirectory, { recursive: true, force: true });
+  }
   assert.ok(
     measured.heapDelta < 32 * 1024 * 1024,
     `retained heap grew by ${measured.heapDelta} bytes`,

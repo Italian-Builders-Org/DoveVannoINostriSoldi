@@ -6,6 +6,7 @@ import "./helpers/register-ts-alias.mjs";
 const { buildPovertaPageView } = await import("../src/lib/poverta-page.ts");
 const { istatPovertaData } = await import("../src/lib/istat-poverta-snapshot.ts");
 const { istatPovertaRelativaData } = await import("../src/lib/istat-poverta-relativa-snapshot.ts");
+const { istatPovertaSogliaAssolutaData } = await import("../src/lib/istat-poverta-soglia-assoluta-snapshot.ts");
 
 const view = buildPovertaPageView();
 const page = await readFile(new URL("../src/app/poverta/page.tsx", import.meta.url), "utf8");
@@ -30,7 +31,12 @@ test("la vista non produce mai un totale né una differenza fra le due", () => {
     assert.ok(!serialized.toLowerCase().includes(`"${forbidden}`), forbidden);
   }
   // Nessun campo aggrega le due famiglie: si arriva solo per famiglia.
-  assert.deepEqual(Object.keys(view).sort(), ["excludedComposites", "families", "latestYear"]);
+  assert.deepEqual(Object.keys(view).sort(), [
+    "absoluteThreshold",
+    "excludedComposites",
+    "families",
+    "latestYear",
+  ]);
 });
 
 test("i compositi restano fuori dalle tabelle per non contare due volte", () => {
@@ -87,12 +93,46 @@ test("i valori sono percentuali plausibili e coincidono con lo snapshot", () => 
   }
 });
 
+test("la soglia assoluta è contesto monetario separato, non un'incidenza", () => {
+  const threshold = view.absoluteThreshold;
+  assert.equal(threshold.datasetId, "istat-poverta-soglia-assoluta");
+  assert.equal(threshold.year, istatPovertaSogliaAssolutaData.period.to);
+  assert.equal(threshold.householdTypology.code, "40");
+  assert.equal(threshold.municipalitySize.code, "INH_OTH_UN5000");
+  assert.equal(threshold.regions.length, 20);
+  assert.equal(threshold.source.dataflowId, "34_211");
+
+  const regionCodes = istatPovertaSogliaAssolutaData.territories
+    .filter((territory) => territory.kind === "regione")
+    .map((territory) => territory.code);
+  assert.deepEqual(threshold.regions.map((row) => row.code), regionCodes);
+
+  const values = threshold.regions.map((row) => row.valueHundredths);
+  assert.ok(values.every((value) => value !== null && Number.isSafeInteger(value) && value > 0));
+  const descending = [...values].sort((a, b) => b - a);
+  const ascending = [...values].sort((a, b) => a - b);
+  assert.notDeepEqual(values, descending, "ordinare per soglia sarebbe una classifica");
+  assert.notDeepEqual(values, ascending, "ordinare per soglia sarebbe una classifica");
+
+  for (const region of threshold.regions) {
+    const fromSnapshot = istatPovertaSogliaAssolutaData.observations.find((row) =>
+      row.year === threshold.year
+      && row.householdTypology === "40"
+      && row.municipalitySize === "INH_OTH_UN5000"
+      && row.territory === region.code);
+    assert.equal(region.valueHundredths, fromSnapshot?.valueHundredths ?? null);
+  }
+});
+
 test("la pagina dichiara i limiti che il dato impone", () => {
   assert.match(page, /Definizioni, limiti e copertura/);
   assert.match(page, /Non è spesa pubblica/);
   assert.match(page, /non si sommano e non si sottraggono/);
   assert.match(page, /Non c&apos;è una classifica/);
   assert.match(page, /comunale/);
+  assert.match(page, /Soglia monetaria di povertà assoluta/);
+  assert.match(page, /non inventiamo un «gap» rispetto alla soglia/i);
+  assert.match(page, /AbsoluteThresholdSection/);
 });
 
 test("la pagina non accosta la povertà alla spesa pubblica", () => {
@@ -103,16 +143,15 @@ test("la pagina non accosta la povertà alla spesa pubblica", () => {
 });
 
 test("ogni tabella è accessibile e navigabile da tastiera", () => {
-  // `FamilySection` è definito una volta e reso per ciascuna famiglia: nel
-  // sorgente le tabelle sono due, a schermo diventano quattro.
-  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 2);
-  assert.equal((page.match(/role="region"/g) ?? []).length, 2);
-  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 2);
-  assert.equal((page.match(/<caption/g) ?? []).length, 2);
+  // Due tabelle nel componente famiglie + una nella sezione soglia.
+  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 3);
+  assert.equal((page.match(/role="region"/g) ?? []).length, 3);
+  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 3);
+  assert.equal((page.match(/<caption/g) ?? []).length, 3);
   assert.equal(view.families.length, 2, "due famiglie rese dallo stesso componente");
   // Intestazioni di riga e colonna dichiarate.
-  assert.ok((page.match(/scope="col"/g) ?? []).length >= 5);
-  assert.ok((page.match(/scope="row"/g) ?? []).length >= 2);
+  assert.ok((page.match(/scope="col"/g) ?? []).length >= 7);
+  assert.ok((page.match(/scope="row"/g) ?? []).length >= 3);
 });
 
 test("la fonte e la licenza viaggiano con la pagina", () => {
@@ -121,5 +160,8 @@ test("la fonte e la licenza viaggiano con la pagina", () => {
     assert.equal(family.source.dataflowId, "34_727_DF_DCCV_POVERTA_1");
     assert.match(family.source.landingUrl, /^https:\/\/esploradati\.istat\.it\//);
   }
+  assert.equal(view.absoluteThreshold.source.licenseId, "not-declared");
+  assert.match(view.absoluteThreshold.source.landingUrl, /^https:\/\/esploradati\.istat\.it\//);
   assert.match(page, /databrowser ISTAT/);
+  assert.match(page, /poverta-soglia-assoluta/);
 });

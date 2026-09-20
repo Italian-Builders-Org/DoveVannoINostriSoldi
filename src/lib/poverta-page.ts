@@ -9,6 +9,10 @@ import {
   istatPovertaRelativaData,
   istatPovertaRelativaMetadata,
 } from "@/lib/istat-poverta-relativa-snapshot";
+import {
+  istatPovertaSogliaAssolutaData,
+  istatPovertaSogliaAssolutaMetadata,
+} from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import type { IstatPovertaData, IstatPovertaMetadata } from "@/lib/data/istat-poverta-contract";
 
 /**
@@ -23,10 +27,16 @@ import type { IstatPovertaData, IstatPovertaMetadata } from "@/lib/data/istat-po
  * - **le ripartizioni escludono i compositi**. Nord e Mezzogiorno esistono nella
  *   fonte come aggregazioni di ripartizioni che sono già in tabella: elencarli
  *   accanto alle loro parti sarebbe un doppio conteggio visivo. Vengono dichiarati,
- *   non mostrati in riga.
+ *   non mostrati in riga;
+ * - **la soglia monetaria resta un contesto separato**. È un importo mensile in
+ *   euro, non un’incidenza: non si somma né si confronta con le percentuali sopra.
  */
 
 const TENTHS = 10;
+
+/** Fixed profile with complete regional coverage in the latest absolute-threshold year. */
+const THRESHOLD_HOUSEHOLD_TYPOLOGY = "40";
+const THRESHOLD_MUNICIPALITY_SIZE = "INH_OTH_UN5000";
 
 export type PovertaSeriesPoint = Readonly<{ year: number; households: number | null; individuals: number | null }>;
 export type PovertaAreaRow = Readonly<{ code: string; label: string; households: number | null }>;
@@ -47,10 +57,28 @@ export type PovertaFamilyView = Readonly<{
   source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
 }>;
 
+export type PovertaThresholdRegionRow = Readonly<{
+  code: string;
+  label: string;
+  /** Monthly threshold in euro cents; null stays distinct from zero. */
+  valueHundredths: number | null;
+}>;
+
+export type PovertaAbsoluteThresholdView = Readonly<{
+  datasetId: string;
+  year: number;
+  householdTypology: Readonly<{ code: string; label: string }>;
+  municipalitySize: Readonly<{ code: string; label: string }>;
+  regions: readonly PovertaThresholdRegionRow[];
+  caveats: readonly string[];
+  source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
+}>;
+
 export type PovertaPageView = Readonly<{
   families: readonly PovertaFamilyView[];
   /** Ripartizioni escluse dalle tabelle perché contengono già le altre righe. */
   excludedComposites: readonly PovertaAreaRow[];
+  absoluteThreshold: PovertaAbsoluteThresholdView;
   latestYear: number;
 }>;
 
@@ -113,6 +141,56 @@ function buildFamily(
   };
 }
 
+function buildAbsoluteThreshold(): PovertaAbsoluteThresholdView {
+  const data = istatPovertaSogliaAssolutaData;
+  const metadata = istatPovertaSogliaAssolutaMetadata;
+  const year = data.period.to;
+  const householdTypology = data.householdTypologies.find((item) => item.code === THRESHOLD_HOUSEHOLD_TYPOLOGY);
+  const municipalitySize = data.municipalitySizes.find((item) => item.code === THRESHOLD_MUNICIPALITY_SIZE);
+  if (!householdTypology || !municipalitySize) {
+    throw new Error("Profilo di soglia assoluta non trovato nello snapshot.");
+  }
+
+  const byTerritory = new Map(
+    data.observations
+      .filter((row) =>
+        row.year === year
+        && row.householdTypology === THRESHOLD_HOUSEHOLD_TYPOLOGY
+        && row.municipalitySize === THRESHOLD_MUNICIPALITY_SIZE)
+      .map((row) => [row.territory, row.valueHundredths]),
+  );
+
+  const regions = data.territories
+    .filter((territory) => territory.kind === "regione")
+    .map((territory) => ({
+      code: territory.code,
+      label: territory.label,
+      valueHundredths: byTerritory.has(territory.code) ? (byTerritory.get(territory.code) ?? null) : null,
+    }));
+
+  if (regions.length !== 20) {
+    throw new Error("La soglia assoluta deve elencare le 20 regioni nell’ordine della fonte.");
+  }
+  if (regions.some((row) => row.valueHundredths === null)) {
+    throw new Error("Il profilo di contesto della soglia assoluta deve avere copertura regionale completa.");
+  }
+
+  return {
+    datasetId: data.datasetId,
+    year,
+    householdTypology: { code: householdTypology.code, label: householdTypology.label },
+    municipalitySize: { code: municipalitySize.code, label: municipalitySize.label },
+    regions,
+    caveats: data.caveats,
+    source: {
+      landingUrl: metadata.source.landingUrl,
+      dataflowId: metadata.source.dataflowId,
+      licenseId: metadata.source.licenseId,
+      observedAt: metadata.source.acquisitionDate,
+    },
+  };
+}
+
 export function buildPovertaPageView(): PovertaPageView {
   const assoluta = buildFamily(
     "assoluta",
@@ -133,7 +211,12 @@ export function buildPovertaPageView(): PovertaPageView {
     .filter((territory) => territory.kind === "composite")
     .map((territory) => ({ code: territory.code, label: territory.label, households: null }));
 
-  return { families: [assoluta, relativa], excludedComposites, latestYear: assoluta.latestYear };
+  return {
+    families: [assoluta, relativa],
+    excludedComposites,
+    absoluteThreshold: buildAbsoluteThreshold(),
+    latestYear: assoluta.latestYear,
+  };
 }
 
 /** Riesporta la query per gli smoke test della pagina. */

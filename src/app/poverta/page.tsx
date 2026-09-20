@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { longDate, percent } from "@/lib/format";
-import { buildPovertaPageView, type PovertaFamilyView } from "@/lib/poverta-page";
+import { compactEuroFromCents, longDate, percent } from "@/lib/format";
+import {
+  buildPovertaPageView,
+  type PovertaAbsoluteThresholdView,
+  type PovertaFamilyView,
+} from "@/lib/poverta-page";
 import styles from "./poverta.module.css";
 
 export const metadata: Metadata = {
   title: "Povertà assoluta e relativa",
   description:
-    "Gli indicatori ufficiali ISTAT di povertà assoluta e relativa in Italia e per ripartizione, dal 2014. Due definizioni distinte, mai sommate.",
+    "Indicatori ufficiali ISTAT di povertà assoluta e relativa, più la soglia monetaria assoluta per regione come contesto. Misure distinte, mai sommate.",
 };
 
 function rate(value: number | null): string {
   return value === null ? "Non disponibile" : percent(value);
+}
+
+function money(valueHundredths: number | null): string {
+  return valueHundredths === null ? "Non disponibile" : compactEuroFromCents(valueHundredths);
 }
 
 function FamilySection({ family }: { family: PovertaFamilyView }) {
@@ -102,6 +110,67 @@ function FamilySection({ family }: { family: PovertaFamilyView }) {
   );
 }
 
+function AbsoluteThresholdSection({ threshold }: { threshold: PovertaAbsoluteThresholdView }) {
+  const tableId = "soglia-assoluta-regioni";
+  return (
+    <section className={styles.family} aria-labelledby="titolo-soglia-assoluta">
+      <h2 id="titolo-soglia-assoluta">Soglia monetaria di povertà assoluta</h2>
+      <p className={styles.definition}>
+        Importo mensile sotto il quale una famiglia è considerata in povertà assoluta.
+        Non è un&apos;incidenza percentuale e non si somma né si confronta con le tabelle sopra.
+      </p>
+      <p className={styles.definition}>
+        Contesto per il {threshold.year}: profilo <strong>{threshold.householdTypology.label}</strong>
+        {" "}in <strong>{threshold.municipalitySize.label}</strong>. Altre combinazioni restano
+        disponibili via API e MCP.
+      </p>
+
+      <div
+        className="table-scroll"
+        role="region"
+        aria-labelledby={tableId}
+        tabIndex={0}
+      >
+        <table className="table">
+          <caption id={tableId} className="table-caption">
+            Soglia mensile per regione nel {threshold.year}, ordine geografico della fonte
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Regione</th>
+              <th scope="col" className="num">Soglia mensile</th>
+            </tr>
+          </thead>
+          <tbody>
+            {threshold.regions.map((region) => (
+              <tr key={region.code}>
+                <th scope="row">{region.label}</th>
+                <td className="num">{money(region.valueHundredths)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className={styles.sourceNote}>
+        Fonte: ISTAT, dataflow <code>{threshold.source.dataflowId}</code> · acquisito il{" "}
+        {longDate(threshold.source.observedAt)} · licenza{" "}
+        {threshold.source.licenseId === "not-declared" ? "non dichiarata" : threshold.source.licenseId} ·{" "}
+        <a href={threshold.source.landingUrl}>vai al databrowser ISTAT</a> ·{" "}
+        <Link
+          href={`/api/territori/poverta-soglia-assoluta?${new URLSearchParams({
+            anno: "2024",
+            tipologia: "40",
+            ampiezza: "INH_OTH_UN5000",
+          }).toString()}`}
+        >
+          stessa selezione via API
+        </Link>
+      </p>
+    </section>
+  );
+}
+
 export default function PovertaPage() {
   const view = buildPovertaPageView();
   const [assoluta, relativa] = view.families;
@@ -115,7 +184,8 @@ export default function PovertaPage() {
           Gli indicatori ufficiali ISTAT, dal {assoluta.period.from} al {assoluta.period.to}, per
           l&apos;Italia e le sue ripartizioni. Sono <strong>due misure distinte</strong>: la povertà
           assoluta guarda al costo di un paniere di beni essenziali, quella relativa alla distanza
-          dalla spesa media delle famiglie italiane.
+          dalla spesa media delle famiglie italiane. Sotto, in sezione separata, la soglia monetaria
+          assoluta per regione: un importo, non una percentuale.
         </p>
         <p className={styles.leadLinks}>
           <Link href="/disuguaglianza">Distribuzione dei redditi →</Link>
@@ -127,6 +197,7 @@ export default function PovertaPage() {
       <div className={styles.families}>
         <FamilySection family={assoluta} />
         <FamilySection family={relativa} />
+        <AbsoluteThresholdSection threshold={view.absoluteThreshold} />
       </div>
 
       <details className="data-details">
@@ -145,13 +216,19 @@ export default function PovertaPage() {
           significato.
         </p>
         <p>
-          <strong>Non c&apos;è una classifica.</strong> Le ripartizioni sono elencate in ordine
-          geografico, non per valore, e la pagina non attribuisce la povertà di un territorio a una
-          manovra, a un governo o a una responsabilità locale.
+          <strong>La soglia monetaria non è un&apos;incidenza.</strong> L&apos;importo mensile della
+          sezione dedicata non si confronta né si somma con le percentuali di famiglie o individui.
+          Non inventiamo un «gap» rispetto alla soglia: la fonte non lo pubblica.
+        </p>
+        <p>
+          <strong>Non c&apos;è una classifica.</strong> Le ripartizioni e le regioni sono elencate in
+          ordine geografico, non per valore, e la pagina non attribuisce la povertà di un territorio
+          a una manovra, a un governo o a una responsabilità locale.
         </p>
         <p>
           ISTAT non pubblica la povertà a livello comunale: è un&apos;indagine campionaria, e per la
-          povertà assoluta il dettaglio si ferma alle ripartizioni.
+          povertà assoluta l&apos;incidenza si ferma alle ripartizioni mentre la soglia monetaria
+          espone le regioni per profili familiari e ampiezze demografiche.
         </p>
       </section>
 

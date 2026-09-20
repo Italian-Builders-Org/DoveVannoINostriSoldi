@@ -33,6 +33,7 @@ test("politici photo returns 404 for declared portrait gaps without fetching", a
     assert.equal(response.status, 404);
     const body = await response.json();
     assert.match(body.error, /non disponibile/i);
+    assert.match(response.headers.get("cache-control"), /s-maxage=86400/);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -41,8 +42,10 @@ test("politici photo returns 404 for declared portrait gaps without fetching", a
 test("politici photo proxies only bounded official image responses", async () => {
   const originalFetch = globalThis.fetch;
   let requestedUrl = "";
-  globalThis.fetch = async (input) => {
+  let fetchInit = null;
+  globalThis.fetch = async (input, init) => {
     requestedUrl = String(input);
+    fetchInit = init ?? null;
     return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xd9]), {
       headers: { "content-type": "image/jpeg" },
     });
@@ -57,6 +60,55 @@ test("politici photo proxies only bounded official image responses", async () =>
     assert.match(response.headers.get("cache-control"), /s-maxage=86400/);
     assert.equal(new Uint8Array(await response.arrayBuffer()).length, 4);
     assert.equal(requestedUrl, "https://www.senato.it/leg/19/Immagini/Senatori/00000032.jpg");
+    assert.equal(fetchInit?.next?.revalidate, 86_400);
+    assert.notEqual(fetchInit?.cache, "no-store");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("politici photo maps Senato 403 to cacheable 404 instead of 502", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(null, { status: 403 });
+  try {
+    const response = await GET(
+      new Request("http://localhost/politici/foto/sen-s32"),
+      { params: Promise.resolve({ id: "sen-s32" }) },
+    );
+    assert.equal(response.status, 404);
+    assert.match(response.headers.get("cache-control"), /s-maxage=3600/);
+    const body = await response.json();
+    assert.match(body.error, /temporaneamente non disponibile/i);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("politici photo maps empty Senato 202 to cacheable 404", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(new Uint8Array(), { status: 202 });
+  try {
+    const response = await GET(
+      new Request("http://localhost/politici/foto/sen-s32"),
+      { params: Promise.resolve({ id: "sen-s32" }) },
+    );
+    assert.equal(response.status, 404);
+    assert.match(response.headers.get("cache-control"), /s-maxage=3600/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("politici photo maps timeouts to cacheable 404 without 5xx", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = () => new Promise(() => {});
+  try {
+    const response = await GET(
+      new Request("http://localhost/politici/foto/sen-s32", { signal: AbortSignal.timeout(30_000) }),
+      { params: Promise.resolve({ id: "sen-s32" }) },
+    );
+    assert.equal(response.status, 404);
+    assert.match(response.headers.get("cache-control"), /s-maxage=60/);
   } finally {
     globalThis.fetch = originalFetch;
   }

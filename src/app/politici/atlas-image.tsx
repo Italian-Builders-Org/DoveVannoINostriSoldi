@@ -38,6 +38,9 @@ function SourceImage({ src, fallback, size, className, family, eager = false }: 
       width={size}
       height={size}
       sizes={`${size}px`}
+      // Portraits already come from our `/politici/foto` proxy: skipping the
+      // image optimizer avoids a second serverless hop per face in atlas views.
+      unoptimized={src.startsWith("/politici/foto/")}
       loading={eager ? "eager" : "lazy"}
       onLoad={() => setStatus("loaded")}
       onError={() => setStatus("error")} /> : null}

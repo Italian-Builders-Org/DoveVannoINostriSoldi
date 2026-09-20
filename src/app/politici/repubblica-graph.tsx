@@ -124,6 +124,13 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
             onClick={() => changeScope(scope.id)}>
             {scope.label}
           </button>)}
+          <Link
+            href="/politici/europa"
+            className={styles.europaScopeLink}
+            data-europa-entry=""
+            title="Vista separata: eurodeputati eletti in Italia">
+            Europa
+          </Link>
         </nav>
         <div className={`${styles.workspaceTools} ${extra.tools}`}>
           <AtlasSearch

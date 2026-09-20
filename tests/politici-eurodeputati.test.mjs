@@ -42,6 +42,8 @@ test("la vista pagina non mescola i gruppi nazionali e punta alle schede ufficia
   assert.match(page, /Eurodeputati eletti in Italia/);
   assert.match(page, /Non fanno parte dell’atlante Camera\/Senato\/Governo/);
   assert.match(page, /table-scroll/);
+  assert.match(page, /shell page/);
+  assert.doesNotMatch(page, /immersivePage/);
   assert.match(graph, /\/politici\/europa/);
   assert.doesNotMatch(graph, /follow-up #566/);
 });

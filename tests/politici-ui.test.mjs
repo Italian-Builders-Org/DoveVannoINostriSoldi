@@ -18,10 +18,33 @@ const model = await read("src/app/politici/atlas-model.ts");
 test("existing shell: root layout strips site chrome for the immersive route", async () => {
   const layout = await read("src/app/layout.tsx");
   const immersive = await read("src/components/immersive-chrome.tsx");
+  const immersiveHelper = await read("src/lib/politici-immersive.ts");
+  const proxySrc = await read("src/proxy.ts");
   for (const token of ["ImmersiveDocumentFlag", "ChromeUnlessImmersive", "isImmersiveMapRequest", "data-immersive"]) assert.ok(layout.includes(token));
   assert.match(immersive, /isPoliticiImmersive/);
-  assert.match(immersive, /POLITICI_HOST|politici\.dovevannoinostrisoldi\.com/);
+  assert.match(immersiveHelper, /POLITICI_HOST|politici\.dovevannoinostrisoldi\.com/);
   assert.match(immersive, /dataset\.immersive|data-immersive/);
+  // Soft-nav restore: chrome wrappers stay mounted even when SSR is immersive.
+  assert.doesNotMatch(layout, /immersive \? null :/);
+  // Only the atlas itself is immersive — never /politici/europa.
+  assert.match(immersiveHelper, /pathname === "\/politici"/);
+  assert.doesNotMatch(immersiveHelper, /startsWith\("\/politici\/"\)/);
+  assert.match(proxySrc, /isPoliticiAtlasPath|pathname === "\/politici"/);
+  assert.doesNotMatch(proxySrc, /startsWith\("\/politici\/"\)/);
+});
+
+test("existing shell: europa stays reachable, scrollable and outside immersive chrome", async () => {
+  const europa = await read("src/app/politici/europa/page.tsx");
+  const atlasPage = await read("src/app/politici/page.tsx");
+  assert.match(europa, /shell page/);
+  assert.doesNotMatch(europa, /immersivePage/);
+  assert.match(europa, /Atlante nazionale/);
+  assert.match(atlasPage, /data-europa-entry/);
+  assert.match(atlasPage, /href="\/politici\/europa"/);
+  assert.match(graph, /data-europa-entry/);
+  assert.match(graph, /europaScopeLink/);
+  // Brand uses a hard <a> so leaving the atlas remounts site chrome.
+  assert.match(atlasPage, /<a className=\{styles\.immersiveBrand\} href=\{PUBLIC_SITE_URL\}/);
 });
 
 test("existing shell: navigation and discovery retain both entry points", async () => {

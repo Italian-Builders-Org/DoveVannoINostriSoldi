@@ -47,9 +47,12 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
 ## Proxy e host
 
 Il dominio pubblico di `/politici` è `politici.dovevannoinostrisoldi.com`. Il
-proxy aggiunge l'header `x-dvns-immersive: politici` in modo che il root layout
-possa togliere il chrome del sito prima dell'hydration. Quando si lavora in
-locale, `/politici` è raggiungibile sullo stesso host di sviluppo.
+proxy aggiunge l'header `x-dvns-immersive: politici` solo sull'atlante
+(`/politici` e sulla rewrite della root del sottodominio), in modo che il root
+layout possa togliere il chrome del sito prima dell'hydration. Le sotto-route
+come `/politici/europa` restano pagine scrollabili con il menu del sito.
+Quando si lavora in locale, `/politici` è raggiungibile sullo stesso host di
+sviluppo.
 
 ## Navigazione
 

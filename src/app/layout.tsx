@@ -65,23 +65,19 @@ export default async function RootLayout({
         <GoogleAnalytics />
         <ImmersiveDocumentFlag />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>
-        {immersive ? null : (
-          <ChromeUnlessImmersive>
-            <Navigation announcements={announcements} />
-          </ChromeUnlessImmersive>
-        )}
+        {/* Always mount chrome wrappers: SSR omits them when immersive=true would
+            leave soft-nav to `/` without a remounted menu (DVNS brand bug). */}
+        <ChromeUnlessImmersive>
+          <Navigation announcements={announcements} />
+        </ChromeUnlessImmersive>
         <div className="site-content">
-          {immersive ? null : (
-            <ChromeUnlessImmersive>
-              <SectionNav />
-            </ChromeUnlessImmersive>
-          )}
+          <ChromeUnlessImmersive>
+            <SectionNav />
+          </ChromeUnlessImmersive>
           <div id="contenuto-principale" tabIndex={-1}>{children}</div>
-          {immersive ? null : (
-            <ChromeUnlessImmersive>
-              <SiteFooter />
-            </ChromeUnlessImmersive>
-          )}
+          <ChromeUnlessImmersive>
+            <SiteFooter />
+          </ChromeUnlessImmersive>
         </div>
       </body>
     </html>

@@ -29,6 +29,21 @@ test("politici paths mark the request immersive for the root layout", async () =
   const sameOrigin = await proxy(new NextRequest("https://www.dovevannoinostrisoldi.com/politici"));
   assert.equal(isRewrite(sameOrigin), false);
   assert.equal(sameOrigin.headers.get("x-middleware-next"), "1");
+
+  // Sub-routes must not inherit the atlas immersive stamp (scroll + site chrome).
+  const europa = await proxy(new NextRequest("https://www.dovevannoinostrisoldi.com/politici/europa"));
+  assert.equal(isRewrite(europa), false);
+  assert.equal(europa.headers.get("x-middleware-next"), "1");
+});
+
+test("immersive chrome helpers treat only the atlas as immersive", async () => {
+  await import("./helpers/register-ts-alias.mjs");
+  const { isPoliticiImmersive } = await import("../src/lib/politici-immersive.ts");
+  assert.equal(isPoliticiImmersive("/politici", "www.dovevannoinostrisoldi.com"), true);
+  assert.equal(isPoliticiImmersive("/politici/", "www.dovevannoinostrisoldi.com"), true);
+  assert.equal(isPoliticiImmersive("/politici/europa", "www.dovevannoinostrisoldi.com"), false);
+  assert.equal(isPoliticiImmersive("/", "politici.dovevannoinostrisoldi.com"), true);
+  assert.equal(isPoliticiImmersive("/", "www.dovevannoinostrisoldi.com"), false);
 });
 
 test("training crawlers share an entity allowance without blocking user-initiated fetches", (t) => {

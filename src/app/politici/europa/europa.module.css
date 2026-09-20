@@ -1,11 +1,5 @@
 .page {
   max-width: 960px;
-  margin: 0 auto;
-  padding: 28px 20px 64px;
-}
-
-.intro {
-  margin-bottom: 24px;
 }
 
 .eyebrow {
@@ -13,45 +7,53 @@
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--atlas-muted);
+  color: var(--color-neutral-500);
 }
 
-.intro h2 {
-  margin: 0 0 10px;
-  font-size: clamp(1.6rem, 2.4vw, 2rem);
-  font-weight: 600;
-}
-
-.intro p {
-  margin: 0;
-  max-width: 42rem;
-  color: var(--atlas-muted);
-  line-height: 1.5;
+.trail {
+  margin: 12px 0 0;
+  font-size: 14px;
 }
 
 .stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 32px;
+  margin-bottom: 24px;
 }
 
-.stats div {
-  border: 1px solid var(--atlas-line);
-  border-radius: 12px;
+.sources {
+  margin: 0 0 28px;
   padding: 14px 16px;
-  background: var(--atlas-panel);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 12px;
+  background: var(--color-neutral-100);
 }
 
-.stats dt {
-  font-size: 12px;
-  color: var(--atlas-muted);
+.sources summary {
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.stats dd {
-  margin: 6px 0 0;
-  font-size: 1.25rem;
-  font-variant-numeric: tabular-nums;
+.sources div {
+  margin-top: 12px;
+}
+
+.sources h2,
+.sources h3 {
+  margin: 16px 0 8px;
+  font-size: 1rem;
+}
+
+.sources ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.sources li + li {
+  margin-top: 10px;
+}
+
+.sources p {
+  margin: 4px 0 0;
+  color: var(--color-neutral-600);
 }
 
 .groups {
@@ -59,34 +61,30 @@
   gap: 28px;
 }
 
-.group h3 {
+.group h2 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
   margin: 0 0 10px;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
 .groupCount {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--atlas-muted);
+  color: var(--color-neutral-500);
 }
 
 .sourceNote {
   margin-top: 28px;
   font-size: 12px;
-  color: var(--atlas-muted);
+  color: var(--color-neutral-500);
   line-height: 1.5;
 }
 
 @media (max-width: 700px) {
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .group h3 {
+  .group h2 {
     flex-direction: column;
     align-items: flex-start;
   }

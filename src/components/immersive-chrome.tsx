@@ -2,23 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
-import { POLITICI_HOST } from "@/lib/politici-host";
+import { isPoliticiImmersive } from "@/lib/politici-immersive";
 
-/** Single-purpose map page: no site chrome; also on its own subdomain at `/`. */
-export function isPoliticiImmersive(
-  pathname: string | null,
-  hostname: string | null = typeof window === "undefined" ? null : window.location.hostname,
-): boolean {
-  if (pathname === "/politici" || Boolean(pathname?.startsWith("/politici/"))) return true;
-  // Proxy rewrites politici.* `/` → `/politici` but the URL bar stays `/`.
-  return hostname === POLITICI_HOST && (pathname === "/" || pathname === "");
-}
+export { isPoliticiImmersive };
 
 /** Marks <html> so CSS can drop sidebar offset and fill the viewport. */
 export function ImmersiveDocumentFlag() {
   const pathname = usePathname();
   useLayoutEffect(() => {
-    const immersive = isPoliticiImmersive(pathname);
+    const hostname = window.location.hostname;
+    const immersive = isPoliticiImmersive(pathname, hostname);
     if (immersive) document.documentElement.dataset.immersive = "politici";
     else delete document.documentElement.dataset.immersive;
     return () => {
@@ -28,9 +21,15 @@ export function ImmersiveDocumentFlag() {
   return null;
 }
 
-/** Renders children only when we are NOT on the immersive map page. */
+/**
+ * Renders children only when we are NOT on the immersive map page.
+ * Must stay mounted under the root layout even on immersive SSR so that soft
+ * navigation back to the rest of the site can restore the menu without a
+ * full document reload.
+ */
 export function ChromeUnlessImmersive({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (isPoliticiImmersive(pathname)) return null;
+  const hostname = typeof window === "undefined" ? null : window.location.hostname;
+  if (isPoliticiImmersive(pathname, hostname)) return null;
   return children;
 }

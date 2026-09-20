@@ -74,6 +74,15 @@ test("atlas: rich facts keep attendance, education, programs, CV, news and cavea
   assert.match(graph, /eurodeputati non sono ancora integrate/);
 });
 
+test("atlas: legislative acts define «arrivate in fondo» from the official legge class", async () => {
+  const acts = await read("src/app/politici/atlas-acts.tsx");
+  assert.match(acts, /Arrivate in fondo/);
+  assert.match(acts, /data-acts-end-definition/);
+  assert.match(acts, /classe ufficiale di esito <strong>legge<\/strong>/);
+  assert.match(acts, /Camera e Senato usano snapshot e regole/);
+  assert.doesNotMatch(acts, /produttivit[àa]|merito politico/);
+});
+
 test("atlas: resource failures remain failures, bounded retries and URLs remain validated", () => {
   for (const token of ["parseProfiles", "parseNews", "isSafeExternalUrl", "requestDeadline", "signal", "payload.retry === true"]) assert.ok(data.includes(token), token);
   assert.match(graph, /window.history.pushState\(window.history.state/);

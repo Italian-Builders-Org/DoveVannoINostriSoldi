@@ -52,8 +52,14 @@ function ActsBrowser({ data, activity }: { data: LegislativeData; activity: Repu
     <dl className={styles.metrics}>
       <div><dt>A prima firma</dt><dd>{data.firstSigned.length}</dd></div>
       <div><dt>Cofirmate</dt><dd>{data.coSigned.length}</dd></div>
-      {becameLaw !== undefined ? <div><dt>Divenute legge</dt><dd>{becameLaw}</dd></div> : null}
+      {becameLaw !== undefined ? <div><dt>Arrivate in fondo</dt><dd>{becameLaw}</dd></div> : null}
     </dl>
+    {becameLaw !== undefined ? <p className={styles.note} data-acts-end-definition="">
+      «Arrivate in fondo» conta solo gli atti con classe ufficiale di esito <strong>legge</strong>,
+      ricavata dalle etichette degli stati di iter del {chamberLabel}. Non è una votazione finale
+      in aula e non è confrontabile con l&apos;altro ramo: Camera e Senato usano snapshot e regole
+      di conteggio distinti.
+    </p> : null}
     {comparison ? <>
       <p className={styles.note}>
         Mediana {chamberLabel}: {comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma

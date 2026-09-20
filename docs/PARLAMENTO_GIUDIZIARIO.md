@@ -61,6 +61,95 @@ che contiene solo mandati aperti: sono elencate in
 `coverage.membersNotInPoliticiRoster` e per loro il blocco non ha una scheda dove
 apparire.
 
+## Policy (da approvare dai maintainer)
+
+Questa sezione mette per iscritto le decisioni che la issue #555 lasciava aperte.
+Finche non sono approvate, il perimetro pubblicato e una proposta del contributor,
+non una scelta del progetto: e il motivo per cui va chiusa.
+
+### 1. Pubblicazione nominativa
+
+I dati riguardano persone che esercitano una funzione pubblica elettiva, per fatti
+gia pubblici. La pubblicazione nominativa e ammessa perche l'aggregazione non
+raggiunge lo scopo civico: un conteggio per gruppo non consente di verificare il
+singolo procedimento sulle fonti. Stato privacy proposto per
+`scripts/etl/specs/source-corpus-policy.json`: **`named-public-office-judicial`**,
+distinto da `named-professional-role` perche impone due obblighi in piu, il
+tracciamento dello stato del procedimento e la decadenza del dato non riverificato.
+
+### 2. Soglia di evidenza
+
+Resta quella gia implementata: un atto pubblicato dell'autorita competente oppure
+almeno due editori indipendenti. Al momento della scrittura 5 casi su 75 hanno un
+atto pubblicato e 70 reggono su stampa concordante. Se il progetto preferisce la
+soglia stretta, il perimetro scende a 5 casi su 5 persone e la riduzione va fatta
+con una PR dedicata, non silenziosamente.
+
+### 3. Etichette probatorie
+
+`accertamento-ufficiale` solo per condanna definitiva sostenuta da un atto
+pubblicato; `richiede-spiegazione` per tutto il resto. Prescrizioni e assoluzioni
+non sono condanne e non compaiono nella lista delle condanne.
+
+### 4. Titolarita e responsabilita editoriale
+
+Il titolare del trattamento e l'editore del contenuto pubblicato e il progetto.
+Il maintainer responsabile del dataset va indicato qui sotto, come previsto da
+`GOVERNANCE.md` per le fonti nuove:
+
+- maintainer responsabile: **da indicare**
+
+### 5. Manutenzione e decadenza del dato
+
+Il rischio maggiore non e pubblicare, e lasciare il dato fermo. Percio:
+
+- ogni caso porta **due date distinte**, ed e la distinzione che regge tutto il
+  resto: `statusAsOf` e la data dell'**ultimo atto documentato**, `verifiedAt` e la
+  data dell'**ultimo controllo nostro**. La pagina le mostra entrambe ("stato al
+  ... verificato il ..."). Il gate rifiuta una `statusAsOf` che non coincida con la
+  data dell'ultimo grado di giudizio registrato: se si lascia scivolare in avanti
+  quella data, per esempio prendendola dall'articolo che racconta la sentenza, un
+  procedimento fermo da anni si presenta come recente;
+- un procedimento **non definitivo** non riverificato entro
+  `coverage.recheckAfterMonths` mesi (oggi 12) viene marcato `da-riverificare`:
+  mantiene il suo ultimo stato noto, ma la pagina dichiara che nessuno lo controlla
+  da oltre un anno. La finestra si misura su `verifiedAt`, non su `statusAsOf`: un
+  processo puo restare fermo per anni senza che il dato sia inaffidabile, mentre e
+  il nostro silenzio a renderlo tale;
+- un procedimento non definitivo fermo da oltre sette anni esce dai conteggi
+  (`esito_ignoto`);
+- il workflow `parlamento-giudiziario-recheck.yml` gira ogni mese, ricontrolla lo
+  snapshot offline e **fallisce** se un caso supera il doppio della finestra senza
+  riverifica. Un controllo rosso e il segnale che il dato va aggiornato o ritirato.
+
+Il contributor che ha portato il dataset non garantisce una manutenzione
+continuativa: la riverifica periodica e un impegno del progetto, e il workflow
+serve a renderlo visibile invece che implicito.
+
+### 6. Rettifiche
+
+Le segnalazioni arrivano dal canale privato indicato in `/privacy`
+(`info@mantoventure.com`), non dalle issue pubbliche: una richiesta di rettifica su
+un dato giudiziario non va aperta in chiaro su GitHub. Una rettifica documentata va
+applicata e versionata: dal momento della segnalazione, continuare
+a pubblicare un dato superato non e piu un errore scusabile. Il campo `correction`
+del caso resta pubblicato accanto al dato corretto, cosi la pagina dice anche che
+cosa diceva prima.
+
+**Come e andata la prima volta.** La riverifica del 20/09/2026 ha trovato un caso
+sbagliato fra i nostri, `case-009`. Era pubblicato come condanna non definitiva del
+2017 con `statusAsOf` al 28/09/2022, che pero era la data di un articolo, non di un
+atto. In calce al proprio pezzo del 2017 Il Sole 24 Ore pubblica una nota di
+aggiornamento del 28/05/2025: il 20/06/2020 la Corte d'appello di Roma, riformando
+il primo grado, ha emesso sentenza di non doversi procedere per prescrizione. Il
+caso e stato riclassificato come `prescrizione`, il parlamentare e uscito dal
+conteggio dei condannati (da 24 a 23) e la rettifica e visibile nella scheda.
+
+Quella nota e una fonte sola, mentre la regola ne chiede due. Vale comunque, e la
+regola va letta cosi: **le due fonti servono ad affermare un addebito, non a
+mantenerlo.** Una fonte credibile che scagiona basta a togliere; per rimettere un
+addebito servirebbero di nuovo due fonti o l'atto.
+
 ## Artefatti e comandi
 
 | File | Ruolo |

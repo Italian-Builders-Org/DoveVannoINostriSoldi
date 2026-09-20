@@ -6,12 +6,18 @@ proves the pipeline stops instead of publishing.
 
 from __future__ import annotations
 
+import contextlib
 import copy
+import io
 import json
 import unittest
 
 from parlamento_giudiziario_xix_snapshot import (
     OUTPUT,
+    recheck_report,
+    RECHECK_MONTHS,
+    months_between,
+    recheck_state,
     SnapshotError,
     build_snapshot,
     check_committed,
@@ -78,6 +84,8 @@ class ParlamentoGiudiziarioSnapshotTest(unittest.TestCase):
         payload = copy.deepcopy(self.payload)
         case = self.first_case(payload, lambda c: c["status"] == "condanna_non_definitiva"
                                and c["outcomeBucket"] == "condannato")
+        for event in case["events"]:
+            event["date"] = "2005-01-01"
         case["statusAsOf"] = "2005-01-01"
         case["outcomeBucket"] = "esito_ignoto"
         snapshot = build_snapshot(payload, self.spec)
@@ -173,6 +181,99 @@ class ParlamentoGiudiziarioSnapshotTest(unittest.TestCase):
         spec["source"]["committedInput"]["sha256"] = "0" * 64
         with self.assertRaisesRegex(SnapshotError, "sha256"):
             load_input(spec)
+
+    def test_non_definitive_case_left_unchecked_is_marked_for_recheck(self) -> None:
+        case = {
+            "status": "condanna_non_definitiva",
+            "outcomeBucket": "condannato",
+            "statusAsOf": "2019-01-10",
+            "verifiedAt": "2024-01-10",
+        }
+        self.assertEqual(recheck_state(case, "2024-06-01"), "fresco")
+        self.assertEqual(recheck_state(case, "2025-06-01"), "da-riverificare")
+
+    def test_an_old_proceeding_checked_today_is_not_marked_stale(self) -> None:
+        """E il nostro silenzio a invecchiare il dato, non l'eta dell'atto: un
+        procedimento fermo dal 2019 ma ricontrollato oggi resta affidabile."""
+        case = {
+            "status": "contabile_non_definitiva",
+            "outcomeBucket": "contabile",
+            "statusAsOf": "2019-01-02",
+            "verifiedAt": "2026-09-20",
+        }
+        self.assertEqual(recheck_state(case, "2026-09-20"), "fresco")
+
+    def test_definitive_case_never_expires(self) -> None:
+        case = {"status": "condanna_definitiva", "outcomeBucket": "condannato",
+                "statusAsOf": "2015-01-01", "verifiedAt": "2015-02-01"}
+        self.assertEqual(recheck_state(case, "2026-09-18"), "fresco")
+
+    def test_case_already_out_of_the_counts_keeps_its_own_state(self) -> None:
+        case = {"status": "condanna_non_definitiva", "outcomeBucket": "esito_ignoto",
+                "statusAsOf": "2010-01-01", "verifiedAt": "2010-01-01"}
+        self.assertEqual(recheck_state(case, "2026-09-18"), "esito-ignoto")
+
+    def test_rejects_status_date_taken_from_the_article_instead_of_the_act(self) -> None:
+        """Il caso Angelucci: statusAsOf era la data di un articolo del 2022 su una
+        sentenza del 2017, e nascondeva cinque anni di possibili sviluppi."""
+        def mutate(payload):
+            case = self.first_case(payload)
+            case["statusAsOf"] = "2026-09-01"
+        with self.assertRaisesRegex(SnapshotError, "ultimo atto documentato"):
+            self.rebuild(mutate)
+
+    def test_rejects_untranslated_research_text_in_a_visible_field(self) -> None:
+        """La ricerca a monte era in inglese: senza questo gate una riga non tradotta
+        finisce sotto il nome di una persona su una pagina italiana."""
+        def mutate(payload):
+            self.first_case(payload)["offence"] = "He was acquitted of the main charge"
+        with self.assertRaisesRegex(SnapshotError, "testo inglese"):
+            self.rebuild(mutate)
+
+    def test_rejects_case_without_a_verification_date(self) -> None:
+        def missing(payload):
+            self.first_case(payload).pop("verifiedAt")
+        with self.assertRaisesRegex(SnapshotError, "verifiedAt assente"):
+            self.rebuild(missing)
+
+        def future(payload):
+            self.first_case(payload)["verifiedAt"] = "2999-01-01"
+        with self.assertRaisesRegex(SnapshotError, "verifiedAt nel futuro"):
+            self.rebuild(future)
+
+    def test_the_corrected_case_is_no_longer_counted_as_a_conviction(self) -> None:
+        """Angelucci: la Corte d'appello ha dichiarato la prescrizione nel 2020, quindi
+        il procedimento non puo restare fra i condannati."""
+        case = next(item for item in self.payload["cases"] if item["caseId"] == "case-009")
+        self.assertEqual(case["status"], "prescrizione")
+        self.assertEqual(case["outcomeBucket"], "non_condannato")
+        self.assertIsNotNone(case["correction"])
+
+    def test_rejects_a_declared_recheck_that_does_not_match(self) -> None:
+        def mutate(payload):
+            case = self.first_case(payload, lambda c: c["status"] == "condanna_definitiva")
+            case["recheck"] = "da-riverificare"
+        with self.assertRaisesRegex(SnapshotError, "recheck"):
+            self.rebuild(mutate)
+
+    def test_recheck_window_is_counted_in_whole_months(self) -> None:
+        self.assertEqual(months_between("2024-01-10", "2025-01-09"), 12)
+        self.assertEqual(months_between("2024", "2025-03"), 14)
+        self.assertGreater(months_between("2019-10-01", "2026-09-18"), RECHECK_MONTHS * 2)
+
+    def test_snapshot_counts_the_cases_awaiting_a_recheck(self) -> None:
+        snapshot = build_snapshot(copy.deepcopy(self.payload), self.spec)
+        overdue = sum(1 for case in snapshot["cases"] if case["recheck"] == "da-riverificare")
+        self.assertEqual(snapshot["coverage"]["casesToRecheck"], overdue)
+        self.assertEqual(snapshot["coverage"]["recheckAfterMonths"], RECHECK_MONTHS)
+
+    def test_the_monthly_report_passes_today_and_fails_once_time_passes(self) -> None:
+        """Il job mensile deve diventare rosso da solo: misura dalla data odierna,
+        non dalla checkedAt congelata nello snapshot, che non invecchia mai."""
+        with contextlib.redirect_stdout(io.StringIO()) as quiet:
+            self.assertEqual(recheck_report("2026-09-20"), 0)
+            self.assertEqual(recheck_report("2029-01-01"), 1)
+        self.assertIn("oltre il doppio della finestra", quiet.getvalue())
 
     def test_publisher_key_groups_titles_of_one_publisher(self) -> None:
         groups = self.spec["rules"]["publisherGroups"]

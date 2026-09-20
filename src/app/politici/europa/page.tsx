@@ -36,7 +36,7 @@ export default function PoliticiEuropaPage() {
               <ul>
                 <li>
                   <a href={view.source.landingUrl} target="_blank" rel="noopener noreferrer">
-                    Parlamento europeo — elenco MEPs
+                    Parlamento europeo, elenco MEPs
                     <span className={styles.srOnly}> (nuova scheda)</span>
                   </a>
                   <p>

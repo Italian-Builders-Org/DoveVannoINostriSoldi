@@ -614,9 +614,15 @@
   .sideRail { display: none; }
   .workspace { overflow: visible; }
   .topBar { padding: 8px 20px 0; position: sticky; top: 0; background: var(--atlas-bg); border-bottom: 1px solid var(--atlas-line); }
-  .scopeSwitch { gap: 0; justify-content: space-between; }
-  .scopeSwitch button,
-  .europaScopeLink { flex: 1; min-height: 46px; padding: 8px 4px 12px; font-size: 11px; justify-content: center; }
+  .scopeSwitch { gap: 0; justify-content: space-between; flex-wrap: wrap; }
+  .scopeSwitch button { flex: 1 1 0; min-height: 46px; padding: 8px 4px 12px; font-size: 11px; }
+  .europaScopeLink {
+    flex: 0 0 auto;
+    min-height: 46px;
+    padding: 8px 8px 12px;
+    font-size: 11px;
+    justify-content: center;
+  }
   .scopeSwitch button:first-child { padding: 8px 5px 12px; }
   .scopeSwitch button:first-child[aria-current="page"]::after { left: 10px; }
   .workspaceTools { flex-wrap: wrap; gap: 9px; padding: 13px 0; }

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 98
+- Artefatti nel registro: 99
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 81 (PR umana dopo revisione)
+- manuale: 82 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -135,6 +135,7 @@ La revisione e il merge restano umani.
 | `politici-senato-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:38+00:00 | https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11 | nessuno | nessuno | manuale | `python3 scripts/etl/politici_senato_xix_snapshot.py --check` |
 | `governo-meloni` | non dichiarato nello snapshot | 2026-09-17T19:20:03+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/governo_meloni_snapshot.py --check` |
 | `presidente-repubblica` | non dichiarato nello snapshot | 2026-09-17T19:09:42+00:00 | https://www.quirinale.it/pagine/il-presidente | nessuno | nessuno | manuale | `python3 scripts/etl/presidente_repubblica_snapshot.py --check` |
+| `politici-eurodeputati-it` | non dichiarato nello snapshot | 2026-09-20T16:10:00+00:00 | https://www.europarl.europa.eu/meps/it/home | nessuno | nessuno | manuale | `python3 scripts/etl/politici_eurodeputati_it_snapshot.py --check` |
 | `ritratti-liberi` | non dichiarato nello snapshot | 2026-09-17T20:12:24+00:00 | https://commons.wikimedia.org/ | nessuno | nessuno | manuale | `python3 scripts/etl/ritratti_liberi_snapshot.py --check` |
 | `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
 | `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T21:42:19+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |

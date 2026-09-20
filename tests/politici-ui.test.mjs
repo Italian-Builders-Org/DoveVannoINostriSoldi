@@ -71,7 +71,8 @@ test("atlas: rich facts keep attendance, education, programs, CV, news and cavea
   for (const token of ["stemShareOfDeclared", "undeclared", "presencePercent", "votesCastPercent", "missionsPercent", "absencesPercent", "justifiedAbsences", "officialPages", "socialLinks", "photoCredit", "articleUrls", "observedAt"]) assert.ok(facts.includes(token), token);
   assert.match(facts, /missioni non sono presenze fisiche/);
   assert.match(facts, /non dimostrano|non dimostra|non implicano|non prova/);
-  assert.match(graph, /eurodeputati non sono ancora integrate/);
+  assert.match(graph, /vista separata/);
+  assert.match(graph, /\/politici\/europa/);
 });
 
 test("atlas: legislative acts define «arrivate in fondo» from the official legge class", async () => {
@@ -88,7 +89,7 @@ test("atlas: local foto and simboli proxies skip the next/image optimizer", asyn
   const symbol = await read("src/app/politici/atlas-symbol.tsx");
   assert.match(image, /unoptimized=\{src\.startsWith\("\/politici\/foto\/"\) \|\| src\.startsWith\("\/politici\/simboli\/"\)\}/);
   assert.match(symbol, /\/politici\/simboli\//);
-  assert.match(graph, /follow-up #566/);
+  assert.match(graph, /Apri la vista eurodeputati/);
 });
 
 test("atlas: resource failures remain failures, bounded retries and URLs remain validated", () => {

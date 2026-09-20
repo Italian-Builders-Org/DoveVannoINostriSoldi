@@ -59,6 +59,7 @@ locale, `/politici` è raggiungibile sullo stesso host di sviluppo.
 - Gruppo: `/politici?group=<id>`.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
+- Eurodeputati eletti in Italia (vista separata): `/politici/europa`.
 - Deputato per id numerico legacy: `/politici?deputy=<numericId>`
   (risolve in `dep-<numericId>`).
 

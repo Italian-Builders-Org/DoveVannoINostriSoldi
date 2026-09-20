@@ -1,0 +1,93 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+.intro {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--atlas-muted);
+}
+
+.intro h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  font-weight: 600;
+}
+
+.intro p {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--atlas-muted);
+  line-height: 1.5;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 32px;
+}
+
+.stats div {
+  border: 1px solid var(--atlas-line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--atlas-panel);
+}
+
+.stats dt {
+  font-size: 12px;
+  color: var(--atlas-muted);
+}
+
+.stats dd {
+  margin: 6px 0 0;
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.groups {
+  display: grid;
+  gap: 28px;
+}
+
+.group h3 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+
+.groupCount {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--atlas-muted);
+}
+
+.sourceNote {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--atlas-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .group h3 {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

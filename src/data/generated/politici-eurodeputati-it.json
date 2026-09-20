@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "politici-eurodeputati-it",
+  "institution": {
+    "id": "parlamento-europeo",
+    "label": "Parlamento europeo",
+    "chamberLabel": "Eurodeputati eletti in Italia",
+    "landingUrl": "https://www.europarl.europa.eu/meps/it/home",
+    "openDataUrl": "https://data.europarl.europa.eu/en/developer-corner/opendata-api"
+  },
+  "period": {
+    "kind": "point-in-time",
+    "label": "Mandato in corso al Parlamento europeo",
+    "observedDate": "2026-09-20"
+  },
+  "coverage": {
+    "countryOfRepresentation": "IT",
+    "memberCount": 76,
+    "groupCount": 8
+  },
+  "groups": [
+    {
+      "code": "ECR",
+      "memberCount": 24
+    },
+    {
+      "code": "S&D",
+      "memberCount": 19
+    },
+    {
+      "code": "The Left",
+      "memberCount": 10
+    },
+    {
+      "code": "PPE",
+      "memberCount": 9
+    },
+    {
+      "code": "PfE",
+      "memberCount": 7
+    },
+    {
+      "code": "Verts/ALE",
+      "memberCount": 4
+    },
+    {
+      "code": "Renew",
+      "memberCount": 2
+    },
+    {
+      "code": "ESN",
+      "memberCount": 1
+    }
+  ],
+  "meps": [
+    {
+      "id": "257123",
+      "givenName": "Lucia",
+      "familyName": "Annunziata",
+      "displayName": "Lucia Annunziata",
+      "sortLabel": "ANNUNZIATAL",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257123",
+      "openDataId": "person/257123"
+    },
+    {
+      "id": "257138",
+      "givenName": "Giuseppe",
+      "familyName": "Antoci",
+      "displayName": "Giuseppe Antoci",
+      "sortLabel": "ANTOCIG",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257138",
+      "openDataId": "person/257138"
+    },
+    {
+      "id": "124867",
+      "givenName": "Brando",
+      "familyName": "Benifei",
+      "displayName": "Brando Benifei",
+      "sortLabel": "BENIFEI",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124867",
+      "openDataId": "person/124867"
+    },
+    {
+      "id": "4746",
+      "givenName": "Sergio",
+      "familyName": "Berlato",
+      "displayName": "Sergio Berlato",
+      "sortLabel": "BERLATO",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/4746",
+      "openDataId": "person/4746"
+    },
+    {
+      "id": "257108",
+      "givenName": "Stefano",
+      "familyName": "Bonaccini",
+      "displayName": "Stefano Bonaccini",
+      "sortLabel": "BONACCINIS",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257108",
+      "openDataId": "person/257108"
+    },
+    {
+      "id": "101039",
+      "givenName": "Paolo",
+      "familyName": "Borchia",
+      "displayName": "Paolo Borchia",
+      "sortLabel": "BORCHIA",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/101039",
+      "openDataId": "person/101039"
+    },
+    {
+      "id": "257096",
+      "givenName": "Stefano",
+      "familyName": "Cavedagna",
+      "displayName": "Stefano Cavedagna",
+      "sortLabel": "CAVEDAGNAS",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257096",
+      "openDataId": "person/257096"
+    },
+    {
+      "id": "197786",
+      "givenName": "Susanna",
+      "familyName": "Ceccardi",
+      "displayName": "Susanna Ceccardi",
+      "sortLabel": "CECCARDI",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197786",
+      "openDataId": "person/197786"
+    },
+    {
+      "id": "124861",
+      "givenName": "Caterina",
+      "familyName": "Chinnici",
+      "displayName": "Caterina Chinnici",
+      "sortLabel": "CHINNICI",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124861",
+      "openDataId": "person/124861"
+    },
+    {
+      "id": "257093",
+      "givenName": "Carlo",
+      "familyName": "Ciccioli",
+      "displayName": "Carlo Ciccioli",
+      "sortLabel": "CICCIOLIC",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257093",
+      "openDataId": "person/257093"
+    },
+    {
+      "id": "257147",
+      "givenName": "Alessandro",
+      "familyName": "Ciriani",
+      "displayName": "Alessandro Ciriani",
+      "sortLabel": "CIRIANIA",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257147",
+      "openDataId": "person/257147"
+    },
+    {
+      "id": "257131",
+      "givenName": "Anna Maria",
+      "familyName": "Cisint",
+      "displayName": "Anna Maria Cisint",
+      "sortLabel": "CISINTA",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257131",
+      "openDataId": "person/257131"
+    },
+    {
+      "id": "257169",
+      "givenName": "Annalisa",
+      "familyName": "Corrado",
+      "displayName": "Annalisa Corrado",
+      "sortLabel": "CORRADOA",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257169",
+      "openDataId": "person/257169"
+    },
+    {
+      "id": "257094",
+      "givenName": "Giovanni",
+      "familyName": "Crosetto",
+      "displayName": "Giovanni Crosetto",
+      "sortLabel": "CROSETTOG",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257094",
+      "openDataId": "person/257094"
+    },
+    {
+      "id": "204333",
+      "givenName": "Salvatore",
+      "familyName": "De Meo",
+      "displayName": "Salvatore De Meo",
+      "sortLabel": "DEMEO",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/204333",
+      "openDataId": "person/204333"
+    },
+    {
+      "id": "257155",
+      "givenName": "Danilo",
+      "familyName": "Della Valle",
+      "displayName": "Danilo Della Valle",
+      "sortLabel": "DELLAVALLED",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257155",
+      "openDataId": "person/257155"
+    },
+    {
+      "id": "257095",
+      "givenName": "Elena",
+      "familyName": "Donazzan",
+      "displayName": "Elena Donazzan",
+      "sortLabel": "DONAZZANE",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257095",
+      "openDataId": "person/257095"
+    },
+    {
+      "id": "96787",
+      "givenName": "Herbert",
+      "familyName": "Dorfmann",
+      "displayName": "Herbert Dorfmann",
+      "sortLabel": "DORFMANN",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/96787",
+      "openDataId": "person/96787"
+    },
+    {
+      "id": "257137",
+      "givenName": "Marco",
+      "familyName": "Falcone",
+      "displayName": "Marco Falcone",
+      "sortLabel": "FALCONEM",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257137",
+      "openDataId": "person/257137"
+    },
+    {
+      "id": "96810",
+      "givenName": "Carlo",
+      "familyName": "Fidanza",
+      "displayName": "Carlo Fidanza",
+      "sortLabel": "FIDANZA",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/96810",
+      "openDataId": "person/96810"
+    },
+    {
+      "id": "197607",
+      "givenName": "Pietro",
+      "familyName": "Fiocchi",
+      "displayName": "Pietro Fiocchi",
+      "sortLabel": "FIOCCHI",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197607",
+      "openDataId": "person/197607"
+    },
+    {
+      "id": "197795",
+      "givenName": "Mario",
+      "familyName": "Furore",
+      "displayName": "Mario Furore",
+      "sortLabel": "FURORE",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197795",
+      "openDataId": "person/197795"
+    },
+    {
+      "id": "257097",
+      "givenName": "Alberico",
+      "familyName": "Gambino",
+      "displayName": "Alberico Gambino",
+      "sortLabel": "GAMBINOA",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257097",
+      "openDataId": "person/257097"
+    },
+    {
+      "id": "197794",
+      "givenName": "Chiara",
+      "familyName": "Gemma",
+      "displayName": "Chiara Gemma",
+      "sortLabel": "GEMMA",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197794",
+      "openDataId": "person/197794"
+    },
+    {
+      "id": "257102",
+      "givenName": "Giorgio",
+      "familyName": "Gori",
+      "displayName": "Giorgio Gori",
+      "sortLabel": "GORIG",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257102",
+      "openDataId": "person/257102"
+    },
+    {
+      "id": "197618",
+      "givenName": "Elisabetta",
+      "familyName": "Gualmini",
+      "displayName": "Elisabetta Gualmini",
+      "sortLabel": "GUALMINI",
+      "groupCode": "Renew",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197618",
+      "openDataId": "person/197618"
+    },
+    {
+      "id": "257130",
+      "givenName": "Cristina",
+      "familyName": "Guarda",
+      "displayName": "Cristina Guarda",
+      "sortLabel": "GUARDAC",
+      "groupCode": "Verts/ALE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257130",
+      "openDataId": "person/257130"
+    },
+    {
+      "id": "257144",
+      "givenName": "Paolo",
+      "familyName": "Inselvini",
+      "displayName": "Paolo Inselvini",
+      "sortLabel": "INSELVINIP",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257144",
+      "openDataId": "person/257144"
+    },
+    {
+      "id": "230085",
+      "givenName": "Camilla",
+      "familyName": "Laureti",
+      "displayName": "Camilla Laureti",
+      "sortLabel": "LAURETI",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/230085",
+      "openDataId": "person/230085"
+    },
+    {
+      "id": "257129",
+      "givenName": "Mimmo",
+      "familyName": "Lucano",
+      "displayName": "Mimmo Lucano",
+      "sortLabel": "LUCANOM",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257129",
+      "openDataId": "person/257129"
+    },
+    {
+      "id": "257124",
+      "givenName": "Giuseppe",
+      "familyName": "Lupo",
+      "displayName": "Giuseppe Lupo",
+      "sortLabel": "LUPOG",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257124",
+      "openDataId": "person/257124"
+    },
+    {
+      "id": "257149",
+      "givenName": "Lara",
+      "familyName": "Magoni",
+      "displayName": "Lara Magoni",
+      "sortLabel": "MAGONIL",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257149",
+      "openDataId": "person/257149"
+    },
+    {
+      "id": "4395",
+      "givenName": "Mario",
+      "familyName": "Mantovani",
+      "displayName": "Mario Mantovani",
+      "sortLabel": "MANTOVANIM",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/4395",
+      "openDataId": "person/4395"
+    },
+    {
+      "id": "257727",
+      "givenName": "Pierfrancesco",
+      "familyName": "Maran",
+      "displayName": "Pierfrancesco Maran",
+      "sortLabel": "MARANP",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257727",
+      "openDataId": "person/257727"
+    },
+    {
+      "id": "257132",
+      "givenName": "Ignazio Roberto",
+      "familyName": "Marino",
+      "displayName": "Ignazio Roberto Marino",
+      "sortLabel": "MARINOI",
+      "groupCode": "Verts/ALE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257132",
+      "openDataId": "person/257132"
+    },
+    {
+      "id": "124828",
+      "givenName": "Fulvio",
+      "familyName": "Martusciello",
+      "displayName": "Fulvio Martusciello",
+      "sortLabel": "MARTUSCIELLO",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124828",
+      "openDataId": "person/124828"
+    },
+    {
+      "id": "197824",
+      "givenName": "Giuseppe",
+      "familyName": "Milazzo",
+      "displayName": "Giuseppe Milazzo",
+      "sortLabel": "MILAZZO",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197824",
+      "openDataId": "person/197824"
+    },
+    {
+      "id": "257140",
+      "givenName": "Carolina",
+      "familyName": "Morace",
+      "displayName": "Carolina Morace",
+      "sortLabel": "MORACEC",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257140",
+      "openDataId": "person/257140"
+    },
+    {
+      "id": "257151",
+      "givenName": "Letizia",
+      "familyName": "Moratti",
+      "displayName": "Letizia Moratti",
+      "sortLabel": "MORATTIL",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257151",
+      "openDataId": "person/257151"
+    },
+    {
+      "id": "124799",
+      "givenName": "Alessandra",
+      "familyName": "Moretti",
+      "displayName": "Alessandra Moretti",
+      "sortLabel": "MORETTIA",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124799",
+      "openDataId": "person/124799"
+    },
+    {
+      "id": "257111",
+      "givenName": "Dario",
+      "familyName": "Nardella",
+      "displayName": "Dario Nardella",
+      "sortLabel": "NARDELLAD",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257111",
+      "openDataId": "person/257111"
+    },
+    {
+      "id": "239260",
+      "givenName": "Denis",
+      "familyName": "Nesci",
+      "displayName": "Denis Nesci",
+      "sortLabel": "NESCI",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/239260",
+      "openDataId": "person/239260"
+    },
+    {
+      "id": "2152",
+      "givenName": "Leoluca",
+      "familyName": "Orlando",
+      "displayName": "Leoluca Orlando",
+      "sortLabel": "ORLANDO",
+      "groupCode": "Verts/ALE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/2152",
+      "openDataId": "person/2152"
+    },
+    {
+      "id": "257135",
+      "givenName": "Valentina",
+      "familyName": "Palmisano",
+      "displayName": "Valentina Palmisano",
+      "sortLabel": "PALMISANOV",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257135",
+      "openDataId": "person/257135"
+    },
+    {
+      "id": "36392",
+      "givenName": "Aldo",
+      "familyName": "Patriciello",
+      "displayName": "Aldo Patriciello",
+      "sortLabel": "PATRICIELLO",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/36392",
+      "openDataId": "person/36392"
+    },
+    {
+      "id": "257126",
+      "givenName": "Gaetano",
+      "familyName": "Pedulla'",
+      "displayName": "Gaetano Pedulla'",
+      "sortLabel": "PEDULLAG",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257126",
+      "openDataId": "person/257126"
+    },
+    {
+      "id": "257150",
+      "givenName": "Michele",
+      "familyName": "Picaro",
+      "displayName": "Michele Picaro",
+      "sortLabel": "PICAROM",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257150",
+      "openDataId": "person/257150"
+    },
+    {
+      "id": "124846",
+      "givenName": "Pina",
+      "familyName": "Picierno",
+      "displayName": "Pina Picierno",
+      "sortLabel": "PICIERNO",
+      "groupCode": "Renew",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124846",
+      "openDataId": "person/124846"
+    },
+    {
+      "id": "257145",
+      "givenName": "Daniele",
+      "familyName": "Polato",
+      "displayName": "Daniele Polato",
+      "sortLabel": "POLATOD",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257145",
+      "openDataId": "person/257145"
+    },
+    {
+      "id": "257128",
+      "givenName": "Giusi",
+      "familyName": "Princi",
+      "displayName": "Giusi Princi",
+      "sortLabel": "PRINCIG",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257128",
+      "openDataId": "person/257128"
+    },
+    {
+      "id": "197820",
+      "givenName": "Nicola",
+      "familyName": "Procaccini",
+      "displayName": "Nicola Procaccini",
+      "sortLabel": "PROCACCINI",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197820",
+      "openDataId": "person/197820"
+    },
+    {
+      "id": "257104",
+      "givenName": "Ruggero",
+      "familyName": "Razza",
+      "displayName": "Ruggero Razza",
+      "sortLabel": "RAZZAR",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257104",
+      "openDataId": "person/257104"
+    },
+    {
+      "id": "257121",
+      "givenName": "Matteo",
+      "familyName": "Ricci",
+      "displayName": "Matteo Ricci",
+      "sortLabel": "RICCIM",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257121",
+      "openDataId": "person/257121"
+    },
+    {
+      "id": "257170",
+      "givenName": "Sandro",
+      "familyName": "Ruotolo",
+      "displayName": "Sandro Ruotolo",
+      "sortLabel": "RUOTOLOA",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257170",
+      "openDataId": "person/257170"
+    },
+    {
+      "id": "125670",
+      "givenName": "Massimiliano",
+      "familyName": "Salini",
+      "displayName": "Massimiliano Salini",
+      "sortLabel": "SALINI",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/125670",
+      "openDataId": "person/125670"
+    },
+    {
+      "id": "257127",
+      "givenName": "Ilaria",
+      "familyName": "Salis",
+      "displayName": "Ilaria Salis",
+      "sortLabel": "SALISI",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257127",
+      "openDataId": "person/257127"
+    },
+    {
+      "id": "197578",
+      "givenName": "Silvia",
+      "familyName": "Sardone",
+      "displayName": "Silvia Sardone",
+      "sortLabel": "SARDONE",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197578",
+      "openDataId": "person/197578"
+    },
+    {
+      "id": "257113",
+      "givenName": "Antonella",
+      "familyName": "Sberna",
+      "displayName": "Antonella Sberna",
+      "sortLabel": "SBERNAA",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257113",
+      "openDataId": "person/257113"
+    },
+    {
+      "id": "257139",
+      "givenName": "Benedetta",
+      "familyName": "Scuderi",
+      "displayName": "Benedetta Scuderi",
+      "sortLabel": "SCUDERIB",
+      "groupCode": "Verts/ALE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257139",
+      "openDataId": "person/257139"
+    },
+    {
+      "id": "257109",
+      "givenName": "Marco",
+      "familyName": "Squarta",
+      "displayName": "Marco Squarta",
+      "sortLabel": "SQUARTAM",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257109",
+      "openDataId": "person/257109"
+    },
+    {
+      "id": "197825",
+      "givenName": "Raffaele",
+      "familyName": "Stancanelli",
+      "displayName": "Raffaele Stancanelli",
+      "sortLabel": "STANCANELLI",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197825",
+      "openDataId": "person/197825"
+    },
+    {
+      "id": "257101",
+      "givenName": "Cecilia",
+      "familyName": "Strada",
+      "displayName": "Cecilia Strada",
+      "sortLabel": "STRADAC",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257101",
+      "openDataId": "person/257101"
+    },
+    {
+      "id": "124813",
+      "givenName": "Dario",
+      "familyName": "Tamburrano",
+      "displayName": "Dario Tamburrano",
+      "sortLabel": "TAMBURRANO",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124813",
+      "openDataId": "person/124813"
+    },
+    {
+      "id": "257160",
+      "givenName": "Marco",
+      "familyName": "Tarquinio",
+      "displayName": "Marco Tarquinio",
+      "sortLabel": "TARQUINIOM",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257160",
+      "openDataId": "person/257160"
+    },
+    {
+      "id": "197591",
+      "givenName": "Irene",
+      "familyName": "Tinagli",
+      "displayName": "Irene Tinagli",
+      "sortLabel": "TINAGLI",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197591",
+      "openDataId": "person/197591"
+    },
+    {
+      "id": "257148",
+      "givenName": "Raffaele",
+      "familyName": "Topo",
+      "displayName": "Raffaele Topo",
+      "sortLabel": "TOPOR",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257148",
+      "openDataId": "person/257148"
+    },
+    {
+      "id": "257163",
+      "givenName": "Francesco",
+      "familyName": "Torselli",
+      "displayName": "Francesco Torselli",
+      "sortLabel": "TORSELLIF",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257163",
+      "openDataId": "person/257163"
+    },
+    {
+      "id": "124795",
+      "givenName": "Flavio",
+      "familyName": "Tosi",
+      "displayName": "Flavio Tosi",
+      "sortLabel": "TOSI",
+      "groupCode": "PPE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/124795",
+      "openDataId": "person/124795"
+    },
+    {
+      "id": "197580",
+      "givenName": "Isabella",
+      "familyName": "Tovaglieri",
+      "displayName": "Isabella Tovaglieri",
+      "sortLabel": "TOVAGLIERI",
+      "groupCode": "PfE",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/197580",
+      "openDataId": "person/197580"
+    },
+    {
+      "id": "275087",
+      "givenName": "Georgia",
+      "familyName": "Tramacere",
+      "displayName": "Georgia Tramacere",
+      "sortLabel": "TRAMACEREG",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/275087",
+      "openDataId": "person/275087"
+    },
+    {
+      "id": "257133",
+      "givenName": "Pasquale",
+      "familyName": "Tridico",
+      "displayName": "Pasquale Tridico",
+      "sortLabel": "TRIDICOP",
+      "groupCode": "The Left",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257133",
+      "openDataId": "person/257133"
+    },
+    {
+      "id": "257125",
+      "givenName": "Roberto",
+      "familyName": "Vannacci",
+      "displayName": "Roberto Vannacci",
+      "sortLabel": "VANNACCIR",
+      "groupCode": "ESN",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257125",
+      "openDataId": "person/257125"
+    },
+    {
+      "id": "257099",
+      "givenName": "Francesco",
+      "familyName": "Ventola",
+      "displayName": "Francesco Ventola",
+      "sortLabel": "VENTOLAF",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257099",
+      "openDataId": "person/257099"
+    },
+    {
+      "id": "257143",
+      "givenName": "Mariateresa",
+      "familyName": "Vivaldini",
+      "displayName": "Mariateresa Vivaldini",
+      "sortLabel": "VIVALDINIM",
+      "groupCode": "ECR",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257143",
+      "openDataId": "person/257143"
+    },
+    {
+      "id": "257106",
+      "givenName": "Alessandro",
+      "familyName": "Zan",
+      "displayName": "Alessandro Zan",
+      "sortLabel": "ZANA",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/257106",
+      "openDataId": "person/257106"
+    },
+    {
+      "id": "28419",
+      "givenName": "Nicola",
+      "familyName": "Zingaretti",
+      "displayName": "Nicola Zingaretti",
+      "sortLabel": "ZINGARETTIN",
+      "groupCode": "S&D",
+      "countryOfRepresentation": "IT",
+      "officialPage": "https://www.europarl.europa.eu/meps/it/28419",
+      "openDataId": "person/28419"
+    }
+  ],
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo identità e gruppo politico europeo degli eurodeputati con country-of-representation IT."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-20"
+    },
+    "provenance": {
+      "kind": "official-open-data-api",
+      "endpoint": "https://data.europarl.europa.eu/api/v2/meps/show-current",
+      "filter": "country-of-representation=IT"
+    }
+  },
+  "source": {
+    "owner": "Parlamento europeo — Open Data Portal",
+    "endpointUrl": "https://data.europarl.europa.eu/api/v2/meps/show-current",
+    "landingUrl": "https://www.europarl.europa.eu/meps/it/home",
+    "apiDocsUrl": "https://data.europarl.europa.eu/en/developer-corner/opendata-api",
+    "license": "CC BY 4.0 (dichiarata dall'Open Data API del Parlamento europeo)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "observedDate": "2026-09-20",
+    "acquiredAt": "2026-09-20T16:10:00+00:00",
+    "query": {
+      "countryOfRepresentation": "IT",
+      "limit": 100,
+      "offset": 0
+    },
+    "responses": {
+      "currentMepsItaly": {
+        "bytes": 16953,
+        "sha256": "1ee397559f3b17acc0118bead6c0f0ad9b313db8ef0bddf01da114134b5a5113"
+      }
+    },
+    "cadence": "rilevazione puntuale; rieseguire --write dopo ricambio o sostituzione"
+  },
+  "caveats": [
+    "Questa vista è separata dall'atlante nazionale Camera/Senato/Governo: non mescola eurodeputati con mandati italiani.",
+    "Il gruppo politico è quello del Parlamento europeo pubblicato dall'API; non si inferiscono affiliazioni a partiti nazionali italiani dalle etichette UE.",
+    "Le fotografie ufficiali europarl.europa.eu/mepphoto non sono acquisite: il sito applica una challenge WAF alle richieste programmatiche; restano raggiungibili dalle schede ufficiali.",
+    "L'elenco ufficiale completo resta sul sito del Parlamento europeo; questo snapshot è una proiezione filtrata per country-of-representation IT.",
+    "Non è spesa pubblica e non misura influenza, merito o coerenza di voto."
+  ]
+}

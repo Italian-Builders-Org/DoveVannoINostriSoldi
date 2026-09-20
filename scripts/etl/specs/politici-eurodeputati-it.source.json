@@ -1,0 +1,52 @@
+{
+  "datasetId": "politici-eurodeputati-it",
+  "title": "Eurodeputati eletti in Italia — mandato in corso (Parlamento europeo, Open Data)",
+  "landingUrl": "https://www.europarl.europa.eu/meps/it/home",
+  "period": {
+    "kind": "point-in-time",
+    "label": "Mandato in corso al Parlamento europeo",
+    "observedDate": "2026-09-20"
+  },
+  "source": {
+    "owner": "Parlamento europeo — Open Data Portal",
+    "landingUrl": "https://www.europarl.europa.eu/meps/it/home",
+    "endpointUrl": "https://data.europarl.europa.eu/api/v2/meps/show-current",
+    "apiDocsUrl": "https://data.europarl.europa.eu/en/developer-corner/opendata-api",
+    "license": "CC BY 4.0 (dichiarata dall'Open Data API del Parlamento europeo)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "committedResponses": {
+      "currentMepsItaly": {
+        "bytes": 16953,
+        "sha256": "1ee397559f3b17acc0118bead6c0f0ad9b313db8ef0bddf01da114134b5a5113"
+      }
+    }
+  },
+  "expectedCoverage": {
+    "countryOfRepresentation": "IT",
+    "memberFloor": 70,
+    "memberCeiling": 80,
+    "note": "L'Italia ha 76 seggi nella X legislatura europea; il pavimento/soffitto assorbono sostituzioni temporanee senza inventare un totale nazionale."
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: solo identità e gruppo politico europeo degli eurodeputati con country-of-representation IT."
+    },
+    "periodo": {
+      "kind": "point-in-time",
+      "observedDate": "2026-09-20"
+    },
+    "provenance": {
+      "kind": "official-open-data-api",
+      "endpoint": "https://data.europarl.europa.eu/api/v2/meps/show-current",
+      "filter": "country-of-representation=IT"
+    }
+  },
+  "caveats": [
+    "Questa vista è separata dall'atlante nazionale Camera/Senato/Governo: non mescola eurodeputati con mandati italiani.",
+    "Il gruppo politico è quello del Parlamento europeo pubblicato dall'API; non si inferiscono affiliazioni a partiti nazionali italiani dalle etichette UE.",
+    "Le fotografie ufficiali europarl.europa.eu/mepphoto non sono acquisite: il sito applica una challenge WAF alle richieste programmatiche; restano raggiungibili dalle schede ufficiali.",
+    "L'elenco ufficiale completo resta sul sito del Parlamento europeo; questo snapshot è una proiezione filtrata per country-of-representation IT.",
+    "Non è spesa pubblica e non misura influenza, merito o coerenza di voto."
+  ]
+}

@@ -2497,6 +2497,32 @@
       "trustModel": "Nodo di vertice con provenance mista dichiarata: nome, identificativo persona e ritratto arrivano dall'archivio ufficiale della Camera dei deputati via SPARQL, pinnato per byte/SHA-256, mentre la titolarità della carica è dichiarata nella spec perché quirinale.it risponde 403 a ogni richiesta programmatica, robots.txt incluso. Il validator impone che il divario resti dichiarato nel payload e che il nome della spec corrisponda all'identità ufficiale; ogni cambio di carica richiede una revisione manuale della spec."
     },
     {
+      "id": "politici-eurodeputati-it",
+      "owner": "Eurodeputati eletti in Italia — mandato in corso (Parlamento europeo Open Data)",
+      "files": [
+        "src/data/generated/politici-eurodeputati-it.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/politici_eurodeputati_it_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_politici_eurodeputati_it_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/politici-eurodeputati.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/politici_eurodeputati_it_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/politici-eurodeputati-it.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Elenco show-current dell'Open Data API v2 del Parlamento europeo, filtrato per country-of-representation=IT e pinnato per byte/SHA-256. Pubblica solo identità e codice del gruppo politico europeo; non inferisce partiti nazionali, non importa fotografie (WAF su mepphoto) e non mescola i mandati UE nel grafo Camera/Senato/Governo. La copertura deve restare fra pavimento e soffitto dichiarati nella spec."
+    },
+    {
       "id": "ritratti-liberi",
       "owner": "Ritratti a licenza libera dei membri del Governo mai eletti in Parlamento",
       "files": [

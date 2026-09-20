@@ -2,7 +2,11 @@
 
 ## Perimetro
 
-Il restyling sostituisce la UI della route `/politici`, condivisa con il sottodominio tramite l’infrastruttura esistente. Non modifica snapshot, contratti dati, ETL, API, fotografie, configurazione dei provider, routing globale, schema del database o lockfile. Non servono migrazioni. L’integrazione con il Parlamento europeo non viene simulata: la vista Repubblica offre un collegamento esplicito al repertorio ufficiale, finché un nuovo dataset verificato non sarà disponibile.
+Il restyling sostituisce la UI della route `/politici`, condivisa con il sottodominio tramite l’infrastruttura esistente. Non modifica snapshot, contratti dati, ETL, API, fotografie, configurazione dei provider, routing globale, schema del database o lockfile. Non servono migrazioni. L’integrazione con il Parlamento europeo vive in una **vista separata**
+(`/politici/europa`), alimentata dallo snapshot ufficiale
+`politici-eurodeputati-it` (Open Data API v2, filtro `country-of-representation=IT`).
+Non mescola eurodeputati con Camera, Senato o Governo e non inferisce partiti
+nazionali dalle etichette dei gruppi UE.
 
 ## Componenti
 

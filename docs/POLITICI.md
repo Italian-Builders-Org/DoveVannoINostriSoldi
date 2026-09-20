@@ -101,3 +101,7 @@ né coordinamento. La presenza di un procedimento non equivale a colpevolezza:
 assoluzioni, prescrizioni e condanne restano stati distinti, con grado e fonti
 espliciti. I dati provengono dagli archivi pubblicati dalle istituzioni e portano
 le loro date di osservazione.
+
+La rappresentanza al Parlamento europeo resta fuori da questo atlante nazionale:
+vedi issue #566. Ritratti e simboli di partito passano dai proxy
+`/politici/foto` e `/politici/simboli` senza l’optimizer `/_next/image`.

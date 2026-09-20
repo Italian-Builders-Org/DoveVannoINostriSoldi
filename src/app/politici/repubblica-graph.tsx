@@ -364,7 +364,7 @@ function RepublicOverview({ map, people, onSelect, filtered }: { map: RepublicMa
       <span className={styles.europeMark} aria-hidden="true">EU</span>
       <div>
         <strong>La rappresentanza in Europa</strong>
-        <p>Le schede degli eurodeputati non sono ancora integrate in questo atlante.</p>
+        <p>Le schede degli eurodeputati non sono ancora integrate in questo atlante (follow-up #566).</p>
         <SourceLink href="https://www.europarl.europa.eu/meps/it/home">Consulta l’elenco ufficiale del Parlamento europeo</SourceLink>
       </div>
     </div>

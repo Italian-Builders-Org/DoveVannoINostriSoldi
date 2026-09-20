@@ -83,6 +83,14 @@ test("atlas: legislative acts define «arrivate in fondo» from the official leg
   assert.doesNotMatch(acts, /produttivit[àa]|merito politico/);
 });
 
+test("atlas: local foto and simboli proxies skip the next/image optimizer", async () => {
+  const image = await read("src/app/politici/atlas-image.tsx");
+  const symbol = await read("src/app/politici/atlas-symbol.tsx");
+  assert.match(image, /unoptimized=\{src\.startsWith\("\/politici\/foto\/"\) \|\| src\.startsWith\("\/politici\/simboli\/"\)\}/);
+  assert.match(symbol, /\/politici\/simboli\//);
+  assert.match(graph, /follow-up #566/);
+});
+
 test("atlas: resource failures remain failures, bounded retries and URLs remain validated", () => {
   for (const token of ["parseProfiles", "parseNews", "isSafeExternalUrl", "requestDeadline", "signal", "payload.retry === true"]) assert.ok(data.includes(token), token);
   assert.match(graph, /window.history.pushState\(window.history.state/);

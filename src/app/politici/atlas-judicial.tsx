@@ -73,16 +73,31 @@ export function JudicialBlock({ judicial }: { judicial: JudicialState | null }) 
           // no longer exists.
           const sentence =
             item.outcomeBucket === "condannato" ? formatSentenceMonths(item.latestSentenceMonths) : null;
-          const damageEvent = [...item.events].reverse().find((event) => event.damagesEuroCents !== null);
+          // Il danno erariale e una responsabilita contabile accertata dalla Corte dei
+          // conti. Gli importi che compaiono in un processo penale sono provvisionali o
+          // risarcimenti a una parte civile: chiamarli danno erariale e falso, e se la
+          // sentenza e stata riformata quell'importo non esiste piu.
+          const damageEvent = item.jurisdiction === "contabile" && item.outcomeBucket === "contabile"
+            ? [...item.events].reverse().find((event) => event.damagesEuroCents !== null)
+            : undefined;
           const damage = formatEuroCents(damageEvent?.damagesEuroCents ?? null);
           return (
             <li key={item.caseId} className={styles.judicialCase} data-outcome={item.outcomeBucket}>
               <p className={styles.judicialTitle}>
                 <span className={styles.judicialStatus} data-outcome={item.outcomeBucket}>{item.statusLabel}</span>
+                {item.recheck === "da-riverificare" ? (
+                  <span className={styles.judicialRecheck}>da riverificare</span>
+                ) : null}
                 {item.title}
               </p>
+              {item.recheck === "da-riverificare" ? (
+                <p className={styles.judicialRecheckNote}>
+                  Procedimento non definitivo che nessuno controlla da oltre un anno: lo stato potrebbe essere
+                  cambiato senza che questa scheda lo riporti.
+                </p>
+              ) : null}
               <p className={styles.judicialMeta}>
-                {OUTCOME_LABELS[item.outcomeBucket]} · aggiornato al {item.statusAsOf}
+                {OUTCOME_LABELS[item.outcomeBucket]} · stato al {item.statusAsOf} · verificato il {item.verifiedAt}
                 {sentence ? ` · pena nell'ultima sentenza: ${sentence}` : ""}
                 {damage ? ` · danno erariale: ${damage}` : ""}
               </p>

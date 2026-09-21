@@ -252,7 +252,12 @@ a caso.
   si fonde su somiglianza. Un ritratto mancante resta un monogramma, mai una
   fotografia dedotta. Atti Camera e Senato mantengono fonti e identità di ramo.
   Procedimento, assoluzione, prescrizione e condanna non sono sinonimi; stato,
-  grado e fonti restano espliciti. La gerarchia istituzionale mostrata è quella
+  grado e fonti restano espliciti. `statusAsOf` e la data dell'ultimo atto documentato e deve
+  coincidere con l'ultimo grado registrato, mai con la data dell'articolo che lo
+  racconta; `verifiedAt` e la data del nostro ultimo controllo e la pagina mostra
+  entrambe. Un procedimento non definitivo non riverificato entro
+  `coverage.recheckAfterMonths` mesi viene marcato `da-riverificare` e la pagina lo
+  dichiara: il dato fermo non puo presentarsi come attuale. La gerarchia istituzionale mostrata è quella
   costituzionale, non una misura di influenza politica.
 - **Controlli** (percorsi):
   [tests/camera-atti-voti-contract.test.mjs](../tests/camera-atti-voti-contract.test.mjs),

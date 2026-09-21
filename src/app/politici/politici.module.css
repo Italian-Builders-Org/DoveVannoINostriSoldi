@@ -960,3 +960,25 @@
   color: var(--atlas-ink);
   font-weight: 550;
 }
+
+/* Procedimento non definitivo non riverificato entro la finestra dichiarata:
+   il dato resta visibile con il suo ultimo stato noto, ma non si presenta come fresco. */
+.judicialRecheck {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px dashed color-mix(in srgb, var(--graph-institution) 45%, transparent);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-neutral-600);
+}
+
+.judicialRecheckNote {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--color-neutral-600);
+}

@@ -72,9 +72,12 @@ export function ConvictionsDirectory({
               <span className={styles.convictionName}>
                 <strong>{item.displayName}</strong>
                 <span className={styles.judicialStatus} data-outcome={item.outcomeBucket}>{item.statusLabel}</span>
+                {item.recheck === "da-riverificare" ? (
+                  <span className={styles.judicialRecheck}>da riverificare</span>
+                ) : null}
               </span>
               <span className={styles.convictionMeta}>
-                {item.chamber === "camera" ? "Camera" : "Senato"} · {OUTCOME_LABELS[item.outcomeBucket]} · aggiornato al {item.statusAsOf}
+                {item.chamber === "camera" ? "Camera" : "Senato"} · {OUTCOME_LABELS[item.outcomeBucket]} · stato al {item.statusAsOf} · verificato il {item.verifiedAt}
                 {sentence ? ` · pena nell'ultima sentenza: ${sentence}` : ""}
               </span>
               <span className={styles.convictionTitle}>{item.title}</span>

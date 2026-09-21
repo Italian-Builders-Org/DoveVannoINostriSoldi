@@ -147,8 +147,8 @@
       "arope-italy": {
         "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/ilc_peps01n/A.PC+THS_PER.TOTAL.T.IT?format=SDMX-CSV&startPeriod=2015&endPeriod=2025",
         "format": "SDMX-CSV 1.0.0",
-        "bytes": 1693,
-        "sha256": "da535984a0de6db02e995450b24f6d7daf596221cec984200933155d96ab2c8e",
+        "bytes": 1670,
+        "sha256": "f0ef2bf1cf98d9a30c24afafdd96a7d6a7c0f21741b4443c982b750773fe505b",
         "fixturePath": "tests/fixtures/eurostat-arope/ilc_peps01n-IT-TOTAL-T-2015-2025.csv"
       }
     },
@@ -175,7 +175,7 @@
     }
   },
   "integrity": {
-    "sourceLockSha256": "3c267b289ec22873f353f1832f9846c6253484022a2d62268a5d763615e818ff",
+    "sourceLockSha256": "d23069c28017b0b9c5ce2fa9b1a9496fc9389befe6d77dd2111caefc3b8ee6c2",
     "dataArtifact": {
       "path": "src/data/generated/eurostat-arope-2015-2025.data.json",
       "bytes": 3264,

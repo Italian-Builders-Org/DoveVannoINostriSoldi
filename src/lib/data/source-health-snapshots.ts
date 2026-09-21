@@ -49,6 +49,7 @@ import {
   istatPovertaSogliaRelativaData,
   istatPovertaSogliaRelativaMetadata,
 } from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import { eurostatAropeData, eurostatAropeMetadata } from "@/lib/eurostat-arope-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -613,6 +614,19 @@ function snapshotManagedIstatPovertaSogliaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedEurostatArope(): SourceHealth {
+  const { source } = eurostatAropeMetadata;
+  const asset = source.assets["arope-italy"];
+  return {
+    ...baseHealth("eurostat-arope"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-arope", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · AROPE Europa 2030 ${eurostatAropeData.period.from}-${eurostatAropeData.period.to} (ilc_peps01n) · ${eurostatAropeData.observations.length.toLocaleString("it-IT")} osservazioni · solo Italia · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.`,
+    recordCount: eurostatAropeData.observations.length,
+  };
+}
+
 function snapshotManagedIstatBesEconomico(): SourceHealth {
   const { source, observedAt } = istatBesMetadata;
   const asset = Object.values(source.assets)[0];
@@ -796,6 +810,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
   "istat-poverta-soglia-relativa": snapshotManagedIstatPovertaSogliaRelativa,
+  "eurostat-arope": snapshotManagedEurostatArope,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,

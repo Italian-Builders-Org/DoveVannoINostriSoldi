@@ -1962,6 +1962,32 @@
       "trustModel": "Lock dedicato 34_727_DF_DCCV_POVERTA_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVREL, 70 osservazioni pubblicate su 77 della fonte (escluso 2021), solo Italia, 7 ampiezze familiari. Scale factor 100 (centesimi). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia assoluta 34_211. UNIT_MEAS vuoto. Licenza not-declared."
     },
     {
+      "id": "eurostat-arope-2015-2025",
+      "owner": "Eurostat AROPE Europa 2030 (ilc_peps01n)",
+      "files": [
+        "src/data/generated/eurostat-arope-2015-2025.data.json",
+        "src/data/generated/eurostat-arope-2015-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_arope.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_arope.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-arope.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_arope.py --input <CSV ufficiale SDMX> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-arope-2015-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato ilc_peps01n: CSV ufficiale Italia TOTAL/T 2015-2025 vincolato per URL, byte e SHA-256. 11 osservazioni con tasso (decimi) e persone in migliaia. soldi.present false. Non confrontabile con povertà assoluta/relativa ISTAT né con la serie Europa 2020 ilc_peps01. Licenza CC-BY-4.0."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [

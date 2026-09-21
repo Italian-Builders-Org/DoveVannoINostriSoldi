@@ -4,15 +4,16 @@ import { compactEuroFromCents, longDate, percent } from "@/lib/format";
 import {
   buildPovertaPageView,
   type PovertaAbsoluteThresholdView,
+  type PovertaAropeView,
   type PovertaFamilyView,
   type PovertaRelativeThresholdView,
 } from "@/lib/poverta-page";
 import styles from "./poverta.module.css";
 
 export const metadata: Metadata = {
-  title: "Povertà assoluta e relativa",
+  title: "Povertà assoluta, relativa e AROPE",
   description:
-    "Indicatori ufficiali ISTAT di povertà assoluta e relativa, più le soglie monetarie (assoluta per regione, relativa nazionale) come contesto. Misure distinte, mai sommate.",
+    "Indicatori ufficiali ISTAT di povertà assoluta e relativa, soglie monetarie e AROPE Eurostat (Europa 2030). Misure distinte, mai sommate.",
 };
 
 function rate(value: number | null): string {
@@ -21,6 +22,14 @@ function rate(value: number | null): string {
 
 function money(valueHundredths: number | null): string {
   return valueHundredths === null ? "Non disponibile" : compactEuroFromCents(valueHundredths);
+}
+
+function aropeRate(tenths: number): string {
+  return percent(tenths / 10);
+}
+
+function aropePersons(thousands: number): string {
+  return `${thousands.toLocaleString("it-IT")} mila`;
 }
 
 function FamilySection({ family }: { family: PovertaFamilyView }) {
@@ -233,6 +242,72 @@ function RelativeThresholdSection({ threshold }: { threshold: PovertaRelativeThr
   );
 }
 
+function AropeSection({ arope }: { arope: PovertaAropeView }) {
+  const latest = arope.rows.find((row) => row.year === arope.latestYear);
+  const tableId = "arope-serie";
+  return (
+    <section className={styles.family} aria-labelledby="titolo-arope">
+      <h2 id="titolo-arope">Rischio di povertà o esclusione sociale (AROPE)</h2>
+      <p className={styles.definition}>{arope.definitionNote}</p>
+      <p className={styles.definition}>
+        Contesto nazionale Europa 2030 (Eurostat <code>ilc_peps01n</code>). Non è la povertà
+        assoluta né quella relativa ISTAT: restano misure separate, senza somme o differenze.
+      </p>
+
+      <dl className={styles.latest}>
+        <div className={styles.latestItem}>
+          <dt className={styles.latestLabel}>Tasso, {arope.latestYear}</dt>
+          <dd className={styles.latestValue}>{latest ? aropeRate(latest.rateTenths) : "Non disponibile"}</dd>
+        </div>
+        <div className={styles.latestItem}>
+          <dt className={styles.latestLabel}>Persone, {arope.latestYear}</dt>
+          <dd className={styles.latestValue}>
+            {latest ? aropePersons(latest.personsThousands) : "Non disponibile"}
+          </dd>
+        </div>
+      </dl>
+
+      <div className="table-scroll" role="region" aria-labelledby={tableId} tabIndex={0}>
+        <table className="table">
+          <caption id={tableId} className="table-caption">
+            Serie nazionale AROPE, Italia
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Anno</th>
+              <th scope="col" className="num">Tasso</th>
+              <th scope="col" className="num">Persone</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...arope.rows].reverse().map((row) => (
+              <tr key={row.year}>
+                <th scope="row">{row.year}</th>
+                <td className="num">{aropeRate(row.rateTenths)}</td>
+                <td className="num">{aropePersons(row.personsThousands)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className={styles.sourceNote}>
+        Fonte: Eurostat, dataset <code>{arope.source.dataflowId}</code> · acquisito il{" "}
+        {longDate(arope.source.observedAt)} · licenza {arope.source.licenseId} ·{" "}
+        <a href={arope.source.landingUrl}>vai al databrowser Eurostat</a> ·{" "}
+        <Link
+          href={`/api/spese/arope?${new URLSearchParams({
+            territorio: "IT",
+            anno: String(arope.latestYear),
+          }).toString()}`}
+        >
+          stessa selezione via API
+        </Link>
+      </p>
+    </section>
+  );
+}
+
 export default function PovertaPage() {
   const view = buildPovertaPageView();
   const [assoluta, relativa] = view.families;
@@ -246,8 +321,8 @@ export default function PovertaPage() {
           Gli indicatori ufficiali ISTAT, dal {assoluta.period.from} al {assoluta.period.to}, per
           l&apos;Italia e le sue ripartizioni. Sono <strong>due misure distinte</strong>: la povertà
           assoluta guarda al costo di un paniere di beni essenziali, quella relativa alla distanza
-          dalla spesa media delle famiglie italiane. Sotto, in sezioni separate, le soglie monetarie:
-          assoluta per regione e relativa nazionale. Sono importi, non percentuali.
+          dalla spesa media delle famiglie italiane. Sotto, in sezioni separate, le soglie monetarie
+          e l&apos;AROPE Eurostat (Europa 2030): contesti diversi, mai sommati.
         </p>
         <p className={styles.leadLinks}>
           <Link href="/disuguaglianza">Distribuzione dei redditi →</Link>
@@ -261,6 +336,7 @@ export default function PovertaPage() {
         <FamilySection family={relativa} />
         <AbsoluteThresholdSection threshold={view.absoluteThreshold} />
         <RelativeThresholdSection threshold={view.relativeThreshold} />
+        <AropeSection arope={view.arope} />
       </div>
 
       <details className="data-details">
@@ -285,6 +361,12 @@ export default function PovertaPage() {
           rispetto alla soglia: la fonte non lo pubblica. Nella soglia relativa l&apos;anno{" "}
           {view.relativeThreshold.excludedYear} è escluso perché i valori della fonte sono
           incoerenti con il resto della serie.
+        </p>
+        <p>
+          <strong>AROPE non è povertà assoluta né relativa.</strong> È l&apos;indicatore composito
+          Europa 2030 pubblicato da Eurostat (<code>{view.arope.source.dataflowId}</code>): rischio
+          di povertà, grave deprivazione materiale e sociale, bassa intensità di lavoro. Non si
+          somma né si confronta con le tabelle ISTAT sopra.
         </p>
         <p>
           <strong>Non c&apos;è una classifica.</strong> Le ripartizioni e le regioni sono elencate in

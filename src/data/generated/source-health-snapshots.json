@@ -120,6 +120,12 @@
     "recordCount": 210
   },
   {
+    "sourceId": "eurostat-arope",
+    "sourceTimestamp": "2026-09-21",
+    "detail": "Snapshot ETL attivo · AROPE Europa 2030 2015-2025 (ilc_peps01n) · 11 osservazioni · solo Italia · 1693 byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.",
+    "recordCount": 11
+  },
+  {
     "sourceId": "eurostat-gdp",
     "sourceTimestamp": "2026-09-12",
     "detail": "Snapshot Eurostat PIL verificato · trimestrale Italia 2015-Q1/2026-Q2 · annuale 2015-2025 · peer 2019-Q1/2026-Q2 · conti nazionali, non cassa pubblica.",

@@ -1109,6 +1109,16 @@ pubblica né confrontabile con le incidenze o con la soglia assoluta. Fonte
 MCP `istat_poverta_soglia_relativa`, contesto su `/poverta`.
 [Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_RELATIVA.md).
 
+### Eurostat · AROPE Europa 2030 (`ilc_peps01n`)
+
+Rischio di povertà o esclusione sociale (definizione Europa 2030): Italia,
+età TOTAL, sesso T, anni 2015–2025. Undici osservazioni con tasso (decimi) e
+persone in migliaia. `soldi.present` false: non è spesa pubblica e **non** è
+confrontabile con povertà assoluta/relativa ISTAT (`34_727`) né con la serie
+Europa 2020 (`ilc_peps01`). Fonte `eurostat-arope`, API `/api/spese/arope`,
+MCP `eurostat_arope`, sezione su `/poverta`.
+[Lock, definizioni e limiti](research/EUROSTAT_AROPE.md).
+
 ### Procedimenti giudiziari dei parlamentari (XIX legislatura)
 
 Raccolta curata, non tabella ufficiale: 626 parlamentari esaminati, procedimenti

@@ -34,6 +34,7 @@ test("la vista non produce mai un totale né una differenza fra le due", () => {
   // Nessun campo aggrega le due famiglie: si arriva solo per famiglia.
   assert.deepEqual(Object.keys(view).sort(), [
     "absoluteThreshold",
+    "arope",
     "excludedComposites",
     "families",
     "latestYear",
@@ -152,9 +153,11 @@ test("la pagina dichiara i limiti che il dato impone", () => {
   assert.match(page, /comunale/);
   assert.match(page, /Soglia monetaria di povertà assoluta/);
   assert.match(page, /Soglia monetaria di povertà relativa/);
+  assert.match(page, /Rischio di povertà o esclusione sociale \(AROPE\)/);
   assert.match(page, /[Nn]on inventiamo un «gap»[\s\S]*rispetto alla soglia/i);
   assert.match(page, /AbsoluteThresholdSection/);
   assert.match(page, /RelativeThresholdSection/);
+  assert.match(page, /AropeSection/);
 });
 
 test("la pagina non accosta la povertà alla spesa pubblica", () => {
@@ -165,15 +168,24 @@ test("la pagina non accosta la povertà alla spesa pubblica", () => {
 });
 
 test("ogni tabella è accessibile e navigabile da tastiera", () => {
-  // Due tabelle nel componente famiglie + due nelle sezioni soglia.
-  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 4);
-  assert.equal((page.match(/role="region"/g) ?? []).length, 4);
-  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 4);
-  assert.equal((page.match(/<caption/g) ?? []).length, 4);
+  // Due tabelle famiglie + due soglie + una AROPE.
+  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 5);
+  assert.equal((page.match(/role="region"/g) ?? []).length, 5);
+  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 5);
+  assert.equal((page.match(/<caption/g) ?? []).length, 5);
   assert.equal(view.families.length, 2, "due famiglie rese dallo stesso componente");
   // Intestazioni di riga e colonna dichiarate.
-  assert.ok((page.match(/scope="col"/g) ?? []).length >= 9);
+  assert.ok((page.match(/scope="col"/g) ?? []).length >= 12);
   assert.ok((page.match(/scope="row"/g) ?? []).length >= 3);
+});
+
+test("AROPE resta separato dalle famiglie ISTAT", () => {
+  assert.equal(view.arope.datasetId, "eurostat-arope");
+  assert.equal(view.arope.latestYear, 2025);
+  assert.equal(view.arope.rows.length, 11);
+  assert.equal(view.arope.rows.at(-1)?.rateTenths, 226);
+  assert.equal(view.arope.rows.at(-1)?.personsThousands, 13265);
+  assert.match(view.arope.definitionNote, /Europa 2030|AROPE/i);
 });
 
 test("la fonte e la licenza viaggiano con la pagina", () => {

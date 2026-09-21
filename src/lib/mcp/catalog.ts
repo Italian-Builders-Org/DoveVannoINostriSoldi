@@ -10,6 +10,7 @@ import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
+import eurostatAropeMetadata from "@/data/generated/eurostat-arope-2015-2025.meta.json";
 
 function formatItalianInteger(value: number): string {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -58,6 +59,7 @@ export const DATASET_IDS = [
   "istat_poverta_relativa",
   "istat_poverta_soglia_assoluta",
   "istat_poverta_soglia_relativa",
+  "eurostat_arope",
   "istat_bes_economico",
   "istat_bes_salute",
   "istat_bes_istruzione",
@@ -285,6 +287,7 @@ const exampleQueries = {
     year: 2024,
     band: "N1",
   },
+  eurostat_arope: { dataset: "eurostat_arope", territory: "IT", year: 2025 },
   istat_bes_economico: { dataset: "istat_bes_economico", territory: "IT", year: 2023 },
   istat_bes_salute: { dataset: "istat_bes_salute", territory: "IT", year: 2022 },
   istat_bes_istruzione: { dataset: "istat_bes_istruzione", territory: "IT", year: 2022 },
@@ -926,6 +929,22 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
       queryNotes: [
         "Specificare almeno un filtro fra territory, year e band; limit massimo 100 righe per pagina.",
         "L'anno 2021 è escluso dal prodotto; band=N1…N6 o N7_GE; solo territorio IT.",
+      ],
+    } satisfies DatasetPublicMetadata,
+  },
+  {
+    id: "eurostat_arope",
+    title: "Eurostat · AROPE (Europa 2030)",
+    summary: `Rischio di povertà o esclusione sociale (dataset ${eurostatAropeMetadata.source.dataflowId}), Italia 2015–2025: tasso percentuale e persone in migliaia, definizione Europa 2030.`,
+    sourceIds: ["eurostat-arope"],
+    freshness: "snapshot",
+    filters: ["territory", "year", "limit", "offset"],
+    caveat: "Specificare almeno un filtro fra territory e year; pagine di massimo 100 righe. NON è spesa pubblica e NON è la povertà assoluta/relativa ISTAT (34_727): definizioni distinte, non sommabili né confrontabili. Solo Italia. Serie Europa 2020 (ilc_peps01) fuori perimetro. PC e THS_PER non si sommano fra loro. Licenza CC BY 4.0.",
+    publicMetadata: {
+      ...eurostatAropeMetadata.publicMetadata,
+      queryNotes: [
+        "Specificare almeno un filtro fra territory e year; limit massimo 100 righe per pagina.",
+        "Solo territorio IT; definizione Europa 2030 (ilc_peps01n).",
       ],
     } satisfies DatasetPublicMetadata,
   },

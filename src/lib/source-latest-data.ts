@@ -20,6 +20,7 @@ import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData } from "@/lib/istat-poverta-relativa-snapshot";
 import { istatPovertaSogliaAssolutaData } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
 import { istatPovertaSogliaRelativaData } from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import { eurostatAropeData } from "@/lib/eurostat-arope-snapshot";
 import { istatBesData } from "@/lib/istat-bes-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
@@ -109,6 +110,10 @@ const exhaustiveLatestDataBySlug = {
   "istat-poverta-soglia-relativa": {
     kind: "period",
     label: `${istatPovertaSogliaRelativaData.period.from}-${istatPovertaSogliaRelativaData.period.to} (senza ${istatPovertaSogliaRelativaData.excludedYear})`,
+  },
+  "eurostat-arope": {
+    kind: "period",
+    label: `${eurostatAropeData.period.from}-${eurostatAropeData.period.to}`,
   },
   "istat-bes-economico": {
     kind: "period",

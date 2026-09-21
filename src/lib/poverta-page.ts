@@ -17,6 +17,10 @@ import {
   istatPovertaSogliaRelativaData,
   istatPovertaSogliaRelativaMetadata,
 } from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import {
+  eurostatAropeData,
+  eurostatAropeMetadata,
+} from "@/lib/eurostat-arope-snapshot";
 import type { IstatPovertaData, IstatPovertaMetadata } from "@/lib/data/istat-poverta-contract";
 
 /**
@@ -34,6 +38,8 @@ import type { IstatPovertaData, IstatPovertaMetadata } from "@/lib/data/istat-po
  *   non mostrati in riga;
  * - **la soglia monetaria resta un contesto separato**. È un importo mensile in
  *   euro, non un’incidenza: non si somma né si confronta con le percentuali sopra.
+ * - **AROPE resta un contesto separato**. È l’indicatore composito Europa 2030
+ *   (Eurostat ilc_peps01n), non la povertà assoluta né quella relativa ISTAT.
  */
 
 const TENTHS = 10;
@@ -94,12 +100,28 @@ export type PovertaRelativeThresholdView = Readonly<{
   source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
 }>;
 
+export type PovertaAropeRow = Readonly<{
+  year: number;
+  rateTenths: number;
+  personsThousands: number;
+}>;
+
+export type PovertaAropeView = Readonly<{
+  datasetId: string;
+  latestYear: number;
+  definitionNote: string;
+  rows: readonly PovertaAropeRow[];
+  caveats: readonly string[];
+  source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
+}>;
+
 export type PovertaPageView = Readonly<{
   families: readonly PovertaFamilyView[];
   /** Ripartizioni escluse dalle tabelle perché contengono già le altre righe. */
   excludedComposites: readonly PovertaAreaRow[];
   absoluteThreshold: PovertaAbsoluteThresholdView;
   relativeThreshold: PovertaRelativeThresholdView;
+  arope: PovertaAropeView;
   latestYear: number;
 }>;
 
@@ -247,6 +269,32 @@ function buildRelativeThreshold(): PovertaRelativeThresholdView {
   };
 }
 
+function buildArope(): PovertaAropeView {
+  const data = eurostatAropeData;
+  const metadata = eurostatAropeMetadata;
+  const rows = data.observations.map((row) => ({
+    year: row.year,
+    rateTenths: row.rateTenths,
+    personsThousands: row.personsThousands,
+  }));
+  if (rows.length !== 11) {
+    throw new Error("AROPE deve elencare gli 11 anni pubblicati 2015–2025.");
+  }
+  return {
+    datasetId: data.datasetId,
+    latestYear: data.period.to,
+    definitionNote: data.definitionNote,
+    rows,
+    caveats: data.caveats,
+    source: {
+      landingUrl: metadata.source.landingUrl,
+      dataflowId: metadata.source.dataflowId,
+      licenseId: metadata.source.licenseId,
+      observedAt: metadata.source.acquisitionDate,
+    },
+  };
+}
+
 export function buildPovertaPageView(): PovertaPageView {
   const assoluta = buildFamily(
     "assoluta",
@@ -272,6 +320,7 @@ export function buildPovertaPageView(): PovertaPageView {
     excludedComposites,
     absoluteThreshold: buildAbsoluteThreshold(),
     relativeThreshold: buildRelativeThreshold(),
+    arope: buildArope(),
     latestYear: assoluta.latestYear,
   };
 }

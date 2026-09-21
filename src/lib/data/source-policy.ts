@@ -25,6 +25,7 @@ export type SourceId =
   | "bancaditalia"
   | "eurostat"
   | "eurostat-hicp"
+  | "eurostat-arope"
   | "eurostat-gdp"
   | "oecd-taxing-wages"
   | "eurostat-cofog"
@@ -455,6 +456,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 2,
     tags: ["source:eurostat-hicp", "domain:inflation", "domain:government-scorecard"],
+  },
+  "eurostat-arope": {
+    id: "eurostat-arope",
+    label: "Eurostat · AROPE (Europa 2030)",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "AROPE esce annualmente da EU-SILC. Lo snapshot fissa ilc_peps01n Italia 2015–2025 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat-arope", "domain:social-conditions"],
   },
   "eurostat-gdp": {
     id: "eurostat-gdp",

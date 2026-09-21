@@ -666,6 +666,19 @@ export async function queryPublicDataset(
         }, options),
       });
     }
+    case "eurostat_arope": {
+      options.signal?.throwIfAborted();
+      const { queryEurostatArope } = await import("@/lib/eurostat-arope-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatArope({
+          territory: query.territory,
+          year: query.year,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
     case "istat_bes_economico": {
       const { queryIstatBes } = await import("@/lib/istat-bes-snapshot");
       return jsonSafe({

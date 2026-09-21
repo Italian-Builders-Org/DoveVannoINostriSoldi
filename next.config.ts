@@ -110,6 +110,10 @@ const istatPovertaSogliaRelativaRuntimeFiles = [
   "src/data/generated/istat-poverta-soglia-relativa-2014-2024.data.json",
 ];
 
+const eurostatAropeRuntimeFiles = [
+  "src/data/generated/eurostat-arope-2015-2025.data.json",
+];
+
 const childcareRuntimeFiles = ["src/data/generated/pnrr-childcare.data.json"];
 const pensionsRuntimeFiles = [
   "src/data/generated/istat-pensions-2012-2022.data.json",
@@ -258,6 +262,12 @@ const nextConfig: NextConfig = {
     "/api/territori/bes-innovazione": istatBesInnovazioneRuntimeFiles,
     "/api/territori/poverta-soglia-assoluta": istatPovertaSogliaAssolutaRuntimeFiles,
     "/api/territori/poverta-soglia-relativa": istatPovertaSogliaRelativaRuntimeFiles,
+    "/api/spese/arope": eurostatAropeRuntimeFiles,
+    "/poverta": [
+      ...istatPovertaSogliaAssolutaRuntimeFiles,
+      ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...eurostatAropeRuntimeFiles,
+    ],
     "/api/assistant/chat": [
       ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
@@ -271,6 +281,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -297,6 +308,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,
@@ -323,6 +335,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,

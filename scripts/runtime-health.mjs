@@ -60,6 +60,7 @@ const EXPECTED_SOURCE_IDS = [
   "istat-poverta-relativa",
   "istat-poverta-soglia-assoluta",
   "istat-poverta-soglia-relativa",
+  "eurostat-arope",
   "istat-bes-economico",
   "istat-bes-salute",
   "istat-bes-istruzione",

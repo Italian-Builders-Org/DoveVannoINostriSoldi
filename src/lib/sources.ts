@@ -208,6 +208,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "ampiezza familiare"],
   },
   {
+    slug: "eurostat-arope",
+    name: "Eurostat · AROPE (Europa 2030)",
+    owner: "Eurostat",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; dataset ilc_peps01n fissato",
+    coverage: "Italia, età TOTAL, sessi T, tasso e persone in migliaia, 2015–2025",
+    format: "SDMX-CSV · snapshot JSON verificato",
+    url: "https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en",
+    note: "Indicatore composito Europa 2030: rischio di povertà o esclusione sociale. NON è spesa pubblica e NON è la povertà assoluta/relativa ISTAT (34_727): definizioni distinte, non sommabili né confrontabili. Serie Europa 2020 (ilc_peps01) fuori perimetro. Licenza CC BY 4.0.",
+    joinKeys: ["territorio", "anno"],
+  },
+  {
     slug: "istat-bes-economico",
     name: "ISTAT · BES dei territori, benessere economico",
     owner: "ISTAT — Istituto nazionale di statistica",

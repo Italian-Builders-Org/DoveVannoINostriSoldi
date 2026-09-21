@@ -110,6 +110,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["istat-bes-ambiente-2004-2023.data.json", ["api/territori/bes-ambiente/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-bes-innovazione-2004-2023.data.json", ["api/territori/bes-innovazione/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-poverta-soglia-assoluta-2005-2024.data.json", ["api/territori/poverta-soglia-assoluta/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
+    ["istat-poverta-soglia-relativa-2014-2024.data.json", ["api/territori/poverta-soglia-relativa/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["integrated/rows/eurostat-disuguaglianza-redditi.part-00000.jsonl.gz", ["disuguaglianza/page", "dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],
     ["istat-pensions-2012-2022.data.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "mcp/page", "api/mcp/route"]],

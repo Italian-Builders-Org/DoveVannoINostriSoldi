@@ -1096,8 +1096,18 @@ osservazioni (6.050 null), 23 territori, tipologie familiari e ampiezze
 demografiche. Valori in centesimi di euro; `soldi.present` true ma **non** è
 spesa pubblica né confrontabile con le incidenze. Fonte
 `istat-poverta-soglia-assoluta`, API `/api/territori/poverta-soglia-assoluta`,
-MCP `istat_poverta_soglia_assoluta`, nessuna UI.
+MCP `istat_poverta_soglia_assoluta`, contesto su `/poverta`.
 [Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md).
+
+### ISTAT · soglia di povertà relativa (34_727_DF_DCCV_POVERTA_11)
+
+Soglie monetarie mensili nazionali di povertà relativa, anni 2014–2024 senza il
+2021: 70 osservazioni pubblicate su 77 della fonte, solo Italia, ampiezze
+`N1`…`N7_GE`. Valori in centesimi; `soldi.present` true ma **non** è spesa
+pubblica né confrontabile con le incidenze o con la soglia assoluta. Fonte
+`istat-poverta-soglia-relativa`, API `/api/territori/poverta-soglia-relativa`,
+MCP `istat_poverta_soglia_relativa`, contesto su `/poverta`.
+[Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_RELATIVA.md).
 
 ### Procedimenti giudiziari dei parlamentari (XIX legislatura)
 

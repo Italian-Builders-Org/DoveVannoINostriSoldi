@@ -652,6 +652,20 @@ export async function queryPublicDataset(
         }, options),
       });
     }
+    case "istat_poverta_soglia_relativa": {
+      options.signal?.throwIfAborted();
+      const { queryIstatPovertaSogliaRelativa } = await import("@/lib/istat-poverta-soglia-relativa-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaSogliaRelativa({
+          territory: query.territory,
+          year: query.year,
+          householdComposition: query.band,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
     case "istat_bes_economico": {
       const { queryIstatBes } = await import("@/lib/istat-bes-snapshot");
       return jsonSafe({

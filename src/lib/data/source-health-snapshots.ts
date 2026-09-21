@@ -45,6 +45,10 @@ import {
   istatPovertaSogliaAssolutaData,
   istatPovertaSogliaAssolutaMetadata,
 } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
+import {
+  istatPovertaSogliaRelativaData,
+  istatPovertaSogliaRelativaMetadata,
+} from "@/lib/istat-poverta-soglia-relativa-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -596,6 +600,19 @@ function snapshotManagedIstatPovertaSogliaAssoluta(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaSogliaRelativa(): SourceHealth {
+  const { source } = istatPovertaSogliaRelativaMetadata;
+  const asset = source.assets.csv;
+  return {
+    ...baseHealth("istat-poverta-soglia-relativa"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-soglia-relativa", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · soglia monetaria di povertà relativa ${istatPovertaSogliaRelativaData.period.from}-${istatPovertaSogliaRelativaData.period.to} senza ${istatPovertaSogliaRelativaData.excludedYear} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaRelativaData.observations.length.toLocaleString("it-IT")} osservazioni · solo Italia · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
+    recordCount: istatPovertaSogliaRelativaData.observations.length,
+  };
+}
+
 function snapshotManagedIstatBesEconomico(): SourceHealth {
   const { source, observedAt } = istatBesMetadata;
   const asset = Object.values(source.assets)[0];
@@ -778,6 +795,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
+  "istat-poverta-soglia-relativa": snapshotManagedIstatPovertaSogliaRelativa,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,

@@ -9,6 +9,7 @@ import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.s
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
+import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
 
 function formatItalianInteger(value: number): string {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -56,6 +57,7 @@ export const DATASET_IDS = [
   "istat_poverta_assoluta",
   "istat_poverta_relativa",
   "istat_poverta_soglia_assoluta",
+  "istat_poverta_soglia_relativa",
   "istat_bes_economico",
   "istat_bes_salute",
   "istat_bes_istruzione",
@@ -276,6 +278,12 @@ const exampleQueries = {
     year: 2024,
     family: "2",
     band: "2",
+  },
+  istat_poverta_soglia_relativa: {
+    dataset: "istat_poverta_soglia_relativa",
+    territory: "IT",
+    year: 2024,
+    band: "N1",
   },
   istat_bes_economico: { dataset: "istat_bes_economico", territory: "IT", year: 2023 },
   istat_bes_salute: { dataset: "istat_bes_salute", territory: "IT", year: 2022 },
@@ -902,6 +910,22 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
       queryNotes: [
         "Specificare almeno un filtro fra territory, year, family e band; limit massimo 100 righe per pagina.",
         "Celle vuote restano null ≠ zero; riga assente è distinta sia da null che da zero.",
+      ],
+    } satisfies DatasetPublicMetadata,
+  },
+  {
+    id: "istat_poverta_soglia_relativa",
+    title: "ISTAT · soglia di povertà relativa",
+    summary: `Soglie monetarie mensili di povertà relativa (dataflow ${istatPovertaSogliaRelativaMetadata.source.dataflowId}), anni pubblicati senza il 2021, solo Italia, per ampiezza familiare N1–N7_GE.`,
+    sourceIds: ["istat-poverta-soglia-relativa"],
+    freshness: "snapshot",
+    filters: ["territory", "year", "band", "limit", "offset"],
+    caveat: "Specificare almeno un filtro; pagine di massimo 100 righe. È una soglia monetaria mensile in centesimi di euro, NON spesa pubblica e NON confrontabile/sommabile con le incidenze 34_727 né con la soglia assoluta 34_211. Solo territorio IT. L'anno 2021 è escluso dal prodotto. band=N1…N6 o N7_GE. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    publicMetadata: {
+      ...istatPovertaSogliaRelativaMetadata.publicMetadata,
+      queryNotes: [
+        "Specificare almeno un filtro fra territory, year e band; limit massimo 100 righe per pagina.",
+        "L'anno 2021 è escluso dal prodotto; band=N1…N6 o N7_GE; solo territorio IT.",
       ],
     } satisfies DatasetPublicMetadata,
   },

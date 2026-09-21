@@ -195,6 +195,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "tipologia familiare", "ampiezza demografica"],
   },
   {
+    slug: "istat-poverta-soglia-relativa",
+    name: "ISTAT · soglia di povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; dataflow 34_727_DF_DCCV_POVERTA_11 fissato",
+    coverage:
+      "Soglie monetarie mensili nazionali 2014–2024 per ampiezza familiare (N1–N7_GE), senza il 2021; 70 osservazioni",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Soglia monetaria mensile in euro (centesimi nello snapshot), NON spesa pubblica e NON confrontabile/sommabile con le incidenze 34_727 né con la soglia assoluta 34_211. Solo Italia. L'anno 2021 è escluso perché i valori della fonte sono incoerenti con il resto della serie. TOT e FAM_VAL_PERC_POV fuori perimetro. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    joinKeys: ["territorio", "anno", "ampiezza familiare"],
+  },
+  {
     slug: "istat-bes-economico",
     name: "ISTAT · BES dei territori, benessere economico",
     owner: "ISTAT — Istituto nazionale di statistica",

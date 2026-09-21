@@ -13,6 +13,10 @@ import {
   istatPovertaSogliaAssolutaData,
   istatPovertaSogliaAssolutaMetadata,
 } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
+import {
+  istatPovertaSogliaRelativaData,
+  istatPovertaSogliaRelativaMetadata,
+} from "@/lib/istat-poverta-soglia-relativa-snapshot";
 import type { IstatPovertaData, IstatPovertaMetadata } from "@/lib/data/istat-poverta-contract";
 
 /**
@@ -74,11 +78,28 @@ export type PovertaAbsoluteThresholdView = Readonly<{
   source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
 }>;
 
+export type PovertaRelativeThresholdRow = Readonly<{
+  code: string;
+  label: string;
+  valueHundredths: number;
+}>;
+
+export type PovertaRelativeThresholdView = Readonly<{
+  datasetId: string;
+  year: number;
+  excludedYear: number;
+  excludedYearReason: string;
+  rows: readonly PovertaRelativeThresholdRow[];
+  caveats: readonly string[];
+  source: Readonly<{ landingUrl: string; dataflowId: string; licenseId: string; observedAt: string }>;
+}>;
+
 export type PovertaPageView = Readonly<{
   families: readonly PovertaFamilyView[];
   /** Ripartizioni escluse dalle tabelle perché contengono già le altre righe. */
   excludedComposites: readonly PovertaAreaRow[];
   absoluteThreshold: PovertaAbsoluteThresholdView;
+  relativeThreshold: PovertaRelativeThresholdView;
   latestYear: number;
 }>;
 
@@ -191,6 +212,41 @@ function buildAbsoluteThreshold(): PovertaAbsoluteThresholdView {
   };
 }
 
+function buildRelativeThreshold(): PovertaRelativeThresholdView {
+  const data = istatPovertaSogliaRelativaData;
+  const metadata = istatPovertaSogliaRelativaMetadata;
+  const year = data.period.to;
+  const byComposition = new Map(
+    data.observations
+      .filter((row) => row.year === year)
+      .map((row) => [row.householdComposition, row.valueHundredths]),
+  );
+  const rows = data.householdCompositions.map((composition) => {
+    const value = byComposition.get(composition.code);
+    if (value === undefined) {
+      throw new Error(`Soglia relativa ${year}: manca l'ampiezza ${composition.code}.`);
+    }
+    return { code: composition.code, label: composition.label, valueHundredths: value };
+  });
+  if (rows.length !== 7) {
+    throw new Error("La soglia relativa deve elencare le 7 ampiezze familiari pubblicate.");
+  }
+  return {
+    datasetId: data.datasetId,
+    year,
+    excludedYear: data.excludedYear,
+    excludedYearReason: data.excludedYearReason,
+    rows,
+    caveats: data.caveats,
+    source: {
+      landingUrl: metadata.source.landingUrl,
+      dataflowId: metadata.source.dataflowId,
+      licenseId: metadata.source.licenseId,
+      observedAt: metadata.source.acquisitionDate,
+    },
+  };
+}
+
 export function buildPovertaPageView(): PovertaPageView {
   const assoluta = buildFamily(
     "assoluta",
@@ -215,6 +271,7 @@ export function buildPovertaPageView(): PovertaPageView {
     families: [assoluta, relativa],
     excludedComposites,
     absoluteThreshold: buildAbsoluteThreshold(),
+    relativeThreshold: buildRelativeThreshold(),
     latestYear: assoluta.latestYear,
   };
 }

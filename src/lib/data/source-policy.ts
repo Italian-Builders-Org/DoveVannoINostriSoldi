@@ -34,6 +34,7 @@ export type SourceId =
   | "istat-poverta"
   | "istat-poverta-relativa"
   | "istat-poverta-soglia-assoluta"
+  | "istat-poverta-soglia-relativa"
   | "istat-bes-economico"
   | "istat-bes-salute"
   | "istat-bes-istruzione"
@@ -589,6 +590,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta-soglia-assoluta", "domain:social-conditions"],
+  },
+  "istat-poverta-soglia-relativa": {
+    id: "istat-poverta-soglia-relativa",
+    label: "ISTAT · soglia di povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Le soglie monetarie escono annualmente. Lo snapshot fissa 34_727_DF_DCCV_POVERTA_11 (2014–2024, senza 2021) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-soglia-relativa", "domain:social-conditions"],
   },
   "istat-bes-economico": {
     id: "istat-bes-economico",

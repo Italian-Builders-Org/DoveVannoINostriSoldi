@@ -106,12 +106,14 @@
 .directory, .governmentView, .republicView, .institutionalGraph, .memberList { min-width: 0; }
 .workspace { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .topBar { padding: 24px 32px 0; z-index: 20; flex: 0 0 auto; }
-.scopeSwitch { display: flex; gap: 4px; border-bottom: 1px solid var(--atlas-line); }
-.scopeSwitch button { position: relative; min-height: 47px; border: none; padding: 0 17px 13px; background: transparent; color: var(--atlas-muted); font-size: 13px; transition: color 140ms ease; }
+.scopeSwitch { display: flex; gap: 4px; border-bottom: 1px solid var(--atlas-line); align-items: stretch; }
+.scopeSwitch button,
+.europaScopeLink { position: relative; min-height: 47px; border: none; padding: 0 17px 13px; background: transparent; color: var(--atlas-muted); font-size: 13px; transition: color 140ms ease; text-decoration: none; display: inline-flex; align-items: flex-end; }
 .scopeSwitch button:first-child { padding-left: 0; padding-right: 22px; }
 .scopeSwitch button[aria-current="page"] { color: var(--atlas-ink); font-weight: 650; }
 .scopeSwitch button[aria-current="page"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--atlas-ink); }
 .scopeSwitch button:first-child[aria-current="page"]::after { left: 0; }
+.europaScopeLink:hover { color: var(--atlas-ink); }
 .workspaceTools { display: flex; align-items: center; gap: 10px; padding: 18px 0; }
 .searchWrapper { position: relative; flex: 1; min-width: 130px; }
 .searchField { display: flex; gap: 10px; align-items: center; min-height: 46px; border: 1px solid var(--atlas-line); border-radius: 10px; background: var(--atlas-panel); padding: 0 12px; }
@@ -612,8 +614,15 @@
   .sideRail { display: none; }
   .workspace { overflow: visible; }
   .topBar { padding: 8px 20px 0; position: sticky; top: 0; background: var(--atlas-bg); border-bottom: 1px solid var(--atlas-line); }
-  .scopeSwitch { gap: 0; justify-content: space-between; }
-  .scopeSwitch button { flex: 1; min-height: 46px; padding: 8px 4px 12px; font-size: 11px; }
+  .scopeSwitch { gap: 0; justify-content: space-between; flex-wrap: wrap; }
+  .scopeSwitch button { flex: 1 1 0; min-height: 46px; padding: 8px 4px 12px; font-size: 11px; }
+  .europaScopeLink {
+    flex: 0 0 auto;
+    min-height: 46px;
+    padding: 8px 8px 12px;
+    font-size: 11px;
+    justify-content: center;
+  }
   .scopeSwitch button:first-child { padding: 8px 5px 12px; }
   .scopeSwitch button:first-child[aria-current="page"]::after { left: 10px; }
   .workspaceTools { flex-wrap: wrap; gap: 9px; padding: 13px 0; }

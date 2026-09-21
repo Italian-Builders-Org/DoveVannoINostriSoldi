@@ -92,8 +92,10 @@ function withImmersiveRequestHeaders(request: NextRequest): Headers {
   return requestHeaders;
 }
 
-function isPoliticiMapPath(pathname: string): boolean {
-  return pathname === "/politici" || pathname.startsWith("/politici/");
+function isPoliticiAtlasPath(pathname: string): boolean {
+  // Only the national atlas locks the viewport and strips site chrome.
+  // Sub-routes like /politici/europa must remain ordinary scrollable pages.
+  return pathname === "/politici" || pathname === "/politici/";
 }
 
 // ── Proxy handler ───────────────────────────────────────────────────
@@ -110,7 +112,7 @@ export function proxy(request: NextRequest) {
       request: { headers: withImmersiveRequestHeaders(request) },
     });
   }
-  if (isPoliticiMapPath(pathname)) {
+  if (isPoliticiAtlasPath(pathname)) {
     return NextResponse.next({
       request: { headers: withImmersiveRequestHeaders(request) },
     });

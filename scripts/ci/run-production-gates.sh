@@ -108,6 +108,10 @@ echo "::group::Browser political atlas"
 node --experimental-strip-types scripts/browser/politici-atlas.mjs
 echo "::endgroup::"
 
+echo "::group::Browser eurodeputati reachability"
+node scripts/browser/politici-europa.mjs
+echo "::endgroup::"
+
 echo "::group::MCP HTTP smoke"
 npm run test:mcp:http -- --mode contract
 MCP_CONTRACT_WINDOW_COMPLETED_MS="$(node -e 'console.log(Date.now())')"

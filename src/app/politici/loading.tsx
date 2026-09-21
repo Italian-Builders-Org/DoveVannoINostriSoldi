@@ -1,16 +1,10 @@
-import styles from "./politici.module.css";
-
 export default function LoadingPolitici() {
-  return <div className={styles.immersivePage}>
-    <div className={styles.routeStatus} role="status" aria-live="polite">
-      <span className={styles.eyebrow}>DoveVannoINostriSoldi</span>
-      <h1>Caricamento dell’atlante…</h1>
-      <p>Stiamo preparando persone, istituzioni e fonti.</p>
-      <div className={styles.loadingLines} aria-hidden="true">
-        <span />
-        <span />
-        <span />
+  return (
+    <main className="shell page">
+      <div className="page-intro">
+        <h1>Caricamento…</h1>
+        <p>Stiamo preparando la pagina e le fonti ufficiali.</p>
       </div>
-    </div>
-  </div>;
+    </main>
+  );
 }

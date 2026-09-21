@@ -33,9 +33,10 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
     <a className={styles.skipLink} href="#atlante-politica">Vai all’atlante</a>
     <header className={styles.immersiveChrome}>
       <div className={styles.brandLockup}>
-        <Link className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
+        {/* Hard navigation: soft-nav from the immersive SSR shell used to leave `/` without menu. */}
+        <a className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
           DVNS
-        </Link>
+        </a>
         <h1 className={styles.srOnly}>Atlante della politica italiana</h1>
       </div>
       <div className={styles.immersiveActions}>
@@ -69,12 +70,16 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
             </ul>
             <p>Gli emicicli sono rappresentazioni stilizzate: i gruppi sono disposti in ordine alfabetico, non secondo i posti reali o una misura di orientamento politico. Le co-citazioni nelle notizie non dimostrano relazioni personali.</p>
             <nav aria-label="Altri approfondimenti">
+              <Link href="/politici/europa">Eurodeputati</Link>
               <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>
               <Link href={`${PUBLIC_SITE_URL}/governi`}>Governi</Link>
             </nav>
           </div>
         </details>
-        <Link className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>Torna al sito <span aria-hidden="true">↗</span></Link>
+        <Link className={styles.immersiveHomeLink} href="/politici/europa" data-europa-entry="">
+          Eurodeputati
+        </Link>
+        <a className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>Torna al sito <span aria-hidden="true">↗</span></a>
         <ThemeToggle />
       </div>
     </header>

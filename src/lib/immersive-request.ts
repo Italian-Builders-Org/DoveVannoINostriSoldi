@@ -2,17 +2,18 @@ import { headers } from "next/headers";
 import {
   IMMERSIVE_REQUEST_HEADER,
   IMMERSIVE_REQUEST_VALUE,
-  POLITICI_HOST,
 } from "@/lib/politici-host";
 
-function requestHostname(raw: string | null): string {
-  return (raw ?? "").split(",")[0]?.trim().split(":")[0]?.toLowerCase() ?? "";
-}
-
-/** True when the map should render without site chrome (SSR-safe). */
+/**
+ * True when the national atlas should render without site chrome (SSR-safe).
+ *
+ * Only the proxy-stamped atlas request is immersive. Sub-routes such as
+ * `/politici/europa` must keep normal site navigation and document scroll.
+ * Do not infer immersiveness from the politici hostname alone: that locked
+ * every path on the subdomain (and, with soft navigation, left the home
+ * page without a remounted menu).
+ */
 export async function isImmersiveMapRequest(): Promise<boolean> {
   const headerStore = await headers();
-  if (headerStore.get(IMMERSIVE_REQUEST_HEADER) === IMMERSIVE_REQUEST_VALUE) return true;
-  const host = requestHostname(headerStore.get("x-forwarded-host") ?? headerStore.get("host"));
-  return host === POLITICI_HOST;
+  return headerStore.get(IMMERSIVE_REQUEST_HEADER) === IMMERSIVE_REQUEST_VALUE;
 }

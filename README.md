@@ -6,12 +6,6 @@ Riunisce fonti pubbliche sparse su portali diversi e le rende leggibili in un un
 
 **Sito:** [dovevannoinostrisoldi.com](https://www.dovevannoinostrisoldi.com)
 
-<p><img src="docs/readme/brand-mark.png" alt="Marchio Confluenza" width="96" height="96" /></p>
-
-<a href="https://www.buymeacoffee.com/dovevannoinostrisoldi"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me an AI compute" height="32" width="114" /></a>
-
-Il progetto resta indipendente. Un contributo su Buy Me a Coffee aiuta a pagare compute e hosting; non influenza i dati pubblicati.
-
 ## Perché esiste
 
 Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esistono già, ma spesso sono dispersi, difficili da confrontare o poco leggibili per chi non lavora tutti i giorni con dati pubblici. DoveVannoINostriSoldi prova a ridurre questa distanza: meno opacità, più contesto, più verificabilità.

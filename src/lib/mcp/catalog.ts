@@ -7,6 +7,7 @@ import { sourceCatalog } from "@/lib/sources";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
 import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.source.json";
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
+import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
@@ -41,6 +42,7 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2018",
   "opencivitas_fabbisogni_2019",
   "opencivitas_rifiuti_2022",
+  "opencivitas_viabilita_2022",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -258,6 +260,7 @@ const exampleQueries = {
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -684,6 +687,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione RIFIUTI è distinta da FC80TOT (servizi totali): non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Rifiuti 2022", url: opencivitas2022RifiutiSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_viabilita_2022",
+    title: "Fabbisogni comunali · Viabilità e territorio 2022 (FC80TERRVIAB)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Viabilità e territorio per ${formatItalianInteger(opencivitas2022ViabilitaSource.municipalities)} Comuni RSO, annualità ${opencivitas2022ViabilitaSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Viabilità e territorio 2022 · FC80TERRVIAB",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80TERRVIAB_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "dba9ba9e0d5a5aa7d306ba716bf6b2983629516a5e6a460238fede87a78fb9a7", bytes: 3499805,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 4 Comuni con spesa storica vuota nella fonte restano esclusi.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022ViabilitaSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022ViabilitaSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022ViabilitaSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 4 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione TERR_VIAB è distinta da FC80TOT e FC80RIFIUTI: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Viabilità e territorio 2022", url: opencivitas2022ViabilitaSource.datasetPageUrl }],
     },
   },
   {

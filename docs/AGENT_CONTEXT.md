@@ -199,8 +199,9 @@ a caso.
   - [docs/EDUCATION_ATLAS_POC.md](EDUCATION_ATLAS_POC.md): atlante istruzione
     e vincoli di join.
   - [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
-    [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md) e
-    [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md): fonti
+    [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
+    [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md) e
+    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md): fonti
     OpenCivitas e relativi contratti.
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
     e [docs/research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md):
@@ -220,7 +221,8 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
-  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs).
+  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
+  [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs).
 
 ## Politici
 

@@ -166,6 +166,7 @@ const STABLE_METADATA_DATASETS = [
   "opencivitas_fabbisogni_2015",
   "opencivitas_fabbisogni_2016",
   "opencivitas_rifiuti_2022",
+  "opencivitas_viabilita_2022",
   "istat_bes_innovazione",
   "istat_poverta_soglia_assoluta",
 ];
@@ -207,8 +208,8 @@ for (const [datasetId, meta] of [
   });
 }
 
-test("OpenCivitas 2015–2016 and Rifiuti 2022 cards expose RSO coverage and reference year", () => {
-  for (const datasetId of ["opencivitas_fabbisogni_2015", "opencivitas_fabbisogni_2016", "opencivitas_rifiuti_2022"]) {
+test("OpenCivitas 2015–2016, Rifiuti 2022 and Viabilità 2022 cards expose RSO coverage and reference year", () => {
+  for (const datasetId of ["opencivitas_fabbisogni_2015", "opencivitas_fabbisogni_2016", "opencivitas_rifiuti_2022", "opencivitas_viabilita_2022"]) {
     const doc = getAgentPublicDoc(datasetId);
     const markdown = renderAgentPublicDocMarkdown(doc);
     assert.match(doc.coverage, /Comuni RSO/i, `${datasetId} copertura RSO`);

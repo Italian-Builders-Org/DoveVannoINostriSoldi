@@ -365,6 +365,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_viabilita_2022": {
+      const { queryOpenCivitas2022Viabilita } = await import("@/lib/opencivitas-2022-viabilita-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80TERRVIAB è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Viabilita({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2015": {
       const { queryOpenCivitas2015 } = await import("@/lib/opencivitas-2015-snapshot");
       if (query.year !== undefined && query.year !== 2015) {

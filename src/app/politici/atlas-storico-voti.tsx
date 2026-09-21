@@ -289,18 +289,20 @@ export function ThemeVoteHistoryDirectory({
 
   useEffect(() => {
     const controller = new AbortController();
-    setResource({ status: "loading" });
     loadHistory(activeThemeId, titleQuery, query, themeChamber, themeExpressedOnly, controller.signal)
       .then((data) => { if (!controller.signal.aborted) setResource({ status: "ready", data }); })
       .catch(() => { if (!controller.signal.aborted) setResource({ status: "error" }); });
     return () => controller.abort();
   }, [activeThemeId, titleQuery, query, themeChamber, themeExpressedOnly, attempt]);
 
-  useEffect(() => {
-    setOpenMemberId(null);
-  }, [activeThemeId, titleQuery, query, themeChamber, themeExpressedOnly]);
-
-  const data = resource.status === "ready" ? resource.data : null;
+  const data = resource.status === "ready"
+    && (resource.data.theme?.id ?? null) === (activeThemeId || null)
+    && (resource.data.query ?? "") === (titleQuery.trim().length >= 3 ? titleQuery.trim() : "")
+    && (resource.data.personQuery ?? "") === (query.trim() || "")
+    && resource.data.chamber === themeChamber
+    && resource.data.expressedOnly === themeExpressedOnly
+    ? resource.data
+    : null;
   const localTokens = useMemo(() => normalizeSearch(query).split(" ").filter(Boolean), [query]);
   const members = useMemo(() => {
     if (!data) return [];
@@ -310,6 +312,11 @@ export function ThemeVoteHistoryDirectory({
       return localTokens.every((token) => haystack.includes(token));
     });
   }, [data, localTokens]);
+
+  // Drop stale expansion when the open person leaves the filtered list.
+  const openMemberIdSafe = openMemberId && members.some((member) => member.personId === openMemberId)
+    ? openMemberId
+    : null;
 
   return <section className={styles.convictionsView} aria-label="Storico voti per tema" data-storico-theme={activeThemeId}>
     <div className={styles.chamberHeading}>
@@ -495,7 +502,7 @@ export function ThemeVoteHistoryDirectory({
             <ul className={`${styles.convictionList} ${extra.directory}`}>
               {members.map((member) => {
                 const person = peopleById.get(member.personId);
-                const open = openMemberId === member.personId;
+                const open = openMemberIdSafe === member.personId;
                 const votes = open && data ? memberVoteTrail(member, data.events) : [];
                 return <li key={member.personId}>
                   <button

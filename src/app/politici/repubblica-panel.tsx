@@ -232,8 +232,7 @@ function GroupPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSelect"> 
 
 function PersonPanel({ personId, map, profiles, news, judicial, initialTab = null, themeId = null, onSelect, onRetryProfiles, onRetryNews }: PanelProps & { personId: string; }) {
   const person = map.people.find((candidate) => candidate.id === personId);
-  if (!person) return <Status title="Persona non trovata" />;
-  const hasChamberActs = person.chamberId === "camera" || person.chamberId === "senato";
+  const hasChamberActs = person?.chamberId === "camera" || person?.chamberId === "senato";
   const startTab = initialTab === "temi" && hasChamberActs
     ? "temi"
     : initialTab === "atti" && hasChamberActs
@@ -242,6 +241,7 @@ function PersonPanel({ personId, map, profiles, news, judicial, initialTab = nul
         ? "notizie"
         : "profilo";
   const [tab, setTab] = useState<"profilo" | "atti" | "temi" | "notizie">(startTab);
+  if (!person) return <Status title="Persona non trovata" />;
   const group = map.groups.find((item) => item.id === person.groupId);
   const profile = profiles.status === "ready" ? profiles.data[personId] : null;
   const institutionId = person.chamberId ?? (person.government ? "governo" : "presidenza-repubblica");

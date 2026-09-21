@@ -142,7 +142,6 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
 
   useEffect(() => {
     const controller = new AbortController();
-    setResource({ status: "loading" });
     loadThemeVotes(personId, themeId, query, controller.signal)
       .then((data) => { if (!controller.signal.aborted) setResource({ status: "ready", data }); })
       .catch(() => { if (!controller.signal.aborted) setResource({ status: "error" }); });
@@ -156,7 +155,12 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
     }}>La scheda e le altre sezioni restano consultabili.</Status>;
   }
 
-  const data = resource.status === "ready" && resource.data.personId === personId ? resource.data : null;
+  const data = resource.status === "ready"
+    && resource.data.personId === personId
+    && (resource.data.query ?? "") === query
+    && (query.trim().length >= 3 || resource.data.theme?.id === themeId)
+    ? resource.data
+    : null;
   const chamberLabel = data?.chamber === "senato" ? "Senato" : "Camera";
 
   return <section className={extra.themeSection} aria-label="Voti per tema" data-theme-votes-person={personId}>

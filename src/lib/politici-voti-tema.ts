@@ -1,12 +1,8 @@
 import {
   parseCameraAttiVotiSnapshot,
-  type CameraAct,
-  type CameraFinalVote,
 } from "@/lib/data/camera-atti-voti-contract";
 import {
   parseSenatoAttiVotiSnapshot,
-  type SenatoAct,
-  type SenatoFinalVote,
 } from "@/lib/data/senato-atti-voti-contract";
 import {
   findRepublicPerson,
@@ -257,52 +253,6 @@ function yearsFromEvents(events: readonly ThemeHistoryEvent[]): ThemeYearBucket[
     byYear.set(year, bucket);
   }
   return [...byYear.values()].sort((left, right) => right.year.localeCompare(left.year));
-}
-
-function rowFromCamera(
-  act: CameraAct,
-  vote: CameraFinalVote,
-  numericId: string,
-  matchedNeedles: string[],
-): ThemeVoteRow {
-  return {
-    voteId: vote.id,
-    actId: act.id,
-    actNumber: act.number,
-    actTitle: stripMarkup(act.title),
-    officialPage: act.officialPage,
-    date: vote.date,
-    approved: vote.approved,
-    confidenceVote: vote.confidenceVote,
-    favorevoli: vote.favorevoli,
-    contrari: vote.contrari,
-    astenuti: vote.astenuti,
-    ownVote: (vote.votes[numericId] ?? "non-rilevato") as RepublicActVote,
-    matchedNeedles,
-  };
-}
-
-function rowFromSenato(
-  act: SenatoAct,
-  vote: SenatoFinalVote,
-  numericId: string,
-  matchedNeedles: string[],
-): ThemeVoteRow {
-  return {
-    voteId: vote.id,
-    actId: act.id,
-    actNumber: act.number,
-    actTitle: stripMarkup(act.title ?? `Disegno ${act.number}`),
-    officialPage: act.officialPage,
-    date: vote.date,
-    approved: vote.approved,
-    confidenceVote: false,
-    favorevoli: vote.favorevoli,
-    contrari: vote.contrari,
-    astenuti: vote.astenuti,
-    ownVote: (vote.votes[numericId] ?? "non-rilevato") as RepublicActVote,
-    matchedNeedles,
-  };
 }
 
 function sortVotes(rows: ThemeVoteRow[]): ThemeVoteRow[] {

@@ -5,9 +5,11 @@ export type GraphSelection =
   | { kind: "person"; id: string; }
   | { kind: "group"; id: string; }
   | { kind: "institution"; id: string; };
-export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo" | "condanne";
+export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo" | "condanne" | "storico-voti";
 export type AtlasMode = "mappa" | "elenco";
 export type RoleFilter = "tutti" | "governo" | "presidenza" | "capigruppo";
+export type ThemeChamberFilter = "tutti" | "camera" | "senato";
+export type AtlasPanelTab = "profilo" | "atti" | "temi" | "notizie";
 export type AtlasState = {
   scope: AtlasScope;
   selection: GraphSelection;
@@ -15,6 +17,13 @@ export type AtlasState = {
   query: string;
   family: string | null;
   role: RoleFilter;
+  /** Tema attivo nella vista Storico voti (e deep-link). */
+  themeId: string | null;
+  themeChamber: ThemeChamberFilter;
+  /** Solo parlamentari con almeno un voto espresso F/C/A sul tema. */
+  themeExpressedOnly: boolean;
+  /** Tab iniziale della scheda persona (es. da Storico voti). */
+  panelTab: AtlasPanelTab | null;
 };
 export type SearchHit = { key: string; label: string; detail: string; selection: GraphSelection; };
 
@@ -25,6 +34,7 @@ export const SCOPES: ReadonlyArray<{ id: AtlasScope; label: string; }> = [
   { id: "repubblica", label: "Repubblica" },
   { id: "grafo", label: "Grafo" },
   { id: "condanne", label: "Condanne" },
+  { id: "storico-voti", label: "Storico voti" },
 ];
 export const ROLES: ReadonlyArray<{ id: RoleFilter; label: string; }> = [
   { id: "tutti", label: "Tutti gli incarichi" },
@@ -32,6 +42,28 @@ export const ROLES: ReadonlyArray<{ id: RoleFilter; label: string; }> = [
   { id: "presidenza", label: "Presidenze e uffici" },
   { id: "capigruppo", label: "Capigruppo" },
 ];
+export const THEME_CHAMBERS: ReadonlyArray<{ id: ThemeChamberFilter; label: string; }> = [
+  { id: "tutti", label: "Camera e Senato" },
+  { id: "camera", label: "Solo Camera" },
+  { id: "senato", label: "Solo Senato" },
+];
+/** Keep in sync with `VOTE_THEMES` ids in politici-voti-tema-catalog. */
+export const KNOWN_THEME_IDS = [
+  "lavoro",
+  "sicurezza",
+  "sanita",
+  "istruzione",
+  "giustizia",
+  "parita",
+  "ambiente",
+  "europa",
+] as const;
+export const DEFAULT_THEME_ID = "lavoro";
+
+export function resolveThemeId(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return (KNOWN_THEME_IDS as readonly string[]).includes(value) ? value : null;
+}
 
 export function normalizeSearch(value: string): string {
   return value.normalize("NFKD").replaceAll(/\p{M}/gu, "")
@@ -67,7 +99,7 @@ export function isSafeExternalUrl(value: unknown): value is string {
 }
 
 export function defaultSelection(scope: AtlasScope): GraphSelection {
-  return scope === "repubblica" || scope === "grafo" || scope === "condanne"
+  return scope === "repubblica" || scope === "grafo" || scope === "condanne" || scope === "storico-voti"
     ? { kind: "overview" }
     : { kind: "institution", id: scope };
 }
@@ -76,12 +108,14 @@ export function scopeForSelection(selection: GraphSelection, map: RepublicMap, c
   if (selection.kind === "overview") {
     if (current === "grafo") return "grafo";
     if (current === "condanne") return "condanne";
+    if (current === "storico-voti") return "storico-voti";
     return "repubblica";
   }
   if (selection.kind === "institution") {
     if (selection.id === "camera" || selection.id === "senato" || selection.id === "governo") return selection.id;
     if (current === "grafo") return "grafo";
     if (current === "condanne") return "condanne";
+    if (current === "storico-voti") return "storico-voti";
     return "repubblica";
   }
   if (selection.kind === "group") {
@@ -91,6 +125,7 @@ export function scopeForSelection(selection: GraphSelection, map: RepublicMap, c
   if (!person) return current;
   if (current === "grafo" && (person.government || person.roleKind === "capo-stato")) return "grafo";
   if (current === "condanne") return "condanne";
+  if (current === "storico-voti") return "storico-voti";
   if (person.government && current === "governo") return "governo";
   return person.chamberId ?? (person.government ? "governo" : current === "grafo" ? "grafo" : "repubblica");
 }
@@ -116,6 +151,14 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
   const selection = invalidSelection ? defaultSelection(scope) : requested;
   scope = scopeForSelection(selection, map, scope);
   const family = params.get("famiglia");
+  const themeId = resolveThemeId(params.get("tema"))
+    ?? (scope === "storico-voti" ? DEFAULT_THEME_ID : null);
+  const ramo = params.get("ramo");
+  const themeChamber: ThemeChamberFilter = ramo === "camera" || ramo === "senato" ? ramo : "tutti";
+  const scheda = params.get("scheda");
+  const panelTab: AtlasPanelTab | null = scheda === "temi" || scheda === "atti" || scheda === "notizie" || scheda === "profilo"
+    ? scheda
+    : null;
   return {
     invalidSelection,
     state: {
@@ -124,13 +167,17 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
       query: (params.get("q") ?? "").slice(0, 120),
       family: map.partyFamilies.some((item) => item.id === family) ? family : null,
       role: ROLES.find((item) => item.id === params.get("incarico"))?.id ?? "tutti",
+      themeId: scope === "storico-voti" ? themeId : resolveThemeId(params.get("tema")),
+      themeChamber: scope === "storico-voti" ? themeChamber : "tutti",
+      themeExpressedOnly: params.get("espressi") === "0" ? false : true,
+      panelTab: selection.kind === "person" ? panelTab : null,
     },
   };
 }
 
 export function atlasUrl(href: string, state: AtlasState): string {
   const url = new URL(href);
-  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico"]) {
+  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico", "tema", "ramo", "espressi", "scheda"]) {
     url.searchParams.delete(name);
   }
   url.searchParams.set("vista", state.scope);
@@ -141,11 +188,21 @@ export function atlasUrl(href: string, state: AtlasState): string {
   if (state.query.trim()) url.searchParams.set("q", state.query.trim());
   if (state.family) url.searchParams.set("famiglia", state.family);
   if (state.role !== "tutti") url.searchParams.set("incarico", state.role);
+  if (state.scope === "storico-voti") {
+    url.searchParams.set("tema", state.themeId ?? DEFAULT_THEME_ID);
+    if (state.themeChamber !== "tutti") url.searchParams.set("ramo", state.themeChamber);
+    if (!state.themeExpressedOnly) url.searchParams.set("espressi", "0");
+  } else if (state.themeId) {
+    url.searchParams.set("tema", state.themeId);
+  }
+  if (state.selection.kind === "person" && state.panelTab && state.panelTab !== "profilo") {
+    url.searchParams.set("scheda", state.panelTab);
+  }
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
 export function belongsToScope(person: RepublicMapPerson, scope: AtlasScope): boolean {
-  if (scope === "repubblica" || scope === "grafo" || scope === "condanne") return true;
+  if (scope === "repubblica" || scope === "grafo" || scope === "condanne" || scope === "storico-voti") return true;
   if (scope === "governo") return person.government;
   return person.chamberId === scope;
 }

@@ -7,6 +7,7 @@ import { AtlasInspector, AtlasSearch } from "./atlas-controls";
 import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
 import { Hemicycle } from "./atlas-hemicycle";
 import { ConvictionsDirectory } from "./atlas-condanne";
+import { ThemeVoteHistoryDirectory } from "./atlas-storico-voti";
 import { InstitutionalGraph } from "./atlas-institutional-graph";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
@@ -49,6 +50,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   const selectionKey = state.selection.kind === "overview" ? "overview" : `${state.selection.kind}:${state.selection.id}`;
   const filterCount = Number(Boolean(state.family)) + Number(state.role !== "tutti") + Number(Boolean(state.query.trim()));
   const scopeLabel = SCOPES.find((item) => item.id === state.scope)!.label;
+  const showMapListMode = state.scope !== "condanne" && state.scope !== "storico-voti";
 
   const update = useCallback((next: AtlasState, history: "push" | "replace" = "replace") => {
     stateRef.current = next;
@@ -72,22 +74,61 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
     return () => window.removeEventListener("popstate", restore);
   }, [map]);
 
-  const select = useCallback((selection: GraphSelection) => {
-    if (!validSelection(selection, map)) return;
-    const current = stateRef.current;
-    const scope = scopeForSelection(selection, map, current.scope);
-    update({ ...current, scope, selection, query: "", family: null, role: "tutti" }, "push");
-    setDetailsOpen(true);
-    setInvalid(false);
-  }, [map, update]);
-
   const changeScope = (scope: AtlasScope) => {
-    update({ ...state, scope, selection: defaultSelection(scope), query: "", family: null, role: "tutti" }, "push");
+    update({
+      ...state,
+      scope,
+      selection: defaultSelection(scope),
+      query: "",
+      family: null,
+      role: "tutti",
+      themeId: scope === "storico-voti" ? (state.themeId ?? "lavoro") : null,
+      themeChamber: scope === "storico-voti" ? state.themeChamber : "tutti",
+      themeExpressedOnly: true,
+      panelTab: null,
+    }, "push");
     setDetailsOpen(false);
     setInvalid(false);
   };
   const clearFilters = () => update({ ...state, query: "", family: null, role: "tutti" });
-  const closeDetails = useCallback(() => setDetailsOpen(false), []);
+  const closeDetails = useCallback(() => {
+    setDetailsOpen(false);
+    if (stateRef.current.panelTab) update({ ...stateRef.current, panelTab: null });
+  }, [update]);
+  const selectFromStorico = useCallback((personId: string) => {
+    if (!validSelection({ kind: "person", id: personId }, map)) return;
+    const current = stateRef.current;
+    update({
+      ...current,
+      scope: "storico-voti",
+      selection: { kind: "person", id: personId },
+      panelTab: "temi",
+      themeId: current.themeId ?? "lavoro",
+      query: "",
+      family: null,
+      role: "tutti",
+    }, "push");
+    setDetailsOpen(true);
+    setInvalid(false);
+  }, [map, update]);
+
+  const select = useCallback((selection: GraphSelection) => {
+    if (!validSelection(selection, map)) return;
+    const current = stateRef.current;
+    const scope = scopeForSelection(selection, map, current.scope);
+    update({
+      ...current,
+      scope,
+      selection,
+      query: "",
+      family: null,
+      role: "tutti",
+      panelTab: null,
+      themeId: scope === "storico-voti" ? (current.themeId ?? "lavoro") : current.themeId,
+    }, "push");
+    setDetailsOpen(true);
+    setInvalid(false);
+  }, [map, update]);
 
   return <div
     className={`${styles.explorer} ${rail.resizing ? extra.resizing : ""}`}
@@ -102,12 +143,14 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
     onKeyDownCapture={() => setInteraction("keyboard")}>
     <AtlasInspector open={detailsOpen} onClose={closeDetails} selectionKey={selectionKey}>
       <RepubblicaPanel
-        key={selectionKey}
+        key={`${selectionKey}:${state.panelTab ?? "default"}`}
         map={map}
         selection={state.selection}
         profiles={data.profiles}
         news={data.news}
         judicial={data.judicial}
+        initialTab={state.panelTab}
+        themeId={state.themeId}
         onSelect={select}
         onRetryProfiles={data.retryProfiles}
         onRetryNews={data.retryNews} />
@@ -151,16 +194,18 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
               {filterCount}
             </span> : null}
           </button>
-          <div className={styles.modeSwitch} role="group" aria-label="Vista mappa o elenco">
-            <button type="button" aria-pressed={state.mode === "mappa"} onClick={() => update({ ...state, mode: "mappa" })}>
-              <Icon name="map" size={18} />
-              <span>Mappa</span>
-            </button>
-            <button type="button" aria-pressed={state.mode === "elenco"} onClick={() => update({ ...state, mode: "elenco" })}>
-              <Icon name="list" size={18} />
-              <span>Elenco</span>
-            </button>
-          </div>
+          {showMapListMode ? (
+            <div className={styles.modeSwitch} role="group" aria-label="Vista mappa o elenco">
+              <button type="button" aria-pressed={state.mode === "mappa"} onClick={() => update({ ...state, mode: "mappa" })}>
+                <Icon name="map" size={18} />
+                <span>Mappa</span>
+              </button>
+              <button type="button" aria-pressed={state.mode === "elenco"} onClick={() => update({ ...state, mode: "elenco" })}>
+                <Icon name="list" size={18} />
+                <span>Elenco</span>
+              </button>
+            </div>
+          ) : null}
         </div>
         <div className={styles.filters} id="politici-filters" hidden={!filtersOpen}>
           <div>
@@ -201,7 +246,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
           </span>
           <span>Apri scheda <Icon name="arrow" size={16} /></span>
         </button>
-        {!people.length && state.scope !== "condanne" ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica o incarico.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
+        {!people.length && state.scope !== "condanne" && state.scope !== "storico-voti" ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica o incarico.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
           : state.scope === "condanne" ? <ConvictionsDirectory
             cases={convictions}
             coverageNote={convictionsNote}
@@ -209,6 +254,17 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
             query={state.query}
             selectedId={selectedId}
             onSelect={select} />
+            : state.scope === "storico-voti" ? <ThemeVoteHistoryDirectory
+            map={map}
+            query={state.query}
+            themeId={state.themeId}
+            themeChamber={state.themeChamber}
+            themeExpressedOnly={state.themeExpressedOnly}
+            selectedId={selectedId}
+            onThemeId={(themeId) => update({ ...state, themeId })}
+            onThemeChamber={(themeChamber) => update({ ...state, themeChamber })}
+            onThemeExpressedOnly={(themeExpressedOnly) => update({ ...state, themeExpressedOnly })}
+            onSelectPerson={selectFromStorico} />
             : state.mode === "elenco" ? <MemberDirectory
             key={`${state.scope}:${state.query}:${state.family}:${state.role}`}
             people={people}

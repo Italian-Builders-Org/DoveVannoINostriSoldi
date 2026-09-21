@@ -237,7 +237,12 @@ a caso.
     e componenti del grafo (`repubblica-graph.tsx`, `repubblica-panel.tsx`).
   - [src/app/api/politici/](../src/app/api/politici/): endpoint per profili e
     notizie; [src/app/api/politici/[id]/atti/route.ts](../src/app/api/politici/%5Bid%5D/atti/route.ts)
-    serve gli atti Camera/Senato e
+    serve gli atti Camera/Senato,
+    [src/app/api/politici/[id]/voti-tema/route.ts](../src/app/api/politici/%5Bid%5D/voti-tema/route.ts)
+    lo storico di voto per tema sulla persona,
+    [src/app/api/politici/voti-tema/route.ts](../src/app/api/politici/voti-tema/route.ts)
+    la directory cercabile (`vista=storico-voti&tema=…`, filtri `ramo`/`espressi`,
+    timeline per anno, atti con elenco F/C/A e trail per parlamentare) e
     [src/app/api/politici/giudiziario/route.ts](../src/app/api/politici/giudiziario/route.ts)
     i procedimenti documentati.
   - [src/lib/politici-host.ts](../src/lib/politici-host.ts): host pubblico,
@@ -265,6 +270,7 @@ a caso.
   [tests/camera-atti-voti-contract.test.mjs](../tests/camera-atti-voti-contract.test.mjs),
   [tests/senato-atti-voti-contract.test.mjs](../tests/senato-atti-voti-contract.test.mjs),
   [tests/politici-atti-route.test.mjs](../tests/politici-atti-route.test.mjs),
+  [tests/politici-voti-tema-route.test.mjs](../tests/politici-voti-tema-route.test.mjs),
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).

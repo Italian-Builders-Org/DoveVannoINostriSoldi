@@ -266,15 +266,15 @@
 .sourceList { display: grid; gap: 10px; margin: 20px 0 !important; }
 .personHeader { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; margin: 10px 0; }
 .groupBadge { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 9px 12px; background: transparent; border: 1px solid var(--atlas-line); border-radius: 7px; font-size: 11px !important; margin-top: 16px; }
-.panelTabs { display: flex; border-bottom: 1px solid var(--atlas-line); gap: 16px; margin-top: 25px; }
+.panelTabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--atlas-line); gap: 8px 12px; margin-top: 25px; }
 .panelTabs button {
-  flex: 1;
+  flex: 1 1 120px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
   min-height: 49px;
-  padding: 10px 0;
+  padding: 10px 4px;
   background: transparent;
   border: 0;
   border-bottom: 2px solid transparent;

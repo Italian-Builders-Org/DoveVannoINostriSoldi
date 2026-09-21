@@ -122,7 +122,7 @@
   {
     "sourceId": "eurostat-arope",
     "sourceTimestamp": "2026-09-21",
-    "detail": "Snapshot ETL attivo · AROPE Europa 2030 2015-2025 (ilc_peps01n) · 11 osservazioni · solo Italia · 1693 byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.",
+    "detail": "Snapshot ETL attivo · AROPE Europa 2030 2015-2025 (ilc_peps01n) · 11 osservazioni · solo Italia · 1670 byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.",
     "recordCount": 11
   },
   {

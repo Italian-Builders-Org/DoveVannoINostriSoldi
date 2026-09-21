@@ -21,9 +21,7 @@ async function filesBelow(relativePath) {
 test("readme shows current UI screenshots of the main public areas", async () => {
   const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
   assert.match(readme, /https:\/\/www\.dovevannoinostrisoldi\.com/);
-  assert.match(readme, /https:\/\/www\.buymeacoffee\.com\/dovevannoinostrisoldi/);
-  assert.match(readme, /Buy me an AI compute/);
-  assert.match(readme, /height="32"/);
+  assert.doesNotMatch(readme, /buymeacoffee\.com|Buy me an AI compute|docs\/readme\/brand-mark\.png/);
   for (const file of [
     "home.jpg",
     "territori.jpg",

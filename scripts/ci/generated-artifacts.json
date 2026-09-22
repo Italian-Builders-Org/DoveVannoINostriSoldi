@@ -57,7 +57,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": null,
-      "trustModel": "Riepilogo deterministico di 31 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
+      "trustModel": "Riepilogo deterministico di 32 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
     },
     {
       "id": "anac-procurement-peers",
@@ -2409,6 +2409,33 @@
       "sourceSpec": "scripts/etl/specs/eu-vat-gap-italy.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock su XLSX ufficiale DG TAXUD (URL, byte, SHA-256, foglio IT, celle pinnate). Importi in centesimi da milioni di euro; quota gap in milionesimi; 2024 rapid-estimate; X e vuoti non-osservati. Riconciliazione VTTL−revenue=gap. Nessuna media UE né mescolanza con MEF/NOE. Licenza XLSX not-declared."
+    },
+    {
+      "id": "istat-permessi-costruire-2015-2025",
+      "owner": "ISTAT permessi di costruire, tavole introduttive nazionali a.1–a.4 (2015-2025)",
+      "files": [
+        "src/data/generated/istat-permessi-costruire-2015-2025.data.json",
+        "src/data/generated/istat-permessi-costruire-2015-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_permessi_costruire_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_permessi_costruire_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-permessi-costruire.test.mjs",
+        "tests/istat-permessi-costruire-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_permessi_costruire_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/istat-permessi-costruire-2015-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sul zip ufficiale ISTAT (URL, byte, SHA-256, membri a.1–a.4, etichette e pin 2025). Conteggi/volumi/superfici, non soldi. Solo Italia nazionale; serie a.1–a.4 distinte. Distinto da MOP/OpenBDAP e SIOPE. Licenza zip not-declared."
     },
     {
       "id": "mef-tax-gap-nazionale",

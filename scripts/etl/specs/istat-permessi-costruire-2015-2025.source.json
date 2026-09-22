@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-permessi-costruire-2015-2025",
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/379",
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Conteggi, volumi (m³) e superfici (m²) dei permessi di costruire; non importi monetari."
+    },
+    "periodo": {
+      "referencePeriod": "2015-2025",
+      "referenceYearOfRelease": 2025
+    },
+    "provenance": {
+      "holder": "Istituto Nazionale di Statistica (ISTAT)"
+    }
+  },
+  "expected": {
+    "years": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "tables": {
+      "a1": {
+        "sheetName": "Tavola a.1",
+        "titleCell": "Tavola a.1 -",
+        "firstDataRow": 7,
+        "labels": {
+          "A4": "ANNI",
+          "B4": " Fabbricati ",
+          "F4": " Abitazioni ",
+          "B5": " Numero ",
+          "C5": " Volume ",
+          "D5": " Superficie totale ",
+          "F5": " Numero ",
+          "G5": " Superficie utile abitabile ",
+          "H5": " Stanze ",
+          "I5": " Accessori interni"
+        },
+        "pin2025": {
+          "fabbricati": {
+            "numero": 16070,
+            "volume": 22120440,
+            "superficieTotale": 7667449
+          },
+          "abitazioni": {
+            "numero": 51908,
+            "superficieUtile": 4468033,
+            "stanze": 179995,
+            "accessoriInterni": 187316
+          }
+        }
+      },
+      "a2": {
+        "sheetName": " Tavola a.2",
+        "titleCell": "Tavola a.2 - ",
+        "firstDataRow": 6,
+        "labels": {
+          "A3": "ANNI",
+          "B3": "Ampliamenti con abitazioni",
+          "G3": "Ampliamenti di soli vani",
+          "K3": "Ampliamenti per altri usi",
+          "N3": "Totale ampliamenti",
+          "B4": "Abitazioni",
+          "C4": "Superficie utile abitabile",
+          "D4": "Stanze",
+          "E4": "Accessori interni ",
+          "G4": "Stanze",
+          "H4": "Accessori interni ",
+          "I4": "Superficie utile abitabile",
+          "K4": "Superficie per servizi esterni alle abitazioni",
+          "L4": "Superficie destinata ad attività produttive e servizi",
+          "N4": "Volume",
+          "O4": "Superficie totale            (a)"
+        },
+        "pin2025": {
+          "ampliamentiConAbitazioni": {
+            "abitazioni": 3083,
+            "superficieUtile": 216301,
+            "stanze": 9227,
+            "accessoriInterni": 8483
+          },
+          "ampliamentiSoliVani": {
+            "stanze": 9163,
+            "accessoriInterni": 8805,
+            "superficieUtile": 208115
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": 256881,
+            "superficieAttivitaProduttive": 31080
+          },
+          "totaleAmpliamenti": {
+            "volume": 2314326,
+            "superficieTotale": 770244
+          }
+        }
+      },
+      "a3": {
+        "sheetName": "Tavola a.3",
+        "titleCell": "Tavola a.3 -",
+        "firstDataRow": 6,
+        "labels": {
+          "A3": "ANNI",
+          "B3": " Agricoltura",
+          "F3": "Industria e artigianato produttivo",
+          "J3": "Commercio e servizi di alloggio e ristorazione",
+          "N3": " Altro",
+          "R3": "Totale ",
+          "B4": "Fabbricati",
+          "C4": "Volume",
+          "D4": " Superficie totale ",
+          "F4": "Fabbricati",
+          "G4": "Volume",
+          "H4": " Superficie totale ",
+          "J4": "Fabbricati",
+          "K4": "Volume",
+          "L4": " Superficie totale ",
+          "N4": "Fabbricati",
+          "O4": "Volume",
+          "P4": " Superficie totale ",
+          "R4": "Fabbricati",
+          "S4": "Volume",
+          "T4": " Superficie totale "
+        },
+        "sectorColumns": {
+          "agricoltura": {
+            "fabbricati": "B",
+            "volume": "C",
+            "superficieTotale": "D"
+          },
+          "industria": {
+            "fabbricati": "F",
+            "volume": "G",
+            "superficieTotale": "H"
+          },
+          "commercio": {
+            "fabbricati": "J",
+            "volume": "K",
+            "superficieTotale": "L"
+          },
+          "altro": {
+            "fabbricati": "N",
+            "volume": "O",
+            "superficieTotale": "P"
+          },
+          "totale": {
+            "fabbricati": "R",
+            "volume": "S",
+            "superficieTotale": "T"
+          }
+        },
+        "pin2025": {
+          "agricoltura": {
+            "fabbricati": 2951,
+            "volume": 8530171,
+            "superficieTotale": 1509404
+          },
+          "industria": {
+            "fabbricati": 1512,
+            "volume": 30641519,
+            "superficieTotale": 3308435
+          },
+          "commercio": {
+            "fabbricati": 897,
+            "volume": 6136018,
+            "superficieTotale": 1159911
+          },
+          "altro": {
+            "fabbricati": 2184,
+            "volume": 16449646,
+            "superficieTotale": 1985249
+          },
+          "totale": {
+            "fabbricati": 7544,
+            "volume": 61757354,
+            "superficieTotale": 7962999
+          }
+        }
+      },
+      "a4": {
+        "sheetName": "Tavola a.4",
+        "titleCell": "Tavola a.4 - ",
+        "firstDataRow": 6,
+        "labels": {
+          "A3": "ANNI",
+          "B3": "Agricoltura",
+          "E3": "Industria e artigianato produttivo",
+          "H3": "Commercio e servizi di alloggio e ristorazione",
+          "K3": "Altro",
+          "N3": "Totale",
+          "B4": "Volume",
+          "C4": " Superficie totale ",
+          "E4": "Volume",
+          "F4": " Superficie totale ",
+          "H4": "Volume",
+          "I4": " Superficie totale ",
+          "K4": "Volume",
+          "L4": " Superficie totale ",
+          "N4": "Volume",
+          "O4": " Superficie totale "
+        },
+        "sectorColumns": {
+          "agricoltura": {
+            "volume": "B",
+            "superficieTotale": "C"
+          },
+          "industria": {
+            "volume": "E",
+            "superficieTotale": "F"
+          },
+          "commercio": {
+            "volume": "H",
+            "superficieTotale": "I"
+          },
+          "altro": {
+            "volume": "K",
+            "superficieTotale": "L"
+          },
+          "totale": {
+            "volume": "N",
+            "superficieTotale": "O"
+          }
+        },
+        "pin2025": {
+          "agricoltura": {
+            "volume": 2062060,
+            "superficieTotale": 375483
+          },
+          "industria": {
+            "volume": 8095386,
+            "superficieTotale": 1060567
+          },
+          "commercio": {
+            "volume": 1211392,
+            "superficieTotale": 257639
+          },
+          "altro": {
+            "volume": 1267911,
+            "superficieTotale": 285925
+          },
+          "totale": {
+            "volume": 12636749,
+            "superficieTotale": 1979614
+          }
+        }
+      }
+    }
+  },
+  "source": {
+    "owner": "Istituto Nazionale di Statistica (ISTAT)",
+    "landingUrl": "https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/",
+    "url": "https://www.istat.it/wp-content/uploads/2026/06/Tavole-16giugno2026.zip",
+    "filename": "Tavole-16giugno2026.zip",
+    "path": "tests/fixtures/istat-permessi-costruire/Tavole-16giugno2026.zip",
+    "bytes": 968604,
+    "sha256": "d6edee1c0e0ad579e82e9f8efe9d09a89244936e874018234d98a5662ade5876",
+    "licenseId": "not-declared",
+    "licenseNote": "Il zip non dichiara una licenza sul payload. Evidenza di riuso open-data e note legali ISTAT citata senza inventare CC BY sul file.",
+    "evidenceUrls": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "publicationDate": "2026-06-17",
+    "acquiredAt": "2026-09-22",
+    "checkedAt": "2026-09-22",
+    "geography": "Italia (tavole introduttive nazionali a.1–a.4); nessuna geografia regionale in questa slice",
+    "updateFrequency": "annuale",
+    "referenceYear": 2025,
+    "members": {
+      "a1": {
+        "path": "Tavole-16giugno2026/Tavole_introduttive/Tavola 2025_a1.xlsx",
+        "bytes": 11999,
+        "sha256": "bb1d30f0999a15486f683e2b6c3eda5f91bf7d49e7df803df0dccb0f6a07b51b"
+      },
+      "a2": {
+        "path": "Tavole-16giugno2026/Tavole_introduttive/Tavola 2025_a2.xlsx",
+        "bytes": 13545,
+        "sha256": "aaba63bbda3f70d6e648b468879a674e5daa63751efa67f06cdfdd62fd83df56"
+      },
+      "a3": {
+        "path": "Tavole-16giugno2026/Tavole_introduttive/Tavola 2025_a3.xlsx",
+        "bytes": 13416,
+        "sha256": "3bcdf24a82962cc7f11417855fe6f785efc3d0ff23c9d7127d7bd289818e2288"
+      },
+      "a4": {
+        "path": "Tavole-16giugno2026/Tavole_introduttive/Tavola 2025_a4.xlsx",
+        "bytes": 12760,
+        "sha256": "291aa31d18245c03c12c4da8827f09077e87521b40be3a6cd074a0bdf6e3fdec"
+      }
+    }
+  },
+  "dataCanonicalSha256": "953bf6d434ae52311def2ff71200fc97034c9420c6497081e80ca16c839b79ef",
+  "integrity": {
+    "lockSha256": "8efa1ac8c50ac11c1c0733271f43bd4495de16ff866d9811721e9e695fe9d704"
+  }
+}

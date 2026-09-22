@@ -532,6 +532,19 @@ export async function queryPublicDataset(
       const { queryEuVatGapItaly } = await import("@/lib/eu-vat-gap-italy-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryEuVatGapItaly({ year: query.year }) });
     }
+    case "istat_permessi_costruire": {
+      const { queryIstatPermessiCostruire } = await import("@/lib/istat-permessi-costruire-snapshot");
+      const table = query.table === undefined
+        ? undefined
+        : (["a1", "a2", "a3", "a4"] as const).find((id) => id === query.table);
+      if (query.table !== undefined && table === undefined) {
+        throw new Error("Tavola non canonica: usare a1, a2, a3 o a4.");
+      }
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPermessiCostruire({ year: query.year, table }),
+      });
+    }
     case "mef_tax_gap_nazionale": {
       const { queryMefTaxGapNazionale } = await import("@/lib/mef-tax-gap-nazionale-snapshot");
       return jsonSafe({

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 111
+- Artefatti nel registro: 112
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 94 (PR umana dopo revisione)
+- manuale: 95 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -78,6 +78,7 @@ La revisione e il merge restano umani.
 | `opencivitas-2022-viabilita` | 2022 | 2026-09-21T15:02:57Z | https://www.opencivitas.it/it/dataset/2022-comuni-viabilit%C3%A0-e-territorio-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_viabilita_snapshot.py --check` |
 | `opencivitas-2021-viabilita` | 2021 | 2026-09-22T13:58:04Z | https://www.opencivitas.it/it/dataset/2021-comuni-viabilit%C3%A0-e-territorio-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_viabilita_snapshot.py --check` |
 | `opencivitas-2022-sociale-asili` | 2022 | 2026-09-22T11:30:22Z | https://www.opencivitas.it/it/dataset/2022-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --check` |
+| `opencivitas-2021-amministrazione` | 2021 | 2026-09-22T14:29:33Z | https://www.opencivitas.it/it/dataset/2021-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_amministrazione_snapshot.py --check` |
 | `opencivitas-2022-amministrazione` | 2022 | 2026-09-22T12:56:21Z | https://www.opencivitas.it/it/dataset/2022-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --check` |
 | `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |

@@ -228,6 +228,7 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
+  [tests/opencivitas-2021-amministrazione-route.test.mjs](../tests/opencivitas-2021-amministrazione-route.test.mjs),
   [tests/opencivitas-2021-rifiuti-route.test.mjs](../tests/opencivitas-2021-rifiuti-route.test.mjs),
   [tests/opencivitas-2021-sociale-asili-route.test.mjs](../tests/opencivitas-2021-sociale-asili-route.test.mjs),
   [tests/opencivitas-2021-viabilita-route.test.mjs](../tests/opencivitas-2021-viabilita-route.test.mjs),

@@ -41,11 +41,11 @@ test("FC80ISTRUZ 2022 preserves official source dates, money, RSO coverage and e
 
 test("FC80ISTRUZ pin rejects coherent tampering", () => {
   const snapshot = load();
-  assert.throws(() => assertOpenCivitas2022IstruzioneSnapshot({
-    ...snapshot,
-    municipalities: snapshot.municipalities.map((row, index) =>
-      index === 0 ? { ...row, historicalSpendingCents: row.historicalSpendingCents + 1 } : row),
-  }));
+  const tampered = structuredClone(snapshot);
+  const historicalColumn = tampered.municipalityColumns.indexOf("historicalSpendingCents");
+  assert.ok(historicalColumn >= 0);
+  tampered.municipalityRows[0][historicalColumn] += 1;
+  assert.throws(() => assertOpenCivitas2022IstruzioneSnapshot(tampered), /SHA-256 semantico/);
   assert.throws(() => assertOpenCivitas2022IstruzioneSnapshot({
     ...snapshot,
     generatedAt: "2024-01-01T00:00:00Z",

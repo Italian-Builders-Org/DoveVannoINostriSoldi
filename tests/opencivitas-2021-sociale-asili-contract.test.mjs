@@ -42,11 +42,11 @@ test("FC70SOCNID 2021 preserves official source dates, money, RSO coverage and s
 
 test("FC70SOCNID pin rejects coherent tampering", () => {
   const snapshot = load();
-  assert.throws(() => assertOpenCivitas2021SocialeAsiliSnapshot({
-    ...snapshot,
-    municipalities: snapshot.municipalities.map((row, index) =>
-      index === 0 ? { ...row, historicalSpendingCents: row.historicalSpendingCents + 1 } : row),
-  }));
+  const tampered = structuredClone(snapshot);
+  const historicalColumn = tampered.municipalityColumns.indexOf("historicalSpendingCents");
+  assert.ok(historicalColumn >= 0);
+  tampered.municipalityRows[0][historicalColumn] += 1;
+  assert.throws(() => assertOpenCivitas2021SocialeAsiliSnapshot(tampered), /SHA-256 semantico/);
   assert.throws(() => assertOpenCivitas2021SocialeAsiliSnapshot({
     ...snapshot,
     generatedAt: "2024-01-01T00:00:00Z",

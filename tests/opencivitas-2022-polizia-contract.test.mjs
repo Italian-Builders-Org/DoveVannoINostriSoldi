@@ -40,11 +40,11 @@ test("FC80POLIZIA 2022 preserves official source dates, money, RSO coverage and 
 
 test("FC80POLIZIA pin rejects coherent tampering", () => {
   const snapshot = load();
-  assert.throws(() => assertOpenCivitas2022PoliziaSnapshot({
-    ...snapshot,
-    municipalities: snapshot.municipalities.map((row, index) =>
-      index === 0 ? { ...row, historicalSpendingCents: row.historicalSpendingCents + 1 } : row),
-  }));
+  const tampered = structuredClone(snapshot);
+  const historicalColumn = tampered.municipalityColumns.indexOf("historicalSpendingCents");
+  assert.ok(historicalColumn >= 0);
+  tampered.municipalityRows[0][historicalColumn] += 1;
+  assert.throws(() => assertOpenCivitas2022PoliziaSnapshot(tampered), /SHA-256 semantico/);
   assert.throws(() => assertOpenCivitas2022PoliziaSnapshot({
     ...snapshot,
     generatedAt: "2024-01-01T00:00:00Z",

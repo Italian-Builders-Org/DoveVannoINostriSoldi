@@ -19,11 +19,7 @@ jobs:
   probe:
     name: probe
     runs-on: ubuntu-24.04
-    # No environment gate on purpose: this job reads public endpoints and uses no
-    # secret. The source-operations environment guards the data-bot credential
-    # that refresh workflows need to open pull requests; behind its required
-    # reviewers a scheduled run waits for a human, so an unattended monitor
-    # would never observe anything.
+    # Public probes need no data-bot credential or environment access.
     timeout-minutes: 8
     env:
       CANONICAL_BASE_URL: https://www.dovevannoinostrisoldi.com

@@ -32,6 +32,7 @@ const SOURCE_IDS = [
   "governi-presidenza",
   "mef-iva",
   "eu-vat-gap-italy",
+  "istat-permessi-costruire-2015-2025",
   "mef-tax-gap-nazionale",
   "eurostat-taxag",
   "eurostat-sha-health",

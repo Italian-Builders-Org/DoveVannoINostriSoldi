@@ -56,6 +56,7 @@ export type SourceId =
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
+  | "istat-permessi-costruire-2015-2025"
   | "mef-tax-gap-nazionale"
   | "eurostat-taxag"
   | "eurostat-sha-health"
@@ -895,6 +896,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:eu-vat-gap-italy", "domain:taxation"],
+  },
+  "istat-permessi-costruire-2015-2025": {
+    id: "istat-permessi-costruire-2015-2025",
+    label: "ISTAT · permessi di costruire (tavole a.1–a.4)",
+    owner: "Istituto Nazionale di Statistica (ISTAT)",
+    sourceUrl: "https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/",
+    cadence: "annuale",
+    cadenceNote: "Tavole introduttive nazionali a.1–a.4, anni 2015–2025 (rilascio 2025). Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline del zip.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-permessi-costruire-2015-2025", "domain:edilizia"],
   },
   "mef-tax-gap-nazionale": {
     id: "mef-tax-gap-nazionale",

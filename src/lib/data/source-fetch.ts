@@ -95,6 +95,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "mef-iva": [],
   // Snapshot-only: il workbook DG TAXUD VAT gap è acquisito e vincolato dall'ETL.
   "eu-vat-gap-italy": [],
+  // Snapshot-only: il zip ISTAT permessi di costruire è acquisito e vincolato dall'ETL.
+  "istat-permessi-costruire-2015-2025": [],
   "mef-tax-gap-nazionale": [],
   // Snapshot-only: la risposta JSON-stat gov_10a_taxag è acquisita e vincolata dall'ETL.
   "eurostat-taxag": [],

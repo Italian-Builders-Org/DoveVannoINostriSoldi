@@ -455,6 +455,18 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["anno", "estimateKind"],
   },
   {
+    slug: "istat-permessi-costruire-2015-2025",
+    name: "ISTAT · permessi di costruire",
+    owner: "Istituto Nazionale di Statistica (ISTAT)",
+    area: "Mercato edilizio: permessi di costruire (non opere pubbliche)",
+    cadence: "Annuale; tavole introduttive nazionali a.1–a.4, anni 2015–2025",
+    coverage: "Italia soltanto: nuova residenziale, ampliamenti residenziali, nuova e ampliamenti non residenziali",
+    format: "ZIP ufficiale · XLSX a.1–a.4 · snapshot JSON verificato",
+    url: "https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/",
+    note: "Conteggi, volumi e superfici, non soldi. Non confondere con MOP/OpenBDAP (/opere) né SIOPE. Nessuna geografia regionale in questa slice. Licenza zip not-declared.",
+    joinKeys: ["anno", "tavola a.1–a.4"],
+  },
+  {
     slug: "mef-tax-gap-nazionale",
     name: "MEF · tax gap nazionale",
     owner: "MEF — Commissione ex art. 10-bis.1 L. 196/2009",

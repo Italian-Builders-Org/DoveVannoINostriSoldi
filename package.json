@@ -59,11 +59,11 @@
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs"
   },
   "dependencies": {
-    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/core-free-icons": "^4.3.2",
     "@hugeicons/react": "^1.1.10",
     "@modelcontextprotocol/server": "^2.0.0",
-    "mammoth": "1.12.2",
-    "next": "16.3.4",
+    "mammoth": "1.12.3",
+    "next": "16.3.5",
     "pdfjs-dist": "6.3.289",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -78,11 +78,11 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.7",
     "eslint": "^9.0.0",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.3.5",
     "impeccable": "4.0.4",
     "lighthouse": "^13.4.1",
     "puppeteer": "^25.10.0",
     "typescript": "^5.9.0",
-    "yaml": "2.9.0"
+    "yaml": "2.9.1"
   }
 }

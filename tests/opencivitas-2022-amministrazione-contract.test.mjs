@@ -56,3 +56,24 @@ test("FC80AMMIN pin rejects coherent tampering", () => {
     source: { ...snapshot.source, observedAt: "2024-01-01T00:00:00Z" },
   }));
 });
+
+test("FC80AMMIN keeps the reproportioning invariant readable from the published payload", () => {
+  const snapshot = assertOpenCivitas2022AmministrazioneSnapshot(load());
+  const somma = (chiave) => snapshot.municipalities.reduce((totale, riga) => totale + riga[chiave], 0);
+  const storica = somma("historicalSpendingCents");
+  const fabbisogno = somma("standardSpendingCents");
+
+  // Valori del lock: l'uguaglianza vale sui 6557 Comuni joinati, non sui 6548 pubblicati.
+  assert.equal(storica, 862276561316);
+  assert.equal(fabbisogno, 861956990157);
+
+  // I 9 Comuni esclusi portano 3,20 milioni di fabbisogno senza spesa storica:
+  // la differenza sui pubblicati e' quel residuo, non un risparmio.
+  const residuoEsclusi = 319571159;
+  assert.equal(storica - fabbisogno, residuoEsclusi);
+  assert.ok(Math.abs(storica - (fabbisogno + residuoEsclusi)) <= 1000);
+
+  // Il caveat che lo spiega deve restare nel payload, non solo nella documentazione.
+  assert.match(snapshot.methodology.nationalDifferenceWarning, /non è un risultato/);
+  assert.match(snapshot.methodology.nationalDifferenceWarning, /3,20 milioni/);
+});

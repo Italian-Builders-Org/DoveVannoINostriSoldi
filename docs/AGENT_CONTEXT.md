@@ -224,7 +224,8 @@ a caso.
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
   [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
   [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs),
-  [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs).
+  [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs),
+  [tests/opencivitas-2022-amministrazione-route.test.mjs](../tests/opencivitas-2022-amministrazione-route.test.mjs).
 
 ## Politici
 

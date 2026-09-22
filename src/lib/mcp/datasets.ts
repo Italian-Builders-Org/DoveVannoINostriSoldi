@@ -377,6 +377,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_amministrazione_2022": {
+      const { queryOpenCivitas2022Amministrazione } = await import("@/lib/opencivitas-2022-amministrazione-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80AMMIN è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Amministrazione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_sociale_asili_2022": {
       const { queryOpenCivitas2022SocialeAsili } = await import("@/lib/opencivitas-2022-sociale-asili-snapshot");
       if (query.year !== undefined && query.year !== 2022) {

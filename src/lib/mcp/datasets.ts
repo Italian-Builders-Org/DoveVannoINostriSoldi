@@ -365,6 +365,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_rifiuti_2021": {
+      const { queryOpenCivitas2021Rifiuti } = await import("@/lib/opencivitas-2021-rifiuti-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70RIFIUTI è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021; i rifiuti 2022 su opencivitas_rifiuti_2022.");
+      }
+      return jsonSafe(queryOpenCivitas2021Rifiuti({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_viabilita_2022": {
       const { queryOpenCivitas2022Viabilita } = await import("@/lib/opencivitas-2022-viabilita-snapshot");
       if (query.year !== undefined && query.year !== 2022) {

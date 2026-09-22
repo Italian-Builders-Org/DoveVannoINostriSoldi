@@ -756,6 +756,12 @@ RSO; 4 esclusi per spesa storica vuota nella fonte), con contratto distinto,
 Nessuna somma o confronto silenzioso con FC80TOT o FC80RIFIUTI. Fonte, lock e
 perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
 
+È integrata anche **FC80SOCNID 2022** (Sociale e asili nido, 6.554 Comuni RSO;
+3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-sociale-asili` e MCP `opencivitas_sociale_asili_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI o FC80TERRVIAB.
+Fonte, lock e perimetro in [OpenCivitas 2022 Sociale e asili](OPENCIVITAS_2022_SOCIALE_ASILI.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -868,9 +874,9 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni ufficiali OpenCivitas (viabilità, sociale/asili, …) oltre a
-  Rifiuti 2022 e ai servizi totali 2015–2019/2021–2022 già integrati (nessuna
-  imputazione del 2020);
+- ulteriori funzioni ufficiali OpenCivitas (istruzione, …) oltre a
+  rifiuti, viabilità e sociale/asili 2022 e ai servizi totali
+  2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

@@ -377,6 +377,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_sociale_asili_2022": {
+      const { queryOpenCivitas2022SocialeAsili } = await import("@/lib/opencivitas-2022-sociale-asili-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80SOCNID è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022SocialeAsili({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2015": {
       const { queryOpenCivitas2015 } = await import("@/lib/opencivitas-2015-snapshot");
       if (query.year !== undefined && query.year !== 2015) {

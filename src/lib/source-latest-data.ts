@@ -198,7 +198,7 @@ const exhaustiveLatestDataBySlug = {
   },
   "istat-permessi-costruire-2015-2025": {
     kind: "period",
-    label: `${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to} (tavole a.1–a.4)`,
+    label: `${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to} (tavole a.1-a.4)`,
   },
   "mef-tax-gap-nazionale": {
     kind: "period",

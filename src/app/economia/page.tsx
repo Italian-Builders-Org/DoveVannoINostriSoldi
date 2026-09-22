@@ -34,7 +34,7 @@ const dossiers = [
   {
     href: "/edilizia",
     title: "Permessi di costruire",
-    period: "ISTAT · tavole a.1–a.4 · 2015–2025",
+    period: "ISTAT · tavole a.1-a.4 · 2015-2025",
     description:
       "Autorizzazioni a costruire a livello nazionale: fabbricati, abitazioni, volumi e superfici. Mercato edilizio, non opere pubbliche MOP.",
   },

@@ -525,7 +525,7 @@ function snapshotManagedIstatPermessiCostruire(): SourceHealth {
     reachability: "not-probed",
     freshness: freshnessFor("istat-permessi-costruire-2015-2025", istatPermessiCostruireMetadata.observedAt),
     latencyMs: null,
-    detail: `Snapshot ISTAT permessi di costruire ${istatPermessiCostruireData.period.from}–${istatPermessiCostruireData.period.to}: ${istatPermessiCostruireMetadata.coverage.tables} tavole introduttive nazionali (a.1–a.4) e ${istatPermessiCostruireMetadata.coverage.years} anni. Pubblicato ${istatPermessiCostruireMetadata.source.publicationDate}; acquisito ${istatPermessiCostruireMetadata.source.acquiredAt}; controllato ${istatPermessiCostruireMetadata.source.checkedAt}.`,
+    detail: `Snapshot ISTAT permessi di costruire ${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to}: ${istatPermessiCostruireMetadata.coverage.tables} tavole introduttive nazionali (a.1-a.4) e ${istatPermessiCostruireMetadata.coverage.years} anni. Pubblicato ${istatPermessiCostruireMetadata.source.publicationDate}; acquisito ${istatPermessiCostruireMetadata.source.acquiredAt}; controllato ${istatPermessiCostruireMetadata.source.checkedAt}.`,
     recordCount: istatPermessiCostruireMetadata.coverage.years * istatPermessiCostruireMetadata.coverage.tables,
   };
 }

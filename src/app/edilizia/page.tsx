@@ -10,7 +10,7 @@ import styles from "./edilizia.module.css";
 export const metadata: Metadata = {
   title: "Edilizia · permessi di costruire",
   description:
-    "Serie nazionali ISTAT 2015–2025 sui permessi di costruire (tavole a.1–a.4): fabbricati, abitazioni, volumi e superfici. Mercato edilizio, non opere pubbliche né spesa SIOPE.",
+    "Serie nazionali ISTAT 2015-2025 sui permessi di costruire (tavole a.1-a.4): fabbricati, abitazioni, volumi e superfici. Mercato edilizio, non opere pubbliche né spesa SIOPE.",
   alternates: { canonical: "/edilizia" },
 };
 
@@ -37,8 +37,8 @@ export default function EdiliziaPage() {
         <p className="eyebrow">Mercato edilizio · ISTAT</p>
         <h1>Permessi di costruire</h1>
         <p>
-          Serie nazionali ufficiali 2015–2025 sulle autorizzazioni a costruire
-          (tavole introduttive a.1–a.4). Sono conteggi, volumi e superfici: non
+          Serie nazionali ufficiali 2015-2025 sulle autorizzazioni a costruire
+          (tavole introduttive a.1-a.4). Sono conteggi, volumi e superfici: non
           pagamenti pubblici e non cantieri MOP.
         </p>
         <p className={styles.links}>
@@ -98,7 +98,7 @@ export default function EdiliziaPage() {
         </h2>
         <p className={styles.lead}>
           Nuovi fabbricati residenziali e relative abitazioni, Italia, anni
-          2015–2025.
+          2015-2025.
         </p>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
@@ -133,7 +133,7 @@ export default function EdiliziaPage() {
           Altre tavole nazionali nello snapshot
         </h2>
         <p className={styles.lead}>
-          a.2–a.4 restano serie distinte (ampliamenti e non residenziale). API e
+          a.2-a.4 restano serie distinte (ampliamenti e non residenziale). API e
           MCP espongono i dettagli; qui il riepilogo dell’ultimo anno.
         </p>
         <ul className={styles.tableList}>

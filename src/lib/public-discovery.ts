@@ -47,6 +47,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/imprese",
   "/inflazione",
   "/economia",
+  "/edilizia",
   "/cuneo-fiscale",
   "/pil",
   "/incarichi",

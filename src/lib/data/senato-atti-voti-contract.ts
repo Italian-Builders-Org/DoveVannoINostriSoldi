@@ -210,6 +210,18 @@ export const senatoAttiVotiSnapshotSchema = z
           path: ["acts", index, "phases"],
         });
       }
+      const presented = act.phases.find((phase) => phase.kind === "presentato" && phase.ramo === "S");
+      if (
+        presented
+        && act.officialPage
+          !== `https://www.senato.it/leggi-e-documenti/disegni-di-legge/scheda-ddl?did=${presented.idFase}`
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: "officialPage non punta alla scheda did=idFase presentata",
+          path: ["acts", index, "officialPage"],
+        });
+      }
       const last = act.phases[act.phases.length - 1]!;
       const currentOk =
         JSON.stringify(act.currentPhase) === JSON.stringify(last) ||

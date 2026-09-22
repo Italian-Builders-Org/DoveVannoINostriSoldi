@@ -826,6 +826,32 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-rifiuti.source.json"
     },
     {
+      "id": "opencivitas-2021-rifiuti",
+      "owner": "OpenCivitas municipal 2021 FC70RIFIUTI",
+      "files": [
+        "src/data/generated/opencivitas-2021-rifiuti.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_rifiuti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_rifiuti_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-rifiuti-contract.test.mjs",
+        "tests/opencivitas-2021-rifiuti-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_rifiuti_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70RIFIUTI 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80RIFIUTI 2022. Join di 6565 Comuni RSO; aggregati esclusi; CSV senza colonna Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-rifiuti.source.json"
+    },
+    {
       "id": "opencivitas-2022-viabilita",
       "owner": "OpenCivitas municipal 2022 FC80TERRVIAB",
       "files": [

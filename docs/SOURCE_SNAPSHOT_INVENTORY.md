@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 108
+- Artefatti nel registro: 109
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 91 (PR umana dopo revisione)
+- manuale: 92 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -74,6 +74,7 @@ La revisione e il merge restano umani.
 | `opencivitas-2017` | 2017 | 2026-09-12T17:26:20Z | https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2017_snapshot.py --check` |
 | `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
 | `opencivitas-2022-rifiuti` | 2022 | 2026-09-19T07:06:33Z | https://www.opencivitas.it/it/dataset/2022-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --check` |
+| `opencivitas-2021-rifiuti` | 2021 | 2026-09-22T13:43:26Z | https://www.opencivitas.it/it/dataset/2021-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_rifiuti_snapshot.py --check` |
 | `opencivitas-2022-viabilita` | 2022 | 2026-09-21T15:02:57Z | https://www.opencivitas.it/it/dataset/2022-comuni-viabilit%C3%A0-e-territorio-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_viabilita_snapshot.py --check` |
 | `opencivitas-2022-sociale-asili` | 2022 | 2026-09-22T11:30:22Z | https://www.opencivitas.it/it/dataset/2022-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --check` |
 | `opencivitas-2022-amministrazione` | 2022 | 2026-09-22T12:56:21Z | https://www.opencivitas.it/it/dataset/2022-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --check` |

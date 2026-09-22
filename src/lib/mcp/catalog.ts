@@ -8,6 +8,7 @@ import { sourceCatalog } from "@/lib/sources";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
 import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.source.json";
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
+import opencivitas2021RifiutiSource from "../../../scripts/etl/specs/opencivitas-2021-rifiuti.source.json";
 import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
 import opencivitas2022AmministrazioneSource from "../../../scripts/etl/specs/opencivitas-2022-amministrazione.source.json";
 import opencivitas2022SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2022-sociale-asili.source.json";
@@ -47,6 +48,7 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2018",
   "opencivitas_fabbisogni_2019",
   "opencivitas_rifiuti_2022",
+  "opencivitas_rifiuti_2021",
   "opencivitas_viabilita_2022",
   "opencivitas_amministrazione_2022",
   "opencivitas_sociale_asili_2022",
@@ -270,6 +272,7 @@ const exampleQueries = {
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_rifiuti_2021: { dataset: "opencivitas_rifiuti_2021", region: "LAZIO", year: 2021, limit: 20 },
   opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_amministrazione_2022: { dataset: "opencivitas_amministrazione_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_sociale_asili_2022: { dataset: "opencivitas_sociale_asili_2022", region: "LAZIO", year: 2022, limit: 20 },
@@ -738,6 +741,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione RIFIUTI è distinta da FC80TOT (servizi totali): non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Rifiuti 2022", url: opencivitas2022RifiutiSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_rifiuti_2021",
+    title: "Fabbisogni comunali · Rifiuti 2021 (FC70RIFIUTI)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Rifiuti per ${formatItalianInteger(opencivitas2021RifiutiSource.municipalities)} Comuni RSO, annualità ${opencivitas2021RifiutiSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Rifiuti 2021 · FC70RIFIUTI",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70RIFIUTI_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "ab8b417cd957394b25aa278d7f4a788d4a8a1931db8909f68f96a0479ab702f6", bytes: 1725294,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80RIFIUTI 2022: nessuna somma o confronto silenzioso fra funzioni o annualità. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021RifiutiSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021RifiutiSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021RifiutiSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale e aggregati ZZ999…`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione RIFIUTI 2021 (FC70RIFIUTI) è distinta da FC70TOT 2021 e da FC80RIFIUTI 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Rifiuti 2021", url: opencivitas2021RifiutiSource.datasetPageUrl }],
     },
   },
   {

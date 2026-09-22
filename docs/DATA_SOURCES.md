@@ -773,6 +773,12 @@ e MCP `opencivitas_rifiuti_2022`. Non si somma né si confronta in silenzio con
 FC80TOT 2022. Fonte, lock e perimetro sono documentati in
 [OpenCivitas 2022 Rifiuti](OPENCIVITAS_2022_RIFIUTI.md).
 
+È integrata anche **FC70RIFIUTI 2021** (6.565 Comuni RSO), annualità precedente
+della stessa funzione, con contratto distinto, `/api/spese/opencivitas-2021-rifiuti`
+e MCP `opencivitas_rifiuti_2021`. Non si somma né si confronta in silenzio con
+FC70TOT 2021 né con FC80RIFIUTI 2022. Fonte, lock e perimetro sono documentati in
+[OpenCivitas 2021 Rifiuti](OPENCIVITAS_2021_RIFIUTI.md).
+
 È integrata anche **FC80TERRVIAB 2022** (Viabilità e territorio, 6.553 Comuni
 RSO; 4 esclusi per spesa storica vuota nella fonte), con contratto distinto,
 `/api/spese/opencivitas-2022-viabilita` e MCP `opencivitas_viabilita_2022`.

@@ -300,6 +300,12 @@
     "recordCount": 6
   },
   {
+    "sourceId": "istat-permessi-costruire-2015-2025",
+    "sourceTimestamp": "2026-09-22",
+    "detail": "Snapshot ISTAT permessi di costruire 2015-2025: 4 tavole introduttive nazionali (a.1-a.4) e 11 anni. Pubblicato 2026-06-17; acquisito 2026-09-22; controllato 2026-09-22.",
+    "recordCount": 44
+  },
+  {
     "sourceId": "mef-tax-gap-nazionale",
     "sourceTimestamp": "2026-09-13",
     "detail": "Snapshot MEF tax gap nazionale 2018–2022 (Tab. I.1/I.2 Relazione 2025): 16 voci e 5 anni. Versione file 2025-10-23; data di pubblicazione non verificata; acquisito 2026-09-13; controllato 2026-09-13.",

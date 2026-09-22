@@ -40,7 +40,7 @@ LEGISLATURE_START = "2022-10-13"
 ENDPOINT = "https://dati.senato.it/sparql"
 LANDING = "https://dati.senato.it/"
 LICENSE_URL = "https://creativecommons.org/licenses/by/3.0/it/"
-DDL_PAGE_BASE = "https://www.senato.it/leg/19/BGT/Schede/Ddliter/{id_ddl}.htm"
+DDL_PAGE_BASE = "https://www.senato.it/leggi-e-documenti/disegni-di-legge/scheda-ddl?did={id_fase}"
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 FETCH_TIMEOUT = 300
 FETCH_ATTEMPTS = 4
@@ -688,7 +688,13 @@ def build_snapshot(
             "firstSignerId": act["firstSignerId"],
             "coSignerIds": act["coSignerIds"],
             "finalVoteIds": vote_ids,
-            "officialPage": DDL_PAGE_BASE.format(id_ddl=id_ddl),
+            "officialPage": DDL_PAGE_BASE.format(
+                id_fase=next(
+                    phase["idFase"]
+                    for phase in act["phases"]
+                    if phase["kind"] == "presentato" and phase["ramo"] == "S"
+                )
+            ),
         })
 
     today = datetime.now(timezone.utc)
@@ -882,8 +888,17 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
             f"{current['state']} @ {current['ramo']}" in class_states,
             f"{aid}: stato corrente {current['state']!r} @ {current['ramo']} non dichiarato in {outcome}",
         )
+        presented = next(
+            (
+                phase
+                for phase in phases
+                if phase.get("kind") == "presentato" and phase.get("ramo") == "S"
+            ),
+            None,
+        )
+        require(presented is not None, f"{aid}: fase presentata al Senato assente")
         require(
-            act.get("officialPage") == DDL_PAGE_BASE.format(id_ddl=act["idDdl"]),
+            act.get("officialPage") == DDL_PAGE_BASE.format(id_fase=presented["idFase"]),
             f"{aid}: officialPage incoerente",
         )
         for vid in act.get("finalVoteIds") or []:

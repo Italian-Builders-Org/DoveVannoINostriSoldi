@@ -14,6 +14,7 @@ import { aifaSpesaConsumiData } from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
+import { istatPermessiCostruireData } from "@/lib/istat-permessi-costruire-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
@@ -194,6 +195,10 @@ const exhaustiveLatestDataBySlug = {
   "eu-vat-gap-italy": {
     kind: "period",
     label: `${euVatGapItalyData.period.from}-${euVatGapItalyData.period.to} (2024 stima rapida)`,
+  },
+  "istat-permessi-costruire-2015-2025": {
+    kind: "period",
+    label: `${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to} (tavole a.1-a.4)`,
   },
   "mef-tax-gap-nazionale": {
     kind: "period",

@@ -59,6 +59,39 @@ test("free-text theme search finds equo compenso votes for a deputy", () => {
   assert.ok(result.votes.every((vote) => /equo compenso/i.test(vote.actTitle)));
 });
 
+test("title refine within a theme ANDs the query instead of widening the theme", () => {
+  const themeOnly = getThemeVoteHistory({ themeId: "sicurezza" });
+  assert.ok(themeOnly.events.length >= 2);
+  const refined = getThemeVoteHistory({ themeId: "sicurezza", query: "divertimento" });
+  assert.ok(refined.events.length >= 1);
+  assert.ok(refined.events.length < themeOnly.events.length);
+  assert.ok(refined.events.every((event) => /divertimento/i.test(event.actTitle)));
+  assert.ok(refined.events.every((event) => /sicurezza/i.test(event.actTitle)));
+  const personRefined = getRepubblicaThemeVotes({
+    personId: deputyId,
+    themeId: "sicurezza",
+    query: "divertimento",
+  });
+  assert.ok(personRefined.votes.every((vote) => /divertimento/i.test(vote.actTitle)));
+});
+
+test("Senato official pages use the live scheda-ddl idFase, not the retired Ddliter idDdl path", () => {
+  const history = getThemeVoteHistory({ themeId: "sicurezza", query: "divertimento" });
+  const divertimento = history.events.find((event) => event.actNumber === "S.282");
+  assert.ok(divertimento);
+  assert.equal(
+    divertimento.officialPage,
+    "https://www.senato.it/leggi-e-documenti/disegni-di-legge/scheda-ddl?did=55943",
+  );
+  assert.ok(!/BGT\/Schede\/Ddliter/i.test(divertimento.officialPage));
+  const lavoro = getThemeVoteHistory({ themeId: "lavoro", chamber: "senato" });
+  assert.ok(lavoro.events.length >= 1);
+  assert.ok(lavoro.events.every((event) => (
+    event.chamber !== "senato"
+    || /^https:\/\/www\.senato\.it\/leggi-e-documenti\/disegni-di-legge\/scheda-ddl\?did=\d+$/u.test(event.officialPage)
+  )));
+});
+
 test("theme history indexes votes once and supports chamber / expressed filters", () => {
   const history = getThemeVoteHistory({ themeId: "lavoro" });
   assert.ok(history.events.length >= 1);

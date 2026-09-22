@@ -975,6 +975,11 @@ su stock, detentori, scadenze e interessi e non una scomposizione dell'intero GF
 Le pagine `/spese/difesa`, `/spese/sicurezza` e `/spese/cultura` espongono rispettivamente
 GF0201–GF0205, GF0301–GF0306 e GF0801–GF0806 senza stimare residui, missioni estere,
 qualità dei servizi o una categoria «spettacolo» assente dalla fonte.
+Su `/spese/difesa` la serie OpenBDAP della missione «Difesa e sicurezza del territorio»
+resta affiancata al tracker del macroaggregato ufficiale `INVESTIMENTI` (stesso CSV
+LBF_SPE_CRU_AMPMA_001, hash allineato allo snapshot delle missioni): non è spesa COFOG,
+non è cassa e non è la misura NATO; gli appalti Difesa del corpus restano letture di
+procedure, non il totale di funzione.
 
 Gli importi sono spesa delle Amministrazioni pubbliche in competenza economica SEC 2010,
 non pagamenti SIOPE né stanziamenti del bilancio dello Stato. Il secondo livello viene

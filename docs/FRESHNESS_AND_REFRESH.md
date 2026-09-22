@@ -353,6 +353,11 @@ codice, altri lock o altri documenti. Restano il digest dei file, i trailer
 del bot, la validazione offline e la gestione della branch dedicata
 `automation/data/budget-law`. La PR è revisionabile; nessun merge automatico.
 
+Quando il CSV AMPMA cambia hash, aggiornare anche lo snapshot derivato
+`openbdap-defence-budget-macroaggregates` (macroaggregati della sola missione
+Difesa, incluso INVESTIMENTI) con lo stesso digest e i totali di missione
+riconciliati. Non ha workflow dedicato: refresh manuale sulla stessa fonte.
+
 Setup: environment `source-operations`, `DATA_BOT_APP_CLIENT_ID` e
 `DATA_BOT_APP_PRIVATE_KEY`, già usati dagli altri refresh. Un errore upstream,
 un contratto non rispettato o credenziali assenti fanno fallire il job;

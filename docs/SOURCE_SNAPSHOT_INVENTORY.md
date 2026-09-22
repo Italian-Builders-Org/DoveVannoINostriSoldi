@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 102
+- Artefatti nel registro: 103
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 85 (PR umana dopo revisione)
+- manuale: 86 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -67,6 +67,7 @@ La revisione e il merge restano umani.
 | `mef-irpef-2024` | 2024 | non dichiarato | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | `17 6 * * 1` | `.github/workflows/mef-irpef-refresh.yml` | solo rilevamento | `python scripts/etl/mef_irpef_municipal_snapshot.py --check` |
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
+| `openbdap-defence-budget-macroaggregates` | non dichiarato nello snapshot | 2026-09-22T10:30:00.000Z | https://bdap-opendata.rgs.mef.gov.it/content/legge-di-bilancio-pubblicata-serie-storica-spese-amministrazione-missione-programma-1?metadati=showall | nessuno | nessuno | manuale | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
 | `opencivitas-2015` | 2015 | 2026-09-17T10:10:34Z | https://www.opencivitas.it/it/dataset/2015-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2015_snapshot.py --check` |
 | `opencivitas-2016` | 2016 | 2026-09-17T13:57:07Z | https://www.opencivitas.it/it/dataset/2016-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2016_snapshot.py --check` |

@@ -39,7 +39,24 @@ export async function inspectDefence(page) {
   assert.match(body, /CP A1/);
   assert.match(body, /Difesa militare/);
   assert.match(body, /GF0201/);
+  assert.match(body, /Tracker investimenti/i);
+  assert.match(body, /INVESTIMENTI/);
+  assert.match(body, /procurement-difesa-direzioni/);
   assert.equal(await page.$$eval('[data-testid="defence-detail-table"] tbody tr', (elements) => elements.length), 5);
+
+  await page.waitForSelector('[data-testid="defence-investments"]');
+  const investmentBody = await page.$eval('[data-testid="defence-investments"]', (element) => element.textContent);
+  assert.match(investmentBody, /non la spesa PA COFOG/i);
+  assert.match(investmentBody, /NATO/i);
+  await page.focus('[data-testid="defence-investments-annual"] summary');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => document.querySelector('[data-testid="defence-investments-annual"]').open);
+  const investmentRows = await page.$$eval(
+    '[data-testid="defence-investments-annual"] tbody tr',
+    (elements) => elements.map((row) => [...row.cells].map((cell) => cell.textContent)),
+  );
+  assert.ok(investmentRows.length >= 10);
+  assert.ok(investmentRows.some((row) => row[0] === "2026"));
 
   await page.focus('[data-testid="defence-annual"] summary');
   await page.keyboard.press("Enter");

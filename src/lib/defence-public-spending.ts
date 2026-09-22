@@ -1,11 +1,18 @@
 import "server-only";
 
 import budgetLawSourceLock from "../../scripts/etl/specs/openbdap-budget-law-missions.source.json";
+import defenceMacroSourceLock from "../../scripts/etl/specs/openbdap-defence-budget-macroaggregates.source.json";
 import {
   getCommittedBudgetLawMissionSeries,
   selectBudgetLawMission,
   type BudgetLawMissionSeries,
 } from "@/lib/bdap-legge-bilancio";
+import {
+  defenceInvestmentSeries,
+  defenceMacroaggregatesForYear,
+  getDefenceBudgetMacroaggregates,
+  INVESTMENT_MACROAGGREGATE,
+} from "@/lib/defence-budget-macroaggregates";
 import { buildEurostatCofogDetailRows } from "@/lib/eurostat-cofog-detail-view";
 import {
   eurostatCofogMetadata,
@@ -14,6 +21,7 @@ import {
 } from "@/lib/eurostat-cofog-snapshot";
 
 export const DEFENCE_MISSION = "Difesa e sicurezza del territorio";
+export { INVESTMENT_MACROAGGREGATE };
 
 export function parseDefenceYear(value: string | string[] | undefined): number | null {
   if (value === undefined) return eurostatCofogMetadata.period.to;
@@ -76,6 +84,71 @@ export function getDefencePublicSpendingView(year: number = eurostatCofogMetadat
   const selected = series.history.find((point) => point.year === year);
   if (!selected) throw new Error("Difesa: anno COFOG non disponibile.");
   const detail = buildEurostatCofogDetailRows("GF02", year);
+  const macros = getDefenceBudgetMacroaggregates();
+  const investments = defenceInvestmentSeries();
+  const missionByYear = new Map(series.allocations.map((point) => [point.year, point.amountEur]));
+  const investmentTracker = {
+    years: macros.years,
+    investmentMacroaggregate: macros.investmentMacroaggregate,
+    caveats: macros.caveats,
+    annual: investments.map((row) => {
+      const missionTotalEur = missionByYear.get(row.year);
+      if (missionTotalEur === undefined) {
+        throw new Error(`Difesa: missione assente per investimenti ${row.year}`);
+      }
+      if (missionTotalEur !== defenceMacroSourceLock.expectedMissionTotalsEur[
+        String(row.year) as keyof typeof defenceMacroSourceLock.expectedMissionTotalsEur
+      ]) {
+        throw new Error(`Difesa: missione e macroaggregati divergevano nel ${row.year}`);
+      }
+      return {
+        year: row.year,
+        investmentEur: row.amountEur,
+        missionTotalEur,
+        shareOfMissionHundredths: missionTotalEur === 0
+          ? 0
+          : Math.round((row.amountEur * 10_000) / missionTotalEur),
+      };
+    }),
+    forSelectedYear: macros.years.includes(year) ? defenceMacroaggregatesForYear(year) : null,
+    latest: (() => {
+      const last = investments.at(-1)!;
+      const missionTotalEur = missionByYear.get(last.year)!;
+      return {
+        year: last.year,
+        investmentEur: last.amountEur,
+        missionTotalEur,
+        shareOfMissionHundredths: Math.round((last.amountEur * 10_000) / missionTotalEur),
+        macros: defenceMacroaggregatesForYear(last.year),
+      };
+    })(),
+    semantics: {
+      soldi: {
+        unit: "euro" as const,
+        nature:
+          "Stanziamenti di competenza CP A1 della missione Difesa ripartiti per macroaggregato ufficiale OpenBDAP; INVESTIMENTI è la voce di investimento di bilancio, non un pagamento di cassa",
+      },
+      periodo: { from: macros.years[0]!, to: macros.years.at(-1)! },
+      provenance: {
+        holder: defenceMacroSourceLock.source.owner,
+        publicationDate: null,
+        metadataModified: null,
+        acquisitionDate: macros.source.observedAt,
+        checkedAt: null,
+        license: defenceMacroSourceLock.source.license,
+        canonicalUrls: [
+          defenceMacroSourceLock.source.catalogUrl,
+          defenceMacroSourceLock.source.csvUrl,
+          defenceMacroSourceLock.source.landingUrl,
+        ],
+        sha256: defenceMacroSourceLock.source.csv.sha256,
+      },
+    },
+    procurementLinks: [
+      { href: "/dati/procurement-difesa-direzioni", label: "Procedure delle direzioni della Difesa" },
+      { href: "/dati/procurement-difesa-procedimenti", label: "Procedimenti TERRARM della Difesa" },
+    ] as const,
+  };
   return {
     ...series,
     selected,
@@ -88,6 +161,7 @@ export function getDefencePublicSpendingView(year: number = eurostatCofogMetadat
     },
     missionLabel: DEFENCE_MISSION,
     flags: cofog.flags,
+    investments: investmentTracker,
     cofog: {
       period: cofog.period,
       source: eurostatCofogMetadata.source,

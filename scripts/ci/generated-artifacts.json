@@ -641,6 +641,31 @@
       }
     },
     {
+      "id": "openbdap-defence-budget-macroaggregates",
+      "owner": "OpenBDAP Difesa mission × macroaggregate CP A1 series",
+      "files": [
+        "src/data/generated/openbdap-defence-budget-macroaggregates.json",
+        "scripts/etl/specs/openbdap-defence-budget-macroaggregates.source.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/defence-public-spending.test.mjs",
+        "tests/defence-budget-macroaggregates.test.mjs"
+      ],
+      "generator": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --csv CSV --observed-at ISO",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/openbdap-defence-budget-macroaggregates.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed aggregate of the same OpenBDAP AMPMA CSV locked for openbdap-budget-law. Macroaggregates must reconcile to the Difesa mission totals and keep INVESTIMENTI distinct from Eurostat GF02. Refresh manually when the shared CSV hash changes; no NATO or cross-source sums."
+    },
+    {
       "id": "opencivitas-2022",
       "owner": "OpenCivitas municipal 2022",
       "files": [

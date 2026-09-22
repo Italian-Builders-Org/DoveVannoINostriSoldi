@@ -57,6 +57,40 @@
   border-top: 1px solid var(--color-neutral-200);
 }
 
+.investments {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.investmentStrip {
+  margin: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.macroYear {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.macroHeading {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--font-heading-weight);
+}
+
+.procurementNote {
+  margin: 0;
+}
+
+.caveatList {
+  margin: var(--space-3) 0 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: var(--space-2);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
 .sources {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -89,7 +123,8 @@
 }
 
 @media (max-width: 620px) {
-  .comparison {
+  .comparison,
+  .investmentStrip {
     grid-template-columns: minmax(0, 1fr);
   }
 

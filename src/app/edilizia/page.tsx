@@ -32,7 +32,7 @@ export default function EdiliziaPage() {
   const source = istatPermessiCostruireMetadata.source;
 
   return (
-    <main className="shell page">
+    <main className={`shell page ${styles.page}`}>
       <header className="page-intro">
         <p className="eyebrow">Mercato edilizio · ISTAT</p>
         <h1>Permessi di costruire</h1>

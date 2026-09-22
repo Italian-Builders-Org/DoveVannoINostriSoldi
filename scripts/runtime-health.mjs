@@ -81,6 +81,7 @@ const EXPECTED_SOURCE_IDS = [
   "mef-irpef-dettaglio",
   "mef-iva",
   "eu-vat-gap-italy",
+  "istat-permessi-costruire-2015-2025",
   "mef-tax-gap-nazionale",
   "eurostat-taxag",
   "eurostat-sha-health",

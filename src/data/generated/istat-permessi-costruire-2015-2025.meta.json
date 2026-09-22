@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-permessi-costruire-2015-2025",
+  "period": {
+    "from": 2015,
+    "to": 2025
+  },
+  "observedAt": "2026-09-22",
+  "source": {
+    "owner": "Istituto Nazionale di Statistica (ISTAT)",
+    "landingUrl": "https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/",
+    "url": "https://www.istat.it/wp-content/uploads/2026/06/Tavole-16giugno2026.zip",
+    "filename": "Tavole-16giugno2026.zip",
+    "licenseId": "not-declared",
+    "licenseNote": "Il zip non dichiara una licenza sul payload. Evidenza di riuso open-data e note legali ISTAT citata senza inventare CC BY sul file.",
+    "evidenceUrls": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "publicationDate": "2026-06-17",
+    "acquiredAt": "2026-09-22",
+    "checkedAt": "2026-09-22",
+    "bytes": 968604,
+    "sha256": "d6edee1c0e0ad579e82e9f8efe9d09a89244936e874018234d98a5662ade5876",
+    "path": "tests/fixtures/istat-permessi-costruire/Tavole-16giugno2026.zip",
+    "geography": "Italia (tavole introduttive nazionali a.1–a.4); nessuna geografia regionale in questa slice",
+    "updateFrequency": "annuale",
+    "referenceYear": 2025
+  },
+  "coverage": {
+    "years": 11,
+    "tables": 4,
+    "geography": "national-only"
+  },
+  "integrity": {
+    "sourceLockSha256": "8efa1ac8c50ac11c1c0733271f43bd4495de16ff866d9811721e9e695fe9d704",
+    "dataSha256": "eedb1e3daae5741a414e970e730b6a0d8f5edab2a03d805444ce2aeebf788d2a",
+    "dataBytes": 66631
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "unit": null,
+      "nature": "conteggi / volumi / superfici dei permessi di costruire; non soldi"
+    },
+    "periodo": {
+      "referencePeriod": "2015-2025",
+      "referenceYearOfRelease": 2025,
+      "publicationDate": "2026-06-17"
+    },
+    "provenance": {
+      "holder": "Istituto Nazionale di Statistica (ISTAT)",
+      "publicationDate": "2026-06-17",
+      "acquiredAt": "2026-09-22",
+      "checkedAt": "2026-09-22"
+    }
+  }
+}

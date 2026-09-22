@@ -33,6 +33,10 @@ import {
 } from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
+import {
+  istatPermessiCostruireData,
+  istatPermessiCostruireMetadata,
+} from "@/lib/istat-permessi-costruire-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { eurostatTaxagData, eurostatTaxagMetadata } from "@/lib/eurostat-taxag-snapshot";
 import { eurostatShaHealthData, eurostatShaHealthMetadata } from "@/lib/eurostat-sha-health-snapshot";
@@ -515,6 +519,17 @@ function snapshotManagedEuVatGapItaly(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPermessiCostruire(): SourceHealth {
+  return {
+    ...baseHealth("istat-permessi-costruire-2015-2025"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-permessi-costruire-2015-2025", istatPermessiCostruireMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ISTAT permessi di costruire ${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to}: ${istatPermessiCostruireMetadata.coverage.tables} tavole introduttive nazionali (a.1-a.4) e ${istatPermessiCostruireMetadata.coverage.years} anni. Pubblicato ${istatPermessiCostruireMetadata.source.publicationDate}; acquisito ${istatPermessiCostruireMetadata.source.acquiredAt}; controllato ${istatPermessiCostruireMetadata.source.checkedAt}.`,
+    recordCount: istatPermessiCostruireMetadata.coverage.years * istatPermessiCostruireMetadata.coverage.tables,
+  };
+}
+
 function snapshotManagedMefTaxGapNazionale(): SourceHealth {
   return {
     ...baseHealth("mef-tax-gap-nazionale"),
@@ -831,6 +846,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
+  "istat-permessi-costruire-2015-2025": snapshotManagedIstatPermessiCostruire,
   "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
   "eurostat-taxag": snapshotManagedEurostatTaxag,
   "eurostat-sha-health": snapshotManagedEurostatShaHealth,

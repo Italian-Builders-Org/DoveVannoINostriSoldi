@@ -3,9 +3,9 @@ import Link from "next/link";
 import styles from "./economia.module.css";
 
 export const metadata: Metadata = {
-  title: "Economia: prezzi, cuneo fiscale e PIL",
+  title: "Economia: prezzi, cuneo fiscale, PIL e edilizia",
   description:
-    "Indicatori economici ufficiali distinti dalla spesa pubblica: inflazione IPCA Eurostat, cuneo fiscale OECD e PIL Eurostat SEC 2010.",
+    "Indicatori economici ufficiali distinti dalla spesa pubblica: inflazione IPCA Eurostat, cuneo fiscale OECD, PIL Eurostat SEC 2010 e permessi di costruire ISTAT.",
   alternates: { canonical: "/economia" },
 };
 
@@ -30,6 +30,13 @@ const dossiers = [
     period: "Eurostat SEC 2010 · trimestrale e annuale",
     description:
       "Livello, crescita e quote della domanda del prodotto interno lordo. Non è cassa SIOPE e non assegna meriti a un governo.",
+  },
+  {
+    href: "/edilizia",
+    title: "Permessi di costruire",
+    period: "ISTAT · tavole a.1-a.4 · 2015-2025",
+    description:
+      "Autorizzazioni a costruire a livello nazionale: fabbricati, abitazioni, volumi e superfici. Mercato edilizio, non opere pubbliche MOP.",
   },
 ] as const;
 

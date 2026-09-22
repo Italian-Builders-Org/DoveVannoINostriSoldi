@@ -464,6 +464,29 @@ ISTAT. Nessuna media UE in questa slice. Fonte + API + MCP, senza pagina UI.
 - [Contratto, celle e verifiche](research/EU_VAT_GAP_ITALY.md).
 - [Landing ufficiale VAT gap](https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en).
 
+### Permessi di costruire ISTAT (tavole a.1–a.4)
+
+**Issue [#379](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/379).** Zip ufficiale
+*Tavole-16giugno2026.zip* dalla landing
+[Statistiche sui permessi di costruire – Anno 2025](https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/)
+(pubblicazione 17 giugno 2026; acquisizione e controllo 22 settembre 2026).
+Byte 968604, SHA-256
+`d6edee1c0e0ad579e82e9f8efe9d09a89244936e874018234d98a5662ade5876`.
+
+Lo snapshot tipizzato espone le sole tavole introduttive nazionali a.1–a.4
+(2015–2025): nuova residenziale, ampliamenti residenziali, nuova e ampliamenti
+non residenziali. Conteggi, volumi (m³) e superfici (m²); `soldi.present` false.
+Licenza zip: `not-declared` (note legali / open data ISTAT citate come evidenza
+senza inventare CC BY sul payload).
+
+Non è MOP/OpenBDAP `/opere`, non è SIOPE, non è quotazioni OMI. Nessuna
+geografia regionale in questa slice. Fonte + API + MCP + pagina `/edilizia`.
+
+- API: `/api/edilizia/permessi-costruire`, `?anno=2025&tavola=a1`.
+- MCP: `query_dataset` con `dataset: "istat_permessi_costruire"` e filtri
+  opzionali `year` / `table` (`a1`–`a4`).
+- [Contratto e verifiche](ISTAT_PERMESSI_COSTRUIRE.md).
+
 ### Tax gap nazionale MEF (Relazione evasione 2025)
 
 **Issue #474 (epic #387, fonte #1).** PDF ufficiale *Relazione sull'economia non

@@ -762,6 +762,17 @@ perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
 Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI o FC80TERRVIAB.
 Fonte, lock e perimetro in [OpenCivitas 2022 Sociale e asili](OPENCIVITAS_2022_SOCIALE_ASILI.md).
 
+È integrata anche **FC70AMMIN 2021** (Amministrazione, 6.550 Comuni RSO; 15
+esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2021-amministrazione` e MCP `opencivitas_amministrazione_2021`.
+Il CSV di questo rilascio è in cp1252, dichiarato nel lock e non dedotto, mentre
+quello 2022 è UTF-8. Il fabbisogno riproporziona sul totale della spesa storica
+della funzione sull'insieme completo dei Comuni joinati: i 15 esclusi portano
+13,95 milioni di fabbisogno, quindi la differenza aggregata sui pubblicati non è
+un risparmio. Nessuna somma o confronto silenzioso con FC70TOT 2021 né con
+FC80AMMIN 2022. Fonte, lock e perimetro in
+[OpenCivitas 2021 Amministrazione](OPENCIVITAS_2021_AMMINISTRAZIONE.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).

@@ -1,4 +1,5 @@
 import childcare from "../content/studies/childcare.json";
+import wasteInterventions from "../content/studies/waste-interventions.json";
 
 /** Occasional research, independent of the monthly editorial calendar.
  * Values are frozen at revision time, never imported from live raw snapshots.
@@ -14,4 +15,13 @@ export const childcareStudy = {
   ...childcare,
 } as const;
 
-export const studies = [childcareStudy] as const;
+export const wasteInterventionsStudy = {
+  slug: "tre-interventi-sprechi",
+  path: "/studi/tre-interventi-sprechi" as const,
+  teaser: "Farmaci, giustizia ed edilizia: tre spese da verificare",
+  reproducibilityUrl: "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/95a7e645d32e062b0be3443c324ab86bf2412e98/research/quaderni-sprechi-2026-09",
+  assetPath: `/studi/tre-interventi-sprechi/v${wasteInterventions.version}`,
+  ...wasteInterventions,
+} as const;
+
+export const studies = [wasteInterventionsStudy, childcareStudy] as const;

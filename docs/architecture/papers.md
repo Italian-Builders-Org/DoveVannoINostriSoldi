@@ -2,8 +2,9 @@
 
 Archivio pubblico canonico: `/studi`. `/paper` risponde con un redirect permanente
 308 verso l'archivio. Le pubblicazioni sono occasionali e distinte dai report
-mensili. La scheda di *Dai fondi ai posti*, già pubblicato, conserva il dettaglio
-HTML `/studi/dai-fondi-ai-posti` e gli asset delle revisioni precedenti.
+mensili. Le schede già pubblicate conservano il dettaglio HTML
+(`/studi/dai-fondi-ai-posti`, `/studi/tre-interventi-sprechi`) e gli asset delle
+revisioni precedenti.
 
 ## Confine editoriale
 

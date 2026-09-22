@@ -35,8 +35,26 @@ test("study is editorially separate from monthly reports and raw snapshots", asy
   assert.match(page, /non posti nido aperti/);
   assert.match(page, /non è una baseline pre-intervento/);
   assert.doesNotMatch(page, /href="\/report/);
+  const wastePage = await readFile(new URL("../src/app/studi/tre-interventi-sprechi/page.tsx", import.meta.url), "utf8");
+  assert.match(wastePage, /non si sommano/);
+  assert.match(wastePage, /non coincide con un taglio di bilancio/);
+  assert.doesNotMatch(wastePage, /href="\/report/);
   const layout = await readFile(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
   assert.match(layout, /data-scroll-behavior="smooth"/);
+});
+
+test("waste interventions capsule matches the versioned public and research PDF", async () => {
+  const capsule = await json("../src/content/studies/waste-interventions.json");
+  assert.equal(capsule.version, "1");
+  assert.equal(capsule.publishedOn, "2026-09-22");
+  for (const [name, expected] of Object.entries(capsule.assets)) {
+    const bytes = await readFile(new URL(`../public/studi/tre-interventi-sprechi/v${capsule.version}/${name}`, import.meta.url));
+    assert.equal(bytes.length, expected.bytes);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), expected.sha256);
+  }
+  const research = await readFile(new URL("../research/quaderni-sprechi-2026-09/paper/tre-interventi-sprechi.pdf", import.meta.url));
+  assert.equal(createHash("sha256").update(research).digest("hex"), capsule.assets["tre-interventi-sprechi.pdf"].sha256);
+  assert.equal(research.subarray(0, 5).toString(), "%PDF-");
 });
 
 test("previous published PDF remains available with its original checksum", async () => {

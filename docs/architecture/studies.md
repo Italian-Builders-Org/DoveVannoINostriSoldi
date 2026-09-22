@@ -6,6 +6,10 @@ le capsule dei report e non introduce link a route non ancora disponibili.
 Le due sezioni possono essere raccolte in futuro in un indice editoriale comune,
 senza cambiare gli URL o trasformare una revisione scientifica in un'edizione mensile.
 
+I quaderni di spesa pubblica (per esempio *Tre interventi per ridurre gli
+sprechi*) entrano nello stesso archivio: pagina HTML, PDF versionato con
+SHA-256 e materiali in `research/`, senza cadenza mensile.
+
 ## Percorso del contenuto
 
 Snapshot storico verificato con manifest e SHA-256 →

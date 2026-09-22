@@ -795,6 +795,12 @@ differenza aggregata sui Comuni pubblicati non è un risparmio. Nessuna somma o
 confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o FC80SOCNID.
 Fonte, lock e perimetro in [OpenCivitas 2022 Amministrazione](OPENCIVITAS_2022_AMMINISTRAZIONE.md).
 
+È integrata anche **FC80POLIZIA 2022** (Polizia locale, 6.554 Comuni RSO;
+3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-polizia` e MCP `opencivitas_polizia_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o
+FC80SOCNID. Fonte, lock e perimetro in [OpenCivitas 2022 Polizia locale](OPENCIVITAS_2022_POLIZIA.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -907,8 +913,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni ufficiali OpenCivitas (istruzione, …) oltre a
-  rifiuti, viabilità e sociale/asili 2022 e ai servizi totali
+- ulteriori funzioni ufficiali OpenCivitas (istruzione, amministrazione, …) oltre a
+  rifiuti, viabilità, sociale/asili e polizia locale 2022 e ai servizi totali
   2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 

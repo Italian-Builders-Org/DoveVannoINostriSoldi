@@ -41,13 +41,20 @@ export async function inspectDefence(page) {
   assert.match(body, /GF0201/);
   assert.match(body, /Tracker investimenti/i);
   assert.match(body, /INVESTIMENTI/);
-  assert.match(body, /procurement-difesa-direzioni/);
   assert.equal(await page.$$eval('[data-testid="defence-detail-table"] tbody tr', (elements) => elements.length), 5);
 
   await page.waitForSelector('[data-testid="defence-investments"]');
   const investmentBody = await page.$eval('[data-testid="defence-investments"]', (element) => element.textContent);
   assert.match(investmentBody, /non la spesa PA COFOG/i);
   assert.match(investmentBody, /NATO/i);
+  const procurementHrefs = await page.$$eval(
+    '[data-testid="defence-investments"] a[href^="/dati/procurement-difesa"]',
+    (elements) => elements.map((element) => element.getAttribute("href")),
+  );
+  assert.deepEqual(procurementHrefs.sort(), [
+    "/dati/procurement-difesa-direzioni",
+    "/dati/procurement-difesa-procedimenti",
+  ]);
   await page.focus('[data-testid="defence-investments-annual"] summary');
   await page.keyboard.press("Enter");
   await page.waitForFunction(() => document.querySelector('[data-testid="defence-investments-annual"]').open);

@@ -852,6 +852,32 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-viabilita.source.json"
     },
     {
+      "id": "opencivitas-2022-sociale-asili",
+      "owner": "OpenCivitas municipal 2022 FC80SOCNID",
+      "files": [
+        "src/data/generated/opencivitas-2022-sociale-asili.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_sociale_asili_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-sociale-asili-contract.test.mjs",
+        "tests/opencivitas-2022-sociale-asili-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80SOCNID 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB 2022. Join di 6554 Comuni RSO; 3 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-sociale-asili.source.json"
+    },
+    {
       "id": "opencivitas-2019",
       "owner": "OpenCivitas municipal 2019 FC60TOT",
       "files": [

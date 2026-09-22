@@ -42,6 +42,11 @@ SOURCE_HEALTH_REFRESH_ARTIFACTS = frozenset({
     "opencivitas-2022", "opencoesione", "public-debt",
 })
 
+SHARED_INVENTORY = "docs/SOURCE_SNAPSHOT_INVENTORY.md"
+SHARED_INVENTORY_ARTIFACTS = SOURCE_HEALTH_REFRESH_ARTIFACTS | frozenset({
+    "company-atlas", "education-atlas", "openbdap-budget-law", "siope-municipal",
+})
+
 
 class PublishError(RuntimeError):
     """A fail-closed publication policy violation."""
@@ -240,10 +245,9 @@ def load_artifact(artifact_id: str, registry_path: Path = REGISTRY_PATH) -> Arti
     files = tuple(item.get("files") or ())
     if not files or any(not isinstance(path, str) or not path for path in files):
         raise PublishError(f"artifact has no valid generated file allowlist: {artifact_id}")
-    if artifact_id == "company-atlas":
-        # The registry keeps one owner per file. This shared, generated document
-        # is a publication companion, verified by the atlas offline command.
-        files += ("docs/SOURCE_SNAPSHOT_INVENTORY.md",)
+    if artifact_id in SHARED_INVENTORY_ARTIFACTS and SHARED_INVENTORY not in files:
+        # Period and observation dates in this shared document change with the data.
+        files += (SHARED_INVENTORY,)
     if artifact_id in SOURCE_HEALTH_REFRESH_ARTIFACTS:
         files += (SOURCE_HEALTH_SUMMARY,)
     offline_command = offline["command"]
@@ -305,8 +309,8 @@ def allowlisted_paths(artifact: Artifact) -> set[str]:
             and resolved == ROOT / path
         )
         reviewed_shared_inventory = (
-            artifact.artifact_id in {"company-atlas", "education-atlas"}
-            and path == "docs/SOURCE_SNAPSHOT_INVENTORY.md"
+            artifact.artifact_id in SHARED_INVENTORY_ARTIFACTS
+            and path == SHARED_INVENTORY
             and resolved == ROOT / path
         )
         if (
@@ -813,6 +817,15 @@ def confirm_pr(
         raise PublishError("created or updated pull request failed managed provenance validation")
 
 
+def refresh_inventory(artifact: Artifact, *, runner: Runner = subprocess.run) -> None:
+    # Check the exact path before writing, including symlink and SIOPE constraints.
+    if SHARED_INVENTORY in allowlisted_paths(artifact):
+        run_command(
+            [sys.executable, "scripts/ci/source-snapshot-inventory.py", "--write"],
+            env={"DVNS_OFFLINE_GUARD": "1"}, runner=runner,
+        )
+
+
 def publish(
     artifact_id: str,
     *,
@@ -835,6 +848,7 @@ def publish(
              "scripts/ci/source-health-snapshots.mjs", "--write"],
             env={"DVNS_OFFLINE_GUARD": "1"}, runner=runner,
         )
+    refresh_inventory(artifact, runner=runner)
     changed = status_paths(artifact, runner=runner)
     digest = file_digest(artifact)
     observed_tip = remote_branch_tip(artifact.publication.branch, runner=runner)

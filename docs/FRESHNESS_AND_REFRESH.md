@@ -134,6 +134,22 @@ servono ancora merge e deployment. La prima verifica del 22 settembre su
 [OpenCoesione](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/actions/runs/35732775392)
 ha concluso `NO_CHANGE` senza creare PR.
 
+Il controllo su un aggiornamento reale Consulenti ha rilevato un difetto:
+la PR #595 conteneva i dati aggiornati senza l'inventario derivato, e la CI
+l'ha bloccata. Il publisher rigenera ora l'inventario prima del digest e lo
+include come companion esatto, senza autorizzare altri file di documentazione.
+I test coprono cambio della data osservata, assenza di cambiamenti, symlink,
+file estranei e avanzamento concorrente di main.
+
+Il nuovo digest include un file che sette vecchie branch non proteggevano.
+Per non reinterpretarne la provenienza, Consulenti, partecipazioni MEF,
+OpenCivitas, OpenCoesione, pagella governi, debito e SIOPE comunale passano alle
+corrispondenti branch `automation/data/<nome>-v2`. Le vecchie branch restano
+intatte. Imprese, Istruzione, bilancio e SIOPE non comunale includevano già
+l'inventario e mantengono i propri nomi. Dopo il merge di questa modifica,
+rieseguire Consulenti da main e chiudere #595 solo quando la proposta sostitutiva
+è disponibile; non aggiungere commit umani alla branch gestita dal bot.
+
 Per sospendere una fonte disabilitare il suo workflow; per ripristinare il
 controllo preventivo reimpostare il reviewer richiesto nell'ambiente, conservando
 la restrizione a main. Non cancellare credenziali, artifact o branch del bot.

@@ -785,6 +785,12 @@ RSO; 4 esclusi per spesa storica vuota nella fonte), con contratto distinto,
 Nessuna somma o confronto silenzioso con FC80TOT o FC80RIFIUTI. Fonte, lock e
 perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
 
+È integrata anche **FC70TERRVIAB 2021** (Viabilità e territorio, 6.551 Comuni
+RSO; 14 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2021-viabilita` e MCP `opencivitas_viabilita_2021`.
+Nessuna somma o confronto silenzioso con FC70TOT 2021 o FC80TERRVIAB 2022.
+Fonte, lock e perimetro in [OpenCivitas 2021 Viabilità](OPENCIVITAS_2021_VIABILITA.md).
+
 È integrata anche **FC80SOCNID 2022** (Sociale e asili nido, 6.554 Comuni RSO;
 3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
 `/api/spese/opencivitas-2022-sociale-asili` e MCP `opencivitas_sociale_asili_2022`.

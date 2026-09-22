@@ -315,6 +315,18 @@ export async function queryPublicDataset(
       const series = getCommittedBudgetLawMissionSeries(query.years);
       return jsonSafe(query.mission === undefined ? series : selectBudgetLawMission(series, query.mission));
     }
+    case "opencivitas_viabilita_2021": {
+      const { queryOpenCivitas2021Viabilita } = await import("@/lib/opencivitas-2021-viabilita-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70TERRVIAB è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021; la viabilità 2022 su opencivitas_viabilita_2022.");
+      }
+      return jsonSafe(queryOpenCivitas2021Viabilita({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_istruzione_2022": {
       const { queryOpenCivitas2022Istruzione } = await import("@/lib/opencivitas-2022-istruzione-snapshot");
       if (query.year !== undefined && query.year !== 2022) {

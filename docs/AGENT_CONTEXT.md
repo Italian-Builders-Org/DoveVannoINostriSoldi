@@ -204,6 +204,8 @@ a caso.
     [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md) e
     [docs/OPENCIVITAS_2022_SOCIALE_ASILI.md](OPENCIVITAS_2022_SOCIALE_ASILI.md) e
     [docs/OPENCIVITAS_2022_POLIZIA.md](OPENCIVITAS_2022_POLIZIA.md): fonti
+
+    [docs/OPENCIVITAS_2022_ISTRUZIONE.md](OPENCIVITAS_2022_ISTRUZIONE.md): fonti
     OpenCivitas e relativi contratti.
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
     e [docs/research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md):
@@ -229,6 +231,8 @@ a caso.
   [tests/opencivitas-2022-amministrazione-route.test.mjs](../tests/opencivitas-2022-amministrazione-route.test.mjs).
 
   [tests/opencivitas-2022-polizia-route.test.mjs](../tests/opencivitas-2022-polizia-route.test.mjs).
+
+  [tests/opencivitas-2022-istruzione-route.test.mjs](../tests/opencivitas-2022-istruzione-route.test.mjs).
 
 ## Politici
 

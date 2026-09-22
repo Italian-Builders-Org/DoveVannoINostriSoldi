@@ -315,6 +315,18 @@ export async function queryPublicDataset(
       const series = getCommittedBudgetLawMissionSeries(query.years);
       return jsonSafe(query.mission === undefined ? series : selectBudgetLawMission(series, query.mission));
     }
+    case "opencivitas_istruzione_2022": {
+      const { queryOpenCivitas2022Istruzione } = await import("@/lib/opencivitas-2022-istruzione-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80ISTRUZ è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Istruzione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");
       if (query.year && query.year !== openCivitasSnapshot.referenceYear) {

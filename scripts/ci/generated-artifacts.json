@@ -2892,6 +2892,32 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC80POLIZIA 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022. Join di 6554 Comuni RSO; 3 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-polizia.source.json"
+    },
+    {
+      "id": "opencivitas-2022-istruzione",
+      "owner": "OpenCivitas municipal 2022 FC80ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2022-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_istruzione_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-istruzione-contract.test.mjs",
+        "tests/opencivitas-2022-istruzione-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80ISTRUZ 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022. Join di 6550 Comuni RSO; 6 Comuni con spesa storica vuota esclusi senza imputazione; Fascia (GE) esclusa perché storica e standard sono entrambe 0 e la differenza percentuale non è definita; aggregati esclusi; CSV con Privacy. La descrizione ufficiale di SPESA_STORICA usa «euro» minuscolo. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-istruzione.source.json"
     }
   ]
 }

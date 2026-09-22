@@ -167,11 +167,15 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
-function titleMatches(title: string, needles: readonly string[]): string[] {
+function titleMatches(
+  title: string,
+  needles: readonly string[],
+  refineNeedles: readonly string[] = [],
+): string[] {
   const haystack = normalizeNeedle(stripMarkup(title));
   if (!haystack) return [];
   const tokens = haystack.split(/\s+/u).filter(Boolean);
-  return needles.filter((needle) => {
+  const matchesNeedle = (needle: string): boolean => {
     const n = normalizeNeedle(needle);
     if (!n) return false;
     const parts = n.split(/\s+/u).filter(Boolean);
@@ -181,7 +185,9 @@ function titleMatches(title: string, needles: readonly string[]): string[] {
     }
     const stem = parts[0]!;
     return tokens.some((token) => token === stem || (stem.length >= 4 && token.startsWith(stem)));
-  });
+  };
+  if (refineNeedles.length > 0 && !refineNeedles.every(matchesNeedle)) return [];
+  return needles.filter(matchesNeedle);
 }
 
 function emptySummary(): ThemeVoteSummary {
@@ -277,13 +283,14 @@ function expressedCount(summary: ThemeVoteSummary): number {
 function indexChamberVotes(
   chamber: "camera" | "senato",
   needles: readonly string[],
+  refineNeedles: readonly string[] = [],
 ): IndexedVote[] {
   if (needles.length === 0) return [];
   const indexed: IndexedVote[] = [];
   if (chamber === "camera") {
     for (const act of cameraSnapshot.acts) {
       if (!act.title || act.finalVoteIds.length === 0) continue;
-      const matched = titleMatches(act.title, needles);
+      const matched = titleMatches(act.title, needles, refineNeedles);
       if (matched.length === 0) continue;
       for (const voteId of act.finalVoteIds) {
         const vote = cameraVoteById.get(voteId);
@@ -312,7 +319,7 @@ function indexChamberVotes(
   }
   for (const act of senatoSnapshot.acts) {
     if (!act.title || act.finalVoteIds.length === 0) continue;
-    const matched = titleMatches(act.title, needles);
+    const matched = titleMatches(act.title, needles, refineNeedles);
     if (matched.length === 0) continue;
     for (const voteId of act.finalVoteIds) {
       const vote = senatoVoteById.get(voteId);
@@ -340,16 +347,24 @@ function indexChamberVotes(
   return indexed;
 }
 
-function cameraRows(numericId: string, needles: readonly string[]): ThemeVoteRow[] {
-  return indexChamberVotes("camera", needles).map((item) => ({
+function cameraRows(
+  numericId: string,
+  needles: readonly string[],
+  refineNeedles: readonly string[] = [],
+): ThemeVoteRow[] {
+  return indexChamberVotes("camera", needles, refineNeedles).map((item) => ({
     ...item.event,
     ownVote: (item.votesByNumericId[numericId] ?? "non-rilevato") as RepublicActVote,
     confidenceVote: item.event.confidenceVote,
   }));
 }
 
-function senatoRows(numericId: string, needles: readonly string[]): ThemeVoteRow[] {
-  return indexChamberVotes("senato", needles).map((item) => ({
+function senatoRows(
+  numericId: string,
+  needles: readonly string[],
+  refineNeedles: readonly string[] = [],
+): ThemeVoteRow[] {
+  return indexChamberVotes("senato", needles, refineNeedles).map((item) => ({
     ...item.event,
     ownVote: (item.votesByNumericId[numericId] ?? "non-rilevato") as RepublicActVote,
     confidenceVote: false,
@@ -391,16 +406,18 @@ function chamberThemeInventory(): Array<VoteThemeDefinition & { chamberVotes: nu
 function resolveNeedles(themeId: string | null, queryRaw: string | null): {
   theme: VoteThemeDefinition | null;
   needles: string[];
+  refineNeedles: string[];
 } | null {
   const theme = themeId ? VOTE_THEMES.find((item) => item.id === themeId) ?? null : null;
   if (themeId && !theme) return null;
   const queryNeedles = queryRaw && normalizeNeedle(queryRaw).length >= 3
     ? [normalizeNeedle(queryRaw)]
     : [];
-  return {
-    theme,
-    needles: theme ? [...theme.needles, ...queryNeedles] : queryNeedles,
-  };
+  // Theme needles are OR'd; a free-text `q` with a theme *refines* (AND), it does not widen.
+  if (theme) {
+    return { theme, needles: [...theme.needles], refineNeedles: queryNeedles };
+  }
+  return { theme: null, needles: queryNeedles, refineNeedles: [] };
 }
 
 function numericIdFor(personId: string, chamber: "camera" | "senato"): string | null {
@@ -436,13 +453,17 @@ export function getRepubblicaThemeVotes(options: {
   const queryRaw = options.query?.trim() || null;
   const resolved = resolveNeedles(themeId, queryRaw);
   if (!resolved) return null;
-  const { theme, needles } = resolved;
+  const { theme, needles, refineNeedles } = resolved;
   const numericId = numericIdFor(person.id, chamber);
   if (!numericId) return null;
 
   const votes = needles.length === 0
     ? []
-    : sortVotes(chamber === "camera" ? cameraRows(numericId, needles) : senatoRows(numericId, needles));
+    : sortVotes(
+      chamber === "camera"
+        ? cameraRows(numericId, needles, refineNeedles)
+        : senatoRows(numericId, needles, refineNeedles),
+    );
 
   const summary = summarizeRows(votes);
   const source = chamber === "camera" ? cameraSnapshot.provenance : senatoSnapshot.provenance;
@@ -491,10 +512,10 @@ export function getThemeVoteHistory(options: {
 
   const resolved = resolveNeedles(themeId, queryRaw);
   if (!resolved) return null;
-  const { theme, needles } = resolved;
+  const { theme, needles, refineNeedles } = resolved;
 
-  const cameraIndexed = chamber === "senato" ? [] : indexChamberVotes("camera", needles);
-  const senatoIndexed = chamber === "camera" ? [] : indexChamberVotes("senato", needles);
+  const cameraIndexed = chamber === "senato" ? [] : indexChamberVotes("camera", needles, refineNeedles);
+  const senatoIndexed = chamber === "camera" ? [] : indexChamberVotes("senato", needles, refineNeedles);
   const indexedByKey = new Map<string, IndexedVote>();
   for (const item of [...cameraIndexed, ...senatoIndexed]) {
     indexedByKey.set(`${item.event.chamber}:${item.event.voteId}`, item);

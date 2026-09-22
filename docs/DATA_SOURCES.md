@@ -795,6 +795,8 @@ differenza aggregata sui Comuni pubblicati non è un risparmio. Nessuna somma o
 confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o FC80SOCNID.
 Fonte, lock e perimetro in [OpenCivitas 2022 Amministrazione](OPENCIVITAS_2022_AMMINISTRAZIONE.md).
 
+È integrata anche **FC70ISTRUZ 2021** (Istruzione, 6.549 Comuni RSO; 15 esclusi per spesa storica vuota e Fascia per fabbisogno zero nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-istruzione` e MCP `opencivitas_istruzione_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Istruzione](OPENCIVITAS_2021_ISTRUZIONE.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).

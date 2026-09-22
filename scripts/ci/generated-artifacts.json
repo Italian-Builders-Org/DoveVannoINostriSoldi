@@ -904,6 +904,32 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-amministrazione.source.json"
     },
     {
+      "id": "opencivitas-2021-istruzione",
+      "owner": "OpenCivitas municipal 2021 FC70ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2021-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_istruzione_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-istruzione-contract.test.mjs",
+        "tests/opencivitas-2021-istruzione-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70ISTRUZ 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e dalla funzione Istruzione 2022. Join di 6549 Comuni RSO; 30 aggregati, 15 Comuni privi di spesa storica e Fascia (fabbisogno zero) esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-istruzione.source.json"
+    },
+    {
       "id": "opencivitas-2019",
       "owner": "OpenCivitas municipal 2019 FC60TOT",
       "files": [

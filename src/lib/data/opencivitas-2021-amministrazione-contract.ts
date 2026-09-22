@@ -4,7 +4,7 @@ import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "@/lib/data/o
 export type OpenCivitas2021AmministrazioneSnapshot = {
   schemaVersion: 1;
   transformVersion: 1;
-  scope: "ordinary-statute-municipalities-administration-fc80-2021";
+  scope: "ordinary-statute-municipalities-administration-fc70-2021";
   referenceYear: 2021;
   publishedAt: string;
   modifiedAt: string;
@@ -42,10 +42,11 @@ export type OpenCivitas2021AmministrazioneSnapshot = {
     coverageWarning: string;
     rankingWarning: string;
     functionSeparationWarning: string;
+    nationalDifferenceWarning: string;
   };
 };
 
-const SEMANTIC_SHA256 = "50210d7bd482393d4de4ab8ae3a90da538156cde55da018ffa2115c107411288";
+const SEMANTIC_SHA256 = "6a8ec60ab722d13dd9c7b5227facece9361ccce4ca7d07c2ef43a3afe6e89f47";
 
 function canonicalJson(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
@@ -71,7 +72,7 @@ export function assertOpenCivitas2021AmministrazioneSnapshot(value: unknown): Op
     || observed !== source.observedAt
     || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(observed)
     || !Number.isFinite(Date.parse(observed))
-    || Date.parse(observed) < Date.parse("2025-06-16T00:00:00Z")
+    || Date.parse(observed) < Date.parse("2024-05-30T00:00:00Z")
     || new Date(Date.UTC(Number(observed.slice(0, 4)), Number(observed.slice(5, 7)) - 1, Number(observed.slice(8, 10)))).toISOString().slice(0, 10) !== observed.slice(0, 10)
   ) {
     throw new Error("FC70AMMIN: timestamp di acquisizione non valido");

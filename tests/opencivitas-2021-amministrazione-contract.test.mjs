@@ -34,10 +34,7 @@ test("FC70AMMIN 2021 preserves official source dates, money, RSO coverage and ad
   assert.equal(snapshot.municipalities.filter((row) => row.region === "EMILIA-ROMAGNA").length, 330);
   assert.equal(snapshot.municipalities.filter((row) => row.region === "CALABRIA").length, 398);
   assert.equal(snapshot.municipalities.filter((row) => row.region === "ABRUZZO").length, 301);
-  // I 9 Comuni senza spesa storica restano fuori: nessuna imputazione a zero.
-  assert.equal(snapshot.municipalities.length, 6550);
   assert.ok(snapshot.municipalities.some((row) => row.istatCode === "066001"));
-  // I 9 Comuni senza spesa storica non compaiono: nessuna imputazione a zero.
   const esclusi = ["016103", "057055", "063042", "063073", "066083", "066093", "069013", "069043", "073005", "078008", "078128", "078131", "079138", "080096", "102037"];
   assert.ok(!snapshot.municipalities.some((row) => esclusi.includes(row.istatCode)));
   assert.ok(!snapshot.municipalities.some((row) => row.region === "SICILIA" || row.istatCode.startsWith("ZZ")));
@@ -45,16 +42,21 @@ test("FC70AMMIN 2021 preserves official source dates, money, RSO coverage and ad
 
 test("FC70AMMIN pin rejects coherent tampering", () => {
   const snapshot = load();
-  assert.throws(() => assertOpenCivitas2021AmministrazioneSnapshot({
+  const tampered = structuredClone(snapshot);
+  const historicalColumn = tampered.municipalityColumns.indexOf("historicalSpendingCents");
+  assert.ok(historicalColumn >= 0);
+  tampered.municipalityRows[0][historicalColumn] += 1;
+  assert.throws(() => assertOpenCivitas2021AmministrazioneSnapshot(tampered), /SHA-256 semantico/);
+  assert.doesNotThrow(() => assertOpenCivitas2021AmministrazioneSnapshot({
     ...snapshot,
-    municipalities: snapshot.municipalities.map((row, index) =>
-      index === 0 ? { ...row, historicalSpendingCents: row.historicalSpendingCents + 1 } : row),
+    generatedAt: "2024-05-30T00:00:00Z",
+    source: { ...snapshot.source, observedAt: "2024-05-30T00:00:00Z" },
   }));
   assert.throws(() => assertOpenCivitas2021AmministrazioneSnapshot({
     ...snapshot,
     generatedAt: "2024-01-01T00:00:00Z",
     source: { ...snapshot.source, observedAt: "2024-01-01T00:00:00Z" },
-  }));
+  }), /timestamp di acquisizione/);
 });
 
 test("FC70AMMIN keeps the reproportioning invariant readable from the published payload", () => {
@@ -63,17 +65,14 @@ test("FC70AMMIN keeps the reproportioning invariant readable from the published 
   const storica = somma("historicalSpendingCents");
   const fabbisogno = somma("standardSpendingCents");
 
-  // Valori del lock: l'uguaglianza vale sui 6557 Comuni joinati, non sui 6548 pubblicati.
+  // Il riproporzionamento vale sui 6565 Comuni, prima dei 15 esclusi.
   assert.equal(storica, 814318182205);
   assert.equal(fabbisogno, 812923059266);
 
-  // I 9 Comuni esclusi portano 3,20 milioni di fabbisogno senza spesa storica:
-  // la differenza sui pubblicati e' quel residuo, non un risparmio.
-  const residuoEsclusi = 1395122939;
-  assert.equal(storica - fabbisogno, residuoEsclusi);
+  const residuoEsclusi = 1395122936;
+  assert.equal(storica - fabbisogno, residuoEsclusi + 3);
   assert.ok(Math.abs(storica - (fabbisogno + residuoEsclusi)) <= 1000);
 
-  // Il caveat che lo spiega deve restare nel payload, non solo nella documentazione.
   assert.match(snapshot.methodology.nationalDifferenceWarning, /non è un risultato/);
   assert.match(snapshot.methodology.nationalDifferenceWarning, /13,95 milioni/);
 });

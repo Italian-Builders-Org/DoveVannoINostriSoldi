@@ -30,7 +30,7 @@ SPEC_PATH = Path(__file__).with_name("specs") / "opencivitas-2021-amministrazion
 SPEC = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
 OUTPUT = Path("src/data/generated/opencivitas-2021-amministrazione.json")
 # Filled after the first verified build; --check pins the immutable artifact.
-SEMANTIC_SHA256 = "50210d7bd482393d4de4ab8ae3a90da538156cde55da018ffa2115c107411288"
+SEMANTIC_SHA256 = "6a8ec60ab722d13dd9c7b5227facece9361ccce4ca7d07c2ef43a3afe6e89f47"
 
 FUNCTION = "AMMINISTRAZIONE"
 FAMILY = "FC70AMMIN"
@@ -238,7 +238,7 @@ def normalize(data: bytes, entities: bytes, indicators: bytes, observed_at: str)
     return {
         "schemaVersion": 1,
         "transformVersion": 1,
-        "scope": "ordinary-statute-municipalities-administration-fc80-2021",
+        "scope": "ordinary-statute-municipalities-administration-fc70-2021",
         "referenceYear": 2021,
         "publishedAt": SPEC["publishedAt"],
         "modifiedAt": SPEC["modifiedAt"],
@@ -298,7 +298,7 @@ def validate_snapshot(snapshot: dict) -> None:
         raise StructuralError(f"{FAMILY}: timestamp di acquisizione non coerenti")
     try:
         date = datetime.fromisoformat(observed.replace("Z", "+00:00"))
-        if date.tzinfo is None or date < datetime(2025, 6, 16, tzinfo=timezone.utc):
+        if date.tzinfo is None or date < datetime.fromisoformat(SPEC["publishedAt"]).replace(tzinfo=timezone.utc):
             raise ValueError("acquisizione precedente al rilascio")
     except ValueError as error:
         raise StructuralError(f"{FAMILY}: timestamp ISO con fuso atteso") from error

@@ -27,6 +27,11 @@ class OpenCivitas2021AmministrazioneSnapshotTest(unittest.TestCase):
         self.assertEqual(Path("scripts/etl/specs/opencivitas-2021-amministrazione.source.json").exists(), True)
         self.assertIn("15 Comuni", snapshot["methodology"]["coverageWarning"])
         self.assertIn("riproporzionato", snapshot["methodology"]["nationalDifferenceWarning"])
+        snapshot["generatedAt"] = snapshot["source"]["observedAt"] = "2024-05-30T00:00:00Z"
+        validate_snapshot(snapshot)
+        snapshot["generatedAt"] = snapshot["source"]["observedAt"] = "2024-05-29T23:59:59Z"
+        with self.assertRaisesRegex(StructuralError, "timestamp ISO"):
+            validate_snapshot(snapshot)
 
     def test_national_totals_stay_pinned_to_the_source_reproportioning(self) -> None:
         """Storica e fabbisogno coincidono sull insieme joinato, non su quello pubblicato."""
@@ -57,9 +62,6 @@ class OpenCivitas2021AmministrazioneSnapshotTest(unittest.TestCase):
         rows = [dict(zip(columns, row)) for row in snapshot["municipalityRows"]]
         flagged = [row for row in rows if row["sourceWarnings"]]
         self.assertEqual([row["istatCode"] for row in flagged], [])
-        for row in flagged:
-            self.assertEqual(row["sourceWarnings"], ["DIFF_OUT_PERC: cod_anomalo"])
-            self.assertIsNone(row["serviceDifferenceBasisPoints"])
 
 
 if __name__ == "__main__":

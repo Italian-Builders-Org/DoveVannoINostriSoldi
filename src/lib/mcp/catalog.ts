@@ -9,6 +9,7 @@ import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.s
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
 import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
 import opencivitas2022SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2022-sociale-asili.source.json";
+import opencivitas2021SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2021-sociale-asili.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
@@ -45,6 +46,7 @@ export const DATASET_IDS = [
   "opencivitas_rifiuti_2022",
   "opencivitas_viabilita_2022",
   "opencivitas_sociale_asili_2022",
+  "opencivitas_sociale_asili_2021",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -265,6 +267,7 @@ const exampleQueries = {
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_sociale_asili_2022: { dataset: "opencivitas_sociale_asili_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_sociale_asili_2021: { dataset: "opencivitas_sociale_asili_2021", region: "LAZIO", year: 2021, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -764,6 +767,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione SOCIALE E NIDO è distinta da FC80TOT, FC80RIFIUTI e FC80TERRVIAB: non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Sociale e asili nido 2022", url: opencivitas2022SocialeAsiliSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_sociale_asili_2021",
+    title: "Fabbisogni comunali · Sociale e asili nido 2021 (FC70SOCNID)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Sociale e asili nido per ${formatItalianInteger(opencivitas2021SocialeAsiliSource.municipalities)} Comuni RSO, annualità ${opencivitas2021SocialeAsiliSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Sociale e asili nido 2021 · FC70SOCNID",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70SOCNID_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "36cf00aadfd4b1372c4798c9676388acd1bfe62c15820a44805394df5bee9f69", bytes: 3731430,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80SOCNID 2022: nessuna somma o confronto silenzioso fra funzioni o annualità. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 9 Comuni con spesa storica vuota restano esclusi. Canistro (066017) resta fuori perché la fonte pubblica la spesa storica in notazione scientifica.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021SocialeAsiliSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021SocialeAsiliSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021SocialeAsiliSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999…, 9 Comuni con spesa storica incompleta e Canistro (066017), la cui spesa storica è in notazione scientifica`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione SOCIALE E NIDO 2021 (FC70SOCNID) è distinta da FC70TOT 2021 e da FC80SOCNID 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Sociale e asili nido 2021", url: opencivitas2021SocialeAsiliSource.datasetPageUrl }],
     },
   },
   {

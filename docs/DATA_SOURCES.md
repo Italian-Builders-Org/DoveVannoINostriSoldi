@@ -785,6 +785,13 @@ perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
 Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI o FC80TERRVIAB.
 Fonte, lock e perimetro in [OpenCivitas 2022 Sociale e asili](OPENCIVITAS_2022_SOCIALE_ASILI.md).
 
+È integrata anche **FC70SOCNID 2021** (Sociale e asili nido, 6.555 Comuni RSO;
+9 esclusi per spesa storica vuota e Canistro `066017` escluso perché la fonte
+pubblica la spesa storica in notazione scientifica), con contratto distinto,
+`/api/spese/opencivitas-2021-sociale-asili` e MCP `opencivitas_sociale_asili_2021`.
+Nessuna somma o confronto silenzioso con FC70TOT 2021 o FC80SOCNID 2022.
+Fonte, lock e perimetro in [OpenCivitas 2021 Sociale e asili](OPENCIVITAS_2021_SOCIALE_ASILI.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).

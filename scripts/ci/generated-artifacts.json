@@ -330,7 +330,7 @@
       },
       "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",
       "publication": {
-        "branch": "automation/data/consulenti",
+        "branch": "automation/data/consulenti-v2",
         "commitTitle": "chore(data): refresh Consulenti Pubblici snapshot",
         "prTitle": "data: refresh Consulenti Pubblici snapshot",
         "upstreamUrl": "https://consulentipubblici.dfp.gov.it/progetto"
@@ -601,7 +601,7 @@
       },
       "refreshWorkflow": ".github/workflows/mef-participations-refresh.yml",
       "publication": {
-        "branch": "automation/data/mef-participations",
+        "branch": "automation/data/mef-participations-v2",
         "commitTitle": "chore(data): refresh MEF public participations snapshot",
         "prTitle": "data: refresh MEF public participations snapshot",
         "upstreamUrl": "https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html"
@@ -688,7 +688,7 @@
       },
       "refreshWorkflow": ".github/workflows/opencivitas-refresh.yml",
       "publication": {
-        "branch": "automation/data/opencivitas",
+        "branch": "automation/data/opencivitas-v2",
         "commitTitle": "chore(data): refresh OpenCivitas municipal snapshot",
         "prTitle": "data: refresh OpenCivitas municipal snapshot",
         "upstreamUrl": "https://www.opencivitas.it/it/open-data"
@@ -1026,7 +1026,7 @@
       },
       "refreshWorkflow": ".github/workflows/opencoesione-refresh.yml",
       "publication": {
-        "branch": "automation/data/opencoesione",
+        "branch": "automation/data/opencoesione-v2",
         "commitTitle": "chore(data): refresh OpenCoesione national snapshot",
         "prTitle": "data: refresh OpenCoesione national snapshot",
         "upstreamUrl": "https://opencoesione.gov.it/it/api/aggregati/"
@@ -1202,7 +1202,7 @@
         "scripts/etl/specs/government-scorecard-page.source.json"
       ],
       "publication": {
-        "branch": "automation/data/government-scorecard",
+        "branch": "automation/data/government-scorecard-v2",
         "commitTitle": "chore(data): refresh government scorecard snapshot",
         "prTitle": "data: refresh government scorecard snapshot",
         "upstreamUrl": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
@@ -1249,7 +1249,7 @@
       },
       "refreshWorkflow": ".github/workflows/public-debt-refresh.yml",
       "publication": {
-        "branch": "automation/data/public-debt",
+        "branch": "automation/data/public-debt-v2",
         "commitTitle": "chore(data): refresh public debt snapshot",
         "prTitle": "data: refresh public debt snapshot",
         "upstreamUrl": "https://www.bancaditalia.it/pubblicazioni/finanza-pubblica/index.html"
@@ -1399,7 +1399,7 @@
       },
       "refreshWorkflow": ".github/workflows/siope-refresh.yml",
       "publication": {
-        "branch": "automation/data/siope",
+        "branch": "automation/data/siope-v2",
         "commitTitle": "chore(data): refresh SIOPE municipal snapshot",
         "prTitle": "data: refresh SIOPE municipal snapshot",
         "upstreamUrl": "https://www.siope.it/documenti/siope2/open/last"

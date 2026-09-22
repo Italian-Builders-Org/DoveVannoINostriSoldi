@@ -275,7 +275,7 @@ class MunicipalReceiptsTests(unittest.TestCase):
         for year in (2024, 2025, 2026):
             for path in receipts.paths_for_year(year):
                 self.assertIn(path.as_posix(), artifact["files"])
-        self.assertEqual(artifact["publication"]["branch"], "automation/data/siope")
+        self.assertEqual(artifact["publication"]["branch"], "automation/data/siope-v2")
         self.assertIn("--include-expenditure", artifact["offlineCheck"]["command"])
         self.assertEqual(spec.SPEC["scope"], "COMUNE")
         self.assertEqual(spec.SPEC["license"], "not-declared")

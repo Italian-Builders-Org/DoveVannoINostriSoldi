@@ -65,9 +65,6 @@ class PublishDataRefreshTests(TestCase):
         for path in ("docs/ROADMAP.md", "src/lib/company-atlas.ts", "scripts/etl/specs/openbdap-budget-law-missions.source.json"):
             with self.assertRaises(publisher.PublishError):
                 publisher.allowlisted_paths(replace(artifact, files=(path,)))
-        other = publisher.load_artifact("consulenti-pubblici")
-        with self.assertRaises(publisher.PublishError):
-            publisher.allowlisted_paths(replace(other, files=("docs/SOURCE_SNAPSHOT_INVENTORY.md",)))
 
     def test_education_publication_includes_only_its_snapshot_manifest_and_shared_inventory(self) -> None:
         from dataclasses import replace
@@ -81,6 +78,78 @@ class PublishDataRefreshTests(TestCase):
         for path in ("docs/ROADMAP.md", "src/lib/education-atlas.ts", "scripts/etl/specs/other.json"):
             with self.assertRaises(publisher.PublishError):
                 publisher.allowlisted_paths(replace(artifact, files=(path,)))
+
+    def test_refresh_inventory_is_an_exact_companion_for_every_publisher(self) -> None:
+        from dataclasses import replace
+        registry = json.loads(publisher.REGISTRY_PATH.read_text(encoding="utf-8"))
+        for item in registry["artifacts"]:
+            if not item.get("publication"):
+                continue
+            artifact = publisher.load_artifact(item["id"])
+            with self.subTest(artifact=item["id"]):
+                self.assertIn(publisher.SHARED_INVENTORY, publisher.allowlisted_paths(artifact))
+                self.assertEqual(publisher.publication_file_labels(artifact).count(publisher.SHARED_INVENTORY), 1)
+                calls = []
+                def runner(args, **kwargs):
+                    calls.append(args)
+                    return subprocess.CompletedProcess(args, 0, "", "")
+                publisher.refresh_inventory(artifact, runner=runner)
+                self.assertEqual(calls, [[sys.executable, "scripts/ci/source-snapshot-inventory.py", "--write"]])
+                if item["id"] != "siope-nonmunicipal":
+                    for path in ("docs/ROADMAP.md", "scripts/etl/specs/other.json", "../outside.md"):
+                        with self.assertRaises(publisher.PublishError):
+                            publisher.allowlisted_paths(replace(artifact, files=(path,)))
+
+    def test_changed_observation_regenerates_inventory_and_unchanged_data_keeps_digest(self) -> None:
+        import shutil
+        artifact = publisher.load_artifact("consulenti-pubblici")
+        registry = json.loads(publisher.REGISTRY_PATH.read_text(encoding="utf-8"))
+        item = next(item for item in registry["artifacts"] if item["id"] == artifact.artifact_id)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "scripts/ci").mkdir(parents=True)
+            shutil.copyfile(ROOT / "scripts/ci/source-snapshot-inventory.py", root / "scripts/ci/source-snapshot-inventory.py")
+            (root / "scripts/ci/generated-artifacts.json").write_text(json.dumps({"artifacts": [item]}), encoding="utf-8")
+            for name in artifact.files:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("{}" if path.suffix == ".json" else "stale inventory", encoding="utf-8")
+            snapshot = root / item["files"][0]
+            snapshot.write_text(json.dumps({"observedAt": "2026-09-21", "latestYear": 2026}), encoding="utf-8")
+            with mock.patch.object(publisher, "ROOT", root):
+                publisher.refresh_inventory(artifact)
+                before = publisher.file_digest(artifact)
+                self.assertIn("2026-09-21", (root / publisher.SHARED_INVENTORY).read_text(encoding="utf-8"))
+                snapshot.write_text(json.dumps({"observedAt": "2026-09-22", "latestYear": 2026}), encoding="utf-8")
+                publisher.refresh_inventory(artifact)
+                text = (root / publisher.SHARED_INVENTORY).read_text(encoding="utf-8")
+                self.assertIn("2026-09-22", text)
+                self.assertNotIn("2026-09-21", text)
+                after = publisher.file_digest(artifact)
+                self.assertNotEqual(before, after)
+                publisher.refresh_inventory(artifact)
+                self.assertEqual(publisher.file_digest(artifact), after)
+
+    def test_inventory_generation_failure_stops_before_digest_or_publication(self) -> None:
+        base = "b" * 40
+        with mock.patch.object(publisher, "validate_run"), mock.patch.object(publisher, "latest_main", return_value=base), mock.patch.object(publisher, "git_sha", return_value=base), mock.patch.object(publisher.GhClient, "setup_git"), mock.patch.object(publisher, "run_command", side_effect=[subprocess.CompletedProcess([], 0, "", ""), publisher.PublishError("inventory failed")]), mock.patch.object(publisher, "file_digest") as digest, mock.patch.object(publisher, "push_candidate") as push:
+            with self.assertRaisesRegex(publisher.PublishError, "inventory failed"):
+                publisher.publish("consulenti-pubblici", env=self._publish_env())
+            digest.assert_not_called()
+            push.assert_not_called()
+
+    def test_inventory_symlink_is_rejected_before_writing(self) -> None:
+        artifact = publisher.load_artifact("consulenti-pubblici")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "docs").mkdir()
+            (root / "target.md").write_text("untouched", encoding="utf-8")
+            (root / publisher.SHARED_INVENTORY).symlink_to(root / "target.md")
+            with mock.patch.object(publisher, "ROOT", root), mock.patch.object(publisher, "run_command") as command:
+                with self.assertRaises(publisher.PublishError):
+                    publisher.refresh_inventory(artifact)
+                command.assert_not_called()
+            self.assertEqual((root / "target.md").read_text(encoding="utf-8"), "untouched")
 
     def test_registry_has_only_managed_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))
@@ -110,14 +179,14 @@ class PublishDataRefreshTests(TestCase):
             {
                 "automation/data/company-atlas-v2",
                 "automation/data/education-atlas",
-                "automation/data/consulenti",
-                "automation/data/government-scorecard",
-                "automation/data/mef-participations",
+                "automation/data/consulenti-v2",
+                "automation/data/government-scorecard-v2",
+                "automation/data/mef-participations-v2",
                 "automation/data/budget-law",
-                "automation/data/opencivitas",
-                "automation/data/opencoesione",
-                "automation/data/public-debt",
-                "automation/data/siope",
+                "automation/data/opencivitas-v2",
+                "automation/data/opencoesione-v2",
+                "automation/data/public-debt-v2",
+                "automation/data/siope-v2",
                 "automation/data/siope-nonmunicipal",
             },
         )

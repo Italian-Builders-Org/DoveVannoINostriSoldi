@@ -94,14 +94,67 @@ Se il secret non è configurato l'endpoint risponde `503`: non esiste una modali
 
 ### `.github/workflows/source-refresh.yml`
 
-Una volta impostati i repository secrets:
+Workflow **solo manuale** per invalidare cache, non per aggiornare gli snapshot.
+Richiede `REFRESH_URL` e `SOURCE_REFRESH_SECRET` nell'ambiente
+`source-operations`; se mancano fallisce esplicitamente. Le cache hanno già
+revalidation temporale: non ripristinare un cron orario che le svuoti anche
+quando la fonte non è cambiata.
 
-- `REFRESH_URL`: origin pubblico del deployment, ad esempio `https://example.org`;
-- `SOURCE_REFRESH_SECRET`: lo stesso valore configurato nel deployment;
+### Refresh senza intervento quotidiano
 
-GitHub Actions invalida ogni ora, al minuto 17, le sorgenti integrate. Il minuto non è `00` per evitare la finestra più congestionata dei cron GitHub.
+L'ambiente GitHub `source-operations` ammette soltanto la **branch `main`**,
+tramite una deployment branch policy di tipo `branch` (non tag). Dal 22 settembre
+2026 non richiede un reviewer prima dell'esecuzione. La credenziale esistente del
+Data Bot resta nell'ambiente; non è esposta ai workflow delle PR.
 
-Se i secret non esistono il workflow termina con successo e un notice, perché il repository deve rimanere utilizzabile prima del primo deployment.
+Il bot acquisisce e valida i dati, quindi apre o aggiorna la propria PR su
+`automation/data/*`. **Non esegue merge**. Restano i controlli obbligatori di
+`main`, la risoluzione dei thread e la revisione della proposta. Il publisher
+rifiuta eventi diversi da schedule/dispatch su main, file fuori allowlist,
+provenienza incoerente e una base cambiata durante la generazione.
+
+Le undici pubblicazioni automatiche già censite nell'inventario sono SIOPE
+comunale e non comunale, debito, pagella governi, OpenCoesione, OpenCivitas,
+Consulenti, partecipazioni MEF, atlanti Imprese e Istruzione, Legge di Bilancio.
+Ogni fonte mantiene workflow, cadenza, timeout e branch propri. Questo non
+trasforma i dataset manuali o i monitor di sola discovery in refresh automatici;
+la #189 resta aperta per la copertura restante. Gli URL o gli anni fissati nei
+contratti richiedono ancora revisione quando cambia il perimetro della fonte.
+
+A contenuto invariato non si apre una PR né si avvia una build Vercel. Debito,
+pagella e bilancio non scaricano Chromium durante l'installazione: eseguono
+validator di dati, non test browser. La CI di produzione conserva il browser e
+tutti i propri controlli.
+
+Controllo operativo dalla pagina Actions: il run deve terminare con successo,
+non restare `waiting`. Nel log del publisher `NO_CHANGE` indica contenuto
+invariato; `CREATED` indica una nuova proposta e `ALREADY_PUBLISHED` una proposta
+già gestita. Un run riuscito non significa che la produzione sia aggiornata:
+servono ancora merge e deployment. La prima verifica del 22 settembre su
+[OpenCoesione](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/actions/runs/35732775392)
+ha concluso `NO_CHANGE` senza creare PR.
+
+Il controllo su un aggiornamento reale Consulenti ha rilevato un difetto:
+la PR #595 conteneva i dati aggiornati senza l'inventario derivato, e la CI
+l'ha bloccata. Il publisher rigenera ora l'inventario prima del digest e lo
+include come companion esatto, senza autorizzare altri file di documentazione.
+I test coprono cambio della data osservata, assenza di cambiamenti, symlink,
+file estranei e avanzamento concorrente di main.
+
+Il nuovo digest include un file che sette vecchie branch non proteggevano.
+Per non reinterpretarne la provenienza, Consulenti, partecipazioni MEF,
+OpenCivitas, OpenCoesione, pagella governi, debito e SIOPE comunale passano alle
+corrispondenti branch `automation/data/<nome>-v2`. Le vecchie branch restano
+intatte. Imprese, Istruzione, bilancio e SIOPE non comunale includevano già
+l'inventario e mantengono i propri nomi. Dopo il merge di questa modifica,
+rieseguire Consulenti da main e chiudere #595 solo quando la proposta sostitutiva
+è disponibile; non aggiungere commit umani alla branch gestita dal bot.
+
+Per sospendere una fonte disabilitare il suo workflow; per ripristinare il
+controllo preventivo reimpostare il reviewer richiesto nell'ambiente, conservando
+la restrizione a main. Non cancellare credenziali, artifact o branch del bot.
+Un run fallito lascia disponibile lo snapshot già pubblicato e va diagnosticato
+prima di un nuovo tentativo.
 
 ### OpenCoesione snapshot versionato
 
@@ -137,7 +190,7 @@ Una nuova annualità non viene accettata alla cieca. Il workflow la rileva e si 
 
 La ricerca delle opere pubbliche non dipende da alias OData scritti a mano. Il connettore controlla metadati e schema, ricava gli alias tecnici ufficiali e si ferma se una colonna richiesta cambia nome, significato o tipo.
 
-Il refresh orario invalida il tag OpenBDAP e la route `/api/opere`. Al primo accesso successivo vengono ricontrollati metadati e schema; i dati di una singola ricerca CUP hanno cache di 6 ore e possono essere serviti per altre 24 ore mentre avviene la riconvalida. La risposta espone separatamente data della fonte e momento del controllo della piattaforma.
+Il refresh manuale può invalidare il tag OpenBDAP e la route `/api/opere`. La revalidation temporale resta attiva; al successivo accesso previsto vengono ricontrollati metadati e schema; i dati di una singola ricerca CUP hanno cache di 6 ore e possono essere serviti per altre 24 ore mentre avviene la riconvalida. La risposta espone separatamente data della fonte e momento del controllo della piattaforma.
 
 ### OpenBDAP pagamenti Stato — verifica del ripristino
 
@@ -283,8 +336,8 @@ precedente copriva soltanto lo snapshot e non è riutilizzabile per il nuovo ins
 di file. La separazione dei branch conserva la verifica rigorosa dei digest.
 
 Entrambi i nomi ricadono nelle protezioni `automation/data/**`: soltanto il Data
-Bot può gestirli. Il workflow e l'approvazione `source-operations` restano gli
-stessi. I refresh futuri operano esclusivamente sul branch v2; non occorre
+Bot può gestirli. Il workflow e le credenziali nell'ambiente `source-operations` restano gli
+stessi; l'ambiente segue la policy automatica descritta sopra. I refresh futuri operano esclusivamente sul branch v2; non occorre
 cancellare, aggiornare o riaprire il candidato storico.
 
 ## Atlante Istruzione MIM: verifica dei file fissati

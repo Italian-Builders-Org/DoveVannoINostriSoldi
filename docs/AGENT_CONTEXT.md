@@ -201,7 +201,8 @@ a caso.
   - [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
     [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
     [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md),
-    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md) e
+    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md),
+    [docs/OPENCIVITAS_2021_VIABILITA.md](OPENCIVITAS_2021_VIABILITA.md) e
     [docs/OPENCIVITAS_2022_SOCIALE_ASILI.md](OPENCIVITAS_2022_SOCIALE_ASILI.md): fonti
     OpenCivitas e relativi contratti.
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
@@ -224,6 +225,7 @@ a caso.
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
   [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
   [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs),
+  [tests/opencivitas-2021-viabilita-route.test.mjs](../tests/opencivitas-2021-viabilita-route.test.mjs),
   [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs).
 
 ## Politici

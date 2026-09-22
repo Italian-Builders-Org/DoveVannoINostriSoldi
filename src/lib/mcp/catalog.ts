@@ -9,6 +9,7 @@ import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.s
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
 import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
 import opencivitas2022SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2022-sociale-asili.source.json";
+import opencivitas2022IstruzioneSource from "../../../scripts/etl/specs/opencivitas-2022-istruzione.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
@@ -45,6 +46,7 @@ export const DATASET_IDS = [
   "opencivitas_rifiuti_2022",
   "opencivitas_viabilita_2022",
   "opencivitas_sociale_asili_2022",
+  "opencivitas_istruzione_2022",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -264,6 +266,7 @@ const exampleQueries = {
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_sociale_asili_2022: { dataset: "opencivitas_sociale_asili_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_istruzione_2022: { dataset: "opencivitas_istruzione_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -762,6 +765,43 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione SOCIALE E NIDO è distinta da FC80TOT, FC80RIFIUTI e FC80TERRVIAB: non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Sociale e asili nido 2022", url: opencivitas2022SocialeAsiliSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_istruzione_2022",
+    title: "Fabbisogni comunali · Istruzione 2022 (FC80ISTRUZ)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Istruzione per ${formatItalianInteger(opencivitas2022IstruzioneSource.municipalities)} Comuni RSO, annualità ${opencivitas2022IstruzioneSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Istruzione 2022 · FC80ISTRUZ",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80ISTRUZ_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "a4f1f98f4dc070221798e8b2b2264a7254d27c1beac534355c96304755c861c0", bytes: 2557585,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022, FC80TERRVIAB 2022, FC80SOCNID 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 6 Comuni con spesa storica vuota restano esclusi. Fascia (GE) pubblica zero su storica e standard e resta esclusa perché la differenza percentuale non è definita.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022IstruzioneSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022IstruzioneSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022IstruzioneSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999…, 6 Comuni con spesa storica incompleta e Fascia (GE) con storica e standard a zero`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione ISTRUZIONE è distinta da FC80TOT, FC80RIFIUTI, FC80TERRVIAB e FC80SOCNID: non sommare né confrontare in silenzio.",
+        "La descrizione ufficiale di SPESA_STORICA usa «euro» minuscolo, a differenza delle altre funzioni 2022.",
+      ],
+      references: [{ label: "OpenCivitas · Istruzione 2022", url: opencivitas2022IstruzioneSource.datasetPageUrl }],
     },
   },
   {

@@ -762,6 +762,13 @@ perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
 Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI o FC80TERRVIAB.
 Fonte, lock e perimetro in [OpenCivitas 2022 Sociale e asili](OPENCIVITAS_2022_SOCIALE_ASILI.md).
 
+È integrata anche **FC80ISTRUZ 2022** (Istruzione, 6.550 Comuni RSO;
+6 esclusi per spesa storica vuota e Fascia, dove storica e standard sono
+entrambe zero pubblicate), con contratto distinto,
+`/api/spese/opencivitas-2022-istruzione` e MCP `opencivitas_istruzione_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o
+FC80SOCNID. Fonte, lock e perimetro in [OpenCivitas 2022 Istruzione](OPENCIVITAS_2022_ISTRUZIONE.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -874,8 +881,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni ufficiali OpenCivitas (istruzione, …) oltre a
-  rifiuti, viabilità e sociale/asili 2022 e ai servizi totali
+- ulteriori funzioni ufficiali OpenCivitas (amministrazione, polizia locale, …) oltre a
+  rifiuti, viabilità, sociale/asili e istruzione 2022 e ai servizi totali
   2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 

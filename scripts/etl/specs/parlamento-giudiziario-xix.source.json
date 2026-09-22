@@ -14,8 +14,8 @@
     "licenseNote": "La raccolta cita atti e articoli di terzi: nessuna licenza di riuso e dichiarata dalle fonti di stampa, quindi si pubblicano fatto, attribuzione e link, mai il testo degli articoli.",
     "committedInput": {
       "path": "data/parlamento-giudiziario/casi-verificati.json",
-      "bytes": 522630,
-      "sha256": "6939abaf71bae488bcdc06df7a4570b1fe760aaf378fbabf0fdf559b4b6f74df"
+      "bytes": 526483,
+      "sha256": "d4b69bbd2f64259fa8fd05033857c290fcfcc4fccca647978b2279fd64501f25"
     },
     "rosterSources": [
       {

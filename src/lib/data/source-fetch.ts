@@ -62,6 +62,9 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "istat-poverta-relativa": [],
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-poverta-soglia-assoluta": [],
+  "istat-poverta-soglia-relativa": [],
+  // Snapshot-only: la risposta SDMX Eurostat AROPE è acquisita e vincolata dall'ETL, mai scaricata a runtime.
+  "eurostat-arope": [],
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-bes-economico": [],
   "istat-bes-salute": [],
@@ -92,6 +95,8 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   "mef-iva": [],
   // Snapshot-only: il workbook DG TAXUD VAT gap è acquisito e vincolato dall'ETL.
   "eu-vat-gap-italy": [],
+  // Snapshot-only: il zip ISTAT permessi di costruire è acquisito e vincolato dall'ETL.
+  "istat-permessi-costruire-2015-2025": [],
   "mef-tax-gap-nazionale": [],
   // Snapshot-only: la risposta JSON-stat gov_10a_taxag è acquisita e vincolata dall'ETL.
   "eurostat-taxag": [],

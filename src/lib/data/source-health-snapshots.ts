@@ -33,6 +33,10 @@ import {
 } from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIvaData, mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData, euVatGapItalyMetadata } from "@/lib/eu-vat-gap-italy-snapshot";
+import {
+  istatPermessiCostruireData,
+  istatPermessiCostruireMetadata,
+} from "@/lib/istat-permessi-costruire-snapshot";
 import { mefTaxGapNazionaleData, mefTaxGapNazionaleMetadata } from "@/lib/mef-tax-gap-nazionale-snapshot";
 import { eurostatTaxagData, eurostatTaxagMetadata } from "@/lib/eurostat-taxag-snapshot";
 import { eurostatShaHealthData, eurostatShaHealthMetadata } from "@/lib/eurostat-sha-health-snapshot";
@@ -45,6 +49,11 @@ import {
   istatPovertaSogliaAssolutaData,
   istatPovertaSogliaAssolutaMetadata,
 } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
+import {
+  istatPovertaSogliaRelativaData,
+  istatPovertaSogliaRelativaMetadata,
+} from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import { eurostatAropeData, eurostatAropeMetadata } from "@/lib/eurostat-arope-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
 import { istatBesIstruzioneData, istatBesIstruzioneMetadata } from "@/lib/istat-bes-istruzione-snapshot";
@@ -510,6 +519,17 @@ function snapshotManagedEuVatGapItaly(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPermessiCostruire(): SourceHealth {
+  return {
+    ...baseHealth("istat-permessi-costruire-2015-2025"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-permessi-costruire-2015-2025", istatPermessiCostruireMetadata.observedAt),
+    latencyMs: null,
+    detail: `Snapshot ISTAT permessi di costruire ${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to}: ${istatPermessiCostruireMetadata.coverage.tables} tavole introduttive nazionali (a.1-a.4) e ${istatPermessiCostruireMetadata.coverage.years} anni. Pubblicato ${istatPermessiCostruireMetadata.source.publicationDate}; acquisito ${istatPermessiCostruireMetadata.source.acquiredAt}; controllato ${istatPermessiCostruireMetadata.source.checkedAt}.`,
+    recordCount: istatPermessiCostruireMetadata.coverage.years * istatPermessiCostruireMetadata.coverage.tables,
+  };
+}
+
 function snapshotManagedMefTaxGapNazionale(): SourceHealth {
   return {
     ...baseHealth("mef-tax-gap-nazionale"),
@@ -593,6 +613,32 @@ function snapshotManagedIstatPovertaSogliaAssoluta(): SourceHealth {
     latencyMs: null,
     detail: `Snapshot ETL attivo · soglia monetaria di povertà assoluta ${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaAssolutaData.observations.length.toLocaleString("it-IT")} osservazioni di cui ${nullCount.toLocaleString("it-IT")} null · ${istatPovertaSogliaAssolutaData.territories.length} territori · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
     recordCount: istatPovertaSogliaAssolutaData.observations.length,
+  };
+}
+
+function snapshotManagedIstatPovertaSogliaRelativa(): SourceHealth {
+  const { source } = istatPovertaSogliaRelativaMetadata;
+  const asset = source.assets.csv;
+  return {
+    ...baseHealth("istat-poverta-soglia-relativa"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-soglia-relativa", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · soglia monetaria di povertà relativa ${istatPovertaSogliaRelativaData.period.from}-${istatPovertaSogliaRelativaData.period.to} senza ${istatPovertaSogliaRelativaData.excludedYear} (dataflow ${source.dataflowId}) · ${istatPovertaSogliaRelativaData.observations.length.toLocaleString("it-IT")} osservazioni · solo Italia · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.`,
+    recordCount: istatPovertaSogliaRelativaData.observations.length,
+  };
+}
+
+function snapshotManagedEurostatArope(): SourceHealth {
+  const { source } = eurostatAropeMetadata;
+  const asset = source.assets["arope-italy"];
+  return {
+    ...baseHealth("eurostat-arope"),
+    reachability: "not-probed",
+    freshness: freshnessFor("eurostat-arope", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · AROPE Europa 2030 ${eurostatAropeData.period.from}-${eurostatAropeData.period.to} (ilc_peps01n) · ${eurostatAropeData.observations.length.toLocaleString("it-IT")} osservazioni · solo Italia · ${asset.bytes.toLocaleString("it-IT")} byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.`,
+    recordCount: eurostatAropeData.observations.length,
   };
 }
 
@@ -778,6 +824,8 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-poverta": snapshotManagedIstatPoverta,
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
+  "istat-poverta-soglia-relativa": snapshotManagedIstatPovertaSogliaRelativa,
+  "eurostat-arope": snapshotManagedEurostatArope,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,
   "istat-bes-istruzione": snapshotManagedIstatBesIstruzione,
@@ -798,6 +846,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "mef-irpef-dettaglio": snapshotManagedMefIrpefDettaglio,
   "mef-iva": snapshotManagedMefIva,
   "eu-vat-gap-italy": snapshotManagedEuVatGapItaly,
+  "istat-permessi-costruire-2015-2025": snapshotManagedIstatPermessiCostruire,
   "mef-tax-gap-nazionale": snapshotManagedMefTaxGapNazionale,
   "eurostat-taxag": snapshotManagedEurostatTaxag,
   "eurostat-sha-health": snapshotManagedEurostatShaHealth,

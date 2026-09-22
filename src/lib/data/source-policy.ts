@@ -25,6 +25,7 @@ export type SourceId =
   | "bancaditalia"
   | "eurostat"
   | "eurostat-hicp"
+  | "eurostat-arope"
   | "eurostat-gdp"
   | "oecd-taxing-wages"
   | "eurostat-cofog"
@@ -34,6 +35,7 @@ export type SourceId =
   | "istat-poverta"
   | "istat-poverta-relativa"
   | "istat-poverta-soglia-assoluta"
+  | "istat-poverta-soglia-relativa"
   | "istat-bes-economico"
   | "istat-bes-salute"
   | "istat-bes-istruzione"
@@ -54,6 +56,7 @@ export type SourceId =
   | "mef-irpef-dettaglio"
   | "mef-iva"
   | "eu-vat-gap-italy"
+  | "istat-permessi-costruire-2015-2025"
   | "mef-tax-gap-nazionale"
   | "eurostat-taxag"
   | "eurostat-sha-health"
@@ -455,6 +458,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     maxRetries: 2,
     tags: ["source:eurostat-hicp", "domain:inflation", "domain:government-scorecard"],
   },
+  "eurostat-arope": {
+    id: "eurostat-arope",
+    label: "Eurostat · AROPE (Europa 2030)",
+    owner: "Eurostat",
+    sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en",
+    cadence: "annuale",
+    cadenceNote:
+      "AROPE esce annualmente da EU-SILC. Lo snapshot fissa ilc_peps01n Italia 2015–2025 e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 2,
+    tags: ["source:eurostat-arope", "domain:social-conditions"],
+  },
   "eurostat-gdp": {
     id: "eurostat-gdp",
     label: "Eurostat · PIL e conti nazionali",
@@ -589,6 +607,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta-soglia-assoluta", "domain:social-conditions"],
+  },
+  "istat-poverta-soglia-relativa": {
+    id: "istat-poverta-soglia-relativa",
+    label: "ISTAT · soglia di povertà relativa",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Le soglie monetarie escono annualmente. Lo snapshot fissa 34_727_DF_DCCV_POVERTA_11 (2014–2024, senza 2021) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-soglia-relativa", "domain:social-conditions"],
   },
   "istat-bes-economico": {
     id: "istat-bes-economico",
@@ -863,6 +896,20 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:eu-vat-gap-italy", "domain:taxation"],
+  },
+  "istat-permessi-costruire-2015-2025": {
+    id: "istat-permessi-costruire-2015-2025",
+    label: "ISTAT · permessi di costruire (tavole a.1–a.4)",
+    owner: "Istituto Nazionale di Statistica (ISTAT)",
+    sourceUrl: "https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/",
+    cadence: "annuale",
+    cadenceNote: "Tavole introduttive nazionali a.1–a.4, anni 2015–2025 (rilascio 2025). Snapshot aggiornabile solo dopo nuova acquisizione e validazione offline del zip.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-permessi-costruire-2015-2025", "domain:edilizia"],
   },
   "mef-tax-gap-nazionale": {
     id: "mef-tax-gap-nazionale",

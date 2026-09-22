@@ -120,6 +120,12 @@
     "recordCount": 210
   },
   {
+    "sourceId": "eurostat-arope",
+    "sourceTimestamp": "2026-09-21",
+    "detail": "Snapshot ETL attivo · AROPE Europa 2030 2015-2025 (ilc_peps01n) · 11 osservazioni · solo Italia · 1670 byte CSV pinnato. Non è spesa pubblica e non è povertà assoluta/relativa ISTAT.",
+    "recordCount": 11
+  },
+  {
     "sourceId": "eurostat-gdp",
     "sourceTimestamp": "2026-09-12",
     "detail": "Snapshot Eurostat PIL verificato · trimestrale Italia 2015-Q1/2026-Q2 · annuale 2015-2025 · peer 2019-Q1/2026-Q2 · conti nazionali, non cassa pubblica.",
@@ -172,6 +178,12 @@
     "sourceTimestamp": "2026-09-17",
     "detail": "Snapshot ETL attivo · soglia monetaria di povertà assoluta 2005-2024 (dataflow 34_211) · 36.078 osservazioni di cui 6050 null · 23 territori · 2.799.511 byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.",
     "recordCount": 36078
+  },
+  {
+    "sourceId": "istat-poverta-soglia-relativa",
+    "sourceTimestamp": "2026-09-21",
+    "detail": "Snapshot ETL attivo · soglia monetaria di povertà relativa 2014-2024 senza 2021 (dataflow 34_727_DF_DCCV_POVERTA_11) · 70 osservazioni · solo Italia · 9424 byte CSV pinnato. Soldi presenti come soglia mensile, non spesa pubblica.",
+    "recordCount": 70
   },
   {
     "sourceId": "istat-bes-economico",
@@ -286,6 +298,12 @@
     "sourceTimestamp": "2026-09-13",
     "detail": "Snapshot DG TAXUD VAT gap Italia 2019–2024 (2024 stima rapida): 6 anni, 4 misure core e 5 componenti VTTL. Pubblicato 2025-12-08; acquisito 2026-09-13; controllato 2026-09-13.",
     "recordCount": 6
+  },
+  {
+    "sourceId": "istat-permessi-costruire-2015-2025",
+    "sourceTimestamp": "2026-09-22",
+    "detail": "Snapshot ISTAT permessi di costruire 2015-2025: 4 tavole introduttive nazionali (a.1-a.4) e 11 anni. Pubblicato 2026-06-17; acquisito 2026-09-22; controllato 2026-09-22.",
+    "recordCount": 44
   },
   {
     "sourceId": "mef-tax-gap-nazionale",

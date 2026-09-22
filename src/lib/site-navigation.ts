@@ -95,13 +95,14 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/economia",
     label: "Economia",
     icon: "economy",
-    aliases: ["/inflazione", "/cuneo-fiscale", "/pil", "/disuguaglianza"],
+    aliases: ["/inflazione", "/cuneo-fiscale", "/pil", "/disuguaglianza", "/edilizia"],
     children: [
       { href: "/economia", label: "Panoramica" },
       { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
       { href: "/pil", label: "PIL e conti nazionali" },
       { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" },
+      { href: "/edilizia", label: "Permessi di costruire" },
     ],
   },
   {
@@ -274,6 +275,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
       { href: "/pil", label: "PIL e conti nazionali" },
       { href: "/disuguaglianza", label: "Disuguaglianza dei redditi" },
+      { href: "/edilizia", label: "Permessi di costruire" },
     ],
   },
   {

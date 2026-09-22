@@ -7,6 +7,7 @@ const { buildPovertaPageView } = await import("../src/lib/poverta-page.ts");
 const { istatPovertaData } = await import("../src/lib/istat-poverta-snapshot.ts");
 const { istatPovertaRelativaData } = await import("../src/lib/istat-poverta-relativa-snapshot.ts");
 const { istatPovertaSogliaAssolutaData } = await import("../src/lib/istat-poverta-soglia-assoluta-snapshot.ts");
+const { istatPovertaSogliaRelativaData } = await import("../src/lib/istat-poverta-soglia-relativa-snapshot.ts");
 
 const view = buildPovertaPageView();
 const page = await readFile(new URL("../src/app/poverta/page.tsx", import.meta.url), "utf8");
@@ -33,9 +34,11 @@ test("la vista non produce mai un totale né una differenza fra le due", () => {
   // Nessun campo aggrega le due famiglie: si arriva solo per famiglia.
   assert.deepEqual(Object.keys(view).sort(), [
     "absoluteThreshold",
+    "arope",
     "excludedComposites",
     "families",
     "latestYear",
+    "relativeThreshold",
   ]);
 });
 
@@ -124,6 +127,24 @@ test("la soglia assoluta è contesto monetario separato, non un'incidenza", () =
   }
 });
 
+test("la soglia relativa è contesto monetario nazionale separato, senza il 2021", () => {
+  const threshold = view.relativeThreshold;
+  assert.equal(threshold.datasetId, "istat-poverta-soglia-relativa");
+  assert.equal(threshold.year, istatPovertaSogliaRelativaData.period.to);
+  assert.equal(threshold.excludedYear, 2021);
+  assert.equal(threshold.rows.length, 7);
+  assert.equal(threshold.source.dataflowId, "34_727_DF_DCCV_POVERTA_11");
+  assert.deepEqual(
+    threshold.rows.map((row) => row.code),
+    istatPovertaSogliaRelativaData.householdCompositions.map((item) => item.code),
+  );
+  for (const row of threshold.rows) {
+    const fromSnapshot = istatPovertaSogliaRelativaData.observations.find((observation) =>
+      observation.year === threshold.year && observation.householdComposition === row.code);
+    assert.equal(row.valueHundredths, fromSnapshot?.valueHundredths);
+  }
+});
+
 test("la pagina dichiara i limiti che il dato impone", () => {
   assert.match(page, /Definizioni, limiti e copertura/);
   assert.match(page, /Non è spesa pubblica/);
@@ -131,8 +152,12 @@ test("la pagina dichiara i limiti che il dato impone", () => {
   assert.match(page, /Non c&apos;è una classifica/);
   assert.match(page, /comunale/);
   assert.match(page, /Soglia monetaria di povertà assoluta/);
-  assert.match(page, /non inventiamo un «gap» rispetto alla soglia/i);
+  assert.match(page, /Soglia monetaria di povertà relativa/);
+  assert.match(page, /Rischio di povertà o esclusione sociale \(AROPE\)/);
+  assert.match(page, /[Nn]on inventiamo un «gap»[\s\S]*rispetto alla soglia/i);
   assert.match(page, /AbsoluteThresholdSection/);
+  assert.match(page, /RelativeThresholdSection/);
+  assert.match(page, /AropeSection/);
 });
 
 test("la pagina non accosta la povertà alla spesa pubblica", () => {
@@ -143,15 +168,24 @@ test("la pagina non accosta la povertà alla spesa pubblica", () => {
 });
 
 test("ogni tabella è accessibile e navigabile da tastiera", () => {
-  // Due tabelle nel componente famiglie + una nella sezione soglia.
-  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 3);
-  assert.equal((page.match(/role="region"/g) ?? []).length, 3);
-  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 3);
-  assert.equal((page.match(/<caption/g) ?? []).length, 3);
+  // Due tabelle famiglie + due soglie + una AROPE.
+  assert.equal((page.match(/className="table-scroll"/g) ?? []).length, 5);
+  assert.equal((page.match(/role="region"/g) ?? []).length, 5);
+  assert.equal((page.match(/tabIndex=\{0\}/g) ?? []).length, 5);
+  assert.equal((page.match(/<caption/g) ?? []).length, 5);
   assert.equal(view.families.length, 2, "due famiglie rese dallo stesso componente");
   // Intestazioni di riga e colonna dichiarate.
-  assert.ok((page.match(/scope="col"/g) ?? []).length >= 7);
+  assert.ok((page.match(/scope="col"/g) ?? []).length >= 12);
   assert.ok((page.match(/scope="row"/g) ?? []).length >= 3);
+});
+
+test("AROPE resta separato dalle famiglie ISTAT", () => {
+  assert.equal(view.arope.datasetId, "eurostat-arope");
+  assert.equal(view.arope.latestYear, 2025);
+  assert.equal(view.arope.rows.length, 11);
+  assert.equal(view.arope.rows.at(-1)?.rateTenths, 226);
+  assert.equal(view.arope.rows.at(-1)?.personsThousands, 13265);
+  assert.match(view.arope.definitionNote, /Europa 2030|AROPE/i);
 });
 
 test("la fonte e la licenza viaggiano con la pagina", () => {
@@ -162,6 +196,8 @@ test("la fonte e la licenza viaggiano con la pagina", () => {
   }
   assert.equal(view.absoluteThreshold.source.licenseId, "not-declared");
   assert.match(view.absoluteThreshold.source.landingUrl, /^https:\/\/esploradati\.istat\.it\//);
+  assert.equal(view.relativeThreshold.source.licenseId, "not-declared");
   assert.match(page, /databrowser ISTAT/);
   assert.match(page, /poverta-soglia-assoluta/);
+  assert.match(page, /poverta-soglia-relativa/);
 });

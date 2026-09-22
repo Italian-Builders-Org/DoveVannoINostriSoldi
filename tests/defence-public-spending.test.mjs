@@ -107,3 +107,28 @@ test("defence keeps the home year and refuses ambiguous or uncovered selections"
   assert.equal(earliest.comparison.year, 2014);
   assert.equal(earliest.comparison.budget, null);
 });
+
+test("defence exposes the INVESTIMENTI tracker beside GF02 and the mission total", () => {
+  const view = getDefencePublicSpendingView(2024);
+  assert.equal(view.investments.investmentMacroaggregate, "INVESTIMENTI");
+  assert.equal(view.investments.annual.length, 10);
+  assert.equal(view.investments.forSelectedYear.year, 2024);
+  assert.equal(view.investments.forSelectedYear.rows.length, 5);
+  assert.equal(
+    view.investments.forSelectedYear.missionTotalEur,
+    view.comparison.budget.amountEur,
+  );
+  const investment2024 = view.investments.annual.find((row) => row.year === 2024);
+  assert.equal(investment2024.investmentEur, 7928892038);
+  assert.equal(investment2024.missionTotalEur, view.comparison.budget.amountEur);
+  assert.ok(investment2024.shareOfMissionHundredths > 2500);
+  assert.equal(view.investments.latest.year, 2026);
+  assert.equal(view.investments.latest.investmentEur, 9791907392);
+  assert.match(view.investments.semantics.soldi.nature, /INVESTIMENTI/);
+  assert.equal(view.investments.semantics.provenance.sha256, view.budget.semantics.provenance.sha256);
+  assert.ok(view.investments.caveats.some((text) => /NATO/i.test(text)));
+  assert.ok(view.investments.procurementLinks.some((link) => link.href.includes("procurement-difesa")));
+  const early = getDefencePublicSpendingView(2014);
+  assert.equal(early.investments.forSelectedYear, null);
+  assert.equal(early.investments.annual.find((row) => row.year === 2014), undefined);
+});

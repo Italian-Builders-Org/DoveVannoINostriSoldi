@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "openbdap_defence_budget_macroaggregates",
+  "mission": "Difesa e sicurezza del territorio",
+  "measure": "Legge di Bilancio CP A1",
+  "unit": "euro",
+  "years": [
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "macroaggregates": [
+    "FUNZIONAMENTO",
+    "INTERVENTI",
+    "INVESTIMENTI",
+    "ONERI COMUNI DI CONTO CAPITALE",
+    "ONERI COMUNI DI PARTE CORRENTE"
+  ],
+  "investmentMacroaggregate": "INVESTIMENTI",
+  "rows": [
+    {
+      "year": 2017,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 16389521942
+    },
+    {
+      "year": 2017,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 8649504
+    },
+    {
+      "year": 2017,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 2216352138
+    },
+    {
+      "year": 2017,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 0
+    },
+    {
+      "year": 2017,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1210232434
+    },
+    {
+      "year": 2018,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 16822590210
+    },
+    {
+      "year": 2018,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 10861901
+    },
+    {
+      "year": 2018,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 2451515563
+    },
+    {
+      "year": 2018,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 0
+    },
+    {
+      "year": 2018,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1161323906
+    },
+    {
+      "year": 2019,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 17693153295
+    },
+    {
+      "year": 2019,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 6409653
+    },
+    {
+      "year": 2019,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 1991184230
+    },
+    {
+      "year": 2019,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 1000000
+    },
+    {
+      "year": 2019,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1071984638
+    },
+    {
+      "year": 2020,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 18172847660
+    },
+    {
+      "year": 2020,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 6409653
+    },
+    {
+      "year": 2020,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 3034041923
+    },
+    {
+      "year": 2020,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 1000000
+    },
+    {
+      "year": 2020,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1372515970
+    },
+    {
+      "year": 2021,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 18534185219
+    },
+    {
+      "year": 2021,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 6574966
+    },
+    {
+      "year": 2021,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 4251313404
+    },
+    {
+      "year": 2021,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 0
+    },
+    {
+      "year": 2021,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1544074879
+    },
+    {
+      "year": 2022,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 18396748268
+    },
+    {
+      "year": 2022,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 7728914
+    },
+    {
+      "year": 2022,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 5740321840
+    },
+    {
+      "year": 2022,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 2600000
+    },
+    {
+      "year": 2022,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1451280546
+    },
+    {
+      "year": 2023,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 19414053651
+    },
+    {
+      "year": 2023,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 26811060
+    },
+    {
+      "year": 2023,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 6497077898
+    },
+    {
+      "year": 2023,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 900000
+    },
+    {
+      "year": 2023,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1601602513
+    },
+    {
+      "year": 2024,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 19435608131
+    },
+    {
+      "year": 2024,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 26974514
+    },
+    {
+      "year": 2024,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 7928892038
+    },
+    {
+      "year": 2024,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 3100000
+    },
+    {
+      "year": 2024,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1620906786
+    },
+    {
+      "year": 2025,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 19814017895
+    },
+    {
+      "year": 2025,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 30933688
+    },
+    {
+      "year": 2025,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 9592059595
+    },
+    {
+      "year": 2025,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 0
+    },
+    {
+      "year": 2025,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1526014880
+    },
+    {
+      "year": 2026,
+      "macroaggregate": "FUNZIONAMENTO",
+      "amountEur": 20620380793
+    },
+    {
+      "year": 2026,
+      "macroaggregate": "INTERVENTI",
+      "amountEur": 31072192
+    },
+    {
+      "year": 2026,
+      "macroaggregate": "INVESTIMENTI",
+      "amountEur": 9791907392
+    },
+    {
+      "year": 2026,
+      "macroaggregate": "ONERI COMUNI DI CONTO CAPITALE",
+      "amountEur": 0
+    },
+    {
+      "year": 2026,
+      "macroaggregate": "ONERI COMUNI DI PARTE CORRENTE",
+      "amountEur": 1385744928
+    }
+  ],
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "platform": "OpenBDAP",
+    "packageId": "e0be9f03-134b-446d-8e6c-cb5c14ddc11c",
+    "resourceId": "32750",
+    "productCode": "LBF_SPE_CRU_AMPMA_001",
+    "title": "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20",
+    "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e0be9f03-134b-446d-8e6c-cb5c14ddc11c.csv",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/legge-di-bilancio-pubblicata-serie-storica-spese-amministrazione-missione-programma-1?metadati=showall",
+    "license": "Creative Commons Attribution",
+    "licenseId": "cc-by",
+    "licenseUrl": "http://www.opendefinition.org/licenses/cc-by",
+    "observedAt": "2026-09-22T10:30:00.000Z",
+    "csv": {
+      "bytes": 3422462,
+      "sha256": "5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338",
+      "encoding": "cp1252",
+      "delimiter": ";",
+      "quoteChar": "\"",
+      "lineEnding": "CRLF"
+    },
+    "csvSha256": "sha256:5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338"
+  },
+  "caveats": [
+    "Stanziamenti di competenza CP A1 della Legge di Bilancio sulla missione «Difesa e sicurezza del territorio», ripartiti per macroaggregato ufficiale OpenBDAP.",
+    "INVESTIMENTI non è spesa COFOG GF02, non è un pagamento di cassa e non è la misura NATO.",
+    "La somma dei macroaggregati per anno riconcilia il totale di missione già pubblicato su /spese/difesa; non sommare queste serie a Eurostat.",
+    "Macroaggregati assenti in un anno non compaiono come zero inventato: ogni cella dello snapshot è una somma osservata (può essere 0 se la fonte pubblica zero)."
+  ]
+}

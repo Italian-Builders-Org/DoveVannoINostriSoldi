@@ -57,7 +57,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": null,
-      "trustModel": "Riepilogo deterministico di 31 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
+      "trustModel": "Riepilogo deterministico di 32 snapshot gestiti. La riconciliazione esegue gli stessi validator degli adapter pubblici e confronta integralmente i metadati proiettati. Il build si interrompe in caso di divergenza. Date di controllo, freschezza e raggiungibilità restano calcolate a runtime."
     },
     {
       "id": "anac-procurement-peers",
@@ -641,6 +641,31 @@
       }
     },
     {
+      "id": "openbdap-defence-budget-macroaggregates",
+      "owner": "OpenBDAP Difesa mission × macroaggregate CP A1 series",
+      "files": [
+        "src/data/generated/openbdap-defence-budget-macroaggregates.json",
+        "scripts/etl/specs/openbdap-defence-budget-macroaggregates.source.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/defence-public-spending.test.mjs",
+        "tests/defence-budget-macroaggregates.test.mjs"
+      ],
+      "generator": {
+        "command": "node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --csv CSV --observed-at ISO",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/openbdap-defence-budget-macroaggregates.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Curated committed aggregate of the same OpenBDAP AMPMA CSV locked for openbdap-budget-law. Macroaggregates must reconcile to the Difesa mission totals and keep INVESTIMENTI distinct from Eurostat GF02. Refresh manually when the shared CSV hash changes; no NATO or cross-source sums."
+    },
+    {
       "id": "opencivitas-2022",
       "owner": "OpenCivitas municipal 2022",
       "files": [
@@ -799,6 +824,84 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC80RIFIUTI 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT 2022 (servizi totali) e dalle altre funzioni. Join di 6557 Comuni RSO; aggregati esclusi; CSV senza colonna Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-rifiuti.source.json"
+    },
+    {
+      "id": "opencivitas-2022-viabilita",
+      "owner": "OpenCivitas municipal 2022 FC80TERRVIAB",
+      "files": [
+        "src/data/generated/opencivitas-2022-viabilita.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_viabilita_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_viabilita_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-viabilita-contract.test.mjs",
+        "tests/opencivitas-2022-viabilita-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_viabilita_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80TERRVIAB 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI 2022. Join di 6553 Comuni RSO; 4 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-viabilita.source.json"
+    },
+    {
+      "id": "opencivitas-2022-sociale-asili",
+      "owner": "OpenCivitas municipal 2022 FC80SOCNID",
+      "files": [
+        "src/data/generated/opencivitas-2022-sociale-asili.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_sociale_asili_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-sociale-asili-contract.test.mjs",
+        "tests/opencivitas-2022-sociale-asili-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80SOCNID 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB 2022. Join di 6554 Comuni RSO; 3 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-sociale-asili.source.json"
+    },
+    {
+      "id": "opencivitas-2022-amministrazione",
+      "owner": "OpenCivitas municipal 2022 FC80AMMIN",
+      "files": [
+        "src/data/generated/opencivitas-2022-amministrazione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_amministrazione_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-amministrazione-contract.test.mjs",
+        "tests/opencivitas-2022-amministrazione-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80AMMIN 2022 vincolati per byte/SHA-256 nella spec e in issue 591. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022: nessuna somma fra funzioni. Join di 6548 Comuni RSO; 30 aggregati sovracomunali e 9 Comuni privi di spesa storica esclusi senza imputazione a zero. Il fabbisogno riproporziona sul totale della spesa storica della funzione: l'invariante e' vincolata nella spec sui Comuni joinati e la quota dei 9 esclusi e' dichiarata. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-amministrazione.source.json"
     },
     {
       "id": "opencivitas-2019",
@@ -1936,6 +2039,58 @@
       "trustModel": "Lock dedicato 34_211: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVASS (valori medi), 36.078 osservazioni, 23 territori, 83 tipologie familiari, 6 ampiezze demografiche. 6.050 celle con OBS_VALUE vuoto restano null ≠ zero. Scale factor 100 (centesimi di euro mensili). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia relativa 34_212 (chiusa). UNIT_MEAS vuoto nel payload. Licenza not-declared."
     },
     {
+      "id": "istat-poverta-soglia-relativa-2014-2024",
+      "owner": "ISTAT soglia monetaria di povertà relativa (dataflow 34_727_DF_DCCV_POVERTA_11)",
+      "files": [
+        "src/data/generated/istat-poverta-soglia-relativa-2014-2024.data.json",
+        "src/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_relativa.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_soglia_relativa.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta-soglia-relativa.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_poverta_soglia_relativa.py --input <CSV ufficiale> --structure <SDMX structure> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-soglia-relativa-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato 34_727_DF_DCCV_POVERTA_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVREL, 70 osservazioni pubblicate su 77 della fonte (escluso 2021), solo Italia, 7 ampiezze familiari. Scale factor 100 (centesimi). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia assoluta 34_211. UNIT_MEAS vuoto. Licenza not-declared."
+    },
+    {
+      "id": "eurostat-arope-2015-2025",
+      "owner": "Eurostat AROPE Europa 2030 (ilc_peps01n)",
+      "files": [
+        "src/data/generated/eurostat-arope-2015-2025.data.json",
+        "src/data/generated/eurostat-arope-2015-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_arope.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_arope.py"
+      ],
+      "nodeTests": [
+        "tests/eurostat-arope.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_arope.py --input <CSV ufficiale SDMX> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-arope-2015-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato ilc_peps01n: CSV ufficiale Italia TOTAL/T 2015-2025 vincolato per URL, byte e SHA-256. 11 osservazioni con tasso (decimi) e persone in migliaia. soldi.present false. Non confrontabile con povertà assoluta/relativa ISTAT né con la serie Europa 2020 ilc_peps01. Licenza CC-BY-4.0."
+    },
+    {
       "id": "istat-epea-2016-2022",
       "owner": "ISTAT Conti della spesa per la protezione dell'ambiente (EPEA) 2016-2022",
       "files": [
@@ -2280,6 +2435,33 @@
       "sourceSpec": "scripts/etl/specs/eu-vat-gap-italy.source.json",
       "refreshWorkflow": null,
       "trustModel": "Source lock su XLSX ufficiale DG TAXUD (URL, byte, SHA-256, foglio IT, celle pinnate). Importi in centesimi da milioni di euro; quota gap in milionesimi; 2024 rapid-estimate; X e vuoti non-osservati. Riconciliazione VTTL−revenue=gap. Nessuna media UE né mescolanza con MEF/NOE. Licenza XLSX not-declared."
+    },
+    {
+      "id": "istat-permessi-costruire-2015-2025",
+      "owner": "ISTAT permessi di costruire, tavole introduttive nazionali a.1–a.4 (2015-2025)",
+      "files": [
+        "src/data/generated/istat-permessi-costruire-2015-2025.data.json",
+        "src/data/generated/istat-permessi-costruire-2015-2025.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_permessi_costruire_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_permessi_costruire_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/istat-permessi-costruire.test.mjs",
+        "tests/istat-permessi-costruire-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_permessi_costruire_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/istat-permessi-costruire-2015-2025.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock sul zip ufficiale ISTAT (URL, byte, SHA-256, membri a.1–a.4, etichette e pin 2025). Conteggi/volumi/superfici, non soldi. Solo Italia nazionale; serie a.1–a.4 distinte. Distinto da MOP/OpenBDAP e SIOPE. Licenza zip not-declared."
     },
     {
       "id": "mef-tax-gap-nazionale",
@@ -2683,7 +2865,7 @@
       },
       "sourceSpec": "scripts/etl/specs/parlamento-giudiziario-xix.source.json",
       "refreshWorkflow": null,
-      "trustModel": "La raccolta non e una tabella ufficiale: in Italia il casellario giudiziale non e pubblico e gran parte delle sentenze di merito non viene pubblicata. L'input verificato e committato in data/parlamento-giudiziario/casi-verificati.json e bloccato per byte e sha256 nello spec; --check lo riproietta e fallisce se lo snapshot committato diverge, se un caso non ha un atto ufficiale o due editori indipendenti, se l'etichetta official-finding compare senza condanna definitiva con atto, se un bucket non coincide con lo stato, se un importo non e in centesimi interi o se la copertura non torna. Il controllo offline dimostra la coerenza interna e il rispetto delle regole di evidenza, non la veridicita delle sentenze citate: quella resta affidata alle fonti elencate caso per caso."
+      "trustModel": "La raccolta non e una tabella ufficiale: in Italia il casellario giudiziale non e pubblico e gran parte delle sentenze di merito non viene pubblicata. L'input verificato e committato in data/parlamento-giudiziario/casi-verificati.json e bloccato per byte e sha256 nello spec; --check lo riproietta e fallisce se lo snapshot committato diverge, se un caso non ha un atto ufficiale o due editori indipendenti, se l'etichetta official-finding compare senza condanna definitiva con atto, se un bucket non coincide con lo stato, se un importo non e in centesimi interi, se la copertura non torna, se statusAsOf non coincide con la data dell'ultimo grado registrato o se manca la data dell'ultimo controllo (verifiedAt). Un procedimento non definitivo non riverificato entro la finestra dichiarata viene marcato da-riverificare e il workflow mensile fallisce oltre il doppio della finestra. Il controllo offline dimostra la coerenza interna e il rispetto delle regole di evidenza, non la veridicita delle sentenze citate: quella resta affidata alle fonti elencate caso per caso."
     }
   ]
 }

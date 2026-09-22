@@ -1,0 +1,2481 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-permessi-costruire-2015-2025",
+  "geography": {
+    "code": "IT",
+    "label": "Italia"
+  },
+  "period": {
+    "from": 2015,
+    "to": 2025
+  },
+  "units": {
+    "counts": "units",
+    "volume": "cubic-metres",
+    "surface": "square-metres"
+  },
+  "soldi": {
+    "present": false,
+    "note": "Conteggi, volumi e superfici dei permessi di costruire; non importi monetari."
+  },
+  "caveats": [
+    "Serie nazionali ISTAT sui permessi di costruire: conteggi, volumi e superfici, non pagamenti né stanziamenti.",
+    "Non confondere con le opere pubbliche MOP/OpenBDAP (/opere) né con la cassa SIOPE.",
+    "Questa slice pubblica solo le tavole introduttive nazionali a.1–a.4 (2015–2025); nessuna tavola provinciale o analitica.",
+    "a.1 (nuova residenziale), a.2 (ampliamenti residenziali), a.3 (nuova non residenziale) e a.4 (ampliamenti non residenziali) restano serie distinte.",
+    "Rottura metodologica rispetto alle serie pre-2004: dal 2005 il campo cambia (nota ISTAT sulla landing).",
+    "Dall'edizione 2020 ISTAT modifica le imputazioni dei dati mancanti: confrontare con cautela le annate a cavallo.",
+    "Celle vuote restano non osservate: non diventano zero e non si ricostruiscono per differenza.",
+    "Licenza del zip non dichiarata sul payload: licenseId not-declared; riuso soggetto alle note legali ISTAT citate come evidenza."
+  ],
+  "tables": {
+    "a1": {
+      "code": "a.1",
+      "kind": "nuova-edilizia-residenziale",
+      "sheetName": "Tavola a.1",
+      "years": [
+        {
+          "year": 2015,
+          "fabbricati": {
+            "numero": {
+              "value": 15973,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 19242224,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 6507155,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 42879,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 3718555,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 156102,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 155830,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "fabbricati": {
+            "numero": {
+              "value": 16158,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 20063019,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 6756568,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 44231,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 3893971,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 162247,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 164586,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "fabbricati": {
+            "numero": {
+              "value": 17333,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 22709408,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 7843970,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 52027,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4479739,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 187405,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 188484,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "fabbricati": {
+            "numero": {
+              "value": 18029,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 24070779,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 8440041,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 55596,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4794524,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 200292,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 201835,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "fabbricati": {
+            "numero": {
+              "value": 17965,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 24522396,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 8385151,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 55262,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4878169,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 200317,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 205224,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "fabbricati": {
+            "numero": {
+              "value": 15411,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 21362347,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 7411705,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 49100,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4301256,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 176450,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 181050,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "fabbricati": {
+            "numero": {
+              "value": 18990,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 25665276,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 8899595,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 59839,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 5166872,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 209371,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 216480,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "fabbricati": {
+            "numero": {
+              "value": 18698,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 25050957,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 8723502,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 59904,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 5133492,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 209450,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 215175,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "fabbricati": {
+            "numero": {
+              "value": 16532,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 23134638,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 8146581,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 55309,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4696535,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 191632,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 196298,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2024,
+          "fabbricati": {
+            "numero": {
+              "value": 16062,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 22494900,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 7993354,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 55256,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4638849,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 185737,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 193844,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2025,
+          "fabbricati": {
+            "numero": {
+              "value": 16070,
+              "status": "observed"
+            },
+            "volume": {
+              "value": 22120440,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 7667449,
+              "status": "observed"
+            }
+          },
+          "abitazioni": {
+            "numero": {
+              "value": 51908,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 4468033,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 179995,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 187316,
+              "status": "observed"
+            }
+          }
+        }
+      ]
+    },
+    "a2": {
+      "code": "a.2",
+      "kind": "ampliamenti-residenziali",
+      "sheetName": " Tavola a.2",
+      "years": [
+        {
+          "year": 2015,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 5848,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 450347,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 18882,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 16705,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 17962,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 18835,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 438258,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 532353,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 61957,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 4636175,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1555054,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 6119,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 461068,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 19349,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 17366,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 17875,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 18923,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 422770,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 538530,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 57722,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 4631018,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1554265,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 6006,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 445714,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 18792,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 16582,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 18802,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 19958,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 439681,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 521849,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 68537,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 4644691,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1554463,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 5773,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 431839,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 17973,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 16270,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 17265,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 18477,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 404930,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 439801,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 62075,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 4292011,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1420075,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 5610,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 431021,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 17550,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 16595,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 16733,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 17297,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 397592,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 455630,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 55611,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 4273183,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1422187,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 4785,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 354960,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 14755,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 13847,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 13593,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 12870,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 304529,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 348953,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 38454,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 3347821,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1116973,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 4834,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 357357,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 15064,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 13290,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 16945,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 15676,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 381788,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 370424,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 48774,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 3685913,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1236047,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 4361,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 309779,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 12956,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 11263,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 14600,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 13392,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 333735,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 324184,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 37585,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 3180537,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 1081912,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 3548,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 249192,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 10877,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 9538,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 10979,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 10434,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 253506,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 274464,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 28320,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 2580603,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 870183,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2024,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 3371,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 235406,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 9897,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 8957,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 10907,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 9961,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 246177,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 277404,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 34274,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 2542475,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 858925,
+              "status": "observed"
+            }
+          }
+        },
+        {
+          "year": 2025,
+          "ampliamentiConAbitazioni": {
+            "abitazioni": {
+              "value": 3083,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 216301,
+              "status": "observed"
+            },
+            "stanze": {
+              "value": 9227,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 8483,
+              "status": "observed"
+            }
+          },
+          "ampliamentiSoliVani": {
+            "stanze": {
+              "value": 9163,
+              "status": "observed"
+            },
+            "accessoriInterni": {
+              "value": 8805,
+              "status": "observed"
+            },
+            "superficieUtile": {
+              "value": 208115,
+              "status": "observed"
+            }
+          },
+          "ampliamentiAltriUsi": {
+            "superficieServiziEsterni": {
+              "value": 256881,
+              "status": "observed"
+            },
+            "superficieAttivitaProduttive": {
+              "value": 31080,
+              "status": "observed"
+            }
+          },
+          "totaleAmpliamenti": {
+            "volume": {
+              "value": 2314326,
+              "status": "observed"
+            },
+            "superficieTotale": {
+              "value": 770244,
+              "status": "observed"
+            }
+          }
+        }
+      ]
+    },
+    "a3": {
+      "code": "a.3",
+      "kind": "nuova-edilizia-non-residenziale",
+      "sheetName": "Tavola a.3",
+      "years": [
+        {
+          "year": 2015,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 4029,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 7144178,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1406727,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1134,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 15672282,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1925295,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 936,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5986940,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1173199,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2004,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5540804,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1175002,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 8103,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 34344204,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 5680223,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 4297,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 9761118,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1816304,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1226,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 16328398,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2091774,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 950,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6690201,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1173783,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2305,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6162405,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 961292,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 8778,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 38942122,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 6043153,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 4225,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 8498122,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1715985,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1447,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 23805696,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3010753,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 1104,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 8155831,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1368028,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2356,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 9008673,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1370597,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 9132,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 49468322,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 7465363,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 4662,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 11628100,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2246348,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1631,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 29470558,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3698949,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 1107,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 9879584,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1730214,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2637,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 10377307,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1627790,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 10037,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 61355549,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 9303301,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 3854,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 10046746,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1894961,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1579,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 32366582,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3864616,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 1109,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 10158000,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1646649,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2373,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 12387859,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1750018,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 8915,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 64959187,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 9156244,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 3350,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6944500,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1345135,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1239,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 24430565,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2842635,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 903,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5801694,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1138306,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 1849,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 7175023,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1255131,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7341,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 44351782,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 6581207,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 3304,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6881388,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1367041,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1268,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 25802668,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2907387,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 873,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5509708,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1082609,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2050,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 17189228,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2106599,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7495,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 55382992,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 7463636,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 3185,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 8664795,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1543155,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1267,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 30307415,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3350150,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 730,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5014735,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 970256,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 1967,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 17873130,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2004295,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7149,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 61860075,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 7867856,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 2774,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6570568,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1239180,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1380,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 28382818,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3371729,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 841,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 5126245,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1033529,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2090,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 19542520,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2226481,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7085,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 59622151,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 7870919,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2024,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 3021,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 8031478,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1463343,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1435,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 28894754,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3407701,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 828,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6373528,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1256548,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2316,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 15132471,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1975176,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7600,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 58432231,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 8102768,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2025,
+          "sectors": {
+            "agricoltura": {
+              "fabbricati": {
+                "value": 2951,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 8530171,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1509404,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "fabbricati": {
+                "value": 1512,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 30641519,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3308435,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "fabbricati": {
+                "value": 897,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 6136018,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1159911,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "fabbricati": {
+                "value": 2184,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 16449646,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1985249,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "fabbricati": {
+                "value": 7544,
+                "status": "observed"
+              },
+              "volume": {
+                "value": 61757354,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 7962999,
+                "status": "observed"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "a4": {
+      "code": "a.4",
+      "kind": "ampliamenti-non-residenziali",
+      "sheetName": "Tavola a.4",
+      "years": [
+        {
+          "year": 2015,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 1607030,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 331541,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 8513659,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1239491,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1701452,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 403622,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1033852,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 204328,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 12855993,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2178982,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2577384,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 462181,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 10877269,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1546696,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1462928,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 343742,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1664987,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 296440,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 16582568,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2649059,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2748123,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 520531,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 14103612,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1882071,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 2456423,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 523853,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1783534,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 299141,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 21091692,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3225596,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2504351,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 506154,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 14676831,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1939289,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1883671,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 451149,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1751297,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 317412,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 20816150,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3214004,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2646569,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 538657,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 14153215,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1871242,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1766664,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 441906,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 2554056,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 401382,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 21120504,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 3253187,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2028249,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 428330,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 10040728,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1350011,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1381182,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 351545,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1346557,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 307872,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 14796716,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2437758,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2036694,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 417842,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 11046911,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1379699,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1334842,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 276697,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 2431910,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 353048,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 16850357,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2427286,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 1884233,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 361666,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 11268530,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1435907,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1043840,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 233068,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1826162,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 267807,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 16022765,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2298448,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2322433,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 387720,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 11570517,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1488817,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 808707,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 205233,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1723279,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 293724,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 16424936,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2375494,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2024,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2206197,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 385518,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 11203906,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1343829,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1186222,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 247011,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1765108,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 300658,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 16361433,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 2277016,
+                "status": "observed"
+              }
+            }
+          }
+        },
+        {
+          "year": 2025,
+          "sectors": {
+            "agricoltura": {
+              "volume": {
+                "value": 2062060,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 375483,
+                "status": "observed"
+              }
+            },
+            "industria": {
+              "volume": {
+                "value": 8095386,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1060567,
+                "status": "observed"
+              }
+            },
+            "commercio": {
+              "volume": {
+                "value": 1211392,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 257639,
+                "status": "observed"
+              }
+            },
+            "altro": {
+              "volume": {
+                "value": 1267911,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 285925,
+                "status": "observed"
+              }
+            },
+            "totale": {
+              "volume": {
+                "value": 12636749,
+                "status": "observed"
+              },
+              "superficieTotale": {
+                "value": 1979614,
+                "status": "observed"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

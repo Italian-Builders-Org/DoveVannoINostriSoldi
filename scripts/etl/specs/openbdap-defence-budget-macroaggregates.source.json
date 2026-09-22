@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "openbdap_defence_budget_macroaggregates",
+  "mission": "Difesa e sicurezza del territorio",
+  "source": {
+    "owner": "Ragioneria Generale dello Stato",
+    "platform": "OpenBDAP",
+    "packageId": "e0be9f03-134b-446d-8e6c-cb5c14ddc11c",
+    "resourceId": "32750",
+    "productCode": "LBF_SPE_CRU_AMPMA_001",
+    "title": "Legge di Bilancio Pubblicata - Serie storica - Spese per Amministrazione Missione Programma Macroaggregato",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20",
+    "csvUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e0be9f03-134b-446d-8e6c-cb5c14ddc11c.csv",
+    "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/legge-di-bilancio-pubblicata-serie-storica-spese-amministrazione-missione-programma-1?metadati=showall",
+    "license": "Creative Commons Attribution",
+    "licenseId": "cc-by",
+    "licenseUrl": "http://www.opendefinition.org/licenses/cc-by",
+    "observedAt": "2026-09-22T10:30:00.000Z",
+    "csv": {
+      "bytes": 3422462,
+      "sha256": "5988ac55ed61d517d7500402547dccd94c4cae11611f10c77459dcfe64239338",
+      "encoding": "cp1252",
+      "delimiter": ";",
+      "quoteChar": "\"",
+      "lineEnding": "CRLF"
+    }
+  },
+  "transformation": {
+    "measure": "Legge di Bilancio CP A1",
+    "unit": "euro",
+    "aggregation": "Somma per anno e macroaggregato sulla sola missione Difesa e sicurezza del territorio",
+    "minimumStableMissionYear": 2017,
+    "years": [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+    "macroaggregates": [
+      "FUNZIONAMENTO",
+      "INTERVENTI",
+      "INVESTIMENTI",
+      "ONERI COMUNI DI CONTO CAPITALE",
+      "ONERI COMUNI DI PARTE CORRENTE"
+    ],
+    "investmentMacroaggregate": "INVESTIMENTI",
+    "cells": 50
+  },
+  "expectedMissionTotalsEur": {
+    "2017": 19824756018,
+    "2018": 20446291580,
+    "2019": 20763731816,
+    "2020": 22586815206,
+    "2021": 24336148468,
+    "2022": 25598679568,
+    "2023": 27540445122,
+    "2024": 29015481469,
+    "2025": 30963026058,
+    "2026": 31829105305
+  },
+  "expectedInvestmentEur": {
+    "2017": 2216352138,
+    "2018": 2451515563,
+    "2019": 1991184230,
+    "2020": 3034041923,
+    "2021": 4251313404,
+    "2022": 5740321840,
+    "2023": 6497077898,
+    "2024": 7928892038,
+    "2025": 9592059595,
+    "2026": 9791907392
+  }
+}

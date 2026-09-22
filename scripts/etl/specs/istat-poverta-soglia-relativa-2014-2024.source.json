@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-poverta-soglia-relativa",
+  "domain": {
+    "code": "34_727_DF_DCCV_POVERTA_11",
+    "label": "Linee e soglie di povertà relativa",
+    "dataflowId": "34_727_DF_DCCV_POVERTA_11"
+  },
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "periodNote": "Serie nazionale 2014–2024 (solo Italia). L'anno 2021 è escluso dal prodotto perché i valori pubblicati dalla fonte risultano incoerenti con il resto della serie (decisione #329, opzione a).",
+  "excludedYear": 2021,
+  "excludedYearReason": "I valori 2021 della soglia relativa sono circa 2,6× quelli del 2020 e circa 2,2× quelli del 2022; la soglia relativa non può variare così. Si pubblica la serie con buco dichiarato invece di un valore che sappiamo falso.",
+  "sourceObservations": 77,
+  "excludedObservations": 7,
+  "observations": 70,
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "dataflowId": "34_727_DF_DCCV_POVERTA_11",
+    "dataflowVersion": "1.0",
+    "dataflowLabel": "Linee e soglie di povertà relativa",
+    "dataStructure": "34_727_DF_DCCV_POVERTA_11 v1.0",
+    "dataflowLastUpdate": "2025-10-14T08:02:20.381Z",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non dichiara una licenza; le condizioni generali ISTAT CC BY 4.0 sono documentate separatamente e non vengono promosse a licenza incorporata nel payload.",
+    "reuseTermsEvidence": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "acquisitionDate": "2026-09-21",
+    "checkedAt": "2026-09-21",
+    "assets": {
+      "csv": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_11,1.0/A.IT.SOGLIA_POVREL.ALL.N1+N2+N3+N4+N5+N6+N7_GE.HH.TOTAL.99.ALL.9.TOTAL",
+        "requestHeaders": {
+          "Accept": "text/csv"
+        },
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 9424,
+        "sha256": "2ccc07c4de9e82d85bd2e8ce9be26335c12c25a16df224849b093c9301a1a222"
+      },
+      "structure": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/34_727_DF_DCCV_POVERTA_11/1.0?references=all",
+        "format": "SDMX-ML Structure 2.1",
+        "bytes": 9898373,
+        "sha256": "1bc97d259dc91e7b928eedb32d443109b9374caea98ba9c26669468dad1a6b25"
+      }
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "present": true,
+      "note": "Soglia monetaria mensile in centesimi di euro (valueHundredths). Non è spesa pubblica: non confrontare né sommare con pagamenti, stanziamenti o gettito."
+    },
+    "periodo": {
+      "referencePeriod": "2014–2024 (senza 2021)",
+      "note": "Aggiornamento del dataflow, acquisizione e anni delle osservazioni restano date distinte. L'anno 2021 resta nella fonte e fuori dal prodotto."
+    },
+    "provenance": {
+      "holder": "ISTAT",
+      "dataflowLastUpdate": "2025-10-14T08:02:20.381Z",
+      "acquisitionDate": "2026-09-21",
+      "checkedAt": "2026-09-21",
+      "license": "not-declared"
+    }
+  },
+  "headers": [
+    "DATAFLOW",
+    "FREQ",
+    "REF_AREA",
+    "DATA_TYPE",
+    "POVERTY_LINES",
+    "NUMBER_HOUSEHOLD_COMP",
+    "HOUSEHOLD_TYPOLOGY",
+    "AGE_REFERENCE_PERSON",
+    "EDU_LEV_REFPERS",
+    "LABPROF_STATUS_B_REF",
+    "SEX",
+    "AGE",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_STATUS",
+    "NOTE_DS",
+    "NOTE_REF_AREA",
+    "NOTE_DATA_TYPE",
+    "NOTE_POVERTY_LINES",
+    "NOTE_NUMBER_HOUSEHOLD_COMP",
+    "NOTE_HOUSEHOLD_TYPOLOGY",
+    "NOTE_AGE_REFERENCE_PERSON",
+    "NOTE_EDU_LEV_REFPERS",
+    "NOTE_LABPROF_STATUS_B_REF",
+    "NOTE_SEX",
+    "NOTE_AGE",
+    "NOTE_TIME_PERIOD",
+    "BASE_PER",
+    "UNIT_MEAS",
+    "UNIT_MULT"
+  ],
+  "fixedDimensions": {
+    "DATAFLOW": "IT1:34_727_DF_DCCV_POVERTA_11(1.0)",
+    "FREQ": "A",
+    "REF_AREA": "IT",
+    "DATA_TYPE": "SOGLIA_POVREL",
+    "POVERTY_LINES": "ALL",
+    "HOUSEHOLD_TYPOLOGY": "HH",
+    "AGE_REFERENCE_PERSON": "TOTAL",
+    "EDU_LEV_REFPERS": "99",
+    "LABPROF_STATUS_B_REF": "ALL",
+    "SEX": "9",
+    "AGE": "TOTAL"
+  },
+  "attributes": {
+    "OBS_STATUS": [
+      ""
+    ],
+    "NOTE_DS": [
+      ""
+    ],
+    "NOTE_REF_AREA": [
+      ""
+    ],
+    "NOTE_DATA_TYPE": [
+      ""
+    ],
+    "NOTE_POVERTY_LINES": [
+      ""
+    ],
+    "NOTE_NUMBER_HOUSEHOLD_COMP": [
+      ""
+    ],
+    "NOTE_HOUSEHOLD_TYPOLOGY": [
+      ""
+    ],
+    "NOTE_AGE_REFERENCE_PERSON": [
+      ""
+    ],
+    "NOTE_EDU_LEV_REFPERS": [
+      ""
+    ],
+    "NOTE_LABPROF_STATUS_B_REF": [
+      ""
+    ],
+    "NOTE_SEX": [
+      ""
+    ],
+    "NOTE_AGE": [
+      ""
+    ],
+    "NOTE_TIME_PERIOD": [
+      "",
+      "TIME_PERIOD__2024_N1"
+    ],
+    "BASE_PER": [
+      ""
+    ],
+    "UNIT_MEAS": [
+      ""
+    ],
+    "UNIT_MULT": [
+      ""
+    ]
+  },
+  "indicators": [
+    {
+      "code": "SOGLIA_POVREL",
+      "label": "soglia di povertà relativa (spesa mensile in euro)",
+      "unit": "",
+      "period": {
+        "from": 2014,
+        "to": 2024
+      },
+      "observations": 70,
+      "coverage": {
+        "2014": 7,
+        "2015": 7,
+        "2016": 7,
+        "2017": 7,
+        "2018": 7,
+        "2019": 7,
+        "2020": 7,
+        "2022": 7,
+        "2023": 7,
+        "2024": 7
+      }
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "country",
+      "parent": null
+    }
+  ],
+  "householdCompositions": [
+    {
+      "code": "N1",
+      "label": "1"
+    },
+    {
+      "code": "N2",
+      "label": "2"
+    },
+    {
+      "code": "N3",
+      "label": "3"
+    },
+    {
+      "code": "N4",
+      "label": "4"
+    },
+    {
+      "code": "N5",
+      "label": "5"
+    },
+    {
+      "code": "N6",
+      "label": "6"
+    },
+    {
+      "code": "N7_GE",
+      "label": "7 e più"
+    }
+  ],
+  "flags": {
+    "OBS_STATUS": {
+      "codelist": "CL_FLAG",
+      "note": "In questo DSD OBS_STATUS è vincolato a CL_FLAG. In questa acquisizione tutte le celle hanno OBS_STATUS vuoto e OBS_VALUE valorizzato.",
+      "knownValues": {
+        "0": "il dato non raggiunge la metà della cifra minima considerata",
+        "c": "dato oscurato per la tutela del segreto statistico",
+        "n": "dato statisticamente non significativo",
+        "u": "dato indisponibile o incerto"
+      }
+    }
+  },
+  "caveats": [
+    "Soglia monetaria mensile, non spesa pubblica e non un'incidenza: non confrontare né sommare con le misure 34_727 di povertà relativa/assoluta già in piattaforma.",
+    "Soglia relativa ≠ soglia assoluta (34_211): territori, ampiezze e definizioni diverse; nessun confronto riga per riga.",
+    "Solo Italia: nessun dettaglio regionale in questo dataflow.",
+    "TOT (totale ampiezze) e FAM_VAL_PERC_POV restano fuori perimetro.",
+    "L'anno 2021 è escluso dal prodotto perché i valori della fonte sono incoerenti con il resto della serie.",
+    "UNIT_MEAS è vuoto nel payload: l'unità è dichiarata dal codice misura, non inventata.",
+    "Licenza del payload not-declared."
+  ],
+  "reconciliation": {
+    "sourceRows": 77,
+    "publishedRows": 70,
+    "excludedYear": 2021,
+    "excludedRows": 7,
+    "householdCompositions": 7,
+    "territories": 1,
+    "note": "Il CSV ufficiale contiene 77 osservazioni (7 ampiezze × 11 anni). Il prodotto pubblica 70 osservazioni escludendo le 7 del 2021."
+  },
+  "integrity": {
+    "sourceLockSha256": "f2a68db1b2e9573ab270025876a70c06ad32936fe73c07a0d663477fb0ec7ab4",
+    "dataArtifact": {
+      "path": "src/data/generated/istat-poverta-soglia-relativa-2014-2024.data.json",
+      "bytes": 9608,
+      "sha256": "6eea94330ac7bb3b786e35d37f3795dd5a414f418187297f094ddccb9fc52739"
+    }
+  }
+}

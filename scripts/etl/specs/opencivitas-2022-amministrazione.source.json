@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2022,
+  "family": "FC80AMMIN",
+  "releaseVersion": 1,
+  "publishedAt": "2025-06-16",
+  "modifiedAt": "2025-06-16",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2022-comuni-amministrazione-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "Sogei",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2022_Ind_FC80AMMIN_1_csv.zip",
+      "bytes": 1783464,
+      "sha256": "5ff2ccea482e07b3949c955b52f66ffe8d779ab9356b2b4e324677b9dc24e165"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2022_xlsx.zip",
+      "bytes": 518899,
+      "sha256": "9f50652797ed5080d31291cb7a1c74fad74b37189ac19d2cac2921a2939ed6a1"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2022_Metadati_Ind_FC80AMMIN_1_xlsx.zip",
+      "bytes": 11880,
+      "sha256": "5d1fd326a5d81eb7501f20db2251ebe5f015a58ed77ce54a792455124013b946"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "municipalities": 6548,
+  "regionCounts": {
+    "ABRUZZO": 302,
+    "BASILICATA": 131,
+    "CALABRIA": 401,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 330,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1502,
+    "MARCHE": 225,
+    "MOLISE": 136,
+    "PIEMONTE": 1177,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 560
+  },
+  "excludedIncompleteHistorical": [
+    "CH013SIF11AX",
+    "CS052SIF11BP",
+    "CZ138SIF11KN",
+    "PE003SIF11JR",
+    "PE008SIF11JW",
+    "RC040SIF11KA",
+    "VC003SIF11IO",
+    "VC045SIF11JM",
+    "VC089SIF11KI"
+  ],
+  "nationalTotals": {
+    "joinedMunicipalities": 6557,
+    "historicalSpendingCents": 862276561316,
+    "standardSpendingCentsJoined": 862276561305,
+    "standardSpendingCentsExcluded": 319571148,
+    "standardSpendingCentsPublished": 861956990157,
+    "roundingToleranceCents": 1000,
+    "sourceNationalAggregate": "8622765612,9",
+    "note": "Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione: sui 6557 Comuni RSO le due somme distano 0,11 € e coincidono con l'aggregato ZZ999ITA001 pubblicato dalla fonte (8.622.765.612,90 €). L'uguaglianza vale sull'insieme completo: i 9 Comuni esclusi perché privi di spesa storica portano 3,20 milioni di fabbisogno, quindi sui 6548 Comuni pubblicati la somma del fabbisogno resta inferiore alla spesa storica di quell'importo. La differenza aggregata non è un risultato e non va letta come risparmio o spreco."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

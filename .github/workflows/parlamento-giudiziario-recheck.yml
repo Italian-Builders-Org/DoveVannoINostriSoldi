@@ -1,0 +1,37 @@
+name: Parlamento giudiziario recheck
+
+# Verifica mensile che lo snapshot giudiziario non invecchi in silenzio.
+# Non scarica nulla e non scrive nel repository: rilegge l'artefatto committato e
+# fallisce quando un procedimento non definitivo supera il doppio della finestra di
+# riverifica dichiarata. Un rosso qui significa aggiornare il dato o ritirarlo.
+
+on:
+  schedule:
+    - cron: "17 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: parlamento-giudiziario-recheck
+  cancel-in-progress: true
+
+jobs:
+  recheck:
+    name: recheck
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+      - name: Snapshot coerente con l'input verificato
+        run: python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check
+      - name: Nessun procedimento oltre il doppio della finestra di riverifica
+        run: python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --recheck-report

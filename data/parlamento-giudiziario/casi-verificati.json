@@ -15,13 +15,13 @@
   "membersSearchedWithQueryLog": 323,
   "membersSearchedDeclaredOnly": 303,
   "membersNotSearched": [],
-  "checkedAt": "2026-09-18",
+  "checkedAt": "2026-09-20",
   "cases": 75,
   "casesByOutcome": {
-   "condannato": 27,
-   "non_condannato": 36,
-   "esito_ignoto": 5,
-   "contabile": 7
+   "condannato": 26,
+   "non_condannato": 37,
+   "esito_ignoto": 6,
+   "contabile": 6
   },
   "membersWithCase": 56,
   "casesBackedByOfficialAct": 5,
@@ -194,7 +194,8 @@
      "confirms": "Ricorda che il procedimento principale sulla Lombardia Film Commission era pendente in Cassazione, con udienza fissata a gennaio, dopo la condanna d'appello dell'aprile 2024 a 4 anni 6 mesi e 20 giorni.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-039",
@@ -267,7 +268,8 @@
      "confirms": "Conferma che Di Rubba 'era uscito assolto con formula piena - e sempre davanti alla Corte d'appello milanese - in un altro processo sul medesimo fatto', in cui la fattura ritenuta falsa dalla Procura e stata giudicata 'una regolare fattura per una regolare prestazione professionale'.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-023",
@@ -391,7 +393,8 @@
      "confirms": "First-instance conviction for peculato: 'il deputato del gruppo misto Alessandro Colucci a due anni e due mesi'",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-066",
@@ -461,7 +464,8 @@
      "confirms": "Identità anagrafica e istituzionale: Alfredo Antoniozzi, nato il 18 marzo 1956 a Cosenza, eletto in Calabria nell'ottobre 2022, gruppo Fratelli d'Italia dal 18 ottobre 2022, vicepresidente del gruppo. Coincide con il record ufficiale del batch. La scheda NON riporta incarichi locali pregressi (nessuna menzione dell'assessorato romano).",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-020",
@@ -558,7 +562,8 @@
      "confirms": "Sentenza del Tribunale di Roma, sez. VIII penale (udienza 20/02/2025, sentenza 20/05/2025) nei confronti di Andrea Delmastro per rivelazione di segreto d'ufficio ex art. 326 c.p.; rigetto delle domande risarcitorie delle parti civili.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-069",
@@ -628,7 +633,8 @@
      "confirms": "Terza fonte locale: condanna di Gnassi, Chiodarelli e degli assessori; cifre individuali coincidenti; totale indicato 56.375 euro.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-006",
@@ -744,7 +750,8 @@
      "confirms": "Corte d'appello di Messina, 16/03/2012: confermata la condanna per abuso d'ufficio, assoluzione dal reato di rifiuto di atti d'ufficio, pena ridotta da un anno a otto mesi; vicenda della nomina dell'ing. Vincenzo Pozzi a direttore generale del CAS nel 2007.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-009",
@@ -759,23 +766,23 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Contributi pubblici all'editoria (Libero, Il Riformista)",
-   "offence": "tentata truffa aggravata e falso, contributi pubblici all'editoria 2006-2007 (the charge of completed fraud was declared time-barred, per the prosecutor's closing argument)",
+   "offence": "Tentata truffa aggravata e falso per i contributi pubblici all'editoria 2006-2007. Il capo di truffa consumata era gia stato dichiarato prescritto in primo grado.",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "penale",
-   "status": "condanna_non_definitiva",
-   "statusLabel": "Condanna non definitiva",
-   "statusAsOf": "2022-09-28",
-   "outcomeBucket": "condannato",
+   "status": "prescrizione",
+   "statusLabel": "Prescrizione in appello",
+   "statusAsOf": "2020-06-20",
+   "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2017-11-02",
    "latestSentenceMonths": 16,
-   "latestSentenceType": "pena_sospesa",
+   "latestSentenceType": "non_ancora_esecutiva",
    "evidenceTier": "stampa-concordante",
    "evidenceLabel": "needs-explanation",
    "evidenceNote": "3 independent outlets",
    "identityEvidence": "Official record: Antonio Angelucci, born 16/09/1944 in Sante Marie (AQ), Lega deputy for Lazio. The sources describe the Pdl deputy and publisher of Libero and Il Riformista (Tosinvest), the same person, who was a deputy in the XVI legislature under Camera ID 302942.",
-   "notes": "The La Stampa page was read through curl (article body in JSON-LD), because WebFetch was blocked. The lead's claim that the Rome Court of Appeal declared the case time-barred on 20 June 2020 could NOT be verified: the search budget was used up, and Google News RSS queries found no appeal or prescrizione coverage. If a reliable source confirms prescrizione, reclassify this case as 'prescrizione'. Not included, because neither is a conviction: the 2019 full acquittal in the Lazio health-fraud case (la Repubblica, 24/09/2019, per Wikipedia) and the incitement-to-corruption charge (imputato only).",
-   "correction": null,
+   "notes": "Non inclusi, perche' non sono condanne: l'assoluzione piena del 2019 nel procedimento sulla sanita' laziale (la Repubblica, 24/09/2019) e l'imputazione per istigazione alla corruzione (solo imputato). La pagina de La Stampa e' stata letta via curl (corpo in JSON-LD) perche' WebFetch era bloccato.",
+   "correction": "Corretto il 20/09/2026. Fino a questa data il caso risultava come condanna non definitiva del 2017: la riverifica ha trovato la nota di aggiornamento del Sole 24 Ore (28/05/2025) che documenta la sentenza di appello del 20/06/2020, non doversi procedere per prescrizione. Il procedimento è quindi chiuso senza condanna e il parlamentare esce dal conteggio dei condannati. La nota è una sola fonte, ma una fonte che scagiona: la regola delle due testate serve a non affermare un addebito, non a mantenerlo contro una smentita.",
    "events": [
     {
      "date": "2017-11-02",
@@ -798,6 +805,17 @@
      "damagesEuroCents": 10000000,
      "sentenceType": "pena_sospesa",
      "note": "1 anno e 4 mesi di reclusione con sospensione condizionale della pena, piu' una provvisionale di 100.000 euro a favore della Presidenza del Consiglio; ulteriori danni civili da liquidarsi in separata sede. Condannati anche i legali rappresentanti Arnaldo Rossi ed Editoriale Libero e Roberto Crespi (Edizioni Riformiste) a 1 anno ciascuno. Il tribunale ha dichiarato prescritto il capo di truffa consumata, condannando per falso e tentata truffa. I contributi contestati riguardano il 2006-2007, ottenuti secondo l'accusa aggirando il divieto di doppio contributo allo stesso editore."
+    },
+    {
+     "date": "2020-06-20",
+     "instance": "appello",
+     "court": "Corte d'appello di Roma",
+     "outcome": "prescrizione",
+     "sentenceMonths": null,
+     "fineEuroCents": null,
+     "damagesEuroCents": null,
+     "sentenceType": "non_applicabile",
+     "note": "Riformando la sentenza di primo grado, la Corte d'appello ha emesso sentenza di non doversi procedere per intervenuta prescrizione delle condotte contestate. L'atto non e' pubblico: il fatto e' documentato dalla nota di aggiornamento pubblicata da Il Sole 24 Ore in calce al proprio articolo del 03/11/2017."
     }
    ],
    "sources": [
@@ -848,8 +866,17 @@
      "kind": "press",
      "confirms": "L'indice riporta il titolo del Sole 24 Ore del 03/11/2017 'Condanna a un anno e quattro mesi per il parlamentare del Pdl Antonio Angelucci', terza testata a coprire la condanna. La pagina del Sole 24 Ore non e' stata aperta (link Google News con redirect a consent.google.com).",
      "openedByResearcher": true
+    },
+    {
+     "url": "https://www.ilsole24ore.com/art/condanna-un-anno-e-quattro-mesi-il-parlamentare-pdl-antonio-angelucci-AEindo2C",
+     "publisher": "Il Sole 24 Ore",
+     "publishedAt": "2025-05-28",
+     "kind": "press",
+     "confirms": "Nota di aggiornamento del 28/05/2025 in calce all'articolo del 03/11/2017: \"In data 20 giugno 2020 la Corte di appello di Roma, riformando la sentenza di primo grado, ha emesso in favore dell'On. Antonio Angelucci sentenza di non doversi procedere per intervenuta prescrizione delle condotte contestate\".",
+     "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-019",
@@ -995,7 +1022,8 @@
      "confirms": "Indica per Montaruli una condanna in appello a 1 anno e 7 mesi per la 'rimborsopoli' piemontese (dato in contrasto con l'entita di pena - 1 anno e 6 mesi - riportata da Domani e Il Post per la condanna divenuta definitiva).",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-032",
@@ -1197,7 +1225,8 @@
      "confirms": "Feed SCARICATO via curl. Restituisce i titoli originali che coprono tutta la catena: conferma in appello a 18 mesi del 27/06/2023 (ANSA, Sky TG24, RaiNews, Tgcom24); Cassazione del 17/06/2024 con responsabilita irrevocabile e pena da rideterminare (la Repubblica, La Stampa, Corriere Torino); rideterminazione del 20/01/2025 (La Stampa, RaiNews, Sky TG24); conferma finale della pena in Cassazione del 20/01/2026 (Il Sole 24 Ore, torinocronaca.it). Per l'evento del 2026 questa e l'UNICA conferma disponibile, a livello di titolo.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-033",
@@ -1217,7 +1246,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2023-06-16",
+   "statusAsOf": "2023-06-15",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2020-09-21",
@@ -1337,7 +1366,8 @@
      "confirms": "Assoluzione definitiva in Cassazione nel processo Ream. NON APERTO: WebFetch e bloccato su torino.corriere.it ('Claude Code is unable to fetch from torino.corriere.it'); l'URL e ricostruito e il fatto e confermato esclusivamente dal titolo restituito dal feed Google News RSS.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-059",
@@ -1467,7 +1497,8 @@
      "confirms": "Nella sezione \"CONDANNATI\": Lotito \"condannato in via definitiva a 3 mesi convertiti in pena pecuniaria\" per la mancata dismissione delle partecipazioni azionarie della Lazio.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-060",
@@ -1487,7 +1518,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2013-12-17",
+   "statusAsOf": "2015-03-24",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2011-11-08",
@@ -1599,7 +1630,8 @@
      "confirms": "Nell'entry di Lotito si legge di una prescrizione nel processo penale e della squalifica sportiva di 4 mesi per Calciopoli (sanzione sportiva, esclusa dal conteggio).",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-063",
@@ -1619,7 +1651,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2026-09-18",
+   "statusAsOf": "2025-07-03",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2023-05-04",
@@ -1688,7 +1720,8 @@
      "confirms": "Terza fonte indipendente sull'assoluzione in appello: il feed Google News riporta l'articolo RaiNews del 03/07/2025 intitolato «Stefanazzi e Ladisa assolti per finanziamento illecito a Emiliano». ATTENZIONE: NON ho aperto l'articolo — l'URL diretto non è stato ricavabile (il link Google News è un redirect offuscato e la ricerca interna di rainews.it restituisce 404), quindi cito solo il titolo così come indicizzato. Non è una fonte su cui ho fatto affidamento: l'accettazione regge già su Il Fatto Quotidiano + Gazzetta del Mezzogiorno + Repubblica.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-071",
@@ -1766,7 +1799,8 @@
      "confirms": "'La deputata di Fi Daniela Santanche', processata a Milano per aver organizzato senza autorizzazione una protesta anti burqa' - conferma identita e oggetto del processo (citato da snippet, pagina non aperta).",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-005",
@@ -1863,7 +1897,8 @@
      "confirms": "Ritiro della querela davanti alla Corte d'appello di Salerno che rende inefficace la condanna penale di primo grado (multa e spese)",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-010",
@@ -1987,7 +2022,8 @@
      "confirms": "Cassazione dismisses the prosecutor's appeal: acquittal of 19 regional councillors, Rixi included, is final.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-008",
@@ -2007,7 +2043,7 @@
    "jurisdiction": "penale",
    "status": "patteggiamento",
    "statusLabel": "Patteggiamento",
-   "statusAsOf": "2014-10-09",
+   "statusAsOf": "2014-07-14",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2014-07-14",
@@ -2073,7 +2109,8 @@
      "confirms": "Nella sezione \"HANNO PATTEGGIATO\": Elena Maccanti (Lega), candidata Camera Piemonte, \"Ha patteggiato una pena di un anno per il processo 'Rimborsopoli' Piemonte\".",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-031",
@@ -2167,7 +2204,8 @@
      "confirms": "Feed SCARICATO via curl. Restituisce i titoli concordanti di almeno cinque testate nazionali indipendenti del 31/10-01/11/2025 ('Il deputato Pozzolo condannato a 1 anno e 3 mesi per porto abusivo d'arma' - Il Sole 24 Ore; 'Sparo di Capodanno, il deputato Emanuele Pozzolo (ex FdI) condannato a un anno e tre mesi per porto abusivo d'arma' - Corriere Torino; analoghi Il Fatto, La Stampa, Tgcom24). Lo stesso feed, interrogato per il 2026, non restituisce alcuna sentenza d'appello.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-058",
@@ -2187,7 +2225,7 @@
    "jurisdiction": "penale",
    "status": "condanna_non_definitiva",
    "statusLabel": "Condanna non definitiva",
-   "statusAsOf": "2026-06-24",
+   "statusAsOf": "2026-06-25",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2023-09-15",
@@ -2283,7 +2321,8 @@
      "confirms": "Stessa condanna: Tribunale di Castrovillari, 15/09/2023, 1 anno e 6 mesi per calunnia al senatore FdI Ernesto Rapani; accuse infondate di truffa a un imprenditore cosentino e a un ex collaboratore su un assegno firmato dallo stesso Rapani e poi denunciato come smarrito; giudice Matonti, PM Calderaro (richiesta 2 anni), parti civili assistite dagli avv. Vaccaro e Lirangi.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-027",
@@ -2372,7 +2411,8 @@
      "confirms": "The ANSA archive contains only the 17/11/2022 Cassazione article for the query 'rimborsopoli Cecchetti' — no later development (no new appeal, no reinstated conviction) is recorded.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-034",
@@ -2387,12 +2427,12 @@
    "mandateEnded": "2024-07-09",
    "inPoliticiRoster": false,
    "title": "Campagna 'via gli zingari' Lega Nord Verona (legge Mancino)",
-   "offence": "Propaganda di idee fondate sulla superiorita o sull'odio razziale o etnico (art. 3 l. 654/1975 come modificato dalla legge Mancino). He was acquitted of istigazione alla discriminazione.",
+   "offence": "Propaganda di idee fondate sulla superiorita o sull'odio razziale o etnico (art. 3 l. 654/1975 come modificato dalla legge Mancino). E stato assolto dall'accusa di istigazione alla discriminazione.",
    "offenceCategory": "altro",
    "jurisdiction": "penale",
    "status": "condanna_definitiva",
    "statusLabel": "Condanna definitiva",
-   "statusAsOf": "2009-11-19",
+   "statusAsOf": "2009-07-11",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2004-12",
@@ -2505,7 +2545,8 @@
      "confirms": "Cassazione IV sez. penale: conferma in via definitiva della condanna a 2 mesi (coperti da sospensione condizionale) per Tosi e altri cinque leghisti, per propaganda di idee razziste e violazione della legge Mancino; pena accessoria di 3 anni di sospensione dall'attivita' politica; risarcimenti gia' corrisposti.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-035",
@@ -2520,12 +2561,12 @@
    "mandateEnded": "2024-07-09",
    "inPoliticiRoster": false,
    "title": "Diffamazione di Sigfrido Ranucci (Report)",
-   "offence": "Diffamazione (art. 595 c.p.) against the journalist Sigfrido Ranucci",
+   "offence": "Diffamazione (art. 595 c.p.) ai danni del giornalista Sigfrido Ranucci.",
    "offenceCategory": "diffamazione",
    "jurisdiction": "penale",
    "status": "condanna_non_definitiva",
    "statusLabel": "Condanna non definitiva",
-   "statusAsOf": "2019-10-01",
+   "statusAsOf": "2019-09-30",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-09-30",
@@ -2591,7 +2632,8 @@
      "confirms": "Condanna a 3 mesi di reclusione con la condizionale subordinata al risarcimento del danno per la diffamazione di Sigfrido Ranucci.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-028",
@@ -2611,7 +2653,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2022-03-15",
+   "statusAsOf": "2023-01-27",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-05-30",
@@ -2769,7 +2811,8 @@
      "confirms": "Tribunale di Genova, 25 marzo 2021: condanna in primo grado di nove imputati fra cui Biasotti e Bruzzone; pene fra 2 anni e 2 mesi e 4 anni e 4 mesi; contrasto con l'assoluzione in appello dell'altro filone sei giorni prima.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-029",
@@ -2874,7 +2917,8 @@
      "confirms": "La III sezione giurisdizionale centrale d'appello della Corte dei conti annulla una declaratoria di prescrizione riguardante, fra gli altri, Francesco Bruzzone (33 mila euro richiesti dalla procura per spese del primo semestre 2010) e rinvia al primo grado. Mostra che esiste un secondo troncone contabile.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-030",
@@ -2944,7 +2988,8 @@
      "confirms": "Background on the investigation (corruption for an act contrary to official duties) and Calovini's role as the beneficiary of the council seat.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-017",
@@ -2964,7 +3009,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2017-11-16",
+   "statusAsOf": "2017-10",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2013-05-23",
@@ -3041,7 +3086,8 @@
      "confirms": "Headline: 'Non diffamarono Messineo', acquittal for the Panorama editor and two journalists",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-025",
@@ -3127,7 +3173,8 @@
      "confirms": "Sentenza del processo sullo stadio della Roma: 9 condanne, fra cui Giulio Centemero 1 anno; De Vito 8 anni e 8 mesi, Lanzalone 3 anni, Parnasi 2 anni; circa dieci assoluzioni fra cui Bonifazi e Civita.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-026",
@@ -3147,7 +3194,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2024-08-10",
+   "statusAsOf": "2024-08-11",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2022-03-14",
@@ -3254,7 +3301,8 @@
      "confirms": "Titolo e sommario: 'Lega, il tesoriere e deputato Giulio Centemero condannato a 8 mesi per finanziamento illecito - La vicenda riguarda 40mila euro ricevuti da Esselunga nel 2016 concordato con il fondatore Caprotti e utilizzati per sanare i conti di Radio Padania'. Conferma condanna, pena e importo.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-045",
@@ -3332,7 +3380,8 @@
      "confirms": "Tribunale monocratico di Roma, giudice Elena Scozzarella, 10/04/2014: patteggiamento di 4 mesi convertiti in 30.000 euro di pena pecuniaria piu 10.000 euro di multa, per finanziamento illecito di parlamentare, relativo ai 60.000 euro di lavori nell'appartamento di via di Campo Marzio affittato da Marco Milanese a 8.500 euro al mese. Accordo con il pm Paolo Ielo.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-011",
@@ -3352,7 +3401,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2025-04-06",
+   "statusAsOf": "2025-04",
    "outcomeBucket": "non_condannato",
    "beforeMandate": false,
    "firstConvictionDate": null,
@@ -3405,7 +3454,8 @@
      "confirms": "All counts time-barred (Tribunale di Catania, III sez.); corruption time-barred 30/07/2023; Castiglione appealed seeking acquittal on the merits",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-036",
@@ -3420,12 +3470,12 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Crac gruppo De Nicola (Pescara)",
-   "offence": "Bancarotta (two episodes) in the collapse of companies linked to Carmine De Nicola. He was acquitted of associazione per delinquere in the abbreviated trial, and the fraud count was time-barred (prescritto).",
+   "offence": "Bancarotta (due episodi) nel dissesto di societa riconducibili a Carmine De Nicola. Nel rito abbreviato e stato assolto dall'accusa di associazione per delinquere e il capo di truffa e stato dichiarato prescritto.",
    "offenceCategory": "finanziari_fiscali",
    "jurisdiction": "penale",
    "status": "patteggiamento",
    "statusLabel": "Patteggiamento",
-   "statusAsOf": "2022-12-08",
+   "statusAsOf": "2019-11-04",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-10-30",
@@ -3529,7 +3579,8 @@
      "confirms": "Quotidiano regionale abruzzese: Testa ha chiesto il patteggiamento a 1 anno e 6 mesi davanti al GUP Gianluca Sarandrea per bancarotta, con decisione del giudice ancora pendente; il PM aveva chiesto l'assoluzione dall'associazione a delinquere e la prescrizione per le truffe; Testa coinvolto nella sua veste di commercialista.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-072",
@@ -3549,8 +3600,8 @@
    "jurisdiction": "contabile",
    "status": "contabile_non_definitiva",
    "statusLabel": "Condanna della Corte dei conti, non definitiva",
-   "statusAsOf": "2026-09-18",
-   "outcomeBucket": "contabile",
+   "statusAsOf": "2019-01-02",
+   "outcomeBucket": "esito_ignoto",
    "beforeMandate": true,
    "firstConvictionDate": "2019-01-02",
    "latestSentenceMonths": null,
@@ -3599,7 +3650,8 @@
      "confirms": "Verifica negativa: questo procedimento contabile del 2021 riguarda il gruppo 'Unione a Sinistra' (Bonelli, Castè, Gasco, Vergani) e NON Lorenzo Basso — utile a escludere una confusione fra vicende omonime di 'spese pazze'.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-073",
@@ -3619,7 +3671,7 @@
    "jurisdiction": "contabile",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2026-09-18",
+   "statusAsOf": "2021-03-29",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-12-06",
@@ -3672,7 +3724,8 @@
      "confirms": "Titolo e sommario: 'Spese pazze, assolti in Appello gli ex consiglieri regionali liguri del Pd, Ezio Chiesa e Lorenzo Basso. Ridotto invece l'importo di risarcimento a 2.500 euro ciascuno per Michele Boffa, Ubaldo Benvenuti, Antonino Miceli, Vito Vattuone, Luigi Cola, Minella Mosca e Moreno Veschi' - 29 marzo 2021.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-004",
@@ -3692,7 +3745,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2005-12-31",
+   "statusAsOf": "2005",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2001-06-21",
@@ -3788,7 +3841,8 @@
      "confirms": "L'ex consigliere DC di Roma Lorenzo Cesa condannato in primo grado a tre anni e tre mesi; la IV sezione penale della Corte d'appello annulla le condanne del processo Anas/Prandini",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-018",
@@ -3850,7 +3904,8 @@
      "confirms": "Tribunale di Ferrara, giudice Alessandra Martinelli, sentenza del 29 maggio 2023: il deputato di Italia Viva Luigi Marattin condannato per diffamazione del senatore leghista Claudio Borghi a 2.000 euro di multa; origine nel confronto a Omnibus (La7) del 2017 e nei successivi post Facebook; annuncio di appello dell'avv. Federico Orlandini.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-067",
@@ -3870,7 +3925,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2019-12-10",
+   "statusAsOf": "2019-12",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": null,
@@ -3920,7 +3975,8 @@
      "confirms": "Articolo aperto e letto. Conferma SOLO l'esistenza e l'impianto del procedimento — truffa aggravata per rimborsi indebiti percepiti come consigliere comunale di Catania, periodo novembre 2010-gennaio 2012, coimputati Daniele Agatino Belfiore e Giuseppe Anastasio Privitera (i suoi datori di lavoro), costituzione di parte civile del Comune con decreto del sindaco Enzo Bianco del 6 marzo 2016, apertura del dibattimento slittata di un anno per vizio di notifica. NON conferma la prescrizione né alcuna condanna: è anteriore di oltre tre anni all'esito e riferisce che Messina «ha sempre respinto le accuse».",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-074",
@@ -3940,7 +3996,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2026-09-18",
+   "statusAsOf": "2017-10-25",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2015",
@@ -4009,7 +4065,8 @@
      "confirms": "Citata nel lead come fonte della condanna di primo grado. NON verificabile: il server risponde HTTP 403 a WebFetch, quindi non l'ho usata come fonte portante.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-064",
@@ -4024,12 +4081,12 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Condanna della Corte dei conti per danno erariale (gennaio 2022) legata a un'ex partecipazione societaria, vicenda La Spezia",
-   "offence": "Danno erariale. Secondo le fonti, la condanna riguarda fatti risalenti a circa quindici anni prima, connessi a una partecipazione societaria di Frijia; l'oggetto preciso del danno non e' esplicitato dalle fonti disponibili",
+   "offence": "Danno erariale. Secondo le fonti, la condanna riguarda fatti risalenti a circa quindici anni prima, connessi a una partecipazione societaria di Frijia; l'oggetto preciso del danno non è esplicitato dalle fonti disponibili",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "contabile",
    "status": "contabile_non_definitiva",
    "statusLabel": "Condanna della Corte dei conti, non definitiva",
-   "statusAsOf": "2022-07-30",
+   "statusAsOf": "2022-01",
    "outcomeBucket": "contabile",
    "beforeMandate": true,
    "firstConvictionDate": "2022-01",
@@ -4079,7 +4136,8 @@
      "confirms": "In voce redazionale: il Consiglio comunale si e' aperto con un question time dell'opposizione 'in merito alla condanna della Corte dei Conti a carico dell'Assessore Frijia'. Riporta la dichiarazione di Guido Melley ('una condanna di 3 persone, tra cui Maria Grazia Frijia, per danno erariale e 176mila euro da pagare in solido') e la replica del sindaco ('non e' una condanna... l'assessore e altre due persone, in qualita' di ex soci, saranno chiamati a risarcire in solido'). Menziona inoltre un precedente procedimento penale al Tribunale di Genova conclusosi con la PRESCRIZIONE del reato di truffa.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-047",
@@ -4235,7 +4293,8 @@
      "confirms": "Stessa udienza di Cassazione: 3 anni e 6 mesi per bancarotta fraudolenta, pene accessorie confermate (interdizione dai pubblici uffici e divieto di attivita' d'impresa per 5 anni), rinvio alla Corte d'appello del solo punto sul mancato versamento delle imposte; circa 3 milioni distratti dalla Ofin srl (amministrata 1996-2011, fallita nel 2014), fatti 2006-2011; indagine GdF su delega della Procura di Cosenza. Il corpo dell'articolo parla di condanna \"in via definitiva\", ma il titolo attuale della stessa pagina e' \"Processo Bancarotta fraudolenta per Mario Occhiuto, si torna in Appello per uno dei capi d'accusa\".",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-048",
@@ -4316,7 +4375,8 @@
      "confirms": "Titolo ANSA 'Comuni: Cosenza, Corte dei conti assolve ex sindaco Occhiuto' rilevato nel feed Google News del 22/02/2022; l'URL esatto non e stato ricostruito e la pagina NON e stata aperta - fonte indicata solo come riscontro del titolo, non citabile come verifica.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-056",
@@ -4451,7 +4511,8 @@
      "confirms": "Search of the ANSA archive for Corte dei conti rulings on the Lombardy group-funds scandal returns no item naming Massimiliano Romeo or Fabrizio Cecchetti — no separate contabile proceeding could be verified for them.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-054",
@@ -4524,7 +4585,8 @@
      "confirms": "Assoluzione di Matteo Renzi, senatore di Italia Viva, da parte della terza sezione giurisdizionale d'appello della Corte dei conti il 14 maggio 2021, relativamente alla condanna di primo grado a 15.000 euro per il conferimento di quattro incarichi da direttore generale nel 2005 in Provincia di Firenze.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-055",
@@ -4613,7 +4675,8 @@
      "confirms": "Feed aperto e letto integralmente. Riporta i titoli indipendenti: Corriere della Sera 03/03/2022 'Renzi condannato dalla Corte dei Conti: 70 mila euro per danno erariale'; la Repubblica (Firenze) 03/03/2022 'Nomine illegittime al Comune di Firenze: Matteo Renzi condannato dalla Corte dei Conti'; Il Post 03/03/2022 'Matteo Renzi e stato condannato dalla Corte dei Conti a pagare 70mila euro per danno erariale, per fatti relativi a quando era sindaco di Firenze'; Il Tirreno 05/06/2025 'Matteo Renzi assolto in appello per le nomine del suo staff come sindaco di Firenze'.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-065",
@@ -4633,7 +4696,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2026-09-18",
+   "statusAsOf": "2022-12-13",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-05-30",
@@ -4734,7 +4797,8 @@
      "confirms": "Riferimento di controllo: la pronuncia definitiva della Cassazione del marzo 2022 riguarda il PRIMO filone (Rixi e altri), procedimento distinto da quello qui registrato. Serve a evitare di confondere i due filoni e a escludere che esista gia una Cassazione sul secondo filone a quella data.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-050",
@@ -4754,7 +4818,7 @@
    "jurisdiction": "penale",
    "status": "condanna_definitiva",
    "statusLabel": "Condanna definitiva",
-   "statusAsOf": "2014-04-04",
+   "statusAsOf": "2013-07-31",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2013-07-31",
@@ -4796,7 +4860,8 @@
      "confirms": "Decreto penale di condanna, circa 5.700 euro, per violazione della legge Mancino; cori del 13 giugno 2009 a Pontida quando Salvini era capogruppo della Lega Nord in Consiglio comunale a Milano e neoeletto eurodeputato; la condanna è emersa nel processo di Torino su richiesta del pm Emilio Gatti, accolta dal giudice Roberto Ruscello; riporta il testo dei cori.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-046",
@@ -4858,7 +4923,8 @@
      "confirms": "Titolo e testo: \"Siena, Maurizio Gasparri condannato per aver diffamato l'ex rettore Piero Tosi e il figlio Gian Marco\"; multa di mille euro, 20.000 euro di risarcimento a Piero Tosi e 15.000 al figlio; denuncia dell'avv. Enrico De Martino; il pm aveva chiesto 3 mesi; i legali Valentino e Pini annunciano ricorso in appello.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-070",
@@ -4939,7 +5005,8 @@
      "confirms": "Esistenza della condanna di primo grado al momento delle regionali 2020 ('un condannato in primo grado in Emilia con la Meloni'), coerente con la dichiarazione di impresentabilita di Malaguti da parte della Commissione antimafia. NON APERTO: citato solo sulla base del titolo visto nei risultati di ricerca; il contenuto e comunque ridondante rispetto alle due fonti aperte.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-021",
@@ -5020,7 +5087,8 @@
      "confirms": "L'appello contro la sentenza contabile del 2015 e' stato dichiarato inammissibile 'a ottobre', con conferma della condanna in solido a 140.418 euro; ricostruisce inoltre il processo penale (prescrizione) e l'inammissibilita' del ricorso in Cassazione di Rotelli.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-022",
@@ -5040,7 +5108,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2014-09-23",
+   "statusAsOf": "2016-10",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2016-10",
@@ -5112,7 +5180,8 @@
      "confirms": "Riqualificazione e prescrizione del 23 settembre 2014, conferma della Corte d'appello di Roma nell'ottobre 2016 e inammissibilita' del ricorso in Cassazione di Rotelli.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-007",
@@ -5206,7 +5275,8 @@
      "confirms": "Indipendentemente conferma il patteggiamento di 1 anno e 4 mesi dell'ex ministro Brambilla per bancarotta fraudolenta nel crac delle Trafilerie del Lario di Calolziocorte, con le pene dei coimputati.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-061",
@@ -5226,7 +5296,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2018-10-13",
+   "statusAsOf": "2018-10",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2017-06-08",
@@ -5279,7 +5349,8 @@
      "confirms": "Umberto Maerna, di Fratelli d'Italia ed ex vicepresidente della Provincia di Milano, assolto in appello 'per non avere commesso il fatto'; richiama la condanna a 14 mesi del giugno 2017; assolto anche il coimputato Dario Macchi.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-002",
@@ -5299,7 +5370,7 @@
    "jurisdiction": "contabile",
    "status": "contabile_non_definitiva",
    "statusLabel": "Condanna della Corte dei conti, non definitiva",
-   "statusAsOf": "2026-01-02",
+   "statusAsOf": "2022-03",
    "outcomeBucket": "contabile",
    "beforeMandate": true,
    "firstConvictionDate": "2022-03",
@@ -5384,7 +5455,8 @@
      "confirms": "Second central section, presided by Rita Loreto, ruled in March 2022 that Barelli must pay 495,000 euros (495,587.22), reversing acquittal n.113/2020. He was investigated and archived in the criminal case, and intends to appeal.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-062",
@@ -5446,7 +5518,8 @@
      "confirms": "'Caso Duty Free, estinto il reato per Piero Fassino': il GIP ha accettato il risarcimento proposto dall'avvocato Nicola Gianaria per riparare al tentato furto; fatti del 15 aprile 2024; indagine della procura di Civitavecchia con acquisizione di cinque video di sorveglianza e testimonianze.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-057",
@@ -5524,7 +5597,8 @@
      "confirms": "Indice dei pezzi de l'Adige sulla vicenda: 'Comune di Trento, nove condannati' (con Pietro Patton 12.062 euro), 'Dietrofront Andreatta: Io di Patton mi fido' (caso Manenti-Patton davanti alla Corte dei conti), 'Giunta Pacher segnalata alla Corte dei Conti'. Nessun articolo sull'esito di un eventuale appello.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-003",
@@ -5544,7 +5618,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2017-06-23",
+   "statusAsOf": "2019",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2013-02-12",
@@ -5710,7 +5784,8 @@
      "confirms": "Civil Cassazione revived the Region's damages claim over the presidential fund; defence lawyers say the criminal proceedings ended about ten years ago with no criminal conviction, including a time bar.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-001",
@@ -5725,12 +5800,12 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Consulenze/incarichi d'oro Comune di Milano (giunta Moratti)",
-   "offence": "Danno erariale. Charges included 11 senior posts given in 2007 to outside people who lacked the required qualifications, the Madaffari appointment, double pay for Borghini and Bonetti Baroggi, and hiring press-office staff at senior grade. De Corato was held liable for the same items charged to Moratti.",
+   "offence": "Danno erariale. Le contestazioni riguardavano 11 incarichi apicali affidati nel 2007 a persone esterne prive dei requisiti richiesti, la nomina Madaffari, le doppie retribuzioni di Borghini e Bonetti Baroggi e l'assunzione di personale dell'ufficio stampa con inquadramento apicale. De Corato e stato ritenuto responsabile per le stesse voci contestate a Moratti.",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "contabile",
    "status": "contabile_definitiva",
    "statusLabel": "Condanna della Corte dei conti, definitiva",
-   "statusAsOf": "2017-01-12",
+   "statusAsOf": "2016-12-22",
    "outcomeBucket": "contabile",
    "beforeMandate": true,
    "firstConvictionDate": "2016-12-22",
@@ -5783,7 +5858,8 @@
      "confirms": "Central appeal section of the Corte dei conti convicted Moratti, De Corato and 20 others 'in via definitiva' to pay 1,082,000 euros; De Corato's share is 21,763 euros.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-024",
@@ -5856,7 +5932,8 @@
      "confirms": "'Gli ermellini hanno però assolto il capogruppo della Lega alla Camera Riccardo Molinari'; 11 months on appeal (24 July 2018); new appeal ordered only for other defendants",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-053",
@@ -5876,7 +5953,7 @@
    "jurisdiction": "penale",
    "status": "prescrizione",
    "statusLabel": "Prescrizione",
-   "statusAsOf": "2024-05",
+   "statusAsOf": "2024-05-18",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2019-01-14",
@@ -6037,7 +6114,8 @@
      "confirms": "Titoli che confermano sia la condanna a 7 mesi del 01/06/2023 sia la prescrizione del 2024 ('Insulti a Kyenge, prescrizione per Calderoli: niente pena...' - la Repubblica; 'Frasi razziste contro la Kyenge, per Calderoli scatta la prescrizione' - Il Sole 24 Ore).",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-049",
@@ -6142,7 +6220,8 @@
      "confirms": "Sentenza di primo grado del 23/07/2020: 4 anni e 3 mesi a Salvo Pogliese, allora sindaco di Catania ed ex capogruppo del Pdl all'Ars, per le spese pazze all'Assemblea regionale siciliana; annuncio di appello. NB: stesso editore dell'altro articolo La Sicilia, quindi le due testate indipendenti sul caso sono ANSA e La Sicilia.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-20"
   },
   {
    "caseId": "case-051",
@@ -6162,7 +6241,7 @@
    "jurisdiction": "penale",
    "status": "condanna_definitiva",
    "statusLabel": "Condanna definitiva",
-   "statusAsOf": "2015-04-14",
+   "statusAsOf": "2018-05-11",
    "outcomeBucket": "condannato",
    "beforeMandate": true,
    "firstConvictionDate": "2012-10-26",
@@ -6325,7 +6404,8 @@
      "confirms": "Estremi della sentenza: Cass. pen., Sez. feriale, 29 agosto 2013, n. 35729 (motivazioni, 208 pagine); pena detentiva di 4 anni divenuta definitiva.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-052",
@@ -6345,7 +6425,7 @@
    "jurisdiction": "penale",
    "status": "riformata_assoluzione",
    "statusLabel": "Assoluzione dopo una condanna",
-   "statusAsOf": "2015-03-10",
+   "statusAsOf": "2017-04-20",
    "outcomeBucket": "non_condannato",
    "beforeMandate": true,
    "firstConvictionDate": "1998-07-07",
@@ -6599,7 +6679,8 @@
      "confirms": "All Iberian: condanna in primo grado a 2 anni e 4 mesi per finanziamento illecito a Craxi, poi 'non doversi procedere' per prescrizione in secondo grado.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-016",
@@ -6614,7 +6695,7 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Fondi ai gruppi consiliari Regione Sardegna (centrosinistra, 2004-2009)",
-   "offence": "peculato (art. 314 c.p.): misuse of the centre-left regional council group's funds, 2004-2009",
+   "offence": "Peculato (art. 314 c.p.): uso improprio dei fondi del gruppo consiliare regionale di centrosinistra, 2004-2009.",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "penale",
    "status": "prescrizione",
@@ -6688,7 +6769,8 @@
      "confirms": "Lai named among the 22 whose offences were declared time-barred",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-037",
@@ -6703,7 +6785,7 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Rimborsopoli Regione Lombardia (spese pazze al Pirellone)",
-   "offence": "peculato (art. 314 c.p.), misuse of regional council group funds (2008-2011)",
+   "offence": "Peculato (art. 314 c.p.), uso improprio dei fondi del gruppo consiliare regionale (2008-2011).",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "penale",
    "status": "prescrizione",
@@ -6777,7 +6859,8 @@
      "confirms": "'Prescrizione anche per Stefano Maullu'. The article text is inconsistent: it refers to the Tribunale and calls him a current MEP.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-012",
@@ -6797,7 +6880,7 @@
    "jurisdiction": "contabile",
    "status": "contabile_non_definitiva",
    "statusLabel": "Condanna della Corte dei conti, non definitiva",
-   "statusAsOf": "2017-10-05",
+   "statusAsOf": "2017-10-02",
    "outcomeBucket": "esito_ignoto",
    "beforeMandate": true,
    "firstConvictionDate": "2017-10-02",
@@ -6882,7 +6965,8 @@
      "confirms": "First-instance acquittal in Dec 2015, reversed on appeal: 220,000 euros",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-013",
@@ -6987,7 +7071,8 @@
      "confirms": "Cappellacci 'e stato assolto in appello' dalle accuse che andavano 'dalla bancarotta fraudolenta a quella documentale, piu altri reati societari'; in primo grado era stato 'condannato a due anni e mezzo' in qualita di commercialista.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-014",
@@ -7002,7 +7087,7 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Processo P3 (Roma)",
-   "offence": "abuso d'ufficio (art. 323 c.p.): the 2009 appointment of Ignazio Farris as head of ARPA Sardegna, in the P3 / wind-energy case. Per his lawyer, the corruption and P3-membership charges had already been dropped.",
+   "offence": "Abuso d'ufficio (art. 323 c.p.) per la nomina nel 2009 di Ignazio Farris a direttore dell'ARPA Sardegna, nell'ambito della vicenda P3 / eolico. Secondo il suo legale le accuse di corruzione e di appartenenza alla P3 erano gia cadute.",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "penale",
    "status": "prescrizione",
@@ -7073,7 +7158,8 @@
      "confirms": "'P3, prescrizione per Cappellacci. Era accusato di abuso d'ufficio' - Tribunale di Roma, IX sezione penale, decisione del 16/03/2018; nessuna condanna, prescrizione.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-015",
@@ -7088,7 +7174,7 @@
    "mandateEnded": null,
    "inPoliticiRoster": true,
    "title": "Fondi Ingenium (presunta tangente da 80mila euro)",
-   "offence": "corruzione and peculato: an alleged 80,000-euro bribe for 750,000 euros of public funding (Ingenium funds)",
+   "offence": "Corruzione e peculato: una presunta tangente da 80.000 euro a fronte di 750.000 euro di finanziamenti pubblici (fondi Ingenium).",
    "offenceCategory": "pubblica_amministrazione",
    "jurisdiction": "penale",
    "status": "prescrizione",
@@ -7135,7 +7221,8 @@
      "confirms": "Headline: corruption and peculato trial, Zedda acquitted, prescrizione for Ugo Cappellacci",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-040",
@@ -7294,7 +7381,8 @@
      "confirms": "Condanna del Tribunale di Bergamo a un anno e 6 mesi di reclusione per vilipendio al Capo dello Stato Napolitano; seconda condanna dopo quella per vilipendio alla bandiera.",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-041",
@@ -7410,7 +7498,8 @@
      "confirms": "Morte di Umberto Bossi il 19 marzo 2026 a Varese, a 84 anni (rilevante solo per lo stato anagrafico del parlamentare).",
      "openedByResearcher": false
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-042",
@@ -7566,7 +7655,8 @@
      "confirms": "Cassazione 06/08/2019: prescritto il reato di truffa sui rimborsi elettorali per Umberto Bossi e Francesco Belsito; confermata la confisca dei 49 milioni.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-043",
@@ -7690,7 +7780,8 @@
      "confirms": "Editore indipendente: la Corte d'appello di Milano ha deciso il 'non luogo a procedere' per Umberto e Renzo Bossi e 'ha confermato la condanna solo di Belsito', perche la nuova legge rendeva il reato procedibile a querela e la Lega aveva querelato solo l'ex tesoriere.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-044",
@@ -7782,7 +7873,8 @@
      "confirms": "Indica per Bossi una condanna di primo grado a 4 mesi per resistenza agli agenti (fatti di via Bellerio, 18/09/1996) senza segnalare l'esito finale.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-075",
@@ -7888,7 +7980,8 @@
      "confirms": "Testo della sentenza di Cassazione su Umberto Bossi: reato art. 292 c.p.; Tribunale di Como 23/05/2001 condanna a 1 anno e 4 mesi con sospensione condizionale; Corte d'appello di Milano 14/11/2006 conferma con conversione della pena in 3.000 euro di multa (l. 85/2006); Cassazione 25/09/2007 rigetta il ricorso e annulla parzialmente senza rinvio revocando la sospensione condizionale.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   },
   {
    "caseId": "case-068",
@@ -7969,7 +8062,8 @@
      "confirms": "Fonte indipendente sul primo grado: Corte dei conti Emilia-Romagna condanna Merola, la giunta e due dirigenti a 30.000 euro (richiesti 45.000) per l'incarico di capo di gabinetto a un dirigente privo di laurea.",
      "openedByResearcher": true
     }
-   ]
+   ],
+   "verifiedAt": "2026-09-18"
   }
  ]
 }

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 99
+- Artefatti nel registro: 106
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 82 (PR umana dopo revisione)
+- manuale: 89 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -67,12 +67,16 @@ La revisione e il merge restano umani.
 | `mef-irpef-2024` | 2024 | non dichiarato | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | `17 6 * * 1` | `.github/workflows/mef-irpef-refresh.yml` | solo rilevamento | `python scripts/etl/mef_irpef_municipal_snapshot.py --check` |
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
 | `openbdap-budget-law` | 2017-2026 | 2026-08-28T23:26:32.000Z | https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20 | `43 6 5 * *` | `.github/workflows/budget-law-refresh.yml` | PR automatica | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check` |
+| `openbdap-defence-budget-macroaggregates` | non dichiarato nello snapshot | 2026-09-22T10:30:00.000Z | https://bdap-opendata.rgs.mef.gov.it/content/legge-di-bilancio-pubblicata-serie-storica-spese-amministrazione-missione-programma-1?metadati=showall | nessuno | nessuno | manuale | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/it/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
 | `opencivitas-2015` | 2015 | 2026-09-17T10:10:34Z | https://www.opencivitas.it/it/dataset/2015-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2015_snapshot.py --check` |
 | `opencivitas-2016` | 2016 | 2026-09-17T13:57:07Z | https://www.opencivitas.it/it/dataset/2016-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2016_snapshot.py --check` |
 | `opencivitas-2017` | 2017 | 2026-09-12T17:26:20Z | https://www.opencivitas.it/it/dataset/2017-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2017_snapshot.py --check` |
 | `opencivitas-2018` | 2018 | 2026-09-08T05:10:58Z | https://www.opencivitas.it/it/dataset/2018-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_snapshot.py --check` |
 | `opencivitas-2022-rifiuti` | 2022 | 2026-09-19T07:06:33Z | https://www.opencivitas.it/it/dataset/2022-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_rifiuti_snapshot.py --check` |
+| `opencivitas-2022-viabilita` | 2022 | 2026-09-21T15:02:57Z | https://www.opencivitas.it/it/dataset/2022-comuni-viabilit%C3%A0-e-territorio-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_viabilita_snapshot.py --check` |
+| `opencivitas-2022-sociale-asili` | 2022 | 2026-09-22T11:30:22Z | https://www.opencivitas.it/it/dataset/2022-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_sociale_asili_snapshot.py --check` |
+| `opencivitas-2022-amministrazione` | 2022 | 2026-09-22T12:56:21Z | https://www.opencivitas.it/it/dataset/2022-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --check` |
 | `opencivitas-2019` | 2019 | 2026-09-08T02:30:38Z | https://www.opencivitas.it/it/dataset/2019-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_snapshot.py --check` |
 | `opencivitas-2021` | 2021 | 2026-09-05T07:41:53Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_snapshot.py --check` |
 | `opencoesione` | 2026-04-30 | 2026-08-20T08:51:13+00:00 | https://opencoesione.gov.it/it/api/aggregati/ | `17 */6 * * *` | `.github/workflows/opencoesione-refresh.yml` | PR automatica | `python scripts/etl/opencoesione_snapshot.py --check` |
@@ -114,6 +118,8 @@ La revisione e il merge restano umani.
 | `istat-bes-ambiente-2004-2023` | 2004-2023 | 2026-09-16 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_ambiente.py --check` |
 | `istat-bes-innovazione-2004-2023` | 2004-2023 | 2026-09-17 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_innovazione.py --check` |
 | `istat-poverta-soglia-assoluta-2005-2024` | 2005-2024 | 2026-09-17 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_soglia_assoluta.py --check` |
+| `istat-poverta-soglia-relativa-2014-2024` | 2014-2024 | 2026-09-21 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_soglia_relativa.py --check` |
+| `eurostat-arope-2015-2025` | 2015-2025 | 2026-09-21 | https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_arope.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
 | `inps-assegno-unico-2022-2024` | 2022-2024 | 2026-09-14 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_assegno_unico_snapshot.py --check` |
@@ -127,6 +133,7 @@ La revisione e il merge restano umani.
 | `investigative-explorer-incarichi` | non dichiarato nello snapshot | 2026-08-26T21:45:23Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/investigative_explorer_build.py --check --output src/data/generated/investigative-explorer-incarichi.json` |
 | `mef-iva-2024-2025` | 2023-2024 (anni di imposta) | 2026-09-11 | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | nessuno | nessuno | manuale | `python3 scripts/etl/mef_iva_snapshot.py --check` |
 | `eu-vat-gap-italy` | 2019-2024 | 2026-09-13 | https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en | nessuno | nessuno | manuale | `python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check` |
+| `istat-permessi-costruire-2015-2025` | 2015-2025 | 2026-09-22 | https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_permessi_costruire_snapshot.py --check` |
 | `mef-tax-gap-nazionale` | 2018-2022 | 2026-09-13 | https://www.mef.gov.it/documenti-pubblicazioni/rapporti-relazioni/ | nessuno | nessuno | manuale | `python3 scripts/etl/mef_tax_gap_nazionale_snapshot.py --check` |
 | `eurostat-taxag-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/gov_10a_taxag/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_taxag_snapshot.py --check` |
 | `eurostat-sha-health-2014-2025` | 2014-2025 | 2026-09-14 | https://ec.europa.eu/eurostat/databrowser/view/hlth_sha11_hf/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_sha_health_snapshot.py --check` |

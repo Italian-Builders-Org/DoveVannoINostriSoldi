@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-arope",
+  "domain": {
+    "code": "ilc_peps01n",
+    "label": "Persons at risk of poverty or social exclusion by age and sex (Europe 2030)",
+    "dataflowId": "ilc_peps01n"
+  },
+  "period": {
+    "from": 2015,
+    "to": 2025
+  },
+  "periodNote": "Serie nazionale Italia, definizione Europa 2030 (ilc_peps01n), anni 2015–2025. Non giuntare con la serie Europa 2020 (ilc_peps01).",
+  "definitionNote": "AROPE = quota di popolazione in almeno una delle tre condizioni: rischio di povertà (reddito sotto il 60% della mediana), grave deprivazione materiale e sociale, bassa intensità di lavoro. Le persone contano una sola volta.",
+  "indicators": [
+    {
+      "code": "AROPE",
+      "label": "Rischio di povertà o esclusione sociale (Europa 2030)",
+      "unit": "PC / THS_PER",
+      "coverage": {
+        "2015": 1,
+        "2016": 1,
+        "2017": 1,
+        "2018": 1,
+        "2019": 1,
+        "2020": 1,
+        "2021": 1,
+        "2022": 1,
+        "2023": 1,
+        "2024": 1,
+        "2025": 1
+      }
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "country"
+    }
+  ],
+  "flags": {
+    "attribute": "OBS_FLAG",
+    "note": "In questa fetta tutte le osservazioni hanno OBS_FLAG vuoto; un flag futuro deve restare distinto da zero.",
+    "knownValues": {}
+  },
+  "caveats": [
+    "AROPE non è spesa pubblica e non si somma né si confronta con SIOPE, OpenBDAP o IRPEF.",
+    "AROPE non è la povertà assoluta né la povertà relativa ISTAT (34_727): definizioni, denominatori e periodi restano distinti; non crearne un totale o una differenza.",
+    "Questa fetta usa la definizione Europa 2030 (ilc_peps01n). La serie Europa 2020 (ilc_peps01) è un altro dataset e non va giuntata.",
+    "PC è una percentuale di popolazione; THS_PER è un conteggio in migliaia di persone. Non sommare percentuali e conteggi.",
+    "Solo Italia, età TOTAL, sessi T. Nessun dettaglio regionale in questa fetta.",
+    "I componenti (rischio di povertà, deprivazione, bassa intensità) restano fuori: sono tabelle Eurostat separate e non si ricostruiscono qui."
+  ],
+  "reconciliation": {
+    "observations": 11,
+    "years": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "units": [
+      "PC",
+      "THS_PER"
+    ],
+    "note": "11 anni × 2 unità nella fonte CSV = 22 righe; l'artefatto pubblica 11 osservazioni con entrambe le misure."
+  },
+  "observations": 11,
+  "scale": {
+    "rateFactor": 10,
+    "rateNote": "Percentuali con al più un decimale, memorizzate in decimi (×10).",
+    "personsUnit": "thousands",
+    "personsNote": "THS_PER Eurostat: migliaia di persone, interi senza decimali."
+  },
+  "headers": [
+    "DATAFLOW",
+    "LAST UPDATE",
+    "freq",
+    "unit",
+    "age",
+    "sex",
+    "geo",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_FLAG",
+    "CONF_STATUS"
+  ],
+  "fixedDimensions": {
+    "DATAFLOW": "ESTAT:ILC_PEPS01N(1.0)",
+    "freq": "A",
+    "age": "TOTAL",
+    "sex": "T",
+    "geo": "IT",
+    "LAST UPDATE": "17/09/26 23:00:00"
+  },
+  "units": [
+    "PC",
+    "THS_PER"
+  ],
+  "expectedRates": {
+    "2015": "28.4",
+    "2016": "27.8",
+    "2017": "25.9",
+    "2018": "25.7",
+    "2019": "24.6",
+    "2020": "24.9",
+    "2021": "25.2",
+    "2022": "24.4",
+    "2023": "22.8",
+    "2024": "23.1",
+    "2025": "22.6"
+  },
+  "expectedPersons": {
+    "2015": "17291",
+    "2016": "16832",
+    "2017": "15652",
+    "2018": "15463",
+    "2019": "14803",
+    "2020": "14821",
+    "2021": "14834",
+    "2022": "14305",
+    "2023": "13392",
+    "2024": "13525",
+    "2025": "13265"
+  },
+  "source": {
+    "owner": "Eurostat",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en",
+    "informationUrl": "https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:At_risk_of_poverty_or_social_exclusion_(AROPE)",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "apiPath": "/eurostat/api/dissemination/sdmx/2.1/data/ilc_peps01n/",
+    "dataflowId": "ilc_peps01n",
+    "dataflowLabel": "Persons at risk of poverty or social exclusion by age and sex",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: riuso consentito con attribuzione (CC BY 4.0).",
+    "seriesNote": "ilc_peps01n è la definizione corrente Europa 2030 (grave deprivazione materiale e sociale). ilc_peps01 (Europa 2020) resta fuori perimetro. ISTAT pubblica gli stessi ordini di grandezza nei comunicati EU-SILC; i byte pinnati sono la risposta Eurostat.",
+    "acquisitionDate": "2026-09-21",
+    "assets": {
+      "arope-italy": {
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/ilc_peps01n/A.PC+THS_PER.TOTAL.T.IT?format=SDMX-CSV&startPeriod=2015&endPeriod=2025",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 1670,
+        "sha256": "f0ef2bf1cf98d9a30c24afafdd96a7d6a7c0f21741b4443c982b750773fe505b",
+        "fixturePath": "tests/fixtures/eurostat-arope/ilc_peps01n-IT-TOTAL-T-2015-2025.csv"
+      }
+    },
+    "reuseTermsEvidence": [
+      "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+      "https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en"
+    ]
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Percentuali e conteggi di persone: non importi, stanziamenti o pagamenti."
+    },
+    "periodo": {
+      "reference": "Anno di indagine EU-SILC / riferimento AROPE pubblicato da Eurostat",
+      "publication": "17/09/26 23:00:00",
+      "acquisition": "2026-09-21",
+      "note": "Il reddito usato nel componente rischio di povertà è tipicamente quello dell'anno precedente l'indagine; restiamo sul TIME_PERIOD pubblicato senza inventare un secondo calendario."
+    },
+    "provenance": {
+      "holder": "Eurostat (EU-SILC; per l'Italia la raccolta è ISTAT)",
+      "channel": "Eurostat SDMX 2.1 dissemination API",
+      "note": "Hash del CSV ufficiale; LAST UPDATE fissato nel lock."
+    }
+  },
+  "integrity": {
+    "sourceLockSha256": "d23069c28017b0b9c5ce2fa9b1a9496fc9389befe6d77dd2111caefc3b8ee6c2",
+    "dataArtifact": {
+      "path": "src/data/generated/eurostat-arope-2015-2025.data.json",
+      "bytes": 3264,
+      "sha256": "a80c1abd4cf1fa97c8a02a7ec386a92ff752cdadfd3b877fac9e82becf8a0e11"
+    }
+  }
+}

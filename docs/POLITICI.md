@@ -41,6 +41,11 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
   notizie per profilo.
 - [src/app/api/politici/[id]/atti/route.ts](../src/app/api/politici/%5Bid%5D/atti/route.ts):
   atti firmati e votazioni finali per deputati e senatori.
+- [src/app/api/politici/[id]/voti-tema/route.ts](../src/app/api/politici/%5Bid%5D/voti-tema/route.ts):
+  storico di voto per tema sulla singola persona (raggruppamento per parole chiave
+  nei titoli ufficiali delle votazioni finali della XIX legislatura).
+- [src/app/api/politici/voti-tema/route.ts](../src/app/api/politici/voti-tema/route.ts):
+  directory dello storico per tema su tutti i parlamentari (vista **Storico voti**).
 - [src/app/api/politici/giudiziario/route.ts](../src/app/api/politici/giudiziario/route.ts):
   procedimenti documentati, copertura, cautele e fonti per persona.
 
@@ -58,10 +63,19 @@ sviluppo.
 
 - Overview del grafo: `/politici`.
 - Persona: `/politici?person=<id>` dove `<id>` è `dep-<numericId>`,
-  `sen-<id>` o `gov-<personaId>`.
+  `sen-<id>` o `gov-<personaId>`. Nella scheda, la tab **Voti per tema** mostra
+  lo storico delle votazioni finali raggruppate per tema (non una tassonomia
+  ufficiale: match sul titolo dell’atto). I chip mostrano `voti espressi/votazioni
+  in aula`; «non ha votato» resta distinto dal conteggio delle votazioni.
 - Gruppo: `/politici?group=<id>`.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
+- Storico voti per tema (directory cercabile su tutti i parlamentari):
+  `/politici?vista=storico-voti&tema=<id>` (filtra per nome con `q=`, ramo con
+  `ramo=camera|senato`, assenze con `espressi=0`). Mostra sempre **cosa si è
+  votato** (titolo atto, esito, totali d’aula) e **chi ha votato** (F/C/A nel
+  perimetro filtrato); click su un parlamentare espande i suoi voti sul tema.
+  «Apri scheda» apre **Voti per tema** (`scheda=temi`) restando nella vista storico.
 - Eurodeputati eletti in Italia (vista separata): `/politici/europa`.
 - Deputato per id numerico legacy: `/politici?deputy=<numericId>`
   (risolve in `dep-<numericId>`).
@@ -74,6 +88,7 @@ sviluppo.
 node --experimental-strip-types --test tests/camera-atti-voti-contract.test.mjs
 node --experimental-strip-types --test tests/senato-atti-voti-contract.test.mjs
 node --experimental-strip-types --test tests/politici-atti-route.test.mjs
+node --experimental-strip-types --test tests/politici-voti-tema-route.test.mjs
 node --experimental-strip-types --test tests/parlamento-giudiziario-contract.test.mjs
 node --experimental-strip-types --test tests/parlamento-giudiziario-route.test.mjs
 node --experimental-strip-types --test tests/parlamento-giudiziario-ui.test.mjs

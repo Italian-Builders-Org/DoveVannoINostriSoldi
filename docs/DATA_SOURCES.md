@@ -464,6 +464,29 @@ ISTAT. Nessuna media UE in questa slice. Fonte + API + MCP, senza pagina UI.
 - [Contratto, celle e verifiche](research/EU_VAT_GAP_ITALY.md).
 - [Landing ufficiale VAT gap](https://taxation-customs.ec.europa.eu/taxation/vat/fight-against-vat-fraud/vat-gap_en).
 
+### Permessi di costruire ISTAT (tavole a.1–a.4)
+
+**Issue [#379](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/379).** Zip ufficiale
+*Tavole-16giugno2026.zip* dalla landing
+[Statistiche sui permessi di costruire – Anno 2025](https://www.istat.it/tavole-di-dati/statistiche-sui-permessi-di-costruire-anno-2025/)
+(pubblicazione 17 giugno 2026; acquisizione e controllo 22 settembre 2026).
+Byte 968604, SHA-256
+`d6edee1c0e0ad579e82e9f8efe9d09a89244936e874018234d98a5662ade5876`.
+
+Lo snapshot tipizzato espone le sole tavole introduttive nazionali a.1–a.4
+(2015–2025): nuova residenziale, ampliamenti residenziali, nuova e ampliamenti
+non residenziali. Conteggi, volumi (m³) e superfici (m²); `soldi.present` false.
+Licenza zip: `not-declared` (note legali / open data ISTAT citate come evidenza
+senza inventare CC BY sul payload).
+
+Non è MOP/OpenBDAP `/opere`, non è SIOPE, non è quotazioni OMI. Nessuna
+geografia regionale in questa slice. Fonte + API + MCP + pagina `/edilizia`.
+
+- API: `/api/edilizia/permessi-costruire`, `?anno=2025&tavola=a1`.
+- MCP: `query_dataset` con `dataset: "istat_permessi_costruire"` e filtri
+  opzionali `year` / `table` (`a1`–`a4`).
+- [Contratto e verifiche](ISTAT_PERMESSI_COSTRUIRE.md).
+
 ### Tax gap nazionale MEF (Relazione evasione 2025)
 
 **Issue #474 (epic #387, fonte #1).** PDF ufficiale *Relazione sull'economia non
@@ -750,6 +773,28 @@ e MCP `opencivitas_rifiuti_2022`. Non si somma né si confronta in silenzio con
 FC80TOT 2022. Fonte, lock e perimetro sono documentati in
 [OpenCivitas 2022 Rifiuti](OPENCIVITAS_2022_RIFIUTI.md).
 
+È integrata anche **FC80TERRVIAB 2022** (Viabilità e territorio, 6.553 Comuni
+RSO; 4 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-viabilita` e MCP `opencivitas_viabilita_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT o FC80RIFIUTI. Fonte, lock e
+perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
+
+È integrata anche **FC80SOCNID 2022** (Sociale e asili nido, 6.554 Comuni RSO;
+3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-sociale-asili` e MCP `opencivitas_sociale_asili_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI o FC80TERRVIAB.
+Fonte, lock e perimetro in [OpenCivitas 2022 Sociale e asili](OPENCIVITAS_2022_SOCIALE_ASILI.md).
+
+È integrata anche **FC80AMMIN 2022** (Amministrazione, 6.548 Comuni RSO;
+9 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-amministrazione` e MCP `opencivitas_amministrazione_2022`.
+Il fabbisogno standard è riproporzionato sul totale della spesa storica della
+funzione: l'uguaglianza vale sull'insieme completo dei Comuni joinati e i 9
+esclusi portano 3,20 milioni di fabbisogno senza contropartita, quindi la
+differenza aggregata sui Comuni pubblicati non è un risparmio. Nessuna somma o
+confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o FC80SOCNID.
+Fonte, lock e perimetro in [OpenCivitas 2022 Amministrazione](OPENCIVITAS_2022_AMMINISTRAZIONE.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -862,9 +907,9 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni ufficiali OpenCivitas (viabilità, sociale/asili, …) oltre a
-  Rifiuti 2022 e ai servizi totali 2015–2019/2021–2022 già integrati (nessuna
-  imputazione del 2020);
+- ulteriori funzioni ufficiali OpenCivitas (istruzione, …) oltre a
+  rifiuti, viabilità e sociale/asili 2022 e ai servizi totali
+  2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune
@@ -969,6 +1014,11 @@ su stock, detentori, scadenze e interessi e non una scomposizione dell'intero GF
 Le pagine `/spese/difesa`, `/spese/sicurezza` e `/spese/cultura` espongono rispettivamente
 GF0201–GF0205, GF0301–GF0306 e GF0801–GF0806 senza stimare residui, missioni estere,
 qualità dei servizi o una categoria «spettacolo» assente dalla fonte.
+Su `/spese/difesa` la serie OpenBDAP della missione «Difesa e sicurezza del territorio»
+resta affiancata al tracker del macroaggregato ufficiale `INVESTIMENTI` (stesso CSV
+LBF_SPE_CRU_AMPMA_001, hash allineato allo snapshot delle missioni): non è spesa COFOG,
+non è cassa e non è la misura NATO; gli appalti Difesa del corpus restano letture di
+procedure, non il totale di funzione.
 
 Gli importi sono spesa delle Amministrazioni pubbliche in competenza economica SEC 2010,
 non pagamenti SIOPE né stanziamenti del bilancio dello Stato. Il secondo livello viene
@@ -1096,8 +1146,28 @@ osservazioni (6.050 null), 23 territori, tipologie familiari e ampiezze
 demografiche. Valori in centesimi di euro; `soldi.present` true ma **non** è
 spesa pubblica né confrontabile con le incidenze. Fonte
 `istat-poverta-soglia-assoluta`, API `/api/territori/poverta-soglia-assoluta`,
-MCP `istat_poverta_soglia_assoluta`, nessuna UI.
+MCP `istat_poverta_soglia_assoluta`, contesto su `/poverta`.
 [Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md).
+
+### ISTAT · soglia di povertà relativa (34_727_DF_DCCV_POVERTA_11)
+
+Soglie monetarie mensili nazionali di povertà relativa, anni 2014–2024 senza il
+2021: 70 osservazioni pubblicate su 77 della fonte, solo Italia, ampiezze
+`N1`…`N7_GE`. Valori in centesimi; `soldi.present` true ma **non** è spesa
+pubblica né confrontabile con le incidenze o con la soglia assoluta. Fonte
+`istat-poverta-soglia-relativa`, API `/api/territori/poverta-soglia-relativa`,
+MCP `istat_poverta_soglia_relativa`, contesto su `/poverta`.
+[Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_RELATIVA.md).
+
+### Eurostat · AROPE Europa 2030 (`ilc_peps01n`)
+
+Rischio di povertà o esclusione sociale (definizione Europa 2030): Italia,
+età TOTAL, sesso T, anni 2015–2025. Undici osservazioni con tasso (decimi) e
+persone in migliaia. `soldi.present` false: non è spesa pubblica e **non** è
+confrontabile con povertà assoluta/relativa ISTAT (`34_727`) né con la serie
+Europa 2020 (`ilc_peps01`). Fonte `eurostat-arope`, API `/api/spese/arope`,
+MCP `eurostat_arope`, sezione su `/poverta`.
+[Lock, definizioni e limiti](research/EUROSTAT_AROPE.md).
 
 ### Procedimenti giudiziari dei parlamentari (XIX legislatura)
 

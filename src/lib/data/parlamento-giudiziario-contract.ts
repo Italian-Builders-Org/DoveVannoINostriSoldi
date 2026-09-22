@@ -103,12 +103,17 @@ const caseSchema = z
     jurisdiction: z.enum(["penale", "contabile"]),
     status: z.enum(CASE_STATUSES),
     statusLabel: z.string().min(1),
+    /** Data dell'ultimo atto documentato, mai la data dell'articolo che lo racconta. */
     statusAsOf: looseDate,
+    /** Data dell'ultimo controllo nostro: distinta da statusAsOf, e quella che invecchia. */
+    verifiedAt: isoDate,
     outcomeBucket: z.enum(OUTCOME_BUCKETS),
     beforeMandate: z.boolean(),
     firstConvictionDate: looseDate.nullable(),
     latestSentenceMonths: months,
     latestSentenceType: z.string().min(1).nullable(),
+    /** fresco | da-riverificare | esito-ignoto: quanto e vecchio l'ultimo controllo (verifiedAt). */
+    recheck: z.enum(["fresco", "da-riverificare", "esito-ignoto"]),
     evidenceTier: z.enum(["atto-ufficiale", "stampa-concordante"]),
     evidenceLabel: z.enum(["official-finding", "needs-explanation"]),
     evidenceNote: z.string().min(1).nullable(),
@@ -176,6 +181,8 @@ const coverageSchema = z
     membersNotInPoliticiRoster: z.array(memberId).nullable(),
     casesBackedByOfficialAct: z.number().int().nonnegative(),
     casesBackedByPressOnly: z.number().int().nonnegative(),
+    recheckAfterMonths: z.number().int().positive(),
+    casesToRecheck: z.number().int().nonnegative(),
     casesWithoutSentenceLength: z.number().int().nonnegative(),
   })
   .strict();
@@ -265,6 +272,42 @@ const snapshotSchema = z
     if (Math.abs(definitive - value.totals.definitiveSentenceMonths) > 0.001) {
       ctx.addIssue({ code: "custom", message: "totale delle pene definitive non ricalcolato", path: ["totals", "definitiveSentenceMonths"] });
     }
+    // A non definitive proceeding left unchecked past the window must be flagged:
+    // the page may keep the last known status, but never as if it were current.
+    const months = (from: string, to: string) => {
+      const [fy, fm = "01"] = from.slice(0, 7).split("-");
+      const [ty, tm = "01"] = to.slice(0, 7).split("-");
+      return (Number(ty) - Number(fy)) * 12 + (Number(tm) - Number(fm));
+    };
+    const nonDefinitive = new Set(["condanna_non_definitiva", "contabile_non_definitiva"]);
+    let overdue = 0;
+    for (const [index, item] of value.cases.entries()) {
+      const expected = item.outcomeBucket === "esito_ignoto"
+        ? "esito-ignoto"
+        : nonDefinitive.has(item.status) && months(item.verifiedAt, value.coverage.checkedAt) > value.coverage.recheckAfterMonths
+          ? "da-riverificare"
+          : "fresco";
+      if (item.recheck !== expected) {
+        ctx.addIssue({ code: "custom", message: "recheck non coerente con la data dell'ultimo controllo", path: ["cases", index, "recheck"] });
+      }
+      if (expected === "da-riverificare") {
+        overdue += 1;
+      }
+      // La data dello stato deve essere quella dell'ultimo atto documentato: se
+      // scivola in avanti, un procedimento fermo da anni si presenta come recente.
+      const dated = item.events.map((event) => event.date).filter((date): date is string => /^\d{4}(-\d{2}(-\d{2})?)?$/u.test(date ?? ""));
+      const lastAct = dated.length > 0 ? dated.reduce((a, b) => (a > b ? a : b)) : null;
+      if (lastAct !== null && item.statusAsOf !== lastAct) {
+        ctx.addIssue({ code: "custom", message: "statusAsOf non e la data dell'ultimo atto documentato", path: ["cases", index, "statusAsOf"] });
+      }
+      if (item.verifiedAt < item.statusAsOf) {
+        ctx.addIssue({ code: "custom", message: "verifiedAt precedente all'ultimo atto documentato", path: ["cases", index, "verifiedAt"] });
+      }
+    }
+    if (overdue !== value.coverage.casesToRecheck) {
+      ctx.addIssue({ code: "custom", message: "casesToRecheck non ricalcolato", path: ["coverage", "casesToRecheck"] });
+    }
+
     const searched = value.coverage.membersSearched ?? 0;
     const notSearched = value.coverage.membersNotSearched?.length ?? 0;
     if (searched + notSearched !== value.coverage.membersExamined) {

@@ -14,11 +14,14 @@ import { aifaSpesaConsumiData } from "@/lib/aifa-spesa-consumi-snapshot";
 import { mefIrpefDettaglioData } from "@/lib/mef-irpef-dettaglio-snapshot";
 import { mefIvaMetadata } from "@/lib/mef-iva-snapshot";
 import { euVatGapItalyData } from "@/lib/eu-vat-gap-italy-snapshot";
+import { istatPermessiCostruireData } from "@/lib/istat-permessi-costruire-snapshot";
 import { istatCofogData } from "@/lib/istat-cofog-snapshot";
 import { istatEpeaMetadata } from "@/lib/istat-epea-snapshot";
 import { istatPovertaData } from "@/lib/istat-poverta-snapshot";
 import { istatPovertaRelativaData } from "@/lib/istat-poverta-relativa-snapshot";
 import { istatPovertaSogliaAssolutaData } from "@/lib/istat-poverta-soglia-assoluta-snapshot";
+import { istatPovertaSogliaRelativaData } from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import { eurostatAropeData } from "@/lib/eurostat-arope-snapshot";
 import { istatBesData } from "@/lib/istat-bes-snapshot";
 import { istatPensionsSnapshot } from "@/lib/istat-pensions-snapshot";
 import { mefParticipationsSnapshot } from "@/lib/mef-participations-snapshot";
@@ -105,6 +108,14 @@ const exhaustiveLatestDataBySlug = {
     kind: "period",
     label: `${istatPovertaSogliaAssolutaData.period.from}-${istatPovertaSogliaAssolutaData.period.to}`,
   },
+  "istat-poverta-soglia-relativa": {
+    kind: "period",
+    label: `${istatPovertaSogliaRelativaData.period.from}-${istatPovertaSogliaRelativaData.period.to} (senza ${istatPovertaSogliaRelativaData.excludedYear})`,
+  },
+  "eurostat-arope": {
+    kind: "period",
+    label: `${eurostatAropeData.period.from}-${eurostatAropeData.period.to}`,
+  },
   "istat-bes-economico": {
     kind: "period",
     label: `${istatBesData.period.from}-${istatBesData.period.to}`,
@@ -184,6 +195,10 @@ const exhaustiveLatestDataBySlug = {
   "eu-vat-gap-italy": {
     kind: "period",
     label: `${euVatGapItalyData.period.from}-${euVatGapItalyData.period.to} (2024 stima rapida)`,
+  },
+  "istat-permessi-costruire-2015-2025": {
+    kind: "period",
+    label: `${istatPermessiCostruireData.period.from}-${istatPermessiCostruireData.period.to} (tavole a.1-a.4)`,
   },
   "mef-tax-gap-nazionale": {
     kind: "period",

@@ -199,8 +199,10 @@ a caso.
   - [docs/EDUCATION_ATLAS_POC.md](EDUCATION_ATLAS_POC.md): atlante istruzione
     e vincoli di join.
   - [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
-    [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md) e
-    [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md): fonti
+    [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
+    [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md),
+    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md) e
+    [docs/OPENCIVITAS_2022_SOCIALE_ASILI.md](OPENCIVITAS_2022_SOCIALE_ASILI.md): fonti
     OpenCivitas e relativi contratti.
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
     e [docs/research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md):
@@ -220,7 +222,10 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
-  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs).
+  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
+  [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs),
+  [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs),
+  [tests/opencivitas-2022-amministrazione-route.test.mjs](../tests/opencivitas-2022-amministrazione-route.test.mjs).
 
 ## Politici
 
@@ -235,7 +240,12 @@ a caso.
     e componenti del grafo (`repubblica-graph.tsx`, `repubblica-panel.tsx`).
   - [src/app/api/politici/](../src/app/api/politici/): endpoint per profili e
     notizie; [src/app/api/politici/[id]/atti/route.ts](../src/app/api/politici/%5Bid%5D/atti/route.ts)
-    serve gli atti Camera/Senato e
+    serve gli atti Camera/Senato,
+    [src/app/api/politici/[id]/voti-tema/route.ts](../src/app/api/politici/%5Bid%5D/voti-tema/route.ts)
+    lo storico di voto per tema sulla persona,
+    [src/app/api/politici/voti-tema/route.ts](../src/app/api/politici/voti-tema/route.ts)
+    la directory cercabile (`vista=storico-voti&tema=…`, filtri `ramo`/`espressi`,
+    timeline per anno, atti con elenco F/C/A e trail per parlamentare) e
     [src/app/api/politici/giudiziario/route.ts](../src/app/api/politici/giudiziario/route.ts)
     i procedimenti documentati.
   - [src/lib/politici-host.ts](../src/lib/politici-host.ts): host pubblico,
@@ -252,12 +262,18 @@ a caso.
   si fonde su somiglianza. Un ritratto mancante resta un monogramma, mai una
   fotografia dedotta. Atti Camera e Senato mantengono fonti e identità di ramo.
   Procedimento, assoluzione, prescrizione e condanna non sono sinonimi; stato,
-  grado e fonti restano espliciti. La gerarchia istituzionale mostrata è quella
+  grado e fonti restano espliciti. `statusAsOf` e la data dell'ultimo atto documentato e deve
+  coincidere con l'ultimo grado registrato, mai con la data dell'articolo che lo
+  racconta; `verifiedAt` e la data del nostro ultimo controllo e la pagina mostra
+  entrambe. Un procedimento non definitivo non riverificato entro
+  `coverage.recheckAfterMonths` mesi viene marcato `da-riverificare` e la pagina lo
+  dichiara: il dato fermo non puo presentarsi come attuale. La gerarchia istituzionale mostrata è quella
   costituzionale, non una misura di influenza politica.
 - **Controlli** (percorsi):
   [tests/camera-atti-voti-contract.test.mjs](../tests/camera-atti-voti-contract.test.mjs),
   [tests/senato-atti-voti-contract.test.mjs](../tests/senato-atti-voti-contract.test.mjs),
   [tests/politici-atti-route.test.mjs](../tests/politici-atti-route.test.mjs),
+  [tests/politici-voti-tema-route.test.mjs](../tests/politici-voti-tema-route.test.mjs),
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).

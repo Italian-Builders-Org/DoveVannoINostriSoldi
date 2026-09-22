@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PartySymbol, SymbolSource } from "./atlas-symbol";
 import { LegislativeActs } from "./atlas-acts";
+import { ThemeVotes } from "./atlas-theme-votes";
 import type { RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
 import type { GraphSelection } from "./atlas-model";
 import { longDate } from "./atlas-model";
@@ -19,6 +20,8 @@ type PanelProps = {
   profiles: Resource<Record<string, RepublicProfile>>;
   news: Resource<NewsData>;
   judicial: JudicialState | null;
+  initialTab?: "profilo" | "atti" | "temi" | "notizie" | null;
+  themeId?: string | null;
   onSelect: (selection: GraphSelection) => void;
   onRetryProfiles: () => void;
   onRetryNews: () => void;
@@ -227,9 +230,17 @@ function GroupPanel({ map, id, onSelect }: Pick<PanelProps, "map" | "onSelect"> 
   </div>;
 }
 
-function PersonPanel({ personId, map, profiles, news, judicial, onSelect, onRetryProfiles, onRetryNews }: PanelProps & { personId: string; }) {
-  const [tab, setTab] = useState<"profilo" | "atti" | "notizie">("profilo");
+function PersonPanel({ personId, map, profiles, news, judicial, initialTab = null, themeId = null, onSelect, onRetryProfiles, onRetryNews }: PanelProps & { personId: string; }) {
   const person = map.people.find((candidate) => candidate.id === personId);
+  const hasChamberActs = person?.chamberId === "camera" || person?.chamberId === "senato";
+  const startTab = initialTab === "temi" && hasChamberActs
+    ? "temi"
+    : initialTab === "atti" && hasChamberActs
+      ? "atti"
+      : initialTab === "notizie"
+        ? "notizie"
+        : "profilo";
+  const [tab, setTab] = useState<"profilo" | "atti" | "temi" | "notizie">(startTab);
   if (!person) return <Status title="Persona non trovata" />;
   const group = map.groups.find((item) => item.id === person.groupId);
   const profile = profiles.status === "ready" ? profiles.data[personId] : null;
@@ -260,15 +271,21 @@ function PersonPanel({ personId, map, profiles, news, judicial, onSelect, onRetr
     </span>}
     <div className={styles.panelTabs} role="group" aria-label="Contenuto della scheda">
       <button type="button" aria-pressed={tab === "profilo"} onClick={() => setTab("profilo")}>Profilo e incarichi</button>
-      {person.chamberId === "camera" || person.chamberId === "senato"
+      {hasChamberActs
         ? <button type="button" aria-pressed={tab === "atti"} onClick={() => setTab("atti")}>Atti e voti</button>
+        : null}
+      {hasChamberActs
+        ? <button type="button" aria-pressed={tab === "temi"} onClick={() => setTab("temi")}>Voti per tema</button>
         : null}
       <button type="button" aria-pressed={tab === "notizie"} onClick={() => setTab("notizie")}>
         Notizie
         {newsReady && newsReady.articles.length > 0 ? <span className={styles.countMark}>{newsReady.articles.length}</span> : null}
       </button>
     </div>
-    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} /> : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} activity={profile?.legislativeActivity ?? null} /> : <>
+    {tab === "notizie" ? <NewsBlock resource={news} map={map} onSelect={onSelect} onRetry={onRetryNews} />
+      : tab === "atti" ? <LegislativeActs key={person.id} personId={person.id} activity={profile?.legislativeActivity ?? null} />
+      : tab === "temi" ? <ThemeVotes key={`tema-${person.id}-${themeId ?? "lavoro"}`} personId={person.id} initialThemeId={themeId} />
+      : <>
       {person.government ? <button type="button" className={styles.relationshipLink} onClick={() => onSelect({ kind: "institution", id: "governo" })}>
         <span>Membro del Governo<small>
           {person.chamberId ? "Con mandato anche in Parlamento" : "Senza mandato parlamentare"}

@@ -15,8 +15,10 @@ test("default is Camera, all controls derive from the same state", () => {
   assert.equal(filteredPeople(map, { ...state, scope: "repubblica" }).length, map.people.length);
   assert.equal(filteredPeople(map, { ...state, scope: "grafo" }).length, map.people.length);
   assert.equal(filteredPeople(map, { ...state, scope: "condanne" }).length, map.people.length);
+  assert.equal(filteredPeople(map, { ...state, scope: "storico-voti" }).length, map.people.length);
   assert.deepEqual(defaultSelection("grafo"), { kind: "overview" });
   assert.deepEqual(defaultSelection("condanne"), { kind: "overview" });
+  assert.deepEqual(defaultSelection("storico-voti"), { kind: "overview" });
 });
 
 test("Camera filtering never leaks ministers from the other chamber", () => {
@@ -47,13 +49,39 @@ test("invalid and legacy deep links degrade explicitly without unknown entities"
 
 test("URL round trips all controls, both hosts and unrelated query/hash", () => {
   for (const href of ["https://politici.dovevannoinostrisoldi.com/?utm_source=test#fonti", "https://www.dovevannoinostrisoldi.com/politici?utm_source=test#fonti"]) {
-    const changed = { ...state, selection: { kind: "person", id: "dep-2" }, mode: "elenco", query: "Luca", family: map.people[2].family, role: "capigruppo" };
+    const changed = {
+      ...state,
+      selection: { kind: "person", id: "dep-2" },
+      mode: "elenco",
+      query: "Luca",
+      family: map.people[2].family,
+      role: "capigruppo",
+      themeId: null,
+      themeChamber: "tutti",
+      themeExpressedOnly: true,
+      panelTab: null,
+    };
     const result = new URL(atlasUrl(href, changed), href);
     assert.equal(result.host, new URL(href).host); assert.equal(result.pathname, new URL(href).pathname);
     assert.equal(result.hash, "#fonti"); assert.equal(result.searchParams.get("utm_source"), "test");
     assert.deepEqual(readAtlasState(result.searchParams, map).state, changed);
     assert.equal(result.searchParams.has("deputy"), false);
   }
+  const storico = {
+    ...state,
+    scope: "storico-voti",
+    selection: { kind: "overview" },
+    themeId: "giustizia",
+    themeChamber: "camera",
+    themeExpressedOnly: false,
+    panelTab: null,
+  };
+  const storicoUrl = new URL(atlasUrl("https://www.dovevannoinostrisoldi.com/politici", storico), "https://www.dovevannoinostrisoldi.com");
+  assert.equal(storicoUrl.searchParams.get("vista"), "storico-voti");
+  assert.equal(storicoUrl.searchParams.get("tema"), "giustizia");
+  assert.equal(storicoUrl.searchParams.get("ramo"), "camera");
+  assert.equal(storicoUrl.searchParams.get("espressi"), "0");
+  assert.deepEqual(readAtlasState(storicoUrl.searchParams, map).state, storico);
 });
 
 test("government deep links retain scope; cross-chamber groups resolve their own chamber", () => {
@@ -65,6 +93,13 @@ test("government deep links retain scope; cross-chamber groups resolve their own
   assert.equal(readAtlasState(new URLSearchParams("vista=grafo&istituzione=camera"), map).state.scope, "camera");
   assert.equal(readAtlasState(new URLSearchParams("vista=condanne"), map).state.scope, "condanne");
   assert.equal(readAtlasState(new URLSearchParams("vista=condanne&person=dep-2"), map).state.scope, "condanne");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti"), map).state.scope, "storico-voti");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti"), map).state.themeId, "lavoro");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti&tema=sanita&ramo=senato&espressi=0"), map).state.themeId, "sanita");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti&tema=sanita&ramo=senato&espressi=0"), map).state.themeChamber, "senato");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti&tema=sanita&ramo=senato&espressi=0"), map).state.themeExpressedOnly, false);
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti&person=dep-2&scheda=temi"), map).state.panelTab, "temi");
+  assert.equal(readAtlasState(new URLSearchParams("vista=storico-voti&person=dep-2"), map).state.scope, "storico-voti");
 });
 
 test("selection membership, presidency role, and filters remain typed", () => {

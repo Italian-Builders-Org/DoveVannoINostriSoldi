@@ -7,8 +7,13 @@ import { sourceCatalog } from "@/lib/sources";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
 import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.source.json";
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
+import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
+import opencivitas2022AmministrazioneSource from "../../../scripts/etl/specs/opencivitas-2022-amministrazione.source.json";
+import opencivitas2022SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2022-sociale-asili.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
+import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
+import eurostatAropeMetadata from "@/data/generated/eurostat-arope-2015-2025.meta.json";
 
 function formatItalianInteger(value: number): string {
   return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -39,6 +44,9 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2018",
   "opencivitas_fabbisogni_2019",
   "opencivitas_rifiuti_2022",
+  "opencivitas_viabilita_2022",
+  "opencivitas_amministrazione_2022",
+  "opencivitas_sociale_asili_2022",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -56,6 +64,8 @@ export const DATASET_IDS = [
   "istat_poverta_assoluta",
   "istat_poverta_relativa",
   "istat_poverta_soglia_assoluta",
+  "istat_poverta_soglia_relativa",
+  "eurostat_arope",
   "istat_bes_economico",
   "istat_bes_salute",
   "istat_bes_istruzione",
@@ -76,6 +86,7 @@ export const DATASET_IDS = [
   "mef_irpef_dettaglio",
   "mef_iva",
   "eu_vat_gap_italy",
+  "istat_permessi_costruire",
   "mef_tax_gap_nazionale",
   "eurostat_taxag",
   "eurostat_sha_health",
@@ -254,6 +265,9 @@ const exampleQueries = {
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_amministrazione_2022: { dataset: "opencivitas_amministrazione_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_sociale_asili_2022: { dataset: "opencivitas_sociale_asili_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -277,6 +291,13 @@ const exampleQueries = {
     family: "2",
     band: "2",
   },
+  istat_poverta_soglia_relativa: {
+    dataset: "istat_poverta_soglia_relativa",
+    territory: "IT",
+    year: 2024,
+    band: "N1",
+  },
+  eurostat_arope: { dataset: "eurostat_arope", territory: "IT", year: 2025 },
   istat_bes_economico: { dataset: "istat_bes_economico", territory: "IT", year: 2023 },
   istat_bes_salute: { dataset: "istat_bes_salute", territory: "IT", year: 2022 },
   istat_bes_istruzione: { dataset: "istat_bes_istruzione", territory: "IT", year: 2022 },
@@ -315,6 +336,7 @@ const exampleQueries = {
   },
   mef_iva: { dataset: "mef_iva", year: 2025, breakdown: "regione", limit: 25 },
   eu_vat_gap_italy: { dataset: "eu_vat_gap_italy", year: 2023 },
+  istat_permessi_costruire: { dataset: "istat_permessi_costruire", year: 2025, table: "a1" },
   mef_tax_gap_nazionale: { dataset: "mef_tax_gap_nazionale", year: 2022 },
   eurostat_taxag: { dataset: "eurostat_taxag", year: 2025, sector: "S13", tax: "D211" },
   eurostat_sha_health: { dataset: "eurostat_sha_health", year: 2024, code: "HF3" },
@@ -676,6 +698,114 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     },
   },
   {
+    id: "opencivitas_viabilita_2022",
+    title: "Fabbisogni comunali · Viabilità e territorio 2022 (FC80TERRVIAB)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Viabilità e territorio per ${formatItalianInteger(opencivitas2022ViabilitaSource.municipalities)} Comuni RSO, annualità ${opencivitas2022ViabilitaSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Viabilità e territorio 2022 · FC80TERRVIAB",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80TERRVIAB_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "dba9ba9e0d5a5aa7d306ba716bf6b2983629516a5e6a460238fede87a78fb9a7", bytes: 3499805,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 4 Comuni con spesa storica vuota nella fonte restano esclusi.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022ViabilitaSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022ViabilitaSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022ViabilitaSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 4 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione TERR_VIAB è distinta da FC80TOT e FC80RIFIUTI: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Viabilità e territorio 2022", url: opencivitas2022ViabilitaSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_amministrazione_2022",
+    title: "Fabbisogni comunali · Amministrazione 2022 (FC80AMMIN)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Amministrazione per ${formatItalianInteger(opencivitas2022AmministrazioneSource.municipalities)} Comuni RSO, annualità ${opencivitas2022AmministrazioneSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Amministrazione 2022 · FC80AMMIN",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80AMMIN_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "5ff2ccea482e07b3949c955b52f66ffe8d779ab9356b2b4e324677b9dc24e165", bytes: 1783464,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022, FC80TERRVIAB 2022, FC80SOCNID 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 9 Comuni con spesa storica vuota nella fonte restano esclusi. Il fabbisogno e riproporzionato sul totale della spesa storica della funzione: l uguaglianza vale sull insieme completo, e i 9 esclusi portano 3,20 milioni di fabbisogno senza contropartita.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022AmministrazioneSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022AmministrazioneSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022AmministrazioneSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 9 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione AMMINISTRAZIONE è distinta da FC80TOT, FC80RIFIUTI, FC80TERRVIAB e FC80SOCNID: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Amministrazione 2022", url: opencivitas2022AmministrazioneSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_sociale_asili_2022",
+    title: "Fabbisogni comunali · Sociale e asili nido 2022 (FC80SOCNID)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Sociale e asili nido per ${formatItalianInteger(opencivitas2022SocialeAsiliSource.municipalities)} Comuni RSO, annualità ${opencivitas2022SocialeAsiliSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Sociale e asili nido 2022 · FC80SOCNID",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80SOCNID_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "2dd0298e9d25e058f68aaf78f188bc271f175bfb5fe4e6ff06be6882d1486c95", bytes: 4162108,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022, FC80TERRVIAB 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 3 Comuni con spesa storica vuota nella fonte restano esclusi.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022SocialeAsiliSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022SocialeAsiliSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022SocialeAsiliSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 3 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione SOCIALE E NIDO è distinta da FC80TOT, FC80RIFIUTI e FC80TERRVIAB: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Sociale e asili nido 2022", url: opencivitas2022SocialeAsiliSource.datasetPageUrl }],
+    },
+  },
+  {
     id: "opencivitas_fabbisogni_2015",
     title: "Fabbisogni e servizi comunali 2015 (FC20TOT)",
     summary: `Spesa storica, spesa standard e livelli dei servizi di ${formatItalianInteger(opencivitas2015Source.municipalities)} Comuni RSO, annualità ${opencivitas2015Source.referenceYear}, famiglia ${opencivitas2015Source.family}.`,
@@ -905,6 +1035,38 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
       ],
     } satisfies DatasetPublicMetadata,
   },
+  {
+    id: "istat_poverta_soglia_relativa",
+    title: "ISTAT · soglia di povertà relativa",
+    summary: `Soglie monetarie mensili di povertà relativa (dataflow ${istatPovertaSogliaRelativaMetadata.source.dataflowId}), anni pubblicati senza il 2021, solo Italia, per ampiezza familiare N1–N7_GE.`,
+    sourceIds: ["istat-poverta-soglia-relativa"],
+    freshness: "snapshot",
+    filters: ["territory", "year", "band", "limit", "offset"],
+    caveat: "Specificare almeno un filtro; pagine di massimo 100 righe. È una soglia monetaria mensile in centesimi di euro, NON spesa pubblica e NON confrontabile/sommabile con le incidenze 34_727 né con la soglia assoluta 34_211. Solo territorio IT. L'anno 2021 è escluso dal prodotto. band=N1…N6 o N7_GE. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    publicMetadata: {
+      ...istatPovertaSogliaRelativaMetadata.publicMetadata,
+      queryNotes: [
+        "Specificare almeno un filtro fra territory, year e band; limit massimo 100 righe per pagina.",
+        "L'anno 2021 è escluso dal prodotto; band=N1…N6 o N7_GE; solo territorio IT.",
+      ],
+    } satisfies DatasetPublicMetadata,
+  },
+  {
+    id: "eurostat_arope",
+    title: "Eurostat · AROPE (Europa 2030)",
+    summary: `Rischio di povertà o esclusione sociale (dataset ${eurostatAropeMetadata.source.dataflowId}), Italia 2015–2025: tasso percentuale e persone in migliaia, definizione Europa 2030.`,
+    sourceIds: ["eurostat-arope"],
+    freshness: "snapshot",
+    filters: ["territory", "year", "limit", "offset"],
+    caveat: "Specificare almeno un filtro fra territory e year; pagine di massimo 100 righe. NON è spesa pubblica e NON è la povertà assoluta/relativa ISTAT (34_727): definizioni distinte, non sommabili né confrontabili. Solo Italia. Serie Europa 2020 (ilc_peps01) fuori perimetro. PC e THS_PER non si sommano fra loro. Licenza CC BY 4.0.",
+    publicMetadata: {
+      ...eurostatAropeMetadata.publicMetadata,
+      queryNotes: [
+        "Specificare almeno un filtro fra territory e year; limit massimo 100 righe per pagina.",
+        "Solo territorio IT; definizione Europa 2030 (ilc_peps01n).",
+      ],
+    } satisfies DatasetPublicMetadata,
+  },
   { id: "istat_bes_economico", title: "ISTAT · BES dei territori, benessere economico", summary: "Cinque indicatori del dominio benessere economico del BES dei territori, edizione 2025, per Italia, ripartizioni, regioni e 111 province: reddito medio disponibile pro capite, retribuzione media, importo medio dei redditi pensionistici, quota di pensionati con reddito basso e tasso di ingresso in sofferenza dei prestiti alle famiglie.", sourceIds: ["istat-bes-economico"], freshness: "snapshot", filters: ["territory", "year", "measure", "sex"], caveat: "NON è spesa pubblica: misura quanto le famiglie hanno, non quanto lo Stato spende. Nessuna somma o accostamento con SIOPE, OpenBDAP o IRPEF. Sono medie pro capite e percentuali, quindi NON sommabili fra territori: la media di una ripartizione non è la somma di quelle delle sue province. Il totale per sesso non è la somma di F e M, è la media sull'intera popolazione. Ogni indicatore ha il proprio periodo: non esiste un unico 2004-2024, e confrontare indicatori diversi agli estremi significa confrontare anni diversi. Le aree composite Nord e Mezzogiorno contengono già le loro parti. L'anagrafica delle province non è stabile: include province istituite dopo e le tre sarde soppresse nel 2016. Nessun indice composito e nessuna classifica di territori.", },
   {
     id: "istat_bes_salute",
@@ -1011,6 +1173,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "aifa_farmaci_spesa", title: "AIFA · spesa e consumo farmaci per ATC", summary: "Spesa e confezioni 2022–2025 per regione (codice ISTAT), classe di rimborsabilità e ATC di II livello, sui canali tracciabilità e convenzionata. Filtri year, region (codice ISTAT), code (ATC II) e band (classe).", sourceIds: ["aifa-spesa-consumi"], freshness: "snapshot", filters: ["year", "region", "code", "band"], caveat: "Tracciabilità (sell-in alle strutture pubbliche, lordo IVA) e convenzionata (farmacie, prezzo al pubblico) sono canali distinti e non vanno sommati. Importi al lordo dei payback: non è spesa netta del SSN e non si somma al Conto economico SSN, a SIOPE sanità o a COFOG GF07. Canale assente resta null, mai zero; i valori negativi della tracciabilità sono resi e note di credito. Le confezioni non sono dosi (DDD). Licenza CC BY 4.0 del catalogo Open Data AIFA." },
   { id: "mef_iva", title: "MEF · dichiarazioni IVA per regione e attività", summary: "Principali grandezze IVA dichiarate: dichiarazioni 2024-2025, anni di imposta 2023-2024. Richiede year (anno di dichiarazione) e breakdown (regione oppure attivita).", sourceIds: ["mef-iva"], freshness: "snapshot", filters: ["year", "breakdown", "limit", "offset"], caveat: "Importi dichiarati, non gettito riscosso o spesa pubblica. Ammontari e medie in centesimi di euro, frequenze e contribuenti in unità: non si sommano. I totali ufficiali non si sommano alle righe di dettaglio né fra i due tagli. Celle oscurate e mancanti restano distinte dagli zeri. Le classificazioni delle attività cambiano fra i due anni e non costituiscono una serie omogenea." },
   { id: "eu_vat_gap_italy", title: "DG TAXUD · VAT gap Italia", summary: "VTTL, VAT revenue e VAT compliance gap per l'Italia dal Report 2025 (foglio IT): anni 2019-2023 e 2024 stima rapida. Filtro year opzionale.", sourceIds: ["eu-vat-gap-italy"], freshness: "snapshot", filters: ["year"], caveat: "Stima di compliance rispetto al VTTL, non evasione accertata e non dichiarazioni MEF né NOE ISTAT. Importi in centesimi di euro; la quota gap è in milionesimi di unità sul VTTL. Il 2024 è rapid-estimate. Celle X e vuote restano non osservate. Nessuna media UE in questa slice." },
+  { id: "istat_permessi_costruire", title: "ISTAT · permessi di costruire", summary: "Serie nazionali 2015-2025 sulle tavole introduttive a.1-a.4 (nuova residenziale, ampliamenti, non residenziale). Filtri year e table (a1-a4) opzionali.", sourceIds: ["istat-permessi-costruire-2015-2025"], freshness: "snapshot", filters: ["year", "table"], caveat: "Conteggi, volumi e superfici: non soldi e non opere pubbliche MOP/OpenBDAP. Solo Italia nazionale in questa slice; a.1-a.4 restano serie distinte. Celle vuote restano non osservate. Licenza zip not-declared." },
   { id: "mef_tax_gap_nazionale", title: "MEF · tax gap nazionale", summary: "Gap tributario e contributivo e propensione al gap dalla Relazione evasione 2025 (Tab. I.1 e I.2), anni 2018-2022. Filtri year e tax opzionali.", sourceIds: ["mef-tax-gap-nazionale"], freshness: "snapshot", filters: ["year", "tax"], caveat: "Stima MEF, non evasione accertata né recupero. Il 2022 è semi-definitivo. Forchette min/max restano forchette. Solo nazionale: distinto da VAT gap UE e NOE ISTAT. Importi in centesimi; propensione in decimi di punto percentuale." },
   { id: "eurostat_taxag", title: "Eurostat · aggregati fiscali PA", summary: "Gettito SEC 2010 Italia da gov_10a_taxag, 2014-2025, per voce e sottosettore ESA. Filtri year, sector e tax (na_item) opzionali.", sourceIds: ["eurostat-taxag"], freshness: "snapshot", filters: ["year", "sector", "tax"], caveat: "Competenza SEC, non cassa SIOPE né dichiarazioni MEF né tax gap. S1311 non significa denaro a Roma. Celle assenti restano assenti. Importi in centesimi da milioni di euro." },
   { id: "eurostat_sha_health", title: "Eurostat · spesa sanitaria SHA", summary: "Spesa sanitaria Italia per schema di finanziamento (hlth_sha11_hf), 2014-2025. Filtri year e code (schema SHA) opzionali.", sourceIds: ["eurostat-sha-health"], freshness: "snapshot", filters: ["year", "code"], caveat: "Distinto da CE SSN e COFOG GF07: non sommare. Il 2025 è provvisorio. Importi in centesimi." },

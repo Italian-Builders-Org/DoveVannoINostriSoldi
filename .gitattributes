@@ -25,3 +25,5 @@
 *.docx binary
 *.xlsx binary
 *.pem -text
+
+tests/fixtures/eurostat-arope/*.csv text eol=lf

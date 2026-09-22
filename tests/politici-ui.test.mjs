@@ -124,26 +124,56 @@ test("atlas: resource failures remain failures, bounded retries and URLs remain 
 });
 
 test("atlas: every referenced CSS module class exists", async () => {
-  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-image.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx", "atlas-institutional-graph.tsx"].map((name) => read(`src/app/politici/${name}`)));
+  const extra = await Promise.all(["atlas-primitives.tsx", "atlas-image.tsx", "atlas-rail.tsx", "atlas-acts.tsx", "atlas-seat-preview.tsx", "atlas-symbol.tsx", "atlas-institutional-graph.tsx", "atlas-storico-voti.tsx"].map((name) => read(`src/app/politici/${name}`)));
   const files = [graph, controls, diagram, facts, panel, page, ...extra];
   const combinedStyles = styles + await read("src/app/politici/atlas-enhancements.module.css");
   const classes = new Set([...combinedStyles.matchAll(/\.([A-Za-z][\w-]*)/g)].map((match) => match[1]));
   for (const text of files) for (const match of text.matchAll(/(?:styles|extra)\.([A-Za-z][\w]*)/g)) assert.ok(classes.has(match[1]), `Missing CSS class: ${match[1]}`);
 });
 
-test("atlas: institutional graph scope restores the radial overview map", () => {
+test("atlas: institutional graph scope restores the radial overview map", async () => {
   assert.match(model, /id: "grafo"/);
   assert.match(model, /label: "Grafo"/);
   assert.match(model, /label: "Condanne"/);
+  assert.match(model, /label: "Storico voti"/);
   assert.match(graph, /InstitutionalGraph/);
   assert.match(graph, /ConvictionsDirectory/);
+  assert.match(graph, /ThemeVoteHistoryDirectory/);
   assert.match(graph, /scope === "grafo"/);
   assert.match(graph, /scope === "condanne"/);
+  assert.match(graph, /scope === "storico-voti"/);
+  assert.match(graph, /showMapListMode/);
+  assert.match(graph, /scope !== "condanne"/);
+  assert.match(graph, /scope !== "storico-voti"/);
+  const storico = await read("src/app/politici/atlas-storico-voti.tsx");
+  assert.match(storico, /Cosa si è votato/);
+  assert.match(storico, /Chi ha votato/);
+  assert.match(storico, /parseActHeadline/);
+  assert.match(storico, /themeTimelineRail/);
+  const europa = await read("src/app/politici/europa/page.tsx");
+  assert.doesNotMatch(europa, /modeSwitch|Vista mappa o elenco/);
   assert.match(institutional, /Il Grafo Istituzionale/);
   assert.match(institutional, /buildOverviewGeometry/);
   assert.match(overview, /export function buildOverviewGeometry/);
   assert.match(styles, /\.institutionalGraph/);
   assert.match(styles, /\.graphBoard/);
+});
+
+test("storico voti parses camera act headlines into lead and title", async () => {
+  await import("./helpers/register-ts-alias.mjs");
+  const { parseActHeadline } = await import("../src/app/politici/atlas-act-headline.ts");
+  assert.deepEqual(
+    parseActHeadline('BOLDRINI: "Modifica dell’articolo 609- bis del codice penale" (1693)'),
+    { lead: "Boldrini", title: "Modifica dell’articolo 609- bis del codice penale" },
+  );
+  assert.deepEqual(
+    parseActHeadline('BERRUTO ed altri: "Impianti sportivi scolastici" (505)'),
+    { lead: "Berruto ed altri", title: "Impianti sportivi scolastici" },
+  );
+  assert.equal(
+    parseActHeadline("Disposizioni per la prevenzione delle discriminazioni").lead,
+    null,
+  );
 });
 
 

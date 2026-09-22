@@ -365,6 +365,42 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_viabilita_2022": {
+      const { queryOpenCivitas2022Viabilita } = await import("@/lib/opencivitas-2022-viabilita-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80TERRVIAB è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Viabilita({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_amministrazione_2022": {
+      const { queryOpenCivitas2022Amministrazione } = await import("@/lib/opencivitas-2022-amministrazione-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80AMMIN è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Amministrazione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_sociale_asili_2022": {
+      const { queryOpenCivitas2022SocialeAsili } = await import("@/lib/opencivitas-2022-sociale-asili-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80SOCNID è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022SocialeAsili({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni_2015": {
       const { queryOpenCivitas2015 } = await import("@/lib/opencivitas-2015-snapshot");
       if (query.year !== undefined && query.year !== 2015) {
@@ -508,6 +544,19 @@ export async function queryPublicDataset(
       const { queryEuVatGapItaly } = await import("@/lib/eu-vat-gap-italy-snapshot");
       return jsonSafe({ dataset: query.dataset, ...queryEuVatGapItaly({ year: query.year }) });
     }
+    case "istat_permessi_costruire": {
+      const { queryIstatPermessiCostruire } = await import("@/lib/istat-permessi-costruire-snapshot");
+      const table = query.table === undefined
+        ? undefined
+        : (["a1", "a2", "a3", "a4"] as const).find((id) => id === query.table);
+      if (query.table !== undefined && table === undefined) {
+        throw new Error("Tavola non canonica: usare a1, a2, a3 o a4.");
+      }
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPermessiCostruire({ year: query.year, table }),
+      });
+    }
     case "mef_tax_gap_nazionale": {
       const { queryMefTaxGapNazionale } = await import("@/lib/mef-tax-gap-nazionale-snapshot");
       return jsonSafe({
@@ -647,6 +696,33 @@ export async function queryPublicDataset(
           year: query.year,
           householdTypology: query.family,
           municipalitySize: query.band,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
+    case "istat_poverta_soglia_relativa": {
+      options.signal?.throwIfAborted();
+      const { queryIstatPovertaSogliaRelativa } = await import("@/lib/istat-poverta-soglia-relativa-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaSogliaRelativa({
+          territory: query.territory,
+          year: query.year,
+          householdComposition: query.band,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
+    case "eurostat_arope": {
+      options.signal?.throwIfAborted();
+      const { queryEurostatArope } = await import("@/lib/eurostat-arope-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryEurostatArope({
+          territory: query.territory,
+          year: query.year,
           limit: query.limit,
           offset: query.offset,
         }, options),

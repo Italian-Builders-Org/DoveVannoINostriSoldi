@@ -81,7 +81,7 @@ class PublishDataRefreshTests(TestCase):
 
     def test_refresh_inventory_is_an_exact_companion_for_every_publisher(self) -> None:
         from dataclasses import replace
-        registry = json.loads(publisher.REGISTRY_PATH.read_text())
+        registry = json.loads(publisher.REGISTRY_PATH.read_text(encoding="utf-8"))
         for item in registry["artifacts"]:
             if not item.get("publication"):
                 continue
@@ -103,26 +103,26 @@ class PublishDataRefreshTests(TestCase):
     def test_changed_observation_regenerates_inventory_and_unchanged_data_keeps_digest(self) -> None:
         import shutil
         artifact = publisher.load_artifact("consulenti-pubblici")
-        registry = json.loads(publisher.REGISTRY_PATH.read_text())
+        registry = json.loads(publisher.REGISTRY_PATH.read_text(encoding="utf-8"))
         item = next(item for item in registry["artifacts"] if item["id"] == artifact.artifact_id)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
             (root / "scripts/ci").mkdir(parents=True)
             shutil.copyfile(ROOT / "scripts/ci/source-snapshot-inventory.py", root / "scripts/ci/source-snapshot-inventory.py")
-            (root / "scripts/ci/generated-artifacts.json").write_text(json.dumps({"artifacts": [item]}))
+            (root / "scripts/ci/generated-artifacts.json").write_text(json.dumps({"artifacts": [item]}), encoding="utf-8")
             for name in artifact.files:
                 path = root / name
                 path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text("{}" if path.suffix == ".json" else "stale inventory")
+                path.write_text("{}" if path.suffix == ".json" else "stale inventory", encoding="utf-8")
             snapshot = root / item["files"][0]
-            snapshot.write_text(json.dumps({"observedAt": "2026-09-21", "latestYear": 2026}))
+            snapshot.write_text(json.dumps({"observedAt": "2026-09-21", "latestYear": 2026}), encoding="utf-8")
             with mock.patch.object(publisher, "ROOT", root):
                 publisher.refresh_inventory(artifact)
                 before = publisher.file_digest(artifact)
-                self.assertIn("2026-09-21", (root / publisher.SHARED_INVENTORY).read_text())
-                snapshot.write_text(json.dumps({"observedAt": "2026-09-22", "latestYear": 2026}))
+                self.assertIn("2026-09-21", (root / publisher.SHARED_INVENTORY).read_text(encoding="utf-8"))
+                snapshot.write_text(json.dumps({"observedAt": "2026-09-22", "latestYear": 2026}), encoding="utf-8")
                 publisher.refresh_inventory(artifact)
-                text = (root / publisher.SHARED_INVENTORY).read_text()
+                text = (root / publisher.SHARED_INVENTORY).read_text(encoding="utf-8")
                 self.assertIn("2026-09-22", text)
                 self.assertNotIn("2026-09-21", text)
                 after = publisher.file_digest(artifact)
@@ -143,13 +143,13 @@ class PublishDataRefreshTests(TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
             (root / "docs").mkdir()
-            (root / "target.md").write_text("untouched")
+            (root / "target.md").write_text("untouched", encoding="utf-8")
             (root / publisher.SHARED_INVENTORY).symlink_to(root / "target.md")
             with mock.patch.object(publisher, "ROOT", root), mock.patch.object(publisher, "run_command") as command:
                 with self.assertRaises(publisher.PublishError):
                     publisher.refresh_inventory(artifact)
                 command.assert_not_called()
-            self.assertEqual((root / "target.md").read_text(), "untouched")
+            self.assertEqual((root / "target.md").read_text(encoding="utf-8"), "untouched")
 
     def test_registry_has_only_managed_source_publications(self) -> None:
         registry = json.loads((ROOT / "scripts/ci/generated-artifacts.json").read_text(encoding="utf-8"))

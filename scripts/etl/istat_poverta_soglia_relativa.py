@@ -232,7 +232,7 @@ def metadata(spec: dict, data_bytes: bytes) -> dict:
         "integrity": {
             "sourceLockSha256": lock_hash(spec),
             "dataArtifact": {
-                "path": str(DATA.relative_to(ROOT)),
+                "path": DATA.relative_to(ROOT).as_posix(),
                 "bytes": len(data_bytes),
                 "sha256": sha256_bytes(data_bytes),
             },
@@ -435,7 +435,7 @@ def bootstrap_spec(csv_path: Path, structure_path: Path) -> dict:
         "integrity": {
             "sourceLockSha256": "",
             "dataArtifact": {
-                "path": str(DATA.relative_to(ROOT)),
+                "path": DATA.relative_to(ROOT).as_posix(),
                 "bytes": 0,
                 "sha256": "",
             },

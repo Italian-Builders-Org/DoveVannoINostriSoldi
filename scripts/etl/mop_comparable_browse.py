@@ -345,7 +345,7 @@ def build_meta(
         },
         "integrity": {
             "algorithm": "sha256",
-            "dataArtifact": {"path": str(data_path.relative_to(ROOT)), "bytes": data_bytes, "sha256": data_sha},
+            "dataArtifact": {"path": data_path.relative_to(ROOT).as_posix(), "bytes": data_bytes, "sha256": data_sha},
             "sourceSpecSha256": sha256_file(DEFAULT_SPEC)[0] if DEFAULT_SPEC.exists() else None,
         },
         "methodology": {

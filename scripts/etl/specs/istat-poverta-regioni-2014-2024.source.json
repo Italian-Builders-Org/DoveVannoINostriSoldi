@@ -423,9 +423,9 @@
     "note": "Ogni misura copre una griglia di 30 territori × 11 anni = 330 celle. Famiglie: 310 valori diffusi, 19 celle non diffuse, 1 riga assente dalla risposta. Individui: 326 valori diffusi, 3 celle non diffuse, 1 riga assente."
   },
   "integrity": {
-    "sourceLockSha256": "3bdebce4212daaa33f51b311ed5ee9b3e1bc3591807fc731f8a2d20b93a9d373",
+    "sourceLockSha256": "a4f31c6c3b5102f008cb77974b39bf131031344d5f39801ac8dfde64e2d69320",
     "dataArtifact": {
-      "path": "src\\data\\generated\\istat-poverta-regioni-2014-2024.data.json",
+      "path": "src/data/generated/istat-poverta-regioni-2014-2024.data.json",
       "bytes": 57371,
       "sha256": "aea4fd93aa30ef949beb32864c1d0cf90ace210c95629ef321693e5a724f3951"
     }

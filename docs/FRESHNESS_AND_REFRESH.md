@@ -147,8 +147,20 @@ OpenCivitas, OpenCoesione, pagella governi, debito e SIOPE comunale passano alle
 corrispondenti branch `automation/data/<nome>-v2`. Le vecchie branch restano
 intatte. Imprese, Istruzione, bilancio e SIOPE non comunale includevano già
 l'inventario e mantengono i propri nomi. Dopo il merge di questa modifica,
-rieseguire Consulenti da main e chiudere #595 solo quando la proposta sostitutiva
-è disponibile; non aggiungere commit umani alla branch gestita dal bot.
+non aggiungere commit umani alla branch gestita dal bot.
+
+Il 23 settembre i dati Consulenti sono stati integrati con #615, chiudendo le
+candidate #595 e #607. Consulenti riparte da `automation/data/consulenti-v3`:
+il publisher non riapre una candidata chiusa senza merge e non modifica la
+vecchia branch. Gli altri nomi restano invariati.
+
+Dopo push e aggiornamenti della PR, il publisher ripete soltanto le letture:
+al massimo cinque tentativi, con 15 secondi di attesa complessiva fra le chiamate.
+GitHub può mostrare temporaneamente la revisione precedente. L'esaurimento dei
+tentativi o una modifica concorrente rilevata ferma la pubblicazione;
+non vengono riscritti titoli o descrizioni modificati nel frattempo. La base
+di generazione resta vincolata al commit e alla descrizione, mentre il tip
+corrente di `main` può avanzare indipendentemente.
 
 Per sospendere una fonte disabilitare il suo workflow; per ripristinare il
 controllo preventivo reimpostare il reviewer richiesto nell'ambiente, conservando

@@ -28,6 +28,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -480,11 +481,12 @@ def worktree_fingerprint() -> str:
     return "\n".join(parts)
 
 
-def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str]]:
-    """Run unique standalone offline checks. Returns (executed, covered_by_etl, failed)."""
+def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str], list[tuple[str, float]]]:
+    """Run unique standalone checks and return outcomes with wall timings."""
     executed = []
     covered_by_etl = []
     failed = []
+    timings = []
     seen_commands: set[str] = set()
 
     # Set PYTHONPATH so ETL scripts can import sibling modules
@@ -507,7 +509,13 @@ def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str]]
             parts = cmd.split()
             if parts and parts[0] in {"python", "python3"}:
                 parts[0] = sys.executable
+            print(f"  [start] {art_id}: {cmd}", flush=True)
+            started = time.perf_counter()
             result = subprocess.run(parts, cwd=ROOT, env=env, capture_output=True, text=True)
+            duration = time.perf_counter() - started
+            timings.append((art_id, duration))
+            status = "ok" if result.returncode == 0 else "fail"
+            print(f"  [{status}] {art_id}: {duration:.2f}s", flush=True)
             if result.returncode == 0:
                 executed.append(f"{art_id}: {cmd}")
             else:
@@ -521,7 +529,7 @@ def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str]]
         elif covered == "node-tests":
             covered_by_etl.append(f"{art_id} (node-tests)")
 
-    return executed, covered_by_etl, failed
+    return executed, covered_by_etl, failed, timings
 
 
 def main() -> int:
@@ -604,7 +612,7 @@ def main() -> int:
 
     # 3. Run offline checks
     print("\n--- Running standalone offline checks ---")
-    executed, covered_by_etl, failed = run_offline_checks(registry)
+    executed, covered_by_etl, failed, timings = run_offline_checks(registry)
 
     for entry in executed:
         print(f"  [ok] {entry}")
@@ -613,6 +621,11 @@ def main() -> int:
         print(f"\n--- Covered by ETL suite (not re-run) ---")
         for entry in covered_by_etl:
             print(f"  -> {entry}")
+
+    if timings:
+        print("\n--- Slowest standalone checks ---")
+        for art_id, duration in sorted(timings, key=lambda entry: entry[1], reverse=True)[:10]:
+            print(f"  {duration:.2f}s {art_id}")
 
     if failed:
         print(f"\n[fail] {len(failed)} offline check(s) FAILED:\n", file=sys.stderr)

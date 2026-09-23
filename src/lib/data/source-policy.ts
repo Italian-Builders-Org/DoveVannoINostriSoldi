@@ -36,6 +36,7 @@ export type SourceId =
   | "istat-poverta-relativa"
   | "istat-poverta-soglia-assoluta"
   | "istat-poverta-soglia-relativa"
+  | "istat-poverta-regioni"
   | "istat-bes-economico"
   | "istat-bes-salute"
   | "istat-bes-istruzione"
@@ -622,6 +623,21 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     timeoutMs: 20_000,
     maxRetries: 1,
     tags: ["source:istat-poverta-soglia-relativa", "domain:social-conditions"],
+  },
+  "istat-poverta-regioni": {
+    id: "istat-poverta-regioni",
+    label: "ISTAT · povertà relativa per regione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    sourceUrl: "https://esploradati.istat.it/databrowser/",
+    cadence: "annuale",
+    cadenceNote:
+      "Le incidenze regionali escono annualmente. Lo snapshot fissa 34_727_DF_DCCV_POVERTA_8 e _10 (2014–2024) e si aggiorna solo dopo nuova acquisizione e verifica hash.",
+    discoveryRevalidateSeconds: DAY,
+    dataRevalidateSeconds: DAY,
+    staleAfterSeconds: 540 * DAY,
+    timeoutMs: 20_000,
+    maxRetries: 1,
+    tags: ["source:istat-poverta-regioni", "domain:social-conditions"],
   },
   "istat-bes-economico": {
     id: "istat-bes-economico",

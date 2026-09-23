@@ -15,6 +15,7 @@ import json
 import shutil
 import sqlite3
 import tempfile
+import time
 import unicodedata
 from collections.abc import Iterator
 from decimal import Decimal
@@ -304,10 +305,21 @@ def write_packed(path: Path, payloads: Iterator[tuple[str, bytes]]) -> tuple[lis
 
 
 def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: dict, spec: dict,
-                    spec_sha: str, yearly: dict[int, dict[str, int]], matched: int) -> None:
+                    spec_sha: str, yearly: dict[int, dict[str, int]], matched: int,
+                    *, show_timings: bool = False) -> None:
+    checkpoint = time.perf_counter()
+
+    def report(label: str) -> None:
+        nonlocal checkpoint
+        now = time.perf_counter()
+        if show_timings:
+            print(f"[ok] Medical device artifact: {label} ({now - checkpoint:.2f}s)", flush=True)
+        checkpoint = now
+
     destination.mkdir(parents=True)
     scopes = scope_rows(connection)
     scope_ids = {scope["key"]: index for index, scope in enumerate(scopes)}
+    report("scope inventory")
 
     connection.executescript("""
         CREATE TEMP TABLE search_records(ref TEXT PRIMARY KEY, payload TEXT NOT NULL);
@@ -344,9 +356,14 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
         connection.execute("INSERT INTO search_records VALUES (?,?)", (item["ref"], canonical_line(lightweight).decode("utf-8")))
 
     store_search_records()
+    report("search records")
     search_raw = "".join(row[0] for row in connection.execute("SELECT payload FROM search_records ORDER BY ref")).encode("utf-8")
     search_payload = corpus.canonical_gzip(search_raw)
     (destination / "search.jsonl.gz").write_bytes(search_payload)
+    report("search artifact")
+
+    connection.execute("CREATE INDEX devices_prefix_idx ON devices(prefix, ref)")
+    report("detail lookup index")
 
     def detail_payloads() -> Iterator[tuple[str, bytes]]:
         for value in range(DETAIL_PREFIXES):
@@ -378,6 +395,7 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
             yield prefix, b"".join(lines)
 
     detail_blocks, detail_bytes, detail_sha = write_packed(destination / "details.jsonl.gz", detail_payloads())
+    report("detail artifact")
     detail_counts = {row[0]: (row[1], row[2]) for row in connection.execute(
         """SELECT d.prefix,count(DISTINCT d.ref),count(*) FROM devices d JOIN facts f ON f.ref=d.ref GROUP BY d.prefix"""
     )}
@@ -387,6 +405,7 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
         destination / "aggregates.json.gz",
         ((scope["key"], corpus.canonical_json(scope_payload(connection, scope))) for scope in scopes),
     )
+    report("aggregate artifact")
     device_count = connection.execute("SELECT count(*) FROM devices").fetchone()[0]
     fact_count = connection.execute("SELECT count(*) FROM facts").fetchone()[0]
     receipt_sha = {dataset: sha256_path(RECEIPTS / f"{dataset}.receipt.json") for dataset in DATASETS}
@@ -412,6 +431,7 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
                        "scopes": [{**scope, **block} for scope, block in zip(scopes, scope_blocks, strict=True)]},
     }
     (destination / "meta.json").write_bytes(corpus.canonical_json(meta))
+    report("metadata")
 
 
 def compare_directories(actual: Path, expected: Path) -> None:
@@ -424,18 +444,38 @@ def compare_directories(actual: Path, expected: Path) -> None:
             raise IndexError(f"Indice divergente: {relative}")
 
 
-def build(destination: Path) -> None:
-    proof, spec, spec_sha = load_contract()
+def build(destination: Path, *, show_timings: bool = False) -> None:
+    def phase(label: str, operation, *args):
+        if show_timings:
+            print(f"[start] Medical device index: {label}", flush=True)
+        started = time.perf_counter()
+        try:
+            result = operation(*args)
+        except Exception:
+            if show_timings:
+                print(f"[fail] Medical device index: {label} ({time.perf_counter() - started:.2f}s)", flush=True)
+            raise
+        if show_timings:
+            print(f"[ok] Medical device index: {label} ({time.perf_counter() - started:.2f}s)", flush=True)
+        return result
+
+    proof, spec, spec_sha = phase("load contract", load_contract)
     if shutil.disk_usage(destination.parent).free < MAX_TEMP_DB_BYTES:
         raise IndexError("Spazio insufficiente per la derivazione dell'indice")
     with tempfile.TemporaryDirectory(prefix=".medical-device-index-", dir=destination.parent) as directory:
         staging = Path(directory)
-        connection = prepare_database(staging / "index.sqlite")
+        connection = phase("prepare database", prepare_database, staging / "index.sqlite")
         try:
-            yearly = load_spending(connection, proof, spec)
-            matched = join_registry(connection, proof)
-            verify_join(connection, spec)
-            build_artifacts(connection, staging / "artifact", proof, spec, spec_sha, yearly, matched)
+            yearly = phase("load spending", load_spending, connection, proof, spec)
+            matched = phase("join registry", join_registry, connection, proof)
+            phase("verify join", verify_join, connection, spec)
+            phase(
+                "build artifacts",
+                lambda: build_artifacts(
+                    connection, staging / "artifact", proof, spec, spec_sha, yearly, matched,
+                    show_timings=show_timings,
+                ),
+            )
             if (staging / "index.sqlite").stat().st_size > MAX_TEMP_DB_BYTES:
                 raise IndexError("Database temporaneo oltre il budget dichiarato")
         finally:
@@ -452,8 +492,15 @@ def main() -> int:
     if args.check:
         with tempfile.TemporaryDirectory(prefix="medical-device-index-check-") as directory:
             candidate = Path(directory) / "artifact"
-            build(candidate)
-            compare_directories(candidate, OUTPUT)
+            build(candidate, show_timings=True)
+            started = time.perf_counter()
+            print("[start] Medical device index: compare committed artifacts", flush=True)
+            try:
+                compare_directories(candidate, OUTPUT)
+            except Exception:
+                print(f"[fail] Medical device index: compare committed artifacts ({time.perf_counter() - started:.2f}s)", flush=True)
+                raise
+            print(f"[ok] Medical device index: compare committed artifacts ({time.perf_counter() - started:.2f}s)", flush=True)
     else:
         build(OUTPUT)
     return 0

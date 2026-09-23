@@ -53,6 +53,7 @@ import {
   istatPovertaSogliaRelativaData,
   istatPovertaSogliaRelativaMetadata,
 } from "@/lib/istat-poverta-soglia-relativa-snapshot";
+import { istatPovertaRegioniData, istatPovertaRegioniMetadata } from "@/lib/istat-poverta-regioni-snapshot";
 import { eurostatAropeData, eurostatAropeMetadata } from "@/lib/eurostat-arope-snapshot";
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import { istatBesSaluteData, istatBesSaluteMetadata } from "@/lib/istat-bes-salute-snapshot";
@@ -629,6 +630,21 @@ function snapshotManagedIstatPovertaSogliaRelativa(): SourceHealth {
   };
 }
 
+function snapshotManagedIstatPovertaRegioni(): SourceHealth {
+  const { source } = istatPovertaRegioniMetadata;
+  const byte = source.assets.households.bytes + source.assets.individuals.bytes;
+  const nonDiffuse = istatPovertaRegioniData.undiffused.length;
+  const assenti = istatPovertaRegioniData.missingRows.length;
+  return {
+    ...baseHealth("istat-poverta-regioni"),
+    reachability: "not-probed",
+    freshness: freshnessFor("istat-poverta-regioni", source.acquisitionDate),
+    latencyMs: null,
+    detail: `Snapshot ETL attivo · incidenza di povertà relativa per regione ${istatPovertaRegioniData.period.from}-${istatPovertaRegioniData.period.to} (dataflow ${source.dataflowIds.join(" e ")}) · ${istatPovertaRegioniData.observations.length.toLocaleString("it-IT")} valori diffusi su ${istatPovertaRegioniData.territories.length} territori · ${nonDiffuse} celle non diffuse e ${assenti} righe assenti dalla fonte, dichiarate e mai imputate a zero · ${byte.toLocaleString("it-IT")} byte CSV pinnati. Incidenze percentuali, non spesa pubblica.`,
+    recordCount: istatPovertaRegioniData.observations.length,
+  };
+}
+
 function snapshotManagedEurostatArope(): SourceHealth {
   const { source } = eurostatAropeMetadata;
   const asset = source.assets["arope-italy"];
@@ -825,6 +841,7 @@ const SNAPSHOT_ADAPTERS: Partial<Record<SourceId, () => SourceHealth>> = {
   "istat-poverta-relativa": snapshotManagedIstatPovertaRelativa,
   "istat-poverta-soglia-assoluta": snapshotManagedIstatPovertaSogliaAssoluta,
   "istat-poverta-soglia-relativa": snapshotManagedIstatPovertaSogliaRelativa,
+  "istat-poverta-regioni": snapshotManagedIstatPovertaRegioni,
   "eurostat-arope": snapshotManagedEurostatArope,
   "istat-bes-economico": snapshotManagedIstatBesEconomico,
   "istat-bes-salute": snapshotManagedIstatBesSalute,

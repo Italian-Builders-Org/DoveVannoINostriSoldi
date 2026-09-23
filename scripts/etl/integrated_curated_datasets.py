@@ -19,9 +19,11 @@ import os
 import re
 import stat
 import tempfile
+import time
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import zlib
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from contextlib import contextmanager
 from dataclasses import dataclass
 from importlib import metadata as importlib_metadata
@@ -2815,6 +2817,52 @@ def validate_public_rows(
     return rows_with_public_source, redaction_count
 
 
+def _check_committed_public_rows(
+    item: dict[str, Any], rows_dir: Path, root: Path,
+    artifact_hashes: dict[str, str],
+    url_validator: Callable[[str], bool] | None = None,
+) -> tuple[str | None, int, int, float]:
+    """Validate one dataset's bounded chunks, including bytes, rows and provenance."""
+
+    started = time.perf_counter()
+    dataset_id = item["id"]
+    expected_public_rows = item["expected"]["rows"]
+    chunk_count = (expected_public_rows + PUBLIC_ROW_CHUNK_ROWS - 1) // PUBLIC_ROW_CHUNK_ROWS
+    rows_digest = hashlib.sha256()
+    rows_with_source = redactions = 0
+    seen_ids: set[str] = set()
+    if url_validator is None:
+        url_validator = _memoized_url_validator(is_safe_public_url)
+    for ordinal in range(chunk_count):
+        rows_path = rows_dir / row_chunk_name(dataset_id, ordinal)
+        label = f"{dataset_id}:{ordinal}"
+        compressed = read_bounded_regular_file(
+            rows_path, PUBLIC_ROW_CHUNK_MAX_COMPRESSED_BYTES, label,
+        )
+        chunk = decompress_public_row_chunk(compressed, dataset_id, ordinal)
+        expected_chunk_rows = min(
+            PUBLIC_ROW_CHUNK_ROWS,
+            expected_public_rows - ordinal * PUBLIC_ROW_CHUNK_ROWS,
+        )
+        chunk_sources, chunk_redactions = validate_public_rows(
+            item=item, rows_payload=chunk, expected_rows=expected_chunk_rows,
+            url_validator=url_validator, row_offset=ordinal * PUBLIC_ROW_CHUNK_ROWS,
+            seen_ids=seen_ids,
+        )
+        if canonical_gzip(chunk) != compressed:
+            raise DatasetBuildError(f"gzip non deterministico per {label}")
+        relative = rows_path.relative_to(root).as_posix()
+        if artifact_hashes.get(relative) != sha256_bytes(compressed):
+            raise DatasetBuildError(f"hash artefatto divergente: {relative}")
+        rows_digest.update(chunk)
+        rows_with_source += chunk_sources
+        redactions += chunk_redactions
+    return (
+        rows_digest.hexdigest() if expected_public_rows else None,
+        rows_with_source, redactions, time.perf_counter() - started,
+    )
+
+
 def check_committed(
     *,
     spec_path: Path,
@@ -2822,6 +2870,8 @@ def check_committed(
     rows_dir: Path,
     receipts_dir: Path,
     proof_path: Path,
+    show_timings: bool = False,
+    workers: int | None = None,
 ) -> None:
     url_validator = _memoized_url_validator(is_safe_public_url)
     spec, datasets = load_spec(spec_path, url_validator=url_validator)
@@ -2869,6 +2919,62 @@ def check_committed(
     if set(artifact_hashes) != expected_keys:
         raise DatasetBuildError("insieme artefatti nel proof divergente")
 
+    # Small fixtures avoid process startup; the committed corpus uses a bounded
+    # worker pair so independent datasets can be checked concurrently.
+    if workers is None:
+        public_rows = sum(
+            item["expected"]["rows"] for item in datasets
+            if item["publication"] in {"rows", "source-index"}
+        )
+        workers = (
+            min(2, os.cpu_count() or 1)
+            if len(datasets) >= 10 and public_rows >= 100_000 else 1
+        )
+    if type(workers) is not int or workers < 1 or workers > 4:
+        raise DatasetBuildError("numero worker non valido per il controllo dei dataset")
+
+    def row_hashes(item: dict[str, Any]) -> dict[str, str]:
+        count = (item["expected"]["rows"] + PUBLIC_ROW_CHUNK_ROWS - 1) // PUBLIC_ROW_CHUNK_ROWS
+        hashes = {}
+        for ordinal in range(count):
+            relative = (
+                rows_dir / row_chunk_name(item["id"], ordinal)
+            ).relative_to(ROOT).as_posix()
+            hashes[relative] = artifact_hashes[relative]
+        return hashes
+
+    row_results: dict[str, tuple[str | None, int, int, float]] = {}
+    if workers > 1:
+        row_items = sorted(
+            (
+                item for item in datasets
+                if item["publication"] in {"rows", "source-index"}
+                and item["expected"]["rows"]
+            ),
+            key=lambda item: item["expected"]["rows"], reverse=True,
+        )
+        if show_timings:
+            print(f"[start] Corpus row validation: {len(row_items)} datasets, {workers} workers", flush=True)
+        parallel_started = time.perf_counter()
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(
+                    _check_committed_public_rows, item, rows_dir, ROOT, row_hashes(item),
+                ): item
+                for item in row_items
+            }
+            for future in as_completed(futures):
+                item = futures[future]
+                row_results[item["id"]] = future.result()
+                if show_timings:
+                    print(
+                        f"[ok] Corpus dataset: {item['id']} "
+                        f"({item['expected']['rows']} public rows, {row_results[item['id']][3]:.2f}s)",
+                        flush=True,
+                    )
+        if show_timings:
+            print(f"[ok] Corpus row validation ({time.perf_counter() - parallel_started:.2f}s)", flush=True)
+
     totals = {
         "datasets": 0,
         "sourceRows": 0,
@@ -2879,6 +2985,8 @@ def check_committed(
     }
     expected_catalog_entries: list[dict[str, Any]] = []
     for item in datasets:
+        dataset_started = time.perf_counter()
+        row_seconds = 0.0
         receipt_path = receipts_dir / f"{item['id']}.receipt.json"
         try:
             receipt_payload = receipt_path.read_bytes()
@@ -2945,42 +3053,11 @@ def check_committed(
         ):
             raise DatasetBuildError(f"equazione righe divergente per {item['id']}")
         if item["publication"] in {"rows", "source-index"}:
-            chunk_count = (
-                expected_public_rows + PUBLIC_ROW_CHUNK_ROWS - 1
-            ) // PUBLIC_ROW_CHUNK_ROWS
-            rows_digest = hashlib.sha256()
-            rows_with_source = redactions = 0
-            seen_ids: set[str] = set()
-            for ordinal in range(chunk_count):
-                rows_path = rows_dir / row_chunk_name(item["id"], ordinal)
-                label = f"{item['id']}:{ordinal}"
-                compressed = read_bounded_regular_file(
-                    rows_path,
-                    PUBLIC_ROW_CHUNK_MAX_COMPRESSED_BYTES,
-                    label,
-                )
-                chunk = decompress_public_row_chunk(compressed, item["id"], ordinal)
-                expected_chunk_rows = min(
-                    PUBLIC_ROW_CHUNK_ROWS,
-                    expected_public_rows - ordinal * PUBLIC_ROW_CHUNK_ROWS,
-                )
-                if len(chunk.splitlines()) != expected_chunk_rows:
-                    raise DatasetBuildError(
-                        f"cardinalita chunk divergente per {item['id']}:{ordinal}"
-                    )
-                if canonical_gzip(chunk) != compressed:
-                    raise DatasetBuildError(
-                        f"gzip non deterministico per {item['id']}:{ordinal}"
-                    )
-                rows_digest.update(chunk)
-                chunk_sources, chunk_redactions = validate_public_rows(
-                    item=item, rows_payload=chunk, expected_rows=expected_chunk_rows,
-                    url_validator=url_validator, row_offset=ordinal * PUBLIC_ROW_CHUNK_ROWS,
-                    seen_ids=seen_ids,
-                )
-                rows_with_source += chunk_sources
-                redactions += chunk_redactions
-            if (rows_digest.hexdigest() if expected_public_rows else None) != receipt.get("rowsSha256"):
+            rows_sha, rows_with_source, redactions, row_seconds = (
+                row_results[item["id"]] if expected_public_rows and workers > 1
+                else _check_committed_public_rows(item, rows_dir, ROOT, row_hashes(item), url_validator)
+            )
+            if rows_sha != receipt.get("rowsSha256"):
                 raise DatasetBuildError(f"hash righe divergente per {item['id']}")
             if (
                 publication.get("rowsWithPublicSource") != rows_with_source
@@ -3020,6 +3097,16 @@ def check_committed(
         totals["catalogOnlyRows"] += publication["catalogOnlyRows"]
         totals["derivedOnlyRows"] += publication["derivedOnlyRows"]
         totals["sourceBytes"] += source["bytes"]
+        if show_timings and not (workers > 1 and expected_public_rows):
+            elapsed = (
+                row_seconds if item["publication"] in {"rows", "source-index"}
+                else time.perf_counter() - dataset_started
+            )
+            print(
+                f"[ok] Corpus dataset: {item['id']} "
+                f"({publication['publicRows']} public rows, {elapsed:.2f}s)",
+                flush=True,
+            )
 
     expected_catalog = {
         "schemaVersion": 1,
@@ -3032,21 +3119,19 @@ def check_committed(
         raise DatasetBuildError("metadati catalogo divergenti dalla specifica")
     if proof.get("totals") != totals:
         raise DatasetBuildError("totali proof/catalogo divergenti")
-    for path in expected_paths:
+    hashes_started = time.perf_counter()
+    # Row chunks were hashed from the same bounded read used for their semantic
+    # validation; only catalog and receipts still need a separate read here.
+    for path in expected_paths - expected_rows_paths:
         relative = path.relative_to(ROOT).as_posix()
-        if path in expected_rows_paths:
-            payload = read_bounded_regular_file(
-                path,
-                PUBLIC_ROW_CHUNK_MAX_COMPRESSED_BYTES,
-                relative,
-            )
-        else:
-            try:
-                payload = path.read_bytes()
-            except OSError as error:
-                raise DatasetBuildError(f"artefatto mancante: {relative}") from error
+        try:
+            payload = path.read_bytes()
+        except OSError as error:
+            raise DatasetBuildError(f"artefatto mancante: {relative}") from error
         if artifact_hashes.get(relative) != sha256_bytes(payload):
             raise DatasetBuildError(f"hash artefatto divergente: {relative}")
+    if show_timings:
+        print(f"[ok] Corpus artifact hashes ({time.perf_counter() - hashes_started:.2f}s)", flush=True)
 
 
 def parse_args() -> argparse.Namespace:
@@ -3071,6 +3156,7 @@ def main() -> int:
             rows_dir=args.rows_dir,
             receipts_dir=args.receipts_dir,
             proof_path=args.proof,
+            show_timings=True,
         )
         print(json.dumps({"status": "ok", "action": args.action, "sourceRequired": False}, sort_keys=True))
         return 0

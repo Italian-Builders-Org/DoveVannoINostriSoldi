@@ -122,6 +122,12 @@ non vengono ripristinate. I job senza browser evitano il download di Chromium.
 `NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
 browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
 `DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.
+Il core usa `DVNS_CORE_MODE=full` per le interazioni complete. Nel gate di
+produzione il passaggio scuro usa `DVNS_CORE_MODE=theme`: visita gli stessi
+scenari e viewport per tema, layout, overflow ed errori, ed esegue ancora i
+controlli completi di palette e contrasto della pagina Coesione. Il riepilogo
+JSON distingue i due modi e riporta la durata di ogni scenario. Per indagare
+un'interazione specifica in scuro, esegui il core senza `DVNS_CORE_MODE=theme`.
 
 ### Feedback rapido
 
@@ -207,6 +213,10 @@ contratti fail-closed) una sola volta. La prova completa del corpus integrato
 `tests/etl/test_integrated_source_release.py`, insieme agli altri due gate di
 release. Il test Node `integrated-curated-datasets` mantiene il controllo
 indipendente del ledger; non rilancia la stessa prova Python.
+Sul corpus completo `check_committed` distribuisce i dataset indipendenti su
+due processi; ogni processo valida tutte le righe del proprio dataset. Le
+fixture piccole restano seriali. I tempi per dataset e il tempo totale della
+fase righe sono visibili nell'output del gate.
 
 `test:snapshots` valida il registro degli artifact generati
 (`scripts/ci/generated-artifacts.json`), controlla che
@@ -216,6 +226,9 @@ artifact, verifica la pulizia del worktree e rileva file generati non
 registrati. Non riesegue la suite ETL. Se il registro o un workflow di refresh
 cambiano, rigenera l'inventario con
 `python3 scripts/ci/source-snapshot-inventory.py --write`.
+Ogni controllo standalone stampa nome, stato e durata mentre procede; anche il
+gate ETL del corpus integrato e la ricostruzione dell'indice medico riportano
+tempi per fase, così un aumento del tempo si può attribuire al controllo giusto.
 
 ### Limite di trust: PR vs fonti ufficiali
 

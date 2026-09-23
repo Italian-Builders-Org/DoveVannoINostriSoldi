@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-poverta-regioni",
+  "domain": {
+    "code": "34_727_DF_DCCV_POVERTA_8+10",
+    "label": "Povertà relativa per regione di residenza — famiglie e individui",
+    "dataflowIds": [
+      "34_727_DF_DCCV_POVERTA_8",
+      "34_727_DF_DCCV_POVERTA_10"
+    ]
+  },
+  "period": {
+    "from": 2014,
+    "to": 2024
+  },
+  "periodNote": "Serie corrente post-revisione 2014–2024, 30 territori: Italia, Nord e Mezzogiorno, le 5 ripartizioni, le 20 regioni e le 2 province autonome. I dataflow pre-revisione 34_728_*_BRKN1_* restano fuori perimetro.",
+  "measures": [
+    {
+      "code": "INCID_POVREL_FAM",
+      "key": "households",
+      "dataflowId": "34_727_DF_DCCV_POVERTA_8",
+      "label": "incidenza di povertà relativa familiare (% di famiglie povere)",
+      "unit": ""
+    },
+    {
+      "code": "INCID_POVREL_INDIV",
+      "key": "individuals",
+      "dataflowId": "34_727_DF_DCCV_POVERTA_10",
+      "label": "incidenza di povertà relativa individuale (% di individui poveri)",
+      "unit": ""
+    }
+  ],
+  "territories": [
+    {
+      "code": "IT",
+      "label": "Italia",
+      "kind": "country",
+      "parent": null
+    },
+    {
+      "code": "ITCD",
+      "label": "Nord",
+      "kind": "macro-area",
+      "parent": "IT"
+    },
+    {
+      "code": "ITC",
+      "label": "Nord-ovest",
+      "kind": "area",
+      "parent": "ITCD"
+    },
+    {
+      "code": "ITC1",
+      "label": "Piemonte",
+      "kind": "region",
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC2",
+      "label": "Valle d'Aosta / Vallée d'Aoste",
+      "kind": "region",
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC3",
+      "label": "Liguria",
+      "kind": "region",
+      "parent": "ITC"
+    },
+    {
+      "code": "ITC4",
+      "label": "Lombardia",
+      "kind": "region",
+      "parent": "ITC"
+    },
+    {
+      "code": "ITD",
+      "label": "Nord-est",
+      "kind": "area",
+      "parent": "ITCD"
+    },
+    {
+      "code": "ITDA",
+      "label": "Trentino Alto Adige / Südtirol",
+      "kind": "region",
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD1",
+      "label": "Provincia Autonoma Bolzano / Bozen",
+      "kind": "autonomous-province",
+      "parent": "ITDA"
+    },
+    {
+      "code": "ITD2",
+      "label": "Provincia Autonoma Trento",
+      "kind": "autonomous-province",
+      "parent": "ITDA"
+    },
+    {
+      "code": "ITD3",
+      "label": "Veneto",
+      "kind": "region",
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD4",
+      "label": "Friuli-Venezia Giulia",
+      "kind": "region",
+      "parent": "ITD"
+    },
+    {
+      "code": "ITD5",
+      "label": "Emilia-Romagna",
+      "kind": "region",
+      "parent": "ITD"
+    },
+    {
+      "code": "ITE",
+      "label": "Centro",
+      "kind": "area",
+      "parent": "IT"
+    },
+    {
+      "code": "ITE1",
+      "label": "Toscana",
+      "kind": "region",
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE2",
+      "label": "Umbria",
+      "kind": "region",
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE3",
+      "label": "Marche",
+      "kind": "region",
+      "parent": "ITE"
+    },
+    {
+      "code": "ITE4",
+      "label": "Lazio",
+      "kind": "region",
+      "parent": "ITE"
+    },
+    {
+      "code": "ITFG",
+      "label": "Mezzogiorno",
+      "kind": "macro-area",
+      "parent": "IT"
+    },
+    {
+      "code": "ITF",
+      "label": "Sud",
+      "kind": "area",
+      "parent": "ITFG"
+    },
+    {
+      "code": "ITF1",
+      "label": "Abruzzo",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF2",
+      "label": "Molise",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF3",
+      "label": "Campania",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF4",
+      "label": "Puglia",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF5",
+      "label": "Basilicata",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITF6",
+      "label": "Calabria",
+      "kind": "region",
+      "parent": "ITF"
+    },
+    {
+      "code": "ITG",
+      "label": "Isole",
+      "kind": "area",
+      "parent": "ITFG"
+    },
+    {
+      "code": "ITG1",
+      "label": "Sicilia",
+      "kind": "region",
+      "parent": "ITG"
+    },
+    {
+      "code": "ITG2",
+      "label": "Sardegna",
+      "kind": "region",
+      "parent": "ITG"
+    }
+  ],
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "dataflowIds": [
+      "34_727_DF_DCCV_POVERTA_8",
+      "34_727_DF_DCCV_POVERTA_10"
+    ],
+    "dataflowVersion": "1.0",
+    "dataflowLabels": {
+      "34_727_DF_DCCV_POVERTA_8": "Famiglie povere - regione di residenza",
+      "34_727_DF_DCCV_POVERTA_10": "Individui poveri - regione di residenza"
+    },
+    "dataflowLastUpdate": "2025-10-14T08:02:20.381Z",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX non dichiara una licenza; le condizioni generali ISTAT CC BY 4.0 sono documentate separatamente e non vengono promosse a licenza incorporata nel payload.",
+    "reuseTermsEvidence": [
+      "https://www.istat.it/dati/open-data/",
+      "https://www.istat.it/note-legali/"
+    ],
+    "acquisitionDate": "2026-09-23",
+    "checkedAt": "2026-09-23",
+    "assets": {
+      "households": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_8,1.0/A.IT+ITCD+ITC+ITC1+ITC2+ITC3+ITC4+ITD+ITDA+ITD1+ITD2+ITD3+ITD4+ITD5+ITE+ITE1+ITE2+ITE3+ITE4+ITFG+ITF+ITF1+ITF2+ITF3+ITF4+ITF5+ITF6+ITG+ITG1+ITG2.INCID_POVREL_FAM.ALL.TOT.HH.TOTAL.99.ALL.9.TOTAL",
+        "bytes": 39159,
+        "sha256": "db02713258cb4192a0d9593ff0e3ce988183c03c4233dab1c594406c56591167",
+        "requestHeaders": {
+          "Accept": "application/vnd.sdmx.data+csv;version=1.0.0"
+        },
+        "format": "SDMX-CSV 1.0.0"
+      },
+      "individuals": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,34_727_DF_DCCV_POVERTA_10,1.0/A.IT+ITCD+ITC+ITC1+ITC2+ITC3+ITC4+ITD+ITDA+ITD1+ITD2+ITD3+ITD4+ITD5+ITE+ITE1+ITE2+ITE3+ITE4+ITFG+ITF+ITF1+ITF2+ITF3+ITF4+ITF5+ITF6+ITG+ITG1+ITG2.INCID_POVREL_INDIV.ALL.TOT.HH.TOTAL.99.ALL.9.TOTAL",
+        "bytes": 40214,
+        "sha256": "a79a82808e44d833f27158d078f0570857a8f4e026782dfac13cb245ae8dbf6a",
+        "requestHeaders": {
+          "Accept": "application/vnd.sdmx.data+csv;version=1.0.0"
+        },
+        "format": "SDMX-CSV 1.0.0"
+      },
+      "structureHouseholds": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/34_727_DF_DCCV_POVERTA_8/1.0?references=all",
+        "bytes": 9897943,
+        "sha256": "640120f34c45d3ad2187998033547627e7bd79cf4761f0f52632e5eb4a8263a8",
+        "format": "SDMX-ML Structure 2.1"
+      },
+      "structureIndividuals": {
+        "url": "https://esploradati.istat.it/SDMXWS/rest/dataflow/IT1/34_727_DF_DCCV_POVERTA_10/1.0?references=all",
+        "bytes": 9897949,
+        "sha256": "30d0a31128ec1fc1323709081fd1b673e8c6a945463fdda4cfa81a5cc0a13bec",
+        "format": "SDMX-ML Structure 2.1"
+      }
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Incidenze percentuali, non importi: non sommare, non confrontare con spesa pubblica."
+    },
+    "periodo": {
+      "referencePeriod": "2014–2024",
+      "note": "Aggiornamento dei dataflow, acquisizione e anni delle osservazioni restano date distinte."
+    },
+    "provenance": {
+      "holder": "ISTAT",
+      "dataflowLastUpdate": "2025-10-14T08:02:20.381Z",
+      "acquisitionDate": "2026-09-23",
+      "checkedAt": "2026-09-23",
+      "license": "not-declared"
+    }
+  },
+  "headers": [
+    "DATAFLOW",
+    "FREQ",
+    "REF_AREA",
+    "DATA_TYPE",
+    "POVERTY_LINES",
+    "NUMBER_HOUSEHOLD_COMP",
+    "HOUSEHOLD_TYPOLOGY",
+    "AGE_REFERENCE_PERSON",
+    "EDU_LEV_REFPERS",
+    "LABPROF_STATUS_B_REF",
+    "SEX",
+    "AGE",
+    "TIME_PERIOD",
+    "OBS_VALUE",
+    "OBS_STATUS",
+    "NOTE_DS",
+    "NOTE_REF_AREA",
+    "NOTE_DATA_TYPE",
+    "NOTE_POVERTY_LINES",
+    "NOTE_NUMBER_HOUSEHOLD_COMP",
+    "NOTE_HOUSEHOLD_TYPOLOGY",
+    "NOTE_AGE_REFERENCE_PERSON",
+    "NOTE_EDU_LEV_REFPERS",
+    "NOTE_LABPROF_STATUS_B_REF",
+    "NOTE_SEX",
+    "NOTE_AGE",
+    "NOTE_TIME_PERIOD",
+    "BASE_PER",
+    "UNIT_MEAS",
+    "UNIT_MULT"
+  ],
+  "fixedDimensions": {
+    "FREQ": "A",
+    "POVERTY_LINES": "ALL",
+    "NUMBER_HOUSEHOLD_COMP": "TOT",
+    "HOUSEHOLD_TYPOLOGY": "HH",
+    "AGE_REFERENCE_PERSON": "TOTAL",
+    "EDU_LEV_REFPERS": "99",
+    "LABPROF_STATUS_B_REF": "ALL",
+    "SEX": "9",
+    "AGE": "TOTAL"
+  },
+  "attributes": {
+    "NOTE_DS": [
+      ""
+    ],
+    "NOTE_REF_AREA": [
+      ""
+    ],
+    "NOTE_DATA_TYPE": [
+      ""
+    ],
+    "NOTE_POVERTY_LINES": [
+      ""
+    ],
+    "NOTE_NUMBER_HOUSEHOLD_COMP": [
+      ""
+    ],
+    "NOTE_HOUSEHOLD_TYPOLOGY": [
+      ""
+    ],
+    "NOTE_AGE_REFERENCE_PERSON": [
+      ""
+    ],
+    "NOTE_EDU_LEV_REFPERS": [
+      ""
+    ],
+    "NOTE_LABPROF_STATUS_B_REF": [
+      ""
+    ],
+    "NOTE_SEX": [
+      ""
+    ],
+    "NOTE_AGE": [
+      ""
+    ],
+    "NOTE_TIME_PERIOD": [
+      "",
+      "TIME_PERIOD__2024_N1"
+    ],
+    "OBS_STATUS": [
+      "",
+      "0"
+    ],
+    "BASE_PER": [
+      ""
+    ],
+    "UNIT_MEAS": [
+      ""
+    ],
+    "UNIT_MULT": [
+      ""
+    ]
+  },
+  "flags": {
+    "OBS_STATUS": {
+      "codelist": "CL_FLAG",
+      "note": "CL_FLAG legge \"0\" come «il dato non raggiunge la metà della cifra minima considerata». In questa diffusione quella lettura non regge: su 8.265 osservazioni degli 11 dataflow della famiglia 34_727 nessuna cella flaggata porta un valore, la stessa risposta in SDMX-ML nativo arriva priva dell'elemento del valore, e l'incidenza individuale è per definizione quella familiare moltiplicata per il rapporto fra dimensione media delle famiglie povere e di tutte le famiglie, rapporto che sulle celle valide non supera 1,92: l'Umbria 2015, con incidenza individuale 13,4%, richiederebbe un rapporto di 268. Le celle flaggate sono quindi dato non diffuso, dichiarato e mai imputato a zero.",
+      "knownValues": {
+        "0": "il dato non raggiunge la metà della cifra minima considerata",
+        "c": "dato oscurato per la tutela del segreto statistico",
+        "n": "dato statisticamente non significativo",
+        "u": "dato indisponibile o incerto"
+      }
+    }
+  },
+  "caveats": [
+    "Incidenza di povertà relativa: quota di famiglie o individui poveri, non un importo. Non sommare fra territori né con altre misure.",
+    "Povertà relativa ≠ povertà assoluta: l'incidenza assoluta non è pubblicata per regione, si ferma alle ripartizioni. Nessun confronto riga per riga con le fette 34_727 già in piattaforma.",
+    "I territori sono annidati: Italia, Nord e Mezzogiorno, ripartizioni, regioni e province autonome convivono nello stesso elenco. Sommare le regioni non ricostruisce l'Italia.",
+    "Dato non diffuso e riga assente dalla fonte restano distinti e dichiarati: nessuna imputazione a zero, nessuna interpolazione.",
+    "La Provincia autonoma di Bolzano non ha alcun valore familiare in undici anni ed è dichiarata come tale, non mostrata come serie spezzata.",
+    "La misura individuale ha copertura più ampia di quella familiare: una graduatoria regionale costruita sulle famiglie perde territori in anni diversi.",
+    "UNIT_MEAS è vuoto nel payload: l'unità è dichiarata dal codice misura, non inventata.",
+    "Licenza del payload not-declared."
+  ],
+  "reconciliation": {
+    "grid": {
+      "territories": 30,
+      "years": 11,
+      "cells": 330
+    },
+    "byMeasure": {
+      "households": {
+        "sourceRows": 329,
+        "published": 310,
+        "undiffused": 19,
+        "missing": 1
+      },
+      "individuals": {
+        "sourceRows": 329,
+        "published": 326,
+        "undiffused": 3,
+        "missing": 1
+      }
+    },
+    "note": "Ogni misura copre una griglia di 30 territori × 11 anni = 330 celle. Famiglie: 310 valori diffusi, 19 celle non diffuse, 1 riga assente dalla risposta. Individui: 326 valori diffusi, 3 celle non diffuse, 1 riga assente."
+  },
+  "integrity": {
+    "sourceLockSha256": "a4f31c6c3b5102f008cb77974b39bf131031344d5f39801ac8dfde64e2d69320",
+    "dataArtifact": {
+      "path": "src/data/generated/istat-poverta-regioni-2014-2024.data.json",
+      "bytes": 57371,
+      "sha256": "aea4fd93aa30ef949beb32864c1d0cf90ace210c95629ef321693e5a724f3951"
+    }
+  },
+  "invariants": {
+    "individualToHouseholdRatio": {
+      "pairs": 310,
+      "min": 9030,
+      "max": 19189
+    }
+  }
+}

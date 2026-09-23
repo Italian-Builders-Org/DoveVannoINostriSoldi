@@ -702,6 +702,14 @@ class PublishDataRefreshTests(TestCase):
             expected_workflow_ref="owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main",
         ), "NO_CHANGE")
 
+    def test_merged_candidate_is_republished_when_main_needs_the_same_data_again(self) -> None:
+        artifact, branch, pr = self._managed_fixture(state="MERGED")
+        self.assertEqual(publisher.classify_existing_pr(
+            pr, artifact, branch, current_base="d" * 40,
+            current_digest=branch.trailers["Data-Refresh-Files-SHA256"], changed=True,
+            expected_workflow_ref="owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main",
+        ), "REPLACE")
+
     def test_state_machine_preserves_create_recovery_and_push_order(self) -> None:
         source = SCRIPT.read_text(encoding="utf-8")
         self.assertLess(source.index("push_candidate("), source.index("gh.create_pr(artifact, body)"))

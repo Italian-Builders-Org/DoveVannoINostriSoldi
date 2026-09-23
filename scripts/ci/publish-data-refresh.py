@@ -637,9 +637,7 @@ def classify_existing_pr(
         return "REPLACE"
     # Once merged, a clean generation already matches reviewed main, even if
     # another source has since changed the shared inventory included in the digest.
-    if not changed or branch_digest == current_digest:
-        return "NO_CHANGE"
-    return "REPLACE"
+    return "REPLACE" if changed else "NO_CHANGE"
 
 
 class GhClient:

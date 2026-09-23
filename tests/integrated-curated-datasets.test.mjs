@@ -273,6 +273,20 @@ function sorted(values) {
 }
 
 const validatedPublicUrls = new Set();
+const publicRowFields = new Set([
+  "cells", "evidenceLabel", "id", "redactions", "sourceRow", "sourceRowSha256", "sourceUrls",
+]);
+const redactionFields = new Set(["field", "reason"]);
+
+function assertExactFields(value, expected, datasetId, sourceRow, kind) {
+  const keys = Object.keys(value);
+  if (keys.length !== expected.size) {
+    assert.fail(`${datasetId}:${sourceRow}: campi ${kind} inattesi: ${keys.join(", ")}`);
+  }
+  for (const key of keys) {
+    if (!expected.has(key)) assert.fail(`${datasetId}:${sourceRow}: campo ${kind} inatteso: ${key}`);
+  }
+}
 
 function assertPublicUrlSafe(rawUrl, context) {
   if (validatedPublicUrls.has(rawUrl)) return;
@@ -328,7 +342,7 @@ test("public provenance rejects internal README names while retaining official U
   }, "fixture"));
 });
 
-test("the committed curated corpus has an exact, closed artifact and row ledger", () => {
+test("the committed curated corpus has an exact, closed artifact and row ledger", (t) => {
   const spec = readJson(specPath);
   const siope = siopeProjectionMeasurements(readJson(path.join(repositoryRoot, "src/data/generated/siope-nonmunicipal-provenance.json")));
   for (const dataset of spec.datasets) {
@@ -407,6 +421,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
   let sourceBytes = 0;
 
   for (const dataset of spec.datasets) {
+    const datasetStarted = performance.now();
     const catalogEntry = catalogById.get(dataset.id);
     assert.ok(catalogEntry, `${dataset.id}: catalog entry`);
     assert.deepEqual(
@@ -539,19 +554,12 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
     let rowsWithPublicSource = 0;
     let redactions = 0;
     const rowIds = new Set();
-    const expectedCellFields = sorted(receipt.source.headers);
+    const expectedCellFieldSet = new Set(receipt.source.headers);
+    assert.equal(expectedCellFieldSet.size, receipt.source.headers.length, `${dataset.id}: header duplicati`);
     for (const line of datasetLines()) {
       const row = JSON.parse(line);
       sourceRow += 1;
-      assert.deepEqual(sorted(Object.keys(row)), [
-        "cells",
-        "evidenceLabel",
-        "id",
-        "redactions",
-        "sourceRow",
-        "sourceRowSha256",
-        "sourceUrls",
-      ]);
+      assertExactFields(row, publicRowFields, dataset.id, sourceRow, "row");
       assert.equal(row.sourceRow, sourceRow, `${dataset.id}: sourceRow ${sourceRow}`);
       assert.match(row.sourceRowSha256, /^[a-f0-9]{64}$/);
       assert.equal(
@@ -561,7 +569,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
       assert.ok(!rowIds.has(row.id), `${dataset.id}: duplicate row id ${row.id}`);
       rowIds.add(row.id);
       assert.equal(row.evidenceLabel, dataset.evidenceLabel);
-      assert.deepEqual(sorted(Object.keys(row.cells)), expectedCellFields);
+      assertExactFields(row.cells, expectedCellFieldSet, dataset.id, sourceRow, "cells");
       assertNoInternalProvenance(row.cells, `${dataset.id}:${sourceRow}`);
 
       for (const privateField of dataset.privateFields) {
@@ -580,7 +588,10 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
         }
       }
 
-      assert.deepEqual(row.sourceUrls, sorted(new Set(row.sourceUrls)));
+      assert.ok(Array.isArray(row.sourceUrls), `${dataset.id}:${sourceRow}: sourceUrls non è un array`);
+      for (let index = 1; index < row.sourceUrls.length; index += 1) {
+        assert.ok(row.sourceUrls[index - 1] < row.sourceUrls[index], `${dataset.id}:${sourceRow}: URL duplicati o non ordinati`);
+      }
       for (const sourceUrl of row.sourceUrls) {
         assertPublicUrlSafe(sourceUrl, `${dataset.id}:${sourceRow}`);
       }
@@ -588,7 +599,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
         rowsWithPublicSource += 1;
       }
       for (const redaction of row.redactions) {
-        assert.deepEqual(sorted(Object.keys(redaction)), ["field", "reason"]);
+        assertExactFields(redaction, redactionFields, dataset.id, sourceRow, "redaction");
         assert.ok(receipt.source.headers.includes(redaction.field));
         assert.ok(
           [
@@ -607,6 +618,7 @@ test("the committed curated corpus has an exact, closed artifact and row ledger"
     assert.equal(rowsHash.digest("hex"), receipt.rowsSha256);
     assert.equal(receipt.publication.rowsWithPublicSource, rowsWithPublicSource);
     assert.equal(receipt.publication.redactions, redactions);
+    t.diagnostic(`Corpus ${dataset.id}: ${sourceRow} righe, ${((performance.now() - datasetStarted) / 1000).toFixed(2)}s`);
   }
 
   assert.deepEqual(

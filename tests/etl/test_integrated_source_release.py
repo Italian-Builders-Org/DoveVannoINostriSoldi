@@ -447,7 +447,7 @@ class DatasetGateTests(unittest.TestCase):
 
 class CommittedReleaseProofTests(unittest.TestCase):
     def test_committed_release_proof_closes_all_three_real_gates(self) -> None:
-        proof = release.check_release()
+        proof = release.check_release(show_timings=True)
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
         self.assertEqual(proof["contract"]["datasets"], 103)

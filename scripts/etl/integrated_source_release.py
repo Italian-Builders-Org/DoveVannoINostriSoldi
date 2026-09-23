@@ -10,6 +10,7 @@ import os
 import re
 import stat
 import tempfile
+import time
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
@@ -606,7 +607,7 @@ def _validate_dataset_receipt(
     }
 
 
-def _validate_datasets(paths: ReleasePaths) -> dict[str, object]:
+def _validate_datasets(paths: ReleasePaths, *, show_timings: bool = False) -> dict[str, object]:
     spec_payload = _read_regular(paths.dataset_spec, "integrated dataset spec")
     try:
         spec, dataset_items = dataset_etl.load_spec(paths.dataset_spec)
@@ -742,6 +743,7 @@ def _validate_datasets(paths: ReleasePaths) -> dict[str, object]:
             rows_dir=paths.dataset_rows_dir,
             receipts_dir=paths.dataset_receipts_dir,
             proof_path=paths.dataset_proof,
+            show_timings=show_timings,
         )
     except Exception as exc:
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):
@@ -790,14 +792,36 @@ def _guard_output(paths: ReleasePaths) -> None:
         raise ReleaseError("release proof output must use the .json extension")
 
 
-def build_expected_release(paths: ReleasePaths = ReleasePaths()) -> dict[str, object]:
+def build_expected_release(
+    paths: ReleasePaths = ReleasePaths(), *, show_timings: bool = False,
+) -> dict[str, object]:
     """Recalculate every sub-gate and return the deterministic aggregate proof."""
 
-    _guard_output(paths)
-    _validate_ledger_layout(paths)
-    archive = _validate_archive_receipt(paths)
-    source_catalog = _validate_source_catalog(paths)
-    datasets = _validate_datasets(paths)
+    def phase(label: str, operation):
+        if show_timings:
+            print(f"[start] Release gate: {label}", flush=True)
+        started = time.perf_counter()
+        try:
+            result = operation(paths)
+        except Exception:
+            if show_timings:
+                print(f"[fail] Release gate: {label} ({time.perf_counter() - started:.2f}s)", flush=True)
+            raise
+        if show_timings:
+            print(f"[ok] Release gate: {label} ({time.perf_counter() - started:.2f}s)", flush=True)
+        return result
+
+    phase("output", _guard_output)
+    phase("ledger layout", _validate_ledger_layout)
+    archive = phase("archive receipt", _validate_archive_receipt)
+    source_catalog = phase("source catalog", _validate_source_catalog)
+    datasets = phase(
+        "dataset artifacts and rows",
+        lambda current: (
+            _validate_datasets(current, show_timings=True)
+            if show_timings else _validate_datasets(current)
+        ),
+    )
     dataset_rows = expected_dataset_rows(paths)
     contract = {
         "archiveEntries": EXPECTED_CORPUS["entries"],
@@ -844,10 +868,12 @@ def _atomic_write(path: Path, payload: bytes) -> None:
         raise
 
 
-def check_release(paths: ReleasePaths = ReleasePaths()) -> dict[str, object]:
+def check_release(
+    paths: ReleasePaths = ReleasePaths(), *, show_timings: bool = False,
+) -> dict[str, object]:
     """Recalculate all gates and require byte equality with the committed release proof."""
 
-    expected = build_expected_release(paths)
+    expected = build_expected_release(paths, show_timings=show_timings)
     committed, payload = _load_canonical_object(paths.output, "integrated source release proof")
     _require_exact_keys(committed, RELEASE_KEYS, "integrated source release proof")
     if committed.get("schemaVersion") != 1 or committed.get("complete") is not True:
@@ -908,7 +934,7 @@ def main(argv: list[str] | None = None) -> int:
         output=args.output,
     )
     try:
-        proof = build_release(paths) if args.build else check_release(paths)
+        proof = build_release(paths) if args.build else check_release(paths, show_timings=True)
     except ReleaseError as exc:
         raise SystemExit(f"integrated source release failed: {exc}") from exc
     print(json.dumps(_summary(proof), ensure_ascii=False, sort_keys=True, separators=(",", ":")))

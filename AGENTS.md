@@ -35,8 +35,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_NOME.py'`.
 - `npm run typecheck` genera i tipi Next anche senza `next dev`; leggi le guide
   installate nel blocco Next.
-- Prima della consegna: `npm run ci:static`, `npm run ci:action-pins`, `npm test`,
-  `npm run test:etl`, `npm run test:snapshots`, `npm run build`,
+- Durante lo sviluppo esegui i test mirati del dominio modificato, come in
+  [Feedback rapido](CONTRIBUTING.md#feedback-rapido); allarga la selezione ai
+  contratti correlati prima di concludere la modifica.
+- Prima di aprire una PR esegui il profilo completo: `npm run ci:static`,
+  `npm run ci:action-pins`, `npm test`, `npm run test:etl`,
+  `npm run test:snapshots`, `npm run build`,
   `NEXT_PORT=PORTA_LIBERA npm run test:production`, `git diff --check`.
   Per ETL e snapshot attiva il network guard (CONTRIBUTING).
 - Il runner di produzione possiede e termina il proprio server anche in errore.

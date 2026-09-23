@@ -184,7 +184,7 @@ def build_procedure_map(
         digest = sha256_path(path)
         inputs.append(
             {
-                "path": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
+                "path": path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.as_posix(),
                 "fileName": path.name,
                 "year": year,
                 "bytes": path.stat().st_size,

@@ -33,6 +33,8 @@ test("FC80AMMIN API and MCP share pagination, provenance and region alias behavi
   assert.equal(body.referenceYear, 2022);
   assert.equal(body.family, "FC80AMMIN");
   assert.equal(body.function, "AMMINISTRAZIONE");
+  assert.ok(body.caveats.includes(body.methodology.coverageWarning));
+  assert.match(body.methodology.coverageWarning, /9 Comuni/);
   assert.equal(body.modifiedAt, "2025-06-16");
   assert.equal(body.provenance.sha256.data, "5ff2ccea482e07b3949c955b52f66ffe8d779ab9356b2b4e324677b9dc24e165");
   assert.equal(descriptor.sources[0].sha256, body.provenance.sha256.data);

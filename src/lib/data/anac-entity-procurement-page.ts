@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { closeSync, existsSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { gunzipSync } from "node:zlib";
 import type { IpaEntity } from "@/lib/ipa";
 
@@ -1468,7 +1468,9 @@ function readJson(path: string, label: string): unknown {
 function shardFilePath(root: string, shardMeta: AnacPageShardMeta): string {
   const path = join(projectRootFromArtifact(root), shardMeta.path);
   const entitiesRoot = join(projectRootFromArtifact(root), "src/data/generated/anac-entity-procurement-page/entities");
-  if (!path.startsWith(entitiesRoot + "/")) throw new Error("ANAC entity page: path shard fuori directory.");
+  // join usa il separatore del sistema: il prefisso va confrontato con lo stesso,
+  // altrimenti su Windows ogni shard legittimo risulta fuori directory.
+  if (!path.startsWith(entitiesRoot + sep)) throw new Error("ANAC entity page: path shard fuori directory.");
   return path;
 }
 

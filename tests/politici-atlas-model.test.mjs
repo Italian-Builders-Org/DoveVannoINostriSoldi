@@ -200,3 +200,26 @@ test("institutional overview geometry stays deterministic and anchors hierarchy 
   assert.equal(stacked.width, 900);
   assert.ok(stacked.height > wide.height);
 });
+
+test("legislature filter (#556) reads per-chamber terms and excludes people outside Parliament", () => {
+  const firstInChamber = filteredPeople(map, { ...state, scope: "repubblica", term: "primo-ramo" });
+  assert.ok(firstInChamber.length > 0);
+  assert.ok(firstInChamber.every((person) => person.firstTerm?.chamber === true));
+  const firstInParliament = filteredPeople(map, { ...state, scope: "repubblica", term: "primo-parlamento" });
+  assert.ok(firstInParliament.every((person) => person.firstTerm?.parliament === true));
+  assert.ok(firstInParliament.length < firstInChamber.length);
+  const veterans = filteredPeople(map, { ...state, scope: "repubblica", term: "gia-parlamento" });
+  assert.ok(veterans.every((person) => person.firstTerm?.parliament === false));
+  const parliamentarians = map.people.filter((person) => person.firstTerm !== null).length;
+  assert.equal(firstInParliament.length + veterans.length, parliamentarians);
+  for (const term of ["primo-ramo", "primo-parlamento", "gia-parlamento"]) {
+    const rows = filteredPeople(map, { ...state, scope: "repubblica", term });
+    assert.ok(!rows.some((person) => person.id === "gov-1" || person.id === "pres-1"), term);
+  }
+  const base = "https://www.dovevannoinostrisoldi.com";
+  const url = new URL(atlasUrl(`${base}/politici`, { ...state, term: "primo-parlamento" }), base);
+  assert.equal(url.searchParams.get("mandato"), "primo-parlamento");
+  assert.equal(readAtlasState(url.searchParams, map).state.term, "primo-parlamento");
+  assert.equal(readAtlasState(new URLSearchParams("mandato=bogus"), map).state.term, "tutti");
+  assert.equal(new URL(atlasUrl(`${base}/politici?mandato=primo-ramo`, state), base).searchParams.has("mandato"), false);
+});

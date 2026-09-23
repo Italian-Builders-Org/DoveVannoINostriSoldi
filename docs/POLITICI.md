@@ -21,6 +21,10 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
 - [src/lib/data/camera-atti-voti-contract.ts](../src/lib/data/camera-atti-voti-contract.ts)
   e [src/lib/data/senato-atti-voti-contract.ts](../src/lib/data/senato-atti-voti-contract.ts):
   contratti degli atti firmati e delle votazioni finali dei due rami.
+- [src/lib/data/parlamento-mandati-contract.ts](../src/lib/data/parlamento-mandati-contract.ts):
+  contratto delle legislature per ramo dei parlamentari in carica (#556), che
+  alimenta il filtro **Legislature** e il profilo; vedi
+  [PARLAMENTO_MANDATI.md](PARLAMENTO_MANDATI.md).
 - [src/lib/parlamento-giudiziario.ts](../src/lib/parlamento-giudiziario.ts) e
   [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
   accesso e contratto dello snapshot curato dei procedimenti documentati; lo
@@ -68,6 +72,9 @@ sviluppo.
   ufficiale: match sul titolo dell’atto). I chip mostrano `voti espressi/votazioni
   in aula`; «non ha votato» resta distinto dal conteggio delle votazioni.
 - Gruppo: `/politici?group=<id>`.
+- Legislature: `mandato=primo-ramo|primo-parlamento|gia-parlamento` filtra
+  deputati e senatori per legislature nel proprio ramo o in Parlamento; esclude
+  i membri del Governo senza seggio.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
 - Storico voti per tema (directory cercabile su tutti i parlamentari):
@@ -95,6 +102,7 @@ node --experimental-strip-types --test tests/parlamento-giudiziario-ui.test.mjs
 node --experimental-strip-types --test tests/politici-news-route.test.mjs
 node --experimental-strip-types --test tests/politici-repubblica-contract.test.mjs
 node --experimental-strip-types --test tests/politici-camera-contract.test.mjs
+node --experimental-strip-types --test tests/parlamento-mandati-contract.test.mjs
 ```
 
 ### Build e contesto agenti
@@ -119,7 +127,9 @@ omologa ricavata dalle denominazioni ufficiali: non implicano identità giuridic
 né coordinamento. La presenza di un procedimento non equivale a colpevolezza:
 assoluzioni, prescrizioni e condanne restano stati distinti, con grado e fonti
 espliciti. I dati provengono dagli archivi pubblicati dalle istituzioni e portano
-le loro date di osservazione.
+le loro date di osservazione. «Primo mandato» conta soltanto le legislature
+repubblicane alla Camera e al Senato: non misura altri incarichi né il diritto al
+vitalizio.
 
 La rappresentanza al Parlamento europeo resta fuori da questo atlante nazionale:
 vedi issue #566. Ritratti e simboli di partito passano dai proxy

@@ -55,7 +55,7 @@ La revisione e il merge restano umani.
 | `anac-cig-2007-2025` | non dichiarato nello snapshot | 2026-09-08T12:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |
-| `consulenti-pubblici` | 2026 | 2026-08-25T13:30:46Z | https://consulentipubblici.dfp.gov.it/progetto | `37 */6 * * *` | `.github/workflows/consulenti-refresh.yml` | PR automatica | `python scripts/etl/consulenti_snapshot.py --check` |
+| `consulenti-pubblici` | 2026 | 2026-09-22T17:17:17Z | https://consulentipubblici.dfp.gov.it/progetto | `37 */6 * * *` | `.github/workflows/consulenti-refresh.yml` | PR automatica | `python scripts/etl/consulenti_snapshot.py --check` |
 | `cpt-regional-fiscal` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `indire-pnrr-assignments` | aggiornamento aprile 2026 | 2026-08-23 | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/indire_pnrr_assignments.py --validate-committed` |
 | `inps-civil-invalidity` | non dichiarato nello snapshot | 2026-08-20T22:30:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |

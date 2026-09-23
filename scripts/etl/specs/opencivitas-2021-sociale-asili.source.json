@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2021,
+  "family": "FC70SOCNID",
+  "releaseVersion": 1,
+  "publishedAt": "2024-05-30",
+  "modifiedAt": "2024-05-30",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2021-comuni-sociale-e-asili-nido-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "Sogei",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2021_Ind_FC70SOCNID_1_csv.zip",
+      "bytes": 3731430,
+      "sha256": "36cf00aadfd4b1372c4798c9676388acd1bfe62c15820a44805394df5bee9f69"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2021_xlsx.zip",
+      "bytes": 429597,
+      "sha256": "ef1a547c281b0f47ed9b5d6fd17b8919eff3ad5eaae163ed2bf108ba02eca83b"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2021_Metadati_Ind_FC70SOCNID_1_xlsx.zip",
+      "bytes": 13721,
+      "sha256": "a3bccf772ab80a278b0775ade9f3691ef830d35796e804d5879ea349247cb67a"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "municipalities": 6555,
+  "regionCounts": {
+    "ABRUZZO": 301,
+    "BASILICATA": 131,
+    "CALABRIA": 401,
+    "CAMPANIA": 548,
+    "EMILIA-ROMAGNA": 330,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1505,
+    "MARCHE": 225,
+    "MOLISE": 136,
+    "PIEMONTE": 1181,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 563
+  },
+  "excludedIncompleteHistorical": [
+    "AQ083SIF11TR",
+    "BG103SIF11LA",
+    "CH013SIF11AX",
+    "CH043SIF11CB",
+    "CS128SIF11EN",
+    "CS131SIF11EQ",
+    "NA042SIF11OI",
+    "NA073SIF11PN",
+    "VV037SIF11ZS"
+  ],
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ],
+  "excludedScientificHistorical": [
+    "AQ017SIF11RD"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2022,
+  "family": "FC80POLIZIA",
+  "releaseVersion": 1,
+  "publishedAt": "2025-06-16",
+  "modifiedAt": "2025-06-16",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2022-comuni-polizia-locale-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "Sogei",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2022_Ind_FC80POLIZIA_1_csv.zip",
+      "bytes": 2839376,
+      "sha256": "a57923007cf2c76e645f3e16beed2f4974e0c41dfcf68c688ef1c168cd65ad77"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2022_xlsx.zip",
+      "bytes": 518899,
+      "sha256": "9f50652797ed5080d31291cb7a1c74fad74b37189ac19d2cac2921a2939ed6a1"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2022_Metadati_Ind_FC80POLIZIA_1_xlsx.zip",
+      "bytes": 12415,
+      "sha256": "ade9078fcb2e182c46a1bf27dc9b592d2fbc3b20c3ae20187d900bfd8b13dd56"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "municipalities": 6554,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 401,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 330,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1502,
+    "MARCHE": 225,
+    "MOLISE": 136,
+    "PIEMONTE": 1180,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 560
+  },
+  "excludedIncompleteHistorical": [
+    "CS052SIF11BP",
+    "CZ138SIF11KN",
+    "RC040SIF11KA"
+  ],
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

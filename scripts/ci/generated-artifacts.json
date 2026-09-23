@@ -826,6 +826,32 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-rifiuti.source.json"
     },
     {
+      "id": "opencivitas-2021-rifiuti",
+      "owner": "OpenCivitas municipal 2021 FC70RIFIUTI",
+      "files": [
+        "src/data/generated/opencivitas-2021-rifiuti.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_rifiuti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_rifiuti_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-rifiuti-contract.test.mjs",
+        "tests/opencivitas-2021-rifiuti-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_rifiuti_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70RIFIUTI 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80RIFIUTI 2022. Join di 6565 Comuni RSO; aggregati esclusi; CSV senza colonna Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-rifiuti.source.json"
+    },
+    {
       "id": "opencivitas-2022-viabilita",
       "owner": "OpenCivitas municipal 2022 FC80TERRVIAB",
       "files": [
@@ -850,6 +876,32 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC80TERRVIAB 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI 2022. Join di 6553 Comuni RSO; 4 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-viabilita.source.json"
+    },
+    {
+      "id": "opencivitas-2021-viabilita",
+      "owner": "OpenCivitas municipal 2021 FC70TERRVIAB",
+      "files": [
+        "src/data/generated/opencivitas-2021-viabilita.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_viabilita_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_viabilita_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-viabilita-contract.test.mjs",
+        "tests/opencivitas-2021-viabilita-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_viabilita_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70TERRVIAB 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80TERRVIAB 2022. Join di 6551 Comuni RSO; 14 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-viabilita.source.json"
     },
     {
       "id": "opencivitas-2022-sociale-asili",
@@ -928,6 +980,32 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC80AMMIN 2022 vincolati per byte/SHA-256 nella spec e in issue 591. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022: nessuna somma fra funzioni. Join di 6548 Comuni RSO; 30 aggregati sovracomunali e 9 Comuni privi di spesa storica esclusi senza imputazione a zero. Il fabbisogno riproporziona sul totale della spesa storica della funzione: l'invariante e' vincolata nella spec sui Comuni joinati e la quota dei 9 esclusi e' dichiarata. Digest semantico verificato in Python e TypeScript.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2022-amministrazione.source.json"
+    },
+    {
+      "id": "opencivitas-2021-istruzione",
+      "owner": "OpenCivitas municipal 2021 FC70ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2021-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_istruzione_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-istruzione-contract.test.mjs",
+        "tests/opencivitas-2021-istruzione-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70ISTRUZ 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e dalla funzione Istruzione 2022. Join di 6549 Comuni RSO; 30 aggregati, 15 Comuni privi di spesa storica e Fascia (fabbisogno zero) esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-istruzione.source.json"
     },
     {
       "id": "opencivitas-2019",
@@ -2892,6 +2970,110 @@
       "sourceSpec": "scripts/etl/specs/parlamento-giudiziario-xix.source.json",
       "refreshWorkflow": null,
       "trustModel": "La raccolta non e una tabella ufficiale: in Italia il casellario giudiziale non e pubblico e gran parte delle sentenze di merito non viene pubblicata. L'input verificato e committato in data/parlamento-giudiziario/casi-verificati.json e bloccato per byte e sha256 nello spec; --check lo riproietta e fallisce se lo snapshot committato diverge, se un caso non ha un atto ufficiale o due editori indipendenti, se l'etichetta official-finding compare senza condanna definitiva con atto, se un bucket non coincide con lo stato, se un importo non e in centesimi interi, se la copertura non torna, se statusAsOf non coincide con la data dell'ultimo grado registrato o se manca la data dell'ultimo controllo (verifiedAt). Un procedimento non definitivo non riverificato entro la finestra dichiarata viene marcato da-riverificare e il workflow mensile fallisce oltre il doppio della finestra. Il controllo offline dimostra la coerenza interna e il rispetto delle regole di evidenza, non la veridicita delle sentenze citate: quella resta affidata alle fonti elencate caso per caso."
+    },
+    {
+      "id": "opencivitas-2022-polizia",
+      "owner": "OpenCivitas municipal 2022 FC80POLIZIA",
+      "files": [
+        "src/data/generated/opencivitas-2022-polizia.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_polizia_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_polizia_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-polizia-contract.test.mjs",
+        "tests/opencivitas-2022-polizia-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_polizia_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80POLIZIA 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022. Join di 6554 Comuni RSO; 3 Comuni con spesa storica vuota esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-polizia.source.json"
+    },
+    {
+      "id": "opencivitas-2022-istruzione",
+      "owner": "OpenCivitas municipal 2022 FC80ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2022-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2022_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2022_istruzione_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2022-istruzione-contract.test.mjs",
+        "tests/opencivitas-2022-istruzione-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2022_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC80ISTRUZ 2022 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC80TOT/FC80RIFIUTI/FC80TERRVIAB/FC80SOCNID 2022. Join di 6550 Comuni RSO; 6 Comuni con spesa storica vuota esclusi senza imputazione; Fascia (GE) esclusa perché storica e standard sono entrambe 0 e la differenza percentuale non è definita; aggregati esclusi; CSV con Privacy. La descrizione ufficiale di SPESA_STORICA usa «euro» minuscolo. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2022-istruzione.source.json"
+    },
+    {
+      "id": "opencivitas-2021-sociale-asili",
+      "owner": "OpenCivitas municipal 2021 FC70SOCNID",
+      "files": [
+        "src/data/generated/opencivitas-2021-sociale-asili.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_sociale_asili_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_sociale_asili_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-sociale-asili-contract.test.mjs",
+        "tests/opencivitas-2021-sociale-asili-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_sociale_asili_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70SOCNID 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e da FC80SOCNID 2022. Join di 6555 Comuni RSO; 9 Comuni con spesa storica vuota e Canistro (notazione scientifica) esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-sociale-asili.source.json"
+    },
+    {
+      "id": "opencivitas-2021-polizia",
+      "owner": "OpenCivitas municipal 2021 FC70POLIZIA",
+      "files": [
+        "src/data/generated/opencivitas-2021-polizia.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_polizia_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_polizia_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-polizia-contract.test.mjs",
+        "tests/opencivitas-2021-polizia-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_polizia_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70POLIZIA 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e dalla funzione Polizia locale 2022. Join di 6556 Comuni RSO; 30 aggregati e 9 Comuni privi di spesa storica esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-polizia.source.json"
     }
   ]
 }

@@ -1,3 +1,7 @@
+import opencivitas2021PoliziaSource from "../../../scripts/etl/specs/opencivitas-2021-polizia.source.json";
+import opencivitas2021SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2021-sociale-asili.source.json";
+import opencivitas2021ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2021-viabilita.source.json";
+import opencivitas2022IstruzioneSource from "../../../scripts/etl/specs/opencivitas-2022-istruzione.source.json";
 import { OPENCUP_PRODUCT_INTEGRATION, type SourceId } from "@/lib/data/source-policy";
 import { MEF_IRPEF_SOURCE } from "@/lib/data/mef-irpef-source";
 import { educationAtlasCatalogSources } from "@/lib/education-atlas-metadata";
@@ -7,10 +11,13 @@ import { sourceCatalog } from "@/lib/sources";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
 import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.source.json";
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
+import opencivitas2021RifiutiSource from "../../../scripts/etl/specs/opencivitas-2021-rifiuti.source.json";
 import opencivitas2022ViabilitaSource from "../../../scripts/etl/specs/opencivitas-2022-viabilita.source.json";
 import opencivitas2021AmministrazioneSource from "../../../scripts/etl/specs/opencivitas-2021-amministrazione.source.json";
 import opencivitas2022AmministrazioneSource from "../../../scripts/etl/specs/opencivitas-2022-amministrazione.source.json";
+import opencivitas2021IstruzioneSource from "../../../scripts/etl/specs/opencivitas-2021-istruzione.source.json";
 import opencivitas2022SocialeAsiliSource from "../../../scripts/etl/specs/opencivitas-2022-sociale-asili.source.json";
+import opencivitas2022PoliziaSource from "../../../scripts/etl/specs/opencivitas-2022-polizia.source.json";
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
@@ -37,6 +44,10 @@ export const DATASET_IDS = [
   "salute_dispositivi_medici",
   "openbdap_spesa_legislature",
   "openbdap_legge_bilancio_storico",
+  "opencivitas_polizia_2021",
+  "opencivitas_sociale_asili_2021",
+  "opencivitas_viabilita_2021",
+  "opencivitas_istruzione_2022",
   "opencivitas_fabbisogni",
   "opencivitas_fabbisogni_2021",
   "opencivitas_fabbisogni_2015",
@@ -45,10 +56,13 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2018",
   "opencivitas_fabbisogni_2019",
   "opencivitas_rifiuti_2022",
+  "opencivitas_rifiuti_2021",
   "opencivitas_viabilita_2022",
   "opencivitas_amministrazione_2021",
   "opencivitas_amministrazione_2022",
+  "opencivitas_istruzione_2021",
   "opencivitas_sociale_asili_2022",
+  "opencivitas_polizia_2022",
   "opencoesione_progetti",
   "opencup_progetto",
   "pnrr_asili",
@@ -259,6 +273,10 @@ const exampleQueries = {
   },
   openbdap_spesa_legislature: { dataset: "openbdap_spesa_legislature" },
   openbdap_legge_bilancio_storico: { dataset: "openbdap_legge_bilancio_storico", years: 6 },
+  opencivitas_polizia_2021: { dataset: "opencivitas_polizia_2021", region: "LAZIO", year: 2021, limit: 20 },
+  opencivitas_sociale_asili_2021: { dataset: "opencivitas_sociale_asili_2021", region: "LAZIO", year: 2021, limit: 20 },
+  opencivitas_viabilita_2021: { dataset: "opencivitas_viabilita_2021", region: "LAZIO", year: 2021, limit: 20 },
+  opencivitas_istruzione_2022: { dataset: "opencivitas_istruzione_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_fabbisogni: { dataset: "opencivitas_fabbisogni", region: "CALABRIA", limit: 20 },
   opencivitas_fabbisogni_2015: { dataset: "opencivitas_fabbisogni_2015", region: "LAZIO", year: 2015, limit: 20 },
   opencivitas_fabbisogni_2016: { dataset: "opencivitas_fabbisogni_2016", region: "LAZIO", year: 2016, limit: 20 },
@@ -267,10 +285,13 @@ const exampleQueries = {
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_fabbisogni_2021: { dataset: "opencivitas_fabbisogni_2021", region: "CALABRIA", limit: 20 },
   opencivitas_rifiuti_2022: { dataset: "opencivitas_rifiuti_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_rifiuti_2021: { dataset: "opencivitas_rifiuti_2021", region: "LAZIO", year: 2021, limit: 20 },
   opencivitas_viabilita_2022: { dataset: "opencivitas_viabilita_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencivitas_amministrazione_2021: { dataset: "opencivitas_amministrazione_2021", region: "LAZIO", year: 2021, limit: 20 },
   opencivitas_amministrazione_2022: { dataset: "opencivitas_amministrazione_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_istruzione_2021: { dataset: "opencivitas_istruzione_2021", region: "LAZIO", year: 2021, limit: 20 },
   opencivitas_sociale_asili_2022: { dataset: "opencivitas_sociale_asili_2022", region: "LAZIO", year: 2022, limit: 20 },
+  opencivitas_polizia_2022: { dataset: "opencivitas_polizia_2022", region: "LAZIO", year: 2022, limit: 20 },
   opencoesione_progetti: { dataset: "opencoesione_progetti" },
   opencup_progetto: { dataset: "opencup_progetto", cup: "A12B34567890001", limit: 20 },
   pnrr_progetti: { dataset: "pnrr_progetti", mission: "M1", region: "012", limit: 20 },
@@ -665,6 +686,151 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "opencivitas_fabbisogni", title: "Fabbisogni e servizi comunali", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni coperti da OpenCivitas.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "La differenza dalla spesa standard non è una misura automatica di spreco." },
   { id: "opencivitas_fabbisogni_2021", title: "Fabbisogni e servizi comunali 2021 (FC70TOT)", summary: "Spesa storica, spesa standard e livelli dei servizi dei Comuni RSO, annualità 2021, famiglia FC70TOT.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"], caveat: "Contratto distinto da FC80TOT 2022: non sommare né confrontare in silenzio le due annualità. La differenza dalla spesa standard non è spreco. RSS fuori perimetro." },
   {
+    id: "opencivitas_polizia_2021",
+    title: "Fabbisogni comunali · Polizia locale 2021 (FC70POLIZIA)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Polizia locale per ${formatItalianInteger(opencivitas2021PoliziaSource.municipalities)} Comuni RSO, annualità ${opencivitas2021PoliziaSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Polizia locale 2021 · FC70POLIZIA",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70POLIZIA_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "709732432e95a296625aaf9bf793dbcb2db502a864ee186769d81384a3c68dbd", bytes: 2607887,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e dalla funzione Polizia locale 2022: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 9 Comuni con spesa storica vuota nella fonte restano esclusi. Il fabbisogno è riproporzionato sul totale della spesa storica della funzione: l'uguaglianza vale sull'insieme con spesa storica, e i 9 esclusi portano fabbisogno senza contropartita.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021PoliziaSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021PoliziaSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021PoliziaSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 9 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione POLIZIA 2021 (FC70POLIZIA) è distinta da FC70TOT 2021 e dalla stessa funzione nel 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Polizia locale 2021", url: opencivitas2021PoliziaSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_sociale_asili_2021",
+    title: "Fabbisogni comunali · Sociale e asili nido 2021 (FC70SOCNID)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Sociale e asili nido per ${formatItalianInteger(opencivitas2021SocialeAsiliSource.municipalities)} Comuni RSO, annualità ${opencivitas2021SocialeAsiliSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Sociale e asili nido 2021 · FC70SOCNID",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70SOCNID_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "36cf00aadfd4b1372c4798c9676388acd1bfe62c15820a44805394df5bee9f69", bytes: 3731430,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80SOCNID 2022: nessuna somma o confronto silenzioso fra funzioni o annualità. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 9 Comuni con spesa storica vuota restano esclusi. Canistro (066017) resta fuori perché la fonte pubblica la spesa storica in notazione scientifica.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021SocialeAsiliSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021SocialeAsiliSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021SocialeAsiliSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999…, 9 Comuni con spesa storica incompleta e Canistro (066017), la cui spesa storica è in notazione scientifica`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione SOCIALE E NIDO 2021 (FC70SOCNID) è distinta da FC70TOT 2021 e da FC80SOCNID 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Sociale e asili nido 2021", url: opencivitas2021SocialeAsiliSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_viabilita_2021",
+    title: "Fabbisogni comunali · Viabilità e territorio 2021 (FC70TERRVIAB)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Viabilità e territorio per ${formatItalianInteger(opencivitas2021ViabilitaSource.municipalities)} Comuni RSO, annualità ${opencivitas2021ViabilitaSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Viabilità e territorio 2021 · FC70TERRVIAB",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70TERRVIAB_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "e56d93a219cc165b72309778116aed6c295fea9a843aae3780392dcd6f00b8ed", bytes: 3394631,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80TERRVIAB 2022: nessuna somma o confronto silenzioso fra funzioni o annualità. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 14 Comuni con spesa storica vuota nella fonte restano esclusi.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021ViabilitaSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021ViabilitaSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021ViabilitaSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 14 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione TERR_VIAB 2021 (FC70TERRVIAB) è distinta da FC70TOT 2021 e da FC80TERRVIAB 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Viabilità e territorio 2021", url: opencivitas2021ViabilitaSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_istruzione_2022",
+    title: "Fabbisogni comunali · Istruzione 2022 (FC80ISTRUZ)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Istruzione per ${formatItalianInteger(opencivitas2022IstruzioneSource.municipalities)} Comuni RSO, annualità ${opencivitas2022IstruzioneSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Istruzione 2022 · FC80ISTRUZ",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80ISTRUZ_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "a4f1f98f4dc070221798e8b2b2264a7254d27c1beac534355c96304755c861c0", bytes: 2557585,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022, FC80TERRVIAB 2022, FC80SOCNID 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 6 Comuni con spesa storica vuota restano esclusi. Fascia (GE) pubblica zero su storica e standard e resta esclusa perché la differenza percentuale non è definita.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022IstruzioneSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022IstruzioneSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022IstruzioneSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999…, 6 Comuni con spesa storica incompleta e Fascia (GE) con storica e standard a zero`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione ISTRUZIONE è distinta da FC80TOT, FC80RIFIUTI, FC80TERRVIAB e FC80SOCNID: non sommare né confrontare in silenzio.",
+        "La descrizione ufficiale di SPESA_STORICA usa «euro» minuscolo, a differenza delle altre funzioni 2022.",
+      ],
+      references: [{ label: "OpenCivitas · Istruzione 2022", url: opencivitas2022IstruzioneSource.datasetPageUrl }],
+    },
+  },
+  {
     id: "opencivitas_rifiuti_2022",
     title: "Fabbisogni comunali · Rifiuti 2022 (FC80RIFIUTI)",
     summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Rifiuti per ${formatItalianInteger(opencivitas2022RifiutiSource.municipalities)} Comuni RSO, annualità ${opencivitas2022RifiutiSource.referenceYear}.`,
@@ -698,6 +864,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione RIFIUTI è distinta da FC80TOT (servizi totali): non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Rifiuti 2022", url: opencivitas2022RifiutiSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_rifiuti_2021",
+    title: "Fabbisogni comunali · Rifiuti 2021 (FC70RIFIUTI)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Rifiuti per ${formatItalianInteger(opencivitas2021RifiutiSource.municipalities)} Comuni RSO, annualità ${opencivitas2021RifiutiSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Rifiuti 2021 · FC70RIFIUTI",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70RIFIUTI_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "ab8b417cd957394b25aa278d7f4a788d4a8a1931db8909f68f96a0479ab702f6", bytes: 1725294,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e da FC80RIFIUTI 2022: nessuna somma o confronto silenzioso fra funzioni o annualità. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021RifiutiSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021RifiutiSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021RifiutiSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale e aggregati ZZ999…`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione RIFIUTI 2021 (FC70RIFIUTI) è distinta da FC70TOT 2021 e da FC80RIFIUTI 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Rifiuti 2021", url: opencivitas2021RifiutiSource.datasetPageUrl }],
     },
   },
   {
@@ -809,6 +1011,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     },
   },
   {
+    id: "opencivitas_istruzione_2021",
+    title: "Fabbisogni comunali · Istruzione 2021 (FC70ISTRUZ)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Istruzione per ${formatItalianInteger(opencivitas2021IstruzioneSource.municipalities)} Comuni RSO, annualità ${opencivitas2021IstruzioneSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Istruzione 2021 · FC70ISTRUZ",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2021_Ind_FC70ISTRUZ_1_csv.zip",
+      cadence: "Irregolare; snapshot 2021 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2024-05-30", updatedAt: "2024-05-30", period: "2021",
+      sha256: "ee4ffe034eb5d8900eabafaa3b9c5e185863bf37b4823b68bf46bd34d26e0e52", bytes: 2336072,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC70TOT 2021 (servizi totali) e dalla funzione Istruzione 2022: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 15 Comuni con spesa storica vuota nella fonte restano esclusi. Fascia (ISTAT 010022) resta esclusa perché la fonte pubblica fabbisogno zero. Il fabbisogno è riproporzionato sul totale della spesa storica della funzione: l'uguaglianza vale sull'insieme con spesa storica, e i 15 esclusi portano fabbisogno senza contropartita.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2021IstruzioneSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2021IstruzioneSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2021IstruzioneSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999…, 15 Comuni con spesa storica incompleta e Fascia (ISTAT 010022) con fabbisogno zero nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione ISTRUZIONE 2021 (FC70ISTRUZ) è distinta da FC70TOT 2021 e dalla stessa funzione nel 2022: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Istruzione 2021", url: opencivitas2021IstruzioneSource.datasetPageUrl }],
+    },
+  },
+  {
     id: "opencivitas_sociale_asili_2022",
     title: "Fabbisogni comunali · Sociale e asili nido 2022 (FC80SOCNID)",
     summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Sociale e asili nido per ${formatItalianInteger(opencivitas2022SocialeAsiliSource.municipalities)} Comuni RSO, annualità ${opencivitas2022SocialeAsiliSource.referenceYear}.`,
@@ -842,6 +1080,42 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
         "La funzione SOCIALE E NIDO è distinta da FC80TOT, FC80RIFIUTI e FC80TERRVIAB: non sommare né confrontare in silenzio.",
       ],
       references: [{ label: "OpenCivitas · Sociale e asili nido 2022", url: opencivitas2022SocialeAsiliSource.datasetPageUrl }],
+    },
+  },
+  {
+    id: "opencivitas_polizia_2022",
+    title: "Fabbisogni comunali · Polizia locale 2022 (FC80POLIZIA)",
+    summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione Polizia locale per ${formatItalianInteger(opencivitas2022PoliziaSource.municipalities)} Comuni RSO, annualità ${opencivitas2022PoliziaSource.referenceYear}.`,
+    sourceIds: ["opencivitas"],
+    customSources: [{
+      id: "opencivitas", name: "OpenCivitas · Polizia locale 2022 · FC80POLIZIA",
+      owner: "Ragioneria Generale dello Stato · pubblicazione Sogei",
+      url: "https://docs.opencivitas.it/2022_Ind_FC80POLIZIA_1_csv.zip",
+      cadence: "Irregolare; snapshot 2022 vincolato per hash",
+      license: "CC BY 4.0", licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+      publishedAt: "2025-06-16", updatedAt: "2025-06-16", period: "2022",
+      sha256: "a57923007cf2c76e645f3e16beed2f4974e0c41dfcf68c688ef1c168cd65ad77", bytes: 2839376,
+    }],
+    freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
+    caveat: "Contratto distinto da FC80TOT 2022 (servizi totali), FC80RIFIUTI 2022, FC80TERRVIAB 2022, FC80SOCNID 2022 e dalle altre funzioni: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. 3 Comuni con spesa storica vuota nella fonte restano esclusi.",
+    publicMetadata: {
+      period: [
+        `Annualità di riferimento ${opencivitas2022PoliziaSource.referenceYear}`,
+        `Pubblicazione e ultima modifica ${opencivitas2022PoliziaSource.publishedAt}`,
+      ],
+      units: [
+        "Spesa storica in euro",
+        "Spesa standard in euro",
+        "Differenza spesa storica − spesa standard in euro",
+        "Livelli dei servizi in unità pubblicate dalla fonte per ciascun indicatore",
+        "Euro per abitante dove pubblicato dalla fonte",
+      ],
+      coverage: `${formatItalianInteger(opencivitas2022PoliziaSource.municipalities)} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale, aggregati ZZ999… e 3 Comuni con spesa storica incompleta nella fonte`,
+      queryNotes: [
+        "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
+        "La funzione POLIZIA è distinta da FC80TOT, FC80RIFIUTI, FC80TERRVIAB e FC80SOCNID: non sommare né confrontare in silenzio.",
+      ],
+      references: [{ label: "OpenCivitas · Polizia locale 2022", url: opencivitas2022PoliziaSource.datasetPageUrl }],
     },
   },
   {

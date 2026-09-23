@@ -838,6 +838,7 @@ pubblica la spesa storica in notazione scientifica), con contratto distinto,
 Nessuna somma o confronto silenzioso con FC70TOT 2021 o FC80SOCNID 2022.
 Fonte, lock e perimetro in [OpenCivitas 2021 Sociale e asili](OPENCIVITAS_2021_SOCIALE_ASILI.md).
 
+È integrata anche **FC70ISTRUZ 2021** (Istruzione, 6.549 Comuni RSO; 15 esclusi per spesa storica vuota e Fascia per fabbisogno zero nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-istruzione` e MCP `opencivitas_istruzione_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Istruzione](OPENCIVITAS_2021_ISTRUZIONE.md).
 
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.

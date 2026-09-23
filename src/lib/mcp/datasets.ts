@@ -449,6 +449,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_istruzione_2021": {
+      const { queryOpenCivitas2021Istruzione } = await import("@/lib/opencivitas-2021-istruzione-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70ISTRUZ è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021.");
+      }
+      return jsonSafe(queryOpenCivitas2021Istruzione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_sociale_asili_2022": {
       const { queryOpenCivitas2022SocialeAsili } = await import("@/lib/opencivitas-2022-sociale-asili-snapshot");
       if (query.year !== undefined && query.year !== 2022) {

@@ -17,6 +17,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
@@ -589,7 +590,7 @@ def managed_pr_matches(
         and pr.head_ref == artifact.publication.branch
         and pr.base_ref == BASE_BRANCH
         and pr.head_sha == branch.tip
-        and pr.base_sha == branch.parent
+        # GitHub reports the current main tip here; the body pins the generation base.
         and pr.title == artifact.publication.pr_title
         and "<!-- dvns-data-refresh:v1 -->" in pr.body
         and _provenance_field(pr.body, "Source artifact") == artifact.artifact_id
@@ -634,11 +635,9 @@ def classify_existing_pr(
         if not changed:
             raise PublishError("no-change cannot legitimize a stale or different open candidate")
         return "REPLACE"
-    if branch_digest == current_digest:
-        return "NO_CHANGE"
-    if not changed:
-        raise PublishError("no-change cannot legitimize a stale merged candidate")
-    return "REPLACE"
+    # Once merged, a clean generation already matches reviewed main, even if
+    # another source has since changed the shared inventory included in the digest.
+    return "REPLACE" if changed else "NO_CHANGE"
 
 
 class GhClient:
@@ -809,12 +808,41 @@ def confirm_pr(
     number: int,
     expected_workflow_ref: str,
 ) -> None:
-    matches = [
-        pr for pr in relevant_tip_prs(gh.prs(artifact.publication.branch), artifact.publication.branch, branch.tip)
-        if pr.number == number
-    ]
-    if len(matches) != 1 or not managed_pr_matches(matches[0], artifact, branch, expected_workflow_ref):
-        raise PublishError("created or updated pull request failed managed provenance validation")
+    for delay in (0, 1, 2, 4, 8):
+        if delay:
+            time.sleep(delay)
+        matches = relevant_tip_prs(gh.prs(artifact.publication.branch), artifact.publication.branch, branch.tip)
+        if len(matches) == 1 and matches[0].number == number and managed_pr_matches(
+            matches[0], artifact, branch, expected_workflow_ref
+        ):
+            return
+    raise PublishError("created or updated pull request failed managed provenance validation")
+
+
+def wait_for_replacement(gh: GhClient, previous: PullRequest, candidate: str) -> None:
+    # A successful push can precede GitHub's PR index update. Retry reads only.
+    for delay in (0, 1, 2, 4, 8):
+        if delay:
+            time.sleep(delay)
+        prs = gh.prs(previous.head_ref)
+        current = [pr for pr in prs if pr.number == previous.number]
+        if any(pr.number != previous.number and pr.state.upper() == "OPEN" for pr in prs):
+            raise PublishError("multiple open pull requests exist after branch publication")
+        if len(current) != 1:
+            continue
+        pr = current[0]
+        if (
+            pr.state.upper() != "OPEN"
+            or pr.head_ref != previous.head_ref
+            or pr.base_ref != previous.base_ref
+            or pr.title != previous.title
+            or pr.body != previous.body
+            or pr.head_sha not in (previous.head_sha, candidate)
+        ):
+            raise PublishError("replacement pull request changed during publication")
+        if pr.head_sha == candidate:
+            return
+    raise PublishError("replacement pull request did not expose the candidate before timeout")
 
 
 def refresh_inventory(artifact: Artifact, *, runner: Runner = subprocess.run) -> None:
@@ -894,18 +922,16 @@ def publish(
     candidate = make_candidate(artifact, run, base_before, digest, runner=runner)
     push_candidate(artifact.publication.branch, candidate, observed_tip=observed_tip, runner=runner)
     body = provenance_body(artifact, run, base_sha=base_before, candidate_sha=candidate, digest=digest)
-    prs = gh.prs(artifact.publication.branch)
     candidate_branch = parse_branch_commit(candidate, runner=runner)
     validate_single_candidate_ancestry(candidate_branch, runner=runner)
     if ref_file_digest(candidate, artifact, runner=runner) != digest:
         raise PublishError("candidate tree does not match its generated-data digest")
-    candidate_prs = relevant_tip_prs(prs, artifact.publication.branch, candidate)
     if replacement_pr is not None:
-        if len(candidate_prs) > 1 or not any(pr.number == replacement_pr.number for pr in candidate_prs):
-            raise PublishError("replacement pull request does not match candidate provenance")
+        wait_for_replacement(gh, replacement_pr, candidate)
         gh.update_pr(replacement_pr.number, artifact, body)
         confirm_pr(gh, artifact, candidate_branch, replacement_pr.number, run.workflow_ref)
         return "ALREADY_PUBLISHED"
+    candidate_prs = relevant_tip_prs(gh.prs(artifact.publication.branch), artifact.publication.branch, candidate)
     open_candidates = [pr for pr in candidate_prs if pr.state.upper() == "OPEN"]
     if len(open_candidates) > 1:
         raise PublishError("multiple open pull requests exist after branch publication")

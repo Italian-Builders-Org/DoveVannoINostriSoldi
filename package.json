@@ -27,7 +27,7 @@
     "test:node": "DVNS_OFFLINE_GUARD=1 node --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/*.test.mjs",
     "test:live": "node --experimental-strip-types --test tests/live/*.test.mjs",
     "government-scorecard:verify": "python3 scripts/ci/check-government-scorecard-artifacts.py && node --experimental-strip-types --test tests/government-scorecard-*.test.mjs",
-    "test:etl": "python3 -m unittest discover -s tests/etl -p 'test_*.py'",
+    "test:etl": "python3 -m unittest discover -s tests/etl -p 'test_*.py' --durations 20",
     "test:snapshots": "python3 scripts/ci/validate-generated-artifacts.py --run-checks",
     "company-atlas:refresh": "node scripts/etl/company_atlas_snapshot.mjs",
     "education-atlas:refresh": "python3 scripts/etl/education_atlas_snapshot.py",

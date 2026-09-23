@@ -355,6 +355,7 @@ export async function runScenario(
     afterNavigate,
   },
 ) {
+  const started = performance.now();
   const id = scenarioId ?? scenarioIdFromLabel(label);
   const page = await createPage(browser, { width });
   const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
@@ -380,6 +381,9 @@ export async function runScenario(
     });
   } finally {
     await page.close().catch(() => {});
+    console.log(
+      `[${thrown ? "fail" : "ok"}] Browser ${suite}: ${label} (${((performance.now() - started) / 1000).toFixed(2)}s)`,
+    );
   }
 
   if (thrown) throw thrown;

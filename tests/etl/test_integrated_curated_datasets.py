@@ -82,6 +82,19 @@ def source_spec(
 
 
 class IntegratedCuratedDatasetsTests(unittest.TestCase):
+    def test_parallel_check_validates_rows_and_rejects_corrupt_chunks(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=1)
+        self.build()
+
+        self.check(workers=2)
+        self.first_row_chunk_path().write_bytes(b"invalid gzip")
+        with self.assertRaisesRegex(ETL.DatasetBuildError, "compresso|gzip"):
+            self.check(workers=2)
+
     def test_empty_public_csv_closes_without_a_row_chunk(self):
         spec = self.write_fixture(b"name|private_id|amount|source|note\n", rows=0)
         self.build()
@@ -272,13 +285,14 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         ETL.commit_artifacts(artifacts)
         return artifacts
 
-    def check(self) -> None:
+    def check(self, *, workers: int | None = None) -> None:
         ETL.check_committed(
             spec_path=self.spec_path,
             catalog_path=self.catalog_path,
             rows_dir=self.rows_dir,
             receipts_dir=self.receipts_dir,
             proof_path=self.proof_path,
+            workers=workers,
         )
 
     def row_chunk_paths(self) -> list[Path]:

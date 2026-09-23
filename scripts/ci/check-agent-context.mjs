@@ -67,6 +67,14 @@ function safeRealpath(target) {
   }
 }
 
+// path.relative usa il separatore del sistema: su Windows restituisce docs\X.md,
+// mentre documenti posseduti e link obbligatori sono dichiarati con la barra. Il
+// confronto va fatto in forma POSIX, altrimenti ogni link obbligatorio risulta
+// mancante e le ancore verso i documenti in docs/ non vengono mai controllate.
+export function relativePosix(root, target, pathApi = path) {
+  return pathApi.relative(root, target).split(pathApi.sep).join("/");
+}
+
 function isWithin(root, target) {
   const relative = path.relative(root, target);
   return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
@@ -176,7 +184,7 @@ function linkResolvesTo(document, root, expectedRelative) {
     if (classified.kind !== "local" || classified.pathPart === "") continue;
     const resolved = path.resolve(path.dirname(document.absolute), classified.pathPart);
     if (!isWithin(root, resolved)) continue;
-    if (path.relative(root, resolved) === expectedRelative) return true;
+    if (relativePosix(root, resolved) === expectedRelative) return true;
   }
   return false;
 }
@@ -270,7 +278,7 @@ function checkLinkTarget(documentName, document, root, realRoot, documents, viol
   }
 
   if (!anchor) return;
-  const relativeTarget = path.relative(root, resolved);
+  const relativeTarget = relativePosix(root, resolved);
   if (!OWNED_DOCUMENTS.includes(relativeTarget)) return;
   const targetDocument = documents.get(relativeTarget);
   if (targetDocument && !targetDocument.headings.has(anchor)) {

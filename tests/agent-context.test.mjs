@@ -5,7 +5,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { checkAgentContext } from "../scripts/ci/check-agent-context.mjs";
+import path from "node:path";
+import { checkAgentContext, relativePosix } from "../scripts/ci/check-agent-context.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const fixturesRoot = join(repoRoot, "tests", "fixtures", "agent-context");
@@ -142,4 +143,17 @@ test("fixture with irrelevant change still passes", (t) => {
   writeFixture(root, variantFixture("irrelevant"));
   const violations = checkAgentContext({ root });
   assert.deepEqual(violations, []);
+});
+
+test("i percorsi relativi si confrontano in forma POSIX su qualunque sistema", () => {
+  // Il comportamento che su Windows rendeva mancante ogni link obbligatorio,
+  // riprodotto con path.win32 così la prova gira anche sulla CI Linux.
+  const root = "C:\\repo";
+  const target = "C:\\repo\\docs\\ARCHITECTURE.md";
+  assert.equal(path.win32.relative(root, target), "docs\\ARCHITECTURE.md");
+  assert.notEqual(path.win32.relative(root, target), "docs/ARCHITECTURE.md");
+  assert.equal(relativePosix(root, target, path.win32), "docs/ARCHITECTURE.md");
+  assert.equal(relativePosix("/repo", "/repo/docs/ARCHITECTURE.md", path.posix), "docs/ARCHITECTURE.md");
+  // Un file alla radice non ha separatori, ed è il motivo per cui AGENTS.md veniva trovato.
+  assert.equal(relativePosix(root, "C:\\repo\\AGENTS.md", path.win32), "AGENTS.md");
 });

@@ -315,6 +315,54 @@ export async function queryPublicDataset(
       const series = getCommittedBudgetLawMissionSeries(query.years);
       return jsonSafe(query.mission === undefined ? series : selectBudgetLawMission(series, query.mission));
     }
+    case "opencivitas_polizia_2021": {
+      const { queryOpenCivitas2021Polizia } = await import("@/lib/opencivitas-2021-polizia-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70POLIZIA è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021.");
+      }
+      return jsonSafe(queryOpenCivitas2021Polizia({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_sociale_asili_2021": {
+      const { queryOpenCivitas2021SocialeAsili } = await import("@/lib/opencivitas-2021-sociale-asili-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70SOCNID è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021; il sociale 2022 su opencivitas_sociale_asili_2022.");
+      }
+      return jsonSafe(queryOpenCivitas2021SocialeAsili({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_viabilita_2021": {
+      const { queryOpenCivitas2021Viabilita } = await import("@/lib/opencivitas-2021-viabilita-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70TERRVIAB è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021; la viabilità 2022 su opencivitas_viabilita_2022.");
+      }
+      return jsonSafe(queryOpenCivitas2021Viabilita({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_istruzione_2022": {
+      const { queryOpenCivitas2022Istruzione } = await import("@/lib/opencivitas-2022-istruzione-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80ISTRUZ è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Istruzione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_fabbisogni": {
       const { openCivitasSnapshot } = await import("@/lib/opencivitas-snapshot");
       if (query.year && query.year !== openCivitasSnapshot.referenceYear) {
@@ -365,6 +413,18 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_rifiuti_2021": {
+      const { queryOpenCivitas2021Rifiuti } = await import("@/lib/opencivitas-2021-rifiuti-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70RIFIUTI è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021; i rifiuti 2022 su opencivitas_rifiuti_2022.");
+      }
+      return jsonSafe(queryOpenCivitas2021Rifiuti({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_viabilita_2022": {
       const { queryOpenCivitas2022Viabilita } = await import("@/lib/opencivitas-2022-viabilita-snapshot");
       if (query.year !== undefined && query.year !== 2022) {
@@ -401,12 +461,36 @@ export async function queryPublicDataset(
         offset: query.offset,
       }));
     }
+    case "opencivitas_istruzione_2021": {
+      const { queryOpenCivitas2021Istruzione } = await import("@/lib/opencivitas-2021-istruzione-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70ISTRUZ è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021.");
+      }
+      return jsonSafe(queryOpenCivitas2021Istruzione({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_sociale_asili_2022": {
       const { queryOpenCivitas2022SocialeAsili } = await import("@/lib/opencivitas-2022-sociale-asili-snapshot");
       if (query.year !== undefined && query.year !== 2022) {
         throw new Error("OpenCivitas FC80SOCNID è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
       }
       return jsonSafe(queryOpenCivitas2022SocialeAsili({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
+    case "opencivitas_polizia_2022": {
+      const { queryOpenCivitas2022Polizia } = await import("@/lib/opencivitas-2022-polizia-snapshot");
+      if (query.year !== undefined && query.year !== 2022) {
+        throw new Error("OpenCivitas FC80POLIZIA è disponibile per il 2022. I servizi totali restano su opencivitas_fabbisogni.");
+      }
+      return jsonSafe(queryOpenCivitas2022Polizia({
         region: query.region,
         code: query.code,
         limit: query.limit,

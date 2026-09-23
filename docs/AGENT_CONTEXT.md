@@ -198,12 +198,21 @@ a caso.
     vincoli di join.
   - [docs/EDUCATION_ATLAS_POC.md](EDUCATION_ATLAS_POC.md): atlante istruzione
     e vincoli di join.
-  - [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
+  - Fonti e contratti OpenCivitas:
+    [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
     [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
+    [docs/OPENCIVITAS_2021_AMMINISTRAZIONE.md](OPENCIVITAS_2021_AMMINISTRAZIONE.md),
+    [docs/OPENCIVITAS_2021_ISTRUZIONE.md](OPENCIVITAS_2021_ISTRUZIONE.md),
+    [docs/OPENCIVITAS_2021_POLIZIA.md](OPENCIVITAS_2021_POLIZIA.md),
+    [docs/OPENCIVITAS_2021_RIFIUTI.md](OPENCIVITAS_2021_RIFIUTI.md),
+    [docs/OPENCIVITAS_2021_SOCIALE_ASILI.md](OPENCIVITAS_2021_SOCIALE_ASILI.md),
+    [docs/OPENCIVITAS_2021_VIABILITA.md](OPENCIVITAS_2021_VIABILITA.md),
+    [docs/OPENCIVITAS_2022_AMMINISTRAZIONE.md](OPENCIVITAS_2022_AMMINISTRAZIONE.md),
+    [docs/OPENCIVITAS_2022_ISTRUZIONE.md](OPENCIVITAS_2022_ISTRUZIONE.md),
+    [docs/OPENCIVITAS_2022_POLIZIA.md](OPENCIVITAS_2022_POLIZIA.md),
     [docs/OPENCIVITAS_2022_RIFIUTI.md](OPENCIVITAS_2022_RIFIUTI.md),
-    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md) e
-    [docs/OPENCIVITAS_2022_SOCIALE_ASILI.md](OPENCIVITAS_2022_SOCIALE_ASILI.md): fonti
-    OpenCivitas e relativi contratti.
+    [docs/OPENCIVITAS_2022_SOCIALE_ASILI.md](OPENCIVITAS_2022_SOCIALE_ASILI.md),
+    [docs/OPENCIVITAS_2022_VIABILITA.md](OPENCIVITAS_2022_VIABILITA.md).
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
     e [docs/research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md):
     ricerche ISTAT collegate.
@@ -222,11 +231,18 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
-  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
-  [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs),
-  [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs),
   [tests/opencivitas-2021-amministrazione-route.test.mjs](../tests/opencivitas-2021-amministrazione-route.test.mjs),
-  [tests/opencivitas-2022-amministrazione-route.test.mjs](../tests/opencivitas-2022-amministrazione-route.test.mjs).
+  [tests/opencivitas-2021-rifiuti-route.test.mjs](../tests/opencivitas-2021-rifiuti-route.test.mjs),
+  [tests/opencivitas-2021-sociale-asili-route.test.mjs](../tests/opencivitas-2021-sociale-asili-route.test.mjs),
+  [tests/opencivitas-2021-viabilita-route.test.mjs](../tests/opencivitas-2021-viabilita-route.test.mjs),
+  [tests/opencivitas-2022-amministrazione-route.test.mjs](../tests/opencivitas-2022-amministrazione-route.test.mjs),
+  [tests/opencivitas-2022-istruzione-route.test.mjs](../tests/opencivitas-2022-istruzione-route.test.mjs),
+  [tests/opencivitas-2022-polizia-route.test.mjs](../tests/opencivitas-2022-polizia-route.test.mjs),
+  [tests/opencivitas-2022-rifiuti-route.test.mjs](../tests/opencivitas-2022-rifiuti-route.test.mjs),
+  [tests/opencivitas-2022-sociale-asili-route.test.mjs](../tests/opencivitas-2022-sociale-asili-route.test.mjs),
+  [tests/opencivitas-2022-viabilita-route.test.mjs](../tests/opencivitas-2022-viabilita-route.test.mjs),
+  [tests/opencivitas-2021-istruzione-route.test.mjs](../tests/opencivitas-2021-istruzione-route.test.mjs),
+  [tests/opencivitas-2021-polizia-route.test.mjs](../tests/opencivitas-2021-polizia-route.test.mjs).
 
 ## Politici
 

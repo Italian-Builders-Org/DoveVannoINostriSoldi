@@ -82,6 +82,9 @@ cells are insufficient:
 2. Add fail-closed contract under `src/lib/data/`.
 3. Add ETL + `--check`, register in `scripts/ci/generated-artifacts.json`, refresh
    `docs/SOURCE_SNAPSHOT_INVENTORY.md`.
+   With an API, an MCP dataset or a source card, go through every registry in
+   `DATA_IMPORT_STANDARD.md` § *Registri di una fonte tipizzata*: missing one
+   fails a CI test whose message rarely names the registry.
 4. Still satisfy money / period / provenance rules.
 
 Prefer deriving typed snapshots from corpus bytes over a second unhashed fetch.

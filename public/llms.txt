@@ -50,6 +50,9 @@ sono incluse nel catalogo pubblico; la pubblicazione non ha una cadenza fissa.
 [Dai fondi ai posti](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti)
 analizza lo stato amministrativo dei progetti PNRR per asili nido al 13 giugno 2026,
 senza misurare i posti effettivamente aperti o certificati.
+[Tre interventi per ridurre gli sprechi](https://www.dovevannoinostrisoldi.com/studi/tre-interventi-sprechi)
+individua tre spese da verificare (farmaci, giustizia, incentivi edilizi),
+mantenendo separate le cifre delle fonti e le proposte DVNS.
 
 Il catalogo MCP è la fonte più compatta per identificativi e filtri. Comprende SIOPE, OpenBDAP,
 OpenCoesione, ANAC, INPS, CPT, MEF IRPEF, MIM, IPA, partecipazioni MEF, Consulenti Pubblici,

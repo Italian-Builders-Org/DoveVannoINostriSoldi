@@ -11,3 +11,6 @@ Non dichiarare peer review accademica senza una procedura realmente completata.
 
 *Dai fondi ai posti* è già pubblicato: i materiali sono in
 `research/pnrr-childcare-delivery` e la scheda è nel registro `published`.
+
+*Tre interventi per ridurre gli sprechi* è già pubblicato: i materiali sono in
+`research/quaderni-sprechi-2026-09` e la scheda è nel registro `published`.

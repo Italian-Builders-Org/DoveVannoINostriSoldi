@@ -28,11 +28,13 @@ try {
         assert.deepEqual(state.headings, ["Paper di ricerca"]);
         assert.equal(state.overflow, false);
         assert.deepEqual(state.current, ["Studi"]);
+        assert.match(state.text, /Tre interventi per ridurre gli sprechi/);
         assert.match(state.text, /Dai fondi ai posti/);
-        assert.match(state.text, /Versione 1\.3/);
+        assert.match(state.text, /Versione 1(?:\.3)?/);
+        assert.match(state.text, /22 settembre 2026/);
         assert.match(state.text, /13 giugno 2026/);
         assert.doesNotMatch(state.text, /Non ci sono ancora studi/);
-        assert.equal(state.pdf, "/studi/dai-fondi-ai-posti/v1.3/dai-fondi-ai-posti.pdf");
+        assert.equal(state.pdf, "/studi/tre-interventi-sprechi/v1/tre-interventi-sprechi.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
         const navLabels = await page.$$eval('#desktop-navigation .nav-item > a', (links) => links.map((link) => link.textContent.trim()));

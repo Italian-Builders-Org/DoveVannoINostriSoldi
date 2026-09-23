@@ -24,7 +24,17 @@ const latestReport = monthlyReports.listPublished()[0];
 const latestPaper = papers.listPublished()[0];
 const announcements = [
   ...(latestReport ? [{ label: "Articolo", title: latestReport.title, description: latestReport.issueMonth === "2026-08" ? "Imprese e territori: cosa sta cambiando in Italia?" : latestReport.title, cta: "Leggi l’articolo", href: latestReport.href }] : []),
-  ...(latestPaper ? [{ label: "Paper", title: latestPaper.title, description: latestPaper.webPath === "/studi/dai-fondi-ai-posti" ? "Asili PNRR: i finanziamenti diventano posti disponibili?" : latestPaper.title, cta: "Scopri il paper", href: latestPaper.webPath ?? "/studi" }] : []),
+  ...(latestPaper ? [{
+    label: "Paper",
+    title: latestPaper.title,
+    description: latestPaper.webPath === "/studi/tre-interventi-sprechi"
+      ? "Farmaci, giustizia ed edilizia: tre spese da verificare"
+      : latestPaper.webPath === "/studi/dai-fondi-ai-posti"
+        ? "Asili PNRR: i finanziamenti diventano posti disponibili?"
+        : latestPaper.title,
+    cta: "Scopri il paper",
+    href: latestPaper.webPath ?? "/studi",
+  }] : []),
   { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/report/${stateBudgetReport.slug}` },
 ];
 

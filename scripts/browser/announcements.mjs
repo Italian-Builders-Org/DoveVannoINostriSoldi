@@ -32,7 +32,7 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
     await page.focus('[data-announcement] button[aria-label^="Mostra:"]');
     await page.keyboard.press('Enter');
   }
-  await page.waitForFunction(() => document.querySelector('[data-announcement] a[data-active="true"]')?.getAttribute('href') === '/studi/dai-fondi-ai-posti', { timeout: 10_000 });
+  await page.waitForFunction(() => document.querySelector('[data-announcement] a[data-active="true"]')?.getAttribute('href') === '/studi/tre-interventi-sprechi', { timeout: 10_000 });
   await page.focus('[data-announcement] a[data-active="true"]');
   await page.waitForFunction(() => document.querySelector('[data-announcement]')?.dataset.static === 'true');
   await assertStationaryLink();
@@ -68,10 +68,10 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
   assert.ok(['none', 'blur(0px)'].includes(await page.$eval('[data-announcement] a[data-active="true"]', (node) => getComputedStyle(node).filter)));
   await assertStationaryLink();
   await page.focus('[data-announcement] button[aria-label^="Mostra:"]'); await page.keyboard.press('Enter');
-  assert.equal((await active()).href, '/studi/dai-fondi-ai-posti', 'Prossimo annuncio cambia anche il link visibile con movimento ridotto');
+  assert.equal((await active()).href, '/studi/tre-interventi-sprechi', 'Prossimo annuncio cambia anche il link visibile con movimento ridotto');
   await assertStationaryLink();
   await page.focus('[data-announcement] a[data-active="true"]');
   await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
-  assert.equal(new URL(page.url()).pathname, '/studi/dai-fondi-ai-posti', 'Il link dell’annuncio si apre da tastiera');
+  assert.equal(new URL(page.url()).pathname, '/studi/tre-interventi-sprechi', 'Il link dell’annuncio si apre da tastiera');
   await page.goto(homeUrl, { waitUntil: 'networkidle2' });
 }

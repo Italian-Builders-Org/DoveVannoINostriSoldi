@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "revisedAt": "2026-09-22",
+  "series": "Quaderni di spesa pubblica",
+  "publishedOn": "2026-09-22",
+  "title": "Tre interventi per ridurre gli sprechi",
+  "subtitle": "Acquisti farmaceutici, ritardi giudiziari e contributi per le ristrutturazioni",
+  "description": "Tre spese da sottoporre a verifica, con la voce da ridurre, il motivo economico, la decisione da prendere e la prova necessaria per contabilizzare un risparmio.",
+  "limitations": "Le cifre dei tre casi hanno significati diversi e non si sommano. Gli scenari AIFA sono alternative complete, non risparmi già conseguiti. I pagamenti Pinto 2025 includono arretrati. I 45 miliardi sugli incentivi edilizi sono investimenti storici stimati come non aggiuntivi, non contributi oggi recuperabili. Non equivale a peer review esterna.",
+  "sourcesConsultedOn": "2026-09-22",
+  "headline": {
+    "pharma_scenarios_mln": [87.3, 157.7, 348.4, 446.4],
+    "pharma_priority_mln_s3": { "epoetine": 88.0, "eparine": 41.5, "ustekinumab": 39.5 },
+    "pinto_paid_2025_mln": 207.4,
+    "pinto_central_arrears_mln": 121.3,
+    "pinto_appeals_from_2023_mln": 86.1,
+    "building_non_additional_share": 0.27,
+    "building_non_additional_bln": 45
+  },
+  "assets": {
+    "tre-interventi-sprechi.pdf": {
+      "bytes": 124869,
+      "sha256": "5c90c51cfb5eb5d2725d4c05f6fd736da50b9bbc287f059ce38f740c6bd2d40b"
+    }
+  }
+}

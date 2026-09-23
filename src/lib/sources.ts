@@ -208,6 +208,19 @@ export const sourceCatalog: PublicSource[] = [
     joinKeys: ["territorio", "anno", "ampiezza familiare"],
   },
   {
+    slug: "istat-poverta-regioni",
+    name: "ISTAT · povertà relativa per regione",
+    owner: "ISTAT — Istituto nazionale di statistica",
+    area: "Condizioni economiche delle famiglie",
+    cadence: "Annuale; dataflow 34_727_DF_DCCV_POVERTA_8 e _10 fissati",
+    coverage:
+      "Incidenza di povertà relativa di famiglie e individui, 2014–2024, 30 territori fra Italia, ripartizioni, regioni e province autonome; 636 valori diffusi",
+    format: "SDMX-CSV 1.0.0 · snapshot JSON verificato",
+    url: "https://esploradati.istat.it/databrowser/",
+    note: "Incidenza percentuale, NON un importo: non sommare fra territori. Povertà RELATIVA: l'incidenza assoluta non è pubblicata per regione e si ferma alle ripartizioni. I territori sono annidati, quindi sommare le regioni non ricostruisce l'Italia. 22 celle non diffuse e 2 righe assenti dalla fonte restano dichiarate e distinte, mai imputate a zero; Bolzano non ha alcun valore familiare. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    joinKeys: ["territorio", "misura", "anno"],
+  },
+  {
     slug: "eurostat-arope",
     name: "Eurostat · AROPE (Europa 2030)",
     owner: "Eurostat",

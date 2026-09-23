@@ -186,6 +186,12 @@
     "recordCount": 70
   },
   {
+    "sourceId": "istat-poverta-regioni",
+    "sourceTimestamp": "2026-09-23",
+    "detail": "Snapshot ETL attivo · incidenza di povertà relativa per regione 2014-2024 (dataflow 34_727_DF_DCCV_POVERTA_8 e 34_727_DF_DCCV_POVERTA_10) · 636 valori diffusi su 30 territori · 22 celle non diffuse e 2 righe assenti dalla fonte, dichiarate e mai imputate a zero · 79.373 byte CSV pinnati. Incidenze percentuali, non spesa pubblica.",
+    "recordCount": 636
+  },
+  {
     "sourceId": "istat-bes-economico",
     "sourceTimestamp": "2026-09-06",
     "detail": "Snapshot ETL attivo · BES dei territori, benessere economico (edizione 2025, DF_BES_TERRIT_4) · 19.592 osservazioni su 5 indicatori e 139 territori, di cui 111 province · 2.107.955 byte CSV pinnato. Medie pro capite, non spesa pubblica e non sommabili fra territori.",

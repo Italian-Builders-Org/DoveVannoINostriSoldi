@@ -6,6 +6,7 @@ import {
   defaultArtifactsDir,
   defaultBaseUrl,
   launchBrowser,
+  navigate,
   waitForServer,
 } from "./harness.mjs";
 
@@ -59,9 +60,7 @@ try {
 
   await scenario("europa-scroll-and-chrome", async (page) => {
     await page.setViewport({ width: 1280, height: 800 });
-    const response = await page.goto(europaUrl, { waitUntil: "networkidle0", timeout: 45_000 });
-    assert.ok(response?.ok(), `Europa HTTP ${response?.status()}`);
-    await page.waitForSelector("#eurodeputati-italia", { visible: true });
+    await navigate(page, { url: europaUrl, label: "Europa", readySelector: "#eurodeputati-italia", timeoutMs: 45_000 });
 
     const state = await page.evaluate(() => {
       const html = document.documentElement;
@@ -90,7 +89,7 @@ try {
 
   await scenario("europa-dvns-home-keeps-menu", async (page) => {
     await page.setViewport({ width: 1280, height: 900 });
-    await page.goto(europaUrl, { waitUntil: "networkidle0", timeout: 45_000 });
+    await navigate(page, { url: europaUrl, label: "Europa", readySelector: "#eurodeputati-italia", timeoutMs: 45_000 });
     // Soft-nav to home via site brand/logo if present; otherwise go directly then assert chrome.
     const brand = await page.$('a[aria-label*="DoveVannoINostriSoldi"], a[href="/"], .site-logo, a.brand');
     if (brand) {

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const sourceRoot = new URL("../src/", import.meta.url);
@@ -24,7 +25,7 @@ async function listSourceFiles(directory) {
 }
 
 test("the frontend uses Geist tokens and reserves mono for technical code", async () => {
-  const files = await listSourceFiles(sourceRoot.pathname);
+  const files = await listSourceFiles(fileURLToPath(sourceRoot));
   const source = (await Promise.all(files.map((file) => readFile(file, "utf8")))).join("\n");
   const layout = await readFile(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
   const tokens = await readFile(new URL("../src/app/design-system.css", import.meta.url), "utf8");

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { gunzipSync } from 'node:zlib';
@@ -21,7 +22,8 @@ function fixture(run) {
   try { run({ cwd, copy }); } finally { rmSync(cwd, { recursive: true, force: true }); }
 }
 function invoke(cwd, expression, expected) {
-  const script = `import ${JSON.stringify(join(root, 'tests/helpers/register-ts-alias.mjs'))};\nconst adapter = await import(${JSON.stringify(join(root, 'src/lib/data/anac-operator-awards-index.ts'))});\nconst records = await import(${JSON.stringify(join(root, 'src/lib/data/anac-operator-records.ts'))});\n${expression};`;
+  const specifier = (path) => JSON.stringify(pathToFileURL(join(root, path)).href);
+  const script = `import ${specifier('tests/helpers/register-ts-alias.mjs')};\nconst adapter = await import(${specifier('src/lib/data/anac-operator-awards-index.ts')});\nconst records = await import(${specifier('src/lib/data/anac-operator-records.ts')});\n${expression};`;
   const result = spawnSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', script], { cwd, encoding: 'utf8' });
   if (expected) {
     assert.notEqual(result.status, 0, 'corrupt data must fail closed');

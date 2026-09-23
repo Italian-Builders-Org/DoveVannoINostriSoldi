@@ -45,16 +45,19 @@ test("FC80AMMIN 2022 preserves official source dates, money, RSO coverage and ad
 
 test("FC80AMMIN pin rejects coherent tampering", () => {
   const snapshot = load();
-  assert.throws(() => assertOpenCivitas2022AmministrazioneSnapshot({
-    ...snapshot,
-    municipalities: snapshot.municipalities.map((row, index) =>
-      index === 0 ? { ...row, historicalSpendingCents: row.historicalSpendingCents + 1 } : row),
-  }));
+  // La manomissione deve colpire municipalityRows, la struttura che il digest copre:
+  // municipalities non esiste nel payload, quindi mutarla sollevava un TypeError
+  // che assert.throws catturava senza che il contratto venisse mai interrogato.
+  const manomesso = structuredClone(snapshot);
+  const colonnaStorica = manomesso.municipalityColumns.indexOf("historicalSpendingCents");
+  assert.ok(colonnaStorica >= 0);
+  manomesso.municipalityRows[0][colonnaStorica] += 1;
+  assert.throws(() => assertOpenCivitas2022AmministrazioneSnapshot(manomesso), /SHA-256 semantico/);
   assert.throws(() => assertOpenCivitas2022AmministrazioneSnapshot({
     ...snapshot,
     generatedAt: "2024-01-01T00:00:00Z",
     source: { ...snapshot.source, observedAt: "2024-01-01T00:00:00Z" },
-  }));
+  }), /timestamp di acquisizione/);
 });
 
 test("FC80AMMIN keeps the reproportioning invariant readable from the published payload", () => {

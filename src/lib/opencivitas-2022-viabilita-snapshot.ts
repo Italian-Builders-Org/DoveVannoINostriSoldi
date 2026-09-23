@@ -71,7 +71,7 @@ export function queryOpenCivitas2022Viabilita(filters: {
       "Non sommare né confrontare in silenzio funzioni o annualità diverse.",
       "La differenza spesa storica − spesa standard non è spreco.",
       "RSS e Province autonome sono fuori perimetro.",
-      "4 Comuni con spesa storica vuota nella fonte restano esclusi: nessuna imputazione a zero.",
+      openCivitas2022ViabilitaSnapshot.methodology.coverageWarning,
     ],
   };
 }

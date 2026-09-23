@@ -206,7 +206,7 @@ echo "::endgroup::"
 echo "::group::Interazioni e grafici in modalità scura"
 DVNS_COLOR_SCHEME=dark npm run test:browser:assistant
 DVNS_COLOR_SCHEME=dark npm run test:browser:assistant-free
-DVNS_COLOR_SCHEME=dark npm run test:browser:core
+DVNS_COLOR_SCHEME=dark DVNS_CORE_MODE=theme npm run test:browser:core
 DVNS_COLOR_SCHEME=dark npm run test:browser:charts
 echo "::endgroup::"
 

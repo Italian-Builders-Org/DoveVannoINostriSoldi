@@ -104,11 +104,15 @@ for (const [shardIndex, shard] of manifest.shards.entries()) {
           award.procedure?.procedure ?? null,
           award.amount,
         ];
-        assert.deepEqual(
-          fields,
-          record.detail.filterRows[data.start + offset],
-          `${record.ref} filter row ${data.start + offset}`,
-        );
+        const filterRow = record.detail.filterRows[data.start + offset];
+        if (
+          fields[0] !== filterRow[0] ||
+          fields[1] !== filterRow[1] ||
+          fields[2] !== filterRow[2] ||
+          fields[3] !== filterRow[3]
+        ) {
+          assert.deepEqual(fields, filterRow, `${record.ref} filter row ${data.start + offset}`);
+        }
         const annual = annualCounts.get(fields[0]) ?? {
           count: 0,
           attributedCount: 0,

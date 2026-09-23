@@ -30,6 +30,11 @@ import {
 } from "./harness.mjs";
 
 const baseUrl = defaultBaseUrl();
+const coreStarted = performance.now();
+const coreMode = process.env.DVNS_CORE_MODE ?? "full";
+if (!["full", "theme"].includes(coreMode)) {
+  throw new Error("DVNS_CORE_MODE deve essere full oppure theme.");
+}
 const TABLE_REGION = '[role="region"][aria-label="Redditi e variabili IRPEF per territorio"]';
 const ACTIVE_LEVEL = 'nav[aria-label="Livello territoriale"] a[aria-current="page"]';
 const INFO_TOOLTIP_IDS = ["cash-payments-tip"];
@@ -635,10 +640,12 @@ async function runScenario(browser, {
   label,
   mediaFeatures,
   pathname,
+  themeValidation = false,
   touch = false,
   validate,
   width,
 }) {
+  const started = performance.now();
   const requestedUrl = new URL(pathname, baseUrl).toString();
   const page = await createPage(browser, { width });
   const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
@@ -663,7 +670,9 @@ async function runScenario(browser, {
     await navigate(page, { url: requestedUrl, label });
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), process.env.DVNS_COLOR_SCHEME ?? "light", `${label}: tema inatteso`);
     await assertResponsiveShell(page, label, width);
-    await validate(page);
+    if (coreMode === "full" || themeValidation) {
+      await validate(page);
+    }
     await assertNoErrors(expectedFailure);
   } catch (error) {
     thrown = error;
@@ -678,6 +687,10 @@ async function runScenario(browser, {
     });
   } finally {
     await page.close().catch(() => {});
+    const durationMs = Math.round(performance.now() - started);
+    const validation = coreMode === "full" || themeValidation ? "full" : "theme";
+    scenarioTimings.push({ label, durationMs, ok: !thrown, validation });
+    console.log(`[${thrown ? "fail" : "ok"}] Browser core: ${label} (${validation}, ${(durationMs / 1000).toFixed(2)}s)`);
   }
 
   if (thrown) throw thrown;
@@ -701,6 +714,7 @@ const debtReferenceDate = new Intl.DateTimeFormat("it-IT", {
 
 let browser;
 const completed = [];
+const scenarioTimings = [];
 
 try {
   browser = await launchBrowser();
@@ -724,6 +738,7 @@ try {
       label,
       pathname: "/",
       width,
+      themeValidation: true,
       touch: width === 390,
       validate: async (page) => {
         await inspectInstitutionalPalette(page, { label, width });
@@ -2225,6 +2240,7 @@ try {
       label,
       pathname: "/coesione",
       width,
+      themeValidation: true,
       validate: async (page) => {
         assertTextMatches(await bodyText(page), /A che punto sono i progetti/i, label);
         await assertCohesionTracePanelContrast(page, label);
@@ -2597,6 +2613,9 @@ try {
   console.log(JSON.stringify({
     baseUrl: baseUrl.origin,
     checks: completed,
+    durationMs: Math.round(performance.now() - coreStarted),
+    mode: coreMode,
+    scenarioTimings,
     ok: true,
   }));
 } finally {

@@ -3048,6 +3048,32 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC70SOCNID 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e da FC80SOCNID 2022. Join di 6555 Comuni RSO; 9 Comuni con spesa storica vuota e Canistro (notazione scientifica) esclusi senza imputazione; aggregati esclusi; CSV con Privacy. Digest semantico verificato indipendentemente in Python e TypeScript; soli timestamp di acquisizione esclusi. Check e generazione offline.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2021-sociale-asili.source.json"
+    },
+    {
+      "id": "opencivitas-2021-polizia",
+      "owner": "OpenCivitas municipal 2021 FC70POLIZIA",
+      "files": [
+        "src/data/generated/opencivitas-2021-polizia.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2021_polizia_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2021_polizia_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2021-polizia-contract.test.mjs",
+        "tests/opencivitas-2021-polizia-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2021_polizia_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC70POLIZIA 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e dalla funzione Polizia locale 2022. Join di 6556 Comuni RSO; 30 aggregati e 9 Comuni privi di spesa storica esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2021-polizia.source.json"
     }
   ]
 }

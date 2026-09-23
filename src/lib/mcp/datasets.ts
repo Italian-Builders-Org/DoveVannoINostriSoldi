@@ -315,6 +315,18 @@ export async function queryPublicDataset(
       const series = getCommittedBudgetLawMissionSeries(query.years);
       return jsonSafe(query.mission === undefined ? series : selectBudgetLawMission(series, query.mission));
     }
+    case "opencivitas_polizia_2021": {
+      const { queryOpenCivitas2021Polizia } = await import("@/lib/opencivitas-2021-polizia-snapshot");
+      if (query.year !== undefined && query.year !== 2021) {
+        throw new Error("OpenCivitas FC70POLIZIA è disponibile per il 2021. I servizi totali 2021 restano su opencivitas_fabbisogni_2021.");
+      }
+      return jsonSafe(queryOpenCivitas2021Polizia({
+        region: query.region,
+        code: query.code,
+        limit: query.limit,
+        offset: query.offset,
+      }));
+    }
     case "opencivitas_sociale_asili_2021": {
       const { queryOpenCivitas2021SocialeAsili } = await import("@/lib/opencivitas-2021-sociale-asili-snapshot");
       if (query.year !== undefined && query.year !== 2021) {

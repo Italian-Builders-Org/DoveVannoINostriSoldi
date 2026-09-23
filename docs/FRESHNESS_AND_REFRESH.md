@@ -154,9 +154,10 @@ candidate #595 e #607. Consulenti riparte da `automation/data/consulenti-v3`:
 il publisher non riapre una candidata chiusa senza merge e non modifica la
 vecchia branch. Gli altri nomi restano invariati.
 
-Dopo push e aggiornamenti della PR, il publisher ripete soltanto le letture
-per un massimo di 15 secondi: GitHub può mostrare temporaneamente la revisione
-precedente. Un timeout o una modifica concorrente ferma la pubblicazione;
+Dopo push e aggiornamenti della PR, il publisher ripete soltanto le letture:
+al massimo cinque tentativi, con 15 secondi di attesa complessiva fra le chiamate.
+GitHub può mostrare temporaneamente la revisione precedente. L'esaurimento dei
+tentativi o una modifica concorrente rilevata ferma la pubblicazione;
 non vengono riscritti titoli o descrizioni modificati nel frattempo. La base
 di generazione resta vincolata al commit e alla descrizione, mentre il tip
 corrente di `main` può avanzare indipendentemente.

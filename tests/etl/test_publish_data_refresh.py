@@ -692,6 +692,16 @@ class PublishDataRefreshTests(TestCase):
             ), "NO_CHANGE",
         )
 
+    def test_merged_candidate_does_not_block_clean_generation_after_main_moves(self) -> None:
+        from dataclasses import replace
+        artifact, branch, pr = self._managed_fixture(state="MERGED")
+        advanced = "d" * 40
+        self.assertEqual(publisher.classify_existing_pr(
+            replace(pr, base_sha=advanced), artifact, branch, current_base=advanced,
+            current_digest="e" * 64, changed=False,
+            expected_workflow_ref="owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main",
+        ), "NO_CHANGE")
+
     def test_state_machine_preserves_create_recovery_and_push_order(self) -> None:
         source = SCRIPT.read_text(encoding="utf-8")
         self.assertLess(source.index("push_candidate("), source.index("gh.create_pr(artifact, body)"))

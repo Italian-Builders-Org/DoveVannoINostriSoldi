@@ -635,10 +635,10 @@ def classify_existing_pr(
         if not changed:
             raise PublishError("no-change cannot legitimize a stale or different open candidate")
         return "REPLACE"
-    if branch_digest == current_digest:
+    # Once merged, a clean generation already matches reviewed main, even if
+    # another source has since changed the shared inventory included in the digest.
+    if not changed or branch_digest == current_digest:
         return "NO_CHANGE"
-    if not changed:
-        raise PublishError("no-change cannot legitimize a stale merged candidate")
     return "REPLACE"
 
 

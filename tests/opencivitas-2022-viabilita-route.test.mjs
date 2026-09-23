@@ -33,6 +33,8 @@ test("FC80TERRVIAB API and MCP share pagination, provenance and region alias beh
   assert.equal(body.referenceYear, 2022);
   assert.equal(body.family, "FC80TERRVIAB");
   assert.equal(body.function, "TERR_VIAB");
+  assert.ok(body.caveats.includes(body.methodology.coverageWarning));
+  assert.match(body.methodology.coverageWarning, /4 Comuni/);
   assert.equal(body.modifiedAt, "2025-06-16");
   assert.equal(body.provenance.sha256.data, "dba9ba9e0d5a5aa7d306ba716bf6b2983629516a5e6a460238fede87a78fb9a7");
   assert.equal(descriptor.sources[0].sha256, body.provenance.sha256.data);

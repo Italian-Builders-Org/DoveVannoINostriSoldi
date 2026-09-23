@@ -33,6 +33,8 @@ test("FC80SOCNID API and MCP share pagination, provenance and region alias behav
   assert.equal(body.referenceYear, 2022);
   assert.equal(body.family, "FC80SOCNID");
   assert.equal(body.function, "SOCIALE E NIDO");
+  assert.ok(body.caveats.includes(body.methodology.coverageWarning));
+  assert.match(body.methodology.coverageWarning, /3 Comuni/);
   assert.equal(body.modifiedAt, "2025-06-16");
   assert.equal(body.provenance.sha256.data, "2dd0298e9d25e058f68aaf78f188bc271f175bfb5fe4e6ff06be6882d1486c95");
   assert.equal(descriptor.sources[0].sha256, body.provenance.sha256.data);

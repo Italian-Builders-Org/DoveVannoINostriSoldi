@@ -11,7 +11,7 @@ import { ThemeVoteHistoryDirectory } from "./atlas-storico-voti";
 import { InstitutionalGraph } from "./atlas-institutional-graph";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
-import { atlasUrl, defaultSelection, filteredPeople, longDate, readAtlasState, ROLES, SCOPES, scopeForSelection, TERMS, validSelection, type AtlasScope, type AtlasState, type GraphSelection } from "./atlas-model";
+import { atlasUrl, defaultSelection, filteredPeople, longDate, readAtlasState, ROLES, SCOPES, scopeForSelection, supportsTermFilter, TERMS, validSelection, type AtlasScope, type AtlasState, type GraphSelection } from "./atlas-model";
 import { buildChamberScene, CHAMBER } from "./graph-geometry";
 import { RepubblicaPanel } from "./repubblica-panel";
 import { useAtlasData } from "./use-atlas-data";
@@ -48,7 +48,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   const selectedGroupId = state.selection.kind === "group" ? state.selection.id : null;
   const data = useAtlasData(selectedId, judicialPersonIds);
   const selectionKey = state.selection.kind === "overview" ? "overview" : `${state.selection.kind}:${state.selection.id}`;
-  const filterCount = Number(Boolean(state.family)) + Number(state.role !== "tutti") + Number(state.term !== "tutti") + Number(Boolean(state.query.trim()));
+  const filterCount = Number(Boolean(state.family)) + Number(state.role !== "tutti") + Number(supportsTermFilter(state.scope) && state.term !== "tutti") + Number(Boolean(state.query.trim()));
   const scopeLabel = SCOPES.find((item) => item.id === state.scope)!.label;
   const showMapListMode = state.scope !== "condanne" && state.scope !== "storico-voti";
 
@@ -228,14 +228,14 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
               </option>)}
             </select>
           </div>
-          <div>
+          {supportsTermFilter(state.scope) ? <div>
             <label htmlFor="politici-term">Legislature</label>
             <select id="politici-term" value={state.term} onChange={(event) => update({ ...state, term: TERMS.find((term) => term.id === event.target.value)?.id ?? "tutti" })}>
               {TERMS.map((term) => <option key={term.id} value={term.id}>
                 {term.label}
               </option>)}
             </select>
-          </div>
+          </div> : null}
           <button type="button" className={styles.textButton} disabled={!filterCount} onClick={clearFilters}>Azzera filtri</button>
         </div>
       </div>

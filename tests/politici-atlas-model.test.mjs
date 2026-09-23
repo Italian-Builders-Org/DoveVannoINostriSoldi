@@ -223,3 +223,16 @@ test("legislature filter (#556) reads per-chamber terms and excludes people outs
   assert.equal(readAtlasState(new URLSearchParams("mandato=bogus"), map).state.term, "tutti");
   assert.equal(new URL(atlasUrl(`${base}/politici?mandato=primo-ramo`, state), base).searchParams.has("mandato"), false);
 });
+
+test("legislature filter (#556) does not exist in views whose directory ignores it", () => {
+  const base = "https://www.dovevannoinostrisoldi.com";
+  for (const vista of ["condanne", "storico-voti"]) {
+    const deepLink = readAtlasState(new URLSearchParams(`vista=${vista}&mandato=primo-ramo`), map).state;
+    assert.equal(deepLink.scope, vista);
+    assert.equal(deepLink.term, "tutti", vista);
+    const leaked = { ...deepLink, term: "primo-parlamento" };
+    assert.equal(new URL(atlasUrl(`${base}/politici`, leaked), base).searchParams.has("mandato"), false, vista);
+    assert.equal(filteredPeople(map, leaked).length, filteredPeople(map, deepLink).length, vista);
+  }
+  assert.equal(readAtlasState(new URLSearchParams("vista=senato&mandato=primo-ramo"), map).state.term, "primo-ramo");
+});

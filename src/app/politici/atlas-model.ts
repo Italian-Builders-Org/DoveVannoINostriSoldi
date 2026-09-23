@@ -176,7 +176,7 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
       query: (params.get("q") ?? "").slice(0, 120),
       family: map.partyFamilies.some((item) => item.id === family) ? family : null,
       role: ROLES.find((item) => item.id === params.get("incarico"))?.id ?? "tutti",
-      term: TERMS.find((item) => item.id === params.get("mandato"))?.id ?? "tutti",
+      term: supportsTermFilter(scope) ? TERMS.find((item) => item.id === params.get("mandato"))?.id ?? "tutti" : "tutti",
       themeId: scope === "storico-voti" ? themeId : resolveThemeId(params.get("tema")),
       themeChamber: scope === "storico-voti" ? themeChamber : "tutti",
       themeExpressedOnly: params.get("espressi") === "0" ? false : true,
@@ -198,7 +198,7 @@ export function atlasUrl(href: string, state: AtlasState): string {
   if (state.query.trim()) url.searchParams.set("q", state.query.trim());
   if (state.family) url.searchParams.set("famiglia", state.family);
   if (state.role !== "tutti") url.searchParams.set("incarico", state.role);
-  if (state.term !== "tutti") url.searchParams.set("mandato", state.term);
+  if (state.term !== "tutti" && supportsTermFilter(state.scope)) url.searchParams.set("mandato", state.term);
   if (state.scope === "storico-voti") {
     url.searchParams.set("tema", state.themeId ?? DEFAULT_THEME_ID);
     if (state.themeChamber !== "tutti") url.searchParams.set("ramo", state.themeChamber);
@@ -225,6 +225,11 @@ export function matchesRole(person: RepublicMapPerson, role: RoleFilter): boolea
   return ["capo-stato", "presidente-assemblea", "vicepresidente-assemblea", "questore", "segretario-presidenza"].includes(person.roleKind);
 }
 
+/** Condanne and Storico voti render their own directories, which do not read the term filter. */
+export function supportsTermFilter(scope: AtlasScope): boolean {
+  return scope !== "condanne" && scope !== "storico-voti";
+}
+
 /** Government members outside Parliament have no chamber terms: any term filter excludes them. */
 export function matchesTerm(person: RepublicMapPerson, term: TermFilter): boolean {
   if (term === "tutti") return true;
@@ -238,7 +243,7 @@ export function filteredPeople(map: RepublicMap, state: AtlasState): RepublicMap
   const groups = new Map(map.groups.map((group) => [group.id, group]));
   const tokens = normalizeSearch(state.query).split(" ").filter(Boolean);
   return map.people.filter((person) => {
-    if (!belongsToScope(person, state.scope) || !matchesRole(person, state.role) || !matchesTerm(person, state.term)) return false;
+    if (!belongsToScope(person, state.scope) || !matchesRole(person, state.role) || (supportsTermFilter(state.scope) && !matchesTerm(person, state.term))) return false;
     if (state.family && person.family !== state.family) return false;
     const group = person.groupId ? groups.get(person.groupId) : null;
     const text = normalizeSearch(`${person.name} ${person.roleLabel} ${group?.label ?? ""} ${group?.shortLabel ?? ""}`);

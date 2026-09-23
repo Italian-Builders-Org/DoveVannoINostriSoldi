@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
-const guardPath = new URL("../scripts/ci/node-offline-guard.mjs", import.meta.url).pathname;
+const guardPath = new URL("../scripts/ci/node-offline-guard.mjs", import.meta.url).href;
 
 function runWithGuard(code) {
   const result = spawnSync(process.execPath, [

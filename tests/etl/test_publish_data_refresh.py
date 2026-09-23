@@ -179,7 +179,7 @@ class PublishDataRefreshTests(TestCase):
             {
                 "automation/data/company-atlas-v2",
                 "automation/data/education-atlas",
-                "automation/data/consulenti-v2",
+                "automation/data/consulenti-v3",
                 "automation/data/government-scorecard-v2",
                 "automation/data/mef-participations-v2",
                 "automation/data/budget-law",
@@ -558,12 +558,62 @@ class PublishDataRefreshTests(TestCase):
         artifact, branch, pr = self._managed_fixture()
         expected_ref = "owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main"
         self.assertTrue(publisher.managed_pr_matches(pr, artifact, branch, expected_ref))
-        for field, value in (("base_sha", "d" * 40), ("head_sha", "d" * 40), ("body", pr.body.replace("`" + "c" * 64 + "`", "`" + "e" * 64 + "`"))):
+        for field, value in (("base_ref", "other"), ("head_sha", "d" * 40), ("body", pr.body.replace("Base SHA: `" + branch.parent + "`", "Base SHA: `" + "d" * 40 + "`")), ("body", pr.body.replace("`" + "c" * 64 + "`", "`" + "e" * 64 + "`"))):
             tampered = publisher.PullRequest(**{**pr.__dict__, field: value})
             self.assertFalse(publisher.managed_pr_matches(tampered, artifact, branch, expected_ref))
         evil_body = pr.body.replace(expected_ref, expected_ref.replace("owner/repo", "evil/repo"))
         evil = publisher.PullRequest(**{**pr.__dict__, "body": evil_body})
         self.assertFalse(publisher.managed_pr_matches(evil, artifact, branch, expected_ref))
+
+    def test_main_advancement_preserves_pinned_candidate_provenance(self) -> None:
+        from dataclasses import replace
+        artifact, branch, pr = self._managed_fixture()
+        advanced = "d" * 40
+        self.assertEqual(publisher.classify_existing_pr(
+            replace(pr, base_sha=advanced), artifact, branch,
+            current_base=advanced, current_digest="e" * 64, changed=True,
+            expected_workflow_ref="owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main",
+        ), "REPLACE")
+
+    def test_replacement_waits_for_github_head_visibility(self) -> None:
+        from dataclasses import replace
+        _, _, previous = self._managed_fixture()
+        candidate = "d" * 40
+        gh = mock.Mock()
+        gh.prs.side_effect = [[previous], [previous], [replace(previous, head_sha=candidate)]]
+        with mock.patch.object(publisher.time, "sleep") as sleep:
+            publisher.wait_for_replacement(gh, previous, candidate)
+        self.assertEqual(gh.prs.call_count, 3)
+        self.assertEqual(sleep.call_args_list, [mock.call(1), mock.call(2)])
+
+    def test_replacement_rejects_timeout_and_concurrent_edits(self) -> None:
+        from dataclasses import replace
+        _, _, previous = self._managed_fixture()
+        candidate = "d" * 40
+        for changes in ({}, {"state": "CLOSED"}, {"title": "Human edit"},
+                        {"body": "Human edit"}, {"head_sha": "e" * 40}, {"base_ref": "other"}):
+            gh = mock.Mock()
+            gh.prs.return_value = [replace(previous, **changes)]
+            with self.subTest(changes=changes), mock.patch.object(publisher.time, "sleep"):
+                with self.assertRaises(publisher.PublishError):
+                    publisher.wait_for_replacement(gh, previous, candidate)
+                self.assertEqual(gh.prs.call_count, 1 if changes else 5)
+        gh.prs.return_value = [replace(previous, head_sha=candidate), replace(previous, number=99)]
+        with self.assertRaisesRegex(publisher.PublishError, "multiple open"):
+            publisher.wait_for_replacement(gh, previous, candidate)
+
+    def test_confirmation_retries_stale_metadata_but_requires_exact_provenance(self) -> None:
+        from dataclasses import replace
+        artifact, branch, current = self._managed_fixture()
+        expected_ref = "owner/repo/.github/workflows/consulenti-refresh.yml@refs/heads/main"
+        gh = mock.Mock()
+        gh.prs.side_effect = [[], [replace(current, body="stale")], [current]]
+        with mock.patch.object(publisher.time, "sleep"):
+            publisher.confirm_pr(gh, artifact, branch, current.number, expected_ref)
+        gh.prs.side_effect = None
+        gh.prs.return_value = [replace(current, body="tampered")]
+        with mock.patch.object(publisher.time, "sleep"), self.assertRaisesRegex(publisher.PublishError, "provenance"):
+            publisher.confirm_pr(gh, artifact, branch, current.number, expected_ref)
 
     def test_open_candidate_with_different_digest_is_eligible_for_replacement(self) -> None:
         artifact, branch, pr = self._managed_fixture(digest="c" * 64, parent="b" * 40)

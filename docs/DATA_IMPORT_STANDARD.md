@@ -115,11 +115,56 @@ basta una proiezione a celle stringa.
 2. Contratto Zod/TS in `src/lib/data/*-contract.ts` con validazione fail-closed.
 3. ETL `scripts/etl/*_snapshot.py` (o Node) + `--check` offline.
 4. Registrazione in `scripts/ci/generated-artifacts.json` e inventario
-   `docs/SOURCE_SNAPSHOT_INVENTORY.md`.
+   `docs/SOURCE_SNAPSHOT_INVENTORY.md`. Se la fonte ha API, dataset MCP e una
+   scheda fra le fonti, i registri sono di più: vedi
+   [Registri di una fonte tipizzata](#registri-di-una-fonte-tipizzata).
 5. Stessi tre assi semantici (soldi, periodo, provenance) nel metadata dello
    snapshot.
 6. Preferire nel tempo di **derivare** lo snapshot da byte già nel corpus, non
    da un download parallelo non hashed.
+
+### Registri di una fonte tipizzata
+
+Una fonte con snapshot tipizzato, API, dataset MCP e scheda fra le fonti compare
+in registri espliciti sparsi nel repository. Mancarne uno non rompe il build: fa
+cadere un test in CI, spesso con un messaggio che non nomina il registro. La
+colonna di destra è il test che se ne accorge.
+
+| Registro | Cosa aggiungere | Chi lo verifica |
+| --- | --- | --- |
+| `scripts/ci/generated-artifacts.json` | voce dell'artefatto, test ETL e Node, generatore | `scripts/ci/validate-generated-artifacts.py` |
+| `docs/SOURCE_SNAPSHOT_INVENTORY.md` | rigenerato con `python scripts/ci/source-snapshot-inventory.py --write` | test ETL: «is stale» |
+| `next.config.ts`, `outputFileTracingIncludes` | l'artefatto letto a runtime sulla sua route e nei tre aggregati `/api/assistant/chat`, `/mcp`, `/api/mcp` | `scripts/ci/check-runtime-traces.mjs`, dentro `npm run build` |
+| `scripts/ci/check-runtime-traces.mjs` | artefatto → route che devono tracciarlo | `npm run build` |
+| `src/lib/mcp/catalog.ts` | id in `DATASET_IDS`, query di esempio, descrittore | `tests/mcp-datasets.test.mjs` |
+| `src/lib/mcp/datasets.ts` | ramo dell'adapter | `tests/mcp-datasets.test.mjs` |
+| `tests/assistant-byok.test.mjs` | tetto dei metadati alzato quanto serve, misurandolo | «should remain compact» |
+| `src/lib/data/source-policy.ts` | `SourceId` e politica della fonte | `npm run typecheck` |
+| `src/lib/sources.ts` | scheda pubblica della fonte | `tests/source-latest-data.test.mjs`: schede pubbliche e fonti attive devono coincidere |
+| `src/lib/source-latest-data.ts` | etichetta dell'ultimo dato | `npm run typecheck` e `tests/source-latest-data.test.mjs` |
+| `src/lib/data/source-fetch.ts` | host consentiti in `ALLOWED_HOSTS`, anche un elenco vuoto | `npm run typecheck` |
+| `src/lib/data/source-health-snapshots.ts` | funzione di stato e voce nella mappa | `tests/source-health.test.mjs` |
+| `src/data/generated/source-health-snapshots.json` | rigenerato con `npm run source-health:generate`, **mai a mano** | `tests/source-health.test.mjs` |
+| `scripts/runtime-health.mjs`, `EXPECTED_SOURCE_IDS` | id della fonte | `tests/source-health-cold-deadline.test.mjs`: «Source health non coincide con il registro operativo» |
+| `tests/runtime-health.test.mjs` | id della fonte nell'elenco del test | `tests/source-health-monitor.test.mjs` |
+
+Due regole che la tabella da sola non dice:
+
+- **Inventario e stato fonti si rigenerano dopo aver fuso `main`.** La CI
+  valuta il merge con `main`, non il branch: se nel frattempo è entrata
+  un'altra fonte, i due artefatti generati prima del merge risultano stale anche
+  se in locale erano verdi.
+- **Per trovare i registri, parti da una fonte simile già integrata.** Elenca i
+  file che ne citano l'id e controlla quali non citano la nuova:
+
+  ```bash
+  grep -rl "<id-di-una-fonte-simile>" src/ scripts/ tests/ \
+    | xargs grep -L "<id-della-nuova-fonte>"
+  ```
+
+  Restano da scartare solo i file propri della fonte di partenza (la sua route,
+  il suo contratto, i suoi test). Un registro nuovo che non sta in questa tabella
+  salta fuori così.
 
 ## Vietato
 

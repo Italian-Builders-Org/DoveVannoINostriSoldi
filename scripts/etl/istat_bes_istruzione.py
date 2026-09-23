@@ -136,7 +136,7 @@ def metadata(spec: dict, data_bytes: bytes) -> dict:
             "acquiredAt": spec["source"]["acquisitionDate"], "source": spec["source"],
             "semantics": spec["semantics"], "integrity": {
                 "sourceLockSha256": lock_hash(spec), "dataArtifact": {
-                    "path": str(DATA.relative_to(ROOT)), "bytes": len(data_bytes),
+                    "path": DATA.relative_to(ROOT).as_posix(), "bytes": len(data_bytes),
                     "sha256": sha256_bytes(data_bytes)}}}
 
 

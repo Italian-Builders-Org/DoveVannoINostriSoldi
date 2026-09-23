@@ -773,11 +773,23 @@ e MCP `opencivitas_rifiuti_2022`. Non si somma né si confronta in silenzio con
 FC80TOT 2022. Fonte, lock e perimetro sono documentati in
 [OpenCivitas 2022 Rifiuti](OPENCIVITAS_2022_RIFIUTI.md).
 
+È integrata anche **FC70RIFIUTI 2021** (6.565 Comuni RSO), annualità precedente
+della stessa funzione, con contratto distinto, `/api/spese/opencivitas-2021-rifiuti`
+e MCP `opencivitas_rifiuti_2021`. Non si somma né si confronta in silenzio con
+FC70TOT 2021 né con FC80RIFIUTI 2022. Fonte, lock e perimetro sono documentati in
+[OpenCivitas 2021 Rifiuti](OPENCIVITAS_2021_RIFIUTI.md).
+
 È integrata anche **FC80TERRVIAB 2022** (Viabilità e territorio, 6.553 Comuni
 RSO; 4 esclusi per spesa storica vuota nella fonte), con contratto distinto,
 `/api/spese/opencivitas-2022-viabilita` e MCP `opencivitas_viabilita_2022`.
 Nessuna somma o confronto silenzioso con FC80TOT o FC80RIFIUTI. Fonte, lock e
 perimetro in [OpenCivitas 2022 Viabilità](OPENCIVITAS_2022_VIABILITA.md).
+
+È integrata anche **FC70TERRVIAB 2021** (Viabilità e territorio, 6.551 Comuni
+RSO; 14 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2021-viabilita` e MCP `opencivitas_viabilita_2021`.
+Nessuna somma o confronto silenzioso con FC70TOT 2021 o FC80TERRVIAB 2022.
+Fonte, lock e perimetro in [OpenCivitas 2021 Viabilità](OPENCIVITAS_2021_VIABILITA.md).
 
 È integrata anche **FC80SOCNID 2022** (Sociale e asili nido, 6.554 Comuni RSO;
 3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
@@ -806,6 +818,29 @@ differenza aggregata sui Comuni pubblicati non è un risparmio. Nessuna somma o
 confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o FC80SOCNID.
 Fonte, lock e perimetro in [OpenCivitas 2022 Amministrazione](OPENCIVITAS_2022_AMMINISTRAZIONE.md).
 
+È integrata anche **FC80POLIZIA 2022** (Polizia locale, 6.554 Comuni RSO;
+3 esclusi per spesa storica vuota nella fonte), con contratto distinto,
+`/api/spese/opencivitas-2022-polizia` e MCP `opencivitas_polizia_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o
+FC80SOCNID. Fonte, lock e perimetro in [OpenCivitas 2022 Polizia locale](OPENCIVITAS_2022_POLIZIA.md).
+
+È integrata anche **FC80ISTRUZ 2022** (Istruzione, 6.550 Comuni RSO;
+6 esclusi per spesa storica vuota e Fascia, dove storica e standard sono
+entrambe zero pubblicate), con contratto distinto,
+`/api/spese/opencivitas-2022-istruzione` e MCP `opencivitas_istruzione_2022`.
+Nessuna somma o confronto silenzioso con FC80TOT, FC80RIFIUTI, FC80TERRVIAB o
+FC80SOCNID. Fonte, lock e perimetro in [OpenCivitas 2022 Istruzione](OPENCIVITAS_2022_ISTRUZIONE.md).
+
+È integrata anche **FC70SOCNID 2021** (Sociale e asili nido, 6.555 Comuni RSO;
+9 esclusi per spesa storica vuota e Canistro `066017` escluso perché la fonte
+pubblica la spesa storica in notazione scientifica), con contratto distinto,
+`/api/spese/opencivitas-2021-sociale-asili` e MCP `opencivitas_sociale_asili_2021`.
+Nessuna somma o confronto silenzioso con FC70TOT 2021 o FC80SOCNID 2022.
+Fonte, lock e perimetro in [OpenCivitas 2021 Sociale e asili](OPENCIVITAS_2021_SOCIALE_ASILI.md).
+
+È integrata anche **FC70ISTRUZ 2021** (Istruzione, 6.549 Comuni RSO; 15 esclusi per spesa storica vuota e Fascia per fabbisogno zero nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-istruzione` e MCP `opencivitas_istruzione_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Istruzione](OPENCIVITAS_2021_ISTRUZIONE.md).
+
+È integrata anche **FC70POLIZIA 2021** (Polizia locale, 6.556 Comuni RSO; 9 esclusi per spesa storica vuota nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-polizia` e MCP `opencivitas_polizia_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Polizia locale](OPENCIVITAS_2021_POLIZIA.md).
 
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
@@ -919,8 +954,7 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni ufficiali OpenCivitas (istruzione, …) oltre a
-  rifiuti, viabilità e sociale/asili 2022 e ai servizi totali
+- ulteriori funzioni e annualità ufficiali OpenCivitas oltre alle serie già integrate
   2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 

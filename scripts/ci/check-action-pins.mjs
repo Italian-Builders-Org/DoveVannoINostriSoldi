@@ -5,7 +5,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { isMap, isSeq, isScalar, LineCounter, parseDocument } from "yaml";
 
-const ROOT = path.resolve(new URL("../..", import.meta.url).pathname);
+const ROOT = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const WORKFLOWS_DIR = path.join(ROOT, ".github", "workflows");
 const LOCAL_ACTIONS_DIR = path.join(ROOT, ".github", "actions");
 const PINS_FILE = path.join(ROOT, "scripts", "ci", "action-pins.json");

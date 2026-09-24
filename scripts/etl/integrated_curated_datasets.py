@@ -186,6 +186,13 @@ def canonical_json(value: object) -> bytes:
 
 def canonical_gzip(payload: bytes) -> bytes:
     """Return a gzip member with a stable header on every supported Python."""
+    if "zlib-ng" in zlib.ZLIB_RUNTIME_VERSION:
+        # zlib-ng (e.g. CPython 3.14 on Windows) deflates differently from the
+        # classic zlib that produced the committed chunks.
+        raise DatasetBuildError(
+            f"interprete con zlib-ng ({zlib.ZLIB_RUNTIME_VERSION}): i gzip canonici non sono "
+            "riproducibili; usa un Python con zlib classica (per esempio 3.12 o 3.13)"
+        )
     output = io.BytesIO()
     with gzip.GzipFile(
         filename="",

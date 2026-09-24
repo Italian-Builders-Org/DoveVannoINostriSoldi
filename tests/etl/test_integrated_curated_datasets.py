@@ -508,6 +508,11 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         with self.assertRaisesRegex(ETL.DatasetBuildError, "chunk righe troppo grande"):
             self.check()
 
+    def test_canonical_gzip_names_a_zlib_ng_runtime_instead_of_a_chunk_mismatch(self) -> None:
+        with mock.patch.object(ETL.zlib, "ZLIB_RUNTIME_VERSION", "1.3.1.zlib-ng"):
+            with self.assertRaisesRegex(ETL.DatasetBuildError, "zlib-ng"):
+                ETL.canonical_gzip(b"payload")
+
     def test_check_rejects_a_symlinked_public_row_chunk(self) -> None:
         payload = (
             "name|private_id|amount|source|note\n"

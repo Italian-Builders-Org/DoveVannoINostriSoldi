@@ -1,6 +1,6 @@
 {
   "datasetId": "senato-atti-voti-xix",
-  "title": "Senato della Repubblica — disegni di legge di iniziativa parlamentare, fasi dell'iter e votazioni finali per senatore (XIX legislatura)",
+  "title": "Senato della Repubblica — disegni di legge a prima firma senatoriale o di iniziativa governativa, fasi e votazioni finali (XIX legislatura)",
   "landingUrl": "https://dati.senato.it/",
   "period": {
     "legislatures": "19",
@@ -18,15 +18,21 @@
     "committedResponses": {
       "phases": {
         "pages": 1,
-        "rows": 1608,
-        "bytes": 2360477,
-        "sha256": "3df6f0f68a4d8956f9de29abcc6b30f363cc1930052235fd4584ae91f9e8f42f"
+        "rows": 2300,
+        "bytes": 3418810,
+        "sha256": "29a6ab4e7212e3400a4c3776b664340cfa78f5cf835c6ee306a1015460fc275e"
       },
       "signers": {
         "pages": 3,
-        "rows": 13200,
-        "bytes": 3755154,
-        "sha256": "c3b5fb291be77ba18736833388a2cf8409ddcbfddf72899d114314bf22d8babd"
+        "rows": 13220,
+        "bytes": 3761119,
+        "sha256": "627735ea5675581fd7616f7acb7d0897f1f9f5cf6501a1d42981ae2a49903200"
+      },
+      "governmentInitiatives": {
+        "pages": 1,
+        "rows": 1818,
+        "bytes": 542121,
+        "sha256": "1b5cf54e7fdf5dae17875839b77965c2cd07f26f4e56d1e18f96420c4259c3bd"
       },
       "finalVotes": {
         "pages": 1,
@@ -38,27 +44,30 @@
         "pages": 1,
         "rows": 1,
         "bytes": 225,
-        "sha256": "7e8e0a5aea43cb403a0610a3dc28fa0064f85bf49ea5175fac952ebe7a49643b"
+        "sha256": "5b13fffc5fed1ee246feae1469340dd94fb296fc292f2d26947f500b29187677"
       },
       "sessions": {
         "pages": 2,
-        "rows": 8078,
-        "bytes": 1784685,
-        "sha256": "d39936ec57dd665846218834e00f8c596a977acea3b3cb3e9ebe9c84966a5cb7"
+        "rows": 8081,
+        "bytes": 1785434,
+        "sha256": "1eb912bc4ffa1f258ec93f16465f9e931d992708cc70b209683da660fd7591d5"
       },
       "nominalVotes": {
-        "count": 66,
-        "bytes": 1966794,
-        "rows": 12436,
-        "sha256": "e3f62a7fc266661969979c94c8ab5839d15a88cca35bbba06ba4fd02a6d1c757"
+        "count": 222,
+        "batches": 19,
+        "bytes": 9799873,
+        "rows": 41545,
+        "sha256": "6e47220b89b7557a2a312114f340268499120de752bbacf7c28c241c260745a2"
       }
     }
   },
   "coverageFloor": {
-    "acts": 1400,
+    "acts": 1800,
     "senatorsAsFirstSigner": 150,
-    "finalVotes": 40,
-    "finalVotesObserved": 200
+    "governmentActs": 300,
+    "finalVotes": 200,
+    "governmentFinalVotes": 150,
+    "finalVotesObserved": 240
   },
   "semantics": {
     "soldi": {
@@ -76,8 +85,9 @@
     }
   },
   "caveats": [
-    "Il perimetro è l'iniziativa parlamentare a prima firma di un senatore: sono esclusi i disegni di legge a prima firma di deputati, del Governo, delle Regioni, del CNEL e di iniziativa popolare.",
-    "Le votazioni finali su disegni di legge non a prima firma di un senatore non sono incluse: compaiono solo le finali sugli atti del perimetro.",
+    "Il perimetro include iniziative parlamentari a prima firma senatoriale presentate al Senato e iniziative governative con almeno una fase Senato; gli altri atti restano esclusi e contati.",
+    "Un voto finale può essere collegato a più disegni di legge abbinati: il numero di eventi non è la somma dei collegamenti atto-voto.",
+    "I presentatori formali e il Governo delle iniziative governative provengono dalle etichette ufficiali osr:presentatore, non da un matching di nomi.",
     "La firma di un disegno di legge non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
     "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati del Senato.",
     "I conteggi di firme, disegni e voti non misurano produttività o merito dei senatori.",

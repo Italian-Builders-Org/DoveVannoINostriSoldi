@@ -46,6 +46,19 @@ class CameraAttiVotiXixSnapshotTest(unittest.TestCase):
     def test_coverage_acts_reconciles(self) -> None:
         payload = committed()
         self.assertEqual(payload["coverage"]["acts"], len(payload["acts"]))
+        initiatives = Counter(act["initiative"]["kind"] for act in payload["acts"])
+        self.assertEqual(payload["coverage"]["actsByInitiative"], {
+            "parliamentary": initiatives["parliamentary"],
+            "government": initiatives["government"],
+        })
+
+    def test_final_vote_coverage_reconciles_included_and_excluded(self) -> None:
+        payload = committed()
+        coverage = payload["coverage"]
+        self.assertEqual(
+            coverage["finalVotesObserved"],
+            coverage["finalVotes"] + coverage["finalVotesExcluded"],
+        )
 
     def test_coverage_outcome_classes_reconcile(self) -> None:
         payload = committed()
@@ -83,10 +96,28 @@ class CameraAttiVotiXixSnapshotTest(unittest.TestCase):
 
     def test_validate_rejects_first_signer_among_co_signers(self) -> None:
         payload = committed()
-        act = payload["acts"][0]
-        act["coSignerIds"].append(act["firstSignerId"])
+        act = next(act for act in payload["acts"] if act["proposer"]["kind"] == "deputy")
+        act["coSignerIds"].append(act["proposer"]["deputyId"])
         with self.assertRaises(SnapshotError):
             validate_snapshot(payload)
+
+    def test_validate_rejects_government_act_attributed_to_a_deputy(self) -> None:
+        payload = committed()
+        act = next(act for act in payload["acts"] if act["initiative"]["kind"] == "government")
+        act["proposer"] = {"kind": "deputy", "deputyId": "d1_19"}
+        with self.assertRaises(SnapshotError):
+            validate_snapshot(payload)
+
+    def test_validate_rejects_repeated_or_foreign_final_vote_link(self) -> None:
+        for repeated in (False, True):
+            with self.subTest(repeated=repeated):
+                payload = committed()
+                vote = payload["finalVotes"][0]
+                act = next(act for act in payload["acts"]
+                           if (act["id"] == vote["actId"]) == repeated)
+                act["finalVoteIds"].append(vote["id"])
+                with self.assertRaises(SnapshotError):
+                    validate_snapshot(payload)
 
 
 if __name__ == "__main__":

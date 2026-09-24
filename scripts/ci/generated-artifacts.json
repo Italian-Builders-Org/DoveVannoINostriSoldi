@@ -2169,6 +2169,33 @@
       "trustModel": "Lock dedicato 34_727_DF_DCCV_POVERTA_11: CSV e struttura ufficiali vincolati per URL, byte e SHA-256. Una misura SOGLIA_POVREL, 70 osservazioni pubblicate su 77 della fonte (escluso 2021), solo Italia, 7 ampiezze familiari. Scale factor 100 (centesimi). soldi.present true ma non è spesa pubblica. Non confrontabile con incidenze 34_727 né con soglia assoluta 34_211. UNIT_MEAS vuoto. Licenza not-declared."
     },
     {
+      "id": "istat-poverta-regioni-2014-2024",
+      "owner": "ISTAT incidenza di povertà relativa per regione (dataflow 34_727_DF_DCCV_POVERTA_8 e _10)",
+      "files": [
+        "src/data/generated/istat-poverta-regioni-2014-2024.data.json",
+        "src/data/generated/istat-poverta-regioni-2014-2024.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python scripts/etl/istat_poverta_regioni.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_poverta_regioni.py"
+      ],
+      "nodeTests": [
+        "tests/istat-poverta-regioni.test.mjs",
+        "tests/istat-poverta-regioni-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/istat_poverta_regioni.py --write --input-dir <CSV ufficiali vincolati>",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/istat-poverta-regioni-2014-2024.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Lock dedicato 34_727_DF_DCCV_POVERTA_8 e _10: due CSV e due strutture ufficiali vincolati per URL, byte e SHA-256. Due misure di incidenza relativa (famiglie e individui) su 30 territori × 11 anni: 636 valori diffusi, 22 celle non diffuse e 2 righe assenti dalla risposta, dichiarate e distinte, mai imputate a zero. CL_FLAG legge '0' come «meno della metà della cifra minima», lettura che i dati smentiscono: nessuna cella flaggata porta un valore in 8.265 osservazioni della famiglia, e il rapporto individui/famiglie sulle 310 coppie valide resta fra 0,903 e 1,919, vincolato nel lock. Bolzano non ha alcun valore familiare in 11 anni ed è escluso, non spezzato. Scale factor 100 (centesimi di punto percentuale). soldi.present false: è un'incidenza, non un importo. Povertà relativa, non assoluta: quest'ultima non è pubblicata per regione. UNIT_MEAS vuoto. Licenza not-declared."
+    },
+    {
       "id": "eurostat-arope-2015-2025",
       "owner": "Eurostat AROPE Europa 2030 (ilc_peps01n)",
       "files": [
@@ -2887,7 +2914,7 @@
       },
       "sourceSpec": "scripts/etl/specs/camera-atti-voti-xix.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Cinque risposte SPARQL lockate dall'endpoint ufficiale dati.camera.it (atti, cofirme, stati iter, votazioni finali, voti nominali). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap di 10.000 righe dell'endpoint; le cofirme paginano per chiave (keyset) perché l'OFFSET non supera il limite. Il perimetro è l'iniziativa parlamentare: gli atti a prima firma di un membro del Governo sono esclusi e conteggiati in coverage, così come le votazioni finali su quegli atti. Le identità ufficiali della Camera sono verificate strict: votanti = favorevoli + contrari, presenti = votanti + astenuti, approvato solo se i favorevoli superano la maggioranza, e i conteggi nominali F/C/A riconciliano con i totali dichiarati."
+      "trustModel": "Cinque risposte SPARQL lockate dall'endpoint ufficiale dati.camera.it (atti, cofirme, stati iter, votazioni finali, voti nominali). Le query usano SELECT DISTINCT e paginazione con guardia fail-closed sul cap di 10.000 righe dell'endpoint; le cofirme paginano per chiave (keyset) perché l'OFFSET non supera il limite. Il perimetro include atti di iniziativa parlamentare e governativa; proponente formale e Governo responsabile restano distinti e l'assenza della relazione ufficiale resta esplicita. Le identità ufficiali della Camera sono verificate strict: votanti = favorevoli + contrari, presenti = votanti + astenuti, approvato solo se i favorevoli superano la maggioranza, e i conteggi nominali F/C/A riconciliano con i totali dichiarati. Le votazioni con collegamenti incompleti o conteggi non riconciliati sono escluse dal corpus verificato e riconciliate in coverage.finalVotesExcluded."
     },
     {
       "id": "senato-atti-voti-xix",

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "chamber": "camera",
   "legislature": {
     "id": "repubblica_19",
@@ -20,7 +20,8 @@
     "deputiesWithProfession": 386,
     "groupLeaders": 10,
     "institutionalRoles": 22,
-    "organs": 71
+    "organs": 71,
+    "groupMemberships": 483
   },
   "source": {
     "owner": "Camera dei deputati",
@@ -50,13 +51,19 @@
         "count": 398,
         "bytes": 10729984,
         "sha256": "ecaa50be703675f15f19ed4571803b35941fa8e56195dc48e7b49509f5c2dcac"
+      },
+      "groupMemberships": {
+        "bytes": 126841,
+        "sha256": "1128217fd0d2c37d8e10a3fa0a89b87f49b57f5e82d5a9eac4ec334cf28f3417"
       }
     },
-    "cadence": "continuo / aggiornamento RDF e schede Camera"
+    "cadence": "continuo / aggiornamento RDF e schede Camera",
+    "groupMembershipsAcquiredAt": "2026-09-22T18:44:59+00:00"
   },
   "caveats": [
     "Copre i deputati con adesione parlamentare aperta nella XIX legislatura; le differenze dai 400 seggi sono esposte come seggi vacanti, non riempite con ex deputati.",
     "Le cariche di gruppo e gli uffici parlamentari sono quelli senza data di fine alla data di acquisizione.",
+    "Le adesioni ai gruppi coprono l'intera XIX legislatura pubblicata nel grafo RDF; per il join giornaliero la data iniziale è inclusa e quella finale è esclusa, così i cambi registrati nello stesso giorno non si sovrappongono.",
     "Anagrafica, collegio, coalizione e note professionali provengono dalle schede personali pubblicate su camera.it, non dal grafo RDF.",
     "Non è un grafo di potere o di influenza: mostra appartenenze formali e cariche ufficiali pubblicate dalla Camera.",
     "Lo snapshot non contiene notizie di stampa; la UI interroga separatamente indici live e attribuisce ogni link all'editore.",
@@ -14183,6 +14190,2906 @@
       "socialLinks": null,
       "biography": "Deputata della XIX legislatura. Gruppo Fratelli d'Italia. Eletta nella circoscrizione Piemonte 1 (collegio plurinominale Piemonte 1 - P02). Nata a Torino il 7 giugno 1973. Formazione o note professionali: DIPLOMA DI RAGIONERIA; IMPIEGATA AMMINISTRATIVA.",
       "componentLabel": null
+    }
+  ],
+  "groupMemberships": [
+    {
+      "deputyId": "d200291_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300127_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2024-12-20"
+    },
+    {
+      "deputyId": "d300299_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300319_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300369_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d300369_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300444_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300447_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d300447_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300469_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d300469_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300480_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d300480_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300497_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d300674_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301436_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301439_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d301439_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": "2024-04-18"
+    },
+    {
+      "deputyId": "d301439_19",
+      "groupId": "gr4111",
+      "startDate": "2024-04-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301457_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301459_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-05-20"
+    },
+    {
+      "deputyId": "d301459_19",
+      "groupId": "gr4111",
+      "startDate": "2026-05-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301463_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2025-01-07"
+    },
+    {
+      "deputyId": "d301531_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2024-09-24"
+    },
+    {
+      "deputyId": "d301531_19",
+      "groupId": "gr4111",
+      "startDate": "2024-09-24",
+      "endDate": "2024-10-30"
+    },
+    {
+      "deputyId": "d301531_19",
+      "groupId": "gr4152",
+      "startDate": "2024-10-30",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301541_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2024-09-16"
+    },
+    {
+      "deputyId": "d301541_19",
+      "groupId": "gr4134",
+      "startDate": "2024-09-16",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301551_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": "2024-12-02"
+    },
+    {
+      "deputyId": "d301558_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d301577_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302069_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302080_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d302080_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302103_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302422_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302746_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302748_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302754_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302762_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302764_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302789_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2026-05-06"
+    },
+    {
+      "deputyId": "d302789_19",
+      "groupId": "gr4211",
+      "startDate": "2026-05-06",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302794_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302818_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302824_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2025-12-28"
+    },
+    {
+      "deputyId": "d302838_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-02"
+    },
+    {
+      "deputyId": "d302838_19",
+      "groupId": "gr4152",
+      "startDate": "2023-03-02",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302856_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302867_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302902_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302913_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2024-04-19"
+    },
+    {
+      "deputyId": "d302913_19",
+      "groupId": "gr4111",
+      "startDate": "2024-04-19",
+      "endDate": "2025-07-18"
+    },
+    {
+      "deputyId": "d302913_19",
+      "groupId": "gr4134",
+      "startDate": "2025-07-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302942_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302968_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d302980_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d303089_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d304521_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305549_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305553_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d305553_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305580_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305586_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305624_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305688_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305698_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305704_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305708_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305733_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305757_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305771_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305815_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305880_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d305880_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305931_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d305974_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306003_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d306003_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306005_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d306005_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306008_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306064_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306139_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306158_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2024-05-14"
+    },
+    {
+      "deputyId": "d306158_19",
+      "groupId": "gr4134",
+      "startDate": "2024-05-14",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306160_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d306160_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306176_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306189_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306214_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306272_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2024-07-09"
+    },
+    {
+      "deputyId": "d306349_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306352_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306379_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d306379_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": "2024-09-30"
+    },
+    {
+      "deputyId": "d306379_19",
+      "groupId": "gr4134",
+      "startDate": "2024-09-30",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306382_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d306382_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306395_19",
+      "groupId": "gr4136",
+      "startDate": "2024-12-20",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306398_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306412_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306417_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306497_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d306521_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d306521_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307109_19",
+      "groupId": "gr4131",
+      "startDate": "2025-07-22",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307130_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307132_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2026-04-29"
+    },
+    {
+      "deputyId": "d307132_19",
+      "groupId": "gr4111",
+      "startDate": "2026-04-29",
+      "endDate": "2026-07-28"
+    },
+    {
+      "deputyId": "d307132_19",
+      "groupId": "gr4133",
+      "startDate": "2026-07-28",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307134_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307138_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307142_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307143_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-06"
+    },
+    {
+      "deputyId": "d307143_19",
+      "groupId": "gr4111",
+      "startDate": "2026-02-06",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307151_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307161_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307162_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307173_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307175_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307185_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307193_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307202_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307210_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307215_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307219_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307223_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307234_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307246_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307248_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307250_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307285_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307298_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307300_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307302_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307304_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-02"
+    },
+    {
+      "deputyId": "d307306_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307308_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307312_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307328_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d307328_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": "2024-09-09"
+    },
+    {
+      "deputyId": "d307328_19",
+      "groupId": "gr4111",
+      "startDate": "2024-09-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307332_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307334_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307340_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307348_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307356_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2024-09-04"
+    },
+    {
+      "deputyId": "d307356_19",
+      "groupId": "gr4134",
+      "startDate": "2024-09-04",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307360_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-06"
+    },
+    {
+      "deputyId": "d307360_19",
+      "groupId": "gr4111",
+      "startDate": "2026-02-06",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307370_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307374_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307376_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307388_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307394_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307400_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307402_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307406_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307416_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307418_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307420_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307424_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307426_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307430_19",
+      "groupId": "gr4136",
+      "startDate": "2024-07-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307435_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307436_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307447_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307452_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307453_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307454_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307455_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307456_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307457_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307459_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307463_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307464_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307466_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307471_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307475_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307478_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307479_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307481_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307496_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307502_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307507_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307508_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307511_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307531_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307561_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307564_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307567_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307568_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": "2026-07-22"
+    },
+    {
+      "deputyId": "d307570_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307571_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2025-12-09"
+    },
+    {
+      "deputyId": "d307573_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307575_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307580_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307585_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-06-04"
+    },
+    {
+      "deputyId": "d307585_19",
+      "groupId": "gr4111",
+      "startDate": "2026-06-04",
+      "endDate": "2026-07-06"
+    },
+    {
+      "deputyId": "d307585_19",
+      "groupId": "gr4134",
+      "startDate": "2026-07-06",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307591_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307601_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307602_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307603_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d307603_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307604_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307608_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307612_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307616_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307630_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307632_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307634_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d307634_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307639_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307641_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307657_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307659_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307678_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307680_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307683_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307686_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307688_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307689_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307716_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307718_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-06-08"
+    },
+    {
+      "deputyId": "d307718_19",
+      "groupId": "gr4111",
+      "startDate": "2026-06-08",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307722_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2025-03-12"
+    },
+    {
+      "deputyId": "d307726_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307749_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-09-15"
+    },
+    {
+      "deputyId": "d307752_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307762_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307782_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307790_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307803_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307804_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2025-07-22"
+    },
+    {
+      "deputyId": "d307822_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307826_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307829_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307837_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307851_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307857_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307863_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307889_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307892_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307902_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307903_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307918_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": "2024-08-12"
+    },
+    {
+      "deputyId": "d307918_19",
+      "groupId": "gr4111",
+      "startDate": "2024-08-12",
+      "endDate": "2025-02-05"
+    },
+    {
+      "deputyId": "d307918_19",
+      "groupId": "gr4132",
+      "startDate": "2025-02-05",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307922_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307926_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d307983_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308001_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308101_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308221_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308243_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308244_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308270_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2024-04-09"
+    },
+    {
+      "deputyId": "d308421_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308600_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308620_19",
+      "groupId": "gr4134",
+      "startDate": "2025-03-12",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308760_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308761_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308761_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": "2026-02-25"
+    },
+    {
+      "deputyId": "d308761_19",
+      "groupId": "gr4133",
+      "startDate": "2026-02-25",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308762_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308763_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308764_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308765_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308766_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308767_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308768_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308769_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308770_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308780_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308781_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": "2024-02-01"
+    },
+    {
+      "deputyId": "d308781_19",
+      "groupId": "gr4135",
+      "startDate": "2024-02-01",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308782_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308782_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308783_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308784_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308785_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308785_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308786_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308787_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308788_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308789_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308790_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308790_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": "2025-09-16"
+    },
+    {
+      "deputyId": "d308790_19",
+      "groupId": "gr4134",
+      "startDate": "2025-09-16",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308791_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2025-12-30"
+    },
+    {
+      "deputyId": "d308791_19",
+      "groupId": "gr4111",
+      "startDate": "2025-12-30",
+      "endDate": "2026-01-20"
+    },
+    {
+      "deputyId": "d308791_19",
+      "groupId": "gr4134",
+      "startDate": "2026-01-20",
+      "endDate": "2026-06-08"
+    },
+    {
+      "deputyId": "d308791_19",
+      "groupId": "gr4111",
+      "startDate": "2026-06-08",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308792_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308793_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308794_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308795_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308796_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308797_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308797_19",
+      "groupId": "gr4152",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308798_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308799_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308800_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308801_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-06-08"
+    },
+    {
+      "deputyId": "d308801_19",
+      "groupId": "gr4111",
+      "startDate": "2026-06-08",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308802_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308803_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308804_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308805_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308806_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308807_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308808_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308809_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308810_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308810_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308811_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308812_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308813_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308814_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308815_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308816_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308816_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308817_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308818_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308819_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308820_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308821_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308822_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": "2025-05-14"
+    },
+    {
+      "deputyId": "d308822_19",
+      "groupId": "gr4111",
+      "startDate": "2025-05-14",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308823_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308824_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308825_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308826_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308827_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308828_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308829_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308830_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2025-03-21"
+    },
+    {
+      "deputyId": "d308830_19",
+      "groupId": "gr4134",
+      "startDate": "2025-03-21",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308831_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308832_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308833_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308834_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308835_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308836_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308837_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308838_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308839_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308840_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308841_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308842_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2024-07-09"
+    },
+    {
+      "deputyId": "d308843_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308844_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308845_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308846_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308847_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308848_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308849_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308850_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308851_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308852_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308853_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308854_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308855_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308856_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308857_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308857_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308858_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308859_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308860_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308861_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308861_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308862_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308863_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308864_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308865_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": "2024-07-09"
+    },
+    {
+      "deputyId": "d308866_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308867_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308868_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308869_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308869_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308870_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308871_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308872_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308873_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308874_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308875_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308876_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308877_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308878_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308879_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308880_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308881_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308882_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308883_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": "2025-12-03"
+    },
+    {
+      "deputyId": "d308884_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308885_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308886_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308887_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308888_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308889_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308890_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308891_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308892_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308893_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308893_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": "2024-04-23"
+    },
+    {
+      "deputyId": "d308893_19",
+      "groupId": "gr4136",
+      "startDate": "2024-04-23",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308894_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308895_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308896_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308897_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": "2025-07-31"
+    },
+    {
+      "deputyId": "d308897_19",
+      "groupId": "gr4111",
+      "startDate": "2025-07-31",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308898_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308899_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308900_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308901_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308902_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308903_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308904_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308905_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308906_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308907_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308908_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308909_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308910_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308911_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308912_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308913_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308914_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308915_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308916_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308917_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308918_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308920_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308921_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308922_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308923_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308924_19",
+      "groupId": "gr4135",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-20"
+    },
+    {
+      "deputyId": "d308924_19",
+      "groupId": "gr4211",
+      "startDate": "2023-11-20",
+      "endDate": "2025-06-05"
+    },
+    {
+      "deputyId": "d308924_19",
+      "groupId": "gr4133",
+      "startDate": "2025-06-05",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308925_19",
+      "groupId": "gr4134",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308926_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308927_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308928_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-01-07"
+    },
+    {
+      "deputyId": "d308928_19",
+      "groupId": "gr4111",
+      "startDate": "2026-01-07",
+      "endDate": "2026-01-20"
+    },
+    {
+      "deputyId": "d308928_19",
+      "groupId": "gr4134",
+      "startDate": "2026-01-20",
+      "endDate": "2026-06-08"
+    },
+    {
+      "deputyId": "d308928_19",
+      "groupId": "gr4111",
+      "startDate": "2026-06-08",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308929_19",
+      "groupId": "gr4111",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-27"
+    },
+    {
+      "deputyId": "d308929_19",
+      "groupId": "gr4154",
+      "startDate": "2022-10-27",
+      "endDate": "2023-01-09"
+    },
+    {
+      "deputyId": "d308929_19",
+      "groupId": "gr4111",
+      "startDate": "2023-01-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308930_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308931_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308932_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308933_19",
+      "groupId": "gr4131",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308934_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308935_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308936_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308937_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308938_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308939_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308940_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308941_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d308942_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309140_19",
+      "groupId": "gr4131",
+      "startDate": "2024-04-10",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309160_19",
+      "groupId": "gr4136",
+      "startDate": "2024-07-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309161_19",
+      "groupId": "gr4134",
+      "startDate": "2024-07-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309200_19",
+      "groupId": "gr4133",
+      "startDate": "2024-12-02",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309220_19",
+      "groupId": "gr4136",
+      "startDate": "2025-01-07",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309260_19",
+      "groupId": "gr4133",
+      "startDate": "2025-12-03",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309280_19",
+      "groupId": "gr4136",
+      "startDate": "2026-02-03",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309300_19",
+      "groupId": "gr4132",
+      "startDate": "2026-03-26",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309320_19",
+      "groupId": "gr4132",
+      "startDate": "2026-03-26",
+      "endDate": null
+    },
+    {
+      "deputyId": "d309321_19",
+      "groupId": "gr4132",
+      "startDate": "2026-03-26",
+      "endDate": null
+    },
+    {
+      "deputyId": "d32460_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": "2026-03-19"
+    },
+    {
+      "deputyId": "d34580_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": "2026-07-09"
+    },
+    {
+      "deputyId": "d34580_19",
+      "groupId": "gr4111",
+      "startDate": "2026-07-09",
+      "endDate": null
+    },
+    {
+      "deputyId": "d35980_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d36500_19",
+      "groupId": "gr4136",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d38560_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d39130_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d50115_19",
+      "groupId": "gr4132",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "deputyId": "d50204_19",
+      "groupId": "gr4133",
+      "startDate": "2022-10-18",
+      "endDate": null
     }
   ]
 }

@@ -18,6 +18,16 @@ class PoliticiCameraXixSnapshotTest(unittest.TestCase):
         with self.assertRaises(SnapshotError):
             validate_snapshot(payload)
 
+    def test_validate_rejects_overlapping_group_memberships(self) -> None:
+        payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        memberships = [
+            item for item in payload["groupMemberships"]
+            if item["deputyId"] == "d300480_19"
+        ]
+        memberships[1]["startDate"] = "2023-11-19"
+        with self.assertRaisesRegex(SnapshotError, "sovrapposti"):
+            validate_snapshot(payload)
+
 
 if __name__ == "__main__":
     unittest.main()

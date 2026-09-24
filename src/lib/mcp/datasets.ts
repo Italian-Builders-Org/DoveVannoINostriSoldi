@@ -811,6 +811,20 @@ export async function queryPublicDataset(
         }, options),
       });
     }
+    case "istat_poverta_regioni": {
+      options.signal?.throwIfAborted();
+      const { queryIstatPovertaRegioni } = await import("@/lib/istat-poverta-regioni-snapshot");
+      return jsonSafe({
+        dataset: query.dataset,
+        ...queryIstatPovertaRegioni({
+          territory: query.territory,
+          measure: query.measure,
+          year: query.year,
+          limit: query.limit,
+          offset: query.offset,
+        }, options),
+      });
+    }
     case "eurostat_arope": {
       options.signal?.throwIfAborted();
       const { queryEurostatArope } = await import("@/lib/eurostat-arope-snapshot");

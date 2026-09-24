@@ -245,13 +245,6 @@
 .barTrack span { display: block; height: 100%; background: var(--atlas-muted); }
 .barTrack span[data-area="stem"] { background: var(--atlas-accent); }
 .bulletList { list-style: disc !important; padding-left: 18px !important; font-size: 11px; color: var(--atlas-muted); line-height: 1.6; display: grid; gap: 10px; margin: 10px 0 16px !important; }
-.rankingList li { border-bottom: 1px solid var(--atlas-line); }
-.rankingRow { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 7px; width: 100%; min-height: 65px; padding: 8px 0; text-align: left; background: transparent; border: 0; }
-.rankingRow strong { font-size: 11px; font-weight: 550; }
-.rankingRow small { display: block; margin-top: 3px; color: var(--atlas-muted); font-size: 9px; }
-.rankNumber { font-size: 10px; color: var(--atlas-muted); }
-.rankValue { font-size: 12px; font-variant-numeric: tabular-nums; text-align: right; }
-.rankValue small { font-size: 8px; }
 .themeChips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 15px !important; }
 .themeChips li { border: 1px solid var(--atlas-line); border-radius: 6px; padding: 5px 8px; font-size: 10px; }
 .profileFacts > div { padding: 13px 0; border-bottom: 1px solid var(--atlas-line); }

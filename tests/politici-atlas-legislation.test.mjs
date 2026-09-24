@@ -14,9 +14,30 @@ test("acts retain records, votes, source, date and missing data", () => {
   payload.firstSigned[0].title = null;
   payload.firstSigned[0].currentState = null;
   assert.equal(parseLegislation(payload, "dep-1").firstSigned[0].title, null);
+  const voted = parseLegislation(payload, "dep-1").voted[0];
+  assert.equal(voted.role, "votante");
+  assert.equal(voted.initiative.kind, "government");
+  assert.equal(voted.proposer.label, "Governo");
+  assert.equal(voted.responsibleGovernment.id, "g202");
+});
+test("Senato acts require explicit parliamentary attribution and expose coverage", () => {
+  const payload = legislationFixture("sen-s1");
+  payload.source.chamber = "senato";
+  payload.source.coverage = { acts: 1531, finalVotesIncluded: 66, finalVotesExcluded: 181 };
+  for (const act of [...payload.firstSigned, ...payload.voted]) {
+    act.chamber = "senato";
+    act.initiative = { kind: "parliamentary", label: "Parlamentare" };
+    act.proposer = { kind: "senator", id: "sen-s2", label: "Senatrice Esempio" };
+    act.responsibleGovernment = null;
+  }
+  const parsed = parseLegislation(payload, "sen-s1");
+  assert.equal(parsed.voted[0].proposer.kind, "senator");
+  assert.deepEqual(parsed.source.coverage, payload.source.coverage);
+  payload.voted[0].proposer.kind = "deputy";
+  assert.throws(() => parseLegislation(payload, "sen-s1"));
 });
 test("acts fail closed on stale person, unsafe source, duplicates, wrong role and malformed votes", () => {
-  for (const mutate of [p => p.personId = "dep-2", p => p.source.sourceUrl = "javascript:alert(1)", p => p.firstSigned.push(p.firstSigned[0]), p => p.firstSigned[0].role = "cofirmatario", p => p.firstSigned[0].finalVotes[0].ownVote = "__proto__", p => p.firstSigned[0].finalVotes[0].favorevoli = -1, p => p.firstSigned[0].officialPage = "data:text/html,x", p => delete p.source.caveats]) {
+  for (const mutate of [p => p.personId = "dep-2", p => p.source.sourceUrl = "javascript:alert(1)", p => p.firstSigned.push(p.firstSigned[0]), p => p.firstSigned[0].role = "cofirmatario", p => p.voted[0].role = "primo-firmatario", p => p.voted[0].responsibleGovernment.uri = "javascript:alert(1)", p => p.firstSigned[0].finalVotes[0].ownVote = "__proto__", p => p.firstSigned[0].finalVotes[0].favorevoli = -1, p => p.firstSigned[0].officialPage = "data:text/html,x", p => delete p.source.caveats, p => delete p.source.coverage]) {
     const payload = legislationFixture(); mutate(payload);
     assert.throws(() => parseLegislation(payload, "dep-1"));
   }

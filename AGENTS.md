@@ -33,15 +33,22 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Test mirati: `node --experimental-strip-types --test tests/NOME.test.mjs`
   (`--test-name-pattern='testo'` per un caso); ETL con virtualenv attivo:
   `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_NOME.py'`.
+- Per ogni ticket esegui solo i test ETL pertinenti ai producer, contratti o dati
+  modificati; se il ticket non tocca ETL, riporta `NOT RUN`. La suite completa
+  `npm run test:etl` richiede una richiesta esplicita di Lorenzo.
+- Per ogni modifica UI verifica il flusso cambiato con Playwright CLI su mobile
+  e desktop, inclusi tastiera, overflow ed errori console; riporta gli esiti.
 - `npm run typecheck` genera i tipi Next anche senza `next dev`; leggi le guide
   installate nel blocco Next.
 - Durante lo sviluppo esegui i test mirati del dominio modificato, come in
   [Feedback rapido](CONTRIBUTING.md#feedback-rapido); allarga la selezione ai
   contratti correlati prima di concludere la modifica.
-- Prima di aprire una PR esegui il profilo completo: `npm run ci:static`,
-  `npm run ci:action-pins`, `npm test`, `npm run test:etl`,
+- Prima di aprire una PR esegui gli altri gate del profilo completo:
+  `npm run ci:static`, `npm run ci:action-pins`, `npm test`,
   `npm run test:snapshots`, `npm run build`,
   `NEXT_PORT=PORTA_LIBERA npm run test:production`, `git diff --check`.
+  `npm run test:etl` richiede una richiesta esplicita di Lorenzo; altrimenti
+  esegui i soli ETL mirati e segnala la suite completa come `NOT RUN`.
   Per ETL e snapshot attiva il network guard (CONTRIBUTING).
 - Il runner di produzione possiede e termina il proprio server anche in errore.
   Log: `artifacts/production/next.log`; browser e screenshot: `artifacts/browser/`;

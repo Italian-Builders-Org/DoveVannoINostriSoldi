@@ -44,12 +44,10 @@ export function makeMap({ cameraCount = 398, senateCount = 205, vacancies = 2 } 
     { area: "other", label: "Altre aree", count: Math.floor(total * .8) - Math.floor(total * .1), shareOfTotal: total ? (Math.floor(total * .8) - Math.floor(total * .1)) / total : 0, shareOfDeclared: .875 },
     { area: "undeclared", label: "Non dichiarata", count: total - Math.floor(total * .8), shareOfTotal: total ? (total - Math.floor(total * .8)) / total : 0, shareOfDeclared: null },
   ] });
-  const ranking = people.filter((person) => person.chamberId === "camera").map((person, index) => ({ rank: index + 1, personId: person.id, name: person.name, groupLabel: "Gruppo di prova", presencePercent: `${99 - index % 70},0%`, presenceTotal: 990, absences: 10, absencesPercent: "1,0%" }));
   return { legislature: { id: "19", label: "XIX Legislatura", startDate: "2022-10-13" }, updatedAt: "2026-09-17", people, groups, institutions,
     departments: [{ id: "presidenza", kind: "presidenza", label: "Presidenza del Consiglio", memberCount: 1 }],
     partyFamilies: familyLabels.map(([id, label]) => ({ id, label, shortLabel: label, memberCount: people.filter((person) => person.family === id).length, chamberIds: ["camera", "senato"] })), edges: [{ id: "test-nomina", kind: "gerarchia", source: "presidenza-repubblica", target: "governo", label: "Relazione di nomina (fixture)", weight: 1 }, { id: "test-fiducia", kind: "gerarchia", source: "governo", target: "camera", label: "Rapporto di fiducia (fixture)", weight: 1 }],
     coverage: { people: people.length, deputies: cameraCount, senators: senateCount, governmentMembers, nonParliamentaryGovernmentMembers: 1, groups: groups.length, departments: 1, institutionalLeaders: 4, peopleWithPhoto: 0, peopleWithBiography: people.length, crossChamberFamilyLinks: familyLabels.length },
-    cameraAttendanceRanking: { chamber: "camera", periodLabel: "Fixture · 2022–2026", observedDate: "2026-02-01", sourceUrl: "https://www.camera.it/", sourceLabel: "Camera dei deputati", matchedCount: ranking.length, unmatchedRows: 0, rosterWithoutRow: 0, caveat: "Voti e missioni in Aula, non presenza fisica né attività in commissione.", rows: ranking },
     education: { all: education(people.length), camera: education(cameraCount), senato: education(senateCount), governo: education(governmentMembers) },
   };
 }
@@ -59,7 +57,7 @@ export function makeProfiles(map) {
     firstName: person.name.split(" ")[0], lastName: person.name.split(" ").slice(1).join(" "), gender: null, photoCredit: null,
     officialPages: [{ label: "Scheda ufficiale", url: "https://www.camera.it/" }], institutionId: person.chamberId ?? (person.government ? "governo" : "presidenza-repubblica"), groupLabel: "Gruppo di prova", componentLabel: null, groupRoleLabel: null,
     roles: [{ kind: person.roleKind, label: person.roleLabel, institutionId: person.chamberId ?? "governo", organLabel: null, since: "2022-10-13" }], departmentIds: [], organLabels: ["Commissione di prova"], constituency: "Territorio di prova", college: null, profession: "Laurea in ingegneria", birthDate: "1980-01-15", birthPlace: "Luogo di prova", socialLinks: null, biography: "Dati sintetici esclusivamente per i test dell’interfaccia. Non è una scheda biografica reale.", education: { area: "stem", label: "STEM", evidence: "Laurea in ingegneria", matchedRule: "stem-degree", sourceField: "profession" },
-    voteAttendance: person.chamberId === "camera" ? { chamber: "camera", periodLabel: "Fixture · 2022–2026", observedDate: "2026-02-01", votesCast: 900, votesCastPercent: "90,0%", missions: 90, missionsPercent: "9,0%", presenceTotal: 990, presencePercent: "99,0%", absences: 10, absencesPercent: "1,0%", justifiedAbsences: 5, justifiedAbsencesPercent: "0,5%", sourceUrl: "https://www.camera.it/", sourceLabel: "Camera dei deputati", rank: 1, rankedAmong: map.coverage.deputies } : null,
+    voteAttendance: person.chamberId === "camera" ? { chamber: "camera", periodLabel: "Fixture · 2022–2026", observedDate: "2026-02-01", votesCast: 900, votesCastPercent: "90,0%", missions: 90, missionsPercent: "9,0%", presenceTotal: 990, presencePercent: "99,0%", absences: 10, absencesPercent: "1,0%", justifiedAbsences: 5, justifiedAbsencesPercent: "0,5%", sourceUrl: "https://www.camera.it/", sourceLabel: "Camera dei deputati" } : null,
   }]));
 }
 

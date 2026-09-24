@@ -42,8 +42,11 @@ test("every published person has a round-trippable link and searchable name", ()
 test("government membership and Camera attendance remain different scopes", () => {
   const state = readAtlasState(new URLSearchParams("vista=governo"), map).state;
   assert.equal(filteredPeople(map, state).length, map.coverage.governmentMembers);
-  const cameraPeople = new Set(map.people.filter((person) => person.chamberId === "camera").map((person) => person.id));
-  for (const row of map.cameraAttendanceRanking.rows) assert.ok(cameraPeople.has(row.personId));
+  assert.equal("cameraAttendanceRanking" in map, false);
+  const profiles = getRepubblicaProfiles();
+  const profilesWithAttendance = Object.entries(profiles).filter(([, profile]) => profile.voteAttendance !== null);
+  assert.ok(profilesWithAttendance.length > 0);
+  assert.ok(profilesWithAttendance.every(([personId]) => map.people.find((person) => person.id === personId)?.chamberId === "camera"));
   const crossRole = filteredPeople(map, { ...state, scope: "camera", role: "governo" });
   assert.ok(crossRole.every((person) => person.chamberId === "camera" && person.government));
 });
@@ -63,6 +66,7 @@ test("every published deputy and senator's legislative payload validates without
     const parsed = parseLegislation({ ok: true, personId: person.id, source, ...acts }, person.id);
     assert.deepEqual(parsed.firstSigned, acts.firstSigned, person.id);
     assert.deepEqual(parsed.coSigned, acts.coSigned, person.id);
+    assert.deepEqual(parsed.voted, acts.voted, person.id);
     assert.deepEqual(parsed.source, source);
   }
 });

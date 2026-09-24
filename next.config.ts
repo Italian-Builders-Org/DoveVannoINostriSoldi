@@ -110,6 +110,10 @@ const istatPovertaSogliaRelativaRuntimeFiles = [
   "src/data/generated/istat-poverta-soglia-relativa-2014-2024.data.json",
 ];
 
+const istatPovertaRegioniRuntimeFiles = [
+  "src/data/generated/istat-poverta-regioni-2014-2024.data.json",
+];
+
 const eurostatAropeRuntimeFiles = [
   "src/data/generated/eurostat-arope-2015-2025.data.json",
 ];
@@ -262,6 +266,7 @@ const nextConfig: NextConfig = {
     "/api/territori/bes-innovazione": istatBesInnovazioneRuntimeFiles,
     "/api/territori/poverta-soglia-assoluta": istatPovertaSogliaAssolutaRuntimeFiles,
     "/api/territori/poverta-soglia-relativa": istatPovertaSogliaRelativaRuntimeFiles,
+    "/api/territori/poverta-regioni": istatPovertaRegioniRuntimeFiles,
     "/api/spese/arope": eurostatAropeRuntimeFiles,
     "/poverta": [
       ...istatPovertaSogliaAssolutaRuntimeFiles,
@@ -281,6 +286,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...istatPovertaRegioniRuntimeFiles,
       ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
@@ -308,6 +314,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...istatPovertaRegioniRuntimeFiles,
       ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,
@@ -335,6 +342,7 @@ const nextConfig: NextConfig = {
       ...istatBesInnovazioneRuntimeFiles,
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,
+      ...istatPovertaRegioniRuntimeFiles,
       ...eurostatAropeRuntimeFiles,
       ...childcareRuntimeFiles,
       ...naspiRuntimeFiles,

@@ -63,6 +63,7 @@ const ALLOWED_HOSTS: Readonly<Record<SourceId, readonly string[]>> = {
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "istat-poverta-soglia-assoluta": [],
   "istat-poverta-soglia-relativa": [],
+  "istat-poverta-regioni": [],
   // Snapshot-only: la risposta SDMX Eurostat AROPE è acquisita e vincolata dall'ETL, mai scaricata a runtime.
   "eurostat-arope": [],
   // Snapshot-only: la risposta SDMX è acquisita e vincolata dall'ETL, mai scaricata a runtime.

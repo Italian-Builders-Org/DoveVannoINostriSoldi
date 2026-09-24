@@ -20,11 +20,11 @@ export type NewsData = {
   provider: { id: string; name: string; url: string; note: string; } | null;
 };
 
-const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
-const text = (value: unknown): value is string => typeof value === "string";
+export const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+export const text = (value: unknown): value is string => typeof value === "string";
 const optionalText = (value: unknown): boolean => value === null || text(value);
 const texts = (value: unknown): value is string[] => Array.isArray(value) && value.every(text);
-const count = (value: unknown): boolean => Number.isSafeInteger(value) && Number(value) >= 0;
+export const count = (value: unknown): boolean => Number.isSafeInteger(value) && Number(value) >= 0;
 const invalid = (): never => { throw new Error("Risposta del servizio non valida"); };
 
 /** Validate the fields rendered by the client; a broken response is never an empty success. */
@@ -41,7 +41,8 @@ export function parseProfiles(payload: unknown): Record<string, RepublicProfile>
       || !optionalText(profile.education.evidence)) return invalid();
     const attendance = profile.voteAttendance;
     if (attendance !== null && (!object(attendance)
-      || !["votesCast", "missions", "presenceTotal", "absences", "justifiedAbsences", "rank", "rankedAmong"].every((key) => count(attendance[key]))
+      || "rank" in attendance || "rankedAmong" in attendance
+      || !["votesCast", "missions", "presenceTotal", "absences", "justifiedAbsences"].every((key) => count(attendance[key]))
       || !["periodLabel", "observedDate", "sourceLabel", "votesCastPercent", "missionsPercent", "presencePercent", "absencesPercent", "justifiedAbsencesPercent"].every((key) => text(attendance[key]))
       || !isSafeExternalUrl(attendance.sourceUrl))) return invalid();
   }

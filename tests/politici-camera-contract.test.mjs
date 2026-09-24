@@ -16,6 +16,7 @@ function assertInvalid(mutator, pattern) {
 
 test("politici Camera XIX snapshot validates and reconciles coverage", () => {
   const parsed = parsePoliticiCameraSnapshot(snapshot);
+  assert.equal(parsed.schemaVersion, 3);
   assert.equal(parsed.chamber, "camera");
   assert.equal(parsed.legislature.id, "repubblica_19");
   assert.equal(parsed.coverage.deputies, 398);
@@ -24,7 +25,16 @@ test("politici Camera XIX snapshot validates and reconciles coverage", () => {
   assert.equal(parsed.coverage.seatCapacity, 400);
   assert.equal(parsed.coverage.vacantSeats, 2);
   assert.equal(parsed.coverage.deputiesWithPhoto, 398);
+  assert.equal(parsed.coverage.groupMemberships, parsed.groupMemberships.length);
   assert.equal(parsed.deputies.length, 398);
+  assert.ok(parsed.groupMemberships.length > parsed.deputies.length);
+  assert.deepEqual(
+    parsed.groupMemberships.filter((membership) => membership.deputyId === "d300480_19"),
+    [
+      { deputyId: "d300480_19", groupId: "gr4135", startDate: "2022-10-18", endDate: "2023-11-20" },
+      { deputyId: "d300480_19", groupId: "gr4211", startDate: "2023-11-20", endDate: null },
+    ],
+  );
   assert.ok(parsed.deputies.every((deputy) => deputy.photoUrl && deputy.officialPage && deputy.biography));
   assert.match(parsed.caveats.join(" "), /adesione|seggi vacanti/i);
 });
@@ -34,6 +44,12 @@ test("contract fails closed on coverage and membership drift", () => {
   assertInvalid((value) => { value.coverage.groups += 1; }, /coverage\.groups|coincide/);
   assertInvalid((value) => { value.groups[0].memberCount += 1; }, /memberCount/);
   assertInvalid((value) => { value.deputies[0].groupId = "gr-missing"; }, /sconosciuto|groupId/);
+  assertInvalid((value) => { value.coverage.groupMemberships += 1; }, /groupMemberships|coincide/);
+  assertInvalid((value) => { value.groupMemberships[0].groupId = "gr-missing"; }, /sconosciuto|groupId/);
+  assertInvalid((value) => {
+    const memberships = value.groupMemberships.filter((item) => item.deputyId === "d300480_19");
+    memberships[1].startDate = "2023-11-19";
+  }, /sovrappost|intervall/i);
   assertInvalid((value) => { value.chamber = "senato"; });
   assertInvalid((value) => { value.deputies[0].photoUrl = null; });
 });

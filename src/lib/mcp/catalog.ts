@@ -21,6 +21,7 @@ import opencivitas2022PoliziaSource from "../../../scripts/etl/specs/opencivitas
 import istatBesInnovazioneMetadata from "@/data/generated/istat-bes-innovazione-2004-2023.meta.json";
 import istatPovertaSogliaAssolutaMetadata from "@/data/generated/istat-poverta-soglia-assoluta-2005-2024.meta.json";
 import istatPovertaSogliaRelativaMetadata from "@/data/generated/istat-poverta-soglia-relativa-2014-2024.meta.json";
+import istatPovertaRegioniMetadata from "@/data/generated/istat-poverta-regioni-2014-2024.meta.json";
 import eurostatAropeMetadata from "@/data/generated/eurostat-arope-2015-2025.meta.json";
 
 function formatItalianInteger(value: number): string {
@@ -81,6 +82,7 @@ export const DATASET_IDS = [
   "istat_poverta_relativa",
   "istat_poverta_soglia_assoluta",
   "istat_poverta_soglia_relativa",
+  "istat_poverta_regioni",
   "eurostat_arope",
   "istat_bes_economico",
   "istat_bes_salute",
@@ -321,6 +323,7 @@ const exampleQueries = {
     year: 2024,
     band: "N1",
   },
+  istat_poverta_regioni: { dataset: "istat_poverta_regioni", territory: "ITC4", year: 2024, limit: 20 },
   eurostat_arope: { dataset: "eurostat_arope", territory: "IT", year: 2025 },
   istat_bes_economico: { dataset: "istat_bes_economico", territory: "IT", year: 2023 },
   istat_bes_salute: { dataset: "istat_bes_salute", territory: "IT", year: 2022 },
@@ -1361,6 +1364,23 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
       queryNotes: [
         "Specificare almeno un filtro fra territory, year e band; limit massimo 100 righe per pagina.",
         "L'anno 2021 è escluso dal prodotto; band=N1…N6 o N7_GE; solo territorio IT.",
+      ],
+    } satisfies DatasetPublicMetadata,
+  },
+  {
+    id: "istat_poverta_regioni",
+    title: "ISTAT · povertà relativa per regione",
+    summary: `Incidenza di povertà relativa di famiglie e individui per regione e provincia autonoma (dataflow ${istatPovertaRegioniMetadata.source.dataflowIds.join(" e ")}), 2014–2024, 30 territori.`,
+    sourceIds: ["istat-poverta-regioni"],
+    freshness: "snapshot",
+    filters: ["territory", "measure", "year", "limit", "offset"],
+    caveat: "Specificare almeno un filtro; pagine di massimo 100 righe. È un'incidenza percentuale, NON un importo: non sommare fra territori. measure=households o individuals. Povertà RELATIVA: l'incidenza assoluta non è pubblicata per regione e si ferma alle ripartizioni, quindi nessun confronto riga per riga con le altre fette 34_727. I territori sono annidati (Italia, Nord e Mezzogiorno, ripartizioni, regioni, province autonome): sommare le regioni non ricostruisce l'Italia. Celle non diffuse e righe assenti dalla fonte viaggiano con la risposta e non valgono zero. Bolzano non ha alcun valore familiare. UNIT_MEAS assente nel payload. Licenza not-declared.",
+    publicMetadata: {
+      ...istatPovertaRegioniMetadata.publicMetadata,
+      queryNotes: [
+        "Specificare almeno un filtro fra territory, measure e year; limit massimo 100 righe per pagina.",
+        "measure=households o individuals; territory usa i codici ISTAT, per esempio ITC4 per la Lombardia.",
+        "undiffused e missingRows elencano ciò che la fonte non pubblica: non sono zeri.",
       ],
     } satisfies DatasetPublicMetadata,
   },

@@ -1205,6 +1205,20 @@ pubblica né confrontabile con le incidenze o con la soglia assoluta. Fonte
 MCP `istat_poverta_soglia_relativa`, contesto su `/poverta`.
 [Lock, definizioni e limiti](research/ISTAT_POVERTA_SOGLIA_RELATIVA.md).
 
+### ISTAT · povertà relativa per regione (34_727_DF_DCCV_POVERTA_8 e _10)
+
+Incidenza di povertà **relativa** di famiglie e individui per i 30 territori
+della serie corrente — Italia, Nord e Mezzogiorno, le cinque ripartizioni, le
+venti regioni e le due province autonome — anni 2014–2024: 636 valori diffusi
+sulle 660 celle della griglia. Le altre 24 non sono zeri e restano dichiarate
+distinte: 22 celle che la fonte non diffonde e 2 righe assenti dalla risposta.
+`soldi.present` false: è un'incidenza, non un importo, e i territori sono
+annidati, quindi sommarli non ha senso. L'incidenza **assoluta** non è
+pubblicata per regione e si ferma alle ripartizioni: nessun confronto riga per
+riga con le altre fette 34_727. Fonte `istat-poverta-regioni`, API
+`/api/territori/poverta-regioni`, MCP `istat_poverta_regioni`; nessuna UI.
+[Lock, definizioni e limiti](research/ISTAT_POVERTA_REGIONI.md).
+
 ### Eurostat · AROPE Europa 2030 (`ilc_peps01n`)
 
 Rischio di povertà o esclusione sociale (definizione Europa 2030): Italia,

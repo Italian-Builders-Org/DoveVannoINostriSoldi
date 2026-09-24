@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { checkWorkflow, validatePins } from "../scripts/ci/check-action-pins.mjs";
 
@@ -63,4 +64,18 @@ test("lock schema rejects corrupt and unexpected entries", () => {
 test("file and line bounds fail closed", () => {
   assert.throws(() => checkWorkflow(fixture(`jobs:\n  build:\n    uses: ${"x".repeat(16_500)}\n`), pins), /line exceeds/);
   assert.throws(() => checkWorkflow(fixture("#".repeat(1_000_001)), pins), /file exceeds/);
+});
+
+test("the real entry point resolves the repository and checks every workflow", () => {
+  // I test sopra passano percorsi espliciti e non attraversano mai la radice calcolata
+  // dal modulo: e' li' che su Windows `url.pathname` produceva C:\C:\... e il gate
+  // si fermava con ENOENT senza che nessun test se ne accorgesse.
+  const repoRoot = path.resolve(import.meta.dirname, "..");
+  const result = spawnSync(process.execPath, [path.join(repoRoot, "scripts", "ci", "check-action-pins.mjs")], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /All third-party actions are SHA-pinned/);
+  assert.doesNotMatch(result.stderr, /ENOENT/);
 });

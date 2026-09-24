@@ -21,6 +21,10 @@
         "bytes": 231582,
         "sha256": "41af7c2b18279770bde2834f7da73653524ac0c529acc7587c89462a740102ca"
       },
+      "groupMemberships": {
+        "bytes": 126841,
+        "sha256": "1128217fd0d2c37d8e10a3fa0a89b87f49b57f5e82d5a9eac4ec334cf28f3417"
+      },
       "groupRoles": {
         "bytes": 23622,
         "sha256": "f17701f461d8c50fece0a145fc3425a24eb877b10ad6631530b7ef7383f9f7c4"
@@ -58,6 +62,7 @@
   },
   "caveats": [
     "L'emiciclo include soltanto adesioni aperte: ex deputati e adesioni concluse non occupano seggi.",
+    "Lo storico delle adesioni usa intervalli con inizio incluso e fine esclusa per evitare sovrapposizioni nei cambi registrati nello stesso giorno.",
     "Le cariche interne ai gruppi e gli uffici parlamentari sono quelli senza data di fine alla data di acquisizione.",
     "Anagrafica, collegio, coalizione e note professionali provengono dalle schede personali su camera.it: il grafo RDF non le pubblica.",
     "Le schede personali sono pinnate con un digest aggregato in ordine di identità: qualsiasi variazione richiede una nuova revisione."

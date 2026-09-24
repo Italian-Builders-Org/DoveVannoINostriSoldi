@@ -13,7 +13,7 @@
     "brand:check": "node scripts/brand/generate-icons.mjs --check",
     "readme:screenshots": "node scripts/brand/capture-readme.mjs",
     "dev": "next dev",
-    "build": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs && next build && node scripts/ci/check-runtime-traces.mjs",
+    "build": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs && next build && node scripts/ci/clean-next-build-cache.mjs && node scripts/ci/check-runtime-traces.mjs",
     "source-health:generate": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs --write",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",

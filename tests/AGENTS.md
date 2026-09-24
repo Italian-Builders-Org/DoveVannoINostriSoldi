@@ -11,7 +11,9 @@ e [CONTRIBUTING.md](../CONTRIBUTING.md#verifica-locale).
    per iterare; riserva la verifica dell'intero corpus e del browser di
    produzione al profilo full.
 2. Esegui il file Node mirato con il guard offline:
-   `DVNS_OFFLINE_GUARD=1 node --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/NOME.test.mjs`.
+   `node --env-file=scripts/ci/offline-guard.env --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/NOME.test.mjs`.
+   Il file `offline-guard.env` accende il guard su ogni shell, cmd.exe compreso;
+   una `DVNS_OFFLINE_GUARD` già presente nell'ambiente ha la precedenza.
    Per un caso aggiungi `--test-name-pattern='nome del caso'` prima del file.
 3. Per ETL usa il Python del virtualenv:
    `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_NOME.py'`.

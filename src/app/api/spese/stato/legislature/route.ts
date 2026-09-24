@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const legislatureLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 6 });
-const legislatureConcurrency = new ConcurrencyLimiter(1);
+const legislatureConcurrency = new ConcurrencyLimiter(3);
 
 export async function GET(request: Request) {
   const clientKey = clientAddress(request) ?? "unknown";

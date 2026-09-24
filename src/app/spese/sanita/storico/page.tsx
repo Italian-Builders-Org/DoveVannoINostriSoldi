@@ -9,7 +9,8 @@ import type { SsnCceMetricId } from "@/lib/data/ssn-cce-contract";
 import { HealthSpendingHistoryChart } from "@/components/charts/health-spending-history-chart";
 import styles from "./storico.module.css";
 
-export const dynamic = "force-dynamic";
+// Snapshot OpenBDAP già in unstable_cache (6h): ISR evita una Function a ogni hit.
+export const revalidate = 21_600;
 export const maxDuration = 60;
 
 export const metadata: Metadata = {

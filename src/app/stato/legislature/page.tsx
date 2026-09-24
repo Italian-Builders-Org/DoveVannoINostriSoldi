@@ -7,7 +7,8 @@ import {
 import { getCachedLegislatureSpendingCycles } from "@/lib/data/cached-legislature-spending";
 import styles from "./legislature.module.css";
 
-export const dynamic = "force-dynamic";
+// Cicli legislatura da OpenBDAP cached (6h): ISR riduce Fluid CPU senza cambiare i numeri.
+export const revalidate = 21_600;
 export const maxDuration = 60;
 
 export const metadata: Metadata = {

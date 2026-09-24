@@ -4,7 +4,8 @@ import type { SourceHealth } from "@/lib/data/source-health";
 import { getCachedSourceHealthOverview } from "@/lib/data/cached-source-health";
 import styles from "./stato.module.css";
 
-export const dynamic = "force-dynamic";
+// Allineato a SOURCE_HEALTH_CACHE_SECONDS: niente force-dynamic su overview già cacheata.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Stato delle fonti",

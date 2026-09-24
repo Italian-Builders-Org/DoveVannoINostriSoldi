@@ -12,14 +12,15 @@ Issue: [#609](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issu
 | Licenza | CC BY 4.0, dichiarata nelle pagine di pubblicazione |
 | Periodo | anno 2023 dichiarato dalla fonte; vedi Limiti per gli enti che non hanno comunicato |
 | Pubblicazione | 5 maggio 2026 |
-| Acquisizione e controllo | 23 settembre 2026 |
-| Formato | 42 ZIP con un CSV ciascuno, separatore `;`, codifica Windows-1252 |
+| Acquisizione e controllo | 23 settembre 2026 per gli archivi, 24 settembre 2026 per il file di adempimento |
+| Formato | 42 ZIP con un CSV ciascuno, separatore `;`, codifica Windows-1252; `Dati_Adempimento_Anno_2023.csv`, separatore `;`, codifica UTF-8 |
 | Perimetro | 20 archivi regionali dei Comuni e 1 degli enti territoriali per l'edilizia residenziale pubblica, per beni e per detenzioni |
 | Frequenza | rilevazione annuale; rilasci open data 2015-2019, 2022, 2023 |
 
 Il lock `scripts/etl/specs/mef-patrimonio-immobiliare.source.json` fissa URL,
 byte, SHA-256, membro CSV e numero di righe di ogni archivio, gli header e i
-domini dei campi chiusi.
+domini dei campi chiusi. Il blocco `adempimento` fa lo stesso per il file di
+adempimento e fissa i conteggi riconciliati descritti sotto.
 
 ## Proiezione
 
@@ -34,6 +35,10 @@ questa proiezione aggrega per ente dichiarante, identificato dal codice fiscale.
   finalità dichiarata per le persone fisiche × tipologia, con contratti su
   intera unità, contratti con canone positivo, zero o assente, canone totale e
   i due addendi del rapporto canone/superficie.
+- `mef-patrimonio-adempimento-2023` (7.977 righe): una riga per Comune o ente
+  ERP del file di adempimento, con obbligo, invio della comunicazione 2023,
+  dichiarazione negativa, dichiarazione di completezza, beni dichiarati e
+  presenza nei due censimenti pubblicati. Nessuna aggregazione.
 
 Il rapporto €/m² annuo è `Canone annuo per rapporto (EUR) ÷ Superficie per
 rapporto (m²)`, calcolato solo sui contratti su intera unità con canone
@@ -51,6 +56,37 @@ tipo di detenzione, intera unità, finalità), superfici non nella forma
 anagrafica dello stesso ente diversa tra righe o archivi, e ogni aggregazione
 che non si riconcilia con il totale delle righe sorgente. Il lock dichiara anche
 l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
+
+## Adempimento 2023
+
+La rilevazione 2023 chiedeva di aggiornare «quanto presente a sistema alla
+chiusura del censimento relativo al 31/12/2022». Un ente che non invia la
+comunicazione resta quindi nel censimento con i dati dell'ultima comunicazione.
+Il file di adempimento lo rende visibile: nel perimetro 1.293 enti (1.254 Comuni
+e 39 enti ERP) hanno `Invio comunicazione = No` e beni nel censimento pubblicato.
+
+Il file copre 11.326 amministrazioni; ne entrano 7.977 (7.900 Comuni e 77 enti
+ERP), le altre 3.349 sono validate ma non pubblicate. I valori della fonte
+restano «Si» e «No»; una cella vuota non è un «No». Il dataset si collega ai
+due del censimento sul codice fiscale dell'ente.
+
+L'ETL blocca, oltre a byte, codifica, header e righe diversi dal lock: codice
+fiscale non nella forma `[11 cifre]` o ripetuto; invio o obbligo fuori dominio;
+dichiarazione negativa o di completezza valorizzata senza invio, o assente con
+invio; obbligo vuoto per un'amministrazione S13; conteggi dei beni non interi.
+Per il perimetro riconcilia in modo esatto con i dataset del censimento:
+«Nome sezione» e «Nome file Beni Immobili Dichiarati» sono valorizzati se e solo
+se l'ente ha beni nel censimento, «Nome file Detenzioni a favore di terzi» se e
+solo se ha detenzioni, ogni ente del censimento ha una riga di adempimento e
+denominazione, tipologia, regione, provincia e codice catastale coincidono. Il
+nome del Comune non è confrontato: per due Comuni nati da fusione differisce
+solo per maiuscole e trattino. I conteggi per tipologia, invio, invio mancato
+con beni nel censimento, dichiarazioni negative con beni e completezza negata
+sono fissati nel lock.
+
+I conteggi «Beni in proprietà dichiarati» e «Beni in detenzione dichiarati»
+sono quelli del file di adempimento e per alcuni enti differiscono dalle righe
+del censimento: non lo sostituiscono.
 
 ## Limiti
 
@@ -70,7 +106,7 @@ l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
   dichiarato. Nel rilascio 2023 sono 1.254 Comuni e 39 enti ERP, per 403.192
   beni, secondo `Dati_Adempimento_Anno_2023.csv`, pubblicato a parte come
   dataset collegato `mef-patrimonio-adempimento-2023` (#609). Gli enti senza
-  alcuna comunicazione non compaiono.
+  alcuna comunicazione non compaiono nel censimento.
 - Catalogo e API cercano a pagine: una pagina vuota non significa che l'ente
   sia assente. La scheda ente usa il filtro esatto sul codice fiscale.
 - La fonte non pubblica nome e codice fiscale delle persone fisiche che
@@ -78,15 +114,15 @@ l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
 
 ## Riproduzione
 
-I 42 ZIP non sono versionati. Scaricali dagli URL del lock in una directory
-locale, poi:
+I 42 ZIP e il file di adempimento non sono versionati. Scaricali dagli URL del
+lock in una directory locale, poi:
 
 ```bash
 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/mef_patrimonio_immobiliare.py --input-dir DIR --check
 ```
 
-`--output-dir DIR_OUT` scrive le due proiezioni `.psv` con byte, SHA-256 e
-righe; `--publish` le accoda al corpus. Su Windows `--publish` richiede Python
+`--output-dir DIR_OUT` scrive le tre proiezioni `.psv` con byte, SHA-256 e
+righe; `--publish` accoda al corpus quelle non ancora presenti. Su Windows `--publish` richiede Python
 3.13: 3.12 non espone `os.fchmod` e le build Windows di 3.14 usano zlib-ng,
 che non riproduce i gzip canonici già versionati.
 

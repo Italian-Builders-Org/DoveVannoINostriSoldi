@@ -536,6 +536,17 @@
           "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html",
           "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html"
         ]
+      },
+      "mef-patrimonio-adempimento-2023": {
+        "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
+        "referencePeriod": "Adempimento per l'annualità 2023 (beni al 31/12/2023) dichiarato dalla fonte; una riga per ente, senza aggregazioni DVNS",
+        "publicationDate": "2026-05-05",
+        "acquisitionDate": "2026-09-24",
+        "checkedAt": "2026-09-24",
+        "updateFrequency": "rilevazione annuale; rilasci open data non regolari (2015-2019, 2022, 2023)",
+        "canonicalUrls": [
+          "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html"
+        ]
       }
     }
   },
@@ -6276,6 +6287,56 @@
           "URL fonte"
         ]
       }
+    },
+    {
+      "id": "mef-patrimonio-adempimento-2023",
+      "title": "MEF · adempimento 2023 del censimento immobili · Comuni ed enti ERP",
+      "domain": "entities",
+      "relativePath": "mef-patrimonio-adempimento-2023.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "derived-curated",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "expected": {
+        "bytes": 1748225,
+        "sha256": "d88bd6767281726c9d1dfa5d48a1b6672ca30083427991e968b635dbfb8cd4d7",
+        "rows": 7977,
+        "columns": 17,
+        "headers": [
+          "Codice fiscale ente",
+          "Ente",
+          "Obbligo di comunicazione",
+          "Invio comunicazione 2023",
+          "Dichiarazione negativa",
+          "Dichiarazione di completezza",
+          "Beni in proprietà dichiarati",
+          "Beni in detenzione dichiarati",
+          "Presente nel censimento pubblicato",
+          "Presente nelle detenzioni pubblicate",
+          "Tipologia ente",
+          "Regione ente",
+          "Provincia ente",
+          "Comune ente",
+          "Codice catastale comune ente",
+          "Anno",
+          "URL fonte"
+        ]
+      },
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Una riga per Comune o ente territoriale per l'edilizia residenziale pubblica presente nel file «Dati Adempimento Anno 2023» del MEF: obbligo, invio della comunicazione per l'annualità 2023, dichiarazione negativa, dichiarazione di completezza e numero di beni dichiarati, con i valori della fonte («Si», «No»). Una cella vuota non è un «No»: dichiarazione negativa e completezza esistono solo se la comunicazione è stata inviata.",
+        "«Invio comunicazione 2023 = No» con «Presente nel censimento pubblicato = Si» indica un ente i cui beni compaiono nel censimento senza la comunicazione 2023: l'adempimento chiedeva di aggiornare i dati presenti a sistema alla chiusura del censimento 2022, quindi per questi enti i dati possono risalire a comunicazioni precedenti, di anno non dichiarato dalla fonte. Non vanno letti come situazione al 31/12/2023.",
+        "Le colonne «Presente nel censimento pubblicato» e «Presente nelle detenzioni pubblicate» sono riconciliate in modo esatto con i nomi di file indicati dalla fonte e con gli enti dei dataset mef-patrimonio-beni-2023 e mef-patrimonio-contratti-2023; il collegamento è sul codice fiscale.",
+        "I conteggi «Beni in proprietà dichiarati» e «Beni in detenzione dichiarati» sono quelli del file di adempimento e possono differire dalle righe del censimento per singolo ente: non sostituiscono i dataset del censimento.",
+        "Invio, completezza e obbligo descrivono l'adempimento dichiarato al MEF, non la qualità dei dati o la gestione del patrimonio. Un ente assente dal censimento non ha beni pari a zero: può non avere comunicato o avere presentato una dichiarazione negativa.",
+        "Perimetro: Comuni ed enti territoriali per l'edilizia residenziale pubblica, come i dataset del censimento; le altre 3.349 amministrazioni del file sono validate ma non pubblicate qui.",
+        "Fonte MEF, CC BY 4.0; proiezione DVNS una riga per ente, senza aggregazioni né correzioni."
+      ]
     }
   ]
 }

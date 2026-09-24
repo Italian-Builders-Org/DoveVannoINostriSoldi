@@ -231,3 +231,150 @@ class MefPatrimonioImmobiliareTests(TestCase):
         spec["files"][0]["url"] = "https://example.org/Imm.zip"
         with self.assertRaisesRegex(mef.SourceError, "URL non ufficiale"):
             mef.validate_contract(spec, require_corpus=False)
+
+
+def adempimento(**fields: str) -> dict[str, str]:
+    """A compliance row for ROMA, sent in 2023 and present in both census files."""
+    return {**ROMA, "Settore Istituzionale": "AMMINISTRAZIONI S13", "Macrocategoria Amministrazione": "Amministrazioni Locali",
+            "Numero beni in proprieta'": "1", "Numero beni in detenzione": "1", "Dichiarazione negativa": "No",
+            "Dich. di completezza dei dati": "Si", "Invio comunicazione": "Si", "Obbligo di comunicazione": "Si",
+            "Nome sezione": "Amministrazioni Comunali", "Nome file Beni Immobili Dichiarati": "Imm_Roma",
+            "Nome file Detenzioni a favore di terzi": "Det_Roma", **fields}
+
+
+class MefAdempimentoTests(TestCase):
+    """The compliance file is reconciled with the entities of the census it describes."""
+
+    # Reuse the archive fixtures without running the census tests a second time.
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.spec = json.loads(mef.SPEC.read_text(encoding="utf-8"))
+
+    setUp = MefPatrimonioImmobiliareTests.setUp
+    tearDown = MefPatrimonioImmobiliareTests.tearDown
+    archive = MefPatrimonioImmobiliareTests.archive
+    synthetic_spec = MefPatrimonioImmobiliareTests.synthetic_spec
+
+    OTHER = {"Amministrazione Codice Fiscale": "[00008010803]", "Amministrazione Denominazione": "COMUNE DI CINQUEFRONDI (RC)",
+             "Regione (Amministrazione)": "CALABRIA", "Provincia (Amministrazione)": "REGGIO CALABRIA",
+             "Comune (Amministrazione)": "Cinquefrondi", "Cod. Comune (Amministrazione)": "C710"}
+
+    def compliance_spec(self, rows: list[dict[str, str]], expected: dict[str, int] | None = None) -> dict:
+        spec = self.synthetic_spec([bene("1")], [contratto("10")])
+        headers = self.spec["adempimento"]["headers"]
+        text = io.StringIO(newline="")
+        writer = csv.writer(text, delimiter=";", lineterminator="\r\n")
+        writer.writerow(headers)
+        writer.writerows([[row.get(header, "") for header in headers] for row in rows])
+        payload = text.getvalue().encode("utf-8")
+        (self.input_dir / "Dati_Adempimento_Anno_2023.csv").write_bytes(payload)
+        spec["adempimento"].update(bytes=len(payload), sha256=hashlib.sha256(payload).hexdigest(), rows=len(rows))
+        spec["adempimento"]["expected"] = expected or {
+            "comuni": 1, "invioNo": 0, "invioNoInCensimento": 0, "negativaConBeni": 0, "completezzaNo": 0,
+        }
+        return spec
+
+    def compliance(self, spec: dict) -> list[dict[str, str]]:
+        beni_registry: dict = {}
+        contratti_registry: dict = {}
+        mef.beni_projection(spec, self.input_dir, beni_registry)
+        mef.contratti_projection(spec, self.input_dir, contratti_registry)
+        body = mef.adempimento_projection(spec, self.input_dir, beni_registry, contratti_registry)
+        return list(csv.DictReader(io.StringIO(body.decode("utf-8")), delimiter="|"))
+
+    def test_projects_one_row_per_entity_and_keeps_empty_declarations_empty(self) -> None:
+        not_sent = adempimento(**self.OTHER, **{
+            "Invio comunicazione": "No", "Dichiarazione negativa": "", "Dich. di completezza dei dati": "",
+            "Nome sezione": "", "Nome file Beni Immobili Dichiarati": "", "Nome file Detenzioni a favore di terzi": "",
+            "Numero beni in proprieta'": "0", "Numero beni in detenzione": "0",
+        })
+        region = adempimento(**{"Amministrazione Codice Fiscale": "[80000000000]", "Tipologia Amministrazione": "Regioni",
+                                "Nome sezione": "", "Nome file Beni Immobili Dichiarati": "",
+                                "Nome file Detenzioni a favore di terzi": ""})
+        spec = self.compliance_spec([adempimento(), not_sent, region], {
+            "comuni": 2, "outsidePerimeter": 1, "invioNo": 1, "invioNoInCensimento": 0, "negativaConBeni": 0, "completezzaNo": 0,
+        })
+        rows = {row["Codice fiscale ente"]: row for row in self.compliance(spec)}
+        self.assertEqual(set(rows), {"02438750586", "00008010803"})
+        self.assertEqual(
+            [rows["02438750586"][key] for key in ("Invio comunicazione 2023", "Presente nel censimento pubblicato",
+                                                  "Presente nelle detenzioni pubblicate")],
+            ["Si", "Si", "Si"],
+        )
+        cinquefrondi = rows["00008010803"]
+        self.assertEqual((cinquefrondi["Dichiarazione negativa"], cinquefrondi["Dichiarazione di completezza"]), ("", ""))
+        self.assertEqual(cinquefrondi["Presente nel censimento pubblicato"], "No")
+        self.assertEqual(list(cinquefrondi)[:4], ["Codice fiscale ente", "Ente", "Obbligo di comunicazione", "Invio comunicazione 2023"])
+
+    def test_counts_census_bodies_that_did_not_communicate_in_2023(self) -> None:
+        carried_over = adempimento(**{"Invio comunicazione": "No", "Dichiarazione negativa": "",
+                                      "Dich. di completezza dei dati": ""})
+        spec = self.compliance_spec([carried_over], {
+            "comuni": 1, "invioNo": 1, "invioNoInCensimento": 1, "negativaConBeni": 0, "completezzaNo": 0,
+        })
+        self.assertEqual(self.compliance(spec)[0]["Invio comunicazione 2023"], "No")
+        spec["adempimento"]["expected"]["invioNoInCensimento"] = 0
+        with self.assertRaisesRegex(mef.SourceError, "conteggi dell'adempimento"):
+            self.compliance(spec)
+
+    def test_rejects_declarations_inconsistent_with_the_communication(self) -> None:
+        cases = [
+            (adempimento(**{"Invio comunicazione": "No"}), "dichiarazioni incoerenti"),
+            (adempimento(**{"Dichiarazione negativa": ""}), "dichiarazioni incoerenti"),
+            (adempimento(**{"Dich. di completezza dei dati": "Forse"}), "dichiarazioni incoerenti"),
+            (adempimento(**{"Invio comunicazione": "Si, parziale"}), "invio o obbligo"),
+            (adempimento(**{"Obbligo di comunicazione": ""}), "obbligo assente"),
+            (adempimento(**{"Numero beni in proprieta'": "1.200"}), "conteggio beni"),
+            (adempimento(**{"Amministrazione Codice Fiscale": "02438750586"}), "codice fiscale"),
+        ]
+        for row, message in cases:
+            with self.subTest(message=message, row=row):
+                with self.assertRaisesRegex(mef.SourceError, message):
+                    self.compliance(self.compliance_spec([row]))
+        with self.assertRaisesRegex(mef.SourceError, "duplicato"):
+            self.compliance(self.compliance_spec([adempimento(), adempimento()]))
+
+    def test_rejects_presence_or_registry_that_disagrees_with_the_census(self) -> None:
+        cases = [
+            ([adempimento(**{"Nome file Detenzioni a favore di terzi": ""})], "presenza nel censimento"),
+            ([adempimento(**{"Nome sezione": ""})], "presenza nel censimento"),
+            ([adempimento(**{"Cod. Comune (Amministrazione)": "H502"})], "anagrafica ente diversa"),
+            ([adempimento(**self.OTHER)], "presenza nel censimento"),
+        ]
+        for rows, message in cases:
+            with self.subTest(message=message):
+                with self.assertRaisesRegex(mef.SourceError, message):
+                    self.compliance(self.compliance_spec(rows))
+        # A merged Comune whose name differs only in case or hyphenation is the same body.
+        self.compliance(self.compliance_spec([adempimento(**{"Comune (Amministrazione)": "ROMA"})]))
+
+    def test_rejects_census_bodies_missing_from_the_compliance_file(self) -> None:
+        spec = self.compliance_spec([adempimento()])
+        spec["files"] = [self.archive("immobili", [bene("1"), bene("2", **self.OTHER)]), self.archive("detenzioni", [contratto("10")])]
+        spec["expected"]["immobiliRows"] = 2
+        with self.assertRaisesRegex(mef.SourceError, "assenti dall'adempimento"):
+            self.compliance(spec)
+
+    def test_rejects_tampered_compliance_bytes_headers_and_lock(self) -> None:
+        spec = self.compliance_spec([adempimento()])
+        tampered = deepcopy(spec)
+        tampered["adempimento"]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(mef.SourceError, "byte sorgente"):
+            self.compliance(tampered)
+        tampered = deepcopy(spec)
+        tampered["adempimento"]["headers"] = list(reversed(tampered["adempimento"]["headers"]))
+        with self.assertRaisesRegex(mef.SourceError, "header divergenti"):
+            self.compliance(tampered)
+        tampered = deepcopy(self.spec)
+        tampered["adempimento"]["url"] = "https://example.org/Dati_Adempimento_Anno_2023.csv"
+        with self.assertRaisesRegex(mef.SourceError, "lock del file di adempimento"):
+            mef.validate_contract(tampered, require_corpus=False)
+
+    def test_compliance_lock_matches_corpus_registration(self) -> None:
+        mef.validate_contract(self.spec)
+        corpus_spec = json.loads(mef.CORPUS_SPEC.read_text(encoding="utf-8"))
+        registered = {item["id"]: item for item in corpus_spec["datasets"]}[self.spec["datasets"]["adempimento"]]
+        self.assertEqual(registered["expected"]["headers"], mef.ADEMPIMENTO_HEADERS)
+        expected = self.spec["adempimento"]["expected"]
+        self.assertEqual(registered["expected"]["rows"], expected["comuni"] + expected["erp"])
+        self.assertEqual(expected["comuni"] + expected["erp"] + expected["outsidePerimeter"], self.spec["adempimento"]["rows"])

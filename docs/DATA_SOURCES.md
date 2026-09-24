@@ -1009,6 +1009,9 @@ terzi con canone e superficie. Copre i Comuni e gli enti territoriali per
 l'edilizia residenziale pubblica. Include anche enti che non hanno inviato la
 comunicazione 2023, con dati di comunicazioni precedenti: non vanno letti come
 situazione al 31/12/2023. Gli enti mai comunicati non compaiono e non valgono zero.
+Il file di adempimento MEF entra come terzo dataset, una riga per ente: distingue
+chi ha comunicato per il 2023 da chi ha nel censimento dati di comunicazioni
+precedenti.
 
 Lo stato d'uso è dichiarato dall'ente e non misura agibilità o spreco; il
 canone è contrattuale, non un incasso. Le case popolari compaiono solo come

@@ -199,7 +199,8 @@ export function relatedReadingForDataset(
       dataset.id === "istat-economia-sommersa-branche" ||
       dataset.id === "istat-economia-non-osservata-territori" ||
       dataset.id === "mef-patrimonio-beni-2023" ||
-      dataset.id === "mef-patrimonio-contratti-2023") return null;
+      dataset.id === "mef-patrimonio-contratti-2023" ||
+      dataset.id === "mef-patrimonio-adempimento-2023") return null;
   if (dataset.id === "pnrr-progetti") return { href: "/pnrr", label: "Cerca tutti i progetti PNRR" };
   if (dataset.id === "ted-avvisi-italia-2026-08") {
     return { href: "/appalti/ted", label: "Avvisi TED con committenti in Italia" };

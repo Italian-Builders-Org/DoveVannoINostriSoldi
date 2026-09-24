@@ -9,6 +9,7 @@ const { relatedReadingForDataset } = await import("../src/lib/integrated-catalog
 
 const beniId = "mef-patrimonio-beni-2023";
 const contrattiId = "mef-patrimonio-contratti-2023";
+const adempimentoId = "mef-patrimonio-adempimento-2023";
 const roma = "02438750586";
 
 // Pages are capped at 100 rows: follow the cursor, as the entity profile will.
@@ -101,7 +102,41 @@ test("MEF contracts keep empty and zero rent distinct and expose the ratio input
 });
 
 test("patrimonio datasets are not framed as oversight signals", () => {
-  for (const id of [beniId, contrattiId]) {
+  for (const id of [beniId, contrattiId, adempimentoId]) {
     assert.equal(relatedReadingForDataset({ id, domain: "entities" }), null);
   }
+});
+
+test("compliance rows tell 2023 communications apart from data carried over in the census", async () => {
+  const one = async (code) => {
+    const { dataset, rows } = await allRows(adempimentoId, { "Codice fiscale ente": code });
+    assert.equal(rows.length, 1, code);
+    return { dataset, cells: rows[0].cells };
+  };
+  const roma = await one("02438750586");
+  assert.equal(roma.dataset.publicRows, 7_977);
+  assert.equal(roma.dataset.sourceMetadata.acquisitionDate, "2026-09-24");
+  assert.match(roma.dataset.caveats.join(" "), /Non vanno letti come situazione al 31\/12\/2023/);
+  assert.match(roma.dataset.caveats.join(" "), /Una cella vuota non è un «No»/);
+  assert.deepEqual(
+    ["Invio comunicazione 2023", "Dichiarazione negativa", "Dichiarazione di completezza", "Presente nel censimento pubblicato"]
+      .map((key) => roma.cells[key]),
+    ["Si", "No", "No", "Si"],
+  );
+
+  // Not sent in 2023, yet 197 assets are in the published census: data from earlier communications.
+  const cinquefrondi = (await one("00008010803")).cells;
+  assert.equal(cinquefrondi["Invio comunicazione 2023"], "No");
+  assert.equal(cinquefrondi["Presente nel censimento pubblicato"], "Si");
+  assert.equal(cinquefrondi["Beni in proprietà dichiarati"], "197");
+  // Without a communication there is no declaration: the cell stays empty, never "No".
+  assert.equal(cinquefrondi["Dichiarazione negativa"], "");
+  assert.equal(cinquefrondi["Dichiarazione di completezza"], "");
+
+  const cerchio = (await one("00185810660")).cells;
+  assert.deepEqual([cerchio["Dichiarazione negativa"], cerchio["Presente nel censimento pubblicato"]], ["Si", "No"]);
+
+  // Every body of the census has a compliance row, joined on the fiscal code.
+  const censimento = await allRows(beniId, { "Codice fiscale ente": "00008010803" });
+  assert.ok(censimento.rows.length > 0);
 });

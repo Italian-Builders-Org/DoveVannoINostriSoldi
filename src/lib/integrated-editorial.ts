@@ -1067,7 +1067,7 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   {
     surface: "/dati",
     title: "Patrimonio immobiliare di Comuni ed enti ERP",
-    description: "Censimento MEF al 31 dicembre 2023, aggregato per ente: beni per titolo e stato d’uso dichiarato, contratti dati a terzi e canoni.",
+    description: "Censimento MEF al 31 dicembre 2023, aggregato per ente: beni per titolo e stato d’uso dichiarato, contratti dati a terzi e canoni, e comunicazione 2023 di ogni ente.",
     datasets: [
       {
         id: "mef-patrimonio-beni-2023",
@@ -1078,6 +1078,11 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
         id: "mef-patrimonio-contratti-2023",
         label: "Contratti e canoni dichiarati",
         catalogBoundary: "Canoni contrattuali dichiarati, non incassi; l’edilizia residenziale pubblica compare solo aggregata per ente.",
+      },
+      {
+        id: "mef-patrimonio-adempimento-2023",
+        label: "Comunicazione 2023 per ente",
+        catalogBoundary: "Adempimento dichiarato al MEF, non qualità dei dati: distingue chi ha comunicato per il 2023 da chi ha beni a sistema da comunicazioni precedenti.",
       },
     ],
   },

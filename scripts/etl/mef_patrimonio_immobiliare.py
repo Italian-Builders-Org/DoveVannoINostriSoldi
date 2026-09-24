@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Aggregate the MEF 2023 public real-estate census of Comuni and ERP bodies into corpus rows.
 
-The 42 official ZIP files are too large to version: they stay in a local
-directory passed with --input-dir and are verified against the source lock.
+The 42 official ZIP files and the compliance file (Dati_Adempimento) are too
+large to version: they stay in a local directory passed with --input-dir and
+are verified against the source lock.
 """
 
 from __future__ import annotations
@@ -81,6 +82,21 @@ CONTRATTI_HEADERS = ENTITY_ID_HEADERS + [
     "Canone annuo per rapporto (EUR)",
     "Superficie per rapporto (m²)",
 ] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
+# One row per Comune or ERP body obliged or listed in the compliance file. Source
+# values stay as published: "Si"/"No", and an empty cell is not a "No".
+ADEMPIMENTO_HEADERS = ENTITY_ID_HEADERS + [
+    "Obbligo di comunicazione",
+    "Invio comunicazione 2023",
+    "Dichiarazione negativa",
+    "Dichiarazione di completezza",
+    "Beni in proprietà dichiarati",
+    "Beni in detenzione dichiarati",
+    "Presente nel censimento pubblicato",
+    "Presente nelle detenzioni pubblicate",
+] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
+ADEMPIMENTO_URL_PREFIX = "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/"
+YES_NO = {"Si", "No"}
+COUNT = re.compile(r"0|[1-9][0-9]*")
 SOURCE_ENTITY_FIELDS = [
     "Amministrazione Denominazione",
     "Tipologia Amministrazione",
@@ -107,19 +123,27 @@ class SourceError(ValueError):
     """The acquired archives or committed projection violate the reviewed contract."""
 
 
-def expected_corpus_metadata(spec: dict) -> dict:
+def expected_corpus_metadata(spec: dict, dataset_key: str = "beni") -> dict:
     source = spec["source"]
+    reference_period = (
+        "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
+        "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante"
+    )
+    if dataset_key == "adempimento":
+        reference_period = (
+            "Adempimento per l'annualità 2023 (beni al 31/12/2023) dichiarato dalla fonte; "
+            "una riga per ente, senza aggregazioni DVNS"
+        )
+    # The compliance file is linked only from the census landing page and was acquired separately.
+    acquired = spec["adempimento"]["acquiredAt"] if dataset_key == "adempimento" else source["acquiredAt"]
     return {
         "holder": source["holder"],
-        "referencePeriod": (
-            "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
-            "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante"
-        ),
+        "referencePeriod": reference_period,
         "publicationDate": source["publicationDate"],
-        "acquisitionDate": source["acquiredAt"],
-        "checkedAt": source["checkedAt"],
+        "acquisitionDate": acquired,
+        "checkedAt": spec["adempimento"]["acquiredAt"] if dataset_key == "adempimento" else source["checkedAt"],
         "updateFrequency": source["updateFrequency"],
-        "canonicalUrls": source["landingUrls"],
+        "canonicalUrls": source["landingUrls"][:1] if dataset_key == "adempimento" else source["landingUrls"],
     }
 
 
@@ -166,13 +190,23 @@ def validate_contract(spec: dict, *, require_corpus: bool = True) -> None:
             raise SourceError(f"archivio non classificato: {item['file']}")
         if not item["url"].startswith("https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/"):
             raise SourceError(f"URL non ufficiale: {item['file']}")
+    adempimento = spec.get("adempimento")
+    if (
+        not isinstance(adempimento, dict)
+        or adempimento.get("url") != ADEMPIMENTO_URL_PREFIX + adempimento.get("file", "")
+        or adempimento.get("encoding") != "utf-8"
+        or adempimento.get("delimiter") != ";"
+    ):
+        raise SourceError("lock del file di adempimento divergente")
+    if set(spec.get("datasets", {})) != {"beni", "contratti", "adempimento"}:
+        raise SourceError("dataset del rilascio divergenti")
     if not require_corpus:
         return
 
     corpus_spec = json.loads(CORPUS_SPEC.read_text(encoding="utf-8"))
     overrides = corpus_spec.get("sourceMetadata", {}).get("overrides", {})
-    for dataset_id in spec["datasets"].values():
-        if overrides.get(dataset_id) != expected_corpus_metadata(spec):
+    for key, dataset_id in spec["datasets"].items():
+        if overrides.get(dataset_id) != expected_corpus_metadata(spec, key):
             raise SourceError(f"metadati corpus divergenti dal source lock: {dataset_id}")
 
 
@@ -330,6 +364,97 @@ def contratti_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
     return delimited_payload(CONTRATTI_HEADERS, rows)
 
 
+def adempimento_rows(spec: dict, input_dir: Path):
+    lock = spec["adempimento"]
+    payload = (input_dir / lock["file"]).read_bytes()
+    if len(payload) != lock["bytes"] or corpus.sha256_bytes(payload) != lock["sha256"]:
+        raise SourceError(f"byte sorgente divergenti dal lock: {lock['file']}")
+    try:
+        text = payload.decode(lock["encoding"])
+    except UnicodeDecodeError as error:
+        raise SourceError(f"codifica divergente: {lock['file']}") from error
+    reader = csv.reader(io.StringIO(text, newline=""), delimiter=lock["delimiter"])
+    if next(reader, None) != lock["headers"]:
+        raise SourceError(f"header divergenti: {lock['file']}")
+    count = 0
+    for row in reader:
+        if not row:
+            continue
+        if len(row) != len(lock["headers"]):
+            raise SourceError(f"numero di colonne divergente: {lock['file']} riga {count + 2}")
+        count += 1
+        yield dict(zip(lock["headers"], row))
+    if count != lock["rows"]:
+        raise SourceError(f"righe divergenti dal lock: {lock['file']}")
+
+
+def adempimento_projection(spec: dict, input_dir: Path, beni_registry: dict, contratti_registry: dict) -> bytes:
+    """One row per Comune/ERP body, reconciled with the entities of the published census."""
+    lock = spec["adempimento"]
+    perimeter = {label: key for key, label in spec["domains"]["tipologiaEnte"].items()}
+    seen: set[str] = set()
+    counts: dict[str, int] = defaultdict(int)
+    rows = []
+    for row in adempimento_rows(spec, input_dir):
+        match = FISCAL_CODE.fullmatch(row["Amministrazione Codice Fiscale"])
+        if match is None or match.group(1) in seen:
+            raise SourceError(f"codice fiscale ente non valido o duplicato: {row['Amministrazione Codice Fiscale']}")
+        fiscal_code = match.group(1)
+        seen.add(fiscal_code)
+        invio, negativa, completezza, obbligo = (
+            row["Invio comunicazione"], row["Dichiarazione negativa"],
+            row["Dich. di completezza dei dati"], row["Obbligo di comunicazione"],
+        )
+        if invio not in YES_NO or obbligo not in YES_NO | {""}:
+            raise SourceError(f"invio o obbligo fuori dominio: {fiscal_code}")
+        # A declaration exists only when the communication was sent, and then both flags are filled.
+        declarations = {negativa, completezza}
+        if (invio == "No" and declarations != {""}) or (invio == "Si" and not declarations <= YES_NO):
+            raise SourceError(f"dichiarazioni incoerenti con l'invio: {fiscal_code}")
+        if obbligo == "" and row["Settore Istituzionale"] != "AMMINISTRAZIONI NON S13":
+            raise SourceError(f"obbligo assente per un'amministrazione S13: {fiscal_code}")
+        declared = [row["Numero beni in proprieta'"], row["Numero beni in detenzione"]]
+        if not all(COUNT.fullmatch(value) for value in declared):
+            raise SourceError(f"conteggio beni non valido: {fiscal_code}")
+        kind = perimeter.get(row["Tipologia Amministrazione"])
+        if kind is None:
+            counts["outsidePerimeter"] += 1
+            continue
+        in_beni = fiscal_code in beni_registry
+        in_contratti = fiscal_code in contratti_registry
+        # The file names the census files of each body: they must match the published archives exactly.
+        if (row["Nome file Beni Immobili Dichiarati"] != "") != in_beni or (
+            row["Nome file Detenzioni a favore di terzi"] != ""
+        ) != in_contratti or (row["Nome sezione"] != "") != in_beni:
+            raise SourceError(f"presenza nel censimento incoerente con l'adempimento: {fiscal_code}")
+        if in_beni:
+            census = beni_registry[fiscal_code][0]
+            # Names of merged Comuni differ only in case or hyphenation: compare every field but that one.
+            if [census[1], census[2], census[3], census[4], census[6]] != [
+                row["Amministrazione Denominazione"], row["Tipologia Amministrazione"],
+                row["Regione (Amministrazione)"], row["Provincia (Amministrazione)"],
+                row["Cod. Comune (Amministrazione)"],
+            ]:
+                raise SourceError(f"anagrafica ente diversa tra censimento e adempimento: {fiscal_code}")
+        counts[kind] += 1
+        counts["invioNo"] += invio == "No"
+        counts["invioNoInCensimento"] += invio == "No" and in_beni
+        counts["negativaConBeni"] += negativa == "Si" and declared != ["0", "0"]
+        counts["completezzaNo"] += completezza == "No"
+        rows.append([
+            fiscal_code, row["Amministrazione Denominazione"], obbligo, invio, negativa, completezza,
+            *declared, "Si" if in_beni else "No", "Si" if in_contratti else "No",
+            row["Tipologia Amministrazione"], row["Regione (Amministrazione)"], row["Provincia (Amministrazione)"],
+            row["Comune (Amministrazione)"], row["Cod. Comune (Amministrazione)"], "2023", lock["url"],
+        ])
+    missing = (set(beni_registry) | set(contratti_registry)) - seen
+    if missing:
+        raise SourceError(f"enti del censimento assenti dall'adempimento: {sorted(missing)[:3]}")
+    if dict(counts) != lock["expected"]:
+        raise SourceError(f"conteggi dell'adempimento divergenti dal lock: {dict(counts)}")
+    return delimited_payload(ADEMPIMENTO_HEADERS, sorted(rows))
+
+
 def delimited_payload(headers: list[str], rows: list[list[str]]) -> bytes:
     output = io.StringIO(newline="")
     writer = csv.writer(output, delimiter="|", lineterminator="\n")
@@ -340,9 +465,12 @@ def delimited_payload(headers: list[str], rows: list[list[str]]) -> bytes:
 
 def projections(spec: dict, input_dir: Path, *, require_corpus: bool = True) -> dict[str, bytes]:
     validate_contract(spec, require_corpus=require_corpus)
+    beni_registry: dict = {}
+    contratti_registry: dict = {}
     return {
-        spec["datasets"]["beni"]: beni_projection(spec, input_dir, {}),
-        spec["datasets"]["contratti"]: contratti_projection(spec, input_dir, {}),
+        spec["datasets"]["beni"]: beni_projection(spec, input_dir, beni_registry),
+        spec["datasets"]["contratti"]: contratti_projection(spec, input_dir, contratti_registry),
+        spec["datasets"]["adempimento"]: adempimento_projection(spec, input_dir, beni_registry, contratti_registry),
     }
 
 
@@ -372,6 +500,11 @@ def check_committed(payloads: dict[str, bytes]) -> None:
 
 
 def publish(payloads: dict[str, bytes]) -> None:
+    # Datasets already in the corpus are verified by --check, never appended twice.
+    published = {value["id"] for value in json.loads(CATALOG.read_bytes())["datasets"]}
+    payloads = {dataset_id: body for dataset_id, body in payloads.items() if dataset_id not in published}
+    if not payloads:
+        raise SourceError("nessun dataset del rilascio da aggiungere al corpus")
     with tempfile.TemporaryDirectory() as directory:
         source_root = Path(directory)
         for dataset_id, payload in payloads.items():
@@ -390,7 +523,7 @@ def publish(payloads: dict[str, bytes]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input-dir", type=Path, required=True, help="directory con i 42 ZIP ufficiali del lock")
+    parser.add_argument("--input-dir", type=Path, required=True, help="directory con i 42 ZIP e il file di adempimento del lock")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--publish", action="store_true")
     parser.add_argument("--check", action="store_true")

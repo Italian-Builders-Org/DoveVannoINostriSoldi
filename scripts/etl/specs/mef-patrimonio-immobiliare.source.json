@@ -182,7 +182,8 @@
   },
   "datasets": {
     "beni": "mef-patrimonio-beni-2023",
-    "contratti": "mef-patrimonio-contratti-2023"
+    "contratti": "mef-patrimonio-contratti-2023",
+    "adempimento": "mef-patrimonio-adempimento-2023"
   },
   "files": [
     {
@@ -605,5 +606,44 @@
       "member": "Imm_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.csv",
       "rows": 458139
     }
-  ]
+  ],
+  "adempimento": {
+    "file": "Dati_Adempimento_Anno_2023.csv",
+    "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/Dati_Adempimento_Anno_2023.csv",
+    "bytes": 2653469,
+    "sha256": "0c7d0345b187b0c40ca7553762adb2777ea89544e1873485ecf5d9db84fde18f",
+    "encoding": "utf-8",
+    "delimiter": ";",
+    "headers": [
+      "Settore Istituzionale",
+      "Macrocategoria Amministrazione",
+      "Tipologia Amministrazione",
+      "Amministrazione Denominazione",
+      "Amministrazione Codice Fiscale",
+      "Regione (Amministrazione)",
+      "Provincia (Amministrazione)",
+      "Comune (Amministrazione)",
+      "Cod. Comune (Amministrazione)",
+      "Numero beni in proprieta'",
+      "Numero beni in detenzione",
+      "Dichiarazione negativa",
+      "Dich. di completezza dei dati",
+      "Invio comunicazione",
+      "Obbligo di comunicazione",
+      "Nome sezione",
+      "Nome file Beni Immobili Dichiarati",
+      "Nome file Detenzioni a favore di terzi"
+    ],
+    "rows": 11326,
+    "acquiredAt": "2026-09-24",
+    "expected": {
+      "comuni": 7900,
+      "erp": 77,
+      "outsidePerimeter": 3349,
+      "invioNo": 1977,
+      "invioNoInCensimento": 1293,
+      "negativaConBeni": 0,
+      "completezzaNo": 197
+    }
+  }
 }

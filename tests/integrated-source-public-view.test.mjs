@@ -38,11 +38,11 @@ test("the aggregate release proof closes the fixed public contract", async () =>
   );
 });
 
-test("all 105 datasets remain visible and only catalog dispositions decide row access", async () => {
+test("all 106 datasets remain visible and only catalog dispositions decide row access", async () => {
   const overview = await view.getIntegratedDataOverview();
   assert.equal(overview.complete, true);
-  assert.equal(overview.datasets.length, 105);
-  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 83);
+  assert.equal(overview.datasets.length, 106);
+  assert.equal(overview.datasets.filter((dataset) => dataset.queryable).length, 84);
   assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.sourceRows, 0), INTEGRATED_CORPUS_CONTRACT.sourceRows);
   assert.equal(overview.datasets.reduce((sum, dataset) => sum + dataset.publicRows, 0), INTEGRATED_CORPUS_CONTRACT.publicRows);
   assert.ok(overview.datasets.every((dataset) => dataset.sourceMetadata.holder.length > 0));
@@ -274,7 +274,7 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
     )));
   }
-  assert.equal(checked.length, 83);
+  assert.equal(checked.length, 84);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
     INTEGRATED_CORPUS_CONTRACT.publicRows,
@@ -386,7 +386,7 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
           loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
         )));
       }
-      if (loaded.length !== 83) throw new Error("Unexpected queryable dataset count");
+      if (loaded.length !== 84) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();

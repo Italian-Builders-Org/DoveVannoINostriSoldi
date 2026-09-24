@@ -10,7 +10,7 @@ Issue: [#609](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issu
 | Pagine | [beni immobili 2023](https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html), [detenzioni a favore di terzi 2023](https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html) |
 | Base normativa | art. 2, c. 222, L. 191/2009 |
 | Licenza | CC BY 4.0, dichiarata nelle pagine di pubblicazione |
-| Periodo | situazione al 31/12/2023 |
+| Periodo | anno 2023 dichiarato dalla fonte; vedi Limiti per gli enti che non hanno comunicato |
 | Pubblicazione | 5 maggio 2026 |
 | Acquisizione e controllo | 23 settembre 2026 |
 | Formato | 42 ZIP con un CSV ciascuno, separatore `;`, codifica Windows-1252 |
@@ -62,8 +62,13 @@ l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
   dichiarano anche alloggi gestiti per conto dei Comuni. Non si sommano.
 - Il canone è contrattuale: non misura incassi o morosità. Il canone ERP è
   determinato per legge e non è confrontabile con il mercato.
-- Gli enti che non hanno comunicato non compaiono. La copertura
-  dell'adempimento (`Dati_Adempimento_Anno_2023.csv`) non è in questo dataset.
+- Il censimento include enti che non hanno inviato la comunicazione 2023:
+  per loro restano a sistema dati di comunicazioni precedenti, di anno non
+  dichiarato. Nel rilascio 2023 sono 1.254 Comuni e 39 enti ERP, per 403.192
+  beni, secondo `Dati_Adempimento_Anno_2023.csv`, che non è in questo dataset
+  (#609). Gli enti senza alcuna comunicazione non compaiono.
+- Catalogo e API cercano a pagine: una pagina vuota non significa che l'ente
+  sia assente. La scheda ente usa il filtro esatto sul codice fiscale.
 - La fonte non pubblica nome e codice fiscale delle persone fisiche che
   ricevono i beni; l'aggregazione per ente non espone singoli alloggi.
 

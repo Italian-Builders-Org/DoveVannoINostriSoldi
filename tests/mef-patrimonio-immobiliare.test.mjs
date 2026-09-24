@@ -30,7 +30,9 @@ test("MEF beni rows keep provenance, titles and declared use per entity", async 
   assert.equal(selected.dataset.licenseStatus, "verified-open-cc-by-4.0");
   assert.equal(selected.dataset.sourceMetadata.publicationDate, "2026-05-05");
   assert.equal(selected.dataset.sourceMetadata.acquisitionDate, "2026-09-23");
-  assert.match(selected.dataset.sourceMetadata.referencePeriod, /31\/12\/2023/);
+  assert.match(selected.dataset.sourceMetadata.referencePeriod, /comunicazioni precedenti/);
+  assert.match(selected.dataset.caveats.join(" "), /non hanno inviato la comunicazione 2023/);
+  assert.match(selected.dataset.caveats.join(" "), /una pagina vuota non significa/);
   assert.match(selected.dataset.caveats.join(" "), /non dice se il bene sia agibile/);
   assert.match(selected.dataset.caveats.join(" "), /un'assenza non è uno zero/);
   assert.equal(selected.rows.length, 122);

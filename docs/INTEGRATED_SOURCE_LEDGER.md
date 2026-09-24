@@ -50,7 +50,7 @@ aggiunto per regioni, province autonome, Italia e ripartizioni pubblicate.
 [Contratto e riproduzione](ISTAT_ECONOMIA_NON_OSSERVATA.md).
 `mef-patrimonio-beni-2023` e `mef-patrimonio-contratti-2023` aggiungono
 157.537 righe aggregate per ente dal censimento MEF degli immobili pubblici
-al 31/12/2023 (Comuni ed enti ERP). Titolo, stato d'uso e tipi di detenzione
+(rilascio 2023, Comuni ed enti ERP). Titolo, stato d'uso e tipi di detenzione
 restano distinti; il canone è contrattuale. [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.

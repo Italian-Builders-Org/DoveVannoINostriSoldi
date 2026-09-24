@@ -98,7 +98,10 @@ def expected_corpus_metadata(spec: dict) -> dict:
     source = spec["source"]
     return {
         "holder": source["holder"],
-        "referencePeriod": "Situazione al 31/12/2023; aggregazione DVNS per ente dichiarante",
+        "referencePeriod": (
+            "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
+            "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante"
+        ),
         "publicationDate": source["publicationDate"],
         "acquisitionDate": source["acquiredAt"],
         "checkedAt": source["checkedAt"],
@@ -127,7 +130,7 @@ def validate_contract(spec: dict, *, require_corpus: bool = True) -> None:
     if semantics.get("soldi", {}).get("present") is not True or semantics.get("soldi", {}).get("unit") != "euro interi":
         raise SourceError("asse soldi divergente")
     if semantics.get("periodo") != {
-        "referencePeriod": "Situazione al 31/12/2023",
+        "referencePeriod": "Anno 2023 dichiarato dalla fonte",
         "publicationDate": source["publicationDate"],
         "acquisitionDate": source["acquiredAt"],
         "checkedAt": source["checkedAt"],

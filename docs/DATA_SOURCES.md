@@ -1002,12 +1002,13 @@ integrati. Vedi [source lock, licenza, schema e limiti](ISTAT_ECONOMIA_NON_OSSER
 
 ### MEF · patrimonio immobiliare di Comuni ed enti ERP
 
-Il censimento MEF degli immobili pubblici al 31/12/2023 (pubblicato il 5 maggio
+Il censimento MEF degli immobili pubblici, rilascio 2023 (pubblicato il 5 maggio
 2026, CC BY 4.0) entra nel corpus aggregato per ente dichiarante: 136.503 righe
 di beni per titolo, stato d'uso, tipologia e comune del bene e 21.034 righe di contratti dati a
 terzi con canone e superficie. Copre i Comuni e gli enti territoriali per
-l'edilizia residenziale pubblica; gli enti che non hanno comunicato non
-compaiono e non valgono zero.
+l'edilizia residenziale pubblica. Include anche enti che non hanno inviato la
+comunicazione 2023, con dati di comunicazioni precedenti: non vanno letti come
+situazione al 31/12/2023. Gli enti mai comunicati non compaiono e non valgono zero.
 
 Lo stato d'uso è dichiarato dall'ente e non misura agibilità o spreco; il
 canone è contrattuale, non un incasso. Le case popolari compaiono solo come

@@ -106,7 +106,8 @@ a caso.
 ## Runtime e CI
 
 - **Quando serve**: per modificare workflow, gate o script CI, riprodurre i
-  gate di consegna o verificare il registro degli artifact generati.
+  gate di consegna, diagnosticare deployment Vercel o verificare il registro
+  degli artifact generati.
 - **Fonti iniziali**:
   - [CONTRIBUTING.md](../CONTRIBUTING.md): profili full/quick, job e gate.
   - [scripts/ci/generated-artifacts.json](../scripts/ci/generated-artifacts.json):
@@ -114,7 +115,10 @@ a caso.
   - [.github/workflows/ci.yml](../.github/workflows/ci.yml): job `static`,
     `security`, `node`, `etl`, `production` e aggregatore `required`.
   - [docs/CAPACITY_AND_INCIDENTS.md](CAPACITY_AND_INCIDENTS.md): picchi e
-    capacità, separati dai test deterministici.
+    capacità, diagnosi di build/pubblicazione e criteri per gli upgrade,
+    separati dai test deterministici.
+  - [scripts/ci/clean-next-build-cache.mjs](../scripts/ci/clean-next-build-cache.mjs):
+    pulizia del solo container Vercel dopo la compilazione, con misura disco.
 - **Invarianti**: `ci:static` include `agent-context:check` e `agent-public:check`; il job `required`
   dipende già dalla fase statica e i workflow non si modificano per questo. In CI
   servono soltanto file tracciati di prodotto: nessun file `.scratch`. Il network
@@ -125,6 +129,7 @@ a caso.
 - **Controlli** (percorsi):
   [tests/action-pins.test.mjs](../tests/action-pins.test.mjs),
   [tests/vercel-ignore-build.test.mjs](../tests/vercel-ignore-build.test.mjs),
+  [tests/clean-next-build-cache.test.mjs](../tests/clean-next-build-cache.test.mjs),
   [tests/runtime-health.test.mjs](../tests/runtime-health.test.mjs),
   [tests/agent-context.test.mjs](../tests/agent-context.test.mjs).
 

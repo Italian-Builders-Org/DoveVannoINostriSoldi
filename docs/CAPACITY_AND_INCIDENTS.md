@@ -33,6 +33,51 @@ Le build dipendono da durata e core; le richieste di produzione continuano a
 consumare anche senza nuovi push. Fonti: [gestione build](https://vercel.com/docs/builds/managing-builds),
 [listino](https://vercel.com/docs/pricing#builds).
 
+## Diagnosi dei deployment
+
+1. Registra deployment ID, SHA, ambiente, orari e ultimo deployment `Ready`.
+   Confronta i log della revisione fallita con quella funzionante prima di
+   attribuire il problema a una PR. Controlla anche la
+   [pagina di stato Vercel](https://www.vercel-status.com/).
+2. Separa installazione, `next build`, packaging, `Deploying outputs` e
+   pubblicazione. `Build Completed` e `CI / required` verde non provano che
+   il deployment sia `Ready` o che il dominio punti alla nuova revisione.
+3. Leggi log e metadati con il connettore autorizzato o la CLI autenticata:
+
+   ```bash
+   vercel inspect DEPLOYMENT_URL --scope TEAM --logs
+   vercel inspect DEPLOYMENT_URL --scope TEAM --format=json
+   vercel api /v13/deployments/DEPLOYMENT_ID --scope TEAM
+   ```
+
+   Nei metadati cerca `readyStateReason`, `errorCode` ed `errorStep`. Conserva
+   solo i campi diagnostici necessari: non allegare dump di configurazione o
+   credenziali alla PR. Se il connettore non accede al team, un suo 403 non
+   dimostra che il deployment o la sessione browser siano guasti.
+4. Per `ENOSPC` controlla disco disponibile e file voluminosi; per OOM memoria
+   e fase del picco; per errori di contratto correggi codice o artifact. La
+   pulizia post-build stampa spazio disponibile e totale prima/dopo: libera
+   cache e directory Git nel container Vercel, preservando output e snapshot.
+   I file `.git` dei worktree restano intatti. Locale e GitHub conservano la
+   cache per le compilazioni successive.
+   Se il report indica cache ripristinate fuori dal progetto, confronta una
+   sola preview dello stesso codice senza «Use existing Build Cache», come
+   descritto nella [guida Vercel](https://vercel.com/docs/deployments/troubleshoot-a-build).
+   Non cancellare directory interne della piattaforma e non disabilitare la
+   cache permanentemente sulla sola base di questa ipotesi.
+5. Se il fallimento resta interno alla piattaforma dopo `Build Completed`,
+   prepara per il supporto ID, orari, SHA, ultimo successo e log pertinenti.
+   Non trasformare una diagnosi generica in una causa certa e non ripetere
+   redeploy identici a pagamento senza una nuova ipotesi verificabile.
+6. Valuta una macchina diversa solo dopo aver individuato la risorsa esaurita
+   e confrontato i [limiti e costi correnti](https://vercel.com/docs/builds/managing-builds).
+   Un messaggio che suggerisce Enhanced Builds non prova che serva un upgrade
+   del piano. Concorda ogni aumento di costo; non indebolire tracing, test o
+   disponibilità dei dati per far passare la build.
+7. Chiudi l'incidente solo dopo `Ready` sullo SHA corretto e smoke test delle
+   route interessate. Se è pronta solo la preview, dichiaralo: non equivale
+   alla pubblicazione in produzione.
+
 ## Cache runtime degli appalti
 
 Gli adapter conservano solo artifact validati. La cache usa identità del file,

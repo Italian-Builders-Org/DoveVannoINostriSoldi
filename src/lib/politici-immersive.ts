@@ -10,3 +10,12 @@ export function isPoliticiImmersive(
   // Proxy rewrites politici.* `/` → `/politici` but the URL bar stays `/`.
   return hostname === POLITICI_HOST && (pathname === "/" || pathname === "");
 }
+
+// Runs before first paint; no request headers are needed by the shared layout.
+export const IMMERSIVE_INIT_SCRIPT = `(() => {
+  const path = location.pathname;
+  if (path === "/politici" || path === "/politici/"
+    || (location.hostname === ${JSON.stringify(POLITICI_HOST)} && path === "/")) {
+    document.documentElement.dataset.immersive = "politici";
+  }
+})();`;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicDebtHistoryChart } from "@/components/charts/public-debt-history-chart";
+import { ShareFactButton } from "@/components/share-fact/ShareFactButton";
 import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
 import { getPublicDebtView } from "@/lib/public-debt";
 import styles from "./debito.module.css";
@@ -118,6 +119,14 @@ export default function PublicDebtPage() {
             <p>Debito lordo della PA a fine mese secondo il perimetro Maastricht: non è la spesa dell’anno e non è una fattura individuale.</p>
             <p className={styles.meta}>Dato al {longDate(stock.referenceDate)} · fonte in milioni di euro, equivalente convertito per la visualizzazione · <a href={data.sources.bancaditalia.landingUrl} target="_blank" rel="noreferrer">Fonte: Banca d’Italia</a></p>
             {stock.freshness.state === "stale" && <p className="notice warning-notice"><strong>Aggiornamento in ritardo.</strong> Lo stock ha superato la soglia di 75 giorni.</p>}
+            <ShareFactButton
+              title="Debito pubblico italiano"
+              value={compactEuro(euro(stock.totalCents))}
+              detail={`${signed(stock.changeCents)} rispetto al mese precedente · al ${longDate(stock.referenceDate)}`}
+              source={`Banca d’Italia · stock Maastricht al ${longDate(stock.referenceDate)}`}
+              path="/debito"
+              label="Condividi questo dato"
+            />
           </div>
           <PublicDebtHistoryChart data={stock.history} />
         </div>

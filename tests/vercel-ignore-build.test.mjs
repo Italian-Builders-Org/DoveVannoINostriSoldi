@@ -45,6 +45,12 @@ test("Vercel skips only non-deployment changes since the last successful build",
   const benchmark = commit("scripts/bench/runtime.mjs", "Local benchmark");
   expect(pins, browser, 0);
   expect(pins, benchmark, 0);
+  const cursorRule = commit(".cursor/rules/cost.mdc", "Editor rule");
+  const agentSkill = commit(".agents/skills/foo/SKILL.md", "Agent skill");
+  const design = commit("DESIGN.md", "Design notes");
+  expect(pins, cursorRule, 0);
+  expect(pins, agentSkill, 0);
+  expect(pins, design, 0);
   expect("", pins, 1); // Anche le sole modifiche CI richiedono un primo deployment.
   expect("", tests, 1); // First deployment: a preview must exist.
   expect(tests, tests, 1); // Manual redeploy may contain new environment settings.

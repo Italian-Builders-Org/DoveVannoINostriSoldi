@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { closeSync, existsSync, fstatSync, openSync, readFileSync, readSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import { gunzipSync } from "node:zlib";
+import { ArtifactCache, artifactFingerprint } from "@/lib/data/artifact-cache";
 import type { IpaEntity } from "@/lib/ipa";
 
 const DATASET = "anac-entity-procurement-page" as const;
@@ -1493,7 +1494,7 @@ function sameShardFingerprint(left: ShardFingerprint, right: ShardFingerprint): 
   return left.size === right.size && left.mtimeMs === right.mtimeMs && left.ctimeMs === right.ctimeMs && left.ino === right.ino;
 }
 
-type LoadedShard = Readonly<{ records: AnacEntityProcurementPageRecord[]; fingerprint: ShardFingerprint }>;
+type LoadedShard = Readonly<{ records: AnacEntityProcurementPageRecord[]; fingerprint: ShardFingerprint; rawBytes: number }>;
 
 function readShard(root: string, shardMeta: AnacPageShardMeta): LoadedShard {
   const prefix = shardPrefix(shardMeta);
@@ -1527,11 +1528,13 @@ function readShard(root: string, shardMeta: AnacPageShardMeta): LoadedShard {
     }
     return validateRecord(parsed, prefix);
   });
-  return { records, fingerprint };
+  return { records, fingerprint, rawBytes: uncompressed.byteLength };
 }
 
 type CachedShard = Readonly<{ records: readonly AnacEntityProcurementPageRecord[]; fingerprint: ShardFingerprint }>;
-const shardCache = new Map<string, CachedShard>();
+const shardCache = new ArtifactCache<CachedShard>(MAX_CACHE_ENTRIES, 32 * 1024 * 1024);
+const metadataCache = new ArtifactCache<AnacEntityProcurementPageMeta>(4, 4 * MAX_META_BYTES);
+const concentrations = new WeakMap<AnacEntityProcurementPageRecord, AnacEntityProcurementPageView["concentration"]>();
 function cachedShard(root: string, shard: AnacPageShardMeta): readonly AnacEntityProcurementPageRecord[] {
   const key = `${root}\u001f${shard.path}\u001f${shard.sha256}`;
   const path = shardFilePath(root, shard);
@@ -1539,8 +1542,7 @@ function cachedShard(root: string, shard: AnacPageShardMeta): readonly AnacEntit
   const cached = shardCache.get(key);
   if (cached && sameShardFingerprint(cached.fingerprint, fingerprint)) return cached.records;
   const loaded = readShard(root, shard);
-  if (shardCache.size >= MAX_CACHE_ENTRIES) shardCache.delete(shardCache.keys().next().value as string);
-  shardCache.set(key, loaded);
+  shardCache.set(key, loaded, loaded.rawBytes);
   return loaded.records;
 }
 
@@ -1555,13 +1557,18 @@ export function safeEntityProcurementPageProfile(
 ): AnacEntityProcurementPageView {
   // codiceFiscaleEnte is intentionally discarded at the public/domain boundary.
   const { codiceIpa, summary, operators, procedures, awards } = record;
+  let concentration = concentrations.get(record);
+  if (!concentration) {
+    concentration = deriveAnacEntityProcurementConcentration(record);
+    concentrations.set(record, concentration);
+  }
   return {
     codiceIpa,
     summary,
     operators,
     procedures,
     awards,
-    concentration: deriveAnacEntityProcurementConcentration(record),
+    concentration,
     meta,
   };
 }
@@ -1580,7 +1587,14 @@ export async function loadAnacEntityProcurementPage(
   }
   const root = artifactRoot(args.rootDirectory);
   try {
-    const meta = validateMeta(readJson(join(root, "meta.json"), "meta"));
+    const paths = [join(root, "meta.json"), resolve(process.cwd(), SOURCE_SPEC_PATH), resolve(process.cwd(), PARENT_SPEC_PATH)];
+    const key = artifactFingerprint(paths);
+    let meta = metadataCache.get(key);
+    if (!meta) {
+      meta = validateMeta(readJson(paths[0], "meta"));
+      if (artifactFingerprint(paths) !== key) throw new Error("ANAC entity page: metadati modificati durante la lettura.");
+      metadataCache.set(key, meta, Buffer.byteLength(JSON.stringify(meta)));
+    }
     const prefix = createHash("sha256").update(codiceIpa).digest("hex").slice(0, 2);
     const shard = meta.shards.find((candidate) => shardPrefix(candidate) === prefix);
     if (!shard) return { status: "not_found", reason: "entity-not-in-profile", message: "Nessun profilo ANAC pubblicato per questo ente." };

@@ -8,7 +8,7 @@ const { getRewrittenUrl, isRewrite } = proxyTesting;
 
 test("MCP compatibility proxy is scoped to the exact public presentation path", () => {
   assert.deepEqual(config, {
-    matcher: ["/", "/politici", "/politici/:path*", "/mcp", "/enti/:path*", "/api/:path*"],
+    matcher: ["/", "/mcp", "/enti/:path*", "/api/:path*"],
   });
 });
 
@@ -22,7 +22,7 @@ test("politici subdomain rewrites the root path to the immersive map", async () 
   assert.equal(main.headers.get("x-middleware-next"), "1");
 });
 
-test("politici paths mark the request immersive for the root layout", async () => {
+test("politici paths retain the atlas rewrite without request-dependent chrome", async () => {
   const subdomain = await proxy(new NextRequest("https://politici.dovevannoinostrisoldi.com/"));
   assert.equal(isRewrite(subdomain), true);
 
@@ -30,7 +30,7 @@ test("politici paths mark the request immersive for the root layout", async () =
   assert.equal(isRewrite(sameOrigin), false);
   assert.equal(sameOrigin.headers.get("x-middleware-next"), "1");
 
-  // Sub-routes must not inherit the atlas immersive stamp (scroll + site chrome).
+  // Sub-routes remain ordinary pages.
   const europa = await proxy(new NextRequest("https://www.dovevannoinostrisoldi.com/politici/europa"));
   assert.equal(isRewrite(europa), false);
   assert.equal(europa.headers.get("x-middleware-next"), "1");

@@ -11,28 +11,45 @@ const beniId = "mef-patrimonio-beni-2023";
 const contrattiId = "mef-patrimonio-contratti-2023";
 const roma = "02438750586";
 
+// Pages are capped at 100 rows: follow the cursor, as the entity profile will.
+async function allRows(datasetId, equals) {
+  const rows = [];
+  let cursor;
+  let result;
+  do {
+    result = await selectIntegratedDataset({ datasetId, equals, limit: 100, cursor });
+    rows.push(...result.rows);
+    cursor = result.pagination.nextCursor;
+  } while (cursor);
+  return { dataset: result.dataset, rows };
+}
+
 test("MEF beni rows keep provenance, titles and declared use per entity", async () => {
-  const selected = await selectIntegratedDataset({ datasetId: beniId, equals: { "Codice fiscale ente": roma }, limit: 100 });
-  assert.equal(selected.dataset.publicRows, 125_371);
+  const selected = await allRows(beniId, { "Codice fiscale ente": roma });
+  assert.equal(selected.dataset.publicRows, 136_503);
   assert.equal(selected.dataset.licenseStatus, "verified-open-cc-by-4.0");
   assert.equal(selected.dataset.sourceMetadata.publicationDate, "2026-05-05");
   assert.equal(selected.dataset.sourceMetadata.acquisitionDate, "2026-09-23");
   assert.match(selected.dataset.sourceMetadata.referencePeriod, /31\/12\/2023/);
   assert.match(selected.dataset.caveats.join(" "), /non dice se il bene sia agibile/);
   assert.match(selected.dataset.caveats.join(" "), /un'assenza non è uno zero/);
-  assert.equal(selected.rows.length, 60);
+  assert.equal(selected.rows.length, 122);
   assert.ok(selected.rows.every((row) => row.cells["Codice fiscale ente"] === roma));
   assert.ok(
     selected.rows.every((row) => Object.values(row.cells).every((value) => value === null || typeof value === "string")),
   );
 
-  const vuote = selected.rows.find((row) =>
+  const vuote = selected.rows.filter((row) =>
     row.cells.Titolo === "Proprietà" &&
     row.cells["Utilizzo del bene"] === "Non utilizzato" &&
     row.cells["Tipologia bene"] === "Abitazione");
-  assert.ok(vuote);
-  assert.equal(vuote.cells.Beni, "1070");
-  assert.equal(vuote.cells["Superficie di riferimento (m²)"], "80483.39");
+  assert.equal(vuote.reduce((sum, row) => sum + Number(row.cells.Beni), 0), 1070);
+  const inRoma = vuote.find((row) => row.cells["Codice catastale comune del bene"] === "H501");
+  assert.ok(inRoma);
+  assert.equal(inRoma.cells.Beni, "872");
+  assert.equal(inRoma.cells["Superficie di riferimento (m²)"], "57315.78");
+  assert.ok(vuote.some((row) => row.cells["Comune del bene"] === "Guidonia Montecelio"));
+  assert.ok(vuote.every((row) => row.cells["Comune ente"] === "Roma"));
   assert.ok(selected.rows.some((row) => row.cells.Titolo === "in locazione"));
 });
 
@@ -55,7 +72,7 @@ test("free-text search matches API and MCP for the same entity", async () => {
 });
 
 test("MEF contracts keep empty and zero rent distinct and expose the ratio inputs", async () => {
-  const selected = await selectIntegratedDataset({ datasetId: contrattiId, equals: { "Codice fiscale ente": roma }, limit: 100 });
+  const selected = await allRows(contrattiId, { "Codice fiscale ente": roma });
   assert.equal(selected.dataset.publicRows, 21_034);
   assert.match(selected.dataset.caveats.join(" "), /non misura incassi/);
   assert.match(selected.dataset.caveats.join(" "), /non è confrontabile con il mercato/);

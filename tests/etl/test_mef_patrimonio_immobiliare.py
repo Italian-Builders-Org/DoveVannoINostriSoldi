@@ -30,7 +30,8 @@ ROMA = {
 def bene(id_bene: str, **fields: str) -> dict[str, str]:
     return {**ROMA, "ID bene": id_bene, "Titolo proprietà": "Proprietà", "Titolo detenzione": "",
             "Utilizzo del bene": "Non utilizzato", "Tipologia Bene Immobile": "Abitazione",
-            "Superficie di Riferimento (mq)": "70,5", **fields}
+            "Superficie di Riferimento (mq)": "70,5", "Regione del bene": "LAZIO",
+            "Comune del bene": "Roma", "Codice Comune del bene": "H501", **fields}
 
 
 def contratto(id_variazione: str, **fields: str) -> dict[str, str]:
@@ -98,6 +99,18 @@ class MefPatrimonioImmobiliareTests(TestCase):
         self.assertEqual((vuoti["Beni"], vuoti["Beni con superficie"], vuoti["Superficie di riferimento (m²)"]), ("3", "2", "100.0"))
         self.assertEqual(vuoti["Codice fiscale ente"], "02438750586")
         self.assertEqual(sum(int(row["Beni"]) for row in beni), 5)
+
+    def test_beni_are_split_by_location_of_the_asset_not_of_the_entity(self) -> None:
+        spec = self.synthetic_spec(
+            [bene("1"), bene("2", **{"Comune del bene": "Guidonia Montecelio", "Codice Comune del bene": "E263"})],
+            [contratto("10")],
+        )
+        beni, _ = self.project(spec)
+        self.assertEqual(
+            sorted((row["Codice catastale comune del bene"], row["Comune ente"], row["Beni"]) for row in beni),
+            [("E263", "Roma", "1"), ("H501", "Roma", "1")],
+        )
+        self.assertEqual(list(beni[0])[:3], ["Codice fiscale ente", "Ente", "Titolo"])
 
     def test_contracts_split_empty_zero_and_positive_rent_and_restrict_ratio(self) -> None:
         spec = self.synthetic_spec(

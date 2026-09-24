@@ -44,26 +44,29 @@ CANONE = MoneyPolicy(
     strip_whitespace=False,
 )
 
-ENTITY_HEADERS = [
-    "Codice fiscale ente",
-    "Ente",
+# Identity and measures come first so the catalog table is readable without
+# scrolling; the entity registry details, repeated on every row, go last.
+ENTITY_ID_HEADERS = ["Codice fiscale ente", "Ente"]
+ENTITY_DETAIL_HEADERS = [
     "Tipologia ente",
     "Regione ente",
     "Provincia ente",
     "Comune ente",
     "Codice catastale comune ente",
 ]
-BENI_HEADERS = ENTITY_HEADERS + [
+TRAILER_HEADERS = ["Anno", "URL fonte"]
+BENI_HEADERS = ENTITY_ID_HEADERS + [
     "Titolo",
     "Utilizzo del bene",
     "Tipologia bene",
     "Beni",
     "Beni con superficie",
     "Superficie di riferimento (m²)",
-    "Anno",
-    "URL fonte",
-]
-CONTRATTI_HEADERS = ENTITY_HEADERS + [
+    "Regione del bene",
+    "Comune del bene",
+    "Codice catastale comune del bene",
+] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
+CONTRATTI_HEADERS = ENTITY_ID_HEADERS + [
     "Tipo detenzione",
     "Finalità persona fisica",
     "Tipologia bene",
@@ -76,9 +79,7 @@ CONTRATTI_HEADERS = ENTITY_HEADERS + [
     "Contratti per rapporto canone/superficie",
     "Canone annuo per rapporto (EUR)",
     "Superficie per rapporto (m²)",
-    "Anno",
-    "URL fonte",
-]
+] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
 SOURCE_ENTITY_FIELDS = [
     "Amministrazione Denominazione",
     "Tipologia Amministrazione",
@@ -249,7 +250,8 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
             if utilizzo not in domains["utilizzo"]:
                 raise SourceError(f"utilizzo fuori dominio: {utilizzo}")
             area = surface(row["Superficie di Riferimento (mq)"], row["ID bene"])
-            group = groups[(owner, proprieta or detenzione, utilizzo or "Non indicato", row["Tipologia Bene Immobile"])]
+            location = (row["Regione del bene"], row["Comune del bene"], row["Codice Comune del bene"])
+            group = groups[(owner, proprieta or detenzione, utilizzo or "Non indicato", row["Tipologia Bene Immobile"], location)]
             group[0] += 1
             if area is not None and area > 0:
                 group[1] += 1
@@ -261,8 +263,9 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
     if sum(value[0] for value in groups.values()) != total:
         raise SourceError("aggregazione beni non riconciliata con le righe sorgente")
     rows = [
-        [*owner, titolo, utilizzo, tipologia, str(count), str(with_area), decimal_text(area), "2023", urls[owner[0]]]
-        for (owner, titolo, utilizzo, tipologia), (count, with_area, area) in sorted(groups.items())
+        [*owner[:2], titolo, utilizzo, tipologia, str(count), str(with_area), decimal_text(area),
+         *location, *owner[2:], "2023", urls[owner[0]]]
+        for (owner, titolo, utilizzo, tipologia, location), (count, with_area, area) in sorted(groups.items())
     ]
     return delimited_payload(BENI_HEADERS, rows)
 
@@ -300,7 +303,8 @@ def contratti_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
     if total != spec["expected"]["detenzioniRows"] or sum(value[0] for value in groups.values()) != total:
         raise SourceError("aggregazione contratti non riconciliata con le righe sorgente")
     rows = [
-        [*owner, tipo, finalita, tipologia, *(str(value) for value in metrics[:8]), decimal_text(metrics[8]), "2023", urls[owner[0]]]
+        [*owner[:2], tipo, finalita, tipologia, *(str(value) for value in metrics[:8]), decimal_text(metrics[8]),
+         *owner[2:], "2023", urls[owner[0]]]
         for (owner, tipo, finalita, tipologia), metrics in sorted(groups.items())
     ]
     return delimited_payload(CONTRATTI_HEADERS, rows)

@@ -43,8 +43,8 @@ EXPECTED_CORPUS = {
 }
 EXPECTED_DATASETS = 105
 EXPECTED_DATASET_ROWS = {
-    "sourceRows": 20_500_820,
-    "publicRows": 7_518_474,
+    "sourceRows": 20_511_952,
+    "publicRows": 7_529_606,
     "catalogOnlyRows": 12_979_505,
     "derivedOnlyRows": 2_841,
 }

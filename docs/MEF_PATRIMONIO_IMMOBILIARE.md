@@ -68,8 +68,9 @@ l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
 - Il censimento include enti che non hanno inviato la comunicazione 2023:
   per loro restano a sistema dati di comunicazioni precedenti, di anno non
   dichiarato. Nel rilascio 2023 sono 1.254 Comuni e 39 enti ERP, per 403.192
-  beni, secondo `Dati_Adempimento_Anno_2023.csv`, che non è in questo dataset
-  (#609). Gli enti senza alcuna comunicazione non compaiono.
+  beni, secondo `Dati_Adempimento_Anno_2023.csv`, pubblicato a parte come
+  dataset collegato `mef-patrimonio-adempimento-2023` (#609). Gli enti senza
+  alcuna comunicazione non compaiono.
 - Catalogo e API cercano a pagine: una pagina vuota non significa che l'ente
   sia assente. La scheda ente usa il filtro esatto sul codice fiscale.
 - La fonte non pubblica nome e codice fiscale delle persone fisiche che

@@ -453,5 +453,24 @@ class CommittedReleaseProofTests(unittest.TestCase):
         self.assertEqual(proof["contract"]["datasets"], 106)
 
 
+class AtomicWriteTests(unittest.TestCase):
+    def test_writes_public_proof_where_os_has_no_fchmod(self) -> None:
+        # CPython on Windows exposes os.fchmod only from 3.13.
+        saved = getattr(release.os, "fchmod", None)
+        if saved is not None:
+            del release.os.fchmod
+        try:
+            with tempfile.TemporaryDirectory() as directory:
+                target = Path(directory) / "release-proof.json"
+                release._atomic_write(target, b"{}\n")
+                self.assertEqual(target.read_bytes(), b"{}\n")
+                self.assertEqual([path.name for path in Path(directory).iterdir()], ["release-proof.json"])
+                if release.os.name == "posix":
+                    self.assertEqual(target.stat().st_mode & 0o777, 0o644)
+        finally:
+            if saved is not None:
+                release.os.fchmod = saved
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -748,7 +748,7 @@ def _validate_datasets(paths: ReleasePaths, *, show_timings: bool = False) -> di
     except Exception as exc:
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):
             raise
-        raise ReleaseError("deep dataset artifact gate failed") from exc
+        raise ReleaseError(f"deep dataset artifact gate failed: {exc}") from exc
 
     return {
         "specBytes": len(spec_payload),
@@ -857,8 +857,12 @@ def _atomic_write(path: Path, payload: bytes) -> None:
     descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
     temporary = Path(temporary_name)
     try:
-        os.fchmod(descriptor, 0o644)
         with os.fdopen(descriptor, "wb") as stream:
+            # Windows CPython exposes os.fchmod only from 3.13; the proof is public.
+            if hasattr(os, "fchmod"):
+                os.fchmod(stream.fileno(), 0o644)
+            else:
+                os.chmod(temporary, 0o644)
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())

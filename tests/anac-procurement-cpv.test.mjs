@@ -142,8 +142,15 @@ test("Roma CPV categories partition the locked profile and reconcile filtered in
     const prefix = createHash("sha256").update(profile.codiceIpa).digest("hex").slice(0, 2);
     const files = ["scripts/etl/specs/anac-procurement-cpv.source.json", cpv.anacCpvSource.profiles.path, cpv.anacCpvSource.sourceLock.path, "src/data/generated/anac-procurement-cpv/meta.json", `src/data/generated/anac-procurement-cpv/${prefix}.jsonl.gz`];
     for (const path of files) { mkdirSync(join(root, path, ".."), { recursive: true }); copyFileSync(path, join(root, path)); }
+    const warm = await Promise.all(Array.from({ length: 8 }, () => cpv.loadAnacCpvRecord(profile, root)));
+    assert.ok(warm.every((record) => record === warm[0]), "Concurrent reads share the validated shard");
+    await assert.rejects(cpv.loadAnacCpvRecord({ ...profile, procedures: [] }, root), /non riconciliato/);
     const shard = join(root, files.at(-1));
     const bytes = readFileSync(shard); bytes[bytes.length - 1] ^= 1; writeFileSync(shard, bytes);
     await assert.rejects(cpv.loadAnacCpvRecord(profile, root), /Hash indice CPV/);
+    copyFileSync(files.at(-1), shard);
+    assert.deepEqual(await cpv.loadAnacCpvRecord(profile, root), index);
+    writeFileSync(join(root, files[0]), "{}");
+    await assert.rejects(cpv.loadAnacCpvRecord(profile, root), /Provenienza/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

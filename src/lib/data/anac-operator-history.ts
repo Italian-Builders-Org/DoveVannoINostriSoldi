@@ -4,6 +4,7 @@ import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import { z } from "zod";
+import { ArtifactCache, artifactFingerprint } from "@/lib/data/artifact-cache";
 import {
   historyManifestSchema,
   historyBlockSchema,
@@ -13,11 +14,9 @@ import {
 
 const DIRECTORY = "src/data/generated/anac-operator-history";
 let cachedManifest: z.infer<typeof historyManifestSchema> | undefined;
-const cache = new Map<
-  string,
-  { record: OperatorHistorySummary; bytes: number }
->();
-let cacheBytes = 0;
+const cache = new ArtifactCache<OperatorHistorySummary>(8, 16_777_216);
+const shardCache = new ArtifactCache<ReadonlyMap<string, string>>(4, 16_777_216);
+let manifestFingerprint = "";
 
 function digest(bytes: Buffer): string {
   return createHash("sha256").update(bytes).digest("hex");
@@ -65,7 +64,13 @@ function readBytes(
 }
 
 function manifest() {
-  if (cachedManifest) return cachedManifest;
+  const paths = [
+    join(process.cwd(), DIRECTORY, "manifest.json"),
+    join(process.cwd(), "src/data/generated/anac-operator-awards-index/meta.json"),
+    join(process.cwd(), "scripts/etl/specs/anac-cig-2007-2025.source.json"),
+  ];
+  const fingerprint = artifactFingerprint(paths);
+  if (cachedManifest && fingerprint === manifestFingerprint) return cachedManifest;
   const parsed = historyManifestSchema.parse(
     JSON.parse(
       readBytes(
@@ -94,6 +99,8 @@ function manifest() {
     if (new Set(files.map((file) => file.id)).size !== 256)
       throw new Error("Partizioni dello storico duplicate");
   }
+  if (artifactFingerprint(paths) !== fingerprint) throw new Error("Fonti dello storico modificate durante la lettura");
+  manifestFingerprint = fingerprint;
   cachedManifest = parsed;
   return parsed;
 }
@@ -104,36 +111,45 @@ function bucketFor(ref: string): string {
 
 export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
   if (!/^op-\d{8}$/.test(ref)) return null;
-  const cached = cache.get(ref);
-  if (cached) return cached.record;
   const bucket = bucketFor(ref);
   const file = manifest().shards.find((file) => file.id === bucket)!;
-  const compressed = readBytes(
-    join(process.cwd(), DIRECTORY, `${bucket}.jsonl.gz`),
-    16_777_216,
-  );
-  if (compressed.length !== file.bytes || digest(compressed) !== file.sha256)
-    throw new Error("Hash dello storico operatori non valido");
-  const raw = gunzipSync(compressed, { maxOutputLength: 67_108_864 }).toString(
-    "utf8",
-  );
-  for (const line of raw.split("\n")) {
-    if (!line) continue;
+  const path = join(process.cwd(), DIRECTORY, `${bucket}.jsonl.gz`);
+  const fingerprint = `${file.sha256}:${artifactFingerprint([path])}`;
+  const recordKey = `${ref}:${fingerprint}`;
+  const cached = cache.get(recordKey);
+  if (cached) return cached;
+  let lines = shardCache.get(fingerprint);
+  if (!lines) {
+    const compressed = readBytes(
+      path,
+      16_777_216,
+    );
+    if (compressed.length !== file.bytes || digest(compressed) !== file.sha256)
+      throw new Error("Hash dello storico operatori non valido");
+    const raw = gunzipSync(compressed, { maxOutputLength: 67_108_864 }).toString(
+      "utf8",
+    );
+    const indexed = new Map<string, string>();
+    for (const line of raw.split("\n")) {
+      if (!line) continue;
+      const candidate = JSON.parse(line);
+      if (typeof candidate.ref !== "string" || bucketFor(candidate.ref) !== bucket || indexed.has(candidate.ref)) {
+        throw new Error("Identità dello storico operatori non valida");
+      }
+      indexed.set(candidate.ref, line);
+    }
+    if (`${file.sha256}:${artifactFingerprint([path])}` !== fingerprint) throw new Error("Storico operatori cambiato durante la lettura");
+    // Keep serialized records: parsing every summary would multiply retained heap.
+    shardCache.set(fingerprint, indexed, Buffer.byteLength(raw));
+    lines = indexed;
+  }
+  const line = lines.get(ref);
+  if (line) {
     const candidate = JSON.parse(line);
-    if (candidate.ref !== ref) continue;
     const result = historySummarySchema.parse(candidate);
     const bytes = Buffer.byteLength(line);
     if (bytes <= 8_388_608) {
-      while (
-        cache.size &&
-        (cache.size >= 8 || cacheBytes + bytes > 16_777_216)
-      ) {
-        const oldest = cache.keys().next().value!;
-        cacheBytes -= cache.get(oldest)!.bytes;
-        cache.delete(oldest);
-      }
-      cache.set(ref, { record: result, bytes });
-      cacheBytes += bytes;
+      cache.set(recordKey, result, bytes);
     }
     return result;
   }

@@ -372,22 +372,22 @@ nav li a { text-decoration: none; }
 /* Keep «Qualcosa non torna?» pinned: only the link list scrolls when nested menus grow. */
 .mobile-navigation .primary-nav { flex: 1; }
 body:has(.mobile-navigation:modal) { overflow: hidden; }
-html[data-immersive="politici"] .site-content {
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) .site-content {
   margin-left: 0;
   padding: 0;
 }
-html[data-immersive="politici"] .desktop-sidebar,
-html[data-immersive="politici"] .mobile-menu-trigger,
-html[data-immersive="politici"] .header,
-html[data-immersive="politici"] .site-header,
-html[data-immersive="politici"] header.site-header {
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) .desktop-sidebar,
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) .mobile-menu-trigger,
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) .header,
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) .site-header,
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) header.site-header {
   display: none !important;
 }
-html[data-immersive="politici"] body {
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) body {
   background: var(--graph-canvas);
   overflow: hidden;
 }
-html[data-immersive="politici"] #contenuto-principale {
+html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) #contenuto-principale {
   min-height: 100dvh;
   height: 100dvh;
   padding: 0;
@@ -396,11 +396,11 @@ html[data-immersive="politici"] #contenuto-principale {
 
 /* Mobile: unlock document scroll so list/panel read as one page, not nested panes. */
 @media (max-width: 899px) {
-  html[data-immersive="politici"] body {
+  html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) body {
     overflow-x: hidden;
     overflow-y: auto;
   }
-  html[data-immersive="politici"] #contenuto-principale {
+  html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) #contenuto-principale {
     height: auto;
     min-height: 100dvh;
   }

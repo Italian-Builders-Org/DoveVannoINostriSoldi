@@ -107,7 +107,7 @@ export default async function OperatoreDetailPage({
       <main className="shell page">
         <h1>Filtri non validi</h1>
         <p>Controlla anno, pagina e intervallo degli importi.</p>
-        <Link href={`/appalti/operatori/${ref}`}>Rimuovi i filtri</Link>
+        <Link prefetch={false} href={`/appalti/operatori/${ref}`}>Rimuovi i filtri</Link>
       </main>
     );
   }
@@ -129,8 +129,8 @@ export default async function OperatoreDetailPage({
   return (
     <main className={`shell page ${styles.page}`}>
       <nav aria-label="Percorso">
-        <Link href="/appalti">Appalti pubblici</Link> /{" "}
-        <Link href="/appalti/operatori">Imprese aggiudicatarie</Link> / Scheda
+        <Link prefetch={false} href="/appalti">Appalti pubblici</Link> /{" "}
+        <Link prefetch={false} href="/appalti/operatori">Imprese aggiudicatarie</Link> / Scheda
       </nav>
       <div className="page-intro">
         <h1>{operator.name}</h1>
@@ -206,7 +206,7 @@ export default async function OperatoreDetailPage({
             soglia non dimostrano illeciti. Nessuna soglia unica viene applicata
             allo storico.
           </p>
-          <Link href="/appalti">Analisi dei CIG 2025</Link>
+          <Link prefetch={false} href="/appalti">Analisi dei CIG 2025</Link>
         </details>
       </section>
       <section aria-labelledby="history-title">
@@ -275,7 +275,7 @@ export default async function OperatoreDetailPage({
           <button className="btn" type="submit">
             Filtra
           </button>
-          <Link href={`/appalti/operatori/${ref}`}>Azzera filtri</Link>
+          <Link prefetch={false} href={`/appalti/operatori/${ref}`}>Azzera filtri</Link>
         </form>
         <p className={styles.note}>
           {integer(page.total)} risultati su {integer(operator.awardCount)}{" "}
@@ -364,9 +364,9 @@ export default async function OperatoreDetailPage({
             className={styles.paginationRow}
             aria-label="Pagine aggiudicazioni"
           >
-            {page.page > 1 ? <Link href={href(1)}>Prima</Link> : null}
+            {page.page > 1 ? <Link prefetch={false} href={href(1)}>Prima</Link> : null}
             {page.page > 1 ? (
-              <Link href={href(Math.min(page.page - 1, page.pageCount))}>
+              <Link prefetch={false} href={href(Math.min(page.page - 1, page.pageCount))}>
                 Precedente
               </Link>
             ) : null}
@@ -374,10 +374,10 @@ export default async function OperatoreDetailPage({
               Pagina {integer(page.page)} di {integer(page.pageCount)}
             </span>
             {page.page < page.pageCount ? (
-              <Link href={href(page.page + 1)}>Successiva</Link>
+              <Link prefetch={false} href={href(page.page + 1)}>Successiva</Link>
             ) : null}
             {page.page < page.pageCount ? (
-              <Link href={href(page.pageCount)}>Ultima</Link>
+              <Link prefetch={false} href={href(page.pageCount)}>Ultima</Link>
             ) : null}
             {page.pageCount > 1 ? (
               <form
@@ -466,7 +466,7 @@ export default async function OperatoreDetailPage({
         <ol>
           {operator.authorities.slice(0, 10).map((row) => (
             <li key={row.ref}>
-              <Link href={operatorHistoryHref(ref, { authority: row.ref })}>
+              <Link prefetch={false} href={operatorHistoryHref(ref, { authority: row.ref })}>
                 {row.label ?? row.ref}
               </Link>{" "}
               · {integer(row.awardCount)} aggiudicazioni

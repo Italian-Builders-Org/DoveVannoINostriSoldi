@@ -108,6 +108,10 @@ echo "::group::Browser political atlas"
 node --experimental-strip-types scripts/browser/politici-atlas.mjs
 echo "::endgroup::"
 
+echo "::group::Runtime cache and immersive shell"
+node scripts/browser/runtime-cache.mjs
+echo "::endgroup::"
+
 echo "::group::Browser eurodeputati reachability"
 node scripts/browser/politici-europa.mjs
 echo "::endgroup::"

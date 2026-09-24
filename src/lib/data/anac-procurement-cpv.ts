@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { z } from "zod";
+import { ArtifactCache, artifactFingerprint } from "@/lib/data/artifact-cache";
 import sourceSpec from "../../../scripts/etl/specs/anac-procurement-cpv.source.json";
 import { selectAnacEntityProcurementCigs, type AnacEntityProcurementPageView } from "@/lib/data/anac-entity-procurement-page";
 
@@ -70,7 +71,16 @@ export function validateAnacCpvRecord(value: unknown, profile: Pick<AnacEntityPr
   return record;
 }
 
-export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, root = process.cwd()): Promise<AnacCpvRecord> {
+type CpvMetadata = { metadata: z.infer<typeof metadataSchema>; parentJson: string };
+const metadataCache = new ArtifactCache<CpvMetadata>(4, 4_000_000);
+const shardCache = new ArtifactCache<ReadonlyMap<string, AnacCpvRecord>>(8, 16 * 1024 * 1024);
+const pending = new Map<string, Promise<ReadonlyMap<string, AnacCpvRecord>>>();
+
+async function loadMetadata(root: string): Promise<CpvMetadata> {
+  const paths = [join(root, ROOT, "meta.json"), join(root, SPEC), join(root, sourceSpec.profiles.path), join(root, sourceSpec.sourceLock.path)];
+  const key = artifactFingerprint(paths);
+  const cached = metadataCache.get(key);
+  if (cached) return cached;
   const [metaBytes, specBytes, parentBytes, lockBytes] = await Promise.all([
     readBounded(join(root, ROOT, "meta.json"), 1_000_000),
     readBounded(join(root, SPEC), 100_000),
@@ -83,28 +93,59 @@ export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, 
     throw new Error("Provenienza indice CPV non riconciliata.");
   }
   const parent = JSON.parse(parentBytes.toString("utf8"));
-  if (JSON.stringify(profile.meta) !== JSON.stringify(parent)) throw new Error("Indice CPV di un'altra versione del profilo.");
   const { sourceCounts: s, counts: c } = metadata;
   if (s.rawRows !== s.primaryRows + s.nonPrimaryRows || s.primaryRows !== s.classified + s.unclassified
     || c.procedures !== c.classified + c.unclassified || c.entities !== parent.totals.entities || c.procedures !== parent.totals.procedures
     || metadata.shards.some((shard, i) => shard.id !== i.toString(16).padStart(2, "0") || shard.entities !== parent.shards[i].entities)) {
     throw new Error("Copertura indice CPV non riconciliata.");
   }
+  if (artifactFingerprint(paths) !== key) throw new Error("Provenienza CPV modificata durante la lettura.");
+  const result = { metadata, parentJson: JSON.stringify(parent) };
+  metadataCache.set(key, result, metaBytes.length + parentBytes.length);
+  return result;
+}
+
+export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, root = process.cwd()): Promise<AnacCpvRecord> {
+  const { metadata, parentJson } = await loadMetadata(root);
+  if (JSON.stringify(profile.meta) !== parentJson) throw new Error("Indice CPV di un'altra versione del profilo.");
   const prefix = createHash("sha256").update(profile.codiceIpa).digest("hex").slice(0, 2);
   const shard = metadata.shards[Number.parseInt(prefix, 16)];
-  const bytes = await readBounded(join(root, ROOT, `${prefix}.jsonl.gz`), MAX_SHARD_BYTES);
-  if (bytes.length !== shard.bytes || sha256(bytes) !== shard.sha256) throw new Error("Hash indice CPV divergente.");
-  const raw = await unzip(bytes, { maxOutputLength: MAX_RAW_BYTES });
-  if (raw.length !== shard.rawBytes || !raw.toString("utf8").endsWith("\n")) throw new Error("Dimensione indice CPV divergente.");
-  const lines = raw.toString("utf8").trimEnd().split("\n");
-  if (lines.length !== shard.entities) throw new Error("Cardinalità indice CPV divergente.");
-  const records = lines.map((line) => recordSchema.parse(JSON.parse(line)));
-  const codes = new Set<string>();
-  for (const record of records) {
-    if (codes.has(record.codiceIpa) || createHash("sha256").update(record.codiceIpa).digest("hex").slice(0, 2) !== prefix) throw new Error("Identità indice CPV divergente.");
-    codes.add(record.codiceIpa);
+  const path = join(root, ROOT, `${prefix}.jsonl.gz`);
+  const key = `${shard.sha256}:${artifactFingerprint([path])}`;
+  let records = shardCache.get(key);
+  if (!records) {
+    let loading = pending.get(key);
+    if (!loading) {
+      loading = (async () => {
+        const bytes = await readBounded(path, MAX_SHARD_BYTES);
+        if (bytes.length !== shard.bytes || sha256(bytes) !== shard.sha256) throw new Error("Hash indice CPV divergente.");
+        const raw = await unzip(bytes, { maxOutputLength: MAX_RAW_BYTES });
+        if (raw.length !== shard.rawBytes || !raw.toString("utf8").endsWith("\n")) throw new Error("Dimensione indice CPV divergente.");
+        const lines = raw.toString("utf8").trimEnd().split("\n");
+        if (lines.length !== shard.entities) throw new Error("Cardinalità indice CPV divergente.");
+        const records = lines.map((line) => recordSchema.parse(JSON.parse(line)));
+        const codes = new Set<string>();
+        for (const record of records) {
+          if (codes.has(record.codiceIpa) || createHash("sha256").update(record.codiceIpa).digest("hex").slice(0, 2) !== prefix) throw new Error("Identità indice CPV divergente.");
+          codes.add(record.codiceIpa);
+        }
+        if (`${shard.sha256}:${artifactFingerprint([path])}` !== key) throw new Error("Indice CPV modificato durante la lettura.");
+        const result = new Map(records.map((record) => [record.codiceIpa, record]));
+        shardCache.set(key, result, raw.length);
+        return result;
+      })();
+      // Bound retained in-flight keys even when callers request unrelated shards.
+      if (pending.size < 8) pending.set(key, loading);
+    }
+    try { records = await loading; }
+    finally { if (pending.get(key) === loading) pending.delete(key); }
   }
-  return validateAnacCpvRecord(records.find((record) => record.codiceIpa === profile.codiceIpa), profile);
+  const record = records.get(profile.codiceIpa);
+  if (!record || record.procedures.length !== profile.procedures.length
+    || record.procedures.some((row, i) => row.cig !== profile.procedures[i].cig)) {
+    throw new Error("Indice CPV non riconciliato con il profilo ANAC.");
+  }
+  return record;
 }
 
 export function anacCpvOptions(record: AnacCpvRecord): { options: AnacCpvOption[]; unclassified: number } {

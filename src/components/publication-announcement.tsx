@@ -69,7 +69,7 @@ export function PublicationAnnouncement({ items }: Readonly<{ items: readonly Pu
       <div className={styles.inner}>
         <div className={styles.messages} aria-hidden="true">
           <div className={styles.track}>
-            {visualItems.map((item, index) => <Link key={`${item.href}-${index}`} href={item.href} className={styles.link}
+            {visualItems.map((item, index) => <Link prefetch={false} key={`${item.href}-${index}`} href={item.href} className={styles.link}
               tabIndex={-1}>
               <span className={styles.title}>{item.description}</span>
               <span className={styles.cta}>{item.cta}<HugeiconsIcon icon={ArrowRight01Icon} size={14} aria-hidden="true" /></span>
@@ -78,7 +78,7 @@ export function PublicationAnnouncement({ items }: Readonly<{ items: readonly Pu
         </div>
         {/* Keep a real keyboard-accessible destination. Focusing the banner
             replaces the moving copies with this stationary, visible link. */}
-        <Link href={activeItem.href} className={`${styles.link} ${styles.activeLink}`} data-active="true">
+        <Link prefetch={false} href={activeItem.href} className={`${styles.link} ${styles.activeLink}`} data-active="true">
           <span className={styles.title}>{activeItem.description}</span>
           <span className={styles.cta}>{activeItem.cta}<HugeiconsIcon icon={ArrowRight01Icon} size={14} aria-hidden="true" /></span>
         </Link>

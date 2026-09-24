@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Current Senate XIX roster and groups from official dati.senato.it exports."""
+"""Senate XIX roster and dated group history from official dati.senato.it sources."""
 
 from __future__ import annotations
 
@@ -71,6 +71,35 @@ WHERE {
 }
 ORDER BY ?senatore
 """.strip()
+
+GROUP_MEMBERSHIPS_QUERY = """
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX osr: <http://dati.senato.it/osr/>
+SELECT DISTINCT ?senatore ?gruppo ?inizio ?fine WHERE {
+  ?senatore a osr:Senatore ; ocd:aderisce ?adesione .
+  ?adesione osr:legislatura 19 ; osr:gruppo ?gruppo ; osr:inizio ?inizio .
+  OPTIONAL { ?adesione osr:fine ?fine }
+}
+ORDER BY ?senatore ?inizio
+""".strip()
+
+GROUP_NAMES_QUERY = """
+PREFIX osr: <http://dati.senato.it/osr/>
+SELECT DISTINCT ?gruppo ?inizio ?fine ?nome ?breve WHERE {
+  ?adesione osr:legislatura 19 ; osr:gruppo ?gruppo .
+  ?gruppo osr:denominazione ?denominazione .
+  ?denominazione osr:inizio ?inizio ; osr:titolo ?nome .
+  OPTIONAL { ?denominazione osr:fine ?fine }
+  OPTIONAL { ?denominazione osr:titoloBreve ?breve }
+}
+ORDER BY ?gruppo ?inizio
+""".strip()
+
+SENATO_VOTES_OUTPUT = ROOT / "src/data/generated/senato-atti-voti-xix.json"
+GROUP_HISTORY_HEADERS = {
+    "memberships": ["senatore", "gruppo", "inizio", "fine"],
+    "names": ["gruppo", "inizio", "fine", "nome", "breve"],
+}
 
 GROUP_ROLE_LABELS = {
     "Presidente": "Presidente del gruppo",
@@ -147,12 +176,107 @@ def parse_id(uri: str, pattern: re.Pattern[str], kind: str) -> str:
     return match.group(1)
 
 
-def bindings(payload: dict[str, Any], source_id: str) -> list[dict[str, Any]]:
+def bindings(payload: dict[str, Any], source_id: str, headers: dict[str, list[str]] = EXPECTED_HEADERS) -> list[dict[str, Any]]:
     head = payload.get("head") or {}
-    require(head.get("vars") == EXPECTED_HEADERS[source_id], f"{source_id}: schema inatteso")
+    require(head.get("vars") == headers[source_id], f"{source_id}: schema inatteso")
     rows = (payload.get("results") or {}).get("bindings")
     require(isinstance(rows, list) and rows, f"{source_id}: righe assenti")
     return rows
+
+
+def attach_group_history(snapshot: dict[str, Any]) -> None:
+    payloads: dict[str, dict[str, Any]] = {}
+    raws: dict[str, bytes] = {}
+    for key, query in (("memberships", GROUP_MEMBERSHIPS_QUERY), ("names", GROUP_NAMES_QUERY)):
+        payloads[key], raws[key] = fetch_sparql(query)
+
+    memberships = set()
+    for row in bindings(payloads["memberships"], "memberships", GROUP_HISTORY_HEADERS):
+        senator = value(row, "senatore")
+        group = value(row, "gruppo")
+        start = value(row, "inizio")
+        require(senator is not None and group is not None and start is not None, "adesione incompleta")
+        memberships.add((
+            parse_id(senator, SENATOR_RE, "senatore"),
+            f"g{parse_id(group, GROUP_RE, 'gruppo')}",
+            start,
+            value(row, "fine"),
+        ))
+
+    names = set()
+    for row in bindings(payloads["names"], "names", GROUP_HISTORY_HEADERS):
+        group = value(row, "gruppo")
+        start = value(row, "inizio")
+        label = value(row, "nome")
+        end = value(row, "fine")
+        require(group is not None and start is not None and label is not None, "denominazione incompleta")
+        if end is not None and end < snapshot["legislature"]["startDate"]:
+            continue
+        names.add((f"g{parse_id(group, GROUP_RE, 'gruppo')}", label, value(row, "breve"), start, end))
+
+    snapshot["groupMemberships"] = [
+        {"senatorId": sid, "groupId": gid, "startDate": start, "endDate": end}
+        for sid, gid, start, end in sorted(memberships, key=lambda item: (item[0], item[2], item[1], item[3] or ""))
+    ]
+    snapshot["groupNames"] = [
+        {"groupId": gid, "label": label, "shortLabel": short, "startDate": start, "endDate": end}
+        for gid, label, short, start, end in sorted(names, key=lambda item: (item[0], item[3], item[1]))
+    ]
+    acquired_at = datetime.now(timezone.utc).replace(microsecond=0)
+    snapshot["source"]["groupHistory"] = {
+        "endpointUrl": SPARQL_ENDPOINT,
+        "observedDate": acquired_at.date().isoformat(),
+        "acquiredAt": acquired_at.isoformat(),
+        "responses": {key: {"bytes": len(raw), "sha256": sha256_bytes(raw)} for key, raw in raws.items()},
+    }
+    validate_group_history(snapshot)
+
+
+def validate_group_history(snapshot: dict[str, Any], locks: dict[str, Any] | None = None) -> None:
+    memberships = snapshot.get("groupMemberships")
+    names = snapshot.get("groupNames")
+    require(isinstance(memberships, list) and memberships, "appartenenze storiche assenti")
+    require(isinstance(names, list) and names, "denominazioni storiche assenti")
+    history = (snapshot.get("source") or {}).get("groupHistory") or {}
+    require(history.get("endpointUrl") == SPARQL_ENDPOINT, "fonte storia gruppi divergente")
+    require(DATE_RE.fullmatch(str(history.get("observedDate") or "")) is not None, "data storia gruppi invalida")
+    responses = history.get("responses") or {}
+    require(set(responses) == set(GROUP_HISTORY_HEADERS), "risposte storia gruppi incomplete")
+    for key, response in responses.items():
+        require(isinstance(response.get("bytes"), int) and response["bytes"] > 0, f"{key}.bytes")
+        require(SHA_RE.fullmatch(str(response.get("sha256") or "")) is not None, f"{key}.sha256")
+        if locks is not None:
+            require(response == locks.get(key), f"{key}: source lock diverge")
+
+    def valid_interval(row: dict[str, Any]) -> bool:
+        start, end = row.get("startDate"), row.get("endDate")
+        return (isinstance(start, str) and DATE_RE.fullmatch(start) is not None
+                and (end is None or isinstance(end, str) and DATE_RE.fullmatch(end) is not None and start <= end))
+
+    for row in [*memberships, *names]:
+        require(isinstance(row, dict) and valid_interval(row), "intervallo storico invalido")
+    group_ids = {row["groupId"] for row in names}
+    require(all(row.get("groupId") in group_ids for row in memberships), "adesione senza denominazione")
+
+    by_senator: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    by_group: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in memberships:
+        require(re.fullmatch(r"\d+", str(row.get("senatorId") or "")) is not None, "id senatore storico invalido")
+        by_senator[row["senatorId"]].append(row)
+    for row in names:
+        require(isinstance(row.get("label"), str) and row["label"], "denominazione storica invalida")
+        by_group[row["groupId"]].append(row)
+
+    votes = json.loads(SENATO_VOTES_OUTPUT.read_text(encoding="utf-8"))["finalVotes"]
+    for vote in votes:
+        date = vote["date"]
+        for senator_id in vote["votes"]:
+            groups = {row["groupId"] for row in by_senator[senator_id]
+                      if row["startDate"] <= date <= (row["endDate"] or "9999-12-31")}
+            require(len(groups) == 1, f"{vote['id']}: gruppo storico non determinabile per {senator_id}")
+            labels = [row for row in by_group[next(iter(groups))]
+                      if row["startDate"] <= date <= (row["endDate"] or "9999-12-31")]
+            require(len(labels) == 1, f"{vote['id']}: denominazione storica non determinabile")
 
 
 def build_snapshot(
@@ -564,13 +688,18 @@ def refresh(spec: dict[str, Any]) -> dict[str, Any]:
     for key, (landing, fields) in exports.items():
         payloads[key], raws[key] = fetch_export(landing, fields)
     payloads["profiles"], raws["profiles"] = fetch_sparql(PROFILES_QUERY)
-    return build_snapshot(payloads, raws, observed_date=observed_date)
+    snapshot = build_snapshot(payloads, raws, observed_date=observed_date)
+    attach_group_history(snapshot)
+    return snapshot
 
 
 def check_committed(spec: dict[str, Any]) -> None:
     payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
     locks = (spec.get("source") or {}).get("committedResponses") or {}
+    history_locks = (spec.get("source") or {}).get("groupHistoryResponses") or {}
+    require(set(history_locks) == set(GROUP_HISTORY_HEADERS), "source lock storia gruppi assente")
     validate_snapshot(payload, locks=locks)
+    validate_group_history(payload, locks=history_locks)
     require(payload["source"]["observedDate"] == spec["period"]["observedDate"], "period observedDate diverge")
     require(payload["coverage"]["senators"] >= spec["coverageFloor"]["senators"], "coverage senators sotto floor")
     require(payload["coverage"]["groups"] >= spec["coverageFloor"]["groups"], "coverage groups sotto floor")
@@ -581,14 +710,20 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--write", action="store_true")
+    parser.add_argument("--write-history", action="store_true")
     args = parser.parse_args()
-    if args.check == args.write:
-        raise SystemExit("specificare esattamente --check oppure --write")
+    if sum((args.check, args.write, args.write_history)) != 1:
+        raise SystemExit("specificare esattamente --check, --write oppure --write-history")
     spec = load_spec()
     if args.check:
         check_committed(spec)
         return 0
-    snapshot = refresh(spec)
+    if args.write_history:
+        snapshot = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        validate_snapshot(snapshot, locks=(spec.get("source") or {}).get("committedResponses"))
+        attach_group_history(snapshot)
+    else:
+        snapshot = refresh(spec)
     OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['senators']} senators)")
     return 0

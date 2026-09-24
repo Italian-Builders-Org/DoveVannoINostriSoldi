@@ -34,6 +34,16 @@
         "bytes": 205592,
         "sha256": "8d96dc4152fb114b50b294457b84a0091e4a306b912b085c8173a46dbf16672b"
       }
+    },
+    "groupHistoryResponses": {
+      "memberships": {
+        "bytes": 89227,
+        "sha256": "519037b7021521ad0304547ebea5f993e4acaa69f93b2e4568a9f020a5e2d465"
+      },
+      "names": {
+        "bytes": 20606,
+        "sha256": "d0e6760ce287c6dbe6e8cdfcfbaaf7f58dd8310659b4603e846321d7d0c5a4f1"
+      }
     }
   },
   "coverageFloor": {

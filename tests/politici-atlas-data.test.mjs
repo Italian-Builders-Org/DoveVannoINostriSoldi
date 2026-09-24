@@ -27,6 +27,7 @@ test("profile parser rejects unsafe source and social URLs and malformed attenda
     (p) => { p.officialPages[0].url = "data:text/html,unsafe"; },
     (p) => { p.socialLinks = { x: "javascript:alert(1)" }; },
     (p) => { p.voteAttendance.votesCast = -5; },
+    (p) => { p.voteAttendance.rank = 1; p.voteAttendance.rankedAmong = 398; },
     (p) => { p.education.area = "guessed"; },
   ]) { const changed = structuredClone(profiles); mutate(changed["dep-0"]); assert.throws(() => parseProfiles({ profiles: changed })); }
 });

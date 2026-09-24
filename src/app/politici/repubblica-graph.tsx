@@ -114,6 +114,22 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
     setInvalid(false);
   }, [map, update]);
 
+  const exploreGroupVotes = useCallback((groupId: string, chamber: "camera" | "senato") => {
+    const current = stateRef.current;
+    update({
+      ...current,
+      scope: "storico-voti",
+      selection: { kind: "group", id: groupId },
+      themeId: current.themeId ?? "lavoro",
+      themeChamber: chamber,
+      query: "",
+      family: null,
+      role: "tutti",
+      panelTab: null,
+    }, "push");
+    setDetailsOpen(false);
+  }, [update]);
+
   const select = useCallback((selection: GraphSelection) => {
     if (!validSelection(selection, map)) return;
     const current = stateRef.current;
@@ -155,6 +171,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
         initialTab={state.panelTab}
         themeId={state.themeId}
         onSelect={select}
+        onExploreGroupVotes={exploreGroupVotes}
         onRetryProfiles={data.retryProfiles}
         onRetryNews={data.retryNews} />
     </AtlasInspector>
@@ -272,6 +289,7 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
             themeChamber={state.themeChamber}
             themeExpressedOnly={state.themeExpressedOnly}
             selectedId={selectedId}
+            selectedGroupId={selectedGroupId}
             onThemeId={(themeId) => update({ ...state, themeId })}
             onThemeChamber={(themeChamber) => update({ ...state, themeChamber })}
             onThemeExpressedOnly={(themeExpressedOnly) => update({ ...state, themeExpressedOnly })}

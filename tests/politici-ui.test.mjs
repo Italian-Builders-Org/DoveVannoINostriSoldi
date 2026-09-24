@@ -90,7 +90,7 @@ test("atlas: responsive inspector uses native modality, focus restoration and sc
 });
 
 test("atlas: rich facts keep attendance, education, programs, CV, news and caveats", () => {
-  for (const token of ["AttendanceRanking", "EducationBlock", "ProgramBlock", "VoteAttendance", "ProfileFacts", "NewsBlock", "InstitutionalRelations"]) assert.ok(panel.includes(token), token);
+  for (const token of ["EducationBlock", "ProgramBlock", "VoteAttendance", "ProfileFacts", "NewsBlock", "InstitutionalRelations"]) assert.ok(panel.includes(token), token);
   for (const token of ["stemShareOfDeclared", "undeclared", "presencePercent", "votesCastPercent", "missionsPercent", "absencesPercent", "justifiedAbsences", "officialPages", "socialLinks", "photoCredit", "articleUrls", "observedAt"]) assert.ok(facts.includes(token), token);
   assert.match(facts, /missioni non sono presenze fisiche/);
   assert.match(facts, /non dimostrano|non dimostra|non implicano|non prova/);
@@ -105,6 +105,12 @@ test("atlas: legislative acts define «arrivate in fondo» from the official leg
   assert.match(acts, /classe ufficiale di esito <strong>legge<\/strong>/);
   assert.match(acts, /Camera e Senato usano snapshot e regole/);
   assert.doesNotMatch(acts, /produttivit[àa]|merito politico/);
+  assert.doesNotMatch(acts, /firstSignedPercentile|peerCount|più proposte a prima firma del/);
+  assert.match(acts, /Votazioni finali/);
+  assert.match(acts, /atto nel suo complesso/);
+  assert.match(acts, /Proponente formale/);
+  assert.match(acts, /finalVotesExcluded/);
+  assert.match(acts, /iniziative governative con fase Senato/);
 });
 
 test("atlas: local foto and simboli proxies skip the next/image optimizer", async () => {
@@ -148,6 +154,9 @@ test("atlas: institutional graph scope restores the radial overview map", async 
   const storico = await read("src/app/politici/atlas-storico-voti.tsx");
   assert.match(storico, /Cosa si è votato/);
   assert.match(storico, /Chi ha votato/);
+  assert.match(storico, /Voti espressi per gruppo/);
+  assert.match(storico, /iniziative governative con fase Senato/);
+  assert.doesNotMatch(storico, /fuori dal perimetro a prima firma di un senatore/);
   assert.match(storico, /parseActHeadline/);
   assert.match(storico, /themeTimelineRail/);
   const europa = await read("src/app/politici/europa/page.tsx");
@@ -157,6 +166,19 @@ test("atlas: institutional graph scope restores the radial overview map", async 
   assert.match(overview, /export function buildOverviewGeometry/);
   assert.match(styles, /\.institutionalGraph/);
   assert.match(styles, /\.graphBoard/);
+});
+
+test("vote participation copy keeps official states distinct without inventing presence or absence", async () => {
+  const [themeVotes, storico, voteStates] = await Promise.all([
+    read("src/app/politici/atlas-theme-votes.tsx"),
+    read("src/app/politici/atlas-storico-voti.tsx"),
+    read("src/lib/politici-vote-states.ts"),
+  ]);
+  assert.doesNotMatch(themeVotes, /Presente in aula sul tema/);
+  assert.doesNotMatch(storico, /inclusi assenti/);
+  for (const label of ["Mancata partecipazione", "Presente senza voto", "Missione o congedo", "Dato non rilevato", "Fuori mandato"]) {
+    assert.match(themeVotes + storico + voteStates, new RegExp(label));
+  }
 });
 
 test("storico voti parses camera act headlines into lead and title", async () => {
@@ -178,11 +200,12 @@ test("storico voti parses camera act headlines into lead and title", async () =>
 
 
 test("atlas: attendance remains sourced data without ordinal ratings", () => {
-  assert.match(facts, /ranking\.rows\.toSorted/);
-  assert.match(facts, /a\.name\.localeCompare\(b\.name, "it"\)/);
-  assert.match(facts, /Ordine alfabetico/);
+  assert.doesNotMatch(facts + panel, /AttendanceRanking|Classifica presenze|cameraAttendanceRanking/);
+  assert.match(panel, /attendance=\{profile\.voteAttendance\}/);
+  assert.match(facts, /Partecipazione al voto/);
+  assert.doesNotMatch(facts, /<h3>Presenze in Aula<\/h3>/);
   assert.doesNotMatch(facts, /\{(?:row|attendance)\.rank(?:edAmong)?\}/);
-  for (const field of ["periodLabel", "observedDate", "sourceUrl", "rosterWithoutRow", "unmatchedRows"]) assert.ok(facts.includes(field), field);
+  for (const field of ["periodLabel", "observedDate", "sourceUrl", "votesCast", "missions", "absences"]) assert.ok(facts.includes(field), field);
 });
 
 test("atlas: the interactive-ready marker does not disable SSR or hide hydration errors", () => {

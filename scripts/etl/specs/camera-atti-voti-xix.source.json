@@ -1,6 +1,6 @@
 {
   "datasetId": "camera-atti-voti-xix",
-  "title": "Camera dei deputati — atti di iniziativa parlamentare, iter e votazioni finali per deputato (XIX legislatura)",
+  "title": "Camera dei deputati — atti di iniziativa parlamentare e governativa, iter e votazioni finali per deputato (XIX legislatura)",
   "landingUrl": "https://dati.camera.it/",
   "period": {
     "legislatures": "repubblica_19",
@@ -18,39 +18,39 @@
     "committedResponses": {
       "acts": {
         "pages": 1,
-        "rows": 4198,
-        "bytes": 2847678,
-        "sha256": "36eb3fadad881e785f462dbb43d648f850c339310d79936c51baea63e8464e4e"
+        "rows": 4217,
+        "bytes": 3199041,
+        "sha256": "9617d3626d56ca0a17864e2a340db5daf52044e383008d047ad7a6e4a89eaf57"
       },
       "coSigners": {
         "pages": 4,
         "rows": 19623,
-        "bytes": 3682600,
-        "sha256": "8d48f300bf8d0a659f879990fbd50dedb515dd5e4c38235a83a19827cb9864ab"
+        "bytes": 3682602,
+        "sha256": "67749160a75f9761321d7f83cdebd1d64343c8aab2b5a68ef37e12172e1dfa47"
       },
       "iterStates": {
         "pages": 2,
-        "rows": 9043,
-        "bytes": 2884215,
-        "sha256": "9423feaf3f7db20902b26cab892722100cf39defac0dc543abbfe6e4f366ab08"
+        "rows": 9061,
+        "bytes": 2889768,
+        "sha256": "3941de1c9253a8419bb57a88389f28c32da03326c2b1c8ba8d423e63f969de5c"
       },
       "finalVotes": {
         "pages": 1,
-        "rows": 318,
-        "bytes": 408724,
-        "sha256": "f89de68110ea10c51048ae9e6bc093ca0a8d3c9c47d2091fd837549d8c1aeb85"
+        "rows": 319,
+        "bytes": 410009,
+        "sha256": "4c7b2f25b22eba1b632be14b073a08cfbf0d950144907f351ab6edbd6f9abd32"
       },
       "nominalVotes": {
-        "count": 60,
-        "bytes": 3624025,
-        "rows": 23937,
-        "sha256": "381cf4bd81d2935b4501557f119d57765bcf158eea28da9b42790d93321617b3"
+        "count": 289,
+        "bytes": 17440072,
+        "rows": 115276,
+        "sha256": "a73f08ad9ab29e5622d6136a656fc5fc41e30ea4d9a2c84865fd398468ce35ee"
       }
     }
   },
   "coverageFloor": {
-    "acts": 2500,
-    "finalVotes": 50,
+    "acts": 2900,
+    "finalVotes": 280,
     "finalVotesObserved": 300,
     "deputiesAsFirstSigner": 300
   },
@@ -70,8 +70,10 @@
     }
   },
   "caveats": [
-    "Sono esclusi i disegni di legge a prima firma di un membro del Governo: il profilo riguarda l'iniziativa parlamentare e le cofirme di deputati su quegli atti non sono conteggiate.",
-    "Le votazioni finali su disegni di legge di iniziativa governativa non sono incluse: compaiono solo le finali sugli atti a prima firma di un deputato.",
+    "Negli atti di iniziativa governativa il proponente formale è il Governo: i membri del Governo presenti nella sorgente non sono attribuiti come autori individuali.",
+    "Il Governo responsabile deriva dalla relazione ufficiale esposta da dati.camera.it, resta distinto dal proponente formale e può essere esplicitamente non disponibile.",
+    "Una votazione finale riguarda l'atto nel suo complesso: non prova sostegno o opposizione a ogni singola misura contenuta nel testo.",
+    "Le votazioni con relazioni incomplete o conteggi nominali non riconciliati sono escluse dal corpus verificato e restano conteggiate nella copertura osservata.",
     "La firma di un atto non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
     "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati iter della Camera.",
     "I conteggi di firme, atti e voti non misurano produttività o merito dei deputati.",

@@ -51,7 +51,22 @@
         "sha256": "8d96dc4152fb114b50b294457b84a0091e4a306b912b085c8173a46dbf16672b"
       }
     },
-    "cadence": "aggiornamento quotidiano dichiarato dal portale"
+    "cadence": "aggiornamento quotidiano dichiarato dal portale",
+    "groupHistory": {
+      "endpointUrl": "https://dati.senato.it/sparql",
+      "observedDate": "2026-09-23",
+      "acquiredAt": "2026-09-23T05:08:45+00:00",
+      "responses": {
+        "memberships": {
+          "bytes": 89227,
+          "sha256": "519037b7021521ad0304547ebea5f993e4acaa69f93b2e4568a9f020a5e2d465"
+        },
+        "names": {
+          "bytes": 20606,
+          "sha256": "d0e6760ce287c6dbe6e8cdfcfbaaf7f58dd8310659b4603e846321d7d0c5a4f1"
+        }
+      }
+    }
   },
   "caveats": [
     "Copre i senatori in carica alla data osservata, inclusi i senatori a vita; gli ex senatori della XIX legislatura non occupano seggi nell'emiciclo.",
@@ -5336,6 +5351,1836 @@
       "birthDate": "1959-08-20",
       "birthPlace": "CASSANO DELLE MURGE, Bari",
       "biography": "Senatore della XIX legislatura. Gruppo Fratelli d'Italia. Eletto in Puglia. Nato a CASSANO DELLE MURGE, Bari il 20 agosto 1959. Professione dichiarata: Medico chirurgo."
+    }
+  ],
+  "groupMemberships": [
+    {
+      "senatorId": "1103",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-21"
+    },
+    {
+      "senatorId": "1103",
+      "groupId": "g56",
+      "startDate": "2023-11-21",
+      "endDate": "2026-03-25"
+    },
+    {
+      "senatorId": "1103",
+      "groupId": "g56",
+      "startDate": "2026-03-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "1116",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-07"
+    },
+    {
+      "senatorId": "1116",
+      "groupId": "g33",
+      "startDate": "2022-11-08",
+      "endDate": null
+    },
+    {
+      "senatorId": "1116",
+      "groupId": "g33",
+      "startDate": "2025-02-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "1227",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "1275",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "1407",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "1407",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "1558",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "1579",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2023-01-18"
+    },
+    {
+      "senatorId": "1672",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": "2023-09-22"
+    },
+    {
+      "senatorId": "17542",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "17811",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "17924",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "18055",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "18121",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "18562",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "22263",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "227",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2023-06-12"
+    },
+    {
+      "senatorId": "22707",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2023-04-28"
+    },
+    {
+      "senatorId": "22814",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-28"
+    },
+    {
+      "senatorId": "22814",
+      "groupId": "g92",
+      "startDate": "2023-03-29",
+      "endDate": null
+    },
+    {
+      "senatorId": "22871",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-28"
+    },
+    {
+      "senatorId": "22871",
+      "groupId": "g92",
+      "startDate": "2023-03-29",
+      "endDate": null
+    },
+    {
+      "senatorId": "22877",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "22910",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "22914",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2026-03-25"
+    },
+    {
+      "senatorId": "22914",
+      "groupId": "g56",
+      "startDate": "2026-03-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "22918",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "22963",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "22966",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-18"
+    },
+    {
+      "senatorId": "22966",
+      "groupId": "g91",
+      "startDate": "2022-10-19",
+      "endDate": "2023-11-08"
+    },
+    {
+      "senatorId": "22966",
+      "groupId": "g9",
+      "startDate": "2023-11-09",
+      "endDate": "2024-10-29"
+    },
+    {
+      "senatorId": "22966",
+      "groupId": "g92",
+      "startDate": "2024-10-30",
+      "endDate": null
+    },
+    {
+      "senatorId": "23011",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "23011",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": "2023-06-05"
+    },
+    {
+      "senatorId": "23011",
+      "groupId": "g49",
+      "startDate": "2023-06-06",
+      "endDate": null
+    },
+    {
+      "senatorId": "24016",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "24016",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "2444",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25377",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25402",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25407",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25411",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25429",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-07"
+    },
+    {
+      "senatorId": "25429",
+      "groupId": "g92",
+      "startDate": "2022-11-08",
+      "endDate": null
+    },
+    {
+      "senatorId": "25446",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "25474",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "25474",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "25555",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-27"
+    },
+    {
+      "senatorId": "25555",
+      "groupId": "g49",
+      "startDate": "2023-03-28",
+      "endDate": null
+    },
+    {
+      "senatorId": "25558",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "27622",
+      "groupId": "g49",
+      "startDate": "2023-03-21",
+      "endDate": null
+    },
+    {
+      "senatorId": "28306",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "28543",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "28550",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "28670",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "28924",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29040",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-03"
+    },
+    {
+      "senatorId": "29067",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29105",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29132",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29138",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "29138",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "29185",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29270",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "29270",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "29273",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-06-05"
+    },
+    {
+      "senatorId": "29273",
+      "groupId": "g49",
+      "startDate": "2023-06-06",
+      "endDate": null
+    },
+    {
+      "senatorId": "29291",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29292",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": "2025-02-24"
+    },
+    {
+      "senatorId": "29292",
+      "groupId": "g33",
+      "startDate": "2025-02-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "29293",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-04-25"
+    },
+    {
+      "senatorId": "29293",
+      "groupId": "g91",
+      "startDate": "2023-04-26",
+      "endDate": "2023-07-19"
+    },
+    {
+      "senatorId": "29293",
+      "groupId": "g91",
+      "startDate": "2023-07-20",
+      "endDate": "2025-03-03"
+    },
+    {
+      "senatorId": "29293",
+      "groupId": "g91",
+      "startDate": "2025-03-04",
+      "endDate": null
+    },
+    {
+      "senatorId": "29406",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-18"
+    },
+    {
+      "senatorId": "29406",
+      "groupId": "g91",
+      "startDate": "2022-10-19",
+      "endDate": null
+    },
+    {
+      "senatorId": "29425",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29447",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29467",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-27"
+    },
+    {
+      "senatorId": "29467",
+      "groupId": "g49",
+      "startDate": "2023-03-28",
+      "endDate": null
+    },
+    {
+      "senatorId": "29480",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29490",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29521",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "29573",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-18"
+    },
+    {
+      "senatorId": "29573",
+      "groupId": "g91",
+      "startDate": "2022-10-19",
+      "endDate": null
+    },
+    {
+      "senatorId": "29604",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "30110",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-08"
+    },
+    {
+      "senatorId": "30110",
+      "groupId": "g9",
+      "startDate": "2023-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "30294",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "30510",
+      "groupId": "g69",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "30511",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "30512",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "30742",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "30915",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "31010",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "31725",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2025-03-06"
+    },
+    {
+      "senatorId": "31725",
+      "groupId": "g91",
+      "startDate": "2025-03-07",
+      "endDate": "2025-06-03"
+    },
+    {
+      "senatorId": "31725",
+      "groupId": "g91",
+      "startDate": "2025-06-04",
+      "endDate": null
+    },
+    {
+      "senatorId": "31875",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "31875",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "32",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32435",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32578",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "32578",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": "2023-06-05"
+    },
+    {
+      "senatorId": "32578",
+      "groupId": "g49",
+      "startDate": "2023-06-06",
+      "endDate": null
+    },
+    {
+      "senatorId": "32583",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-07"
+    },
+    {
+      "senatorId": "32583",
+      "groupId": "g56",
+      "startDate": "2022-11-08",
+      "endDate": null
+    },
+    {
+      "senatorId": "32586",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32590",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32598",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32600",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32601",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2024-12-31"
+    },
+    {
+      "senatorId": "32603",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "32603",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "32608",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32619",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "32619",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "32624",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32628",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32634",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2023-04-17"
+    },
+    {
+      "senatorId": "32634",
+      "groupId": "g71",
+      "startDate": "2023-04-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32637",
+      "groupId": "g56",
+      "startDate": "2023-11-02",
+      "endDate": null
+    },
+    {
+      "senatorId": "32640",
+      "groupId": "g71",
+      "startDate": "2025-01-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "32644",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32645",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32650",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32653",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32655",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32658",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "32658",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "32660",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32673",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32677",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32681",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2023-04-17"
+    },
+    {
+      "senatorId": "32681",
+      "groupId": "g71",
+      "startDate": "2023-04-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "32681",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "32691",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "32691",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "32697",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32699",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "32699",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "32703",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32706",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32707",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-21"
+    },
+    {
+      "senatorId": "32707",
+      "groupId": "g56",
+      "startDate": "2023-11-21",
+      "endDate": null
+    },
+    {
+      "senatorId": "32721",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32726",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32727",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32732",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32747",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32779",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2023-12-12"
+    },
+    {
+      "senatorId": "32779",
+      "groupId": "g56",
+      "startDate": "2023-12-13",
+      "endDate": "2026-03-30"
+    },
+    {
+      "senatorId": "32779",
+      "groupId": "g56",
+      "startDate": "2026-03-31",
+      "endDate": null
+    },
+    {
+      "senatorId": "32851",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32856",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32862",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32898",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "32988",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33005",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2023-07-19"
+    },
+    {
+      "senatorId": "33005",
+      "groupId": "g91",
+      "startDate": "2023-07-20",
+      "endDate": "2025-03-03"
+    },
+    {
+      "senatorId": "33005",
+      "groupId": "g91",
+      "startDate": "2025-03-04",
+      "endDate": null
+    },
+    {
+      "senatorId": "33022",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33027",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2023-11-08"
+    },
+    {
+      "senatorId": "33027",
+      "groupId": "g9",
+      "startDate": "2023-11-09",
+      "endDate": "2024-11-26"
+    },
+    {
+      "senatorId": "33027",
+      "groupId": "g92",
+      "startDate": "2024-11-27",
+      "endDate": null
+    },
+    {
+      "senatorId": "33038",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33065",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33070",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33096",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33110",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33137",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "33863",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2024-05-07"
+    },
+    {
+      "senatorId": "33863",
+      "groupId": "g85",
+      "startDate": "2024-05-08",
+      "endDate": null
+    },
+    {
+      "senatorId": "33946",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "34243",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "34485",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "34558",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "35489",
+      "groupId": "g85",
+      "startDate": "2023-05-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "36013",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": "2026-06-29"
+    },
+    {
+      "senatorId": "36013",
+      "groupId": "g33",
+      "startDate": "2026-06-30",
+      "endDate": null
+    },
+    {
+      "senatorId": "36381",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36382",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36383",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36384",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36385",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36385",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36386",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-07"
+    },
+    {
+      "senatorId": "36386",
+      "groupId": "g33",
+      "startDate": "2022-11-08",
+      "endDate": "2026-06-29"
+    },
+    {
+      "senatorId": "36386",
+      "groupId": "g33",
+      "startDate": "2026-06-30",
+      "endDate": null
+    },
+    {
+      "senatorId": "36387",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36388",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36389",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-05-31"
+    },
+    {
+      "senatorId": "36390",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36391",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36391",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36392",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36393",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36394",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2024-02-08"
+    },
+    {
+      "senatorId": "36394",
+      "groupId": "g56",
+      "startDate": "2024-02-21",
+      "endDate": null
+    },
+    {
+      "senatorId": "36395",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36396",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36397",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36398",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36399",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": "2025-02-18"
+    },
+    {
+      "senatorId": "36399",
+      "groupId": "g69",
+      "startDate": "2025-02-19",
+      "endDate": null
+    },
+    {
+      "senatorId": "36400",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36401",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-24"
+    },
+    {
+      "senatorId": "36401",
+      "groupId": "g49",
+      "startDate": "2022-10-25",
+      "endDate": null
+    },
+    {
+      "senatorId": "36402",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36403",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36404",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36404",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36405",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36406",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36407",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36408",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36409",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": "2023-10-04"
+    },
+    {
+      "senatorId": "36409",
+      "groupId": "g91",
+      "startDate": "2023-10-05",
+      "endDate": "2025-06-03"
+    },
+    {
+      "senatorId": "36409",
+      "groupId": "g91",
+      "startDate": "2025-06-04",
+      "endDate": null
+    },
+    {
+      "senatorId": "36410",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36410",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36411",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-06-05"
+    },
+    {
+      "senatorId": "36411",
+      "groupId": "g49",
+      "startDate": "2023-06-06",
+      "endDate": null
+    },
+    {
+      "senatorId": "36412",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36413",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36414",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36415",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36416",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36417",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36417",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36418",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36419",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36420",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36421",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36422",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "36422",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "36423",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36424",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36425",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36426",
+      "groupId": "g69",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36427",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36428",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "36428",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "36429",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": "2023-06-05"
+    },
+    {
+      "senatorId": "36429",
+      "groupId": "g49",
+      "startDate": "2023-06-06",
+      "endDate": null
+    },
+    {
+      "senatorId": "36430",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-08"
+    },
+    {
+      "senatorId": "36430",
+      "groupId": "g85",
+      "startDate": "2022-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "36431",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36432",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36433",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36434",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2026-02-25"
+    },
+    {
+      "senatorId": "36434",
+      "groupId": "g71",
+      "startDate": "2026-02-26",
+      "endDate": null
+    },
+    {
+      "senatorId": "36435",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36436",
+      "groupId": "g91",
+      "startDate": "2022-10-18",
+      "endDate": "2022-10-18"
+    },
+    {
+      "senatorId": "36436",
+      "groupId": "g91",
+      "startDate": "2022-10-19",
+      "endDate": "2023-11-08"
+    },
+    {
+      "senatorId": "36436",
+      "groupId": "g9",
+      "startDate": "2023-11-09",
+      "endDate": null
+    },
+    {
+      "senatorId": "36437",
+      "groupId": "g9",
+      "startDate": "2022-10-18",
+      "endDate": "2023-03-15"
+    },
+    {
+      "senatorId": "36437",
+      "groupId": "g9",
+      "startDate": "2023-03-16",
+      "endDate": null
+    },
+    {
+      "senatorId": "36438",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36439",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36440",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36441",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36442",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36443",
+      "groupId": "g92",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36444",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36445",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36446",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36447",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36448",
+      "groupId": "g71",
+      "startDate": "2022-10-18",
+      "endDate": "2024-08-06"
+    },
+    {
+      "senatorId": "36448",
+      "groupId": "g56",
+      "startDate": "2024-08-07",
+      "endDate": null
+    },
+    {
+      "senatorId": "36449",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "36450",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "37415",
+      "groupId": "g56",
+      "startDate": "2023-01-18",
+      "endDate": "2026-03-30"
+    },
+    {
+      "senatorId": "37415",
+      "groupId": "g56",
+      "startDate": "2026-03-31",
+      "endDate": null
+    },
+    {
+      "senatorId": "37739",
+      "groupId": "g49",
+      "startDate": "2023-05-31",
+      "endDate": null
+    },
+    {
+      "senatorId": "3900",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "407",
+      "groupId": "g85",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "4192",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "422",
+      "groupId": "g33",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "4512",
+      "groupId": "g56",
+      "startDate": "2022-10-18",
+      "endDate": "2022-11-07"
+    },
+    {
+      "senatorId": "4512",
+      "groupId": "g56",
+      "startDate": "2022-11-08",
+      "endDate": "2026-03-30"
+    },
+    {
+      "senatorId": "4512",
+      "groupId": "g56",
+      "startDate": "2026-03-31",
+      "endDate": null
+    },
+    {
+      "senatorId": "520",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    },
+    {
+      "senatorId": "5799",
+      "groupId": "g49",
+      "startDate": "2022-10-18",
+      "endDate": null
+    }
+  ],
+  "groupNames": [
+    {
+      "groupId": "g33",
+      "label": "Lega Salvini Premier - Partito Sardo d'Azione",
+      "shortLabel": "LSP-PSd'Az",
+      "startDate": "2022-10-13",
+      "endDate": null
+    },
+    {
+      "groupId": "g49",
+      "label": "Partito Democratico - Italia Democratica e Progressista",
+      "shortLabel": "PD-IDP",
+      "startDate": "2022-10-13",
+      "endDate": null
+    },
+    {
+      "groupId": "g56",
+      "label": "Forza Italia Berlusconi Presidente",
+      "shortLabel": "FIBP",
+      "startDate": "2022-10-13",
+      "endDate": "2022-10-18"
+    },
+    {
+      "groupId": "g56",
+      "label": "Forza Italia - Berlusconi Presidente - PPE",
+      "shortLabel": "FI-BP-PPE",
+      "startDate": "2022-10-19",
+      "endDate": null
+    },
+    {
+      "groupId": "g69",
+      "label": "Per le Autonomie (SVP-Patt, Campobase, Sud Chiama Nord)",
+      "shortLabel": "Aut (SVP-Patt, Cb, SCN)",
+      "startDate": "2022-10-13",
+      "endDate": "2023-11-06"
+    },
+    {
+      "groupId": "g69",
+      "label": "Per le Autonomie (SVP-PATT, Campobase)",
+      "shortLabel": "Aut (SVP-PATT, Cb)",
+      "startDate": "2023-11-07",
+      "endDate": null
+    },
+    {
+      "groupId": "g71",
+      "label": "MoVimento 5 Stelle",
+      "shortLabel": "M5S",
+      "startDate": "2018-03-23",
+      "endDate": null
+    },
+    {
+      "groupId": "g85",
+      "label": "Fratelli d'Italia",
+      "shortLabel": "FdI",
+      "startDate": "2018-03-23",
+      "endDate": null
+    },
+    {
+      "groupId": "g9",
+      "label": "Misto",
+      "shortLabel": "Misto",
+      "startDate": "1946-06-25",
+      "endDate": null
+    },
+    {
+      "groupId": "g91",
+      "label": "Azione-ItaliaViva-RenewEurope",
+      "shortLabel": "Az-IV-RE",
+      "startDate": "2022-10-13",
+      "endDate": "2023-11-08"
+    },
+    {
+      "groupId": "g91",
+      "label": "Italia Viva - Il Centro - Renew Europe",
+      "shortLabel": "IV-C-RE",
+      "startDate": "2023-11-09",
+      "endDate": "2026-06-14"
+    },
+    {
+      "groupId": "g91",
+      "label": "Italia Viva - Casa Riformista",
+      "shortLabel": "IV-CR",
+      "startDate": "2026-06-15",
+      "endDate": null
+    },
+    {
+      "groupId": "g92",
+      "label": "Civici d'Italia - Noi Moderati (UDC - Coraggio Italia - Noi con l'Italia - Italia al Centro) - MAIE",
+      "shortLabel": "Cd'I-NM (UDC-CI-NcI-IaC)-MAIE",
+      "startDate": "2022-10-13",
+      "endDate": "2024-10-29"
+    },
+    {
+      "groupId": "g92",
+      "label": "Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare",
+      "shortLabel": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+      "startDate": "2024-10-30",
+      "endDate": null
     }
   ]
 }

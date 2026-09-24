@@ -31,13 +31,13 @@ export type AtlasState = {
 export type SearchHit = { key: string; label: string; detail: string; selection: GraphSelection; };
 
 export const SCOPES: ReadonlyArray<{ id: AtlasScope; label: string; }> = [
+  { id: "storico-voti", label: "Storico voti" },
   { id: "camera", label: "Camera" },
   { id: "senato", label: "Senato" },
   { id: "governo", label: "Governo" },
   { id: "repubblica", label: "Repubblica" },
   { id: "grafo", label: "Grafo" },
   { id: "condanne", label: "Condanne" },
-  { id: "storico-voti", label: "Storico voti" },
 ];
 export const ROLES: ReadonlyArray<{ id: RoleFilter; label: string; }> = [
   { id: "tutti", label: "Tutti gli incarichi" },
@@ -85,6 +85,10 @@ export function initialsOf(name: string): string {
     .map((word) => Array.from(word ?? "")[0] ?? "").join("").toLocaleUpperCase("it-IT");
 }
 
+export function countLabel(value: number, singular: string, plural: string): string {
+  return `${value} ${value === 1 ? singular : plural}`;
+}
+
 export function longDate(value: string | null | undefined): string {
   if (!value) return "Data non disponibile";
   const match = /^(\d{4})-(\d{2})-(\d{2})(?:T|$)/u.exec(value);
@@ -128,6 +132,7 @@ export function scopeForSelection(selection: GraphSelection, map: RepublicMap, c
     return "repubblica";
   }
   if (selection.kind === "group") {
+    if (current === "storico-voti") return "storico-voti";
     return map.groups.find((group) => group.id === selection.id)?.chamberId ?? current;
   }
   const person = map.people.find((candidate) => candidate.id === selection.id);

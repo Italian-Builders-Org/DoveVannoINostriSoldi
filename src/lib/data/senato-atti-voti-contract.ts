@@ -14,7 +14,7 @@ const phaseSchema = z
   .object({
     ddlUri: z.string().url(),
     idFase: numericId,
-    fase: z.string().regex(/^[SC]\.\d+(?:-\d+)*(?:-B)?$/u),
+    fase: z.string().regex(/^[SC]\.\d+(?:[-/][0-9A-Za-z]+)*$/u),
     ramo: z.enum(["S", "C"]),
     progressivo: z.number().int().nonnegative(),
     kind: z.enum(["presentato", "trasmesso"]),
@@ -30,14 +30,20 @@ const actSchema = z
   .object({
     id: actId,
     idDdl: numericId,
-    number: z.string().regex(/^S\.\d+$/u),
-    natureId: z.enum(["ordinaria", "costituzionale"]),
+    number: z.string().regex(/^S\.\d+(?:[-/][0-9A-Za-z]+)*$/u),
+    natureId: z.enum([
+      "ordinaria", "costituzionale", "di conversione di decreto-legge",
+      "di approvazione di bilancio",
+    ]),
     title: z.string().min(1).nullable(),
     presentedDate: isoDate,
     phases: z.array(phaseSchema).min(1),
     currentPhase: phaseSchema,
     outcomeClass: z.string().min(1),
-    firstSignerId: numericId,
+    initiativeKind: z.enum(["parliamentary", "government"]),
+    formalProposers: z.array(z.string().min(1)),
+    governmentLabels: z.array(z.string().min(1)),
+    firstSignerId: numericId.nullable(),
     coSignerIds: z.array(numericId),
     finalVoteIds: z.array(voteId),
     officialPage: z.string().url(),
@@ -121,12 +127,14 @@ export const senatoAttiVotiSnapshotSchema = z
           .object({
             phases: pagedResponseSchema,
             signers: pagedResponseSchema,
+            governmentInitiatives: pagedResponseSchema,
             finalVotes: pagedResponseSchema,
             disegniXix: pagedResponseSchema,
             sessions: pagedResponseSchema,
             nominalVotes: z
               .object({
                 count: z.number().int().positive(),
+                batches: z.number().int().positive(),
                 rows: z.number().int().positive(),
                 bytes: z.number().int().positive(),
                 sha256,
@@ -152,11 +160,15 @@ export const senatoAttiVotiSnapshotSchema = z
       .object({
         acts: z.number().int().positive(),
         actsByNature: z.record(z.string(), z.number().int().positive()),
+        actsByInitiative: z.record(z.string(), z.number().int().positive()),
         phases: z.number().int().positive(),
         actsWithMultiplePhases: z.number().int().nonnegative(),
         signatures: z.number().int().nonnegative(),
-        actsExcludedNonSenatorFirstSigner: z.number().int().nonnegative(),
+        actsObservedWithInitiative: z.number().int().positive(),
+        actsExcludedOtherInitiative: z.number().int().nonnegative(),
+        actsExcludedNoEligibleSenatePhase: z.number().int().nonnegative(),
         finalVotes: z.number().int().nonnegative(),
+        finalVotesOnGovernmentActs: z.number().int().nonnegative(),
         finalVotesOnOtherActs: z.number().int().nonnegative(),
         nominalVotes: z.number().int().nonnegative(),
         secretFinalVotes: z.number().int().nonnegative(),
@@ -177,6 +189,17 @@ export const senatoAttiVotiSnapshotSchema = z
     if (value.coverage.finalVotes !== value.finalVotes.length) {
       ctx.addIssue({ code: "custom", message: "coverage.finalVotes", path: ["coverage", "finalVotes"] });
     }
+    if (value.coverage.actsObservedWithInitiative !== value.acts.length
+      + value.coverage.actsExcludedOtherInitiative
+      + value.coverage.actsExcludedNoEligibleSenatePhase) {
+      ctx.addIssue({ code: "custom", message: "coverage.actsObservedWithInitiative", path: ["coverage"] });
+    }
+    for (const kind of ["parliamentary", "government"] as const) {
+      if ((value.coverage.actsByInitiative[kind] ?? 0)
+        !== value.acts.filter((act) => act.initiativeKind === kind).length) {
+        ctx.addIssue({ code: "custom", message: "coverage.actsByInitiative", path: ["coverage"] });
+      }
+    }
     if (
       value.coverage.phases !==
       value.acts.reduce((sum, act) => sum + act.phases.length, 0)
@@ -184,6 +207,9 @@ export const senatoAttiVotiSnapshotSchema = z
       ctx.addIssue({ code: "custom", message: "coverage.phases", path: ["coverage", "phases"] });
     }
     const voteIds = new Set(value.finalVotes.map((vote) => vote.id));
+    if (voteIds.size !== value.finalVotes.length) {
+      ctx.addIssue({ code: "custom", message: "votazione duplicata", path: ["finalVotes"] });
+    }
     const actIds = new Set<string>();
     for (const [index, act] of value.acts.entries()) {
       if (actIds.has(act.id)) {
@@ -199,7 +225,7 @@ export const senatoAttiVotiSnapshotSchema = z
         ctx.addIssue({ code: "custom", message: "phases non ordinate", path: ["acts", index, "phases"] });
       }
       const lowest = progressivi[0];
-      if (
+      if (act.initiativeKind === "parliamentary" &&
         !act.phases.some(
           (phase) => phase.progressivo === lowest && phase.kind === "presentato" && phase.ramo === "S",
         )
@@ -210,7 +236,23 @@ export const senatoAttiVotiSnapshotSchema = z
           path: ["acts", index, "phases"],
         });
       }
-      const presented = act.phases.find((phase) => phase.kind === "presentato" && phase.ramo === "S");
+      if (act.initiativeKind === "government"
+        ? act.firstSignerId !== null || act.coSignerIds.length > 0
+          || act.formalProposers.length === 0 || act.governmentLabels.length === 0
+        : act.firstSignerId === null || act.formalProposers.length > 0 || act.governmentLabels.length > 0) {
+        ctx.addIssue({ code: "custom", message: "attribuzione iniziativa incoerente", path: ["acts", index] });
+      }
+      if (act.initiativeKind === "government") {
+        const labels = act.formalProposers.map((presenter) => {
+          const match = /\(Gov\. ([^)]+)\)$/u.exec(presenter);
+          return match ? `Governo ${match[1]}` : null;
+        });
+        if (labels.includes(null) || JSON.stringify(act.governmentLabels)
+          !== JSON.stringify([...new Set(labels.filter((label): label is string => label !== null))].sort())) {
+          ctx.addIssue({ code: "custom", message: "Governo non riconciliato con i presentatori", path: ["acts", index, "governmentLabels"] });
+        }
+      }
+      const presented = act.phases.find((phase) => phase.ramo === "S");
       if (
         presented
         && act.officialPage
@@ -218,7 +260,7 @@ export const senatoAttiVotiSnapshotSchema = z
       ) {
         ctx.addIssue({
           code: "custom",
-          message: "officialPage non punta alla scheda did=idFase presentata",
+          message: "officialPage non punta alla prima fase Senato",
           path: ["acts", index, "officialPage"],
         });
       }
@@ -238,7 +280,8 @@ export const senatoAttiVotiSnapshotSchema = z
         });
       }
       const coSigners = new Set(act.coSignerIds);
-      if (coSigners.size !== act.coSignerIds.length || coSigners.has(act.firstSignerId)) {
+      if (coSigners.size !== act.coSignerIds.length
+        || (act.firstSignerId !== null && coSigners.has(act.firstSignerId))) {
         ctx.addIssue({
           code: "custom",
           message: "coSignerIds incoerenti",
@@ -301,6 +344,11 @@ export const senatoAttiVotiSnapshotSchema = z
       }
     }
     const referencedVoteIds = new Set(value.acts.flatMap((act) => act.finalVoteIds));
+    const governmentVoteIds = new Set(value.acts.filter((act) => act.initiativeKind === "government")
+      .flatMap((act) => act.finalVoteIds));
+    if (value.coverage.finalVotesOnGovernmentActs !== governmentVoteIds.size) {
+      ctx.addIssue({ code: "custom", message: "coverage.finalVotesOnGovernmentActs", path: ["coverage"] });
+    }
     for (const [index, vote] of value.finalVotes.entries()) {
       if (!referencedVoteIds.has(vote.id)) {
         ctx.addIssue({ code: "custom", message: "votazione non referenziata da alcun atto", path: ["finalVotes", index, "id"] });

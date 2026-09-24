@@ -52,6 +52,13 @@ const deputySchema = z.object({
   biography: z.string().min(1),
 });
 
+const groupMembershipSchema = z.object({
+  deputyId: z.string().regex(/^d\d+_19$/u),
+  groupId: z.string().min(1),
+  startDate: isoDate,
+  endDate: isoDate.nullable(),
+});
+
 const groupSchema = z.object({
   id: z.string().min(1),
   uri: z.string().url(),
@@ -82,7 +89,7 @@ const organSchema = z.object({
 
 export const politiciCameraSnapshotSchema = z
   .object({
-    schemaVersion: z.literal(2),
+    schemaVersion: z.literal(3),
     chamber: z.literal("camera"),
     legislature: z.object({
       id: z.string().min(1),
@@ -93,6 +100,7 @@ export const politiciCameraSnapshotSchema = z
     coverage: z.object({
       deputies: z.number().int().positive(),
       groups: z.number().int().positive(),
+      groupMemberships: z.number().int().positive(),
       deputiesWithGroup: z.number().int().nonnegative(),
       deputiesWithoutGroup: z.literal(0),
       seatCapacity: z.literal(400),
@@ -116,8 +124,10 @@ export const politiciCameraSnapshotSchema = z
       licenseUrl: z.string().url(),
       legislatureUri: z.string().url(),
       acquiredAt: isoDateTime,
+      groupMembershipsAcquiredAt: isoDateTime,
       responses: z.object({
         roster: responseSchema,
+        groupMemberships: responseSchema,
         groupRoles: responseSchema,
         organs: responseSchema,
         profiles: responseSchema,
@@ -126,6 +136,7 @@ export const politiciCameraSnapshotSchema = z
     }),
     caveats: z.array(z.string().min(1)).min(1),
     groups: z.array(groupSchema).min(1),
+    groupMemberships: z.array(groupMembershipSchema).min(1),
     organs: z.array(organSchema).min(1),
     deputies: z.array(deputySchema).min(1),
   })
@@ -136,12 +147,37 @@ export const politiciCameraSnapshotSchema = z
     if (value.coverage.groups !== value.groups.length) {
       ctx.addIssue({ code: "custom", message: "coverage.groups non coincide con groups.length", path: ["coverage", "groups"] });
     }
+    if (value.coverage.groupMemberships !== value.groupMemberships.length) {
+      ctx.addIssue({ code: "custom", message: "coverage.groupMemberships non coincide con groupMemberships.length", path: ["coverage", "groupMemberships"] });
+    }
     if (value.coverage.deputies + value.coverage.vacantSeats !== value.coverage.seatCapacity) {
       ctx.addIssue({ code: "custom", message: "seggi e vacanze non riconciliano", path: ["coverage", "vacantSeats"] });
     }
     const groupIds = new Set(value.groups.map((group) => group.id));
     const organIds = new Set(value.organs.map((organ) => organ.id));
     const ids = new Set<string>();
+    const membershipsByDeputy = new Map<string, typeof value.groupMemberships>();
+    value.groupMemberships.forEach((membership, index) => {
+      if (!groupIds.has(membership.groupId)) {
+        ctx.addIssue({ code: "custom", message: "adesione a gruppo sconosciuto", path: ["groupMemberships", index, "groupId"] });
+      }
+      if (membership.endDate !== null && membership.startDate >= membership.endDate) {
+        ctx.addIssue({ code: "custom", message: "intervallo gruppo non crescente", path: ["groupMemberships", index] });
+      }
+      const memberships = membershipsByDeputy.get(membership.deputyId) ?? [];
+      memberships.push(membership);
+      membershipsByDeputy.set(membership.deputyId, memberships);
+    });
+    for (const [deputyId, memberships] of membershipsByDeputy) {
+      memberships.sort((left, right) => left.startDate.localeCompare(right.startDate));
+      for (let index = 1; index < memberships.length; index += 1) {
+        const previous = memberships[index - 1]!;
+        const current = memberships[index]!;
+        if (previous.endDate === null || previous.endDate > current.startDate) {
+          ctx.addIssue({ code: "custom", message: "intervalli gruppo sovrapposti", path: ["groupMemberships", deputyId] });
+        }
+      }
+    }
     let presidents = 0;
     const membersByGroup = new Map<string, number>();
     value.deputies.forEach((deputy, index) => {
@@ -153,6 +189,11 @@ export const politiciCameraSnapshotSchema = z
         ctx.addIssue({ code: "custom", message: "gruppo sconosciuto", path: ["deputies", index, "groupId"] });
       } else {
         membersByGroup.set(deputy.groupId, (membersByGroup.get(deputy.groupId) ?? 0) + 1);
+      }
+      const openMemberships = (membershipsByDeputy.get(deputy.id) ?? [])
+        .filter((membership) => membership.endDate === null);
+      if (openMemberships.length !== 1 || openMemberships[0]?.groupId !== deputy.groupId) {
+        ctx.addIssue({ code: "custom", message: "gruppo corrente non riconcilia con lo storico", path: ["deputies", index, "groupId"] });
       }
       for (const organId of deputy.organIds) {
         if (!organIds.has(organId)) {
@@ -176,6 +217,7 @@ export const politiciCameraSnapshotSchema = z
 export type PoliticiCameraSnapshot = z.infer<typeof politiciCameraSnapshotSchema>;
 export type CameraDeputy = PoliticiCameraSnapshot["deputies"][number];
 export type CameraGroup = PoliticiCameraSnapshot["groups"][number];
+export type CameraGroupMembership = PoliticiCameraSnapshot["groupMemberships"][number];
 
 export function parsePoliticiCameraSnapshot(input: unknown): PoliticiCameraSnapshot {
   return politiciCameraSnapshotSchema.parse(input);

@@ -34,7 +34,6 @@ export function createShareFactCardImageResponse(fact: ShareFactCardParsed): Ima
       flexDirection: "column",
       background: COLORS.bg,
       color: COLORS.text,
-      fontFamily: "ui-sans-serif, system-ui, sans-serif",
     },
     box({ height: 18, width: "100%", background: COLORS.accent }),
     box(

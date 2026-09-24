@@ -6187,7 +6187,7 @@
       "caveats": [
         "Beni per ente, titolo, stato d'uso, tipologia e comune in cui si trova il bene, che può essere diverso dal Comune dell'ente (per esempio un Comune proprietario di alloggi in altri Comuni). Un bene può comparire più volte se l'ente lo dichiara con titoli diversi (per esempio proprietà per l'area e proprietà superficiaria); una riga del censimento è ripetuta identica e resta conteggiata come nella fonte.",
         "Il titolo distingue i beni posseduti (proprietà e altri diritti reali) da quelli detenuti da terzi (locazione, uso gratuito, gestione per conto di altri enti): non vanno sommati come patrimonio dell'ente. Gli enti ERP dichiarano anche alloggi gestiti per conto dei Comuni.",
-        "Lo stato d'uso è dichiarato dall'ente: «Non utilizzato» non dice se il bene sia agibile, affittabile o occupato; «Inutilizzabile» e «In ristrutturazione/manutenzione» sono voci distinte; «Non indicato» è una cella vuota nella fonte. Nessuna valutazione di spreco o di efficienza deriva da questi conteggi.",
+        "Lo stato d'uso è dichiarato dall'ente: «Non utilizzato» non dice se il bene sia agibile, affittabile o occupato; «Inutilizzabile» e «In ristrutturazione/manutenzione» sono voci distinte; «Non indicato» è una cella vuota nella fonte: nella maggior parte dei casi il bene è dato interamente a terzi, come indica la colonna «Dato a terzi», ricavata dai due flag della fonte sulla cessione intera o parziale. Nessuna valutazione di spreco o di efficienza deriva da questi conteggi.",
         "La superficie di riferimento è sommata solo sui beni che la dichiarano maggiore di zero; terreni e fabbricati hanno superfici non confrontabili e non vanno sommati tra tipologie.",
         "Censimento annuale degli immobili pubblici del MEF (art. 2, c. 222, L. 191/2009), rilascio 2023 pubblicato il 5 maggio 2026. Perimetro: Comuni ed enti territoriali per l'edilizia residenziale pubblica; le altre amministrazioni non sono incluse.",
         "Aggregazione DVNS per ente dichiarante (codice fiscale) dalle righe ufficiali, senza correzioni: ogni conteggio e somma si riconcilia con i 42 archivi del lock. Il censimento include anche enti che non hanno inviato la comunicazione 2023: per loro restano a sistema i dati di comunicazioni precedenti, di anno non dichiarato dalla fonte, che non vanno letti come situazione al 31/12/2023. Il file di adempimento MEF, non incluso in questo dataset, distingue i due casi. Gli enti senza alcuna comunicazione non compaiono: un'assenza non è uno zero.",
@@ -6195,15 +6195,16 @@
         "Fonte MEF, CC BY 4.0; proiezione DVNS aggregata con trasformazione dichiarata."
       ],
       "expected": {
-        "bytes": 45843648,
-        "sha256": "a9879254db2afd28d9694f5cf1107c1df7a84de1f9ff5c01678707b8b3645786",
-        "rows": 136503,
-        "columns": 18,
+        "bytes": 47842799,
+        "sha256": "0cfb5025c0e72d54eeabb28e06304bb80b5554905bcffbe42437b05b4cd579b7",
+        "rows": 140712,
+        "columns": 19,
         "headers": [
           "Codice fiscale ente",
           "Ente",
           "Titolo",
           "Utilizzo del bene",
+          "Dato a terzi",
           "Tipologia bene",
           "Beni",
           "Beni con superficie",

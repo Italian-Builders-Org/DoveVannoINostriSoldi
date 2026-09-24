@@ -58,6 +58,7 @@ TRAILER_HEADERS = ["Anno", "URL fonte"]
 BENI_HEADERS = ENTITY_ID_HEADERS + [
     "Titolo",
     "Utilizzo del bene",
+    "Dato a terzi",
     "Tipologia bene",
     "Beni",
     "Beni con superficie",
@@ -88,6 +89,18 @@ SOURCE_ENTITY_FIELDS = [
     "Comune (Amministrazione)",
     "Cod. Comune (Amministrazione)",
 ]
+
+
+# The source leaves "Utilizzo del bene" empty mostly when the asset is given to third
+# parties; these two flags say so. Only the combinations observed in the 2023 release
+# are mapped, anything else fails closed.
+THIRD_PARTY = {
+    ("Sì", "No"): "Interamente",
+    ("Sì", "Sì"): "Interamente",
+    ("No", "Sì"): "Parzialmente",
+    ("No", "No"): "No",
+    ("", ""): "Non indicato",
+}
 
 
 class SourceError(ValueError):
@@ -253,8 +266,12 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
             if utilizzo not in domains["utilizzo"]:
                 raise SourceError(f"utilizzo fuori dominio: {utilizzo}")
             area = surface(row["Superficie di Riferimento (mq)"], row["ID bene"])
+            flags = (row["ui data interamente a terzi"], row["ui data parzialmente a terzi"])
+            if flags not in THIRD_PARTY:
+                raise SourceError(f"combinazione dei flag «dato a terzi» fuori dominio: {flags}")
             location = (row["Regione del bene"], row["Comune del bene"], row["Codice Comune del bene"])
-            group = groups[(owner, proprieta or detenzione, utilizzo or "Non indicato", row["Tipologia Bene Immobile"], location)]
+            group = groups[(owner, proprieta or detenzione, utilizzo or "Non indicato", THIRD_PARTY[flags],
+                            row["Tipologia Bene Immobile"], location)]
             group[0] += 1
             if area is not None and area > 0:
                 group[1] += 1
@@ -266,9 +283,9 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
     if sum(value[0] for value in groups.values()) != total:
         raise SourceError("aggregazione beni non riconciliata con le righe sorgente")
     rows = [
-        [*owner[:2], titolo, utilizzo, tipologia, str(count), str(with_area), decimal_text(area),
+        [*owner[:2], titolo, utilizzo, terzi, tipologia, str(count), str(with_area), decimal_text(area),
          *location, *owner[2:], "2023", urls[owner[0]]]
-        for (owner, titolo, utilizzo, tipologia, location), (count, with_area, area) in sorted(groups.items())
+        for (owner, titolo, utilizzo, terzi, tipologia, location), (count, with_area, area) in sorted(groups.items())
     ]
     return delimited_payload(BENI_HEADERS, rows)
 

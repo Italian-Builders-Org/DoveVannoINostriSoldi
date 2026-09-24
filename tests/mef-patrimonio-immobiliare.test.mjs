@@ -26,7 +26,7 @@ async function allRows(datasetId, equals) {
 
 test("MEF beni rows keep provenance, titles and declared use per entity", async () => {
   const selected = await allRows(beniId, { "Codice fiscale ente": roma });
-  assert.equal(selected.dataset.publicRows, 136_503);
+  assert.equal(selected.dataset.publicRows, 140_712);
   assert.equal(selected.dataset.licenseStatus, "verified-open-cc-by-4.0");
   assert.equal(selected.dataset.sourceMetadata.publicationDate, "2026-05-05");
   assert.equal(selected.dataset.sourceMetadata.acquisitionDate, "2026-09-23");
@@ -35,7 +35,7 @@ test("MEF beni rows keep provenance, titles and declared use per entity", async 
   assert.match(selected.dataset.caveats.join(" "), /una pagina vuota non significa/);
   assert.match(selected.dataset.caveats.join(" "), /non dice se il bene sia agibile/);
   assert.match(selected.dataset.caveats.join(" "), /un'assenza non è uno zero/);
-  assert.equal(selected.rows.length, 122);
+  assert.equal(selected.rows.length, 129);
   assert.ok(selected.rows.every((row) => row.cells["Codice fiscale ente"] === roma));
   assert.ok(
     selected.rows.every((row) => Object.values(row.cells).every((value) => value === null || typeof value === "string")),
@@ -46,10 +46,12 @@ test("MEF beni rows keep provenance, titles and declared use per entity", async 
     row.cells["Utilizzo del bene"] === "Non utilizzato" &&
     row.cells["Tipologia bene"] === "Abitazione");
   assert.equal(vuote.reduce((sum, row) => sum + Number(row.cells.Beni), 0), 1070);
-  const inRoma = vuote.find((row) => row.cells["Codice catastale comune del bene"] === "H501");
-  assert.ok(inRoma);
-  assert.equal(inRoma.cells.Beni, "872");
-  assert.equal(inRoma.cells["Superficie di riferimento (m²)"], "57315.78");
+  const inRoma = vuote.filter((row) => row.cells["Codice catastale comune del bene"] === "H501");
+  assert.equal(inRoma.reduce((sum, row) => sum + Number(row.cells.Beni), 0), 872);
+  assert.deepEqual(inRoma.map((row) => row.cells["Dato a terzi"]).sort(), ["No", "Parzialmente"]);
+  const unstated = selected.rows.filter((row) => row.cells.Titolo === "Proprietà" && row.cells["Utilizzo del bene"] === "Non indicato");
+  assert.equal(unstated.reduce((sum, row) => sum + Number(row.cells.Beni), 0), 28_039);
+  assert.ok(unstated.every((row) => row.cells["Dato a terzi"] !== "No"));
   assert.ok(vuote.some((row) => row.cells["Comune del bene"] === "Guidonia Montecelio"));
   assert.ok(vuote.every((row) => row.cells["Comune ente"] === "Roma"));
   assert.ok(selected.rows.some((row) => row.cells.Titolo === "in locazione"));

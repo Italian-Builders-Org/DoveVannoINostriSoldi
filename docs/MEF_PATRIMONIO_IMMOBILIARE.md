@@ -27,9 +27,9 @@ Gli archivi contano 2.640.689 righe di beni e 449.258 detenzioni. La
 pubblicazione riga per riga richiederebbe una decisione dimensionale (ADR-001):
 questa proiezione aggrega per ente dichiarante, identificato dal codice fiscale.
 
-- `mef-patrimonio-beni-2023` (136.503 righe): ente × titolo × stato d'uso ×
-  tipologia × comune del bene, con numero di beni, beni con superficie
-  positiva e somma esatta della superficie di riferimento.
+- `mef-patrimonio-beni-2023` (140.712 righe): ente × titolo × stato d'uso ×
+  dato a terzi × tipologia × comune del bene, con numero di beni, beni con
+  superficie positiva e somma esatta della superficie di riferimento.
 - `mef-patrimonio-contratti-2023` (21.034 righe): ente × tipo di detenzione ×
   finalità dichiarata per le persone fisiche × tipologia, con contratti su
   intera unità, contratti con canone positivo, zero o assente, canone totale e
@@ -55,7 +55,10 @@ l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
 ## Limiti
 
 - «Non utilizzato» è dichiarato dall'ente e non dice se il bene sia agibile,
-  affittabile o occupato. «Non indicato» è una cella vuota nella fonte.
+  affittabile o occupato. «Non indicato» è una cella vuota nella fonte: nel
+  66% dei casi il bene è dato interamente a terzi. La colonna «Dato a terzi»
+  lo esplicita dai due flag della fonte (interamente, parzialmente, no, non
+  indicato); combinazioni non osservate bloccano l'ETL.
 - Il comune del bene può differire dal Comune dell'ente: Roma Capitale
   dichiara beni in 17 Comuni. Una mappa per luogo usa il comune del bene.
 - Il titolo separa beni posseduti e beni detenuti da terzi; gli enti ERP

@@ -31,7 +31,8 @@ def bene(id_bene: str, **fields: str) -> dict[str, str]:
     return {**ROMA, "ID bene": id_bene, "Titolo proprietà": "Proprietà", "Titolo detenzione": "",
             "Utilizzo del bene": "Non utilizzato", "Tipologia Bene Immobile": "Abitazione",
             "Superficie di Riferimento (mq)": "70,5", "Regione del bene": "LAZIO",
-            "Comune del bene": "Roma", "Codice Comune del bene": "H501", **fields}
+            "Comune del bene": "Roma", "Codice Comune del bene": "H501",
+            "ui data interamente a terzi": "No", "ui data parzialmente a terzi": "No", **fields}
 
 
 def contratto(id_variazione: str, **fields: str) -> dict[str, str]:
@@ -111,6 +112,24 @@ class MefPatrimonioImmobiliareTests(TestCase):
             [("E263", "Roma", "1"), ("H501", "Roma", "1")],
         )
         self.assertEqual(list(beni[0])[:3], ["Codice fiscale ente", "Ente", "Titolo"])
+
+    def test_third_party_flags_explain_empty_use_and_unknown_combinations_fail(self) -> None:
+        spec = self.synthetic_spec(
+            [
+                bene("1", **{"Utilizzo del bene": "", "ui data interamente a terzi": "Sì"}),
+                bene("2", **{"Utilizzo del bene": "", "ui data interamente a terzi": "", "ui data parzialmente a terzi": ""}),
+                bene("3", **{"ui data parzialmente a terzi": "Sì"}),
+            ],
+            [contratto("10")],
+        )
+        beni, _ = self.project(spec)
+        self.assertEqual(
+            sorted((row["Utilizzo del bene"], row["Dato a terzi"]) for row in beni),
+            [("Non indicato", "Interamente"), ("Non indicato", "Non indicato"), ("Non utilizzato", "Parzialmente")],
+        )
+        spec = self.synthetic_spec([bene("1", **{"ui data interamente a terzi": ""})], [contratto("10")])
+        with self.assertRaisesRegex(mef.SourceError, "dato a terzi"):
+            mef.beni_projection(spec, self.input_dir, {})
 
     def test_contracts_split_empty_zero_and_positive_rent_and_restrict_ratio(self) -> None:
         spec = self.synthetic_spec(

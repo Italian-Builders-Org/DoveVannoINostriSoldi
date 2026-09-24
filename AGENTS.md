@@ -1,3 +1,20 @@
+## Strategia dei test
+
+- Prima del codice, definisci il comportamento atteso e i modi in cui può
+  fallire. Se serve un test unitario, scrivilo prima dell'implementazione;
+  per un bug esistente, riproduci il difetto prima della correzione. Non
+  aggiungere test a posteriori che si limitano a ricopiare il codice.
+- Preferisci gli E2E per verificare funzionalità e flussi completi. Usali come
+  unica verifica quando coprono anche gli errori e i confini rilevanti; mantieni
+  test isolati per rischi non coperti, come integrità dei dati, quote e timeout.
+- Ogni esecuzione E2E deve lasciare una prova verificabile e ripetibile:
+  comando, revisione, fixture/configurazione, esito e artifact pertinenti
+  (report, log, screenshot). Escludi credenziali e dati privati.
+- Ogni test deve intercettare un bug reale. Prima di rimuoverlo, indica quale
+  verifica rimasta copre lo stesso rischio; il numero o il tipo di test non
+  dimostrano ridondanza. Per scegliere e rivedere i test leggi
+  [tests/AGENTS.md](tests/AGENTS.md).
+
 ## Continuità del lavoro
 
 Prima di fermarti, chiediti: “C’è un prossimo passo che l’utente vorrebbe che io facessi?” Se sì, continua: il lavoro non è finito.

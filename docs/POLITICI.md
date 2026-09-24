@@ -21,6 +21,9 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
 - [src/lib/data/camera-atti-voti-contract.ts](../src/lib/data/camera-atti-voti-contract.ts)
   e [src/lib/data/senato-atti-voti-contract.ts](../src/lib/data/senato-atti-voti-contract.ts):
   contratti degli atti firmati e delle votazioni finali dei due rami.
+- [scripts/etl/senato_atti_voti_xix_snapshot.py](../scripts/etl/senato_atti_voti_xix_snapshot.py):
+  acquisizione ufficiale SPARQL Senato, con paginazione, lotti nominali,
+  checkpoint giornaliero e pubblicazione atomica dopo riconciliazione.
 - [src/lib/parlamento-giudiziario.ts](../src/lib/parlamento-giudiziario.ts) e
   [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
   accesso e contratto dello snapshot curato dei procedimenti documentati; lo
@@ -76,11 +79,25 @@ sviluppo.
   votato** (titolo atto, esito, totali d’aula) e **chi ha votato** (F/C/A nel
   perimetro filtrato); click su un parlamentare espande i suoi voti sul tema.
   «Apri scheda» apre **Voti per tema** (`scheda=temi`) restando nella vista storico.
+- Un voto finale Senato può riferirsi a più disegni abbinati: compare come un
+  solo evento con collegamenti a tutti gli atti ufficiali. L'iniziativa
+  governativa deriva da `osr:tipoIniziativa` e i presentatori dall'etichetta
+  ufficiale `osr:presentatore`, non dal comportamento di voto.
 - Eurodeputati eletti in Italia (vista separata): `/politici/europa`.
 - Deputato per id numerico legacy: `/politici?deputy=<numericId>`
   (risolve in `dep-<numericId>`).
 
 ## Verifiche
+
+Lo snapshot Senato include i disegni di iniziativa senatoriale presentati al
+Senato e quelli governativi con almeno una fase Senato. Il refresh usa solo GET
+verso l'endpoint ufficiale; `--checkpoint` riprende risposte della stessa
+giornata UTC. Prima di aggiornare i digest in
+[senato-atti-voti-xix.source.json](../scripts/etl/specs/senato-atti-voti-xix.source.json),
+controllare conteggi, esclusioni e semantica delle risposte. Un refresh
+incompleto non sostituisce lo snapshot già verificato. Per ogni ticket eseguire
+soltanto i test ETL mirati ai producer/contratti/dati cambiati; la suite ETL
+completa richiede una richiesta esplicita di Lorenzo.
 
 ### Contratti e route
 
@@ -114,7 +131,11 @@ Node non sostituiscono la verifica visiva del grafo interattivo.
 ## Cosa non misura
 
 `/politici` mostra ruoli istituzionali ufficiali, non influenza politica o
-merito. I collegamenti fra gruppi dei due rami indicano una famiglia politica
+merito. Firme, presentazione governativa e voti sono relazioni distinte: non
+misurano produttività, coerenza con promesse o paternità del testo finale.
+Le percentuali e le assenze seguono le regole di conteggio proprie di ciascun
+ramo; l'assenza da una lista di voto non spiega il motivo. I collegamenti fra
+gruppi dei due rami indicano una famiglia politica
 omologa ricavata dalle denominazioni ufficiali: non implicano identità giuridica
 né coordinamento. La presenza di un procedimento non equivale a colpevolezza:
 assoluzioni, prescrizioni e condanne restano stati distinti, con grado e fonti

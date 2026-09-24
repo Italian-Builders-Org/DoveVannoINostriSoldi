@@ -60,18 +60,9 @@ test("senator profiles expose senato legislative activity", () => {
     0,
   );
   assert.equal(byOutcomeSum, activity.counts.total);
-  assert.ok(activity.comparison.firstSignedPercentile >= 0);
-  assert.ok(activity.comparison.firstSignedPercentile <= 100);
-  // percentile = share of the OTHER roster members with fewer first-signed acts
-  const senatoCounts = Object.values(profiles)
-    .filter((candidate) => candidate.legislativeActivity?.chamber === "senato")
-    .map((candidate) => candidate.legislativeActivity.counts.firstSigned);
-  const expectedPercentile = Math.round(
-    (100 * senatoCounts.filter((count) => count < activity.counts.firstSigned).length) /
-      (senatoCounts.length - 1),
-  );
-  assert.equal(activity.comparison.firstSignedPercentile, expectedPercentile);
-  assert.equal(activity.comparison.peerCount, senatoCounts.length - 1);
+  assert.equal("firstSignedPercentile" in activity.comparison, false);
+  assert.equal("peerCount" in activity.comparison, false);
+  assert.ok(activity.comparison.chamberMedianFirstSigned >= 0);
   assert.ok(activity.recentFirstSigned.length <= 3);
   assert.ok(activity.recentFirstSigned.every((act) => act.phases === undefined));
 
@@ -85,13 +76,51 @@ test("senator profiles expose senato legislative activity", () => {
     for (const vote of act.finalVotes) assert.ok(voteCodes.has(vote.ownVote), vote.id);
   }
 
-  const zeroFirstSigned = Object.values(profiles).find(
-    (candidate) =>
-      candidate.legislativeActivity?.chamber === "senato" &&
-      candidate.legislativeActivity.counts.firstSigned === 0,
+});
+
+test("senators expose their verified final votes with parliamentary attribution", () => {
+  const snapshot = parseSenatoAttiVotiSnapshot(attiVotiJson);
+  const profiles = getRepubblicaProfiles();
+  const act = snapshot.acts.find((candidate) => candidate.finalVoteIds.some((voteId) => {
+    const vote = snapshot.finalVotes.find((item) => item.id === voteId);
+    return vote && Object.keys(vote.votes).some((numericId) => profiles[`sen-s${numericId}`]);
+  }));
+  assert.ok(act, "atto con voto nominale e senatore nel roster");
+  const linkedVotes = act.finalVoteIds.map((voteId) => snapshot.finalVotes.find((vote) => vote.id === voteId));
+  const numericId = linkedVotes.flatMap((vote) => Object.keys(vote?.votes ?? {})).find(
+    (candidate) => profiles[`sen-s${candidate}`],
   );
-  assert.ok(zeroFirstSigned);
-  assert.equal(zeroFirstSigned.legislativeActivity.comparison.firstSignedPercentile, 0);
+  assert.ok(numericId, "senatore votante nel roster");
+
+  const acts = getRepubblicaLegislativeActs(`sen-s${numericId}`);
+  assert.ok(acts);
+  const voted = acts.voted.find((candidate) => candidate.id === act.id);
+  assert.ok(voted, act.id);
+  assert.equal(voted.role, "votante");
+  assert.deepEqual(voted.initiative, { kind: "parliamentary", label: "Parlamentare" });
+  assert.equal(voted.proposer?.kind, "senator");
+  assert.equal(voted.proposer?.id, `sen-s${act.firstSignerId}`);
+  assert.ok(voted.proposer?.label.length > 0);
+  assert.equal(voted.responsibleGovernment, null);
+  assert.ok(voted.finalVotes.length > 0);
+  assert.ok(voted.finalVotes.every((vote) => vote.ownVote !== "non-rilevato"));
+});
+
+test("a government bill reaches the senator vote trail with official attribution", () => {
+  const snapshot = parseSenatoAttiVotiSnapshot(attiVotiJson);
+  const act = snapshot.acts.find((item) => item.id === "ddl-52421");
+  const vote = snapshot.finalVotes.find((item) => item.id === "19-98-11");
+  assert.ok(act?.finalVoteIds.includes(vote?.id));
+  const profiles = getRepubblicaProfiles();
+  const numericId = Object.keys(vote.votes).find((id) => profiles[`sen-s${id}`]);
+  assert.ok(numericId);
+  const voted = getRepubblicaLegislativeActs(`sen-s${numericId}`).voted
+    .find((item) => item.id === act.id);
+  assert.deepEqual(voted.initiative, { kind: "government", label: "Governativa" });
+  assert.equal(voted.proposer.kind, "government");
+  assert.match(voted.proposer.label, /Giancarlo Giorgetti/u);
+  assert.equal(voted.responsibleGovernment.label, "Governo Meloni-I");
+  assert.ok(voted.finalVotes.some((item) => item.id === vote.id));
 });
 
 test("tampered snapshot with a broken tally fails the parse", () => {
@@ -107,5 +136,20 @@ test("tampered snapshot with an unlinked final vote fails the parse", () => {
   const linked = mutated.acts.find((act) => act.finalVoteIds.length > 0);
   assert.ok(linked);
   linked.finalVoteIds = [];
+  assert.throws(() => parseSenatoAttiVotiSnapshot(mutated));
+});
+
+test("tampered snapshot with a duplicate final vote fails the parse", () => {
+  const mutated = structuredClone(attiVotiJson);
+  mutated.finalVotes.push(structuredClone(mutated.finalVotes[0]));
+  mutated.coverage.finalVotes += 1;
+  assert.throws(() => parseSenatoAttiVotiSnapshot(mutated));
+});
+
+test("tampered government attribution fails the parse", () => {
+  const mutated = structuredClone(attiVotiJson);
+  const act = mutated.acts.find((item) => item.initiativeKind === "government");
+  assert.ok(act);
+  act.governmentLabels = ["Governo Inventato"];
   assert.throws(() => parseSenatoAttiVotiSnapshot(mutated));
 });

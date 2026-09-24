@@ -86,11 +86,30 @@ export const politiciSenatoSnapshotSchema = z
       observedDate: isoDate,
       acquiredAt: isoDateTime,
       responses: z.record(z.string(), responseSchema),
+      groupHistory: z.object({
+        endpointUrl: z.literal("https://dati.senato.it/sparql"),
+        observedDate: isoDate,
+        acquiredAt: isoDateTime,
+        responses: z.object({ memberships: responseSchema, names: responseSchema }),
+      }),
       cadence: z.string().min(1),
     }),
     caveats: z.array(z.string().min(1)).min(1),
     groups: z.array(groupSchema).min(1),
     senators: z.array(senatorSchema).min(1),
+    groupMemberships: z.array(z.object({
+      senatorId: z.string().regex(/^\d+$/u),
+      groupId: z.string().regex(/^g\d+$/u),
+      startDate: isoDate,
+      endDate: isoDate.nullable(),
+    })).min(1),
+    groupNames: z.array(z.object({
+      groupId: z.string().regex(/^g\d+$/u),
+      label: z.string().min(1),
+      shortLabel: z.string().min(1).nullable(),
+      startDate: isoDate,
+      endDate: isoDate.nullable(),
+    })).min(1),
   })
   .superRefine((value, ctx) => {
     if (value.coverage.senators !== value.senators.length) {
@@ -103,6 +122,20 @@ export const politiciSenatoSnapshotSchema = z
       ctx.addIssue({ code: "custom", message: "elettivi e a vita non riconciliano", path: ["coverage", "electedSenators"] });
     }
     const groupIds = new Set(value.groups.map((group) => group.id));
+    const historicalGroupIds = new Set(value.groupNames.map((group) => group.groupId));
+    value.groupMemberships.forEach((membership, index) => {
+      if (!historicalGroupIds.has(membership.groupId)) {
+        ctx.addIssue({ code: "custom", message: "gruppo storico senza denominazione", path: ["groupMemberships", index, "groupId"] });
+      }
+      if (membership.endDate !== null && membership.startDate > membership.endDate) {
+        ctx.addIssue({ code: "custom", message: "intervallo storico invalido", path: ["groupMemberships", index, "endDate"] });
+      }
+    });
+    value.groupNames.forEach((group, index) => {
+      if (group.endDate !== null && group.startDate > group.endDate) {
+        ctx.addIssue({ code: "custom", message: "intervallo denominazione invalido", path: ["groupNames", index, "endDate"] });
+      }
+    });
     const ids = new Set<string>();
     let presidents = 0;
     value.senators.forEach((senator, index) => {

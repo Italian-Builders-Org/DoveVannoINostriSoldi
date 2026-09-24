@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import type { CameraAttendanceRanking, RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
+import type { RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
 import type { EducationDistribution } from "@/lib/politici-education";
 import { formatPercent } from "@/lib/politici-education";
 import { programForGroup } from "@/lib/politici-electoral-programs";
@@ -10,7 +9,6 @@ import { longDate } from "./atlas-model";
 import type { NewsData, Resource } from "./atlas-data";
 import { PersonRow, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
-import extra from "./atlas-enhancements.module.css";
 
 type Select = (selection: GraphSelection) => void;
 
@@ -52,49 +50,6 @@ export function EducationBlock({ distribution, scopeLabel }: { distribution: Edu
       </li>)}
     </ul>
     <p className={styles.note}>Dichiarati: {distribution.declared} · Non dichiarati: {distribution.undeclared}. Nessuna etichetta inventata dove la fonte tace.</p>
-  </section>;
-}
-
-export function AttendanceRanking({ ranking, onSelect }: { ranking: CameraAttendanceRanking; onSelect: Select; }) {
-  const [limit, setLimit] = useState(25);
-  const rows = ranking.rows.toSorted((a, b) => a.name.localeCompare(b.name, "it") || a.personId.localeCompare(b.personId));
-  return <section className={styles.factBlock} aria-label="Classifica presenze Camera">
-    <div className={styles.sectionHeading}>
-      <h3>Classifica presenze · Camera</h3>
-      <span className={styles.tag}>{ranking.matchedCount} deputati</span>
-    </div>
-    <p className={styles.note}>
-      Classifica solo sui deputati della Camera con riga ufficiale collegata. Il Senato non pubblica una tabella equivalente: i senatori non compaiono. Misura le votazioni elettroniche in Aula (voto o missione), non le commissioni.
-    </p>
-    <p className={styles.note}>
-      {ranking.periodLabel}
-    </p>
-    <p className={styles.note}>Ordine alfabetico nell’elenco sotto. I percentuali di presenza restano quelli pubblicati dalla fonte.</p>
-    {rows.length ? <ul className={styles.rankingList}>
-      {rows.slice(0, limit).map((row) => <li key={row.personId}>
-        <button type="button" className={`${styles.rankingRow} ${extra.attendanceRow}`} onClick={() => onSelect({ kind: "person", id: row.personId })}>
-          <span>
-            <strong>
-              {row.name}
-            </strong>
-            <small>
-              {row.groupLabel}
-            </small>
-          </span>
-          <span className={styles.rankValue}>
-            {row.presencePercent}
-            <small>{row.absencesPercent} assenze</small>
-          </span>
-        </button>
-      </li>)}
-    </ul> : <Status title="Dati di partecipazione non disponibili">Non ci sono righe ufficiali collegate nello snapshot.</Status>}
-    {limit < ranking.rows.length ? <button className={styles.secondaryButton} type="button" onClick={() => setLimit((value) => value + 25)}>Mostra altri {Math.min(25, ranking.rows.length - limit)} <span>({Math.min(limit, ranking.rows.length)}/{ranking.rows.length})</span></button> : null}
-    {limit > 25 ? <button className={styles.textButton} type="button" onClick={() => setLimit(25)}>Riduci elenco</button> : null}
-    <p className={styles.note}>{ranking.matchedCount} deputati con dato · {ranking.rosterWithoutRow} senza riga collegata · {ranking.unmatchedRows} righe non associate.</p>
-    <SourceLink href={ranking.sourceUrl}>
-      {ranking.sourceLabel}
-    </SourceLink>
-    <p className={styles.note}>Osservato il {longDate(ranking.observedDate)}.</p>
   </section>;
 }
 
@@ -140,9 +95,9 @@ export function ProgramBlock({ family, label, personName }: { family: string | n
 }
 
 export function VoteAttendance({ attendance }: { attendance: NonNullable<RepublicProfile["voteAttendance"]>; }) {
-  return <section className={styles.factBlock} aria-label="Presenze ufficiali in Aula">
+  return <section className={styles.factBlock} aria-label="Partecipazione ufficiale al voto">
     <div className={styles.sectionHeading}>
-      <h3>Presenze in Aula</h3>
+      <h3>Partecipazione al voto</h3>
     </div>
     <div className={styles.attendanceHero}>
       <strong>

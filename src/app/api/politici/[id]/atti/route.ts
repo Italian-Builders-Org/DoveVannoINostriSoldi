@@ -34,6 +34,7 @@ export async function GET(_request: Request, context: RouteContext) {
       source: person.chamberId === "senato" ? sources.senato : sources.camera,
       firstSigned: acts.firstSigned,
       coSigned: acts.coSigned,
+      voted: acts.voted,
     },
     {
       headers: {

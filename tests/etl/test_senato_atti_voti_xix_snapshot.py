@@ -6,6 +6,9 @@ import copy
 import json
 import unittest
 from collections import Counter
+from unittest.mock import patch
+
+import senato_atti_voti_xix_snapshot as producer
 
 from senato_atti_voti_xix_snapshot import (
     OUTPUT,
@@ -23,6 +26,15 @@ def committed() -> dict:
 class SenatoAttiVotiXixSnapshotTest(unittest.TestCase):
     def test_offline_check_passes_on_committed_artifact(self) -> None:
         check_committed(load_spec())
+
+    def test_government_final_vote_retains_formal_proposers(self) -> None:
+        payload = committed()
+        act = next(act for act in payload["acts"] if act["id"] == "ddl-52421")
+        self.assertEqual(act["initiativeKind"], "government")
+        self.assertIsNone(act["firstSignerId"])
+        self.assertIn("19-98-11", act["finalVoteIds"])
+        self.assertIn("Governo Meloni-I", act["governmentLabels"])
+        self.assertTrue(any("Giancarlo Giorgetti" in name for name in act["formalProposers"]))
 
     def test_nominal_tallies_reconcile_with_totals(self) -> None:
         for vote in committed()["finalVotes"]:
@@ -60,8 +72,15 @@ class SenatoAttiVotiXixSnapshotTest(unittest.TestCase):
         self.assertEqual(coverage["finalVotes"], len(payload["finalVotes"]))
         self.assertEqual(
             coverage["signatures"],
-            sum(1 + len(act["coSignerIds"]) for act in payload["acts"]),
+            sum(1 + len(act["coSignerIds"]) for act in payload["acts"] if act["firstSignerId"]),
         )
+        self.assertEqual(coverage["actsByInitiative"]["government"],
+                         sum(act["initiativeKind"] == "government" for act in payload["acts"]))
+        self.assertEqual(coverage["actsObservedWithInitiative"],
+                         coverage["acts"] + coverage["actsExcludedOtherInitiative"]
+                         + coverage["actsExcludedNoEligibleSenatePhase"])
+        self.assertGreaterEqual(coverage["finalVotes"] + coverage["finalVotesOnOtherActs"],
+                                load_spec()["coverageFloor"]["finalVotesObserved"])
         self.assertEqual(
             sum(coverage["actsByOutcomeClass"].values()), len(payload["acts"])
         )
@@ -74,10 +93,37 @@ class SenatoAttiVotiXixSnapshotTest(unittest.TestCase):
         with self.assertRaises(SnapshotError):
             validate_snapshot(payload, locks=locks)
 
+    def test_validate_rejects_duplicate_final_vote(self) -> None:
+        payload = committed()
+        payload["finalVotes"].append(copy.deepcopy(payload["finalVotes"][0]))
+        payload["coverage"]["finalVotes"] += 1
+        payload["coverage"]["nominalVotes"] += len(payload["finalVotes"][0]["votes"])
+        with self.assertRaises(SnapshotError):
+            validate_snapshot(payload)
+
+    def test_keyset_rejects_repeated_full_page(self) -> None:
+        rows = [
+            {"ddl": {"value": f"http://dati.senato.it/ddl/{number}"}}
+            for number in (1, 2)
+        ]
+        payload = {"results": {"bindings": rows}}
+        query = "SELECT ?ddl WHERE { ?ddl a <urn:bill> . }\nORDER BY ?ddl"
+        with patch.object(producer, "PAGE_SIZE", 2), patch.object(
+            producer, "sparql_fetch", return_value=(payload, b"{}")
+        ):
+            with self.assertRaises(SnapshotError):
+                producer.sparql_fetch_keyset(query, "ddl")
+
     def test_validate_rejects_unmapped_state_ramo_pair(self) -> None:
         payload = committed()
         act = payload["acts"][0]
         act["currentPhase"]["state"] = "Stato inventato"
+        with self.assertRaises(SnapshotError):
+            validate_snapshot(payload)
+
+    def test_validate_rejects_non_senate_bill_number(self) -> None:
+        payload = committed()
+        payload["acts"][0]["number"] = "C.123"
         with self.assertRaises(SnapshotError):
             validate_snapshot(payload)
 

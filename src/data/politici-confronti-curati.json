@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "allowedPositionHosts": ["deputatipd.it"],
+  "comparisons": [
+    {
+      "id": "gianassi-ddl-sicurezza-2024",
+      "chamber": "camera",
+      "subject": { "kind": "person", "id": "dep-308880" },
+      "position": {
+        "date": "2024-09-10",
+        "summary": "Gianassi critica il disegno di legge sulla sicurezza perché introduce nuovi reati e rischia di comprimere libertà e dissenso, senza migliorare la sicurezza pubblica.",
+        "sourceLabel": "Gruppo PD Camera · dichiarazione di Federico Gianassi",
+        "sourceUrl": "https://www.deputatipd.it/news/ddl-sicurezza-gianassi-norme-liberticide-che-colpiscono-libert%C3%A0-e-attaccano-dissenso"
+      },
+      "actId": "ac19_1660",
+      "voteId": "vs19_349_113",
+      "voteSourceUrl": "https://documenti.camera.it/apps/votazioni/votazionitutte/schedaVotazione.asp?CDDANNO=2024&CDDGIORNO=18&CDDMESE=9&CDDNATURA=FINALE&Legislatura=19&PAGESIZE=10&PagCorr=1&RifVotazione=349_113&TipoRicerca=t&progrID=risultatiDB&tipo=dettaglio"
+    }
+  ]
+}

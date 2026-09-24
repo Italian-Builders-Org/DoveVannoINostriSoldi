@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Camera XIX acts, iter states and final nominal votes per deputy.
 
-Acts of parliamentary initiative, their official iter and the final votes with
-per-deputy positions come from the official SPARQL endpoint of dati.camera.it
-(OCD). Offline --check validates the committed artifact; --write refreshes from
-the official source and fails closed on empty, duplicate, unmapped or
-unreconciled coverage.
+Acts of parliamentary and government initiative, their official iter and the
+final votes with per-deputy positions come from the official SPARQL endpoint of
+dati.camera.it (OCD). Offline --check validates the committed artifact; --write
+refreshes from the official source and fails closed on empty, duplicate,
+unmapped or unreconciled coverage.
 """
 
 from __future__ import annotations
@@ -25,6 +25,9 @@ from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
 from typing import Any
+
+from atomic_snapshot import write_atomic
+from parliament_snapshot_json import serialize_snapshot
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = ROOT / "scripts/etl/specs/camera-atti-voti-xix.source.json"
@@ -52,6 +55,7 @@ FIRST_SIGNER_RE = re.compile(r"^d\d+_19$")
 NATURE_RE = re.compile(r"/natura\.rdf/([a-z_]+)$")
 VOTE_ID_RE = re.compile(r"/votazione\.rdf/(vs19_\d+_\d+)$")
 SESSION_ID_RE = re.compile(r"/seduta\.rdf/(s19_\d+)$")
+GOVERNMENT_ID_RE = re.compile(r"/governo\.rdf/(g\d+)$")
 
 NATURE_IDS = (
     "proposta_legge_ordinaria",
@@ -62,17 +66,23 @@ NATURE_IDS = (
 
 OCD_PREFIX = """PREFIX ocd: <http://dati.camera.it/ocd/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 """
 
 QUERIES = {
     "acts": OCD_PREFIX + """
-SELECT DISTINCT ?atto ?natura ?titolo ?data ?iniziativa ?primo
+SELECT DISTINCT ?atto ?natura ?titolo ?data ?iniziativa ?primo ?governo ?governoLabel
 WHERE {
   ?atto a ocd:atto ; ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19> ;
         ocd:primo_firmatario ?primo ; ocd:rif_natura ?natura .
   OPTIONAL { ?atto dc:title ?titolo }
   OPTIONAL { ?atto dc:date ?data }
   OPTIONAL { ?atto ocd:iniziativa ?iniziativa }
+  OPTIONAL {
+    ?primo ocd:rif_membroGoverno ?membroGoverno .
+    ?membroGoverno ocd:rif_governo ?governo .
+    ?governo rdfs:label ?governoLabel .
+  }
 }
 ORDER BY ?atto
 """.strip(),
@@ -94,7 +104,7 @@ WHERE {
 }
 ORDER BY ?atto ?statoData
 """.strip(),
-    "finalVotes": OCD_PREFIX + """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    "finalVotes": OCD_PREFIX + """
 SELECT DISTINCT ?vot ?label ?atto ?seduta ?sedutaData ?fav ?con ?ast ?pres ?votanti ?magg ?appr ?fiducia
 WHERE {
   ?vot a ocd:votazione ; ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19> ;
@@ -388,10 +398,9 @@ def fetch_nominal_votes(vote_uris: list[str]) -> tuple[dict[str, dict[str, Any]]
 # --------------------------------------------------------------------------- #
 
 
-def parse_acts(payload: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set[str]]:
-    """Deputy-signed acts only; government bnode first signers are counted apart."""
+def parse_acts(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """All supported acts, preserving formal proposer and responsible Government."""
     acts: dict[str, dict[str, Any]] = {}
-    government: set[str] = set()
     for row in payload["results"]["bindings"]:
         act_uri = binding_value(row, "atto")
         require(act_uri is not None, "riga acts senza atto")
@@ -405,12 +414,6 @@ def parse_acts(payload: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set[
         is_bnode = primo_cell.get("type") == "bnode" or (
             isinstance(primo_uri, str) and primo_uri.startswith("nodeID://")
         )
-        if is_bnode:
-            government.add(act_id)
-            continue
-        require(primo_uri is not None, f"{act_id}: primo firmatario assente")
-        assert primo_uri is not None
-        first_signer = parse_uri_id(primo_uri, DEPUTY_ID_RE, "primo firmatario")
         nature_uri = binding_value(row, "natura")
         require(nature_uri is not None, f"{act_id}: natura assente")
         assert nature_uri is not None
@@ -419,7 +422,31 @@ def parse_acts(payload: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set[
         title = binding_value(row, "titolo")
         title = re.sub(r"\s+", " ", unescape(title)).strip() if title else None
         presented = compact_date(binding_value(row, "data") or "")
-        initiative = binding_value(row, "iniziativa")
+        initiative_label = binding_value(row, "iniziativa")
+        if is_bnode:
+            government_uri = binding_value(row, "governo")
+            government_label = binding_value(row, "governoLabel")
+            initiative = {"kind": "government", "label": initiative_label or "Governo"}
+            proposer = {"kind": "government", "label": "Governo"}
+            if government_uri is not None or government_label is not None:
+                require(government_uri is not None, f"{act_id}: URI Governo responsabile assente")
+                require(government_label is not None, f"{act_id}: etichetta Governo responsabile assente")
+                assert government_uri is not None and government_label is not None
+                government_id = parse_uri_id(government_uri, GOVERNMENT_ID_RE, "Governo")
+                responsible_government = {
+                    "id": government_id,
+                    "label": government_label,
+                    "uri": government_uri,
+                }
+            else:
+                responsible_government = None
+        else:
+            require(primo_uri is not None, f"{act_id}: primo firmatario assente")
+            assert primo_uri is not None
+            first_signer = parse_uri_id(primo_uri, DEPUTY_ID_RE, "primo firmatario")
+            initiative = {"kind": "parliamentary", "label": initiative_label or "Parlamentare"}
+            proposer = {"kind": "deputy", "deputyId": first_signer}
+            responsible_government = None
         previous = acts.get(act_id)
         if previous is None:
             acts[act_id] = {
@@ -431,16 +458,24 @@ def parse_acts(payload: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], set[
                 "title": title,
                 "presentedDate": presented,
                 "initiative": initiative,
-                "firstSignerId": first_signer,
+                "proposer": proposer,
+                "responsibleGovernment": responsible_government,
             }
             continue
         for key, value in (
             ("natureId", nature_id), ("title", title), ("presentedDate", presented),
-            ("initiative", initiative), ("firstSignerId", first_signer),
+            ("initiative", initiative), ("proposer", proposer),
         ):
             require(previous[key] == value, f"{act_id}: valori multipli divergenti per {key}")
-    require(not (set(acts) & government), "atto con primo firmatario deputato e governo insieme")
-    return acts, government
+        if responsible_government is not None:
+            if previous["responsibleGovernment"] is None:
+                previous["responsibleGovernment"] = responsible_government
+            else:
+                require(
+                    previous["responsibleGovernment"] == responsible_government,
+                    f"{act_id}: Governi responsabili multipli divergenti",
+                )
+    return acts
 
 
 def parse_iter_states(payload: dict[str, Any], act_ids: set[str]) -> dict[str, list[dict[str, str]]]:
@@ -496,7 +531,7 @@ def vote_int(row: dict[str, Any], key: str, vote_uri: str) -> int:
 def parse_final_votes(
     payload: dict[str, Any], act_ids: set[str]
 ) -> tuple[dict[str, dict[str, Any]], int]:
-    """One final vote per votazione URI; acts outside the snapshot are discarded."""
+    """One final vote per votazione URI, with an explicit excluded count."""
     grouped: dict[str, dict[str, Any]] = {}
     for row in payload["results"]["bindings"]:
         vote_uri = binding_value(row, "vot")
@@ -579,20 +614,23 @@ def build_snapshot(
     nominal_payloads: dict[str, dict[str, Any]],
     nominal_digest: dict[str, Any],
 ) -> dict[str, Any]:
-    acts, government_acts = parse_acts(payloads["acts"])
+    acts = parse_acts(payloads["acts"])
     require(len(acts) > 0, "SPARQL acts vuoto")
     act_ids = set(acts)
 
     co_signers, co_signers_not_deputy = parse_co_signers(payloads["coSigners"], act_ids)
     iters = parse_iter_states(payloads["iterStates"], act_ids)
-    vote_groups, votes_on_other_acts = parse_final_votes(payloads["finalVotes"], act_ids)
+    vote_groups, final_votes_excluded = parse_final_votes(payloads["finalVotes"], act_ids)
+    relation_excluded_votes = final_votes_excluded
+    final_votes_observed = len(vote_groups) + final_votes_excluded
 
     final_votes: dict[str, dict[str, Any]] = {}
-    tally_violations: list[str] = []
-    identity_violations: list[str] = []
-    approved_violations: list[str] = []
+    quality_excluded_vote_uris: set[str] = set()
     for uri in sorted(vote_groups):
         group = vote_groups[uri]
+        if len(group["actIds"]) != 1:
+            quality_excluded_vote_uris.add(uri)
+            continue
         record = {key: value for key, value in group.items() if key != "actIds"}
         record["actId"] = sorted(group["actIds"])[0]
         votes = parse_nominal_votes(nominal_payloads[uri], uri)
@@ -604,26 +642,16 @@ def build_snapshot(
             or counts["C"] != record["contrari"]
             or counts["A"] != record["astenuti"]
         ):
-            tally_violations.append(
-                f"{record['id']}: F{counts['F']}/{record['favorevoli']} "
-                f"C{counts['C']}/{record['contrari']} A{counts['A']}/{record['astenuti']} secret={record['secret']}"
-            )
+            quality_excluded_vote_uris.add(uri)
         if record["favorevoli"] + record["contrari"] != record["votanti"]:
-            identity_violations.append(
-                f"{record['id']}: {record['favorevoli']}+{record['contrari']} != votanti {record['votanti']}"
-            )
+            quality_excluded_vote_uris.add(uri)
         if record["favorevoli"] + record["contrari"] + record["astenuti"] != record["presenti"]:
-            identity_violations.append(
-                f"{record['id']}: {record['favorevoli']}+{record['contrari']}+{record['astenuti']} != presenti {record['presenti']}"
-            )
+            quality_excluded_vote_uris.add(uri)
         if record["approved"] != (record["favorevoli"] > record["maggioranza"]):
-            approved_violations.append(
-                f"{record['id']}: approvato={record['approved']} con {record['favorevoli']} favorevoli e maggioranza {record['maggioranza']}"
-            )
-        final_votes[uri] = record
-    require(not tally_violations, f"conteggi nominali non riconciliati: {tally_violations[:10]}")
-    require(not identity_violations, f"identità votanti violata: {identity_violations[:10]}")
-    require(not approved_violations, f"identità approvato violata: {approved_violations[:10]}")
+            quality_excluded_vote_uris.add(uri)
+        if uri not in quality_excluded_vote_uris:
+            final_votes[uri] = record
+    final_votes_excluded += len(quality_excluded_vote_uris)
 
     iter_less = sorted(act_id for act_id in act_ids if not iters.get(act_id))
     require(
@@ -650,11 +678,15 @@ def build_snapshot(
         entries = iters.get(act_id) or []
         current = pick_current_state(entries) if entries else None
         outcome = outcome_class_of(current["state"]) if current else None
-        co = sorted(co_signers.get(act_id, set()) - {act["firstSignerId"]})
-        vote_ids = sorted(group["id"] for group in vote_groups.values() if act_id in group["actIds"])
-        first_signers.add(act["firstSignerId"])
+        proposer_deputy = (
+            act["proposer"]["deputyId"] if act["proposer"]["kind"] == "deputy" else None
+        )
+        co = sorted(co_signers.get(act_id, set()) - ({proposer_deputy} if proposer_deputy else set()))
+        vote_ids = sorted(vote["id"] for vote in final_votes.values() if vote["actId"] == act_id)
+        if proposer_deputy:
+            first_signers.add(proposer_deputy)
         co_signer_set.update(co)
-        signatures += 1 + len(co)
+        signatures += (1 if proposer_deputy else 0) + len(co)
         acts_by_nature[act["natureId"]] += 1
         if outcome is not None:
             acts_by_outcome[outcome] += 1
@@ -667,7 +699,8 @@ def build_snapshot(
             "title": act["title"],
             "presentedDate": act["presentedDate"],
             "initiative": act["initiative"],
-            "firstSignerId": act["firstSignerId"],
+            "proposer": act["proposer"],
+            "responsibleGovernment": act["responsibleGovernment"],
             "coSignerIds": co,
             "iter": entries,
             "currentState": current,
@@ -679,7 +712,7 @@ def build_snapshot(
     today = datetime.now(timezone.utc)
     observed = today.date().isoformat()
     snapshot = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "chamber": "camera",
         "legislature": {
             "number": 19,
@@ -698,7 +731,7 @@ def build_snapshot(
         "provenance": {
             "kind": "official-sparql",
             "owner": "Camera dei deputati",
-            "title": "Open Data Camera — atti di iniziativa parlamentare, iter e votazioni finali (OCD)",
+            "title": "Open Data Camera — atti di iniziativa parlamentare e governativa, iter e votazioni finali (OCD)",
             "endpointUrl": ENDPOINT,
             "landingUrl": LANDING,
             "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
@@ -721,13 +754,17 @@ def build_snapshot(
         ],
         "coverage": {
             "acts": len(act_list),
-            "actsWithGovernmentFirstSigner": len(government_acts),
+            "actsByInitiative": {
+                "parliamentary": sum(1 for act in act_list if act["initiative"]["kind"] == "parliamentary"),
+                "government": sum(1 for act in act_list if act["initiative"]["kind"] == "government"),
+            },
             "actsByNature": {key: acts_by_nature[key] for key in sorted(acts_by_nature)},
             "signatures": signatures,
             "coSignersNotDeputyXix": co_signers_not_deputy,
             "actsWithoutIterState": len(iter_less),
             "finalVotes": len(final_votes),
-            "finalVotesOnOtherActs": votes_on_other_acts,
+            "finalVotesObserved": final_votes_observed,
+            "finalVotesExcluded": final_votes_excluded,
             "nominalVotes": sum(len(vote["votes"]) for vote in final_votes.values()),
             "secretFinalVotes": sum(1 for vote in final_votes.values() if vote["secret"]),
             "deputiesAsFirstSigner": len(first_signers),
@@ -737,8 +774,11 @@ def build_snapshot(
         "acts": act_list,
         "finalVotes": [final_votes[uri] for uri in sorted(final_votes, key=lambda item: final_votes[item]["id"])],
         "caveats": [
-            f"Sono esclusi i disegni di legge a prima firma di un membro del Governo ({len(government_acts)} nella fonte): il profilo riguarda l'iniziativa parlamentare. Le cofirme di deputati su quegli atti non sono conteggiate.",
-            f"Le votazioni finali su disegni di legge di iniziativa governativa ({votes_on_other_acts} nella fonte) non sono incluse: qui compaiono solo le finali sugli atti a prima firma di un deputato.",
+            "Negli atti di iniziativa governativa il proponente formale è il Governo: i membri del Governo presenti nella sorgente non sono attribuiti come autori individuali.",
+            "Il Governo responsabile deriva dalla relazione ufficiale esposta da dati.camera.it ed è mantenuto distinto dal proponente formale.",
+            "Una votazione finale riguarda l'atto nel suo complesso: non prova sostegno o opposizione a ogni singola misura contenuta nel testo.",
+            f"Sono escluse {relation_excluded_votes} votazioni finali il cui collegamento all'atto non è risolvibile nel perimetro ufficiale acquisito.",
+            f"Sono escluse {len(quality_excluded_vote_uris)} votazioni finali i cui conteggi o collegamenti ufficiali non si riconciliano.",
             "La firma di un atto non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
             "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati iter della Camera.",
             "I conteggi di firme, atti e voti non misurano produttività o merito dei deputati.",
@@ -759,7 +799,7 @@ def build_snapshot(
 
 
 def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = None) -> None:
-    require(payload.get("schemaVersion") == 1, "schemaVersion inattesa")
+    require(payload.get("schemaVersion") == 2, "schemaVersion inattesa")
     require(payload.get("chamber") == "camera", "chamber inattesa")
     legislature = payload.get("legislature") or {}
     require(legislature.get("number") == 19, "legislature.number inatteso")
@@ -826,8 +866,10 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         vid = vote.get("id")
         require(isinstance(vid, str) and vid not in vote_ids, f"votazione duplicata: {vid}")
         vote_ids.add(str(vid))
+    vote_act_by_id = {vote["id"]: vote.get("actId") for vote in final_votes}
 
     act_ids: set[str] = set()
+    linked_vote_ids: set[str] = set()
     iter_less = 0
     previous_key: tuple[int, str] | None = None
     for act in acts:
@@ -849,12 +891,34 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         require(act.get("title") is None or (isinstance(act["title"], str) and act["title"].strip()), f"{aid}.title")
         if act.get("presentedDate") is not None:
             require(bool(ISO_DATE.match(act["presentedDate"])), f"{aid}: presentedDate non ISO")
-        first = act.get("firstSignerId")
-        require(isinstance(first, str) and FIRST_SIGNER_RE.match(first), f"{aid}: firstSignerId {first!r}")
+        initiative = act.get("initiative") or {}
+        proposer = act.get("proposer") or {}
+        responsible_government = act.get("responsibleGovernment")
+        require(initiative.get("kind") in {"parliamentary", "government"}, f"{aid}: initiative.kind")
+        require(isinstance(initiative.get("label"), str) and initiative["label"].strip(), f"{aid}: initiative.label")
+        if initiative["kind"] == "parliamentary":
+            require(proposer.get("kind") == "deputy", f"{aid}: proponente parlamentare")
+            first = proposer.get("deputyId")
+            require(isinstance(first, str) and FIRST_SIGNER_RE.match(first), f"{aid}: proposer.deputyId {first!r}")
+            require(responsible_government is None, f"{aid}: Governo su iniziativa parlamentare")
+        else:
+            require(proposer == {"kind": "government", "label": "Governo"}, f"{aid}: proponente Governo")
+            if responsible_government is not None:
+                require(isinstance(responsible_government, dict), f"{aid}: Governo responsabile")
+                government_uri = responsible_government.get("uri")
+                require(isinstance(government_uri, str), f"{aid}: URI Governo responsabile")
+                government_id = parse_uri_id(government_uri, GOVERNMENT_ID_RE, "Governo responsabile")
+                require(responsible_government.get("id") == government_id, f"{aid}: id Governo responsabile")
+                require(
+                    isinstance(responsible_government.get("label"), str)
+                    and responsible_government["label"].strip(),
+                    f"{aid}: etichetta Governo responsabile",
+                )
+            first = None
         co = act.get("coSignerIds") or []
         require(isinstance(co, list) and len(set(co)) == len(co), f"{aid}: coSignerIds")
         require(all(isinstance(item, str) and FIRST_SIGNER_RE.match(item) for item in co), f"{aid}: coSigner non deputato")
-        require(first not in co, f"{aid}: primo firmatario fra i cofirmatari")
+        require(first is None or first not in co, f"{aid}: primo firmatario fra i cofirmatari")
         entries = act.get("iter") or []
         require(isinstance(entries, list), f"{aid}.iter")
         if not entries:
@@ -873,7 +937,11 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
             require(current["state"] in class_states[outcome], f"{aid}: stato fuori dalla classe dichiarata")
         for vid in act.get("finalVoteIds") or []:
             require(vid in vote_ids, f"{aid}: finalVoteId sconosciuto {vid}")
+            require(vote_act_by_id[vid] == aid and vid not in linked_vote_ids,
+                    f"{aid}: finalVoteId attribuito a un altro atto o ripetuto {vid}")
+            linked_vote_ids.add(vid)
         require(act.get("officialPage") == ACT_PAGE_BASE.format(number=act["number"]), f"{aid}: officialPage")
+    require(linked_vote_ids == vote_ids, "votazioni senza atto collegato")
     require(iter_less <= int(len(acts) * MAX_ITER_LESS_SHARE), f"atti senza iter oltre soglia: {iter_less}")
 
     for vote in final_votes:
@@ -905,26 +973,40 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
 
     coverage = payload.get("coverage") or {}
     require(coverage.get("acts") == len(acts), "coverage.acts non riconcilia")
+    expected_initiatives = Counter(act["initiative"]["kind"] for act in acts)
     require(
-        isinstance(coverage.get("actsWithGovernmentFirstSigner"), int)
-        and coverage["actsWithGovernmentFirstSigner"] >= 0,
-        "coverage.actsWithGovernmentFirstSigner",
+        coverage.get("actsByInitiative")
+        == {
+            "parliamentary": expected_initiatives["parliamentary"],
+            "government": expected_initiatives["government"],
+        },
+        "coverage.actsByInitiative non riconcilia",
     )
     require(coverage.get("actsByNature") == dict(sorted(Counter(act["natureId"] for act in acts).items())),
             "coverage.actsByNature non riconcilia")
-    require(coverage.get("signatures") == sum(1 + len(act.get("coSignerIds") or []) for act in acts),
+    require(coverage.get("signatures") == sum(
+        (1 if act["proposer"]["kind"] == "deputy" else 0) + len(act.get("coSignerIds") or [])
+        for act in acts
+    ),
             "coverage.signatures non riconcilia")
     require(isinstance(coverage.get("coSignersNotDeputyXix"), int) and coverage["coSignersNotDeputyXix"] >= 0,
             "coverage.coSignersNotDeputyXix")
     require(coverage.get("actsWithoutIterState") == iter_less, "coverage.actsWithoutIterState non riconcilia")
     require(coverage.get("finalVotes") == len(final_votes), "coverage.finalVotes non riconcilia")
-    require(isinstance(coverage.get("finalVotesOnOtherActs"), int) and coverage["finalVotesOnOtherActs"] >= 0,
-            "coverage.finalVotesOnOtherActs")
+    require(isinstance(coverage.get("finalVotesObserved"), int), "coverage.finalVotesObserved")
+    require(isinstance(coverage.get("finalVotesExcluded"), int) and coverage["finalVotesExcluded"] >= 0,
+            "coverage.finalVotesExcluded")
+    require(
+        coverage["finalVotesObserved"] == len(final_votes) + coverage["finalVotesExcluded"],
+        "coverage votazioni finali non riconciliata",
+    )
     require(coverage.get("nominalVotes") == sum(len(vote["votes"]) for vote in final_votes),
             "coverage.nominalVotes non riconcilia")
     require(coverage.get("secretFinalVotes") == sum(1 for vote in final_votes if vote["secret"]),
             "coverage.secretFinalVotes non riconcilia")
-    require(coverage.get("deputiesAsFirstSigner") == len({act["firstSignerId"] for act in acts}),
+    require(coverage.get("deputiesAsFirstSigner") == len({
+        act["proposer"]["deputyId"] for act in acts if act["proposer"]["kind"] == "deputy"
+    }),
             "coverage.deputiesAsFirstSigner non riconcilia")
     require(coverage.get("deputiesAsCoSigner") == len({item for act in acts for item in (act.get("coSignerIds") or [])}),
             "coverage.deputiesAsCoSigner non riconcilia")
@@ -941,23 +1023,26 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
 # --------------------------------------------------------------------------- #
 
 
-def check_committed(spec: dict[str, Any]) -> None:
-    payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    locks = (spec.get("source") or {}).get("committedResponses") or None
-    validate_snapshot(payload, locks=locks)
+def require_coverage_floor(coverage: dict[str, Any], spec: dict[str, Any]) -> None:
     floor = spec.get("coverageFloor") or {}
-    coverage = payload["coverage"]
     require(coverage["acts"] >= int(floor.get("acts", 2500)), "coverage acts sotto floor")
     require(coverage["finalVotes"] >= int(floor.get("finalVotes", 50)), "coverage finalVotes sotto floor")
     require(
-        coverage["finalVotes"] + coverage.get("finalVotesOnOtherActs", 0)
-        >= int(floor.get("finalVotesObserved", 300)),
+        coverage["finalVotesObserved"] >= int(floor.get("finalVotesObserved", 300)),
         "coverage finalVotes osservate sotto floor",
     )
     require(
         coverage["deputiesAsFirstSigner"] >= int(floor.get("deputiesAsFirstSigner", 300)),
         "coverage deputiesAsFirstSigner sotto floor",
     )
+
+
+def check_committed(spec: dict[str, Any]) -> None:
+    payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    locks = (spec.get("source") or {}).get("committedResponses") or None
+    validate_snapshot(payload, locks=locks)
+    coverage = payload["coverage"]
+    require_coverage_floor(coverage, spec)
     print(
         f"OK camera-atti-voti-xix: {coverage['acts']} atti, {coverage['finalVotes']} votazioni finali, "
         f"{coverage['deputiesAsFirstSigner']} primi firmatari, {coverage['nominalVotes']} voti nominali"
@@ -972,7 +1057,7 @@ def refresh() -> dict[str, Any]:
             payloads[key], response_locks[key] = sparql_fetch_keyset(query, "atto")
         else:
             payloads[key], response_locks[key] = sparql_fetch_paged(query)
-    acts, _government = parse_acts(payloads["acts"])
+    acts = parse_acts(payloads["acts"])
     require(len(acts) >= 2500, f"atti insufficienti: {len(acts)}")
     act_ids = set(acts)
     vote_groups, _ = parse_final_votes(payloads["finalVotes"], act_ids)
@@ -994,8 +1079,9 @@ def main() -> int:
         return 0
 
     snapshot = refresh()
+    require_coverage_floor(snapshot["coverage"], spec)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_atomic(OUTPUT, serialize_snapshot(snapshot))
     print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['acts']} acts)")
     return 0
 

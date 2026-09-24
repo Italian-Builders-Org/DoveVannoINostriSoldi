@@ -46,6 +46,11 @@ ORGAN_ID_RE = re.compile(r"/organo\.rdf/(o19_\d+)$")
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
 PRESIDENCY_ORGAN_LABEL = "UFFICIO DI PRESIDENZA"
 CHAMBER_ORGAN_LABEL = "CAMERA DEI DEPUTATI"
+GROUP_MEMBERSHIPS_CAVEAT = (
+    "Le adesioni ai gruppi coprono l'intera XIX legislatura pubblicata nel grafo RDF; "
+    "per il join giornaliero la data iniziale è inclusa e quella finale è esclusa, "
+    "così i cambi registrati nello stesso giorno non si sovrappongono."
+)
 
 ITALIAN_MONTHS = {
     "gennaio": 1, "febbraio": 2, "marzo": 3, "aprile": 4, "maggio": 5, "giugno": 6,
@@ -98,6 +103,20 @@ WHERE {
   OPTIONAL { ?adesione ocd:startDate ?inizioGruppo }
 }
 ORDER BY ?cognome ?nome ?inizioGruppo
+""".strip(),
+    "groupMemberships": """
+PREFIX ocd: <http://dati.camera.it/ocd/>
+
+SELECT DISTINCT ?deputato ?gruppo ?inizio ?fine
+WHERE {
+  ?deputato a ocd:deputato ;
+            ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_19> ;
+            ocd:aderisce ?adesione .
+  ?adesione ocd:rif_gruppoParlamentare ?gruppo ;
+            ocd:startDate ?inizio .
+  OPTIONAL { ?adesione ocd:endDate ?fine }
+}
+ORDER BY ?deputato ?inizio ?fine ?gruppo
 """.strip(),
     "groupRoles": """
 PREFIX ocd: <http://dati.camera.it/ocd/>
@@ -220,6 +239,33 @@ def compact_date(value: str) -> str | None:
     if re.fullmatch(r"\d{8}", value or ""):
         return f"{value[0:4]}-{value[4:6]}-{value[6:8]}"
     return value if ISO_DATE.match(value or "") else None
+
+
+def parse_group_memberships(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    memberships: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str, str | None]] = set()
+    for row in payload["results"]["bindings"]:
+        deputy_uri = binding_value(row, "deputato")
+        group_uri = binding_value(row, "gruppo")
+        start = compact_date(binding_value(row, "inizio") or "")
+        end = compact_date(binding_value(row, "fine") or "")
+        require(bool(deputy_uri and group_uri and start), "adesione storica incompleta")
+        assert deputy_uri and group_uri and start
+        deputy_id = parse_uri_id(deputy_uri, DEPUTY_ID_RE, "deputato")
+        group_id = parse_uri_id(group_uri, GROUP_ID_RE, "gruppo")
+        require(end is None or start < end, f"{deputy_id}: intervallo gruppo non crescente")
+        key = (deputy_id, group_id, start, end)
+        require(key not in seen, f"{deputy_id}: adesione gruppo duplicata")
+        seen.add(key)
+        memberships.append({
+            "deputyId": deputy_id,
+            "groupId": group_id,
+            "startDate": start,
+            "endDate": end,
+        })
+    return sorted(memberships, key=lambda item: (
+        item["deputyId"], item["startDate"], item["endDate"] or "9999-12-31", item["groupId"],
+    ))
 
 
 def strip_tags(fragment: str) -> str:
@@ -423,6 +469,8 @@ def build_snapshot(
             "gender": binding_value(row, "gender"),
         })
 
+    group_memberships = parse_group_memberships(payloads["groupMemberships"])
+
     group_roles: dict[str, dict[str, str]] = {}
     for row in payloads["groupRoles"]["results"]["bindings"]:
         uri = binding_value(row, "deputato")
@@ -592,8 +640,9 @@ def build_snapshot(
         for oid in sorted(organs, key=lambda item: (organs[item]["kind"], organs[item]["label"]))
     ]
 
+    acquired_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     snapshot = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "chamber": "camera",
         "legislature": {
             "id": "repubblica_19",
@@ -604,6 +653,7 @@ def build_snapshot(
         "coverage": {
             "deputies": len(deputies),
             "groups": len(groups),
+            "groupMemberships": len(group_memberships),
             "deputiesWithGroup": len(deputies),
             "deputiesWithoutGroup": 0,
             "seatCapacity": 400,
@@ -626,7 +676,8 @@ def build_snapshot(
             "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
             "licenseUrl": LICENSE_URL,
             "legislatureUri": LEGISLATURE_URI,
-            "acquiredAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            "acquiredAt": acquired_at,
+            "groupMembershipsAcquiredAt": acquired_at,
             "responses": {
                 **{key: {"bytes": len(raw), "sha256": sha256_bytes(raw)} for key, raw in raws.items()},
                 "profiles": profile_digest,
@@ -636,12 +687,14 @@ def build_snapshot(
         "caveats": [
             "Copre i deputati con adesione parlamentare aperta nella XIX legislatura; le differenze dai 400 seggi sono esposte come seggi vacanti, non riempite con ex deputati.",
             "Le cariche di gruppo e gli uffici parlamentari sono quelli senza data di fine alla data di acquisizione.",
+            GROUP_MEMBERSHIPS_CAVEAT,
             "Anagrafica, collegio, coalizione e note professionali provengono dalle schede personali pubblicate su camera.it, non dal grafo RDF.",
             "Non è un grafo di potere o di influenza: mostra appartenenze formali e cariche ufficiali pubblicate dalla Camera.",
             "Lo snapshot non contiene notizie di stampa; la UI interroga separatamente indici live e attribuisce ogni link all'editore.",
             "I soldi pubblici non sono in questo snapshot; per bilanci e spesa usare /parlamento e /governi.",
         ],
         "groups": groups,
+        "groupMemberships": group_memberships,
         "organs": organ_list,
         "deputies": deputies,
     }
@@ -650,7 +703,7 @@ def build_snapshot(
 
 
 def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = None) -> None:
-    require(payload.get("schemaVersion") == 2, "schemaVersion inattesa")
+    require(payload.get("schemaVersion") == 3, "schemaVersion inattesa")
     require(payload.get("chamber") == "camera", "chamber inattesa")
     legislature = payload.get("legislature") or {}
     require(legislature.get("id") == "repubblica_19", "legislature.id inatteso")
@@ -664,6 +717,7 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
     ):
         require(source.get(key) == expected, f"source.{key} diverge")
     require(isinstance(source.get("acquiredAt"), str) and "T" in source["acquiredAt"], "acquiredAt")
+    require(isinstance(source.get("groupMembershipsAcquiredAt"), str) and "T" in source["groupMembershipsAcquiredAt"], "groupMembershipsAcquiredAt")
     responses = source.get("responses") or {}
     require(set(responses) == set(QUERIES) | {"profiles"}, "set delle risposte inatteso")
     for key, response in responses.items():
@@ -677,15 +731,18 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
     require(isinstance(caveats, list) and len(caveats) >= 3, "caveats assenti")
 
     groups = payload.get("groups") or []
+    group_memberships = payload.get("groupMemberships") or []
     deputies = payload.get("deputies") or []
     organs = payload.get("organs") or []
     require(isinstance(groups, list) and len(groups) >= 5, "groups assenti")
+    require(isinstance(group_memberships, list) and len(group_memberships) >= len(deputies), "adesioni gruppi incomplete")
     require(isinstance(deputies, list) and 390 <= len(deputies) <= 400, f"composizione Camera fuori intervallo: {len(deputies)}")
     require(isinstance(organs, list) and len(organs) >= 14, "organi assenti")
 
     coverage = payload.get("coverage") or {}
     require(coverage.get("deputies") == len(deputies), "coverage.deputies non riconcilia")
     require(coverage.get("groups") == len(groups), "coverage.groups non riconcilia")
+    require(coverage.get("groupMemberships") == len(group_memberships), "coverage.groupMemberships non riconcilia")
     require(coverage.get("organs") == len(organs), "coverage.organs non riconcilia")
     require(coverage.get("deputiesWithGroup") == len(deputies), "deputati senza gruppo")
     require(coverage.get("deputiesWithoutGroup") == 0, "deputiesWithoutGroup inatteso")
@@ -703,6 +760,27 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         require(isinstance(group.get("displayLabel"), str) and group["displayLabel"].strip(), "group displayLabel")
         require(isinstance(group.get("memberCount"), int) and group["memberCount"] >= 0, "memberCount")
         require(str(group.get("officialPage") or "").startswith(GROUP_PAGE_BASE), f"{gid}: pagina gruppo")
+
+    memberships_by_deputy: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    membership_keys: set[tuple[str, str, str, str | None]] = set()
+    for item in group_memberships:
+        deputy_id = item.get("deputyId")
+        group_id = item.get("groupId")
+        start = item.get("startDate")
+        end = item.get("endDate")
+        require(isinstance(deputy_id, str) and DEPUTY_ID_RE.search(f"/deputato.rdf/{deputy_id}"), "adesione con deputato invalido")
+        require(group_id in group_ids, f"{deputy_id}: adesione a gruppo sconosciuto")
+        require(isinstance(start, str) and ISO_DATE.match(start), f"{deputy_id}: inizio adesione invalido")
+        require(end is None or (isinstance(end, str) and ISO_DATE.match(end) and start < end), f"{deputy_id}: fine adesione invalida")
+        key = (deputy_id, group_id, start, end)
+        require(key not in membership_keys, f"{deputy_id}: adesione duplicata")
+        membership_keys.add(key)
+        memberships_by_deputy[deputy_id].append(item)
+    for deputy_id, items in memberships_by_deputy.items():
+        items.sort(key=lambda item: (item["startDate"], item["endDate"] or "9999-12-31", item["groupId"]))
+        for previous, current in zip(items, items[1:]):
+            require(previous["endDate"] is not None, f"{deputy_id}: intervallo aperto seguito da altra adesione")
+            require(previous["endDate"] <= current["startDate"], f"{deputy_id}: intervalli gruppo sovrapposti")
 
     organ_ids = {organ["id"] for organ in organs}
     require(len(organ_ids) == len(organs), "organi duplicati")
@@ -722,6 +800,9 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         require(deputy.get("officialPage") == f"{PROFILE_BASE}{numeric}", f"{did}: officialPage fuori schema")
         require(deputy.get("photoUrl") == f"{PHOTO_BASE}{numeric}.jpg", f"{did}: photoUrl fuori schema")
         require(deputy.get("groupId") in group_ids, f"{did}: groupId sconosciuto")
+        open_memberships = [item for item in memberships_by_deputy.get(did, []) if item["endDate"] is None]
+        require(len(open_memberships) == 1, f"{did}: adesione corrente non unica")
+        require(open_memberships[0]["groupId"] == deputy.get("groupId"), f"{did}: gruppo corrente non riconcilia con lo storico")
         require(isinstance(deputy.get("groupLabel"), str) and deputy["groupLabel"].strip(), f"{did}.groupLabel")
         require(isinstance(deputy.get("groupDisplayLabel"), str) and deputy["groupDisplayLabel"].strip(), f"{did}.groupDisplayLabel")
         if deputy.get("groupRole") is not None:
@@ -856,23 +937,52 @@ def refresh() -> dict[str, Any]:
     return build_snapshot(payloads, raws, profiles, digest)
 
 
+def refresh_group_memberships() -> dict[str, Any]:
+    payload, raw = sparql_fetch(QUERIES["groupMemberships"])
+    snapshot = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    memberships = parse_group_memberships(payload)
+    snapshot["schemaVersion"] = 3
+    snapshot["coverage"]["groupMemberships"] = len(memberships)
+    snapshot["source"]["groupMembershipsAcquiredAt"] = (
+        datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    )
+    snapshot["source"]["responses"]["groupMemberships"] = {
+        "bytes": len(raw),
+        "sha256": sha256_bytes(raw),
+    }
+    if GROUP_MEMBERSHIPS_CAVEAT not in snapshot["caveats"]:
+        snapshot["caveats"].insert(2, GROUP_MEMBERSHIPS_CAVEAT)
+    snapshot["groupMemberships"] = memberships
+    validate_snapshot(snapshot)
+    return snapshot
+
+
+def write_snapshot(snapshot: dict[str, Any]) -> None:
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['deputies']} deputies)")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="valida lo snapshot committato senza rete")
     parser.add_argument("--write", action="store_true", help="scarica fonti Camera e riscrive lo snapshot")
+    parser.add_argument(
+        "--write-group-memberships",
+        action="store_true",
+        help="aggiorna soltanto gli intervalli storici quando roster RDF e schede non sono ancora allineati",
+    )
     args = parser.parse_args()
-    if args.check == args.write:
-        raise SystemExit("specificare esattamente una azione: --check oppure --write")
+    if sum((args.check, args.write, args.write_group_memberships)) != 1:
+        raise SystemExit("specificare esattamente una azione")
 
     spec = load_spec()
     if args.check:
         check_committed(spec)
         return 0
 
-    snapshot = refresh()
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['deputies']} deputies)")
+    snapshot = refresh_group_memberships() if args.write_group_memberships else refresh()
+    write_snapshot(snapshot)
     return 0
 
 

@@ -216,6 +216,11 @@ a caso.
   - [docs/research/ISTAT_BES_INNOVAZIONE.md](research/ISTAT_BES_INNOVAZIONE.md)
     e [docs/research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md](research/ISTAT_POVERTA_SOGLIA_ASSOLUTA.md):
     ricerche ISTAT collegate.
+  - [docs/research/ISTAT_POVERTA_REGIONI.md](research/ISTAT_POVERTA_REGIONI.md):
+    incidenza di povertà relativa per regione. Due forme di assenza distinte —
+    celle non diffuse e righe mancanti dalla risposta — e il flag `0` di
+    `CL_FLAG`, che la codelist descrive come «meno della metà della cifra
+    minima» e che qui significa dato non diffuso: non imputarlo a zero.
 - **Invarianti**: il finanziamento dichiarato non è un pagamento osservato e
   l'attuatore non è la localizzazione; la presenza in OpenCUP non prova
   l'appartenenza al PNRR e più registrazioni per CUP restano conservate. IPA,

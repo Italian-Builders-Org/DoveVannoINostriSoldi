@@ -10,6 +10,24 @@ const voteId = z.string().regex(/^vs19_\d+_\d+$/u);
 const sessionId = z.string().regex(/^s19_\d+$/u);
 const voteCode = z.enum(["F", "C", "A", "N", "V"]);
 
+const initiativeSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("parliamentary"), label: z.string().min(1) }).strict(),
+  z.object({ kind: z.literal("government"), label: z.string().min(1) }).strict(),
+]);
+
+const proposerSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("deputy"), deputyId }).strict(),
+  z.object({ kind: z.literal("government"), label: z.literal("Governo") }).strict(),
+]);
+
+const governmentSchema = z
+  .object({
+    id: z.string().regex(/^g\d+$/u),
+    label: z.string().min(1),
+    uri: z.string().url(),
+  })
+  .strict();
+
 const iterEntrySchema = z
   .object({
     state: z.string().min(1),
@@ -31,8 +49,9 @@ const actSchema = z
     ]),
     title: z.string().min(1),
     presentedDate: isoDate.nullable(),
-    initiative: z.string().min(1).nullable(),
-    firstSignerId: deputyId,
+    initiative: initiativeSchema,
+    proposer: proposerSchema,
+    responsibleGovernment: governmentSchema.nullable(),
     coSignerIds: z.array(deputyId),
     iter: z.array(iterEntrySchema),
     currentState: iterEntrySchema.nullable(),
@@ -78,7 +97,7 @@ const pagedResponseSchema = z
 
 export const cameraAttiVotiSnapshotSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     chamber: z.literal("camera"),
     legislature: z
       .object({
@@ -147,13 +166,19 @@ export const cameraAttiVotiSnapshotSchema = z
     coverage: z
       .object({
         acts: z.number().int().positive(),
-        actsWithGovernmentFirstSigner: z.number().int().nonnegative(),
+        actsByInitiative: z
+          .object({
+            parliamentary: z.number().int().nonnegative(),
+            government: z.number().int().nonnegative(),
+          })
+          .strict(),
         actsByNature: z.record(z.string(), z.number().int().positive()),
         signatures: z.number().int().nonnegative(),
         coSignersNotDeputyXix: z.number().int().nonnegative(),
         actsWithoutIterState: z.number().int().nonnegative(),
         finalVotes: z.number().int().nonnegative(),
-        finalVotesOnOtherActs: z.number().int().nonnegative(),
+        finalVotesObserved: z.number().int().nonnegative(),
+        finalVotesExcluded: z.number().int().nonnegative(),
         nominalVotes: z.number().int().nonnegative(),
         secretFinalVotes: z.number().int().nonnegative(),
         deputiesAsFirstSigner: z.number().int().nonnegative(),
@@ -173,28 +198,54 @@ export const cameraAttiVotiSnapshotSchema = z
     if (value.coverage.finalVotes !== value.finalVotes.length) {
       ctx.addIssue({ code: "custom", message: "coverage.finalVotes", path: ["coverage", "finalVotes"] });
     }
-    const voteIds = new Set(value.finalVotes.map((vote) => vote.id));
+    const voteActById = new Map(value.finalVotes.map((vote) => [vote.id, vote.actId]));
+    if (voteActById.size !== value.finalVotes.length) {
+      ctx.addIssue({ code: "custom", message: "votazione duplicata", path: ["finalVotes"] });
+    }
     const actIds = new Set<string>();
+    const linkedVoteIds = new Set<string>();
     for (const [index, act] of value.acts.entries()) {
       if (actIds.has(act.id)) {
         ctx.addIssue({ code: "custom", message: "atto duplicato", path: ["acts", index, "id"] });
       }
       actIds.add(act.id);
       for (const linked of act.finalVoteIds) {
-        if (!voteIds.has(linked)) {
+        if (!voteActById.has(linked)) {
           ctx.addIssue({
             code: "custom",
             message: "finalVoteId irrisolto",
             path: ["acts", index, "finalVoteIds"],
           });
+        } else if (voteActById.get(linked) !== act.id || linkedVoteIds.has(linked)) {
+          ctx.addIssue({
+            code: "custom",
+            message: "finalVoteId attribuito a un altro atto o ripetuto",
+            path: ["acts", index, "finalVoteIds"],
+          });
         }
+        linkedVoteIds.add(linked);
       }
       const coSigners = new Set(act.coSignerIds);
-      if (coSigners.size !== act.coSignerIds.length || coSigners.has(act.firstSignerId)) {
+      if (
+        coSigners.size !== act.coSignerIds.length ||
+        (act.proposer.kind === "deputy" && coSigners.has(act.proposer.deputyId))
+      ) {
         ctx.addIssue({
           code: "custom",
           message: "coSignerIds incoerenti",
           path: ["acts", index, "coSignerIds"],
+        });
+      }
+      if (
+        (act.initiative.kind === "parliamentary" &&
+          (act.proposer.kind !== "deputy" || act.responsibleGovernment !== null)) ||
+        (act.initiative.kind === "government" &&
+          act.proposer.kind !== "government")
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message: "iniziativa, proponente e Governo responsabile incoerenti",
+          path: ["acts", index],
         });
       }
     }
@@ -228,11 +279,34 @@ export const cameraAttiVotiSnapshotSchema = z
         ctx.addIssue({ code: "custom", message: "flag secret incoerente", path: ["finalVotes", index, "secret"] });
       }
     }
-    const referencedVoteIds = new Set(value.acts.flatMap((act) => act.finalVoteIds));
     for (const [index, vote] of value.finalVotes.entries()) {
-      if (!referencedVoteIds.has(vote.id)) {
+      if (!linkedVoteIds.has(vote.id)) {
         ctx.addIssue({ code: "custom", message: "votazione non referenziata da alcun atto", path: ["finalVotes", index, "id"] });
       }
+    }
+    const actsByInitiative = value.acts.reduce(
+      (counts, act) => ({ ...counts, [act.initiative.kind]: counts[act.initiative.kind] + 1 }),
+      { parliamentary: 0, government: 0 },
+    );
+    if (
+      value.coverage.actsByInitiative.parliamentary !== actsByInitiative.parliamentary ||
+      value.coverage.actsByInitiative.government !== actsByInitiative.government
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "coverage.actsByInitiative",
+        path: ["coverage", "actsByInitiative"],
+      });
+    }
+    if (
+      value.coverage.finalVotesObserved !==
+      value.coverage.finalVotes + value.coverage.finalVotesExcluded
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: "coverage votazioni finali non riconciliata",
+        path: ["coverage", "finalVotesObserved"],
+      });
     }
   });
 

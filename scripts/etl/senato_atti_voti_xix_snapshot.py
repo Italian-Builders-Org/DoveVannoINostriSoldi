@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Senato XIX bills signed by senators, their phases and final nominal votes.
+"""Senato XIX senator- and government-initiated bills and final nominal votes.
 
 Each ``osr:Ddl`` node on dati.senato.it is one *phase* of a bill; the snapshot
-unit is the bill (``osr:idDdl``). Parliamentary-initiative bills whose first
-phase was presented at the Senate with a senator as first signer are kept,
-with every phase, the current outcome and the final nominal votes.
+unit is the bill (``osr:idDdl``). The corpus keeps bills first presented at
+the Senate by a senator and government bills with a Senate phase, together
+with their phases, outcomes and final nominal votes.
 
 The endpoint accepts GET only (POST is refused by the WAF, which also rejects
 ``BIND``/``IF``); literals are compared through ``STR(?x) = "..."``. Offline
@@ -31,6 +31,9 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from atomic_snapshot import write_atomic
+from parliament_snapshot_json import serialize_snapshot
+
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = ROOT / "scripts/etl/specs/senato-atti-voti-xix.source.json"
 OUTPUT = ROOT / "src/data/generated/senato-atti-voti-xix.json"
@@ -42,10 +45,12 @@ LANDING = "https://dati.senato.it/"
 LICENSE_URL = "https://creativecommons.org/licenses/by/3.0/it/"
 DDL_PAGE_BASE = "https://www.senato.it/leggi-e-documenti/disegni-di-legge/scheda-ddl?did={id_fase}"
 USER_AGENT = "DoveVannoINostriSoldi-ETL/1.0 (+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi)"
-FETCH_TIMEOUT = 300
-FETCH_ATTEMPTS = 4
+FETCH_TIMEOUT = 30
+FETCH_ATTEMPTS = 3
 NOMINAL_VOTE_WORKERS = 4
+NOMINAL_BATCH_SIZE = 12
 PAGE_SIZE = 5000
+MAX_SOURCE_PAGES = 100
 ENDPOINT_ROW_CAP = 10000
 
 SHA_RE = re.compile(r"^[0-9a-f]{64}$")
@@ -55,8 +60,13 @@ DDL_URI_RE = re.compile(r"/ddl/(\d+)$")
 SENATORE_URI_RE = re.compile(r"/senatore/(\d+)$")
 VOTE_ID_RE = re.compile(r"/votazione/(\d+-\d+-\d+)$")
 SESSION_URI_RE = re.compile(r"/seduta(?:assemblea|commissione)/(\S+)$")
+GOVERNMENT_LABEL_RE = re.compile(r"\(Gov\. ([^)]+)\)$")
+SENATE_BILL_NUMBER_RE = re.compile(r"^S\.\d+(?:[-/][0-9A-Za-z]+)*$")
 
-NATURE_IDS = ("ordinaria", "costituzionale")
+NATURE_IDS = (
+    "ordinaria", "costituzionale", "di conversione di decreto-legge",
+    "di approvazione di bilancio",
+)
 PHASE_KINDS = ("presentato", "trasmesso")
 
 OSR_PREFIX = """PREFIX osr: <http://dati.senato.it/osr/>
@@ -64,15 +74,17 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 """
 
 QUERIES = {
-    # One row per phase node of every bill that has a senator as first signer
-    # on at least one phase; perimeter rules are applied while parsing.
+    # One row per phase of bills with a senator first signer or official
+    # government initiative; Senate-branch perimeter rules follow in parsing.
     "phases": OSR_PREFIX + """
 SELECT DISTINCT ?ddl ?id ?idFase ?fase ?ramo ?prog ?pt ?stato ?statoData ?dataPres ?natura ?titolo
 WHERE {
   ?ddl a osr:Ddl ; osr:legislatura 19 ; osr:idDdl ?id ; osr:idFase ?idFase ; osr:fase ?fase ; osr:ramo ?ramo ;
        osr:progressivoIter ?prog ; osr:presentatoTrasmesso ?pt ; osr:statoDdl ?stato .
   ?any a osr:Ddl ; osr:idDdl ?id ; osr:iniziativa ?ini .
-  ?ini osr:primoFirmatario 1 ; osr:senatore ?sen .
+  { ?ini osr:primoFirmatario 1 ; osr:senatore ?sen }
+  UNION
+  { ?ini osr:tipoIniziativa ?tipo . FILTER(STR(?tipo) = "Governativa") }
   OPTIONAL { ?ddl osr:dataStatoDdl ?statoData }
   OPTIONAL { ?ddl osr:dataPresentazione ?dataPres }
   OPTIONAL { ?ddl osr:natura ?natura }
@@ -93,6 +105,15 @@ WHERE {
   ?ini2 osr:primoFirmatario 1 ; osr:senatore ?sen2 .
 }
 ORDER BY ?ddl ?sen
+""".strip(),
+    "governmentInitiatives": OSR_PREFIX + """
+SELECT DISTINCT ?id ?presenter
+WHERE {
+  ?ddl a osr:Ddl ; osr:legislatura 19 ; osr:idDdl ?id ; osr:iniziativa ?ini .
+  ?ini osr:tipoIniziativa ?tipo ; osr:presentatore ?presenter .
+  FILTER(STR(?tipo) = "Governativa")
+}
+ORDER BY ?id ?presenter
 """.strip(),
     "finalVotes": OSR_PREFIX + """
 SELECT DISTINCT ?v ?label ?esito ?fav ?con ?ast ?pres ?vot ?magg ?tv ?seduta ?ddl ?id
@@ -125,12 +146,13 @@ ORDER BY ?seduta
 }
 
 NOMINAL_VOTE_QUERY = OSR_PREFIX + """
-SELECT DISTINCT ?p ?sen
+SELECT DISTINCT ?v ?p ?sen
 WHERE {
-  <VOT_URI> ?p ?sen .
+  ?v ?p ?sen .
+  FILTER(?v IN (<VOTE_URIS>))
   FILTER(?p IN (osr:favorevole, osr:contrario, osr:astenuto, osr:presenteNonVotante, osr:inCongedoMissione))
 }
-ORDER BY ?p ?sen
+ORDER BY ?v ?p ?sen
 """.strip()
 
 NOMINAL_PREDICATES = {
@@ -173,6 +195,16 @@ OUTCOME_CLASSES: tuple[tuple[str, str, tuple[str, ...]], ...] = (
         "appr. definit. Legge @ S",
         "appr. definit. Legge @ C",
     )),
+    ("approvato-non-pubblicato", "Approvato definitivamente, non ancora pubblicato", (
+        "appr. def. non pubbl @ S",
+        "appr. def. non pubbl @ C",
+    )),
+    ("decreto-legge-decaduto", "Decreto-legge decaduto", (
+        "D-L decaduto @ S",
+    )),
+    ("restituito-al-governo", "Restituito al Governo", (
+        "restit. al Governo @ S",
+    )),
     ("assorbito", "Assorbito da un provvedimento abbinato", (
         "assorbito @ S",
     )),
@@ -202,6 +234,13 @@ def require(condition: bool, message: str) -> None:
 
 def sha256_bytes(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+
+def response_fingerprint(raws: list[bytes]) -> tuple[int, str]:
+    digest = hashlib.sha256()
+    for raw in raws:
+        digest.update(raw)
+    return sum(map(len, raws)), digest.hexdigest()
 
 
 def load_spec(path: Path = SPEC) -> dict[str, Any]:
@@ -254,6 +293,12 @@ def outcome_class_of(state: str, ramo: str) -> str:
         return state
     if state == LEGGE_STATE:
         return "legge"
+    if state == "appr. def. non pubbl":
+        return "approvato-non-pubblicato"
+    if state == "D-L decaduto":
+        return "decreto-legge-decaduto"
+    if state == "restit. al Governo":
+        return "restituito-al-governo"
     if ramo == "C":
         return "approvato-senato-trasmesso"
     if ramo == "S":
@@ -277,7 +322,18 @@ def state_at_ramo(entry: str) -> tuple[str, str]:
 # --------------------------------------------------------------------------- #
 
 
-def sparql_fetch(query: str) -> tuple[dict[str, Any], bytes]:
+def parse_sparql_response(raw: bytes) -> dict[str, Any]:
+    payload = json.loads(raw)
+    require("results" in payload and "bindings" in payload["results"], "payload SPARQL senza bindings")
+    require(len(payload["results"]["bindings"]) != ENDPOINT_ROW_CAP, "cap endpoint raggiunto")
+    return payload
+
+
+def sparql_fetch(query: str, checkpoint: Path | None = None) -> tuple[dict[str, Any], bytes]:
+    cache = checkpoint / f"{sha256_bytes(query.encode('utf-8'))}.json" if checkpoint else None
+    if cache and cache.exists():
+        raw = cache.read_bytes()
+        return parse_sparql_response(raw), raw
     url = ENDPOINT + "?" + urllib.parse.urlencode(
         {"query": query, "format": "application/sparql-results+json"}
     )
@@ -291,12 +347,9 @@ def sparql_fetch(query: str) -> tuple[dict[str, Any], bytes]:
         try:
             with urllib.request.urlopen(request, context=ssl.create_default_context(), timeout=FETCH_TIMEOUT) as response:
                 raw = response.read()
-            payload = json.loads(raw)
-            require("results" in payload and "bindings" in payload["results"], "payload SPARQL senza bindings")
-            require(
-                len(payload["results"]["bindings"]) != ENDPOINT_ROW_CAP,
-                "cap endpoint raggiunto",
-            )
+            payload = parse_sparql_response(raw)
+            if cache:
+                write_atomic(cache, raw.decode("utf-8"))
             return payload, raw
         except (urllib.error.URLError, json.JSONDecodeError) as error:
             last_error = error
@@ -304,13 +357,14 @@ def sparql_fetch(query: str) -> tuple[dict[str, Any], bytes]:
     raise SnapshotError(f"SPARQL Senato non raggiungibile: {last_error}")
 
 
-def sparql_fetch_paged(query: str) -> tuple[dict[str, Any], dict[str, Any]]:
+def sparql_fetch_paged(query: str, checkpoint: Path | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     """Fetch an ordered DISTINCT query in deterministic LIMIT/OFFSET pages."""
     payloads: list[dict[str, Any]] = []
     raws: list[bytes] = []
     offset = 0
     while True:
-        payload, raw = sparql_fetch(f"{query}\nLIMIT {PAGE_SIZE} OFFSET {offset}")
+        require(len(payloads) < MAX_SOURCE_PAGES, "troppe pagine SPARQL: refresh interrotto")
+        payload, raw = sparql_fetch(f"{query}\nLIMIT {PAGE_SIZE} OFFSET {offset}", checkpoint)
         payloads.append(payload)
         raws.append(raw)
         if len(payload["results"]["bindings"]) < PAGE_SIZE:
@@ -320,21 +374,19 @@ def sparql_fetch_paged(query: str) -> tuple[dict[str, Any], dict[str, Any]]:
         "head": payloads[0].get("head", {}),
         "results": {"bindings": [row for payload in payloads for row in payload["results"]["bindings"]]},
     }
-    digest = hashlib.sha256()
-    total = 0
-    for raw in raws:
-        digest.update(raw)
-        total += len(raw)
+    total, digest = response_fingerprint(raws)
     lock = {
         "pages": len(raws),
         "rows": len(merged["results"]["bindings"]),
         "bytes": total,
-        "sha256": digest.hexdigest(),
+        "sha256": digest,
     }
     return merged, lock
 
 
-def sparql_fetch_keyset(query: str, key_var: str) -> tuple[dict[str, Any], dict[str, Any]]:
+def sparql_fetch_keyset(
+    query: str, key_var: str, checkpoint: Path | None = None
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """Ordered DISTINCT query paged by keyset: FILTER(STR(?key) >= last) + LIMIT.
 
     OFFSET cannot pass the endpoint's sorted-top cap, so each page resumes from
@@ -349,15 +401,19 @@ def sparql_fetch_keyset(query: str, key_var: str) -> tuple[dict[str, Any], dict[
     bindings: list[dict[str, Any]] = []
     last_key: str | None = None
     while True:
+        require(len(payloads) < MAX_SOURCE_PAGES, "troppe pagine keyset: refresh interrotto")
         paged = query
         if last_key is not None:
             insert_at = paged.index(marker)
             paged = f'{paged[:insert_at]}  FILTER(STR(?{key_var}) >= "{last_key}")\n{paged[insert_at:]}'
-        payload, raw = sparql_fetch(f"{paged}\nLIMIT {PAGE_SIZE}")
+        payload, raw = sparql_fetch(f"{paged}\nLIMIT {PAGE_SIZE}", checkpoint)
         page = payload["results"]["bindings"]
         if len(page) == PAGE_SIZE:
             keys = {binding_value(row, key_var) for row in page}
             require(len(keys) > 1, "pagina keyset su un solo valore: la chiave non avanza")
+            next_key = binding_value(page[-1], key_var)
+            require(next_key is not None and (last_key is None or next_key > last_key),
+                    "pagina keyset ripetuta: la chiave non avanza")
         payloads.append(payload)
         raws.append(raw)
         for row in page:
@@ -370,37 +426,44 @@ def sparql_fetch_keyset(query: str, key_var: str) -> tuple[dict[str, Any], dict[
         last_key = binding_value(page[-1], key_var)
         require(last_key is not None, "pagina keyset senza chiave")
     merged = {"head": payloads[0].get("head", {}), "results": {"bindings": bindings}}
-    digest = hashlib.sha256()
-    total = 0
-    total_rows = 0
-    for raw in raws:
-        digest.update(raw)
-        total += len(raw)
-    for payload in payloads:
-        total_rows += len(payload["results"]["bindings"])
-    lock = {"pages": len(raws), "rows": total_rows, "bytes": total, "sha256": digest.hexdigest()}
+    total, digest = response_fingerprint(raws)
+    total_rows = sum(len(payload["results"]["bindings"]) for payload in payloads)
+    lock = {"pages": len(raws), "rows": total_rows, "bytes": total, "sha256": digest}
     return merged, lock
 
 
-def fetch_nominal_votes(vote_uris: list[str]) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+def fetch_nominal_votes(
+    vote_uris: list[str], checkpoint: Path | None = None
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     ordered = sorted(vote_uris)
+    batches = [ordered[start:start + NOMINAL_BATCH_SIZE]
+               for start in range(0, len(ordered), NOMINAL_BATCH_SIZE)]
 
-    def fetch(uri: str) -> tuple[dict[str, Any], bytes]:
-        return sparql_fetch(NOMINAL_VOTE_QUERY.replace("<VOT_URI>", f"<{uri}>"))
+    def fetch(batch: list[str]) -> tuple[dict[str, Any], bytes]:
+        uris = ", ".join(f"<{uri}>" for uri in batch)
+        return sparql_fetch(NOMINAL_VOTE_QUERY.replace("<VOTE_URIS>", uris), checkpoint)
 
     with ThreadPoolExecutor(max_workers=NOMINAL_VOTE_WORKERS) as pool:
-        results = dict(zip(ordered, pool.map(fetch, ordered)))
-    digest = hashlib.sha256()
-    total = 0
+        results = list(pool.map(fetch, batches))
+    raws: list[bytes] = []
     total_rows = 0
-    payloads: dict[str, dict[str, Any]] = {}
-    for uri in ordered:
-        payload, raw = results[uri]
-        payloads[uri] = payload
-        digest.update(raw)
-        total += len(raw)
+    rows_by_uri: dict[str, list[dict[str, Any]]] = {uri: [] for uri in ordered}
+    for batch, (payload, raw) in zip(batches, results):
+        allowed = set(batch)
+        for row in payload["results"]["bindings"]:
+            uri = binding_value(row, "v")
+            require(uri in allowed, f"votazione nominale fuori lotto: {uri}")
+            assert uri is not None
+            rows_by_uri[uri].append(row)
+        raws.append(raw)
         total_rows += len(payload["results"]["bindings"])
-    return payloads, {"count": len(ordered), "bytes": total, "rows": total_rows, "sha256": digest.hexdigest()}
+    require(all(rows_by_uri.values()), "lotto nominale con votazione mancante")
+    payloads = {uri: {"results": {"bindings": rows}} for uri, rows in rows_by_uri.items()}
+    total, digest = response_fingerprint(raws)
+    return payloads, {
+        "count": len(ordered), "batches": len(batches), "bytes": total,
+        "rows": total_rows, "sha256": digest,
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -480,6 +543,29 @@ def parse_signers(payload: dict[str, Any], bills: dict[str, dict[str, Any]]) -> 
     return per_bill
 
 
+def parse_government_initiatives(
+    payload: dict[str, Any], bills: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, list[str]]]:
+    government: dict[str, dict[str, set[str]]] = defaultdict(
+        lambda: {"formalProposers": set(), "governmentLabels": set()}
+    )
+    for row in payload["results"]["bindings"]:
+        id_ddl = binding_value(row, "id")
+        presenter = binding_value(row, "presenter")
+        require(id_ddl in bills, f"iniziativa governativa senza fase verificata: {id_ddl}")
+        require(presenter is not None, f"{id_ddl}: presentatore governativo assente")
+        assert id_ddl is not None and presenter is not None
+        presenter = re.sub(r"\s+", " ", unescape(presenter)).strip()
+        match = GOVERNMENT_LABEL_RE.search(presenter)
+        require(match is not None, f"{id_ddl}: Governo non esplicito nel presentatore {presenter!r}")
+        government[id_ddl]["formalProposers"].add(presenter)
+        government[id_ddl]["governmentLabels"].add(f"Governo {match.group(1)}")
+    return {
+        id_ddl: {key: sorted(values) for key, values in entry.items()}
+        for id_ddl, entry in government.items()
+    }
+
+
 def initial_perimeter_phases(bill: dict[str, Any]) -> list[dict[str, Any]]:
     """Phase nodes at the lowest progressivoIter marked presentato on ramo S."""
     phases = list(bill["phases"].values())
@@ -557,6 +643,7 @@ def parse_nominal(payload: dict[str, Any], vote_uri: str) -> dict[str, str]:
     for row in payload["results"]["bindings"]:
         pred = binding_value(row, "p")
         sen_uri = binding_value(row, "sen")
+        require(binding_value(row, "v") == vote_uri, f"{vote_uri}: lotto nominale di altra votazione")
         require(pred in NOMINAL_PREDICATES, f"{vote_uri}: predicato nominale inatteso {pred!r}")
         require(sen_uri is not None, f"{vote_uri}: nominale senza senatore")
         assert pred is not None and sen_uri is not None
@@ -574,29 +661,42 @@ def build_snapshot(
 ) -> dict[str, Any]:
     bills = parse_phases(payloads["phases"])
     signers = parse_signers(payloads["signers"], bills)
+    government = parse_government_initiatives(payloads["governmentInitiatives"], bills)
     disegni_total = int(binding_value(payloads["disegniXix"]["results"]["bindings"][0], "n") or "-1")
-    require(disegni_total >= len(bills), "disegniXix sotto i disegni con primo firmatario senatore")
-    excluded_no_senator_first = disegni_total - len(bills)
+    require(disegni_total >= len(bills), "disegniXix sotto il perimetro candidato")
+    excluded_other_initiative = disegni_total - len(bills)
 
     perimeter_ids: set[str] = set()
     acts_core: dict[str, dict[str, Any]] = {}
     for id_ddl, bill in bills.items():
-        initial = initial_perimeter_phases(bill)
-        if not initial:
-            continue
-        primos: set[str] = set()
-        primo_nodes: list[dict[str, Any]] = []
-        for phase in initial:
-            node_primos = (signers.get(id_ddl) or {}).get("primoByNode", {}).get(phase["ddlUri"], set())
-            if node_primos:
-                primo_nodes.append(phase)
-                primos.update(node_primos)
-        require(len(primos) == 1, f"{id_ddl}: primi firmatari sulla fase iniziale {sorted(primos)}")
-        first_signer = sorted(primos)[0]
-        base = min(primo_nodes or initial, key=lambda phase: int(phase["idFase"]))
-        senators = (signers.get(id_ddl) or {}).get("senators", set())
-        co_signers = sorted(senators - {first_signer}, key=int)
         phases_sorted = sorted(bill["phases"].values(), key=lambda phase: (phase["progressivo"], phase["ddlUri"]))
+        initial = initial_perimeter_phases(bill)
+        government_entry = government.get(id_ddl)
+        if government_entry:
+            senate_phases = [phase for phase in phases_sorted if phase["ramo"] == "S"]
+            if not senate_phases:
+                continue
+            require(id_ddl not in signers, f"{id_ddl}: iniziativa governativa e prima firma senatoriale sovrapposte")
+            base = senate_phases[0]
+            first_signer = None
+            co_signers: list[str] = []
+            presented_date = phases_sorted[0]["presentedDate"]
+        else:
+            if not initial:
+                continue
+            primos: set[str] = set()
+            primo_nodes: list[dict[str, Any]] = []
+            for phase in initial:
+                node_primos = (signers.get(id_ddl) or {}).get("primoByNode", {}).get(phase["ddlUri"], set())
+                if node_primos:
+                    primo_nodes.append(phase)
+                    primos.update(node_primos)
+            require(len(primos) == 1, f"{id_ddl}: primi firmatari sulla fase iniziale {sorted(primos)}")
+            first_signer = sorted(primos)[0]
+            base = min(primo_nodes or initial, key=lambda phase: int(phase["idFase"]))
+            senators = (signers.get(id_ddl) or {}).get("senators", set())
+            co_signers = sorted(senators - {first_signer}, key=int)
+            presented_date = base["presentedDate"]
         current = max(phases_sorted, key=lambda phase: (phase["progressivo"], phase["stateDate"], phase["ddlUri"]))
         outcome = outcome_class_of(current["state"], current["ramo"])
         titles = sorted(bill["titles"], key=lambda item: (-len(item), item))
@@ -607,10 +707,14 @@ def build_snapshot(
             "number": base["fase"],
             "natureId": sorted(bill["natures"])[0],
             "title": titles[0] if titles else None,
-            "presentedDate": base["presentedDate"],
+            "presentedDate": presented_date,
             "phases": phases_sorted,
             "currentPhase": dict(current),
             "outcomeClass": outcome,
+            "initiativeKind": "government" if government_entry else "parliamentary",
+            "formalProposers": government_entry["formalProposers"] if government_entry else [],
+            "governmentLabels": government_entry["governmentLabels"] if government_entry else [],
+            "senatePhaseId": base["idFase"],
             "firstSignerId": first_signer,
             "coSignerIds": co_signers,
         }
@@ -665,6 +769,7 @@ def build_snapshot(
     co_signer_set: set[str] = set()
     signatures = 0
     acts_by_nature: Counter[str] = Counter()
+    acts_by_initiative: Counter[str] = Counter()
     acts_by_outcome: Counter[str] = Counter()
     multi_phase = 0
     for id_ddl in sorted(acts_core, key=int):
@@ -675,27 +780,31 @@ def build_snapshot(
         )
         if len(act["phases"]) > 1:
             multi_phase += 1
-        first_signers.add(act["firstSignerId"])
+        if act["firstSignerId"] is not None:
+            first_signers.add(act["firstSignerId"])
+            signatures += 1 + len(act["coSignerIds"])
         co_signer_set.update(act["coSignerIds"])
-        signatures += 1 + len(act["coSignerIds"])
         acts_by_nature[act["natureId"]] += 1
+        acts_by_initiative[act["initiativeKind"]] += 1
         acts_by_outcome[act["outcomeClass"]] += 1
         act_list.append({
             **{key: act[key] for key in ("id", "idDdl", "number", "natureId", "title", "presentedDate")},
             "phases": act["phases"],
             "currentPhase": act["currentPhase"],
             "outcomeClass": act["outcomeClass"],
+            "initiativeKind": act["initiativeKind"],
+            "formalProposers": act["formalProposers"],
+            "governmentLabels": act["governmentLabels"],
             "firstSignerId": act["firstSignerId"],
             "coSignerIds": act["coSignerIds"],
             "finalVoteIds": vote_ids,
-            "officialPage": DDL_PAGE_BASE.format(
-                id_fase=next(
-                    phase["idFase"]
-                    for phase in act["phases"]
-                    if phase["kind"] == "presentato" and phase["ramo"] == "S"
-                )
-            ),
+            "officialPage": DDL_PAGE_BASE.format(id_fase=act["senatePhaseId"]),
         })
+
+    government_vote_ids = {
+        vote_id for act in act_list if act["initiativeKind"] == "government"
+        for vote_id in act["finalVoteIds"]
+    }
 
     today = datetime.now(timezone.utc)
     observed = today.date().isoformat()
@@ -743,11 +852,15 @@ def build_snapshot(
         "coverage": {
             "acts": len(act_list),
             "actsByNature": {key: acts_by_nature[key] for key in sorted(acts_by_nature)},
+            "actsByInitiative": {key: acts_by_initiative[key] for key in sorted(acts_by_initiative)},
             "phases": sum(len(act["phases"]) for act in act_list),
             "actsWithMultiplePhases": multi_phase,
             "signatures": signatures,
-            "actsExcludedNonSenatorFirstSigner": excluded_no_senator_first,
+            "actsObservedWithInitiative": disegni_total,
+            "actsExcludedOtherInitiative": excluded_other_initiative,
+            "actsExcludedNoEligibleSenatePhase": len(bills) - len(act_list),
             "finalVotes": len(final_votes),
+            "finalVotesOnGovernmentActs": len(government_vote_ids),
             "finalVotesOnOtherActs": votes_on_other_acts,
             "nominalVotes": sum(len(vote["votes"]) for vote in final_votes.values()),
             "secretFinalVotes": sum(1 for vote in final_votes.values() if vote["secret"]),
@@ -761,8 +874,9 @@ def build_snapshot(
             for uri in sorted(final_votes, key=lambda item: tuple(int(p) for p in final_votes[item]["id"].split("-")))
         ],
         "caveats": [
-            f"Il perimetro è l'iniziativa parlamentare a prima firma di un senatore: sono esclusi i disegni di legge a prima firma di deputati, del Governo, delle Regioni, del CNEL e di iniziativa popolare ({excluded_no_senator_first} disegni XIX con iniziative ma senza primo firmatario senatore nella fonte).",
-            f"Le votazioni finali su disegni di legge non a prima firma di un senatore ({votes_on_other_acts} nella fonte) non sono incluse: compaiono solo le finali sugli atti del perimetro.",
+            f"Il perimetro comprende i disegni a prima firma di senatori presentati al Senato e quelli di iniziativa governativa con una fase al Senato. Su {disegni_total} disegni XIX con iniziativa nella fonte, {excluded_other_initiative} hanno un'altra iniziativa e {len(bills) - len(act_list)} non hanno una fase Senato ammissibile.",
+            f"Le votazioni finali su atti fuori perimetro ({votes_on_other_acts} eventi osservati nella fonte) non sono incluse.",
+            "I presentatori formali e il Governo delle iniziative governative provengono dalle etichette ufficiali osr:presentatore; non sono dedotti dal voto favorevole o da corrispondenze di nomi.",
             "La firma di un disegno di legge non equivale alla paternità del testo finale: l'iter parlamentare può modificare il testo approvato.",
             "'Arrivata in fondo' corrisponde alla classe 'legge' ricavata dalle etichette ufficiali degli stati del Senato.",
             "I conteggi di firme, disegni e voti non misurano produttività o merito dei senatori.",
@@ -815,6 +929,8 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         require(bool(SHA_RE.match(str(response.get("sha256") or ""))), f"{key}.sha256")
         if key == "nominalVotes":
             require(isinstance(response.get("count"), int) and response["count"] > 0, "nominalVotes.count")
+            require(isinstance(response.get("batches"), int) and 0 < response["batches"] <= response["count"],
+                    "nominalVotes.batches")
         else:
             require(isinstance(response.get("pages"), int) and response["pages"] > 0, f"{key}.pages")
         if locks:
@@ -839,12 +955,30 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
         require(isinstance(aid, str) and ACT_ID_RE.fullmatch(aid) is not None, f"act id inatteso {aid!r}")
         require(act.get("idDdl") == ACT_ID_RE.fullmatch(aid).group(1), f"{aid}: idDdl incoerente")
         act_ids.add(aid)
-        require(isinstance(act.get("number"), str) and act["number"], f"{aid}: number assente")
+        require(isinstance(act.get("number"), str) and SENATE_BILL_NUMBER_RE.fullmatch(act["number"]) is not None,
+                f"{aid}: number Senato inatteso")
         require(act.get("natureId") in NATURE_IDS, f"{aid}: natureId inatteso")
+        kind = act.get("initiativeKind")
+        require(kind in ("parliamentary", "government"), f"{aid}: initiativeKind inattesa")
         first = act.get("firstSignerId")
-        require(isinstance(first, str) and first.isdigit(), f"{aid}: firstSignerId inatteso")
+        require(first is None if kind == "government" else isinstance(first, str) and first.isdigit(),
+                f"{aid}: firstSignerId incoerente con iniziativa")
         co = act.get("coSignerIds") or []
         require(isinstance(co, list) and len(set(co)) == len(co), f"{aid}: coSignerIds duplicati")
+        formal = act.get("formalProposers")
+        governments = act.get("governmentLabels")
+        require(isinstance(formal, list) and isinstance(governments, list), f"{aid}: presentatori/Governi assenti")
+        if kind == "government":
+            require(not co and bool(formal) and bool(governments), f"{aid}: iniziativa governativa incompleta")
+            labels = set()
+            for presenter in formal:
+                require(isinstance(presenter, str), f"{aid}: presentatore inatteso")
+                match = GOVERNMENT_LABEL_RE.search(presenter)
+                require(match is not None, f"{aid}: Governo non esplicito nel presentatore")
+                labels.add(f"Governo {match.group(1)}")
+            require(governments == sorted(labels), f"{aid}: Governi non riconciliati con i presentatori")
+        else:
+            require(not formal and not governments, f"{aid}: presentatori governativi su atto parlamentare")
         require(first not in co, f"{aid}: primo firmatario tra i cofirmatari")
         for item in co:
             require(isinstance(item, str) and item.isdigit(), f"{aid}: coSignerId inatteso {item!r}")
@@ -856,11 +990,14 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
             f"{aid}: phases non ordinate per progressivo",
         )
         lowest = phases[0]["progressivo"]
-        require(
-            any(phase["kind"] == "presentato" and phase["ramo"] == "S"
-                for phase in phases if phase["progressivo"] == lowest),
-            f"{aid}: fase iniziale non presentata al Senato",
-        )
+        if kind == "parliamentary":
+            require(
+                any(phase["kind"] == "presentato" and phase["ramo"] == "S"
+                    for phase in phases if phase["progressivo"] == lowest),
+                f"{aid}: fase iniziale non presentata al Senato",
+            )
+        else:
+            require(any(phase["ramo"] == "S" for phase in phases), f"{aid}: fase Senato assente")
         seen_uris: set[str] = set()
         for phase in phases:
             uri = phase.get("ddlUri")
@@ -888,15 +1025,8 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
             f"{current['state']} @ {current['ramo']}" in class_states,
             f"{aid}: stato corrente {current['state']!r} @ {current['ramo']} non dichiarato in {outcome}",
         )
-        presented = next(
-            (
-                phase
-                for phase in phases
-                if phase.get("kind") == "presentato" and phase.get("ramo") == "S"
-            ),
-            None,
-        )
-        require(presented is not None, f"{aid}: fase presentata al Senato assente")
+        presented = next((phase for phase in phases if phase["ramo"] == "S"), None)
+        require(presented is not None, f"{aid}: fase Senato assente")
         require(
             act.get("officialPage") == DDL_PAGE_BASE.format(id_fase=presented["idFase"]),
             f"{aid}: officialPage incoerente",
@@ -910,6 +1040,7 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
     for vote in final_votes:
         vid = vote.get("id")
         require(isinstance(vid, str) and re.fullmatch(r"19-\d+-\d+", vid) is not None, f"voto id inatteso {vid!r}")
+        require(vid not in vote_ids, f"voto duplicato {vid}")
         vote_ids.add(vid)
         session_id = vote.get("sessionId")
         require(isinstance(session_id, str) and vid.startswith(f"{session_id}-"), f"{vid}: sessionId incoerente")
@@ -949,6 +1080,8 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
 
     coverage = payload.get("coverage") or {}
     require(coverage.get("acts") == len(acts), "coverage.acts non riconcilia")
+    require(coverage.get("actsByInitiative") == dict(sorted(Counter(act["initiativeKind"] for act in acts).items())),
+            "coverage.actsByInitiative non riconcilia")
     require(coverage.get("phases") == sum(len(act["phases"]) for act in acts),
             "coverage.phases non riconcilia")
     require(
@@ -957,21 +1090,27 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
     )
     require(coverage.get("actsByNature") == dict(sorted(Counter(act["natureId"] for act in acts).items())),
             "coverage.actsByNature non riconcilia")
-    require(coverage.get("signatures") == sum(1 + len(act.get("coSignerIds") or []) for act in acts),
+    require(coverage.get("signatures") == sum(1 + len(act["coSignerIds"]) for act in acts if act["firstSignerId"]),
             "coverage.signatures non riconcilia")
     require(
-        isinstance(coverage.get("actsExcludedNonSenatorFirstSigner"), int)
-        and coverage["actsExcludedNonSenatorFirstSigner"] >= 0,
-        "coverage.actsExcludedNonSenatorFirstSigner",
+        isinstance(coverage.get("actsObservedWithInitiative"), int)
+        and coverage["actsObservedWithInitiative"]
+        == len(acts) + coverage.get("actsExcludedOtherInitiative", -1)
+        + coverage.get("actsExcludedNoEligibleSenatePhase", -1),
+        "coverage.actsObservedWithInitiative non riconcilia",
     )
     require(coverage.get("finalVotes") == len(final_votes), "coverage.finalVotes non riconcilia")
+    require(coverage.get("finalVotesOnGovernmentActs") == len({
+        vote_id for act in acts if act["initiativeKind"] == "government"
+        for vote_id in act["finalVoteIds"]
+    }), "coverage.finalVotesOnGovernmentActs non riconcilia")
     require(isinstance(coverage.get("finalVotesOnOtherActs"), int) and coverage["finalVotesOnOtherActs"] >= 0,
             "coverage.finalVotesOnOtherActs")
     require(coverage.get("nominalVotes") == sum(len(vote["votes"]) for vote in final_votes),
             "coverage.nominalVotes non riconcilia")
     require(coverage.get("secretFinalVotes") == sum(1 for vote in final_votes if vote["secret"]),
             "coverage.secretFinalVotes non riconcilia")
-    require(coverage.get("senatorsAsFirstSigner") == len({act["firstSignerId"] for act in acts}),
+    require(coverage.get("senatorsAsFirstSigner") == len({act["firstSignerId"] for act in acts if act["firstSignerId"]}),
             "coverage.senatorsAsFirstSigner non riconcilia")
     require(coverage.get("senatorsAsCoSigner") == len({item for act in acts for item in (act.get("coSignerIds") or [])}),
             "coverage.senatorsAsCoSigner non riconcilia")
@@ -988,14 +1127,14 @@ def validate_snapshot(payload: dict[str, Any], locks: dict[str, Any] | None = No
 # --------------------------------------------------------------------------- #
 
 
-def check_committed(spec: dict[str, Any]) -> None:
-    payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    locks = (spec.get("source") or {}).get("committedResponses") or None
-    validate_snapshot(payload, locks=locks)
+def require_coverage_floor(coverage: dict[str, Any], spec: dict[str, Any]) -> None:
     floor = spec.get("coverageFloor") or {}
-    coverage = payload["coverage"]
     require(coverage["acts"] >= int(floor.get("acts", 1400)), "coverage acts sotto floor")
     require(coverage["finalVotes"] >= int(floor.get("finalVotes", 40)), "coverage finalVotes sotto floor")
+    require(coverage["actsByInitiative"].get("government", 0) >= int(floor.get("governmentActs", 100)),
+            "coverage governmentActs sotto floor")
+    require(coverage["finalVotesOnGovernmentActs"] >= int(floor.get("governmentFinalVotes", 140)),
+            "coverage governmentFinalVotes sotto floor")
     require(
         coverage["finalVotes"] + coverage.get("finalVotesOnOtherActs", 0)
         >= int(floor.get("finalVotesObserved", 200)),
@@ -1005,28 +1144,48 @@ def check_committed(spec: dict[str, Any]) -> None:
         coverage["senatorsAsFirstSigner"] >= int(floor.get("senatorsAsFirstSigner", 150)),
         "coverage senatorsAsFirstSigner sotto floor",
     )
+
+
+def check_committed(spec: dict[str, Any]) -> None:
+    payload = json.loads(OUTPUT.read_text(encoding="utf-8"))
+    locks = (spec.get("source") or {}).get("committedResponses") or None
+    validate_snapshot(payload, locks=locks)
+    coverage = payload["coverage"]
+    require_coverage_floor(coverage, spec)
     print(
         f"OK senato-atti-voti-xix: {coverage['acts']} disegni, {coverage['finalVotes']} votazioni finali, "
         f"{coverage['senatorsAsFirstSigner']} primi firmatari, {coverage['nominalVotes']} voti nominali"
     )
 
 
-def refresh() -> dict[str, Any]:
+def refresh(checkpoint: Path | None = None) -> dict[str, Any]:
+    if checkpoint:
+        checkpoint.mkdir(parents=True, exist_ok=True)
+        manifest_path = checkpoint / "manifest.json"
+        manifest = {"endpoint": ENDPOINT, "utcDate": datetime.now(timezone.utc).date().isoformat()}
+        if manifest_path.exists():
+            require(json.loads(manifest_path.read_text(encoding="utf-8")) == manifest,
+                    "checkpoint di un altro giorno o endpoint: usare una nuova directory")
+        else:
+            write_atomic(manifest_path, json.dumps(manifest) + "\n")
     payloads: dict[str, dict[str, Any]] = {}
     response_locks: dict[str, dict[str, Any]] = {}
     for key, query in QUERIES.items():
         if key == "signers":
-            payloads[key], response_locks[key] = sparql_fetch_keyset(query, "ddl")
+            payloads[key], response_locks[key] = sparql_fetch_keyset(query, "ddl", checkpoint)
         else:
-            payloads[key], response_locks[key] = sparql_fetch_paged(query)
+            payloads[key], response_locks[key] = sparql_fetch_paged(query, checkpoint)
     bills = parse_phases(payloads["phases"])
+    government_ids = set(parse_government_initiatives(payloads["governmentInitiatives"], bills))
     perimeter = {
-        id_ddl for id_ddl, bill in bills.items() if initial_perimeter_phases(bill)
+        id_ddl for id_ddl, bill in bills.items()
+        if initial_perimeter_phases(bill)
+        or (id_ddl in government_ids and any(phase["ramo"] == "S" for phase in bill["phases"].values()))
     }
     require(len(perimeter) >= 1400, f"disegni insufficienti: {len(perimeter)}")
     vote_entries, _ = parse_final_votes(payloads["finalVotes"], perimeter)
     nominal_uris = sorted(uri for uri, entry in vote_entries.items() if entry["voteType"] != "segreta")
-    nominal_payloads, nominal_digest = fetch_nominal_votes(nominal_uris)
+    nominal_payloads, nominal_digest = fetch_nominal_votes(nominal_uris, checkpoint)
     return build_snapshot(payloads, response_locks, nominal_payloads, nominal_digest)
 
 
@@ -1034,6 +1193,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="valida lo snapshot committato senza rete")
     parser.add_argument("--write", action="store_true", help="scarica la fonte Senato e riscrive lo snapshot")
+    parser.add_argument("--checkpoint", type=Path, help="directory di ripresa del refresh live, valida solo nel giorno UTC corrente")
     args = parser.parse_args()
     if args.check == args.write:
         raise SystemExit("specificare esattamente una azione: --check oppure --write")
@@ -1043,9 +1203,10 @@ def main() -> int:
         check_committed(spec)
         return 0
 
-    snapshot = refresh()
+    snapshot = refresh(args.checkpoint)
+    require_coverage_floor(snapshot["coverage"], spec)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_atomic(OUTPUT, serialize_snapshot(snapshot))
     print(f"written {OUTPUT.relative_to(ROOT)} ({snapshot['coverage']['acts']} acts)")
     return 0
 

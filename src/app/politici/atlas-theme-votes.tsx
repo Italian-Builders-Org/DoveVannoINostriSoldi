@@ -1,99 +1,52 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import type { RepublicActVote } from "@/lib/politici-repubblica";
+import type { ThemeVotesResult } from "@/lib/politici-voti-tema";
+import {
+  compactRepublicVoteStateCounts,
+  countRepublicVoteStates,
+  isRepublicActVote,
+  isRepublicVoteStateCounts,
+  OWN_VOTE_LABELS,
+  REPUBLIC_VOTE_COUNT_META,
+  republicVoteTone,
+} from "@/lib/politici-vote-states";
 import { VOTE_THEMES } from "@/lib/politici-voti-tema-catalog";
-import type { Resource } from "./atlas-data";
-import { requestDeadline } from "./atlas-data";
-import { OWN_VOTE_LABELS } from "./atlas-legislation";
-import { longDate } from "./atlas-model";
+import { count, object, requestDeadline, text, type Resource } from "./atlas-data";
+import { countLabel, longDate } from "./atlas-model";
+import { OfficialActLinks, validLinkedActs } from "./atlas-official-acts";
 import { Icon, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-type ThemeOption = {
-  id: string;
-  label: string;
-  description: string;
-  chamberVotes: number;
-  expressedVotes: number;
-  nonVotato: number;
-};
-
-type ThemeVoteRow = {
-  voteId: string;
-  actId: string;
-  actNumber: string;
-  actTitle: string;
-  officialPage: string;
-  date: string;
-  approved: boolean;
-  confidenceVote: boolean;
-  favorevoli: number;
-  contrari: number;
-  astenuti: number;
-  ownVote: RepublicActVote;
-  matchedNeedles: string[];
-};
-
-type ThemeVotesData = {
-  personId: string;
-  chamber: "camera" | "senato";
-  theme: { id: string; label: string; description: string } | null;
-  query: string | null;
-  periodLabel: string;
-  observedDate: string;
-  sourceUrl: string;
-  sourceLabel: string;
-  licenseLabel: string;
-  summary: {
-    totale: number;
-    favorevoli: number;
-    contrari: number;
-    astenuti: number;
-    nonVotato: number;
-    altro: number;
-  };
-  votes: ThemeVoteRow[];
-  years: Array<{
-    year: string;
-    events: number;
-    favorevoli: number;
-    contrari: number;
-    astenuti: number;
-    nonVotato: number;
-  }>;
-  themes: ThemeOption[];
-  caveats: string[];
-};
-
-const object = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
-const text = (v: unknown): v is string => typeof v === "string";
-const count = (v: unknown) => Number.isSafeInteger(v) && Number(v) >= 0;
+type ThemeVotesData = ThemeVotesResult;
 
 function parseThemeVotes(payload: unknown, personId: string): ThemeVotesData {
   if (!object(payload) || payload.ok !== true || payload.personId !== personId) throw new Error("invalid");
   if ((payload.chamber !== "camera" && payload.chamber !== "senato")
     || !["periodLabel", "observedDate", "sourceUrl", "sourceLabel", "licenseLabel"].every((key) => text(payload[key]))
     || !object(payload.summary)
-    || !["totale", "favorevoli", "contrari", "astenuti", "nonVotato", "altro"].every((key) => count((payload.summary as Record<string, unknown>)[key]))
+    || !count(payload.summary.totale)
+    || !isRepublicVoteStateCounts(payload.summary)
+    || countRepublicVoteStates(payload.summary) !== payload.summary.totale
     || !Array.isArray(payload.votes)
     || !Array.isArray(payload.years)
     || !Array.isArray(payload.themes)
     || !Array.isArray(payload.caveats)
     || !payload.caveats.every(text)
     || !payload.years.every((year) => object(year) && text(year.year)
-      && ["events", "favorevoli", "contrari", "astenuti", "nonVotato"].every((key) => count(year[key])))
+      && count(year.events) && isRepublicVoteStateCounts(year)
+      && countRepublicVoteStates(year) === year.events)
     || !payload.themes.every((theme) => object(theme)
       && text(theme.id) && text(theme.label) && text(theme.description)
-      && count(theme.chamberVotes) && count(theme.expressedVotes) && count(theme.nonVotato))
+      && count(theme.chamberVotes) && count(theme.expressedVotes))
     || !payload.votes.every((vote) => object(vote)
       && ["voteId", "actId", "actNumber", "actTitle", "officialPage", "date"].every((key) => text(vote[key]))
       && typeof vote.approved === "boolean"
       && typeof vote.confidenceVote === "boolean"
       && ["favorevoli", "contrari", "astenuti"].every((key) => count(vote[key]))
-      && text(vote.ownVote)
-      && Object.hasOwn(OWN_VOTE_LABELS, vote.ownVote)
+      && isRepublicActVote(vote.ownVote)
+      && validLinkedActs(vote.linkedActs)
       && Array.isArray(vote.matchedNeedles)
       && vote.matchedNeedles.every(text))) {
     throw new Error("invalid");
@@ -123,13 +76,6 @@ async function loadThemeVotes(
   } finally {
     deadline.dispose();
   }
-}
-
-function voteTone(ownVote: RepublicActVote): "for" | "against" | "abstain" | "absent" {
-  if (ownVote === "F") return "for";
-  if (ownVote === "C") return "against";
-  if (ownVote === "A") return "abstain";
-  return "absent";
 }
 
 export function ThemeVotes({ personId, initialThemeId = null }: { personId: string; initialThemeId?: string | null; }) {
@@ -177,8 +123,11 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
     <div className={extra.themeChips} role="group" aria-label="Temi disponibili">
       {VOTE_THEMES.map((theme) => {
         const stats = data?.themes.find((item) => item.id === theme.id);
+        const voteCountLabel = stats
+          ? `${countLabel(stats.expressedVotes, "voto espresso", "voti espressi")} su ${countLabel(stats.chamberVotes, "votazione", "votazioni")}`
+          : null;
         const chipTitle = stats
-          ? `${theme.description} · ${stats.expressedVotes} voti espressi su ${stats.chamberVotes} votazioni in aula (${stats.nonVotato} non votato)`
+          ? `${theme.description} · ${voteCountLabel} in aula`
           : theme.description;
         return (
           <button
@@ -190,7 +139,7 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
           >
             <span>{theme.label}</span>
             {stats !== undefined ? (
-              <small aria-label={`${stats.expressedVotes} voti espressi su ${stats.chamberVotes} votazioni`}>
+              <small aria-label={voteCountLabel ?? undefined}>
                 {stats.expressedVotes}
                 <span className={extra.themeChipDenom}>/{stats.chamberVotes}</span>
               </small>
@@ -233,10 +182,12 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
 
         <dl className={styles.metrics}>
           <div><dt>Votazioni in aula</dt><dd>{data.summary.totale}</dd></div>
-          <div><dt>Favorevoli</dt><dd>{data.summary.favorevoli}</dd></div>
-          <div><dt>Contrari</dt><dd>{data.summary.contrari}</dd></div>
-          <div><dt>Astenuti</dt><dd>{data.summary.astenuti}</dd></div>
-          <div><dt>Non votato</dt><dd>{data.summary.nonVotato}</dd></div>
+          {REPUBLIC_VOTE_COUNT_META.map(({ key, label }) => (
+            <div key={key}>
+              <dt>{label}</dt>
+              <dd>{data.summary[key] ?? "Non disponibile"}</dd>
+            </div>
+          ))}
         </dl>
 
         {data.years.length > 0 ? (
@@ -247,8 +198,8 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
             </div>
             <ol className={extra.yearBars}>
               {data.years.map((year) => {
-                const total = year.favorevoli + year.contrari + year.astenuti + year.nonVotato;
-                const max = Math.max(1, ...data.years.map((item) => item.favorevoli + item.contrari + item.astenuti + item.nonVotato));
+                const total = countRepublicVoteStates(year);
+                const max = Math.max(1, ...data.years.map(countRepublicVoteStates));
                 const width = Math.max(4, Math.round((total / max) * 100));
                 return <li key={year.year}>
                   <span className={extra.yearLabel}>{year.year}</span>
@@ -256,7 +207,7 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
                     <span className={extra.yearFill} style={{ width: `${width}%` }} />
                   </span>
                   <span className={extra.yearMeta}>
-                    F {year.favorevoli} · C {year.contrari} · A {year.astenuti} · N {year.nonVotato}
+                    {compactRepublicVoteStateCounts(year)}
                   </span>
                 </li>;
               })}
@@ -266,21 +217,21 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
 
         {data.summary.totale === 0 ? (
           <Status title="Nessuna votazione finale per questo tema">
-            Nello snapshot non risultano votazioni finali su atti di iniziativa parlamentare
+            Nello snapshot non risultano votazioni finali sugli atti inclusi
             il cui titolo richiama il tema. Non significa assenza di proposte o di lavoro in commissione.
           </Status>
         ) : data.summary.favorevoli + data.summary.contrari + data.summary.astenuti === 0 ? (
-          <Status title="Presente in aula sul tema, senza voto espresso">
-            Ci sono {data.summary.totale} votazioni finali sul tema, ma in tutte questa persona risulta
-            «non ha votato» (o non rilevato) secondo la fonte ufficiale. Non è un errore del conteggio:
-            le votazioni esistono in aula; manca il voto individuale espresso.
+          <Status title="Nessun voto individuale espresso sul tema">
+            Per queste {data.summary.totale} votazioni la fonte registra soltanto stati diversi
+            da favorevole, contrario o astenuto, oppure non fornisce un dato nominale. Il dettaglio
+            mantiene separati tutti gli stati disponibili.
           </Status>
         ) : null}
 
         {data.summary.totale > 0 ? (
           <ol className={extra.themeTimeline}>
             {data.votes.map((vote) => {
-              const tone = voteTone(vote.ownVote);
+              const tone = republicVoteTone(vote.ownVote);
               const numberLabel = data.chamber === "senato" || vote.actNumber.startsWith("S.")
                 ? vote.actNumber
                 : `A.C. ${vote.actNumber}`;
@@ -301,7 +252,10 @@ export function ThemeVotes({ personId, initialThemeId = null }: { personId: stri
                   <div><dt>Contrari</dt><dd>{vote.contrari}</dd></div>
                   <div><dt>Astenuti</dt><dd>{vote.astenuti}</dd></div>
                 </dl>
-                <a href={vote.officialPage} target="_blank" rel="noreferrer">Atto ufficiale <Icon name="arrow" size={14} /></a>
+                <OfficialActLinks officialPage={vote.officialPage} linkedActs={vote.linkedActs} />
+                {data.theme ? <a href={`?vista=storico-voti&tema=${data.theme.id}&ramo=${data.chamber}#voto-${data.chamber}-${vote.voteId}`}>
+                  Vedi gruppi e confronti <Icon name="arrow" size={14} />
+                </a> : null}
               </li>;
             })}
           </ol>

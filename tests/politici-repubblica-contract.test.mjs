@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
-const { getRepubblicaGraph, getRepubblicaMap, findRepublicPerson } = await import(
+const { getRepubblicaGraph, getRepubblicaMap, getRepubblicaProfiles, findRepublicPerson } = await import(
   "../src/lib/politici-repubblica.ts"
 );
 
@@ -34,22 +34,22 @@ test("compact map keeps only navigation fields and matches person ids", () => {
   assert.equal(map.groups.length, graph.groups.length);
   assert.ok(map.people.every((person) => typeof person.photo === "boolean"));
   assert.ok(map.people.every((person) => findRepublicPerson(person.id)));
-  assert.equal(map.cameraAttendanceRanking.chamber, "camera");
-  assert.ok(map.cameraAttendanceRanking.rows.length >= 390);
-  assert.equal(map.cameraAttendanceRanking.rows[0]?.rank, 1);
-  const percents = map.cameraAttendanceRanking.rows.map((row) =>
-    Number.parseFloat(row.presencePercent.replace("%", "")),
-  );
-  for (let index = 1; index < percents.length; index += 1) {
-    assert.ok(
-      (percents[index] ?? Number.POSITIVE_INFINITY) <= (percents[index - 1] ?? Number.NEGATIVE_INFINITY),
-      "ranking must be descending by presence",
-    );
-  }
-  assert.match(map.cameraAttendanceRanking.caveat, /Senato/);
+  assert.equal("cameraAttendanceRanking" in map, false);
   assert.equal(map.education.all.total, map.people.length);
   assert.ok(map.education.camera.stemCount + map.education.senato.stemCount <= map.education.all.stemCount + map.education.governo.stemCount);
   assert.ok(map.education.all.areas.some((area) => area.area === "stem"));
+});
+
+test("Camera vote participation stays a sourced profile fact without ranks", () => {
+  const profiles = Object.values(getRepubblicaProfiles());
+  const attendance = profiles.find((profile) => profile.voteAttendance !== null)?.voteAttendance;
+
+  assert.ok(attendance);
+  assert.equal(attendance.chamber, "camera");
+  assert.match(attendance.periodLabel, /legislatura|dal|al/i);
+  assert.match(attendance.sourceUrl, /^https:\/\/www\.camera\.it\//);
+  assert.equal("rank" in attendance, false);
+  assert.equal("rankedAmong" in attendance, false);
 });
 
 test("declared portrait gaps stay without invented photos", () => {

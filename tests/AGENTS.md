@@ -40,7 +40,8 @@ e [CONTRIBUTING.md](../CONTRIBUTING.md#verifica-locale).
 
 ## Prima di una PR
 
-Esegui il profilo full di [Verifica locale](../CONTRIBUTING.md#verifica-locale),
-inclusi suite Node, ETL, snapshot offline, build e produzione, dopo l'ultima
-modifica. Riporta ogni gate come `PASS`, `FAIL` o `NOT RUN` e spiega ogni limite
-ambientale. Un test mirato verde non sostituisce il profilo full.
+Esegui i gate applicabili del profilo full di
+[Verifica locale](../CONTRIBUTING.md#verifica-locale) dopo l'ultima modifica,
+rispettando la politica ETL di [AGENTS.md](../AGENTS.md). Riporta ogni gate come
+`PASS`, `FAIL` o `NOT RUN` e spiega ogni limite ambientale. Un test mirato verde
+non sostituisce il profilo full.

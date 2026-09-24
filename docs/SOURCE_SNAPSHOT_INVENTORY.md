@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 114
+- Artefatti nel registro: 115
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 97 (PR umana dopo revisione)
+- manuale: 98 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -123,6 +123,7 @@ La revisione e il merge restano umani.
 | `istat-bes-innovazione-2004-2023` | 2004-2023 | 2026-09-17 | https://www.istat.it/notizia/bes-dei-territori-edizione-2025/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_bes_innovazione.py --check` |
 | `istat-poverta-soglia-assoluta-2005-2024` | 2005-2024 | 2026-09-17 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_soglia_assoluta.py --check` |
 | `istat-poverta-soglia-relativa-2014-2024` | 2014-2024 | 2026-09-21 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_poverta_soglia_relativa.py --check` |
+| `istat-poverta-regioni-2014-2024` | 2014-2024 | 2026-09-23 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python scripts/etl/istat_poverta_regioni.py --check` |
 | `eurostat-arope-2015-2025` | 2015-2025 | 2026-09-21 | https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_arope.py --check` |
 | `istat-epea-2016-2022` | 2016-2022 | 2026-09-04 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_epea_snapshot.py --check` |
 | `inps-naspi-2018-2022` | 2018-2022 | 2026-09-04 | https://opendata.inps.it/opendata | nessuno | nessuno | manuale | `python3 scripts/etl/inps_naspi_snapshot.py --check` |
@@ -149,8 +150,8 @@ La revisione e il merge restano umani.
 | `politici-eurodeputati-it` | non dichiarato nello snapshot | 2026-09-20T16:10:00+00:00 | https://www.europarl.europa.eu/meps/it/home | nessuno | nessuno | manuale | `python3 scripts/etl/politici_eurodeputati_it_snapshot.py --check` |
 | `ritratti-liberi` | non dichiarato nello snapshot | 2026-09-17T20:12:24+00:00 | https://commons.wikimedia.org/ | nessuno | nessuno | manuale | `python3 scripts/etl/ritratti_liberi_snapshot.py --check` |
 | `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
-| `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T21:42:19+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
-| `senato-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-18T21:41:48+00:00 | https://dati.senato.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check` |
+| `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-22T15:11:42+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
+| `senato-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-23T08:38:08+00:00 | https://dati.senato.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check` |
 | `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 | `parlamento-giudiziario-xix` | XIX legislatura, dal 2022-10-13 | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/555 | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check` |
 | `opencivitas-2022-polizia` | 2022 | 2026-09-22T13:19:50Z | https://www.opencivitas.it/it/dataset/2022-comuni-polizia-locale-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_polizia_snapshot.py --check` |

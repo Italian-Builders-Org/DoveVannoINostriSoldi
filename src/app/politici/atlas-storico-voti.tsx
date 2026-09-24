@@ -2,13 +2,30 @@
 
 import { useEffect, useId, useMemo, useState } from "react";
 import { VOTE_THEMES } from "@/lib/politici-voti-tema-catalog";
-import type { RepublicActVote, RepublicMap } from "@/lib/politici-repubblica";
-import type { Resource } from "./atlas-data";
-import { requestDeadline } from "./atlas-data";
-import { OWN_VOTE_LABELS } from "./atlas-legislation";
+import { compareGroupVoteEvents, type GroupChoice } from "@/lib/politici-group-patterns";
+import type { RepublicMap } from "@/lib/politici-repubblica";
+import type {
+  CuratedComparison,
+  ThemeEventVoter,
+  ThemeGroupVote,
+  ThemeHistoryResult,
+  ThemeYearBucket,
+} from "@/lib/politici-voti-tema";
+import {
+  compactRepublicVoteStateCounts,
+  countRepublicVoteStates,
+  isRepublicActVote,
+  isRepublicVoteStateCounts,
+  OWN_VOTE_LABELS,
+  REPUBLIC_VOTE_STATE_META,
+  republicVoteTone,
+} from "@/lib/politici-vote-states";
+import { count, object, requestDeadline, text, type Resource } from "./atlas-data";
 import { parseActHeadline } from "./atlas-act-headline";
+import { OfficialActLinks, validLinkedActs } from "./atlas-official-acts";
 import {
   DEFAULT_THEME_ID,
+  countLabel,
   longDate,
   normalizeSearch,
   THEME_CHAMBERS,
@@ -18,91 +35,110 @@ import { Icon, Portrait, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-type YearBucket = {
-  year: string;
-  events: number;
-  cameraEvents: number;
-  senatoEvents: number;
-  favorevoli: number;
-  contrari: number;
-  astenuti: number;
-  nonVotato: number;
-};
+type YearBucket = ThemeYearBucket;
+type EventVoter = ThemeEventVoter;
+type GroupVote = ThemeGroupVote;
+type ThemeHistoryData = ThemeHistoryResult;
 
-type EventVoter = {
-  personId: string;
-  name: string;
-  groupLabel: string | null;
-  ownVote: RepublicActVote;
-};
+const expressedVoteKeys = (["F", "C", "A"] as const)
+  .map((code) => REPUBLIC_VOTE_STATE_META[code].countKey);
 
-type ThemeHistoryData = {
-  theme: { id: string; label: string; description: string } | null;
-  query: string | null;
-  personQuery: string | null;
-  chamber: ThemeChamberFilter;
-  expressedOnly: boolean;
-  periodLabel: string;
-  observedDate: string;
-  cameraSourceUrl: string;
-  cameraSourceLabel: string;
-  senatoSourceUrl: string;
-  senatoSourceLabel: string;
-  events: Array<{
-    voteId: string;
-    chamber: "camera" | "senato";
-    actNumber: string;
-    actTitle: string;
-    officialPage: string;
-    date: string;
-    approved: boolean;
-    favorevoli: number;
-    contrari: number;
-    astenuti: number;
-    voters: {
-      favorevoli: EventVoter[];
-      contrari: EventVoter[];
-      astenuti: EventVoter[];
-    };
-  }>;
-  years: YearBucket[];
-  members: Array<{
-    personId: string;
-    name: string;
-    chamber: "camera" | "senato";
-    groupLabel: string | null;
-    expressedVotes: number;
-    summary: {
-      totale: number;
-      favorevoli: number;
-      contrari: number;
-      astenuti: number;
-      nonVotato: number;
-      altro: number;
-    };
-    years: YearBucket[];
-  }>;
-  themes: Array<{ id: string; label: string; description: string; chamberVotes: number }>;
-  caveats: string[];
-};
+function validVoters(value: unknown): boolean {
+  return object(value) && expressedVoteKeys.every((key) => Array.isArray(value[key])
+    && value[key].every((voter) => object(voter)
+      && text(voter.personId) && text(voter.name)
+      && (voter.groupLabel === null || text(voter.groupLabel))
+      && isRepublicActVote(voter.ownVote)
+      && REPUBLIC_VOTE_STATE_META[voter.ownVote].countKey === key));
+}
 
-const object = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
-const text = (v: unknown): v is string => typeof v === "string";
+function validGroupVotes(value: unknown): boolean {
+  return Array.isArray(value) && value.every((group) => object(group)
+    && (group.groupId === null || text(group.groupId))
+    && text(group.groupLabel)
+    && count(group.favorevoli)
+    && count(group.contrari)
+    && count(group.astenuti));
+}
+
+function validComparison(value: unknown): boolean {
+  return object(value) && object(value.subject) && object(value.position)
+    && text(value.id)
+    && (value.chamber === "camera" || value.chamber === "senato")
+    && (value.subject.kind === "person" || value.subject.kind === "group")
+    && text(value.subject.id) && text(value.subject.label)
+    && text(value.position.date) && text(value.position.summary)
+    && text(value.position.sourceLabel) && text(value.position.sourceUrl)
+    && text(value.actId) && text(value.voteId) && text(value.voteSourceUrl)
+    && (value.voteState === null || value.voteState === "F" || value.voteState === "C" || value.voteState === "A");
+}
 
 function parseHistory(payload: unknown): ThemeHistoryData {
   if (!object(payload) || payload.ok !== true) throw new Error("invalid");
-  if (!["periodLabel", "observedDate", "cameraSourceUrl", "cameraSourceLabel", "senatoSourceUrl", "senatoSourceLabel"].every((key) => text(payload[key]))
+  const coverage = payload.coverage;
+  if (!["cameraSourceUrl", "cameraSourceLabel", "senatoSourceUrl", "senatoSourceLabel", "senatoGroupSourceUrl", "senatoGroupSourceLabel"].every((key) => text(payload[key]))
+    || !object(coverage)
+    || !(["camera", "senato"] as const).every((chamber) => {
+      const item = coverage[chamber];
+      return object(item) && ["periodLabel", "observedDate", "acquiredAt"].every((key) => text(item[key]))
+        && count(item.included) && count(item.excluded);
+    })
     || (payload.chamber !== "tutti" && payload.chamber !== "camera" && payload.chamber !== "senato")
     || typeof payload.expressedOnly !== "boolean"
     || !Array.isArray(payload.events)
+    || !Array.isArray(payload.comparisons)
+    || !payload.comparisons.every(validComparison)
     || !Array.isArray(payload.years)
     || !Array.isArray(payload.members)
     || !Array.isArray(payload.themes)
     || !Array.isArray(payload.caveats)
-    || !payload.caveats.every(text)) {
+    || !payload.caveats.every(text)
+    || !payload.events.every((event) => object(event) && validVoters(event.voters)
+      && (event.chamber === "camera" || event.chamber === "senato")
+      && validLinkedActs(event.linkedActs)
+      && validGroupVotes(event.groupVotes))
+    || !payload.years.every((year) => object(year) && isRepublicVoteStateCounts(year))
+    || !payload.members.every((member) => object(member) && object(member.summary)
+      && count(member.summary.totale) && isRepublicVoteStateCounts(member.summary)
+      && countRepublicVoteStates(member.summary) === member.summary.totale
+      && Array.isArray(member.years) && member.years.every(isRepublicVoteStateCounts)
+      && object(member.otherVotes) && Object.values(member.otherVotes).every((vote) => (
+        isRepublicActVote(vote) && vote !== "F" && vote !== "C" && vote !== "A" && vote !== "non-rilevato"
+      )))) {
     throw new Error("invalid");
   }
   return payload as ThemeHistoryData;
+}
+
+function CuratedEvidence({
+  comparison,
+  event,
+}: {
+  comparison: CuratedComparison;
+  event: ThemeHistoryData["events"][number];
+}) {
+  const group = comparison.subject.kind === "group"
+    ? event.groupVotes.find((item) => item.groupId === comparison.subject.id)
+    : null;
+  return <aside className={extra.curatedEvidence} aria-label="Posizione e voto documentati">
+    <p className={extra.curatedEvidenceEyebrow}>
+      Confronto documentato · posizione {comparison.subject.kind === "person" ? "personale" : "del gruppo"}
+    </p>
+    <p><strong>{comparison.subject.label}</strong> · <time dateTime={comparison.position.date}>{longDate(comparison.position.date)}</time></p>
+    <p>{comparison.position.summary}</p>
+    <p>
+      {comparison.subject.kind === "person" && comparison.voteState
+        ? <>Voto finale sull’intero atto: <strong>{OWN_VOTE_LABELS[comparison.voteState]}</strong>.</>
+        : group
+          ? <>Voti espressi dal gruppo sull’intero atto: {group.favorevoli} favorevoli, {group.contrari} contrari, {group.astenuti} astenuti.</>
+          : null}
+    </p>
+    <div className={extra.curatedEvidenceSources}>
+      <SourceLink href={comparison.position.sourceUrl}>Fonte della posizione · {comparison.position.sourceLabel}</SourceLink>
+      <SourceLink href={comparison.voteSourceUrl}>Scheda ufficiale del voto</SourceLink>
+    </div>
+    <small>La posizione riguarda l’atto nel suo insieme; questo confronto non giudica la coerenza né attribuisce un voto alle singole misure.</small>
+  </aside>;
 }
 
 async function loadHistory(
@@ -131,13 +167,6 @@ async function loadHistory(
   } finally {
     deadline.dispose();
   }
-}
-
-function voteTone(ownVote: RepublicActVote): "for" | "against" | "abstain" | "absent" {
-  if (ownVote === "F") return "for";
-  if (ownVote === "C") return "against";
-  if (ownVote === "A") return "abstain";
-  return "absent";
 }
 
 function actNumberLabel(chamber: "camera" | "senato", actNumber: string): string {
@@ -170,14 +199,14 @@ function ActHeadline({
   </div>;
 }
 
-function ownVoteOnEvent(
+function expressedVoteOnEvent(
   event: ThemeHistoryData["events"][number],
   personId: string,
-): RepublicActVote {
+): "F" | "C" | "A" | null {
   if (event.voters.favorevoli.some((voter) => voter.personId === personId)) return "F";
   if (event.voters.contrari.some((voter) => voter.personId === personId)) return "C";
   if (event.voters.astenuti.some((voter) => voter.personId === personId)) return "A";
-  return "N";
+  return null;
 }
 
 function memberVoteTrail(
@@ -186,15 +215,20 @@ function memberVoteTrail(
 ) {
   return events
     .filter((event) => event.chamber === member.chamber)
-    .map((event) => ({
-      voteId: event.voteId,
-      date: event.date,
-      actNumber: event.actNumber,
-      actTitle: event.actTitle,
-      officialPage: event.officialPage,
-      approved: event.approved,
-      ownVote: ownVoteOnEvent(event, member.personId),
-    }));
+    .map((event) => {
+      return {
+        voteId: event.voteId,
+        date: event.date,
+        actNumber: event.actNumber,
+        actTitle: event.actTitle,
+        officialPage: event.officialPage,
+        linkedActs: event.linkedActs,
+        approved: event.approved,
+        ownVote: expressedVoteOnEvent(event, member.personId)
+          ?? member.otherVotes[event.voteId]
+          ?? "non-rilevato",
+      };
+    });
 }
 
 function YearBars({ years, mode }: { years: YearBucket[]; mode: "events" | "votes"; }) {
@@ -202,13 +236,13 @@ function YearBars({ years, mode }: { years: YearBucket[]; mode: "events" | "vote
   const max = Math.max(1, ...years.map((year) => (
     mode === "events"
       ? year.events
-      : year.favorevoli + year.contrari + year.astenuti + year.nonVotato
+      : countRepublicVoteStates(year)
   )));
   return <ol className={extra.yearBars} aria-label="Andamento per anno">
     {years.map((year) => {
       const value = mode === "events"
         ? year.events
-        : year.favorevoli + year.contrari + year.astenuti + year.nonVotato;
+        : countRepublicVoteStates(year);
       const width = Math.max(4, Math.round((value / max) * 100));
       return <li key={year.year}>
         <span className={extra.yearLabel}>{year.year}</span>
@@ -217,8 +251,8 @@ function YearBars({ years, mode }: { years: YearBucket[]; mode: "events" | "vote
         </span>
         <span className={extra.yearMeta}>
           {mode === "events"
-            ? `${year.events} votazioni · Camera ${year.cameraEvents} · Senato ${year.senatoEvents}`
-            : `F ${year.favorevoli} · C ${year.contrari} · A ${year.astenuti} · N ${year.nonVotato}`}
+            ? `${countLabel(year.events, "votazione", "votazioni")} · Camera ${year.cameraEvents} · Senato ${year.senatoEvents}`
+            : compactRepublicVoteStateCounts(year)}
         </span>
       </li>;
     })}
@@ -236,13 +270,14 @@ function VoterGroup({
   people: EventVoter[];
   onSelectPerson: (personId: string) => void;
 }) {
+  const [open, setOpen] = useState(people.length <= 12);
   if (!people.length) return null;
-  return <details className={extra.voterGroup} open={people.length <= 12}>
+  return <details className={extra.voterGroup} open={open} onToggle={(event) => setOpen(event.currentTarget.open)}>
     <summary>
       <span className={extra.themeVotePill} data-tone={tone}>{label}</span>
       <span className={styles.tag}>{people.length}</span>
     </summary>
-    <ul className={extra.voterList}>
+    {open ? <ul className={extra.voterList}>
       {people.map((voter) => (
         <li key={voter.personId}>
           <button type="button" onClick={() => onSelectPerson(voter.personId)}>
@@ -251,8 +286,115 @@ function VoterGroup({
           </button>
         </li>
       ))}
-    </ul>
+    </ul> : null}
   </details>;
+}
+
+function GroupVotes({ groups, chamber }: { groups: GroupVote[]; chamber: "camera" | "senato" }) {
+  if (!groups.length) return null;
+  return <details className={extra.voterGroup}>
+    <summary>
+      <span className={extra.themeVotePill} data-tone="neutral">Voti espressi per gruppo · {chamber === "camera" ? "Camera intera" : "Senato intero"}</span>
+      <span className={styles.tag}>{groups.length}</span>
+    </summary>
+    <dl className={extra.groupVoteList}>
+      {groups.map((group) => <div key={group.groupId ?? "unknown"}>
+        <dt>{group.groupLabel}</dt>
+        <dd>Favorevoli {group.favorevoli} · Contrari {group.contrari} · Astenuti {group.astenuti}</dd>
+      </div>)}
+    </dl>
+  </details>;
+}
+
+function groupChoiceLabel(choice: GroupChoice): string {
+  if (choice === "pareggio") return "Parità interna";
+  if (choice === "non-determinato") return "Non determinabile";
+  return OWN_VOTE_LABELS[choice];
+}
+
+function GroupPatternComparison({ data, initialGroupId }: { data: ThemeHistoryData; initialGroupId: string | null }) {
+  const [selectedA, setSelectedA] = useState<string | null>(null);
+  const [selectedB, setSelectedB] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const chamber = data.chamber;
+  const chamberEvents = data.events.filter((event) => event.chamber === chamber);
+  const groupsById = new Map<string, { id: string; label: string; date: string }>();
+  for (const event of chamberEvents) {
+    for (const group of event.groupVotes) {
+      if (!group.groupId) continue;
+      const previous = groupsById.get(group.groupId);
+      if (!previous || event.date > previous.date) {
+        groupsById.set(group.groupId, { id: group.groupId, label: group.groupLabel, date: event.date });
+      }
+    }
+  }
+  const groups = [...groupsById.values()].sort((a, b) => a.label.localeCompare(b.label, "it"));
+  const years = [...new Set(chamberEvents.map((event) => event.date.slice(0, 4)))].sort();
+  const initialSourceId = initialGroupId?.startsWith(`${chamber}-`)
+    ? initialGroupId.slice(chamber.length + 1) : "";
+  const preferredA = selectedA ?? initialSourceId;
+  const groupAId = groupsById.has(preferredA) ? preferredA : "";
+  const groupBId = groupsById.has(selectedB) ? selectedB : "";
+  const year = years.includes(selectedYear) ? selectedYear : "";
+  const comparison = (chamber === "camera" || chamber === "senato") && groupAId && groupBId
+    ? compareGroupVoteEvents(data.events, chamber, groupAId, groupBId, year || null)
+    : null;
+  const eventsById = new Map(chamberEvents.map((event) => [event.voteId, event]));
+
+  return <section className={extra.yearSection} aria-label="Pattern di voto comune tra gruppi">
+    <div className={styles.sectionHeading}>
+      <h3>Pattern di voto comune tra gruppi</h3>
+    </div>
+    {chamber === "tutti" ? <p className={styles.note}>Seleziona «Solo Camera» o «Solo Senato» per confrontare gruppi dello stesso ramo.</p> : <>
+      <div className={extra.groupPatternFilters}>
+        <label>Primo gruppo
+          <select value={groupAId} onChange={(event) => setSelectedA(event.target.value)}>
+            <option value="">Seleziona un gruppo</option>
+            {groups.map((group) => <option key={group.id} value={group.id}>{group.label}</option>)}
+          </select>
+        </label>
+        <label>Secondo gruppo
+          <select value={groupBId} onChange={(event) => setSelectedB(event.target.value)}>
+            <option value="">Seleziona un gruppo</option>
+            {groups.map((group) => <option key={group.id} value={group.id}>{group.label}</option>)}
+          </select>
+        </label>
+        <label>Periodo
+          <select value={year} onChange={(event) => setSelectedYear(event.target.value)}>
+            <option value="">Tutti gli anni disponibili</option>
+            {years.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+        </label>
+      </div>
+      {groupAId && groupAId === groupBId ? <p className={styles.note}>Scegli due gruppi diversi.</p> : null}
+      {comparison ? <>
+        <p className={styles.note} role="status">
+          {groupsById.get(groupAId)?.label} e {groupsById.get(groupBId)?.label} · {chamber === "camera" ? "Camera" : "Senato"} · {data.theme?.label ?? "ricerca libera"}
+          {data.query ? ` · titolo «${data.query}»` : ""} · {year || "tutti gli anni disponibili"}.
+          {comparison.periodStart && comparison.periodEnd ? ` Voti dal ${longDate(comparison.periodStart)} al ${longDate(comparison.periodEnd)}.` : " Nessuna votazione nel periodo."}
+        </p>
+        <dl className={extra.voteCounts}>
+          <div><dt>Scelta comune</dt><dd>{comparison.commonChoiceEvents}/{comparison.comparableEvents}</dd></div>
+          <div><dt>Eventi confrontabili</dt><dd>{comparison.comparableEvents}/{comparison.events.length}</dd></div>
+          <div><dt>Non confrontabili</dt><dd>{comparison.events.length - comparison.comparableEvents}</dd></div>
+        </dl>
+        {comparison.comparableEvents === 0 ? <p className={styles.note}>Nessuna scelta comune valutabile nel periodo selezionato.</p> : null}
+        <details className={extra.voterGroup}>
+          <summary><span className={extra.themeVotePill} data-tone="neutral">Vedi gli atti e le scelte</span><span className={styles.tag}>{comparison.events.length}</span></summary>
+          <ol className={extra.groupPatternList}>
+            {comparison.events.map((row) => {
+              const event = eventsById.get(row.voteId)!;
+              return <li key={row.voteId}>
+                <a href={`#voto-${event.chamber}-${row.voteId}`}>{actNumberLabel(event.chamber, event.actNumber)} · {longDate(event.date)} · {parseActHeadline(event.actTitle).title}</a>
+                <span>Primo gruppo: {groupChoiceLabel(row.choiceA)} · secondo gruppo: {groupChoiceLabel(row.choiceB)} · {row.agreement === null ? "non confrontabile" : row.agreement ? "scelta comune" : "scelta diversa"}</span>
+              </li>;
+            })}
+          </ol>
+        </details>
+      </> : null}
+      <p className={styles.note}>Il confronto usa gruppi parlamentari, non necessariamente partiti, e solo favorevoli, contrari e astenuti prevalenti. Parità interne e scelte non determinabili non entrano nel denominatore. La ricerca per persona e il filtro «solo chi ha espresso» non modificano il confronto tra gruppi; una scelta comune non dimostra un’alleanza politica.</p>
+    </>}
+  </section>;
 }
 
 export function ThemeVoteHistoryDirectory({
@@ -262,6 +404,7 @@ export function ThemeVoteHistoryDirectory({
   themeChamber,
   themeExpressedOnly,
   selectedId,
+  selectedGroupId,
   onThemeId,
   onThemeChamber,
   onThemeExpressedOnly,
@@ -273,6 +416,7 @@ export function ThemeVoteHistoryDirectory({
   themeChamber: ThemeChamberFilter;
   themeExpressedOnly: boolean;
   selectedId: string | null;
+  selectedGroupId: string | null;
   onThemeId: (themeId: string) => void;
   onThemeChamber: (chamber: ThemeChamberFilter) => void;
   onThemeExpressedOnly: (value: boolean) => void;
@@ -312,6 +456,24 @@ export function ThemeVoteHistoryDirectory({
       return localTokens.every((token) => haystack.includes(token));
     });
   }, [data, localTokens]);
+
+  useEffect(() => {
+    if (!data || !window.location.hash.startsWith("#voto-")) return;
+    const target = window.location.hash.slice(1);
+    const frame = window.requestAnimationFrame(() => {
+      const event = document.getElementById(target);
+      const pane = event?.closest(`.${styles.workspaceScroll}`);
+      if (!event || !(pane instanceof HTMLElement)) return;
+      if (getComputedStyle(pane).overflowY === "auto") {
+        pane.scrollTop += event.getBoundingClientRect().top - pane.getBoundingClientRect().top - 12;
+        window.scrollTo(0, 0);
+      } else {
+        const sticky = document.querySelector(`.${styles.topBar}`)?.getBoundingClientRect().height ?? 0;
+        window.scrollBy(0, event.getBoundingClientRect().top - sticky - 12);
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [data]);
 
   // Drop stale expansion when the open person leaves the filtered list.
   const openMemberIdSafe = openMemberId && members.some((member) => member.personId === openMemberId)
@@ -407,10 +569,13 @@ export function ThemeVoteHistoryDirectory({
           {data.query ? <>Titolo «{data.query}». </> : null}
           {query.trim() ? <>Persona «{query.trim()}». </> : null}
           {themeChamber === "camera" ? "Solo Camera. " : themeChamber === "senato" ? "Solo Senato. " : null}
-          {data.periodLabel}. Rilevazione: {longDate(data.observedDate)}.
-          {" "}{data.events.length} votazioni in aula · {members.length} parlamentari
-          {themeExpressedOnly ? " con voto espresso" : " (inclusi assenti)"}.
+          {" "}{countLabel(data.events.length, "votazione", "votazioni")} in aula · {countLabel(members.length, "parlamentare", "parlamentari")}
+          {themeExpressedOnly ? " con voto espresso" : " con tutti gli stati disponibili"}.
         </p>
+        <section className={styles.note} aria-label="Copertura delle fonti per ramo">
+          <p>Camera · {data.coverage.camera.periodLabel}. Osservata il {longDate(data.coverage.camera.observedDate)}, acquisita il {longDate(data.coverage.camera.acquiredAt)}. {data.coverage.camera.included} votazioni finali incluse; {data.coverage.camera.excluded} non incluse dopo la verifica dei collegamenti e dei conteggi.</p>
+          <p>Senato · {data.coverage.senato.periodLabel}. Osservato il {longDate(data.coverage.senato.observedDate)}, acquisito il {longDate(data.coverage.senato.acquiredAt)}. {data.coverage.senato.included} votazioni finali incluse sugli atti a prima firma senatore e sulle iniziative governative con fase Senato; {data.coverage.senato.excluded} votazioni osservate su altri atti sono escluse.</p>
+        </section>
 
         {data.years.length > 0 ? (
           <section className={extra.yearSection} aria-label="Storico per anno">
@@ -422,11 +587,14 @@ export function ThemeVoteHistoryDirectory({
           </section>
         ) : null}
 
+        <GroupPatternComparison key={selectedGroupId ?? "overview"} data={data} initialGroupId={selectedGroupId} />
+
         <section className={extra.storicoEvents} aria-label="Cosa si è votato">
           <div className={styles.sectionHeading}>
             <h3>Cosa si è votato</h3>
             <span className={styles.tag}>{data.events.length}</span>
           </div>
+          <p className={styles.note}>I confronti documentati sono una selezione: se un atto non ne ha, non implica nulla sulla coerenza delle posizioni.</p>
           {!data.events.length ? (
             <Status title="Nessuna votazione per questi filtri">
               Prova un altro tema o togli il raffinamento sul titolo.
@@ -437,7 +605,7 @@ export function ThemeVoteHistoryDirectory({
                 const expressedVoters = event.voters.favorevoli.length
                   + event.voters.contrari.length
                   + event.voters.astenuti.length;
-                return <li key={`${event.chamber}-${event.voteId}`} data-approved={event.approved ? "true" : "false"}>
+                return <li key={`${event.chamber}-${event.voteId}`} id={`voto-${event.chamber}-${event.voteId}`} data-approved={event.approved ? "true" : "false"}>
                   <div className={extra.themeTimelineRail}>
                     <time dateTime={event.date}>{longDate(event.date)}</time>
                     <span className={styles.tag}>{event.chamber === "senato" ? "Senato" : "Camera"}</span>
@@ -455,7 +623,10 @@ export function ThemeVoteHistoryDirectory({
                       <div><dt>Contrari</dt><dd>{event.contrari}</dd></div>
                       <div><dt>Astenuti</dt><dd>{event.astenuti}</dd></div>
                     </dl>
-                    <a href={event.officialPage} target="_blank" rel="noreferrer">Atto ufficiale <Icon name="arrow" size={14} /></a>
+                    <GroupVotes groups={event.groupVotes} chamber={event.chamber} />
+                    {data.comparisons.filter((comparison) => comparison.chamber === event.chamber && comparison.voteId === event.voteId)
+                      .map((comparison) => <CuratedEvidence key={comparison.id} comparison={comparison} event={event} />)}
+                    <OfficialActLinks officialPage={event.officialPage} linkedActs={event.linkedActs} />
                     <div className={extra.whoVoted}>
                       <p className={extra.whoVotedLead}>
                         Chi ha votato
@@ -522,16 +693,15 @@ export function ThemeVoteHistoryDirectory({
                       </span>
                       <span className={styles.convictionMeta}>
                         {member.groupLabel ? `${member.groupLabel} · ` : ""}
-                        {member.expressedVotes} voti espressi · F {member.summary.favorevoli} · C {member.summary.contrari} · A {member.summary.astenuti}
-                        {member.summary.nonVotato > 0 ? ` · non votato ${member.summary.nonVotato}` : ""}
+                        {countLabel(member.expressedVotes, "voto espresso", "voti espressi")} · {compactRepublicVoteStateCounts(member.summary)}
                       </span>
                       {member.years.length > 0 ? (
                         <span className={styles.convictionTitle}>
-                          Anni: {member.years.map((year) => `${year.year} (F${year.favorevoli}/C${year.contrari}/A${year.astenuti}/N${year.nonVotato})`).join(" · ")}
+                          Anni: {member.years.map((year) => `${year.year} (${compactRepublicVoteStateCounts(year)})`).join(" · ")}
                         </span>
                       ) : (
                         <span className={styles.convictionTitle}>
-                          {member.summary.totale} votazioni finali sul tema nello snapshot
+                          {countLabel(member.summary.totale, "votazione finale", "votazioni finali")} sul tema nello snapshot
                         </span>
                       )}
                     </span>
@@ -546,10 +716,10 @@ export function ThemeVoteHistoryDirectory({
                       </div>
                       <ol className={extra.memberVoteList}>
                         {votes.map((vote) => (
-                          <li key={vote.voteId} data-tone={voteTone(vote.ownVote)}>
+                          <li key={vote.voteId} data-tone={republicVoteTone(vote.ownVote)}>
                             <div className={extra.themeTimelineMeta}>
                               <time dateTime={vote.date}>{longDate(vote.date)}</time>
-                              <span className={extra.themeVotePill} data-tone={voteTone(vote.ownVote)}>
+                              <span className={extra.themeVotePill} data-tone={republicVoteTone(vote.ownVote)}>
                                 {OWN_VOTE_LABELS[vote.ownVote]}
                               </span>
                             </div>
@@ -559,7 +729,7 @@ export function ThemeVoteHistoryDirectory({
                               actNumber={vote.actNumber}
                               approved={vote.approved}
                             />
-                            <a href={vote.officialPage} target="_blank" rel="noreferrer">Atto ufficiale <Icon name="arrow" size={14} /></a>
+                            <OfficialActLinks officialPage={vote.officialPage} linkedActs={vote.linkedActs} />
                           </li>
                         ))}
                       </ol>
@@ -574,6 +744,7 @@ export function ThemeVoteHistoryDirectory({
         <div className={extra.actSource}>
           <SourceLink href={data.cameraSourceUrl}>{data.cameraSourceLabel}</SourceLink>
           <SourceLink href={data.senatoSourceUrl}>{data.senatoSourceLabel}</SourceLink>
+          <SourceLink href={data.senatoGroupSourceUrl}>{data.senatoGroupSourceLabel}</SourceLink>
         </div>
         <details className={styles.disclosure}>
           <summary>Come è costruito lo storico</summary>

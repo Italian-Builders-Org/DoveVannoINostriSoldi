@@ -26,13 +26,44 @@ non interrompe una build già in corso e non elimina una coda di build produzion
 - Rivedere la configurazione se attese superiori a dieci minuti diventano
   frequenti. Questa è una soglia operativa iniziale, non un limite Vercel.
 
-Il listino verificato il 5 settembre indica $0,014/min per Standard on demand
-e $0,028/min per Enhanced, con arrotondamento della durata al minuto superiore.
-Dieci build da cinque minuti costerebbero rispettivamente $0,70 e $1,40, a
-parità di durata ipotizzata. Standard senza on-demand o Elastic non è fatturata
-come build a consumo. Questi importi non includono il runtime né l'intera fattura.
-Fonti: [gestione build](https://vercel.com/docs/builds/managing-builds),
+Per la spesa effettiva leggere `Build CPU Minutes` nel ciclo di fatturazione:
+la macchina Standard e la concorrenza on-demand disattivata non bastano per
+dedurre un costo nullo. Distinguere utilizzo lordo, credito incluso e licenze.
+Le build dipendono da durata e core; le richieste di produzione continuano a
+consumare anche senza nuovi push. Fonti: [gestione build](https://vercel.com/docs/builds/managing-builds),
 [listino](https://vercel.com/docs/pricing#builds).
+
+## Cache runtime degli appalti
+
+Gli adapter conservano solo artifact validati. La cache usa identità del file,
+dimensione e tempi di modifica, inclusa `ctime`, per invalidare i risultati
+quando vengono sostituiti o modificati. Anche una lettura a cache calda controlla
+il fingerprint; hash, schema e provenance vengono ricontrollati al caricamento.
+Errori e risultati incompleti non vengono memorizzati come successi.
+
+Le cache sono limitate per numero di elementi e peso serializzato: 32 MiB per
+gli shard ente, 16 MiB per CPV e 16 MiB per shard storico operatori. Quest'ultima
+conserva righe serializzate e valida il record selezionato; non espande tutti i
+riepiloghi in oggetti. Il peso serializzato **non** equivale all'heap JavaScript:
+misurare anche RSS/heap prima di aumentare i limiti. Gli oggetti restituiti dagli
+adapter sono condivisi e vanno trattati come immutabili.
+
+`node --experimental-strip-types scripts/bench/procurement.mjs` confronta batch
+di enti e operatori diversi negli stessi shard, prima a freddo e poi a caldo.
+Conservare digest, runtime e corpus identici nel confronto. Non rappresenta la
+latenza HTTP o un crawler che cambia shard a ogni richiesta.
+
+Il layout pubblico non legge header della richiesta per scegliere la modalità
+immersiva. La mappa inizializza il proprio flag prima del primo paint e lo
+aggiorna sulle navigazioni client; un selettore CSS copre JavaScript disabilitato.
+Il gate `scripts/browser/runtime-cache.mjs` verifica header cache, filtri senza
+prefetch automatico, tastiera, avanti/indietro, sottodominio e shell senza JS.
+
+Le cache non sostituiscono il WAF: mantenere i limiti per IP e distinguere
+crawler automatici da richieste avviate dagli utenti. Calibrare eventuali
+limiti aggregati sul traffico residuo, senza permettere che un bot esaurisca la
+capacità degli utenti legittimi. Il sampling dei trace non dimostra da solo
+una riduzione della voce fatturata `Observability Events`.
 
 ## Dimensionare un evento
 

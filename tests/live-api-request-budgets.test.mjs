@@ -53,7 +53,7 @@ test("multi-file OpenBDAP views use persistent cache, single-flight and narrow c
     const source = read(path);
     assert.match(source, /export const maxDuration = 60/);
     assert.match(source, /SlidingWindowLimiter\(\{ windowMs: 60_000, max: 6 \}\)/);
-    assert.match(source, /ConcurrencyLimiter\(1\)/);
+    assert.match(source, /ConcurrencyLimiter\(3\)/);
     assert.match(source, new RegExp(`${operation}\\(\\)`));
     assert.match(source, /Retry-After/);
     assert.match(source, /finally\s*\{\s*release\(\)/);

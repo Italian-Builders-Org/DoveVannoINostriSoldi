@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { NextRequest } from "next/server.js";
 import test from "node:test";
@@ -55,7 +55,7 @@ assert proof["verifiedRows"] == proof["verifiedPostingRefs"] == count
 print(json.dumps(manifest))
 `, output, String(count)], {
     cwd: new URL("../", import.meta.url),
-    env: { ...process.env, DVNS_OFFLINE_GUARD: "1", PYTHONPATH: "scripts/etl:scripts/ci" },
+    env: { ...process.env, DVNS_OFFLINE_GUARD: "1", PYTHONPATH: ["scripts/etl", "scripts/ci"].join(delimiter) },
     encoding: "utf8",
   }));
 }

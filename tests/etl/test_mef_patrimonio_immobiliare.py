@@ -206,7 +206,9 @@ class MefPatrimonioImmobiliareTests(TestCase):
     def idle_buildings(self, beni: list[dict[str, str]], expected: int | None = None) -> list[dict[str, str]]:
         spec = self.synthetic_spec(beni, [contratto("10")])
         spec["expected"]["fabbricatiFermiRows"] = len(beni) if expected is None else expected
-        body = mef.fabbricati_fermi_projection(spec, self.input_dir)
+        idle: list[list[str]] = []
+        mef.beni_projection(spec, self.input_dir, {}, idle)
+        body = mef.fabbricati_fermi_payload(spec, idle)
         return list(csv.DictReader(io.StringIO(body.decode("utf-8")), delimiter="|"))
 
     def test_idle_buildings_keep_one_row_per_owned_idle_building_and_owner(self) -> None:

@@ -316,7 +316,8 @@ def decimal_text(value: Decimal) -> str:
     return format(value, "f")
 
 
-def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
+def beni_projection(spec: dict, input_dir: Path, registry: dict, idle: list | None = None) -> bytes:
+    """Aggregated beni; with `idle`, also collects the idle-building rows in the same pass over the archives."""
     domains = spec["domains"]
     groups: dict[tuple, list] = defaultdict(lambda: [0, 0, Decimal(0)])
     urls: dict[str, str] = {}
@@ -351,6 +352,8 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
                 group[1] += 1
                 group[2] += area
             urls[owner[0]] = item["url"]
+            if idle is not None and (building := idle_building(row, item, domains)) is not None:
+                idle.append(building)
     expected = spec["expected"]
     if total != expected["immobiliRows"] or duplicates != expected["immobiliExactDuplicateRows"]:
         raise SourceError("righe totali o righe identiche del censimento divergenti dal lock")
@@ -374,39 +377,38 @@ def coordinate(raw: str, axis: str, label: str) -> str:
     return decimal_text(value)
 
 
-def fabbricati_fermi_projection(spec: dict, input_dir: Path) -> bytes:
-    domains = spec["domains"]
-    rows = []
-    for item in (value for value in spec["files"] if value["kind"] == "immobili"):
-        for row in verified_rows(spec, item, input_dir):
-            natura = row["Natura del bene"]
-            if natura not in domains["naturaBene"]:
-                raise SourceError(f"natura del bene fuori dominio: {natura}")
-            titolo = row["Titolo proprietà"]
-            if natura != "FABBRICATO" or titolo == "" or row["Utilizzo del bene"] not in IDLE_USES:
-                continue
-            label = row["ID bene"]
-            if ASSET_ID.fullmatch(label) is None or titolo not in domains["titoloProprieta"]:
-                raise SourceError(f"identificativo o titolo del bene non valido: {label}")
-            if SHARE.fullmatch(row["Quota proprietà"]) is None:
-                raise SourceError(f"quota di proprietà non valida: {label}")
-            region = REGION_CODES.get(row["Regione del bene"])
-            if region is None:
-                raise SourceError(f"regione del bene fuori dominio: {row['Regione del bene']}")
-            georeferencing = [row["Fonte Georeferenziazione"], row["Precisione Georeferenziazione"], row["Immobile Geo-Ref."]]
-            if georeferencing not in domains["georeferenziazione"]:
-                raise SourceError(f"georeferenziazione fuori dominio: {georeferencing}")
-            area = surface(row["Superficie di Riferimento (mq)"], label)
-            match = FISCAL_CODE.fullmatch(row["Amministrazione Codice Fiscale"])
-            if match is None:
-                raise SourceError(f"codice fiscale ente non valido: {item['file']}")
-            rows.append([
-                match.group(1), row["Amministrazione Denominazione"], label, titolo, row["Quota proprietà"],
-                row["Utilizzo del bene"], row["Tipologia Bene Immobile"], "" if area is None else decimal_text(area),
-                region, row["Regione del bene"], row["Provincia del bene"], row["Comune del bene"], row["Codice Comune del bene"],
-                coordinate(row["Latitudine"], "Latitudine", label), coordinate(row["Longitudine"], "Longitudine", label),
-                *georeferencing, row["Tipologia Amministrazione"], "2023", item["url"],
-            ])
+def idle_building(row: dict, item: dict, domains: dict) -> list[str] | None:
+    natura = row["Natura del bene"]
+    if natura not in domains["naturaBene"]:
+        raise SourceError(f"natura del bene fuori dominio: {natura}")
+    titolo = row["Titolo proprietà"]
+    if natura != "FABBRICATO" or titolo == "" or row["Utilizzo del bene"] not in IDLE_USES:
+        return None
+    label = row["ID bene"]
+    if ASSET_ID.fullmatch(label) is None or titolo not in domains["titoloProprieta"]:
+        raise SourceError(f"identificativo o titolo del bene non valido: {label}")
+    if SHARE.fullmatch(row["Quota proprietà"]) is None:
+        raise SourceError(f"quota di proprietà non valida: {label}")
+    region = REGION_CODES.get(row["Regione del bene"])
+    if region is None:
+        raise SourceError(f"regione del bene fuori dominio: {row['Regione del bene']}")
+    georeferencing = [row["Fonte Georeferenziazione"], row["Precisione Georeferenziazione"], row["Immobile Geo-Ref."]]
+    if georeferencing not in domains["georeferenziazione"]:
+        raise SourceError(f"georeferenziazione fuori dominio: {georeferencing}")
+    area = surface(row["Superficie di Riferimento (mq)"], label)
+    match = FISCAL_CODE.fullmatch(row["Amministrazione Codice Fiscale"])
+    if match is None:
+        raise SourceError(f"codice fiscale ente non valido: {item['file']}")
+    return [
+        match.group(1), row["Amministrazione Denominazione"], label, titolo, row["Quota proprietà"],
+        row["Utilizzo del bene"], row["Tipologia Bene Immobile"], "" if area is None else decimal_text(area),
+        region, row["Regione del bene"], row["Provincia del bene"], row["Comune del bene"], row["Codice Comune del bene"],
+        coordinate(row["Latitudine"], "Latitudine", label), coordinate(row["Longitudine"], "Longitudine", label),
+        *georeferencing, row["Tipologia Amministrazione"], "2023", item["url"],
+    ]
+
+
+def fabbricati_fermi_payload(spec: dict, rows: list[list[str]]) -> bytes:
     if len(rows) != spec["expected"]["fabbricatiFermiRows"]:
         raise SourceError(f"righe dei fabbricati fermi divergenti dal lock: {len(rows)}")
     # Region first, so the rows of one region sit in contiguous chunks.
@@ -557,11 +559,12 @@ def projections(spec: dict, input_dir: Path, *, require_corpus: bool = True) -> 
     validate_contract(spec, require_corpus=require_corpus)
     beni_registry: dict = {}
     contratti_registry: dict = {}
+    idle: list[list[str]] = []
     return {
-        spec["datasets"]["beni"]: beni_projection(spec, input_dir, beni_registry),
+        spec["datasets"]["beni"]: beni_projection(spec, input_dir, beni_registry, idle),
         spec["datasets"]["contratti"]: contratti_projection(spec, input_dir, contratti_registry),
         spec["datasets"]["adempimento"]: adempimento_projection(spec, input_dir, beni_registry, contratti_registry),
-        spec["datasets"]["fabbricatiFermi"]: fabbricati_fermi_projection(spec, input_dir),
+        spec["datasets"]["fabbricatiFermi"]: fabbricati_fermi_payload(spec, idle),
     }
 
 

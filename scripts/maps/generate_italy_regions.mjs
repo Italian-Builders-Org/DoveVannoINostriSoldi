@@ -179,7 +179,8 @@ function projectRegions(regions) {
   const xOffset = (VIEWBOX.width - contentWidth) / 2;
   const yOffset = (VIEWBOX.height - contentHeight) / 2;
 
-  return regions.map((region) => ({
+  const projection = { minimumEasting, maximumNorthing, scale, xOffset, yOffset };
+  return { projection, regions: regions.map((region) => ({
     ...region,
     path: region.parts
       .map((part) => {
@@ -192,10 +193,10 @@ function projectRegions(regions) {
           .join("") + "Z";
       })
       .join(""),
-  }));
+  })) };
 }
 
-function typescript(regions) {
+function typescript({ projection, regions }) {
   const serializedRegions = regions
     .map(
       (region) =>
@@ -203,7 +204,7 @@ function typescript(regions) {
     )
     .join("\n");
 
-  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs\n */\n\nexport const ITALY_REGIONS_VIEWBOX = ${JSON.stringify(`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`)};\n\nexport const italyRegionGeometry = [\n${serializedRegions}\n] as const;\n`;
+  return `/**\n * Generated from ISTAT administrative boundaries. Do not edit by hand.\n * Source: ${SOURCE_URL}\n * Source SHA-256: ${SOURCE_SHA256}\n * Geography date: 1 January 2026 · License: CC BY 4.0\n * Generator: scripts/maps/generate_italy_regions.mjs\n */\n\nexport const ITALY_REGIONS_VIEWBOX = ${JSON.stringify(`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`)};\n\n/** ISTAT WGS84 / UTM 32N metres to viewBox units: x = xOffset + (E - minimumEasting) * scale; y = yOffset + (maximumNorthing - N) * scale. */\nexport const ITALY_REGIONS_PROJECTION = ${JSON.stringify(projection)} as const;\n\nexport const italyRegionGeometry = [\n${serializedRegions}\n] as const;\n`;
 }
 
 const archiveBuffer = await readFile(sourceArchive);
@@ -249,5 +250,5 @@ const simplifiedPointCount = normalized.flatMap((region) => region.parts).flat()
 await mkdir(path.dirname(outputFile), { recursive: true });
 await writeFile(outputFile, typescript(projected), "utf8");
 console.log(
-  `Generate ${projected.length} regioni in ${outputFile} (${originalPointCount} -> ${simplifiedPointCount} punti)`,
+  `Generate ${projected.regions.length} regioni in ${outputFile} (${originalPointCount} -> ${simplifiedPointCount} punti)`,
 );

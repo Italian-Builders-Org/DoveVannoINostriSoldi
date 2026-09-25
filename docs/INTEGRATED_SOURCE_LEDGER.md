@@ -53,7 +53,9 @@ aggiunto per regioni, province autonome, Italia e ripartizioni pubblicate.
 (rilascio 2023, Comuni ed enti ERP). Titolo, stato d'uso e tipi di detenzione
 restano distinti; il canone è contrattuale. `mef-patrimonio-adempimento-2023`
 aggiunge 7.977 righe, una per Comune o ente ERP del file di adempimento dello
-stesso rilascio. [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
+stesso rilascio; `mef-patrimonio-fabbricati-fermi-2023` aggiunge 133.293 righe,
+una per fabbricato fermo e proprietario, con le coordinate della fonte.
+[Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -122,6 +124,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `mef-patrimonio-beni-2023` | MEF · patrimonio immobiliare dei Comuni e degli enti ERP · beni per stato d'uso 2023 | entities | 140.712 | 140.712 | 140.712 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mef-patrimonio-contratti-2023` | MEF · beni di Comuni ed enti ERP dati a terzi · contratti e canoni dichiarati 2023 | entities | 21.034 | 21.034 | 21.034 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mef-patrimonio-adempimento-2023` | MEF · adempimento 2023 del censimento immobili · Comuni ed enti ERP | entities | 7.977 | 7.977 | 7.977 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `mef-patrimonio-fabbricati-fermi-2023` | MEF · fabbricati fermi del censimento immobili 2023 · Comuni ed enti ERP | entities | 133.293 | 133.293 | 133.293 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mim-scuole-statali-comuni` | Scuole statali · sedi per Comune | education | 6.648 | 6.648 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
 | `missioni` | Capitoli per missioni e trasferte | operations | 618 | 618 | 618 | rows | documented-fact | not-declared |
 | `missioni-cdp` | Missioni degli organi di Cassa Depositi e Prestiti | operations | 6 | 6 | 6 | rows | documented-fact | not-declared |

@@ -12,9 +12,9 @@ e [CONTRIBUTING.md](../CONTRIBUTING.md#verifica-locale).
    per rischi scoperti. Per un bug verifica che il test fallisca sulla versione
    difettosa e passi con la correzione. Usa fixture piccole durante lo sviluppo.
 2. Esegui il file Node mirato con il guard offline:
-   `node --env-file=scripts/ci/offline-guard.env --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/NOME.test.mjs`.
-   Il file `offline-guard.env` accende il guard su ogni shell, cmd.exe compreso;
-   una `DVNS_OFFLINE_GUARD` già presente nell'ambiente ha la precedenza.
+   `node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/NOME.test.mjs`.
+   Il setup forza il guard su ogni shell, cmd.exe compreso, anche se
+   `DVNS_OFFLINE_GUARD=0` è già presente nell'ambiente.
    Per un caso aggiungi `--test-name-pattern='nome del caso'` prima del file.
 3. Per ETL usa il Python del virtualenv:
    `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_NOME.py'`.

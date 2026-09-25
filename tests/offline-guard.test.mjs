@@ -1,8 +1,32 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const guardPath = new URL("../scripts/ci/node-offline-guard.mjs", import.meta.url).href;
+
+test("npm test forces offline verification even when the inherited environment disables it", () => {
+  const { scripts } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  const command = scripts["test:node"].split(" ");
+  assert.equal(command[0], "node", "The test command must run without shell-specific environment assignments");
+  const result = spawnSync(process.execPath, [
+    ...command.slice(1, command.indexOf("--test")), "-e", `
+      const assert = require("node:assert/strict");
+      const { spawnSync } = require("node:child_process");
+      assert.equal(process.env.DVNS_OFFLINE_GUARD, "1");
+      const child = spawnSync(process.execPath, ["-p", "process.env.DVNS_OFFLINE_GUARD"], { encoding: "utf8" });
+      assert.equal(child.status, 0);
+      assert.equal(child.stdout.trim(), "1");
+      try { require("node:https").request("https://example.invalid/"); }
+      catch (error) {
+        assert.match(error.message, /offline verification attempted outbound connection/);
+        console.log("BLOCKED_AND_INHERITED");
+      }
+    `,
+  ], { cwd: new URL("..", import.meta.url), env: { ...process.env, DVNS_OFFLINE_GUARD: "0" }, encoding: "utf8", timeout: 10000 });
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stdout, /BLOCKED_AND_INHERITED/, result.stderr);
+});
 
 function runWithGuard(code) {
   const result = spawnSync(process.execPath, [

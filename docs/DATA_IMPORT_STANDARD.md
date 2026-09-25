@@ -126,9 +126,9 @@ basta una proiezione a celle stringa.
 ### Registri di una fonte tipizzata
 
 Una fonte con snapshot tipizzato, API, dataset MCP e scheda fra le fonti compare
-in registri espliciti sparsi nel repository. Mancarne uno non rompe il build: fa
-cadere un test in CI, spesso con un messaggio che non nomina il registro. La
-colonna di destra è il test che se ne accorge.
+in registri espliciti sparsi nel repository. Mancarne uno può far fallire il
+typecheck, la build o un test, spesso senza nominare il registro. La colonna
+di destra indica il controllo pertinente.
 
 | Registro | Cosa aggiungere | Chi lo verifica |
 | --- | --- | --- |
@@ -138,7 +138,7 @@ colonna di destra è il test che se ne accorge.
 | `scripts/ci/check-runtime-traces.mjs` | artefatto → route che devono tracciarlo | `npm run build` |
 | `src/lib/mcp/catalog.ts` | id in `DATASET_IDS`, query di esempio, descrittore | `tests/mcp-datasets.test.mjs` |
 | `src/lib/mcp/datasets.ts` | ramo dell'adapter | `tests/mcp-datasets.test.mjs` |
-| `tests/assistant-byok.test.mjs` | tetto dei metadati alzato quanto serve, misurandolo | «should remain compact» |
+| `tests/assistant-byok.test.mjs` | verificare il budget dei metadati; ridurre duplicazioni prima di valutare un aumento motivato | «should remain compact» |
 | `src/lib/data/source-policy.ts` | `SourceId` e politica della fonte | `npm run typecheck` |
 | `src/lib/sources.ts` | scheda pubblica della fonte | `tests/source-latest-data.test.mjs`: schede pubbliche e fonti attive devono coincidere |
 | `src/lib/source-latest-data.ts` | etichetta dell'ultimo dato | `npm run typecheck` e `tests/source-latest-data.test.mjs` |

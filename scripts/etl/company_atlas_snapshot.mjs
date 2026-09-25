@@ -9,7 +9,7 @@ const OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-snapshot.json");
 const METADATA_OUTPUT = resolve(ROOT, "src/data/generated/company-atlas-metadata.json");
 
 function sourceInventory(mode) {
-  execFileSync("python3", ["scripts/ci/source-snapshot-inventory.py", mode], { cwd: ROOT, stdio: "inherit" });
+  execFileSync(process.env.PYTHON || "python3", ["scripts/ci/source-snapshot-inventory.py", mode], { cwd: ROOT, stdio: "inherit" });
 }
 
 export const SOURCE_URLS = Object.freeze({

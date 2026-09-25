@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { delimiter } from "node:path";
 
 export function operatorHistoryFixture() {
   return JSON.parse(
@@ -24,7 +25,7 @@ print(json.dumps({'summary':summary,'pack':base64.b64encode(stream.getvalue()).d
         encoding: "utf8",
         env: {
           ...process.env,
-          PYTHONPATH: "scripts/etl:scripts/ci",
+          PYTHONPATH: ["scripts/etl", "scripts/ci"].join(delimiter),
           DVNS_OFFLINE_GUARD: "1",
         },
       },

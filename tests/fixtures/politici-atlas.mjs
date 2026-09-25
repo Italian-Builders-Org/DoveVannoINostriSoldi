@@ -22,15 +22,16 @@ export function makeMap({ cameraCount = 398, senateCount = 205, vacancies = 2 } 
           tier: serial === 0 ? 1 : 3, roleKind: serial === 0 ? "presidente-assemblea" : chamberId === "camera" ? "deputato" : "senatore",
           roleLabel: serial === 0 ? `Presidente ${chamberId === "camera" ? "della Camera" : "del Senato"}` : chamberId === "camera" ? "Deputato" : "Senatore",
           chamberId, groupId, family, weight: serial === 0 ? .9 : .1,
-          government: serial > 2 && serial < 9, leader: serial === 0, groupLeader: member === 0, photo: false });
+          government: serial > 2 && serial < 9, leader: serial === 0, groupLeader: member === 0, photo: false,
+          firstTerm: { chamber: serial % 2 === 1, parliament: serial % 4 === 1 } });
       }
       groups.push({ id: groupId, chamberId, label: `${label} — Gruppo parlamentare di prova`, shortLabel: label, partyFamily: family, officialPage: "https://www.camera.it/",
         memberCount: size, presidentPersonId: `${chamberId === "camera" ? "dep" : "sen"}-${assigned}`, componentLabels: [], relatedGroupIds: [] });
       assigned += size;
     }
   }
-  people.push({ id: "gov-1", name: "Elena Verdi", tier: 1, roleKind: "presidente-del-consiglio", roleLabel: "Presidente del Consiglio", chamberId: null, groupId: null, family: null, weight: 1, government: true, leader: true, groupLeader: false, photo: false });
-  people.push({ id: "pres-1", name: "Andrea Bianchi", tier: 0, roleKind: "capo-stato", roleLabel: "Presidente della Repubblica", chamberId: null, groupId: null, family: null, weight: 1, government: false, leader: true, groupLeader: false, photo: false });
+  people.push({ id: "gov-1", name: "Elena Verdi", tier: 1, roleKind: "presidente-del-consiglio", roleLabel: "Presidente del Consiglio", chamberId: null, groupId: null, family: null, weight: 1, government: true, leader: true, groupLeader: false, photo: false, firstTerm: null });
+  people.push({ id: "pres-1", name: "Andrea Bianchi", tier: 0, roleKind: "capo-stato", roleLabel: "Presidente della Repubblica", chamberId: null, groupId: null, family: null, weight: 1, government: false, leader: true, groupLeader: false, photo: false, firstTerm: null });
   for (const group of groups) group.relatedGroupIds = groups.filter((other) => other.partyFamily === group.partyFamily && other.chamberId !== group.chamberId).map((other) => other.id);
   const governmentMembers = people.filter((person) => person.government).length;
   const institutions = [
@@ -58,6 +59,7 @@ export function makeProfiles(map) {
     officialPages: [{ label: "Scheda ufficiale", url: "https://www.camera.it/" }], institutionId: person.chamberId ?? (person.government ? "governo" : "presidenza-repubblica"), groupLabel: "Gruppo di prova", componentLabel: null, groupRoleLabel: null,
     roles: [{ kind: person.roleKind, label: person.roleLabel, institutionId: person.chamberId ?? "governo", organLabel: null, since: "2022-10-13" }], departmentIds: [], organLabels: ["Commissione di prova"], constituency: "Territorio di prova", college: null, profession: "Laurea in ingegneria", birthDate: "1980-01-15", birthPlace: "Luogo di prova", socialLinks: null, biography: "Dati sintetici esclusivamente per i test dell’interfaccia. Non è una scheda biografica reale.", education: { area: "stem", label: "STEM", evidence: "Laurea in ingegneria", matchedRule: "stem-degree", sourceField: "profession" },
     voteAttendance: person.chamberId === "camera" ? { chamber: "camera", periodLabel: "Fixture · 2022–2026", observedDate: "2026-02-01", votesCast: 900, votesCastPercent: "90,0%", missions: 90, missionsPercent: "9,0%", presenceTotal: 990, presencePercent: "99,0%", absences: 10, absencesPercent: "1,0%", justifiedAbsences: 5, justifiedAbsencesPercent: "0,5%", sourceUrl: "https://www.camera.it/", sourceLabel: "Camera dei deputati" } : null,
+    parliamentaryTerms: person.firstTerm ? { chamber: person.chamberId, camera: person.chamberId === "camera" ? ["XIX"] : [], senato: person.firstTerm.parliament ? (person.chamberId === "senato" ? ["XIX"] : []) : ["XVIII", ...(person.chamberId === "senato" ? ["XIX"] : [])], firstTermInChamber: person.firstTerm.chamber, firstTermInParliament: person.firstTerm.parliament, sourceLabel: "Fonte di prova — SPARQL", sourceUrl: "https://dati.camera.it/", observedDate: "2026-09-23", caveat: "Dati sintetici per i test." } : null,
   }]));
 }
 

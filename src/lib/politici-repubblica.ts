@@ -2,6 +2,7 @@ import attendanceJson from "@/data/generated/camera-partecipazione-voto.json";
 import attiVotiJson from "@/data/generated/camera-atti-voti-xix.json";
 import senatoAttiVotiJson from "@/data/generated/senato-atti-voti-xix.json";
 import cameraJson from "@/data/generated/politici-camera-xix.json";
+import mandatiJson from "@/data/generated/parlamento-mandati-xix.json";
 import governmentJson from "@/data/generated/governo-meloni.json";
 import presidentJson from "@/data/generated/presidente-repubblica.json";
 import portraitsJson from "@/data/generated/ritratti-liberi.json";
@@ -19,6 +20,7 @@ import {
   type CameraPartecipazioneDeputy,
 } from "@/lib/data/camera-partecipazione-voto-contract";
 import { parseGovernoSnapshot, type GovernoPerson } from "@/lib/data/governo-meloni-contract";
+import { parseParlamentoMandatiSnapshot, type ParlamentoMandatiMember } from "@/lib/data/parlamento-mandati-contract";
 import { parsePoliticiCameraSnapshot, type CameraDeputy } from "@/lib/data/politici-camera-contract";
 import {
   parsePoliticiRepubblicaGraph,
@@ -45,6 +47,7 @@ const freePortraits = parseRitrattiLiberiSnapshot(portraitsJson);
 const cameraAttendance = parseCameraPartecipazioneVotoSnapshot(attendanceJson);
 const cameraAttiVoti = parseCameraAttiVotiSnapshot(attiVotiJson);
 const senatoAttiVoti = parseSenatoAttiVotiSnapshot(senatoAttiVotiJson);
+const mandati = parseParlamentoMandatiSnapshot(mandatiJson);
 
 const attendanceByNumericId = new Map(
   cameraAttendance.deputies
@@ -66,6 +69,32 @@ class GraphError extends Error {}
 
 function require(condition: boolean, message: string): void {
   if (!condition) throw new GraphError(message);
+}
+
+const mandatiByMemberId = new Map(mandati.members.map((member) => [member.id, member]));
+
+/** Graph ids are `dep-<numericId>` and `sen-s<id>`; the mandates snapshot keeps each chamber's own id. */
+function mandatiFor(personId: string): ParlamentoMandatiMember | null {
+  const memberId = personId.startsWith("dep-") ? `d${personId.slice(4)}_19`
+    : personId.startsWith("sen-") ? personId.slice(4) : null;
+  if (memberId === null) return null;
+  const member = mandatiByMemberId.get(memberId);
+  require(member !== undefined, `mandati parlamentari assenti per ${personId}`);
+  return member!;
+}
+
+const ROMAN_UNITS = [["X", 10], ["IX", 9], ["V", 5], ["IV", 4], ["I", 1]] as const;
+
+function romanLegislature(value: number): string {
+  let rest = value;
+  let out = "";
+  for (const [symbol, amount] of ROMAN_UNITS) {
+    while (rest >= amount) {
+      out += symbol;
+      rest -= amount;
+    }
+  }
+  return out;
 }
 
 // --------------------------------------------------------------------------- //
@@ -972,6 +1001,8 @@ export type RepublicMapPerson = {
   leader: boolean;
   groupLeader: boolean;
   photo: boolean;
+  /** Only for sitting deputies and senators (#556); `null` for government members outside Parliament. */
+  firstTerm: { chamber: boolean; parliament: boolean; } | null;
 };
 
 export type RepublicMap = {
@@ -1126,7 +1157,38 @@ export type RepublicProfile = {
   voteAttendance: RepublicVoteAttendance | null;
   /** Signed acts, iter and final votes; only for members of Camera or Senato. */
   legislativeActivity: RepublicLegislativeActivity | null;
+  /** Republican legislatures per chamber, read from the chamber the person sits in (#556). */
+  parliamentaryTerms: RepublicParliamentaryTerms | null;
 };
+
+export type RepublicParliamentaryTerms = {
+  chamber: ChamberId;
+  camera: string[];
+  senato: string[];
+  firstTermInChamber: boolean;
+  firstTermInParliament: boolean;
+  sourceLabel: string;
+  sourceUrl: string;
+  observedDate: string;
+  caveat: string;
+};
+
+function profileParliamentaryTerms(person: RepublicPerson): RepublicParliamentaryTerms | null {
+  const member = mandatiFor(person.id);
+  if (member === null) return null;
+  const source = mandati.source[member.chamber];
+  return {
+    chamber: member.chamber,
+    camera: member.legislatures.camera.map(romanLegislature),
+    senato: member.legislatures.senato.map(romanLegislature),
+    firstTermInChamber: member.firstTermInChamber,
+    firstTermInParliament: member.firstTermInParliament,
+    sourceLabel: `${source.owner} — ${member.chamber === "camera" ? "dati.camera.it" : "dati.senato.it"}, SPARQL ufficiale`,
+    sourceUrl: source.landingUrl,
+    observedDate: mandati.source.acquiredAt.slice(0, 10),
+    caveat: "Legislature repubblicane con almeno un mandato, lette dalla fonte del ramo in cui siede oggi. I mandati nell'altro ramo sono quelli che la stessa fonte collega alla persona; nessun abbinamento per nome.",
+  };
+}
 
 function profileAttendanceFor(person: RepublicPerson): RepublicVoteAttendance | null {
   if (person.chamberId !== "camera" || !person.id.startsWith("dep-")) return null;
@@ -1586,6 +1648,11 @@ function profileLegislativeActivity(person: RepublicPerson): RepublicLegislative
   };
 }
 
+function firstTermOf(person: RepublicPerson): RepublicMapPerson["firstTerm"] {
+  const member = mandatiFor(person.id);
+  return member ? { chamber: member.firstTermInChamber, parliament: member.firstTermInParliament } : null;
+}
+
 export function getRepubblicaMap(): RepublicMap {
   const graph = getRepubblicaGraph();
   const educationPeople = graph.people.map((person) => ({
@@ -1642,6 +1709,7 @@ export function getRepubblicaMap(): RepublicMap {
       leader: person.isInstitutionalLeader,
       groupLeader: person.isGroupLeader,
       photo: person.photoUrl !== null,
+      firstTerm: firstTermOf(person),
     })),
     education: {
       all: buildEducationDistribution(educationPeople),
@@ -1679,6 +1747,7 @@ export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
       education: classifyEducation(person.profession, person.biography),
       voteAttendance: profileAttendanceFor(person),
       legislativeActivity: profileLegislativeActivity(person),
+      parliamentaryTerms: profileParliamentaryTerms(person),
     } satisfies RepublicProfile,
   ]);
   return Object.fromEntries(entries);

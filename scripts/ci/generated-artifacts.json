@@ -2760,6 +2760,32 @@
       "trustModel": "Quattro risposte ufficiali pinnate per byte/SHA-256: tre export JSON di dati.senato.it (anagrafica della legislatura, roster in carica alla data, composizione gruppi con cariche) e una query all'endpoint SPARQL ufficiale per professione, regione e collegio di elezione, tipo di elezione e Consiglio di Presidenza. L'import deduplica solo formulazioni multiple della stessa professione o cariche multiple della medesima URI, blocca identità o gruppi ambigui, verifica che il Presidente del Senato sia unico e che i senatori a vita non abbiano regione di elezione."
     },
     {
+      "id": "parlamento-mandati-xix",
+      "owner": "Camera e Senato — legislature repubblicane per ramo dei parlamentari in carica nella XIX (#556)",
+      "files": [
+        "src/data/generated/parlamento-mandati-xix.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/parlamento_mandati_xix_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_parlamento_mandati_xix_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/parlamento-mandati-contract.test.mjs",
+        "tests/politici-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/parlamento_mandati_xix_snapshot.py --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/parlamento-mandati-xix.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Due risposte SPARQL ufficiali pinnate per byte/SHA-256, una per ramo: dati.camera.it (persona OCD con mandati Camera e Senato) e dati.senato.it (senatore OSR con mandati Senato e Camera). Ogni persona è letta solo dalla fonte del ramo in cui siede, con l'identificativo ufficiale di quel ramo; nessun join per nome. Il roster deve coincidere con politici-camera-xix e politici-senato-xix; tipo e URI di ogni mandato devono indicare lo stesso ramo, ogni membro ha un mandato XIX aperto nel proprio ramo, legislature e flag di primo mandato sono ricalcolati dai mandati e Costituente/Regno bloccano l'import."
+    },
+    {
       "id": "governo-meloni",
       "owner": "Governo in carica — incarichi, dicasteri e componenti",
       "files": [

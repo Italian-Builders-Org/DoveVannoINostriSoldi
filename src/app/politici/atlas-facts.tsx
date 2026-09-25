@@ -1,6 +1,6 @@
 "use client";
 
-import type { RepublicMap, RepublicProfile } from "@/lib/politici-repubblica";
+import type { RepublicMap, RepublicParliamentaryTerms, RepublicProfile } from "@/lib/politici-repubblica";
 import type { EducationDistribution } from "@/lib/politici-education";
 import { formatPercent } from "@/lib/politici-education";
 import { programForGroup } from "@/lib/politici-electoral-programs";
@@ -134,6 +134,30 @@ export function VoteAttendance({ attendance }: { attendance: NonNullable<Republi
   </section>;
 }
 
+function termSummary(terms: RepublicParliamentaryTerms): string {
+  if (terms.firstTermInParliament) return "Primo mandato in Parlamento";
+  const total = new Set([...terms.camera, ...terms.senato]).size;
+  const inChamber = terms.chamber === "camera" ? "alla Camera" : "al Senato";
+  return terms.firstTermInChamber
+    ? `Primo mandato ${inChamber}, ${total} legislature in Parlamento`
+    : `${total} legislature in Parlamento`;
+}
+
+function ParliamentaryTerms({ terms }: { terms: RepublicParliamentaryTerms; }) {
+  return <div>
+    <dt>Legislature in Parlamento</dt>
+    <dd>
+      {termSummary(terms)}
+      <small>
+        Camera: {terms.camera.length ? terms.camera.join(", ") : "nessuna"} · Senato: {terms.senato.length ? terms.senato.join(", ") : "nessuna"}
+      </small>
+      <small>
+        {terms.caveat} Dati al {longDate(terms.observedDate)}: <SourceLink href={terms.sourceUrl}>{terms.sourceLabel}</SourceLink>
+      </small>
+    </dd>
+  </div>;
+}
+
 export function ProfileFacts({ profile, map }: { profile: RepublicProfile; map: RepublicMap; }) {
   const departments = map.departments.filter((item) => profile.departmentIds.includes(item.id));
   return <section className={styles.factBlock} aria-label="Curriculum istituzionale">
@@ -163,6 +187,7 @@ export function ProfileFacts({ profile, map }: { profile: RepublicProfile; map: 
           {[profile.constituency, profile.college].filter(Boolean).join(" · ")}
         </dd>
       </div> : null}
+      {profile.parliamentaryTerms ? <ParliamentaryTerms terms={profile.parliamentaryTerms} /> : null}
       {profile.groupRoleLabel ? <div>
         <dt>Incarico nel gruppo</dt>
         <dd>

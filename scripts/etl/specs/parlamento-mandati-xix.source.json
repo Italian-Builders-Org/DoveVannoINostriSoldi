@@ -1,0 +1,57 @@
+{
+  "datasetId": "parlamento-mandati-xix",
+  "title": "Camera e Senato — legislature repubblicane per ramo dei parlamentari in carica nella XIX",
+  "landingUrl": "https://dati.camera.it/",
+  "period": {
+    "legislature": "19",
+    "label": "XIX Legislatura",
+    "kind": "legislature-history-of-current-members",
+    "observedDate": "2026-09-23"
+  },
+  "source": {
+    "camera": {
+      "owner": "Camera dei deputati",
+      "endpointUrl": "https://dati.camera.it/sparql",
+      "landingUrl": "https://dati.camera.it/",
+      "license": "CC BY 4.0 (dichiarata dal portale dati.camera.it)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "senato": {
+      "owner": "Senato della Repubblica",
+      "endpointUrl": "https://dati.senato.it/sparql",
+      "landingUrl": "https://dati.senato.it/",
+      "license": "CC BY 3.0 IT (dichiarata dal portale dati.senato.it)",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/"
+    },
+    "committedResponses": {
+      "camera": {
+        "bytes": 447308,
+        "sha256": "50edc117e69b2264cc1dc2294f05fb11cce1ea14c89e4acc0439fba1462da0d3"
+      },
+      "senato": {
+        "bytes": 265833,
+        "sha256": "dd972b5a8db822735bd9bfa888b55a27be9366a4dd56421084f139494268565b"
+      }
+    }
+  },
+  "roster": {
+    "camera": "src/data/generated/politici-camera-xix.json",
+    "senato": "src/data/generated/politici-senato-xix.json",
+    "rule": "Gli ID devono coincidere con gli snapshot politici committati: un roster aggiornato senza rigenerare questo snapshot blocca --check."
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Nessun importo: soltanto mandati parlamentari pubblicati dalle due Camere. Nessun calcolo di vitalizio."
+    },
+    "periodo": {
+      "kind": "legislature",
+      "current": "19",
+      "note": "Legislature repubblicane con almeno un mandato nel ramo; Costituente e Regno bloccano l'import invece di essere numerati."
+    },
+    "provenance": {
+      "kind": "official-sparql-per-chamber",
+      "identity": "ID persona ufficiale di ciascun ramo; nessun join Camera↔Senato per nome."
+    }
+  }
+}

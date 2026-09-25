@@ -280,6 +280,9 @@ a caso.
   - [src/lib/data/camera-atti-voti-contract.ts](../src/lib/data/camera-atti-voti-contract.ts)
     e [src/lib/data/senato-atti-voti-contract.ts](../src/lib/data/senato-atti-voti-contract.ts):
     contratti degli atti firmati e delle votazioni finali dei due rami.
+  - [src/lib/data/parlamento-mandati-contract.ts](../src/lib/data/parlamento-mandati-contract.ts):
+    legislature per ramo dei parlamentari in carica, lette dalla fonte del ramo
+    di appartenenza ([PARLAMENTO_MANDATI.md](PARLAMENTO_MANDATI.md)).
   - [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
     contratto fail-closed dello snapshot giudiziario curato.
   - [docs/POLITICI.md](POLITICI.md): riferimento operativo rapido per moduli,
@@ -302,6 +305,7 @@ a caso.
   [tests/politici-atti-route.test.mjs](../tests/politici-atti-route.test.mjs),
   [tests/politici-voti-tema-route.test.mjs](../tests/politici-voti-tema-route.test.mjs),
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
+  [tests/parlamento-mandati-contract.test.mjs](../tests/parlamento-mandati-contract.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).
   Per verifiche browser vedi [docs/POLITICI.md](POLITICI.md).

@@ -137,8 +137,8 @@ un'interazione specifica in scuro, esegui il core senza `DVNS_CORE_MODE=theme`.
 ### Feedback rapido
 
 ```bash
-node --experimental-strip-types --test tests/global-search.test.mjs
-node --experimental-strip-types --test --test-name-pattern='deadline' tests/mcp-deadline.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/global-search.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test --test-name-pattern='deadline' tests/mcp-deadline.test.mjs
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_integrated_source_release.py'
 ```
 
@@ -196,7 +196,7 @@ Primo deployment, redeploy della stessa SHA, metadati mancanti e cronologia
 Git incompleta eseguono sempre il build. Le preview del codice restano attive.
 La CI GitHub continua a eseguire tutti i controlli anche se Vercel salta il build.
 
-Test mirato: `node --test tests/vercel-ignore-build.test.mjs`.
+Test mirato: `node --import ./scripts/ci/node-test-setup.mjs --test tests/vercel-ignore-build.test.mjs`.
 Per verificare una decisione su due commit disponibili localmente:
 `VERCEL_GIT_PREVIOUS_SHA=SHA_PRECEDENTE VERCEL_GIT_COMMIT_SHA=SHA_ATTUALE node scripts/ci/vercel-ignore-build.mjs`.
 Il codice di uscita segue Vercel: **0 = skip, 1 = build**. Per un redeploy dovuto

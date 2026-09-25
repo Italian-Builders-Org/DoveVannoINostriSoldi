@@ -173,17 +173,30 @@
       "Alloggio di servizio, foresterie",
       "Alloggio per studenti",
       ""
+    ],
+    "naturaBene": [
+      "FABBRICATO",
+      "TERRENO"
+    ],
+    "georeferenziazione": [
+      ["IDENTIFICATIVI_CATASTALI", "", "Sì"],
+      ["INDIRIZZO", "CIVICO", "Sì"],
+      ["INDIRIZZO", "STRADA", "No"],
+      ["INDIRIZZO", "COMUNE", "No"],
+      ["UTENTE", "", "Sì"]
     ]
   },
   "expected": {
     "immobiliRows": 2640689,
     "detenzioniRows": 449258,
-    "immobiliExactDuplicateRows": 1
+    "immobiliExactDuplicateRows": 1,
+    "fabbricatiFermiRows": 133293
   },
   "datasets": {
     "beni": "mef-patrimonio-beni-2023",
     "contratti": "mef-patrimonio-contratti-2023",
-    "adempimento": "mef-patrimonio-adempimento-2023"
+    "adempimento": "mef-patrimonio-adempimento-2023",
+    "fabbricatiFermi": "mef-patrimonio-fabbricati-fermi-2023"
   },
   "files": [
     {

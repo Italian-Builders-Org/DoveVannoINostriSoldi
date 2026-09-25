@@ -6,10 +6,11 @@ e [CONTRIBUTING.md](../CONTRIBUTING.md#verifica-locale).
 
 ## Durante lo sviluppo
 
-1. Parti dal contratto modificato: scegli il file di test che esercita quel
-   comportamento e i confini immediatamente collegati. Usa le fixture piccole
-   per iterare; riserva la verifica dell'intero corpus e del browser di
-   produzione al profilo full.
+1. Applica la [strategia dei test](../AGENTS.md#strategia-dei-test): prima del
+   codice, annota nella checklist della task gli errori plausibili e l'esito
+   atteso. Scegli il flusso E2E pertinente; aggiungi verifiche isolate soltanto
+   per rischi scoperti. Per un bug verifica che il test fallisca sulla versione
+   difettosa e passi con la correzione. Usa fixture piccole durante lo sviluppo.
 2. Esegui il file Node mirato con il guard offline:
    `DVNS_OFFLINE_GUARD=1 node --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/NOME.test.mjs`.
    Per un caso aggiungi `--test-name-pattern='nome del caso'` prima del file.
@@ -31,6 +32,11 @@ e [CONTRIBUTING.md](../CONTRIBUTING.md#verifica-locale).
   ETL, snapshot e suite Node deterministiche.
 - Riusa fixture e helper solo quando rendono più chiaro il contratto. Evita
   setup costoso ripetuto per ogni caso; non condividere stato mutabile fra test.
+- Per valutare un test, chiediti quale difetto osservabile lo farebbe fallire.
+  Assert su dettagli interni, copie della stessa formula e mock che impongono
+  la risposta attesa richiedono revisione: verifica il risultato al confine
+  pubblico. Prima di eliminare una duplicazione, indica nella PR il rischio,
+  lo scenario e l'asserzione che restano a coprirlo; esegui quella verifica.
 - Se un test rallenta, misura prima la fase dominante e ottimizza letture,
   indici o preparazione duplicati. Conserva la stessa copertura semantica,
   cardinalità e controlli fail-closed; documenta il confronto sullo stesso

@@ -48,6 +48,10 @@ stime di contabilità nazionale, non evasione accertata.
 Conti economici territoriali (anno 2023): percentuali di incidenza sul valore
 aggiunto per regioni, province autonome, Italia e ripartizioni pubblicate.
 [Contratto e riproduzione](ISTAT_ECONOMIA_NON_OSSERVATA.md).
+`mef-patrimonio-beni-2023` e `mef-patrimonio-contratti-2023` aggiungono
+161.746 righe aggregate per ente dal censimento MEF degli immobili pubblici
+(rilascio 2023, Comuni ed enti ERP). Titolo, stato d'uso e tipi di detenzione
+restano distinti; il canone è contrattuale. [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -113,6 +117,8 @@ fornisce comunque un percorso di provenienza verificabile.
 | `istat-misura-comune-dipendenza-anziani` | A misura di Comune · Indice di dipendenza anziani | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |
 | `istat-misura-comune-dipendenza-strutturale` | A misura di Comune · Indice di dipendenza strutturale | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |
 | `istat-misura-comune-vecchiaia` | A misura di Comune · Indice di vecchiaia | demography | 7.896 | 7.896 | 0 | rows | documented-fact | not-declared |
+| `mef-patrimonio-beni-2023` | MEF · patrimonio immobiliare dei Comuni e degli enti ERP · beni per stato d'uso 2023 | entities | 140.712 | 140.712 | 140.712 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `mef-patrimonio-contratti-2023` | MEF · beni di Comuni ed enti ERP dati a terzi · contratti e canoni dichiarati 2023 | entities | 21.034 | 21.034 | 21.034 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mim-scuole-statali-comuni` | Scuole statali · sedi per Comune | education | 6.648 | 6.648 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
 | `missioni` | Capitoli per missioni e trasferte | operations | 618 | 618 | 618 | rows | documented-fact | not-declared |
 | `missioni-cdp` | Missioni degli organi di Cassa Depositi e Prestiti | operations | 6 | 6 | 6 | rows | documented-fact | not-declared |

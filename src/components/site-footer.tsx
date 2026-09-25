@@ -55,11 +55,11 @@ export function SiteFooter() {
             </li>)}</ul>
           </nav>
           <nav className="footer-actions" aria-label="Link di servizio">
-            <Link href="/fonti">Fonti</Link>
-            <Link href="/metodologia">Metodo</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/termini">Termini</Link>
-            <Link href="/supporto">Supporto</Link>
+            <Link prefetch={false} href="/fonti">Fonti</Link>
+            <Link prefetch={false} href="/metodologia">Metodo</Link>
+            <Link prefetch={false} href="/privacy">Privacy</Link>
+            <Link prefetch={false} href="/termini">Termini</Link>
+            <Link prefetch={false} href="/supporto">Supporto</Link>
             <a href={REPO_URL} target="_blank" rel="noreferrer"><HugeiconsIcon icon={GithubIcon} size={16} aria-hidden="true" /> GitHub</a>
           </nav>
         </div>
@@ -69,16 +69,16 @@ export function SiteFooter() {
         <div className="footer-sitemap-columns">
           {FOOTER_SITEMAP_GROUPS.map((group) => <div key={group.title} className="footer-sitemap-group">
             <h3>{group.title}</h3>
-            <ul>{group.links.map((link) => <li key={link.href}><Link href={link.href}>{link.label}</Link></li>)}</ul>
+            <ul>{group.links.map((link) => <li key={link.href}><Link prefetch={false} href={link.href}>{link.label}</Link></li>)}</ul>
           </div>)}
         </div>
       </details>
       <p className="footer-disclaimer">
         Usiamo anche l’AI per organizzare e presentare i dati. Sono possibili errori:
         verifica le fonti originali prima di decidere. Il sito non fornisce consulenza.{" "}
-        <Link href="/metodologia">Metodo</Link>
+        <Link prefetch={false} href="/metodologia">Metodo</Link>
         {" · "}
-        <Link href="/termini">Termini</Link>
+        <Link prefetch={false} href="/termini">Termini</Link>
       </p>
       <div className="footer-credits">
         <div className="footer-makers">
@@ -88,7 +88,7 @@ export function SiteFooter() {
         </div>
         <div className="footer-backer">
           <span>Con il supporto di <a href={MANTO_VENTURE.href} target="_blank" rel="noreferrer">{MANTO_VENTURE.name}</a></span>
-          <Link href="/supporter">Chi ci sostiene</Link>
+          <Link prefetch={false} href="/supporter">Chi ci sostiene</Link>
         </div>
       </div>
     </footer>

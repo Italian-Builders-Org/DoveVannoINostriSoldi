@@ -481,6 +481,7 @@
         "tests/etl/test_eurostat_inequality_corpus.py",
         "tests/etl/test_istat_economia_non_osservata.py",
         "tests/etl/test_istat_economia_non_osservata_territoriale.py",
+        "tests/etl/test_mef_patrimonio_immobiliare.py",
         "tests/etl/test_medical_device_spending_profile.py",
         "tests/etl/test_medical_device_spending_model.py"
       ],
@@ -493,6 +494,7 @@
         "tests/conto-annuale.test.mjs",
         "tests/istat-economia-non-osservata.test.mjs",
         "tests/istat-economia-non-osservata-territoriale.test.mjs",
+        "tests/mef-patrimonio-immobiliare.test.mjs",
         "tests/medical-device-corpus.test.mjs"
       ],
       "generator": {

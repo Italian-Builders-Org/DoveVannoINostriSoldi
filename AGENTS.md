@@ -1,3 +1,20 @@
+## Strategia dei test
+
+- Prima del codice, definisci il comportamento atteso e i modi in cui può
+  fallire. Se serve un test unitario, scrivilo prima dell'implementazione;
+  per un bug esistente, riproduci il difetto prima della correzione. Non
+  aggiungere test a posteriori che si limitano a ricopiare il codice.
+- Preferisci gli E2E per verificare funzionalità e flussi completi. Usali come
+  unica verifica quando coprono anche gli errori e i confini rilevanti; mantieni
+  test isolati per rischi non coperti, come integrità dei dati, quote e timeout.
+- Ogni esecuzione E2E deve lasciare una prova verificabile e ripetibile:
+  comando, revisione, fixture/configurazione, esito e artifact pertinenti
+  (report, log, screenshot). Escludi credenziali e dati privati.
+- Ogni test deve intercettare un bug reale. Prima di rimuoverlo, indica quale
+  verifica rimasta copre lo stesso rischio; il numero o il tipo di test non
+  dimostrano ridondanza. Per scegliere e rivedere i test leggi
+  [tests/AGENTS.md](tests/AGENTS.md).
+
 ## Continuità del lavoro
 
 Prima di fermarti, chiediti: “C’è un prossimo passo che l’utente vorrebbe che io facessi?” Se sì, continua: il lavoro non è finito.
@@ -30,6 +47,13 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Parti da `git status --short --branch`. Per lavoro isolato usa un worktree con
   `node_modules`, `.venv`, `.next` e porta propri. Non copiare `.env` o
   condividere `.next`.
+- Prima di modificare file, annota obiettivo, SHA di base e controlli previsti
+  in una checklist della task. Verifica PR e modifiche concorrenti; conserva il
+  lavoro altrui. Prima della consegna aggiorna `origin/main` e riesamina il diff
+  rispetto alla base corrente, ripetendo i controlli dei contratti coinvolti.
+- Per ogni file modificato, verifica comportamento, casi di errore e confini
+  del dato. Aggiungi test che rilevino regressioni concrete e commenti che
+  spieghino vincoli non evidenti; evita refactor estranei al ticket.
 - Test mirati: `node --experimental-strip-types --test tests/NOME.test.mjs`
   (`--test-name-pattern='testo'` per un caso); ETL con virtualenv attivo:
   `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_NOME.py'`.
@@ -58,3 +82,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   contratti; non disattivare i gate per un verde.
 - `npm run bench:runtime` misura gli hot path offline. Confronta revisioni sullo
   stesso runtime e a macchina libera, conservando i digest.
+- Raggruppa le correzioni validate prima del push per evitare build duplicate.
+  La consegna indica PR, SHA verificato, gate `PASS`/`FAIL`/`NOT RUN` e limiti
+  residui. Merge e deploy seguono l'autorizzazione dell'utente; una CI verde
+  non dimostra che la revisione sia online.
+- Per deployment falliti o costi Vercel leggi
+  [Diagnosi dei deployment](docs/CAPACITY_AND_INCIDENTS.md#diagnosi-dei-deployment).

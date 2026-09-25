@@ -20,7 +20,7 @@ test("existing shell: root layout strips site chrome for the immersive route", a
   const immersive = await read("src/components/immersive-chrome.tsx");
   const immersiveHelper = await read("src/lib/politici-immersive.ts");
   const proxySrc = await read("src/proxy.ts");
-  for (const token of ["ImmersiveDocumentFlag", "ChromeUnlessImmersive", "isImmersiveMapRequest", "data-immersive"]) assert.ok(layout.includes(token));
+  for (const token of ["ImmersiveDocumentFlag", "ChromeUnlessImmersive", "IMMERSIVE_INIT_SCRIPT"]) assert.ok(layout.includes(token));
   assert.match(immersive, /isPoliticiImmersive/);
   assert.match(immersiveHelper, /POLITICI_HOST|politici\.dovevannoinostrisoldi\.com/);
   assert.match(immersive, /dataset\.immersive|data-immersive/);
@@ -29,7 +29,7 @@ test("existing shell: root layout strips site chrome for the immersive route", a
   // Only the atlas itself is immersive — never /politici/europa.
   assert.match(immersiveHelper, /pathname === "\/politici"/);
   assert.doesNotMatch(immersiveHelper, /startsWith\("\/politici\/"\)/);
-  assert.match(proxySrc, /isPoliticiAtlasPath|pathname === "\/politici"/);
+  assert.match(proxySrc, /destination\.pathname = "\/politici"/);
   assert.doesNotMatch(proxySrc, /startsWith\("\/politici\/"\)/);
 });
 
@@ -57,7 +57,7 @@ test("existing shell: navigation and discovery retain both entry points", async 
 
 test("existing shell: document scrolling remains unlocked only on mobile", async () => {
   const globals = await read("src/app/globals.css");
-  assert.match(globals, /html\[data-immersive="politici"\] body\s*\{[^}]*overflow:\s*hidden/s);
+  assert.match(globals, /html:is\([^\n]+\) body\s*\{[^}]*overflow:\s*hidden/s);
   const mobile = globals.slice(globals.indexOf("/* Mobile: unlock document scroll"));
   assert.match(mobile, /@media \(max-width: 899px\)/);
   assert.match(mobile, /overflow-y:\s*auto/);

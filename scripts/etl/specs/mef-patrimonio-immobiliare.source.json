@@ -1,0 +1,609 @@
+{
+  "schemaVersion": 1,
+  "issue": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/609",
+  "source": {
+    "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
+    "landingUrls": [
+      "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html",
+      "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html"
+    ],
+    "dictionaryUrl": "https://www.de.mef.gov.it/export/sites/sitode/modules/documenti_it/attivo_patrimonio/immobili_2023/Dizionario_Immobili_2023.pdf",
+    "license": "CC-BY-4.0",
+    "licenseScope": "Licenza CC BY 4.0 dichiarata nelle pagine di pubblicazione MEF dei dati 2023.",
+    "publicationDate": "2026-05-05",
+    "referenceDate": "2023-12-31",
+    "referenceYear": 2023,
+    "acquiredAt": "2026-09-23",
+    "checkedAt": "2026-09-23",
+    "geography": "Comuni ed enti territoriali per l'edilizia residenziale pubblica, un file per Regione per i Comuni; aggregazione DVNS per ente dichiarante",
+    "updateFrequency": "rilevazione annuale; rilasci open data non regolari (2015-2019, 2022, 2023)"
+  },
+  "semantics": {
+    "soldi": {
+      "present": true,
+      "unit": "euro interi",
+      "note": "Canone annuale contrattuale dichiarato dall'ente per i beni dati a terzi. Non è un incasso: la riscossione non è rilevata."
+    },
+    "periodo": {
+      "referencePeriod": "Anno 2023 dichiarato dalla fonte",
+      "publicationDate": "2026-05-05",
+      "acquisitionDate": "2026-09-23",
+      "checkedAt": "2026-09-23"
+    },
+    "provenance": {
+      "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
+      "canonicalUrls": [
+        "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html",
+        "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html"
+      ],
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html"
+    }
+  },
+  "csv": {
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "headers": {
+      "detenzioni": [
+        "ID variazione",
+        "Settore Istituzionale",
+        "Macrocategoria Amministrazione",
+        "Tipologia Amministrazione",
+        "Amministrazione Denominazione",
+        "Amministrazione Codice Fiscale",
+        "Regione (Amministrazione)",
+        "Provincia (Amministrazione)",
+        "Comune (Amministrazione)",
+        "Cod. Comune (Amministrazione)",
+        "Tipo detenzione a terzi",
+        "Detenzione Intera UI",
+        "Superficie in detenzione",
+        "Canone annuale",
+        "Data decorrenza",
+        "Data scadenza",
+        "Sogg. ricevente (tipo)",
+        "Sogg. ricevente (denominaz.)",
+        "Sogg. ricevente (CF)",
+        "Soggetto ricevente PA",
+        "Finalità PF",
+        "ID bene",
+        "Natura del bene",
+        "Tipologia Bene Immobile",
+        "Superficie di Riferimento (mq)"
+      ],
+      "immobili": [
+        "Settore Istituzionale",
+        "Macrocategoria Amministrazione",
+        "Tipologia Amministrazione",
+        "Amministrazione Denominazione",
+        "Amministrazione Codice Fiscale",
+        "Regione (Amministrazione)",
+        "Provincia (Amministrazione)",
+        "Comune (Amministrazione)",
+        "Cod. Comune (Amministrazione)",
+        "Titolo proprietà",
+        "Quota proprietà",
+        "Titolo detenzione",
+        "Detenzione Intera UI",
+        "Superficie in detenzione",
+        "Canone annuale",
+        "Sogg. cedente (denominazione)",
+        "Soggetto cedente (CF)",
+        "ID bene",
+        "Natura del bene",
+        "Stato Accatastamento",
+        "Sistema Catastale",
+        "Regione del bene",
+        "Provincia del bene",
+        "Comune del bene",
+        "Codice Comune del bene",
+        "Indirizzo",
+        "Numero Civico",
+        "Fonte Georeferenziazione",
+        "Precisione Georeferenziazione",
+        "Immobile Geo-Ref.",
+        "Latitudine",
+        "Longitudine",
+        "Identificativo catastale",
+        "Codice Bene non accatastato",
+        "Tipologia Bene Immobile",
+        "Superficie (mq)",
+        "Cubatura (mc)",
+        "Sup. aree pertinenziali (mq)",
+        "Superficie di Riferimento (mq)",
+        "Epoca Costruzione",
+        "Vinc. culturale/paesaggistico",
+        "Natura Giuridica del Bene",
+        "Diritto gravante sul terreno",
+        "ID Compendio",
+        "Descrizione Compendio",
+        "Tipologia Compendio",
+        "Utilizzo del bene",
+        "Finalità",
+        "Altra finalità",
+        "ui data interamente a terzi",
+        "ui data parzialmente a terzi"
+      ]
+    }
+  },
+  "domains": {
+    "tipologiaEnte": {
+      "comuni": "Comuni",
+      "erp": "Aziende, Enti e Istituti Territoriali per l'Edilizia Residenziale"
+    },
+    "titoloProprieta": [
+      "Proprietà",
+      "Proprietà per l'area",
+      "Nuda proprietà",
+      "Proprietà superficiaria",
+      "Usufrutto"
+    ],
+    "titoloDetenzione": [
+      "in gestione per conto di",
+      "in uso gratuito",
+      "in locazione",
+      "in concessione a titolo oneroso",
+      "in concessione a titolo gratuito",
+      "in uso governativo"
+    ],
+    "utilizzo": [
+      "Utilizzato direttamente",
+      "Non utilizzato",
+      "Inutilizzabile",
+      "In ristrutturazione/manutenzione",
+      ""
+    ],
+    "tipoDetenzioneTerzi": [
+      "in gestione per conto di",
+      "in locazione",
+      "in uso gratuito",
+      "in concessione a titolo oneroso",
+      "in concessione a titolo gratuito"
+    ],
+    "detenzioneInteraUi": [
+      "Sì",
+      "No",
+      ""
+    ],
+    "finalitaPf": [
+      "Edilizia residenziale pubblica",
+      "Nessuna delle precedenti",
+      "Valorizzazione e recupero",
+      "Orto urbano",
+      "Alloggio di servizio, foresterie",
+      "Alloggio per studenti",
+      ""
+    ]
+  },
+  "expected": {
+    "immobiliRows": 2640689,
+    "detenzioniRows": 449258,
+    "immobiliExactDuplicateRows": 1
+  },
+  "datasets": {
+    "beni": "mef-patrimonio-beni-2023",
+    "contratti": "mef-patrimonio-contratti-2023"
+  },
+  "files": [
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_ABRUZZO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_ABRUZZO_2023.zip",
+      "bytes": 70050,
+      "sha256": "9c6458118fd261843cf28584732845f2a62fa0594d6aea1c6927706cce687080",
+      "member": "Det_Amministrazioni_Comunali_ABRUZZO_2023.csv",
+      "rows": 6285
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_BASILICATA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_BASILICATA_2023.zip",
+      "bytes": 12404,
+      "sha256": "c4fb3c8485e4bd619bf3b25406e9bb2c5296168e7cb0ab1a8e5a612e0a51514f",
+      "member": "Det_Amministrazioni_Comunali_BASILICATA_2023.csv",
+      "rows": 601
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_CALABRIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_CALABRIA_2023.zip",
+      "bytes": 17283,
+      "sha256": "cddbe23863fffd9020c381a788c494ae8c1ecf712631b2c3a792a0ceeb0a77cb",
+      "member": "Det_Amministrazioni_Comunali_CALABRIA_2023.csv",
+      "rows": 958
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_CAMPANIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_CAMPANIA_2023.zip",
+      "bytes": 519687,
+      "sha256": "c9ab173230d0904d4fd6243ce31e8fa159509a7e1cce3deb30e12c20a14e144a",
+      "member": "Det_Amministrazioni_Comunali_CAMPANIA_2023.csv",
+      "rows": 42842
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.zip",
+      "bytes": 953232,
+      "sha256": "e5a03d932f08647b161a2e61d8fc89aa20a31d2b55b05d32b5adbfdf32b29881",
+      "member": "Det_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.csv",
+      "rows": 80677
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.zip",
+      "bytes": 101727,
+      "sha256": "525033b85d02b5b41031919da97d456f1c5028b1980d0bbecd1e01c422d7b069",
+      "member": "Det_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.csv",
+      "rows": 6513
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_LAZIO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_LAZIO_2023.zip",
+      "bytes": 517025,
+      "sha256": "6b823efe260674f80611e5ceb2c2996db8a8d90ada0dc642e06d151ccef83666",
+      "member": "Det_Amministrazioni_Comunali_LAZIO_2023.csv",
+      "rows": 30751
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_LIGURIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_LIGURIA_2023.zip",
+      "bytes": 125080,
+      "sha256": "e4392a557b4f3c7d9e3ab91e399b93aee37e3334b8ad1515c18d3d3247575098",
+      "member": "Det_Amministrazioni_Comunali_LIGURIA_2023.csv",
+      "rows": 8325
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_LOMBARDIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_LOMBARDIA_2023.zip",
+      "bytes": 895469,
+      "sha256": "a85a13c10a7df5ffbf09d8ab5378bfb70e15c3890ef14a3e9eecb22cd359ab5c",
+      "member": "Det_Amministrazioni_Comunali_LOMBARDIA_2023.csv",
+      "rows": 63407
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_MARCHE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_MARCHE_2023.zip",
+      "bytes": 123017,
+      "sha256": "415a38587486a8ed4ac7eac469906f38ee0367e10c203c43170014802743eb3f",
+      "member": "Det_Amministrazioni_Comunali_MARCHE_2023.csv",
+      "rows": 6938
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_MOLISE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_MOLISE_2023.zip",
+      "bytes": 4870,
+      "sha256": "6e4ea23a795779af751d0e3984e7a20b44a469581e1c5f11dfdedae5e4a48455",
+      "member": "Det_Amministrazioni_Comunali_MOLISE_2023.csv",
+      "rows": 120
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_PIEMONTE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_PIEMONTE_2023.zip",
+      "bytes": 307323,
+      "sha256": "adae820598192e961ed300f03d1a1f22e2a3f63a334f8e03ca7ac416bcc52d32",
+      "member": "Det_Amministrazioni_Comunali_PIEMONTE_2023.csv",
+      "rows": 13950
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_PUGLIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_PUGLIA_2023.zip",
+      "bytes": 34981,
+      "sha256": "cd8a7d29b94c86e7c2be91b1663363b63f0a34f12597760fc43336a09f0ce1f3",
+      "member": "Det_Amministrazioni_Comunali_PUGLIA_2023.csv",
+      "rows": 1440
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_SARDEGNA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_SARDEGNA_2023.zip",
+      "bytes": 92143,
+      "sha256": "cd9c8040366cca58ccbbb6f4dcffafba196ef46549250b8049113c4f5c072b54",
+      "member": "Det_Amministrazioni_Comunali_SARDEGNA_2023.csv",
+      "rows": 4672
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_SICILIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_SICILIA_2023.zip",
+      "bytes": 55503,
+      "sha256": "1e1ab8f8ec60dda7cf30e81ed54cb5086bb99e9fe2217fea97809baf73b144d3",
+      "member": "Det_Amministrazioni_Comunali_SICILIA_2023.csv",
+      "rows": 3079
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_TOSCANA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_TOSCANA_2023.zip",
+      "bytes": 501207,
+      "sha256": "d510eec99b630d270861706f01175765099f140843ba9f3b4b2025951859ebb8",
+      "member": "Det_Amministrazioni_Comunali_TOSCANA_2023.csv",
+      "rows": 38015
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.zip",
+      "bytes": 76960,
+      "sha256": "81844c4e421744c2c56b9c6946da4dc64de202aa33f6a9211845947d8a355f72",
+      "member": "Det_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.csv",
+      "rows": 3247
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_UMBRIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_UMBRIA_2023.zip",
+      "bytes": 56767,
+      "sha256": "e7cebd9aef86f75a3d935688a1c0efdfa0bf58e33dfcf96a0b304eb57fa88fa1",
+      "member": "Det_Amministrazioni_Comunali_UMBRIA_2023.csv",
+      "rows": 2846
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.zip",
+      "bytes": 36669,
+      "sha256": "33d51edbb5f3c49ff804ca7609362c90c2b114bfa26d97cd8fff7a2c2852768c",
+      "member": "Det_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.csv",
+      "rows": 2316
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "comuni",
+      "file": "Det_Amministrazioni_Comunali_VENETO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Amministrazioni_Comunali_VENETO_2023.zip",
+      "bytes": 283499,
+      "sha256": "c12792f941398c54d5a31908f630bfedb7ea72b2c3cefd6d187b094d1ebbd9db",
+      "member": "Det_Amministrazioni_Comunali_VENETO_2023.csv",
+      "rows": 16534
+    },
+    {
+      "kind": "detenzioni",
+      "perimeter": "erp",
+      "file": "Det_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_det/Det_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.zip",
+      "bytes": 1422149,
+      "sha256": "62458045e4eee883cb862fc58ef83bf9a8234907ca948a10aa82ef9fb998b094",
+      "member": "Det_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.csv",
+      "rows": 115742
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_ABRUZZO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_ABRUZZO_2023.zip",
+      "bytes": 3196599,
+      "sha256": "263873022964f5474d6603cf9e1f5a2d161ea5e4ef62fab7fe30746151d4ecac",
+      "member": "Imm_Amministrazioni_Comunali_ABRUZZO_2023.csv",
+      "rows": 114633
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_BASILICATA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_BASILICATA_2023.zip",
+      "bytes": 1050292,
+      "sha256": "9e710336c5fe54381ff9c1fa2507b76bd42fa38328a80380d7353ec08384b793",
+      "member": "Imm_Amministrazioni_Comunali_BASILICATA_2023.csv",
+      "rows": 34020
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_CALABRIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_CALABRIA_2023.zip",
+      "bytes": 1519139,
+      "sha256": "c633a2ce9d8902ff788a4e846b230adac3a54195c796ac4d48293b08974b6b19",
+      "member": "Imm_Amministrazioni_Comunali_CALABRIA_2023.csv",
+      "rows": 50292
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_CAMPANIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_CAMPANIA_2023.zip",
+      "bytes": 3732345,
+      "sha256": "601fa7f835d56c439f82849f6cb8a919c22f191c0107c16eb50688abd1890242",
+      "member": "Imm_Amministrazioni_Comunali_CAMPANIA_2023.csv",
+      "rows": 157999
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.zip",
+      "bytes": 5774863,
+      "sha256": "5d5b7aad6e78b6e9190628f83b0238beb3ba1d696a0a6ca481927b5eb701f18d",
+      "member": "Imm_Amministrazioni_Comunali_EMILIA-ROMAGNA_2023.csv",
+      "rows": 207649
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.zip",
+      "bytes": 2254497,
+      "sha256": "27ad2ad4ccad555282706c68f902d6660772691ad9e629dee6bb6f32b90e189f",
+      "member": "Imm_Amministrazioni_Comunali_FRIULI-VENEZIA-GIULIA_2023.csv",
+      "rows": 73360
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_LAZIO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_LAZIO_2023.zip",
+      "bytes": 3409606,
+      "sha256": "2ff086d565c9f9230f2c0e1b4862be1872f42d8fc2b4d1460552e40c47575fd7",
+      "member": "Imm_Amministrazioni_Comunali_LAZIO_2023.csv",
+      "rows": 121507
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_LIGURIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_LIGURIA_2023.zip",
+      "bytes": 1621033,
+      "sha256": "e1bbe6bb318c9102142d2890d271bb65e6af40ee9d08d93db7008701a2d8f390",
+      "member": "Imm_Amministrazioni_Comunali_LIGURIA_2023.csv",
+      "rows": 50649
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_LOMBARDIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_LOMBARDIA_2023.zip",
+      "bytes": 9541327,
+      "sha256": "49d099e85cacbcc2d84b332eba3c529bc6365c050c8b2f279a29e54b6839dd21",
+      "member": "Imm_Amministrazioni_Comunali_LOMBARDIA_2023.csv",
+      "rows": 327612
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_MARCHE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_MARCHE_2023.zip",
+      "bytes": 2773383,
+      "sha256": "8a2d51e699b3bfa291260ead5c6f31a9ec7367ded1627bc8b130a8ad30a4942f",
+      "member": "Imm_Amministrazioni_Comunali_MARCHE_2023.csv",
+      "rows": 76626
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_MOLISE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_MOLISE_2023.zip",
+      "bytes": 892514,
+      "sha256": "5821c31042c7d0d624965b12eddbf6cfeaea09abd7de070dd5861b3538d36a99",
+      "member": "Imm_Amministrazioni_Comunali_MOLISE_2023.csv",
+      "rows": 30941
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_PIEMONTE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_PIEMONTE_2023.zip",
+      "bytes": 7742122,
+      "sha256": "65e2f0fd600484a512b6458acaa387addea94f4a144444ae6e5cddcbc3b9db7b",
+      "member": "Imm_Amministrazioni_Comunali_PIEMONTE_2023.csv",
+      "rows": 254260
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_PUGLIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_PUGLIA_2023.zip",
+      "bytes": 2875355,
+      "sha256": "c93717cd01b7cc6ee79bd41fb404df3bb8ef02a82e89e2d990a71bdb93660690",
+      "member": "Imm_Amministrazioni_Comunali_PUGLIA_2023.csv",
+      "rows": 102027
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_SARDEGNA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_SARDEGNA_2023.zip",
+      "bytes": 2327719,
+      "sha256": "5e67eb397a2a98659f1f5333610e2093645eaff3a081400981f696e3700f55f9",
+      "member": "Imm_Amministrazioni_Comunali_SARDEGNA_2023.csv",
+      "rows": 70648
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_SICILIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_SICILIA_2023.zip",
+      "bytes": 1931454,
+      "sha256": "4134f36e5b96028cef2cc92ab7452704b7895536fce5d38f3c707f812b745c1a",
+      "member": "Imm_Amministrazioni_Comunali_SICILIA_2023.csv",
+      "rows": 60053
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_TOSCANA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_TOSCANA_2023.zip",
+      "bytes": 4680422,
+      "sha256": "4df7e3262506d12d710f221a87d69ae2a57b8037641e5c45bfc9a8e9b4c7dc80",
+      "member": "Imm_Amministrazioni_Comunali_TOSCANA_2023.csv",
+      "rows": 159703
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.zip",
+      "bytes": 1816693,
+      "sha256": "6c304e9c641064d950c5da7cd2e7d556e868a21d4a506dcc8e1ce8a3004fc6a2",
+      "member": "Imm_Amministrazioni_Comunali_TRENTINO-ALTO-ADIGE_2023.csv",
+      "rows": 71201
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_UMBRIA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_UMBRIA_2023.zip",
+      "bytes": 1144530,
+      "sha256": "d29bed8e4842a9f123d59e435a469aed10ab9a3a463ed55f4fa1ead638bbe92b",
+      "member": "Imm_Amministrazioni_Comunali_UMBRIA_2023.csv",
+      "rows": 34553
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.zip",
+      "bytes": 564567,
+      "sha256": "cae7a43b5e562cb8219f46ec33d7b32c8b8c9ddb52f61d0d06d210c06abcab76",
+      "member": "Imm_Amministrazioni_Comunali_VALLE-D_AOSTA_2023.csv",
+      "rows": 17904
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "comuni",
+      "file": "Imm_Amministrazioni_Comunali_VENETO_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Amministrazioni_Comunali_VENETO_2023.zip",
+      "bytes": 5260639,
+      "sha256": "d845c1855972e3e29b2884d63b997e71a68f7d801ed7068d055497a5e10744c4",
+      "member": "Imm_Amministrazioni_Comunali_VENETO_2023.csv",
+      "rows": 166913
+    },
+    {
+      "kind": "immobili",
+      "perimeter": "erp",
+      "file": "Imm_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.zip",
+      "url": "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/opendata_imm/Imm_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.zip",
+      "bytes": 8015366,
+      "sha256": "1948b0beaf17aa007cb4bec233cff39b5d0985f3a160c171fe0bdac3dd763239",
+      "member": "Imm_Aziende_Enti_ed_Istituti_Territoriali_per_l_Edilizia_Residenziale_2023.csv",
+      "rows": 458139
+    }
+  ]
+}

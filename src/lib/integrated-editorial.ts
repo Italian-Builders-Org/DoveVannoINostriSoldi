@@ -1065,6 +1065,23 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     ],
   },
   {
+    surface: "/dati",
+    title: "Patrimonio immobiliare di Comuni ed enti ERP",
+    description: "Censimento MEF al 31 dicembre 2023, aggregato per ente: beni per titolo e stato d’uso dichiarato, contratti dati a terzi e canoni.",
+    datasets: [
+      {
+        id: "mef-patrimonio-beni-2023",
+        label: "Beni per stato d’uso",
+        catalogBoundary: "Stato d’uso dichiarato dall’ente, non agibilità, occupazione o valutazione di efficienza.",
+      },
+      {
+        id: "mef-patrimonio-contratti-2023",
+        label: "Contratti e canoni dichiarati",
+        catalogBoundary: "Canoni contrattuali dichiarati, non incassi; l’edilizia residenziale pubblica compare solo aggregata per ente.",
+      },
+    ],
+  },
+  {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",
     description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",

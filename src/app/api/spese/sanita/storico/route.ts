@@ -6,7 +6,9 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const ssnHistoryLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 6 });
-const ssnHistoryConcurrency = new ConcurrencyLimiter(1);
+// Concurrency 1 provocava ondate di 503 no-store (retry → più invocazioni Fluid).
+// Dopo il warm la storia è in process/unstable_cache: 3 isolati bastano.
+const ssnHistoryConcurrency = new ConcurrencyLimiter(3);
 
 export async function GET(request: Request) {
   const clientKey = clientAddress(request) ?? "unknown";

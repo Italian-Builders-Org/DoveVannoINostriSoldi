@@ -677,3 +677,32 @@ test("Next tracing carries the page and both parent source specs", () => {
   assert.match(config, /scripts\/etl\/specs\/anac-entity-procurement\.source\.json/);
   assert.match(config, /scripts\/etl\/specs\/anac-awardees\.source\.json/);
 });
+
+test("loader refuses shard paths that leave the entities directory, for the path itself", async () => {
+  // Il percorso degli shard viene dal meta: una risalita con ../ o una cartella sorella che
+  // condivide il prefisso (entities-evil) devono essere rifiutate. Il messaggio conta: un
+  // rifiuto per un digest caduto prima non proverebbe che il controllo sul percorso morde.
+  for (const hostile of [
+    `${SHARD_RELATIVE}/../../../../../package.json`,
+    `${ARTIFACT_RELATIVE}/entities-evil/00.jsonl.gz`,
+  ]) {
+    const fixture = makeFixture();
+    try {
+      const metaPath = join(fixture.projectRoot, ARTIFACT_RELATIVE, "meta.json");
+      const meta = JSON.parse(readFileSync(metaPath, "utf8"));
+      const target = meta.shards.find((shard) => shard.path.endsWith(`/${fixture.prefix}.jsonl.gz`));
+      target.path = hostile.replace("00.jsonl.gz", `${fixture.prefix}.jsonl.gz`);
+      writeFileSync(metaPath, JSON.stringify(meta) + "\n");
+      const result = await loader.loadAnacEntityProcurementPage({
+        codiceIpa: fixture.record.codiceIpa,
+        currentEntityCf: fixture.record.codiceFiscaleEnte,
+        rootDirectory: fixture.projectRoot,
+      });
+      assert.equal(result.status, "unavailable", hostile);
+      assert.equal(result.reason, "artifact-invalid", hostile);
+      assert.match(result.message, /path shard/, `${hostile}: ${result.message}`);
+    } finally {
+      cleanup(fixture);
+    }
+  }
+});

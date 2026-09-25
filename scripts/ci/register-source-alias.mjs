@@ -9,6 +9,7 @@ const sourceRoot = resolve(fileURLToPath(new URL("../../src/", import.meta.url))
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === "next/server") return nextResolve("next/server.js", context);
+    if (specifier === "next/og") return nextResolve("next/og.js", context);
     if (specifier === "server-only") {
       return { url: "data:text/javascript,export default undefined", shortCircuit: true };
     }

@@ -512,6 +512,30 @@
           "https://www.dati.salute.gov.it/it/dataset/dispositivi-medici-anno-2019-spesa-rilevata-azienda-sanitaria/",
           "https://www.dati.salute.gov.it/sites/default/files/imported/C_17_dataset_101_0_upFile.zip"
         ]
+      },
+      "mef-patrimonio-beni-2023": {
+        "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
+        "referencePeriod": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante",
+        "publicationDate": "2026-05-05",
+        "acquisitionDate": "2026-09-23",
+        "checkedAt": "2026-09-23",
+        "updateFrequency": "rilevazione annuale; rilasci open data non regolari (2015-2019, 2022, 2023)",
+        "canonicalUrls": [
+          "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html",
+          "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html"
+        ]
+      },
+      "mef-patrimonio-contratti-2023": {
+        "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
+        "referencePeriod": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante",
+        "publicationDate": "2026-05-05",
+        "acquisitionDate": "2026-09-23",
+        "checkedAt": "2026-09-23",
+        "updateFrequency": "rilevazione annuale; rilasci open data non regolari (2015-2019, 2022, 2023)",
+        "canonicalUrls": [
+          "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html",
+          "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/detenzioni_favore_di_terzi_2023.html"
+        ]
       }
     }
   },
@@ -6144,6 +6168,114 @@
         "CodRegCommit e CodASL restano stringhe nel lessico della fonte; zeri iniziali e RegioneCommit non vengono riscritti mediante raccordi impliciti.",
         "Release selezionata: open-data-spesa-2019. La data di pubblicazione è quella del catalogo; la data ZIP non è una data certificata di estrazione ministeriale."
       ]
+    },
+    {
+      "id": "mef-patrimonio-beni-2023",
+      "title": "MEF · patrimonio immobiliare dei Comuni e degli enti ERP · beni per stato d'uso 2023",
+      "domain": "entities",
+      "relativePath": "mef-patrimonio-beni-2023.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "derived-curated",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Beni per ente, titolo, stato d'uso, tipologia e comune in cui si trova il bene, che può essere diverso dal Comune dell'ente (per esempio un Comune proprietario di alloggi in altri Comuni). Un bene può comparire più volte se l'ente lo dichiara con titoli diversi (per esempio proprietà per l'area e proprietà superficiaria); una riga del censimento è ripetuta identica e resta conteggiata come nella fonte.",
+        "Il titolo distingue i beni posseduti (proprietà e altri diritti reali) da quelli detenuti da terzi (locazione, uso gratuito, gestione per conto di altri enti): non vanno sommati come patrimonio dell'ente. Gli enti ERP dichiarano anche alloggi gestiti per conto dei Comuni.",
+        "Lo stato d'uso è dichiarato dall'ente: «Non utilizzato» non dice se il bene sia agibile, affittabile o occupato; «Inutilizzabile» e «In ristrutturazione/manutenzione» sono voci distinte; «Non indicato» è una cella vuota nella fonte: nella maggior parte dei casi il bene è dato interamente a terzi, come indica la colonna «Dato a terzi», ricavata dai due flag della fonte sulla cessione intera o parziale. Nessuna valutazione di spreco o di efficienza deriva da questi conteggi.",
+        "La superficie di riferimento è sommata solo sui beni che la dichiarano maggiore di zero; terreni e fabbricati hanno superfici non confrontabili e non vanno sommati tra tipologie.",
+        "Censimento annuale degli immobili pubblici del MEF (art. 2, c. 222, L. 191/2009), rilascio 2023 pubblicato il 5 maggio 2026. Perimetro: Comuni ed enti territoriali per l'edilizia residenziale pubblica; le altre amministrazioni non sono incluse.",
+        "Aggregazione DVNS per ente dichiarante (codice fiscale) dalle righe ufficiali, senza correzioni: ogni conteggio e somma si riconcilia con i 42 archivi del lock. Il censimento include anche enti che non hanno inviato la comunicazione 2023: per loro restano a sistema i dati di comunicazioni precedenti, di anno non dichiarato dalla fonte, che non vanno letti come situazione al 31/12/2023. Il file di adempimento MEF, pubblicato a parte come dataset mef-patrimonio-adempimento-2023, distingue i due casi. Gli enti senza alcuna comunicazione non compaiono: un'assenza non è uno zero.",
+        "Nel catalogo e nell'API la ricerca libera esamina un numero limitato di righe per richiesta e prosegue con il cursore: una pagina vuota non significa che l'ente sia assente.",
+        "Fonte MEF, CC BY 4.0; proiezione DVNS aggregata con trasformazione dichiarata."
+      ],
+      "expected": {
+        "bytes": 47842799,
+        "sha256": "0cfb5025c0e72d54eeabb28e06304bb80b5554905bcffbe42437b05b4cd579b7",
+        "rows": 140712,
+        "columns": 19,
+        "headers": [
+          "Codice fiscale ente",
+          "Ente",
+          "Titolo",
+          "Utilizzo del bene",
+          "Dato a terzi",
+          "Tipologia bene",
+          "Beni",
+          "Beni con superficie",
+          "Superficie di riferimento (m²)",
+          "Regione del bene",
+          "Comune del bene",
+          "Codice catastale comune del bene",
+          "Tipologia ente",
+          "Regione ente",
+          "Provincia ente",
+          "Comune ente",
+          "Codice catastale comune ente",
+          "Anno",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "mef-patrimonio-contratti-2023",
+      "title": "MEF · beni di Comuni ed enti ERP dati a terzi · contratti e canoni dichiarati 2023",
+      "domain": "entities",
+      "relativePath": "mef-patrimonio-contratti-2023.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "derived-curated",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Contratti con cui l'ente dà beni a terzi, per tipo di detenzione, finalità dichiarata per le persone fisiche e tipologia del bene. Il canone è quello contrattuale annuo dichiarato, in euro interi: non misura incassi, morosità o riscossione.",
+        "Canone vuoto e canone zero restano distinti. Il rapporto canone/superficie usa solo i contratti su intera unità con canone positivo e superficie dichiarata: €/m² annui = Canone annuo per rapporto ÷ Superficie per rapporto.",
+        "Nessun dato identificativo delle persone fisiche: la fonte non pubblica nome e codice fiscale del ricevente e l'aggregazione per ente non espone singoli alloggi. Il canone dell'edilizia residenziale pubblica è determinato per legge e non è confrontabile con il mercato.",
+        "I tipi di detenzione non vanno sommati tra loro: «in gestione per conto di» non è una locazione.",
+        "Censimento annuale degli immobili pubblici del MEF (art. 2, c. 222, L. 191/2009), rilascio 2023 pubblicato il 5 maggio 2026. Perimetro: Comuni ed enti territoriali per l'edilizia residenziale pubblica; le altre amministrazioni non sono incluse.",
+        "Aggregazione DVNS per ente dichiarante (codice fiscale) dalle righe ufficiali, senza correzioni: ogni conteggio e somma si riconcilia con i 42 archivi del lock. Il censimento include anche enti che non hanno inviato la comunicazione 2023: per loro restano a sistema i dati di comunicazioni precedenti, di anno non dichiarato dalla fonte, che non vanno letti come situazione al 31/12/2023. Il file di adempimento MEF, pubblicato a parte come dataset mef-patrimonio-adempimento-2023, distingue i due casi. Gli enti senza alcuna comunicazione non compaiono: un'assenza non è uno zero.",
+        "Nel catalogo e nell'API la ricerca libera esamina un numero limitato di righe per richiesta e prosegue con il cursore: una pagina vuota non significa che l'ente sia assente.",
+        "Fonte MEF, CC BY 4.0; proiezione DVNS aggregata con trasformazione dichiarata."
+      ],
+      "expected": {
+        "bytes": 6785753,
+        "sha256": "991aa9a128f6dcc3464b768b95b003baa1c0585331fd20ff3b52847f7bac4f3b",
+        "rows": 21034,
+        "columns": 21,
+        "headers": [
+          "Codice fiscale ente",
+          "Ente",
+          "Tipo detenzione",
+          "Finalità persona fisica",
+          "Tipologia bene",
+          "Contratti",
+          "Contratti su intera unità",
+          "Contratti con canone positivo",
+          "Contratti con canone zero",
+          "Contratti senza canone",
+          "Canone annuo totale (EUR)",
+          "Contratti per rapporto canone/superficie",
+          "Canone annuo per rapporto (EUR)",
+          "Superficie per rapporto (m²)",
+          "Tipologia ente",
+          "Regione ente",
+          "Provincia ente",
+          "Comune ente",
+          "Codice catastale comune ente",
+          "Anno",
+          "URL fonte"
+        ]
+      }
     }
   ]
 }

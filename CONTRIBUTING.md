@@ -77,8 +77,8 @@ scansione Zizmor dei workflow ed è bloccante. Per riprodurla usa Zizmor 1.29.0:
 ```bash
 npm ci
 npm run ci:static
+npm run ci:action-pins
 npm run test:node
-DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci npm run test:etl
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci npm run test:snapshots
 npm run build
 NEXT_PORT=3218 npm run test:production
@@ -91,6 +91,11 @@ esempi in “Feedback rapido”, e serve durante lo sviluppo. `test:node` esegue
 suite deterministica con il network guard: qualsiasi tentativo verso una rete
 esterna rende il comando fallito, anche se il codice sotto test intercetta
 l'errore.
+
+Per gli agenti, la verifica ETL locale segue [AGENTS.md](AGENTS.md): eseguire
+soltanto i test pertinenti ai producer, contratti o dati modificati; se non
+coinvolti, riportare `NOT RUN`. La suite completa `npm run test:etl` richiede
+una richiesta esplicita di Lorenzo. Il job ETL di GitHub resta obbligatorio.
 
 Le osservazioni che dipendono da fonti esterne sono separate nel profilo
 **live**:
@@ -162,6 +167,10 @@ latenza delle fonti live, rete, rendering o cold start.
 tracing accidentale di test, documentazione e ricerca, controlla gli artifact
 ANAC necessari e impedisce l'inclusione dell'indice operatori nelle route enti.
 Vedi [misure e verifica dei bundle](docs/VERCEL_RUNTIME_BUNDLES.md).
+La pulizia dopo la compilazione libera `.next/cache` e il checkout `.git`
+soltanto su Vercel; in locale e su GitHub la cache resta disponibile. Non
+elimina output o snapshot. Per errori di pubblicazione e valutazioni di
+capacità seguire la [diagnosi dei deployment](docs/CAPACITY_AND_INCIDENTS.md#diagnosi-dei-deployment).
 
 Lo stato delle fonti usa un riepilogo dei metadati degli snapshot, riconciliato
 con i rispettivi validator prima di ogni build. Dopo un aggiornamento degli
@@ -264,7 +273,7 @@ Node). Loopback (127.0.0.0/8, ::1) è sempre consentito.
 Per attivarlo localmente:
 
 ```bash
-DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p 'test_NOME.py'
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/ci/validate-generated-artifacts.py --run-checks
 ```
 

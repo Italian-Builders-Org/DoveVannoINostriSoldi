@@ -29,7 +29,7 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
     if (first !== undefined) query.set(key, first);
   }
   const parsed = readAtlasState(query, map);
-  return <main className={styles.immersivePage}>
+  return <main className={styles.immersivePage} data-immersive-page="politici">
     <a className={styles.skipLink} href="#atlante-politica">Vai all’atlante</a>
     <header className={styles.immersiveChrome}>
       <div className={styles.brandLockup}>

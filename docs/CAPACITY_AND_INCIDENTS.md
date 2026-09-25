@@ -6,7 +6,13 @@ fonti. Questa guida definisce decisioni e verifiche, non una capacità garantita
 
 ## Configurazione di riferimento
 
-Verificata il 5 settembre 2026: build Standard (4 vCPU, 8 GB), on-demand
+Il 25 settembre 2026 le build DVNS risultano su Enhanced (8 vCPU, 16 GB).
+La stessa revisione ha fallito su Standard ed è riuscita su Enhanced: questo
+giustifica mantenere temporaneamente Enhanced, ma non identifica da solo la
+risorsa esaurita. Distinguere RAM e disco temporaneo del container; eliminare
+vecchi deployment non aumenta lo spazio disponibile alla singola build.
+
+Riferimento precedente, verificato il 5 settembre 2026: build Standard (4 vCPU, 8 GB), on-demand
 concurrency disattivata, priorità produzione attiva; Fluid Compute attivo,
 funzioni Standard (1 vCPU, 2 GB per istanza). Ricontrollare il dashboard prima
 di un evento: sono impostazioni modificabili, non imposte da `vercel.json`.
@@ -94,9 +100,21 @@ misurare anche RSS/heap prima di aumentare i limiti. Gli oggetti restituiti dagl
 adapter sono condivisi e vanno trattati come immutabili.
 
 `node --experimental-strip-types scripts/bench/procurement.mjs` confronta batch
-di enti e operatori diversi negli stessi shard, prima a freddo e poi a caldo.
-Conservare digest, runtime e corpus identici nel confronto. Non rappresenta la
-latenza HTTP o un crawler che cambia shard a ogni richiesta.
+di enti e operatori diversi in due shard. Per esercitare anche il ricambio delle
+cache, aumentare gli shard (da 1 a 256):
+
+```bash
+mkdir -p artifacts/bench
+DVNS_BENCH_SHARDS=16 node --experimental-strip-types scripts/bench/procurement.mjs > artifacts/bench/procurement.jsonl
+```
+
+Ogni batch ha quattro passaggi e registra durata, CPU del processo, RSS e digest
+dei risultati. Usare la versione Node di `.nvmrc`, lo stesso corpus e lo stesso
+campione nelle due revisioni, a macchina libera. La RSS include il processo
+intero e non misura il peso della sola cache. Confrontare prima i digest; poi
+tempi e memoria. Il benchmark non misura latenza HTTP o risparmio in fattura:
+verificare separatamente richieste, CPU, memoria ed errori in produzione su
+finestre comparabili, escludendo quelle che mescolano versioni diverse.
 
 Il layout pubblico non legge header della richiesta per scegliere la modalità
 immersiva. La mappa inizializza il proprio flag prima del primo paint e lo

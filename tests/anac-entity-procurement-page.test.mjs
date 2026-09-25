@@ -706,3 +706,31 @@ test("loader refuses shard paths that leave the entities directory, for the path
     }
   }
 });
+
+test("record dates preserve the ISO calendar boundary, including leap centuries and year zero", () => {
+  const record = fixtureRecord();
+  const prefix = digest(record.codiceIpa).slice(0, 2);
+  const accepted = ["0000-02-29", "0099-12-31", "1900-02-28", "2000-02-29", "2024-02-29", "2025-04-30", "9999-12-31"];
+  const rejected = ["1900-02-29", "2100-02-29", "2025-02-29", "2025-04-31", "2025-00-01", "2025-13-01", "2025-01-00", "2025-01-32", "2025-1-01", "2025-01-01\n", "2025-01-01T00:00:00Z"];
+  for (const date of accepted) {
+    record.awards[0].awardedAt = date;
+    assert.doesNotThrow(() => loader.assertAnacEntityProcurementPageRecord(record, prefix), date);
+  }
+  for (const date of rejected) {
+    record.awards[0].awardedAt = date;
+    assert.throws(() => loader.assertAnacEntityProcurementPageRecord(record, prefix), /non valido/, date);
+  }
+});
+
+test("record keys are order independent but cannot be replaced by inherited or hidden fields", () => {
+  const record = fixtureRecord();
+  const prefix = digest(record.codiceIpa).slice(0, 2);
+  assert.doesNotThrow(() => loader.assertAnacEntityProcurementPageRecord(Object.fromEntries(Object.entries(record).reverse()), prefix));
+  const inherited = Object.assign(Object.create({ codiceIpa: record.codiceIpa }), record);
+  delete inherited.codiceIpa;
+  inherited.unexpected = true;
+  assert.throws(() => loader.assertAnacEntityProcurementPageRecord(inherited, prefix), /chiavi inattese/);
+  const hidden = { ...record, unexpected: true };
+  Object.defineProperty(hidden, "codiceIpa", { enumerable: false });
+  assert.throws(() => loader.assertAnacEntityProcurementPageRecord(hidden, prefix), /chiavi inattese/);
+});

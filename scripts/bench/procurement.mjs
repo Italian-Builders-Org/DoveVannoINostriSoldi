@@ -8,8 +8,11 @@ const { loadAnacEntityProcurementPage } = await import("../../src/lib/data/anac-
 const { loadAnacCpvRecord } = await import("../../src/lib/data/anac-procurement-cpv.ts");
 const { getOperatorHistory } = await import("../../src/lib/data/anac-operator-history.ts");
 const records = (path) => gunzipSync(readFileSync(path)).toString("utf8").trim().split("\n").map(JSON.parse);
-const entities = ["00", "01"].flatMap((prefix) => records(`src/data/generated/anac-entity-procurement-page/entities/${prefix}.jsonl.gz`).slice(0, 8).map((row) => row.codiceIpa));
-const operators = records("src/data/generated/anac-operator-history/00.jsonl.gz").slice(0, 16).map((row) => row.ref);
+const shardCount = Number(process.env.DVNS_BENCH_SHARDS ?? 2);
+if (!Number.isInteger(shardCount) || shardCount < 1 || shardCount > 256) throw new Error("DVNS_BENCH_SHARDS must be between 1 and 256");
+const prefixes = Array.from({ length: shardCount }, (_, i) => i.toString(16).padStart(2, "0"));
+const entities = prefixes.flatMap((prefix) => records(`src/data/generated/anac-entity-procurement-page/entities/${prefix}.jsonl.gz`).slice(0, 8).map((row) => row.codiceIpa));
+const operators = prefixes.flatMap((prefix) => records(`src/data/generated/anac-operator-history/${prefix}.jsonl.gz`).slice(0, 8).map((row) => row.ref));
 console.log(JSON.stringify({ node: process.version, entities, operators }));
 for (const [name, run] of Object.entries({
   entities: async () => {
@@ -24,9 +27,11 @@ for (const [name, run] of Object.entries({
   operators: () => operators.map(getOperatorHistory),
 })) {
   for (let round = 0; round < 4; round++) {
+    const cpu = process.cpuUsage();
     const start = performance.now();
     const result = await run();
     const elapsedMs = performance.now() - start;
-    console.log(JSON.stringify({ name, round, elapsedMs, digest: createHash("sha256").update(JSON.stringify(result)).digest("hex"), rss: process.memoryUsage().rss }));
+    const usedCpu = process.cpuUsage(cpu);
+    console.log(JSON.stringify({ name, round, elapsedMs, cpuMs: (usedCpu.user + usedCpu.system) / 1000, digest: createHash("sha256").update(JSON.stringify(result)).digest("hex"), rss: process.memoryUsage().rss }));
   }
 }

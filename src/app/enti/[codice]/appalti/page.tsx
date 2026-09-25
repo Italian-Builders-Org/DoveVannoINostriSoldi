@@ -500,6 +500,10 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
+  const query = await searchParams;
+  let cpv: string;
+  let awardYear: string;
+  try { cpv = parseAnacCpvFilter(query.cpv); awardYear = parseAnacAwardYearFilter(query.awardYear); } catch { notFound(); }
   const municipality = getSiopeMunicipalityDetailByIpaCode(normalizedCode);
   const state = await loadAnacEntityProcurementPage({
     codiceIpa: normalizedCode,
@@ -519,10 +523,6 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
       </main>
     );
   }
-  const query = await searchParams;
-  let cpv: string;
-  let awardYear: string;
-  try { cpv = parseAnacCpvFilter(query.cpv); awardYear = parseAnacAwardYearFilter(query.awardYear); } catch { notFound(); }
   let cpvRecord: AnacCpvRecord | null = null;
   try { cpvRecord = await loadAnacCpvRecord(state.profile); } catch { /* Display an explicit unavailable state; never widen a selected cohort. */ }
   if (cpv && !cpvRecord) return (

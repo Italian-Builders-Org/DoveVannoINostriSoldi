@@ -15,6 +15,14 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
   await response.arrayBuffer();
 }
 
+for (const query of ["cpv=invalid", "awardYear=invalid", "cpv=30121100&cpv=45000000", "awardYear=2025&awardYear=2024"]) {
+  for (const code of ["c_h501", "no_such_entity"]) {
+    const response = await fetch(new URL(`/enti/${code}/appalti?${query}`, base));
+    assert.equal(response.status, 404, `Invalid filter accepted: ${code}?${query}`);
+    await response.arrayBuffer();
+  }
+}
+
 const browser = await launchBrowser({ extraArgs: ["--host-resolver-rules=MAP politici.dovevannoinostrisoldi.com 127.0.0.1"] });
 try {
   for (const width of [390, 768, 1280]) {

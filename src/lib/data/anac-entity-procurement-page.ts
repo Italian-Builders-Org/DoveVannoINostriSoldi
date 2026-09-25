@@ -340,9 +340,10 @@ function object(value: unknown, label: string): JsonObject {
 }
 
 function exactKeys(value: JsonObject, expected: readonly string[], label: string): void {
-  const actual = Object.keys(value).sort().join("\u001f");
-  const wanted = [...expected].sort().join("\u001f");
-  if (actual !== wanted) throw new Error(`ANAC entity page: chiavi inattese in ${label}.`);
+  if (Object.keys(value).length !== expected.length
+    || expected.some((key) => !Object.prototype.propertyIsEnumerable.call(value, key))) {
+    throw new Error(`ANAC entity page: chiavi inattese in ${label}.`);
+  }
 }
 
 function text(value: unknown, label: string): string {
@@ -430,8 +431,12 @@ function instant(value: unknown, label: string): string {
 function date(value: unknown, label: string): string {
   const candidate = text(value, label);
   if (!DATE.test(candidate)) throw new Error(`ANAC entity page: ${label} non valido.`);
-  const parsed = Date.parse(`${candidate}T00:00:00Z`);
-  if (!Number.isFinite(parsed) || new Date(parsed).toISOString().slice(0, 10) !== candidate) {
+  const year = Number(candidate.slice(0, 4));
+  const month = Number(candidate.slice(5, 7));
+  const day = Number(candidate.slice(8, 10));
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = month === 2 ? (leap ? 29 : 28) : [4, 6, 9, 11].includes(month) ? 30 : 31;
+  if (month < 1 || month > 12 || day < 1 || day > days) {
     throw new Error(`ANAC entity page: ${label} non valido.`);
   }
   return candidate;
@@ -1507,7 +1512,7 @@ function readShard(root: string, shardMeta: AnacPageShardMeta): LoadedShard {
   if (digest !== shardMeta.sha256) throw new Error(`ANAC entity page: SHA shard ${prefix} divergente.`);
   let uncompressed: Buffer;
   try {
-    uncompressed = gunzipSync(compressed);
+    uncompressed = gunzipSync(compressed, { maxOutputLength: MAX_UNCOMPRESSED_BYTES });
   } catch {
     throw new Error(`ANAC entity page: gzip shard ${prefix} non valido.`);
   }

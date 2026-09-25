@@ -1012,6 +1012,9 @@ situazione al 31/12/2023. Gli enti mai comunicati non compaiono e non valgono ze
 Il file di adempimento MEF entra come terzo dataset, una riga per ente: distingue
 chi ha comunicato per il 2023 da chi ha nel censimento dati di comunicazioni
 precedenti.
+Il quarto dataset, `mef-patrimonio-fabbricati-fermi-2023`, pubblica bene per bene
+i 133.293 fabbricati posseduti dichiarati fermi, con le coordinate della fonte,
+per la mappa `/patrimonio`.
 
 Lo stato d'uso è dichiarato dall'ente e non misura agibilità o spreco; il
 canone è contrattuale, non un incasso. Le case popolari compaiono solo come

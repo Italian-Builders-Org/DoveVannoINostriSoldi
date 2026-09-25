@@ -32,7 +32,10 @@ def bene(id_bene: str, **fields: str) -> dict[str, str]:
             "Utilizzo del bene": "Non utilizzato", "Tipologia Bene Immobile": "Abitazione",
             "Superficie di Riferimento (mq)": "70,5", "Regione del bene": "LAZIO",
             "Comune del bene": "Roma", "Codice Comune del bene": "H501",
-            "ui data interamente a terzi": "No", "ui data parzialmente a terzi": "No", **fields}
+            "ui data interamente a terzi": "No", "ui data parzialmente a terzi": "No",
+            "Natura del bene": "FABBRICATO", "Quota proprietà": "100", "Provincia del bene": "ROMA",
+            "Latitudine": "41,9027835", "Longitudine": "12,4963655", "Immobile Geo-Ref.": "Sì",
+            "Fonte Georeferenziazione": "IDENTIFICATIVI_CATASTALI", "Precisione Georeferenziazione": "", **fields}
 
 
 def contratto(id_variazione: str, **fields: str) -> dict[str, str]:
@@ -200,6 +203,70 @@ class MefPatrimonioImmobiliareTests(TestCase):
         with self.assertRaisesRegex(mef.SourceError, "tipo detenzione"):
             mef.contratti_projection(spec, self.input_dir, {})
 
+    def idle_buildings(self, beni: list[dict[str, str]], expected: int | None = None) -> list[dict[str, str]]:
+        spec = self.synthetic_spec(beni, [contratto("10")])
+        spec["expected"]["fabbricatiFermiRows"] = len(beni) if expected is None else expected
+        body = mef.fabbricati_fermi_projection(spec, self.input_dir)
+        return list(csv.DictReader(io.StringIO(body.decode("utf-8")), delimiter="|"))
+
+    def test_idle_buildings_keep_one_row_per_owned_idle_building_and_owner(self) -> None:
+        second_owner = {"Amministrazione Codice Fiscale": "[00181820663]", "Amministrazione Denominazione": "COMUNE DI TIVOLI (RM)",
+                        "Comune (Amministrazione)": "Tivoli", "Cod. Comune (Amministrazione)": "L182"}
+        rows = self.idle_buildings(
+            [
+                bene("1", **{"Quota proprietà": "50"}),
+                bene("1", **{**second_owner, "Quota proprietà": "50"}),
+                bene("2", **{"Utilizzo del bene": "Inutilizzabile", "Superficie di Riferimento (mq)": ""}),
+                bene("3", **{"Natura del bene": "TERRENO"}),
+                bene("4", **{"Utilizzo del bene": "Utilizzato direttamente"}),
+                bene("5", **{"Utilizzo del bene": ""}),
+                bene("6", **{"Titolo proprietà": "", "Titolo detenzione": "in uso gratuito"}),
+            ],
+            expected=3,
+        )
+        self.assertEqual(
+            [(row["ID bene"], row["Codice fiscale ente"], row["Quota di proprietà (%)"]) for row in rows],
+            [("1", "00181820663", "50"), ("1", "02438750586", "50"), ("2", "02438750586", "100")],
+        )
+        first = rows[1]
+        self.assertEqual(
+            (first["Codice regione del bene"], first["Latitudine"], first["Longitudine"], first["Superficie di riferimento (m²)"]),
+            ("12", "41.9027835", "12.4963655", "70.5"),
+        )
+        self.assertEqual((rows[2]["Utilizzo del bene"], rows[2]["Superficie di riferimento (m²)"]), ("Inutilizzabile", ""))
+        self.assertEqual((first["Tipologia ente"], first["Anno"]), ("Comuni", "2023"))
+
+    def test_idle_buildings_keep_the_source_georeferencing_and_reject_unknown_combinations(self) -> None:
+        rows = self.idle_buildings([
+            bene("1"),
+            bene("2", **{"Immobile Geo-Ref.": "No", "Fonte Georeferenziazione": "INDIRIZZO", "Precisione Georeferenziazione": "COMUNE"}),
+        ])
+        self.assertEqual(
+            [(row["Fonte georeferenziazione"], row["Precisione georeferenziazione"], row["Immobile georeferenziato"]) for row in rows],
+            [("IDENTIFICATIVI_CATASTALI", "", "Sì"), ("INDIRIZZO", "COMUNE", "No")],
+        )
+        with self.assertRaisesRegex(mef.SourceError, "georeferenziazione fuori dominio"):
+            self.idle_buildings([bene("1", **{"Precisione Georeferenziazione": "COMUNE"})])
+
+    def test_idle_buildings_reject_values_outside_the_reviewed_domains(self) -> None:
+        # A 0 share under an ownership title is in the source and stays as published.
+        self.assertEqual(self.idle_buildings([bene("1", **{"Quota proprietà": "0"})])[0]["Quota di proprietà (%)"], "0")
+        cases = [
+            ({"Natura del bene": "INFRASTRUTTURA"}, "natura del bene"),
+            ({"Quota proprietà": ""}, "quota"),
+            ({"Quota proprietà": "101"}, "quota"),
+            ({"Regione del bene": "LAZIO E UMBRIA"}, "regione del bene"),
+            ({"Latitudine": ""}, "coordinate"),
+            ({"Latitudine": "41.9027835"}, "coordinate"),
+            ({"Longitudine": "25,1"}, "coordinate"),
+        ]
+        for fields, message in cases:
+            with self.subTest(message=message, fields=fields):
+                with self.assertRaisesRegex(mef.SourceError, message):
+                    self.idle_buildings([bene("1", **fields)])
+        with self.assertRaisesRegex(mef.SourceError, "fabbricati fermi"):
+            self.idle_buildings([bene("1")], expected=2)
+
     def test_lock_matches_corpus_registration(self) -> None:
         mef.validate_contract(self.spec)
         corpus_spec = json.loads(mef.CORPUS_SPEC.read_text(encoding="utf-8"))
@@ -209,6 +276,9 @@ class MefPatrimonioImmobiliareTests(TestCase):
         self.assertEqual(beni["expected"]["headers"], mef.BENI_HEADERS)
         self.assertEqual(contratti["expected"]["headers"], mef.CONTRATTI_HEADERS)
         self.assertEqual((beni["publication"], beni["privateFields"]), ("rows", []))
+        fabbricati = registered[self.spec["datasets"]["fabbricatiFermi"]]
+        self.assertEqual(fabbricati["expected"]["headers"], mef.FABBRICATI_FERMI_HEADERS)
+        self.assertEqual(fabbricati["expected"]["rows"], self.spec["expected"]["fabbricatiFermiRows"])
         self.assertEqual(sum(item["rows"] for item in self.spec["files"] if item["kind"] == "immobili"), self.spec["expected"]["immobiliRows"])
         self.assertEqual(sum(item["rows"] for item in self.spec["files"] if item["kind"] == "detenzioni"), self.spec["expected"]["detenzioniRows"])
 

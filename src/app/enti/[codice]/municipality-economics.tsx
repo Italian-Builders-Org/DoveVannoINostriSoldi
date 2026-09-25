@@ -10,6 +10,7 @@ import {
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import { MunicipalityReceipts } from "./municipality-receipts";
 import { MunicipalitySchools } from "./municipality-school-services";
+import { MunicipalityRealEstate } from "./municipality-real-estate";
 import styles from "./scheda.module.css";
 
 function amount(measure: ReportedMeasure): number {
@@ -99,6 +100,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         <a href="#dati-pnrr-asili">PNRR</a>
         <a href="#dati-irpef">IRPEF</a>
         <a href="#dati-scuole">Scuole</a>
+        <a href="#dati-patrimonio">Patrimonio</a>
         <a href="#dati-anac-aggiudicazioni">Appalti</a>
       </nav>
 
@@ -649,6 +651,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
       </details>
 
       <MunicipalitySchools services={profile.schoolServices} />
+      <MunicipalityRealEstate realEstate={profile.realEstate} />
     </>
   );
 }

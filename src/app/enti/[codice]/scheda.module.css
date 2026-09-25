@@ -912,3 +912,16 @@
 @media (max-width: 390px) {
   .metricGrid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.realEstateSection h3 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: 14px;
+}
+.realEstateSection caption {
+  padding: var(--space-4) 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 650;
+  text-align: left;
+}
+.realEstateBar { background: var(--chart-data-primary); }
+.realEstateNote { grid-column: 1 / -1; color: var(--color-neutral-600); font-size: 12px; }

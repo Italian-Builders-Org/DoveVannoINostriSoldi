@@ -1,6 +1,6 @@
 import "server-only";
 
-import { selectIntegratedDataset, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
+import { selectSortedRows } from "@/lib/integrated-sorted-lookup";
 import type { IntegratedPublicRow } from "@/lib/integrated-source-contract";
 
 export const realEstateSource = {
@@ -78,7 +78,7 @@ export type Communication = Readonly<{ sent: boolean; negative: boolean | null; 
 export type MunicipalityRealEstate =
   | Readonly<{
       status: "available";
-      data: RealEstateSummary & Readonly<{ taxCode: string; beni: IntegratedDatasetMetadata; contratti: IntegratedDatasetMetadata }>;
+      data: RealEstateSummary & Readonly<{ taxCode: string }>;
       /** Null when the entity is not in the compliance file. */
       communication: Communication | null;
     }>
@@ -218,22 +218,13 @@ export function summarizeRealEstate(
   };
 }
 
+// The three datasets are published sorted by fiscal code, so an entity is a binary search away.
 async function entityRows(datasetId: string, taxCode: string, columns: readonly string[]) {
-  const rows: IntegratedPublicRow[] = [];
-  let cursor: string | undefined;
-  let dataset: IntegratedDatasetMetadata;
-  // ponytail: equals scans the whole dataset on every call (~160 chunks); a per-entity index or a
-  // sorted-key seek in the selector is the upgrade once maintainers pick one (#643).
-  do {
-    const page = await selectIntegratedDataset({ datasetId, equals: { "Codice fiscale ente": taxCode }, limit: 100, cursor });
-    dataset = page.dataset;
-    rows.push(...page.rows);
-    cursor = page.pagination.nextCursor ?? undefined;
-  } while (cursor);
-  if (columns.some((column) => !dataset.headers.includes(column))) {
+  const { rows, headers } = await selectSortedRows(datasetId, "Codice fiscale ente", taxCode);
+  if (columns.some((column) => !headers.includes(column))) {
     throw new Error(`Schema divergente nel dataset ${datasetId}.`);
   }
-  return { rows, dataset };
+  return { rows };
 }
 
 export async function getMunicipalityRealEstate(taxCode: string): Promise<MunicipalityRealEstate> {
@@ -257,7 +248,7 @@ export async function getMunicipalityRealEstate(taxCode: string): Promise<Munici
   }
   return {
     status: "available",
-    data: { taxCode, ...summarizeRealEstate(beni.rows, contratti.rows), beni: beni.dataset, contratti: contratti.dataset },
+    data: { taxCode, ...summarizeRealEstate(beni.rows, contratti.rows) },
     communication,
   };
 }

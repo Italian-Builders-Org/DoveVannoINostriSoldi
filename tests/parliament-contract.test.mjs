@@ -28,6 +28,26 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   );
   assert.doesNotMatch(pensions.label, /vitalizi/i);
   assert.match(pensions.caveat, /non equivale ai soli vitalizi/i);
+
+  const goods = account.categories.find((category) => category.id === "goods-services");
+  assert.ok(Math.abs(goods.paid - 61.4846849) < 1e-9);
+  assert.equal(
+    Number(goods.components.reduce((total, component) => total + component.paid, 0).toFixed(8)),
+    goods.paid,
+  );
+  assert.ok(goods.components.some((component) => component.id === "cap-1045"));
+  assert.ok(goods.components.some((component) => component.id === "other-chapters"));
+  assert.match(goods.caveat, /Altri capitoli/i);
+
+  for (const category of account.categories) {
+    assert.ok(category.components?.length, `${category.id}: sottovoci attese`);
+    assert.ok(category.caveat, `${category.id}: nota semantica attesa`);
+    const componentTotal = category.components.reduce((total, component) => total + component.paid, 0);
+    assert.ok(
+      Math.abs(componentTotal - category.paid) <= 0.000001,
+      `${category.id}: componenti non riconciliate`,
+    );
+  }
 });
 
 test("Parliament snapshot rejects unofficial and document-only entries", () => {

@@ -3,7 +3,7 @@
   "transformVersion": 2,
   "observedAt": "2026-08-20T14:00:00.000Z",
   "unit": "million-euro",
-  "rounding": "Gli importi sono espressi in milioni di euro. Conserviamo la precisione verificata disponibile; le altre categorie restano al decimo di milione e la UI mostra un decimale.",
+  "rounding": "Gli importi sono espressi in milioni di euro. Le categorie e le sottovoci usano i pagamenti di competenza del conto consuntivo; dove disponibile, la precisione conserva i centesimi ufficiali convertiti in milioni. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
   "chambers": [
     {
       "id": "camera",
@@ -24,14 +24,215 @@
             "annualStateContribution": 943.16
           },
           "categories": [
-            { "id": "deputies", "label": "Deputati", "paid": 87.0 },
-            { "id": "employees", "label": "Personale dipendente", "paid": 204.11385629 },
-            { "id": "other-staff", "label": "Altro personale", "paid": 25.5 },
-            { "id": "goods-services", "label": "Beni e servizi", "paid": 61.4 },
-            { "id": "transfers", "label": "Trasferimenti", "paid": 31.2 },
-            { "id": "parliamentary-bodies", "label": "Attività degli organi parlamentari", "paid": 2.7 },
-            { "id": "common-costs", "label": "Oneri comuni", "paid": 24.7 },
-            { "id": "capital", "label": "Investimenti", "paid": 6.9 },
+            {
+              "id": "deputies",
+              "label": "Deputati",
+              "paid": 87.03657592,
+              "components": [
+                {
+                  "id": "cap-1000",
+                  "label": "Indennità dei deputati",
+                  "paid": 52.62193795
+                },
+                {
+                  "id": "cap-1005",
+                  "label": "Rimborso di spese sostenute dai deputati",
+                  "paid": 34.41463797
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria I nel conto consuntivo 2025."
+            },
+            {
+              "id": "employees",
+              "label": "Personale dipendente",
+              "paid": 204.11385629,
+              "components": [
+                {
+                  "id": "cap-1010",
+                  "label": "Emolumenti per il personale",
+                  "paid": 174.52749783
+                },
+                {
+                  "id": "cap-1015",
+                  "label": "Contributi a carico del datore di lavoro",
+                  "paid": 29.50269275
+                },
+                {
+                  "id": "cap-1020",
+                  "label": "Oneri accessori",
+                  "paid": 0.08366571
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria II nel conto consuntivo 2025."
+            },
+            {
+              "id": "other-staff",
+              "label": "Altro personale",
+              "paid": 25.52590008,
+              "components": [
+                {
+                  "id": "cap-1025",
+                  "label": "Emolumenti per il personale non dipendente",
+                  "paid": 21.83981114
+                },
+                {
+                  "id": "cap-1030",
+                  "label": "Contributi previdenziali",
+                  "paid": 3.68608894
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria III (personale non dipendente) nel conto consuntivo 2025."
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "paid": 61.4846849,
+              "components": [
+                {
+                  "id": "cap-1045",
+                  "label": "Manutenzioni: immobili, impianti, hardware e software",
+                  "paid": 12.57212085
+                },
+                {
+                  "id": "cap-1050",
+                  "label": "Assistenza informatica, tecnica e operativa",
+                  "paid": 9.59909121
+                },
+                {
+                  "id": "cap-1095",
+                  "label": "Trasporti: aerei, treni, trasporti marittimi e pedaggi",
+                  "paid": 7.5789792
+                },
+                {
+                  "id": "cap-1060",
+                  "label": "Pulizie, rifiuti e lavanderia",
+                  "paid": 7.24442275
+                },
+                {
+                  "id": "cap-1070",
+                  "label": "Acqua, gas ed elettricità",
+                  "paid": 5.1826299
+                },
+                {
+                  "id": "cap-1090",
+                  "label": "Preparazione e stampa di atti e pubblicazioni",
+                  "paid": 4.9680716
+                },
+                {
+                  "id": "cap-1055",
+                  "label": "Ristorazione",
+                  "paid": 3.2648292
+                },
+                {
+                  "id": "other-chapters",
+                  "label": "Altri capitoli, complessivamente",
+                  "paid": 11.07454019
+                }
+              ],
+              "caveat": "Le voci principali sono i capitoli della categoria IV con i pagamenti di competenza più alti; «Altri capitoli» somma i restanti capitoli della stessa categoria. Totale esatto dei pagamenti: 61.484.684,90 €."
+            },
+            {
+              "id": "transfers",
+              "label": "Trasferimenti",
+              "paid": 31.21783656,
+              "components": [
+                {
+                  "id": "cap-1150",
+                  "label": "Contributo ai Gruppi parlamentari",
+                  "paid": 30.3993499
+                },
+                {
+                  "id": "cap-1155",
+                  "label": "Contributi ad Organismi internazionali",
+                  "paid": 0.49348666
+                },
+                {
+                  "id": "cap-1160",
+                  "label": "Contributi vari",
+                  "paid": 0.325
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria V nel conto consuntivo 2025."
+            },
+            {
+              "id": "parliamentary-bodies",
+              "label": "Attività degli organi parlamentari",
+              "paid": 2.70149527,
+              "components": [
+                {
+                  "id": "cap-1165",
+                  "label": "Verifica dei risultati elettorali",
+                  "paid": 0.00645136
+                },
+                {
+                  "id": "cap-1170",
+                  "label": "Commissioni permanenti, Giunte e Comitati",
+                  "paid": 0.14555435
+                },
+                {
+                  "id": "cap-1175",
+                  "label": "Commissioni di inchiesta",
+                  "paid": 0.77173925
+                },
+                {
+                  "id": "cap-1180",
+                  "label": "Altri Organi bicamerali",
+                  "paid": 0.06686534
+                },
+                {
+                  "id": "cap-1185",
+                  "label": "Spese per attività internazionali",
+                  "paid": 1.29187018
+                },
+                {
+                  "id": "cap-1190",
+                  "label": "Spese per il cerimoniale",
+                  "paid": 0.41901479
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VI nel conto consuntivo 2025."
+            },
+            {
+              "id": "common-costs",
+              "label": "Oneri comuni",
+              "paid": 24.73391741,
+              "components": [
+                {
+                  "id": "cap-1195",
+                  "label": "Imposte e tasse",
+                  "paid": 24.60281252
+                },
+                {
+                  "id": "cap-1200",
+                  "label": "Dispositivi giurisdizionali, lodi arbitrali e transazioni",
+                  "paid": 0.13110489
+                }
+              ],
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VII. Il Fondo di riserva (cap. 1210) non ha generato pagamenti di competenza."
+            },
+            {
+              "id": "capital",
+              "label": "Investimenti",
+              "paid": 6.9281862,
+              "components": [
+                {
+                  "id": "cat-viii",
+                  "label": "Beni immobiliari",
+                  "paid": 3.23560347
+                },
+                {
+                  "id": "cat-ix",
+                  "label": "Beni durevoli",
+                  "paid": 3.03360244
+                },
+                {
+                  "id": "cat-x",
+                  "label": "Patrimonio artistico, bibliotecario e archivistico storico",
+                  "paid": 0.65898029
+                }
+              ],
+              "caveat": "Il Titolo II (spese in conto capitale) è aggregato come Investimenti; le voci corrispondono alle categorie VIII, IX e X. La categoria XI (fondo di riserva) non ha generato pagamenti."
+            },
             {
               "id": "pensions",
               "label": "Spese previdenziali",
@@ -51,7 +252,7 @@
               "caveat": "Il Titolo III non equivale ai soli vitalizi. Il conto consuntivo non separa i pagamenti effettivi delle singole sottovoci interne alle due categorie."
             }
           ],
-          "categoryReconciliationTolerance": 0.5,
+          "categoryReconciliationTolerance": 1e-06,
           "meaning": "Il totale degli impegni comprende anche le partite di giro. Pagamenti e categorie si riferiscono alla spesa effettiva dei titoli I, II e III."
         },
         {
@@ -66,9 +267,21 @@
             "plannedRevenue": 975.2
           },
           "highlights": [
-            { "id": "employees", "label": "Personale dipendente", "value": 207.3 },
-            { "id": "other-staff", "label": "Altro personale", "value": 31.2 },
-            { "id": "goods-services", "label": "Beni e servizi", "value": 90.9 }
+            {
+              "id": "employees",
+              "label": "Personale dipendente",
+              "value": 207.3
+            },
+            {
+              "id": "other-staff",
+              "label": "Altro personale",
+              "value": 31.2
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "value": 90.9
+            }
           ],
           "meaning": "Sono previsioni approvate, non pagamenti già effettuati. Gli importi evidenziati non formano una ripartizione completa del totale."
         }

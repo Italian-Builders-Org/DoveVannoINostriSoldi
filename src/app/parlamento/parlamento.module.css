@@ -151,6 +151,7 @@
 .categoryComponents dt,
 .categoryComponents dd,
 .categoryCaveat {
+  overflow-wrap: anywhere;
   color: var(--color-neutral-700);
   font-size: 11px;
   line-height: 1.5;

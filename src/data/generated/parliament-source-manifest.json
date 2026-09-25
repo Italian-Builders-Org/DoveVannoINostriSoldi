@@ -4,8 +4,8 @@
   "verifiedAt": "2026-08-20T14:14:16Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 4109,
-    "sha256": "6d76c488fc6ec915ea5384d4a61b7fb559354492332fde0b73636e5fb2e48afc"
+    "bytes": 11542,
+    "sha256": "e48d9f0cff9e71fb9fc4475a0a2c87ab7036a7a613f14a04a98d318f60212c15"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
@@ -23,6 +23,14 @@
           {
             "pages": "7-8",
             "scope": "riepilogo dei pagamenti per categoria e totale dei Titoli I-III"
+          },
+          {
+            "pages": "27-39",
+            "scope": "pagamenti di competenza per capitolo delle categorie I-VII (spese correnti)"
+          },
+          {
+            "pages": "45-49",
+            "scope": "pagamenti di competenza delle categorie VIII-X (investimenti / Titolo II)"
           },
           {
             "pages": "49-51",

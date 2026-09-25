@@ -18,6 +18,12 @@ const amount = new Intl.NumberFormat("it-IT", {
   useGrouping: "always",
 });
 
+const componentAmount = new Intl.NumberFormat("it-IT", {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+  useGrouping: "always",
+});
+
 const valueLabels: Record<string, string> = {
   totalCommitments: "Impegni totali",
   effectiveCommitments: "Impegni per la spesa effettiva",
@@ -31,6 +37,10 @@ const valueLabels: Record<string, string> = {
 
 function millionEuro(value: number): string {
   return `${amount.format(value)} mln €`;
+}
+
+function componentMillionEuro(value: number): string {
+  return `${componentAmount.format(value)} mln €`;
 }
 
 function statementValue(statement: ParliamentStatement, key: string): number | null {
@@ -152,7 +162,7 @@ export default function ParliamentPage() {
                                     {item.components.map((component) => (
                                       <div key={component.id}>
                                         <dt>{component.label}</dt>
-                                        <dd>{millionEuro(component.paid)}</dd>
+                                        <dd>{componentMillionEuro(component.paid)}</dd>
                                       </div>
                                     ))}
                                   </dl>

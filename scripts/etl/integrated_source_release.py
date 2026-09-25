@@ -861,8 +861,6 @@ def _atomic_write(path: Path, payload: bytes) -> None:
             # Windows CPython exposes os.fchmod only from 3.13; the proof is public.
             if hasattr(os, "fchmod"):
                 os.fchmod(stream.fileno(), 0o644)
-            else:
-                os.chmod(temporary, 0o644)
             stream.write(payload)
             stream.flush()
             os.fsync(stream.fileno())

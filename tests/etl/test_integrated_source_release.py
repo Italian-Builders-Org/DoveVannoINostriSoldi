@@ -466,7 +466,7 @@ class AtomicWriteTests(unittest.TestCase):
                 self.assertEqual(target.read_bytes(), b"{}\n")
                 self.assertEqual([path.name for path in Path(directory).iterdir()], ["release-proof.json"])
                 if release.os.name == "posix":
-                    self.assertEqual(target.stat().st_mode & 0o777, 0o644)
+                    self.assertEqual(target.stat().st_mode & 0o777, 0o600)
         finally:
             if saved is not None:
                 release.os.fchmod = saved

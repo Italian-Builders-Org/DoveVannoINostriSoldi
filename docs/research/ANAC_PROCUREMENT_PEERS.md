@@ -116,7 +116,7 @@ esplicitamente l’indice e i parent richiesti dalla nuova route.
 ```sh
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/anac_procurement_peers.py
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/anac_procurement_peers.py --check
-node --experimental-strip-types --test tests/anac-procurement-peers.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/anac-procurement-peers.test.mjs
 DVNS_BASE_URL=http://127.0.0.1:3000 npm run test:browser:procurement-peers
 ```
 

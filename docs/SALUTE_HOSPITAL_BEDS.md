@@ -67,7 +67,7 @@ e la ricevuta con gli artifact pubblicati.
 ```sh
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
 python3 -m unittest discover -s tests/etl -p 'test_salute_hospital_beds.py'
-node --experimental-strip-types --test tests/salute-hospital-beds.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/salute-hospital-beds.test.mjs
 ```
 
 Per rigenerare questa sola proiezione nella checkout isolata, usare

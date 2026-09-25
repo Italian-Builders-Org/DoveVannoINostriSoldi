@@ -435,7 +435,7 @@ Comandi locali dalla root con Node 22 e dipendenze installate:
 node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_refresh.mjs
 python3 scripts/ci/source-snapshot-inventory.py --write
 node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/bdap_budget_law_snapshot.mjs --check
-node --experimental-strip-types --test tests/bdap-legge-bilancio.test.mjs tests/bdap-budget-law-refresh.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/bdap-legge-bilancio.test.mjs tests/bdap-budget-law-refresh.test.mjs
 ```
 
 Il primo comando contatta la fonte ufficiale e scrive soltanto un candidato

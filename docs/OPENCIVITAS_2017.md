@@ -50,7 +50,7 @@ separate e il 2020 non viene ricostruito.
 ```bash
 PYTHONPATH=scripts/etl python3 scripts/etl/opencivitas_2017_snapshot.py --input-dir /directory/dei-tre-zip
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/opencivitas_2017_snapshot.py --check
-node --experimental-strip-types --test tests/opencivitas-2017-contract.test.mjs tests/opencivitas-2017-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/opencivitas-2017-contract.test.mjs tests/opencivitas-2017-route.test.mjs
 ```
 
 API: `/api/spese/opencivitas-2017?codice=058091&anno=2017`.

@@ -37,7 +37,7 @@ materiali sono collegati a un commit preciso, non al contenuto mutevole di
 
 ## Verifica
 
-`node --experimental-strip-types --test tests/papers.test.mjs tests/studies.test.mjs`
+`node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/papers.test.mjs tests/studies.test.mjs`
 
 `npm run test:browser:papers` controlla redirect, archivio popolato, canonical,
 navigazione attiva, tastiera e viewport 390/768/1280 px. Il runner di produzione

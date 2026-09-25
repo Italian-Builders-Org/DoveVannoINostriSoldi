@@ -81,7 +81,7 @@ del parsing; un refresh diverso richiede un nuovo lock revisionato.
 python3 scripts/etl/istat_bes_istruzione.py --input /tmp/best-istruzione.csv --structure /tmp/best-istruzione-structure.xml --write
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/istat_bes_istruzione.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p test_istat_bes_istruzione.py
-node --experimental-strip-types --test tests/istat-bes-istruzione.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/istat-bes-istruzione.test.mjs
 ```
 
 Registro artifact e inventario includono il check offline. Lo smoke HTTP/MCP

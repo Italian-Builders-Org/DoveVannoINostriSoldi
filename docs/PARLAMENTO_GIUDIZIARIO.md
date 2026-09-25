@@ -165,7 +165,7 @@ addebito servirebbero di nuovo due fonti o l'atto.
 python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check   # offline, non tocca il worktree
 python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --write   # riproietta dall'input verificato
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p 'test_parlamento_giudiziario_xix_snapshot.py'
-node --experimental-strip-types --test tests/parlamento-giudiziario-*.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-giudiziario-*.test.mjs
 ```
 
 Entrambe le azioni sono offline: l'acquisizione e la ricerca documentata a monte,

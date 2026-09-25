@@ -75,7 +75,7 @@ La lacuna 2020 documentata nella fetta 2019 non viene ricostruita.
 PYTHONPATH=scripts/etl python3 scripts/etl/opencivitas_2018_snapshot.py --input-dir /directory/dei/tre/zip
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/opencivitas_2018_snapshot.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p 'test_opencivitas*'
-node --experimental-strip-types --test tests/opencivitas-2018-contract.test.mjs tests/opencivitas-2018-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/opencivitas-2018-contract.test.mjs tests/opencivitas-2018-route.test.mjs
 ```
 
 Python e TypeScript verificano indipendentemente il digest dell'intero artifact;

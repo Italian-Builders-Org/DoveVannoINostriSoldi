@@ -49,7 +49,7 @@ senza far tracciare l'intero repository.
 
 ```sh
 node --experimental-strip-types scripts/bench/operator-pages.mjs
-node --experimental-strip-types --test tests/anac-operator-read-budget.test.mjs tests/anac-operator-integrity.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/anac-operator-read-budget.test.mjs tests/anac-operator-integrity.test.mjs
 ```
 
 Il benchmark riporta tempi, byte letti, memoria residente e digest. Confrontare

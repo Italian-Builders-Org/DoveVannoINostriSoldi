@@ -70,7 +70,7 @@ ricavato dai dati nazionali.
 ```bash
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
   python3 scripts/etl/eurostat_inequality_corpus.py check
-node --experimental-strip-types --test tests/inequality-page.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/inequality-page.test.mjs
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
   python3 -m unittest discover -s tests/etl -p 'test_eurostat_inequality_corpus.py'
 ```

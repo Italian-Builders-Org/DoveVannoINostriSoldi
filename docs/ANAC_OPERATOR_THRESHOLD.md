@@ -111,7 +111,7 @@ la limitazione è visibile anche a chi non apre una scheda:
 I vincoli di questa pagina sono coperti da test:
 
 ```sh
-node --experimental-strip-types --test tests/anac-operator-award-insights.test.mjs tests/appalti-operatori-page.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/anac-operator-award-insights.test.mjs tests/appalti-operatori-page.test.mjs
 ```
 
 I test verificano la forma del link CIG, il conteggio delle stazioni distinte

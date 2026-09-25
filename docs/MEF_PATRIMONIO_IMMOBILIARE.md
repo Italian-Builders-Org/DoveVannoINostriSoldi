@@ -142,9 +142,9 @@ PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/mef_patrimonio_immobiliare.
 ```
 
 `--output-dir DIR_OUT` scrive le quattro proiezioni `.psv` con byte, SHA-256 e
-righe; `--publish` accoda al corpus quelle non ancora presenti. Su Windows `--publish` richiede Python
-3.13: 3.12 non espone `os.fchmod` e le build Windows di 3.14 usano zlib-ng,
-che non riproduce i gzip canonici già versionati.
+righe; `--publish` accoda al corpus quelle non ancora presenti. Su Windows le
+build di Python 3.14 usano zlib-ng, che non riproduce i gzip canonici già
+versionati: l'append si ferma con un errore che lo dice, quindi serve 3.12 o 3.13.
 
 I test `tests/etl/test_mef_patrimonio_immobiliare.py` usano archivi sintetici
 generati al volo; `tests/mef-patrimonio-immobiliare.test.mjs` verifica le righe

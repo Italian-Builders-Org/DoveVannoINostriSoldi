@@ -24,7 +24,7 @@
     "agent-public:check": "node --experimental-strip-types scripts/ci/check-agent-public-docs.mjs",
     "ci:action-pins": "node scripts/ci/check-action-pins.mjs",
     "test": "npm run test:node",
-    "test:node": "node --env-file=scripts/ci/offline-guard.env --experimental-strip-types --import ./scripts/ci/node-offline-guard.mjs --test tests/*.test.mjs",
+    "test:node": "node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/*.test.mjs",
     "test:live": "node --experimental-strip-types --test tests/live/*.test.mjs",
     "government-scorecard:verify": "python3 scripts/ci/check-government-scorecard-artifacts.py && node --experimental-strip-types --test tests/government-scorecard-*.test.mjs",
     "test:etl": "python3 -m unittest discover -s tests/etl -p 'test_*.py' --durations 20",

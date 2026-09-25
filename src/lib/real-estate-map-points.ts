@@ -2,6 +2,7 @@ import "server-only";
 
 import { toItalyMap } from "@/lib/italy-map-projection";
 import { INTEGRATED_ROW_CHUNK_ROWS, integratedRowChunkCount, type IntegratedPublicRow } from "@/lib/integrated-source-contract";
+import { selectSortedRows } from "@/lib/integrated-sorted-lookup";
 import { loadIntegratedDatasetChunk, loadIntegratedSourceBundle } from "@/lib/integrated-sources";
 
 export const REAL_ESTATE_POINTS_DATASET_ID = "mef-patrimonio-fabbricati-fermi-2023";
@@ -143,8 +144,7 @@ export function pointFromRow(row: IntegratedPublicRow): RealEstatePointRow {
 type Loaded = Readonly<{ rows: readonly RealEstatePointRow[]; byRegion: ReadonlyMap<string, RealEstatePointRow[]> }>;
 let loaded: Promise<Loaded> | null = null;
 
-// ponytail: every chunk of the dataset is read once per process (~134 chunks, all in memory);
-// rows are sorted by region, so a per-region chunk range is the upgrade if cold starts hurt.
+// Every chunk, once per process: only the national view needs it, and /patrimonio is prerendered at build.
 function load(): Promise<Loaded> {
   loaded ??= (async () => {
     const bundle = await loadIntegratedSourceBundle();
@@ -182,7 +182,8 @@ export async function getRealEstateNationalData(): Promise<RealEstateNationalDat
   };
 }
 
+// Rows are published sorted by region: a region reads only its own chunks.
 export async function getRealEstateRegionPoints(regionCode: string): Promise<RealEstateMapPoints> {
-  const data = await load();
-  return projectRealEstatePoints(data.byRegion.get(regionCode) ?? []);
+  const { rows } = await selectSortedRows(REAL_ESTATE_POINTS_DATASET_ID, "Codice regione del bene", regionCode);
+  return projectRealEstatePoints(rows.map(pointFromRow));
 }

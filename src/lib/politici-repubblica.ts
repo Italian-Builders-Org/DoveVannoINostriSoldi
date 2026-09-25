@@ -29,7 +29,15 @@ import {
   type RepublicPerson,
   type RoleKind,
 } from "@/lib/data/politici-repubblica-contract";
-import { parsePoliticiSenatoSnapshot, type SenatoSenator } from "@/lib/data/politici-senato-contract";
+import { parsePoliticiSenatoSnapshot, senatoGroupSegments, type SenatoSenator } from "@/lib/data/politici-senato-contract";
+import {
+  formationDates,
+  groupChangeCount,
+  groupHistoryEntries,
+  type GroupHistoryContext,
+  type GroupHistoryEntry,
+  type GroupSegment,
+} from "@/lib/politici-group-history";
 import { parsePresidenteRepubblicaSnapshot } from "@/lib/data/presidente-repubblica-contract";
 import { parseRitrattiLiberiSnapshot } from "@/lib/data/ritratti-liberi-contract";
 import {
@@ -81,6 +89,74 @@ function mandatiFor(personId: string): ParlamentoMandatiMember | null {
   const member = mandatiByMemberId.get(memberId);
   require(member !== undefined, `mandati parlamentari assenti per ${personId}`);
   return member!;
+}
+
+// ----- Group memberships in the XIX (#556) ------------------------------- //
+
+/** A couple of Camera groups have no mixed-case name on the official page:
+ * their label arrives in capitals and would shout in every card. */
+function cameraGroupLabel(group: { displayLabel: string; }): string {
+  return group.displayLabel === group.displayLabel.toLocaleUpperCase("it-IT")
+    ? humanizeOrgan(group.displayLabel)
+    : group.displayLabel;
+}
+
+function mixedGroupId(groups: ReadonlyArray<{ id: string; label: string; }>, chamber: string): string {
+  const mixed = groups.filter((group) => group.label.trim().toLocaleLowerCase("it-IT") === "misto");
+  require(mixed.length === 1, `gruppo Misto non univoco alla ${chamber}`);
+  return mixed[0]!.id;
+}
+
+const cameraMembershipsByDeputy = Map.groupBy(camera.groupMemberships, (membership) => membership.deputyId);
+const senatoMembershipsBySenator = Map.groupBy(senate.groupMemberships, (membership) => membership.senatorId);
+const senatoNamesByGroup = Map.groupBy(senate.groupNames, (name) => name.groupId);
+const cameraGroupById = new Map(camera.groups.map((group) => [group.id, group]));
+
+const cameraHistoryContext: GroupHistoryContext = {
+  mixedGroupId: mixedGroupId(camera.groups, "Camera"),
+  formationDateByGroup: formationDates(camera.groupMemberships),
+  labelsDuring: (groupId) => {
+    const group = cameraGroupById.get(groupId);
+    return group ? [cameraGroupLabel(group)] : [];
+  },
+};
+
+const senatoHistoryContext: GroupHistoryContext = {
+  mixedGroupId: mixedGroupId(senate.groups, "Senato"),
+  formationDateByGroup: formationDates(senate.groupMemberships),
+  labelsDuring: (groupId, startDate, endDate) => (senatoNamesByGroup.get(groupId) ?? [])
+    .filter((name) => (endDate === null || name.startDate <= endDate) && (name.endDate === null || startDate <= name.endDate))
+    .sort((left, right) => left.startDate.localeCompare(right.startDate))
+    .map((name) => name.label),
+};
+
+/** Camera end dates are exclusive: a row that ends the day the next row of the same group starts continues it. */
+function cameraGroupSegments(rows: readonly GroupSegment[]): GroupSegment[] {
+  const segments: GroupSegment[] = [];
+  for (const row of [...rows].sort((left, right) => left.startDate.localeCompare(right.startDate))) {
+    const previous = segments.at(-1);
+    if (previous && previous.groupId === row.groupId && previous.endDate === row.startDate) {
+      previous.endDate = row.endDate;
+      continue;
+    }
+    segments.push({ groupId: row.groupId, startDate: row.startDate, endDate: row.endDate });
+  }
+  return segments;
+}
+
+/** Graph ids are `dep-<numericId>` and `sen-s<id>`; each snapshot keys memberships on its own id. */
+function groupHistoryFor(personId: string): { chamber: ChamberId; entries: GroupHistoryEntry[]; } | null {
+  if (personId.startsWith("dep-")) {
+    const rows = cameraMembershipsByDeputy.get(`d${personId.slice(4)}_19`) ?? [];
+    require(rows.length > 0, `adesioni ai gruppi assenti per ${personId}`);
+    return { chamber: "camera", entries: groupHistoryEntries(cameraGroupSegments(rows), cameraHistoryContext) };
+  }
+  if (personId.startsWith("sen-s")) {
+    const rows = senatoMembershipsBySenator.get(personId.slice(5)) ?? [];
+    require(rows.length > 0, `adesioni ai gruppi assenti per ${personId}`);
+    return { chamber: "senato", entries: groupHistoryEntries(senatoGroupSegments(rows), senatoHistoryContext) };
+  }
+  return null;
 }
 
 const ROMAN_UNITS = [["X", 10], ["IX", 9], ["V", 5], ["IV", 4], ["I", 1]] as const;
@@ -432,11 +508,7 @@ export function getRepubblicaGraph(): PoliticiRepubblicaGraph {
 
   for (const group of camera.groups) {
     const family = partyFamily(group.displayLabel);
-    // A couple of Camera groups have no mixed-case name on the official page:
-    // their label arrives in capitals and would shout in every card.
-    const label = group.displayLabel === group.displayLabel.toLocaleUpperCase("it-IT")
-      ? humanizeOrgan(group.displayLabel)
-      : group.displayLabel;
+    const label = cameraGroupLabel(group);
     groups.push({
       id: `camera-${group.id}`,
       sourceId: group.id,
@@ -1003,6 +1075,8 @@ export type RepublicMapPerson = {
   photo: boolean;
   /** Only for sitting deputies and senators (#556); `null` for government members outside Parliament. */
   firstTerm: { chamber: boolean; parliament: boolean; } | null;
+  /** Group changes in the XIX (#556); `null` for government members outside Parliament. */
+  groupChanges: number | null;
 };
 
 export type RepublicMap = {
@@ -1159,7 +1233,52 @@ export type RepublicProfile = {
   legislativeActivity: RepublicLegislativeActivity | null;
   /** Republican legislatures per chamber, read from the chamber the person sits in (#556). */
   parliamentaryTerms: RepublicParliamentaryTerms | null;
+  /** Group memberships in the XIX as published by the chamber (#556). */
+  groupHistory: RepublicGroupHistory | null;
 };
+
+export type RepublicGroupHistory = {
+  chamber: ChamberId;
+  entries: Array<Omit<GroupHistoryEntry, "groupId">>;
+  changes: number;
+  sourceLabel: string;
+  sourceUrl: string;
+  observedDate: string;
+  caveat: string;
+};
+
+const GROUP_HISTORY_CAVEAT = "Adesioni ai gruppi nella XIX come pubblicate dalla fonte, senza interpolazioni. Il passaggio dal Misto a un gruppo nel giorno della sua prima adesione pubblicata è l'adesione alla costituzione del gruppo, non un cambio. La fonte non pubblica il motivo di un passaggio.";
+
+function profileGroupHistory(person: RepublicPerson): RepublicGroupHistory | null {
+  const history = groupHistoryFor(person.id);
+  if (history === null) return null;
+  const entries = history.entries.map((entry) => ({
+    label: entry.label,
+    laterLabels: entry.laterLabels,
+    startDate: entry.startDate,
+    endDate: entry.endDate,
+    joinedAtFormation: entry.joinedAtFormation,
+  }));
+  return history.chamber === "camera"
+    ? {
+      chamber: "camera",
+      entries,
+      changes: groupChangeCount(history.entries),
+      sourceLabel: "Camera dei deputati — dati.camera.it, SPARQL ufficiale",
+      sourceUrl: camera.source.landingUrl,
+      observedDate: camera.source.groupMembershipsAcquiredAt.slice(0, 10),
+      caveat: `${GROUP_HISTORY_CAVEAT} Alla Camera la data finale di un'adesione coincide con l'inizio della successiva.`,
+    }
+    : {
+      chamber: "senato",
+      entries,
+      changes: groupChangeCount(history.entries),
+      sourceLabel: "Senato della Repubblica — dati.senato.it, SPARQL ufficiale",
+      sourceUrl: senate.source.groupsLandingUrl,
+      observedDate: senate.source.groupHistory.observedDate,
+      caveat: `${GROUP_HISTORY_CAVEAT} Al Senato le righe dello stesso gruppo per incarichi diversi sono unite in un solo periodo.`,
+    };
+}
 
 export type RepublicParliamentaryTerms = {
   chamber: ChamberId;
@@ -1648,6 +1767,11 @@ function profileLegislativeActivity(person: RepublicPerson): RepublicLegislative
   };
 }
 
+function groupChangesOf(person: RepublicPerson): number | null {
+  const history = groupHistoryFor(person.id);
+  return history ? groupChangeCount(history.entries) : null;
+}
+
 function firstTermOf(person: RepublicPerson): RepublicMapPerson["firstTerm"] {
   const member = mandatiFor(person.id);
   return member ? { chamber: member.firstTermInChamber, parliament: member.firstTermInParliament } : null;
@@ -1710,6 +1834,7 @@ export function getRepubblicaMap(): RepublicMap {
       groupLeader: person.isGroupLeader,
       photo: person.photoUrl !== null,
       firstTerm: firstTermOf(person),
+      groupChanges: groupChangesOf(person),
     })),
     education: {
       all: buildEducationDistribution(educationPeople),
@@ -1748,6 +1873,7 @@ export function getRepubblicaProfiles(): Record<string, RepublicProfile> {
       voteAttendance: profileAttendanceFor(person),
       legislativeActivity: profileLegislativeActivity(person),
       parliamentaryTerms: profileParliamentaryTerms(person),
+      groupHistory: profileGroupHistory(person),
     } satisfies RepublicProfile,
   ]);
   return Object.fromEntries(entries);

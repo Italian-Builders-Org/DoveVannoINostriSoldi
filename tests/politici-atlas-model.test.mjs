@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { makeMap } from "./fixtures/politici-atlas.mjs";
-import { atlasUrl, belongsToScope, countLabel, defaultSelection, filteredPeople, initialsOf, isSafeExternalUrl, longDate, matchesRole, normalizeSearch, readAtlasState, SCOPES, searchAtlas, selectionPeople, validSelection } from "../src/app/politici/atlas-model.ts";
+import { atlasUrl, belongsToScope, countLabel, defaultSelection, filteredPeople, groupPeriod, initialsOf, isSafeExternalUrl, longDate, matchesRole, normalizeSearch, readAtlasState, SCOPES, searchAtlas, selectionPeople, validSelection } from "../src/app/politici/atlas-model.ts";
 import { adjacentSeat, allocateRows, buildChamberScene, buildSeatGrid, CHAMBER } from "../src/app/politici/graph-geometry.ts";
 import { buildOverviewGeometry, overviewAnchor } from "../src/app/politici/overview-geometry.ts";
 
@@ -250,4 +250,35 @@ test("legislature filter (#556) does not exist in views whose directory ignores 
     assert.equal(filteredPeople(map, leaked).length, filteredPeople(map, deepLink).length, vista);
   }
   assert.equal(readAtlasState(new URLSearchParams("vista=senato&mandato=primo-ramo"), map).state.term, "primo-ramo");
+});
+
+test("group-change filter (#556) splits parliamentarians and excludes people outside Parliament", () => {
+  const changed = filteredPeople(map, { ...state, scope: "repubblica", groupChange: "cambio" });
+  const stayed = filteredPeople(map, { ...state, scope: "repubblica", groupChange: "nessun-cambio" });
+  assert.ok(changed.length > 0 && stayed.length > 0);
+  assert.ok(changed.every((person) => person.groupChanges > 0));
+  assert.ok(stayed.every((person) => person.groupChanges === 0));
+  assert.equal(changed.length + stayed.length, map.people.filter((person) => person.groupChanges !== null).length);
+  assert.ok(![...changed, ...stayed].some((person) => person.id === "gov-1" || person.id === "pres-1"));
+  const both = filteredPeople(map, { ...state, scope: "repubblica", groupChange: "cambio", term: "primo-ramo" });
+  assert.ok(both.every((person) => person.groupChanges > 0 && person.firstTerm?.chamber === true));
+  const base = "https://www.dovevannoinostrisoldi.com";
+  const url = new URL(atlasUrl(`${base}/politici`, { ...state, groupChange: "cambio" }), base);
+  assert.equal(url.searchParams.get("cambi"), "cambio");
+  assert.equal(readAtlasState(url.searchParams, map).state.groupChange, "cambio");
+  assert.equal(readAtlasState(new URLSearchParams("cambi=bogus"), map).state.groupChange, "tutti");
+  assert.equal(new URL(atlasUrl(`${base}/politici?cambi=cambio`, state), base).searchParams.has("cambi"), false);
+  for (const vista of ["condanne", "storico-voti"]) {
+    const deepLink = readAtlasState(new URLSearchParams(`vista=${vista}&cambi=cambio`), map).state;
+    assert.equal(deepLink.groupChange, "tutti", vista);
+    const leaked = { ...deepLink, groupChange: "cambio" };
+    assert.equal(new URL(atlasUrl(`${base}/politici`, leaked), base).searchParams.has("cambi"), false, vista);
+    assert.equal(filteredPeople(map, leaked).length, filteredPeople(map, deepLink).length, vista);
+  }
+});
+
+test("group periods (#556) read as Italian, with the article elided before 8 and 11", () => {
+  assert.equal(groupPeriod({ startDate: "2022-10-18", endDate: "2026-01-07" }), "dal 18 ottobre 2022 al 7 gennaio 2026");
+  assert.equal(groupPeriod({ startDate: "2026-06-08", endDate: null }), "dall'8 giugno 2026, in corso");
+  assert.equal(groupPeriod({ startDate: "2023-03-01", endDate: "2024-11-11" }), "dal 1 marzo 2023 all'11 novembre 2024");
 });

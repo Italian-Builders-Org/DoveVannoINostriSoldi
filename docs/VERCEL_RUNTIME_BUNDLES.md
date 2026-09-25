@@ -53,7 +53,7 @@ Per ispezionare una build esistente:
 
 ```bash
 node scripts/ci/check-runtime-traces.mjs
-node --test tests/runtime-traces.test.mjs
+node --import ./scripts/ci/node-test-setup.mjs --test tests/runtime-traces.test.mjs
 ```
 
 Se una route inizia a leggere un nuovo artifact runtime, aggiorna il suo

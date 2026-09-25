@@ -77,7 +77,7 @@ Gli archivi restano fuori Git, mentre indice e prova sono versionati:
 ```bash
 python3 scripts/etl/anac_procurement_cpv.py --input-dir /path/to/locked-cig-archives
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/anac_procurement_cpv.py --check
-node --experimental-strip-types --test tests/anac-procurement-cpv.test.mjs tests/anac-concentration-drilldown.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/anac-procurement-cpv.test.mjs tests/anac-concentration-drilldown.test.mjs
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p test_anac_procurement_cpv.py
 ```
 

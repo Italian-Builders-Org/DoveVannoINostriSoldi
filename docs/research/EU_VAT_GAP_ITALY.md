@@ -65,5 +65,5 @@ fonte).
 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/eu_vat_gap_italy_snapshot.py --check
 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/eu_vat_gap_italy_snapshot.py --write
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_eu_vat_gap_italy_snapshot.py'
-node --experimental-strip-types --test tests/eu-vat-gap-italy.test.mjs tests/eu-vat-gap-italy-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/eu-vat-gap-italy.test.mjs tests/eu-vat-gap-italy-route.test.mjs
 ```

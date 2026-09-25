@@ -72,6 +72,6 @@ Parlamento, perché per loro nessun ramo pubblica mandati.
 
 ```bash
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_parlamento_mandati_xix_snapshot.py'
-node --experimental-strip-types --test tests/parlamento-mandati-contract.test.mjs
-node --experimental-strip-types --test --test-name-pattern='legislature filter' tests/politici-atlas-model.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-mandati-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test --test-name-pattern='legislature filter' tests/politici-atlas-model.test.mjs
 ```

@@ -56,7 +56,7 @@ restare sotto 100 kB, come verificato dal test sul Comune di Benevento.
 # Ambiente .venv e guard offline da CONTRIBUTING.md.
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/mim_school_services.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_mim_school_services.py'
-node --experimental-strip-types --test tests/mim-school-services.test.mjs tests/municipality-profile.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/mim-school-services.test.mjs tests/municipality-profile.test.mjs
 # Riproduzione dal CSV MIM originale già acquisito, senza download impliciti:
 .venv/bin/python scripts/etl/mim_school_services.py --input /percorso/SCUANAGRAFESTAT20262720260901.csv --check
 ```

@@ -171,8 +171,11 @@ export function assertIstatPopulationGrid2021Data(value: unknown): IstatPopulati
   }
 
   const totals = object(record.totals, "data.totals");
-  const pins = (sourceLock as { expected: { pins: Record<string, number> & { bands: Record<string, number> } } })
-    .expected.pins;
+  const pins = (
+    sourceLock as unknown as {
+      expected: { pins: Record<string, number> & { bands: Record<string, number> } };
+    }
+  ).expected.pins;
   const checkedTotals = {
     cells: nonNegInt(totals.cells, "data.totals.cells"),
     cellsWithPopulation: nonNegInt(totals.cellsWithPopulation, "data.totals.cellsWithPopulation"),
@@ -310,7 +313,7 @@ export function assertIstatPopulationGrid2021Data(value: unknown): IstatPopulati
   const asset = object(provenance.asset, "data.provenance.asset");
   const member = object(asset.member, "data.provenance.asset.member");
   const methodology = object(provenance.methodology, "data.provenance.methodology");
-  const lockSource = (sourceLock as { source: Record<string, unknown> }).source;
+  const lockSource = (sourceLock as unknown as { source: Record<string, unknown> }).source;
   if (sha256Hex(asset.sha256, "data.provenance.asset.sha256") !== lockSource.sha256) {
     throw new Error("data.provenance.asset.sha256: divergente dal lock");
   }

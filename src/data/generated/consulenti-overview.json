@@ -2,78 +2,78 @@
   "schemaVersion": 1,
   "transformVersion": 1,
   "scope": "national-annual-overview",
-  "generatedAt": "2026-09-25T05:18:31Z",
+  "generatedAt": "2026-09-26T16:43:13Z",
   "latestYear": 2026,
   "externalAppointments": [
     {
       "year": 2023,
-      "assignments": 204984,
-      "paidCents": 74133482526,
-      "completedAssignments": 109358,
-      "individualRecipients": 122677,
+      "assignments": 204998,
+      "paidCents": 74142384108,
+      "completedAssignments": 109378,
+      "individualRecipients": 122683,
       "organizationRecipients": 4907
     },
     {
       "year": 2024,
-      "assignments": 228138,
-      "paidCents": 81706304601,
-      "completedAssignments": 118712,
-      "individualRecipients": 137634,
-      "organizationRecipients": 4503
+      "assignments": 228191,
+      "paidCents": 81748190389,
+      "completedAssignments": 118792,
+      "individualRecipients": 137665,
+      "organizationRecipients": 4504
     },
     {
       "year": 2025,
-      "assignments": 213807,
-      "paidCents": 52115186509,
-      "completedAssignments": 92191,
-      "individualRecipients": 132535,
-      "organizationRecipients": 3402
+      "assignments": 213897,
+      "paidCents": 52243089272,
+      "completedAssignments": 92357,
+      "individualRecipients": 132583,
+      "organizationRecipients": 3406
     },
     {
       "year": 2026,
-      "assignments": 94943,
-      "paidCents": 7268919330,
-      "completedAssignments": 23068,
-      "individualRecipients": 67317,
-      "organizationRecipients": 1591
+      "assignments": 95529,
+      "paidCents": 7310095529,
+      "completedAssignments": 23207,
+      "individualRecipients": 67688,
+      "organizationRecipients": 1596
     }
   ],
   "employeeAppointments": [
     {
       "year": 2023,
-      "assignments": 406704,
-      "paidCents": 22337208951,
-      "completedAssignments": 200660,
-      "managerAssignments": 74259,
-      "nonManagerAssignments": 332445,
-      "publicAdministrationGrantorRecords": 267121
+      "assignments": 406726,
+      "paidCents": 22343088300,
+      "completedAssignments": 200692,
+      "managerAssignments": 74263,
+      "nonManagerAssignments": 332463,
+      "publicAdministrationGrantorRecords": 267142
     },
     {
       "year": 2024,
-      "assignments": 595746,
-      "paidCents": 34984711327,
-      "completedAssignments": 296014,
-      "managerAssignments": 75672,
-      "nonManagerAssignments": 520074,
-      "publicAdministrationGrantorRecords": 445052
+      "assignments": 595842,
+      "paidCents": 35016575632,
+      "completedAssignments": 296221,
+      "managerAssignments": 75674,
+      "nonManagerAssignments": 520168,
+      "publicAdministrationGrantorRecords": 445144
     },
     {
       "year": 2025,
-      "assignments": 570477,
-      "paidCents": 28545167457,
-      "completedAssignments": 233764,
-      "managerAssignments": 73549,
-      "nonManagerAssignments": 496928,
-      "publicAdministrationGrantorRecords": 417976
+      "assignments": 570709,
+      "paidCents": 28626524018,
+      "completedAssignments": 234312,
+      "managerAssignments": 73562,
+      "nonManagerAssignments": 497147,
+      "publicAdministrationGrantorRecords": 418169
     },
     {
       "year": 2026,
-      "assignments": 244861,
-      "paidCents": 4799460159,
-      "completedAssignments": 47883,
-      "managerAssignments": 43002,
-      "nonManagerAssignments": 201859,
-      "publicAdministrationGrantorRecords": 162903
+      "assignments": 246505,
+      "paidCents": 4878651905,
+      "completedAssignments": 48352,
+      "managerAssignments": 43262,
+      "nonManagerAssignments": 203243,
+      "publicAdministrationGrantorRecords": 163997
     }
   ],
   "source": {
@@ -83,7 +83,7 @@
     "endpoint": "https://adp-api.perlapa.gov.it/api/public/incarichi/StatisticheIncarichi",
     "licenseUrl": "https://www.perlapa.gov.it/cd-note-legali.html",
     "reuseTerms": "Riuso consentito con attribuzione e licenza identica o equivalente",
-    "observedAt": "2026-09-25T05:18:31Z",
+    "observedAt": "2026-09-26T16:43:13Z",
     "declaredCadence": "Aggiornamento per singola amministrazione e incarico",
     "platformCheckCadence": "Ogni 6 ore"
   },

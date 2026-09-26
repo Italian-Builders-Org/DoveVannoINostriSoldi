@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "transformVersion": 2,
-  "observedAt": "2026-09-26T16:30:00.000Z",
+  "observedAt": "2026-09-26T17:20:00.000Z",
   "unit": "million-euro",
-  "rounding": "Gli importi sono espressi in milioni di euro. Le categorie e le sottovoci usano i pagamenti di competenza del conto consuntivo; dove disponibile, la precisione conserva i centesimi ufficiali convertiti in milioni. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
+  "rounding": "Gli importi sono espressi in milioni di euro. Per i consuntivi Camera e Senato le categorie usano i pagamenti ufficiali; per il Quirinale usano le previsioni di comparto della nota illustrativa. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
   "chambers": [
     {
       "id": "camera",
@@ -785,6 +785,139 @@
       ]
     },
     {
+      "id": "senato",
+      "name": "Senato della Repubblica",
+      "structuredStatus": "structured-summary",
+      "landingUrl": "https://www.senato.it/relazioni-con-i-cittadini/spese-trasparenza/spese-e-trasparenza",
+      "statements": [
+        {
+          "kind": "account",
+          "year": 2024,
+          "title": "Rendiconto delle entrate e delle spese 2024",
+          "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1487093.pdf",
+          "values": {
+            "effectivePayments": 495.9277309,
+            "annualStateContribution": 505.3605,
+            "functioningExpenditure": 257.42854029
+          },
+          "categories": [
+            {
+              "id": "senators",
+              "label": "Senatori",
+              "paid": 50.73461599,
+              "caveat": "Articoli S.1.1.1-S.1.1.8 del Cap. 1.1 (emolumenti e rimborsi ai senatori).",
+              "components": [
+                {
+                  "id": "art-1-1-1",
+                  "label": "Indennità parlamentare",
+                  "paid": 25.41057523
+                },
+                {
+                  "id": "art-1-1-2",
+                  "label": "Indennità di ufficio",
+                  "paid": 1.72888814
+                },
+                {
+                  "id": "art-1-1-3",
+                  "label": "Altre indennità",
+                  "paid": 0.14533158
+                },
+                {
+                  "id": "art-1-1-4",
+                  "label": "Diaria",
+                  "paid": 8.61175
+                },
+                {
+                  "id": "art-1-1-5",
+                  "label": "Rimborso forfetario delle spese generali",
+                  "paid": 4.05966
+                },
+                {
+                  "id": "art-1-1-6",
+                  "label": "Rimborsi spese per dotazione di strumenti informatici",
+                  "paid": 0.12216534
+                },
+                {
+                  "id": "art-1-1-7",
+                  "label": "Rimborso spese per l'esercizio del mandato",
+                  "paid": 10.3073507
+                },
+                {
+                  "id": "art-1-1-8",
+                  "label": "Rimborsi spese per ragioni di servizio",
+                  "paid": 0.348895
+                }
+              ]
+            },
+            {
+              "id": "staff",
+              "label": "Personale",
+              "paid": 125.6617412,
+              "caveat": "Articoli S.1.1.9-S.1.1.13 del Cap. 1.1 (personale di ruolo, non dipendente, consulenze e personale distaccato).",
+              "components": [
+                {
+                  "id": "art-1-1-9",
+                  "label": "Stipendi del personale di ruolo e nuove assunzioni",
+                  "paid": 105.03218809
+                },
+                {
+                  "id": "art-1-1-10",
+                  "label": "Personale non dipendente dall'Amministrazione del Senato",
+                  "paid": 9.83929308
+                },
+                {
+                  "id": "art-1-1-11",
+                  "label": "Consulenze e prestazioni professionali",
+                  "paid": 3.69618831
+                },
+                {
+                  "id": "art-1-1-12",
+                  "label": "Personale di altre Amministrazioni ed Enti che forniscono servizi in Senato",
+                  "paid": 3.45430252
+                },
+                {
+                  "id": "art-1-1-13",
+                  "label": "Personale di altre amministrazioni non di ruolo",
+                  "paid": 3.6397692
+                }
+              ]
+            },
+            {
+              "id": "functioning-other",
+              "label": "Funzionamento e beni/servizi",
+              "paid": 78.98933324,
+              "caveat": "Capitoli 1.00 e 1.2-1.18 della sezione A (funzionamento), esclusi gli emolumenti del Cap. 1.1."
+            },
+            {
+              "id": "previdenza",
+              "label": "Spese previdenziali",
+              "paid": 238.49919061,
+              "caveat": "Sezione B: Cap. 1.19 (assegni vitalizi/pensioni senatori e pensioni del personale) e Cap. 1.20 (oneri previdenziali a carico dell'Amministrazione). Il totale non equivale ai soli vitalizi.",
+              "components": [
+                {
+                  "id": "cap-1-19",
+                  "label": "Spese previdenziali (Cap. 1.19)",
+                  "paid": 230.75551734
+                },
+                {
+                  "id": "cap-1-20",
+                  "label": "Oneri previdenziali e assistenziali (Cap. 1.20)",
+                  "paid": 7.74367327
+                }
+              ]
+            },
+            {
+              "id": "investments",
+              "label": "Spese in conto capitale",
+              "paid": 2.04284986,
+              "caveat": "Titolo II: acquisti e manutenzioni straordinarie (Cap. 2.22-2.26)."
+            }
+          ],
+          "meaning": "Pagamenti del rendiconto Senato 2024 sui Titoli I e II (spesa al netto delle partite di giro). La ripartizione segue i capitoli ufficiali: emolumenti ai senatori, personale, funzionamento, previdenza e conto capitale. Non va sommato a Camera o Quirinale."
+        }
+      ]
+    },
+    {
       "id": "quirinale",
       "name": "Presidenza della Repubblica",
       "structuredStatus": "structured-summary",
@@ -812,7 +945,127 @@
               "value": 287.550194
             }
           ],
-          "meaning": "Previsioni del Segretariato generale. La spesa effettiva e al netto di partite di giro e quote vincolate/avanzo; il totale uscite con partite di giro e riportato a parte. Non è un conto consuntivo e non va sommato a Camera o Senato."
+          "meaning": "Previsioni del Segretariato generale ripartite nei comparti ufficiali della nota (retribuzioni, previdenza, beni e servizi, fondi di riserva). Non è un conto consuntivo e non va sommato a Camera o Senato.",
+          "categories": [
+            {
+              "id": "staff",
+              "label": "Retribuzioni del personale",
+              "paid": 112.7075,
+              "caveat": "Comparto retribuzioni della nota illustrativa, inclusi oneri riflessi e IRAP dove indicati nel totale di comparto.",
+              "components": [
+                {
+                  "id": "ruolo",
+                  "label": "Oneri diretti del personale di ruolo",
+                  "paid": 76.395
+                },
+                {
+                  "id": "non-ruolo",
+                  "label": "Oneri diretti del personale non di ruolo",
+                  "paid": 8.871
+                },
+                {
+                  "id": "distaccato",
+                  "label": "Indennità del personale distaccato",
+                  "paid": 9.587
+                },
+                {
+                  "id": "consiglieri",
+                  "label": "Consiglieri e consulenti del Presidente",
+                  "paid": 1.568
+                },
+                {
+                  "id": "oneri-riflessi-irap",
+                  "label": "Oneri riflessi, IRAP e altre voci del comparto retribuzioni",
+                  "paid": 16.2865
+                }
+              ]
+            },
+            {
+              "id": "previdenza",
+              "label": "Previdenza",
+              "paid": 116.334,
+              "caveat": "Spesa previdenziale prevista nella nota illustrativa (non è un consuntivo Camera-equivalente)."
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "paid": 29.8201,
+              "caveat": "Tabella dei programmi settoriali della nota illustrativa 2025, incluso il residuo non programmato.",
+              "components": [
+                {
+                  "id": "program-01",
+                  "label": "Gestione del patrimonio immobiliare",
+                  "paid": 10.0002372
+                },
+                {
+                  "id": "program-02",
+                  "label": "Gestione del patrimonio storico artistico",
+                  "paid": 0.37377372
+                },
+                {
+                  "id": "program-03",
+                  "label": "Gestione del patrimonio mobiliare e logistica",
+                  "paid": 5.37568727
+                },
+                {
+                  "id": "program-04",
+                  "label": "Gestione dei servizi di mobilità",
+                  "paid": 1.589
+                },
+                {
+                  "id": "program-05",
+                  "label": "Gestione del patrimonio librario ed archivistico",
+                  "paid": 0.26867333
+                },
+                {
+                  "id": "program-06",
+                  "label": "Rappresentanza, cerimoniale ed ospitalità",
+                  "paid": 1.82788377
+                },
+                {
+                  "id": "program-07",
+                  "label": "Gestione della comunicazione",
+                  "paid": 0.92026766
+                },
+                {
+                  "id": "program-08",
+                  "label": "Gestione delle risorse umane",
+                  "paid": 2.5791
+                },
+                {
+                  "id": "program-09",
+                  "label": "Gestione delle risorse tecnologiche",
+                  "paid": 5.03455114
+                },
+                {
+                  "id": "program-10",
+                  "label": "Supporto alle attività lavorative",
+                  "paid": 0.73208719
+                },
+                {
+                  "id": "program-11",
+                  "label": "Gestione del rischio e conformità normativa",
+                  "paid": 0.62155075
+                },
+                {
+                  "id": "program-12",
+                  "label": "Tutela della salute",
+                  "paid": 0.06150001
+                },
+                {
+                  "id": "program-non-programmate",
+                  "label": "Spese non programmate",
+                  "paid": 0.43578797
+                }
+              ]
+            },
+            {
+              "id": "reserve",
+              "label": "Fondi di riserva",
+              "paid": 1.0,
+              "caveat": "Fondi di riserva annuali indicati nella nota."
+            }
+          ]
         },
         {
           "kind": "budget",
@@ -823,7 +1076,60 @@
             "annualStateContribution": 224.0,
             "plannedExpenditure": 253.8227
           },
-          "meaning": "Previsioni 2023 dalla nota ufficiale. La spesa effettiva e al netto delle partite di giro. Non è un conto consuntivo."
+          "meaning": "Previsioni del Segretariato generale ripartite nei comparti ufficiali della nota (retribuzioni, previdenza, beni e servizi, fondi di riserva). Non è un conto consuntivo e non va sommato a Camera o Senato.",
+          "categories": [
+            {
+              "id": "staff",
+              "label": "Retribuzioni del personale",
+              "paid": 115.0,
+              "caveat": "Comparto retribuzioni della nota illustrativa, inclusi oneri riflessi e IRAP dove indicati nel totale di comparto.",
+              "components": [
+                {
+                  "id": "ruolo",
+                  "label": "Oneri diretti del personale di ruolo",
+                  "paid": 78.6065
+                },
+                {
+                  "id": "non-ruolo",
+                  "label": "Oneri diretti del personale non di ruolo",
+                  "paid": 8.7805
+                },
+                {
+                  "id": "distaccato",
+                  "label": "Indennità del personale distaccato",
+                  "paid": 9.2515
+                },
+                {
+                  "id": "consiglieri",
+                  "label": "Consiglieri e consulenti del Presidente",
+                  "paid": 1.892
+                },
+                {
+                  "id": "oneri-riflessi-irap",
+                  "label": "Oneri riflessi, IRAP e altre voci del comparto retribuzioni",
+                  "paid": 16.4695
+                }
+              ]
+            },
+            {
+              "id": "previdenza",
+              "label": "Previdenza",
+              "paid": 109.141,
+              "caveat": "Spesa previdenziale prevista nella nota illustrativa (non è un consuntivo Camera-equivalente)."
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "paid": 28.6817,
+              "caveat": "Comparto beni e servizi della nota illustrativa."
+            },
+            {
+              "id": "reserve",
+              "label": "Fondi di riserva",
+              "paid": 1.0,
+              "caveat": "Fondi di riserva annuali indicati nella nota."
+            }
+          ]
         },
         {
           "kind": "budget",
@@ -952,7 +1258,7 @@
   ],
   "methodology": {
     "comparability": "Camera, Senato e Quirinale non vengono sommati: sono bilanci autonomi con periodi e definizioni contabili distinti. Il dettaglio per categoria della Camera riguarda i pagamenti di competenza della spesa effettiva (Titoli I-III).",
-    "missingData": "Il Senato ha documenti ufficiali di rendiconto e bilancio gia censiti, ma il PDF non e ancora scaricabile in modo stabile da questo ambiente: non stimiamo importi. Per la Camera gli anni 2023-2025 espongono totali e dettaglio per categoria/capitolo; il 2020-2022 resta sui totali verificati finche il layout tabellare verticale dei PDF non e riconciliato fail-closed. Per il Quirinale pubblichiamo previsioni e la serie della dotazione dalle note ufficiali, non un consuntivo completo a categorie Camera-equivalenti.",
+    "missingData": "Il Senato pubblica il rendiconto 2024 con ripartizione per capitolo (PDF pinnato). Anni Senato precedenti e il progetto di bilancio restano da acquisire con lo stesso metodo. Il Quirinale espone previsioni per comparti, non un consuntivo Camera-equivalente. Camera 2020-2022 restano sui totali finché il layout verticale non è riconciliabile.",
     "publicationCheck": "Le pagine ufficiali vengono controllate per individuare nuovi documenti. Ogni nuova struttura deve superare il contratto dati prima della pubblicazione."
   }
 }

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-09-26T16:30:00Z",
+  "verifiedAt": "2026-09-26T17:20:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 36242,
-    "sha256": "5e79ab1614cb372d73e8ceb3a7aacace4e6675bece91879936c8c79065ad319f"
+    "bytes": 47625,
+    "sha256": "b9479c8e90d52ff35a185a76719911f86e51e135c08126b8ea1ad938e9240512"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
@@ -145,7 +145,18 @@
         "presentedAt": "2025-12-16",
         "recordUrl": "https://dati.senato.it/documento/52803",
         "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1487093.pdf",
-        "publicationStatus": "metadata-only"
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 966927,
+          "sha256": "de109375206e4fc931443bce671f50b2063ca6b5c5e1c9100b6b3b4450289df5"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2024.pdf",
+        "evidence": [
+          {
+            "pages": "12-18",
+            "scope": "pagamenti Titoli I-II per capitolo; Cap. 1.1 articolato in senatori e personale"
+          }
+        ]
       },
       {
         "kind": "budget",
@@ -170,7 +181,14 @@
         "asset": {
           "bytes": 312864,
           "sha256": "9cd96e603aeac3e3d2b01c682582d05872b9b24fef7716d2621c379f3858eb2c"
-        }
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2025.pdf"
       },
       {
         "kind": "budget",
@@ -180,7 +198,14 @@
         "asset": {
           "bytes": 232405,
           "sha256": "2a032dc3fdd5ce482b35442d1b18c90e0f6dfcd05e75d6c385f8442a77778c6a"
-        }
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2023.pdf"
       },
       {
         "kind": "budget",

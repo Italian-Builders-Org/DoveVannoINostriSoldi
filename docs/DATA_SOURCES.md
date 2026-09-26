@@ -919,7 +919,7 @@ La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazion
 I valori del Senato non sono ancora normalizzati e non compaiono nella pagina pubblica come numeri. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
 
 ### Presidenza della Repubblica (Quirinale)
-Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione a carico del bilancio dello Stato (2007-2028) e aggregati di previsione (spesa effettiva al netto delle partite di giro; uscite con partite di giro tenute separate). Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
+Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione (2007-2028), gli aggregati di previsione e, per il 2023 e il 2025, i comparti retribuzioni/previdenza/beni e servizi/fondi di riserva riconciliati alla spesa effettiva prevista. Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
 
 ### Presidenza del Consiglio dei ministri
 

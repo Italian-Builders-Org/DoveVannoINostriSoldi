@@ -10,7 +10,7 @@ import styles from "./parlamento.module.css";
 export const metadata: Metadata = {
   title: "Spese Camera, Senato e Quirinale",
   description:
-    "Consuntivi e bilanci ufficiali della Camera (con dettaglio per categoria 2023-2025), copertura documentale del Senato e previsioni/dotazione della Presidenza della Repubblica, con periodi e fonti distinti.",
+    "Consuntivi Camera 2020-2025 (categorie 2023-2025), rendiconto Senato 2024 per capitolo, previsioni Quirinale per comparti e serie della dotazione, con periodi e fonti distinti.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -61,9 +61,9 @@ export default function ParliamentPage() {
         <h1>Spese di Camera, Senato e Quirinale</h1>
         <p>
           Tre bilanci autonomi, tre fonti ufficiali. Per la Camera trovi i totali 2020-2025 e, dal
-          2023, la stessa ripartizione per categoria del consuntivo (deputati, personale, beni e
-          servizi, previdenza…). Quirinale con previsioni e serie della dotazione; Senato ancora in
-          sola copertura documentale.
+          2023, la ripartizione per categoria. Per il Senato il rendiconto 2024 è ripartito per
+          capitolo (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni
+          per comparti e la serie della dotazione.
         </p>
       </div>
 
@@ -242,8 +242,18 @@ export default function ParliamentPage() {
                     </td>
                     <td>{longDate(source.updatedAt)}</td>
                     <td>
-                      <span className={styles.metadataStatus}>Solo metadati</span>
-                      <small>Numeri del PDF non verificati in questa tabella</small>
+                      {source.subjectId === "senato" &&
+                      source.title.toLocaleLowerCase("it-IT").includes("2024") ? (
+                        <>
+                          <span className={styles.metadataStatus}>Numeri pubblicati</span>
+                          <small>Rendiconto 2024 ripartito nello snapshot</small>
+                        </>
+                      ) : (
+                        <>
+                          <span className={styles.metadataStatus}>Solo metadati</span>
+                          <small>Numeri del PDF non verificati in questa tabella</small>
+                        </>
+                      )}
                     </td>
                     <td>
                       <a href={source.sourceUrl} target="_blank" rel="noreferrer">

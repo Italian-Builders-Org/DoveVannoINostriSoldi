@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 116
+- Artefatti nel registro: 117
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 99 (PR umana dopo revisione)
+- manuale: 100 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -55,7 +55,7 @@ La revisione e il merge restano umani.
 | `anac-cig-2007-2025` | non dichiarato nello snapshot | 2026-09-08T12:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_operator_cig_enrich.py --check` |
 | `anac-entity-procurement-coverage` | 2026-08-06T07:31:40Z | 2026-08-30T21:30:00Z | https://dati.anticorruzione.it/opendata/dataset/stazioni-appaltanti | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_coverage.py --check` |
 | `anac-entity-procurement-page` | non dichiarato nello snapshot | 2026-08-31T14:49:08Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/anac_entity_procurement_page.py --check` |
-| `consulenti-pubblici` | 2026 | 2026-09-25T05:18:31Z | https://consulentipubblici.dfp.gov.it/progetto | `37 */6 * * *` | `.github/workflows/consulenti-refresh.yml` | PR automatica | `python scripts/etl/consulenti_snapshot.py --check` |
+| `consulenti-pubblici` | 2026 | 2026-09-24T12:09:02Z | https://consulentipubblici.dfp.gov.it/progetto | `37 */6 * * *` | `.github/workflows/consulenti-refresh.yml` | PR automatica | `python scripts/etl/consulenti_snapshot.py --check` |
 | `cpt-regional-fiscal` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | suite ETL |
 | `indire-pnrr-assignments` | aggiornamento aprile 2026 | 2026-08-23 | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/indire_pnrr_assignments.py --validate-committed` |
 | `inps-civil-invalidity` | non dichiarato nello snapshot | 2026-08-20T22:30:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
@@ -63,6 +63,7 @@ La revisione e il merge restano umani.
 | `integrated-catalog` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `integrated-rows` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `istat-municipality-geography` | 31/12/2022 | 2026-08-25T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_municipality_geography.py --validate-committed` |
+| `istat-population-grid-2021` | non dichiarato nello snapshot | 2026-09-26T07:15:00.000Z | https://www.istat.it/notizia/statistiche-sulla-popolazione-per-griglia-regolare/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_population_grid_2021.py --check` |
 | `istat-regions-2024` | 2024 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_regions_account.py --validate-committed` |
 | `mef-irpef-2024` | 2024 | non dichiarato | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | `17 6 * * 1` | `.github/workflows/mef-irpef-refresh.yml` | solo rilevamento | `python scripts/etl/mef_irpef_municipal_snapshot.py --check` |
 | `mef-participations` | 2023-12-31 | 2026-08-20T10:12:54.480623Z | https://www.de.mef.gov.it/it/attivita_istituzionali/partecipazioni_pubbliche/open_data_partecipazioni/index.html | `23 5 * * *` | `.github/workflows/mef-participations-refresh.yml` | PR automatica | `python scripts/etl/mef_participations_snapshot.py --check` |
@@ -145,7 +146,7 @@ La revisione e il merge restano umani.
 | `aifa-spesa-consumi-2022-2025` | 2022-2025 | 2026-09-16 | https://www.aifa.gov.it/spesa-e-consumo-relativi-al-flusso-della-farmaceutica-convenzionata-e-degli-acquisti-diretti | nessuno | nessuno | manuale | `python3 scripts/etl/aifa_spesa_consumi_snapshot.py --check` |
 | `politici-camera-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:04+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/politici_camera_xix_snapshot.py --check` |
 | `politici-senato-xix` | non dichiarato nello snapshot | 2026-09-17T19:07:38+00:00 | https://dati.senato.it/DatiSenato/browse/composizione?legislatura=19&testo_generico=11 | nessuno | nessuno | manuale | `python3 scripts/etl/politici_senato_xix_snapshot.py --check` |
-| `parlamento-mandati-xix` | non dichiarato nello snapshot | 2026-09-23T09:27:59+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_mandati_xix_snapshot.py --check` |
+| `parlamento-mandati-xix` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_mandati_xix_snapshot.py --check` |
 | `governo-meloni` | non dichiarato nello snapshot | 2026-09-17T19:20:03+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/governo_meloni_snapshot.py --check` |
 | `presidente-repubblica` | non dichiarato nello snapshot | 2026-09-17T19:09:42+00:00 | https://www.quirinale.it/pagine/il-presidente | nessuno | nessuno | manuale | `python3 scripts/etl/presidente_repubblica_snapshot.py --check` |
 | `politici-eurodeputati-it` | non dichiarato nello snapshot | 2026-09-20T16:10:00+00:00 | https://www.europarl.europa.eu/meps/it/home | nessuno | nessuno | manuale | `python3 scripts/etl/politici_eurodeputati_it_snapshot.py --check` |

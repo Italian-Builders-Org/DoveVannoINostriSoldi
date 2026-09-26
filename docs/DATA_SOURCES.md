@@ -916,10 +916,10 @@ pagamenti effettivi, quindi non ne stimiamo l'importo.
 ### Senato della Repubblica
 La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazioni sul trattamento economico dei senatori. Il monitor interno controlla i metadati dei nuovi documenti ufficiali e li registra nel manifesto della pipeline.
 
-Lo snapshot pubblica il rendiconto 2024 con pagamenti ripartiti per capitolo (senatori, personale, funzionamento, previdenza, conto capitale), da PDF ufficiale pinnato: l'endpoint PDFServer senza sessione browser può rispondere vuoto. Anni precedenti restano documentali finché non c'è un PDF riconciliabile. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
+Lo snapshot pubblica i rendiconti Senato 2022-2024 con pagamenti ripartiti per capitolo (senatori, personale, funzionamento, previdenza, conto capitale), da PDF ufficiali pinnati: l'endpoint PDFServer senza sessione browser può rispondere vuoto. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
 
 ### Presidenza della Repubblica (Quirinale)
-Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione (2007-2028), gli aggregati di previsione e, per il 2023 e il 2025, i comparti retribuzioni/previdenza/beni e servizi/fondi di riserva riconciliati alla spesa effettiva prevista. Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
+Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione (2007-2028), gli aggregati di previsione e, per il 2022-2025, i comparti retribuzioni/previdenza/beni e servizi/fondi di riserva riconciliati alla spesa effettiva prevista. Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
 
 ### Presidenza del Consiglio dei ministri
 

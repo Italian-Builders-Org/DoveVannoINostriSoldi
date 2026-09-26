@@ -53,6 +53,25 @@ NOTES = {
             ("non-programmate", "Spese non programmate", 0.43578797),
         ],
     },
+    2024: {
+        "url": "https://new.quirinale.it/allegati_statici/bilancio_2024/nota_illustrativa_bilancio_previsione_2024.pdf",
+        "sha256": "518afbfd042fcfb7ea4ed171bd579266285bf5c2aed11f64ba4493a79247b4fa",
+        "bytes": 336666,
+        "local": ROOT / "data/parliament/pinned/quirinale-nota-2024.pdf",
+        "planned": 255.6653,
+        "contribution": 224.0,
+        "staff_total": 113.8279,
+        "pensions": 112.62,
+        "goods": 28.2174,
+        "reserve": 1.0,
+        "staff_parts": [
+            ("ruolo", "Oneri diretti del personale di ruolo", 76.854),
+            ("non-ruolo", "Oneri diretti del personale non di ruolo", 9.034),
+            ("distaccato", "Indennità del personale distaccato", 9.631),
+            ("consiglieri", "Consiglieri e consulenti del Presidente", 1.795),
+        ],
+        "goods_programs": None,
+    },
     2023: {
         "url": "https://new.quirinale.it/allegati_statici/bilancio_2023/nota_illustrativa_bilancio_previsione_2023.pdf",
         "sha256": "2a032dc3fdd5ce482b35442d1b18c90e0f6dfcd05e75d6c385f8442a77778c6a",
@@ -69,6 +88,25 @@ NOTES = {
             ("non-ruolo", "Oneri diretti del personale non di ruolo", 8.7805),
             ("distaccato", "Indennità del personale distaccato", 9.2515),
             ("consiglieri", "Consiglieri e consulenti del Presidente", 1.892),
+        ],
+        "goods_programs": None,
+    },
+    2022: {
+        "url": "https://new.quirinale.it/allegati_statici/bilancio_2022/nota_illustrativa_bilancio_previsione_2022.pdf",
+        "sha256": "5026f93783776000986adc8e20b8c52c7784ace92706fabd7707d7d8cfcc46da",
+        "bytes": 365058,
+        "local": ROOT / "data/parliament/pinned/quirinale-nota-2022.pdf",
+        "planned": 245.734827,
+        "contribution": 224.0,
+        "staff_total": 117.1437,
+        "pensions": 103.192,
+        "goods": 23.899127,
+        "reserve": 1.5,
+        "staff_parts": [
+            ("ruolo", "Oneri diretti del personale di ruolo", 81.8215),
+            ("non-ruolo", "Oneri diretti del personale non di ruolo", 7.7935),
+            ("distaccato", "Indennità del personale distaccato", 9.0725),
+            ("consiglieri", "Consiglieri e consulenti del Presidente", 1.849),
         ],
         "goods_programs": None,
     },
@@ -190,7 +228,7 @@ def build_categories(spec: dict) -> list[dict]:
             raise SystemExit("programmi beni/servizi non riconciliati")
         categories[2]["components"] = programs
         categories[2]["caveat"] = (
-            "Tabella dei programmi settoriali della nota illustrativa 2025, "
+            "Tabella dei programmi settoriali della nota illustrativa, "
             "incluso il residuo non programmato."
         )
 

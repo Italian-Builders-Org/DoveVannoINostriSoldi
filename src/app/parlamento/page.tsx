@@ -10,7 +10,7 @@ import styles from "./parlamento.module.css";
 export const metadata: Metadata = {
   title: "Spese Camera, Senato e Quirinale",
   description:
-    "Consuntivi Camera 2020-2025 con dettaglio per categoria, rendiconto Senato 2024 per capitolo, previsioni Quirinale per comparti e serie della dotazione, con periodi e fonti distinti.",
+    "Consuntivi Camera 2020-2025 con dettaglio per categoria, rendiconti Senato 2022-2024 per capitolo, previsioni Quirinale 2022-2025 per comparti e serie della dotazione, con periodi e fonti distinti.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -61,8 +61,8 @@ export default function ParliamentPage() {
         <h1>Spese di Camera, Senato e Quirinale</h1>
         <p>
           Tre bilanci autonomi, tre fonti ufficiali. Per la Camera i consuntivi 2020-2025 hanno la
-          ripartizione per categoria. Per il Senato il rendiconto 2024 è ripartito per capitolo
-          (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni per
+          ripartizione per categoria. Per il Senato i rendiconti 2022-2024 sono ripartiti per capitolo
+          (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni 2022-2025 per
           comparti e la serie della dotazione.
         </p>
       </div>

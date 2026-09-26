@@ -24,6 +24,18 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   const quirinaleSum = quirinaleBudget.categories.reduce((total, item) => total + item.paid, 0);
   assert.ok(Math.abs(quirinaleSum - quirinaleBudget.values.plannedExpenditure) < 1e-8);
 
+  for (const year of [2022, 2023, 2024]) {
+    const quirinaleEarlier = quirinale.statements.find(
+      (statement) => statement.kind === "budget" && statement.year === year,
+    );
+    assert.ok(quirinaleEarlier?.categories?.length >= 4, `Quirinale ${year}: comparti attesi`);
+    const sum = quirinaleEarlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(sum - quirinaleEarlier.values.plannedExpenditure) < 1e-8,
+      `Quirinale ${year}: comparti non riconciliati`,
+    );
+  }
+
   const senato = parsed.chambers.find((chamber) => chamber.id === "senato");
   assert.ok(senato, "senato atteso nello snapshot");
   const senatoAccount = senato.statements.find(
@@ -37,6 +49,18 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
     senatoAccount.categories.find((category) => category.id === "previdenza").caveat,
     /non equivale ai soli vitalizi/i,
   );
+  for (const year of [2022, 2023]) {
+    const earlier = senato.statements.find(
+      (statement) => statement.kind === "account" && statement.year === year,
+    );
+    assert.ok(earlier?.categories?.length >= 5, `Senato ${year}: categorie per capitolo attese`);
+    const sum = earlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(sum - earlier.values.effectivePayments) <=
+        (earlier.categoryReconciliationTolerance ?? 0),
+      `Senato ${year}: categorie non riconciliate`,
+    );
+  }
   assert.ok(
     parsed.chambers.every((chamber) =>
       chamber.statements.every(

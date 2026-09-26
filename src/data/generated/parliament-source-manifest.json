@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-09-26T17:20:00Z",
+  "verifiedAt": "2026-09-26T19:15:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 66597,
-    "sha256": "663ef0efecade2d875a39df577cf90c701a739a3868f8c3f2940af067990130b"
+    "bytes": 79750,
+    "sha256": "38b43fdf281e1f2a266b3086b2fc309f8ec438969a65dc31416d4f9036866a54"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
@@ -166,9 +166,71 @@
         "evidence": [
           {
             "pages": "12-18",
-            "scope": "pagamenti Titoli I-II per capitolo; Cap. 1.1 articolato in senatori e personale"
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
           }
         ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "documentNumber": 3,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2023",
+        "presentedAt": "2024-11-27",
+        "recordUrl": "https://dati.senato.it/documento/50230",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1435880.pdf",
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 465155,
+          "sha256": "95fc92c39c59a3ae6cb35c14bd96a8bfe11dfa0dbde435177508a50941aaee43"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2023.pdf",
+        "evidence": [
+          {
+            "pages": "15-27",
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "documentNumber": 3,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2023",
+        "presentedAt": "2024-11-27",
+        "recordUrl": "https://dati.senato.it/documento/50230",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1439383.pdf",
+        "publicationStatus": "metadata-only"
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "documentNumber": 1,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2022",
+        "presentedAt": "2023-10-25",
+        "recordUrl": "https://dati.senato.it/documento/47890",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1391468.pdf",
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 1719929,
+          "sha256": "6c75c285a98edc415cf60cbec3ab41a8b8c907ff2d104af67c5fa710df73c60f"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2022.pdf",
+        "evidence": [
+          {
+            "pages": "15-28",
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "documentNumber": 1,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2022",
+        "presentedAt": "2023-10-25",
+        "recordUrl": "https://dati.senato.it/documento/47890",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1393041.pdf",
+        "publicationStatus": "metadata-only"
       },
       {
         "kind": "budget",
@@ -204,6 +266,23 @@
       },
       {
         "kind": "budget",
+        "year": 2024,
+        "title": "Nota illustrativa del bilancio di previsione 2024",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2024/nota_illustrativa_bilancio_previsione_2024.pdf",
+        "asset": {
+          "bytes": 336666,
+          "sha256": "518afbfd042fcfb7ea4ed171bd579266285bf5c2aed11f64ba4493a79247b4fa"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2024.pdf"
+      },
+      {
+        "kind": "budget",
         "year": 2023,
         "title": "Nota illustrativa del bilancio di previsione 2023",
         "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2023/nota_illustrativa_bilancio_previsione_2023.pdf",
@@ -218,6 +297,23 @@
           }
         ],
         "pinnedPath": "data/parliament/pinned/quirinale-nota-2023.pdf"
+      },
+      {
+        "kind": "budget",
+        "year": 2022,
+        "title": "Nota illustrativa del bilancio di previsione 2022",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2022/nota_illustrativa_bilancio_previsione_2022.pdf",
+        "asset": {
+          "bytes": 365058,
+          "sha256": "5026f93783776000986adc8e20b8c52c7784ace92706fabd7707d7d8cfcc46da"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2022.pdf"
       },
       {
         "kind": "budget",

@@ -173,6 +173,20 @@ function statementYears(chambers: ParliamentChamber[]): number[] {
   return [...years].sort((left, right) => right - left);
 }
 
+/** Prefer the latest Camera consuntivo with categories; never a bare budget year. */
+function defaultYear(chambers: ParliamentChamber[]): number | "all" {
+  let best: number | null = null;
+  for (const chamber of chambers) {
+    if (chamber.id !== "camera") continue;
+    for (const statement of chamber.statements) {
+      if (statement.kind !== "account") continue;
+      if (!statement.categories?.length) continue;
+      if (best === null || statement.year > best) best = statement.year;
+    }
+  }
+  return best ?? "all";
+}
+
 function filterChamber(chamber: ParliamentChamber, year: number | "all"): ParliamentChamber {
   if (year === "all") return chamber;
   return {
@@ -185,7 +199,7 @@ function filterChamber(chamber: ParliamentChamber, year: number | "all"): Parlia
 
 export function ParliamentYearFilter({ chambers }: { chambers: ParliamentChamber[] }) {
   const years = useMemo(() => statementYears(chambers), [chambers]);
-  const [year, setYear] = useState<number | "all">(years[0] ?? "all");
+  const [year, setYear] = useState<number | "all">(() => defaultYear(chambers));
 
   const filteredChambers = useMemo(
     () =>

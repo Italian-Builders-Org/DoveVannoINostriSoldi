@@ -4,12 +4,13 @@ import { longDate } from "@/lib/format";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import type { ParliamentChamber, ParliamentStatement } from "@/lib/data/parliament-contract";
 import { INSTITUTIONAL_SOURCE_REGISTRY } from "@/lib/data/institutional-source-registry";
+import { ParliamentYearFilter } from "./ParliamentYearFilter";
 import styles from "./parlamento.module.css";
 
 export const metadata: Metadata = {
   title: "Spese Camera, Senato e Quirinale",
   description:
-    "Consuntivi e bilanci ufficiali della Camera, copertura documentale del Senato e previsioni/dotazione della Presidenza della Repubblica, con periodi e fonti distinti.",
+    "Consuntivi e bilanci ufficiali della Camera (con dettaglio per categoria 2023-2025), copertura documentale del Senato e previsioni/dotazione della Presidenza della Repubblica, con periodi e fonti distinti.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -194,9 +195,10 @@ export default function ParliamentPage() {
       <div className="page-intro">
         <h1>Spese di Camera, Senato e Quirinale</h1>
         <p>
-          Tre bilanci autonomi, tre fonti ufficiali. Qui trovi i totali verificati dei consuntivi
-          Camera (2020-2025), le previsioni e la dotazione della Presidenza della Repubblica, e i
-          documenti del Senato ancora in sola copertura documentale.
+          Tre bilanci autonomi, tre fonti ufficiali. Per la Camera trovi i totali 2020-2025 e, dal
+          2023, la stessa ripartizione per categoria del consuntivo (deputati, personale, beni e
+          servizi, previdenza…). Quirinale con previsioni e serie della dotazione; Senato ancora in
+          sola copertura documentale.
         </p>
       </div>
 
@@ -234,7 +236,7 @@ export default function ParliamentPage() {
           </h2>
           <p className={styles.plainText}>
             Totale dei pagamenti di competenza sui Titoli I, II e III (spesa effettiva), anno per
-            anno. Il dettaglio per categoria resta sul consuntivo 2025.
+            anno. Dal 2023 il dettaglio per categoria è sotto, selezionando l&apos;anno.
           </p>
           <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Serie Camera pagamenti" tabIndex={0}>
             <table className="table">
@@ -315,9 +317,18 @@ export default function ParliamentPage() {
         </section>
       ) : null}
 
-      {chambers.map((chamber) => (
-        <ChamberSection key={chamber.id} chamber={chamber} />
-      ))}
+      <ParliamentYearFilter chambers={chambers}>
+        {({ year, filteredChambers }) => (
+          <>
+            {year !== "all" && filteredChambers.length === 0 ? (
+              <p className={styles.plainText}>Nessun documento strutturato per l&apos;anno selezionato.</p>
+            ) : null}
+            {filteredChambers.map((chamber) => (
+              <ChamberSection key={`${chamber.id}-${year}`} chamber={chamber} />
+            ))}
+          </>
+        )}
+      </ParliamentYearFilter>
 
       <details className="data-details">
         <summary>Documenti, copertura e limiti</summary>

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "transformVersion": 2,
-  "observedAt": "2026-09-26T12:00:00.000Z",
+  "observedAt": "2026-09-26T16:30:00.000Z",
   "unit": "million-euro",
   "rounding": "Gli importi sono espressi in milioni di euro. Le categorie e le sottovoci usano i pagamenti di competenza del conto consuntivo; dove disponibile, la precisione conserva i centesimi ufficiali convertiti in milioni. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
   "chambers": [
@@ -64,7 +64,225 @@
             "finalAdministrationSurplus": 376.4,
             "annualStateContribution": 943.16
           },
-          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo e ripartizione dei pagamenti di competenza per categoria (Titoli I-III), con sottovoci di capitolo dove riconciliate al documento INTERO.",
+          "categories": [
+            {
+              "id": "deputies",
+              "label": "Deputati",
+              "paid": 87.76274349,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria I.",
+              "components": [
+                {
+                  "id": "cap-1000",
+                  "label": "Indennità dei deputati",
+                  "paid": 51.70590172
+                },
+                {
+                  "id": "cap-1005",
+                  "label": "Rimborso di spese sostenute dai deputati",
+                  "paid": 36.05684177
+                }
+              ]
+            },
+            {
+              "id": "employees",
+              "label": "Personale dipendente",
+              "paid": 203.14528221,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria II.",
+              "components": [
+                {
+                  "id": "cap-1010",
+                  "label": "Emolumenti per il personale",
+                  "paid": 169.23722114
+                },
+                {
+                  "id": "cap-1015",
+                  "label": "Contributi a carico del datore di lavoro",
+                  "paid": 33.82439536
+                },
+                {
+                  "id": "cap-1020",
+                  "label": "Oneri accessori",
+                  "paid": 0.08366571
+                }
+              ]
+            },
+            {
+              "id": "other-staff",
+              "label": "Altro personale",
+              "paid": 19.7633079,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria III.",
+              "components": [
+                {
+                  "id": "cap-1025",
+                  "label": "Emolumenti per il personale non dipendente",
+                  "paid": 16.78638509
+                },
+                {
+                  "id": "cap-1030",
+                  "label": "Contributi previdenziali",
+                  "paid": 2.97692281
+                }
+              ]
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "paid": 53.94140199,
+              "caveat": "Le voci principali sono i capitoli della categoria IV con i pagamenti di competenza più alti; «Altri capitoli» somma i restanti capitoli della stessa categoria, Totale esatto dei pagamenti: 53.941.401,99 €,",
+              "components": [
+                {
+                  "id": "cap-1045",
+                  "label": "Manutenzioni: immobili, impianti, hardware e software",
+                  "paid": 13.54056462
+                },
+                {
+                  "id": "cap-1050",
+                  "label": "Assistenza informatica, tecnica e operativa",
+                  "paid": 9.80080622
+                },
+                {
+                  "id": "cap-1095",
+                  "label": "Trasporti: aerei, treni, trasporti marittimi e pedaggi",
+                  "paid": 6.10525304
+                },
+                {
+                  "id": "cap-1060",
+                  "label": "Pulizie, rifiuti e lavanderia",
+                  "paid": 4.9539138
+                },
+                {
+                  "id": "cap-1090",
+                  "label": "Preparazione e stampa di atti e pubblicazioni",
+                  "paid": 4.77511041
+                },
+                {
+                  "id": "cap-1070",
+                  "label": "Acqua, gas ed elettricità",
+                  "paid": 3.86002348
+                },
+                {
+                  "id": "cap-1135",
+                  "label": "Comunicazione istituzionale",
+                  "paid": 2.38086379
+                },
+                {
+                  "id": "other-chapters",
+                  "label": "Altri capitoli, complessivamente",
+                  "paid": 8.52486663
+                }
+              ]
+            },
+            {
+              "id": "transfers",
+              "label": "Trasferimenti",
+              "paid": 31.55280791,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria V.",
+              "components": [
+                {
+                  "id": "cap-1150",
+                  "label": "Contributo ai Gruppi parlamentari",
+                  "paid": 30.69248705
+                },
+                {
+                  "id": "cap-1155",
+                  "label": "Contributi ad Organismi internazionali",
+                  "paid": 0.46532086
+                },
+                {
+                  "id": "cap-1160",
+                  "label": "Contributi vari",
+                  "paid": 0.395
+                }
+              ]
+            },
+            {
+              "id": "parliamentary-bodies",
+              "label": "Attività degli organi parlamentari",
+              "paid": 1.88392125,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VI.",
+              "components": [
+                {
+                  "id": "cap-1165",
+                  "label": "Verifica dei risultati elettorali",
+                  "paid": 0.12130473
+                },
+                {
+                  "id": "cap-1170",
+                  "label": "Commissioni permanenti, Giunte e Comitati",
+                  "paid": 0.17827095
+                },
+                {
+                  "id": "cap-1175",
+                  "label": "Commissioni di inchiesta",
+                  "paid": 0.05198502
+                },
+                {
+                  "id": "cap-1180",
+                  "label": "Altri Organi bicamerali",
+                  "paid": 0.00409274
+                },
+                {
+                  "id": "cap-1185",
+                  "label": "Spese per attività internazionali",
+                  "paid": 1.11323535
+                },
+                {
+                  "id": "cap-1190",
+                  "label": "Spese per il cerimoniale",
+                  "paid": 0.41503246
+                }
+              ]
+            },
+            {
+              "id": "common-costs",
+              "label": "Oneri comuni",
+              "paid": 26.94261619,
+              "caveat": "Pagamenti di competenza della categoria VII nel conto consuntivo."
+            },
+            {
+              "id": "capital",
+              "label": "Investimenti",
+              "paid": 7.09653135,
+              "components": [
+                {
+                  "id": "cat-viii",
+                  "label": "Beni immobiliari",
+                  "paid": 4.0582411
+                },
+                {
+                  "id": "cat-ix",
+                  "label": "Beni durevoli",
+                  "paid": 2.15533523
+                },
+                {
+                  "id": "cat-x",
+                  "label": "Patrimonio artistico e bibliotecario",
+                  "paid": 0.88295502
+                }
+              ],
+              "caveat": "Il Titolo II aggrega le categorie VIII-X e, se presente, XI-bis."
+            },
+            {
+              "id": "pensions",
+              "label": "Spese previdenziali",
+              "paid": 397.75834072,
+              "components": [
+                {
+                  "id": "former-deputies",
+                  "label": "Deputati cessati dal mandato",
+                  "paid": 102.63194002
+                },
+                {
+                  "id": "retired-staff",
+                  "label": "Personale in quiescenza",
+                  "paid": 295.1264007
+                }
+              ],
+              "caveat": "Titolo III: categorie XII e XIII. Il totale non equivale ai soli vitalizi."
+            }
+          ],
+          "categoryReconciliationTolerance": 0.05
         },
         {
           "kind": "account",
@@ -78,7 +296,230 @@
             "finalAdministrationSurplus": 428.5,
             "annualStateContribution": 943.16
           },
-          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo e ripartizione dei pagamenti di competenza per categoria (Titoli I-III), con sottovoci di capitolo dove riconciliate al documento INTERO.",
+          "categories": [
+            {
+              "id": "deputies",
+              "label": "Deputati",
+              "paid": 86.74090083,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria I.",
+              "components": [
+                {
+                  "id": "cap-1000",
+                  "label": "Indennità dei deputati",
+                  "paid": 52.34870818
+                },
+                {
+                  "id": "cap-1005",
+                  "label": "Rimborso di spese sostenute dai deputati",
+                  "paid": 34.39219265
+                }
+              ]
+            },
+            {
+              "id": "employees",
+              "label": "Personale dipendente",
+              "paid": 200.71185772,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria II.",
+              "components": [
+                {
+                  "id": "cap-1010",
+                  "label": "Emolumenti per il personale",
+                  "paid": 171.75978636
+                },
+                {
+                  "id": "cap-1015",
+                  "label": "Contributi a carico del datore di lavoro",
+                  "paid": 28.86633983
+                },
+                {
+                  "id": "cap-1020",
+                  "label": "Oneri accessori",
+                  "paid": 0.08573153
+                }
+              ]
+            },
+            {
+              "id": "other-staff",
+              "label": "Altro personale",
+              "paid": 23.87046428,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria III.",
+              "components": [
+                {
+                  "id": "cap-1025",
+                  "label": "Emolumenti per il personale non dipendente",
+                  "paid": 20.5404924
+                },
+                {
+                  "id": "cap-1030",
+                  "label": "Contributi previdenziali",
+                  "paid": 3.32997188
+                }
+              ]
+            },
+            {
+              "id": "goods-services",
+              "label": "Beni e servizi",
+              "paid": 56.92744856,
+              "caveat": "Le voci principali sono i capitoli della categoria IV con i pagamenti di competenza più alti; «Altri capitoli» somma i restanti capitoli della stessa categoria, Totale esatto dei pagamenti: 56.927.448,56 €,",
+              "components": [
+                {
+                  "id": "cap-1045",
+                  "label": "Manutenzioni: immobili, impianti, hardware e software",
+                  "paid": 12.52664005
+                },
+                {
+                  "id": "cap-1050",
+                  "label": "Assistenza informatica, tecnica e operativa",
+                  "paid": 8.44373726
+                },
+                {
+                  "id": "cap-1095",
+                  "label": "Trasporti: aerei, treni, trasporti marittimi e pedaggi",
+                  "paid": 7.06507946
+                },
+                {
+                  "id": "cap-1060",
+                  "label": "Pulizie, rifiuti e lavanderia",
+                  "paid": 6.53444478
+                },
+                {
+                  "id": "cap-1090",
+                  "label": "Preparazione e stampa di atti e pubblicazioni",
+                  "paid": 4.89281868
+                },
+                {
+                  "id": "cap-1070",
+                  "label": "Acqua, gas ed elettricità",
+                  "paid": 4.02582322
+                },
+                {
+                  "id": "cap-1135",
+                  "label": "Comunicazione istituzionale",
+                  "paid": 2.38123566
+                },
+                {
+                  "id": "other-chapters",
+                  "label": "Altri capitoli, complessivamente",
+                  "paid": 11.05766945
+                }
+              ]
+            },
+            {
+              "id": "transfers",
+              "label": "Trasferimenti",
+              "paid": 31.37611131,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria V.",
+              "components": [
+                {
+                  "id": "cap-1150",
+                  "label": "Contributo ai Gruppi parlamentari",
+                  "paid": 30.56801741
+                },
+                {
+                  "id": "cap-1155",
+                  "label": "Contributi ad Organismi internazionali",
+                  "paid": 0.4880939
+                },
+                {
+                  "id": "cap-1160",
+                  "label": "Contributi vari",
+                  "paid": 0.32
+                }
+              ]
+            },
+            {
+              "id": "parliamentary-bodies",
+              "label": "Attività degli organi parlamentari",
+              "paid": 2.55638693,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VI.",
+              "components": [
+                {
+                  "id": "cap-1165",
+                  "label": "Verifica dei risultati elettorali",
+                  "paid": 0.00937305
+                },
+                {
+                  "id": "cap-1170",
+                  "label": "Commissioni permanenti, Giunte e Comitati",
+                  "paid": 0.13485038
+                },
+                {
+                  "id": "cap-1175",
+                  "label": "Commissioni di inchiesta",
+                  "paid": 0.42987386
+                },
+                {
+                  "id": "cap-1180",
+                  "label": "Altri Organi bicamerali",
+                  "paid": 0.04895283
+                },
+                {
+                  "id": "cap-1185",
+                  "label": "Spese per attività internazionali",
+                  "paid": 1.41967591
+                },
+                {
+                  "id": "cap-1190",
+                  "label": "Spese per il cerimoniale",
+                  "paid": 0.5136609
+                }
+              ]
+            },
+            {
+              "id": "common-costs",
+              "label": "Oneri comuni",
+              "paid": 24.42727182,
+              "caveat": "Pagamenti di competenza della categoria VII nel conto consuntivo."
+            },
+            {
+              "id": "capital",
+              "label": "Investimenti",
+              "paid": 6.44964475,
+              "components": [
+                {
+                  "id": "cat-viii",
+                  "label": "Beni immobiliari",
+                  "paid": 2.4820373
+                },
+                {
+                  "id": "cat-ix",
+                  "label": "Beni durevoli",
+                  "paid": 2.24422158
+                },
+                {
+                  "id": "cat-x",
+                  "label": "Patrimonio artistico e bibliotecario",
+                  "paid": 0.72338587
+                },
+                {
+                  "id": "cat-xibis",
+                  "label": "Immobilizzazioni finanziarie",
+                  "paid": 1.0
+                }
+              ],
+              "caveat": "Il Titolo II aggrega le categorie VIII-X e, se presente, XI-bis."
+            },
+            {
+              "id": "pensions",
+              "label": "Spese previdenziali",
+              "paid": 410.16804498,
+              "components": [
+                {
+                  "id": "former-deputies",
+                  "label": "Deputati cessati dal mandato",
+                  "paid": 99.05123308
+                },
+                {
+                  "id": "retired-staff",
+                  "label": "Personale in quiescenza",
+                  "paid": 311.1168119
+                }
+              ],
+              "caveat": "Titolo III: categorie XII e XIII. Il totale non equivale ai soli vitalizi."
+            }
+          ],
+          "categoryReconciliationTolerance": 0.05
         },
         {
           "kind": "account",
@@ -97,6 +538,7 @@
               "id": "deputies",
               "label": "Deputati",
               "paid": 87.03657592,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria I.",
               "components": [
                 {
                   "id": "cap-1000",
@@ -108,13 +550,13 @@
                   "label": "Rimborso di spese sostenute dai deputati",
                   "paid": 34.41463797
                 }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria I nel conto consuntivo 2025."
+              ]
             },
             {
               "id": "employees",
               "label": "Personale dipendente",
               "paid": 204.11385629,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria II.",
               "components": [
                 {
                   "id": "cap-1010",
@@ -131,13 +573,13 @@
                   "label": "Oneri accessori",
                   "paid": 0.08366571
                 }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria II nel conto consuntivo 2025."
+              ]
             },
             {
               "id": "other-staff",
               "label": "Altro personale",
               "paid": 25.52590008,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria III.",
               "components": [
                 {
                   "id": "cap-1025",
@@ -149,13 +591,13 @@
                   "label": "Contributi previdenziali",
                   "paid": 3.68608894
                 }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria III (personale non dipendente) nel conto consuntivo 2025."
+              ]
             },
             {
               "id": "goods-services",
               "label": "Beni e servizi",
               "paid": 61.4846849,
+              "caveat": "Le voci principali sono i capitoli della categoria IV con i pagamenti di competenza più alti; «Altri capitoli» somma i restanti capitoli della stessa categoria, Totale esatto dei pagamenti: 61.484.684,90 €,",
               "components": [
                 {
                   "id": "cap-1045",
@@ -197,13 +639,13 @@
                   "label": "Altri capitoli, complessivamente",
                   "paid": 11.07454019
                 }
-              ],
-              "caveat": "Le voci principali sono i capitoli della categoria IV con i pagamenti di competenza più alti; «Altri capitoli» somma i restanti capitoli della stessa categoria. Totale esatto dei pagamenti: 61.484.684,90 €."
+              ]
             },
             {
               "id": "transfers",
               "label": "Trasferimenti",
               "paid": 31.21783656,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria V.",
               "components": [
                 {
                   "id": "cap-1150",
@@ -220,13 +662,13 @@
                   "label": "Contributi vari",
                   "paid": 0.325
                 }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria V nel conto consuntivo 2025."
+              ]
             },
             {
               "id": "parliamentary-bodies",
               "label": "Attività degli organi parlamentari",
               "paid": 2.70149527,
+              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VI.",
               "components": [
                 {
                   "id": "cap-1165",
@@ -258,26 +700,13 @@
                   "label": "Spese per il cerimoniale",
                   "paid": 0.41901479
                 }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VI nel conto consuntivo 2025."
+              ]
             },
             {
               "id": "common-costs",
               "label": "Oneri comuni",
               "paid": 24.73391741,
-              "components": [
-                {
-                  "id": "cap-1195",
-                  "label": "Imposte e tasse",
-                  "paid": 24.60281252
-                },
-                {
-                  "id": "cap-1200",
-                  "label": "Dispositivi giurisdizionali, lodi arbitrali e transazioni",
-                  "paid": 0.13110489
-                }
-              ],
-              "caveat": "Ripartizione per capitolo dei pagamenti di competenza della categoria VII. Il Fondo di riserva (cap. 1210) non ha generato pagamenti di competenza."
+              "caveat": "Pagamenti di competenza della categoria VII nel conto consuntivo."
             },
             {
               "id": "capital",
@@ -296,11 +725,11 @@
                 },
                 {
                   "id": "cat-x",
-                  "label": "Patrimonio artistico, bibliotecario e archivistico storico",
+                  "label": "Patrimonio artistico e bibliotecario",
                   "paid": 0.65898029
                 }
               ],
-              "caveat": "Il Titolo II (spese in conto capitale) è aggregato come Investimenti; le voci corrispondono alle categorie VIII, IX e X. La categoria XI (fondo di riserva) non ha generato pagamenti."
+              "caveat": "Il Titolo II aggrega le categorie VIII-X e, se presente, XI-bis."
             },
             {
               "id": "pensions",
@@ -318,11 +747,10 @@
                   "paid": 321.74182014
                 }
               ],
-              "caveat": "Il Titolo III non equivale ai soli vitalizi. Il conto consuntivo non separa i pagamenti effettivi delle singole sottovoci interne alle due categorie."
+              "caveat": "Titolo III: categorie XII e XIII. Il totale non equivale ai soli vitalizi."
             }
           ],
-          "categoryReconciliationTolerance": 1e-06,
-          "meaning": "Il totale degli impegni comprende anche le partite di giro. Pagamenti e categorie si riferiscono alla spesa effettiva dei titoli I, II e III."
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo e ripartizione dei pagamenti di competenza per categoria (Titoli I-III), con sottovoci di capitolo dove riconciliate al documento INTERO."
         },
         {
           "kind": "budget",
@@ -523,8 +951,8 @@
     }
   ],
   "methodology": {
-    "comparability": "Camera, Senato e Presidenza della Repubblica hanno bilanci autonomi e documenti con strutture diverse. I loro importi non vengono sommati automaticamente.",
-    "missingData": "Il Senato ha documenti ufficiali di rendiconto e bilancio gia censiti, ma il PDF non e ancora scaricabile in modo stabile da questo ambiente: non stimiamo importi. Per la Camera gli anni 2020-2024 espongono i totali verificati; il dettaglio per categoria resta sul consuntivo 2025. Per il Quirinale pubblichiamo previsioni e la serie della dotazione dalle note ufficiali, non un consuntivo completo finche i PDF di consuntivo non sono pinnabili.",
+    "comparability": "Camera, Senato e Quirinale non vengono sommati: sono bilanci autonomi con periodi e definizioni contabili distinti. Il dettaglio per categoria della Camera riguarda i pagamenti di competenza della spesa effettiva (Titoli I-III).",
+    "missingData": "Il Senato ha documenti ufficiali di rendiconto e bilancio gia censiti, ma il PDF non e ancora scaricabile in modo stabile da questo ambiente: non stimiamo importi. Per la Camera gli anni 2023-2025 espongono totali e dettaglio per categoria/capitolo; il 2020-2022 resta sui totali verificati finche il layout tabellare verticale dei PDF non e riconciliato fail-closed. Per il Quirinale pubblichiamo previsioni e la serie della dotazione dalle note ufficiali, non un consuntivo completo a categorie Camera-equivalenti.",
     "publicationCheck": "Le pagine ufficiali vengono controllate per individuare nuovi documenti. Ogni nuova struttura deve superare il contratto dati prima della pubblicazione."
   }
 }

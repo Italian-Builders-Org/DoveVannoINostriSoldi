@@ -1,0 +1,584 @@
+{
+  "schemaVersion": 1,
+  "municipality": {
+    "ipaCode": "c_e897",
+    "taxCode": "00189800204",
+    "name": "Comune di Mantova"
+  },
+  "coverage": {
+    "organs": [
+      "giunta",
+      "consiglio"
+    ],
+    "historical": false,
+    "verifiedAt": "2026-09-26"
+  },
+  "sources": [
+    {
+      "id": "giunta",
+      "publisher": "Comune di Mantova",
+      "url": "https://www.comune.mantova.it/it/unita_organizzative/giunta-comunale",
+      "publishedAt": null,
+      "lastModifiedAt": "2026-06-19",
+      "acquiredAt": "2026-09-26",
+      "verifiedAt": "2026-09-26",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.comune.mantova.it/it/legal_notices",
+      "sha256": "71110cfef094705d129ac9cc22d614bbbe1f8e10e761d84c1061167cc659683e"
+    },
+    {
+      "id": "nomina",
+      "publisher": "Comune di Mantova",
+      "url": "https://www.comune.mantova.it/it/news/la-nuova-giunta-del-comune-di-mantova",
+      "publishedAt": "2026-06-08",
+      "lastModifiedAt": "2026-06-25",
+      "acquiredAt": "2026-09-26",
+      "verifiedAt": "2026-09-26",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.comune.mantova.it/it/legal_notices",
+      "sha256": "e0afcc4cf5c0a02bae9d75d66fe6280aaa727ba572250dfe4497715b20d6ce4b"
+    },
+    {
+      "id": "consiglio",
+      "publisher": "Comune di Mantova",
+      "url": "https://www.comune.mantova.it/it/unita_organizzative/consiglio-comunale",
+      "publishedAt": null,
+      "lastModifiedAt": "2026-09-07",
+      "acquiredAt": "2026-09-26",
+      "verifiedAt": "2026-09-26",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.comune.mantova.it/it/legal_notices",
+      "sha256": "33d519f707e76872513076ef46a61975399ca9f0fad0cb57837f0b5b9ca91ef0"
+    },
+    {
+      "id": "insediamento",
+      "publisher": "Comune di Mantova",
+      "url": "https://www.comune.mantova.it/it/news/142087/il-nuovo-consiglio-comunale-campisi-presidente",
+      "publishedAt": "2026-06-11",
+      "lastModifiedAt": "2026-06-23",
+      "acquiredAt": "2026-09-26",
+      "verifiedAt": "2026-09-26",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.comune.mantova.it/it/legal_notices",
+      "sha256": "09f4b3819f47db1f80b2f89c60ffeba5090458075a7b4aa98e140f585cad8370"
+    },
+    {
+      "id": "licenza",
+      "publisher": "Comune di Mantova",
+      "url": "https://www.comune.mantova.it/it/legal_notices",
+      "publishedAt": null,
+      "lastModifiedAt": null,
+      "acquiredAt": "2026-09-26",
+      "verifiedAt": "2026-09-26",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.comune.mantova.it/it/legal_notices",
+      "sha256": "d0ea1908db7b533ec6777ae4b24d6226da353a82ace2775fdc7f215dffd94204"
+    }
+  ],
+  "members": [
+    {
+      "organ": "giunta",
+      "name": "Andrea Murari",
+      "personUrl": "https://www.comune.mantova.it/it/person/murari-andrea",
+      "role": "Sindaco",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Chiara Sortino",
+      "personUrl": "https://www.comune.mantova.it/it/person/sortino-chiara",
+      "role": "Vicesindaca",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Giovanni Buvoli",
+      "personUrl": "https://www.comune.mantova.it/it/person/buvoli-giovanni",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Fabio Madella",
+      "personUrl": "https://www.comune.mantova.it/it/person/madella-fabio",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Nicola Martinelli",
+      "personUrl": "https://www.comune.mantova.it/it/person/martinelli-nicola",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Serena Pedrazzoli",
+      "personUrl": "https://www.comune.mantova.it/it/person/pedrazzoli-serena",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Davide Provenzano",
+      "personUrl": "https://www.comune.mantova.it/it/person/provenzano-davide",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Alessandra Riccadonna",
+      "personUrl": "https://www.comune.mantova.it/it/person/riccadonna-alessandra",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Stefano Simonazzi",
+      "personUrl": "https://www.comune.mantova.it/it/person/simonazzi-stefano",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "giunta",
+      "name": "Francesca Zaltieri",
+      "personUrl": "https://www.comune.mantova.it/it/person/zaltieri-francesca",
+      "role": "Assessore o assessora",
+      "membershipStartDate": "2026-06-08",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "giunta",
+        "nomina"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Matteo Campisi",
+      "personUrl": "https://www.comune.mantova.it/it/person/campisi-matteo",
+      "role": "Presidente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Pierluigi Baschieri",
+      "personUrl": "https://www.comune.mantova.it/it/person/baschieri-pierluigi",
+      "role": "Vicepresidente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Maddalena Grassi",
+      "personUrl": "https://www.comune.mantova.it/it/person/grassi-maddalena",
+      "role": "Vicepresidente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Massimo Allegretti",
+      "personUrl": "https://www.comune.mantova.it/it/person/allegretti-massimo",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Gabriele Araldi",
+      "personUrl": "https://www.comune.mantova.it/it/person/araldi-gabriele",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Caterina Badalucco",
+      "personUrl": "https://www.comune.mantova.it/it/person/badalucco-caterina",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Giorgio Bassi",
+      "personUrl": "https://www.comune.mantova.it/it/person/bassi-giorgio",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Laura Bonaffini",
+      "personUrl": "https://www.comune.mantova.it/it/person/bonaffini-laura",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Sabrina Bottardi",
+      "personUrl": "https://www.comune.mantova.it/it/person/bottardi-sabrina",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Camilla Brancolini",
+      "personUrl": "https://www.comune.mantova.it/it/person/brancolini-camilla",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Antonella Caiola",
+      "personUrl": "https://www.comune.mantova.it/it/person/caiola-antonella",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Andrea Caprini",
+      "personUrl": "https://www.comune.mantova.it/it/person/caprini-andrea",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Pietro Casari",
+      "personUrl": "https://www.comune.mantova.it/it/person/casari-pietro",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Gloria Costani",
+      "personUrl": "https://www.comune.mantova.it/it/person/costani-gloria",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Chiara Esposito",
+      "personUrl": "https://www.comune.mantova.it/it/person/esposito-chiara",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Assunta Formicola",
+      "personUrl": "https://www.comune.mantova.it/it/person/formicola-assunta",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Barbara Gerola",
+      "personUrl": "https://www.comune.mantova.it/it/person/gerola-barbara",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Andrea Gorgati",
+      "personUrl": "https://www.comune.mantova.it/it/person/gorgati-andrea",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Enrico Grazioli",
+      "personUrl": "https://www.comune.mantova.it/it/person/grazioli-enrico",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Giulia Martinelli",
+      "personUrl": "https://www.comune.mantova.it/it/person/martinelli-giulia",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Andrea Negretti",
+      "personUrl": "https://www.comune.mantova.it/it/person/negretti-andrea",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Sara Nicolini",
+      "personUrl": "https://www.comune.mantova.it/it/person/nicolini-sara",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Stefano Nuvolari",
+      "personUrl": "https://www.comune.mantova.it/it/person/nuvolari-stefano",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Mattia Palazzi",
+      "personUrl": "https://www.comune.mantova.it/it/person/palazzi-mattia",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Iacopo Rebecchi",
+      "personUrl": "https://www.comune.mantova.it/it/person/rebecchi-iacopo",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Francesco Rossi",
+      "personUrl": "https://www.comune.mantova.it/it/person/rossi-francesco",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Salvatore Onofrio Scalia",
+      "personUrl": "https://www.comune.mantova.it/it/person/scalia-salvatore-onofrio",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Erica Soranzo",
+      "personUrl": "https://www.comune.mantova.it/it/person/soranzo-erica",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Gabriele Squassabia",
+      "personUrl": "https://www.comune.mantova.it/it/person/squassabia-gabriele",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Serena Tavernari",
+      "personUrl": "https://www.comune.mantova.it/it/person/tavernari-serena",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Raffaele Zancuoghi",
+      "personUrl": "https://www.comune.mantova.it/it/person/zancuoghi-raffaele",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    },
+    {
+      "organ": "consiglio",
+      "name": "Mariangela Ruocco",
+      "personUrl": "https://www.comune.mantova.it/it/person/ruocco-mariangela",
+      "role": "Componente del Consiglio",
+      "membershipStartDate": "2026-06-10",
+      "membershipEndDate": null,
+      "evidenceSourceIds": [
+        "consiglio",
+        "insediamento"
+      ]
+    }
+  ]
+}

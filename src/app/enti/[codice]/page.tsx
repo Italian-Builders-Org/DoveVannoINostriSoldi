@@ -16,11 +16,13 @@ import {
   loadAnacEntityProcurementPage,
 } from "@/lib/data/anac-entity-procurement-page";
 import { getMunicipalityProfile } from "@/lib/municipality-profile";
+import { getMunicipalOfficesForEntity } from "@/lib/municipal-offices";
 import { municipalityName } from "@/lib/municipality-name";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import { getSiopeMunicipalityDetailByIpaCode } from "@/lib/siope-municipality-detail";
 import { getSiopeNonMunicipalEntityByIpaCode, getSiopeNonMunicipalTypeLabel } from "@/lib/siope-nonmunicipal";
 import { MunicipalityEconomics } from "./municipality-economics";
+import { MunicipalityOffices } from "./municipality-offices";
 import { NonMunicipalEconomics } from "./nonmunicipal-economics";
 import { EntityInformation } from "./entity-information";
 import { EntityProcurementSection } from "./entity-procurement-section";
@@ -306,6 +308,9 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
 
       <div className={styles.municipalityLayout}>
         {isMunicipality ? <MunicipalityEconomics profile={municipalityProfile} /> : null}
+        {isMunicipality ? (
+          <MunicipalityOffices state={getMunicipalOfficesForEntity(entity.codiceIpa, municipalityProfile.identifiers.taxCode)} />
+        ) : null}
         {nonMunicipalSnapshot ? <NonMunicipalEconomics entity={nonMunicipalSnapshot} year={search.siopeAnno} /> : null}
         <EntityProcurementSection state={procurementState} />
         <EntityInformation

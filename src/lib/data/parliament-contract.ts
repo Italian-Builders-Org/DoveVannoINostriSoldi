@@ -199,11 +199,17 @@ function statement(value: unknown, field: string): ParliamentStatement {
     ? undefined
     : amount(record.categoryReconciliationTolerance, `${field}.categoryReconciliationTolerance`);
 
-  if (categories && values?.effectivePayments !== undefined) {
+  if (categories) {
     const categoryTotal = categories.reduce((total, item) => total + item.paid, 0);
     const allowed = tolerance ?? 1e-9;
-    if (Math.abs(categoryTotal - values.effectivePayments) > allowed) {
-      throw new Error(`${field}: categorie non riconciliate con i pagamenti`);
+    if (values?.effectivePayments !== undefined) {
+      if (Math.abs(categoryTotal - values.effectivePayments) > allowed) {
+        throw new Error(`${field}: categorie non riconciliate con i pagamenti`);
+      }
+    } else if (values?.plannedExpenditure !== undefined) {
+      if (Math.abs(categoryTotal - values.plannedExpenditure) > allowed) {
+        throw new Error(`${field}: categorie non riconciliate con la spesa prevista`);
+      }
     }
   }
 

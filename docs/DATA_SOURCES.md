@@ -897,7 +897,7 @@ La prima integrazione usa l'endpoint JSON pubblico impiegato dal portale per le 
 Gli importi vengono convertiti in centesimi interi. Per gli incarichi ai dipendenti, dirigenti e non dirigenti devono riconciliarsi esattamente con il totale annuale. L'anno corrente resta esplicitamente parziale. Il campo tecnico `paConferenteCount` non viene reinterpretato come numero di amministrazioni distinte.
 
 ### Camera dei deputati
-Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone i documenti Doc. VIII; lo snapshot pubblico include i consuntivi 2020-2025 (totali verificati; dettaglio per categoria sul 2025) e il bilancio 2026.
+Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone i documenti Doc. VIII; lo snapshot pubblico include i consuntivi 2020-2025 (totali e ripartizione per categoria dai PDF INTERO, fail-closed) e il bilancio 2026.
 
 Per il consuntivo conserviamo gli importi effettivi estratti e li arrotondiamo
 soltanto nella presentazione. Il PDF è bloccato nel manifesto con dimensione,
@@ -916,10 +916,10 @@ pagamenti effettivi, quindi non ne stimiamo l'importo.
 ### Senato della Repubblica
 La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazioni sul trattamento economico dei senatori. Il monitor interno controlla i metadati dei nuovi documenti ufficiali e li registra nel manifesto della pipeline.
 
-I valori del Senato non sono ancora normalizzati e non compaiono nella pagina pubblica come numeri. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
+Lo snapshot pubblica il rendiconto 2024 con pagamenti ripartiti per capitolo (senatori, personale, funzionamento, previdenza, conto capitale), da PDF ufficiale pinnato: l'endpoint PDFServer senza sessione browser può rispondere vuoto. Anni precedenti restano documentali finché non c'è un PDF riconciliabile. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
 
 ### Presidenza della Repubblica (Quirinale)
-Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione a carico del bilancio dello Stato (2007-2028) e aggregati di previsione (spesa effettiva al netto delle partite di giro; uscite con partite di giro tenute separate). Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
+Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione (2007-2028), gli aggregati di previsione e, per il 2023 e il 2025, i comparti retribuzioni/previdenza/beni e servizi/fondi di riserva riconciliati alla spesa effettiva prevista. Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
 
 ### Presidenza del Consiglio dei ministri
 

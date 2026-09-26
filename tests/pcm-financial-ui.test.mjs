@@ -25,7 +25,7 @@ test("Palazzo Chigi keeps scope, accounting phases and source visible", () => {
 
 test("institutional pages keep Parliament and Palazzo Chigi separate", () => {
   assert.match(parliament, /Camera e Senato hanno bilanci autonomi/);
-  assert.match(parliament, /Solo metadati/);
+  assert.match(parliament, /Solo metadati|Numeri pubblicati/);
   assert.doesNotMatch(parliament, /pcmFinancial|Palazzo Chigi/);
   assert.doesNotMatch(page, /parliamentSnapshot|Camera dei deputati|Senato della Repubblica/);
 });

@@ -181,13 +181,13 @@ def document_from_mapping(
     number = item.get("documentNumber")
     asset_sha256: str | None = None
     asset_bytes: int | None = None
-    if require_asset and chamber in {"camera", "quirinale"}:
+    if require_asset:
         asset = require_object(item.get("asset"), f"{field}.asset")
         asset_sha256 = require_text(asset.get("sha256"), f"{field}.asset.sha256")
         if not re.fullmatch(r"[0-9a-f]{64}", asset_sha256):
             raise StructuralError(f"{field}.asset.sha256: SHA-256 minuscolo atteso")
         asset_bytes = require_int(asset.get("bytes"), f"{field}.asset.bytes", 1, MAX_PDF_BYTES)
-        if chamber == "camera" and kind == "account":
+        if chamber in {"camera", "senato"} and kind == "account":
             evidence = require_list(item.get("evidence"), f"{field}.evidence")
             if not evidence:
                 raise StructuralError(f"{field}.evidence: riferimenti al documento richiesti")
@@ -321,15 +321,24 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
         raise StructuralError("manifest.senato.documentSeries: VIII atteso")
     known_max = require_int(senate.get("knownMaxDocumentNumber"), "manifest.senato.knownMaxDocumentNumber", 1, 10_000)
     senate_docs: list[Document] = []
+    structured_senate_docs: list[Document] = []
     for index, item in enumerate(require_list(senate.get("latestDocuments"), "manifest.senato.latestDocuments")):
         field = f"manifest.senato.latestDocuments[{index}]"
         record = require_object(item, field)
-        if record.get("publicationStatus") != "metadata-only":
-            raise StructuralError(f"{field}.publicationStatus: metadata-only atteso")
-        document = document_from_mapping(record, field, "senato")
+        status = record.get("publicationStatus")
+        if status not in {"metadata-only", "structured"}:
+            raise StructuralError(f"{field}.publicationStatus: metadata-only o structured atteso")
+        document = document_from_mapping(
+            record,
+            field,
+            "senato",
+            require_asset=status == "structured",
+        )
         if document.document_number is None or document.presented_at is None or document.record_url is None:
             raise StructuralError(f"{field}: provenienza Senato incompleta")
         senate_docs.append(document)
+        if status == "structured":
+            structured_senate_docs.append(document)
     if {item.kind for item in senate_docs} != {"account", "budget"}:
         raise StructuralError("manifest.senato.latestDocuments: ultimo rendiconto e ultimo bilancio attesi")
     if max(item.document_number or 0 for item in senate_docs) != known_max:
@@ -347,8 +356,20 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
         manifest_docs = {(item.kind, item.year, item.document_url) for item in camera_docs}
         if not public_docs <= manifest_docs:
             raise StructuralError("snapshot Camera: documento non presente nel manifesto delle fonti")
-    if any(item.get("id") == "senato" for item in snapshot.get("chambers", [])):
-        raise StructuralError("snapshot Senato: i documenti metadata-only non devono essere pubblicati")
+    public_senate = next(
+        (item for item in snapshot.get("chambers", []) if item.get("id") == "senato"),
+        None,
+    )
+    if public_senate is not None:
+        if not structured_senate_docs:
+            raise StructuralError("snapshot Senato: i documenti metadata-only non devono essere pubblicati")
+        public_senate_docs = {
+            (item.get("kind"), item.get("year"), item.get("documentUrl"))
+            for item in require_list(public_senate.get("statements"), "snapshot.senato.statements")
+        }
+        manifest_structured = {(item.kind, item.year, item.document_url) for item in structured_senate_docs}
+        if not public_senate_docs <= manifest_structured:
+            raise StructuralError("snapshot Senato: documento non presente tra le fonti structured")
 
     quirinale = require_object(manifest.get("quirinale"), "manifest.quirinale")
     official_url(quirinale.get("landingUrl"), "manifest.quirinale.landingUrl", QUIRINALE_HOSTS)

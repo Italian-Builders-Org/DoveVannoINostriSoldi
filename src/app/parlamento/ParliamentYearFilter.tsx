@@ -23,7 +23,7 @@ const valueLabels: Record<string, string> = {
   finalAdministrationSurplus: "Avanzo finale di amministrazione",
   annualStateContribution: "Contributo / dotazione dello Stato",
   plannedExpenditure: "Spesa effettiva prevista",
-  functioningExpenditure: "Spesa di funzionamento prevista",
+  functioningExpenditure: "Spesa di funzionamento",
   plannedRevenue: "Entrate previste",
   plannedOutlaysIncludingClearing: "Uscite previste con partite di giro",
 };
@@ -58,10 +58,14 @@ function StatementCard({ statement }: { statement: ParliamentStatement }) {
       statementValue(statement, "effectiveCommitments")
     : statementValue(statement, "plannedExpenditure") ??
       statementValue(statement, "annualStateContribution");
-  const items = isAccount ? statement.categories : statement.highlights;
+  const categories = statement.categories;
+  const highlights = statement.highlights;
+  const breakdownItems = categories?.length
+    ? categories
+    : highlights;
   const maximum = Math.max(
     1,
-    ...(items?.map((item) => ("paid" in item ? item.paid : item.value)) ?? []),
+    ...(breakdownItems?.map((item) => ("paid" in item ? item.paid : item.value)) ?? []),
   );
   const endowmentSeries = isEndowment(statement);
 
@@ -90,17 +94,19 @@ function StatementCard({ statement }: { statement: ParliamentStatement }) {
         </dl>
       ) : null}
 
-      {items && items.length > 0 ? (
+      {breakdownItems && breakdownItems.length > 0 ? (
         <div className={styles.breakdown}>
           <h4>
-            {isAccount
-              ? "Per cosa sono stati pagati"
+            {categories?.length
+              ? isAccount
+                ? "Per cosa sono stati pagati"
+                : "Per cosa sono previsti"
               : endowmentSeries
                 ? "Dotazione per anno"
                 : "Alcune voci previste"}
           </h4>
           <ul>
-            {items.map((item) => {
+            {breakdownItems.map((item) => {
               const value = "paid" in item ? item.paid : item.value;
               return (
                 <li key={item.id}>

@@ -1,15 +1,95 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-08-20T14:14:16Z",
+  "verifiedAt": "2026-09-26T12:00:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 11542,
-    "sha256": "e48d9f0cff9e71fb9fc4475a0a2c87ab7036a7a613f14a04a98d318f60212c15"
+    "bytes": 21468,
+    "sha256": "9b3ab2f872dffc7988bbf6e17987e0e9816a1e94e31690795225129a3eb5b357"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
     "documents": [
+      {
+        "kind": "account",
+        "year": 2020,
+        "title": "Conto consuntivo 2020",
+        "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+        "asset": {
+          "bytes": 1064912,
+          "sha256": "8792361f7ba29fee5c80e0372a2eeef34b81049523c51bf3cb3fe84edfccde39"
+        },
+        "evidence": [
+          {
+            "pages": "5-9",
+            "scope": "totali della spesa effettiva (Titoli I-III), pagamenti e contributo dello Stato nella relazione del Collegio dei Questori"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2021,
+        "title": "Conto consuntivo 2021",
+        "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/009/INTERO.pdf",
+        "asset": {
+          "bytes": 1052481,
+          "sha256": "c28036ed24a7f670a82e080139df83116fbd61af3bec469c77e46cb44c804731"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "title": "Conto consuntivo 2022",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/001/INTERO.pdf",
+        "asset": {
+          "bytes": 4532955,
+          "sha256": "2e8ac57eba8b39647996577a638320a7e9a153864836f3a2868d2a1587b34d04"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "title": "Conto consuntivo 2023",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/003/INTERO.pdf",
+        "asset": {
+          "bytes": 719856,
+          "sha256": "26f0989f5612d91119c2099c1ef4aa15eddf4fe5924fdf5db5b4aaac2da4bb31"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2024,
+        "title": "Conto consuntivo 2024",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/005/INTERO.pdf",
+        "asset": {
+          "bytes": 892321,
+          "sha256": "0f62501b22c3bed5cd0b82beedd2a67cc7048480b7f575aae617d0dbdd854af8"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+          }
+        ]
+      },
       {
         "kind": "account",
         "year": 2025,
@@ -76,6 +156,41 @@
         "recordUrl": "https://dati.senato.it/documento/52804",
         "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1487095.pdf",
         "publicationStatus": "metadata-only"
+      }
+    ]
+  },
+  "quirinale": {
+    "landingUrl": "https://www.quirinale.it/it/pagine/nota-illustrativa-bilancio-previsione-2026",
+    "documents": [
+      {
+        "kind": "budget",
+        "year": 2025,
+        "title": "Nota illustrativa del bilancio di previsione 2025",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+        "asset": {
+          "bytes": 312864,
+          "sha256": "9cd96e603aeac3e3d2b01c682582d05872b9b24fef7716d2621c379f3858eb2c"
+        }
+      },
+      {
+        "kind": "budget",
+        "year": 2023,
+        "title": "Nota illustrativa del bilancio di previsione 2023",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2023/nota_illustrativa_bilancio_previsione_2023.pdf",
+        "asset": {
+          "bytes": 232405,
+          "sha256": "2a032dc3fdd5ce482b35442d1b18c90e0f6dfcd05e75d6c385f8442a77778c6a"
+        }
+      },
+      {
+        "kind": "budget",
+        "year": 2028,
+        "title": "Serie della dotazione a carico del bilancio dello Stato (2007-2028)",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+        "asset": {
+          "bytes": 312864,
+          "sha256": "9cd96e603aeac3e3d2b01c682582d05872b9b24fef7716d2621c379f3858eb2c"
+        }
       }
     ]
   }

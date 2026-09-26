@@ -141,9 +141,14 @@ class ParliamentSourceParserTests(unittest.TestCase):
 
     def test_snapshot_rejects_calling_the_whole_pension_title_vitalizi(self) -> None:
         snapshot = MODULE.load_json(MODULE.SNAPSHOT_PATH)
+        account_2025 = next(
+            statement
+            for statement in snapshot["chambers"][0]["statements"]
+            if statement.get("kind") == "account" and statement.get("year") == 2025
+        )
         pensions = next(
             category
-            for category in snapshot["chambers"][0]["statements"][0]["categories"]
+            for category in account_2025["categories"]
             if category["id"] == "pensions"
         )
         pensions["label"] = "Vitalizi"

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "transformVersion": 2,
-  "observedAt": "2026-08-20T14:00:00.000Z",
+  "observedAt": "2026-09-26T12:00:00.000Z",
   "unit": "million-euro",
   "rounding": "Gli importi sono espressi in milioni di euro. Le categorie e le sottovoci usano i pagamenti di competenza del conto consuntivo; dove disponibile, la precisione conserva i centesimi ufficiali convertiti in milioni. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
   "chambers": [
@@ -11,6 +11,75 @@
       "structuredStatus": "structured-summary",
       "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
       "statements": [
+        {
+          "kind": "account",
+          "year": 2020,
+          "title": "Conto consuntivo 2020",
+          "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+          "values": {
+            "effectiveCommitments": 1010.9,
+            "effectivePayments": 889.0,
+            "finalAdministrationSurplus": 275.5,
+            "annualStateContribution": 943.16
+          },
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025. Per il 2020 il totale degli impegni comprensivo delle partite di giro non è riportato qui perche il testo estratto non lo espone in forma univoca nella relazione iniziale."
+        },
+        {
+          "kind": "account",
+          "year": 2021,
+          "title": "Conto consuntivo 2021",
+          "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/009/INTERO.pdf",
+          "values": {
+            "totalCommitments": 1241.0,
+            "effectiveCommitments": 973.1,
+            "effectivePayments": 848.8,
+            "finalAdministrationSurplus": 283.9,
+            "annualStateContribution": 943.16
+          },
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+        },
+        {
+          "kind": "account",
+          "year": 2022,
+          "title": "Conto consuntivo 2022",
+          "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/001/INTERO.pdf",
+          "values": {
+            "totalCommitments": 1267.8,
+            "effectiveCommitments": 960.3,
+            "effectivePayments": 878.3,
+            "finalAdministrationSurplus": 317.2,
+            "annualStateContribution": 943.16
+          },
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+        },
+        {
+          "kind": "account",
+          "year": 2023,
+          "title": "Conto consuntivo 2023",
+          "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/003/INTERO.pdf",
+          "values": {
+            "totalCommitments": 1234.6,
+            "effectiveCommitments": 943.8,
+            "effectivePayments": 829.8,
+            "finalAdministrationSurplus": 376.4,
+            "annualStateContribution": 943.16
+          },
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+        },
+        {
+          "kind": "account",
+          "year": 2024,
+          "title": "Conto consuntivo 2024",
+          "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/005/INTERO.pdf",
+          "values": {
+            "totalCommitments": 1263.8,
+            "effectiveCommitments": 967.3,
+            "effectivePayments": 843.2,
+            "finalAdministrationSurplus": 428.5,
+            "annualStateContribution": 943.16
+          },
+          "meaning": "Riepilogo ufficiale dei totali del conto consuntivo (impegni totali, impegni e pagamenti della spesa effettiva dei Titoli I-III, avanzo finale di amministrazione, contributo dello Stato). Senza ripartizione per categoria: quella resta sul documento PDF e, in dettaglio, sul consuntivo 2025."
+        },
         {
           "kind": "account",
           "year": 2025,
@@ -286,11 +355,176 @@
           "meaning": "Sono previsioni approvate, non pagamenti già effettuati. Gli importi evidenziati non formano una ripartizione completa del totale."
         }
       ]
+    },
+    {
+      "id": "quirinale",
+      "name": "Presidenza della Repubblica",
+      "structuredStatus": "structured-summary",
+      "landingUrl": "https://www.quirinale.it/it/pagine/nota-illustrativa-bilancio-previsione-2026",
+      "statements": [
+        {
+          "kind": "budget",
+          "year": 2025,
+          "title": "Nota illustrativa del bilancio di previsione 2025",
+          "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+          "values": {
+            "annualStateContribution": 230.0,
+            "plannedExpenditure": 259.8616,
+            "plannedOutlaysIncludingClearing": 377.034694
+          },
+          "highlights": [
+            {
+              "id": "planned-2024-initial",
+              "label": "Spesa effettiva prevista iniziale 2024 (confronto in nota)",
+              "value": 255.6653
+            },
+            {
+              "id": "outlays-net-avanzo-vincoli",
+              "label": "Uscite nette da partite di giro (con avanzo/vincoli)",
+              "value": 287.550194
+            }
+          ],
+          "meaning": "Previsioni del Segretariato generale. La spesa effettiva e al netto di partite di giro e quote vincolate/avanzo; il totale uscite con partite di giro e riportato a parte. Non è un conto consuntivo e non va sommato a Camera o Senato."
+        },
+        {
+          "kind": "budget",
+          "year": 2023,
+          "title": "Nota illustrativa del bilancio di previsione 2023",
+          "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2023/nota_illustrativa_bilancio_previsione_2023.pdf",
+          "values": {
+            "annualStateContribution": 224.0,
+            "plannedExpenditure": 253.8227
+          },
+          "meaning": "Previsioni 2023 dalla nota ufficiale. La spesa effettiva e al netto delle partite di giro. Non è un conto consuntivo."
+        },
+        {
+          "kind": "budget",
+          "year": 2028,
+          "title": "Serie della dotazione a carico del bilancio dello Stato (2007-2028)",
+          "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+          "values": {
+            "annualStateContribution": 235.0
+          },
+          "highlights": [
+            {
+              "id": "endowment-2007",
+              "label": "2007",
+              "value": 224
+            },
+            {
+              "id": "endowment-2008",
+              "label": "2008",
+              "value": 227.8
+            },
+            {
+              "id": "endowment-2009",
+              "label": "2009",
+              "value": 231.217
+            },
+            {
+              "id": "endowment-2010",
+              "label": "2010",
+              "value": 228
+            },
+            {
+              "id": "endowment-2011",
+              "label": "2011",
+              "value": 228
+            },
+            {
+              "id": "endowment-2012",
+              "label": "2012",
+              "value": 228
+            },
+            {
+              "id": "endowment-2013",
+              "label": "2013",
+              "value": 228
+            },
+            {
+              "id": "endowment-2014",
+              "label": "2014",
+              "value": 228
+            },
+            {
+              "id": "endowment-2015",
+              "label": "2015",
+              "value": 224
+            },
+            {
+              "id": "endowment-2016",
+              "label": "2016",
+              "value": 224
+            },
+            {
+              "id": "endowment-2017",
+              "label": "2017",
+              "value": 224
+            },
+            {
+              "id": "endowment-2018",
+              "label": "2018",
+              "value": 224
+            },
+            {
+              "id": "endowment-2019",
+              "label": "2019",
+              "value": 224
+            },
+            {
+              "id": "endowment-2020",
+              "label": "2020",
+              "value": 224
+            },
+            {
+              "id": "endowment-2021",
+              "label": "2021",
+              "value": 224
+            },
+            {
+              "id": "endowment-2022",
+              "label": "2022",
+              "value": 224
+            },
+            {
+              "id": "endowment-2023",
+              "label": "2023",
+              "value": 224
+            },
+            {
+              "id": "endowment-2024",
+              "label": "2024",
+              "value": 224
+            },
+            {
+              "id": "endowment-2025",
+              "label": "2025",
+              "value": 230
+            },
+            {
+              "id": "endowment-2026",
+              "label": "2026",
+              "value": 235
+            },
+            {
+              "id": "endowment-2027",
+              "label": "2027",
+              "value": 235
+            },
+            {
+              "id": "endowment-2028",
+              "label": "2028",
+              "value": 235
+            }
+          ],
+          "meaning": "Dotazione annuale iscritta a carico del bilancio dello Stato, come pubblicata nella tabella della nota illustrativa Quirinale. Non coincide automaticamente con la spesa effettiva del Segretariato (che puo usare anche avanzi ed entrate proprie). Valori in milioni di euro."
+        }
+      ]
     }
   ],
   "methodology": {
-    "comparability": "Camera e Senato hanno bilanci autonomi e documenti con strutture diverse. I loro importi non vengono sommati automaticamente.",
-    "missingData": "Pubblichiamo un ramo parlamentare soltanto quando i valori ufficiali sono stati normalizzati e verificati. Un valore mancante non viene stimato.",
+    "comparability": "Camera, Senato e Presidenza della Repubblica hanno bilanci autonomi e documenti con strutture diverse. I loro importi non vengono sommati automaticamente.",
+    "missingData": "Il Senato ha documenti ufficiali di rendiconto e bilancio gia censiti, ma il PDF non e ancora scaricabile in modo stabile da questo ambiente: non stimiamo importi. Per la Camera gli anni 2020-2024 espongono i totali verificati; il dettaglio per categoria resta sul consuntivo 2025. Per il Quirinale pubblichiamo previsioni e la serie della dotazione dalle note ufficiali, non un consuntivo completo finche i PDF di consuntivo non sono pinnabili.",
     "publicationCheck": "Le pagine ufficiali vengono controllate per individuare nuovi documenti. Ogni nuova struttura deve superare il contratto dati prima della pubblicazione."
   }
 }

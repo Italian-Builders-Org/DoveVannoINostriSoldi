@@ -897,7 +897,7 @@ La prima integrazione usa l'endpoint JSON pubblico impiegato dal portale per le 
 Gli importi vengono convertiti in centesimi interi. Per gli incarichi ai dipendenti, dirigenti e non dirigenti devono riconciliarsi esattamente con il totale annuale. L'anno corrente resta esplicitamente parziale. Il campo tecnico `paConferenteCount` non viene reinterpretato come numero di amministrazioni distinte.
 
 ### Camera dei deputati
-Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone il conto consuntivo 2025 e il bilancio 2026 come documenti distinti.
+Camera Trasparente pubblica informazioni su bilancio, amministrazione e procedure di gara. L'API parlamentare espone i documenti Doc. VIII; lo snapshot pubblico include i consuntivi 2020-2025 (totali verificati; dettaglio per categoria sul 2025) e il bilancio 2026.
 
 Per il consuntivo conserviamo gli importi effettivi estratti e li arrotondiamo
 soltanto nella presentazione. Il PDF è bloccato nel manifesto con dimensione,
@@ -916,7 +916,10 @@ pagamenti effettivi, quindi non ne stimiamo l'importo.
 ### Senato della Repubblica
 La sezione Spese e trasparenza pubblica bilancio, conto consuntivo e informazioni sul trattamento economico dei senatori. Il monitor interno controlla i metadati dei nuovi documenti ufficiali e li registra nel manifesto della pipeline.
 
-I valori del Senato non sono ancora normalizzati e non compaiono nell'API o nella pagina pubblica. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera e Senato hanno bilanci autonomi e non verranno sommati automaticamente.
+I valori del Senato non sono ancora normalizzati e non compaiono nella pagina pubblica come numeri. La pubblicazione istituzionale non offre al momento una tabella aperta stabile e l'accesso automatico ai PDF può essere bloccato. Non estraiamo né stimiamo importi finché il formato non è verificabile. Camera, Senato e Quirinale hanno bilanci autonomi e non verranno sommati automaticamente.
+
+### Presidenza della Repubblica (Quirinale)
+Il Quirinale pubblica note illustrative del bilancio di previsione. Lo snapshot pubblica la serie ufficiale della dotazione a carico del bilancio dello Stato (2007-2028) e aggregati di previsione (spesa effettiva al netto delle partite di giro; uscite con partite di giro tenute separate). Non è un conto consuntivo completo: i consuntivi andranno aggiunti solo con PDF pinnabili.
 
 ### Presidenza del Consiglio dei ministri
 
@@ -1009,9 +1012,6 @@ terzi con canone e superficie. Copre i Comuni e gli enti territoriali per
 l'edilizia residenziale pubblica. Include anche enti che non hanno inviato la
 comunicazione 2023, con dati di comunicazioni precedenti: non vanno letti come
 situazione al 31/12/2023. Gli enti mai comunicati non compaiono e non valgono zero.
-Il file di adempimento MEF entra come terzo dataset, una riga per ente: distingue
-chi ha comunicato per il 2023 da chi ha nel censimento dati di comunicazioni
-precedenti.
 
 Lo stato d'uso è dichiarato dall'ente e non misura agibilità o spreco; il
 canone è contrattuale, non un incasso. Le case popolari compaiono solo come

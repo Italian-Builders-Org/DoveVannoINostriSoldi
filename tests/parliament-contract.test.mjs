@@ -6,10 +6,17 @@ import { assertParliamentSnapshot } from "../src/lib/data/parliament-contract.ts
 test("Parliament snapshot keeps accounts, budgets and official provenance separate", () => {
   const parsed = assertParliamentSnapshot(snapshot);
   const camera = parsed.chambers.find((chamber) => chamber.id === "camera");
+  const quirinale = parsed.chambers.find((chamber) => chamber.id === "quirinale");
 
   assert.equal(camera.structuredStatus, "structured-summary");
-  assert.ok(camera.statements.some((statement) => statement.kind === "account"));
+  assert.ok(camera.statements.filter((statement) => statement.kind === "account").length >= 6);
   assert.ok(camera.statements.some((statement) => statement.kind === "budget"));
+  assert.ok(quirinale, "quirinale atteso nello snapshot");
+  assert.ok(
+    quirinale.statements.some((statement) =>
+      statement.title.toLocaleLowerCase("it-IT").includes("serie della dotazione"),
+    ),
+  );
   assert.ok(
     parsed.chambers.every((chamber) =>
       chamber.statements.every(
@@ -19,7 +26,9 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   );
   assert.match(parsed.methodology.comparability, /non vengono sommati/i);
 
-  const account = camera.statements.find((statement) => statement.kind === "account");
+  const account = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2025,
+  );
   const pensions = account.categories.find((category) => category.id === "pensions");
   assert.equal(pensions.paid, 418.22631632);
   assert.equal(
@@ -48,6 +57,13 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
       `${category.id}: componenti non riconciliate`,
     );
   }
+
+  const account2024 = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2024,
+  );
+  assert.equal(account2024.values.effectivePayments, 843.2);
+  assert.equal(account2024.values.totalCommitments, 1263.8);
+  assert.ok(!account2024.categories, "anni storici: solo totali, senza categorie inventate");
 });
 
 test("Parliament snapshot rejects unofficial and document-only entries", () => {
@@ -70,16 +86,18 @@ test("Parliament snapshot rejects unofficial and document-only entries", () => {
   assert.throws(() => assertParliamentSnapshot(emptyValues), /valori strutturati/);
 
   const brokenPensionBreakdown = structuredClone(snapshot);
-  brokenPensionBreakdown.chambers[0].statements[0].categories
-    .find((category) => category.id === "pensions").components[0].paid += 1;
+  brokenPensionBreakdown.chambers[0].statements
+    .find((statement) => statement.kind === "account" && statement.year === 2025)
+    .categories.find((category) => category.id === "pensions").components[0].paid += 1;
   assert.throws(
     () => assertParliamentSnapshot(brokenPensionBreakdown),
     /componenti non riconciliate/,
   );
 
   const mislabeledPensions = structuredClone(snapshot);
-  mislabeledPensions.chambers[0].statements[0].categories
-    .find((category) => category.id === "pensions").label = "Vitalizi";
+  mislabeledPensions.chambers[0].statements
+    .find((statement) => statement.kind === "account" && statement.year === 2025)
+    .categories.find((category) => category.id === "pensions").label = "Vitalizi";
   assert.throws(
     () => assertParliamentSnapshot(mislabeledPensions),
     /non può essere rinominato vitalizi/,

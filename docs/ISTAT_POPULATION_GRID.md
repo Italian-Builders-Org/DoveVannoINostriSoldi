@@ -12,7 +12,7 @@ Dal CSV ufficiale (`GrigliaPop2021_Ind_ITA_CSV.zip`):
 | Aggregato | Dove compare |
 | --- | --- |
 | Totale persone, maschi/femmine, fasce d’età ufficiali del CSV, nati, occupati | `/territori/griglia`, `/api/territori/griglia` |
-| Numero di celle e fasce di densità (0, 1–9, …, 5.000+) | stessa pagina/API |
+| Numero di celle e fasce di densità (0, 1-9, …, 5.000+) | stessa pagina/API |
 | Celle di confine per `CNTR_ID` | API + artifact |
 
 Non pubblichiamo le ~319k righe di cella nel prodotto: restano nell’asset

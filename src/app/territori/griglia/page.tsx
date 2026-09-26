@@ -100,7 +100,7 @@ export default function TerritorialGridPage() {
             <dd>{integer(totals.populationFieldPop0_15)}</dd>
           </div>
           <div>
-            <dt>15–64 anni</dt>
+            <dt>15-64 anni</dt>
             <dd>{integer(totals.populationAge15to64)}</dd>
           </div>
           <div>

@@ -30,12 +30,12 @@ ISTAT_PREFIX = "https://www.istat.it/"
 BAND_ORDER = ("0", "1-9", "10-49", "50-99", "100-499", "500-999", "1000-4999", "5000+")
 BAND_LABELS = {
     "0": "Celle con popolazione 0",
-    "1-9": "1–9 abitanti",
-    "10-49": "10–49 abitanti",
-    "50-99": "50–99 abitanti",
-    "100-499": "100–499 abitanti",
-    "500-999": "500–999 abitanti",
-    "1000-4999": "1.000–4.999 abitanti",
+    "1-9": "1-9 abitanti",
+    "10-49": "10-49 abitanti",
+    "50-99": "50-99 abitanti",
+    "100-499": "100-499 abitanti",
+    "500-999": "500-999 abitanti",
+    "1000-4999": "1.000-4.999 abitanti",
     "5000+": "5.000 abitanti o più",
 }
 EXPECTED_COLUMNS = (

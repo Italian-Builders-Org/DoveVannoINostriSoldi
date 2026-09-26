@@ -36,32 +36,32 @@
     },
     {
       "id": "1-9",
-      "label": "1–9 abitanti",
+      "label": "1-9 abitanti",
       "cells": 44438
     },
     {
       "id": "10-49",
-      "label": "10–49 abitanti",
+      "label": "10-49 abitanti",
       "cells": 50131
     },
     {
       "id": "50-99",
-      "label": "50–99 abitanti",
+      "label": "50-99 abitanti",
       "cells": 20411
     },
     {
       "id": "100-499",
-      "label": "100–499 abitanti",
+      "label": "100-499 abitanti",
       "cells": 33977
     },
     {
       "id": "500-999",
-      "label": "500–999 abitanti",
+      "label": "500-999 abitanti",
       "cells": 9460
     },
     {
       "id": "1000-4999",
-      "label": "1.000–4.999 abitanti",
+      "label": "1.000-4.999 abitanti",
       "cells": 11534
     },
     {

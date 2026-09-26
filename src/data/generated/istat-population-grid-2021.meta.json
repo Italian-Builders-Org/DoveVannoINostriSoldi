@@ -41,8 +41,8 @@
   },
   "artifact": {
     "path": "src/data/generated/istat-population-grid-2021.data.json",
-    "bytes": 4802,
-    "sha256": "f0d6abb6d6c0301b8525a1036f2323ea47eccc0fc7b9772f8100a466a2f2d3f3"
+    "bytes": 4790,
+    "sha256": "15a5b51504e38f9d773cff683ea036ad6b65938845fe871188b312ca62cbb106"
   },
   "refreshWorkflow": null,
   "runtimeNetwork": false

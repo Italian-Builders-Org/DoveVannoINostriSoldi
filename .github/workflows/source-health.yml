@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   probe:
+    if: github.repository == 'Italian-Builders-Org/DoveVannoINostriSoldi' && github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
     name: probe
     runs-on: ubuntu-24.04
     # Public probes need no data-bot credential or environment access.

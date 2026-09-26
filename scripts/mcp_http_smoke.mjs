@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { successfulMcpToolResult } from "./mcp_test_helpers.mjs";
+import { validateToolsListPayload } from "./runtime-health.mjs";
 
 const baseUrl = new URL(process.env.DVNS_BASE_URL ?? "http://127.0.0.1:3000");
 const MAX_RESPONSE_BYTES = 750_000;
@@ -64,6 +65,9 @@ async function mcpRequest(
   assert.equal(response.headers.get("cache-control"), "private, no-store");
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
   assert.equal(response.url, new URL(pathname, baseUrl).href, "MCP alias must not redirect");
+  if (body.method === "tools/list") {
+    validateToolsListPayload(response, text, `MCP ${pathname} tools/list`);
+  }
   return text;
 }
 

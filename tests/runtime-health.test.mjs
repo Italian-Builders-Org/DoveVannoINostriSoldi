@@ -91,10 +91,38 @@ const TOOLS = [
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true,
-      openWorldHint: false,
+      openWorldHint: true,
     },
   },
 ];
+
+test("MCP tool annotations preserve each tool's live-source boundary", () => {
+  const validate = (tools) => {
+    const body = JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools } });
+    return validateToolsListPayload(rpcResponse({ tools }), body);
+  };
+  assert.equal(validate(TOOLS).toolCount, 2);
+  for (const [name, openWorldHint] of [
+    ["list_datasets", true],
+    ["query_dataset", false],
+  ]) {
+    const changed = TOOLS.map((tool) => tool.name === name
+      ? { ...tool, annotations: { ...tool.annotations, openWorldHint } }
+      : tool);
+    assert.throws(() => validate(changed), (error) => error.code === "invalid_tool_annotations");
+  }
+  for (const annotations of [
+    undefined,
+    { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+    { readOnlyHint: true, destructiveHint: true, idempotentHint: true, openWorldHint: true },
+    { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+  ]) {
+    const changed = TOOLS.map((tool) => tool.name === "query_dataset"
+      ? { ...tool, annotations }
+      : tool);
+    assert.throws(() => validate(changed), (error) => error.code === "invalid_tool_annotations");
+  }
+});
 
 function makeResponse(body, { status = 200, headers = {} } = {}) {
   const payload = typeof body === "string" ? body : JSON.stringify(body);

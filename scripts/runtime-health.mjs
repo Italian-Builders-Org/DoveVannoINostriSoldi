@@ -545,6 +545,8 @@ export function validateToolsListPayload(response, body, label = "MCP tools/list
     const outputRequired = tool?.outputSchema?.required ?? [];
     const inputProperties = tool?.inputSchema?.properties;
     const outputProperties = tool?.outputSchema?.properties;
+    // Query may read live public sources; listing stays within the local catalog.
+    const expectedOpenWorldHint = required === "query_dataset";
     const schemasValid = required === "list_datasets"
       ? Object.keys(inputProperties ?? {}).length === 0
         && inputRequired.length === 0
@@ -573,7 +575,7 @@ export function validateToolsListPayload(response, body, label = "MCP tools/list
       || annotations?.readOnlyHint !== true
       || annotations.destructiveHint !== false
       || annotations.idempotentHint !== true
-      || annotations.openWorldHint !== false
+      || annotations.openWorldHint !== expectedOpenWorldHint
     ) {
       throw new RuntimeHealthError(`${label}: annotazioni read-only non valide per ${required}`, {
         code: "invalid_tool_annotations",

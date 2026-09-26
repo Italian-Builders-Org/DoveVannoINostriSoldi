@@ -237,6 +237,46 @@
   display: block;
 }
 
+.yearFilter {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.yearFilterControls {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.yearFilterControls label {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 20rem;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.yearFilterControls select {
+  appearance: none;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 0;
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.yearFilterControls p {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .coverageTable table {
   min-width: 760px;
 }

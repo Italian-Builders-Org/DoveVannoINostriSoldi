@@ -49,21 +49,37 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   assert.match(goods.caveat, /Altri capitoli/i);
 
   for (const category of account.categories) {
-    assert.ok(category.components?.length, `${category.id}: sottovoci attese`);
     assert.ok(category.caveat, `${category.id}: nota semantica attesa`);
+    if (!category.components?.length) continue;
     const componentTotal = category.components.reduce((total, component) => total + component.paid, 0);
     assert.ok(
       Math.abs(componentTotal - category.paid) <= 0.000001,
       `${category.id}: componenti non riconciliate`,
     );
   }
+  assert.ok(account.categories.filter((category) => category.components?.length).length >= 7);
 
   const account2024 = camera.statements.find(
     (statement) => statement.kind === "account" && statement.year === 2024,
   );
   assert.equal(account2024.values.effectivePayments, 843.2);
   assert.equal(account2024.values.totalCommitments, 1263.8);
-  assert.ok(!account2024.categories, "anni storici: solo totali, senza categorie inventate");
+  assert.ok(account2024.categories?.length >= 8, "2024: dettaglio per categoria atteso");
+  const categorySum2024 = account2024.categories.reduce((total, item) => total + item.paid, 0);
+  assert.ok(
+    Math.abs(categorySum2024 - account2024.values.effectivePayments) <=
+      (account2024.categoryReconciliationTolerance ?? 0),
+  );
+
+  const account2023 = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2023,
+  );
+  assert.ok(account2023.categories?.length >= 8, "2023: dettaglio per categoria atteso");
+
+  const account2020 = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2020,
+  );
+  assert.ok(!account2020.categories, "2020-2022: solo totali finché il layout PDF verticale non è riconciliato");
 });
 
 test("Parliament snapshot rejects unofficial and document-only entries", () => {

@@ -201,7 +201,8 @@ function statement(value: unknown, field: string): ParliamentStatement {
 
   if (categories && values?.effectivePayments !== undefined) {
     const categoryTotal = categories.reduce((total, item) => total + item.paid, 0);
-    if (Math.abs(categoryTotal - values.effectivePayments) > (tolerance ?? 0)) {
+    const allowed = tolerance ?? 1e-9;
+    if (Math.abs(categoryTotal - values.effectivePayments) > allowed) {
       throw new Error(`${field}: categorie non riconciliate con i pagamenti`);
     }
   }

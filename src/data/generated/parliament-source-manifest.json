@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-09-26T12:00:00Z",
+  "verifiedAt": "2026-09-26T16:30:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 21468,
-    "sha256": "9b3ab2f872dffc7988bbf6e17987e0e9816a1e94e31690795225129a3eb5b357"
+    "bytes": 36242,
+    "sha256": "5e79ab1614cb372d73e8ceb3a7aacace4e6675bece91879936c8c79065ad319f"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
@@ -69,8 +69,12 @@
         },
         "evidence": [
           {
-            "pages": "5-8",
-            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+            "pages": "7-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
           }
         ]
       },
@@ -85,8 +89,12 @@
         },
         "evidence": [
           {
-            "pages": "5-8",
-            "scope": "accertamenti, impegni totali, spesa effettiva, pagamenti, avanzo finale e dotazione annuale"
+            "pages": "7-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
           }
         ]
       },
@@ -102,19 +110,11 @@
         "evidence": [
           {
             "pages": "7-8",
-            "scope": "riepilogo dei pagamenti per categoria e totale dei Titoli I-III"
+            "scope": "totali della spesa effettiva e narrativa per categoria"
           },
           {
-            "pages": "27-39",
-            "scope": "pagamenti di competenza per capitolo delle categorie I-VII (spese correnti)"
-          },
-          {
-            "pages": "45-49",
-            "scope": "pagamenti di competenza delle categorie VIII-X (investimenti / Titolo II)"
-          },
-          {
-            "pages": "49-51",
-            "scope": "composizione del Titolo III nelle Categorie XII e XIII"
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
           }
         ]
       },

@@ -347,7 +347,7 @@ def build_categories(extraction: dict) -> list[dict]:
         top_n: int | None = None,
     ) -> tuple[list[dict], float]:
         items = []
-        for number in sorted(chapters, key=lambda value: int(value)):
+        for number in sorted(chapters, key=int):
             if number not in chapter_payments:
                 continue
             items.append(

@@ -14,8 +14,11 @@ import {
 
 const DIRECTORY = "src/data/generated/anac-operator-history";
 let cachedManifest: z.infer<typeof historyManifestSchema> | undefined;
-const cache = new ArtifactCache<OperatorHistorySummary>(8, 16_777_216);
-const shardCache = new ArtifactCache<ReadonlyMap<string, string>>(4, 16_777_216);
+const cache = new ArtifactCache<OperatorHistorySummary>(128, 16_777_216);
+type HistoryRange = Readonly<{ start: number; end: number }>;
+type HistoryShard = Readonly<{ raw: string; index: ReadonlyMap<string, HistoryRange> }>;
+const shardCache = new ArtifactCache<HistoryShard>(4, 16_777_216);
+const shardIndexes = new ArtifactCache<ReadonlyMap<string, HistoryRange>>(256, 8_388_608);
 let manifestFingerprint = "";
 
 function digest(bytes: Buffer): string {
@@ -129,22 +132,31 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
     const raw = gunzipSync(compressed, { maxOutputLength: 67_108_864 }).toString(
       "utf8",
     );
-    const indexed = new Map<string, string>();
-    for (const line of raw.split("\n")) {
-      if (!line) continue;
-      const candidate = JSON.parse(line);
-      if (typeof candidate.ref !== "string" || bucketFor(candidate.ref) !== bucket || indexed.has(candidate.ref)) {
-        throw new Error("Identità dello storico operatori non valida");
+    let indexed = shardIndexes.get(`${bucket}:${file.sha256}`);
+    if (!indexed) {
+      const offsets = new Map<string, HistoryRange>();
+      let start = 0;
+      for (const line of raw.split("\n")) {
+        if (line) {
+          const candidate = JSON.parse(line);
+          if (typeof candidate.ref !== "string" || bucketFor(candidate.ref) !== bucket || offsets.has(candidate.ref)) {
+            throw new Error("Identità dello storico operatori non valida");
+          }
+          offsets.set(candidate.ref, { start, end: start + line.length });
+        }
+        start += line.length + 1;
       }
-      indexed.set(candidate.ref, line);
+      indexed = offsets;
+      shardIndexes.set(`${bucket}:${file.sha256}`, indexed, Buffer.byteLength(JSON.stringify([...indexed])));
     }
     if (`${file.sha256}:${artifactFingerprint([path])}` !== fingerprint) throw new Error("Storico operatori cambiato durante la lettura");
-    // Keep serialized records: parsing every summary would multiply retained heap.
-    shardCache.set(fingerprint, indexed, Buffer.byteLength(raw));
-    lines = indexed;
+    // Keep offsets across shard eviction; the SHA check above still runs on every read.
+    lines = { raw, index: indexed };
+    shardCache.set(fingerprint, lines, Buffer.byteLength(raw));
   }
-  const line = lines.get(ref);
-  if (line) {
+  const range = lines.index.get(ref);
+  if (range) {
+    const line = lines.raw.slice(range.start, range.end);
     const candidate = JSON.parse(line);
     const result = historySummarySchema.parse(candidate);
     const bytes = Buffer.byteLength(line);

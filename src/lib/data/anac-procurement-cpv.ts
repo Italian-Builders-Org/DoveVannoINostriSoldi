@@ -73,7 +73,8 @@ export function validateAnacCpvRecord(value: unknown, profile: Pick<AnacEntityPr
 
 type CpvMetadata = { metadata: z.infer<typeof metadataSchema>; parentJson: string };
 const metadataCache = new ArtifactCache<CpvMetadata>(4, 4_000_000);
-const shardCache = new ArtifactCache<ReadonlyMap<string, AnacCpvRecord>>(8, 16 * 1024 * 1024);
+const shardCache = new ArtifactCache<ReadonlyMap<string, AnacCpvRecord>>(8, 8 * 1024 * 1024);
+const recordCache = new ArtifactCache<AnacCpvRecord>(128, 8 * 1024 * 1024);
 const pending = new Map<string, Promise<ReadonlyMap<string, AnacCpvRecord>>>();
 
 async function loadMetadata(root: string): Promise<CpvMetadata> {
@@ -112,6 +113,12 @@ export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, 
   const shard = metadata.shards[Number.parseInt(prefix, 16)];
   const path = join(root, ROOT, `${prefix}.jsonl.gz`);
   const key = `${shard.sha256}:${artifactFingerprint([path])}`;
+  const recordKey = `${key}:${profile.codiceIpa}`;
+  const cached = recordCache.get(recordKey);
+  if (cached) {
+    reconcileRecord(cached, profile);
+    return cached;
+  }
   let records = shardCache.get(key);
   if (!records) {
     let loading = pending.get(key);
@@ -141,11 +148,16 @@ export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, 
     finally { if (pending.get(key) === loading) pending.delete(key); }
   }
   const record = records.get(profile.codiceIpa);
+  reconcileRecord(record, profile);
+  recordCache.set(recordKey, record, Buffer.byteLength(JSON.stringify(record)));
+  return record;
+}
+
+function reconcileRecord(record: AnacCpvRecord | undefined, profile: AnacEntityProcurementPageView): asserts record is AnacCpvRecord {
   if (!record || record.procedures.length !== profile.procedures.length
     || record.procedures.some((row, i) => row.cig !== profile.procedures[i].cig)) {
     throw new Error("Indice CPV non riconciliato con il profilo ANAC.");
   }
-  return record;
 }
 
 export function anacCpvOptions(record: AnacCpvRecord): { options: AnacCpvOption[]; unclassified: number } {

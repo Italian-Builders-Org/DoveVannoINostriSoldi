@@ -93,8 +93,10 @@ il fingerprint; hash, schema e provenance vengono ricontrollati al caricamento.
 Errori e risultati incompleti non vengono memorizzati come successi.
 
 Le cache sono limitate per numero di elementi e peso serializzato: 32 MiB per
-gli shard ente, 16 MiB per CPV e 16 MiB per shard storico operatori. Quest'ultima
-conserva righe serializzate e valida il record selezionato; non espande tutti i
+shard e record ente complessivamente, 16 MiB per shard e record CPV e 16 MiB
+per shard storico operatori. Gli indici compatti hanno budget separati, indicati
+sotto. La cache operatori conserva righe serializzate e valida il record
+selezionato; non espande tutti i
 riepiloghi in oggetti. Il peso serializzato **non** equivale all'heap JavaScript:
 misurare anche RSS/heap prima di aumentare i limiti. Gli oggetti restituiti dagli
 adapter sono condivisi e vanno trattati come immutabili.
@@ -226,3 +228,84 @@ Non attivarla come ottimizzazione ordinaria se la priorità è restare disponibi
 Un limite economico rigido e disponibilità senza limiti non possono essere
 promessi insieme. Stabilire chi interviene e quale spesa straordinaria è
 accettabile prima di un lancio. [Spend Management](https://vercel.com/docs/spend-management).
+
+## Prevenzione dei costi runtime
+
+Per ogni nuova pagina/API dinamica o modifica di dati/filtri:
+
+- Identificare le operazioni per visita, il numero di righe/byte letti e le
+  chiamate esterne. I refresh delle fonti appartengono ai workflow pianificati,
+  non al rendering. Timer puramente visuali non sono polling di rete.
+- Stimare la cardinalità di path e query. Non generare prefetch automatici per
+  tutti gli enti/operatori o combinazioni di filtri. Validare forma, duplicati,
+  range e paginazione prima delle letture costose, anche nei metadati SEO.
+- Stabilire cosa è pubblico e riutilizzabile, per quanto tempo e per quale
+  snapshot. Mantenere separati pagina canonica, filtri, RSC, HEAD e POST.
+  Non forzare cache pubblica su risposte personali o errori transitori.
+- Provare cache fredda/calda e scansioni più ampie del numero di slot. Misurare
+  CPU del processo, heap/RSS e digest identici, sullo stesso Node e corpus.
+  Una cache limitata per byte serializzati non limita direttamente l'heap.
+- Verificare hash, identità, duplicati, corruzione, aggiornamento dei file e
+  fallimenti concorrenti. Non eliminare le verifiche per migliorare un tempo.
+- Verificare percorso interno/alias, URL codificate, query ignote o ripetute,
+  navigazione avanti/indietro, tastiera e filtri su mobile e desktop.
+- Controllare in Vercel CPU/1.000 richieste per route, cache hit, traffico,
+  errori, memoria e revisione. Confrontare finestre omogenee. Una CI verde o
+  un microbenchmark non prova un risparmio sul sito pubblico.
+
+### Cache dei dati ANAC
+
+La cache degli adapter riduce il costo delle letture senza cambiare le URL o
+condividere HTML tra filtri. Prima di introdurre ISR su pagine ad alta
+cardinalità, misurare anche letture/scritture fatturate, URL distinte e payload
+compressi. Provare riavvio, aggiornamento del deployment, RSC ed errori:
+`Cache-Control` e cache HIT nella stessa istanza non bastano.
+[Costi ISR](https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing).
+
+Gli indici compatti degli shard ente conservano gli offset solo dopo la
+validazione completa. Rileggere uno shard richiede ancora lettura stabile,
+dimensione, SHA e decompressione limitata. Lo stesso digest consente di riusare
+la prova semantica, ricostruendo solo il record richiesto. Le cache di record
+enti e CPV controllano ancora il fingerprint del file; la riconciliazione CPV
+con il profilo avviene anche a cache calda. Il limite combinato shard/record è
+32 MiB per enti e 16 MiB per CPV, più l'indice compatto ente limitato a 4 MiB.
+Per gli operatori gli offset sono legati a digest e bucket, limitati a 8 MiB;
+la validazione del record selezionato resta obbligatoria prima della sua cache.
+
+### WAF: mitigazione del 26 settembre 2026
+
+Le impostazioni WAF sono esterne al Git: questo testo documenta lo stato
+applicato, non provisiona regole. Prima di cambiarle leggere configurazione
+attiva e draft; non pubblicare modifiche di altri. Conservare una copia locale
+necessaria al rollback senza segreti o log con IP.
+
+| Regola | Ambito | Limite / 60 secondi |
+| --- | --- | --- |
+| `training-bot-operator-cap` | ClaudeBot, GPTBot, CCBot, Meta-ExternalAgent su tutti i percorsi del progetto | 10 per IP |
+| `training-bot-procurement-fingerprint-cap` | Stessi crawler, tutti i percorsi | 30 per JA4, per regione |
+
+I nomi storici delle regole sono conservati; non indicano più una restrizione
+ai soli operatori o appalti. Anche le nuove pagine rientrano nel limite.
+Le richieste oltre soglia ricevono 429, senza ban permanente. Le regole generali
+per IP, MCP e API rimangono attive. Claude-User, Meta-ExternalFetcher e browser
+normali non corrispondono a queste due regole. I crawler riconosciuti possono
+continuare sotto soglia. Pro offre IP e JA4 come chiavi; contatori per User-Agent
+richiedono altre opzioni di piano: non prometterli come funzione Pro.
+
+JA4 raggruppa client con lo stesso comportamento TLS, non identifica una persona.
+Usarlo indiscriminatamente sui browser potrebbe limitare utenti non correlati:
+qui è subordinato al riconoscimento dei crawler di training. IP, User-Agent e
+impronta possono cambiare; i contatori sono regionali. Questa mitigazione non è
+un tetto globale né una garanzia contro ogni abuso. Prima di estenderla ad altri
+client, osservare traffico legittimo e falsi positivi; non bloccare interi paesi
+perché un campione proviene da lì. Il WAF precede il runtime, il limiter del
+proxy è soltanto un fallback per istanza e non va presentato come globale.
+
+Rollback mirato: ripristinare la regola preesistente a 30/minuto/IP sul solo
+prefisso `/appalti/operatori` e disabilitare la regola JA4 aggiunta; riesaminare
+il diff prima di pubblicarlo. Non disabilitare l'intero firewall. Verificare
+subito navigazione normale e agenti avviati dagli utenti, poi il traffico
+rifiutato dalla singola regola. Non usare un load test sul sito pubblico.
+
+Fonti: [Vercel WAF rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
+e [custom rules](https://vercel.com/docs/vercel-firewall/vercel-waf/custom-rules).

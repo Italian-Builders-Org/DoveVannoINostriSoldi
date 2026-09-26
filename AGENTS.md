@@ -88,3 +88,18 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   non dimostra che la revisione sia online.
 - Per deployment falliti o costi Vercel leggi
   [Diagnosi dei deployment](docs/CAPACITY_AND_INCIDENTS.md#diagnosi-dei-deployment).
+
+## CPU, cache e crawler
+
+- Prima di aggiungere una pagina/API dinamica, applica la checklist
+  [Prevenzione dei costi runtime](docs/CAPACITY_AND_INCIDENTS.md#prevenzione-dei-costi-runtime).
+  Documenta cardinalità di URL/filtri, letture per richiesta, cache e limiti.
+- Non avviare acquisizioni/refresh in risposta a una visita. Evita prefetch di
+  griglie con molte destinazioni costose. Distingui rendering, fetch live,
+  polling client, build e test: hanno costi e rimedi differenti.
+- Per le cache prova anche scansioni oltre la loro capacità, concorrenza,
+  sostituzione/corruzione dello snapshot, query ripetute e RSC. Mantieni hash,
+  provenance e riconciliazioni; non memorizzare un errore come successo.
+- Un limite per IP non copre un bot distribuito. Valuta il WAF prima del runtime,
+  preservando richieste umane, indicizzazione e agenti avviati dall'utente.
+  Documenta soglia, perimetro, chiave, rollback e limiti della mitigazione.

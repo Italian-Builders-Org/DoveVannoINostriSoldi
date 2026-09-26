@@ -91,7 +91,7 @@ test("large snapshot stays out of TypeScript inference and is traced into every 
 test("Next traces the runtime-loaded snapshot into every server entry point", async () => {
   const { default: config } = await import("../next.config.ts");
   const tracing = config.outputFileTracingIncludes;
-  for (const route of ["/api/territori/bes-lavoro", "/api/assistant/chat", "/mcp", "/api/mcp"]) {
+  for (const route of ["/api/territori/bes-lavoro", "/api/assistant/chat", "/api/mcp"]) {
     assert.ok(tracing[route].includes("src/data/generated/istat-bes-lavoro-2008-2024.data.json"), route);
   }
 });

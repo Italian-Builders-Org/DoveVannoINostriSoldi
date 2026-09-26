@@ -19,7 +19,9 @@ const querySchema = z
     maxAmount: amount.optional(),
     page: z.number().int().positive().max(1_000_000).default(1),
   })
-  .strict();
+  .strict()
+  .refine((query) => query.minAmount === undefined || query.maxAmount === undefined
+    || compareAmounts(query.minAmount, query.maxAmount) <= 0, "L’importo minimo supera il massimo");
 
 function compareAmounts(left: string, right: string): number {
   const [li, lf = ""] = left.split(".");
@@ -74,12 +76,6 @@ export function selectOperatorHistoryPage(
   input: OperatorHistoryQuery,
 ) {
   const query = querySchema.parse(input);
-  if (
-    query.minAmount !== undefined &&
-    query.maxAmount !== undefined &&
-    compareAmounts(query.minAmount, query.maxAmount) > 0
-  )
-    throw new Error("L’importo minimo supera il massimo");
   const start = (query.page - 1) * OPERATOR_HISTORY_PAGE_SIZE;
   const end = start + OPERATOR_HISTORY_PAGE_SIZE;
   const rows = history.detail.filterRows;

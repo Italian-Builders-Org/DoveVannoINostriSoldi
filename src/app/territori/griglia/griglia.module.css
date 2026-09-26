@@ -1,0 +1,116 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+}
+
+.links a {
+  color: var(--color-accent-700);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.hero {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.heroRate {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+
+.heroLabel {
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+}
+
+.heroMetrics {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.heroMetrics > div,
+.stats > div {
+  display: grid;
+  gap: 4px;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.heroMetrics dt,
+.stats dt {
+  color: var(--color-neutral-600);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.heroMetrics dd,
+.stats dd {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.heroMetrics small {
+  color: var(--color-neutral-600);
+  font-size: 0.85rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.tableWrap {
+  margin-top: var(--space-3);
+}
+
+.joinList,
+.sourceList,
+.caveatList {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.joinList a {
+  color: var(--color-accent-700);
+  font-weight: 650;
+}
+
+.joinList small,
+.sourceList,
+.caveatList {
+  color: var(--color-neutral-700);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

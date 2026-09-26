@@ -114,6 +114,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/territori/irpef", label: "Redditi IRPEF" },
       { href: "/territori/fisco", label: "Entrate e spese" },
       { href: "/territori/confronto", label: "Confronto Comuni" },
+      { href: "/territori/griglia", label: "Griglia ISTAT 1 km" },
     ],
   },
   {
@@ -285,6 +286,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/territori/irpef", label: "Redditi IRPEF" },
       { href: "/territori/fisco", label: "Entrate e spese" },
       { href: "/territori/confronto", label: "Confronto Comuni" },
+      { href: "/territori/griglia", label: "Griglia ISTAT 1 km" },
     ],
   },
   {

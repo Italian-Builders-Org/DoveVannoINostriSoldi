@@ -80,13 +80,13 @@
   {
     "sourceId": "camera",
     "sourceTimestamp": null,
-    "detail": "Snapshot verificato il 2026-08-20 · consuntivo e bilancio collegati ai documenti ufficiali della Camera.",
-    "recordCount": 2
+    "detail": "Snapshot verificato il 2026-09-26 · consuntivo e bilancio collegati ai documenti ufficiali della Camera.",
+    "recordCount": 7
   },
   {
     "sourceId": "senato",
     "sourceTimestamp": null,
-    "detail": "Metadati verificati il 2026-08-20 · importi esclusi finché i PDF contabili non sono acquisiti e verificati.",
+    "detail": "Metadati verificati il 2026-09-26 · importi esclusi finché i PDF contabili non sono acquisiti e verificati.",
     "recordCount": 2
   },
   {

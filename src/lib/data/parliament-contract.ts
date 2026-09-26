@@ -5,10 +5,13 @@ const OFFICIAL_HOSTS = new Set([
   "camera.it",
   "www.senato.it",
   "senato.it",
+  "www.quirinale.it",
+  "quirinale.it",
+  "new.quirinale.it",
 ]);
 
 type StatementKind = "account" | "budget";
-type ChamberId = "camera" | "senato";
+type ChamberId = "camera" | "senato" | "quirinale";
 
 export type ParliamentCategory = {
   id: string;
@@ -234,15 +237,15 @@ export function assertParliamentSnapshot(value: unknown): ParliamentSnapshot {
     throw new Error("snapshot.observedAt: timestamp non valido");
   }
   if (record.unit !== "million-euro") throw new Error("snapshot.unit non valida");
-  if (!Array.isArray(record.chambers) || record.chambers.length < 1 || record.chambers.length > 2) {
-    throw new Error("snapshot.chambers: uno o due rami parlamentari attesi");
+  if (!Array.isArray(record.chambers) || record.chambers.length < 1 || record.chambers.length > 3) {
+    throw new Error("snapshot.chambers: da uno a tre istituzioni attese (Camera, Senato, Quirinale)");
   }
 
   const chamberIds = new Set<string>();
   const chambers = record.chambers.map((item, index): ParliamentChamber => {
     const field = `snapshot.chambers[${index}]`;
     const chamber = object(item, field);
-    if (chamber.id !== "camera" && chamber.id !== "senato") {
+    if (chamber.id !== "camera" && chamber.id !== "senato" && chamber.id !== "quirinale") {
       throw new Error(`${field}.id non valido`);
     }
     if (chamberIds.has(chamber.id)) throw new Error(`${field}.id duplicato`);

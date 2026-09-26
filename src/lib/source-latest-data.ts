@@ -240,7 +240,11 @@ const exhaustiveLatestDataBySlug = {
   camera: {
     kind: "period",
     label: String(
-      Math.max(...parliamentSnapshot.chambers.flatMap((chamber) => chamber.statements.map((item) => item.year))),
+      Math.max(
+        ...parliamentSnapshot.chambers
+          .filter((chamber) => chamber.id === "camera")
+          .flatMap((chamber) => chamber.statements.map((item) => item.year)),
+      ),
     ),
   },
   senato: {

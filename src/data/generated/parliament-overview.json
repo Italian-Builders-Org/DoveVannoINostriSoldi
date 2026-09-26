@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "transformVersion": 2,
-  "observedAt": "2026-09-26T19:15:00.000Z",
+  "observedAt": "2026-09-26T20:20:00.000Z",
   "unit": "million-euro",
   "rounding": "Gli importi sono espressi in milioni di euro. Per i consuntivi Camera e Senato le categorie usano i pagamenti ufficiali; per il Quirinale usano le previsioni di comparto della nota illustrativa. La UI mostra un decimale per le categorie e due decimali per le sottovoci.",
   "chambers": [
@@ -2139,7 +2139,7 @@
   ],
   "methodology": {
     "comparability": "Camera, Senato e Quirinale non vengono sommati: sono bilanci autonomi con periodi e definizioni contabili distinti. Il dettaglio per categoria della Camera riguarda i pagamenti di competenza della spesa effettiva (Titoli I-III).",
-    "missingData": "Il Senato pubblica il rendiconto 2024 con ripartizione per capitolo (PDF pinnato). Anni Senato precedenti e il progetto di bilancio restano da acquisire con lo stesso metodo. Il Quirinale espone previsioni per comparti, non un consuntivo Camera-equivalente. Camera 2020-2022 restano sui totali finché il layout verticale non è riconciliabile.",
+    "missingData": "Il Senato pubblica i rendiconti 2022-2024 con ripartizione per capitolo (PDF pinnati). Il progetto di bilancio Senato resta metadata-only. Il Quirinale espone previsioni per comparti 2022-2025, non un consuntivo Camera-equivalente.",
     "publicationCheck": "Le pagine ufficiali vengono controllate per individuare nuovi documenti. Ogni nuova struttura deve superare il contratto dati prima della pubblicazione."
   }
 }

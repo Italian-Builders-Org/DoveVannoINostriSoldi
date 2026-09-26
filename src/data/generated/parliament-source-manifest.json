@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-09-26T19:15:00Z",
+  "verifiedAt": "2026-09-26T20:20:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 79750,
-    "sha256": "38b43fdf281e1f2a266b3086b2fc309f8ec438969a65dc31416d4f9036866a54"
+    "bytes": 79637,
+    "sha256": "2f79630b6e1a3232b1e4d71f9043998f8759f0862de2c732a4181ab55baab53b"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",

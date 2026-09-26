@@ -325,7 +325,8 @@ export default function ParliamentPage() {
           <strong>Come leggere questi numeri</strong>
           <p>
             Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
-            pagato. Camera, Senato e Quirinale restano su ambiti separati: nessun totale unico.
+            pagato. Camera e Senato hanno bilanci autonomi; lo stesso vale per la Presidenza della
+            Repubblica. Nessun totale unico tra le tre istituzioni.
           </p>
         </div>
 

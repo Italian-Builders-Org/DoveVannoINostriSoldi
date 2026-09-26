@@ -294,12 +294,16 @@ function snapshotManagedCamera(): SourceHealth {
 }
 
 function snapshotManagedSenate(): SourceHealth {
+  const senato = parliamentSnapshot.chambers.find((chamber) => chamber.id === "senato");
+  const structuredAccounts =
+    senato?.statements.filter((statement) => statement.kind === "account" && statement.categories?.length)
+      .length ?? 0;
   return {
     ...baseHealth("senato"),
     reachability: "not-probed",
     freshness: freshnessFor("senato", null),
     latencyMs: null,
-    detail: `Metadati verificati il ${parliamentManifest.verifiedAt.slice(0, 10)} · importi esclusi finché i PDF contabili non sono acquisiti e verificati.`,
+    detail: `Snapshot verificato il ${parliamentSnapshot.observedAt.slice(0, 10)} · ${structuredAccounts} rendiconti con categorie da PDF pinnati e ${parliamentManifest.senato.latestDocuments.length} documenti nel manifesto.`,
     recordCount: parliamentManifest.senato.latestDocuments.length,
   };
 }

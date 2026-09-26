@@ -10,7 +10,7 @@ import styles from "./parlamento.module.css";
 export const metadata: Metadata = {
   title: "Spese Camera, Senato e Quirinale",
   description:
-    "Consuntivi Camera 2020-2025 (categorie 2023-2025), rendiconto Senato 2024 per capitolo, previsioni Quirinale per comparti e serie della dotazione, con periodi e fonti distinti.",
+    "Consuntivi Camera 2020-2025 con dettaglio per categoria, rendiconto Senato 2024 per capitolo, previsioni Quirinale per comparti e serie della dotazione, con periodi e fonti distinti.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -60,10 +60,10 @@ export default function ParliamentPage() {
       <div className="page-intro">
         <h1>Spese di Camera, Senato e Quirinale</h1>
         <p>
-          Tre bilanci autonomi, tre fonti ufficiali. Per la Camera trovi i totali 2020-2025 e, dal
-          2023, la ripartizione per categoria. Per il Senato il rendiconto 2024 è ripartito per
-          capitolo (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni
-          per comparti e la serie della dotazione.
+          Tre bilanci autonomi, tre fonti ufficiali. Per la Camera i consuntivi 2020-2025 hanno la
+          ripartizione per categoria. Per il Senato il rendiconto 2024 è ripartito per capitolo
+          (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni per
+          comparti e la serie della dotazione.
         </p>
       </div>
 
@@ -101,7 +101,7 @@ export default function ParliamentPage() {
           </h2>
           <p className={styles.plainText}>
             Totale dei pagamenti di competenza sui Titoli I, II e III (spesa effettiva), anno per
-            anno. Dal 2023 il dettaglio per categoria è sotto, selezionando l&apos;anno.
+            anno. Il dettaglio per categoria è sotto, selezionando l&apos;anno.
           </p>
           <div
             className={`table-scroll ${styles.coverageTable}`}

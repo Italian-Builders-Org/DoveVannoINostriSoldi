@@ -96,10 +96,18 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   );
   assert.ok(account2023.categories?.length >= 8, "2023: dettaglio per categoria atteso");
 
-  const account2020 = camera.statements.find(
-    (statement) => statement.kind === "account" && statement.year === 2020,
-  );
-  assert.ok(!account2020.categories, "2020-2022: solo totali finché il layout PDF verticale non è riconciliato");
+  for (const year of [2020, 2021, 2022]) {
+    const earlier = camera.statements.find(
+      (statement) => statement.kind === "account" && statement.year === year,
+    );
+    assert.ok(earlier.categories?.length >= 8, `${year}: dettaglio per categoria atteso`);
+    const categorySum = earlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(categorySum - earlier.values.effectivePayments) <=
+        (earlier.categoryReconciliationTolerance ?? 0),
+      `${year}: categorie non riconciliate ai pagamenti effettivi`,
+    );
+  }
 });
 
 test("Parliament snapshot rejects unofficial and document-only entries", () => {

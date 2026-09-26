@@ -139,6 +139,14 @@ def to_million(euro: float) -> float:
     return round(euro / 1_000_000, 8)
 
 
+def _normalize_pdf_money_text(text: str) -> str:
+    """Normalize dash glyphs and same-line spaces after minus signs in PDF euros."""
+    text = text.replace("–", "-").replace("−", "-")
+    # Only collapse "- 215.000,00" on one line; do not join a lone dash placeholder
+    # with the amount on the following line.
+    return re.sub(r"-([ \t]+)(?=\d)", "-", text)
+
+
 def find_spesa_start(reader: PdfReader) -> int:
     for index, page in enumerate(reader.pages):
         text = page.extract_text() or ""
@@ -153,8 +161,7 @@ def is_amount_page(text: str) -> bool:
 
 def _cp_definitive_from_line(line: str) -> float | None:
     """CP provisional definitive = initial + optional variation on the same line."""
-    # Normalize unicode minus / en-dash used as empty variation.
-    line = line.replace("–", "-").replace("−", "-")
+    line = _normalize_pdf_money_text(line)
     euros = EURO_RE.findall(line)
     if not euros:
         return None
@@ -162,6 +169,39 @@ def _cp_definitive_from_line(line: str) -> float | None:
     if len(euros) >= 2:
         total += to_euro(euros[1])
     return total
+
+
+def _parse_rscs_cp(block: str) -> float | None:
+    """Return definitive CP from an RS/CP/CS stack (Layout A row or Layout B vertical)."""
+    block = _normalize_pdf_money_text(block)
+    # Layout B: RS/CP/CS markers on their own lines (RS may sit on the title line).
+    stacked = re.search(r"(?:^|\s)RS\s*\nCP\s*\nCS\s*\n", block)
+    if stacked:
+        values: list[float | None] = []
+        for line in [ln.strip() for ln in block[stacked.end() :].splitlines()[:6]]:
+            if line in {"-", ""}:
+                values.append(None)
+                continue
+            found = EURO_RE.findall(line)
+            if found and not re.search(r"[A-Za-zÀ-ù]", line):
+                values.append(to_euro(found[0]))
+            else:
+                break
+        if len(values) < 3 or values[1] is None:
+            return None
+        cp = values[1]
+        # CP variation may sit right after CS, or after a placeholder dash line.
+        for extra in values[3:]:
+            if extra is not None:
+                cp += extra
+                break
+        return cp
+
+    # Layout A (2023+): amounts on the CP line.
+    inline = re.search(r"\nCP\s+([^\n]+)\nCS", block)
+    if not inline:
+        return None
+    return _cp_definitive_from_line(inline.group(1))
 
 
 def extract_cap_cp_map(label_text: str) -> dict[str, float]:
@@ -172,76 +212,39 @@ def extract_cap_cp_map(label_text: str) -> dict[str, float]:
         .replace("Indennita`", "Indennità")
     )
     mapping: dict[str, float] = {}
-
-    # Layout A (2023+): Cap title may include RS on the same line, or wrap before RS/CP.
-    for match in re.finditer(
-        r"Cap\.\s*(\d+)\s*-[\s\S]*?\nCP\s+([^\n]+)\nCS",
-        text,
-    ):
-        # Avoid swallowing the next Cap by bounding length.
-        if match.end() - match.start() > 500:
+    # Bound each Cap block so Layout B cannot attach the next Cap's RS/CP/CS stack.
+    for part in re.split(r"(?=Cap\.\s*\d+\s*-)", text):
+        match = re.match(r"Cap\.\s*(\d+)\s*-", part)
+        if not match:
             continue
-        definitive = _cp_definitive_from_line(match.group(2))
+        body = part
+        stop = re.search(r"\nTOTALE\s+CATEGORIA\b", body)
+        if stop:
+            body = body[: stop.start()]
+        definitive = _parse_rscs_cp(body)
         if definitive is not None:
             mapping[match.group(1)] = definitive
-
-    # Layout B (2020-2022): Cap …\nRS\nCP\nCS\n<rs or dash>\n<cp>\n<cs>[\n<cp var>\n<cs var>]
-    for match in re.finditer(
-        r"Cap\.\s*(\d+)\s*-[\s\S]*?\nRS\s*\nCP\s*\nCS\s*\n([^\n]*)\n("
-        + EURO_RE.pattern
-        + r")\n([^\n]*)\n(?:("
-        + EURO_RE.pattern
-        + r")\n("
-        + EURO_RE.pattern
-        + r")\n)?",
-        text,
-    ):
-        if match.end() - match.start() > 600:
-            continue
-        cp = to_euro(match.group(3))
-        if match.group(5):
-            cp += to_euro(match.group(5))
-        mapping.setdefault(match.group(1), cp)
-
     return mapping
 
 
 def extract_total_cp_map(label_text: str) -> dict[str, float]:
     text = label_text.replace("CA TEGORIA", "CATEGORIA")
     mapping: dict[str, float] = {}
-    roman_pat = r"([IVX]+(?:\s*-?\s*bis)?)"
-
     for match in re.finditer(
-        rf"TOTALE\s+CATEGORIA\s+{roman_pat}\s*\nRS[^\n]*\nCP\s+([^\n]+)\nCS",
+        r"TOTALE\s+CATEGORIA\s+([IVX]+(?:\s*-?\s*bis)?)\b",
         text,
         flags=re.I,
     ):
         roman = re.sub(r"[\s-]+", "", match.group(1)).upper()
-        definitive = _cp_definitive_from_line(match.group(2))
+        chunk = text[match.start() : match.start() + 320]
+        stop = re.search(r"\n(?:CATEGORIA|Cap\.|TOTALE\s+TITOLO)\b", chunk[20:])
+        body = chunk[: 20 + stop.start()] if stop else chunk
+        definitive = _parse_rscs_cp(body)
         if definitive is not None:
             mapping[roman] = definitive
-
-    for match in re.finditer(
-        rf"TOTALE\s+CATEGORIA\s+{roman_pat}\s+RS[^\n]*\nCP\s+([^\n]+)\nCS",
-        text,
-        flags=re.I,
-    ):
-        roman = re.sub(r"[\s-]+", "", match.group(1)).upper()
-        definitive = _cp_definitive_from_line(match.group(2))
-        if definitive is not None:
-            mapping.setdefault(roman, definitive)
-
-    for match in re.finditer(
-        rf"TOTALE\s+CATEGORIA\s+{roman_pat}\s*\nRS\s*\nCP\s*\nCS\s*\n([^\n]*)\n("
-        + EURO_RE.pattern
-        + r")\n",
-        text,
-        flags=re.I,
-    ):
-        roman = re.sub(r"[\s-]+", "", match.group(1)).upper()
-        mapping.setdefault(roman, to_euro(match.group(3)))
-
     return mapping
+
+
 def extract_amount_rows(amount_text: str) -> list[tuple[float, float, float]]:
     rows: list[tuple[float, float, float]] = []
     for line in amount_text.splitlines():
@@ -262,29 +265,44 @@ def payments_for_previsioni(
         candidates.sort(key=lambda row: (0 if row[2] <= row[1] + 0.02 else 1, -row[2]))
         return candidates[0][2]
 
-    # Vertical amount pages (Camera 2020-2022): numbers are stacked, not row-wise.
-    if amount_stream:
-        for index, value in enumerate(amount_stream):
-            if abs(value - previsioni) > 0.005:
-                continue
-            window = amount_stream[index : index + 12]
-            # Prefer a later value that repeats and stays <= previsioni (competence payment).
-            repeats = [
-                window[i]
-                for i in range(1, len(window) - 1)
-                if abs(window[i] - window[i + 1]) < 0.005 and window[i] <= previsioni + 0.02
-            ]
-            if repeats:
-                # Largest repeated value under previsioni is usually CP payments.
-                return max(repeats)
-            under = [item for item in window[1:] if 0 < item <= previsioni + 0.02]
-            if under:
-                return under[0]
-    return None
+    # Vertical amount pages (Camera 2020-2022): dashes drop out of the euro stream.
+    # Prefer the RS-present column pattern (CP_imp then pay_RS/pay_CP/pay_CS);
+    # fall back to the compact empty-RS pattern when CS_prev ~= CP_prev.
+    if not amount_stream:
+        return None
+    best: float | None = None
+    for index, value in enumerate(amount_stream):
+        if abs(value - previsioni) > 0.005:
+            continue
+        window = amount_stream[index : index + 10]
+        if len(window) < 5:
+            continue
+        paid: float | None = None
+        if len(window) >= 7:
+            cp_imp = window[3]
+            if 0 < cp_imp <= previsioni + 0.02:
+                if abs(window[4] + window[5] - window[6]) < 1.0 and 0 < window[5] <= cp_imp + 0.02:
+                    paid = window[5]
+                elif abs(window[4] - window[5]) < 0.005 and 0 < window[4] <= cp_imp + 0.02:
+                    paid = window[4]
+        if paid is None and abs(window[1] - window[0]) <= max(0.02, previsioni * 0.001):
+            cp_imp = window[2]
+            if 0 < cp_imp <= previsioni + 0.02:
+                if abs(window[2] - window[3]) < 0.005:
+                    paid = window[2]
+                elif len(window) > 4 and abs(window[3] - window[4]) < 0.005 and 0 < window[3] <= cp_imp + 0.02:
+                    paid = window[3]
+                elif 0 < window[3] <= cp_imp + 0.02:
+                    paid = window[3]
+        if paid is None:
+            continue
+        if best is None or paid > best:
+            best = paid
+    return best
 
 
 def extract_amount_stream(amount_text: str) -> list[float]:
-    return [to_euro(token) for token in EURO_RE.findall(amount_text.replace("–", "-").replace("−", "-"))]
+    return [to_euro(token) for token in EURO_RE.findall(_normalize_pdf_money_text(amount_text))]
 
 
 def extract_year(pdf_path: Path) -> dict:

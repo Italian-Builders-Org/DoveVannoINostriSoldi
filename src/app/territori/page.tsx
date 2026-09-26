@@ -27,7 +27,7 @@ import styles from "./territori.module.css";
 export const metadata: Metadata = {
   title: "Territori",
   description:
-    "Pagamenti effettuati dai Comuni, regione per regione: valori per abitante, per km², totali. La pagina espone anche valori per km² e copertura dei Comuni con dati SIOPE e superficie ISTAT.",
+    "Pagamenti effettuati dai Comuni, regione per regione: valori per abitante, per km², totali. La pagina espone anche valori per km² e copertura dei Comuni con dati SIOPE e superficie ISTAT. La base a celle 1 km del Censimento 2021 è su /territori/griglia.",
 };
 
 function selectedYear(value: string | string[] | undefined): number {
@@ -305,6 +305,9 @@ export default async function TerritoriesPage({
           <h1>Pagamenti dei Comuni per territorio</h1>
           <p>
             Pagamenti di cassa dei Comuni con sede nella regione, da gennaio a {monthLabel} {data.year}.
+            {" "}
+            Per la griglia ufficiale ISTAT 1 km² del Censimento 2021 vedi{" "}
+            <Link href="/territori/griglia">/territori/griglia</Link>.
           </p>
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/territori" query={{ misura: metric }} />

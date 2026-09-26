@@ -10,6 +10,8 @@ export type AtlasMode = "mappa" | "elenco";
 export type RoleFilter = "tutti" | "governo" | "presidenza" | "capigruppo";
 /** Legislatures read per chamber from the official sources (#556). */
 export type TermFilter = "tutti" | "primo-ramo" | "primo-parlamento" | "gia-parlamento";
+/** Group changes in the XIX, from the chambers' dated adhesions (#556). */
+export type GroupChangeFilter = "tutti" | "cambio" | "nessun-cambio";
 export type ThemeChamberFilter = "tutti" | "camera" | "senato";
 export type AtlasPanelTab = "profilo" | "atti" | "temi" | "notizie";
 export type AtlasState = {
@@ -20,6 +22,7 @@ export type AtlasState = {
   family: string | null;
   role: RoleFilter;
   term: TermFilter;
+  groupChange: GroupChangeFilter;
   /** Tema attivo nella vista Storico voti (e deep-link). */
   themeId: string | null;
   themeChamber: ThemeChamberFilter;
@@ -50,6 +53,11 @@ export const TERMS: ReadonlyArray<{ id: TermFilter; label: string; }> = [
   { id: "primo-ramo", label: "Prima nel ramo" },
   { id: "primo-parlamento", label: "Prima in Parlamento" },
   { id: "gia-parlamento", label: "Anche prima della XIX" },
+];
+export const GROUP_CHANGES: ReadonlyArray<{ id: GroupChangeFilter; label: string; }> = [
+  { id: "tutti", label: "Tutti i percorsi" },
+  { id: "cambio", label: "Ha cambiato gruppo" },
+  { id: "nessun-cambio", label: "Sempre nello stesso gruppo" },
 ];
 export const THEME_CHAMBERS: ReadonlyArray<{ id: ThemeChamberFilter; label: string; }> = [
   { id: "tutti", label: "Camera e Senato" },
@@ -101,6 +109,19 @@ export function longDate(value: string | null | undefined): string {
     return "Data non disponibile";
   }
   return new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(date);
+}
+
+/** "dall'8 giugno", "all'11 marzo": the article elides before a day read with a vowel. */
+function withArticle(preposition: "da" | "a", date: string): string {
+  const text = longDate(date);
+  const elided = /^(8|11) /u.test(text);
+  return `${preposition === "da" ? "dal" : "al"}${elided ? "l'" : " "}${text}`;
+}
+
+export function groupPeriod(entry: { startDate: string; endDate: string | null; }): string {
+  return entry.endDate === null
+    ? `${withArticle("da", entry.startDate)}, in corso`
+    : `${withArticle("da", entry.startDate)} ${withArticle("a", entry.endDate)}`;
 }
 
 export function isSafeExternalUrl(value: unknown): value is string {
@@ -182,6 +203,7 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
       family: map.partyFamilies.some((item) => item.id === family) ? family : null,
       role: ROLES.find((item) => item.id === params.get("incarico"))?.id ?? "tutti",
       term: supportsTermFilter(scope) ? TERMS.find((item) => item.id === params.get("mandato"))?.id ?? "tutti" : "tutti",
+      groupChange: supportsTermFilter(scope) ? GROUP_CHANGES.find((item) => item.id === params.get("cambi"))?.id ?? "tutti" : "tutti",
       themeId: scope === "storico-voti" ? themeId : resolveThemeId(params.get("tema")),
       themeChamber: scope === "storico-voti" ? themeChamber : "tutti",
       themeExpressedOnly: params.get("espressi") === "0" ? false : true,
@@ -192,7 +214,7 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
 
 export function atlasUrl(href: string, state: AtlasState): string {
   const url = new URL(href);
-  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico", "mandato", "tema", "ramo", "espressi", "scheda"]) {
+  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico", "mandato", "cambi", "tema", "ramo", "espressi", "scheda"]) {
     url.searchParams.delete(name);
   }
   url.searchParams.set("vista", state.scope);
@@ -204,6 +226,7 @@ export function atlasUrl(href: string, state: AtlasState): string {
   if (state.family) url.searchParams.set("famiglia", state.family);
   if (state.role !== "tutti") url.searchParams.set("incarico", state.role);
   if (state.term !== "tutti" && supportsTermFilter(state.scope)) url.searchParams.set("mandato", state.term);
+  if (state.groupChange !== "tutti" && supportsTermFilter(state.scope)) url.searchParams.set("cambi", state.groupChange);
   if (state.scope === "storico-voti") {
     url.searchParams.set("tema", state.themeId ?? DEFAULT_THEME_ID);
     if (state.themeChamber !== "tutti") url.searchParams.set("ramo", state.themeChamber);
@@ -230,7 +253,7 @@ export function matchesRole(person: RepublicMapPerson, role: RoleFilter): boolea
   return ["capo-stato", "presidente-assemblea", "vicepresidente-assemblea", "questore", "segretario-presidenza"].includes(person.roleKind);
 }
 
-/** Condanne and Storico voti render their own directories, which do not read the term filter. */
+/** Condanne and Storico voti render their own directories, which read neither the term nor the group-change filter. */
 export function supportsTermFilter(scope: AtlasScope): boolean {
   return scope !== "condanne" && scope !== "storico-voti";
 }
@@ -244,11 +267,19 @@ export function matchesTerm(person: RepublicMapPerson, term: TermFilter): boolea
   return !person.firstTerm.parliament;
 }
 
+/** Government members outside Parliament have no group history: any group-change filter excludes them. */
+export function matchesGroupChange(person: RepublicMapPerson, filter: GroupChangeFilter): boolean {
+  if (filter === "tutti") return true;
+  if (person.groupChanges === null) return false;
+  return filter === "cambio" ? person.groupChanges > 0 : person.groupChanges === 0;
+}
+
 export function filteredPeople(map: RepublicMap, state: AtlasState): RepublicMapPerson[] {
   const groups = new Map(map.groups.map((group) => [group.id, group]));
   const tokens = normalizeSearch(state.query).split(" ").filter(Boolean);
   return map.people.filter((person) => {
-    if (!belongsToScope(person, state.scope) || !matchesRole(person, state.role) || (supportsTermFilter(state.scope) && !matchesTerm(person, state.term))) return false;
+    if (!belongsToScope(person, state.scope) || !matchesRole(person, state.role)) return false;
+    if (supportsTermFilter(state.scope) && (!matchesTerm(person, state.term) || !matchesGroupChange(person, state.groupChange))) return false;
     if (state.family && person.family !== state.family) return false;
     const group = person.groupId ? groups.get(person.groupId) : null;
     const text = normalizeSearch(`${person.name} ${person.roleLabel} ${group?.label ?? ""} ${group?.shortLabel ?? ""}`);

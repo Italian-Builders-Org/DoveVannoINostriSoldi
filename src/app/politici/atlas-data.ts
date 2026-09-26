@@ -45,6 +45,13 @@ export function parseProfiles(payload: unknown): Record<string, RepublicProfile>
       || !["votesCast", "missions", "presenceTotal", "absences", "justifiedAbsences"].every((key) => count(attendance[key]))
       || !["periodLabel", "observedDate", "sourceLabel", "votesCastPercent", "missionsPercent", "presencePercent", "absencesPercent", "justifiedAbsencesPercent"].every((key) => text(attendance[key]))
       || !isSafeExternalUrl(attendance.sourceUrl))) return invalid();
+    const history = profile.groupHistory;
+    if (history !== undefined && history !== null && (!object(history)
+      || !count(history.changes) || !["sourceLabel", "observedDate", "caveat"].every((key) => text(history[key]))
+      || !isSafeExternalUrl(history.sourceUrl)
+      || !Array.isArray(history.entries) || history.entries.length === 0
+      || !history.entries.every((entry) => object(entry) && text(entry.label) && texts(entry.laterLabels)
+        && text(entry.startDate) && optionalText(entry.endDate) && typeof entry.joinedAtFormation === "boolean"))) return invalid();
   }
   return payload.profiles as Record<string, RepublicProfile>;
 }

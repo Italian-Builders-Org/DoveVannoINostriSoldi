@@ -27,7 +27,6 @@ adempimento e fissa i conteggi riconciliati descritti sotto.
 Gli archivi contano 2.640.689 righe di beni e 449.258 detenzioni. La
 pubblicazione riga per riga richiederebbe una decisione dimensionale (ADR-001):
 questa proiezione aggrega per ente dichiarante, identificato dal codice fiscale.
-Fanno eccezione i fabbricati fermi, pubblicati bene per bene per la mappa.
 
 - `mef-patrimonio-beni-2023` (140.712 righe): ente × titolo × stato d'uso ×
   dato a terzi × tipologia × comune del bene, con numero di beni, beni con
@@ -40,12 +39,17 @@ Fanno eccezione i fabbricati fermi, pubblicati bene per bene per la mappa.
   ERP del file di adempimento, con obbligo, invio della comunicazione 2023,
   dichiarazione negativa, dichiarazione di completezza, beni dichiarati e
   presenza nei due censimenti pubblicati. Nessuna aggregazione.
-- `mef-patrimonio-fabbricati-fermi-2023` (133.293 righe): una riga per bene e
-  proprietario tra i fabbricati posseduti (`Natura del bene = FABBRICATO`,
-  titolo di proprietà) dichiarati non utilizzati, inutilizzabili o in
-  ristrutturazione, con tipologia, superficie, comune del bene e coordinate
-  della fonte. Tutti hanno coordinate. Alimenta la mappa `/patrimonio`, che li
-  carica per regione (`/api/patrimonio/punti?regione=NN`).
+- `mef-patrimonio-fabbricati-fermi-2023` (25.235 righe): comune del bene ×
+  ente × stato d'uso × tipologia, con numero di fabbricati e superficie, per i
+  133.293 fabbricati posseduti (`Natura del bene = FABBRICATO`, titolo di
+  proprietà) dichiarati non utilizzati, inutilizzabili o in ristrutturazione, in
+  5.927 Comuni. Non pubblica coordinate né identificativi dei beni: la posizione
+  esatta di un edificio pubblico vuoto può esporlo a occupazioni (#609). Le righe
+  sono ordinate per regione e alimentano la mappa `/patrimonio`, che le legge per
+  regione (`/api/patrimonio/punti?regione=NN`) e mette i Comuni in classifica.
+  La vista sta nell'URL e si può condividere:
+  `/patrimonio?regione=12&comuni=H501,M082&tipo=…&ordina=contribuenti`
+  (codici ISTAT della regione e catastali dei Comuni; `tipo` ripetibile).
 
 Il rapporto €/m² annuo è `Canone annuo per rapporto (EUR) ÷ Superficie per
 rapporto (m²)`, calcolato solo sui contratti su intera unità con canone
@@ -64,11 +68,9 @@ anagrafica dello stesso ente diversa tra righe o archivi, e ogni aggregazione
 che non si riconcilia con il totale delle righe sorgente. Il lock dichiara anche
 l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
 
-Per i fabbricati fermi blocca anche: natura del bene fuori dominio,
-identificativo del bene non intero, quota di proprietà fuori da 0-100, regione
-senza codice ISTAT, coordinate non nella forma `gradi,decimali` o fuori dal
-riquadro dell'Italia, combinazioni di fonte, precisione e georeferenziazione non
-osservate, e un numero di righe diverso dal lock.
+Per i fabbricati fermi blocca anche: natura del bene fuori dominio, regione
+senza codice ISTAT, lo stesso codice catastale con nome, provincia o regione
+diversi, e un numero di fabbricati diverso dal lock.
 
 ## Adempimento 2023
 
@@ -124,13 +126,15 @@ del censimento: non lo sostituiscono.
   sia assente. La scheda ente usa il filtro esatto sul codice fiscale.
 - La fonte non pubblica nome e codice fiscale delle persone fisiche che
   ricevono i beni; l'aggregazione per ente non espone singoli alloggi.
-- Un fabbricato in comproprietà compare una volta per ogni ente proprietario
-  (91 beni), con la quota di ciascuno. La fonte riporta quota 0 per 293
-  fabbricati fermi con titolo di proprietà: il valore resta com'è.
-- Le coordinate vengono dagli identificativi catastali, dall'indirizzo o
-  dall'ente: con precisione `COMUNE` (2.740 fabbricati) o `STRADA` (11.266) il
-  punto non indica l'edificio. «Area urbana» è una categoria catastale dei
-  fabbricati, non un edificio.
+- Un fabbricato in comproprietà è contato una volta per ogni ente proprietario
+  (91 beni). «Area urbana» è una categoria catastale dei fabbricati, non un
+  edificio.
+- La classifica per 1.000 contribuenti usa i contribuenti IRPEF 2024 del
+  Comune (`mef-irpef-2024`), che non sono i residenti, ed esclude i Comuni sotto
+  i 1.000 contribuenti, dove pochi fabbricati bastano a un valore estremo. I 30
+  Comuni del censimento soppressi per fusione non hanno contribuenti propri:
+  restano nella classifica per numero, e i loro fabbricati non entrano nel
+  rapporto del Comune che li ha assorbiti.
 
 ## Riproduzione
 

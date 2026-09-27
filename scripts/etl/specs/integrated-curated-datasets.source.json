@@ -550,7 +550,7 @@
       },
       "mef-patrimonio-fabbricati-fermi-2023": {
         "holder": "Ministero dell'Economia e delle Finanze – Dipartimento dell'Economia",
-        "referencePeriod": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; una riga per bene e proprietario, senza aggregazioni DVNS",
+        "referencePeriod": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia",
         "publicationDate": "2026-05-05",
         "acquisitionDate": "2026-09-23",
         "checkedAt": "2026-09-23",
@@ -6351,7 +6351,7 @@
     },
     {
       "id": "mef-patrimonio-fabbricati-fermi-2023",
-      "title": "MEF · fabbricati fermi del censimento immobili 2023 · Comuni ed enti ERP",
+      "title": "MEF · fabbricati fermi per Comune del censimento immobili 2023 · Comuni ed enti ERP",
       "domain": "entities",
       "relativePath": "mef-patrimonio-fabbricati-fermi-2023.psv",
       "dataKind": "delimited",
@@ -6361,30 +6361,24 @@
       "publication": "rows",
       "evidenceLabel": "documented-fact",
       "expected": {
-        "bytes": 48847706,
-        "sha256": "1a097200ec438e4bc7e2ef897baea7c89f1fa1e03b26061da6dc88dc5448a447",
-        "rows": 133293,
-        "columns": 21,
+        "bytes": 7531019,
+        "sha256": "1ec37f9ef02e3421712996b8e642d9e796885be5061df4bdb9f4bffa61e85661",
+        "rows": 25235,
+        "columns": 15,
         "headers": [
-          "Codice fiscale ente",
-          "Ente",
-          "ID bene",
-          "Titolo",
-          "Quota di proprietà (%)",
-          "Utilizzo del bene",
-          "Tipologia bene",
-          "Superficie di riferimento (m²)",
           "Codice regione del bene",
           "Regione del bene",
           "Provincia del bene",
           "Comune del bene",
           "Codice catastale comune del bene",
-          "Latitudine",
-          "Longitudine",
-          "Fonte georeferenziazione",
-          "Precisione georeferenziazione",
-          "Immobile georeferenziato",
+          "Codice fiscale ente",
+          "Ente",
           "Tipologia ente",
+          "Utilizzo del bene",
+          "Tipologia bene",
+          "Fabbricati",
+          "Fabbricati con superficie",
+          "Superficie di riferimento (m²)",
           "Anno",
           "URL fonte"
         ]
@@ -6394,13 +6388,13 @@
       ],
       "privateFields": [],
       "caveats": [
-        "Una riga per fabbricato posseduto («Natura del bene = FABBRICATO» e titolo di proprietà) che l'ente dichiara non utilizzato, inutilizzabile o in ristrutturazione/manutenzione, con le coordinate pubblicate dalla fonte. Terreni, beni avuti da terzi e beni senza stato d'uso dichiarato sono esclusi; tutti i fabbricati del perimetro hanno coordinate.",
-        "Un bene in comproprietà compare una volta per ogni ente proprietario con lo stesso «ID bene» e la quota di ciascuno: contare le righe conta le dichiarazioni, non gli edifici. La fonte riporta quota 0 per 293 righe con titolo di proprietà: il valore è lasciato com'è.",
-        "Le coordinate vengono dagli identificativi catastali, dall'indirizzo o dall'ente. «Precisione georeferenziazione = COMUNE» indica una posizione nota solo a livello di Comune, «STRADA» a livello di via: il punto non indica l'edificio.",
+        "Fabbricati posseduti («Natura del bene = FABBRICATO» e titolo di proprietà) che l'ente dichiara non utilizzati, inutilizzabili o in ristrutturazione/manutenzione, contati per comune del bene, ente, stato d'uso e tipologia: 133.293 fabbricati in 5.927 Comuni. Terreni, beni avuti da terzi e beni senza stato d'uso dichiarato sono esclusi.",
+        "Non sono pubblicati coordinate, indirizzi né identificativi dei singoli beni: la posizione esatta di un edificio pubblico vuoto non serve alla lettura e può esporlo a occupazioni.",
+        "Un bene in comproprietà è contato una volta per ogni ente proprietario: sommare le righe conta le dichiarazioni, non gli edifici.",
         "Lo stato d'uso è quello dichiarato dall'ente: non dice se il bene sia agibile, affittabile o occupato, e un bene fermo non è di per sé uno spreco. «Area urbana» è una categoria catastale dei fabbricati, non un edificio.",
         "Per gli enti che non hanno inviato la comunicazione 2023 i dati possono risalire a comunicazioni precedenti: l'esito per ente è nel dataset mef-patrimonio-adempimento-2023.",
-        "«Codice regione del bene» è il codice ISTAT della regione, aggiunto da DVNS a partire dal nome pubblicato dalla fonte.",
-        "Fonte MEF, CC BY 4.0; proiezione DVNS una riga per bene e proprietario, senza aggregazioni né correzioni."
+        "«Codice regione del bene» è il codice ISTAT della regione, aggiunto da DVNS a partire dal nome pubblicato dalla fonte. Il comune del bene è quello della fonte: 30 Comuni poi soppressi per fusione restano con il loro nome e codice catastale, anche quando il nuovo Comune ne ha ripreso il nome (Sovizzo).",
+        "Fonte MEF, CC BY 4.0; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia, senza correzioni ai valori."
       ]
     }
   ]

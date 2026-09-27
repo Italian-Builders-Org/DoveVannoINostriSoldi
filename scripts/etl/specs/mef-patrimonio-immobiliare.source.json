@@ -177,20 +177,13 @@
     "naturaBene": [
       "FABBRICATO",
       "TERRENO"
-    ],
-    "georeferenziazione": [
-      ["IDENTIFICATIVI_CATASTALI", "", "Sì"],
-      ["INDIRIZZO", "CIVICO", "Sì"],
-      ["INDIRIZZO", "STRADA", "No"],
-      ["INDIRIZZO", "COMUNE", "No"],
-      ["UTENTE", "", "Sì"]
     ]
   },
   "expected": {
     "immobiliRows": 2640689,
     "detenzioniRows": 449258,
     "immobiliExactDuplicateRows": 1,
-    "fabbricatiFermiRows": 133293
+    "fabbricatiFermi": 133293
   },
   "datasets": {
     "beni": "mef-patrimonio-beni-2023",

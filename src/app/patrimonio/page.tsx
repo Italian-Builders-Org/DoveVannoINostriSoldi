@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { RealEstateMap } from "@/components/real-estate-map";
+import { Suspense } from "react";
+import { RealEstateExplorer, RealEstateMap } from "@/components/real-estate-map";
 import { integer } from "@/lib/format";
 import { getRealEstateNationalData } from "@/lib/real-estate-map-points";
 
@@ -27,16 +28,20 @@ export default async function PatrimonioPage() {
 
       <section className="panel" aria-labelledby="mappa-patrimonio">
         <h2 id="mappa-patrimonio" className="panel-title">Fabbricati fermi · {integer(data.total)} in Italia</h2>
-        <RealEstateMap total={data.total} byRegion={data.byRegion} municipalities={data.municipalities} />
+        {/* The URL is only known in the browser: the prerendered HTML is the national view. */}
+        <Suspense fallback={<RealEstateMap {...data} />}>
+          <RealEstateExplorer {...data} />
+        </Suspense>
       </section>
 
       <section className="panel" aria-labelledby="limiti-patrimonio">
         <h2 id="limiti-patrimonio" className="panel-title">Come leggere la mappa</h2>
         <p>
-          Ogni punto è un fabbricato del censimento degli immobili pubblici (rilascio 2023), nella posizione pubblicata
-          dal MEF: dalla particella catastale, dall’indirizzo o dall’ente. I cerchi vuoti sono collocati solo al livello
-          del Comune. Terreni e beni affittati o concessi a terzi, comprese le case popolari abitate, sono esclusi. Un
-          bene in comproprietà compare una volta per ogni ente proprietario.
+          La mappa colora le regioni secondo i fabbricati fermi del censimento degli immobili pubblici (rilascio 2023);
+          dentro una regione i Comuni sono in classifica, per numero di fabbricati o in rapporto ai contribuenti IRPEF
+          2024 del Comune, che non sono i residenti. Né la pagina né il dataset pubblicano la posizione dei singoli
+          edifici. Terreni e beni affittati o concessi a terzi, comprese le case popolari abitate, sono esclusi. Un bene
+          in comproprietà è contato una volta per ogni ente proprietario.
         </p>
         <p>
           Il censimento include enti che non hanno inviato la comunicazione 2023: per loro i dati possono risalire a

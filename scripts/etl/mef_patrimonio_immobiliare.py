@@ -94,26 +94,22 @@ ADEMPIMENTO_HEADERS = ENTITY_ID_HEADERS + [
     "Presente nel censimento pubblicato",
     "Presente nelle detenzioni pubblicate",
 ] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
-# One row per owned building declared idle, and per owner: co-owned buildings repeat the
-# asset id with each owner's share. Coordinates are the source's, with a dot as separator.
-FABBRICATI_FERMI_HEADERS = ENTITY_ID_HEADERS + [
-    "ID bene",
-    "Titolo",
-    "Quota di proprietà (%)",
-    "Utilizzo del bene",
-    "Tipologia bene",
-    "Superficie di riferimento (m²)",
+# Owned buildings declared idle, counted per municipality of the asset, owner, use and type.
+# Positions stay out: the exact location of an empty public building is not published (#609).
+FABBRICATI_FERMI_HEADERS = [
     "Codice regione del bene",
     "Regione del bene",
     "Provincia del bene",
     "Comune del bene",
     "Codice catastale comune del bene",
-    "Latitudine",
-    "Longitudine",
-    "Fonte georeferenziazione",
-    "Precisione georeferenziazione",
-    "Immobile georeferenziato",
+    "Codice fiscale ente",
+    "Ente",
     "Tipologia ente",
+    "Utilizzo del bene",
+    "Tipologia bene",
+    "Fabbricati",
+    "Fabbricati con superficie",
+    "Superficie di riferimento (m²)",
 ] + TRAILER_HEADERS
 IDLE_USES = {"Non utilizzato", "Inutilizzabile", "In ristrutturazione/manutenzione"}
 # ISTAT region codes, as in the regional map geometry of the site.
@@ -123,11 +119,6 @@ REGION_CODES = {
     "MARCHE": "11", "LAZIO": "12", "ABRUZZO": "13", "MOLISE": "14", "CAMPANIA": "15", "PUGLIA": "16",
     "BASILICATA": "17", "CALABRIA": "18", "SICILIA": "19", "SARDEGNA": "20",
 }
-COORDINATE = re.compile(r"[0-9]{1,2},[0-9]+")
-ITALY_BOUNDS = {"Latitudine": (Decimal("35.2"), Decimal("47.2")), "Longitudine": (Decimal("6.5"), Decimal("18.6"))}
-# The source has 293 idle buildings with a 0 share under an ownership title: kept as published.
-SHARE = re.compile(r"0|[1-9][0-9]?|100")
-ASSET_ID = re.compile(r"[1-9][0-9]*")
 ADEMPIMENTO_URL_PREFIX = "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/"
 YES_NO = {"Si", "No"}
 COUNT = re.compile(r"0|[1-9][0-9]*")
@@ -166,7 +157,7 @@ def expected_corpus_metadata(spec: dict, dataset_key: str = "beni") -> dict:
     if dataset_key == "fabbricatiFermi":
         reference_period = (
             "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
-            "i dati possono risalire a comunicazioni precedenti; una riga per bene e proprietario, senza aggregazioni DVNS"
+            "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia"
         )
     if dataset_key == "adempimento":
         reference_period = (
@@ -367,52 +358,47 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict, idle: list | No
     return delimited_payload(BENI_HEADERS, rows)
 
 
-def coordinate(raw: str, axis: str, label: str) -> str:
-    if COORDINATE.fullmatch(raw) is None:
-        raise SourceError(f"coordinate non valide: {label}")
-    value = Decimal(raw.replace(",", "."))
-    low, high = ITALY_BOUNDS[axis]
-    if not low <= value <= high:
-        raise SourceError(f"coordinate fuori dall'Italia: {label}")
-    return decimal_text(value)
-
-
-def idle_building(row: dict, item: dict, domains: dict) -> list[str] | None:
+def idle_building(row: dict, item: dict, domains: dict) -> tuple | None:
+    """Aggregation key and surface of an owned idle building, None for any other asset."""
     natura = row["Natura del bene"]
     if natura not in domains["naturaBene"]:
         raise SourceError(f"natura del bene fuori dominio: {natura}")
-    titolo = row["Titolo proprietà"]
-    if natura != "FABBRICATO" or titolo == "" or row["Utilizzo del bene"] not in IDLE_USES:
+    if natura != "FABBRICATO" or row["Titolo proprietà"] == "" or row["Utilizzo del bene"] not in IDLE_USES:
         return None
-    label = row["ID bene"]
-    if ASSET_ID.fullmatch(label) is None or titolo not in domains["titoloProprieta"]:
-        raise SourceError(f"identificativo o titolo del bene non valido: {label}")
-    if SHARE.fullmatch(row["Quota proprietà"]) is None:
-        raise SourceError(f"quota di proprietà non valida: {label}")
     region = REGION_CODES.get(row["Regione del bene"])
     if region is None:
         raise SourceError(f"regione del bene fuori dominio: {row['Regione del bene']}")
-    georeferencing = [row["Fonte Georeferenziazione"], row["Precisione Georeferenziazione"], row["Immobile Geo-Ref."]]
-    if georeferencing not in domains["georeferenziazione"]:
-        raise SourceError(f"georeferenziazione fuori dominio: {georeferencing}")
-    area = surface(row["Superficie di Riferimento (mq)"], label)
     match = FISCAL_CODE.fullmatch(row["Amministrazione Codice Fiscale"])
     if match is None:
         raise SourceError(f"codice fiscale ente non valido: {item['file']}")
-    return [
-        match.group(1), row["Amministrazione Denominazione"], label, titolo, row["Quota proprietà"],
-        row["Utilizzo del bene"], row["Tipologia Bene Immobile"], "" if area is None else decimal_text(area),
-        region, row["Regione del bene"], row["Provincia del bene"], row["Comune del bene"], row["Codice Comune del bene"],
-        coordinate(row["Latitudine"], "Latitudine", label), coordinate(row["Longitudine"], "Longitudine", label),
-        *georeferencing, row["Tipologia Amministrazione"], "2023", item["url"],
+    place = (region, row["Regione del bene"], row["Provincia del bene"], row["Comune del bene"], row["Codice Comune del bene"])
+    owner = (match.group(1), row["Amministrazione Denominazione"], row["Tipologia Amministrazione"])
+    key = (place, owner, row["Utilizzo del bene"], row["Tipologia Bene Immobile"], item["url"])
+    return key, surface(row["Superficie di Riferimento (mq)"], row["ID bene"])
+
+
+def fabbricati_fermi_payload(spec: dict, buildings: list[tuple]) -> bytes:
+    if len(buildings) != spec["expected"]["fabbricatiFermi"]:
+        raise SourceError(f"fabbricati fermi divergenti dal lock: {len(buildings)}")
+    groups: dict[tuple, list] = defaultdict(lambda: [0, 0, Decimal(0)])
+    places: dict[str, tuple] = {}
+    for key, area in buildings:
+        place = key[0]
+        # One municipality code, one name, province and region: otherwise the counts would split.
+        if places.setdefault(place[4], place) != place:
+            raise SourceError(f"comune del bene con anagrafica incoerente: {place[4]}")
+        group = groups[key]
+        group[0] += 1
+        if area is not None and area > 0:
+            group[1] += 1
+            group[2] += area
+    # Region, then municipality code: the rows of one region sit in contiguous chunks.
+    rows = [
+        [place[0], place[1], place[2], place[3], place[4], *owner, use, kind,
+         str(count), str(with_area), decimal_text(area), "2023", url]
+        for (place, owner, use, kind, url), (count, with_area, area) in sorted(
+            groups.items(), key=lambda entry: (entry[0][0][0], entry[0][0][4], entry[0][1][0], entry[0][2], entry[0][3]))
     ]
-
-
-def fabbricati_fermi_payload(spec: dict, rows: list[list[str]]) -> bytes:
-    if len(rows) != spec["expected"]["fabbricatiFermiRows"]:
-        raise SourceError(f"righe dei fabbricati fermi divergenti dal lock: {len(rows)}")
-    # Region first, so the rows of one region sit in contiguous chunks.
-    rows.sort(key=lambda value: (value[8], value[12], int(value[2]), value[0]))
     return delimited_payload(FABBRICATI_FERMI_HEADERS, rows)
 
 

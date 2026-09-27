@@ -1089,12 +1089,12 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   {
     surface: "/dati",
     title: "Fabbricati pubblici fermi",
-    description: "Censimento MEF al 31 dicembre 2023, bene per bene: fabbricati di Comuni ed enti ERP dichiarati non utilizzati, inutilizzabili o in ristrutturazione, con le coordinate della fonte.",
+    description: "Censimento MEF al 31 dicembre 2023: fabbricati di Comuni ed enti ERP dichiarati non utilizzati, inutilizzabili o in ristrutturazione, contati per Comune, senza la posizione dei singoli edifici.",
     datasets: [
       {
         id: "mef-patrimonio-fabbricati-fermi-2023",
-        label: "Fabbricati fermi con coordinate",
-        catalogBoundary: "Stato d’uso dichiarato bene per bene, non agibilità né spreco; un bene in comproprietà compare una volta per proprietario.",
+        label: "Fabbricati fermi per Comune",
+        catalogBoundary: "Stato d’uso dichiarato dall’ente, non agibilità né spreco; un bene in comproprietà è contato una volta per proprietario.",
       },
     ],
   },

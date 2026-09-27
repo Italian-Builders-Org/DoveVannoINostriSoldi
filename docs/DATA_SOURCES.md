@@ -1012,9 +1012,9 @@ terzi con canone e superficie. Copre i Comuni e gli enti territoriali per
 l'edilizia residenziale pubblica. Include anche enti che non hanno inviato la
 comunicazione 2023, con dati di comunicazioni precedenti: non vanno letti come
 situazione al 31/12/2023. Gli enti mai comunicati non compaiono e non valgono zero.
-Il dataset `mef-patrimonio-fabbricati-fermi-2023` pubblica bene per bene i
-133.293 fabbricati posseduti dichiarati fermi, con le coordinate della fonte,
-per la mappa `/patrimonio`.
+Il dataset `mef-patrimonio-fabbricati-fermi-2023` conta per Comune, ente, stato
+d'uso e tipologia i 133.293 fabbricati posseduti dichiarati fermi, senza
+coordinate dei beni, per la pagina `/patrimonio`.
 
 Lo stato d'uso è dichiarato dall'ente e non misura agibilità o spreco; il
 canone è contrattuale, non un incasso. Le case popolari compaiono solo come

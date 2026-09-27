@@ -95,6 +95,22 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         with self.assertRaisesRegex(ETL.DatasetBuildError, "compresso|gzip"):
             self.check(workers=2)
 
+    def test_rows_for_limits_row_validation_but_still_binds_every_chunk_to_the_proof(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=1)
+        self.build()
+
+        with mock.patch.object(ETL, "_check_committed_public_rows", side_effect=AssertionError("righe rivalidate")):
+            self.check(rows_for=frozenset())
+            with self.assertRaisesRegex(AssertionError, "righe rivalidate"):
+                self.check(rows_for=frozenset({"synthetic-ledger"}))
+        self.first_row_chunk_path().write_bytes(ETL.canonical_gzip(b"altro\n"))
+        with self.assertRaisesRegex(ETL.DatasetBuildError, "hash artefatto divergente"):
+            self.check(rows_for=frozenset())
+
     def test_empty_public_csv_closes_without_a_row_chunk(self):
         spec = self.write_fixture(b"name|private_id|amount|source|note\n", rows=0)
         self.build()
@@ -285,7 +301,7 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
         ETL.commit_artifacts(artifacts)
         return artifacts
 
-    def check(self, *, workers: int | None = None) -> None:
+    def check(self, *, workers: int | None = None, rows_for: frozenset[str] | None = None) -> None:
         ETL.check_committed(
             spec_path=self.spec_path,
             catalog_path=self.catalog_path,
@@ -293,6 +309,7 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
             receipts_dir=self.receipts_dir,
             proof_path=self.proof_path,
             workers=workers,
+            rows_for=rows_for,
         )
 
     def row_chunk_paths(self) -> list[Path]:

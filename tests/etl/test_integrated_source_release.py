@@ -148,6 +148,19 @@ class AggregateReleaseProofTests(unittest.TestCase):
             ),
         )
 
+    def test_build_computes_the_release_once_and_forwards_the_row_scope(self) -> None:
+        archive_gate, source_gate, _ = self.validators()
+        with archive_gate, source_gate, patch.object(release, "_validate_datasets", return_value=self.dataset_summary) as dataset_gate, \
+                patch.object(release, "build_expected_release", wraps=release.build_expected_release) as expected:
+            proof = release.build_release(self.paths, rows_for=frozenset({"appended"}))
+
+        self.assertEqual(expected.call_count, 1)
+        self.assertEqual(dataset_gate.call_args.kwargs["rows_for"], frozenset({"appended"}))
+        self.assertEqual(self.paths.output.read_bytes(), canonical(proof))
+        with archive_gate, source_gate, patch.object(release, "_validate_datasets", return_value=self.dataset_summary) as dataset_gate:
+            release.check_release(self.paths)
+        self.assertIsNone(dataset_gate.call_args.kwargs.get("rows_for"))
+
     def test_check_rejects_stale_incomplete_extra_and_missing_state(self) -> None:
         archive_gate, source_gate, dataset_gate = self.validators()
         with archive_gate, source_gate, dataset_gate:

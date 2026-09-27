@@ -2824,6 +2824,20 @@ def validate_public_rows(
     return rows_with_public_source, redaction_count
 
 
+def _check_committed_chunk_bytes(item: dict[str, Any], rows_dir: Path, root: Path, artifact_hashes: dict[str, str]) -> None:
+    """Bind an unchanged dataset's chunks to the proof without decoding its rows again."""
+
+    chunk_count = (item["expected"]["rows"] + PUBLIC_ROW_CHUNK_ROWS - 1) // PUBLIC_ROW_CHUNK_ROWS
+    for ordinal in range(chunk_count):
+        rows_path = rows_dir / row_chunk_name(item["id"], ordinal)
+        compressed = read_bounded_regular_file(
+            rows_path, PUBLIC_ROW_CHUNK_MAX_COMPRESSED_BYTES, f"{item['id']}:{ordinal}",
+        )
+        relative = rows_path.relative_to(root).as_posix()
+        if artifact_hashes.get(relative) != sha256_bytes(compressed):
+            raise DatasetBuildError(f"hash artefatto divergente: {relative}")
+
+
 def _check_committed_public_rows(
     item: dict[str, Any], rows_dir: Path, root: Path,
     artifact_hashes: dict[str, str],
@@ -2879,7 +2893,13 @@ def check_committed(
     proof_path: Path,
     show_timings: bool = False,
     workers: int | None = None,
+    rows_for: frozenset[str] | None = None,
 ) -> None:
+    """Validate the committed corpus; ``rows_for`` limits row semantics to those datasets.
+
+    An append passes the datasets it wrote: the others keep the bytes sealed by the previous proof,
+    so their chunks are only hashed against it. ``None`` revalidates every row, as ``check`` and CI do.
+    """
     url_validator = _memoized_url_validator(is_safe_public_url)
     spec, datasets = load_spec(spec_path, url_validator=url_validator)
     try:
@@ -2957,6 +2977,7 @@ def check_committed(
                 item for item in datasets
                 if item["publication"] in {"rows", "source-index"}
                 and item["expected"]["rows"]
+                and (rows_for is None or item["id"] in rows_for)
             ),
             key=lambda item: item["expected"]["rows"], reverse=True,
         )
@@ -3059,7 +3080,12 @@ def check_committed(
             or publication.get("derivedOnlyRows") != expected_derived_only_rows
         ):
             raise DatasetBuildError(f"equazione righe divergente per {item['id']}")
-        if item["publication"] in {"rows", "source-index"}:
+        if item["publication"] in {"rows", "source-index"} and rows_for is not None and item["id"] not in rows_for:
+            _check_committed_chunk_bytes(item, rows_dir, ROOT, row_hashes(item))
+            rows_sha, rows_with_source, redactions = (
+                receipt.get("rowsSha256"), publication.get("rowsWithPublicSource"), publication.get("redactions"),
+            )
+        elif item["publication"] in {"rows", "source-index"}:
             rows_sha, rows_with_source, redactions, row_seconds = (
                 row_results[item["id"]] if expected_public_rows and workers > 1
                 else _check_committed_public_rows(item, rows_dir, ROOT, row_hashes(item), url_validator)

@@ -51,6 +51,7 @@ class SiopeNonMunicipalTests(TestCase):
         (self.input / "amministrazioni.txt").write_text(
             "cf\tcod_amm\tregione\n00000000001\tprov_test\tTest\n00000000002\treg_test\tTest\n00000000003\tmetro_test\tTest\n00000000003\tmetro_alt\tTest\n",
             encoding="utf-8",
+            newline="\n",
         )
         for year in etl.YEARS:
             rows = [["100", str(year), "01", "1.01", "100"], ["200", str(year), "01", "1.01", "-100"], ["300", str(year), "02", "1.01", "0"], ["400", str(year), "03", "1103", "9"]]
@@ -88,7 +89,7 @@ class SiopeNonMunicipalTests(TestCase):
             "schemaVersion": 1,
             "scope": "non-municipal-payments-inputs",
             "files": files,
-        }, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+        }, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8", newline="\n")
 
     def build(self) -> dict:
         return etl.build_release(
@@ -207,6 +208,7 @@ class SiopeNonMunicipalTests(TestCase):
         (self.input / "amministrazioni.txt").write_text(
             "cf\tcod_amm\tregione\n00000000001\tprov_test\tTest\n00000000002\treg_test\tTest\n",
             encoding="utf-8",
+            newline="\n",
         )
         for year in etl.YEARS:
             rows = [["100", str(year), "01", "1.01", "400"]]
@@ -253,7 +255,7 @@ class SiopeNonMunicipalTests(TestCase):
                 ["1.01", "REG", "Personale", "2024-01-01", "9999-12-31"],
             ],
         })
-        (self.input / "amministrazioni.txt").write_text("cf\tcod_amm\tregione\n00000000001\tprov_test\tTest\n", encoding="utf-8")
+        (self.input / "amministrazioni.txt").write_text("cf\tcod_amm\tregione\n00000000001\tprov_test\tTest\n", encoding="utf-8", newline="\n")
         self.write_input_receipt()
         with self.assertRaisesRegex(etl.SiopeNonMunicipalError, "tipi distinti"):
             self.build()

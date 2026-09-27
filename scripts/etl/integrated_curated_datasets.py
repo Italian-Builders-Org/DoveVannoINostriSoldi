@@ -3081,10 +3081,8 @@ def check_committed(
         ):
             raise DatasetBuildError(f"equazione righe divergente per {item['id']}")
         if item["publication"] in {"rows", "source-index"} and rows_for is not None and item["id"] not in rows_for:
+            # Rows sealed by the previous proof: only their bytes are bound again.
             _check_committed_chunk_bytes(item, rows_dir, ROOT, row_hashes(item))
-            rows_sha, rows_with_source, redactions = (
-                receipt.get("rowsSha256"), publication.get("rowsWithPublicSource"), publication.get("redactions"),
-            )
         elif item["publication"] in {"rows", "source-index"}:
             rows_sha, rows_with_source, redactions, row_seconds = (
                 row_results[item["id"]] if expected_public_rows and workers > 1

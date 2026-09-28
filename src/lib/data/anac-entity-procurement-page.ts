@@ -1499,7 +1499,12 @@ function sameShardFingerprint(left: ShardFingerprint, right: ShardFingerprint): 
   return left.size === right.size && left.mtimeMs === right.mtimeMs && left.ctimeMs === right.ctimeMs && left.ino === right.ino;
 }
 
-type LoadedShard = Readonly<{ records: AnacEntityProcurementPageRecord[]; fingerprint: ShardFingerprint; rawBytes: number }>;
+type RecordRange = Readonly<{ start: number; end: number }>;
+type ShardIndex = ReadonlyMap<string, RecordRange>;
+type LoadedShard = Readonly<{ content: string; index: ShardIndex; fingerprint: ShardFingerprint; rawBytes: number }>;
+// A digest identifies exactly the bytes whose entire semantic contract was checked.
+// Retain only offsets after eviction, never unchecked records or a failed validation.
+const validatedIndexes = new ArtifactCache<ShardIndex>(256, 4 * 1024 * 1024);
 
 function readShard(root: string, shardMeta: AnacPageShardMeta): LoadedShard {
   const prefix = shardPrefix(shardMeta);
@@ -1523,32 +1528,50 @@ function readShard(root: string, shardMeta: AnacPageShardMeta): LoadedShard {
   if (lines.length !== shardMeta.entities || lines.length > MAX_RECORDS_PER_SHARD) {
     throw new Error(`ANAC entity page: record shard ${prefix} divergenti.`);
   }
-  const records = lines.map((line, index) => {
-    if (!line) throw new Error(`ANAC entity page: riga vuota nello shard ${prefix}.`);
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(line) as unknown;
-    } catch {
-      throw new Error(`ANAC entity page: JSON riga ${index + 1} non valido.`);
+  const validationKey = `${prefix}:${shardMeta.sha256}`;
+  let index = validatedIndexes.get(validationKey);
+  if (!index) {
+    const ranges = new Map<string, RecordRange>();
+    let start = 0;
+    for (const [position, line] of lines.entries()) {
+      if (!line) throw new Error(`ANAC entity page: riga vuota nello shard ${prefix}.`);
+      let parsed: unknown;
+      try { parsed = JSON.parse(line) as unknown; }
+      catch { throw new Error(`ANAC entity page: JSON riga ${position + 1} non valido.`); }
+      const record = validateRecord(parsed, prefix);
+      if (ranges.has(record.codiceIpa)) throw new Error(`ANAC entity page: identità duplicata nello shard ${prefix}.`);
+      ranges.set(record.codiceIpa, { start, end: start + line.length });
+      start += line.length + 1;
     }
-    return validateRecord(parsed, prefix);
-  });
-  return { records, fingerprint, rawBytes: uncompressed.byteLength };
+    index = ranges;
+    validatedIndexes.set(validationKey, index, Buffer.byteLength(JSON.stringify([...index])));
+  }
+  return { content, index, fingerprint, rawBytes: uncompressed.byteLength };
 }
 
-type CachedShard = Readonly<{ records: readonly AnacEntityProcurementPageRecord[]; fingerprint: ShardFingerprint }>;
-const shardCache = new ArtifactCache<CachedShard>(MAX_CACHE_ENTRIES, 32 * 1024 * 1024);
+const shardCache = new ArtifactCache<LoadedShard>(MAX_CACHE_ENTRIES, 16 * 1024 * 1024);
+const recordCache = new ArtifactCache<AnacEntityProcurementPageRecord>(128, 16 * 1024 * 1024);
 const metadataCache = new ArtifactCache<AnacEntityProcurementPageMeta>(4, 4 * MAX_META_BYTES);
 const concentrations = new WeakMap<AnacEntityProcurementPageRecord, AnacEntityProcurementPageView["concentration"]>();
-function cachedShard(root: string, shard: AnacPageShardMeta): readonly AnacEntityProcurementPageRecord[] {
-  const key = `${root}\u001f${shard.path}\u001f${shard.sha256}`;
-  const path = shardFilePath(root, shard);
-  const fingerprint = shardFingerprint(path);
-  const cached = shardCache.get(key);
-  if (cached && sameShardFingerprint(cached.fingerprint, fingerprint)) return cached.records;
-  const loaded = readShard(root, shard);
-  shardCache.set(key, loaded, loaded.rawBytes);
-  return loaded.records;
+function cachedRecord(root: string, shard: AnacPageShardMeta, codiceIpa: string): AnacEntityProcurementPageRecord | undefined {
+  const fingerprint = shardFingerprint(shardFilePath(root, shard));
+  const key = `${root}\u001f${shard.path}\u001f${shard.sha256}\u001f${JSON.stringify(fingerprint)}`;
+  const recordKey = `${key}\u001f${codiceIpa}`;
+  const cached = recordCache.get(recordKey);
+  if (cached) return cached;
+  let loaded = shardCache.get(key);
+  if (!loaded) {
+    loaded = readShard(root, shard);
+    if (!sameShardFingerprint(fingerprint, loaded.fingerprint)) throw new Error("ANAC entity page: shard cambiato durante la lettura.");
+    shardCache.set(key, loaded, loaded.rawBytes);
+  }
+  const range = loaded.index.get(codiceIpa);
+  if (!range) return undefined;
+  // Parsing only the requested line avoids reconstructing every neighbour on a miss.
+  const line = loaded.content.slice(range.start, range.end);
+  const record = JSON.parse(line) as AnacEntityProcurementPageRecord;
+  recordCache.set(recordKey, record, Buffer.byteLength(line));
+  return record;
 }
 
 export function assertAnacEntityProcurementPageRecord(value: unknown, prefix = "00"): AnacEntityProcurementPageRecord {
@@ -1603,7 +1626,7 @@ export async function loadAnacEntityProcurementPage(
     const prefix = createHash("sha256").update(codiceIpa).digest("hex").slice(0, 2);
     const shard = meta.shards.find((candidate) => shardPrefix(candidate) === prefix);
     if (!shard) return { status: "not_found", reason: "entity-not-in-profile", message: "Nessun profilo ANAC pubblicato per questo ente." };
-    const record = cachedShard(root, shard).find((candidate) => candidate.codiceIpa === codiceIpa);
+    const record = cachedRecord(root, shard, codiceIpa);
     if (!record) return { status: "not_found", reason: "entity-not-in-profile", message: "Nessun profilo ANAC pubblicato per questo ente." };
     if (
       args.verifyLiveFiscalCode !== false

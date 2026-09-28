@@ -35,6 +35,12 @@ MAX_CSV_BYTES = 8_000_000
 MAX_PDF_BYTES = 20_000_000
 CAMERA_HOSTS = {"trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"}
 SENATE_HOSTS = {"dati.senato.it", "www.senato.it", "senato.it"}
+QUIRINALE_HOSTS = {"www.quirinale.it", "quirinale.it", "new.quirinale.it"}
+INSTITUTION_HOSTS = {
+    "camera": CAMERA_HOSTS,
+    "senato": SENATE_HOSTS,
+    "quirinale": QUIRINALE_HOSTS,
+}
 SOURCE_UNAVAILABLE_HTTP_CODES = {403, 408, 425, 429, 500, 502, 503, 504}
 SENATE_DOCUMENT_TYPE = "Rendiconto delle entrate e delle spese e progetto di bilancio interno del Senato"
 
@@ -169,17 +175,19 @@ def document_from_mapping(
     kind = require_text(item.get("kind"), f"{field}.kind")
     if kind not in {"account", "budget"}:
         raise StructuralError(f"{field}.kind: account o budget atteso")
-    hosts = CAMERA_HOSTS if chamber == "camera" else SENATE_HOSTS
+    hosts = INSTITUTION_HOSTS.get(chamber)
+    if hosts is None:
+        raise StructuralError(f"{field}: camera, senato o quirinale atteso")
     number = item.get("documentNumber")
     asset_sha256: str | None = None
     asset_bytes: int | None = None
-    if chamber == "camera" and require_asset:
+    if require_asset:
         asset = require_object(item.get("asset"), f"{field}.asset")
         asset_sha256 = require_text(asset.get("sha256"), f"{field}.asset.sha256")
         if not re.fullmatch(r"[0-9a-f]{64}", asset_sha256):
             raise StructuralError(f"{field}.asset.sha256: SHA-256 minuscolo atteso")
         asset_bytes = require_int(asset.get("bytes"), f"{field}.asset.bytes", 1, MAX_PDF_BYTES)
-        if kind == "account":
+        if chamber in {"camera", "senato"} and kind == "account":
             evidence = require_list(item.get("evidence"), f"{field}.evidence")
             if not evidence:
                 raise StructuralError(f"{field}.evidence: riferimenti al documento richiesti")
@@ -210,14 +218,14 @@ def validate_public_snapshot(snapshot: dict[str, Any]) -> None:
     if snapshot.get("schemaVersion") != 1 or snapshot.get("transformVersion") != 2:
         raise StructuralError("parliament-overview: versione 1 attesa")
     chambers = require_list(snapshot.get("chambers"), "parliament-overview.chambers")
-    if not 1 <= len(chambers) <= 2:
-        raise StructuralError("parliament-overview.chambers: uno o due rami attesi")
+    if not 1 <= len(chambers) <= 3:
+        raise StructuralError("parliament-overview.chambers: da una a tre istituzioni attese")
     seen: set[str] = set()
     for index, raw_chamber in enumerate(chambers):
         field = f"parliament-overview.chambers[{index}]"
         chamber = require_object(raw_chamber, field)
         chamber_id = require_text(chamber.get("id"), f"{field}.id")
-        if chamber_id not in {"camera", "senato"} or chamber_id in seen:
+        if chamber_id not in {"camera", "senato", "quirinale"} or chamber_id in seen:
             raise StructuralError(f"{field}.id non valido o duplicato")
         seen.add(chamber_id)
         if chamber.get("structuredStatus") != "structured-summary":
@@ -313,15 +321,24 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
         raise StructuralError("manifest.senato.documentSeries: VIII atteso")
     known_max = require_int(senate.get("knownMaxDocumentNumber"), "manifest.senato.knownMaxDocumentNumber", 1, 10_000)
     senate_docs: list[Document] = []
+    structured_senate_docs: list[Document] = []
     for index, item in enumerate(require_list(senate.get("latestDocuments"), "manifest.senato.latestDocuments")):
         field = f"manifest.senato.latestDocuments[{index}]"
         record = require_object(item, field)
-        if record.get("publicationStatus") != "metadata-only":
-            raise StructuralError(f"{field}.publicationStatus: metadata-only atteso")
-        document = document_from_mapping(record, field, "senato")
+        status = record.get("publicationStatus")
+        if status not in {"metadata-only", "structured"}:
+            raise StructuralError(f"{field}.publicationStatus: metadata-only o structured atteso")
+        document = document_from_mapping(
+            record,
+            field,
+            "senato",
+            require_asset=status == "structured",
+        )
         if document.document_number is None or document.presented_at is None or document.record_url is None:
             raise StructuralError(f"{field}: provenienza Senato incompleta")
         senate_docs.append(document)
+        if status == "structured":
+            structured_senate_docs.append(document)
     if {item.kind for item in senate_docs} != {"account", "budget"}:
         raise StructuralError("manifest.senato.latestDocuments: ultimo rendiconto e ultimo bilancio attesi")
     if max(item.document_number or 0 for item in senate_docs) != known_max:
@@ -339,8 +356,48 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
         manifest_docs = {(item.kind, item.year, item.document_url) for item in camera_docs}
         if not public_docs <= manifest_docs:
             raise StructuralError("snapshot Camera: documento non presente nel manifesto delle fonti")
-    if any(item.get("id") == "senato" for item in snapshot.get("chambers", [])):
-        raise StructuralError("snapshot Senato: i documenti metadata-only non devono essere pubblicati")
+    public_senate = next(
+        (item for item in snapshot.get("chambers", []) if item.get("id") == "senato"),
+        None,
+    )
+    if public_senate is not None:
+        if not structured_senate_docs:
+            raise StructuralError("snapshot Senato: i documenti metadata-only non devono essere pubblicati")
+        public_senate_docs = {
+            (item.get("kind"), item.get("year"), item.get("documentUrl"))
+            for item in require_list(public_senate.get("statements"), "snapshot.senato.statements")
+        }
+        manifest_structured = {(item.kind, item.year, item.document_url) for item in structured_senate_docs}
+        if not public_senate_docs <= manifest_structured:
+            raise StructuralError("snapshot Senato: documento non presente tra le fonti structured")
+
+    quirinale = require_object(manifest.get("quirinale"), "manifest.quirinale")
+    official_url(quirinale.get("landingUrl"), "manifest.quirinale.landingUrl", QUIRINALE_HOSTS)
+    quirinale_docs = [
+        document_from_mapping(
+            item,
+            f"manifest.quirinale.documents[{index}]",
+            "quirinale",
+            require_asset=True,
+        )
+        for index, item in enumerate(require_list(quirinale.get("documents"), "manifest.quirinale.documents"))
+    ]
+    if not quirinale_docs or len({item.identity() for item in quirinale_docs}) != len(quirinale_docs):
+        raise StructuralError("manifest.quirinale.documents: documenti mancanti o duplicati")
+    public_quirinale = next(
+        (item for item in snapshot.get("chambers", []) if item.get("id") == "quirinale"),
+        None,
+    )
+    if public_quirinale is not None:
+        public_q_docs = {
+            (item.get("kind"), item.get("year"), item.get("documentUrl"))
+            for item in require_list(public_quirinale.get("statements"), "snapshot.quirinale.statements")
+        }
+        manifest_q_docs = {(item.kind, item.year, item.document_url) for item in quirinale_docs}
+        # The endowment series statement reuses the 2025 note URL; allow that reuse.
+        if not public_q_docs <= manifest_q_docs:
+            raise StructuralError("snapshot Quirinale: documento non presente nel manifesto delle fonti")
+
     return camera_docs, senate_docs, known_max
 
 

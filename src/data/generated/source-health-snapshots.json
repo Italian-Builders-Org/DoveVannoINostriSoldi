@@ -74,20 +74,20 @@
   {
     "sourceId": "consulenti",
     "sourceTimestamp": null,
-    "detail": "Snapshot estratto il 2026-09-25 · ultimo anno disponibile 2026, parziale",
-    "recordCount": 94943
+    "detail": "Snapshot estratto il 2026-09-27 · ultimo anno disponibile 2026, parziale",
+    "recordCount": 95529
   },
   {
     "sourceId": "camera",
     "sourceTimestamp": null,
-    "detail": "Snapshot verificato il 2026-08-20 · consuntivo e bilancio collegati ai documenti ufficiali della Camera.",
-    "recordCount": 2
+    "detail": "Snapshot verificato il 2026-09-26 · consuntivo e bilancio collegati ai documenti ufficiali della Camera.",
+    "recordCount": 7
   },
   {
     "sourceId": "senato",
     "sourceTimestamp": null,
-    "detail": "Metadati verificati il 2026-08-20 · importi esclusi finché i PDF contabili non sono acquisiti e verificati.",
-    "recordCount": 2
+    "detail": "Snapshot verificato il 2026-09-26 · 3 rendiconti con categorie da PDF pinnati e 6 documenti nel manifesto.",
+    "recordCount": 6
   },
   {
     "sourceId": "pcm",

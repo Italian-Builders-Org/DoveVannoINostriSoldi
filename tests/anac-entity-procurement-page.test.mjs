@@ -734,3 +734,25 @@ test("record keys are order independent but cannot be replaced by inherited or h
   Object.defineProperty(hidden, "codiceIpa", { enumerable: false });
   assert.throws(() => loader.assertAnacEntityProcurementPageRecord(hidden, prefix), /chiavi inattese/);
 });
+
+test("entity record cache survives shard churn and rejects changed files", async () => {
+  const fixtures = Array.from({ length: 10 }, makeFixture);
+  const load = (f) => loader.loadAnacEntityProcurementPage({ codiceIpa: f.record.codiceIpa, currentEntityCf: f.record.codiceFiscaleEnte, rootDirectory: f.projectRoot });
+  try {
+    const first = await load(fixtures[0]);
+    assert.equal(first.status, "available");
+    for (const f of fixtures.slice(1)) assert.equal((await load(f)).status, "available");
+    const warm = await load(fixtures[0]);
+    assert.equal(warm.status, "available");
+    assert.strictEqual(warm.profile.awards, first.profile.awards, "retain the requested record, not all expanded neighbours");
+    const path = join(fixtures[0].projectRoot, SHARD_RELATIVE, `${fixtures[0].prefix}.jsonl.gz`);
+    const original = readFileSync(path);
+    const damaged = Buffer.from(original); damaged[damaged.length - 1] ^= 1;
+    writeFileSync(path, damaged);
+    assert.equal((await load(fixtures[0])).status, "unavailable");
+    writeFileSync(path, original);
+    assert.equal((await load(fixtures[0])).status, "available", "failures must not poison a repaired snapshot");
+  } finally {
+    for (const f of fixtures) cleanup(f);
+  }
+});

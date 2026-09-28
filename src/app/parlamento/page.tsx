@@ -4,12 +4,13 @@ import { longDate } from "@/lib/format";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
 import type { ParliamentStatement } from "@/lib/data/parliament-contract";
 import { INSTITUTIONAL_SOURCE_REGISTRY } from "@/lib/data/institutional-source-registry";
+import { ParliamentYearFilter } from "./ParliamentYearFilter";
 import styles from "./parlamento.module.css";
 
 export const metadata: Metadata = {
-  title: "Spese del Parlamento: Camera e Senato",
+  title: "Spese Camera, Senato e Quirinale",
   description:
-    "Dati verificati della Camera e copertura documentale separata per Camera e Senato, con periodi, procedure e fonti ufficiali.",
+    "Consuntivi Camera 2020-2025 con dettaglio per categoria, rendiconti Senato 2022-2024 per capitolo, previsioni Quirinale 2022-2025 per comparti e serie della dotazione, con periodi e fonti distinti.",
 };
 
 const amount = new Intl.NumberFormat("it-IT", {
@@ -18,242 +19,273 @@ const amount = new Intl.NumberFormat("it-IT", {
   useGrouping: "always",
 });
 
-const componentAmount = new Intl.NumberFormat("it-IT", {
-  maximumFractionDigits: 2,
-  minimumFractionDigits: 2,
-  useGrouping: "always",
-});
-
-const valueLabels: Record<string, string> = {
-  totalCommitments: "Impegni totali",
-  effectiveCommitments: "Impegni per la spesa effettiva",
-  effectivePayments: "Pagamenti per la spesa effettiva",
-  finalAdministrationSurplus: "Avanzo finale di amministrazione",
-  annualStateContribution: "Contributo dello Stato",
-  plannedExpenditure: "Spesa prevista",
-  functioningExpenditure: "Spesa di funzionamento prevista",
-  plannedRevenue: "Entrate previste",
-};
-
 function millionEuro(value: number): string {
   return `${amount.format(value)} mln €`;
-}
-
-function componentMillionEuro(value: number): string {
-  return `${componentAmount.format(value)} mln €`;
 }
 
 function statementValue(statement: ParliamentStatement, key: string): number | null {
   return statement.values?.[key] ?? null;
 }
 
+function chamberLabel(id: string): string {
+  if (id === "camera") return "Camera";
+  if (id === "senato") return "Senato";
+  if (id === "quirinale") return "Quirinale";
+  return id;
+}
+
 export default function ParliamentPage() {
   const chambers = parliamentSnapshot.chambers;
+  const camera = chambers.find((chamber) => chamber.id === "camera");
+  const quirinale = chambers.find((chamber) => chamber.id === "quirinale");
   const documentCoverage = INSTITUTIONAL_SOURCE_REGISTRY.filter(
     (source) => source.domain === "parliament",
   );
-  const latestAccount = chambers
-    .flatMap((chamber) => chamber.statements)
+
+  const cameraAccounts = (camera?.statements ?? [])
     .filter((statement) => statement.kind === "account")
-    .sort((left, right) => right.year - left.year)[0];
-  const latestBudget = chambers
-    .flatMap((chamber) => chamber.statements)
+    .slice()
+    .sort((left, right) => left.year - right.year);
+  const endowmentSeries = quirinale?.statements.find((statement) =>
+    statement.title.toLocaleLowerCase("it-IT").includes("serie della dotazione"),
+  );
+
+  const latestCameraAccount = cameraAccounts.at(-1);
+  const latestCameraBudget = (camera?.statements ?? [])
     .filter((statement) => statement.kind === "budget")
     .sort((left, right) => right.year - left.year)[0];
 
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Spese del Parlamento</h1>
+        <h1>Spese di Camera, Senato e Quirinale</h1>
         <p>
-          Camera e Senato hanno bilanci autonomi. Per la Camera mostriamo i dati già estratti e
-          controllati; per i documenti 2024 dei due rami, per ora i riferimenti ufficiali.
+          Tre bilanci autonomi, tre fonti ufficiali. Per la Camera i consuntivi 2020-2025 hanno la
+          ripartizione per categoria. Per il Senato i rendiconti 2022-2024 sono ripartiti per capitolo
+          (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni 2022-2025 per
+          comparti e la serie della dotazione.
         </p>
       </div>
 
       <dl className="stat-strip">
         <div>
-          <dt>Rami con numeri verificati</dt>
+          <dt>Istituzioni con numeri</dt>
           <dd>{chambers.length}</dd>
-          <span className="stat-note">su documenti ufficiali verificati</span>
+          <span className="stat-note">Camera e Quirinale strutturati</span>
         </div>
         <div>
           <dt>Ultimo consuntivo Camera</dt>
-          <dd>{latestAccount?.year ?? "Non disponibile"}</dd>
-          <span className="stat-note">spese già registrate</span>
+          <dd>{latestCameraAccount?.year ?? "Non disponibile"}</dd>
+          <span className="stat-note">
+            {latestCameraAccount
+              ? millionEuro(statementValue(latestCameraAccount, "effectivePayments") ?? 0)
+              : "spese registrate"}
+          </span>
         </div>
         <div>
           <dt>Ultimo bilancio Camera</dt>
-          <dd>{latestBudget?.year ?? "Non disponibile"}</dd>
+          <dd>{latestCameraBudget?.year ?? "Non disponibile"}</dd>
           <span className="stat-note">spese previste</span>
         </div>
         <div>
           <dt>Controllato da noi</dt>
           <dd>{longDate(parliamentSnapshot.observedAt)}</dd>
-          <span className="stat-note">controllo automatico ogni 6 ore</span>
+          <span className="stat-note">snapshot statico pinnato</span>
         </div>
       </dl>
 
-      {chambers.map((chamber) => (
-        <section className={styles.chamber} key={chamber.id}>
-          <header className={styles.chamberHeader}>
-            <div>
-              <span>Dati ufficiali</span>
-              <h2>{chamber.name}</h2>
-            </div>
-            <a href={chamber.landingUrl} target="_blank" rel="noreferrer">
-              Apri la pagina ufficiale ↗
-            </a>
-          </header>
-
-          <div className={styles.statementGrid}>
-            {chamber.statements
-              .slice()
-              .sort((left, right) => left.kind.localeCompare(right.kind))
-              .map((statement) => {
-                const isAccount = statement.kind === "account";
-                const mainValue = isAccount
-                  ? statementValue(statement, "effectivePayments")
-                  : statementValue(statement, "plannedExpenditure");
-                const items = isAccount ? statement.categories : statement.highlights;
-                const maximum = Math.max(
-                  1,
-                  ...(items?.map((item) => ("paid" in item ? item.paid : item.value)) ?? []),
-                );
-
-                return (
-                  <article className="panel" key={`${statement.kind}-${statement.year}`}>
-                    <div className={styles.statementHeader}>
-                      <div>
-                        <span>{isAccount ? "Spese registrate" : "Spese previste"}</span>
-                        <h3>{statement.title}</h3>
-                      </div>
-                      <strong>{mainValue === null ? "Dato non disponibile" : millionEuro(mainValue)}</strong>
-                    </div>
-
-                    <p className={styles.meaning}>{statement.meaning}</p>
-
-                    {statement.values && (
-                      <dl className={styles.values}>
-                        {Object.entries(statement.values).map(([key, value]) => (
-                          <div key={key}>
-                            <dt>{valueLabels[key] ?? key}</dt>
-                            <dd>{millionEuro(value)}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    )}
-
-                    {items && items.length > 0 && (
-                      <div className={styles.breakdown}>
-                        <h4>{isAccount ? "Per cosa sono stati pagati" : "Alcune voci previste"}</h4>
-                        <ul>
-                          {items.map((item) => {
-                            const value = "paid" in item ? item.paid : item.value;
-                            return (
-                              <li key={item.id}>
-                                <div>
-                                  <span>{item.label}</span>
-                                  <strong>{millionEuro(value)}</strong>
-                                </div>
-                                <i style={{ width: `${Math.max(2, (value / maximum) * 100)}%` }} />
-                                {"components" in item && item.components ? (
-                                  <dl className={styles.categoryComponents}>
-                                    {item.components.map((component) => (
-                                      <div key={component.id}>
-                                        <dt>{component.label}</dt>
-                                        <dd>{componentMillionEuro(component.paid)}</dd>
-                                      </div>
-                                    ))}
-                                  </dl>
-                                ) : null}
-                                {"caveat" in item && item.caveat ? (
-                                  <p className={styles.categoryCaveat}>
-                                    {item.caveat}
-                                  </p>
-                                ) : null}
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    )}
-
-                    <a className={styles.documentLink} href={statement.documentUrl} target="_blank" rel="noreferrer">
-                      Leggi il documento ufficiale ↗
-                    </a>
-                  </article>
-                );
-              })}
+      {cameraAccounts.length > 1 ? (
+        <section className="panel" aria-labelledby="serie-camera">
+          <h2 id="serie-camera" className="panel-title">
+            Camera: pagamenti della spesa effettiva nel tempo
+          </h2>
+          <p className={styles.plainText}>
+            Totale dei pagamenti di competenza sui Titoli I, II e III (spesa effettiva), anno per
+            anno. Il dettaglio per categoria è sotto, selezionando l&apos;anno.
+          </p>
+          <div
+            className={`table-scroll ${styles.coverageTable}`}
+            role="region"
+            aria-label="Serie Camera pagamenti"
+            tabIndex={0}
+          >
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Anno</th>
+                  <th scope="col">Pagamenti spesa effettiva</th>
+                  <th scope="col">Impegni spesa effettiva</th>
+                  <th scope="col">Impegni totali</th>
+                  <th scope="col">Avanzo finale</th>
+                  <th scope="col">Dotazione Stato</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cameraAccounts.map((statement) => (
+                  <tr key={statement.year}>
+                    <th scope="row">{statement.year}</th>
+                    <td>
+                      {statementValue(statement, "effectivePayments") === null
+                        ? "n.d."
+                        : millionEuro(statementValue(statement, "effectivePayments")!)}
+                    </td>
+                    <td>
+                      {statementValue(statement, "effectiveCommitments") === null
+                        ? "n.d."
+                        : millionEuro(statementValue(statement, "effectiveCommitments")!)}
+                    </td>
+                    <td>
+                      {statementValue(statement, "totalCommitments") === null
+                        ? "n.d."
+                        : millionEuro(statementValue(statement, "totalCommitments")!)}
+                    </td>
+                    <td>
+                      {statementValue(statement, "finalAdministrationSurplus") === null
+                        ? "n.d."
+                        : millionEuro(statementValue(statement, "finalAdministrationSurplus")!)}
+                    </td>
+                    <td>
+                      {statementValue(statement, "annualStateContribution") === null
+                        ? "n.d."
+                        : millionEuro(statementValue(statement, "annualStateContribution")!)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
-      ))}
+      ) : null}
+
+      {endowmentSeries?.highlights ? (
+        <section className="panel" aria-labelledby="serie-quirinale">
+          <h2 id="serie-quirinale" className="panel-title">
+            Quirinale: dotazione a carico dello Stato
+          </h2>
+          <p className={styles.plainText}>
+            Importo annuale della dotazione iscritta nel bilancio dello Stato (tabella ufficiale della
+            nota illustrativa). Non coincide automaticamente con la spesa effettiva del Segretariato.
+          </p>
+          <div
+            className={`table-scroll ${styles.coverageTable}`}
+            role="region"
+            aria-label="Serie Quirinale dotazione"
+            tabIndex={0}
+          >
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Anno</th>
+                  <th scope="col">Dotazione</th>
+                </tr>
+              </thead>
+              <tbody>
+                {endowmentSeries.highlights.map((item) => (
+                  <tr key={item.id}>
+                    <th scope="row">{item.label}</th>
+                    <td>{millionEuro(item.value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ) : null}
+
+      <ParliamentYearFilter chambers={chambers} />
 
       <details className="data-details">
         <summary>Documenti, copertura e limiti</summary>
-      <div className="notice">
-        <strong>Come leggere questi numeri</strong>
-        <p>
-          Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
-          pagato. Ogni documento resta sul suo ambito.
-        </p>
-      </div>
+        <div className="notice">
+          <strong>Come leggere questi numeri</strong>
+          <p>
+            Il bilancio è quanto si prevede di spendere. Il consuntivo è quanto è stato impegnato o
+            pagato. Camera e Senato hanno bilanci autonomi; lo stesso vale per la Presidenza della
+            Repubblica. Nessun totale unico tra le tre istituzioni.
+          </p>
+        </div>
 
-      <section className="panel" aria-labelledby="copertura-parlamento">
-        <div className={styles.coverageHeader}>
-          <div>
-            <h2 id="copertura-parlamento">Copertura dei due rami</h2>
-            <p>Un documento censito non diventa automaticamente un dato numerico.</p>
+        <section className="panel" aria-labelledby="copertura-parlamento">
+          <div className={styles.coverageHeader}>
+            <div>
+              <h2 id="copertura-parlamento">Copertura documentale (metadati)</h2>
+              <p>Un documento censito non diventa automaticamente un dato numerico.</p>
+            </div>
+            <span>Fonti ufficiali</span>
           </div>
-          <span>Documenti 2024 · fonti ufficiali</span>
-        </div>
-        <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere approvazione, copertura e fonti.</p>
-        <div className={`table-scroll ${styles.coverageTable}`} role="region" aria-label="Copertura dei documenti contabili di Camera e Senato" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Ramo</th>
-                <th scope="col">Documento</th>
-                <th scope="col">Approvato</th>
-                <th scope="col">Copertura</th>
-                <th scope="col">Fonte</th>
-              </tr>
-            </thead>
-            <tbody>
-              {documentCoverage.map((source) => (
-                <tr key={source.id}>
-                  <th scope="row">{source.subjectId === "camera" ? "Camera" : "Senato"}</th>
-                  <td>
-                    {source.title}
-                    <small>ID fonte: {source.sourceRecordId}</small>
-                  </td>
-                  <td>{longDate(source.updatedAt)}</td>
-                  <td>
-                    <span className={styles.metadataStatus}>Solo metadati</span>
-                    <small>Numeri del PDF non verificati</small>
-                  </td>
-                  <td>
-                    <a href={source.sourceUrl} target="_blank" rel="noreferrer">Procedura ↗</a>
-                    {source.downloadUrl ? (
-                      <small><a href={source.downloadUrl} target="_blank" rel="noreferrer">PDF ufficiale ↗</a></small>
-                    ) : null}
-                  </td>
+          <p className={styles.scrollHint}>
+            Scorri la tabella verso destra per vedere approvazione, copertura e fonti.
+          </p>
+          <div
+            className={`table-scroll ${styles.coverageTable}`}
+            role="region"
+            aria-label="Copertura dei documenti contabili"
+            tabIndex={0}
+          >
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">Ramo</th>
+                  <th scope="col">Documento</th>
+                  <th scope="col">Approvato</th>
+                  <th scope="col">Copertura</th>
+                  <th scope="col">Fonte</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {documentCoverage.map((source) => (
+                  <tr key={source.id}>
+                    <th scope="row">{chamberLabel(source.subjectId)}</th>
+                    <td>
+                      {source.title}
+                      <small>ID fonte: {source.sourceRecordId}</small>
+                    </td>
+                    <td>{longDate(source.updatedAt)}</td>
+                    <td>
+                      {source.subjectId === "senato" &&
+                      source.title.toLocaleLowerCase("it-IT").includes("2024") ? (
+                        <>
+                          <span className={styles.metadataStatus}>Numeri pubblicati</span>
+                          <small>Rendiconto 2024 ripartito nello snapshot</small>
+                        </>
+                      ) : (
+                        <>
+                          <span className={styles.metadataStatus}>Solo metadati</span>
+                          <small>Numeri del PDF non verificati in questa tabella</small>
+                        </>
+                      )}
+                    </td>
+                    <td>
+                      <a href={source.sourceUrl} target="_blank" rel="noreferrer">
+                        Procedura ↗
+                      </a>
+                      {source.downloadUrl ? (
+                        <small>
+                          <a href={source.downloadUrl} target="_blank" rel="noreferrer">
+                            PDF ufficiale ↗
+                          </a>
+                        </small>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <section className="panel">
-        <h2 className="panel-title">Cosa non pubblichiamo ancora</h2>
-        <p className={styles.plainText}>{parliamentSnapshot.methodology.missingData}</p>
-        <p className={styles.plainText}>{parliamentSnapshot.methodology.comparability}</p>
-        <div className={styles.relatedLinks}>
-          <Link href="/stato">Spese delle amministrazioni centrali</Link>
-          <Link href="/fonti">Fonti collegate</Link>
-        </div>
-      </section>
+        <section className="panel">
+          <h2 className="panel-title">Cosa non pubblichiamo ancora</h2>
+          <p className={styles.plainText}>{parliamentSnapshot.methodology.missingData}</p>
+          <p className={styles.plainText}>{parliamentSnapshot.methodology.comparability}</p>
+          <div className={styles.relatedLinks}>
+            <Link href="/stato">Spese delle amministrazioni centrali</Link>
+            <Link href="/fonti">Fonti collegate</Link>
+            <a href="https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/667">
+              Issue #667
+            </a>
+          </div>
+        </section>
       </details>
     </main>
   );

@@ -530,6 +530,32 @@
       "trustModel": "The committed annual snapshot is validated offline for schema, coverage, identifiers, denominators, and provenance; online generation downloads the official ISTAT SITUAS reports."
     },
     {
+      "id": "istat-population-grid-2021",
+      "owner": "ISTAT Census 2021 1km population grid static overview",
+      "files": [
+        "src/data/generated/istat-population-grid-2021.data.json",
+        "src/data/generated/istat-population-grid-2021.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_population_grid_2021.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_population_grid_2021.py"
+      ],
+      "nodeTests": [
+        "tests/istat-population-grid-2021.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_population_grid_2021.py --write --input <GrigliaPop2021_Ind_ITA_CSV.zip>",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/istat-population-grid-2021.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock sullo zip CSV ufficiale ISTAT della griglia 1 km Censimento 2021 (URL, byte, SHA-256, membro CSV e nota metodologica). --check valida offline i totali pinati senza rete e senza refresh schedulato. soldi.present false. Nessun runtime network."
+    },
+    {
       "id": "istat-regions-2024",
       "owner": "ISTAT regional accounts 2024",
       "files": [

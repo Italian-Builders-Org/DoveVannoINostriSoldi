@@ -154,3 +154,19 @@ test("Roma CPV categories partition the locked profile and reconcile filtered in
     await assert.rejects(cpv.loadAnacCpvRecord(profile, root), /Provenienza/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
+
+test("CPV records survive shard churn without accepting a different parent cohort", async () => {
+  const { gunzipSync } = await import("node:zlib");
+  const profiles = [];
+  let first;
+  for (let i = 0; i < 10; i++) {
+    const prefix = i.toString(16).padStart(2, "0");
+    const row = JSON.parse(gunzipSync(readFileSync(`src/data/generated/anac-entity-procurement-page/entities/${prefix}.jsonl.gz`)).toString("utf8").split("\n")[0]);
+    const state = await domain.loadAnacEntityProcurementPage({ codiceIpa: row.codiceIpa, currentEntityCf: null, verifyLiveFiscalCode: false });
+    assert.equal(state.status, "available"); profiles.push(state.profile);
+    const record = await cpv.loadAnacCpvRecord(state.profile);
+    if (i === 0) first = record;
+  }
+  assert.strictEqual(await cpv.loadAnacCpvRecord(profiles[0]), first);
+  await assert.rejects(cpv.loadAnacCpvRecord({ ...profiles[0], procedures: [...profiles[0].procedures, { cig: "OTHER00001", publishedAt: null }] }), /non riconciliato/);
+});

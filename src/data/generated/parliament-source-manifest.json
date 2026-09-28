@@ -1,15 +1,115 @@
 {
   "schemaVersion": 1,
   "discoveryVersion": 1,
-  "verifiedAt": "2026-08-20T14:14:16Z",
+  "verifiedAt": "2026-09-26T19:15:00Z",
   "snapshotArtifact": {
     "path": "src/data/generated/parliament-overview.json",
-    "bytes": 11542,
-    "sha256": "e48d9f0cff9e71fb9fc4475a0a2c87ab7036a7a613f14a04a98d318f60212c15"
+    "bytes": 79750,
+    "sha256": "38b43fdf281e1f2a266b3086b2fc309f8ec438969a65dc31416d4f9036866a54"
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
     "documents": [
+      {
+        "kind": "account",
+        "year": 2020,
+        "title": "Conto consuntivo 2020",
+        "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/007/INTERO.pdf",
+        "asset": {
+          "bytes": 1064912,
+          "sha256": "8792361f7ba29fee5c80e0372a2eeef34b81049523c51bf3cb3fe84edfccde39"
+        },
+        "evidence": [
+          {
+            "pages": "5-9",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-49",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2021,
+        "title": "Conto consuntivo 2021",
+        "documentUrl": "https://documenti.camera.it/_dati/leg18/lavori/documentiparlamentari/IndiceETesti/008/009/INTERO.pdf",
+        "asset": {
+          "bytes": 1052481,
+          "sha256": "c28036ed24a7f670a82e080139df83116fbd61af3bec469c77e46cb44c804731"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-49",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "title": "Conto consuntivo 2022",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/001/INTERO.pdf",
+        "asset": {
+          "bytes": 4532955,
+          "sha256": "2e8ac57eba8b39647996577a638320a7e9a153864836f3a2868d2a1587b34d04"
+        },
+        "evidence": [
+          {
+            "pages": "5-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-49",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "title": "Conto consuntivo 2023",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/003/INTERO.pdf",
+        "asset": {
+          "bytes": 719856,
+          "sha256": "26f0989f5612d91119c2099c1ef4aa15eddf4fe5924fdf5db5b4aaac2da4bb31"
+        },
+        "evidence": [
+          {
+            "pages": "7-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2024,
+        "title": "Conto consuntivo 2024",
+        "documentUrl": "https://documenti.camera.it/_dati/leg19/lavori/documentiparlamentari/IndiceETesti/008/005/INTERO.pdf",
+        "asset": {
+          "bytes": 892321,
+          "sha256": "0f62501b22c3bed5cd0b82beedd2a67cc7048480b7f575aae617d0dbdd854af8"
+        },
+        "evidence": [
+          {
+            "pages": "7-8",
+            "scope": "totali della spesa effettiva e narrativa per categoria"
+          },
+          {
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
+          }
+        ]
+      },
       {
         "kind": "account",
         "year": 2025,
@@ -22,19 +122,11 @@
         "evidence": [
           {
             "pages": "7-8",
-            "scope": "riepilogo dei pagamenti per categoria e totale dei Titoli I-III"
+            "scope": "totali della spesa effettiva e narrativa per categoria"
           },
           {
-            "pages": "27-39",
-            "scope": "pagamenti di competenza per capitolo delle categorie I-VII (spese correnti)"
-          },
-          {
-            "pages": "45-49",
-            "scope": "pagamenti di competenza delle categorie VIII-X (investimenti / Titolo II)"
-          },
-          {
-            "pages": "49-51",
-            "scope": "composizione del Titolo III nelle Categorie XII e XIII"
+            "pages": "24-51",
+            "scope": "pagamenti di competenza per capitolo e totali di categoria (Titoli I-III)"
           }
         ]
       },
@@ -65,6 +157,79 @@
         "presentedAt": "2025-12-16",
         "recordUrl": "https://dati.senato.it/documento/52803",
         "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1487093.pdf",
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 966927,
+          "sha256": "de109375206e4fc931443bce671f50b2063ca6b5c5e1c9100b6b3b4450289df5"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2024.pdf",
+        "evidence": [
+          {
+            "pages": "12-18",
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "documentNumber": 3,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2023",
+        "presentedAt": "2024-11-27",
+        "recordUrl": "https://dati.senato.it/documento/50230",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1435880.pdf",
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 465155,
+          "sha256": "95fc92c39c59a3ae6cb35c14bd96a8bfe11dfa0dbde435177508a50941aaee43"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2023.pdf",
+        "evidence": [
+          {
+            "pages": "15-27",
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2023,
+        "documentNumber": 3,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2023",
+        "presentedAt": "2024-11-27",
+        "recordUrl": "https://dati.senato.it/documento/50230",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1439383.pdf",
+        "publicationStatus": "metadata-only"
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "documentNumber": 1,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2022",
+        "presentedAt": "2023-10-25",
+        "recordUrl": "https://dati.senato.it/documento/47890",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1391468.pdf",
+        "publicationStatus": "structured",
+        "asset": {
+          "bytes": 1719929,
+          "sha256": "6c75c285a98edc415cf60cbec3ab41a8b8c907ff2d104af67c5fa710df73c60f"
+        },
+        "pinnedPath": "data/parliament/pinned/senato-rendiconto-2022.pdf",
+        "evidence": [
+          {
+            "pages": "15-28",
+            "scope": "pagamenti Titoli I-II per capitolo; ripartizione senatori/personale/funzionamento/previdenza"
+          }
+        ]
+      },
+      {
+        "kind": "account",
+        "year": 2022,
+        "documentNumber": 1,
+        "title": "Rendiconto delle entrate e delle spese del Senato per l'anno finanziario 2022",
+        "presentedAt": "2023-10-25",
+        "recordUrl": "https://dati.senato.it/documento/47890",
+        "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1393041.pdf",
         "publicationStatus": "metadata-only"
       },
       {
@@ -76,6 +241,89 @@
         "recordUrl": "https://dati.senato.it/documento/52804",
         "documentUrl": "https://www.senato.it/service/PDF/PDFServer/BGT/1487095.pdf",
         "publicationStatus": "metadata-only"
+      }
+    ]
+  },
+  "quirinale": {
+    "landingUrl": "https://www.quirinale.it/it/pagine/nota-illustrativa-bilancio-previsione-2026",
+    "documents": [
+      {
+        "kind": "budget",
+        "year": 2025,
+        "title": "Nota illustrativa del bilancio di previsione 2025",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+        "asset": {
+          "bytes": 312864,
+          "sha256": "9cd96e603aeac3e3d2b01c682582d05872b9b24fef7716d2621c379f3858eb2c"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2025.pdf"
+      },
+      {
+        "kind": "budget",
+        "year": 2024,
+        "title": "Nota illustrativa del bilancio di previsione 2024",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2024/nota_illustrativa_bilancio_previsione_2024.pdf",
+        "asset": {
+          "bytes": 336666,
+          "sha256": "518afbfd042fcfb7ea4ed171bd579266285bf5c2aed11f64ba4493a79247b4fa"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2024.pdf"
+      },
+      {
+        "kind": "budget",
+        "year": 2023,
+        "title": "Nota illustrativa del bilancio di previsione 2023",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2023/nota_illustrativa_bilancio_previsione_2023.pdf",
+        "asset": {
+          "bytes": 232405,
+          "sha256": "2a032dc3fdd5ce482b35442d1b18c90e0f6dfcd05e75d6c385f8442a77778c6a"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2023.pdf"
+      },
+      {
+        "kind": "budget",
+        "year": 2022,
+        "title": "Nota illustrativa del bilancio di previsione 2022",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio_2022/nota_illustrativa_bilancio_previsione_2022.pdf",
+        "asset": {
+          "bytes": 365058,
+          "sha256": "5026f93783776000986adc8e20b8c52c7784ace92706fabd7707d7d8cfcc46da"
+        },
+        "evidence": [
+          {
+            "pages": "nota",
+            "scope": "comparti retribuzioni, previdenza, beni e servizi, fondi di riserva"
+          }
+        ],
+        "pinnedPath": "data/parliament/pinned/quirinale-nota-2022.pdf"
+      },
+      {
+        "kind": "budget",
+        "year": 2028,
+        "title": "Serie della dotazione a carico del bilancio dello Stato (2007-2028)",
+        "documentUrl": "https://new.quirinale.it/allegati_statici/bilancio/nota_illustrativa_bilancio_previsione_2025.pdf",
+        "asset": {
+          "bytes": 312864,
+          "sha256": "9cd96e603aeac3e3d2b01c682582d05872b9b24fef7716d2621c379f3858eb2c"
+        }
       }
     ]
   }

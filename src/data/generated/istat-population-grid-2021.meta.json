@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-population-grid-2021",
+  "generatedAt": "2026-09-26T07:15:00.000Z",
+  "observedAt": "2026-09-26T07:15:00.000Z",
+  "source": {
+    "holder": "Istituto Nazionale di Statistica (ISTAT)",
+    "landingUrl": "https://www.istat.it/notizia/statistiche-sulla-popolazione-per-griglia-regolare/",
+    "assetUrl": "https://www.istat.it/wp-content/uploads/2023/07/GrigliaPop2021_Ind_ITA_CSV.zip",
+    "methodologyUrl": "https://www.istat.it/wp-content/uploads/2023/07/NotaMetodologicaGriglia2021-Ind.pdf",
+    "licenseId": "not-declared",
+    "acquiredAt": "2026-09-26T07:15:00.000Z",
+    "asset": {
+      "bytes": 3651502,
+      "sha256": "a7f145cc74fef8c4cdc8c8f193dbe7dcca4de5d6856291c534cdc2ba6a5d4003",
+      "member": {
+        "path": "GrigliaPop2021_Ind_ITA_CSV.txt",
+        "bytes": 21344090,
+        "sha256": "ae6faabad7243212d9a6df93bbd6cf7c406e9adef2df37ff4da6b91c8d6fdcd6"
+      }
+    },
+    "methodology": {
+      "bytes": 577732,
+      "sha256": "65355fd08a79a311fb252a000f472eda1ef3c98417ef63163b9d611f83106b14"
+    }
+  },
+  "semantics": {
+    "soldi": {
+      "present": false,
+      "note": "Conteggi di persone e celle sulla griglia 1 km² del Censimento 2021; non importi monetari né spesa pubblica."
+    },
+    "periodo": {
+      "referencePeriod": "2021",
+      "censusYear": 2021,
+      "publicationDate": "2023-07-28",
+      "updateDate": "2024-09-10"
+    },
+    "provenance": {
+      "holder": "Istituto Nazionale di Statistica (ISTAT)"
+    }
+  },
+  "artifact": {
+    "path": "src/data/generated/istat-population-grid-2021.data.json",
+    "bytes": 4790,
+    "sha256": "15a5b51504e38f9d773cff683ea036ad6b65938845fe871188b312ca62cbb106"
+  },
+  "refreshWorkflow": null,
+  "runtimeNetwork": false
+}

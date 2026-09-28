@@ -127,3 +127,7 @@ test("la paginazione conserva il totale filtrato anche oltre la pagina richiesta
     total: 0, page: 1, pageCount: 0, positions: [],
   });
 });
+
+test("invalid amount intervals fail before loading operator history", () => {
+  assert.throws(() => parseOperatorHistorySearch({ minAmount: "10.01", maxAmount: "10" }));
+});

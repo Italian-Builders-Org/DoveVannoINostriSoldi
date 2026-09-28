@@ -6,10 +6,61 @@ import { assertParliamentSnapshot } from "../src/lib/data/parliament-contract.ts
 test("Parliament snapshot keeps accounts, budgets and official provenance separate", () => {
   const parsed = assertParliamentSnapshot(snapshot);
   const camera = parsed.chambers.find((chamber) => chamber.id === "camera");
+  const quirinale = parsed.chambers.find((chamber) => chamber.id === "quirinale");
 
   assert.equal(camera.structuredStatus, "structured-summary");
-  assert.ok(camera.statements.some((statement) => statement.kind === "account"));
+  assert.ok(camera.statements.filter((statement) => statement.kind === "account").length >= 6);
   assert.ok(camera.statements.some((statement) => statement.kind === "budget"));
+  assert.ok(quirinale, "quirinale atteso nello snapshot");
+  assert.ok(
+    quirinale.statements.some((statement) =>
+      statement.title.toLocaleLowerCase("it-IT").includes("serie della dotazione"),
+    ),
+  );
+  const quirinaleBudget = quirinale.statements.find(
+    (statement) => statement.kind === "budget" && statement.year === 2025,
+  );
+  assert.ok(quirinaleBudget?.categories?.length >= 4, "Quirinale 2025: comparti attesi");
+  const quirinaleSum = quirinaleBudget.categories.reduce((total, item) => total + item.paid, 0);
+  assert.ok(Math.abs(quirinaleSum - quirinaleBudget.values.plannedExpenditure) < 1e-8);
+
+  for (const year of [2022, 2023, 2024]) {
+    const quirinaleEarlier = quirinale.statements.find(
+      (statement) => statement.kind === "budget" && statement.year === year,
+    );
+    assert.ok(quirinaleEarlier?.categories?.length >= 4, `Quirinale ${year}: comparti attesi`);
+    const sum = quirinaleEarlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(sum - quirinaleEarlier.values.plannedExpenditure) < 1e-8,
+      `Quirinale ${year}: comparti non riconciliati`,
+    );
+  }
+
+  const senato = parsed.chambers.find((chamber) => chamber.id === "senato");
+  assert.ok(senato, "senato atteso nello snapshot");
+  const senatoAccount = senato.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2024,
+  );
+  assert.equal(senatoAccount.values.effectivePayments, 495.9277309);
+  assert.ok(senatoAccount.categories?.length >= 5, "Senato 2024: categorie per capitolo attese");
+  const senatoSum = senatoAccount.categories.reduce((total, item) => total + item.paid, 0);
+  assert.ok(Math.abs(senatoSum - senatoAccount.values.effectivePayments) < 1e-8);
+  assert.match(
+    senatoAccount.categories.find((category) => category.id === "previdenza").caveat,
+    /non equivale ai soli vitalizi/i,
+  );
+  for (const year of [2022, 2023]) {
+    const earlier = senato.statements.find(
+      (statement) => statement.kind === "account" && statement.year === year,
+    );
+    assert.ok(earlier?.categories?.length >= 5, `Senato ${year}: categorie per capitolo attese`);
+    const sum = earlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(sum - earlier.values.effectivePayments) <=
+        (earlier.categoryReconciliationTolerance ?? 0),
+      `Senato ${year}: categorie non riconciliate`,
+    );
+  }
   assert.ok(
     parsed.chambers.every((chamber) =>
       chamber.statements.every(
@@ -19,7 +70,9 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   );
   assert.match(parsed.methodology.comparability, /non vengono sommati/i);
 
-  const account = camera.statements.find((statement) => statement.kind === "account");
+  const account = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2025,
+  );
   const pensions = account.categories.find((category) => category.id === "pensions");
   assert.equal(pensions.paid, 418.22631632);
   assert.equal(
@@ -40,12 +93,43 @@ test("Parliament snapshot keeps accounts, budgets and official provenance separa
   assert.match(goods.caveat, /Altri capitoli/i);
 
   for (const category of account.categories) {
-    assert.ok(category.components?.length, `${category.id}: sottovoci attese`);
     assert.ok(category.caveat, `${category.id}: nota semantica attesa`);
+    if (!category.components?.length) continue;
     const componentTotal = category.components.reduce((total, component) => total + component.paid, 0);
     assert.ok(
       Math.abs(componentTotal - category.paid) <= 0.000001,
       `${category.id}: componenti non riconciliate`,
+    );
+  }
+  assert.ok(account.categories.filter((category) => category.components?.length).length >= 7);
+
+  const account2024 = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2024,
+  );
+  assert.equal(account2024.values.effectivePayments, 843.2);
+  assert.equal(account2024.values.totalCommitments, 1263.8);
+  assert.ok(account2024.categories?.length >= 8, "2024: dettaglio per categoria atteso");
+  const categorySum2024 = account2024.categories.reduce((total, item) => total + item.paid, 0);
+  assert.ok(
+    Math.abs(categorySum2024 - account2024.values.effectivePayments) <=
+      (account2024.categoryReconciliationTolerance ?? 0),
+  );
+
+  const account2023 = camera.statements.find(
+    (statement) => statement.kind === "account" && statement.year === 2023,
+  );
+  assert.ok(account2023.categories?.length >= 8, "2023: dettaglio per categoria atteso");
+
+  for (const year of [2020, 2021, 2022]) {
+    const earlier = camera.statements.find(
+      (statement) => statement.kind === "account" && statement.year === year,
+    );
+    assert.ok(earlier.categories?.length >= 8, `${year}: dettaglio per categoria atteso`);
+    const categorySum = earlier.categories.reduce((total, item) => total + item.paid, 0);
+    assert.ok(
+      Math.abs(categorySum - earlier.values.effectivePayments) <=
+        (earlier.categoryReconciliationTolerance ?? 0),
+      `${year}: categorie non riconciliate ai pagamenti effettivi`,
     );
   }
 });
@@ -70,16 +154,18 @@ test("Parliament snapshot rejects unofficial and document-only entries", () => {
   assert.throws(() => assertParliamentSnapshot(emptyValues), /valori strutturati/);
 
   const brokenPensionBreakdown = structuredClone(snapshot);
-  brokenPensionBreakdown.chambers[0].statements[0].categories
-    .find((category) => category.id === "pensions").components[0].paid += 1;
+  brokenPensionBreakdown.chambers[0].statements
+    .find((statement) => statement.kind === "account" && statement.year === 2025)
+    .categories.find((category) => category.id === "pensions").components[0].paid += 1;
   assert.throws(
     () => assertParliamentSnapshot(brokenPensionBreakdown),
     /componenti non riconciliate/,
   );
 
   const mislabeledPensions = structuredClone(snapshot);
-  mislabeledPensions.chambers[0].statements[0].categories
-    .find((category) => category.id === "pensions").label = "Vitalizi";
+  mislabeledPensions.chambers[0].statements
+    .find((statement) => statement.kind === "account" && statement.year === 2025)
+    .categories.find((category) => category.id === "pensions").label = "Vitalizi";
   assert.throws(
     () => assertParliamentSnapshot(mislabeledPensions),
     /non può essere rinominato vitalizi/,

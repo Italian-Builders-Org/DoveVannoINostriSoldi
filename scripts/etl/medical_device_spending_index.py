@@ -413,8 +413,8 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
         "schemaVersion": 1, "dataset": "salute-spesa-dispositivi-index",
         "distributionKind": "derived-corpus-search-and-aggregate-index",
         "registrySnapshotDate": spec["registry"]["referenceDate"],
-        "sourceSpecSha256": spec_sha, "corpusCatalogSha256": proof["catalogSha256"],
-        "sourceReceiptSha256": receipt_sha,
+        # Bound to the receipts of its own datasets, not to the catalog: an unrelated append keeps it valid.
+        "sourceSpecSha256": spec_sha, "sourceReceiptSha256": receipt_sha,
         "coverage": {"devicesWithSpending": device_count, "matchedDevices": matched,
                      "unresolvedDevices": device_count - matched, "facts": fact_count,
                      "years": {str(year): {**values, "spending": cents_to_euro(values["cents"])}

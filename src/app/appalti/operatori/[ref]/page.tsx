@@ -64,6 +64,7 @@ function amountStatusLabel(status: string): string {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps): Promise<Metadata> {
   const { ref } = await params;
   if (!isAnacOperatorRef(ref)) {
@@ -72,6 +73,8 @@ export async function generateMetadata({
       robots: { index: false, follow: false },
     };
   }
+  try { parseOperatorHistorySearch(await searchParams); }
+  catch { return { title: "Filtri non validi", robots: { index: false, follow: false } }; }
   const operator = getOperatorHistory(ref);
   if (!operator) {
     return {
@@ -92,17 +95,9 @@ export default async function OperatoreDetailPage({
 }: PageProps) {
   const { ref } = await params;
   if (!isAnacOperatorRef(ref)) notFound();
-  const operator = getOperatorHistory(ref);
-  if (!operator) notFound();
-  const meta = loadAnacOperatorIndexMeta();
-  const screening = operator.screening2025;
-  const raw = await searchParams;
   let query: OperatorHistoryQuery;
-  let page: ReturnType<typeof selectOperatorHistoryPage>;
-  try {
-    query = parseOperatorHistorySearch(raw);
-    page = selectOperatorHistoryPage(operator, query);
-  } catch {
+  try { query = parseOperatorHistorySearch(await searchParams); }
+  catch {
     return (
       <main className="shell page">
         <h1>Filtri non validi</h1>
@@ -111,6 +106,11 @@ export default async function OperatoreDetailPage({
       </main>
     );
   }
+  const operator = getOperatorHistory(ref);
+  if (!operator) notFound();
+  const meta = loadAnacOperatorIndexMeta();
+  const screening = operator.screening2025;
+  const page = selectOperatorHistoryPage(operator, query);
   if (page.page > Math.max(1, page.pageCount)) {
     redirect(
       operatorHistoryHref(ref, { ...query, page: Math.max(1, page.pageCount) }),

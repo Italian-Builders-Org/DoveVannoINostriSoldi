@@ -87,6 +87,25 @@ class SiopeNonMunicipalCorpusTests(TestCase):
                 continue
             self.assertEqual((self.root / relative).read_bytes(), payload)
 
+    def test_append_revalidates_rows_only_for_the_appended_datasets(self) -> None:
+        release_proof = self.root / "ledger/release-proof.json"
+        release_proof.write_bytes(b"old-release\n")
+        scopes = []
+
+        def seal(paths, **kwargs) -> None:
+            scopes.append(("release", kwargs.get("rows_for")))
+
+        with mock.patch.object(corpus, "check_committed", wraps=corpus.check_committed) as corpus_gate, \
+                mock.patch.object(append_release.integrated_source_release, "build_release", side_effect=seal):
+            append_release.append(
+                spec_path=self.spec, source_root=self.source, dataset_ids={"siope-projection"},
+                catalog_path=self.catalog, rows_dir=self.rows, receipts_dir=self.receipts,
+                proof_path=self.proof, corpus_release_proof_path=release_proof,
+            )
+        scopes.extend(("corpus", call.kwargs.get("rows_for")) for call in corpus_gate.call_args_list)
+        self.assertEqual(sorted(scopes), [("corpus", frozenset({"siope-projection"})), ("release", frozenset({"siope-projection"}))])
+        corpus.check_committed(spec_path=self.spec, catalog_path=self.catalog, rows_dir=self.rows, receipts_dir=self.receipts, proof_path=self.proof)
+
     def test_second_promotion_accepts_unchanged_and_explicitly_updated_inputs(self) -> None:
         self.append()
         first = self.catalog.read_bytes()
@@ -161,7 +180,7 @@ class SiopeNonMunicipalCorpusTests(TestCase):
             if path.is_file() and "source" not in path.parts
         }
 
-        def fail_seal(paths) -> None:
+        def fail_seal(paths, **_scope) -> None:
             paths.output.write_bytes(b"mixed-release\n")
             raise RuntimeError("aggregate seal failure")
 
@@ -196,7 +215,7 @@ class SiopeNonMunicipalCorpusTests(TestCase):
             if path.is_file() and "source" not in path.parts
         }
 
-        def seal_release(paths) -> None:
+        def seal_release(paths, **_scope) -> None:
             paths.output.write_bytes(b"new-release\n")
 
         def fail_view() -> None:
@@ -461,7 +480,7 @@ class ClosedSiopePromotionBuilder:
         source_rows = 1 + sum(item["rows"] for item in manifest["projections"].values())
         return {"sourceRows": source_rows, "publicRows": source_rows, "catalogOnlyRows": 0, "derivedOnlyRows": 0}
 
-    def dataset_gate_summary(self, _paths) -> dict[str, object]:
+    def dataset_gate_summary(self, _paths, **_options) -> dict[str, object]:
         proof_payload = self.proof.read_bytes()
         catalog_payload = self.catalog.read_bytes()
         proof = json.loads(proof_payload)

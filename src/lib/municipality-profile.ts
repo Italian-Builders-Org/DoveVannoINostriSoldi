@@ -4,6 +4,7 @@ import type { IpaEntity } from "@/lib/ipa";
 import type { OpenCivitasMunicipality, OpenCivitasSnapshot } from "@/lib/data/opencivitas-contract";
 import type { PnrrChildcareMeta } from "@/lib/data/pnrr-childcare-contract";
 import type { MefIrpefQueryResult, MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
+import { getMunicipalityRealEstate, type MunicipalityRealEstate } from "@/lib/municipality-real-estate";
 import { getMunicipalitySchoolServices, type MunicipalitySchoolServices } from "@/lib/municipality-school-services";
 import {
   getSiopeMunicipalityDetail,
@@ -46,6 +47,7 @@ export type MunicipalityProfile = Readonly<{
     source: MefIrpefQueryResult["provenance"]["source"];
   }>>;
   schoolServices: MunicipalitySchoolServices;
+  realEstate: MunicipalityRealEstate;
   openCivitas: ProfileSection<Readonly<{
     referenceYear: number;
     publishedAt: string;
@@ -284,6 +286,7 @@ export async function getMunicipalityProfile(
       ? irpef.data.record.territory
       : null,
   );
+  const realEstate = await getMunicipalityRealEstate(taxCode);
 
   return {
     identifiers: {
@@ -306,6 +309,7 @@ export async function getMunicipalityProfile(
     },
     irpef,
     schoolServices,
+    realEstate,
     openCivitas,
     pnrrChildcare: {
       status: "available",

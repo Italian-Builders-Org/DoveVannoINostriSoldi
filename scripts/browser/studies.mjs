@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario, waitForServer } from "./harness.mjs";
 
 const baseUrl = defaultBaseUrl();
@@ -28,8 +29,8 @@ try {
           return title && header && title.top >= header.bottom && title.bottom <= innerHeight;
         });
         assert.equal(await page.$eval("main h1", el => el.textContent), "Paper di ricerca");
-        await page.screenshot({ path: new URL(`archive-${width}.png`, evidence).pathname, fullPage: true });
-        await page.screenshot({ path: new URL(`archive-top-${width}.png`, evidence).pathname });
+        await page.screenshot({ path: fileURLToPath(new URL(`archive-${width}.png`, evidence)), fullPage: true });
+        await page.screenshot({ path: fileURLToPath(new URL(`archive-top-${width}.png`, evidence)) });
         await page.click('main a[href="/studi/dai-fondi-ai-posti"]');
         await page.waitForFunction(() => location.pathname === "/studi/dai-fondi-ai-posti" && document.querySelector("main h1")?.textContent === "Dai fondi ai posti");
         await page.waitForFunction(() => {
@@ -65,8 +66,8 @@ try {
         assert.match(response.headers.get("content-type"), /application\/pdf/);
         const bytes = Buffer.from(await response.arrayBuffer());
         assert.equal(createHash("sha256").update(bytes).digest("hex"), capsule.assets["dai-fondi-ai-posti.pdf"].sha256);
-        await page.screenshot({ path: new URL(`study-${width}.png`, evidence).pathname, fullPage: true });
-        await page.screenshot({ path: new URL(`study-top-${width}.png`, evidence).pathname });
+        await page.screenshot({ path: fileURLToPath(new URL(`study-${width}.png`, evidence)), fullPage: true });
+        await page.screenshot({ path: fileURLToPath(new URL(`study-top-${width}.png`, evidence)) });
         await page.click("main details summary");
         assert.equal(await page.$eval("main details", el => el.open), true);
         results.push({ width, ...state, body: undefined, pdfHashVerified: true });

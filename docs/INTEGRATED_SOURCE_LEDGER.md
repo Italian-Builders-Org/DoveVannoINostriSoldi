@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 97 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 110 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 97 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 97 | 75 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 14.804.828 | 1.822.482 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.066.169.932 | somma dei byte impegnati nelle 97 ricevute |
+| Dataset correnti | 110 | 88 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.608.861 | 7.626.515 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.894.874.587 | somma dei byte impegnati nelle 110 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 1.822.482 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.626.515 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -53,7 +53,15 @@ aggiunto per regioni, province autonome, Italia e ripartizioni pubblicate.
 (rilascio 2023, Comuni ed enti ERP). Titolo, stato d'uso e tipi di detenzione
 restano distinti; il canone è contrattuale. `mef-patrimonio-adempimento-2023`
 aggiunge 7.977 righe, una per Comune o ente ERP del file di adempimento dello
-stesso rilascio. [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
+stesso rilascio; `mef-patrimonio-fabbricati-fermi-2023` aggiunge 25.235 righe che
+contano per Comune, ente, stato d'uso e tipologia 133.293 fabbricati fermi.
+[Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
+`rgs-spesa-statale-regionalizzata-2020`, `-2021` e `-2022` aggiungono 59.488
+righe dal record RGS `SRS_SPE_BIL_SPESR_001`, un dataset per esercizio: spesa
+del Bilancio dello Stato per territorio destinatario, con Italia, ripartizioni
+e Regioni come livelli sovrapposti da non sommare. Ogni anno riconcilia il
+totale nazionale con Regioni e ripartizioni entro un milione di euro.
+[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2020-2022).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -122,6 +130,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `mef-patrimonio-beni-2023` | MEF · patrimonio immobiliare dei Comuni e degli enti ERP · beni per stato d'uso 2023 | entities | 140.712 | 140.712 | 140.712 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mef-patrimonio-contratti-2023` | MEF · beni di Comuni ed enti ERP dati a terzi · contratti e canoni dichiarati 2023 | entities | 21.034 | 21.034 | 21.034 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mef-patrimonio-adempimento-2023` | MEF · adempimento 2023 del censimento immobili · Comuni ed enti ERP | entities | 7.977 | 7.977 | 7.977 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `mef-patrimonio-fabbricati-fermi-2023` | MEF · fabbricati fermi per Comune del censimento immobili 2023 · Comuni ed enti ERP | entities | 25.235 | 25.235 | 25.235 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `mim-scuole-statali-comuni` | Scuole statali · sedi per Comune | education | 6.648 | 6.648 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
 | `missioni` | Capitoli per missioni e trasferte | operations | 618 | 618 | 618 | rows | documented-fact | not-declared |
 | `missioni-cdp` | Missioni degli organi di Cassa Depositi e Prestiti | operations | 6 | 6 | 6 | rows | documented-fact | not-declared |
@@ -160,6 +169,9 @@ fornisce comunque un percorso di provenienza verificabile.
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-spesa-statale-regionalizzata-2020` | RGS · spesa statale regionalizzata 2020 | state-accounts | 19.356 | 19.356 | 19.356 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2021` | RGS · spesa statale regionalizzata 2021 | state-accounts | 19.872 | 19.872 | 19.872 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2022` | RGS · spesa statale regionalizzata 2022 | state-accounts | 20.260 | 20.260 | 20.260 | rows | documented-fact | not-declared |
 | `ted-avvisi-italia-2026-08` | Avvisi TED · committenti in Italia · agosto 2026 | procurement | 2.825 | 2.825 | 2.825 | rows | documented-fact | verified-open-eu-reuse |
 | `vincitori` | Aggregati fornitori e settori | procurement | 682 | 682 | 0 | rows | documented-fact | not-declared |
 | `vincitori-cig` | Vincitori collegati ai CIG | procurement | 120 | 120 | 119 | rows | documented-fact | not-declared |
@@ -222,7 +234,7 @@ python3 scripts/etl/source_corpus_intake.py --check
 python3 scripts/etl/integrated_curated_datasets.py check
 python3 scripts/etl/integrated_source_release.py --check
 python3 -m unittest discover -s tests/etl
-node --test tests/integrated-curated-datasets.test.mjs \
+node --import ./scripts/ci/node-test-setup.mjs --test tests/integrated-curated-datasets.test.mjs \
   tests/integrated-source-public-view.test.mjs
 ```
 

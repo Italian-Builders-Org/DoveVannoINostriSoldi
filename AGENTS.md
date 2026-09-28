@@ -54,7 +54,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Per ogni file modificato, verifica comportamento, casi di errore e confini
   del dato. Aggiungi test che rilevino regressioni concrete e commenti che
   spieghino vincoli non evidenti; evita refactor estranei al ticket.
-- Test mirati: `node --experimental-strip-types --test tests/NOME.test.mjs`
+- Test mirati: `node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/NOME.test.mjs`
   (`--test-name-pattern='testo'` per un caso); ETL con virtualenv attivo:
   `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_NOME.py'`.
 - Per ogni ticket esegui solo i test ETL pertinenti ai producer, contratti o dati
@@ -103,3 +103,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Un limite per IP non copre un bot distribuito. Valuta il WAF prima del runtime,
   preservando richieste umane, indicizzazione e agenti avviati dall'utente.
   Documenta soglia, perimetro, chiave, rollback e limiti della mitigazione.
+
+## Approvazione delle build
+
+- Le preview Vercel sono manuali: seguire [DEPLOYMENT_APPROVAL.md](docs/DEPLOYMENT_APPROVAL.md).
+  Non riattivare build automatiche o aggirare approvazioni per ottenere un badge verde.
+- Prima di approvare codice esterno, verificare lo SHA e il diff; riunire le
+  modifiche compatibili e validarle prima di un unico push.

@@ -98,9 +98,9 @@ La label applicata è `segnalazione`. Va creata una sola volta nel repository.
 ## Verifica
 
 ```bash
-node --experimental-strip-types --test tests/report-contract.test.mjs
-node --experimental-strip-types --test tests/report-github.test.mjs
-node --experimental-strip-types --test tests/report-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/report-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/report-github.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/report-route.test.mjs
 npm run build && npm start &   # oppure scripts/ci/run-production-gates.sh
 npm run test:browser:report
 ```

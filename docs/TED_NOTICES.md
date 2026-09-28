@@ -80,7 +80,7 @@ Con `.venv` e guard offline da `CONTRIBUTING.md`:
 ```bash
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/ted_notices.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_ted_notices.py'
-node --experimental-strip-types --test tests/ted-notices.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/ted-notices.test.mjs
 ```
 
 Per confrontare le risposte originali già acquisite, passare `--input-dir` con

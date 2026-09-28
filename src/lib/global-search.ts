@@ -173,6 +173,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/regioni": ["regioni", "province autonome"],
   "/enti": ["enti", "comune", "comuni", "amministrazioni", "registro"],
   "/partecipazioni": ["societa partecipate", "quote", "partecipate"],
+  "/patrimonio": ["immobili pubblici", "fabbricati fermi", "patrimonio immobiliare"],
   "/appalti": ["appalti", "contratti", "gare", "acquisti"],
   "/appalti/dettaglio": ["appalti dettagli", "fornitori"],
   "/appalti/operatori": [

@@ -59,5 +59,5 @@ python3 scripts/etl/istat_population_grid_2021.py --check
 python3 scripts/etl/istat_population_grid_2021.py --write \
   --input /path/to/GrigliaPop2021_Ind_ITA_CSV.zip
 
-node --experimental-strip-types --test tests/istat-population-grid-2021.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/istat-population-grid-2021.test.mjs
 ```

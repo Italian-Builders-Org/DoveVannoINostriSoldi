@@ -29,7 +29,7 @@ Gli interventi proposti sono analisi del report, non affermazioni attribuite ai 
 ## Verifiche locali indipendenti
 
 ```bash
-node --experimental-strip-types --test tests/public-spending-report.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/public-spending-report.test.mjs
 python3 -m unittest discover -s tests/reports -v
 python3 scripts/reports/build_public_spending_report.py --check
 ```

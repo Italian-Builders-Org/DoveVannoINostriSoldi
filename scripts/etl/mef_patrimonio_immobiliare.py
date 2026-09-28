@@ -94,6 +94,31 @@ ADEMPIMENTO_HEADERS = ENTITY_ID_HEADERS + [
     "Presente nel censimento pubblicato",
     "Presente nelle detenzioni pubblicate",
 ] + ENTITY_DETAIL_HEADERS + TRAILER_HEADERS
+# Owned buildings declared idle, counted per municipality of the asset, owner, use and type.
+# Positions stay out: the exact location of an empty public building is not published (#609).
+FABBRICATI_FERMI_HEADERS = [
+    "Codice regione del bene",
+    "Regione del bene",
+    "Provincia del bene",
+    "Comune del bene",
+    "Codice catastale comune del bene",
+    "Codice fiscale ente",
+    "Ente",
+    "Tipologia ente",
+    "Utilizzo del bene",
+    "Tipologia bene",
+    "Fabbricati",
+    "Fabbricati con superficie",
+    "Superficie di riferimento (m²)",
+] + TRAILER_HEADERS
+IDLE_USES = {"Non utilizzato", "Inutilizzabile", "In ristrutturazione/manutenzione"}
+# ISTAT region codes, as in the regional map geometry of the site.
+REGION_CODES = {
+    "PIEMONTE": "01", "VALLE D'AOSTA": "02", "LOMBARDIA": "03", "TRENTINO ALTO ADIGE": "04", "VENETO": "05",
+    "FRIULI VENEZIA GIULIA": "06", "LIGURIA": "07", "EMILIA ROMAGNA": "08", "TOSCANA": "09", "UMBRIA": "10",
+    "MARCHE": "11", "LAZIO": "12", "ABRUZZO": "13", "MOLISE": "14", "CAMPANIA": "15", "PUGLIA": "16",
+    "BASILICATA": "17", "CALABRIA": "18", "SICILIA": "19", "SARDEGNA": "20",
+}
 ADEMPIMENTO_URL_PREFIX = "https://www.de.mef.gov.it/modules/documenti_it/attivo_patrimonio/immobili_2023/"
 YES_NO = {"Si", "No"}
 COUNT = re.compile(r"0|[1-9][0-9]*")
@@ -129,6 +154,11 @@ def expected_corpus_metadata(spec: dict, dataset_key: str = "beni") -> dict:
         "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
         "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per ente dichiarante"
     )
+    if dataset_key == "fabbricatiFermi":
+        reference_period = (
+            "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 "
+            "i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia"
+        )
     if dataset_key == "adempimento":
         reference_period = (
             "Adempimento per l'annualità 2023 (beni al 31/12/2023) dichiarato dalla fonte; "
@@ -143,7 +173,8 @@ def expected_corpus_metadata(spec: dict, dataset_key: str = "beni") -> dict:
         "acquisitionDate": acquired,
         "checkedAt": spec["adempimento"]["acquiredAt"] if dataset_key == "adempimento" else source["checkedAt"],
         "updateFrequency": source["updateFrequency"],
-        "canonicalUrls": source["landingUrls"][:1] if dataset_key == "adempimento" else source["landingUrls"],
+        # Only the contracts come from the detenzioni page.
+        "canonicalUrls": source["landingUrls"] if dataset_key in {"beni", "contratti"} else source["landingUrls"][:1],
     }
 
 
@@ -198,7 +229,7 @@ def validate_contract(spec: dict, *, require_corpus: bool = True) -> None:
         or adempimento.get("delimiter") != ";"
     ):
         raise SourceError("lock del file di adempimento divergente")
-    if set(spec.get("datasets", {})) != {"beni", "contratti", "adempimento"}:
+    if set(spec.get("datasets", {})) != {"beni", "contratti", "adempimento", "fabbricatiFermi"}:
         raise SourceError("dataset del rilascio divergenti")
     if not require_corpus:
         return
@@ -276,7 +307,8 @@ def decimal_text(value: Decimal) -> str:
     return format(value, "f")
 
 
-def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
+def beni_projection(spec: dict, input_dir: Path, registry: dict, idle: list | None = None) -> bytes:
+    """Aggregated beni; with `idle`, also collects the idle-building rows in the same pass over the archives."""
     domains = spec["domains"]
     groups: dict[tuple, list] = defaultdict(lambda: [0, 0, Decimal(0)])
     urls: dict[str, str] = {}
@@ -311,6 +343,8 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
                 group[1] += 1
                 group[2] += area
             urls[owner[0]] = item["url"]
+            if idle is not None and (building := idle_building(row, item, domains)) is not None:
+                idle.append(building)
     expected = spec["expected"]
     if total != expected["immobiliRows"] or duplicates != expected["immobiliExactDuplicateRows"]:
         raise SourceError("righe totali o righe identiche del censimento divergenti dal lock")
@@ -322,6 +356,50 @@ def beni_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
         for (owner, titolo, utilizzo, terzi, tipologia, location), (count, with_area, area) in sorted(groups.items())
     ]
     return delimited_payload(BENI_HEADERS, rows)
+
+
+def idle_building(row: dict, item: dict, domains: dict) -> tuple | None:
+    """Aggregation key and surface of an owned idle building, None for any other asset."""
+    natura = row["Natura del bene"]
+    if natura not in domains["naturaBene"]:
+        raise SourceError(f"natura del bene fuori dominio: {natura}")
+    if natura != "FABBRICATO" or row["Titolo proprietà"] == "" or row["Utilizzo del bene"] not in IDLE_USES:
+        return None
+    region = REGION_CODES.get(row["Regione del bene"])
+    if region is None:
+        raise SourceError(f"regione del bene fuori dominio: {row['Regione del bene']}")
+    match = FISCAL_CODE.fullmatch(row["Amministrazione Codice Fiscale"])
+    if match is None:
+        raise SourceError(f"codice fiscale ente non valido: {item['file']}")
+    place = (region, row["Regione del bene"], row["Provincia del bene"], row["Comune del bene"], row["Codice Comune del bene"])
+    owner = (match.group(1), row["Amministrazione Denominazione"], row["Tipologia Amministrazione"])
+    key = (place, owner, row["Utilizzo del bene"], row["Tipologia Bene Immobile"], item["url"])
+    return key, surface(row["Superficie di Riferimento (mq)"], row["ID bene"])
+
+
+def fabbricati_fermi_payload(spec: dict, buildings: list[tuple]) -> bytes:
+    if len(buildings) != spec["expected"]["fabbricatiFermi"]:
+        raise SourceError(f"fabbricati fermi divergenti dal lock: {len(buildings)}")
+    groups: dict[tuple, list] = defaultdict(lambda: [0, 0, Decimal(0)])
+    places: dict[str, tuple] = {}
+    for key, area in buildings:
+        place = key[0]
+        # One municipality code, one name, province and region: otherwise the counts would split.
+        if places.setdefault(place[4], place) != place:
+            raise SourceError(f"comune del bene con anagrafica incoerente: {place[4]}")
+        group = groups[key]
+        group[0] += 1
+        if area is not None and area > 0:
+            group[1] += 1
+            group[2] += area
+    # Region, then municipality code: the rows of one region sit in contiguous chunks.
+    rows = [
+        [place[0], place[1], place[2], place[3], place[4], *owner, use, kind,
+         str(count), str(with_area), decimal_text(area), "2023", url]
+        for (place, owner, use, kind, url), (count, with_area, area) in sorted(
+            groups.items(), key=lambda entry: (entry[0][0][0], entry[0][0][4], entry[0][1][0], entry[0][2], entry[0][3]))
+    ]
+    return delimited_payload(FABBRICATI_FERMI_HEADERS, rows)
 
 
 def contratti_projection(spec: dict, input_dir: Path, registry: dict) -> bytes:
@@ -467,10 +545,12 @@ def projections(spec: dict, input_dir: Path, *, require_corpus: bool = True) -> 
     validate_contract(spec, require_corpus=require_corpus)
     beni_registry: dict = {}
     contratti_registry: dict = {}
+    idle: list[list[str]] = []
     return {
-        spec["datasets"]["beni"]: beni_projection(spec, input_dir, beni_registry),
+        spec["datasets"]["beni"]: beni_projection(spec, input_dir, beni_registry, idle),
         spec["datasets"]["contratti"]: contratti_projection(spec, input_dir, contratti_registry),
         spec["datasets"]["adempimento"]: adempimento_projection(spec, input_dir, beni_registry, contratti_registry),
+        spec["datasets"]["fabbricatiFermi"]: fabbricati_fermi_payload(spec, idle),
     }
 
 

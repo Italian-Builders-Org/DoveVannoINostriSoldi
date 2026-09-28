@@ -140,12 +140,17 @@ class WorkflowGovernanceTests(unittest.TestCase):
         self.assertNotIn("MCP_STAGING_URL", text)
         self.assertIn('test -n "$MCP_PREVIEW_URL"', text)
 
-    def test_dependabot_keeps_npm_minor_and_patch_separate(self):
+    def test_dependabot_groups_compatible_npm_updates(self):
         text = (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
-        self.assertIn("npm-patch:", text)
-        self.assertIn("npm-minor:", text)
-        self.assertNotIn("npm-minor-and-patch:", text)
+        # Patch+minor raggruppate (docs/DEPLOYMENT_APPROVAL.md); major restano ignore.
+        self.assertIn("npm-compatible:", text)
+        self.assertIn("- patch", text)
+        self.assertIn("- minor", text)
+        self.assertNotIn("npm-patch:", text)
+        self.assertNotIn("npm-minor:", text)
         self.assertNotIn("automerge", text.lower())
+        self.assertIn('dependency-name: "@types/node"', text)
+        self.assertIn("dependency-name: eslint", text)
 
     def test_local_action_has_no_token_fallback_and_is_pin_locked(self):
         action = (ROOT / ".github" / "actions" / "publish-data-refresh" / "action.yml").read_text(encoding="utf-8")

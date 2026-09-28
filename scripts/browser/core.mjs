@@ -1778,7 +1778,7 @@ try {
       await page.setCacheEnabled(false);
       await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
       const response = await page.goto(new URL("/debito", baseUrl).toString(), {
-        waitUntil: "domcontentloaded",
+        waitUntil: "load",
         timeout: NAVIGATION_TIMEOUT_MS,
       });
       assert.equal(response?.status(), 200);

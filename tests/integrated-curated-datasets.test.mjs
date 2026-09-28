@@ -108,6 +108,9 @@ const mandatoryDatasetIds = [
   "procurement-partecipate",
   "rgs-conto-annuale-costo-2020",
   "rgs-conto-annuale-personale-2020",
+  "rgs-spesa-statale-regionalizzata-2020",
+  "rgs-spesa-statale-regionalizzata-2021",
+  "rgs-spesa-statale-regionalizzata-2022",
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
@@ -139,7 +142,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 107,
+  datasets: 110,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -160,6 +163,9 @@ const expectedReferencePeriods = {
   "mef-patrimonio-fabbricati-fermi-2023": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia",
   "rgs-conto-annuale-costo-2020": "Anno 2020; costo del lavoro annuale",
   "rgs-conto-annuale-personale-2020": "Anno 2020; personale al 31 dicembre",
+  "rgs-spesa-statale-regionalizzata-2020": "Esercizio finanziario 2020; spesa del Bilancio dello Stato per territorio destinatario finale",
+  "rgs-spesa-statale-regionalizzata-2021": "Esercizio finanziario 2021; spesa del Bilancio dello Stato per territorio destinatario finale",
+  "rgs-spesa-statale-regionalizzata-2022": "Esercizio finanziario 2022; spesa del Bilancio dello Stato per territorio destinatario finale",
   "pnrr-progetti": "2026-06-13",
   "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
   "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",

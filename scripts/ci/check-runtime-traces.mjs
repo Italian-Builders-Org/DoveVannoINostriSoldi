@@ -105,6 +105,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["integrated/rows/mef-patrimonio-contratti-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["integrated/rows/mef-patrimonio-adempimento-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["integrated/rows/mef-patrimonio-fabbricati-fermi-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route", "patrimonio/page", "api/patrimonio/punti/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-2022.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-relazioni-2011-2024.data.json", ["api/territori/bes-relazioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-politica-2004-2024.data.json", ["api/territori/bes-politica/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-sicurezza-2004-2023.data.json", ["api/territori/bes-sicurezza/route", "api/assistant/chat/route", "api/mcp/route"]],

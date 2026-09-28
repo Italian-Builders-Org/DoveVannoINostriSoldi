@@ -222,7 +222,7 @@ python3 scripts/etl/source_corpus_intake.py --check
 python3 scripts/etl/integrated_curated_datasets.py check
 python3 scripts/etl/integrated_source_release.py --check
 python3 -m unittest discover -s tests/etl
-node --test tests/integrated-curated-datasets.test.mjs \
+node --import ./scripts/ci/node-test-setup.mjs --test tests/integrated-curated-datasets.test.mjs \
   tests/integrated-source-public-view.test.mjs
 ```
 

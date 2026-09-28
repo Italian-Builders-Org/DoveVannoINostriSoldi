@@ -103,7 +103,7 @@ python3 scripts/etl/istat_misura_comune.py --input /percorso/al/file.xlsx --chec
 
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci \
 python3 -m unittest discover -s tests/etl -p 'test_istat_misura_comune.py'
-node --experimental-strip-types --test tests/istat-misura-comune.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/istat-misura-comune.test.mjs
 ```
 
 `--check` riproduce **ogni riga pubblica e ogni ricevuta** dalle celle

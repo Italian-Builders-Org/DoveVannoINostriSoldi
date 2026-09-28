@@ -106,7 +106,7 @@ Input ufficiali esterni al repository, con byte/hash identici al lock:
 python3 scripts/etl/istat_bes_salute.py --input /percorso/salute.csv --structure /percorso/structure.xml --write
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 scripts/etl/istat_bes_salute.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p 'test_istat_bes_salute.py'
-node --experimental-strip-types --test tests/istat-bes-salute.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/istat-bes-salute.test.mjs
 ```
 
 `scripts/mcp_http_smoke.mjs`, eseguito dal runner di produzione, confronta API

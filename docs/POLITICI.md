@@ -109,17 +109,17 @@ completa richiede una richiesta esplicita di Lorenzo.
 ### Contratti e route
 
 ```bash
-node --experimental-strip-types --test tests/camera-atti-voti-contract.test.mjs
-node --experimental-strip-types --test tests/senato-atti-voti-contract.test.mjs
-node --experimental-strip-types --test tests/politici-atti-route.test.mjs
-node --experimental-strip-types --test tests/politici-voti-tema-route.test.mjs
-node --experimental-strip-types --test tests/parlamento-giudiziario-contract.test.mjs
-node --experimental-strip-types --test tests/parlamento-giudiziario-route.test.mjs
-node --experimental-strip-types --test tests/parlamento-giudiziario-ui.test.mjs
-node --experimental-strip-types --test tests/politici-news-route.test.mjs
-node --experimental-strip-types --test tests/politici-repubblica-contract.test.mjs
-node --experimental-strip-types --test tests/politici-camera-contract.test.mjs
-node --experimental-strip-types --test tests/parlamento-mandati-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/camera-atti-voti-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/senato-atti-voti-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/politici-atti-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/politici-voti-tema-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-giudiziario-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-giudiziario-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-giudiziario-ui.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/politici-news-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/politici-repubblica-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/politici-camera-contract.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/parlamento-mandati-contract.test.mjs
 ```
 
 ### Build e contesto agenti

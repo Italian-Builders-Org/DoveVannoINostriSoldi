@@ -32,7 +32,7 @@ indicatori conservano entrambi i filtri. I riferimenti operatore restano locali
 al profilo. I peer esistenti sono accessibili soltanto dalla vista senza filtri,
 perché non esiste un benchmark annuale verificato.
 
-Verifica mirata: `node --experimental-strip-types --test tests/anac-award-year.test.mjs`.
+Verifica mirata: `node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/anac-award-year.test.mjs`.
 La suite browser `scripts/browser/procurement-award-year.mjs`, eseguita dal gate
 di produzione CI, conserva screenshot a 320/390/768/1280 px in
 `artifacts/browser/procurement-award-year/`.

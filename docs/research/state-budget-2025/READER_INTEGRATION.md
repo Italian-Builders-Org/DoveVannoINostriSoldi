@@ -62,7 +62,7 @@ capitolo. Le esclusioni sono registrate e non sono state trasformate in accuse.
 ```sh
 python scripts/reports/build_state_budget_reader.py --check
 python scripts/reports/audit_state_budget.py --check --require-upstream
-node --experimental-strip-types --test tests/state-budget-reader.test.mjs tests/state-budget-reader-snapshot.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/state-budget-reader.test.mjs tests/state-budget-reader-snapshot.test.mjs
 python -m unittest discover -s tests/reports -p 'test_state_budget_*.py'
 ```
 

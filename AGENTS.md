@@ -54,7 +54,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Per ogni file modificato, verifica comportamento, casi di errore e confini
   del dato. Aggiungi test che rilevino regressioni concrete e commenti che
   spieghino vincoli non evidenti; evita refactor estranei al ticket.
-- Test mirati: `node --experimental-strip-types --test tests/NOME.test.mjs`
+- Test mirati: `node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/NOME.test.mjs`
   (`--test-name-pattern='testo'` per un caso); ETL con virtualenv attivo:
   `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_NOME.py'`.
 - Per ogni ticket esegui solo i test ETL pertinenti ai producer, contratti o dati

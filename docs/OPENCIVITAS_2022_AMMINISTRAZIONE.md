@@ -84,5 +84,5 @@ non si somma né si confronta in silenzio, né fra funzioni né fra annualità.
 python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --input-dir /percorso/degli/zip-ufficiali
 python scripts/etl/opencivitas_2022_amministrazione_snapshot.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_opencivitas_2022_amministrazione_snapshot.py'
-node --experimental-strip-types --test tests/opencivitas-2022-amministrazione-contract.test.mjs tests/opencivitas-2022-amministrazione-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/opencivitas-2022-amministrazione-contract.test.mjs tests/opencivitas-2022-amministrazione-route.test.mjs
 ```

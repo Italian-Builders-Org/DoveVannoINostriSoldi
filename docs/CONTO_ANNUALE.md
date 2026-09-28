@@ -64,7 +64,7 @@ normalizzati; byte e SHA-256 dei CSV ufficiali restano nel lock dedicato.
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/conto_annuale.py --output-dir /tmp/conto-annuale
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/conto_annuale.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_conto_annuale.py'
-node --experimental-strip-types --test tests/conto-annuale.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/conto-annuale.test.mjs
 ```
 
 Il controllo riconcilia dai CSV tutte le righe pubbliche, un chunk alla volta, le ricevute e le

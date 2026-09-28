@@ -83,7 +83,7 @@ non sono esposte. Nessuna differenza viene interpretata come spreco.
 PYTHONPATH=scripts/etl python scripts/etl/opencivitas_2019_snapshot.py --input-dir /directory/dei/tre/zip
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/opencivitas_2019_snapshot.py --check
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest discover -s tests/etl -p 'test_opencivitas*'
-node --experimental-strip-types --test tests/opencivitas-2019-contract.test.mjs tests/opencivitas-2019-route.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/opencivitas-2019-contract.test.mjs tests/opencivitas-2019-route.test.mjs
 ```
 
 La generazione non usa rete, verifica i tre ZIP e non riscrive uno snapshot

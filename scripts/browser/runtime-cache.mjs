@@ -80,7 +80,7 @@ try {
   const noScript = await browser.newPage();
   await noScript.setViewport({ width: 1280, height: 900 });
   await noScript.setJavaScriptEnabled(false);
-  await noScript.goto(new URL("/politici", base).href, { waitUntil: "domcontentloaded" });
+  await noScript.goto(new URL("/politici", base).href, { waitUntil: "load" });
   assert.equal(await noScript.evaluate(() => getComputedStyle(document.body).overflowY), "hidden");
   assert.ok(await noScript.$('[data-immersive-page="politici"]'));
   await noScript.close();

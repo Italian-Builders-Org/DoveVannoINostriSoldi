@@ -463,7 +463,7 @@ class CommittedReleaseProofTests(unittest.TestCase):
         proof = release.check_release(show_timings=True)
         self.assertTrue(proof["complete"])
         self.assertEqual(proof["contract"]["archiveEntries"], 51_303)
-        self.assertEqual(proof["contract"]["datasets"], 106)
+        self.assertEqual(proof["contract"]["datasets"], 109)
 
 
 class AtomicWriteTests(unittest.TestCase):

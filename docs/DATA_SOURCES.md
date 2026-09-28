@@ -290,6 +290,26 @@ sommati. Valore assoluto, quota di PIL, euro per abitante ed euro per km²
 restano misure distinte; i denominatori delle ultime tre sono calcolati
 dall'editore ma non versionati nel record. Una riga assente non diventa zero.
 
+### Spesa del Bilancio dello Stato per territorio destinatario 2020-2022
+
+Gli esercizi 2020, 2021 e 2022 della stessa serie `SRS_SPE_BIL_SPESR_001`
+entrano nel corpus integrato come tre dataset `rgs-spesa-statale-regionalizzata-*`
+(19.356, 19.872 e 20.260 righe). Il source lock
+`scripts/etl/specs/rgs-spesa-statale-regionalizzata-2020-2022.source.json`
+vincola byte e SHA-256 dei CSV originali, conservati come gzip deterministico in
+`tests/fixtures/rgs-state-budget-territorial/`, e per ogni anno righe,
+dimensioni, zeri pubblicati e riconciliazione tra Italia, Regioni e
+ripartizioni. `scripts/etl/rgs_spesa_statale_regionalizzata_corpus.py --check`
+ricostruisce le proiezioni dalla fonte e le confronta con il corpus.
+
+Lo schema cambia fra annualità: 2020 e 2021 hanno un'ottava colonna vuota, il
+2021 elenca ancora la missione 033 «Fondi da ripartire» e le categorie non
+coincidono con il 2023. Come nel 2023, i file contengono righe della categoria 09
+con missione 034 «Debito pubblico» anche se la scheda descrive la spesa al netto
+degli interessi: il corpus le conserva come pubblicate. Il pacchetto CKAN riporta
+`cc-by`, ma pagina e file non dichiarano una licenza: lo stato resta
+`not-declared`.
+
 ### Conto Economico degli enti del SSN 2024
 
 **Dataset:** `spd_ssn_cce_elb_voccn_01_2024`, Modello di rilevazione del Conto Economico degli enti del SSN.

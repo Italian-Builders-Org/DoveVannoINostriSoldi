@@ -54,6 +54,12 @@ aggiunto per regioni, province autonome, Italia e ripartizioni pubblicate.
 restano distinti; il canone è contrattuale. `mef-patrimonio-adempimento-2023`
 aggiunge 7.977 righe, una per Comune o ente ERP del file di adempimento dello
 stesso rilascio. [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
+`rgs-spesa-statale-regionalizzata-2020`, `-2021` e `-2022` aggiungono 59.488
+righe dal record RGS `SRS_SPE_BIL_SPESR_001`, un dataset per esercizio: spesa
+del Bilancio dello Stato per territorio destinatario, con Italia, ripartizioni
+e Regioni come livelli sovrapposti da non sommare. Ogni anno riconcilia il
+totale nazionale con Regioni e ripartizioni entro un milione di euro.
+[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2020-2022).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -160,6 +166,9 @@ fornisce comunque un percorso di provenienza verificabile.
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-spesa-statale-regionalizzata-2020` | RGS · spesa statale regionalizzata 2020 | state-accounts | 19.356 | 19.356 | 19.356 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2021` | RGS · spesa statale regionalizzata 2021 | state-accounts | 19.872 | 19.872 | 19.872 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2022` | RGS · spesa statale regionalizzata 2022 | state-accounts | 20.260 | 20.260 | 20.260 | rows | documented-fact | not-declared |
 | `ted-avvisi-italia-2026-08` | Avvisi TED · committenti in Italia · agosto 2026 | procurement | 2.825 | 2.825 | 2.825 | rows | documented-fact | verified-open-eu-reuse |
 | `vincitori` | Aggregati fornitori e settori | procurement | 682 | 682 | 0 | rows | documented-fact | not-declared |
 | `vincitori-cig` | Vincitori collegati ai CIG | procurement | 120 | 120 | 119 | rows | documented-fact | not-declared |

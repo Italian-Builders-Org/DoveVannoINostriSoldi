@@ -547,6 +547,42 @@
         "canonicalUrls": [
           "https://www.de.mef.gov.it/it/attivita_istituzionali/patrimonio_pubblico/censimento_immobili_pubblici/open_data_immobili/dati_immobili_2023.html"
         ]
+      },
+      "rgs-spesa-statale-regionalizzata-2020": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizio finanziario 2020; spesa del Bilancio dello Stato per territorio destinatario finale",
+        "publicationDate": "2022-10-21",
+        "acquisitionDate": "2026-09-28",
+        "checkedAt": "2026-09-28",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/bb75db10-1b5b-470d-b475-e425f3b954b1.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2020-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall"
+        ]
+      },
+      "rgs-spesa-statale-regionalizzata-2021": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizio finanziario 2021; spesa del Bilancio dello Stato per territorio destinatario finale",
+        "publicationDate": "2023-10-23",
+        "acquisitionDate": "2026-09-28",
+        "checkedAt": "2026-09-28",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/2bae0ff7-bb5e-4f7f-92d3-82bfe60124ec.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2021-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall"
+        ]
+      },
+      "rgs-spesa-statale-regionalizzata-2022": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizio finanziario 2022; spesa del Bilancio dello Stato per territorio destinatario finale",
+        "publicationDate": "2024-11-04",
+        "acquisitionDate": "2026-09-28",
+        "checkedAt": "2026-09-28",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/3a1867e0-2cee-4678-bf31-0416e3926c21.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2022-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall"
+        ]
       }
     }
   },
@@ -6337,6 +6373,135 @@
         "Perimetro: Comuni ed enti territoriali per l'edilizia residenziale pubblica, come i dataset del censimento; le altre 3.349 amministrazioni del file sono validate ma non pubblicate qui.",
         "Fonte MEF, CC BY 4.0; proiezione DVNS una riga per ente, senza aggregazioni né correzioni."
       ]
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-2020",
+      "title": "RGS · spesa statale regionalizzata 2020",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-2020.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa del Bilancio dello Stato distribuita per territorio destinatario finale (Spesa Statale Regionalizzata RGS). Non è la spesa delle Regioni come ente, non sono pagamenti di cassa SIOPE e non è la spesa consolidata dei Conti pubblici territoriali.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni combinazione: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Una combinazione assente non è zero; lo zero è conservato solo quando è pubblicato nel CSV. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Categorie e missioni cambiano fra annualità: il 2021 elenca ancora la missione 033 «Fondi da ripartire» e la categoria 09 cambia etichetta nel 2023. Non confrontare voci fra anni per codice senza verificarne l'etichetta.",
+        "La scheda RGS descrive la spesa al netto degli interessi sul debito pubblico, ma il file contiene righe con categoria 09 e missione 034 «Debito pubblico»: il corpus le conserva come pubblicate e non stabilisce se ricadano nel perimetro descritto.",
+        "Stessa serie BDAP SRS_SPE_BIL_SPESR_001 della fetta tipizzata rgs-state-budget-territorial-2023: un dataset per esercizio, da non sommare fra anni.",
+        "Licenza del payload not-declared: il pacchetto CKAN riporta cc-by, ma la pagina della serie e il file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 5773789,
+        "sha256": "dfeb3620d613569ad2bf9efcaf7cd2c262881dc721a8698bf348e32efac377b2",
+        "rows": 19356,
+        "columns": 9,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
+          "Titolo",
+          "Categoria",
+          "Missione",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-2021",
+      "title": "RGS · spesa statale regionalizzata 2021",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-2021.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa del Bilancio dello Stato distribuita per territorio destinatario finale (Spesa Statale Regionalizzata RGS). Non è la spesa delle Regioni come ente, non sono pagamenti di cassa SIOPE e non è la spesa consolidata dei Conti pubblici territoriali.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni combinazione: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Una combinazione assente non è zero; lo zero è conservato solo quando è pubblicato nel CSV. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Categorie e missioni cambiano fra annualità: il 2021 elenca ancora la missione 033 «Fondi da ripartire» e la categoria 09 cambia etichetta nel 2023. Non confrontare voci fra anni per codice senza verificarne l'etichetta.",
+        "La scheda RGS descrive la spesa al netto degli interessi sul debito pubblico, ma il file contiene righe con categoria 09 e missione 034 «Debito pubblico»: il corpus le conserva come pubblicate e non stabilisce se ricadano nel perimetro descritto.",
+        "Stessa serie BDAP SRS_SPE_BIL_SPESR_001 della fetta tipizzata rgs-state-budget-territorial-2023: un dataset per esercizio, da non sommare fra anni.",
+        "Licenza del payload not-declared: il pacchetto CKAN riporta cc-by, ma la pagina della serie e il file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 5928486,
+        "sha256": "4153e06de0a2eef961d3099a9abc955148abed179eef8dd729ab312cd9dfbba1",
+        "rows": 19872,
+        "columns": 9,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
+          "Titolo",
+          "Categoria",
+          "Missione",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-2022",
+      "title": "RGS · spesa statale regionalizzata 2022",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-2022.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa del Bilancio dello Stato distribuita per territorio destinatario finale (Spesa Statale Regionalizzata RGS). Non è la spesa delle Regioni come ente, non sono pagamenti di cassa SIOPE e non è la spesa consolidata dei Conti pubblici territoriali.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni combinazione: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Una combinazione assente non è zero; lo zero è conservato solo quando è pubblicato nel CSV. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Categorie e missioni cambiano fra annualità: il 2021 elenca ancora la missione 033 «Fondi da ripartire» e la categoria 09 cambia etichetta nel 2023. Non confrontare voci fra anni per codice senza verificarne l'etichetta.",
+        "La scheda RGS descrive la spesa al netto degli interessi sul debito pubblico, ma il file contiene righe con categoria 09 e missione 034 «Debito pubblico»: il corpus le conserva come pubblicate e non stabilisce se ricadano nel perimetro descritto.",
+        "Stessa serie BDAP SRS_SPE_BIL_SPESR_001 della fetta tipizzata rgs-state-budget-territorial-2023: un dataset per esercizio, da non sommare fra anni.",
+        "Licenza del payload not-declared: il pacchetto CKAN riporta cc-by, ma la pagina della serie e il file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 6059198,
+        "sha256": "019c3a77d3030714bac0bcbd591902bc874a399e5375ded81d7659bbd510415e",
+        "rows": 20260,
+        "columns": 9,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
+          "Titolo",
+          "Categoria",
+          "Missione",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
     }
   ]
 }

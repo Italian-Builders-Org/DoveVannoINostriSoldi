@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "series": {
+    "recordId": "SRS_SPE_BIL_SPESR_001",
+    "title": "Distribuzione territoriale della spesa del bilancio dello Stato - Spesa Statale Regionalizzata",
+    "holder": "Ragioneria Generale dello Stato",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_BIL_SPESR_001",
+    "licenseStatus": "not-declared",
+    "licenseNote": "Il pacchetto CKAN riporta license_id cc-by, ma la pagina della serie e il file non dichiarano una licenza: come per gli altri dataset OpenBDAP nel corpus e per la fetta tipizzata 2023, lo stato resta not-declared.",
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "lineEnding": "CRLF",
+    "sourceHeaders": [
+      "Anno di Interesse",
+      "Territorio",
+      "Titolo",
+      "Categoria",
+      "Missione",
+      "Tipo Misura",
+      "Importo"
+    ],
+    "acquisitionDate": "2026-09-28",
+    "checkedAt": "2026-09-28",
+    "updateFrequency": "annuale; acquisizione e promozione manuali",
+    "compression": "I CSV ufficiali sono conservati come gzip deterministico (mtime 0, livello 9): il lock vincola byte e SHA-256 dell'originale, verificati dopo la decompressione."
+  },
+  "semantics": {
+    "soldi": {
+      "present": true,
+      "measure": "Spesa Complessiva - Valori Assoluti (mln)",
+      "unit": "milioni di euro, due decimali come pubblicati",
+      "note": "Solo la misura in valori assoluti è un importo. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record."
+    },
+    "periodo": {
+      "referencePeriod": "Esercizi finanziari 2020, 2021 e 2022, un dataset per anno",
+      "note": "Pubblicazione della serie, acquisizione e anno di interesse restano date distinte."
+    },
+    "provenance": {
+      "holder": "Ragioneria Generale dello Stato",
+      "license": "not-declared",
+      "note": "Una sola serie BDAP per tutti gli anni; un file e una pagina di dettaglio per anno."
+    }
+  },
+  "years": [
+    {
+      "year": 2020,
+      "datasetId": "rgs-spesa-statale-regionalizzata-2020",
+      "packageName": "spd_srs_spe_bil_spesr_01_2020",
+      "publicationDate": "2022-10-21",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2020-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/bb75db10-1b5b-470d-b475-e425f3b954b1.csv",
+      "fixture": "tests/fixtures/rgs-state-budget-territorial/srs-2020.csv.gz",
+      "bytes": 3719933,
+      "sha256": "67279426c60aa7ca235c328641236184e14694e2eb147fc688549cd600ba9632",
+      "compressedBytes": 153356,
+      "compressedSha256": "260061051da2ae4725afb2a09fdad4e445af3e2e4f1d78900bf09b8e59e68272",
+      "trailingEmptyColumn": true,
+      "reconciliationCeilingHundredths": 100,
+      "expected": {
+        "rows": 19356,
+        "territories": 26,
+        "titles": 2,
+        "categories": 16,
+        "missions": 33,
+        "measures": 4,
+        "zeroValues": 3568,
+        "reconciliation": {
+          "nationalHundredthsMillionEur": 27358903,
+          "regionsHundredthsMillionEur": 27358876,
+          "regionDeltaHundredthsMillionEur": -27,
+          "macroareasHundredthsMillionEur": 27358912,
+          "macroareaDeltaHundredthsMillionEur": 9
+        }
+      }
+    },
+    {
+      "year": 2021,
+      "datasetId": "rgs-spesa-statale-regionalizzata-2021",
+      "packageName": "spd_srs_spe_bil_spesr_01_2021",
+      "publicationDate": "2023-10-23",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2021-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/2bae0ff7-bb5e-4f7f-92d3-82bfe60124ec.csv",
+      "fixture": "tests/fixtures/rgs-state-budget-territorial/srs-2021.csv.gz",
+      "bytes": 3819894,
+      "sha256": "679e801d654a694191123566e0da269cf9f2b3d638b4751eb5a9842fb855f46e",
+      "compressedBytes": 160379,
+      "compressedSha256": "447cfeafc047585782f8bfb3436e7c4d20b00f22a6447cd46af73eedc1f8e14d",
+      "trailingEmptyColumn": true,
+      "reconciliationCeilingHundredths": 100,
+      "expected": {
+        "rows": 19872,
+        "territories": 26,
+        "titles": 2,
+        "categories": 16,
+        "missions": 34,
+        "measures": 4,
+        "zeroValues": 3552,
+        "reconciliation": {
+          "nationalHundredthsMillionEur": 28849242,
+          "regionsHundredthsMillionEur": 28849233,
+          "regionDeltaHundredthsMillionEur": -9,
+          "macroareasHundredthsMillionEur": 28849225,
+          "macroareaDeltaHundredthsMillionEur": -17
+        }
+      }
+    },
+    {
+      "year": 2022,
+      "datasetId": "rgs-spesa-statale-regionalizzata-2022",
+      "packageName": "spd_srs_spe_bil_spesr_01_2022",
+      "publicationDate": "2024-11-04",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2022-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/3a1867e0-2cee-4678-bf31-0416e3926c21.csv",
+      "fixture": "tests/fixtures/rgs-state-budget-territorial/srs-2022.csv.gz",
+      "bytes": 3929845,
+      "sha256": "17ff083c92cd3c301e0520d3a2bb9c93cfea7c4db737f6e3ced58fa7ef14949f",
+      "compressedBytes": 162857,
+      "compressedSha256": "500112e447f332709f1e6cf5a4ef147d1ddf04b3c78034c2cbd1523255e71c2b",
+      "trailingEmptyColumn": false,
+      "reconciliationCeilingHundredths": 100,
+      "expected": {
+        "rows": 20260,
+        "territories": 26,
+        "titles": 2,
+        "categories": 16,
+        "missions": 33,
+        "measures": 4,
+        "zeroValues": 3862,
+        "reconciliation": {
+          "nationalHundredthsMillionEur": 28363560,
+          "regionsHundredthsMillionEur": 28363519,
+          "regionDeltaHundredthsMillionEur": -41,
+          "macroareasHundredthsMillionEur": 28363555,
+          "macroareaDeltaHundredthsMillionEur": -5
+        }
+      }
+    }
+  ]
+}

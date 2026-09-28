@@ -40,6 +40,8 @@ async function collectStaticPagePaths(directory, segments = []) {
 
 test("the public discovery catalog is canonical, unique and complete for static pages", async () => {
   assert.equal(PUBLIC_SITE_URL, "https://www.dovevannoinostrisoldi.com");
+  assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/mobilita"), true);
+  assert.equal(LLMS_DISCOVERY_PATHS.includes("/mobilita"), true);
   assert.equal(new Set(PUBLIC_INDEXABLE_PATHS).size, PUBLIC_INDEXABLE_PATHS.length);
   assert.equal(new Set(PUBLIC_NOINDEX_PATHS).size, PUBLIC_NOINDEX_PATHS.length);
   assert.deepEqual(

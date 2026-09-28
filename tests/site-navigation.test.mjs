@@ -12,7 +12,7 @@ const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs",
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV, SITE_MAP_GROUPS } = await import("../src/lib/site-navigation.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
@@ -33,6 +33,18 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.match(globalsCss, /break-inside: avoid/);
   assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
+});
+
+test("mobility is reachable from the territories menu and sitemap", () => {
+  const territoriesMenu = PRIMARY_NAV.find((section) => section.href === "/territori");
+  const mobilityMenuItem = flattenNavLinks(territoriesMenu?.children ?? [])
+    .find((link) => link.href === "/mobilita");
+  const territoriesSitemap = SITE_MAP_GROUPS.find((group) => group.title === "Territori");
+  const mobilitySitemapItem = flattenNavLinks(territoriesSitemap?.links ?? [])
+    .find((link) => link.href === "/mobilita");
+
+  assert.equal(mobilityMenuItem?.label, "Mobilità");
+  assert.equal(mobilitySitemapItem?.label, "Mobilità");
 });
 
 test("browser copy guard matches limit and offset as whole words", () => {

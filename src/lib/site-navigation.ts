@@ -115,6 +115,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/territori/fisco", label: "Entrate e spese" },
       { href: "/territori/confronto", label: "Confronto Comuni" },
       { href: "/territori/griglia", label: "Griglia ISTAT 1 km" },
+      { href: "/mobilita", label: "Mobilità" },
     ],
   },
   {
@@ -288,6 +289,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/territori/fisco", label: "Entrate e spese" },
       { href: "/territori/confronto", label: "Confronto Comuni" },
       { href: "/territori/griglia", label: "Griglia ISTAT 1 km" },
+      { href: "/mobilita", label: "Mobilità" },
     ],
   },
   {

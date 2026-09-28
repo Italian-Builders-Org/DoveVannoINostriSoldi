@@ -57,7 +57,7 @@ export const TERMS: ReadonlyArray<{ id: TermFilter; label: string; }> = [
 export const GROUP_CHANGES: ReadonlyArray<{ id: GroupChangeFilter; label: string; }> = [
   { id: "tutti", label: "Tutti i percorsi" },
   { id: "cambio", label: "Ha cambiato gruppo" },
-  { id: "nessun-cambio", label: "Sempre nello stesso gruppo" },
+  { id: "nessun-cambio", label: "Nessun cambio di gruppo" },
 ];
 export const THEME_CHAMBERS: ReadonlyArray<{ id: ThemeChamberFilter; label: string; }> = [
   { id: "tutti", label: "Camera e Senato" },

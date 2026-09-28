@@ -15,5 +15,5 @@ export async function GET(request: NextRequest) {
   if (regione === null || !REGION_CODE_PATTERN.test(regione)) {
     return invalid("Parametro regione non canonico: usare il codice ISTAT a due cifre, da 01 a 20.");
   }
-  return Response.json(await getRealEstateRegionData(regione), { headers: { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" } });
+  return Response.json(await getRealEstateRegionData(regione), { headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" } });
 }

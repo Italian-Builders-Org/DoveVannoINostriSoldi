@@ -103,3 +103,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Un limite per IP non copre un bot distribuito. Valuta il WAF prima del runtime,
   preservando richieste umane, indicizzazione e agenti avviati dall'utente.
   Documenta soglia, perimetro, chiave, rollback e limiti della mitigazione.
+
+## Approvazione delle build
+
+- Le preview Vercel sono manuali: seguire [DEPLOYMENT_APPROVAL.md](docs/DEPLOYMENT_APPROVAL.md).
+  Non riattivare build automatiche o aggirare approvazioni per ottenere un badge verde.
+- Prima di approvare codice esterno, verificare lo SHA e il diff; riunire le
+  modifiche compatibili e validarle prima di un unico push.

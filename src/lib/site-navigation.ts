@@ -156,10 +156,11 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/enti",
     label: "Enti e società",
     icon: "entities",
-    aliases: ["/partecipazioni"],
+    aliases: ["/partecipazioni", "/patrimonio"],
     children: [
       { href: "/enti", label: "Registro enti" },
       { href: "/partecipazioni", label: "Partecipazioni" },
+      { href: "/patrimonio", label: "Patrimonio pubblico" },
     ],
   },
   {
@@ -318,6 +319,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     links: [
       { href: "/enti", label: "Registro enti" },
       { href: "/partecipazioni", label: "Partecipazioni" },
+      { href: "/patrimonio", label: "Patrimonio pubblico" },
     ],
   },
   {

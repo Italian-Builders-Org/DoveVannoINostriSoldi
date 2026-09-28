@@ -183,3 +183,16 @@ test("explicit units keep inequality indices and ratios out of euro columns", ()
   assert.equal(amountColumnKeys(headers, [row("100", "EUR"), row("5.13", "rapporto")]).has("Valore"), false);
   assert.equal(amountColumnKeys(headers, [row("31.0", null)]).has("Valore"), false);
 });
+
+test('RGS values retain the source measure on mixed and filtered pages', () => {
+  const headers = ['Anno', 'Misura', 'Valore'];
+  const rows = [
+    { cells: { Misura: 'Spesa Complessiva - in rapporto al PIL (%)', Valore: '0.00' } },
+    { cells: { Misura: 'Spesa Complessiva - per abitante (Euro)', Valore: '0.08' } },
+    { cells: { Misura: 'Spesa Complessiva - per Kmq (Euro)', Valore: '9.68' } },
+    { cells: { Misura: 'Spesa Complessiva - Valori Assoluti (mln)', Valore: '0.10' } },
+  ];
+  for (const page of [rows, ...rows.map(row => [row])]) {
+    assert.equal(amountColumnKeys(headers, page).has('Valore'), false, page[0].cells.Misura);
+  }
+});

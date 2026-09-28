@@ -203,6 +203,10 @@ echo "::group::Browser procurement award years"
 node scripts/browser/procurement-award-year.mjs
 echo "::endgroup::"
 
+echo "::group::Browser patrimonio"
+node scripts/browser/patrimonio.mjs
+echo "::endgroup::"
+
 echo "::group::Browser chart interactions"
 npm run test:browser:charts
 echo "::endgroup::"

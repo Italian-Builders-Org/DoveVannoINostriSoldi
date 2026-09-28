@@ -273,7 +273,7 @@ export function RealEstateMap({ total, byRegion, byUse, municipalities, view = N
       </div>
 
       {region ? (
-        <section className={styles.ranking} aria-labelledby="patrimonio-classifica" aria-busy={!data}>
+        <section className={styles.ranking} aria-labelledby="patrimonio-classifica" aria-busy={!data && !loadError}>
           <h3 id="patrimonio-classifica" className={styles.caption}>
             Fabbricati fermi per Comune · {regionName(region)}
             <small>Clicca un Comune per aggiungerlo al confronto o toglierlo.</small>

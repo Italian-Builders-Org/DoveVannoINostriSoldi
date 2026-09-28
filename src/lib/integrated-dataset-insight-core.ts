@@ -109,7 +109,7 @@ export function amountColumnKeys(
   headers: readonly string[],
   rows: readonly Readonly<{ cells: Readonly<Record<string, string | null>> }>[],
 ): ReadonlySet<string> {
-  const unitHeader = headers.find((header) => /^unit[àa]$/i.test(header.trim()));
+  const unitHeader = headers.find((header) => /^(unit[àa]|misura)$/i.test(header.trim()));
   return new Set(
     headers.filter((header) => {
       if (!looksLikeAmountHeader(header)) return false;

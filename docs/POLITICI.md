@@ -28,6 +28,17 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
   contratto delle legislature per ramo dei parlamentari in carica (#556), che
   alimenta il filtro **Legislature** e il profilo; vedi
   [PARLAMENTO_MANDATI.md](PARLAMENTO_MANDATI.md).
+- [src/lib/politici-group-history.ts](../src/lib/politici-group-history.ts):
+  gruppi nella XIX per persona (#556) dalle adesioni datate già negli snapshot
+  Camera e Senato, senza nuovi import. Alla Camera la data finale è esclusiva,
+  al Senato inclusiva e le righe dello stesso gruppo per incarichi diversi si
+  uniscono (`senatoGroupSegments`, che il contratto Senato usa per rifiutare
+  gruppi diversi sovrapposti o un gruppo corrente assente dallo storico). Il
+  passaggio dal Misto a un gruppo nel giorno della sua prima adesione pubblicata
+  è l'adesione alla costituzione, non un cambio; lasciare un gruppo esistente lo
+  è sempre. La fonte non pubblica il motivo del passaggio: `ocd:motivoTermine`
+  della Camera è procedurale (cessazione, dimissioni) e non viene mostrato come
+  motivo.
 - [src/lib/parlamento-giudiziario.ts](../src/lib/parlamento-giudiziario.ts) e
   [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
   accesso e contratto dello snapshot curato dei procedimenti documentati; lo
@@ -78,6 +89,10 @@ sviluppo.
 - Legislature: `mandato=primo-ramo|primo-parlamento|gia-parlamento` filtra
   deputati e senatori per legislature nel proprio ramo o in Parlamento; esclude
   i membri del Governo senza seggio.
+- Gruppo nella XIX: `cambi=cambio|nessun-cambio` filtra chi ha cambiato gruppo
+  nella legislatura secondo la regola sopra; esclude i membri del Governo senza
+  seggio e, come `mandato`, non esiste nelle viste `condanne` e `storico-voti`.
+  La scheda persona mostra la sequenza dei gruppi con date e fonte.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
 - Storico voti per tema (directory cercabile su tutti i parlamentari):

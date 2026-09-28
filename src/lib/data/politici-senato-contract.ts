@@ -154,7 +154,53 @@ export const politiciSenatoSnapshotSchema = z
     if (presidents !== 1) {
       ctx.addIssue({ code: "custom", message: "Presidente del Senato non unico", path: ["senators"] });
     }
+    // #556: after merging the rows of the same group, different groups never
+    // overlap and the only open segment is the current group.
+    const membershipsBySenator = Map.groupBy(value.groupMemberships, (membership) => membership.senatorId);
+    value.senators.forEach((senator, index) => {
+      const segments = senatoGroupSegments(membershipsBySenator.get(senator.id.slice(1)) ?? []);
+      if (segments.some((segment, position) => {
+        const previous = segments[position - 1];
+        return previous !== undefined && (previous.endDate === null || segment.startDate <= previous.endDate);
+      })) {
+        ctx.addIssue({ code: "custom", message: "adesioni a gruppi diversi sovrapposte", path: ["groupMemberships", senator.id] });
+      }
+      if (segments.length === 0 || segments.at(-1)!.endDate !== null || segments.at(-1)!.groupId !== senator.groupId) {
+        ctx.addIssue({ code: "custom", message: "gruppo corrente non riconcilia con lo storico", path: ["senators", index, "groupId"] });
+      }
+    });
   });
+
+type SenatoMembershipRow = { groupId: string; startDate: string; endDate: string | null; };
+
+function nextDay(date: string): string {
+  const next = new Date(`${date}T00:00:00Z`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  return next.toISOString().slice(0, 10);
+}
+
+/**
+ * The Senato publishes one row per role held in a group, with inclusive end
+ * dates: rows of the same group that overlap or touch become one segment.
+ * Rows of different groups are kept apart, so an overlap stays visible.
+ */
+export function senatoGroupSegments(rows: readonly SenatoMembershipRow[]): SenatoMembershipRow[] {
+  const segments: SenatoMembershipRow[] = [];
+  const sorted = [...rows].sort((left, right) => left.startDate.localeCompare(right.startDate)
+    || (left.endDate ?? "9999-12-31").localeCompare(right.endDate ?? "9999-12-31"));
+  for (const row of sorted) {
+    const previous = segments.at(-1);
+    if (previous && previous.groupId === row.groupId
+      && (previous.endDate === null || row.startDate <= nextDay(previous.endDate))) {
+      previous.endDate = previous.endDate === null || row.endDate === null
+        ? null
+        : row.endDate > previous.endDate ? row.endDate : previous.endDate;
+      continue;
+    }
+    segments.push({ groupId: row.groupId, startDate: row.startDate, endDate: row.endDate });
+  }
+  return segments;
+}
 
 export type PoliticiSenatoSnapshot = z.infer<typeof politiciSenatoSnapshotSchema>;
 export type SenatoSenator = PoliticiSenatoSnapshot["senators"][number];

@@ -1,11 +1,11 @@
 "use client";
 
-import type { RepublicMap, RepublicParliamentaryTerms, RepublicProfile } from "@/lib/politici-repubblica";
+import type { RepublicGroupHistory, RepublicMap, RepublicParliamentaryTerms, RepublicProfile } from "@/lib/politici-repubblica";
 import type { EducationDistribution } from "@/lib/politici-education";
 import { formatPercent } from "@/lib/politici-education";
 import { programForGroup } from "@/lib/politici-electoral-programs";
 import type { GraphSelection } from "./atlas-model";
-import { longDate } from "./atlas-model";
+import { groupPeriod, longDate } from "./atlas-model";
 import type { NewsData, Resource } from "./atlas-data";
 import { PersonRow, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
@@ -158,6 +158,30 @@ function ParliamentaryTerms({ terms }: { terms: RepublicParliamentaryTerms; }) {
   </div>;
 }
 
+function groupChangeSummary(history: RepublicGroupHistory): string {
+  if (history.changes === 0) return "Nessun cambio di gruppo nella XIX";
+  return history.changes === 1 ? "1 cambio di gruppo nella XIX" : `${history.changes} cambi di gruppo nella XIX`;
+}
+
+function GroupHistory({ history }: { history: RepublicGroupHistory; }) {
+  return <div>
+    <dt>Gruppi nella XIX</dt>
+    <dd>
+      {groupChangeSummary(history)}
+      {history.entries.map((entry) => <small key={entry.startDate}>
+        <strong>{entry.label}</strong>
+        {entry.laterLabels.length ? ` (poi «${entry.laterLabels.join("», «")}»)` : ""}
+        {" · "}
+        {groupPeriod(entry)}
+        {entry.joinedAtFormation ? " · adesione alla costituzione del gruppo" : ""}
+      </small>)}
+      <small>
+        {history.caveat} Dati al {longDate(history.observedDate)}: <SourceLink href={history.sourceUrl}>{history.sourceLabel}</SourceLink>
+      </small>
+    </dd>
+  </div>;
+}
+
 export function ProfileFacts({ profile, map }: { profile: RepublicProfile; map: RepublicMap; }) {
   const departments = map.departments.filter((item) => profile.departmentIds.includes(item.id));
   return <section className={styles.factBlock} aria-label="Curriculum istituzionale">
@@ -188,6 +212,7 @@ export function ProfileFacts({ profile, map }: { profile: RepublicProfile; map: 
         </dd>
       </div> : null}
       {profile.parliamentaryTerms ? <ParliamentaryTerms terms={profile.parliamentaryTerms} /> : null}
+      {profile.groupHistory ? <GroupHistory history={profile.groupHistory} /> : null}
       {profile.groupRoleLabel ? <div>
         <dt>Incarico nel gruppo</dt>
         <dd>

@@ -283,6 +283,9 @@ a caso.
   - [src/lib/data/parlamento-mandati-contract.ts](../src/lib/data/parlamento-mandati-contract.ts):
     legislature per ramo dei parlamentari in carica, lette dalla fonte del ramo
     di appartenenza ([PARLAMENTO_MANDATI.md](PARLAMENTO_MANDATI.md)).
+  - [src/lib/politici-group-history.ts](../src/lib/politici-group-history.ts):
+    gruppi nella XIX dalle adesioni datate degli snapshot Camera e Senato; il
+    passaggio dal Misto a un gruppo nel giorno della sua costituzione non è un cambio.
   - [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
     contratto fail-closed dello snapshot giudiziario curato.
   - [docs/POLITICI.md](POLITICI.md): riferimento operativo rapido per moduli,
@@ -306,6 +309,7 @@ a caso.
   [tests/politici-voti-tema-route.test.mjs](../tests/politici-voti-tema-route.test.mjs),
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
   [tests/parlamento-mandati-contract.test.mjs](../tests/parlamento-mandati-contract.test.mjs),
+  [tests/politici-group-history.test.mjs](../tests/politici-group-history.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).
   Per verifiche browser vedi [docs/POLITICI.md](POLITICI.md).

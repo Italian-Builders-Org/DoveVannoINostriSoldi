@@ -39,6 +39,17 @@ questa proiezione aggrega per ente dichiarante, identificato dal codice fiscale.
   ERP del file di adempimento, con obbligo, invio della comunicazione 2023,
   dichiarazione negativa, dichiarazione di completezza, beni dichiarati e
   presenza nei due censimenti pubblicati. Nessuna aggregazione.
+- `mef-patrimonio-fabbricati-fermi-2023` (25.235 righe): comune del bene ×
+  ente × stato d'uso × tipologia, con numero di fabbricati e superficie, per i
+  133.293 fabbricati posseduti (`Natura del bene = FABBRICATO`, titolo di
+  proprietà) dichiarati non utilizzati, inutilizzabili o in ristrutturazione, in
+  5.927 Comuni. Non pubblica coordinate né identificativi dei beni: la posizione
+  esatta di un edificio pubblico vuoto può esporlo a occupazioni (#609). Le righe
+  sono ordinate per regione e alimentano la mappa `/patrimonio`, che le legge per
+  regione (`/api/patrimonio/punti?regione=NN`) e mette i Comuni in classifica.
+  La vista sta nell'URL e si può condividere:
+  `/patrimonio?regione=12&comuni=H501,M082&tipo=…&ordina=contribuenti`
+  (codici ISTAT della regione e catastali dei Comuni; `tipo` ripetibile).
 
 Il rapporto €/m² annuo è `Canone annuo per rapporto (EUR) ÷ Superficie per
 rapporto (m²)`, calcolato solo sui contratti su intera unità con canone
@@ -56,6 +67,10 @@ tipo di detenzione, intera unità, finalità), superfici non nella forma
 anagrafica dello stesso ente diversa tra righe o archivi, e ogni aggregazione
 che non si riconcilia con il totale delle righe sorgente. Il lock dichiara anche
 l'unica riga di beni ripetuta identica, che resta conteggiata come nella fonte.
+
+Per i fabbricati fermi blocca anche: natura del bene fuori dominio, regione
+senza codice ISTAT, lo stesso codice catastale con nome, provincia o regione
+diversi, e un numero di fabbricati diverso dal lock.
 
 ## Adempimento 2023
 
@@ -111,6 +126,15 @@ del censimento: non lo sostituiscono.
   sia assente. La scheda ente usa il filtro esatto sul codice fiscale.
 - La fonte non pubblica nome e codice fiscale delle persone fisiche che
   ricevono i beni; l'aggregazione per ente non espone singoli alloggi.
+- Un fabbricato in comproprietà è contato una volta per ogni ente proprietario
+  (91 beni). «Area urbana» è una categoria catastale dei fabbricati, non un
+  edificio.
+- La classifica per 1.000 contribuenti usa i contribuenti IRPEF 2024 del
+  Comune (`mef-irpef-2024`), che non sono i residenti, ed esclude i Comuni sotto
+  i 1.000 contribuenti, dove pochi fabbricati bastano a un valore estremo. I 30
+  Comuni del censimento soppressi per fusione non hanno contribuenti propri:
+  restano nella classifica per numero, e i loro fabbricati non entrano nel
+  rapporto del Comune che li ha assorbiti.
 
 ## Riproduzione
 
@@ -121,10 +145,10 @@ lock in una directory locale, poi:
 PYTHONPATH=scripts/etl:scripts/ci python scripts/etl/mef_patrimonio_immobiliare.py --input-dir DIR --check
 ```
 
-`--output-dir DIR_OUT` scrive le tre proiezioni `.psv` con byte, SHA-256 e
-righe; `--publish` accoda al corpus quelle non ancora presenti. Su Windows `--publish` richiede Python
-3.13: 3.12 non espone `os.fchmod` e le build Windows di 3.14 usano zlib-ng,
-che non riproduce i gzip canonici già versionati.
+`--output-dir DIR_OUT` scrive le quattro proiezioni `.psv` con byte, SHA-256 e
+righe; `--publish` accoda al corpus quelle non ancora presenti. Su Windows le
+build di Python 3.14 usano zlib-ng, che non riproduce i gzip canonici già
+versionati: l'append si ferma con un errore che lo dice, quindi serve 3.12 o 3.13.
 
 I test `tests/etl/test_mef_patrimonio_immobiliare.py` usano archivi sintetici
 generati al volo; `tests/mef-patrimonio-immobiliare.test.mjs` verifica le righe

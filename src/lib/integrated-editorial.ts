@@ -1087,6 +1087,18 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     ],
   },
   {
+    surface: "/dati",
+    title: "Fabbricati pubblici fermi",
+    description: "Censimento MEF al 31 dicembre 2023: fabbricati di Comuni ed enti ERP dichiarati non utilizzati, inutilizzabili o in ristrutturazione, contati per Comune, senza la posizione dei singoli edifici.",
+    datasets: [
+      {
+        id: "mef-patrimonio-fabbricati-fermi-2023",
+        label: "Fabbricati fermi per Comune",
+        catalogBoundary: "Stato d’uso dichiarato dall’ente, non agibilità né spreco; un bene in comproprietà è contato una volta per proprietario.",
+      },
+    ],
+  },
+  {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",
     description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",

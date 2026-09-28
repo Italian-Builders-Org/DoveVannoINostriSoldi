@@ -65,6 +65,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/politici",
   "/politici/europa",
   "/partecipazioni",
+  "/patrimonio",
   "/pnrr",
   "/pnrr/incarichi",
   "/report",

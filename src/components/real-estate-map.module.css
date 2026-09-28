@@ -1,0 +1,215 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.figure { margin: 0; min-width: 0; }
+
+.frame {
+  position: relative;
+  width: 100%;
+  max-width: calc(72vh * 560 / 640);
+  aspect-ratio: 560 / 640;
+  margin-inline: auto;
+}
+.map { width: 100%; height: 100%; }
+
+.nationalRegion { stroke: var(--color-raised); stroke-width: 1; stroke-linejoin: round; cursor: pointer; }
+.hoverOutline { fill: none; stroke: var(--color-text); stroke-width: 2; stroke-linejoin: round; pointer-events: none; }
+
+/* The summary shares the grid row of the search input, so both are centred on the same axis. */
+.toolbar {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 4px var(--space-5);
+}
+.searchBlock { display: contents; }
+.searchBlock > label { grid-area: 1 / 1; }
+.searchRow { grid-area: 2 / 1; }
+.searchBlock > small { grid-area: 3 / 1; }
+
+/* Fixed regional summary in the free space right of the search row. */
+.summary {
+  display: grid;
+  grid-area: 2 / 2;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+}
+.summary > div { min-width: 0; padding-left: var(--space-3); border-left: 1px solid var(--color-neutral-300); }
+.summary dt { color: var(--color-neutral-600); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+.summary dd {
+  margin: 2px 0 0;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: var(--font-heading-weight);
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.summary > div { display: grid; grid-template-columns: auto 1fr; column-gap: 6px; align-items: baseline; }
+.summary dt { grid-column: 1 / -1; }
+.summary small { color: var(--color-neutral-600); font-size: 11px; }
+.searchRow {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.searchRow :global(.input) { width: min(100%, 280px); }
+.toolbar small { color: var(--color-neutral-600); font-size: 11px; line-height: 1.35; }
+.toolbar label { font-size: 12px; color: var(--color-neutral-700); }
+.toolbar :global(.btn), .controls :global(.btn), .more :global(.btn) { flex: none; min-height: 44px; padding-inline: var(--space-4); white-space: nowrap; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { display: inline-block; width: 12px; height: 12px; }
+
+.side { min-width: 0; }
+
+.caption { padding-bottom: var(--space-2); font-size: 13px; font-weight: 650; text-align: left; }
+.caption small { display: block; margin-top: 2px; color: var(--color-neutral-600); font-size: 12px; font-weight: 400; }
+.linkButton {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.linkButton:hover { color: var(--color-accent); }
+table .linkButton { min-height: 0; }
+
+.tooltip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--color-text);
+  color: var(--color-on-strong-muted);
+  font-size: 12px;
+  line-height: 1.35;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+.tooltip strong { color: var(--color-on-strong); font-weight: 600; }
+
+.ranking { grid-column: 1 / -1; min-width: 0; }
+.ranking h3 { margin: 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5); margin-top: var(--space-2); }
+.metric { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--space-2); font-size: 12px; color: var(--color-neutral-700); }
+/* Segmented control: native radios keep arrow-key navigation, the labels are the visible buttons. */
+.segments { display: flex; }
+.segments label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-neutral-400);
+  background: var(--color-raised);
+  color: var(--color-text);
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.segments label + label { border-left-width: 0; }
+.segments label:has(input:checked) { border-color: var(--color-text); background: var(--color-text); color: var(--color-raised); font-weight: 600; }
+.segments label:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.segments input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.bars { margin: var(--space-3) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--color-neutral-200); }
+.bars li { border-bottom: 1px solid var(--color-neutral-200); }
+/* Name and value on one line, the bar under them: long names never squeeze the bar. */
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: 6px var(--space-2);
+  border: 0;
+  border-left: 3px solid transparent;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.bar:hover { background: var(--color-neutral-100); }
+.bar[aria-pressed="true"] { border-left-color: var(--color-text); background: var(--color-neutral-100); font-weight: 650; }
+.barName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barValue { font-variant-numeric: tabular-nums; font-weight: 600; }
+.barTrack { display: flex; grid-column: 1 / -1; height: 10px; background: var(--chart-data-track); }
+.barTrack i { display: block; height: 100%; }
+.more { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); margin-top: var(--space-3); }
+.more small { color: var(--color-neutral-600); font-size: 12px; }
+.empty { margin: var(--space-3) 0 0; color: var(--color-neutral-600); font-size: 13px; }
+
+.comparison { display: grid; gap: var(--space-5); grid-column: 1 / -1; min-width: 0; }
+.comparison > .linkButton { justify-self: start; }
+
+.checkList { margin: 0; padding: 0; list-style: none; }
+.checkList li { border-bottom: 1px solid var(--color-neutral-200); }
+.checkList label {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-2) 0 2px;
+  color: var(--color-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+.checkList label:hover { background: var(--color-neutral-100); }
+.checkList input { width: 18px; height: 18px; margin: 0; accent-color: var(--chart-data-primary); }
+.checkList span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.checkList b { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.typePicker { position: relative; }
+.typePicker > summary { list-style: none; width: fit-content; }
+.typePicker > summary::-webkit-details-marker { display: none; }
+.typePicker > summary::after { content: "▾"; margin-left: var(--space-2); }
+.typePicker[open] > summary::after { content: "▴"; }
+/* Floats over the ranking: the controls keep their height when the list opens. */
+.typePanel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5;
+  width: min(340px, calc(100vw - 2 * var(--space-4)));
+  max-height: min(420px, 60vh);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  overflow-y: auto;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+  box-shadow: var(--shadow-md);
+}
+.typePanel legend { float: left; width: 100%; padding: var(--space-1) 0; font-size: 12px; font-weight: 650; }
+.typePanel .linkButton { font-size: 13px; }
+.typePanel ul { clear: both; border-top: 1px solid var(--color-neutral-300); }
+
+/* Last: overrides the desktop rules above at equal specificity. */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .toolbar { grid-template-columns: minmax(0, 1fr); }
+  .summary { grid-area: 4 / 1; margin-top: var(--space-3); }
+  .searchRow { flex-wrap: wrap; }
+}

@@ -32,7 +32,10 @@ def bene(id_bene: str, **fields: str) -> dict[str, str]:
             "Utilizzo del bene": "Non utilizzato", "Tipologia Bene Immobile": "Abitazione",
             "Superficie di Riferimento (mq)": "70,5", "Regione del bene": "LAZIO",
             "Comune del bene": "Roma", "Codice Comune del bene": "H501",
-            "ui data interamente a terzi": "No", "ui data parzialmente a terzi": "No", **fields}
+            "ui data interamente a terzi": "No", "ui data parzialmente a terzi": "No",
+            "Natura del bene": "FABBRICATO", "Quota proprietà": "100", "Provincia del bene": "ROMA",
+            "Latitudine": "41,9027835", "Longitudine": "12,4963655", "Immobile Geo-Ref.": "Sì",
+            "Fonte Georeferenziazione": "IDENTIFICATIVI_CATASTALI", "Precisione Georeferenziazione": "", **fields}
 
 
 def contratto(id_variazione: str, **fields: str) -> dict[str, str]:
@@ -200,6 +203,53 @@ class MefPatrimonioImmobiliareTests(TestCase):
         with self.assertRaisesRegex(mef.SourceError, "tipo detenzione"):
             mef.contratti_projection(spec, self.input_dir, {})
 
+    def idle_buildings(self, beni: list[dict[str, str]], expected: int | None = None) -> list[dict[str, str]]:
+        spec = self.synthetic_spec(beni, [contratto("10")])
+        idle: list[list[str]] = []
+        mef.beni_projection(spec, self.input_dir, {}, idle)
+        spec["expected"]["fabbricatiFermi"] = len(idle) if expected is None else expected
+        body = mef.fabbricati_fermi_payload(spec, idle)
+        return list(csv.DictReader(io.StringIO(body.decode("utf-8")), delimiter="|"))
+
+    def test_idle_buildings_are_counted_per_municipality_owner_use_and_type_without_positions(self) -> None:
+        tivoli = {"Amministrazione Codice Fiscale": "[00181820663]", "Amministrazione Denominazione": "COMUNE DI TIVOLI (RM)",
+                  "Comune (Amministrazione)": "Tivoli", "Cod. Comune (Amministrazione)": "L182"}
+        rows = self.idle_buildings([
+            bene("1", **{"Quota proprietà": "50"}),
+            bene("1", **{**tivoli, "Quota proprietà": "50"}),
+            bene("2", **{"Superficie di Riferimento (mq)": "29,5"}),
+            bene("3", **{"Superficie di Riferimento (mq)": ""}),
+            bene("4", **{"Utilizzo del bene": "Inutilizzabile"}),
+            bene("5", **{"Natura del bene": "TERRENO"}),
+            bene("6", **{"Utilizzo del bene": "Utilizzato direttamente"}),
+            bene("7", **{"Utilizzo del bene": ""}),
+            bene("8", **{"Titolo proprietà": "", "Titolo detenzione": "in uso gratuito"}),
+        ])
+        self.assertEqual(
+            [(row["Codice fiscale ente"], row["Utilizzo del bene"], row["Fabbricati"], row["Fabbricati con superficie"],
+              row["Superficie di riferimento (m²)"]) for row in rows],
+            [("00181820663", "Non utilizzato", "1", "1", "70.5"),
+             ("02438750586", "Inutilizzabile", "1", "1", "70.5"),
+             ("02438750586", "Non utilizzato", "3", "2", "100.0")],
+        )
+        self.assertEqual((rows[0]["Codice regione del bene"], rows[0]["Codice catastale comune del bene"], rows[0]["Comune del bene"]),
+                         ("12", "H501", "Roma"))
+        # Positions stay out of the public projection: only the municipality is published.
+        self.assertFalse({"Latitudine", "Longitudine", "ID bene"} & set(rows[0]))
+
+    def test_idle_buildings_reject_values_outside_the_reviewed_domains(self) -> None:
+        cases = [
+            ([bene("1", **{"Natura del bene": "INFRASTRUTTURA"})], "natura del bene"),
+            ([bene("1", **{"Regione del bene": "LAZIO E UMBRIA"})], "regione del bene"),
+            ([bene("1"), bene("2", **{"Comune del bene": "Roma Capitale"})], "comune del bene"),
+        ]
+        for beni, message in cases:
+            with self.subTest(message=message):
+                with self.assertRaisesRegex(mef.SourceError, message):
+                    self.idle_buildings(beni)
+        with self.assertRaisesRegex(mef.SourceError, "fabbricati fermi"):
+            self.idle_buildings([bene("1")], expected=2)
+
     def test_lock_matches_corpus_registration(self) -> None:
         mef.validate_contract(self.spec)
         corpus_spec = json.loads(mef.CORPUS_SPEC.read_text(encoding="utf-8"))
@@ -209,6 +259,9 @@ class MefPatrimonioImmobiliareTests(TestCase):
         self.assertEqual(beni["expected"]["headers"], mef.BENI_HEADERS)
         self.assertEqual(contratti["expected"]["headers"], mef.CONTRATTI_HEADERS)
         self.assertEqual((beni["publication"], beni["privateFields"]), ("rows", []))
+        fabbricati = registered[self.spec["datasets"]["fabbricatiFermi"]]
+        self.assertEqual(fabbricati["expected"]["headers"], mef.FABBRICATI_FERMI_HEADERS)
+        self.assertEqual((fabbricati["publication"], fabbricati["privateFields"]), ("rows", []))
         self.assertEqual(sum(item["rows"] for item in self.spec["files"] if item["kind"] == "immobili"), self.spec["expected"]["immobiliRows"])
         self.assertEqual(sum(item["rows"] for item in self.spec["files"] if item["kind"] == "detenzioni"), self.spec["expected"]["detenzioniRows"])
 

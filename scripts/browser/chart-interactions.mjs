@@ -30,10 +30,12 @@ export async function inspectGovernmentChart(page, card) {
     const currentIndex = previous.periods.indexOf(previous.period);
     const expectedIndex = key === "Home" ? 0 : key === "End" ? previous.periods.length - 1
       : Math.max(0, Math.min(previous.periods.length - 1, currentIndex + (key === "ArrowRight" ? 1 : -1)));
+    // Rifocus prima di ogni tasto: dopo molti governi in CI il focus può uscire dall'SVG.
+    await svg.evaluate((element) => element.focus({ preventScroll: true }));
     await page.keyboard.press(key);
     await page.waitForFunction((element, expectedPeriod) =>
       element.querySelector('[role="status"] strong')?.textContent === expectedPeriod,
-    { timeout: 3_000 }, card, previous.periods[expectedIndex]);
+    { timeout: 8_000 }, card, previous.periods[expectedIndex]);
     const state = await read();
     assert.equal(state.id, id, `${id}: i tasti del grafico cambiano indicatore`);
     assert.equal(state.summaries.length, 4, `${id}: riepiloghi della selezione assenti`);

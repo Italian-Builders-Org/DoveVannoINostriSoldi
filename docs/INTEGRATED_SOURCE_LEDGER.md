@@ -209,10 +209,10 @@ prima del calcolo dell'hash pubblico della riga.
 
 ## Superfici pubbliche
 
-- `/dati`: tutti i 79 dataset e i loro stati;
-- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle 57 proiezioni;
+- `/dati`: tutti i dataset del catalogo e i loro stati;
+- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle proiezioni interrogabili;
 - `/fonti/copertura`: riconciliazione dei tre livelli del rilascio e metadati di
-  fonte e freschezza per tutti i 79 dataset;
+  fonte e freschezza per tutti i dataset;
 - `/fonti/catalogo` e `/api/fonti/catalogo`: tutte le 34.071 identità;
 - `/appalti`, `/incarichi`, `/spese`, `/controlli` e `/confronti`: anteprime
   concise di non più di tre percorsi pertinenti;
@@ -222,9 +222,10 @@ prima del calcolo dell'hash pubblico della riga.
 - 21 pagine tematiche sotto `/appalti`, `/incarichi`, `/spese`, `/controlli`,
   `/confronti` e `/trasparenza`: risultati, confini probatori, prime righe e
   collegamento al dataset completo;
-- un'anteprima dedicata in `/partecipazioni`, che mantiene primaria la vista
-  nazionale MEF e conduce ai tre insiemi di approfondimento; 21 pagine e questa
-  anteprima rappresentano insieme tutti i 79 dataset una sola volta;
+- anteprime di superficie, fra cui quella di `/partecipazioni`, che mantiene
+  primaria la vista nazionale MEF e conduce ai tre insiemi di approfondimento;
+  pagine tematiche e anteprime rappresentano insieme ogni dataset del catalogo
+  una sola volta (`tests/integrated-editorial.test.mjs`);
 - MCP `spesa_pa_dettaglio`: lo stesso selettore pubblico con `code`, `query`,
   `limit` e `offset`.
 

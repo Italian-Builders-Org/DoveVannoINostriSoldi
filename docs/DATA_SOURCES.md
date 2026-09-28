@@ -171,12 +171,13 @@ spesa pubblica e non costruisce classifiche. Controllo offline:
 `python3 scripts/etl/eurostat_inequality_corpus.py check`; source lock:
 `scripts/etl/specs/eurostat-inequality.source.json`.
 
-Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
+Il periodo di riferimento è valorizzato soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto
 esplicito di un aggregato derivato. Gli anni presenti solo in testo libero o
-negli URL non vengono usati. I 47 dataset senza un confine non ambiguo restano
-quindi su “Non disponibile”; gli estremi futuri degli incarichi descrivono la
+negli URL non vengono usati. I dataset senza un confine non ambiguo restano
+quindi su “Non disponibile” (l'elenco dei periodi ammessi è fissato in
+`tests/integrated-curated-datasets.test.mjs`); gli estremi futuri degli incarichi descrivono la
 durata dichiarata del record e non una data di pubblicazione o acquisizione.
 
 Due insiemi `catalog-only` espongono anche il denominatore fisico usato nella

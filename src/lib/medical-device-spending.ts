@@ -12,6 +12,13 @@ const META_PATH = join(ROOT, "meta.json");
 const CATALOG_PATH = "src/data/generated/integrated/catalog.json";
 const SOURCE_SPEC_PATH = "scripts/etl/specs/medical-device-spending-pilot.source.json";
 const SHA256 = /^[a-f0-9]{64}$/;
+const INDEX_DATASETS = [
+  "salute-dispositivi-bdrdm",
+  "salute-spesa-dispositivi-2018",
+  "salute-spesa-dispositivi-2019",
+  "salute-spesa-dispositivi-2020",
+  "salute-spesa-dispositivi-2021",
+] as const;
 const DEVICE_REF = /^dm-[a-f0-9]{20}$/;
 const DEVICE_NUMBER = /^\d+$/;
 const MONEY = /^-?(?:0|[1-9]\d*)\.\d{2}$/;
@@ -96,7 +103,7 @@ type Meta = Readonly<{
   dataset: "salute-spesa-dispositivi-index";
   registrySnapshotDate: string;
   sourceSpecSha256: string;
-  corpusCatalogSha256: string;
+  sourceReceiptSha256: Readonly<Record<string, string>>;
   coverage: Readonly<{ devicesWithSpending: number; matchedDevices: number; unresolvedDevices: number; facts: number }>;
   search: Readonly<{ path: string; bytes: number; rawBytes: number; sha256: string; records: number }>;
   details: Readonly<{ path: string; bytes: number; sha256: string; blocks: readonly DetailBlock[] }>;
@@ -229,6 +236,20 @@ function validatePacked(blocks: readonly Block[], totalBytes: number, label: str
   if (offset !== totalBytes) throw new Error(`${label}: dimensione complessiva non valida`);
 }
 
+/**
+ * The index is derived only from its five datasets: it stays valid while their receipts in the catalog
+ * are unchanged, whatever else is appended to the corpus.
+ */
+export function assertIndexReceipts(receipts: Readonly<Record<string, string>>, catalog: unknown): void {
+  if (Object.keys(receipts).sort().join() !== [...INDEX_DATASETS].join()) throw new Error("Insieme dei dataset dell'indice dispositivi non valido");
+  const entries = record(catalog, "catalog").datasets;
+  if (!Array.isArray(entries)) throw new Error("Catalogo integrato privo di dataset");
+  for (const id of INDEX_DATASETS) {
+    const entry = entries.find((item) => item && typeof item === "object" && (item as { id?: unknown }).id === id) as { receiptSha256?: unknown } | undefined;
+    if (entry?.receiptSha256 !== receipts[id]) throw new Error(`Indice dispositivi non allineato alle ricevute del catalogo integrato: ${id}`);
+  }
+}
+
 function loadMeta(): Meta {
   if (cachedMeta) return cachedMeta;
   const raw = stableBytes(META_PATH, MAX_META_BYTES);
@@ -269,7 +290,8 @@ function loadMeta(): Meta {
   const meta: Meta = { schemaVersion: 1, dataset: value.dataset,
     registrySnapshotDate: text(value.registrySnapshotDate, "registrySnapshotDate", 10)!,
     sourceSpecSha256: sha(value.sourceSpecSha256, "sourceSpecSha256"),
-    corpusCatalogSha256: sha(value.corpusCatalogSha256, "corpusCatalogSha256"),
+    sourceReceiptSha256: Object.fromEntries(Object.entries(record(value.sourceReceiptSha256, "sourceReceiptSha256"))
+      .map(([id, digest]) => [id, sha(digest, `sourceReceiptSha256.${id}`)])),
     coverage: { devicesWithSpending: integer(coverage.devicesWithSpending, "devicesWithSpending"),
       matchedDevices: integer(coverage.matchedDevices, "matchedDevices"),
       unresolvedDevices: integer(coverage.unresolvedDevices, "unresolvedDevices"), facts: integer(coverage.facts, "facts") },
@@ -286,10 +308,7 @@ function loadMeta(): Meta {
   }
   validatePacked(meta.details.blocks, meta.details.bytes, "details");
   validatePacked(meta.aggregates.scopes, meta.aggregates.bytes, "aggregates");
-  const catalog = readFileSync(CATALOG_PATH);
-  if (createHash("sha256").update(catalog).digest("hex") !== meta.corpusCatalogSha256) {
-    throw new Error("Indice dispositivi non allineato al catalogo integrato");
-  }
+  assertIndexReceipts(meta.sourceReceiptSha256, JSON.parse(readFileSync(CATALOG_PATH, "utf8")));
   if (createHash("sha256").update(readFileSync(SOURCE_SPEC_PATH)).digest("hex") !== meta.sourceSpecSha256) {
     throw new Error("Indice dispositivi non allineato al source lock");
   }

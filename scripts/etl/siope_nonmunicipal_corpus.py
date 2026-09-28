@@ -42,7 +42,7 @@ def verify_existing_artifacts(proof: dict) -> None:
         if corpus.sha256_bytes(path.read_bytes()) != expected_hash:
             raise AppendError(f"hash artefatto corrente divergente: {raw_path}")
 
-def commit_atomically(artifacts: dict[Path, bytes], *, removals: set[Path], protected_paths: set[Path] | None = None, after_write=None, spec_path: Path, catalog_path: Path, rows_dir: Path, receipts_dir: Path, proof_path: Path) -> None:
+def commit_atomically(artifacts: dict[Path, bytes], *, removals: set[Path], protected_paths: set[Path] | None = None, after_write=None, spec_path: Path, catalog_path: Path, rows_dir: Path, receipts_dir: Path, proof_path: Path, rows_for: frozenset[str] | None = None) -> None:
     """Stage every byte first and restore the previous release on any failure.
 
     The committed catalog is verified only after all replacement writes.  A
@@ -71,7 +71,7 @@ def commit_atomically(artifacts: dict[Path, bytes], *, removals: set[Path], prot
                 path.unlink(missing_ok=True)
             corpus.check_committed(
                 spec_path=spec_path, catalog_path=catalog_path, rows_dir=rows_dir,
-                receipts_dir=receipts_dir, proof_path=proof_path,
+                receipts_dir=receipts_dir, proof_path=proof_path, rows_for=rows_for,
             )
             if after_write is not None:
                 after_write()
@@ -215,7 +215,7 @@ def append(
                 provenance_path = detail_path.parent / "siope-nonmunicipal-provenance.json"
                 corpus.write_bytes(detail_path, candidate_detail_payload)
                 corpus.write_bytes(provenance_path, candidate_manifest_payload)
-            integrated_source_release.build_release(release_paths)
+            integrated_source_release.build_release(release_paths, rows_for=frozenset(dataset_ids))
             if promotes_detail:
                 assert detail_path is not None and view_proof_path is not None and release_proof_path is not None
                 provenance_path = detail_path.parent / "siope-nonmunicipal-provenance.json"
@@ -242,7 +242,7 @@ def append(
     commit_atomically(
         artifacts, removals=removals - set(artifacts), protected_paths=protected_paths, after_write=after_write,
         spec_path=spec_path, catalog_path=catalog_path, rows_dir=rows_dir,
-        receipts_dir=receipts_dir, proof_path=proof_path,
+        receipts_dir=receipts_dir, proof_path=proof_path, rows_for=frozenset(dataset_ids),
     )
 
 def main() -> int:

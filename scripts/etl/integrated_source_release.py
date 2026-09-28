@@ -607,7 +607,9 @@ def _validate_dataset_receipt(
     }
 
 
-def _validate_datasets(paths: ReleasePaths, *, show_timings: bool = False) -> dict[str, object]:
+def _validate_datasets(
+    paths: ReleasePaths, *, show_timings: bool = False, rows_for: frozenset[str] | None = None,
+) -> dict[str, object]:
     spec_payload = _read_regular(paths.dataset_spec, "integrated dataset spec")
     try:
         spec, dataset_items = dataset_etl.load_spec(paths.dataset_spec)
@@ -744,6 +746,7 @@ def _validate_datasets(paths: ReleasePaths, *, show_timings: bool = False) -> di
             receipts_dir=paths.dataset_receipts_dir,
             proof_path=paths.dataset_proof,
             show_timings=show_timings,
+            rows_for=rows_for,
         )
     except Exception as exc:
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):
@@ -794,8 +797,12 @@ def _guard_output(paths: ReleasePaths) -> None:
 
 def build_expected_release(
     paths: ReleasePaths = ReleasePaths(), *, show_timings: bool = False,
+    rows_for: frozenset[str] | None = None,
 ) -> dict[str, object]:
-    """Recalculate every sub-gate and return the deterministic aggregate proof."""
+    """Recalculate every sub-gate and return the deterministic aggregate proof.
+
+    ``rows_for`` limits row semantics to the datasets just appended (see ``check_committed``).
+    """
 
     def phase(label: str, operation):
         if show_timings:
@@ -817,10 +824,7 @@ def build_expected_release(
     source_catalog = phase("source catalog", _validate_source_catalog)
     datasets = phase(
         "dataset artifacts and rows",
-        lambda current: (
-            _validate_datasets(current, show_timings=True)
-            if show_timings else _validate_datasets(current)
-        ),
+        lambda current: _validate_datasets(current, show_timings=show_timings, rows_for=rows_for),
     )
     dataset_rows = expected_dataset_rows(paths)
     contract = {
@@ -886,12 +890,18 @@ def check_release(
     return committed
 
 
-def build_release(paths: ReleasePaths = ReleasePaths()) -> dict[str, object]:
+def build_release(
+    paths: ReleasePaths = ReleasePaths(), *, rows_for: frozenset[str] | None = None,
+) -> dict[str, object]:
     """Validate every gate, then atomically replace only the aggregate proof."""
 
-    expected = build_expected_release(paths)
-    _atomic_write(paths.output, canonical_document(expected))
-    return check_release(paths)
+    expected = build_expected_release(paths, rows_for=rows_for)
+    payload = canonical_document(expected)
+    _atomic_write(paths.output, payload)
+    # The gates just ran on these inputs: reading the bytes back is enough, not a second full pass.
+    if _read_regular(paths.output, "integrated source release proof") != payload:
+        raise ReleaseError("integrated source release proof write is not reproducible")
+    return expected
 
 
 def _summary(proof: dict[str, object]) -> dict[str, object]:

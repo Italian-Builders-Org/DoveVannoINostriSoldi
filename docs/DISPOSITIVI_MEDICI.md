@@ -144,7 +144,10 @@ La funzione condivisa `siope_nonmunicipal_corpus.append`
 aggiunge le tabelle selezionate; usare `corpus_release_proof_path` e il callback
 `siope_nonmunicipal.build_committed_view_proof` nella stessa transazione per
 sigillare la prova globale e riallineare il riferimento SIOPE. Gli altri
-dataset, le identità delle fonti e gli elementi del vecchio archivio non cambiano.
+dataset, le identità delle fonti e gli elementi del vecchio archivio non cambiano:
+l'append rivalida righe e provenienza solo dei dataset selezionati e confronta i
+chunk degli altri con gli hash della prova precedente. La rivalidazione completa
+resta nei comandi `--check` e in CI.
 
 Dopo l'append, confrontare ogni riga, chunk, ricevuta e voce di catalogo con i
 CSV preparati e vincolati dagli hash della spec. Il controllo del pilota usa la
@@ -173,6 +176,8 @@ all'anagrafica durante una richiesta.
 `medical_device_spending_index.py` deriva le viste soltanto dalle partizioni
 pubbliche già verificate. Il controllo offline rilegge gli hash registrati nella
 prova di release, riconcilia le ricevute e ricostruisce ogni byte dell'indice.
+Il manifest lega l'indice alle ricevute dei suoi cinque dataset, non all'hash
+dell'intero catalogo: l'append di un altro dataset non richiede di rigenerarlo.
 Lo script usa SQLite in una directory temporanea durante la generazione e lo
 elimina alla fine. Il prodotto non usa né distribuisce quel database.
 

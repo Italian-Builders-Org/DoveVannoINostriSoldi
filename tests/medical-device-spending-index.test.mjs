@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
   MedicalDeviceQueryError,
   aggregateMedicalDeviceSpending,
+  assertIndexReceipts,
   getMedicalDeviceProfile,
   listMedicalDeviceFilters,
   listMedicalDeviceAggregateFacts,
@@ -13,6 +15,20 @@ const {
   medicalDeviceRegionName,
   searchMedicalDevices,
 } = await import("../src/lib/medical-device-spending.ts");
+
+test("the index is bound to its own datasets, so an unrelated append leaves it valid", () => {
+  const meta = JSON.parse(readFileSync("src/data/generated/medical-device-spending-index/meta.json", "utf8"));
+  const catalog = JSON.parse(readFileSync("src/data/generated/integrated/catalog.json", "utf8"));
+  assert.equal(meta.corpusCatalogSha256, undefined);
+  const receipts = meta.sourceReceiptSha256;
+  const withEntries = (datasets) => ({ ...catalog, datasets });
+  assert.doesNotThrow(() => assertIndexReceipts(receipts, withEntries([...catalog.datasets, { id: "zz-altro", receiptSha256: "0".repeat(64) }])));
+  const changed = catalog.datasets.map((entry) => entry.id === "salute-spesa-dispositivi-2020" ? { ...entry, receiptSha256: "1".repeat(64) } : entry);
+  assert.throws(() => assertIndexReceipts(receipts, withEntries(changed)), /ricevute/);
+  assert.throws(() => assertIndexReceipts(receipts, withEntries(catalog.datasets.filter((entry) => entry.id !== "salute-dispositivi-bdrdm"))), /ricevute/);
+  const fewer = Object.fromEntries(Object.entries(receipts).filter(([id]) => id !== "salute-spesa-dispositivi-2018"));
+  assert.throws(() => assertIndexReceipts(fewer, catalog), /dataset dell'indice/);
+});
 
 test("medical-device region labels preserve historical codes while resolving their names", () => {
   assert.equal(medicalDeviceRegionName("010"), "Piemonte");

@@ -1087,6 +1087,16 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     ],
   },
   {
+    surface: "/dati",
+    title: "Spesa statale per territorio 2020–2022",
+    description: "Spesa del Bilancio dello Stato per territorio destinatario, un dataset per esercizio: Italia, ripartizioni e Regioni sono livelli sovrapposti da non sommare.",
+    datasets: [
+      { id: "rgs-spesa-statale-regionalizzata-2020", label: "Esercizio 2020" },
+      { id: "rgs-spesa-statale-regionalizzata-2021", label: "Esercizio 2021" },
+      { id: "rgs-spesa-statale-regionalizzata-2022", label: "Esercizio 2022" },
+    ],
+  },
+  {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",
     description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",

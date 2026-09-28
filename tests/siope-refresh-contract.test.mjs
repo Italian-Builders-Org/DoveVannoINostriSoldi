@@ -18,7 +18,7 @@ test("SIOPE refresh measurements vary without changing other corpus contribution
   assert.equal(after.bytes - before.bytes, 120);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceRows - before.rows, 19_772_476);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.publicRows - before.rows, 6_790_130);
-  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceBytes - before.bytes, 3_669_580_827);
+  assert.equal(INTEGRATED_CORPUS_CONTRACT.sourceBytes - before.bytes, 3_687_342_300);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.catalogOnlyRows, 12_979_505);
   assert.equal(INTEGRATED_CORPUS_CONTRACT.derivedOnlyRows, 2_841);
 });

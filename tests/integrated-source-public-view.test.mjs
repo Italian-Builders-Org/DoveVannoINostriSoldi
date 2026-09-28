@@ -274,7 +274,7 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
     )));
   }
-  assert.equal(checked.length, 84);
+  assert.equal(checked.length, 87);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
     INTEGRATED_CORPUS_CONTRACT.publicRows,
@@ -386,7 +386,7 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
           loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
         )));
       }
-      if (loaded.length !== 84) throw new Error("Unexpected queryable dataset count");
+      if (loaded.length !== 87) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();

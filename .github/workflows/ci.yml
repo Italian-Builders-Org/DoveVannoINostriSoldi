@@ -199,7 +199,8 @@ jobs:
   production:
     name: production
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    # Gate browser+Lighthouse spesso ~24 min; 25 lasciava <1 min di margine (#679).
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

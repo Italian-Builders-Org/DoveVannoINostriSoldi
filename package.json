@@ -59,7 +59,7 @@
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs"
   },
   "dependencies": {
-    "@hugeicons/core-free-icons": "^4.3.2",
+    "@hugeicons/core-free-icons": "^4.3.4",
     "@hugeicons/react": "^1.1.10",
     "@modelcontextprotocol/server": "^2.0.0",
     "mammoth": "1.12.3",

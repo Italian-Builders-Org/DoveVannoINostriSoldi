@@ -3155,6 +3155,31 @@
       "refreshWorkflow": null,
       "trustModel": "ZIP ufficiali FC70POLIZIA 2021 vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC70TOT 2021 e dalla funzione Polizia locale 2022. Join di 6556 Comuni RSO; 30 aggregati e 9 Comuni privi di spesa storica esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
       "sourceSpec": "scripts/etl/specs/opencivitas-2021-polizia.source.json"
+    },
+    {
+      "id": "mantova-offices",
+      "owner": "Comune di Mantova — organi e mandati del pilota #405",
+      "files": [
+        "src/data/generated/mantova-offices.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": null,
+        "coveredBy": "node-tests"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_mantova_offices_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/municipal-offices-contract.test.mjs",
+        "tests/municipal-offices-ui.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/mantova_offices_snapshot.py --source-dir /path/to/official-html --output src/data/generated/mantova-offices.json --as-of YYYY-MM-DD",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "Snapshot limitato a Giunta e Consiglio di Mantova, con fonti istituzionali e licenza CC BY 4.0 verificate; URL, date e hash dei documenti sono conservati nel payload. Il producer rifiuta cambi di organico, identità discordanti e licenza assente. I test di contratto controllano identità, intervalli, provenienza e copertura; lo storico e i compensi restano non coperti."
     }
   ]
 }

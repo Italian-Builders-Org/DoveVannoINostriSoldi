@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 117
+- Artefatti nel registro: 118
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 100 (PR umana dopo revisione)
+- manuale: 101 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -160,6 +160,7 @@ La revisione e il merge restano umani.
 | `opencivitas-2022-istruzione` | 2022 | 2026-09-22T13:37:40Z | https://www.opencivitas.it/it/dataset/2022-comuni-istruzione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_istruzione_snapshot.py --check` |
 | `opencivitas-2021-sociale-asili` | 2021 | 2026-09-22T14:24:12Z | https://www.opencivitas.it/it/dataset/2021-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_sociale_asili_snapshot.py --check` |
 | `opencivitas-2021-polizia` | 2021 | 2026-09-22T17:49:27Z | https://www.opencivitas.it/it/dataset/2021-comuni-polizia-locale-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_polizia_snapshot.py --check` |
+| `mantova-offices` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 
 ## Prossimo passo
 

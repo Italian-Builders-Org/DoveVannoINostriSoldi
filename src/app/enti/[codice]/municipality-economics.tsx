@@ -99,6 +99,7 @@ export function MunicipalityEconomics({ profile }: { profile: MunicipalityProfil
         <a href="#dati-pnrr-asili">PNRR</a>
         <a href="#dati-irpef">IRPEF</a>
         <a href="#dati-scuole">Scuole</a>
+        <a href="#dati-amministratori">Amministratori</a>
         <a href="#dati-anac-aggiudicazioni">Appalti</a>
       </nav>
 

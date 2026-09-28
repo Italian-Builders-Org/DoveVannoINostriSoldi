@@ -175,6 +175,78 @@
   padding-block: calc(var(--space-4) + var(--space-1));
 }
 
+.officeOrgans {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.officeOrgans details {
+  border: 1px solid var(--color-neutral-200);
+  min-width: 0;
+}
+
+.officeOrgans summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: var(--space-3);
+  font-weight: 700;
+}
+
+.officeOrgans summary span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: var(--space-2);
+}
+
+.officeOrgans summary:focus-visible,
+.officeMembers a:focus-visible,
+.officeSources a:focus-visible {
+  outline: 2px solid var(--color-accent-700);
+  outline-offset: 2px;
+}
+
+.officeMembers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+.officeMembers li {
+  border-top: 1px solid var(--color-neutral-200);
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+
+.officeMembers a,
+.officeMembers span,
+.officeMembers small,
+.officeSources small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.officeMembers a { font-weight: 700; }
+.officeMembers small,
+.officeSources small { color: var(--color-neutral-600); }
+
+.officeCompensation,
+.officeSources {
+  border-top: 1px solid var(--color-neutral-200);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+}
+
+.officeCompensation h3,
+.officeSources h3 { margin: 0; }
+.officeCompensation small { display: block; color: var(--color-neutral-600); overflow-wrap: anywhere; }
+.officeSources ul { padding-left: 1.5rem; }
+.officeSources li { margin-block: var(--space-2); }
+
 .yearPicker {
   display: flex;
   flex-wrap: wrap;

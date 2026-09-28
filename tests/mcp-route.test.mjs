@@ -8,6 +8,7 @@ process.env.MCP_ALLOWED_HOSTS = [process.env.MCP_ALLOWED_HOSTS, "example.test"]
 
 const { GET, HEAD, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
 const { dvnsStarterPrompts } = await import("../src/lib/mcp/server.ts");
+const { validateToolsListPayload } = await import("../scripts/runtime-health.mjs");
 const loader = await import("../src/lib/integrated-sources.ts");
 let requestAddressSequence = 1;
 
@@ -424,6 +425,12 @@ test("MCP tools distinguish read-only behavior from public-internet access", asy
     assert.equal(tool.annotations?.destructiveHint, false, `${name} must not be destructive`);
     assert.equal(tool.annotations?.idempotentHint, true, `${name} must remain idempotent`);
   }
+});
+
+test("real MCP tools/list response satisfies the runtime health contract", async () => {
+  const response = await POST(request({ Origin: "https://example.test" }));
+  const result = validateToolsListPayload(response, await response.text(), "local MCP tools/list");
+  assert.equal(result.toolCount, 2);
 });
 
 test("MCP endpoint exposes the machine-readable dataset catalog resource", async () => {

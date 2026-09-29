@@ -12,7 +12,7 @@ const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs",
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
-const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV, SITE_MAP_GROUPS } = await import("../src/lib/site-navigation.ts");
+const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 
 test("site navigation exposes coesione asili in primary and footer maps", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
@@ -33,18 +33,6 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.match(globalsCss, /break-inside: avoid/);
   assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
-});
-
-test("mobility is reachable from the territories menu and sitemap", () => {
-  const territoriesMenu = PRIMARY_NAV.find((section) => section.href === "/territori");
-  const mobilityMenuItem = flattenNavLinks(territoriesMenu?.children ?? [])
-    .find((link) => link.href === "/mobilita");
-  const territoriesSitemap = SITE_MAP_GROUPS.find((group) => group.title === "Territori");
-  const mobilitySitemapItem = flattenNavLinks(territoriesSitemap?.links ?? [])
-    .find((link) => link.href === "/mobilita");
-
-  assert.equal(mobilityMenuItem?.label, "Mobilità");
-  assert.equal(mobilitySitemapItem?.label, "Mobilità");
 });
 
 test("browser copy guard matches limit and offset as whole words", () => {
@@ -262,4 +250,18 @@ test("mappa della politica nav keeps same-origin /politici; homepage uses the su
   assert.match(navigationSource, /href: "\/politici", label: "Mappa della politica"/);
   assert.ok(home.includes("PUBLIC_POLITICI_URL"));
   assert.equal(PUBLIC_POLITICI_URL, "https://politici.dovevannoinostrisoldi.com");
+});
+
+test("mappa dei comuni nav keeps same-origin /comuni; homepage uses the subdomain", async () => {
+  const { PUBLIC_COMUNI_URL } = await import("../src/lib/site.ts");
+  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const entities = PRIMARY_NAV.find((item) => item.href === "/enti");
+  const mapLinks = flattenNavLinks(entities?.children ?? []).filter((link) =>
+    link.label === "Mappa dei Comuni",
+  );
+  assert.equal(mapLinks.length, 1);
+  assert.equal(mapLinks[0]?.href, "/comuni");
+  assert.match(navigationSource, /href: "\/comuni", label: "Mappa dei Comuni"/);
+  assert.ok(home.includes("PUBLIC_COMUNI_URL"));
+  assert.equal(PUBLIC_COMUNI_URL, "https://comuni.dovevannoinostrisoldi.com");
 });

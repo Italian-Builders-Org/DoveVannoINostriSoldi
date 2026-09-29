@@ -35,7 +35,7 @@ import {
   getSiopeMunicipalSnapshot,
   partialMonth,
 } from "@/lib/siope-snapshot";
-import { PUBLIC_POLITICI_URL } from "@/lib/site";
+import { PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -75,6 +75,19 @@ type Destination = Readonly<{
   description: string;
 }>;
 
+const MAP_DESTINATIONS: readonly Destination[] = [
+  {
+    href: PUBLIC_POLITICI_URL,
+    title: "Mappa della politica",
+    description: "Presidenza, Governo, Camera e Senato: chi c’è e come si collega.",
+  },
+  {
+    href: PUBLIC_COMUNI_URL,
+    title: "Mappa dei Comuni",
+    description: "Impronta finanziaria SIOPE: confronta ogni Comune con i territori simili.",
+  },
+];
+
 const PRIMARY_DESTINATIONS: readonly Destination[] = [
   {
     href: "/imprese",
@@ -90,11 +103,6 @@ const PRIMARY_DESTINATIONS: readonly Destination[] = [
     href: "/spese",
     title: "Soldi",
     description: "Pagamenti comunali, sanità, pensioni e bilancio dello Stato.",
-  },
-  {
-    href: PUBLIC_POLITICI_URL,
-    title: "Mappa della politica",
-    description: "Presidenza, Governo, Camera e Senato: chi c’è e come si collega.",
   },
 ];
 
@@ -113,11 +121,6 @@ const SECONDARY_DESTINATIONS: readonly Destination[] = [
     href: "/coesione",
     title: "Fondi e progetti",
     description: "Coesione, PNRR e progetti con fondi pubblici.",
-  },
-  {
-    href: "/territori/confronto",
-    title: "Spesa e fabbisogno dei Comuni",
-    description: "Confronto tra Comuni su spesa e fabbisogno.",
   },
   {
     href: "/mcp",
@@ -228,6 +231,32 @@ export default async function HomePage({
           </div>
         </form>
       </header>
+
+      <section className={styles.mapsSection} aria-labelledby="maps-title">
+        <div className={styles.mapsIntro}>
+          <h2 id="maps-title" className={styles.mapsTitle}>
+            Mappe
+          </h2>
+          <p className={styles.mapsLead}>
+            Due viste immersive: istituzioni e Comuni, senza il menu del sito.
+          </p>
+        </div>
+        <ul className={styles.mapGrid} aria-label="Mappe immersive">
+          {MAP_DESTINATIONS.map((destination) => (
+            <li key={destination.href}>
+              <Link className={styles.mapCard} href={destination.href}>
+                <span className={styles.mapEyebrow}>Mappa</span>
+                <span className={styles.mapTitle}>{destination.title}</span>
+                <span className={styles.mapCopy}>{destination.description}</span>
+                <span className={styles.mapCta}>
+                  Apri
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className={styles.exploreSection} aria-labelledby="explore-title">
         <h2 id="explore-title" className={styles.sectionTitle}>

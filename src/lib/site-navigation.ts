@@ -2,9 +2,10 @@
  * Primary navigation and footer sitemap. One source so header submenus and the
  * footer map stay aligned.
  *
- * The immersive map also lives on politici.dovevannoinostrisoldi.com (see
- * PUBLIC_POLITICI_URL; root rewrite in src/proxy.ts). Nav keeps the same-origin
- * /politici path so in-app menus and browser tests stay on this host.
+ * The immersive map also lives on politici.dovevannoinostrisoldi.com and the
+ * municipal footprint on comuni.dovevannoinostrisoldi.com (see PUBLIC_POLITICI_URL /
+ * PUBLIC_COMUNI_URL; root rewrite in src/proxy.ts). Nav keeps the same-origin
+ * /politici and /comuni paths so in-app menus and browser tests stay on this host.
  */
 
 export type NavLink = Readonly<{
@@ -157,9 +158,10 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/enti",
     label: "Enti e società",
     icon: "entities",
-    aliases: ["/partecipazioni", "/patrimonio"],
+    aliases: ["/partecipazioni", "/patrimonio", "/comuni"],
     children: [
       { href: "/enti", label: "Registro enti" },
+      { href: "/comuni", label: "Mappa dei Comuni" },
       { href: "/partecipazioni", label: "Partecipazioni" },
       { href: "/patrimonio", label: "Patrimonio pubblico" },
     ],
@@ -320,6 +322,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Enti e società",
     links: [
       { href: "/enti", label: "Registro enti" },
+      { href: "/comuni", label: "Mappa dei Comuni" },
       { href: "/partecipazioni", label: "Partecipazioni" },
       { href: "/patrimonio", label: "Patrimonio pubblico" },
     ],

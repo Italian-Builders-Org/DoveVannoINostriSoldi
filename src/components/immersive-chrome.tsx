@@ -2,17 +2,21 @@
 
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
-import { isPoliticiImmersive } from "@/lib/politici-immersive";
+import {
+  immersiveKind,
+  isImmersiveSurface,
+  isPoliticiImmersive,
+} from "@/lib/politici-immersive";
 
-export { isPoliticiImmersive };
+export { isPoliticiImmersive, isImmersiveSurface, immersiveKind };
 
 /** Marks <html> so CSS can drop sidebar offset and fill the viewport. */
 export function ImmersiveDocumentFlag() {
   const pathname = usePathname();
   useLayoutEffect(() => {
     const hostname = window.location.hostname;
-    const immersive = isPoliticiImmersive(pathname, hostname);
-    if (immersive) document.documentElement.dataset.immersive = "politici";
+    const kind = immersiveKind(pathname, hostname);
+    if (kind) document.documentElement.dataset.immersive = kind;
     else delete document.documentElement.dataset.immersive;
     return () => {
       delete document.documentElement.dataset.immersive;
@@ -22,7 +26,7 @@ export function ImmersiveDocumentFlag() {
 }
 
 /**
- * Renders children only when we are NOT on the immersive map page.
+ * Renders children only when we are NOT on an immersive surface.
  * Must stay mounted under the root layout even on immersive SSR so that soft
  * navigation back to the rest of the site can restore the menu without a
  * full document reload.
@@ -30,6 +34,6 @@ export function ImmersiveDocumentFlag() {
 export function ChromeUnlessImmersive({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const hostname = typeof window === "undefined" ? null : window.location.hostname;
-  if (isPoliticiImmersive(pathname, hostname)) return null;
+  if (isImmersiveSurface(pathname, hostname)) return null;
   return children;
 }

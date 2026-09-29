@@ -21,8 +21,9 @@ test("existing shell: root layout strips site chrome for the immersive route", a
   const immersiveHelper = await read("src/lib/politici-immersive.ts");
   const proxySrc = await read("src/proxy.ts");
   for (const token of ["ImmersiveDocumentFlag", "ChromeUnlessImmersive", "IMMERSIVE_INIT_SCRIPT"]) assert.ok(layout.includes(token));
-  assert.match(immersive, /isPoliticiImmersive/);
+  assert.match(immersive, /isPoliticiImmersive|isImmersiveSurface/);
   assert.match(immersiveHelper, /POLITICI_HOST|politici\.dovevannoinostrisoldi\.com/);
+  assert.match(immersiveHelper, /COMUNI_HOST|comuni\.dovevannoinostrisoldi\.com/);
   assert.match(immersive, /dataset\.immersive|data-immersive/);
   // Soft-nav restore: chrome wrappers stay mounted even when SSR is immersive.
   assert.doesNotMatch(layout, /immersive \? null :/);

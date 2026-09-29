@@ -285,6 +285,8 @@ export type SiopeMunicipalityPeerObservation = Readonly<{
   totalCents: number;
   perCapitaCents: number | null;
   perSquareKmCents: number;
+  /** Packed SIOPE title amounts in `TITLE_ORDER`; null when the source omits the breakdown. */
+  titleCents: readonly number[] | null;
   geography: MunicipalityGeography;
 }>;
 
@@ -351,6 +353,7 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
       totalCents: row[6],
       perCapitaCents: row[5] === null ? null : Math.round(row[6] / row[5]),
       perSquareKmCents,
+      titleCents: row[7],
       geography,
     }];
   });

@@ -3,8 +3,10 @@ import { NextResponse } from "next/server.js";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent)(?:\/|[ );]|$)/i;
-// Keep in sync with PUBLIC_POLITICI_URL / immersive-chrome (Node tests cannot resolve @/).
+// Keep in sync with PUBLIC_POLITICI_URL / PUBLIC_COMUNI_URL / immersive-chrome
+// (Node tests cannot resolve @/).
 const POLITICI_HOST = "politici.dovevannoinostrisoldi.com";
+const COMUNI_HOST = "comuni.dovevannoinostrisoldi.com";
 
 // Local fallback only; Vercel WAF enforces the cross-instance limits.
 const PER_IP_WINDOW_MS = 60_000;
@@ -92,6 +94,11 @@ export function proxy(request: NextRequest) {
   if (pathname === "/" && requestHostname(request) === POLITICI_HOST) {
     const destination = request.nextUrl.clone();
     destination.pathname = "/politici";
+    return NextResponse.rewrite(destination);
+  }
+  if (pathname === "/" && requestHostname(request) === COMUNI_HOST) {
+    const destination = request.nextUrl.clone();
+    destination.pathname = "/comuni";
     return NextResponse.rewrite(destination);
   }
   if (pathname.startsWith("/api/")) {

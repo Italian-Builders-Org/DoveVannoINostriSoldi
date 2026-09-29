@@ -137,7 +137,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           </h2>
           <p className={styles.axisGlossaryHint}>
             Indice &gt; 100 = sopra la mediana; &lt; 100 = sotto.
-            I numeri 1–{footprint.indicators.length} coincidono con il grafico.
+            I numeri da 1 a {footprint.indicators.length} coincidono con il grafico.
           </p>
         </div>
         <ol className={styles.indicatorList}>

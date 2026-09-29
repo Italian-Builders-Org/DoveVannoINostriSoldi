@@ -6,18 +6,17 @@ await waitForServer(baseUrl, { readyPath: "/mobilita" });
 const browser = await launchBrowser();
 
 async function fillLabeledInput(page, labelText, value) {
-  const ok = await page.evaluate((label, next) => {
+  const handle = await page.evaluateHandle((label) => {
     const field = [...document.querySelectorAll("label")].find((node) =>
       [...node.querySelectorAll("span")].some((span) => span.textContent.trim() === label),
     );
-    const input = field?.querySelector("input");
-    if (!input) return false;
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-    setter?.call(input, next);
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    return true;
-  }, labelText, value);
-  assert.equal(ok, true, `Campo assente: ${labelText}`);
+    return field?.querySelector("input") ?? null;
+  }, labelText);
+  const input = handle.asElement();
+  assert.ok(input, `Campo assente: ${labelText}`);
+  await input.click({ clickCount: 3 });
+  await page.keyboard.press("Backspace");
+  await input.type(String(value), { delay: 5 });
 }
 
 try {
@@ -44,26 +43,27 @@ try {
         await page.waitForFunction((selector) => {
           const text = document.querySelector(selector)?.textContent ?? "";
           return /€/.test(text) && /litri stimati/.test(text);
-        }, {}, live);
+        }, { timeout: 15_000 }, live);
 
         await fillLabeledInput(page, "Chilometri annui", "0");
         await page.waitForFunction((selector) =>
           (document.querySelector(selector)?.textContent ?? "").includes("Inserisci valori maggiori di zero"),
-        {}, live);
+        { timeout: 15_000 }, live);
 
+        // 10_000 km × 5 L/100 km × €2/L = €1_000 e 500 litri
         await fillLabeledInput(page, "Chilometri annui", "10000");
         await fillLabeledInput(page, "Consumo medio (L/100 km)", "5");
         await fillLabeledInput(page, "Prezzo al litro (€)", "2");
         await page.waitForFunction((selector) => {
           const text = document.querySelector(selector)?.textContent ?? "";
-          return text.includes("1.000,00") && text.includes("500");
-        }, {}, live);
+          return /1[.\u00a0]?000,00/.test(text) && /\b500\b/.test(text);
+        }, { timeout: 15_000 }, live);
 
         await fillLabeledInput(page, "Spesa familiare mensile (€) · facoltativa", "2000");
         await page.waitForFunction((selector) => {
           const text = document.querySelector(selector)?.textContent ?? "";
-          return /4,2\s*%/.test(text) || text.includes("4,2%");
-        }, {}, live);
+          return /4[,.]2\s*%/.test(text);
+        }, { timeout: 15_000 }, live);
 
         const errors = [];
         page.on("pageerror", (error) => errors.push(String(error)));

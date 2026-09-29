@@ -34,29 +34,26 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const trimmed = query.trim();
-  const showDropdown = open && trimmed.length >= MIN_QUERY;
+  const queryReady = trimmed.length >= MIN_QUERY;
+  const visibleHits = queryReady ? hits : [];
+  const visibleSettled = queryReady ? settledQuery : "";
+  const visibleLoading = queryReady && loading;
+  const showDropdown = open && queryReady;
   const showEmpty =
-    showDropdown && !loading && settledQuery === trimmed && hits.length === 0;
+    showDropdown && !visibleLoading && visibleSettled === trimmed && visibleHits.length === 0;
 
   useEffect(() => {
     const effectQuery = query.trim();
+    if (effectQuery.length < MIN_QUERY) return;
+
     const requestId = ++requestIdRef.current;
     abortRef.current?.abort();
-
-    if (effectQuery.length < MIN_QUERY) {
-      setHits([]);
-      setSettledQuery("");
-      setLoading(false);
-      setActiveIndex(-1);
-      return;
-    }
-
-    setLoading(true);
 
     const timer = setTimeout(() => {
       if (requestId !== requestIdRef.current) return;
       const controller = new AbortController();
       abortRef.current = controller;
+      setLoading(true);
 
       fetch(
         `/api/comuni/search?q=${encodeURIComponent(effectQuery)}&limit=${SUGGESTION_LIMIT}`,
@@ -108,23 +105,23 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (!showDropdown || hits.length === 0) {
+    if (!showDropdown || visibleHits.length === 0) {
       if (event.key === "Escape") setOpen(false);
       return;
     }
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setActiveIndex((index) => (index + 1) % hits.length);
+      setActiveIndex((index) => (index + 1) % visibleHits.length);
       return;
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex((index) => (index <= 0 ? hits.length - 1 : index - 1));
+      setActiveIndex((index) => (index <= 0 ? visibleHits.length - 1 : index - 1));
       return;
     }
     if (event.key === "Enter" && activeIndex >= 0) {
       event.preventDefault();
-      const hit = hits[activeIndex];
+      const hit = visibleHits[activeIndex];
       if (hit) goToHit(hit);
       return;
     }
@@ -142,9 +139,9 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
         method="get"
         role="search"
         onSubmit={(event) => {
-          if (activeIndex >= 0 && hits[activeIndex]) {
+          if (activeIndex >= 0 && visibleHits[activeIndex]) {
             event.preventDefault();
-            goToHit(hits[activeIndex]!);
+            goToHit(visibleHits[activeIndex]!);
           }
         }}
       >
@@ -153,6 +150,7 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
           id="comuni-search"
           name="q"
           type="search"
+          role="combobox"
           value={query}
           placeholder="Inizia a scrivere un Comune…"
           autoComplete="off"
@@ -166,15 +164,22 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
             activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
           }
           onChange={(event) => {
-            setQuery(event.target.value);
+            const next = event.target.value;
+            setQuery(next);
             setOpen(true);
+            if (next.trim().length < MIN_QUERY) {
+              setHits([]);
+              setSettledQuery("");
+              setLoading(false);
+              setActiveIndex(-1);
+            }
           }}
           onFocus={() => {
             if (trimmed.length >= MIN_QUERY) setOpen(true);
           }}
           onKeyDown={onKeyDown}
         />
-        <button type="submit">{loading ? "…" : "Cerca"}</button>
+        <button type="submit">{visibleLoading ? "…" : "Cerca"}</button>
       </form>
 
       {showDropdown ? (
@@ -184,17 +189,17 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
           role="listbox"
           aria-label="Comuni suggeriti"
         >
-          {loading && hits.length === 0 ? (
-            <li className={styles.searchEmpty} role="option" aria-disabled="true">
+          {visibleLoading && visibleHits.length === 0 ? (
+            <li className={styles.searchEmpty} role="status">
               Cerco…
             </li>
           ) : null}
           {showEmpty ? (
-            <li className={styles.searchEmpty} role="option" aria-disabled="true">
+            <li className={styles.searchEmpty} role="status">
               Nessun Comune per «{trimmed}»
             </li>
           ) : null}
-          {hits.map((hit, index) => (
+          {visibleHits.map((hit, index) => (
             <li key={hit.codiceIpa} role="presentation">
               <Link
                 id={`${listboxId}-option-${index}`}

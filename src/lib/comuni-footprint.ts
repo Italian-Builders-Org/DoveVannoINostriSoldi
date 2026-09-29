@@ -3,7 +3,6 @@ import "server-only";
 import { compactEuro, exactEuro, integer, percent } from "@/lib/format";
 import {
   buildMunicipalitySpendingRows,
-  municipalitySpendingTitleLabel,
   type MunicipalitySpendingRow,
 } from "@/lib/municipality-spending-view";
 import {

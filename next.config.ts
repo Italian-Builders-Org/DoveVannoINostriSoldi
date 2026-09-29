@@ -23,6 +23,7 @@ const medicalDeviceRuntimeRows = [
 // Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
 // Anchoring here prevents `/dati` from also matching routes such as `/api/.../dati`.
 const routesWithoutMedicalDeviceRows = [
+  "/app/api/comuni/**",
   "/app/api/enti/**",
   "/app/api/fonti/**",
   "/app/api/governi/**",
@@ -30,6 +31,8 @@ const routesWithoutMedicalDeviceRows = [
   "/app/api/patrimonio/**",
   "/app/api/pnrr/**",
   "/app/appalti/**",
+  "/app/comuni",
+  "/app/comuni/**",
   "/app/confronti/**",
   "/app/controlli/**",
   "/app/disuguaglianza",

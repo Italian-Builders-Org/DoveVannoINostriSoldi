@@ -56,6 +56,117 @@
   min-width: 0;
 }
 
+/* Featured immersive maps sit above the compact section shortcuts. */
+.mapsSection {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5);
+  background:
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--graph-canvas) 88%, var(--color-accent-100)) 0%,
+      var(--graph-canvas) 48%,
+      var(--color-neutral-100) 100%
+    );
+  border: 1px solid var(--color-neutral-300);
+}
+
+.mapsIntro {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 36rem;
+}
+
+.mapsTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 1.2vw + 1.1rem, 1.7rem);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.mapsLead {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.mapGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mapCard {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-3);
+  height: 100%;
+  min-height: 14rem;
+  min-width: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+  border-top: 3px solid var(--color-accent-700);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-neutral-900) 4%, transparent);
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.mapCard:hover,
+.mapCard:focus-visible {
+  border-color: color-mix(in srgb, var(--color-accent-700) 40%, var(--color-neutral-300));
+  border-top-color: var(--color-accent-700);
+  background: var(--color-raised);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-900) 8%, transparent);
+  transform: translateY(-2px);
+}
+
+.mapEyebrow {
+  color: var(--color-accent-800);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mapTitle {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 0.8vw + 1.05rem, 1.45rem);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.mapCopy {
+  color: var(--color-neutral-700);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.mapCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  color: var(--color-accent-700);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 .exploreSection {
   display: grid;
   gap: var(--space-3);
@@ -66,7 +177,7 @@
   margin: 0;
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: var(--font-heading-weight);
   line-height: 1.3;
 }
@@ -80,12 +191,12 @@
   list-style: none;
 }
 
-/* Four primary destinations: 2×2 avoids an orphan cell in a 3-column row. */
+/* Three primary destinations in one row on desktop. */
 .primaryGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* Six secondary destinations fill two complete rows of three. */
+/* Secondary destinations fill the remaining width. */
 .secondaryGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -96,14 +207,23 @@
   grid-template-rows: auto 1fr auto;
   gap: var(--space-2);
   height: 100%;
-  min-height: 9.5rem;
+  min-height: 0;
   min-width: 0;
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   background: var(--color-raised);
   border: 1px solid var(--color-neutral-300);
   color: inherit;
   text-decoration: none;
   transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.primaryCard {
+  min-height: 7.5rem;
+}
+
+.secondaryCard {
+  min-height: 6.5rem;
+  padding: var(--space-3);
 }
 
 .primaryCard:hover,
@@ -117,15 +237,23 @@
 .cardTitle {
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 650;
   line-height: 1.3;
 }
 
+.secondaryCard .cardTitle {
+  font-size: 0.95rem;
+}
+
 .cardCopy {
   color: var(--color-neutral-700);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   line-height: 1.45;
+}
+
+.secondaryCard .cardCopy {
+  font-size: 0.84rem;
 }
 
 .cardCta {
@@ -134,7 +262,7 @@
   gap: var(--space-1);
   margin-top: var(--space-1);
   color: var(--color-accent-700);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 650;
 }
 
@@ -606,9 +734,25 @@
     grid-template-columns: 1fr;
   }
 
+  .mapsSection {
+    padding: var(--space-4) var(--space-3);
+  }
+
   .primaryGrid,
-  .secondaryGrid {
+  .secondaryGrid,
+  .mapGrid {
     grid-template-columns: 1fr;
+  }
+
+  .mapCard {
+    min-height: 0;
+    padding: var(--space-4) var(--space-3);
+    transform: none;
+  }
+
+  .mapCard:hover,
+  .mapCard:focus-visible {
+    transform: none;
   }
 
   .primaryCard,
@@ -620,6 +764,7 @@
     min-height: 0;
   }
 
+  .mapCta,
   .cardCta {
     min-height: 2.75rem;
     align-items: center;
@@ -631,6 +776,10 @@
 }
 
 @media (min-width: 720px) and (max-width: 1099px) {
+  .mapGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .primaryGrid,
   .secondaryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

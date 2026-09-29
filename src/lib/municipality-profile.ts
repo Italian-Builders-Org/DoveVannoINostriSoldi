@@ -86,8 +86,11 @@ export type MunicipalityPeerBenchmark = Readonly<{
   peers: number;
   criteria: readonly string[];
   fallbackLevel: number;
+  taxCodes: readonly string[];
   perSquareKmCents: Readonly<{ p25: number; median: number; p75: number }>;
   perCapitaCents: Readonly<{ p25: number; median: number; p75: number }> | null;
+  /** Median share of each SIOPE title over peer totals (0–1). Keys are title codes. */
+  titleShares: Readonly<Record<string, Readonly<{ p25: number; median: number; p75: number }>>> | null;
 }>;
 
 function quantiles(values: number[]): { p25: number; median: number; p75: number } {
@@ -112,35 +115,71 @@ function peerBenchmark(taxCode: string, geography: MunicipalityGeography): Munic
         item.geography.altimetricZone === geography.altimetricZone &&
         item.geography.degreeUrbanization === geography.degreeUrbanization &&
         item.geography.coastal === geography.coastal && item.geography.island === geography.island,
+      minimumPeers: 10,
     },
     {
       criteria: ["fascia di popolazione", "fascia di superficie", "zona altimetrica", "urbanizzazione"],
       match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item) &&
         item.geography.altimetricZone === geography.altimetricZone &&
         item.geography.degreeUrbanization === geography.degreeUrbanization,
+      minimumPeers: 10,
     },
     {
       criteria: ["fascia di popolazione", "fascia di superficie", "zona altimetrica"],
       match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item) &&
         item.geography.altimetricZone === geography.altimetricZone,
+      minimumPeers: 10,
     },
     {
       criteria: ["fascia di popolazione", "fascia di superficie"],
       match: (item: typeof observations[number]) => samePopulation(item) && sameSurface(item),
+      minimumPeers: 10,
+    },
+    {
+      // Grandi città: poche osservazioni per fascia stretta; confrontiamo i comuni da 250.000+ abitanti.
+      criteria: ["grandi città (250.000 abitanti o più)"],
+      match: (item: typeof observations[number]) =>
+        (geography.residentPopulation ?? 0) >= 250_000
+        && (item.geography.residentPopulation ?? 0) >= 250_000,
+      minimumPeers: 5,
+    },
+    {
+      criteria: ["fascia di popolazione"],
+      match: (item: typeof observations[number]) => samePopulation(item),
+      minimumPeers: 10,
     },
   ];
   for (const [fallbackLevel, stage] of stages.entries()) {
     const peers = observations.filter(stage.match);
-    if (peers.length < 10) continue;
+    if (peers.length < stage.minimumPeers) continue;
     const perCapita = peers.flatMap((item) => item.perCapitaCents === null ? [] : [item.perCapitaCents]);
+    const TITLE_ORDER = ["0", "1", "2", "3", "4", "5", "7"] as const;
+    const titleBuckets = new Map<string, number[]>();
+    for (const peer of peers) {
+      if (!peer.titleCents || peer.totalCents <= 0 || peer.titleCents.length !== TITLE_ORDER.length) continue;
+      for (const [index, amount] of peer.titleCents.entries()) {
+        const code = TITLE_ORDER[index]!;
+        const bucket = titleBuckets.get(code) ?? [];
+        bucket.push(amount / peer.totalCents);
+        titleBuckets.set(code, bucket);
+      }
+    }
+    const titleShares = titleBuckets.size === TITLE_ORDER.length
+      && [...titleBuckets.values()].every((values) => values.length >= stage.minimumPeers)
+      ? Object.fromEntries(
+        TITLE_ORDER.map((code) => [code, quantiles(titleBuckets.get(code)!)]),
+      )
+      : null;
     return {
       year: geography.year,
       populationYear: geography.populationYear,
       peers: peers.length,
       criteria: stage.criteria,
       fallbackLevel,
+      taxCodes: peers.map((item) => item.taxCode),
       perSquareKmCents: quantiles(peers.map((item) => item.perSquareKmCents)),
-      perCapitaCents: perCapita.length >= 10 ? quantiles(perCapita) : null,
+      perCapitaCents: perCapita.length >= stage.minimumPeers ? quantiles(perCapita) : null,
+      titleShares,
     };
   }
   return null;

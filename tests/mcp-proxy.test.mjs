@@ -22,6 +22,16 @@ test("politici subdomain rewrites the root path to the immersive map", async () 
   assert.equal(main.headers.get("x-middleware-next"), "1");
 });
 
+test("comuni subdomain rewrites the root path to the municipal footprint", async () => {
+  const response = await proxy(new NextRequest("https://comuni.dovevannoinostrisoldi.com/"));
+  assert.equal(isRewrite(response), true);
+  assert.equal(getRewrittenUrl(response), "https://comuni.dovevannoinostrisoldi.com/comuni");
+
+  const withQuery = await proxy(new NextRequest("https://comuni.dovevannoinostrisoldi.com/?ente=c_a783"));
+  assert.equal(isRewrite(withQuery), true);
+  assert.equal(getRewrittenUrl(withQuery), "https://comuni.dovevannoinostrisoldi.com/comuni?ente=c_a783");
+});
+
 test("politici paths retain the atlas rewrite without request-dependent chrome", async () => {
   const subdomain = await proxy(new NextRequest("https://politici.dovevannoinostrisoldi.com/"));
   assert.equal(isRewrite(subdomain), true);
@@ -38,12 +48,15 @@ test("politici paths retain the atlas rewrite without request-dependent chrome",
 
 test("immersive chrome helpers treat only the atlas as immersive", async () => {
   await import("./helpers/register-ts-alias.mjs");
-  const { isPoliticiImmersive } = await import("../src/lib/politici-immersive.ts");
+  const { isPoliticiImmersive, isComuniImmersive } = await import("../src/lib/politici-immersive.ts");
   assert.equal(isPoliticiImmersive("/politici", "www.dovevannoinostrisoldi.com"), true);
   assert.equal(isPoliticiImmersive("/politici/", "www.dovevannoinostrisoldi.com"), true);
   assert.equal(isPoliticiImmersive("/politici/europa", "www.dovevannoinostrisoldi.com"), false);
   assert.equal(isPoliticiImmersive("/", "politici.dovevannoinostrisoldi.com"), true);
   assert.equal(isPoliticiImmersive("/", "www.dovevannoinostrisoldi.com"), false);
+  assert.equal(isComuniImmersive("/comuni", "www.dovevannoinostrisoldi.com"), true);
+  assert.equal(isComuniImmersive("/", "comuni.dovevannoinostrisoldi.com"), true);
+  assert.equal(isPoliticiImmersive("/", "comuni.dovevannoinostrisoldi.com"), false);
 });
 
 test("training crawlers share an entity allowance without blocking user-initiated fetches", (t) => {

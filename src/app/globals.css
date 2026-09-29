@@ -394,6 +394,29 @@ html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) #co
   max-width: none;
 }
 
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) .site-content {
+  margin-left: 0;
+  padding: 0;
+}
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) .desktop-sidebar,
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) .mobile-menu-trigger,
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) .header,
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) .site-header,
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) header.site-header {
+  display: none !important;
+}
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--color-bg);
+}
+html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) #contenuto-principale {
+  min-height: 100dvh;
+  height: auto;
+  padding: 0;
+  max-width: none;
+}
+
 /* Mobile: unlock document scroll so list/panel read as one page, not nested panes. */
 @media (max-width: 899px) {
   html:is([data-immersive="politici"], :has([data-immersive-page="politici"])) body {

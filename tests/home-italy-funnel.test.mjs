@@ -89,6 +89,11 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /Mese per mese/);
   assert.match(page, /snapshot fino al/);
   assert.match(page, /PRIMARY_DESTINATIONS/);
+  assert.match(page, /MAP_DESTINATIONS/);
+  assert.match(page, /Mappa dei Comuni/);
+  assert.match(page, /Mappa della politica/);
+  assert.match(page, /mapsSection/);
+  assert.match(page, /maps-title[\s\S]*?Mappe/);
   assert.match(page, /href: "\/imprese"/);
   assert.match(page, /href: "\/territori"/);
   assert.match(page, /href: "\/spese"/);
@@ -100,6 +105,7 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.doesNotMatch(page, /Dove andare subito/);
   assert.doesNotMatch(page, /Altre porte frequenti/);
   assert.match(css, /\.hub \{/);
+  assert.match(css, /\.mapsSection \{/);
   assert.match(css, /\.primaryGrid \{/);
   assert.match(css, /\.italyBand \{/);
   assert.match(css, /\.mapStage/);

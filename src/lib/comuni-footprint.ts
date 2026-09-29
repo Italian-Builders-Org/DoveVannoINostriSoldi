@@ -125,6 +125,19 @@ export function footprintStatusFromIndex(index: number | null): FootprintStatus 
   return "notevole";
 }
 
+/**
+ * Human label for the badge: direction vs mediana (=100), not a vague "lontano".
+ * Bands match {@link footprintStatusFromIndex}.
+ */
+export function footprintStatusLabel(index: number | null): string {
+  if (index === null || !Number.isFinite(index)) return "n.d.";
+  if (index >= 80 && index <= 120) return "In linea";
+  if (index > 120 && index <= 150) return "Più alti";
+  if (index > 150) return "Molto più alti";
+  if (index >= 60 && index < 80) return "Più bassi";
+  return "Molto più bassi";
+}
+
 function indexVsMedian(value: number, medianValue: number | null): number | null {
   if (medianValue === null || medianValue <= 0 || !Number.isFinite(value)) return null;
   return Math.round((value / medianValue) * 1000) / 10;

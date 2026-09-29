@@ -3,7 +3,13 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const [
-  { featuredComuni, footprintStatusFromIndex, getComuniFootprintByIpaCode, searchComuni },
+  {
+    featuredComuni,
+    footprintStatusFromIndex,
+    footprintStatusLabel,
+    getComuniFootprintByIpaCode,
+    searchComuni,
+  },
   { isComuniImmersive, immersiveKind },
 ] = await Promise.all([
   import("../src/lib/comuni-footprint.ts"),
@@ -32,6 +38,16 @@ test("transparent distance bands never invent a risk score", () => {
   assert.equal(footprintStatusFromIndex(160), "notevole");
   assert.equal(footprintStatusFromIndex(40), "notevole");
   assert.equal(footprintStatusFromIndex(null), "non_disponibile");
+});
+
+test("status labels say higher or lower vs the peer median, not vague distance", () => {
+  assert.equal(footprintStatusLabel(100), "In linea");
+  assert.equal(footprintStatusLabel(110), "In linea");
+  assert.equal(footprintStatusLabel(130), "Più alti");
+  assert.equal(footprintStatusLabel(160), "Molto più alti");
+  assert.equal(footprintStatusLabel(70), "Più bassi");
+  assert.equal(footprintStatusLabel(40), "Molto più bassi");
+  assert.equal(footprintStatusLabel(null), "n.d.");
 });
 
 test("Mantova footprint exposes indexed indicators against peer median", async () => {

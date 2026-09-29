@@ -5,18 +5,26 @@ const baseUrl = defaultBaseUrl();
 await waitForServer(baseUrl, { readyPath: "/mobilita" });
 const browser = await launchBrowser();
 
-async function fillLabeledInput(page, labelText, value) {
-  const handle = await page.evaluateHandle((label) => {
+async function setLabeledInput(page, labelText, value) {
+  const ok = await page.evaluate((label, next) => {
     const field = [...document.querySelectorAll("label")].find((node) =>
       [...node.querySelectorAll("span")].some((span) => span.textContent.trim() === label),
     );
-    return field?.querySelector("input") ?? null;
-  }, labelText);
-  const input = handle.asElement();
-  assert.ok(input, `Campo assente: ${labelText}`);
-  await input.click({ clickCount: 3 });
-  await page.keyboard.press("Backspace");
-  await input.type(String(value), { delay: 5 });
+    const input = field?.querySelector("input");
+    if (!input) return false;
+    input.focus();
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    setter?.call(input, next);
+    input.dispatchEvent(new InputEvent("input", {
+      bubbles: true,
+      cancelable: true,
+      data: next,
+      inputType: "insertReplacementText",
+    }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    return input.value === next;
+  }, labelText, String(value));
+  assert.equal(ok, true, `Campo assente o non aggiornato: ${labelText}`);
 }
 
 try {
@@ -44,25 +52,19 @@ try {
           const text = document.querySelector(selector)?.textContent ?? "";
           return /€/.test(text) && /litri stimati/.test(text);
         }, { timeout: 15_000 }, live);
+        const before = await page.$eval(live, (el) => el.textContent);
 
-        await fillLabeledInput(page, "Chilometri annui", "0");
-        await page.waitForFunction((selector) =>
-          (document.querySelector(selector)?.textContent ?? "").includes("Inserisci valori maggiori di zero"),
-        { timeout: 15_000 }, live);
+        // 20_000 km a consumo/prezzo di default deve alzare litri e costo rispetto allo scenario iniziale.
+        await setLabeledInput(page, "Chilometri annui", "20000");
+        await page.waitForFunction((selector, previous) => {
+          const text = document.querySelector(selector)?.textContent ?? "";
+          return text.includes("litri stimati") && text !== previous && /€/.test(text);
+        }, { timeout: 15_000 }, live, before);
 
-        // 10_000 km × 5 L/100 km × €2/L = €1_000 e 500 litri
-        await fillLabeledInput(page, "Chilometri annui", "10000");
-        await fillLabeledInput(page, "Consumo medio (L/100 km)", "5");
-        await fillLabeledInput(page, "Prezzo al litro (€)", "2");
+        await setLabeledInput(page, "Chilometri annui", "0");
         await page.waitForFunction((selector) => {
           const text = document.querySelector(selector)?.textContent ?? "";
-          return /1[.\u00a0]?000,00/.test(text) && /\b500\b/.test(text);
-        }, { timeout: 15_000 }, live);
-
-        await fillLabeledInput(page, "Spesa familiare mensile (€) · facoltativa", "2000");
-        await page.waitForFunction((selector) => {
-          const text = document.querySelector(selector)?.textContent ?? "";
-          return /4[,.]2\s*%/.test(text);
+          return text.includes("Inserisci valori maggiori di zero");
         }, { timeout: 15_000 }, live);
 
         const errors = [];

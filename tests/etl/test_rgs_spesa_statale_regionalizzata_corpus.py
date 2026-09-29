@@ -29,21 +29,33 @@ def riga(territorio: str, importo: str, anno: str = "2022", missione: str = "017
 class SpesaStataleRegionalizzataTests(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.spec = json.loads(srs.SPEC.read_text(encoding="utf-8"))
+        cls.spec, cls.years = srs.load_slice("2020-2022")
         cls.series = cls.spec["series"]
 
     def entry(self, **fields) -> dict:
         return {**deepcopy(self.spec["years"][-1]), "trailingEmptyColumn": False, **fields}
 
     def test_fixtures_match_lock_and_committed_corpus(self) -> None:
-        payloads = srs.projections(self.spec)
-        self.assertEqual(sorted(payloads), [f"rgs-spesa-statale-regionalizzata-{year}" for year in srs.YEARS])
-        srs.check_committed(payloads)
-        for entry in self.spec["years"]:
-            lines = payloads[entry["datasetId"]].decode("utf-8").splitlines()
-            self.assertEqual(lines[0].split("|"), srs.HEADERS)
-            self.assertEqual(len(lines) - 1, entry["expected"]["rows"])
-            self.assertTrue(all(line.endswith("|" + entry["url"]) for line in lines[1:]))
+        for name in srs.SLICES:
+            spec, years = srs.load_slice(name)
+            with self.subTest(slice=name):
+                payloads = srs.projections(spec, years)
+                self.assertEqual(sorted(payloads), [f"rgs-spesa-statale-regionalizzata-{year}" for year in years])
+                srs.check_committed(payloads)
+                for entry in spec["years"]:
+                    lines = payloads[entry["datasetId"]].decode("utf-8").splitlines()
+                    self.assertEqual(lines[0].split("|"), srs.HEADERS)
+                    self.assertEqual(len(lines) - 1, entry["expected"]["rows"])
+                    self.assertTrue(all(line.endswith("|" + entry["url"]) for line in lines[1:]))
+
+    def test_slices_do_not_overlap_and_share_one_series(self) -> None:
+        # A year in two locks would be published twice under the same dataset id.
+        seen: list[int] = []
+        for name in srs.SLICES:
+            spec, years = srs.load_slice(name)
+            self.assertEqual(spec["series"]["recordId"], srs.RECORD_ID)
+            seen.extend(years)
+        self.assertEqual(len(seen), len(set(seen)))
 
     def test_levels_are_labelled_so_overlapping_totals_are_not_summed(self) -> None:
         rows = srs.parse_year(csv_bytes([riga("ITALIA", "3.00"), riga("NORD-OVEST", "3.00"), riga("LOMBARDIA", "3.00")]),
@@ -103,4 +115,4 @@ class SpesaStataleRegionalizzataTests(TestCase):
             spec = deepcopy(self.spec)
             mutate(spec)
             with self.subTest(), self.assertRaises(srs.SourceError):
-                srs.validate_contract(spec)
+                srs.validate_contract(spec, self.years)

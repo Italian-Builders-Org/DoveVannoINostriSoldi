@@ -53,7 +53,7 @@ export function siopeProjectionMeasurements(value: unknown) {
   }
   const rows = Object.values(native.projections).reduce((sum, item) => sum + item.rows, 0);
   const bytes = Object.values(native.projections).reduce((sum, item) => sum + item.bytes, 0);
-  if (!Number.isSafeInteger(rows + 19_797_711) || !Number.isSafeInteger(bytes + 3_694_873_319)) {
+  if (!Number.isSafeInteger(rows + 19_920_111) || !Number.isSafeInteger(bytes + 3_730_425_021)) {
     throw new Error("SIOPE: totali fuori dal limite intero sicuro");
   }
   return { projections: native.projections, acquisitionDate: native.acquiredAt.slice(0, 10), rows, bytes };
@@ -68,14 +68,14 @@ export const INTEGRATED_CORPUS_CONTRACT = {
   regularFiles: 46_438,
   hardlinks: 4_860,
   symlinks: 5,
-  datasets: 110,
+  datasets: 116,
   sourceIdentities: 34_071,
   quarantinedSourceIdentities: 1_493,
-  sourceRows: 19_797_711 + siopeRows,
-  publicRows: 6_815_365 + siopeRows,
+  sourceRows: 19_920_111 + siopeRows,
+  publicRows: 6_937_765 + siopeRows,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 3_694_873_319 + siopeBytes,
+  sourceBytes: 3_730_425_021 + siopeBytes,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;

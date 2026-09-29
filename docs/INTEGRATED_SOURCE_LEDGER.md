@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 110 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 116 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 110 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 110 | 88 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.608.861 | 7.626.515 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.894.874.587 | somma dei byte impegnati nelle 110 ricevute |
+| Dataset correnti | 116 | 94 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.731.261 | 7.748.915 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.930.426.289 | somma dei byte impegnati nelle 116 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.626.515 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.748.915 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -61,7 +61,10 @@ righe dal record RGS `SRS_SPE_BIL_SPESR_001`, un dataset per esercizio: spesa
 del Bilancio dello Stato per territorio destinatario, con Italia, ripartizioni
 e Regioni come livelli sovrapposti da non sommare. Ogni anno riconcilia il
 totale nazionale con Regioni e ripartizioni entro un milione di euro.
-[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2020-2022).
+Gli esercizi dal 2008 al 2013 aggiungono altre 122.400 righe della stessa serie,
+un dataset per anno (`rgs-spesa-statale-regionalizzata-2008` … `-2013`), con un
+proprio lock e gli stessi controlli.
+[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2008-2013-e-2020-2022).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -169,6 +172,12 @@ fornisce comunque un percorso di provenienza verificabile.
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-spesa-statale-regionalizzata-2008` | RGS · spesa statale regionalizzata 2008 | state-accounts | 20.352 | 20.352 | 20.352 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2009` | RGS · spesa statale regionalizzata 2009 | state-accounts | 20.400 | 20.400 | 20.400 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2010` | RGS · spesa statale regionalizzata 2010 | state-accounts | 20.296 | 20.296 | 20.296 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2011` | RGS · spesa statale regionalizzata 2011 | state-accounts | 20.712 | 20.712 | 20.712 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2012` | RGS · spesa statale regionalizzata 2012 | state-accounts | 20.248 | 20.248 | 20.248 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2013` | RGS · spesa statale regionalizzata 2013 | state-accounts | 20.392 | 20.392 | 20.392 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2020` | RGS · spesa statale regionalizzata 2020 | state-accounts | 19.356 | 19.356 | 19.356 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2021` | RGS · spesa statale regionalizzata 2021 | state-accounts | 19.872 | 19.872 | 19.872 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2022` | RGS · spesa statale regionalizzata 2022 | state-accounts | 20.260 | 20.260 | 20.260 | rows | documented-fact | not-declared |

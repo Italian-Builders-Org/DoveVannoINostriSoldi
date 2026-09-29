@@ -207,6 +207,10 @@ echo "::group::Browser patrimonio"
 node scripts/browser/patrimonio.mjs
 echo "::endgroup::"
 
+echo "::group::Browser mobilita"
+node scripts/browser/mobilita.mjs
+echo "::endgroup::"
+
 echo "::group::Browser chart interactions"
 npm run test:browser:charts
 echo "::endgroup::"

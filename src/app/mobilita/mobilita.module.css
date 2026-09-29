@@ -1,0 +1,315 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(330px, .9fr);
+  align-items: stretch;
+  gap: var(--space-6);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.heroCopy {
+  align-self: center;
+  max-width: 68ch;
+  padding-block: var(--space-6);
+}
+
+.kicker {
+  color: var(--color-accent-700);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.heroCopy h1 {
+  max-width: 14ch;
+  margin: 8px 0 14px;
+  font-size: clamp(34px, 5vw, 62px);
+  letter-spacing: -.05em;
+  line-height: .98;
+}
+
+.heroCopy p {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 16px;
+}
+
+.carPanel {
+  align-self: stretch;
+  min-width: 0;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.panelHead h2 { margin: 0; }
+.period { color: var(--color-neutral-600); font-size: 11px; }
+
+.heroFigure {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block: var(--space-4) var(--space-5);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.heroFigure strong {
+  color: var(--color-accent-700);
+  font-family: var(--font-heading);
+  font-size: clamp(64px, 8vw, 92px);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.075em;
+  line-height: .86;
+  font-variant-numeric: tabular-nums;
+}
+
+.heroFigure span {
+  max-width: 16ch;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.rateRows, .supplyRows { display: grid; gap: var(--space-4); }
+.rateRow, .supplyRow { display: grid; gap: var(--space-2); min-width: 0; }
+.rateRow > div, .supplyLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+.rateRow strong, .supplyLabel strong {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rateTrack, .supplyTrack {
+  display: block;
+  height: 8px;
+  background: var(--color-neutral-200);
+}
+.rateTrack i, .supplyTrack i {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+}
+.rateRow:last-child .rateTrack i { background: var(--color-neutral-600); }
+.supplyRow:last-child .supplyTrack i { background: var(--color-neutral-500); }
+
+.sourceNote {
+  margin: var(--space-4) 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.sourceLink { display: inline-block; font-size: 11px; font-weight: 700; }
+
+.readingPath {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  border-top: 1px solid var(--color-neutral-300);
+  border-bottom: 1px solid var(--color-neutral-300);
+  scrollbar-width: thin;
+}
+.readingPath a {
+  flex: 1 0 auto;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-4);
+  color: var(--color-neutral-700);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  border-right: 1px solid var(--color-neutral-300);
+}
+.readingPath a:first-child { padding-inline-start: 0; }
+.readingPath a:last-child { border-right: 0; }
+.readingPath a:hover { color: var(--color-accent-700); }
+
+.insightGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  align-items: stretch;
+  gap: var(--space-4);
+}
+.panel { min-width: 0; }
+.sectionIntro { margin: var(--space-4) 0; color: var(--color-neutral-700); font-size: 13px; }
+
+.householdSignals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block: var(--space-5) var(--space-3);
+}
+.householdSignal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-inline-start: var(--space-3);
+  border-left: 2px solid var(--color-accent-700);
+}
+.householdSignal:last-child { border-left-color: var(--color-neutral-500); }
+.householdSignal strong {
+  color: var(--color-accent-900);
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -.055em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.householdSignal span { color: var(--color-text); font-size: 12px; font-weight: 700; }
+.householdSignal small { color: var(--color-neutral-600); font-size: 10px; line-height: 1.45; }
+
+.calculatorPanel { display: flex; flex-direction: column; gap: var(--space-5); }
+.calculatorIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, .65fr);
+  align-items: start;
+  gap: var(--space-6);
+}
+.calculatorIntro h2 { margin: 6px 0 var(--space-2); font-size: clamp(22px, 3vw, 30px); }
+.calculatorIntro p { max-width: 62ch; margin: 0; color: var(--color-neutral-700); }
+.priceReference {
+  display: grid;
+  gap: 3px;
+  padding-inline-start: var(--space-4);
+  border-left: 1px solid var(--color-neutral-300);
+}
+.priceReference > span { margin-bottom: 4px; color: var(--color-neutral-600); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.priceReference strong { font-size: 13px; font-variant-numeric: tabular-nums; }
+.priceReference small { margin-top: 4px; color: var(--color-neutral-600); font-size: 10px; }
+.priceReference a { font-size: 11px; font-weight: 700; }
+
+.calculatorGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr);
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-neutral-300);
+}
+.inputGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: var(--space-4);
+}
+.field { display: grid; gap: var(--space-2); min-width: 0; }
+.field > span { color: var(--color-neutral-700); font-size: 11px; font-weight: 700; }
+.field input, .field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+}
+.field input:focus-visible, .field select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.budgetField { grid-column: 1 / -1; }
+.inputPrivacy { grid-column: 1 / -1; margin: 0; color: var(--color-neutral-600); font-size: 10px; line-height: 1.45; }
+
+.estimateResult {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border-left: 2px solid var(--color-accent-700);
+}
+.resultLabel { color: var(--color-neutral-600); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.estimateResult > strong { margin-top: var(--space-2); color: var(--color-accent-900); font-size: clamp(27px, 4vw, 38px); letter-spacing: -.05em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.estimateResult > strong small { font-size: 12px; font-weight: 600; letter-spacing: 0; }
+.monthlyCost { margin-top: 4px; color: var(--color-neutral-700); font-size: 12px; }
+.litres { margin-top: var(--space-2); color: var(--color-neutral-600); font-size: 11px; }
+.resultEmpty { margin: var(--space-3) 0; color: var(--color-neutral-700); font-size: 12px; }
+.budgetResult {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  width: 100%;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-neutral-300);
+}
+.budgetResult > span { color: var(--color-neutral-700); font-size: 11px; }
+.budgetResult > strong { font-size: 16px; font-variant-numeric: tabular-nums; }
+.budgetResult small { grid-column: 1 / -1; color: var(--color-neutral-600); font-size: 10px; line-height: 1.45; }
+.calculatorCaveat { margin: 0; color: var(--color-neutral-600); font-size: 11px; line-height: 1.5; }
+
+.publicSpend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+.publicSpend h2 { margin: 5px 0 0; font-size: 20px; }
+.publicSpend p { margin: var(--space-2) 0 0; }
+.publicSpend .btn { flex: none; }
+
+.methodNote {
+  display: grid;
+  grid-template-columns: minmax(160px, .3fr) minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-300);
+}
+.methodNote > span { color: var(--color-neutral-700); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.methodNote p { margin: 0; color: var(--color-neutral-600); font-size: 11px; }
+.methodNote a { font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1fr) minmax(290px, .85fr); gap: var(--space-4); }
+  .heroCopy h1 { font-size: clamp(32px, 5vw, 48px); }
+  .insightGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .page { gap: var(--space-4); padding-block: var(--space-4) var(--space-6); }
+  .hero { grid-template-columns: 1fr; padding-top: 0; }
+  .heroCopy { padding-block: var(--space-4) var(--space-2); }
+  .heroCopy h1 { max-width: 16ch; font-size: clamp(32px, 10vw, 42px); }
+  .carPanel { order: 1; }
+  .heroFigure strong { font-size: 68px; }
+  .readingPath a { min-height: 38px; padding-inline: var(--space-3); font-size: 10px; }
+  .householdSignals { grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .calculatorIntro { grid-template-columns: 1fr; gap: var(--space-4); }
+  .priceReference { padding: var(--space-3) 0 0; border-left: 0; border-top: 1px solid var(--color-neutral-300); }
+  .calculatorGrid { grid-template-columns: 1fr; }
+  .publicSpend { align-items: flex-start; flex-direction: column; }
+  .methodNote { grid-template-columns: 1fr; gap: var(--space-2); }
+}
+
+@media (max-width: 420px) {
+  .heroCopy h1 { font-size: 34px; }
+  .householdSignals { grid-template-columns: 1fr; }
+  .inputGrid { grid-template-columns: 1fr; }
+  .budgetField, .inputPrivacy { grid-column: auto; }
+  .readingPath a { padding-inline: var(--space-2); }
+}

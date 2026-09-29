@@ -7,6 +7,7 @@ import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
+import { ArtifactCache } from "@/lib/data/artifact-cache";
 import {
   assertArchiveReceipt,
   assertIntegratedDatasetChunk,
@@ -77,6 +78,8 @@ type InFlightChunkLoad = {
 };
 
 const inFlightChunkLoads = new Map<string, InFlightChunkLoad>();
+// Serialized weight is bounded separately from the concurrent loading limit.
+const validatedChunks = new ArtifactCache<LoadedIntegratedDatasetChunk>(32, 16 * 1024 * 1024);
 let completedChunkLoads = 0;
 let maxObservedChunkRawBytes = 0;
 
@@ -297,6 +300,14 @@ async function readDatasetChunk(
   if (sha256Hex(compressed) !== expectedHash) {
     throw new Error(`I byte del chunk divergono dalla prova per ${dataset.id}.`);
   }
+  // Read and hash on every request: a warm cache must not hide changed files.
+  const cacheKey = `${artifactKey}:${expectedHash}`;
+  const cached = validatedChunks.get(cacheKey);
+  if (cached) {
+    completedChunkLoads += 1;
+    maxObservedChunkRawBytes = Math.max(maxObservedChunkRawBytes, cached.uncompressedBytes);
+    return cached;
+  }
   const uncompressed = await gunzipBounded(compressed, dataset.id, signal);
   const rows = assertIntegratedDatasetChunk(
     dataset,
@@ -305,12 +316,14 @@ async function readDatasetChunk(
   );
   completedChunkLoads += 1;
   maxObservedChunkRawBytes = Math.max(maxObservedChunkRawBytes, uncompressed.length);
-  return {
+  const loaded = {
     ordinal,
     compressedBytes: compressed.length,
     uncompressedBytes: uncompressed.length,
     rows,
   };
+  validatedChunks.set(cacheKey, loaded, uncompressed.length);
+  return loaded;
 }
 
 /** The dataset argument must come from the validated allowlist in the bundle. */

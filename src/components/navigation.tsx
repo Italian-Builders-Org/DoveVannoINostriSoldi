@@ -1,5 +1,7 @@
 "use client";
 
+import { publicSurfacePath } from "@/lib/snapshot-routing";
+
 import { IntentLink } from "@/components/intent-link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -190,7 +192,7 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
 }
 
 export function Navigation({ announcements = [] }: Readonly<{ announcements?: readonly PublicationAnnouncementItem[] }>) {
-  const pathname = usePathname();
+  const pathname = publicSurfacePath(usePathname());
   const [currentSearch, setCurrentSearch] = useState<string | null>(null);
   return (
     <>

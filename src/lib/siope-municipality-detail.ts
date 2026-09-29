@@ -335,10 +335,15 @@ export function getSiopeMunicipalityPeerCoverage(year: number): SiopeMunicipalit
   };
 }
 
+// Finite, deployment-bound years from the validated JSON modules.
+const peerObservations = new Map<number, readonly SiopeMunicipalityPeerObservation[]>();
+
 export function getSiopeMunicipalityPeerObservations(year: number): readonly SiopeMunicipalityPeerObservation[] {
+  const cached = peerObservations.get(year);
+  if (cached) return cached;
   const artifact = artifacts.find((item) => item.year === year);
   if (!artifact) return [];
-  return artifact.rows.flatMap((row) => {
+  const observations = artifact.rows.flatMap((row) => {
     const geography = getMunicipalityGeographyByTaxCodeIfNameAgrees(year, row[0], row[2]);
     const perSquareKmCents = eurosPerSquareKilometreCents(
       row[6],
@@ -357,6 +362,8 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
       geography,
     }];
   });
+  peerObservations.set(year, observations);
+  return observations;
 }
 
 /**

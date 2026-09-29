@@ -1,3 +1,4 @@
+import { publicSurfacePath } from "@/lib/snapshot-routing";
 import { COMUNI_HOST } from "@/lib/comuni-host";
 import { POLITICI_HOST } from "@/lib/politici-host";
 
@@ -8,6 +9,7 @@ export function immersiveKind(
   pathname: string | null,
   hostname: string | null = null,
 ): ImmersiveKind | null {
+  pathname = pathname === null ? null : publicSurfacePath(pathname);
   if (pathname === "/politici" || pathname === "/politici/") return "politici";
   if (pathname === "/comuni" || pathname === "/comuni/") return "comuni";
   // Proxy rewrites subdomain `/` but the URL bar stays `/`.
@@ -45,7 +47,7 @@ export const IMMERSIVE_INIT_SCRIPT = `(() => {
   if (path === "/politici" || path === "/politici/"
     || (host === ${JSON.stringify(POLITICI_HOST)} && path === "/")) {
     document.documentElement.dataset.immersive = "politici";
-  } else if (path === "/comuni" || path === "/comuni/"
+  } else if (path === "/comuni" || path === "/comuni/" || /^\\/snapshot-pages\\/comuni\\/[A-Za-z0-9_]{1,100}$/.test(path)
     || (host === ${JSON.stringify(COMUNI_HOST)} && path === "/")) {
     document.documentElement.dataset.immersive = "comuni";
   }

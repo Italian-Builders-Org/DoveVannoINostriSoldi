@@ -1,4 +1,4 @@
-import { displayMunicipalityName, searchComuni } from "@/lib/comuni-footprint";
+import { displayMunicipalityName, searchComuni } from "@/lib/comuni-search";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

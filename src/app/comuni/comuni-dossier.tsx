@@ -1,6 +1,10 @@
 import type { CSSProperties } from "react";
 import { compactEuro, integer, longDate } from "@/lib/format";
-import type { ComuniFootprint, FootprintStatus } from "@/lib/comuni-footprint";
+import {
+  footprintStatusLabel,
+  type ComuniFootprint,
+  type FootprintStatus,
+} from "@/lib/comuni-footprint";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import { ChangeComuneButton } from "./change-comune-button";
 import { ComuniRadar } from "./comuni-radar";
@@ -18,13 +22,6 @@ function periodLabel(footprint: ComuniFootprint): string {
     return `Da gennaio ${/^[aeiou]/i.test(name) ? "ad" : "a"} ${name} ${footprint.year}`;
   }
   return `Anno ${footprint.year}`;
-}
-
-function statusLabel(status: FootprintStatus): string {
-  if (status === "notevole") return "Molto lontano";
-  if (status === "da_osservare") return "Lontano";
-  if (status === "in_linea") return "In linea";
-  return "n.d.";
 }
 
 function statusClass(status: FootprintStatus): string {
@@ -83,11 +80,12 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           hasPeerMedian={hasPeerMedian}
         />
         <p className={styles.readingGuide}>
-          Non è un voto né un rischio: solo distanza dal gruppo
+          Non è un voto né un rischio: confrontiamo con i pari
           {peer ? ` (${peer.criteria.join(", ")})` : ""}.
           Due numeri su ogni punta: <strong>questo Comune</strong>
           {" · "}
           <strong>{hasPeerMedian ? "mediana" : "riferimento"}</strong>.
+          I badge dicono se i valori sono più alti o più bassi della mediana (= 100).
         </p>
       </section>
 
@@ -136,7 +134,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
             Cosa misurano gli assi
           </h2>
           <p className={styles.axisGlossaryHint}>
-            Indice &gt; 100 = sopra la mediana; &lt; 100 = sotto.
+            Indice 100 = mediana dei pari. Sopra 100 → più alti; sotto → più bassi.
             I numeri da 1 a {footprint.indicators.length} coincidono con il grafico.
           </p>
         </div>
@@ -152,7 +150,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                   ) : null}
                 </div>
                 <span className={`${styles.statusTag} ${statusClass(item.status)}`}>
-                  {statusLabel(item.status)}
+                  {footprintStatusLabel(item.index)}
                 </span>
               </div>
               <p className={styles.indicatorValues}>

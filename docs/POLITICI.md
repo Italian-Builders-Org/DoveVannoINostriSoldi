@@ -39,6 +39,13 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
   è sempre. La fonte non pubblica il motivo del passaggio: `ocd:motivoTermine`
   della Camera è procedurale (cessazione, dimissioni) e non viene mostrato come
   motivo.
+- [src/lib/politici-group-timeline.ts](../src/lib/politici-group-timeline.ts):
+  composizione dei gruppi a una data della XIX (#556), dalle stesse adesioni
+  datate. Ogni periodo ha una fine esclusiva (`until`): alla Camera è la data
+  pubblicata, al Senato il giorno successivo. Alla data della rilevazione la
+  composizione ricostruita coincide con i gruppi correnti, e un test lo verifica.
+  Le adesioni di chi non è più in carica contano nei totali ma non hanno un
+  seggio.
 - [src/lib/parlamento-giudiziario.ts](../src/lib/parlamento-giudiziario.ts) e
   [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
   accesso e contratto dello snapshot curato dei procedimenti documentati; lo
@@ -64,6 +71,10 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
   nei titoli ufficiali delle votazioni finali della XIX legislatura).
 - [src/app/api/politici/voti-tema/route.ts](../src/app/api/politici/voti-tema/route.ts):
   directory dello storico per tema su tutti i parlamentari (vista **Storico voti**).
+- [src/app/api/politici/gruppi-nel-tempo/route.ts](../src/app/api/politici/gruppi-nel-tempo/route.ts):
+  serie delle adesioni ai gruppi per il cursore temporale. È statica
+  (`force-static`, un URL senza parametri, circa 5 KB compressi) e viene
+  scaricata solo quando si apre «Nel tempo», quindi la pagina non la porta con sé.
 - [src/app/api/politici/giudiziario/route.ts](../src/app/api/politici/giudiziario/route.ts):
   procedimenti documentati, copertura, cautele e fonti per persona.
 
@@ -93,6 +104,14 @@ sviluppo.
   nella legislatura secondo la regola sopra; esclude i membri del Governo senza
   seggio e, come `mandato`, non esiste nelle viste `condanne` e `storico-voti`.
   La scheda persona mostra la sequenza dei gruppi con date e fonte.
+- Composizione nel tempo (#556): negli emicicli di Camera e Senato «Nel tempo»
+  apre un cursore per giorno, dalla prima adesione (18/10/2022) alla rilevazione.
+  `al=AAAA-MM-GG` colora ogni seggio con il gruppo di quel giorno. La
+  disposizione dei seggi resta quella di oggi, le fasce dei gruppi sul bordo si
+  nascondono e la legenda conta anche chi non è più in carica. Il contorno
+  tratteggiato indica chi non era ancora in carica. I filtri restano sui dati
+  di oggi. `al` vale solo in `vista=camera|senato` e una data non valida viene
+  ignorata.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
 - Storico voti per tema (directory cercabile su tutti i parlamentari):

@@ -38,6 +38,13 @@ import {
   type GroupHistoryEntry,
   type GroupSegment,
 } from "@/lib/politici-group-history";
+import {
+  addDays,
+  type ChamberTimeline,
+  type GroupTimeline,
+  type TimelineGroupName,
+  type TimelineSegment,
+} from "@/lib/politici-group-timeline";
 import { parsePresidenteRepubblicaSnapshot } from "@/lib/data/presidente-repubblica-contract";
 import { parseRitrattiLiberiSnapshot } from "@/lib/data/ritratti-liberi-contract";
 import {
@@ -1278,6 +1285,75 @@ function profileGroupHistory(person: RepublicPerson): RepublicGroupHistory | nul
       observedDate: senate.source.groupHistory.observedDate,
       caveat: `${GROUP_HISTORY_CAVEAT} Al Senato le righe dello stesso gruppo per incarichi diversi sono unite in un solo periodo.`,
     };
+}
+
+/**
+ * Group composition over the XIX (#556), for the hemicycle's time slider. Served
+ * by a static endpoint and fetched only when the slider opens: the page payload
+ * does not grow. Segment ends become exclusive (`until`) for both chambers.
+ */
+export function getRepubblicaGroupTimeline(): GroupTimeline {
+  const graph = getRepubblicaGraph();
+  const sitting = new Set(graph.people.map((person) => person.id));
+  const legislatureStart = graph.legislature.startDate;
+
+  const chamberTimeline = (
+    chamber: ChamberId,
+    lastDate: string,
+    rowsByPerson: ReadonlyMap<string, readonly GroupSegment[]>,
+    names: (groupId: string) => TimelineGroupName[],
+  ): ChamberTimeline => {
+    const members: ChamberTimeline["members"] = [];
+    const former: TimelineSegment[] = [];
+    for (const [personId, segments] of rowsByPerson) {
+      const timelineSegments = segments.map((segment) => ({
+        groupId: `${chamber}-${segment.groupId}`, start: segment.startDate, until: segment.endDate,
+      }));
+      if (sitting.has(personId)) members.push({ personId, segments: timelineSegments });
+      else former.push(...timelineSegments);
+    }
+    const groupIds = new Set([...members.flatMap((member) => member.segments), ...former].map((segment) => segment.groupId));
+    const groups = graph.groups.filter((group) => group.chamberId === chamber && groupIds.has(group.id)).map((group) => ({
+      id: group.id,
+      family: group.partyFamily,
+      names: names(group.id.slice(chamber.length + 1)),
+    }));
+    require(groups.length === groupIds.size, `gruppi della serie storica assenti dalla mappa (${chamber})`);
+    const starts = [...members.flatMap((member) => member.segments), ...former].map((segment) => segment.start);
+    return {
+      chamber,
+      firstDate: starts.reduce((first, start) => start < first ? start : first),
+      lastDate,
+      groups,
+      members: members.sort((left, right) => left.personId.localeCompare(right.personId)),
+      former: former.sort((left, right) => left.start.localeCompare(right.start) || left.groupId.localeCompare(right.groupId)),
+    };
+  };
+
+  // Camera: end dates are already exclusive; one official name per group.
+  const cameraRows = new Map([...cameraMembershipsByDeputy].map(([deputyId, rows]) =>
+    [`dep-${deputyId.replace(/^d/u, "").replace(/_19$/u, "")}`, cameraGroupSegments(rows)]));
+  const cameraTimeline = chamberTimeline("camera", camera.source.groupMembershipsAcquiredAt.slice(0, 10), cameraRows, (groupId) => {
+    const group = graph.groups.find((item) => item.id === `camera-${groupId}`)!;
+    return [{ label: group.label, shortLabel: group.shortLabel, start: legislatureStart, until: null }];
+  });
+
+  // Senato: end dates are inclusive, so `until` is the following day; names are dated.
+  const senatoRows = new Map([...senatoMembershipsBySenator].map(([senatorId, rows]) =>
+    [`sen-s${senatorId}`, senatoGroupSegments(rows).map((row) => ({
+      groupId: row.groupId, startDate: row.startDate, endDate: row.endDate === null ? null : addDays(row.endDate, 1),
+    }))]));
+  const senatoTimeline = chamberTimeline("senato", senate.source.groupHistory.observedDate, senatoRows, (groupId) =>
+    (senatoNamesByGroup.get(groupId) ?? [])
+      .toSorted((left, right) => left.startDate.localeCompare(right.startDate))
+      .map((name) => ({
+        label: name.label,
+        shortLabel: name.shortLabel ?? name.label,
+        start: name.startDate,
+        until: name.endDate === null ? null : addDays(name.endDate, 1),
+      })));
+
+  return { camera: cameraTimeline, senato: senatoTimeline };
 }
 
 export type RepublicParliamentaryTerms = {

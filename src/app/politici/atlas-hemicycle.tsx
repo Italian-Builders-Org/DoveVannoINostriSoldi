@@ -2,7 +2,10 @@
 
 import { useId, useMemo, useRef, useState } from "react";
 import type { RepublicMap } from "@/lib/politici-repubblica";
-import type { GraphSelection } from "./atlas-model";
+import { clampTimelineDate, compositionAt, groupNameAt } from "@/lib/politici-group-timeline";
+import { atDate, longDate, type GraphSelection } from "./atlas-model";
+import { TimelineControl, useGroupTimeline } from "./atlas-timeline";
+import timelineStyles from "./atlas-timeline.module.css";
 import { adjacentSeat, buildChamberScene, CHAMBER, curve, sectorBand, type ChamberId } from "./graph-geometry";
 import type { NewsData, Resource } from "./atlas-data";
 import { PartySymbol } from "./atlas-symbol";
@@ -11,7 +14,7 @@ import { Icon, Portrait } from "./atlas-primitives";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
-export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds, onSelect, news }: {
+export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds, onSelect, news, asOf = null, onAsOf }: {
   map: RepublicMap;
   chamberId: ChamberId;
   selection: GraphSelection;
@@ -19,6 +22,9 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
   judicialIds?: Set<string>;
   onSelect: (selection: GraphSelection) => void;
   news?: Resource<NewsData>;
+  /** Day of the XIX whose group composition colours the seats (#556); `null` is today. */
+  asOf?: string | null;
+  onAsOf?: (asOf: string | null) => void;
 }) {
   const id = useId();
   const preview = useSeatPreview();
@@ -49,6 +55,30 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
     [connections],
   );
   const selectedSeat = chosenPerson?.chamberId === chamberId ? seatByPerson.get(chosenPerson.id) ?? null : null;
+  // Time slider (#556): the series loads on first use; until it is ready the seats keep today's colours.
+  const [timelineOpen, setTimelineOpen] = useState(asOf !== null);
+  const timeline = useGroupTimeline(timelineOpen);
+  const series = timeline.resource.status === "ready" ? timeline.resource.data[chamberId] : null;
+  const historicalDate = series && asOf !== null ? clampTimelineDate(series, asOf) : null;
+  const composition = useMemo(
+    () => series && historicalDate ? compositionAt(series, historicalDate) : null,
+    [series, historicalDate],
+  );
+  const timelineGroups = useMemo(() => new Map((series?.groups ?? []).map((group) => [group.id, group])), [series]);
+  const groupOf = (seat: { personId: string | null; groupId: string | null; }) => composition && seat.personId
+    ? composition.byPerson.get(seat.personId) ?? null
+    : seat.groupId;
+  const historicalLegend = composition && historicalDate ? [...composition.counts]
+    .map(([groupId, count]) => {
+      const group = timelineGroups.get(groupId)!;
+      return { groupId, count, family: group.family, label: groupNameAt(group, historicalDate)?.shortLabel ?? groupId };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, "it") || a.groupId.localeCompare(b.groupId)) : null;
+  const historicalTotal = historicalLegend?.reduce((total, item) => total + item.count, 0) ?? 0;
+  const toggleTimeline = () => {
+    if (timelineOpen) onAsOf?.(null);
+    setTimelineOpen((value) => !value);
+  };
 
   return <section className={styles.chamber} aria-label={`Emiciclo ${chamberId === "camera" ? "della Camera" : "del Senato"}`} data-chamber={chamberId}>
     <div className={`${styles.chamberHeading} ${extra.heading}`}>
@@ -58,8 +88,24 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
           {chamberId === "camera" ? "Camera dei deputati" : "Senato della Repubblica"}
         </h2>
       </div>
-      <span className={styles.tag}>{scene.members} componenti</span>
+      <span className={styles.tag}>{composition && historicalDate ? `${historicalTotal} componenti ${atDate(historicalDate)}` : `${scene.members} componenti`}</span>
+      {onAsOf ? <button
+        type="button"
+        className={timelineStyles.toggle}
+        aria-expanded={timelineOpen}
+        aria-controls={`${id}-timeline`}
+        onClick={toggleTimeline}>
+        Nel tempo
+      </button> : null}
     </div>
+    {timelineOpen && onAsOf ? <div id={`${id}-timeline`}>
+      {series ? <TimelineControl series={series} asOf={historicalDate} onAsOf={onAsOf} />
+        : timeline.resource.status === "error" ? <p className={timelineStyles.status} role="alert">
+          La serie storica dei gruppi non è disponibile: l’emiciclo mostra la composizione attuale.{" "}
+          <button type="button" className={styles.textButton} onClick={timeline.retry}>Riprova</button>
+        </p>
+          : <p className={timelineStyles.status} role="status">Caricamento delle adesioni ai gruppi…</p>}
+    </div> : null}
     <div
       ref={viewport}
       className={styles.diagramViewport}
@@ -88,7 +134,8 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
           <text x="400" y="467" className={styles.hemicycleCaption} textAnchor="middle">PARLAMENTO ITALIANO</text>
         </g>
         <g aria-hidden="true">
-          {scene.wedges.map((wedge) => <path
+          {/* The bands describe today's seating order: hidden on a past day. */}
+          {composition ? null : scene.wedges.map((wedge) => <path
             key={wedge.groupId}
             d={wedge.path}
             className={styles.groupArc}
@@ -99,10 +146,16 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
           const person = seat.personId ? peopleById.get(seat.personId) : null;
           const selected = selection.kind === "person" && selection.id === seat.personId;
           const connected = Boolean(person && connectionById.has(person.id));
+          const groupId = groupOf(seat);
+          const family = composition ? (groupId ? timelineGroups.get(groupId)?.family ?? null : null) : seat.family;
+          const absent = Boolean(composition && person && groupId === null);
           const dim = person && (
-            (!matchingIds.has(person.id) || (activeGroup && activeGroup !== seat.groupId))
+            (!matchingIds.has(person.id) || (activeGroup && activeGroup !== groupId))
             && !(selectedSeat && (selected || connected))
           );
+          const groupLabelAt = composition && historicalDate && groupId
+            ? groupNameAt(timelineGroups.get(groupId), historicalDate)?.shortLabel ?? null
+            : null;
           const transform = `translate(${seat.x.toFixed(3)} ${seat.y.toFixed(3)}) rotate(${(90 - seat.angle * 180 / Math.PI).toFixed(3)})`;
           if (!person) return <g key={seat.id} transform={transform} className={styles.vacantSeat} aria-hidden="true">
             <rect x="-4.6" y="-5.6" width="9.2" height="11.2" rx="2.4" />
@@ -113,13 +166,16 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
             transform={transform}
             role="button"
             tabIndex={focusId === seat.id ? 0 : -1}
-            aria-label={`${person.name}, ${person.roleLabel}`}
+            aria-label={composition && historicalDate
+              ? `${person.name}, ${absent ? "non ancora in carica" : groupLabelAt ?? "gruppo non indicato"} ${atDate(historicalDate)}`
+              : `${person.name}, ${person.roleLabel}`}
             aria-pressed={selected}
             data-seat-person={person.id}
             data-preview={preview.preview?.personId === person.id ? "true" : undefined}
             aria-describedby={preview.preview?.personId === person.id ? `${id}-preview` : undefined}
-            className={`${styles.seat} ${preview.preview?.personId === person.id ? extra.previewed : ""}`}
-            data-family={seat.family ?? undefined}
+            className={`${styles.seat} ${timelineStyles.recolour} ${absent ? timelineStyles.absentSeat : ""} ${preview.preview?.personId === person.id ? extra.previewed : ""}`}
+            data-family={family ?? undefined}
+            data-absent={absent ? "true" : undefined}
             data-selected={selected ? "true" : undefined}
             data-connected={connected ? "true" : undefined}
             data-giudiziario={judicialIds?.has(person.id) ? "true" : "false"}
@@ -149,7 +205,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
             }}>
             <circle r="8.2" className={styles.seatHitArea} />
             <rect x="-4.6" y="-5.6" width="9.2" height="11.2" rx="2.4" />
-            <path d="M-3.1-2.3h6.2" className={styles.seatBack} />
+            {absent ? null : <path d="M-3.1-2.3h6.2" className={styles.seatBack} />}
           </g>;
         })}
         {selectedSeat && connections.length ? <g className={styles.newsLayer} aria-hidden="true">
@@ -224,11 +280,11 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
       <li><span className={styles.judicialSample} aria-hidden="true" /> Ha procedimenti giudiziari documentati: apri la scheda per stato e fonti. Il segno indica dove guardare, non una colpevolezza</li>
     </ul>
     <div className={styles.legendHeading}>
-      <h3>Gruppi parlamentari</h3>
+      <h3>{composition && historicalDate ? `Gruppi parlamentari ${atDate(historicalDate)}` : "Gruppi parlamentari"}</h3>
       <span>{highlightedCount}/{scene.members} corrispondono ai filtri</span>
     </div>
     <ul className={`${styles.groupLegend} ${extra.legend}`} aria-label="Seleziona un gruppo parlamentare">
-      {scene.wedges.map((wedge) => <li key={wedge.groupId}>
+      {(historicalLegend ?? scene.wedges).map((wedge) => <li key={wedge.groupId}>
         <button
           type="button"
           aria-pressed={activeGroup === wedge.groupId}
@@ -244,6 +300,11 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
         </button>
       </li>)}
     </ul>
+    {composition && historicalDate && series ? <p className={styles.diagramNote} role="note">
+      Colori secondo il gruppo di ciascuno {atDate(historicalDate)}, dalle adesioni datate pubblicate {chamberId === "camera" ? "dalla Camera" : "dal Senato"} (rilevazione del {longDate(series.lastDate)}); la disposizione dei seggi resta quella di oggi.
+      {" "}{composition.formerInOffice > 0 ? `${composition.formerInOffice} ${composition.formerInOffice === 1 ? "componente di allora non è più in carica: è contato" : "componenti di allora non sono più in carica: sono contati"} nella legenda, senza seggio sulla mappa.` : "Tutti i componenti di quel giorno sono ancora in carica."}
+      {" "}I seggi con il solo contorno sono di chi non era ancora in carica. Filtri e ricerca usano i dati di oggi. La fonte non pubblica il motivo di un passaggio.
+    </p> : null}
     <p className={styles.diagramNote}>Rappresentazione stilizzata, non la disposizione reale in Aula. Gruppi in ordine alfabetico. Simboli delle famiglie politiche: fonti e attribuzioni nelle schede dei gruppi. {scene.vacancies !== null ? `Seggi vuoti: ${scene.vacancies}, indicati dal contorno.` : "Dato sui seggi vacanti non disponibile."}</p>
   </section>;
 }

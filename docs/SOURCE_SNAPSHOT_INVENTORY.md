@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 125
+- Artefatti nel registro: 131
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 108 (PR umana dopo revisione)
+- manuale: 114 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -167,6 +167,12 @@ La revisione e il merge restano umani.
 | `opencivitas-2019-rifiuti` | 2019 | 2026-09-30T06:25:34Z | https://www.opencivitas.it/it/dataset/2019-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_rifiuti_snapshot.py --check` |
 | `opencivitas-2019-sociale-asili` | 2019 | 2026-09-30T06:25:35Z | https://www.opencivitas.it/it/dataset/2019-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_sociale_asili_snapshot.py --check` |
 | `opencivitas-2019-amministrazione` | 2019 | 2026-09-30T06:25:36Z | https://www.opencivitas.it/it/dataset/2019-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2019_amministrazione_snapshot.py --check` |
+| `opencivitas-2018-istruzione` | 2018 | 2026-09-30T07:24:59Z | https://www.opencivitas.it/it/dataset/2018-comuni-istruzione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_istruzione_snapshot.py --check` |
+| `opencivitas-2018-polizia` | 2018 | 2026-09-30T07:25:00Z | https://www.opencivitas.it/it/dataset/2018-comuni-polizia-locale-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_polizia_snapshot.py --check` |
+| `opencivitas-2018-viabilita` | 2018 | 2026-09-30T07:25:02Z | https://www.opencivitas.it/it/dataset/2018-comuni-viabilita-e-territorio-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_viabilita_snapshot.py --check` |
+| `opencivitas-2018-rifiuti` | 2018 | 2026-09-30T07:25:04Z | https://www.opencivitas.it/it/dataset/2018-comuni-rifiuti-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_rifiuti_snapshot.py --check` |
+| `opencivitas-2018-sociale-asili` | 2018 | 2026-09-30T07:25:06Z | https://www.opencivitas.it/it/dataset/2018-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_sociale_asili_snapshot.py --check` |
+| `opencivitas-2018-amministrazione` | 2018 | 2026-09-30T07:25:08Z | https://www.opencivitas.it/it/dataset/2018-comuni-amministrazione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2018_amministrazione_snapshot.py --check` |
 | `mantova-offices` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 
 ## Prossimo passo

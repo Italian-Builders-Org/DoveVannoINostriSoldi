@@ -30,7 +30,6 @@ test("existing shell: root layout strips site chrome for the immersive route", a
   // Only the atlas itself is immersive — never /politici/europa.
   assert.match(immersiveHelper, /pathname === "\/politici"/);
   assert.doesNotMatch(immersiveHelper, /startsWith\("\/politici\/"\)/);
-  assert.match(proxySrc, /destination\.pathname = "\/politici"/);
   assert.doesNotMatch(proxySrc, /startsWith\("\/politici\/"\)/);
 });
 

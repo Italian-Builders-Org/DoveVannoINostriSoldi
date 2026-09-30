@@ -25,6 +25,11 @@ const artifacts = new Map([
   [2024, validateSiopeReceiptsArtifacts(summary2024, detail2024, 2024)],
 ]);
 
+// The JSON modules are validated once and replaced with each deployment.
+const receiptsByYear = new Map([...artifacts].map(([year, { detail }]) => [
+  year, new Map(detail.municipalities.map((row) => [row[0], row])),
+]));
+
 export const SIOPE_RECEIPTS_CAVEATS = [
   "Incassi di cassa SIOPE dei soli Comuni: non accertamenti né entrate di competenza.",
   "Il 2026 può essere parziale; il periodo indica l’ultimo mese osservato, non un anno intero garantito.",
@@ -72,7 +77,7 @@ function municipality(row: PackedRow, detail: SiopeMunicipalReceiptsDetail): Sio
 
 export function getSiopeMunicipalityReceipts(taxCode: string, year = availableSiopeReceiptsYears[0]): SiopeMunicipalityReceipts | null {
   const { detail } = artifactFor(year);
-  const row = detail.municipalities.find((item) => item[0] === taxCode.trim());
+  const row = receiptsByYear.get(year)?.get(taxCode.trim());
   return row ? municipality(row, detail) : null;
 }
 

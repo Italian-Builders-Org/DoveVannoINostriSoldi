@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { launchBrowser, closeBrowser, defaultBaseUrl, defaultArtifactsDir } from "./harness.mjs";
@@ -14,6 +15,51 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
   assert.match(response.headers.get("cache-control") ?? "", new RegExp(`s-maxage=${seconds}(?:,|$)`), route);
   await response.arrayBuffer();
 }
+
+const snapshotEvidence = [];
+for (const route of ["/enti/c_h501/appalti", "/enti/c_h501/appalti?view=procedures", "/appalti/operatori/op-00000001", "/comuni?ente=c_f205"]) {
+  const first = await fetch(new URL(route, base));
+  assert.equal(first.status, 200, route);
+  const html = await first.text();
+  const initialCache = first.headers.get("x-nextjs-cache");
+  let current = first;
+  // A persisted local Next cache resumes as STALE after process restart.
+  // Require regeneration to restore the declared TTL within a bounded window.
+  if (initialCache === "STALE") {
+    const deadline = Date.now() + 5000;
+    do {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      current = await fetch(new URL(route, base));
+      assert.equal(await current.text(), html, "Regeneration must preserve the committed snapshot");
+    } while (current.headers.get("x-nextjs-cache") !== "HIT" && Date.now() < deadline);
+    assert.equal(current.headers.get("x-nextjs-cache"), "HIT", route);
+  }
+  assert.match(current.headers.get("cache-control") ?? "", /s-maxage=21600(?:,|$)/, route);
+  const second = await fetch(new URL(route, base));
+  assert.equal(second.headers.get("x-nextjs-cache"), "HIT", route);
+  assert.equal(await second.text(), html, "Cached responses must preserve the same snapshot");
+  const rscUrl = new URL(route, base);
+  rscUrl.searchParams.set("_rsc", "runtime-cache-proof");
+  const rsc = await fetch(rscUrl, { headers: { rsc: "1" } });
+  assert.match(rsc.headers.get("content-type") ?? "", /text\/x-component/, route);
+  await rsc.arrayBuffer();
+  snapshotEvidence.push({ route, initialCache, cache: "HIT", rsc: true, sha256: createHash("sha256").update(html).digest("hex") });
+}
+for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
+  const response = await fetch(new URL(route, base));
+  assert.match(response.headers.get("cache-control") ?? "", /no-store/, route);
+  await response.arrayBuffer();
+}
+for (const route of ["/comuni?ente=not_a_published_municipality", "/enti/no_such_entity/appalti"]) {
+  const response = await fetch(new URL(route, base));
+  assert.equal(response.status, 200, "Preserve the published missing-data state");
+  const html = await response.text();
+  assert.doesNotMatch(html, /DYNAMIC_SERVER_USAGE|Application error/, route);
+}
+const missingOperator = await fetch(new URL("/appalti/operatori/op-99999999", base));
+assert.equal(missingOperator.status, 404);
+await missingOperator.arrayBuffer();
+await (await import("node:fs/promises")).writeFile(path.join(output, "snapshot-cache.json"), JSON.stringify(snapshotEvidence, null, 2));
 
 for (const query of ["cpv=invalid", "awardYear=invalid", "cpv=30121100&cpv=45000000", "awardYear=2025&awardYear=2024"]) {
   for (const code of ["c_h501", "no_such_entity"]) {
@@ -40,6 +86,13 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
     assert.deepEqual(prefetches, [], "Filter links must not prefetch unseen variants");
     await page.screenshot({ path: path.join(output, `appalti-${width}.png`) });
+
+    await page.goto(new URL("/comuni?ente=c_f205", base).href, { waitUntil: "domcontentloaded" });
+    await page.waitForNetworkIdle({ idleTime: 300, concurrency: 2 });
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.immersive), "comuni");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
+    assert.equal(await page.$eval("h1", node => node.textContent), "Milano");
+    await page.screenshot({ path: path.join(output, `comuni-${width}.png`) });
 
     await page.goto(new URL("/politici", base).href, { waitUntil: "domcontentloaded" });
     await page.waitForSelector('[data-atlas-ready="true"]');

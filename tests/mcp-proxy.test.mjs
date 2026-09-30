@@ -2,14 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import proxyTesting from "next/experimental/testing/server.js";
 import { NextRequest } from "next/server.js";
-import { config, proxy } from "../src/proxy.ts";
+import './helpers/register-ts-alias.mjs';
+const { config, proxy } = await import('../src/proxy.ts');
 
 const { getRewrittenUrl, isRewrite } = proxyTesting;
 
-test("MCP compatibility proxy is scoped to the exact public presentation path", () => {
-  assert.deepEqual(config, {
-    matcher: ["/", "/mcp", "/enti/:path*", "/api/:path*"],
-  });
+test("proxy matching covers costly pages but leaves assets outside middleware", () => {
+  for (const pathname of ["/enti/c_e897/appalti", "/appalti/operatori/op-00000001", "/comuni", "/dati/parti-atti", "/snapshot-pages/comuni/c_e897", "/api/health", "/mcp"]) {
+    assert.ok(proxyTesting.unstable_doesMiddlewareMatch({ config, url: pathname }), pathname);
+  }
+  for (const pathname of ["/_next/static/main.js", "/favicon.ico", "/report"]) {
+    assert.equal(proxyTesting.unstable_doesMiddlewareMatch({ config, url: pathname }), false, pathname);
+  }
 });
 
 test("politici subdomain rewrites the root path to the immersive map", async () => {
@@ -25,11 +29,11 @@ test("politici subdomain rewrites the root path to the immersive map", async () 
 test("comuni subdomain rewrites the root path to the municipal footprint", async () => {
   const response = await proxy(new NextRequest("https://comuni.dovevannoinostrisoldi.com/"));
   assert.equal(isRewrite(response), true);
-  assert.equal(getRewrittenUrl(response), "https://comuni.dovevannoinostrisoldi.com/comuni");
+  assert.equal(getRewrittenUrl(response), "https://comuni.dovevannoinostrisoldi.com/snapshot-pages/comuni/c_e897");
 
   const withQuery = await proxy(new NextRequest("https://comuni.dovevannoinostrisoldi.com/?ente=c_a783"));
   assert.equal(isRewrite(withQuery), true);
-  assert.equal(getRewrittenUrl(withQuery), "https://comuni.dovevannoinostrisoldi.com/comuni?ente=c_a783");
+  assert.equal(getRewrittenUrl(withQuery), "https://comuni.dovevannoinostrisoldi.com/snapshot-pages/comuni/c_a783?ente=c_a783");
 });
 
 test("politici paths retain the atlas rewrite without request-dependent chrome", async () => {
@@ -68,7 +72,7 @@ test("training crawlers share an entity allowance without blocking user-initiate
     });
   const agents = ["ClaudeBot/1.0", "GPTBot/1.0", "CCBot/1.0", "Meta-ExternalAgent/1.0"];
   for (let i = 0; i < 30; i++) {
-    assert.equal(proxy(request(agents[i % agents.length])).headers.get("x-middleware-next"), "1");
+    assert.equal(proxy(request(agents[i % agents.length])).status, 200);
   }
   for (const agent of agents) {
     const response = proxy(request(agent, "/enti"));
@@ -77,13 +81,13 @@ test("training crawlers share an entity allowance without blocking user-initiate
     assert.equal(response.headers.get("cache-control"), "private, no-store");
   }
   for (const agent of ["Claude-User/1.0", "Claude-SearchBot/1.0", "Mozilla/5.0"]) {
-    assert.equal(proxy(request(agent)).headers.get("x-middleware-next"), "1", agent);
+    assert.equal(proxy(request(agent)).status, 200, agent);
   }
   // One exhausted client cannot spend another client's or the API's allowance.
   assert.equal(proxy(request("ClaudeBot/1.0", "/enti/c_h501", "192.0.2.21")).headers.get("x-middleware-next"), "1");
   assert.equal(proxy(request("ClaudeBot/1.0", "/api/health")).headers.get("x-middleware-next"), "1");
   now += 60_000;
-  assert.equal(proxy(request("ClaudeBot/1.0")).headers.get("x-middleware-next"), "1");
+  assert.equal(proxy(request("ClaudeBot/1.0")).status, 200);
 });
 
 test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical endpoint", async () => {

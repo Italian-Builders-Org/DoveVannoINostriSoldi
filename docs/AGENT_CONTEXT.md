@@ -105,6 +105,9 @@ a caso.
 
 ## Runtime e CI
 
+- [Costi delle richieste pubbliche](RUNTIME_COSTS.md): cache ISR, profili finanziari,
+  limiti distribuiti e verifiche dei nuovi percorsi dinamici.
+
 - **Quando serve**: per modificare workflow, gate o script CI, riprodurre i
   gate di consegna, diagnosticare deployment Vercel o verificare il registro
   degli artifact generati.

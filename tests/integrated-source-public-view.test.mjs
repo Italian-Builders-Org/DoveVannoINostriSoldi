@@ -292,7 +292,7 @@ test("a three-row preview of the largest dataset loads exactly one bounded chunk
   assert.ok(diagnostics.maxObservedChunkRawBytes <= 2 * 1024 * 1024);
 });
 
-test("dataset artifacts are deduplicated only in flight and bounded to two concurrent loads", async () => {
+test("dataset reads remain bounded and decoded chunks are reused after byte verification", async () => {
   loader.resetIntegratedDatasetLoaderDiagnosticsForTests();
   const bundle = await loader.loadIntegratedSourceBundle();
   const queryable = bundle.catalog.datasets.filter(
@@ -318,7 +318,8 @@ test("dataset artifacts are deduplicated only in flight and bounded to two concu
   const secondLoad = loader.loadIntegratedDatasetChunk(bundle, firstDataset, 0);
   assert.notStrictEqual(secondLoad, firstLoad);
   const secondChunk = await secondLoad;
-  assert.notStrictEqual(secondChunk, firstChunk);
+  assert.strictEqual(secondChunk, firstChunk);
+  assert.equal(loader.getIntegratedDatasetLoaderDiagnosticsForTests().completedChunkLoads, 2);
 
   const withinCapacity = queryable.slice(0, diagnostics.maxConcurrentLoads + diagnostics.maxPendingLoads);
   const pending = withinCapacity.map((dataset) =>

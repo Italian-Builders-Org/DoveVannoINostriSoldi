@@ -862,6 +862,13 @@ Fonte, lock e perimetro in [OpenCivitas 2021 Sociale e asili](OPENCIVITAS_2021_S
 
 È integrata anche **FC70POLIZIA 2021** (Polizia locale, 6.556 Comuni RSO; 9 esclusi per spesa storica vuota nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-polizia` e MCP `opencivitas_polizia_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Polizia locale](OPENCIVITAS_2021_POLIZIA.md).
 
+Sono integrate anche le **sei funzioni FC50 2018**, con la stessa struttura e
+contratti distinti da FC50TOT 2018 e dalle funzioni 2019/2021/2022 (da 6.584 a
+6.606 Comuni RSO; API `/api/spese/opencivitas-2018-<funzione>`, MCP
+`opencivitas_<funzione>_2018`). In Istruzione restano esclusi anche 4 Comuni che
+dichiarano servizio assente con fabbisogno zero. Dettagli in
+[OpenCivitas 2018 · funzioni](OPENCIVITAS_2018_FUNZIONI.md).
+
 Sono integrate anche le **sei funzioni FC60 2019** (Istruzione, Polizia locale,
 Viabilità e territorio, Rifiuti, Sociale e asili nido, Amministrazione; da 6.494
 a 6.567 Comuni RSO), ciascuna con contratto distinto da FC60TOT 2019 e dalla
@@ -986,8 +993,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- funzioni OpenCivitas 2015–2018 (servizi totali 2015–2019/2021–2022 e funzioni
-  2019/2021/2022 già integrati; nessuna imputazione del 2020);
+- funzioni OpenCivitas 2015–2017 (servizi totali 2015–2019/2021–2022 e funzioni
+  2018/2019/2021/2022 già integrati; nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

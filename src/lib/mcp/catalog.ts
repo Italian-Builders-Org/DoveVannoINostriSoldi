@@ -8,6 +8,7 @@ import { educationAtlasCatalogSources } from "@/lib/education-atlas-metadata";
 import { INTEGRATED_CORPUS_CONTRACT } from "@/lib/integrated-source-contract";
 import { companyAtlasSources } from "@/lib/company-atlas-metadata";
 import { sourceCatalog } from "@/lib/sources";
+import { OPENCIVITAS_2018_FUNCTIONS } from "@/lib/data/opencivitas-2018-functions";
 import { OPENCIVITAS_2019_FUNCTIONS } from "@/lib/data/opencivitas-2019-functions";
 import type { OpenCivitasFunctionDescriptor } from "@/lib/data/opencivitas-functions";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
@@ -57,6 +58,12 @@ export const DATASET_IDS = [
   "opencivitas_fabbisogni_2016",
   "opencivitas_fabbisogni_2017",
   "opencivitas_fabbisogni_2018",
+  "opencivitas_istruzione_2018",
+  "opencivitas_polizia_2018",
+  "opencivitas_viabilita_2018",
+  "opencivitas_rifiuti_2018",
+  "opencivitas_sociale_asili_2018",
+  "opencivitas_amministrazione_2018",
   "opencivitas_fabbisogni_2019",
   "opencivitas_istruzione_2019",
   "opencivitas_polizia_2019",
@@ -292,6 +299,12 @@ const exampleQueries = {
   opencivitas_fabbisogni_2016: { dataset: "opencivitas_fabbisogni_2016", region: "LAZIO", year: 2016, limit: 20 },
   opencivitas_fabbisogni_2017: { dataset: "opencivitas_fabbisogni_2017", region: "LAZIO", year: 2017, limit: 20 },
   opencivitas_fabbisogni_2018: { dataset: "opencivitas_fabbisogni_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_istruzione_2018: { dataset: "opencivitas_istruzione_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_polizia_2018: { dataset: "opencivitas_polizia_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_viabilita_2018: { dataset: "opencivitas_viabilita_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_rifiuti_2018: { dataset: "opencivitas_rifiuti_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_sociale_asili_2018: { dataset: "opencivitas_sociale_asili_2018", region: "LAZIO", year: 2018, limit: 20 },
+  opencivitas_amministrazione_2018: { dataset: "opencivitas_amministrazione_2018", region: "LAZIO", year: 2018, limit: 20 },
   opencivitas_fabbisogni_2019: { dataset: "opencivitas_fabbisogni_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_istruzione_2019: { dataset: "opencivitas_istruzione_2019", region: "LAZIO", year: 2019, limit: 20 },
   opencivitas_polizia_2019: { dataset: "opencivitas_polizia_2019", region: "LAZIO", year: 2019, limit: 20 },
@@ -1306,6 +1319,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
     caveat: "Contratto distinto da FC70TOT 2021 e FC80TOT 2022: nessuna somma o confronto silenzioso tra annualità. Il 2020 non è ricostruito. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
   },
+  ...Object.values(OPENCIVITAS_2018_FUNCTIONS).map(openCivitasFunctionDescriptor),
   ...Object.values(OPENCIVITAS_2019_FUNCTIONS).map(openCivitasFunctionDescriptor),
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
   {

@@ -167,6 +167,62 @@ le loro date di osservazione. «Primo mandato» conta soltanto le legislature
 repubblicane alla Camera e al Senato: non misura altri incarichi né il diritto al
 vitalizio.
 
+### Vitalizio: gap documentato (#556)
+
+L'issue #556 chiede un filtro «ha già maturato il vitalizio / non ancora» solo se
+regole e fonte ufficiale permettono di ricostruirlo in modo verificabile. Al
+30/09/2026 non è così, e l'atlante non mostra il filtro.
+
+**Cosa pubblicano le istituzioni** (verificato il 30/09/2026):
+
+- **Regole, non posizioni individuali.** La
+  [pagina sul trattamento economico della Camera](https://www.camera.it/deputati/trattamento-economico)
+  descrive il regime:
+  - l'assegno vitalizio è superato dal 1° gennaio 2012 e sostituito da una
+    pensione contributiva;
+  - per chi era in carica si applica un pro rata, cioè la quota di vitalizio
+    maturata al 31/12/2011 più la quota contributiva successiva;
+  - il diritto richiede almeno 5 anni effettivi di mandato e 65 anni di età,
+    ridotti di un anno per ogni anno di mandato in più, fino a 60;
+  - il pagamento è sospeso in caso di rielezione e di alcuni incarichi
+    incompatibili.
+
+  La [pagina del Senato](https://www.senato.it/composizione/senatori/trattamento-economico)
+  ricorda la riforma del 2007, che ha portato il mandato minimo da 2 anni e
+  6 mesi a 5 anni, il passaggio al contributivo del 2012 e la rideterminazione
+  dei vitalizi del 16 ottobre 2018.
+- **Un elenco nominativo, solo al Senato.** Il Senato pubblica gli
+  [ex senatori percettori di trattamenti previdenziali](https://www.senato.it/composizione/senatori/trattamento-economico-vitalizi):
+  1.223 voci, di cui 804 ex senatori con trattamento diretto e 419 deceduti con
+  trattamento di reversibilità. Per ciascuno ci sono nome, date di nascita e
+  morte e legislature svolte. Non ci sono importi né la distinzione fra vitalizio
+  e pensione contributiva, e manca un identificativo: il collegamento con la
+  mappa si potrebbe fare solo su nome e data di nascita.
+  La Camera non pubblica un elenco equivalente sulle sue pagine ufficiali.
+- **Nessun dato aperto.** Né `dati.camera.it` né `dati.senato.it` modellano
+  trattamenti previdenziali o vitalizi: le schede delle persone riportano
+  anagrafica, mandati, gruppi e incarichi.
+
+**Perché non si ricostruisce:**
+
+- «Ha maturato» dipende da mandati effettivi nei due rami, età e regole cambiate
+  nel 2007, nel 2012 e nel 2018, oltre che da decisioni degli organi interni. Le
+  Camere non pubblicano la posizione individuale: calcolarla dalle date dei
+  mandati sarebbe una stima, esclusa dall'issue («nessun vitalizio calcolato a
+  occhio»).
+- L'elenco del Senato riguarda chi ha lasciato il Parlamento e riceve il
+  trattamento. Chi siede oggi lo ha sospeso per regola. Un confronto di sola
+  ricerca su cognome e data di nascita, non usato nel prodotto, non trova nessuno
+  dei 603 parlamentari in carica. Le 12 date di nascita coincidenti appartengono
+  a persone diverse.
+- L'identità nell'atlante si unifica solo su identificativi ufficiali, mai per
+  somiglianza di nome.
+
+Il filtro diventa possibile se una delle Camere pubblica la posizione
+previdenziale individuale con un identificativo ufficiale. Un eventuale uso
+dell'elenco del Senato, per esempio una vista sugli ex senatori, sarebbe una
+funzione diversa da proporre a parte.
+
 La rappresentanza al Parlamento europeo resta fuori da questo atlante nazionale:
 vedi issue #566. Ritratti e simboli di partito passano dai proxy
 `/politici/foto` e `/politici/simboli` senza l’optimizer `/_next/image`.

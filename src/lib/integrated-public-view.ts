@@ -403,7 +403,30 @@ export async function getIntegratedDataOverview() {
   } as const;
 }
 
-/** Sole row selector used by both pages and APIs. */
+const SORTED_PUBLIC_COLUMNS: Readonly<Record<string, string>> = {
+  "mim-scuole-statali-comuni": "Codice ISTAT comune",
+  "mef-patrimonio-beni-2023": "Codice fiscale ente",
+  "mef-patrimonio-contratti-2023": "Codice fiscale ente",
+  "mef-patrimonio-adempimento-2023": "Codice fiscale ente",
+  "mef-patrimonio-fabbricati-fermi-2023": "Codice regione del bene",
+};
+
+/** Only ETL-proven orderings may bypass a scan; rows still pass the release proof. */
+export async function selectIntegratedSortedDatasetRows(datasetId: string, column: string, key: string) {
+  if (SORTED_PUBLIC_COLUMNS[datasetId] !== column) {
+    throw new IntegratedQueryError("Il dataset non ha un ordinamento verificato per questa colonna.");
+  }
+  const bundle = await loadIntegratedSourceBundle();
+  const dataset = bundle.datasetsById.get(datasetId);
+  if (!dataset) throw new IntegratedDatasetNotFoundError(datasetId);
+  const metadata = publicMetadata(dataset);
+  if (!metadata.queryable) throw new IntegratedQueryError("Il dataset non espone righe pubbliche.");
+  const { selectSortedRows } = await import("@/lib/integrated-sorted-lookup");
+  const result = await selectSortedRows(datasetId, column, key);
+  return { ...result, dataset: metadata };
+}
+
+/** Budgeted selector for public search, filters and pagination. */
 export async function selectIntegratedDataset(
   input: DatasetSelectorInput,
 ): Promise<IntegratedDatasetResult> {

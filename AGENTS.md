@@ -97,6 +97,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Non avviare acquisizioni/refresh in risposta a una visita. Evita prefetch di
   griglie con molte destinazioni costose. Distingui rendering, fetch live,
   polling client, build e test: hanno costi e rimedi differenti.
+- Prima di aumentare una cache, misura il working set e confronta budget byte/entry
+  sullo stesso runtime. Verifica CPU, RSS e digest con i benchmark in
+  `scripts/bench/`; non aumentare la memoria delle funzioni senza prova del beneficio.
 - Per le cache prova anche scansioni oltre la loro capacità, concorrenza,
   sostituzione/corruzione dello snapshot, query ripetute e RSC. Mantieni hash,
   provenance e riconciliazioni; non memorizzare un errore come successo.

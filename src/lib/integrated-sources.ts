@@ -78,8 +78,13 @@ type InFlightChunkLoad = {
 };
 
 const inFlightChunkLoads = new Map<string, InFlightChunkLoad>();
+// Keep broad dataset scans from occupying the municipal property's measured working set.
 // Serialized weight is bounded separately from the concurrent loading limit.
 const validatedChunks = new ArtifactCache<LoadedIntegratedDatasetChunk>(32, 16 * 1024 * 1024);
+const validatedPropertyChunks = new ArtifactCache<LoadedIntegratedDatasetChunk>(96, 64 * 1024 * 1024);
+const PROPERTY_DATASETS = new Set([
+  "mef-patrimonio-beni-2023", "mef-patrimonio-contratti-2023", "mef-patrimonio-adempimento-2023",
+]);
 let completedChunkLoads = 0;
 let maxObservedChunkRawBytes = 0;
 
@@ -302,7 +307,8 @@ async function readDatasetChunk(
   }
   // Read and hash on every request: a warm cache must not hide changed files.
   const cacheKey = `${artifactKey}:${expectedHash}`;
-  const cached = validatedChunks.get(cacheKey);
+  const cache = PROPERTY_DATASETS.has(dataset.id) ? validatedPropertyChunks : validatedChunks;
+  const cached = cache.get(cacheKey);
   if (cached) {
     completedChunkLoads += 1;
     maxObservedChunkRawBytes = Math.max(maxObservedChunkRawBytes, cached.uncompressedBytes);
@@ -322,7 +328,7 @@ async function readDatasetChunk(
     uncompressedBytes: uncompressed.length,
     rows,
   };
-  validatedChunks.set(cacheKey, loaded, uncompressed.length);
+  cache.set(cacheKey, loaded, uncompressed.length);
   return loaded;
 }
 

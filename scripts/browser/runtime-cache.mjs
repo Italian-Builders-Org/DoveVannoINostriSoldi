@@ -93,6 +93,12 @@ try {
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width);
     assert.equal(await page.$eval("h1", node => node.textContent), "Milano");
     await page.screenshot({ path: path.join(output, `comuni-${width}.png`) });
+    await page.type("#comuni-search", "Roma");
+    await page.waitForFunction(() => document.querySelector('[role="option"]')?.textContent?.includes("Roma Capitale"));
+    await page.screenshot({ path: path.join(output, `comuni-roma-search-${width}.png`) });
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => document.querySelector("h1")?.textContent === "Roma Capitale");
 
     await page.goto(new URL("/politici", base).href, { waitUntil: "domcontentloaded" });
     await page.waitForSelector('[data-atlas-ready="true"]');

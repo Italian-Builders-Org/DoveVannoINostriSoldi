@@ -177,6 +177,18 @@ const STABLE_METADATA_DATASETS = [
   "opencivitas_polizia_2022",
   "opencivitas_istruzione_2022",
   "opencivitas_sociale_asili_2021",
+  "opencivitas_istruzione_2019",
+  "opencivitas_polizia_2019",
+  "opencivitas_viabilita_2019",
+  "opencivitas_rifiuti_2019",
+  "opencivitas_sociale_asili_2019",
+  "opencivitas_amministrazione_2019",
+  "opencivitas_istruzione_2018",
+  "opencivitas_polizia_2018",
+  "opencivitas_viabilita_2018",
+  "opencivitas_rifiuti_2018",
+  "opencivitas_sociale_asili_2018",
+  "opencivitas_amministrazione_2018",
   "istat_bes_innovazione",
   "istat_poverta_soglia_assoluta",
 ];
@@ -219,12 +231,12 @@ for (const [datasetId, meta] of [
 }
 
 test("OpenCivitas cards preserve RSO coverage and reference year", () => {
-  for (const datasetId of ["opencivitas_fabbisogni_2015", "opencivitas_fabbisogni_2016", "opencivitas_rifiuti_2022", "opencivitas_viabilita_2022", "opencivitas_sociale_asili_2022", "opencivitas_amministrazione_2022", "opencivitas_polizia_2022", "opencivitas_istruzione_2022", "opencivitas_rifiuti_2021", "opencivitas_viabilita_2021", "opencivitas_sociale_asili_2021", "opencivitas_amministrazione_2021", "opencivitas_istruzione_2021", "opencivitas_polizia_2021"]) {
+  for (const datasetId of ["opencivitas_fabbisogni_2015", "opencivitas_fabbisogni_2016", "opencivitas_rifiuti_2022", "opencivitas_viabilita_2022", "opencivitas_sociale_asili_2022", "opencivitas_amministrazione_2022", "opencivitas_polizia_2022", "opencivitas_istruzione_2022", "opencivitas_rifiuti_2021", "opencivitas_viabilita_2021", "opencivitas_sociale_asili_2021", "opencivitas_amministrazione_2021", "opencivitas_istruzione_2021", "opencivitas_polizia_2021", "opencivitas_istruzione_2019", "opencivitas_polizia_2019", "opencivitas_viabilita_2019", "opencivitas_rifiuti_2019", "opencivitas_sociale_asili_2019", "opencivitas_amministrazione_2019", "opencivitas_istruzione_2018", "opencivitas_polizia_2018", "opencivitas_viabilita_2018", "opencivitas_rifiuti_2018", "opencivitas_sociale_asili_2018", "opencivitas_amministrazione_2018"]) {
     const doc = getAgentPublicDoc(datasetId);
     const markdown = renderAgentPublicDocMarkdown(doc);
     assert.match(doc.coverage, /Comuni RSO/i, `${datasetId} copertura RSO`);
     assert.match(markdown, /Comuni RSO/i, `${datasetId} render copertura RSO`);
-    assert.match(markdown, /Annualità di riferimento 20(15|16|21|22)/, `${datasetId} render annualità`);
+    assert.match(markdown, /Annualità di riferimento 20(15|16|18|19|21|22)/, `${datasetId} render annualità`);
   }
 });
 

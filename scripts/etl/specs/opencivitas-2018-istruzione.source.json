@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2018,
+  "family": "FC50ISTRUZ",
+  "releaseVersion": 1,
+  "publishedAt": "2022-02-14",
+  "modifiedAt": "2022-02-14",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2018-comuni-istruzione-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2018_Ind_FC50ISTRUZ_1_csv.zip",
+      "bytes": 2342554,
+      "sha256": "b3f80fb4b38faadba4ae9b669a1a795c49efdd8e784db92ecfd3f7d2763c7a2e"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2018_xlsx.zip",
+      "bytes": 340823,
+      "sha256": "91a5ecfb4f0d5d1842e23eb46b30191e373ee5e8b035fcae0326d846fab6b392"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2018_Metadati_Ind_FC50ISTRUZ_1_xlsx.zip",
+      "bytes": 11443,
+      "sha256": "f53700a604b5dc837cb24c529cbd7a3a2bea819be8a3cfb7e440878b7d20fdbc"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "csvEncoding": "utf-8-sig",
+  "decimalSeparator": ",",
+  "csvRowCount": 404796,
+  "indicatorDefinitionCount": 46,
+  "indicatorDescriptions": {
+    "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
+    "FST_RIPROPORZIONATO_BI_PROAB": "Spesa standard - Euro per abitante",
+    "SPESA_STORICA": "Spesa storica - euro",
+    "SPESA_STORICA_PROAB": "Spesa storica - Euro per abitante",
+    "DIFF_OUT_PERC": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+    "POSIZIONE_SPESA_PERC": "Livello della spesa - Da 0 a 10",
+    "POSIZIONE_OUTPUT_PERC": "Livello dei servizi erogati - Da 0 a 10",
+    "DESCR_NON_VALUTABILE_SPESA": "Motivo di non valutabilità per la spesa",
+    "DESCR_NON_VALUTABILE_OUT": "Motivo di non valutabilità per i servizi offerti"
+  },
+  "municipalities": 6584,
+  "regionCounts": {
+    "ABRUZZO": 303,
+    "BASILICATA": 131,
+    "CALABRIA": 400,
+    "CAMPANIA": 547,
+    "EMILIA-ROMAGNA": 331,
+    "LAZIO": 376,
+    "LIGURIA": 232,
+    "LOMBARDIA": 1513,
+    "MARCHE": 229,
+    "MOLISE": 134,
+    "PIEMONTE": 1196,
+    "PUGLIA": 258,
+    "TOSCANA": 273,
+    "UMBRIA": 91,
+    "VENETO": 570
+  },
+  "excludedIncompleteHistorical": [
+    "AQ028SIF11RO",
+    "AQ073SIF11TH",
+    "CB003SIF11TF",
+    "CE057SIF11YP",
+    "CO040SIF11PY",
+    "CZ110SIF11JX",
+    "GR001SIF11ZC",
+    "RC023SIF11JJ",
+    "RC054SIF11KO",
+    "RM108SIF11VJ",
+    "RO028SIF11XR",
+    "TR027SIF11QR",
+    "VA106SIF11EE",
+    "VT013SIF11WL"
+  ],
+  "excludedScientificHistorical": [
+    "IM045SIF11BW",
+    "KR014SIF11FG",
+    "NA019SIF11NL",
+    "SA081SIF11BT"
+  ],
+  "excludedNonPositiveStandard": [
+    "CN039SIF11GT",
+    "GE022SIF11WI",
+    "IS013SIF11DF",
+    "SO006SIF11GI"
+  ],
+  "coverageWarning": "RSS e Province autonome fuori perimetro; esclusi gli aggregati di Italia, regioni, aree e fasce. Esclusi 14 Comuni con SPESA_STORICA e SPESA_STORICA_PROAB vuoti nella fonte (fabbisogno presente): nessuna imputazione a zero. Pontedassio (008045), Melissa (101014), Casamicciola Terme (063019), Ogliastro Cilento (065081) restano fuori perché la fonte pubblica la spesa storica in notazione scientifica (residui come 7,28E-12), non come importo decimale: nessuna riscrittura a zero. Caprauna (004039), Fascia (010022), Castelverrino (094013), Bema (014006) dichiarano servizio assente (cod_no_servizio) con spesa storica e fabbisogno a zero: un fabbisogno non positivo non viene pubblicato.",
+  "nationalTotals": {
+    "reproportioned": true,
+    "historicalSpendingCents": 410373745846,
+    "standardSpendingCentsPublished": 409977433562,
+    "standardSpendingCentsExcluded": 396312383,
+    "roundingToleranceCents": 100,
+    "sourceNationalAggregateHistorical": "4103737459",
+    "sourceNationalAggregateStandard": "4103737459",
+    "note": "Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Sui 6.584 Comuni pubblicati la spesa storica è 4.103.737.458,46 € e il fabbisogno 4.099.774.335,62 €. I 22 Comuni esclusi portano 3.963.123,83 € di fabbisogno: sommato al fabbisogno pubblicato fa 4.103.737.459,45 €, a 0,99 € dalla spesa storica pubblicata. L'aggregato ZZ999ITA001 pubblica 4.103.737.459,00 € di spesa storica e 4.103.737.459,00 € di fabbisogno. La differenza aggregata non è un risultato e non va letta come risparmio o spreco."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

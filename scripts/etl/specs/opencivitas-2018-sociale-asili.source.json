@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2018,
+  "family": "FC50SOCNID",
+  "releaseVersion": 1,
+  "publishedAt": "2022-02-14",
+  "modifiedAt": "2022-02-14",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2018-comuni-sociale-e-asili-nido-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2018_Ind_FC50SOCNID_1_csv.zip",
+      "bytes": 3742784,
+      "sha256": "90f970f40fab094757970af996a8114c8414d36b584a79381876b2dd58722971"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2018_xlsx.zip",
+      "bytes": 340823,
+      "sha256": "91a5ecfb4f0d5d1842e23eb46b30191e373ee5e8b035fcae0326d846fab6b392"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2018_Metadati_Ind_FC50SOCNID_1_xlsx.zip",
+      "bytes": 13164,
+      "sha256": "75decd090a1f8245e96707262b0799b8d9770c11d54d07991b38ae186ee885a5"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "csvEncoding": "utf-8-sig",
+  "decimalSeparator": ",",
+  "csvRowCount": 583968,
+  "indicatorDefinitionCount": 80,
+  "indicatorDescriptions": {
+    "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
+    "FST_RIPROPORZIONATO_BI_PROAB": "Spesa standard - Euro per abitante",
+    "SPESA_STORICA": "Spesa storica - Euro",
+    "SPESA_STORICA_PROAB": "Spesa storica - Euro per abitante",
+    "DIFF_OUT_PERC": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+    "POSIZIONE_SPESA_PERC": "Livello della spesa - Da 0 a 10",
+    "POSIZIONE_OUTPUT_PERC": "Livello dei servizi erogati - Da 0 a 10",
+    "DESCR_NON_VALUTABILE_SPESA": "Motivo di non valutabilità per la spesa",
+    "DESCR_NON_VALUTABILE_OUT": "Motivo di non valutabilità per i servizi offerti"
+  },
+  "municipalities": 6590,
+  "regionCounts": {
+    "ABRUZZO": 304,
+    "BASILICATA": 131,
+    "CALABRIA": 400,
+    "CAMPANIA": 547,
+    "EMILIA-ROMAGNA": 331,
+    "LAZIO": 376,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1515,
+    "MARCHE": 229,
+    "MOLISE": 135,
+    "PIEMONTE": 1196,
+    "PUGLIA": 258,
+    "TOSCANA": 273,
+    "UMBRIA": 91,
+    "VENETO": 570
+  },
+  "excludedIncompleteHistorical": [
+    "AQ028SIF11RO",
+    "CB003SIF11TF",
+    "CE057SIF11YP",
+    "CZ110SIF11JX",
+    "GR001SIF11ZC",
+    "RC023SIF11JJ",
+    "RC054SIF11KO",
+    "RM108SIF11VJ",
+    "RO028SIF11XR",
+    "TR027SIF11QR",
+    "VA106SIF11EE",
+    "VT013SIF11WL"
+  ],
+  "excludedScientificHistorical": [
+    "CN222SIF11NU",
+    "KR014SIF11FG",
+    "SA036SIF11AA",
+    "SA081SIF11BT"
+  ],
+  "excludedNonPositiveStandard": [],
+  "coverageWarning": "RSS e Province autonome fuori perimetro; esclusi gli aggregati di Italia, regioni, aree e fasce. Esclusi 12 Comuni con SPESA_STORICA e SPESA_STORICA_PROAB vuoti nella fonte (fabbisogno presente): nessuna imputazione a zero. Sommariva del Bosco (004222), Melissa (101014), Castiglione del Genovesi (065036), Ogliastro Cilento (065081) restano fuori perché la fonte pubblica la spesa storica in notazione scientifica (residui come 2,546585E-11), non come importo decimale: nessuna riscrittura a zero.",
+  "nationalTotals": {
+    "reproportioned": false,
+    "historicalSpendingCents": 658094644689,
+    "standardSpendingCentsPublished": 709002011408,
+    "standardSpendingCentsExcluded": 577926635,
+    "sourceNationalAggregateHistorical": "6580946447",
+    "sourceNationalAggregateStandard": "7095799380,4",
+    "note": "Per Sociale e asili nido la fonte non riproporziona il fabbisogno sul totale della spesa storica. Sui 6.590 Comuni pubblicati la spesa storica è 6.580.946.446,89 € e il fabbisogno 7.090.020.114,08 €, superiore del 7,7%. L'aggregato ZZ999ITA001 pubblica 6.580.946.447,00 € di spesa storica e 7.095.799.380,40 € di fabbisogno. La differenza aggregata non è un risultato e non va letta come risparmio, spreco o fabbisogno scoperto."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

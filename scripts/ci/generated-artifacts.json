@@ -3313,6 +3313,162 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2019-amministrazione.source.json"
     },
     {
+      "id": "opencivitas-2018-istruzione",
+      "owner": "OpenCivitas municipal 2018 FC50ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2018-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50ISTRUZ 2018 (Istruzione) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6584 Comuni RSO; 30 aggregati esclusi; 14 Comuni con spesa storica vuota, 4 in notazione scientifica e 4 con servizio assente (fabbisogno zero) esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-istruzione.source.json"
+    },
+    {
+      "id": "opencivitas-2018-polizia",
+      "owner": "OpenCivitas municipal 2018 FC50POLIZIA",
+      "files": [
+        "src/data/generated/opencivitas-2018-polizia.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_polizia_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_polizia_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50POLIZIA 2018 (Polizia locale) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6594 Comuni RSO; 30 aggregati esclusi; 12 Comuni con spesa storica vuota esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-polizia.source.json"
+    },
+    {
+      "id": "opencivitas-2018-viabilita",
+      "owner": "OpenCivitas municipal 2018 FC50TERRVIAB",
+      "files": [
+        "src/data/generated/opencivitas-2018-viabilita.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_viabilita_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_viabilita_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50TERRVIAB 2018 (Viabilità e territorio) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6594 Comuni RSO; 30 aggregati esclusi; 12 Comuni con spesa storica vuota esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-viabilita.source.json"
+    },
+    {
+      "id": "opencivitas-2018-rifiuti",
+      "owner": "OpenCivitas municipal 2018 FC50RIFIUTI",
+      "files": [
+        "src/data/generated/opencivitas-2018-rifiuti.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_rifiuti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_rifiuti_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50RIFIUTI 2018 (Rifiuti) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6606 Comuni RSO; 30 aggregati esclusi; nessun Comune RSO escluso; CSV senza colonna Privacy dichiarato nel lock. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-rifiuti.source.json"
+    },
+    {
+      "id": "opencivitas-2018-sociale-asili",
+      "owner": "OpenCivitas municipal 2018 FC50SOCNID",
+      "files": [
+        "src/data/generated/opencivitas-2018-sociale-asili.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_sociale_asili_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_sociale_asili_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50SOCNID 2018 (Sociale e asili nido) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6590 Comuni RSO; 30 aggregati esclusi; 12 Comuni con spesa storica vuota e 4 in notazione scientifica esclusi senza imputazione; la fonte non riproporziona il fabbisogno e il contratto lo dichiara. Totali nazionali bloccati senza riproporzionamento. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-sociale-asili.source.json"
+    },
+    {
+      "id": "opencivitas-2018-amministrazione",
+      "owner": "OpenCivitas municipal 2018 FC50AMMIN",
+      "files": [
+        "src/data/generated/opencivitas-2018-amministrazione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2018_amministrazione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2018_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2018-functions-contract.test.mjs",
+        "tests/opencivitas-2018-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2018_amministrazione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC50AMMIN 2018 (Amministrazione) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC50TOT 2018 e dalla stessa funzione 2019/2021/2022. Join di 6586 Comuni RSO; 30 aggregati esclusi; 20 Comuni con spesa storica vuota esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2018-amministrazione.source.json"
+    },
+    {
       "id": "mantova-offices",
       "owner": "Comune di Mantova — organi e mandati del pilota #405",
       "files": [

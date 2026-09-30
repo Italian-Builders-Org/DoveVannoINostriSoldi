@@ -1,7 +1,7 @@
 import "server-only";
 
 import spec from "../../scripts/etl/specs/mim-school-services.source.json";
-import { selectIntegratedDataset, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
+import { selectIntegratedSortedDatasetRows, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
 import type { MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
 
 type MunicipalIdentity = Extract<MefIrpefTerritoryRecord["territory"], { level: "municipality" }>;
@@ -62,15 +62,10 @@ export async function getMunicipalitySchoolServices(
       message: "Il file MIM delle scuole statali esclude Aosta, Trento e Bolzano. Per questo territorio il conteggio non è disponibile.",
     };
   }
-  const result = await selectIntegratedDataset({
-    datasetId: spec.datasetId,
-    q: identity.code,
-    limit: 100,
-  });
+  const result = await selectIntegratedSortedDatasetRows(spec.datasetId, "Codice ISTAT comune", identity.code);
   if (
     result.dataset.publicRows !== spec.expected.municipalities ||
-    result.dataset.headers.join("\n") !== spec.publicHeaders.join("\n") ||
-    !result.pagination.exhausted
+    result.dataset.headers.join("\n") !== spec.publicHeaders.join("\n")
   ) {
     throw new Error("Vista delle sedi scolastiche incompleta o schema divergente.");
   }

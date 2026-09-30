@@ -129,7 +129,7 @@ test("sitemap exposes only canonical HTTPS public pages", async () => {
 test("robots permits public pages without blocking Next assets", () => {
   const robots = publicRobots(PUBLIC_SITE_URL);
   assert.deepEqual(robots.rules, [
-    { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
+    { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/", "/snapshot-pages/"] },
   ]);
   assert.equal(robots.sitemap, `${PUBLIC_SITE_URL}/sitemap.xml`);
   assert.ok(robots.rules.every((rule) => !rule.disallow.includes("/_next/")));

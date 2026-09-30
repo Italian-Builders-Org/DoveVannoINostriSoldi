@@ -7,6 +7,7 @@ const { loadIntegratedDatasetChunk, loadIntegratedSourceBundle } = await import(
 const { integratedRowChunkCount } = await import("../src/lib/integrated-source-contract.ts");
 
 const SORTED = [
+  ["mim-scuole-statali-comuni", "Codice ISTAT comune"],
   ["mef-patrimonio-beni-2023", "Codice fiscale ente"],
   ["mef-patrimonio-contratti-2023", "Codice fiscale ente"],
   ["mef-patrimonio-adempimento-2023", "Codice fiscale ente"],
@@ -50,4 +51,18 @@ for (const [datasetId, column] of SORTED) {
 test("the lookup rejects unknown datasets and columns", async () => {
   await assert.rejects(selectSortedRows("inesistente", "Codice fiscale ente", "1"), /assente/);
   await assert.rejects(selectSortedRows("mef-patrimonio-beni-2023", "Colonna", "1"), /colonna/);
+});
+
+
+test("public sorted lookups preserve provenance and reject unproven ordering", async () => {
+  const { selectIntegratedSortedDatasetRows, selectIntegratedDataset } = await import("../src/lib/integrated-public-view.ts");
+  const selected = await selectIntegratedSortedDatasetRows("mim-scuole-statali-comuni", "Codice ISTAT comune", "058091");
+  const scanned = await selectIntegratedDataset({ datasetId: "mim-scuole-statali-comuni", q: "058091", limit: 100 });
+  assert.deepEqual(selected.rows, scanned.rows);
+  assert.deepEqual(selected.dataset, scanned.dataset);
+  assert.equal(selected.rows.length, 1);
+  assert.equal(selected.rows[0].cells["Sedi scolastiche statali"], "944");
+  assert.ok(selected.chunksRead <= 4, "An exact municipality lookup must not scan the national registry");
+  await assert.rejects(selectIntegratedSortedDatasetRows("mim-scuole-statali-comuni", "Comune", "Roma"), /ordinamento/);
+  await assert.rejects(selectIntegratedSortedDatasetRows("vincitori", "Codice ISTAT comune", "058091"), /ordinamento/);
 });

@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="8f10c17c5b1ac0400e9693a10a1a757562eb8dfe1a29639ea6bf2d731e5fbe61",
     function="AMMINISTRAZIONE",
     family="FC60AMMIN",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-administration-fc60-2019",
     label="Amministrazione",
 )

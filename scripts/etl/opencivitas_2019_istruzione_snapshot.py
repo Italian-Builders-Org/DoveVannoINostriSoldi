@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="043a06ed2526a8639a37368d286ed5f03f424b56aad00e4c5f8d40d07c8072f3",
     function="ISTRUZIONE",
     family="FC60ISTRUZ",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-education-fc60-2019",
     label="Istruzione",
 )

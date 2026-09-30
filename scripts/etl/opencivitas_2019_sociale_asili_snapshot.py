@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="7db8d7a8d4cad001593c465b181346f7227637c14b9b66afe9adbf2cb3239c32",
     function="SOCIALE E NIDO",
     family="FC60SOCNID",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-social-nursery-fc60-2019",
     label="Sociale e asili nido",
 )

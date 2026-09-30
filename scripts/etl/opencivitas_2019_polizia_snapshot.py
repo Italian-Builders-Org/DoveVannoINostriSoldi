@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="44b9fbf5d3f3a0aa272c5cb5268180a1a973a87bc712110c1319938ec4619531",
     function="POLIZIA",
     family="FC60POLIZIA",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-local-police-fc60-2019",
     label="Polizia locale",
 )

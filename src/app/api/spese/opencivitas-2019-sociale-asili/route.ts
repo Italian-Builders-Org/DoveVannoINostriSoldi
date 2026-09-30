@@ -1,4 +1,5 @@
-import { createOpenCivitas2019FunctionGet } from "@/lib/opencivitas-2019-function-query";
+import { OPENCIVITAS_2019_FUNCTIONS } from "@/lib/data/opencivitas-2019-functions";
+import { createOpenCivitasFunctionGet } from "@/lib/opencivitas-function-query";
 import { queryOpenCivitas2019SocialeAsili } from "@/lib/opencivitas-2019-sociale-asili-snapshot";
 
-export const GET = createOpenCivitas2019FunctionGet("sociale-asili", queryOpenCivitas2019SocialeAsili);
+export const GET = createOpenCivitasFunctionGet(OPENCIVITAS_2019_FUNCTIONS["sociale-asili"], queryOpenCivitas2019SocialeAsili);

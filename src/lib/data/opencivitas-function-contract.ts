@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
 import { MUNICIPALITY_COLUMNS, type OpenCivitasMunicipality } from "@/lib/data/opencivitas-municipality";
-import { OPENCIVITAS_2019_FUNCTIONS, type OpenCivitas2019FunctionKey } from "@/lib/data/opencivitas-2019-functions";
+import type { OpenCivitasFunctionDescriptor } from "@/lib/data/opencivitas-functions";
 
-export type OpenCivitas2019FunctionSnapshot = {
+export type OpenCivitasFunctionSnapshot = {
   schemaVersion: 1;
   transformVersion: 1;
   scope: string;
-  referenceYear: 2019;
+  referenceYear: number;
   publishedAt: string;
   modifiedAt: string;
   generatedAt: string;
@@ -56,11 +56,10 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value);
 }
 
-export function assertOpenCivitas2019FunctionSnapshot(
-  key: OpenCivitas2019FunctionKey,
+export function assertOpenCivitasFunctionSnapshot(
+  descriptor: OpenCivitasFunctionDescriptor,
   value: unknown,
-): OpenCivitas2019FunctionSnapshot {
-  const descriptor = OPENCIVITAS_2019_FUNCTIONS[key];
+): OpenCivitasFunctionSnapshot {
   const family = descriptor.family;
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(`${family}: oggetto snapshot atteso`);
@@ -100,5 +99,5 @@ export function assertOpenCivitas2019FunctionSnapshot(
   delete metadata.municipalityColumns;
   const municipalities = (municipalityRows as unknown[][]).map((row) =>
     Object.fromEntries(MUNICIPALITY_COLUMNS.map((column, index) => [column, structuredClone(row[index])])) as OpenCivitasMunicipality);
-  return { ...structuredClone(metadata), municipalities } as OpenCivitas2019FunctionSnapshot;
+  return { ...structuredClone(metadata), municipalities } as OpenCivitasFunctionSnapshot;
 }

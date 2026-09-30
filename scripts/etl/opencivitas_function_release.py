@@ -51,7 +51,7 @@ SELECTED_CODES = (
     "DESCR_NON_VALUTABILE_SPESA",
     "DESCR_NON_VALUTABILE_OUT",
 )
-# Colonne CSV che il normalizzatore legge; Privacy può mancare (FC60RIFIUTI).
+# Colonne CSV che il normalizzatore legge; Privacy può mancare (Rifiuti 2018/2019).
 REQUIRED_CSV_COLUMNS = {"USERNAME", "Indicatore/Determinante", "Valore", "Anomalia"}
 
 
@@ -62,6 +62,8 @@ class FunctionRelease:
     semantic_sha256: str
     function: str
     family: str
+    # Famiglia dei servizi totali della stessa annualità (FC60TOT per il 2019).
+    total_family: str
     scope: str
     label: str
 
@@ -98,7 +100,7 @@ def verify_definitions(release: FunctionRelease, spec: dict, definitions: list[d
 
 def load_raw_data(release: FunctionRelease, spec: dict, payload: bytes) -> dict[str, dict[str, dict[str, str]]]:
     raw_csv = read_outer_file(payload, ".csv")
-    # Codifica dichiarata nel lock: Amministrazione 2019 è cp1252, le altre UTF-8.
+    # Codifica dichiarata nel lock: Amministrazione 2019 è cp1252, gli altri rilasci UTF-8.
     reader = csv.DictReader(
         io.TextIOWrapper(io.BytesIO(raw_csv), encoding=spec["csvEncoding"], newline=""),
         delimiter=";",
@@ -227,7 +229,7 @@ def normalize_rows(release: FunctionRelease, spec: dict, entities: dict, raw: di
     result = []
     for username in sorted(set(raw) & set(entities)):
         entity = dict(entities[username])
-        # I metadati enti 2019 usano entrambe le grafie per la stessa regione.
+        # I metadati enti usano EMILIA ROMAGNA (e nel 2019 anche EMILIA-ROMAGNA).
         if entity["region"] == "EMILIA ROMAGNA":
             entity["region"] = "EMILIA-ROMAGNA"
         if entity["region"] not in spec["regionCounts"]:
@@ -331,7 +333,7 @@ def normalize(release: FunctionRelease, data: bytes, entities: bytes, indicators
             "coverageWarning": spec["coverageWarning"],
             "rankingWarning": "I livelli della fonte non costituiscono un ranking di efficienza.",
             "functionSeparationWarning": (
-                f"{release.family} {spec['referenceYear']} è distinto da FC60TOT 2019 (servizi totali) e dalla funzione "
+                f"{release.family} {spec['referenceYear']} è distinto da {release.total_family} {spec['referenceYear']} (servizi totali) e dalla funzione "
                 f"{release.label} 2021 e 2022: nessuna somma o confronto silenzioso fra funzioni o annualità."
             ),
             "nationalDifferenceWarning": spec["nationalTotals"]["note"],

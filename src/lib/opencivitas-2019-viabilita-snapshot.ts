@@ -1,13 +1,13 @@
 import "server-only";
 import snapshotJson from "@/data/generated/opencivitas-2019-viabilita.json";
-import { assertOpenCivitas2019FunctionSnapshot } from "@/lib/data/opencivitas-2019-function-contract";
-import {
-  queryOpenCivitas2019Function,
-  type OpenCivitas2019FunctionFilters,
-} from "@/lib/opencivitas-2019-function-query";
+import { OPENCIVITAS_2019_FUNCTIONS } from "@/lib/data/opencivitas-2019-functions";
+import { assertOpenCivitasFunctionSnapshot } from "@/lib/data/opencivitas-function-contract";
+import { queryOpenCivitasFunction, type OpenCivitasFunctionFilters } from "@/lib/opencivitas-function-query";
 
-export const openCivitas2019ViabilitaSnapshot = assertOpenCivitas2019FunctionSnapshot("viabilita", snapshotJson);
+const RELEASE = OPENCIVITAS_2019_FUNCTIONS["viabilita"];
 
-export function queryOpenCivitas2019Viabilita(filters: OpenCivitas2019FunctionFilters) {
-  return queryOpenCivitas2019Function("viabilita", openCivitas2019ViabilitaSnapshot, filters);
+export const openCivitas2019ViabilitaSnapshot = assertOpenCivitasFunctionSnapshot(RELEASE, snapshotJson);
+
+export function queryOpenCivitas2019Viabilita(filters: OpenCivitasFunctionFilters) {
+  return queryOpenCivitasFunction(RELEASE, openCivitas2019ViabilitaSnapshot, filters);
 }

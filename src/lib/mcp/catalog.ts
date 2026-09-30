@@ -9,6 +9,7 @@ import { INTEGRATED_CORPUS_CONTRACT } from "@/lib/integrated-source-contract";
 import { companyAtlasSources } from "@/lib/company-atlas-metadata";
 import { sourceCatalog } from "@/lib/sources";
 import { OPENCIVITAS_2019_FUNCTIONS } from "@/lib/data/opencivitas-2019-functions";
+import type { OpenCivitasFunctionDescriptor } from "@/lib/data/opencivitas-functions";
 import opencivitas2015Source from "../../../scripts/etl/specs/opencivitas-2015.source.json";
 import opencivitas2016Source from "../../../scripts/etl/specs/opencivitas-2016.source.json";
 import opencivitas2022RifiutiSource from "../../../scripts/etl/specs/opencivitas-2022-rifiuti.source.json";
@@ -450,31 +451,32 @@ const COMPANY_ATLAS_SOURCES: DatasetDescriptor["sources"] = Object.values(compan
   license: source.license,
 }));
 
-// FC60 2019 per-function descriptors: every figure comes from the pinned spec.
-function openCivitas2019FunctionDescriptor(
-  item: (typeof OPENCIVITAS_2019_FUNCTIONS)[keyof typeof OPENCIVITAS_2019_FUNCTIONS],
+// OpenCivitas per-function descriptors (2018, 2019): every figure comes from the pinned spec.
+function openCivitasFunctionDescriptor(
+  item: OpenCivitasFunctionDescriptor & { datasetId: DatasetId },
 ): DatasetDescriptorInput {
   const { source } = item;
+  const year = item.referenceYear;
   const municipalities = formatItalianInteger(source.municipalities);
   const reproportioning = source.nationalTotals.reproportioned
     ? "Il fabbisogno è riproporzionato sul totale della spesa storica della funzione: i Comuni esclusi portano fabbisogno senza contropartita."
     : "La fonte non riproporziona il fabbisogno sul totale della spesa storica: la differenza aggregata non è un risultato.";
   return {
     id: item.datasetId,
-    title: `Fabbisogni comunali · ${item.label} 2019 (${item.family})`,
+    title: `Fabbisogni comunali · ${item.label} ${year} (${item.family})`,
     summary: `Spesa storica, spesa standard e livelli dei servizi sulla funzione ${item.label} per ${municipalities} Comuni RSO, annualità ${source.referenceYear}.`,
     sourceIds: ["opencivitas"],
     customSources: [{
-      id: "opencivitas", name: `OpenCivitas · ${item.label} 2019 · ${item.family}`,
+      id: "opencivitas", name: `OpenCivitas · ${item.label} ${year} · ${item.family}`,
       owner: `${source.owner} · pubblicazione ${source.publisher}`,
       url: source.files.data.url,
-      cadence: "Irregolare; snapshot storico 2019 vincolato per hash",
+      cadence: `Irregolare; snapshot storico ${year} vincolato per hash`,
       license: source.license, licenseUrl: source.licenseUrl,
       publishedAt: source.publishedAt, updatedAt: source.modifiedAt, period: String(source.referenceYear),
       sha256: source.files.data.sha256, bytes: source.files.data.bytes,
     }],
     freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
-    caveat: `Contratto distinto da FC60TOT 2019 (servizi totali) e dalla funzione ${item.label} 2021 e 2022: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. ${item.exclusionNote} ${reproportioning}`,
+    caveat: `Contratto distinto da ${item.totalFamily} ${year} (servizi totali) e dalla funzione ${item.label} 2021 e 2022: nessuna somma o confronto silenzioso. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro. ${item.exclusionNote} ${reproportioning}`,
     publicMetadata: {
       period: [
         `Annualità di riferimento ${source.referenceYear}`,
@@ -490,9 +492,9 @@ function openCivitas2019FunctionDescriptor(
       coverage: `${municipalities} Comuni RSO delle 15 regioni a statuto ordinario; escluse Province autonome, regioni a statuto speciale e aggregati ZZ999…. ${item.exclusionNote}`,
       queryNotes: [
         "Specificare almeno un filtro fra region e code; limit massimo 100 righe per pagina.",
-        `La funzione ${item.function} 2019 (${item.family}) è distinta da FC60TOT 2019 e dalla stessa funzione nel 2021 e nel 2022: non sommare né confrontare in silenzio.`,
+        `La funzione ${item.function} ${year} (${item.family}) è distinta da ${item.totalFamily} ${year} e dalla stessa funzione nel 2021 e nel 2022: non sommare né confrontare in silenzio.`,
       ],
-      references: [{ label: `OpenCivitas · ${item.label} 2019`, url: source.datasetPageUrl }],
+      references: [{ label: `OpenCivitas · ${item.label} ${year}`, url: source.datasetPageUrl }],
     },
   };
 }
@@ -1304,7 +1306,7 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
     freshness: "snapshot", filters: ["year", "region", "code", "limit", "offset"],
     caveat: "Contratto distinto da FC70TOT 2021 e FC80TOT 2022: nessuna somma o confronto silenzioso tra annualità. Il 2020 non è ricostruito. La differenza dalla spesa standard non è spreco né un ranking di efficienza. RSS e aggregati sovracomunali fuori perimetro.",
   },
-  ...Object.values(OPENCIVITAS_2019_FUNCTIONS).map(openCivitas2019FunctionDescriptor),
+  ...Object.values(OPENCIVITAS_2019_FUNCTIONS).map(openCivitasFunctionDescriptor),
   { id: "opencoesione_progetti", title: "OpenCoesione", summary: "Aggregati nazionali su costo pubblico, pagamenti, temi, natura e stato dei progetti.", sourceIds: ["opencoesione"], freshness: "snapshot", filters: [], caveat: "Il rapporto pagamenti/costo non misura il completamento o la qualità dei progetti." },
   {
     id: "opencup_progetto",

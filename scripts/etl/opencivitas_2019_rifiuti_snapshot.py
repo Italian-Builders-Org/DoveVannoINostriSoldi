@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="fcf7459c57a688b9ccb9a6027e0f3fb45d19a3b7b373b96b66d13a9cd6d3aa9c",
     function="RIFIUTI",
     family="FC60RIFIUTI",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-waste-fc60-2019",
     label="Rifiuti",
 )

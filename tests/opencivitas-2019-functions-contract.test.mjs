@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-const { assertOpenCivitas2019FunctionSnapshot } = await import("../src/lib/data/opencivitas-2019-function-contract.ts");
+const { assertOpenCivitasFunctionSnapshot } = await import("../src/lib/data/opencivitas-function-contract.ts");
 const { OPENCIVITAS_2019_FUNCTIONS } = await import("../src/lib/data/opencivitas-2019-functions.ts");
 
+const assertOpenCivitas2019FunctionSnapshot = (key, value) => assertOpenCivitasFunctionSnapshot(OPENCIVITAS_2019_FUNCTIONS[key], value);
 const load = (key) => JSON.parse(readFileSync(new URL(`../src/data/generated/opencivitas-2019-${key}.json`, import.meta.url), "utf8"));
 
 // Rome (058091) per function, read from the official 2019 CSVs; excluded = ISTAT codes absent by contract.

@@ -13,6 +13,7 @@ RELEASE = FunctionRelease(
     semantic_sha256="75a18b66e17f4cf12726fb0a09edb4d91f36ca83c8534ebbe03beb618b48f841",
     function="TERR_VIAB",
     family="FC60TERRVIAB",
+    total_family="FC60TOT",
     scope="ordinary-statute-municipalities-roads-fc60-2019",
     label="Viabilità e territorio",
 )

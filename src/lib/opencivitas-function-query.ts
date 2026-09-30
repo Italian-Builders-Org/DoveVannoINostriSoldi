@@ -1,10 +1,10 @@
 import "server-only";
 import type { NextRequest } from "next/server";
-import type { OpenCivitas2019FunctionSnapshot } from "@/lib/data/opencivitas-2019-function-contract";
-import { OPENCIVITAS_2019_FUNCTIONS, type OpenCivitas2019FunctionKey } from "@/lib/data/opencivitas-2019-functions";
+import type { OpenCivitasFunctionSnapshot } from "@/lib/data/opencivitas-function-contract";
+import type { OpenCivitasFunctionDescriptor } from "@/lib/data/opencivitas-functions";
 import { resolveOpenCivitasRegionName } from "@/lib/region-query";
 
-export type OpenCivitas2019FunctionFilters = {
+export type OpenCivitasFunctionFilters = {
   region?: string;
   code?: string;
   limit?: number;
@@ -12,12 +12,12 @@ export type OpenCivitas2019FunctionFilters = {
 };
 
 // Shared by API and MCP so both surfaces keep the same bounds, errors and caveats.
-export function queryOpenCivitas2019Function(
-  key: OpenCivitas2019FunctionKey,
-  snapshot: OpenCivitas2019FunctionSnapshot,
-  filters: OpenCivitas2019FunctionFilters,
+export function queryOpenCivitasFunction(
+  descriptor: OpenCivitasFunctionDescriptor,
+  snapshot: OpenCivitasFunctionSnapshot,
+  filters: OpenCivitasFunctionFilters,
 ) {
-  const descriptor = OPENCIVITAS_2019_FUNCTIONS[key];
+  const year = descriptor.referenceYear;
   const limit = filters.limit ?? 20;
   const offset = filters.offset ?? 0;
   if (!Number.isSafeInteger(limit) || limit < 1 || limit > 100) {
@@ -28,7 +28,7 @@ export function queryOpenCivitas2019Function(
   }
   if (filters.region === undefined && filters.code === undefined) {
     throw new Error(
-      `Specificare regione o codice ISTAT Comune: lo snapshot ${descriptor.label} 2019 completo non viene servito in un'unica risposta.`,
+      `Specificare regione o codice ISTAT Comune: lo snapshot ${descriptor.label} ${year} completo non viene servito in un'unica risposta.`,
     );
   }
 
@@ -66,7 +66,7 @@ export function queryOpenCivitas2019Function(
     methodology: snapshot.methodology,
     provenance: snapshot.source,
     caveats: [
-      `Snapshot distinto da OpenCivitas FC60TOT 2019 (servizi totali) e dalla funzione ${descriptor.label} 2021 e 2022.`,
+      `Snapshot distinto da OpenCivitas ${descriptor.totalFamily} ${year} (servizi totali) e dalla funzione ${descriptor.label} 2021 e 2022.`,
       "Non sommare né confrontare in silenzio funzioni o annualità diverse.",
       "La differenza spesa storica − spesa standard non è spreco.",
       "RSS e Province autonome sono fuori perimetro.",
@@ -88,12 +88,12 @@ function badRequest(error: string) {
   return Response.json({ error }, { status: 400, headers: { "Cache-Control": "no-store" } });
 }
 
-/** GET handler for one static /api/spese/opencivitas-2019-<funzione> route. */
-export function createOpenCivitas2019FunctionGet(
-  key: OpenCivitas2019FunctionKey,
-  query: (filters: OpenCivitas2019FunctionFilters) => ReturnType<typeof queryOpenCivitas2019Function>,
+/** GET handler for one static /api/spese/opencivitas-<anno>-<funzione> route. */
+export function createOpenCivitasFunctionGet(
+  descriptor: OpenCivitasFunctionDescriptor,
+  query: (filters: OpenCivitasFunctionFilters) => ReturnType<typeof queryOpenCivitasFunction>,
 ) {
-  const descriptor = OPENCIVITAS_2019_FUNCTIONS[key];
+  const year = String(descriptor.referenceYear);
   return function GET(request: NextRequest) {
     const params = request.nextUrl.searchParams;
     for (const name of params.keys()) {
@@ -101,10 +101,10 @@ export function createOpenCivitas2019FunctionGet(
         return badRequest(`Parametro sconosciuto o ripetuto: ${name}.`);
       }
     }
-    const year = params.get("anno");
-    if (year !== null && year !== "2019") {
+    const requestedYear = params.get("anno");
+    if (requestedYear !== null && requestedYear !== year) {
       return badRequest(
-        `Questo endpoint serve solo l'annualità 2019 ${descriptor.family}. I servizi totali 2019 restano su /api/spese/opencivitas-2019.`,
+        `Questo endpoint serve solo l'annualità ${year} ${descriptor.family}. I servizi totali ${year} restano su ${descriptor.totalApiPath}.`,
       );
     }
     const limit = parseInteger(params.get("limit"));

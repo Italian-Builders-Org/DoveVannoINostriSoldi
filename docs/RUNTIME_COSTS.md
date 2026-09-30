@@ -12,6 +12,7 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 | `/appalti/operatori/[ref]` | ISR 6 ore per la prima pagina senza filtri | Letture degli intervalli del pack; altre pagine e filtri restano dinamici |
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
+| `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
 | `/enti/[codice]` e API ente | Dinamica dove usa IPA live | Profilo completo, inclusi patrimonio e scuole; identità ufficiali riconciliate |
 | `/dati/[dataset]`, API dati e MCP | Politica del selector/trasporto esistente | Scansione limitata e cursori del rilascio; riuso bounded dei chunk già validati |
 | Altre pagine ad alta cardinalità | Politica specifica della route | Crawler dichiarati coperti dal proxy; includere le nuove route nel matcher e nell'inventario |

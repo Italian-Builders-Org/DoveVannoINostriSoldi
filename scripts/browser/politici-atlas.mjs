@@ -4,10 +4,12 @@ import path from "node:path";
 import { atlasTargets, clickText, hoverSeat, waitForAtlas } from "./politici-atlas-driver.mjs";
 import "../ci/register-source-alias.mjs";
 const {
+  getRepubblicaGroupTimeline,
   getRepubblicaMap,
   getRepubblicaLegislativeActs,
   getRepubblicaLegislativeSources,
 } = await import("../../src/lib/politici-repubblica.ts");
+const { addDays, changeDates, compositionAt } = await import("../../src/lib/politici-group-timeline.ts");
 import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitForServer } from "./harness.mjs";
 
 // Run against the real Next server. Only the final failure scenario intercepts API
@@ -195,6 +197,81 @@ try {
     await page.keyboard.press("Home");
     await noOverflow(page);
   });
+  // Time slider (#556): every seat must carry the group family of the chosen day,
+  // computed here from the same published series the page downloads.
+  const timeline = getRepubblicaGroupTimeline();
+  const familyOf = (series) => new Map(series.groups.map((group) => [group.id, group.family]));
+  const expectedSeats = (chamber, date) => {
+    const series = timeline[chamber];
+    const families = familyOf(series);
+    const composition = compositionAt(series, date);
+    return Object.fromEntries([...composition.byPerson].map(([personId, groupId]) =>
+      [personId, groupId === null ? "absent" : families.get(groupId)]));
+  };
+  const renderedSeats = (page) => page.$$eval("[data-seat-person]", (seats) => Object.fromEntries(seats.map((seat) =>
+    [seat.dataset.seatPerson, seat.dataset.absent === "true" ? "absent" : seat.dataset.family])));
+  const dateIn = (page) => page.evaluate(() => new URL(location.href).searchParams.get("al"));
+  // A day on which some sitting senator was in another group and some had not yet taken the seat.
+  const pastDay = (chamber) => changeDates(timeline[chamber]).find((date) => {
+    const seats = Object.values(expectedSeats(chamber, date));
+    const today = expectedSeats(chamber, timeline[chamber].lastDate);
+    return seats.includes("absent") && Object.entries(expectedSeats(chamber, date)).some(([id, family]) => family !== "absent" && family !== today[id]);
+  });
+  for (const width of [390, 1280]) {
+    await scenario(`group-timeline-camera-${width}`, `${urls[0]}?vista=camera`, width, async (page) => {
+      const series = timeline.camera;
+      assert.equal(await page.$('[aria-label^="Composizione"], input[type="range"]'), null, "Il cursore non deve apparire prima dell’apertura");
+      const today = await renderedSeats(page);
+      assert.deepEqual(today, expectedSeats("camera", series.lastDate), "Colori di oggi diversi dalla serie all’ultima rilevazione");
+      await clickText(page, "Nel tempo");
+      await page.waitForSelector('input[type="range"]');
+      assert.equal(await dateIn(page), null, "Aprire il cursore non cambia la data");
+      await clickText(page, "← Cambio precedente");
+      const changes = changeDates(series);
+      const previous = changes.filter((date) => date < series.lastDate).at(-1);
+      await page.waitForFunction((date) => new URL(location.href).searchParams.get("al") === date, {}, previous);
+      assert.deepEqual(await renderedSeats(page), expectedSeats("camera", previous));
+      assert.equal(await page.$$eval('svg [aria-hidden="true"] path[data-family]', (paths) => paths.length), 0, "Le fasce di oggi restano visibili su un giorno passato");
+      await page.focus('input[type="range"]');
+      await page.keyboard.press("ArrowLeft");
+      const dayBefore = addDays(previous, -1);
+      await page.waitForFunction((date) => new URL(location.href).searchParams.get("al") === date, {}, dayBefore);
+      assert.deepEqual(await renderedSeats(page), expectedSeats("camera", dayBefore));
+      const legend = await page.$$eval('[aria-label="Seleziona un gruppo parlamentare"] strong', (items) => items.reduce((total, item) => total + Number(item.textContent), 0));
+      const composition = compositionAt(series, dayBefore);
+      assert.equal(legend, [...composition.counts.values()].reduce((total, count) => total + count, 0), "La legenda deve contare anche chi non è più in carica");
+      await clickText(page, "Torna a oggi");
+      await page.waitForFunction(() => !new URL(location.href).searchParams.has("al"));
+      assert.deepEqual(await renderedSeats(page), today);
+    });
+    const senatoDay = pastDay("senato");
+    assert.ok(senatoDay, "Serve un giorno del Senato con cambi e subentri");
+    await scenario(`group-timeline-senato-deep-link-${width}`, `${urls[0]}?vista=senato&al=${senatoDay}`, width, async (page) => {
+      await page.waitForSelector('input[type="range"]');
+      await page.waitForFunction(() => document.querySelector("[data-seat-person][data-absent]"));
+      assert.deepEqual(await renderedSeats(page), expectedSeats("senato", senatoDay));
+      const absent = await page.$eval('[data-seat-person][data-absent="true"]', (seat) => seat.getAttribute("aria-label"));
+      assert.match(absent, /non ancora in carica (al |all')/u);
+      assert.equal(await page.evaluate(() => [...document.querySelectorAll('[role="note"]')].some((note) => note.textContent.includes("Filtri e ricerca usano i dati di oggi") && note.textContent.includes("pubblicate dal Senato"))), true);
+    });
+  }
+  await scenario("group-timeline-error-retry", `${urls[0]}?vista=camera`, 390, async (page) => {
+    let fail = true;
+    await page.setRequestInterception(true);
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname === "/api/politici/gruppi-nel-tempo" && fail) {
+        void request.respond({ status: 503, contentType: "application/json", body: "{}" });
+      } else void request.continue();
+    });
+    const today = await renderedSeats(page);
+    await clickText(page, "Nel tempo");
+    await page.waitForSelector('[role="alert"]');
+    assert.deepEqual(await renderedSeats(page), today, "Un errore non deve cambiare i colori");
+    fail = false;
+    await clickText(page, "Riprova");
+    await page.waitForSelector('input[type="range"]');
+  });
+
   const person = map.people.find((item) => item.chamberId === "camera");
   await scenario("api-errors-retry-empty", urls[0], 390, async (page) => {
     let mode = "error";

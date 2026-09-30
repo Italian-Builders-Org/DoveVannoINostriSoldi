@@ -206,6 +206,7 @@ a caso.
   - Fonti e contratti OpenCivitas:
     [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
     [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
+    [docs/OPENCIVITAS_2019_FUNZIONI.md](OPENCIVITAS_2019_FUNZIONI.md),
     [docs/OPENCIVITAS_2021_AMMINISTRAZIONE.md](OPENCIVITAS_2021_AMMINISTRAZIONE.md),
     [docs/OPENCIVITAS_2021_ISTRUZIONE.md](OPENCIVITAS_2021_ISTRUZIONE.md),
     [docs/OPENCIVITAS_2021_POLIZIA.md](OPENCIVITAS_2021_POLIZIA.md),
@@ -241,6 +242,7 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
+  [tests/opencivitas-2019-functions-route.test.mjs](../tests/opencivitas-2019-functions-route.test.mjs),
   [tests/opencivitas-2021-amministrazione-route.test.mjs](../tests/opencivitas-2021-amministrazione-route.test.mjs),
   [tests/opencivitas-2021-rifiuti-route.test.mjs](../tests/opencivitas-2021-rifiuti-route.test.mjs),
   [tests/opencivitas-2021-sociale-asili-route.test.mjs](../tests/opencivitas-2021-sociale-asili-route.test.mjs),

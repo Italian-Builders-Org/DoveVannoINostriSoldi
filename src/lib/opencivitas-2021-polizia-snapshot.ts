@@ -50,7 +50,7 @@ export function queryOpenCivitas2021Polizia(filters: {
   }
 
   return {
-    datasetId: "opencivitas_istruzione_2021",
+    datasetId: "opencivitas_polizia_2021",
     family: "FC70POLIZIA",
     function: "POLIZIA",
     referenceYear: openCivitas2021PoliziaSnapshot.referenceYear,

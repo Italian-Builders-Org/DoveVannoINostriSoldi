@@ -154,3 +154,23 @@ test("MCP compatibility proxy preserves the human-facing page for safe methods",
   assert.equal(isRewrite(subpath), false);
   assert.equal(subpath.headers.get("x-middleware-next"), "1");
 });
+
+test("ignored operator parameters cannot split the four default entity snapshots", () => {
+  for (const view of ["summary", "operators", "procedures", "awards"]) {
+    const response = proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?view=${view}&operator=op-000001&metric=count`));
+    assert.equal(isRewrite(response), true, view);
+    assert.equal(new URL(getRewrittenUrl(response)).pathname, `/snapshot-pages/enti/c_h501/${view}`);
+  }
+  for (const query of ["view=operator&operator=op-000001", "view=operators&metric=value", "view=awards&page=2", "view=procedures&cpv=30121100", "view=concentration&metric=count&selection=top1&operator=op-000001", "view=operators&metric=count&metric=value"]) {
+    assert.equal(isRewrite(proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?${query}`))), false, query);
+  }
+});
+
+test("empty form filters and repeated unused parameters share the same snapshot", () => {
+  for (const query of ["view=summary&cpv=&awardYear=", "view=procedures&operator=x&operator=y", "view=awards&metric=count&metric=value&selection=top1&selection=all"]) {
+    assert.equal(isRewrite(proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?${query}`))), true, query);
+  }
+  for (const query of ["view=summary&cpv=&cpv=30121100", "view=summary&awardYear=&awardYear=2025"]) {
+    assert.equal(isRewrite(proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?${query}`))), false, query);
+  }
+});

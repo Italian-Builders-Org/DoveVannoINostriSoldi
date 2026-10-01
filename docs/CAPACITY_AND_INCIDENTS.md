@@ -272,7 +272,7 @@ con il profilo avviene anche a cache calda. Il limite combinato shard/record è
 Per gli operatori gli offset sono legati a digest e bucket, limitati a 8 MiB;
 la validazione del record selezionato resta obbligatoria prima della sua cache.
 
-### WAF: mitigazione del 26 settembre 2026
+### WAF: mitigazione del 26 settembre, aggiornata il 1 ottobre 2026
 
 Le impostazioni WAF sono esterne al Git: questo testo documenta lo stato
 applicato, non provisiona regole. Prima di cambiarle leggere configurazione
@@ -281,8 +281,8 @@ necessaria al rollback senza segreti o log con IP.
 
 | Regola | Ambito | Limite / 60 secondi |
 | --- | --- | --- |
-| `training-bot-operator-cap` | ClaudeBot, GPTBot, CCBot, Meta-ExternalAgent su tutti i percorsi del progetto | 10 per IP |
-| `training-bot-procurement-fingerprint-cap` | Stessi crawler, tutti i percorsi | 30 per JA4, per regione |
+| `training-bot-operator-cap` | ClaudeBot, GPTBot, CCBot, Meta-ExternalAgent, Amazonbot, Bytespider, Applebot-Extended su tutti i percorsi del progetto | 10 per IP |
+| `training-bot-procurement-fingerprint-cap` | Stessi crawler, tutti i percorsi | 10 per JA4, per regione |
 
 I nomi storici delle regole sono conservati; non indicano più una restrizione
 ai soli operatori o appalti. Anche le nuove pagine rientrano nel limite.
@@ -301,7 +301,14 @@ client, osservare traffico legittimo e falsi positivi; non bloccare interi paesi
 perché un campione proviene da lì. Il WAF precede il runtime, il limiter del
 proxy è soltanto un fallback per istanza e non va presentato come globale.
 
-Rollback mirato: ripristinare la regola preesistente a 30/minuto/IP sul solo
+L’aggiornamento del 1 ottobre allinea il riconoscimento per IP a quello per
+JA4 e al proxy, con confini del nome e confronto indipendente dalle maiuscole.
+Il tetto JA4 passa da 30 a 10/minuto, solo per questi crawler: cambiare IP non
+moltiplica più quel limite nella stessa regione se l’impronta resta uguale.
+Rollback di questo aggiornamento: riportare JA4 a 30/minuto e la corrispondenza
+per IP alle quattro famiglie iniziali; conservare le altre regole.
+
+Rollback mirato della mitigazione iniziale: ripristinare la regola preesistente a 30/minuto/IP sul solo
 prefisso `/appalti/operatori` e disabilitare la regola JA4 aggiunta; riesaminare
 il diff prima di pubblicarlo. Non disabilitare l'intero firewall. Verificare
 subito navigazione normale e agenti avviati dagli utenti, poi il traffico

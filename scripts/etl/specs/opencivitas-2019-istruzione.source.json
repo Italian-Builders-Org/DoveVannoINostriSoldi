@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2019,
+  "family": "FC60ISTRUZ",
+  "releaseVersion": 1,
+  "publishedAt": "2023-05-30",
+  "modifiedAt": "2023-05-30",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2019-comuni-istruzione-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2019_Ind_FC60ISTRUZ_1_csv.zip",
+      "bytes": 2340735,
+      "sha256": "8deb6c81a6901e033c2127dea8881dda4c32acc11d75aad330007f3f5d1d1bf2"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2019_xlsx.zip",
+      "bytes": 423591,
+      "sha256": "bae9771f05dbaf05686553ab5c3110d7b0eb5083c0e3322fb960afff09c1a30c"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2019_Metadati_Ind_FC60ISTRUZ_1_xlsx.zip",
+      "bytes": 6847,
+      "sha256": "eab47d2eee1926bf664d7550e7437161073b9735328e2110d2ab390fc7f40c79"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "csvEncoding": "utf-8-sig",
+  "decimalSeparator": ",",
+  "csvRowCount": 376029,
+  "indicatorDefinitionCount": 44,
+  "indicatorDescriptions": {
+    "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
+    "FST_RIPROPORZIONATO_BI_PROAB": "Spesa standard - Euro per abitante",
+    "SPESA_STORICA": "Spesa storica - euro",
+    "SPESA_STORICA_PROAB": "Spesa storica - Euro per abitante",
+    "DIFF_OUT_PERC": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+    "POSIZIONE_SPESA_PERC": "Livello della spesa - Da 0 a 10",
+    "POSIZIONE_OUTPUT_PERC": "Livello dei servizi erogati - Da 0 a 10",
+    "DESCR_NON_VALUTABILE_SPESA": "Motivo di non valutabilità per la spesa",
+    "DESCR_NON_VALUTABILE_OUT": "Motivo di non valutabilità per i servizi offerti"
+  },
+  "municipalities": 6555,
+  "regionCounts": {
+    "ABRUZZO": 303,
+    "BASILICATA": 131,
+    "CALABRIA": 404,
+    "CAMPANIA": 548,
+    "EMILIA-ROMAGNA": 328,
+    "LAZIO": 377,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1504,
+    "MARCHE": 228,
+    "MOLISE": 134,
+    "PIEMONTE": 1180,
+    "PUGLIA": 256,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 563
+  },
+  "excludedIncompleteHistorical": [
+    "BS098SIF11GH",
+    "CB043SIF11UT",
+    "CH104SIF11EK",
+    "FG026SIF11OU",
+    "IS001SIF11CT",
+    "PE045SIF11LH",
+    "PV082SIF11ZU",
+    "PV145SIF11CF",
+    "RI037SIF11PV",
+    "SA148SIF11EI"
+  ],
+  "excludedScientificHistorical": [
+    "SA040SIF11AE",
+    "TO134SIF11HT"
+  ],
+  "excludedNonPositiveStandard": [],
+  "coverageWarning": "RSS e Province autonome fuori perimetro; esclusi gli aggregati di Italia, regioni, aree e fasce. Esclusi 10 Comuni con SPESA_STORICA e SPESA_STORICA_PROAB vuoti nella fonte (fabbisogno presente): nessuna imputazione a zero. Ceraso (065040), Locana (001134) restano fuori perché la fonte pubblica la spesa storica in notazione scientifica (residui come 2,728484E-12), non come importo decimale: nessuna riscrittura a zero.",
+  "nationalTotals": {
+    "reproportioned": true,
+    "historicalSpendingCents": 417373633043,
+    "standardSpendingCentsPublished": 417305741436,
+    "standardSpendingCentsExcluded": 67891629,
+    "roundingToleranceCents": 100,
+    "sourceNationalAggregateHistorical": "4173736330,4",
+    "sourceNationalAggregateStandard": "4173736330,4",
+    "note": "Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Sui 6.555 Comuni pubblicati la spesa storica è 4.173.736.330,43 € e il fabbisogno 4.173.057.414,36 €. I 12 Comuni esclusi portano 678.916,29 € di fabbisogno: sommato al fabbisogno pubblicato fa 4.173.736.330,65 €, a 0,22 € dalla spesa storica pubblicata. L'aggregato ZZ999ITA001 pubblica 4.173.736.330,40 € di spesa storica e 4.173.736.330,40 € di fabbisogno. La differenza aggregata non è un risultato e non va letta come risparmio o spreco."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

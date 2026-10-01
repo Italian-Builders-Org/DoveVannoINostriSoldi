@@ -201,6 +201,11 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    ...Object.fromEntries(
+      ["/app/fonti/catalogo/**", "/app/fonti/copertura/**", "/app/api/fonti/catalogo/**"].map(
+        (route) => [route, ["src/data/generated/integrated/rows/*"]],
+      ),
+    ),
     "/app/snapshot-pages/operatori/**": [
       "src/data/generated/anac-operator-awards-index/operators/*",
       "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
@@ -211,7 +216,7 @@ const nextConfig: NextConfig = {
       routesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
     ),
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
-    "/appalti/operatori/\\[ref\\]": [
+    "/app/appalti/operatori/*/**": [
       "src/data/generated/anac-operator-awards-index/operators/*",
       "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
       "src/data/generated/anac-operator-awards-index/summaries.json",
@@ -265,13 +270,8 @@ const nextConfig: NextConfig = {
     "/api/spese/opencivitas-2019-sociale-asili": openCivitas2019SocialeAsiliRuntimeFiles,
     "/api/spese/opencivitas-2019-viabilita": openCivitas2019ViabilitaRuntimeFiles,
 
-    "/appalti/operatori": [
-      "src/data/generated/anac-operator-awards-index/meta.json",
-      "src/data/generated/anac-operator-awards-index/summaries.json",
-      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
-      "src/data/generated/anac-operator-browse/*",
-      "scripts/etl/specs/anac-operator-awards-index.source.json",
-    ],
+    // The hub's literal reads are traced automatically. A hub-wide include also
+    // adds its search/ranking files to detail pages; runtime guards check both.
     "/appalti/operatori/\\[ref\\]": [
       "src/data/generated/anac-operator-history/*",
       "src/data/generated/anac-operator-awards-index/meta.json",

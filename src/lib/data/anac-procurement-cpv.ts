@@ -73,7 +73,11 @@ export function validateAnacCpvRecord(value: unknown, profile: Pick<AnacEntityPr
 
 type CpvMetadata = { metadata: z.infer<typeof metadataSchema>; parentJson: string };
 const metadataCache = new ArtifactCache<CpvMetadata>(4, 4_000_000);
-const shardCache = new ArtifactCache<ReadonlyMap<string, AnacCpvRecord>>(8, 8 * 1024 * 1024);
+// Reuse only a completed semantic validation of the exact compressed bytes.
+// The proof budget is taken from the previous shard budget, not added to it.
+const VALIDATION_PROOF_BYTES = 96 * 1024;
+const validatedShards = new ArtifactCache<true>(256, VALIDATION_PROOF_BYTES);
+const shardCache = new ArtifactCache<ReadonlyMap<string, AnacCpvRecord>>(8, 8 * 1024 * 1024 - VALIDATION_PROOF_BYTES);
 const recordCache = new ArtifactCache<AnacCpvRecord>(128, 8 * 1024 * 1024);
 const pending = new Map<string, Promise<ReadonlyMap<string, AnacCpvRecord>>>();
 
@@ -130,13 +134,22 @@ export async function loadAnacCpvRecord(profile: AnacEntityProcurementPageView, 
         if (raw.length !== shard.rawBytes || !raw.toString("utf8").endsWith("\n")) throw new Error("Dimensione indice CPV divergente.");
         const lines = raw.toString("utf8").trimEnd().split("\n");
         if (lines.length !== shard.entities) throw new Error("Cardinalità indice CPV divergente.");
-        const records = lines.map((line) => recordSchema.parse(JSON.parse(line)));
+        const validationKey = `${prefix}:${shard.sha256}:${shard.entities}:${shard.rawBytes}`;
+        const validated = validatedShards.get(validationKey);
+        const records = lines.map((line) => {
+          const candidate: unknown = JSON.parse(line);
+          // Hash verification above binds the reusable proof to these bytes.
+          // New bytes always pass the complete schema before a proof is saved.
+          return validated ? candidate as AnacCpvRecord : recordSchema.parse(candidate);
+        });
         const codes = new Set<string>();
         for (const record of records) {
           if (codes.has(record.codiceIpa) || createHash("sha256").update(record.codiceIpa).digest("hex").slice(0, 2) !== prefix) throw new Error("Identità indice CPV divergente.");
           codes.add(record.codiceIpa);
         }
         if (`${shard.sha256}:${artifactFingerprint([path])}` !== key) throw new Error("Indice CPV modificato durante la lettura.");
+        // Include the UTF-16 SHA/partition key and entry overhead in its weight.
+        if (!validated) validatedShards.set(validationKey, true, 384);
         const result = new Map(records.map((record) => [record.codiceIpa, record]));
         shardCache.set(key, result, raw.length);
         return result;

@@ -62,6 +62,17 @@ promesse rifiutate. Conservare i limiti di concorrenza e l'annullamento per cons
 Non sostituire questa verifica con una cache senza versionamento dell'intero
 profilo dell'ente o del corpus.
 
+L'indice CPV conserva fino a 256 prove di validazione completa, legate a
+partizione, SHA-256 compresso, cardinalità e dimensione dichiarata. I 96 KiB
+riservati alle prove sono sottratti agli 8 MiB della cache degli shard.
+Una rilettura verifica ancora hash, identità, cardinalità e fingerprint del
+file; byte nuovi richiedono la validazione completa di tutti i record.
+Il confronto locale Node 24 su 256 shard riduce la mediana CPU calda da
+820 a 492 ms, con gli stessi valori e ordine degli array. Non dimostra un
+risparmio in fattura: il picco RSS del test cresce da 308 a 344 MiB e non emerge
+un vantaggio affidabile a freddo. Le proprietà degli oggetti JSON possono
+essere serializzate in ordine diverso dopo il riuso della prova.
+
 ## Misura locale del 30 settembre 2026
 
 Sei dossier: Mantova, Milano, Roma, Bologna, Napoli e Firenze. Stesso Node 25.8.2,
@@ -158,7 +169,7 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
   Il risparmio dipende dai deployment effettivamente avviati, non dal numero
   dei commit conservati su GitHub. Vedi [DEPLOYMENT_APPROVAL.md](DEPLOYMENT_APPROVAL.md).
 - Il 30 settembre il progetto è stato fissato a Enhanced (8 core, 16 GB RAM,
-  64 GB disco). Elastic stava assegnando Turbo da 30 core; Enhanced aveva già
+  64 GB disco). Il pannello Elastic indicava Turbo da 30 core per la prossima build; Enhanced aveva già
   pubblicato correttamente lo stesso commit fallito su Standard. È un tetto
   alle risorse, non una percentuale di risparmio: confrontare anche la durata
   fatturata della prossima build. Nessun nuovo deployment diagnostico avviato.
@@ -223,3 +234,24 @@ nel DOM: l’HTML statico e quello in streaming possono differire nei placeholde
 Non attribuire il risparmio locale alla fattura. Prima di cambiare ancora budget
 cache o hardware, misurare CPU/1.000 richieste, MISS, URL distinte, memoria,
 errori e scritture ISR dopo il deployment, su finestre della stessa revisione.
+
+### Confrontare il costo delle macchine
+
+Alle tariffe pubblicate il 1 ottobre 2026, Elastic costa $0,0035 per CPU-minuto
+e Enhanced $0,028 per minuto (8 core). A parità di durata, Enhanced costa il
+doppio di Elastic a 4 core, quanto Elastic a 8 core e meno di Elastic a 30 core.
+Il rapporto 8× confronta unità diverse: minuto della macchina e CPU-minuto.
+Il costo effettivo dipende dai core assegnati e dai minuti fatturabili arrotondati,
+che includono anche la fase dopo la build. L'ultima produzione #710 riporta
+11 minuti fatturabili e 88 CPU-minuti: circa $0,308 prima di crediti e imposte.
+Questo non dimostra un risparmio rispetto a una build Elastic comparabile.
+
+Fonti: [tariffe Vercel](https://vercel.com/pricing),
+[minuti fatturabili](https://vercel.com/changelog/deployments-now-show-billable-duration-and-cpu-minutes).
+
+Le pagine di catalogo e copertura usano cataloghi e prove di rilascio, non le
+righe dei dataset. Il controllo dei trace deve richiedere tutti questi metadati
+ed escludere le righe solo da quelle pagine/API. Il dettaglio operatore deve
+conservare tutti i pack dello storico, senza aggiungere gli indici di ricerca
+dell'elenco. Gli inventari NFT sono logici: non sommarli per stimare il disco
+o i byte dei pacchetti fisici raggruppati da Vercel.

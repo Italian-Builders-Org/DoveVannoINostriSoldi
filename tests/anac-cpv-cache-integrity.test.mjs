@@ -65,7 +65,7 @@ test("CPV validates every sibling after eviction or SHA change, shares concurren
     invalid[sibling].procedures[0].unexpected = "reject sibling even if the requested record is unchanged";
     replaceShard(invalid);
     await assert.rejects(cpv.loadAnacCpvRecord(profiles[0], root));
-    await assert.rejects(cpv.loadAnacCpvRecord(profiles[0], root), undefined, "failed validation must not seed an index");
+    await assert.rejects(cpv.loadAnacCpvRecord(profiles[0], root), undefined, "failed validation must not seed a proof");
     const duplicate = structuredClone(rows); duplicate[sibling] = structuredClone(rows[0]);
     replaceShard(duplicate);
     await assert.rejects(cpv.loadAnacCpvRecord(profiles[0], root), /Identità/);
@@ -76,8 +76,6 @@ test("CPV validates every sibling after eviction or SHA change, shares concurren
     await assert.rejects(cpv.loadAnacCpvRecord(profiles[0], root), /Copertura/);
 
     const valid = structuredClone(rows);
-    // Multibyte names ensure offsets use JavaScript string positions rather
-    // than UTF-8 byte offsets when selecting an adjacent record.
     valid[sibling].procedures[0].description = "Nuova descrizione € 🏛️";
     replaceShard(valid);
     const repaired = await cpv.loadAnacCpvRecord(profiles[0], root);

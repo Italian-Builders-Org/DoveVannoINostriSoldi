@@ -62,6 +62,17 @@ promesse rifiutate. Conservare i limiti di concorrenza e l'annullamento per cons
 Non sostituire questa verifica con una cache senza versionamento dell'intero
 profilo dell'ente o del corpus.
 
+L'indice CPV conserva fino a 256 prove di validazione completa, legate a
+partizione, SHA-256 compresso, cardinalità e dimensione dichiarata. I 96 KiB
+riservati alle prove sono sottratti agli 8 MiB della cache degli shard.
+Una rilettura verifica ancora hash, identità, cardinalità e fingerprint del
+file; byte nuovi richiedono la validazione completa di tutti i record.
+Il confronto locale Node 24 su 256 shard riduce la mediana CPU calda da
+820 a 492 ms, con gli stessi valori e ordine degli array. Non dimostra un
+risparmio in fattura: il picco RSS del test cresce da 308 a 344 MiB e non emerge
+un vantaggio affidabile a freddo. Le proprietà degli oggetti JSON possono
+essere serializzate in ordine diverso dopo il riuso della prova.
+
 ## Misura locale del 30 settembre 2026
 
 Sei dossier: Mantova, Milano, Roma, Bologna, Napoli e Firenze. Stesso Node 25.8.2,

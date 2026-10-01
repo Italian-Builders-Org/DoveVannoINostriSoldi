@@ -6,11 +6,18 @@ fonti. Questa guida definisce decisioni e verifiche, non una capacità garantita
 
 ## Configurazione di riferimento
 
-Il 25 settembre 2026 le build DVNS risultano su Enhanced (8 vCPU, 16 GB).
-La stessa revisione ha fallito su Standard ed è riuscita su Enhanced: questo
-giustifica mantenere temporaneamente Enhanced, ma non identifica da solo la
-risorsa esaurita. Distinguere RAM e disco temporaneo del container; eliminare
-vecchi deployment non aumenta lo spazio disponibile alla singola build.
+Il 30 settembre 2026 il progetto è stato fissato a Enhanced (8 vCPU, 16 GB
+RAM, 64 GB disco temporaneo), con concorrenza on-demand disattivata. Elastic
+stava assegnando Turbo da 30 core. Il supporto Vercel ha confermato che Standard
+(4 vCPU, 8 GB RAM, 32 GB disco) esauriva il disco durante la pubblicazione;
+Enhanced ha pubblicato correttamente la stessa revisione. Il tetto attuale
+evita l'assegnazione automatica di 30 core, ma non dimostra una percentuale di
+risparmio: confrontare durata e Build CPU Minutes su revisioni comparabili.
+
+Eliminare vecchi deployment non aumenta lo spazio temporaneo della singola
+build e non riduce Fluid Active CPU. Un ritorno a Standard richiede prima una
+riduzione dimostrata del picco di packaging e la verifica degli artifact
+necessari, come descritto in [Costi runtime](RUNTIME_COSTS.md#scelte-operative).
 
 Riferimento precedente, verificato il 5 settembre 2026: build Standard (4 vCPU, 8 GB), on-demand
 concurrency disattivata, priorità produzione attiva; Fluid Compute attivo,

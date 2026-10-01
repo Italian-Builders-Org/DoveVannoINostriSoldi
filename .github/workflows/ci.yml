@@ -88,7 +88,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          # Zizmor audits workflows and local actions, all under .github.
+          # Cone mode retains root config files without checking out snapshots.
+          sparse-checkout: .github
           persist-credentials: false
+
+      - name: Verify security audit checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          git ls-files -z -- '.github/workflows/*.yml' '.github/workflows/*.yaml' \
+            'action.yml' 'action.yaml' '**/action.yml' '**/action.yaml' \
+            'dependabot.yml' 'dependabot.yaml' '**/dependabot.yml' '**/dependabot.yaml' \
+            '.pre-commit-config.yaml' '**/.pre-commit-config.yaml' \
+            '.pre-commit-hooks.yaml' '**/.pre-commit-hooks.yaml' \
+            'zizmor.yml' 'zizmor.yaml' '**/zizmor.yml' '**/zizmor.yaml' |
+          while IFS= read -r -d '' input; do
+            if [[ ! -f "$input" ]]; then
+              printf 'ERROR: audit input %s is missing; expand sparse-checkout.\n' "$input" >&2
+              exit 1
+            fi
+          done
 
       - name: Zizmor workflow security scan
         uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2

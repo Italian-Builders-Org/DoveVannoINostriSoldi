@@ -124,6 +124,12 @@ In GitHub, il job `production` conserva la sola cache del compilatore
 `.next/cache/turbopack`, separata per runtime, dipendenze e configurazione.
 Il build e tutti i gate vengono comunque eseguiti; le risposte della Data Cache
 non vengono ripristinate. I job senza browser evitano il download di Chromium.
+Il job `security` usa un checkout sparse di `.github`: conserva tutti i workflow,
+le azioni locali e i file di configurazione alla radice, senza materializzare
+il corpus dati.
+Un controllo preliminare blocca il job se manca un input di audit versionato;
+per nuove azioni fuori da `.github`, estendi i percorsi del checkout sparse.
+La versione, le regole e il risultato bloccante di Zizmor restano gli stessi.
 `NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
 browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
 `DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.

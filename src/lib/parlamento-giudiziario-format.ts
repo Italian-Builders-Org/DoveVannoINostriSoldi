@@ -48,4 +48,3 @@ export function formatEuroCents(cents: number | null): string | null {
     cents / 100,
   );
 }
-

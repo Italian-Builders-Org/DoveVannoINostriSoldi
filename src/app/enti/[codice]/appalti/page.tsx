@@ -115,6 +115,8 @@ function view(value: string): ProcurementView {
 function href(codice: string, values: Record<string, string | number | undefined>): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(values)) {
+    if (key === "operator" && values.view !== "operator") continue;
+    if (key === "metric" && values.view !== "operators" && values.view !== "concentration") continue;
     if (value !== undefined && value !== "") params.set(key, String(value));
   }
   const query = params.toString();
@@ -541,8 +543,8 @@ export default async function EntityProcurementPage({ params, searchParams, snap
   const cpvProfile = cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
   const profile = filterAnacProcurementByAwardYear(cpvProfile, awardYear);
   const selectedView = view(first(query.view));
-  const metric: RankingMetric = first(query.metric) === "value" ? "value" : "count";
-  const operatorRef = first(query.operator) || undefined;
+  const metric: RankingMetric = (selectedView === "operators" || selectedView === "concentration") && first(query.metric) === "value" ? "value" : "count";
+  const operatorRef = selectedView === "operator" ? first(query.operator) || undefined : undefined;
   const size = pageSize(first(query.pageSize));
   let selection: AnacConcentrationSelection | undefined;
   if (selectedView === "concentration") {

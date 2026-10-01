@@ -21,8 +21,15 @@ Le route interne `/snapshot-pages/...` servono esclusivamente i rewrite del prox
 Le viste predefinite usano la stessa cache; i filtri
 redirigono all'URL pubblico. Anche gli alias attraversano il limite crawler.
 Non pubblicare link o sitemap verso questi alias; `robots.txt` li esclude per i crawler cooperativi. I parametri ignorati dalle pagine, come quelli
-di campagna, non creano nuove varianti del contenuto. Parametri semantici ripetuti
-non entrano nella cache della vista predefinita.
+di campagna, non creano nuove varianti del contenuto. Filtri effettivi ripetuti
+non entrano nella cache della vista predefinita; i parametri inutilizzati non
+moltiplicano le chiavi, anche se ripetuti. CPV e anno vuoti nei form equivalgono
+all’assenza del filtro. Il parametro `operator` filtra
+solo la vista `operator`; non divide la cache delle quattro viste predefinite.
+`metric` ordina soltanto `operators` e seleziona il denominatore di `concentration`.
+I link non propagano questi parametri nelle viste che non li usano. Filtri CPV,
+anno, dettaglio operatore, pagine successive e 50 righe conservano la risposta
+dinamica; non creare cache HTML per combinazioni arbitrarie di query.
 
 Next gestisce HTML, RSC, `Vary` e `_rsc`: non impostare indiscriminatamente
 `Cache-Control: public` sulle risposte dinamiche. Non leggere cookie, header,
@@ -125,7 +132,9 @@ Il fallback in memoria non è un limite distribuito. In Vercel verificare anche
 le regole WAF prima delle funzioni. Il 30 settembre 2026 il limite già presente
 per impronta JA4 è stato esteso ad Amazonbot, Bytespider e Applebot-Extended,
 oltre a ClaudeBot, GPTBot, CCBot e Meta-ExternalAgent. Soglia: 30 richieste ogni
-60 secondi, risposta 429. È limitazione dello scraping dichiarato, non un divieto.
+60 secondi, risposta 429. Il 1 ottobre la soglia JA4 è stata ridotta a 10/minuto
+per regione e la regola per IP allineata alle stesse sette famiglie.
+È limitazione dello scraping dichiarato, non un divieto.
 Claude-User, Claude-SearchBot e i browser non corrispondono a questa regola.
 
 Un'impronta può essere condivisa o cambiare; il limite JA4 non è un tetto globale
@@ -186,3 +195,31 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 Fonti: [cache CDN Next.js](https://nextjs.org/docs/app/guides/cdn-caching),
 [ISR Vercel e costi](https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing),
 [macchine di build](https://vercel.com/docs/builds/managing-builds#build-machines).
+
+## Verifica del consumo residuo, 1 ottobre 2026
+
+Nel ciclo 23 settembre–23 ottobre, al momento della verifica, DVNS totalizza
+232 ore e 45 minuti Active CPU, il 99,8% della squadra. Gli altri progetti
+non spiegano il consumo residuo.
+
+La finestra produzione 30 settembre 23:14–1 ottobre 11:14 (ora italiana)
+mostra circa 112 mila invocazioni e 7 ore Active CPU per gli appalti degli enti;
+16 mila e un’ora per gli operatori. Sono valori arrotondati della dashboard; la finestra attraversa più revisioni
+e serve a identificare le route dominanti, non a confrontare due deployment.
+Nel campione consecutivo esportato delle 11:19–11:20, 59 invocazioni della stessa
+produzione risultano MISS: 6 dichiarano Meta-ExternalAgent, le altre User-Agent
+browser. Queste stringhe non provano l’identità dei client. I filtri effettivi e
+il dettaglio operatore spiegano molti percorsi dinamici; i link propagavano anche
+`operator` in viste che non lo usano. Con la correzione, 16 URL del campione
+possono riusare le quattro viste già previste, senza aggiungere chiavi ISR.
+Il campione non è una stima della quota su un’intera giornata.
+
+Riprodurre il costo del percorso HTTP completo, non solo quello del loader:
+server `next start`, stesso Node e corpus, campione di URL reali sanitizzato,
+CPU del processo prima/dopo e profilo `--cpu-prof`; includere un secondo campione
+che attraversa tutti i 256 shard, superando gli slot della cache. Distinguere
+caricamento iniziale, rendering dinamico e risposta ISR calda. Confrontare i dati
+nel DOM: l’HTML statico e quello in streaming possono differire nei placeholder.
+Non attribuire il risparmio locale alla fattura. Prima di cambiare ancora budget
+cache o hardware, misurare CPU/1.000 richieste, MISS, URL distinte, memoria,
+errori e scritture ISR dopo il deployment, su finestre della stessa revisione.

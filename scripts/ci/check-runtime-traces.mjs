@@ -98,6 +98,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["enti/[codice]/appalti/confronti/page.js.nft.json", peerFiles],
     ["appalti/operatori/page.js.nft.json", operatorBrowseFiles],
     ["appalti/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
+    ["snapshot-pages/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
+    ["snapshot-pages/enti/[codice]/[view]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
   ]);
   for (const [file, routes] of [
     ["integrated/rows/istat-economia-non-osservata-territori.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -142,7 +144,10 @@ export function checkRuntimeTraces(root = process.cwd()) {
     const route = relative(appRoot, manifest).replaceAll("\\", "/");
     const forbidden = route.startsWith("appalti/operatori/") ? [ENTITY, CPV]
       : route.startsWith("enti/") || route.startsWith("api/enti/") ? [OPERATOR] : [];
-    if (route !== "appalti/operatori/[ref]/page.js.nft.json") forbidden.push(history);
+    if (!["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) forbidden.push(history);
+    if (["comuni/page.js.nft.json", "snapshot-pages/comuni/[codice]/page.js.nft.json"].includes(route)) {
+      forbidden.push("src/data/generated/integrated/rows", "data/source-ledger");
+    }
     if (route === "mcp/page.js.nft.json") forbidden.push(ENTITY, CPV, `${OPERATOR}/operators`, "src/data/generated/integrated/rows");
     if (route.startsWith("appalti/operatori/")) forbidden.push(`${OPERATOR}/operators`);
     if (HISTORY_ROUTES.has(route) || route === "fonti/stato/page.js.nft.json"

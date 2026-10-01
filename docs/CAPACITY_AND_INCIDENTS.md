@@ -309,3 +309,6 @@ rifiutato dalla singola regola. Non usare un load test sul sito pubblico.
 
 Fonti: [Vercel WAF rate limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
 e [custom rules](https://vercel.com/docs/vercel-firewall/vercel-waf/custom-rules).
+
+Per cache, inventario delle route costose, crawler e verifica dei costi delle
+richieste leggere [RUNTIME_COSTS.md](RUNTIME_COSTS.md).

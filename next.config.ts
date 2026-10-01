@@ -33,6 +33,7 @@ const routesWithoutMedicalDeviceRows = [
   "/app/appalti/**",
   "/app/comuni",
   "/app/comuni/**",
+  "/app/snapshot-pages/**",
   "/app/confronti/**",
   "/app/controlli/**",
   "/app/disuguaglianza",
@@ -186,6 +187,12 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    "/app/snapshot-pages/operatori/**": [
+      "src/data/generated/anac-operator-awards-index/operators/*",
+      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
+      "src/data/generated/anac-operator-awards-index/summaries.json",
+      "src/data/generated/anac-operator-browse/*",
+    ],
     ...Object.fromEntries(
       routesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
     ),
@@ -200,6 +207,13 @@ const nextConfig: NextConfig = {
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
   outputFileTracingIncludes: {
+    "/snapshot-pages/enti/*/*": entityProcurementRuntimeFiles,
+    "/snapshot-pages/operatori/*": [
+      "src/data/generated/anac-operator-history/*",
+      "src/data/generated/anac-operator-awards-index/meta.json",
+      "scripts/etl/specs/anac-operator-awards-index.source.json",
+      "scripts/etl/specs/anac-cig-2007-2025.source.json",
+    ],
     "/opere": [
       "src/data/generated/mop-comparable-browse.meta.json",
       "src/data/generated/mop-comparable-browse.data.jsonl.gz",

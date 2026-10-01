@@ -184,7 +184,7 @@ export function publicSitemap(
 export function publicRobots(siteUrl: string): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/"] },
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/enti/", "/snapshot-pages/"] },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
   };

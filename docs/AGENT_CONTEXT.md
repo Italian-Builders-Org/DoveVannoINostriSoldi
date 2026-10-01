@@ -105,6 +105,9 @@ a caso.
 
 ## Runtime e CI
 
+- [Costi delle richieste pubbliche](RUNTIME_COSTS.md): cache ISR, profili finanziari,
+  limiti distribuiti e verifiche dei nuovi percorsi dinamici.
+
 - **Quando serve**: per modificare workflow, gate o script CI, riprodurre i
   gate di consegna, diagnosticare deployment Vercel o verificare il registro
   degli artifact generati.
@@ -288,6 +291,9 @@ a caso.
   - [src/lib/politici-group-history.ts](../src/lib/politici-group-history.ts):
     gruppi nella XIX dalle adesioni datate degli snapshot Camera e Senato; il
     passaggio dal Misto a un gruppo nel giorno della sua costituzione non è un cambio.
+  - [src/lib/politici-group-timeline.ts](../src/lib/politici-group-timeline.ts):
+    composizione dei gruppi a una data per il cursore degli emicicli, servita da
+    `/api/politici/gruppi-nel-tempo` (statica, caricata su richiesta).
   - [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
     contratto fail-closed dello snapshot giudiziario curato.
   - [docs/POLITICI.md](POLITICI.md): riferimento operativo rapido per moduli,
@@ -312,6 +318,7 @@ a caso.
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
   [tests/parlamento-mandati-contract.test.mjs](../tests/parlamento-mandati-contract.test.mjs),
   [tests/politici-group-history.test.mjs](../tests/politici-group-history.test.mjs),
+  [tests/politici-group-timeline.test.mjs](../tests/politici-group-timeline.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).
   Per verifiche browser vedi [docs/POLITICI.md](POLITICI.md).

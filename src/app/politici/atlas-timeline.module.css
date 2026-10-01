@@ -1,0 +1,26 @@
+/* Time slider on the Camera/Senato hemicycles (#556). Tokens from the atlas theme. */
+.toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--atlas-line); border-radius: 8px; background: transparent; color: var(--atlas-ink); font-size: 12px; }
+.toggle[aria-expanded="true"] { border-color: var(--atlas-accent); background: var(--atlas-accent-soft); }
+.control { display: grid; gap: 6px; margin: 12px 0 4px; padding: 10px 12px 4px; border: 1px solid var(--atlas-line); border-radius: 10px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; min-width: 0; }
+.label { font-size: 12px; color: var(--atlas-ink); }
+.label strong { font-weight: 600; }
+.today { color: var(--atlas-muted); }
+.range { width: 100%; min-height: 44px; accent-color: var(--atlas-accent); }
+.bound { color: var(--atlas-muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+.steps { display: inline-flex; flex-wrap: wrap; gap: 0 14px; }
+.status { margin: 12px 0 4px; color: var(--atlas-muted); font-size: 12px; }
+.legendRow { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 10px; font-size: 11px; }
+.legendRow strong { margin-left: auto; font-size: 11px; font-weight: 550; font-variant-numeric: tabular-nums; }
+/* Not yet in office that day: an outline, like a vacant seat, but still focusable.
+   Doubled class so it wins over `.seat > rect` regardless of module order. */
+.absentSeat.absentSeat > rect { fill: none; stroke: var(--atlas-muted); stroke-width: 1; stroke-dasharray: 2 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Recolouring rather than reshuffling keeps each seat under the eye across days. */
+  .recolour > rect { transition: fill 220ms ease, stroke 220ms ease; }
+}
+
+@media (max-width: 640px) {
+  .steps { order: 3; width: 100%; justify-content: space-between; }
+}

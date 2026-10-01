@@ -37,31 +37,41 @@ export function displayMunicipalityName(name: string): string {
     .join(" ");
 }
 
+function buildSearchIndex() {
+  return getMunicipalitySearchEntities().map((entity) => ({
+    codiceIpa: entity.codiceIpa,
+    name: entity.denominazione,
+    taxCode: entity.codiceFiscale ?? "",
+    normalizedName: normalizeSearch(entity.denominazione),
+    normalizedDisplayName: normalizeSearch(displayMunicipalityName(entity.denominazione)),
+    normalizedCode: normalizeSearch(entity.codiceIpa),
+  }));
+}
+
+// Build only for an actual search; the committed snapshot stays fixed per instance.
+let searchIndex: ReturnType<typeof buildSearchIndex> | undefined;
+
 /** Lightweight municipal name search for `/api/comuni/search` (no profile / corpus imports). */
 export function searchComuni(query: string, limit = 12): readonly ComuniSearchHit[] {
   const needle = normalizeSearch(query);
   if (needle.length < 2) return [];
-  const hits: ComuniSearchHit[] = [];
-  for (const entity of getMunicipalitySearchEntities()) {
-    const hay = normalizeSearch(entity.denominazione);
-    if (!hay.includes(needle) && !normalizeSearch(entity.codiceIpa).includes(needle)) continue;
-    hits.push({
-      codiceIpa: entity.codiceIpa,
-      name: entity.denominazione,
-      province: null,
-      region: null,
-      taxCode: entity.codiceFiscale ?? "",
-    });
+  const hits = [];
+  for (const entry of (searchIndex ??= buildSearchIndex())) {
+    if (!entry.normalizedName.includes(needle) && !entry.normalizedCode.includes(needle)) continue;
+    const name = entry.normalizedDisplayName;
+    const rank = name === needle ? 0
+      : name.startsWith(needle + " ") ? 1
+      : name.startsWith(needle) ? 2 : 3;
+    hits.push({ entry, rank });
   }
   return hits
-    .sort((left, right) => {
-      const leftExact = normalizeSearch(displayMunicipalityName(left.name)) === needle ? 0 : 1;
-      const rightExact = normalizeSearch(displayMunicipalityName(right.name)) === needle ? 0 : 1;
-      if (leftExact !== rightExact) return leftExact - rightExact;
-      const leftStarts = normalizeSearch(displayMunicipalityName(left.name)).startsWith(needle) ? 0 : 1;
-      const rightStarts = normalizeSearch(displayMunicipalityName(right.name)).startsWith(needle) ? 0 : 1;
-      if (leftStarts !== rightStarts) return leftStarts - rightStarts;
-      return left.name.localeCompare(right.name, "it");
-    })
-    .slice(0, limit);
+    .sort((left, right) => left.rank - right.rank || left.entry.name.localeCompare(right.entry.name, "it"))
+    .slice(0, limit)
+    .map(({ entry }) => ({
+      codiceIpa: entry.codiceIpa,
+      name: entry.name,
+      province: null,
+      region: null,
+      taxCode: entry.taxCode,
+    }));
 }

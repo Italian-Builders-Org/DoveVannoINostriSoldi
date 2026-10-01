@@ -104,7 +104,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
               <ul className={styles.resultList}>
                 {searchHits.map((hit) => (
                   <li key={hit.codiceIpa}>
-                    <Link href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
+                    <Link prefetch={false} href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
                       <strong>{displayMunicipalityName(hit.name)}</strong>
                       <span>Codice IPA {hit.codiceIpa}</span>
                     </Link>
@@ -121,7 +121,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
               <ul className={styles.featuredGrid}>
                 {featured.map((hit) => (
                   <li key={hit.codiceIpa}>
-                    <Link href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
+                    <Link prefetch={false} href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
                       <strong>{displayMunicipalityName(hit.name)}</strong>
                       <span>
                         {[hit.province, hit.region].filter(Boolean).join(" · ") || hit.codiceIpa}

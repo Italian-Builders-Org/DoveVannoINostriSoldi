@@ -114,6 +114,16 @@ echo "::endgroup::"
 
 echo "::group::Browser eurodeputati reachability"
 node scripts/browser/politici-europa.mjs
+BROWSER_API_WINDOW_COMPLETED_MS="$(node -e 'console.log(Date.now())')"
+echo "::endgroup::"
+
+echo "::group::API rate-limit window before the MCP contract"
+# The atlas, runtime-cache and Europa suites above call /api/politici/* from the
+# same loopback IP that the contract smoke uses, and the proxy's local fallback
+# counts both against one per-IP window. Every one of those requests predates
+# this timestamp: once its window elapses the contract POSTs start from an empty
+# allowance, however many API calls the browser suites make.
+node scripts/ci/mcp-rate-limit-window.mjs "$BROWSER_API_WINDOW_COMPLETED_MS"
 echo "::endgroup::"
 
 echo "::group::MCP HTTP smoke"

@@ -1,5 +1,7 @@
 "use client";
 
+import { publicSurfacePath } from "@/lib/snapshot-routing";
+
 import { IntentLink } from "@/components/intent-link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -7,7 +9,7 @@ import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-
 import styles from "./section-nav.module.css";
 
 export function SectionNav() {
-  const pathname = usePathname();
+  const pathname = publicSurfacePath(usePathname());
   return (
     <Suspense fallback={<SectionNavContent pathname={pathname} currentSearch={null} />}>
       <SectionNavWithSearchParams pathname={pathname} />

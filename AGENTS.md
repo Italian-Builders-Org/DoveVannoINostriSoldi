@@ -97,6 +97,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Non avviare acquisizioni/refresh in risposta a una visita. Evita prefetch di
   griglie con molte destinazioni costose. Distingui rendering, fetch live,
   polling client, build e test: hanno costi e rimedi differenti.
+- Prima di aumentare una cache, misura il working set e confronta budget byte/entry
+  sullo stesso runtime. Verifica CPU, RSS e digest con i benchmark in
+  `scripts/bench/`; non aumentare la memoria delle funzioni senza prova del beneficio.
 - Per le cache prova anche scansioni oltre la loro capacità, concorrenza,
   sostituzione/corruzione dello snapshot, query ripetute e RSC. Mantieni hash,
   provenance e riconciliazioni; non memorizzare un errore come successo.
@@ -110,3 +113,15 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   Non riattivare build automatiche o aggirare approvazioni per ottenere un badge verde.
 - Prima di approvare codice esterno, verificare lo SHA e il diff; riunire le
   modifiche compatibili e validarle prima di un unico push.
+
+## Costi delle route pubbliche
+
+- Prima di aggiungere una pagina dinamica ad alta cardinalità, leggere
+  [RUNTIME_COSTS.md](docs/RUNTIME_COSTS.md): definire chiave di cache, invalidazione,
+  limiti di query, crawler e file runtime necessari. Non prebuildare l'intero corpus.
+- Conservare filtri, protocollo HTML/RSC e controllo dei byte delle fonti.
+  Un fallback locale per IP non sostituisce il WAF distribuito.
+- Misurare CPU fredda/calda e digest sullo stesso runtime; verificare HIT reali,
+  filtri, errori temporanei, corruzione e host alternativi prima di una PR.
+- Fluid Active CPU è consumo delle richieste: macchina di build e rimozione di
+  deployment non sono rimedi a rendering e aggregazioni ripetuti.

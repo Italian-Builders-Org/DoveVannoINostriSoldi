@@ -320,7 +320,9 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
               matchingIds={matchingIds}
               judicialIds={data.judicialIds}
               onSelect={select}
-              news={data.news} />
+              news={data.news}
+              asOf={state.asOf}
+              onAsOf={(asOf) => update({ ...stateRef.current, asOf })} />
               : state.scope === "governo" ? <GovernmentView people={people} onSelect={select} />
                 : state.scope === "grafo" ? <InstitutionalGraph
                   map={map}

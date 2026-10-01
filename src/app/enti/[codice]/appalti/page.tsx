@@ -27,6 +27,7 @@ import { EntityProcurementCoverage } from "../entity-procurement-coverage";
 type PageProps = {
   params: Promise<{ codice: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+  snapshotCache?: boolean;
 };
 
 export const dynamic = "force-dynamic";
@@ -496,7 +497,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function EntityProcurementPage({ params, searchParams }: PageProps) {
+export default async function EntityProcurementPage({ params, searchParams, snapshotCache = false }: PageProps) {
   const { codice } = await params;
   const normalizedCode = decodeEntityProcurementRouteCode(codice);
   if (!normalizedCode) notFound();
@@ -512,6 +513,7 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
   });
   const heading = municipality?.name ?? normalizedCode;
   if (state.status !== "available") {
+    if (snapshotCache && state.status === "unavailable") throw new Error(`ANAC snapshot unavailable: ${state.reason}`);
     return (
       <main className={"shell page " + styles.page}>
         <p><Link prefetch={false} href={"/enti/" + encodeURIComponent(normalizedCode)}>← Torna alla scheda ente</Link></p>
@@ -524,7 +526,11 @@ export default async function EntityProcurementPage({ params, searchParams }: Pa
     );
   }
   let cpvRecord: AnacCpvRecord | null = null;
-  try { cpvRecord = await loadAnacCpvRecord(state.profile); } catch { /* Display an explicit unavailable state; never widen a selected cohort. */ }
+  try { cpvRecord = await loadAnacCpvRecord(state.profile); }
+  catch (error) {
+    // ISR must retain its previous valid response on a failed regeneration.
+    if (snapshotCache) throw error;
+  }
   if (cpv && !cpvRecord) return (
     <main className={"shell page " + styles.page}>
       <h1>Aggiudicazioni ANAC · {heading}</h1>

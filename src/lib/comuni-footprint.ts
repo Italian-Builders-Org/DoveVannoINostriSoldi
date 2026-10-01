@@ -11,10 +11,10 @@ import {
   type MunicipalitySpendingRow,
 } from "@/lib/municipality-spending-view";
 import {
-  getMunicipalityProfile,
+  getMunicipalityFinancialProfile,
   type MunicipalityPeerBenchmark,
-  type MunicipalityProfile,
-} from "@/lib/municipality-profile";
+  type MunicipalityFinancialProfile,
+} from "@/lib/municipality-financial-profile";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import {
   getSiopeMunicipalityDetailByIpaCode,
@@ -80,12 +80,11 @@ export type ComuniFootprint = Readonly<{
     perCapitaCents: number | null;
     completeness: "complete" | "partial";
   }>[];
-  openCivitas: MunicipalityProfile["openCivitas"];
-  irpef: MunicipalityProfile["irpef"];
-  pnrrChildcare: MunicipalityProfile["pnrrChildcare"];
-  schoolServices: MunicipalityProfile["schoolServices"];
-  methodology: MunicipalityProfile["siope"]["methodology"];
-  sources: MunicipalityProfile["siope"]["sources"];
+  openCivitas: MunicipalityFinancialProfile["openCivitas"];
+  irpef: MunicipalityFinancialProfile["irpef"];
+  pnrrChildcare: MunicipalityFinancialProfile["pnrrChildcare"];
+  methodology: MunicipalityFinancialProfile["siope"]["methodology"];
+  sources: MunicipalityFinancialProfile["siope"]["sources"];
   entityHref: `/enti/${string}`;
 }>;
 
@@ -151,7 +150,7 @@ function distanceNote(index: number | null, unitHint: string): string {
 }
 
 function titleShare(
-  titles: MunicipalityProfile["siope"]["data"]["years"][number]["titles"],
+  titles: MunicipalityFinancialProfile["siope"]["data"]["years"][number]["titles"],
   totalCents: number | null,
   code: string,
 ): number | null {
@@ -162,7 +161,7 @@ function titleShare(
 }
 
 function buildIndicators(
-  profile: MunicipalityProfile,
+  profile: MunicipalityFinancialProfile,
   receiptsPerCapitaCents: number | null,
   peerReceiptsPerCapitaMedian: number | null,
 ): readonly FootprintIndicator[] {
@@ -296,7 +295,7 @@ function buildIndicators(
   });
 }
 
-export function buildComuniFootprint(profile: MunicipalityProfile): ComuniFootprint {
+export function buildComuniFootprint(profile: MunicipalityFinancialProfile): ComuniFootprint {
   const latest = profile.siope.data.years[0]!;
   const peer = profile.siope.peerBenchmark;
   const receipts = getSiopeMunicipalityReceipts(profile.identifiers.taxCode, latest.year);
@@ -350,7 +349,6 @@ export function buildComuniFootprint(profile: MunicipalityProfile): ComuniFootpr
     openCivitas: profile.openCivitas,
     irpef: profile.irpef,
     pnrrChildcare: profile.pnrrChildcare,
-    schoolServices: profile.schoolServices,
     methodology: profile.siope.methodology,
     sources: profile.siope.sources,
     entityHref: `/enti/${encodeURIComponent(profile.identifiers.codiceIpa)}`,
@@ -364,7 +362,7 @@ export async function getComuniFootprintByIpaCode(rawCode: string): Promise<Comu
   if (!detail) return null;
   const entity = municipalitySnapshotEntity(detail);
   if (!entity) return null;
-  const profile = await getMunicipalityProfile(entity, { allowCommittedIstatIdentity: true });
+  const profile = await getMunicipalityFinancialProfile(entity, { allowCommittedIstatIdentity: true });
   if (!profile) return null;
   return buildComuniFootprint(profile);
 }

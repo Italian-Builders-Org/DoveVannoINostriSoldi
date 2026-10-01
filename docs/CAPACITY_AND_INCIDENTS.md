@@ -8,7 +8,7 @@ fonti. Questa guida definisce decisioni e verifiche, non una capacità garantita
 
 Il 30 settembre 2026 il progetto è stato fissato a Enhanced (8 vCPU, 16 GB
 RAM, 64 GB disco temporaneo), con concorrenza on-demand disattivata. Elastic
-stava assegnando Turbo da 30 core. Il supporto Vercel ha confermato che Standard
+indicava Turbo da 30 core per la prossima build. Il supporto Vercel ha confermato che Standard
 (4 vCPU, 8 GB RAM, 32 GB disco) esauriva il disco durante la pubblicazione;
 Enhanced ha pubblicato correttamente la stessa revisione. Il tetto attuale
 evita l'assegnazione automatica di 30 core, ma non dimostra una percentuale di

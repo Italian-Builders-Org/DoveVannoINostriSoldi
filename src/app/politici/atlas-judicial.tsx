@@ -1,7 +1,7 @@
 "use client";
 
 import type { GiudiziarioCase } from "@/lib/data/parlamento-giudiziario-contract";
-import { formatEuroCents, formatSentenceMonths, OUTCOME_LABELS } from "@/lib/parlamento-giudiziario";
+import { formatEuroCents, formatSentenceMonths, OUTCOME_LABELS } from "@/lib/parlamento-giudiziario-format";
 import styles from "./politici.module.css";
 
 export type JudicialState =

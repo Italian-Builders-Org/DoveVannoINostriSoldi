@@ -747,8 +747,9 @@ function deriveProcurementSubset(
   const byRef = new Map(profile.operators.map((operator) => [operator.ref, {
     ...operator, awardCount: 0, attributedAwardCount: 0, attributedValue: "0", rankByCount: 0, rankByValue: null as number | null,
   }]));
-  let attributedAwardValue = "0";
-  let unattributedAwardValue = "0";
+  const attributedAmounts: string[] = [];
+  const unattributedAmounts: string[] = [];
+  const operatorAmounts = new Map<string, string[]>();
   let positiveAwardCount = 0;
   const attribution = { "single-operator": 0, multipart: 0, ambiguous: 0, "no-awardee": 0 };
   for (const award of awards) {
@@ -765,12 +766,18 @@ function deriveProcurementSubset(
       const operator = byRef.get(award.operatorRefs[0]);
       if (!operator) throw new Error("Filtro ANAC con attribuzione non riconciliata.");
       operator.attributedAwardCount += 1;
-      operator.attributedValue = addDecimals(operator.attributedValue, award.amount);
-      attributedAwardValue = addDecimals(attributedAwardValue, award.amount);
+      const amounts = operatorAmounts.get(operator.ref) ?? [];
+      amounts.push(award.amount);
+      operatorAmounts.set(operator.ref, amounts);
+      attributedAmounts.push(award.amount);
     } else {
-      unattributedAwardValue = addDecimals(unattributedAwardValue, award.amount);
+      unattributedAmounts.push(award.amount);
     }
   }
+  // Reuse exact summation, formatting once per total rather than once per award.
+  const attributedAwardValue = sumDecimals(attributedAmounts);
+  const unattributedAwardValue = sumDecimals(unattributedAmounts);
+  for (const [ref, amounts] of operatorAmounts) byRef.get(ref)!.attributedValue = sumDecimals(amounts);
   const operators = [...byRef.values()].filter((operator) => operator.awardCount > 0);
   const byName = (left: typeof operators[number], right: typeof operators[number]) =>
     left.name.localeCompare(right.name, "it") || left.ref.localeCompare(right.ref);

@@ -5,7 +5,7 @@ import { performance } from "node:perf_hooks";
 import "../../tests/helpers/register-ts-alias.mjs";
 
 const { loadAnacEntityProcurementPage } = await import("../../src/lib/data/anac-entity-procurement-page.ts");
-const { loadAnacCpvRecord } = await import("../../src/lib/data/anac-procurement-cpv.ts");
+const { loadAnacCpvRecord, filterAnacProcurementByCpv, normalizeAnacCpv } = await import("../../src/lib/data/anac-procurement-cpv.ts");
 const { getOperatorHistory } = await import("../../src/lib/data/anac-operator-history.ts");
 const records = (path) => gunzipSync(readFileSync(path)).toString("utf8").trim().split("\n").map(JSON.parse);
 const shardCount = Number(process.env.DVNS_BENCH_SHARDS ?? 2);
@@ -20,7 +20,13 @@ for (const [name, run] of Object.entries({
     for (const codiceIpa of entities) {
       const state = await loadAnacEntityProcurementPage({ codiceIpa, currentEntityCf: null, verifyLiveFiscalCode: false });
       if (state.status !== "available") throw new Error(JSON.stringify(state));
-      result.push([state.profile, await loadAnacCpvRecord(state.profile)]);
+      const cpv = await loadAnacCpvRecord(state.profile);
+      let category = "unclassified";
+      for (const row of cpv.procedures) {
+        const code = normalizeAnacCpv(row.rawCode);
+        if (code !== null) { category = code; break; }
+      }
+      result.push([state.profile, cpv, filterAnacProcurementByCpv(state.profile, cpv, category)]);
     }
     return result;
   },

@@ -109,7 +109,10 @@ misurare anche RSS/heap prima di aumentare i limiti. Gli oggetti restituiti dagl
 adapter sono condivisi e vanno trattati come immutabili.
 
 `node --experimental-strip-types scripts/bench/procurement.mjs` confronta batch
-di enti e operatori diversi in due shard. Per esercitare anche il ricambio delle
+di enti e operatori diversi in due shard. Il batch enti include il filtro sulla
+prima categoria CPV classificata (o sulle procedure non classificate), così
+misura anche la ricostruzione di importi esatti, ranking e concentrazione.
+Per esercitare anche il ricambio delle
 cache, aumentare gli shard (da 1 a 256):
 
 ```bash

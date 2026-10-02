@@ -466,27 +466,53 @@ function signedDecimal(value: unknown, label: string): string {
 }
 
 function decimalParts(value: string): [bigint, number] {
+  if (!value.includes(".")) return [BigInt(value), 0];
   const [whole, fraction = ""] = value.split(".");
   return [BigInt(`${whole}${fraction}`), fraction.length];
 }
 
-function addDecimals(left: string, right: string): string {
-  const [leftInteger, leftScale] = decimalParts(left);
-  const [rightInteger, rightScale] = decimalParts(right);
-  const scale = Math.max(leftScale, rightScale);
-  const total = leftInteger * BigInt(10) ** BigInt(scale - leftScale) + rightInteger * BigInt(10) ** BigInt(scale - rightScale);
+function decimalString(total: bigint, scale: number): string {
   if (scale === 0) return total.toString();
   const digits = total.toString().padStart(scale + 1, "0");
   return `${digits.slice(0, -scale)}.${digits.slice(-scale)}`.replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1");
 }
 
+function addDecimals(left: string, right: string): string {
+  const [leftInteger, leftScale] = decimalParts(left);
+  const [rightInteger, rightScale] = decimalParts(right);
+  if (leftScale === rightScale) return decimalString(leftInteger + rightInteger, leftScale);
+  const scale = Math.max(leftScale, rightScale);
+  return decimalString(
+    leftScale < rightScale
+      ? leftInteger * BigInt(10) ** BigInt(rightScale - leftScale) + rightInteger
+      : leftInteger + rightInteger * BigInt(10) ** BigInt(leftScale - rightScale),
+    scale,
+  );
+}
+
 function sumDecimals(values: readonly string[]): string {
-  return values.reduce((sum, value) => addDecimals(sum, value), "0");
+  // Keep the exact running total as an integer; format only once after summing.
+  let total = BigInt(0);
+  let scale = 0;
+  for (const value of values) {
+    const [integer, valueScale] = decimalParts(value);
+    if (valueScale > scale) {
+      total *= BigInt(10) ** BigInt(valueScale - scale);
+      scale = valueScale;
+    }
+    total += valueScale === scale ? integer : integer * BigInt(10) ** BigInt(scale - valueScale);
+  }
+  return decimalString(total, scale);
 }
 
 function compareDecimals(left: string, right: string): number {
+  if (left === right) return 0;
+  // Callers have already validated canonical decimals, including negative zero.
+  if (right === "0") return left.startsWith("-") ? -1 : 1;
+  if (left === "0") return right.startsWith("-") ? 1 : -1;
   const [leftInteger, leftScale] = decimalParts(left);
   const [rightInteger, rightScale] = decimalParts(right);
+  if (leftScale === rightScale) return leftInteger < rightInteger ? -1 : leftInteger > rightInteger ? 1 : 0;
   const scale = Math.max(leftScale, rightScale);
   const scaledLeft = leftInteger * BigInt(10) ** BigInt(scale - leftScale);
   const scaledRight = rightInteger * BigInt(10) ** BigInt(scale - rightScale);

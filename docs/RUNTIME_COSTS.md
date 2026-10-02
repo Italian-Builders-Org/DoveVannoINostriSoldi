@@ -159,6 +159,12 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 
 ## Scelte operative
 
+- Nei calcoli monetari ANAC mantenere interi `BigInt` e scala decimale fino
+  alla fine della somma: formattare ogni totale parziale aumenta le conversioni.
+  Non passare a `Number` né arrotondare i subcentesimi. I confronti rapidi con
+  zero presuppongono il controllo del formato canonico, incluso il rifiuto dello
+  zero negativo, al confine dei dati. Verificare somme e ranking oltre la
+  precisione di `Number`, scale diverse, importi nulli e partizioni non attribuite.
 - Riutilizzare aggregati ANAC e pack esistenti. Aggiungere nuovi duplicati solo
   dopo aver misurato un hot path ancora costoso; non perdere controlli, coorti
   o provenance per risparmiare parsing.

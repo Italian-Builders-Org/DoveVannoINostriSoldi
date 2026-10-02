@@ -146,6 +146,34 @@ function cleanup(fixture) {
   rmSync(fixture.projectRoot, { recursive: true, force: true });
 }
 
+test("procurement subsets preserve decimal order and exact sums beyond Number precision", () => {
+  const values = ["0.001", "1", "1.01", "9.1", "10", "9999999999999999.000001", "9999999999999999.000002"];
+  const procedures = values.map((_, index) => ({ cig: `CIG${String(index).padStart(7, "0")}`, publishedAt: null }));
+  const operators = values.map((_, index) => ({ ref: `op-${String(index).padStart(6, "0")}`, name: String(index), nameVariants: 0 }));
+  const awards = values.map((amount, index) => ({
+    cig: procedures[index].cig, awardId: "1", awardedAt: null, amount,
+    amountStatus: (amount.split(".")[1]?.length ?? 0) > 2 ? "positive-subcent" : "positive-exact-cent",
+    operatorRefs: [operators[index].ref], attribution: "single-operator",
+  }));
+  const profile = { codiceIpa: "ENTE1", operators, procedures, awards, meta: {} };
+  const subset = loader.selectAnacEntityProcurementCigs(profile, new Set(procedures.map((row) => row.cig)));
+  assert.equal(subset.summary.awardValue, "20000000000000019.111003");
+  assert.deepEqual(subset.operators.map((row) => row.rankByValue), [7, 6, 5, 4, 3, 2, 1]);
+  assert.equal(subset.summary.unattributedAwardValue, "0");
+  const empty = loader.selectAnacEntityProcurementCigs(profile, new Set());
+  assert.equal(empty.summary.awardValue, "0");
+});
+
+test("record validation rejects noncanonical amounts and negative zero", () => {
+  const record = fixtureRecord();
+  const prefix = digest(record.codiceIpa).slice(0, 2);
+  for (const amount of ["00", "01", "1.20", "0.000", "-0", "-0.00"]) {
+    const invalid = structuredClone(record);
+    invalid.awards[0].amount = amount;
+    assert.throws(() => loader.assertAnacEntityProcurementPageRecord(invalid, prefix), /decimale.+non (canonico|valido)/);
+  }
+});
+
 test("fixture loader accepts four-way attribution, nullable dates and exact subcent sums", async () => {
   const fixture = makeFixture();
   try {

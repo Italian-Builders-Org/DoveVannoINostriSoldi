@@ -104,6 +104,6 @@ test("CI keeps the pull request required check independent of operational jobs",
   assert.ok(Object.hasOwn(ci.on, "pull_request"));
   assert.deepEqual(
     ci.jobs.required.needs,
-    ["static", "security", "node", "etl", "production", "production-core"],
+    ["static", "security", "node", "etl", "etl-snapshots", "production", "production-core"],
   );
 });

@@ -68,8 +68,9 @@ documentazione del limite invece di inventare valori.
 
 ## Verifica locale
 
-La CI è organizzata in sei job paralleli (`static`, `security`, `node`,
-`etl`, `production`, `production-core`) aggregati da `CI / required`. Il job `security` esegue la
+La CI è organizzata in sette job paralleli (`static`, `security`, `node`,
+`etl`, `etl-snapshots`, `production`, `production-core`) aggregati da
+`CI / required`: `etl` esegue `test:etl`, `etl-snapshots` `test:snapshots`. Il job `security` esegue la
 scansione Zizmor dei workflow ed è bloccante. Per riprodurla usa Zizmor 1.29.0:
 `zizmor --persona auditor .github/workflows/`. Il job static include anche
 `actionlint` 1.7.12 e `npm run ci:action-pins`. I gate applicativi sono:

@@ -24,12 +24,26 @@ const querySchema = z
     || compareAmounts(query.minAmount, query.maxAmount) <= 0, "L’importo minimo supera il massimo");
 
 function compareAmounts(left: string, right: string): number {
-  const [li, lf = ""] = left.split(".");
-  const [ri, rf = ""] = right.split(".");
-  const scale = Math.max(lf.length, rf.length);
-  const l = BigInt(li + lf.padEnd(scale, "0"));
-  const r = BigInt(ri + rf.padEnd(scale, "0"));
-  return l < r ? -1 : l > r ? 1 : 0;
+  const [leftInteger, leftFraction = ""] = left.split(".");
+  const [rightInteger, rightFraction = ""] = right.split(".");
+  // The schemas guarantee canonical digits. Compare exact decimal strings
+  // without converting each row and query bound to BigInt. Signed zero in
+  // published history still compares equal to zero.
+  const leftNegative = leftInteger.startsWith("-") && /[1-9]/.test(left);
+  const rightNegative = rightInteger.startsWith("-") && /[1-9]/.test(right);
+  if (leftNegative !== rightNegative) return leftNegative ? -1 : 1;
+  const leftWhole = leftInteger.startsWith("-") ? leftInteger.slice(1) : leftInteger;
+  const rightWhole = rightInteger.startsWith("-") ? rightInteger.slice(1) : rightInteger;
+  let result = leftWhole.length !== rightWhole.length
+    ? (leftWhole.length < rightWhole.length ? -1 : 1)
+    : leftWhole !== rightWhole ? (leftWhole < rightWhole ? -1 : 1) : 0;
+  if (result === 0) {
+    const scale = Math.max(leftFraction.length, rightFraction.length);
+    const leftDigits = leftFraction.padEnd(scale, "0");
+    const rightDigits = rightFraction.padEnd(scale, "0");
+    result = leftDigits < rightDigits ? -1 : leftDigits > rightDigits ? 1 : 0;
+  }
+  return leftNegative ? -result : result;
 }
 
 export const OPERATOR_HISTORY_PAGE_SIZE = 25;

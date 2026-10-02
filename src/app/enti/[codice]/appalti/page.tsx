@@ -540,7 +540,7 @@ export default async function EntityProcurementPage({ params, searchParams, snap
       <Link prefetch={false} href={href(normalizedCode, { view: "summary", awardYear })}>Rimuovi solo il filtro CPV</Link>
     </main>
   );
-  const cpvProfile = cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
+  const cpvProfile = cpv && cpvRecord ? filterAnacProcurementByCpv(state.profile, cpvRecord, cpv) : state.profile;
   const profile = filterAnacProcurementByAwardYear(cpvProfile, awardYear);
   const selectedView = view(first(query.view));
   const metric: RankingMetric = (selectedView === "operators" || selectedView === "concentration") && first(query.metric) === "value" ? "value" : "count";

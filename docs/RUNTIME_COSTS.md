@@ -47,6 +47,30 @@ aggiornamento dello snapshot prima di cambiare questa politica.
 
 ## Cache dei dati
 
+La ricerca degli operatori conserva il parser e l'indice validato esistenti.
+Conta tutti i risultati, ma ordina soltanto i migliori 50 al massimo; conserva
+precedenza dei prefissi, conteggi, ordine italiano e stabilità delle parità.
+Non conserva risultati delle query. Il confronto locale Node 24.19.0 su nove
+query riduce la mediana CPU calda del batch da 869 a 151 ms, con digest
+integrale invariato. Le 128 query distinte senza risultati mantengono la stessa
+scansione e non trattengono heap aggiuntivo dopo GC. RSS e tempi a freddo
+variano con il carico del Mac: non dimostrano un risparmio di memoria.
+Riprodurre con `scripts/bench/operator-search-efficiency.mjs`, impostando
+`OPERATOR_SEARCH_COMPACT=1` e passando `--expose-gc` a Node.
+
+Il selettore storico operatori confronta importi decimali validati come
+stringhe, senza conversioni BigInt ripetute, arrotondamenti o cache. Su 108
+query dei sei operatori principali la mediana CPU calda passa da 1.247 a
+626 ms, con gli stessi risultati. Il guadagno riguarda i filtri monetari:
+lettura, validazione e rendering restano costi distinti.
+
+I sottoinsiemi CPV/anno degli enti riusano la somma esatta degli importi,
+formattando una volta per totale. La pagina non invoca il filtro CPV quando
+è vuoto; il reader continua a verificare e riconciliare la classificazione.
+`scripts/bench/entity-procurement-filters.mjs` confronta risultati completi,
+CPU e memoria su Roma, Milano e Bologna. Queste misure locali non stimano
+la riduzione della fattura: confrontare finestre complete di traffico su Vercel.
+
 La ricerca globale riusa solo i campi normalizzati del catalogo e delle identità
 comunali versionate nel deployment. L'indice nasce alla prima ricerca; non cresce
 con le query e non conserva testo degli utenti. I risultati vengono ricostruiti

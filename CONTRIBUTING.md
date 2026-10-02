@@ -112,6 +112,8 @@ deterministica riproducibile.
 `ci:static` esegue lint, typecheck, `reports:check`, `design:check`, `brand:check`,
 `agent-context:check` e `agent-public:check` in quest'ordine. `typecheck` genera
 i tipi Next anche in una checkout appena installata.
+Artifact dei test/benchmark e virtualenv sono esclusi da lint e typecheck;
+le copie di sorgenti salvate lì non entrano nel progetto TypeScript.
 Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`
 (per esempio `PYTHON=python npm run test:node`): i test che attraversano il
 confine ETL usano quel nome, il default resta `python3`.

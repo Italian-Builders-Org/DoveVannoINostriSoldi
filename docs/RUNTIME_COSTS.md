@@ -13,6 +13,7 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
 | `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
+| `/api/search` | Dinamica, `no-store` | Campi del catalogo e identità comunali normalizzati una volta per istanza; record IPA elaborati dalla risposta corrente, senza cache delle query |
 | `/enti/[codice]` e API ente | Dinamica dove usa IPA live | Profilo completo, inclusi patrimonio e scuole; identità ufficiali riconciliate |
 | `/dati/[dataset]`, API dati e MCP | Politica del selector/trasporto esistente | Scansione limitata e cursori del rilascio; riuso bounded dei chunk già validati |
 | Altre pagine ad alta cardinalità | Politica specifica della route | Crawler dichiarati coperti dal proxy; includere le nuove route nel matcher e nell'inventario |
@@ -45,6 +46,14 @@ Gli snapshot e le loro prove cambiano con il deployment; verificare anche un
 aggiornamento dello snapshot prima di cambiare questa politica.
 
 ## Cache dei dati
+
+La ricerca globale riusa solo i campi normalizzati del catalogo e delle identità
+comunali versionate nel deployment. L'indice nasce alla prima ricerca; non cresce
+con le query e non conserva testo degli utenti. I risultati vengono ricostruiti
+a ogni richiesta. Le funzioni di ranking con input esterno elaborano sempre i
+record ricevuti: una risposta IPA aggiornata o un alias modificato non deve
+riusare campi obsoleti. Per modificare il ranking, confrontare risultati completi,
+ordine, refusi, Unicode, limiti, costo freddo/caldo e memoria con `bench:runtime`.
 
 Il profilo finanziario è condiviso con quello completo, senza inventare stati
 «dato assente» per sezioni non richieste. Gli indici SIOPE sono limitati agli anni
@@ -204,6 +213,9 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
    segnali CDN dopo il rilascio. Il gate salva prove in
    `artifacts/browser/runtime-cache/`. Verificare anche mobile, tablet, desktop,
    tastiera, prefetch, overflow ed errori di idratazione.
+   Per i clic E2E preferire `page.locator(...).click()`: attende visibilità e
+   posizione stabile del controllo anche dopo uno scroll. Conservare le
+   verifiche sull'URL e sul contenuto, senza sostituirle con attese fisse.
 5. Dopo il deployment verificare READY, cache CDN reale, filtri e sottodomini.
    Confrontare almeno 24 ore complete per route: invocazioni, CPU per richiesta,
    HIT/MISS, 429, errori e p95. Monitorare anche letture/scritture ISR, trasferimento

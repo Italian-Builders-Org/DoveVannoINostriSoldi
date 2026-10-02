@@ -213,6 +213,9 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
    segnali CDN dopo il rilascio. Il gate salva prove in
    `artifacts/browser/runtime-cache/`. Verificare anche mobile, tablet, desktop,
    tastiera, prefetch, overflow ed errori di idratazione.
+   Per i clic E2E preferire `page.locator(...).click()`: attende visibilità e
+   posizione stabile del controllo anche dopo uno scroll. Conservare le
+   verifiche sull'URL e sul contenuto, senza sostituirle con attese fisse.
 5. Dopo il deployment verificare READY, cache CDN reale, filtri e sottodomini.
    Confrontare almeno 24 ore complete per route: invocazioni, CPU per richiesta,
    HIT/MISS, 429, errori e p95. Monitorare anche letture/scritture ISR, trasferimento

@@ -149,8 +149,8 @@ jobs:
   etl:
     name: etl
     runs-on: ubuntu-24.04
-    # Full ETL and artifact checks reached 30 minutes in CI. Leave room for
-    # pinned Node setup and the operator derivative verification to complete.
+    # test:etl and test:snapshots run in parallel jobs (#679), each 10-15
+    # minutes in CI; the timeout leaves room for slow runners and checkout.
     timeout-minutes: 45
     env:
       # PYTHONPATH for ETL scripts that import sibling modules.
@@ -189,11 +189,6 @@ jobs:
           DVNS_OFFLINE_GUARD: "1"
         run: npm run test:etl
 
-      - name: Validate committed generated artifacts (offline)
-        env:
-          DVNS_OFFLINE_GUARD: "1"
-        run: npm run test:snapshots
-
       - name: ETL gate summary
         if: always()
         shell: bash
@@ -211,6 +206,69 @@ jobs:
             echo "| Check | Result |"
             echo "|-------|--------|"
             echo "| ETL test suite (offline) | $RESULT |"
+            echo "| Application-level network guard | active (loopback only) |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  etl-snapshots:
+    name: etl-snapshots
+    runs-on: ubuntu-24.04
+    # test:etl and test:snapshots run in parallel jobs (#679), each 10-15
+    # minutes in CI; the timeout leaves room for slow runners and checkout.
+    timeout-minutes: 45
+    env:
+      # PYTHONPATH for ETL scripts that import sibling modules.
+      # The offline guard (DVNS_OFFLINE_GUARD) is set per-step below,
+      # AFTER dependency installation, so pip can reach PyPI.
+      PYTHONPATH: scripts/etl:scripts/ci
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      # The operator ranking derivative shares the TypeScript runtime validators.
+      - name: Setup Node for snapshot checks
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install snapshot check dependencies
+        run: npm ci
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned ETL dependencies
+        run: >-
+          python -m pip install --no-deps --only-binary=:all:
+          --require-hashes -r requirements-etl.txt
+
+      - name: Validate committed generated artifacts (offline)
+        env:
+          DVNS_OFFLINE_GUARD: "1"
+        run: npm run test:snapshots
+
+      - name: ETL gate summary
+        if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          if [[ "$JOB_STATUS" == "success" ]]; then
+            RESULT="✅ PASS"
+          else
+            RESULT="❌ FAIL"
+          fi
+          {
+            echo "## ETL artifact gate"
+            echo ""
+            echo "| Check | Result |"
+            echo "|-------|--------|"
             echo "| Generated-artifact registry + offline checks | $RESULT |"
             echo "| Application-level network guard | active (loopback only) |"
             echo ""
@@ -251,6 +309,8 @@ jobs:
 
       - name: Production gates (server readiness, MCP, browser, Lighthouse)
         run: bash scripts/ci/run-production-gates.sh
+        env:
+          PRODUCTION_GATES: main
 
       - name: Upload browser diagnostics on failure
         if: failure()
@@ -267,24 +327,6 @@ jobs:
         with:
           name: procurement-award-year-screenshots
           path: artifacts/browser/procurement-award-year/
-          if-no-files-found: ignore
-          retention-days: 14
-
-      - name: Upload home composition layout evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: home-composition-layout
-          path: artifacts/browser/home-composition/
-          if-no-files-found: ignore
-          retention-days: 14
-
-      - name: Upload health spending history evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: health-spending-history
-          path: artifacts/browser/health-history/
           if-no-files-found: ignore
           retention-days: 14
 
@@ -309,9 +351,82 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  production-core:
+    name: production-core
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Conserva solo lo stato del compilatore. I test di produzione leggono
+      # risposte aggiornate; ogni run ricostruisce e verifica il proprio codice.
+      - name: Ripristina cache compilatore Next
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .next/cache/turbopack
+          key: ${{ runner.os }}-${{ runner.arch }}-next-v1-${{ hashFiles('package-lock.json', '.nvmrc', 'next.config.ts') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-next-v1-${{ hashFiles('package-lock.json', '.nvmrc', 'next.config.ts') }}-
+
+      - name: Build
+        run: npm run build
+
+      - name: Production gates (browser core suite, light and dark)
+        run: bash scripts/ci/run-production-gates.sh
+        env:
+          PRODUCTION_GATES: core
+
+      - name: Upload browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: browser-diagnostics-core
+          path: artifacts/browser/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload home composition layout evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: home-composition-layout
+          path: artifacts/browser/home-composition/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload health spending history evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: health-spending-history
+          path: artifacts/browser/health-history/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload production server log on failure
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: production-core-server-log
+          path: artifacts/production/next.log
+          if-no-files-found: ignore
+          retention-days: 7
+
   required:
     name: required
-    needs: [static, security, node, etl, production]
+    needs: [static, security, node, etl, etl-snapshots, production, production-core]
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 2
@@ -323,7 +438,9 @@ jobs:
           SECURITY_RESULT: ${{ needs.security.result }}
           NODE_RESULT: ${{ needs.node.result }}
           ETL_RESULT: ${{ needs.etl.result }}
+          ETL_SNAPSHOTS_RESULT: ${{ needs.etl-snapshots.result }}
           PRODUCTION_RESULT: ${{ needs.production.result }}
+          PRODUCTION_CORE_RESULT: ${{ needs.production-core.result }}
         run: |
           {
             echo "| Gate | Result |"
@@ -332,10 +449,12 @@ jobs:
             echo "| security | ${SECURITY_RESULT} |"
             echo "| node | ${NODE_RESULT} |"
             echo "| etl | ${ETL_RESULT} |"
+            echo "| etl-snapshots | ${ETL_SNAPSHOTS_RESULT} |"
             echo "| production | ${PRODUCTION_RESULT} |"
+            echo "| production-core | ${PRODUCTION_CORE_RESULT} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          for result in "$STATIC_RESULT" "$SECURITY_RESULT" "$NODE_RESULT" "$ETL_RESULT" "$PRODUCTION_RESULT"; do
+          for result in "$STATIC_RESULT" "$SECURITY_RESULT" "$NODE_RESULT" "$ETL_RESULT" "$ETL_SNAPSHOTS_RESULT" "$PRODUCTION_RESULT" "$PRODUCTION_CORE_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "ERROR: gate result '${result}' is not success — CI / required fails." >&2
               exit 1

@@ -61,6 +61,14 @@ type FieldMatch = Readonly<{
   reason: "exact" | "prefix" | "tokens" | "fuzzy";
 }>;
 
+type SearchField = Readonly<{ normalized: string; tokens: readonly string[] }>;
+type PreparedDocument = Readonly<{
+  document: SearchIndexDocument;
+  title: SearchField;
+  aliases: readonly SearchField[];
+  description: SearchField | null;
+}>;
+
 type IntegratedSearchEntry = Readonly<{
   id: string;
   title: string;
@@ -382,6 +390,20 @@ function tokens(normalized: string): readonly string[] {
   return normalized ? normalized.split(" ") : [];
 }
 
+function prepareField(value: string): SearchField {
+  const normalized = normalizeSearchText(value);
+  return { normalized, tokens: tokens(normalized) };
+}
+
+function prepareDocument(document: SearchIndexDocument): PreparedDocument {
+  return {
+    document,
+    title: prepareField(document.title),
+    aliases: document.aliases.map(prepareField),
+    description: document.description ? prepareField(document.description) : null,
+  };
+}
+
 const FUZZY_MIN_TOKEN_LENGTH = 4;
 
 function editDistanceAtMostOne(left: string, right: string): boolean {
@@ -426,15 +448,15 @@ function tokenQuality(queryToken: string, candidateToken: string): number {
   return 0;
 }
 
-function matchField(value: string, query: string, queryTokens: readonly string[]): FieldMatch | null {
-  const normalized = normalizeSearchText(value);
-  if (!normalized || !query) return null;
-  if (normalized === query) return { quality: 3, reason: "exact" };
-  if (normalized.startsWith(query)) return { quality: 2, reason: "prefix" };
+function matchField(field: SearchField, query: SearchField): FieldMatch | null {
+  const normalized = field.normalized;
+  if (!normalized || !query.normalized) return null;
+  if (normalized === query.normalized) return { quality: 3, reason: "exact" };
+  if (normalized.startsWith(query.normalized)) return { quality: 2, reason: "prefix" };
 
-  const candidateTokens = tokens(normalized);
+  const candidateTokens = field.tokens;
   let weakest = 3;
-  for (const queryToken of queryTokens) {
+  for (const queryToken of query.tokens) {
     let best = 0;
     for (const candidateToken of candidateTokens) {
       best = Math.max(best, tokenQuality(queryToken, candidateToken));
@@ -449,18 +471,18 @@ function matchField(value: string, query: string, queryTokens: readonly string[]
   return { quality: 1.4, reason: "tokens" };
 }
 
-function resultForDocument(document: SearchIndexDocument, query: string): SearchResult | null {
-  const queryTokens = tokens(query);
-  const titleMatch = matchField(document.title, query, queryTokens);
-  const aliasMatch = titleMatch ? null : document.aliases.reduce<FieldMatch | null>(
+function resultForDocument(entry: PreparedDocument, query: SearchField): SearchResult | null {
+  const document = entry.document;
+  const titleMatch = matchField(entry.title, query);
+  const aliasMatch = titleMatch ? null : entry.aliases.reduce<FieldMatch | null>(
     (best, alias) => {
-      const match = matchField(alias, query, queryTokens);
+      const match = matchField(alias, query);
       return match && (!best || match.quality > best.quality) ? match : best;
     },
     null,
   );
-  const descriptionMatch = !titleMatch && !aliasMatch && document.description
-    ? matchField(document.description, query, queryTokens)
+  const descriptionMatch = !titleMatch && !aliasMatch && entry.description
+    ? matchField(entry.description, query)
     : null;
 
   let reason: SearchMatchReason;
@@ -503,6 +525,15 @@ type EntityPlace = Readonly<{
   kind: EntityPlaceKind;
   placeName: string;
 }>;
+
+type PreparedEntity = Readonly<{
+  entity: IpaEntity;
+  place: EntityPlace;
+  placeField: SearchField;
+  fields: readonly SearchField[];
+}>;
+
+type EntityQuery = Readonly<{ field: SearchField; place: SearchField }>;
 
 const MUNICIPALITY_PREFIX =
   /^(?:comune di|comune della|comune del|comune dello|comune dei|comune degli|comune delle)\s+/u;
@@ -558,10 +589,25 @@ function placeQueryText(query: string): string {
   return placeTokens.join(" ");
 }
 
-function entityScore(entity: IpaEntity, query: string, match: FieldMatch): number {
+function prepareEntity(entity: IpaEntity): PreparedEntity {
   const place = classifyEntityPlace(entity);
-  const placeQuery = placeQueryText(query) || query;
-  const placeMatch = matchField(place.placeName, placeQuery, tokens(placeQuery));
+  return {
+    entity,
+    place,
+    placeField: prepareField(place.placeName),
+    fields: [entity.denominazione, entity.acronimo, entity.codiceIpa, entity.tipologia]
+      .filter((value): value is string => Boolean(value))
+      .map(prepareField),
+  };
+}
+
+function prepareEntityQuery(rawQuery: string): EntityQuery {
+  const field = prepareField(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
+  const normalized = placeQueryText(field.normalized);
+  return { field, place: { normalized, tokens: tokens(normalized) } };
+}
+
+function entityScore(place: EntityPlace, placeMatch: FieldMatch | null, match: FieldMatch): number {
   const base = 1_600 + match.quality * 100;
 
   if (placeMatch?.reason === "exact") {
@@ -582,22 +628,18 @@ function entityScore(entity: IpaEntity, query: string, match: FieldMatch): numbe
   return base;
 }
 
-function resultForEntity(entity: IpaEntity, query: string): SearchResult | null {
-  const queryTokens = tokens(query);
-  const place = classifyEntityPlace(entity);
-  const placeQuery = placeQueryText(query);
-  const placeTokens = placeQuery ? tokens(placeQuery) : [];
-  const placeMatch = placeQuery
-    ? matchField(place.placeName, placeQuery, placeTokens)
+function resultForEntity(entry: PreparedEntity, query: EntityQuery): SearchResult | null {
+  const { entity, place } = entry;
+  const placeMatch = query.place.normalized
+    ? matchField(entry.placeField, query.place)
     : null;
 
-  const fields = [entity.denominazione, entity.acronimo, entity.codiceIpa, entity.tipologia].filter(
-    (value): value is string => Boolean(value),
-  );
-  const fieldMatch = fields.reduce<FieldMatch | null>((best, field) => {
+  const fieldMatch = entry.fields.reduce<FieldMatch | null>((best, field) => {
     const candidates = [
-      matchField(field, query, queryTokens),
-      placeQuery && placeQuery !== query ? matchField(field, placeQuery, placeTokens) : null,
+      matchField(field, query.field),
+      query.place.normalized && query.place.normalized !== query.field.normalized
+        ? matchField(field, query.place)
+        : null,
     ];
     for (const candidate of candidates) {
       if (candidate && (!best || candidate.quality > best.quality)) best = candidate;
@@ -612,6 +654,9 @@ function resultForEntity(entity: IpaEntity, query: string): SearchResult | null 
   if (!match) return null;
 
   const isMunicipality = place.kind === "municipality";
+  const scoredPlaceMatch = query.place.normalized
+    ? placeMatch
+    : matchField(entry.placeField, query.field);
   const description = [entity.tipologia, entity.codiceIpa].filter(Boolean).join(" · ") || null;
   return {
     id: `entity:${entity.codiceIpa}`,
@@ -621,7 +666,7 @@ function resultForEntity(entity: IpaEntity, query: string): SearchResult | null 
     type: "ente",
     description,
     match: { reason: "entity", label: SEARCH_MATCH_LABELS.entity },
-    score: entityScore(entity, query, match),
+    score: entityScore(place, scoredPlaceMatch, match),
   };
 }
 
@@ -629,17 +674,31 @@ export function rankEntitySearchResults(
   entities: readonly IpaEntity[],
   rawQuery: string,
 ): readonly SearchResult[] {
-  const query = normalizeSearchText(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
-  if (tokens(query).length === 0) return [];
+  const query = prepareEntityQuery(rawQuery);
+  if (query.field.tokens.length === 0) return [];
+  return rankPreparedEntities(entities.map(prepareEntity), query);
+}
 
+function rankPreparedEntities(entries: readonly PreparedEntity[], query: EntityQuery): readonly SearchResult[] {
   const byHref = new Map<string, SearchResult>();
-  for (const entity of entities) {
-    const result = resultForEntity(entity, query);
+  for (const entry of entries) {
+    const result = resultForEntity(entry, query);
     if (!result) continue;
     const existing = byHref.get(result.href);
     if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
   }
   return [...byHref.values()].sort(compareResults);
+}
+
+// Only deployment-owned data is indexed across queries; live IPA records stay fresh.
+let municipalitySearchIndex: readonly PreparedEntity[] | undefined;
+let siteSearchIndex: readonly PreparedDocument[] | undefined;
+
+function searchLocalMunicipalities(rawQuery: string): readonly SearchResult[] {
+  const query = prepareEntityQuery(rawQuery);
+  if (query.field.tokens.length === 0) return [];
+  municipalitySearchIndex ??= getMunicipalitySearchEntities().map(prepareEntity);
+  return rankPreparedEntities(municipalitySearchIndex, query);
 }
 
 function compareResults(left: SearchResult, right: SearchResult): number {
@@ -653,18 +712,25 @@ function compareResults(left: SearchResult, right: SearchResult): number {
 }
 
 export function searchSiteDocuments(rawQuery: string): readonly SearchResult[] {
-  return rankSearchDocuments(SEARCH_DOCUMENTS, rawQuery);
+  const query = prepareField(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
+  if (query.tokens.length === 0) return [];
+  siteSearchIndex ??= SEARCH_DOCUMENTS.map(prepareDocument);
+  return rankPreparedDocuments(siteSearchIndex, query);
 }
 
 export function rankSearchDocuments(
   documents: readonly SearchIndexDocument[],
   rawQuery: string,
 ): readonly SearchResult[] {
-  const query = normalizeSearchText(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
-  if (tokens(query).length === 0) return [];
+  const query = prepareField(rawQuery.slice(0, GLOBAL_SEARCH_MAX_QUERY_LENGTH));
+  if (query.tokens.length === 0) return [];
+  return rankPreparedDocuments(documents.map(prepareDocument), query);
+}
+
+function rankPreparedDocuments(entries: readonly PreparedDocument[], query: SearchField): readonly SearchResult[] {
   const byHref = new Map<string, SearchResult>();
-  for (const document of documents) {
-    const result = resultForDocument(document, query);
+  for (const entry of entries) {
+    const result = resultForDocument(entry, query);
     if (!result) continue;
     const existing = byHref.get(result.href);
     if (!existing || compareResults(result, existing) < 0) byHref.set(result.href, result);
@@ -708,10 +774,7 @@ export function searchGlobalLocalFallback(input: {
   const limit = safeLimit(input.limit);
   const staticResults = searchSiteDocuments(query);
   const entityLimit = Math.min(50, Math.max(limit * 3, 12));
-  const municipalityResults = rankEntitySearchResults(
-    getMunicipalitySearchEntities(),
-    normalizedQuery,
-  ).slice(0, entityLimit);
+  const municipalityResults = searchLocalMunicipalities(normalizedQuery).slice(0, entityLimit);
 
   const byHref = new Map<string, SearchResult>();
   for (const result of [...staticResults, ...municipalityResults]) {
@@ -757,10 +820,7 @@ export async function searchGlobal(input: {
   const entityLimit = Math.min(50, Math.max(limit * 3, 12));
   // Always rank local municipal identities so "Milano" / "Bologna" surface the
   // Comune even when the IPA SQL window is alphabetical and agency-heavy.
-  const municipalityResults = rankEntitySearchResults(
-    getMunicipalitySearchEntities(),
-    normalizedQuery,
-  ).slice(0, entityLimit);
+  const municipalityResults = searchLocalMunicipalities(normalizedQuery).slice(0, entityLimit);
 
   try {
     const entitySearch = await searchIpaEntitiesByPrefix({

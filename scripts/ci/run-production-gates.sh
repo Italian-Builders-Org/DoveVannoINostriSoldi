@@ -12,6 +12,15 @@ READY_TIMEOUT="${READY_TIMEOUT:-90}"
 READY_PATH="/territori/irpef"
 BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
 
+# CI splits the gates into two parallel jobs, each with its own build and
+# server; a local run keeps the whole sequence.
+PRODUCTION_GATES="${PRODUCTION_GATES:-all}"
+case "$PRODUCTION_GATES" in
+  all|main|core) ;;
+  *) echo "ERROR: PRODUCTION_GATES must be all, main or core: ${PRODUCTION_GATES}" >&2; exit 1 ;;
+esac
+run_part() { [[ "$PRODUCTION_GATES" == all || "$PRODUCTION_GATES" == "$1" ]]; }
+
 # The MCP route allows 30 POSTs per public-client window. Keep the declared
 # production sequence auditable and fail before starting a server if it ever
 # exceeds that budget.
@@ -104,6 +113,7 @@ echo "::endgroup::"
 
 export DVNS_BASE_URL="$BASE_URL"
 
+if run_part main; then
 echo "::group::Browser political atlas"
 node --experimental-strip-types scripts/browser/politici-atlas.mjs
 echo "::endgroup::"
@@ -197,9 +207,19 @@ echo "::group::MEF IVA API and MCP HTTP"
 node scripts/mef_iva_http_smoke.mjs
 echo "::endgroup::"
 
+fi
+
+if run_part core; then
 echo "::group::Browser core suite"
 npm run test:browser:core
 echo "::endgroup::"
+
+echo "::group::Browser core suite in modalità scura"
+DVNS_COLOR_SCHEME=dark DVNS_CORE_MODE=theme npm run test:browser:core
+echo "::endgroup::"
+fi
+
+if run_part main; then
 
 echo "::group::Browser procurement peer comparisons"
 npm run test:browser:procurement-peers
@@ -228,7 +248,6 @@ echo "::endgroup::"
 echo "::group::Interazioni e grafici in modalità scura"
 DVNS_COLOR_SCHEME=dark npm run test:browser:assistant
 DVNS_COLOR_SCHEME=dark npm run test:browser:assistant-free
-DVNS_COLOR_SCHEME=dark DVNS_CORE_MODE=theme npm run test:browser:core
 DVNS_COLOR_SCHEME=dark npm run test:browser:charts
 echo "::endgroup::"
 
@@ -255,5 +274,6 @@ echo "::endgroup::"
 echo "::group::Lighthouse budget"
 npm run test:lighthouse
 echo "::endgroup::"
+fi
 
-echo "All production gates passed."
+echo "All production gates passed (${PRODUCTION_GATES})."

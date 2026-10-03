@@ -8,8 +8,8 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 
 | Percorso | Risposta | Lavoro e limiti |
 | --- | --- | --- |
-| `/enti/[codice]/appalti` | ISR 6 ore per riepilogo, operatori, procedure e aggiudicazioni senza filtri | Snapshot ANAC validati; filtri e concentrazione restano dinamici |
-| `/appalti/operatori/[ref]` | ISR 6 ore per la prima pagina senza filtri | Letture degli intervalli del pack; altre pagine e filtri restano dinamici |
+| `/enti/[codice]/appalti` | Snapshot per deployment per riepilogo, operatori, procedure e aggiudicazioni senza filtri | Snapshot ANAC validati; filtri e concentrazione restano dinamici |
+| `/appalti/operatori/[ref]` | Snapshot per deployment per la prima pagina senza filtri | Letture degli intervalli del pack; altre pagine e filtri restano dinamici |
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
 | `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
@@ -25,7 +25,9 @@ Non pubblicare link o sitemap verso questi alias; `robots.txt` li esclude per i 
 di campagna, non creano nuove varianti del contenuto. Filtri effettivi ripetuti
 non entrano nella cache della vista predefinita; i parametri inutilizzati non
 moltiplicano le chiavi, anche se ripetuti. CPV e anno vuoti nei form equivalgono
-all’assenza del filtro. Il parametro `operator` filtra
+all’assenza del filtro. Anche i singoli campi vuoti del form storico operatori
+equivalgono all’assenza del filtro; campi effettivi ripetuti restano dinamici.
+Il parametro `operator` filtra
 solo la vista `operator`; non divide la cache delle quattro viste predefinite.
 `metric` ordina soltanto `operators` e seleziona il denominatore di `concentration`.
 I link non propagano questi parametri nelle viste che non li usano. Filtri CPV,
@@ -41,9 +43,16 @@ con snapshot illeggibile o non validato deve fallire, conservando la precedente
 risposta valida; non renderizzare un errore temporaneo come successo. Non usare
 `connection()` condizionalmente in una route ISR: causa Static to Dynamic Error.
 `generateStaticParams()` restituisce `[]`: il deploy non costruisce tutte le
-schede. Il TTL limita le rigenerazioni, non impone una nuova acquisizione dati.
-Gli snapshot e le loro prove cambiano con il deployment; verificare anche un
-aggiornamento dello snapshot prima di cambiare questa politica.
+schede. I due wrapper ANAC leggono esclusivamente file versionati del deployment,
+incluse le identità SIOPE e IPA già acquisite: `revalidate=false` evita di
+rigenerare a tempo dati immutabili, secondo la [configurazione Next](https://nextjs.org/docs/app/guides/caching-without-cache-components#route-segment-config-revalidate).
+Le [chiavi Vercel](https://vercel.com/docs/caching/cdn-cache/purge#cache-keys)
+includono il deployment: pubblicarne uno nuovo seleziona la cache della nuova
+revisione, mentre un rollback conserva quella del precedente snapshot.
+La prima visita richiede ancora generazione e validazione; URL nuovi, filtri
+dinamici e varianti HTML/RSC possono ancora produrre miss. Il TTL non acquisisce
+nuove fonti e non corregge questi costi. Prima di cambiare la politica verificare
+anche un aggiornamento dello snapshot in un nuovo deployment.
 
 ## Cache dei dati
 
@@ -75,6 +84,16 @@ Anche l'ordinamento degli importi degli enti confronta cifre decimali canoniche
 validate, conservando segni e precisione; somme e rapporti restano BigInt.
 Su Node 24.19.0 il batch caldo Roma/Milano/Bologna passa da 222 a 190 ms CPU
 (14,5% in meno), con risultati integrali identici. Non aggiunge cache.
+
+Il reader storico operatori riusa il record richiesto già decodificato durante
+la validazione dello shard freddo. Il riuso è locale alla chiamata: non trattiene
+record dei vicini e non amplia le cache. Hash, identità dei record e schema della
+scheda richiesta restano obbligatori.
+
+I filtri del corpus integrato normalizzano query e valori attesi una volta per
+richiesta. Ogni riga conserva il confronto italiano, gli stessi operatori AND/OR
+e la verifica del chunk. Il cursore resta legato al filtro originale, non alla
+forma normalizzata; non si conservano query o risultati in cache.
 
 La ricerca testuale PNRR asili normalizza una volta i campi dei progetti validati,
 con un indice legato alle loro referenze nel modulo dello snapshot. Non conserva

@@ -29,6 +29,25 @@ test('default pages and tracking parameters do not create uncached rendering var
   assert.equal(proxy(request('/appalti/operatori/op-00000001?minAmount=100')).headers.get('x-middleware-rewrite'), null);
 });
 
+test('empty operator form fields share the first-page snapshot while actual and repeated filters stay dynamic', () => {
+  const path = '/appalti/operatori/op-00000001';
+  const fields = ['year', 'authority', 'procedure', 'minAmount', 'maxAmount'];
+  const blankForm = fields.map(key => `${key}=`).join('&');
+  for (const query of [blankForm, `page=1&${blankForm}`, 'page=', ...fields.map(key => `${key}=`)]) {
+    assert.equal(proxy(request(`${path}?${query}`)).headers.get('x-middleware-rewrite'), `https://example.test/snapshot-pages/operatori/op-00000001?${query}`, query);
+  }
+  const rscQuery = `${blankForm}&_rsc=operator-cache-proof&fbclid=tracking`;
+  const rsc = new NextRequest(`https://example.test${path}?${rscQuery}`, { headers: { rsc: '1', 'next-router-prefetch': '1' } });
+  assert.equal(proxy(rsc).headers.get('x-middleware-rewrite'), `https://example.test/snapshot-pages/operatori/op-00000001?${rscQuery}`);
+  assert.equal(proxy(request(`/snapshot-pages/operatori/op-00000001?${blankForm}`)).headers.get('x-middleware-next'), '1');
+  for (const query of ['page=2', 'page=&page=', ...fields.flatMap(key => [`${key}=&${key}=`, `${key}=&${key}=invalid`, `${blankForm}&${key}=invalid`, `${key}=invalid`])]) {
+    assert.equal(proxy(request(`${path}?${query}`)).headers.get('x-middleware-rewrite'), null, query);
+  }
+  const internalFiltered = proxy(request('/snapshot-pages/operatori/op-00000001?year=2024'));
+  assert.equal(internalFiltered.status, 307);
+  assert.equal(internalFiltered.headers.get('location'), `https://example.test${path}?year=2024`);
+});
+
 test('declared crawlers share limits across expensive pages and host rewrites; browser and user agents remain usable', t => {
   let now = Date.now() + 600_000;
   t.mock.method(Date, 'now', () => now);

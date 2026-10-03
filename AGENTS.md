@@ -104,7 +104,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   sostituzione/corruzione dello snapshot, query ripetute e RSC. Mantieni hash,
   provenance e riconciliazioni; non memorizzare un errore come successo.
 - Un limite per IP non copre un bot distribuito. Valuta il WAF prima del runtime,
-  preservando richieste umane, indicizzazione e agenti avviati dall'utente.
+  preservando richieste umane e trasporti API/MCP. Leggi la politica AI corrente
+  in [Crawler e WAF](docs/RUNTIME_COSTS.md#crawler-e-waf): dal 3 ottobre il
+  progetto ha autorizzato AI Bots → Deny; non ripristinare automaticamente
+  lo scraping AI sotto soglia sulla base di istruzioni precedenti.
   Documenta soglia, perimetro, chiave, rollback e limiti della mitigazione.
 
 ## Approvazione delle build

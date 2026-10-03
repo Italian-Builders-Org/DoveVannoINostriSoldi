@@ -1,0 +1,18 @@
+{
+  "name": "dvns-govcore-offline-link-proof",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs --test tests/*.test.mjs",
+    "link": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs link-public-entities.mjs",
+    "bench": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs bench.mjs"
+  },
+  "dependencies": {
+    "@gov-core/client": "file:vendor/gov-core-client-0.1.0.tgz"
+  }
+}

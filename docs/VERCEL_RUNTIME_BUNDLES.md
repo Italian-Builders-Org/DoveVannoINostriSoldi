@@ -49,6 +49,16 @@ Richiede inoltre shard enti/CPV, schede o blocchi di consultazione degli operato
 e source lock consumati da ciascuna route, derivando l'inventario dai manifest
 versionati. L'elenco operatori non deve includere gli shard delle schede.
 
+I file `data/source-ledger/elements/` servono alla CI e sono vietati in tutti i
+trace runtime. Release proof, receipt, catalogo e chunk restano inclusi dove
+consumati. Lo snapshot PNRR asili è richiesto dalle schede enti e dalle API che
+lo leggono; hub, struttura e pagine appalti non devono includerlo.
+
+I pattern Next vengono confrontati anche con nomi interni `/app/...` e con
+`contains: true`: un pattern della scheda può includere involontariamente i suoi
+discendenti. I test verificano consumatori e non consumatori con il matcher
+installato; il controllo sui trace della build verifica i file effettivi.
+
 Per ispezionare una build esistente:
 
 ```bash

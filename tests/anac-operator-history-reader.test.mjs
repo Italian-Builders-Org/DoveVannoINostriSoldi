@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
@@ -97,6 +97,42 @@ test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alter
       pack.subarray(0, pack.length - 1),
     );
     assert.throws(() => readOperatorHistoryAwards(history, [0]), /Dimensioni/);
+
+    // A locally reused requested record must still wait for every sibling's
+    // syntax and identity check, and pass its complete summary contract.
+    const manifestPath = join(directory, "manifest.json");
+    const originalManifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const originalShard = readFileSync(join(directory, bucket + ".jsonl.gz"));
+    const summaryLine = JSON.stringify(fixture.summary);
+    function replaceShard(raw) {
+      const compressed = gzipSync(raw);
+      const manifest = structuredClone(originalManifest);
+      Object.assign(manifest.shards.find((file) => file.id === bucket), {
+        bytes: compressed.length,
+        sha256: digest(compressed),
+      });
+      writeFileSync(join(directory, bucket + ".jsonl.gz"), compressed);
+      writeFileSync(manifestPath, JSON.stringify(manifest));
+    }
+    replaceShard(summaryLine + '\n{"ref":\n');
+    assert.throws(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
+    assert.throws(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
+    replaceShard(summaryLine + "\n" + summaryLine + "\n");
+    assert.throws(() => getOperatorHistory(fixture.summary.ref), /Identità/);
+    let neighbour = 2;
+    const operatorRef = (value) => `op-${String(value).padStart(8, "0")}`;
+    while (digest(operatorRef(neighbour)).slice(0, 2) === bucket) neighbour++;
+    replaceShard(summaryLine + "\n" + JSON.stringify({ ...fixture.summary, ref: operatorRef(neighbour) }) + "\n");
+    assert.throws(() => getOperatorHistory(fixture.summary.ref), /Identità/);
+    replaceShard(JSON.stringify({ ...fixture.summary, awardCount: 0 }) + "\n");
+    assert.throws(() => getOperatorHistory(fixture.summary.ref));
+    assert.throws(() => getOperatorHistory(fixture.summary.ref));
+    writeFileSync(join(directory, bucket + ".jsonl.gz"), originalShard);
+    writeFileSync(manifestPath, JSON.stringify(originalManifest));
+    assert.deepEqual(getOperatorHistory(fixture.summary.ref), history);
+    let missing = 2;
+    while (digest(operatorRef(missing)).slice(0, 2) !== bucket) missing++;
+    assert.equal(getOperatorHistory(operatorRef(missing)), null);
   } finally {
     process.chdir(previous);
     rmSync(root, { recursive: true, force: true });

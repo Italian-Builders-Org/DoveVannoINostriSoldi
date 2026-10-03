@@ -31,6 +31,14 @@ const HISTORY_ROUTES = new Set([
   "stato/legislature/page.js.nft.json",
   "api/spese/stato/legislature/route.js.nft.json",
 ]);
+const CHILDCARE_NONCONSUMER_ROUTES = new Set([
+  "enti/page.js.nft.json",
+  "enti/[codice]/appalti/page.js.nft.json",
+  "enti/[codice]/appalti/confronti/page.js.nft.json",
+  "snapshot-pages/enti/[codice]/[view]/page.js.nft.json",
+  "api/enti/route.js.nft.json",
+  "api/enti/[codice]/struttura/route.js.nft.json",
+]);
 
 function walk(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -47,7 +55,12 @@ export function checkTrace(root, manifest, required = [], forbidden = [], forbid
   }
   const paths = new Set(trace.files.map((file) => resolve(dirname(manifest), file)));
   const files = [...paths].map((file) => relative(root, file).replaceAll("\\", "/"));
+  const route = relative(resolve(root, ".next/server/app"), manifest).replaceAll("\\", "/");
+  // Intake is verified offline; runtime validates aggregate proofs and row chunks.
+  // Childcare remains required below for the routes that publish its data.
   const unexpected = files.filter((file) => /^(tests|docs|research)\//.test(file)
+    || file.startsWith("data/source-ledger/elements/")
+    || (CHILDCARE_NONCONSUMER_ROUTES.has(route) && file === "src/data/generated/pnrr-childcare.data.json")
     || forbidden.some((prefix) => file.startsWith(`${prefix}/`))
     || forbiddenFilePrefixes.some((prefix) => file.startsWith(prefix)));
   if (unexpected.length) throw new Error(`${relative(root, manifest)} traces unrelated files: ${unexpected.slice(0, 5).join(", ")}`);

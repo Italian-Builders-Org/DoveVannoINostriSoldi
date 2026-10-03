@@ -201,6 +201,14 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    "/*": ["data/source-ledger/elements/**/*"],
+    // contains:true also matches descendants. !(/**) keeps each hub exact;
+    // the procurement, structure and cached procurement routes do not read childcare.
+    "/app/enti!(/**)": childcareRuntimeFiles,
+    "/app/api/enti!(/**)": childcareRuntimeFiles,
+    "/app/enti/*/appalti/**": childcareRuntimeFiles,
+    "/app/api/enti/*/struttura": childcareRuntimeFiles,
+    "/app/snapshot-pages/enti/**": childcareRuntimeFiles,
     ...Object.fromEntries(
       ["/app/fonti/catalogo/**", "/app/fonti/copertura/**", "/app/api/fonti/catalogo/**"].map(
         (route) => [route, ["src/data/generated/integrated/rows/*"]],
@@ -222,7 +230,6 @@ const nextConfig: NextConfig = {
       "src/data/generated/anac-operator-awards-index/summaries.json",
       "src/data/generated/anac-operator-browse/*",
     ],
-    "/api/mcp": ["data/source-ledger/elements/**/*"],
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
   outputFileTracingIncludes: {
@@ -242,7 +249,7 @@ const nextConfig: NextConfig = {
     "/coesione/asili": childcareRuntimeFiles,
     "/progetti/*": childcareRuntimeFiles,
     "/api/pnrr/asili": childcareRuntimeFiles,
-    "/api/enti/*": childcareRuntimeFiles,
+    "/app/api/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     "/api/lavoro/naspi": naspiRuntimeFiles,
     "/api/famiglia/assegno-unico": assegnoUnicoRuntimeFiles,
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
@@ -278,7 +285,8 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
-    "/enti/*": [...entityProcurementRuntimeFiles, ...childcareRuntimeFiles],
+    "/enti/*": entityProcurementRuntimeFiles,
+    "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/enti/*/appalti/confronti": [
       "src/data/generated/anac-procurement-peers/*",

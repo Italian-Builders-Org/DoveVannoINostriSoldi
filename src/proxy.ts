@@ -112,7 +112,8 @@ function snapshotPath(request: NextRequest, path: string): string | null {
     || (key === "metric" && query.get(key) === "count"))) {
     return `${SNAPSHOT_PREFIX}enti/${entity[1]}/${entityView}`;
   }
-  if (operator && semantic.every(key => key === "page" && query.get(key) === "1")) return `${SNAPSHOT_PREFIX}operatori/${operator[1]}`;
+  if (operator && semantic.every(key => query.get(key) === ""
+    || (key === "page" && query.get(key) === "1"))) return `${SNAPSHOT_PREFIX}operatori/${operator[1]}`;
   if (path === "/comuni" && semantic.every(key => key === "ente")) {
     const code = query.get("ente") || "c_e897";
     return IPA_CODE.test(code) ? `${SNAPSHOT_PREFIX}comuni/${code}` : null;

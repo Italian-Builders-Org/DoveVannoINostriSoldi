@@ -17,7 +17,7 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
 }
 
 const snapshotEvidence = [];
-for (const route of ["/enti/c_h501/appalti", "/enti/c_h501/appalti?view=procedures", "/appalti/operatori/op-00000001", "/comuni?ente=c_f205"]) {
+for (const [route, seconds] of [["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
   const first = await fetch(new URL(route, base));
   assert.equal(first.status, 200, route);
   const html = await first.text();
@@ -34,7 +34,7 @@ for (const route of ["/enti/c_h501/appalti", "/enti/c_h501/appalti?view=procedur
     } while (current.headers.get("x-nextjs-cache") !== "HIT" && Date.now() < deadline);
     assert.equal(current.headers.get("x-nextjs-cache"), "HIT", route);
   }
-  assert.match(current.headers.get("cache-control") ?? "", /s-maxage=21600(?:,|$)/, route);
+  assert.match(current.headers.get("cache-control") ?? "", new RegExp(`s-maxage=${seconds}(?:,|$)`), route);
   const second = await fetch(new URL(route, base));
   assert.equal(second.headers.get("x-nextjs-cache"), "HIT", route);
   assert.equal(await second.text(), html, "Cached responses must preserve the same snapshot");
@@ -50,7 +50,7 @@ for (const route of ["/enti/c_h501/appalti", "/enti/c_h501/appalti?view=procedur
 for (const view of ["summary", "operators", "procedures", "awards"]) {
   const canonical = await fetch(new URL(`/enti/c_h501/appalti?view=${view}`, base));
   const legacy = await fetch(new URL(`/enti/c_h501/appalti?view=${view}&operator=op-000001&operator=op-000002&metric=count&cpv=&awardYear=`, base));
-  assert.match(legacy.headers.get("cache-control") ?? "", /s-maxage=21600(?:,|$)/, view);
+  assert.match(legacy.headers.get("cache-control") ?? "", /s-maxage=31536000(?:,|$)/, view);
   assert.equal(await legacy.text(), await canonical.text(), `Ignored operator must not split ${view} snapshots`);
 }
 for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=operators&metric=value", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
@@ -58,6 +58,36 @@ for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&opera
   assert.match(response.headers.get("cache-control") ?? "", /no-store/, route);
   await response.arrayBuffer();
 }
+// Submitting the operator form with its five default fields must reuse the
+// unfiltered page. Actual or ambiguous filters still require dynamic rendering.
+const operatorPath = "/appalti/operatori/op-00000001";
+const operatorFields = ["year", "authority", "procedure", "minAmount", "maxAmount"];
+const blankOperatorForm = operatorFields.map(key => `${key}=`).join("&");
+const operatorDefault = await fetch(new URL(operatorPath, base));
+const operatorHtml = await operatorDefault.text();
+const operatorBlank = await fetch(new URL(`${operatorPath}?${blankOperatorForm}`, base));
+assert.equal(operatorBlank.status, 200);
+assert.equal(operatorBlank.headers.get("x-nextjs-cache"), "HIT", "Empty operator form must reuse the default snapshot");
+assert.match(operatorBlank.headers.get("cache-control") ?? "", /s-maxage=31536000(?:,|$)/);
+assert.equal(await operatorBlank.text(), operatorHtml, "Empty operator form must preserve the unfiltered body");
+const operatorRscDefault = await fetch(new URL(`${operatorPath}?_rsc=operator-empty-form-proof`, base), { headers: { rsc: "1" } });
+const operatorRscBlank = await fetch(new URL(`${operatorPath}?${blankOperatorForm}&_rsc=operator-empty-form-proof`, base), { headers: { rsc: "1" } });
+for (const response of [operatorRscDefault, operatorRscBlank]) {
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /text\/x-component/);
+  assert.equal(response.headers.get("x-nextjs-cache"), "HIT");
+}
+assert.equal(await operatorRscBlank.text(), await operatorRscDefault.text(), "Empty operator form must preserve the RSC snapshot");
+for (const query of ["year=2024", "procedure=UNRECOGNIZED_PROCEDURE", ...operatorFields.flatMap(key => [`${key}=invalid`, `${key}=&${key}=`])]) {
+  const response = await fetch(new URL(`${operatorPath}?${query}`, base), { redirect: "manual" });
+  assert.equal(response.status, 200, query);
+  assert.match(response.headers.get("cache-control") ?? "", /no-store/, query);
+  const html = await response.text();
+  if (query.includes("=&") || (query.endsWith("=invalid") && !query.startsWith("procedure="))) {
+    assert.match(html, /Filtri non validi/, query);
+  }
+}
+snapshotEvidence.push({ route: `${operatorPath}?${blankOperatorForm}`, cache: "HIT", rsc: true, sha256: createHash("sha256").update(operatorHtml).digest("hex") });
 for (const route of ["/comuni?ente=not_a_published_municipality", "/enti/no_such_entity/appalti"]) {
   const response = await fetch(new URL(route, base));
   assert.equal(response.status, 200, "Preserve the published missing-data state");

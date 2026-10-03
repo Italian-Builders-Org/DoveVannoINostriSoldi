@@ -5,11 +5,11 @@ Questa è la mappa iniziale delle fonti. Il criterio è semplice: prima fonti is
 ## Registro integrato row-level
 
 Oltre alle pipeline istituzionali descritte sotto, il repository contiene un
-rilascio integrato di 79 dataset curati. Prima delle viste applicative sono
-stati chiusi tre registri: 51.303 elementi inventariati, 34.071 identità di fonte e
-13.321.128 righe sorgente. Le equazioni, tutti i dataset, gli stati di licenza
-e i comandi di verifica sono documentati in
-[INTEGRATED_SOURCE_LEDGER.md](INTEGRATED_SOURCE_LEDGER.md).
+rilascio integrato di dataset curati. Prima delle viste applicative sono
+stati chiusi tre registri: elementi inventariati, identità di fonte e righe
+sorgente. Totali ed equazioni, tutti i dataset, gli stati di licenza e i comandi
+di verifica sono documentati in [INTEGRATED_SOURCE_LEDGER.md](INTEGRATED_SOURCE_LEDGER.md),
+che li confronta con il catalogo pubblicato.
 
 Il catalogo non promuove una nota secondaria a fonte ufficiale: conserva i
 collegamenti pubblicabili e mette in quarantena valori locali, malformed,
@@ -171,12 +171,13 @@ spesa pubblica e non costruisce classifiche. Controllo offline:
 `python3 scripts/etl/eurostat_inequality_corpus.py check`; source lock:
 `scripts/etl/specs/eurostat-inequality.source.json`.
 
-Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
+Il periodo di riferimento è valorizzato soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto
 esplicito di un aggregato derivato. Gli anni presenti solo in testo libero o
-negli URL non vengono usati. I 47 dataset senza un confine non ambiguo restano
-quindi su “Non disponibile”; gli estremi futuri degli incarichi descrivono la
+negli URL non vengono usati. I dataset senza un confine non ambiguo restano
+quindi su “Non disponibile” (l'elenco dei periodi ammessi è fissato in
+`tests/integrated-curated-datasets.test.mjs`); gli estremi futuri degli incarichi descrivono la
 durata dichiarata del record e non una data di pubblicazione o acquisizione.
 
 Due insiemi `catalog-only` espongono anche il denominatore fisico usato nella

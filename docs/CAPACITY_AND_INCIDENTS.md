@@ -282,7 +282,7 @@ con il profilo avviene anche a cache calda. Il limite combinato shard/record è
 Per gli operatori gli offset sono legati a digest e bucket, limitati a 8 MiB;
 la validazione del record selezionato resta obbligatoria prima della sua cache.
 
-### WAF: mitigazione del 26 settembre, aggiornata il 1 ottobre 2026
+### WAF: mitigazione del 26 settembre, aggiornata il 3 ottobre 2026
 
 Le impostazioni WAF sono esterne al Git: questo testo documenta lo stato
 applicato, non provisiona regole. Prima di cambiarle leggere configurazione
@@ -298,8 +298,13 @@ I nomi storici delle regole sono conservati; non indicano più una restrizione
 ai soli operatori o appalti. Anche le nuove pagine rientrano nel limite.
 Le richieste oltre soglia ricevono 429, senza ban permanente. Le regole generali
 per IP, MCP e API rimangono attive. Claude-User, Meta-ExternalFetcher e browser
-normali non corrispondono a queste due regole. I crawler riconosciuti possono
-continuare sotto soglia. Pro offre IP e JA4 come chiavi; contatori per User-Agent
+normali non corrispondono a queste due regole. Il 3 ottobre è stato pubblicato
+anche **AI Bots → Deny**: può rifiutare agenti esclusi dai limiter, compresi
+accessi AI avviati dall'utente. La precedente possibilità di scraping sotto
+soglia non descrive più l'intera configurazione. **Bot Protection → Log** resta
+osservativo; la challenge aggiunta è limitata alla rete e ai percorsi appalti
+documentati in [Crawler e WAF](RUNTIME_COSTS.md#crawler-e-waf).
+Pro offre IP e JA4 come chiavi; contatori per User-Agent
 richiedono altre opzioni di piano: non prometterli come funzione Pro.
 
 JA4 raggruppa client con lo stesso comportamento TLS, non identifica una persona.

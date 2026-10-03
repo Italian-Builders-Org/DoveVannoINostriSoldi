@@ -112,3 +112,26 @@ test("awardees are attributed only through the full exact tender key", () => {
   }
   assert.equal(linked, pnrrChildcareMeta.coverage.awardeeRows - pnrrChildcareMeta.coverage.unmatchedAwardeeRows);
 });
+
+test("text search preserves accents, geographic fields and results after distinct queries", () => {
+  const project = pnrrChildcareData.projects.find((item) =>
+    /[àèéìòù]/iu.test(item.title) && item.title.length <= 180 && item.locations.some((location) => location.municipality));
+  assert.ok(project);
+  const original = queryPnrrChildcare({ query: project.title, limit: 100 });
+  assert.ok(original.data.some((item) => item.cup === project.cup));
+  const decomposed = queryPnrrChildcare({ query: `  ${project.title.normalize("NFD").toLocaleLowerCase("it-IT")}  `, limit: 100 });
+  assert.deepEqual(decomposed.data, original.data);
+  assert.deepEqual(decomposed.pagination, original.pagination);
+
+  const municipality = project.locations.find((location) => location.municipality).municipality;
+  const geographic = queryPnrrChildcare({ query: municipality, limit: 100 });
+  assert.ok(geographic.pagination.total > 0);
+  assert.ok(geographic.data.some((item) => item.cup === project.cup));
+  for (let index = 0; index < 128; index++) {
+    const missing = queryPnrrChildcare({ query: `__pnrr_absent_${index}__` });
+    assert.equal(missing.pagination.total, 0);
+    assert.deepEqual(missing.data, []);
+  }
+  assert.deepEqual(queryPnrrChildcare({ query: project.title, limit: 100 }), original);
+  assert.throws(() => queryPnrrChildcare({ query: "x".repeat(201) }), /200 caratteri/);
+});

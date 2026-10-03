@@ -507,16 +507,24 @@ function sumDecimals(values: readonly string[]): string {
 
 function compareDecimals(left: string, right: string): number {
   if (left === right) return 0;
-  // Callers have already validated canonical decimals, including negative zero.
+  // Canonical decimals are validated at the artifact boundary, including negative zero.
   if (right === "0") return left.startsWith("-") ? -1 : 1;
   if (left === "0") return right.startsWith("-") ? 1 : -1;
-  const [leftInteger, leftScale] = decimalParts(left);
-  const [rightInteger, rightScale] = decimalParts(right);
-  if (leftScale === rightScale) return leftInteger < rightInteger ? -1 : leftInteger > rightInteger ? 1 : 0;
-  const scale = Math.max(leftScale, rightScale);
-  const scaledLeft = leftInteger * BigInt(10) ** BigInt(scale - leftScale);
-  const scaledRight = rightInteger * BigInt(10) ** BigInt(scale - rightScale);
-  return scaledLeft < scaledRight ? -1 : scaledLeft > scaledRight ? 1 : 0;
+  const leftNegative = left.startsWith("-");
+  const rightNegative = right.startsWith("-");
+  if (leftNegative !== rightNegative) return leftNegative ? -1 : 1;
+  const [leftWhole, leftFraction = ""] = (leftNegative ? left.slice(1) : left).split(".");
+  const [rightWhole, rightFraction = ""] = (rightNegative ? right.slice(1) : right).split(".");
+  let result = leftWhole.length !== rightWhole.length
+    ? leftWhole.length < rightWhole.length ? -1 : 1
+    : leftWhole < rightWhole ? -1 : leftWhole > rightWhole ? 1 : 0;
+  if (result === 0) {
+    const scale = Math.max(leftFraction.length, rightFraction.length);
+    const leftDigits = leftFraction.padEnd(scale, "0");
+    const rightDigits = rightFraction.padEnd(scale, "0");
+    result = leftDigits < rightDigits ? -1 : leftDigits > rightDigits ? 1 : 0;
+  }
+  return result === 0 ? 0 : leftNegative ? -result : result;
 }
 
 function gcd(left: bigint, right: bigint): bigint {

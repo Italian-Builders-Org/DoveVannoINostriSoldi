@@ -71,6 +71,20 @@ formattando una volta per totale. La pagina non invoca il filtro CPV quando
 CPU e memoria su Roma, Milano e Bologna. Queste misure locali non stimano
 la riduzione della fattura: confrontare finestre complete di traffico su Vercel.
 
+Anche l'ordinamento degli importi degli enti confronta cifre decimali canoniche
+validate, conservando segni e precisione; somme e rapporti restano BigInt.
+Su Node 24.19.0 il batch caldo Roma/Milano/Bologna passa da 222 a 190 ms CPU
+(14,5% in meno), con risultati integrali identici. Non aggiunge cache.
+
+La ricerca testuale PNRR asili normalizza una volta i campi dei progetti validati,
+con un indice legato alle loro referenze nel modulo dello snapshot. Non conserva
+query o risultati degli utenti. Il benchmark riproducibile
+`scripts/bench/pnrr-childcare-search.mjs` confronta anche Unicode, territori,
+paginazione ed errori: 147 query su Node 24.19.0 passano da 705 a 44 ms CPU
+calda, con digest integrale invariato e circa 1,5 MB di heap trattenuto in più.
+La prima ricerca non migliora: circa 14 ms in entrambi i casi. Queste misure
+riguardano la ricerca locale, non la latenza dell'intera pagina o la fattura.
+
 La ricerca globale riusa solo i campi normalizzati del catalogo e delle identità
 comunali versionate nel deployment. L'indice nasce alla prima ricerca; non cresce
 con le query e non conserva testo degli utenti. I risultati vengono ricostruiti
@@ -178,16 +192,36 @@ per impronta JA4 è stato esteso ad Amazonbot, Bytespider e Applebot-Extended,
 oltre a ClaudeBot, GPTBot, CCBot e Meta-ExternalAgent. Soglia: 30 richieste ogni
 60 secondi, risposta 429. Il 1 ottobre la soglia JA4 è stata ridotta a 10/minuto
 per regione e la regola per IP allineata alle stesse sette famiglie.
-È limitazione dello scraping dichiarato, non un divieto.
-Claude-User, Claude-SearchBot e i browser non corrispondono a questa regola.
+Queste regole limitano lo scraping dichiarato. Dal 3 ottobre 2026 si aggiunge
+il ruleset gestito **AI Bots → Deny**, pubblicato su autorizzazione del
+responsabile del progetto: può bloccare anche ricerca e accessi AI avviati
+dall'utente. Le eccezioni dei limiter non prevalgono su questo ruleset.
+
+**Bot Protection → Log** osserva il traffico senza bloccarlo. Non equivale a
+una mitigazione; il campione include `/api/mcp`, perciò una challenge globale
+interromperebbe client legittimi non browser. La regola
+`procurement-cloud-browser-check` applica invece **Challenge** soltanto a
+GET/HEAD da ASN 45102 verso `/enti/[codice]/appalti`, `/appalti/operatori` e
+`/appalti/operatori/[ref]`. Conserva eccezioni per User-Agent dichiarati di
+ricerca e anteprime, senza azioni Bypass. L'ASN identifica la rete, non l'autore;
+le stringhe User-Agent non sono una verifica d'identità.
+
+Se utenti reali di quella rete non superano il checkpoint, riportare solo
+questa regola a Log. Dopo ogni variazione verificare filtri, navigazione HTML/RSC,
+ricerca, health e inizializzazione MCP. Il conteggio delle challenge non misura
+CPU risparmiata: confrontare periodi completi con stessi ambiente, durata e fuso.
+Le richieste che superano la challenge sono fatturate normalmente.
+[Bot Management](https://vercel.com/docs/bot-management),
+[costi WAF](https://vercel.com/docs/vercel-firewall/vercel-waf/usage-and-pricing).
 
 Un'impronta può essere condivisa o cambiare; il limite JA4 non è un tetto globale
 alla spesa. Un User-Agent è falsificabile. Non bloccare un intero ASN o tutti i
 browser per una classificazione sospetta. I limiti per IP sulle route enti e
 operatori rimangono quelli già attivi. Estendere una soglia stretta a tutte le
 pagine può penalizzare reti condivise: richiede una revisione del perimetro.
-Non abilitare una challenge globale che interrompa API, MCP o agenti avviati
-volontariamente dagli utenti. Se serve una challenge, provarla su una route
+Non abilitare una challenge globale che interrompa API o MCP. Cambiare la
+politica di accesso degli agenti AI richiede una decisione esplicita del progetto.
+Se serve una challenge, provarla su una route
 precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 
 ## Scelte operative

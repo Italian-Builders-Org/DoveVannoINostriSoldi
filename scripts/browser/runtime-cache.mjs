@@ -45,7 +45,15 @@ for (const route of ["/enti/c_h501/appalti", "/enti/c_h501/appalti?view=procedur
   await rsc.arrayBuffer();
   snapshotEvidence.push({ route, initialCache, cache: "HIT", rsc: true, sha256: createHash("sha256").update(html).digest("hex") });
 }
-for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
+// Historical links carry an operator into tabs that do not filter by it.
+// Those URLs must share the default snapshot; an actual operator detail must not.
+for (const view of ["summary", "operators", "procedures", "awards"]) {
+  const canonical = await fetch(new URL(`/enti/c_h501/appalti?view=${view}`, base));
+  const legacy = await fetch(new URL(`/enti/c_h501/appalti?view=${view}&operator=op-000001&operator=op-000002&metric=count&cpv=&awardYear=`, base));
+  assert.match(legacy.headers.get("cache-control") ?? "", /s-maxage=21600(?:,|$)/, view);
+  assert.equal(await legacy.text(), await canonical.text(), `Ignored operator must not split ${view} snapshots`);
+}
+for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=operators&metric=value", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
   const response = await fetch(new URL(route, base));
   assert.match(response.headers.get("cache-control") ?? "", /no-store/, route);
   await response.arrayBuffer();

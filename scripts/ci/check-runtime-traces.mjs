@@ -20,6 +20,11 @@ const MEDICAL_DEVICE_QUERY_ROUTES = new Set([
   "dati/page.js.nft.json",
   "dati/[dataset]/page.js.nft.json",
 ]);
+const SOURCE_METADATA_ROUTES = new Set([
+  "fonti/catalogo/page.js.nft.json",
+  "fonti/copertura/page.js.nft.json",
+  "api/fonti/catalogo/route.js.nft.json",
+]);
 const HISTORY_ROUTES = new Set([
   "spese/sanita/storico/page.js.nft.json",
   "api/spese/sanita/storico/route.js.nft.json",
@@ -101,6 +106,13 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["snapshot-pages/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
     ["snapshot-pages/enti/[codice]/[view]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
   ]);
+  for (const route of SOURCE_METADATA_ROUTES) {
+    requirements.set(route, [
+      "data/source-ledger/release-proof.json", "data/source-ledger/receipt.json",
+      "data/source-ledger/sources.jsonl", "data/source-ledger/dataset-proof.json",
+      "src/data/generated/integrated/catalog.json",
+    ]);
+  }
   for (const [file, routes] of [
     ["integrated/rows/istat-economia-non-osservata-territori.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["integrated/rows/mef-patrimonio-beni-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -127,6 +139,12 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["opencivitas-2015.json", ["api/spese/opencivitas-2015/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["opencivitas-2016.json", ["api/spese/opencivitas-2016/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["opencivitas-2017.json", ["api/spese/opencivitas-2017/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-amministrazione.json", ["api/spese/opencivitas-2019-amministrazione/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-istruzione.json", ["api/spese/opencivitas-2019-istruzione/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-polizia.json", ["api/spese/opencivitas-2019-polizia/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-rifiuti.json", ["api/spese/opencivitas-2019-rifiuti/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-sociale-asili.json", ["api/spese/opencivitas-2019-sociale-asili/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-viabilita.json", ["api/spese/opencivitas-2019-viabilita/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-assegno-unico-2022-2024.data.json", ["fonti/page", "api/famiglia/assegno-unico/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-integrazioni-salariali-2023.data.json", ["fonti/page", "api/lavoro/integrazioni-salariali/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -155,7 +173,12 @@ export function checkRuntimeTraces(root = process.cwd()) {
       || route === "api/fonti/stato/route.js.nft.json") {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
-    const forbiddenFilePrefixes = MEDICAL_DEVICE_QUERY_ROUTES.has(route) ? [] : MEDICAL_DEVICE_ROW_PREFIXES;
+    if (SOURCE_METADATA_ROUTES.has(route)) forbidden.push("src/data/generated/integrated/rows");
+    const forbiddenFilePrefixes = MEDICAL_DEVICE_QUERY_ROUTES.has(route) ? [] : [...MEDICAL_DEVICE_ROW_PREFIXES];
+    if (["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) {
+      forbidden.push(browse);
+      forbiddenFilePrefixes.push(`${OPERATOR}/search.jsonl.gz`, `${OPERATOR}/summaries.json`);
+    }
     results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden, forbiddenFilePrefixes) });
     requirements.delete(route);
   }

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2019,
+  "family": "FC60SOCNID",
+  "releaseVersion": 1,
+  "publishedAt": "2023-05-30",
+  "modifiedAt": "2023-05-30",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2019-comuni-sociale-e-asili-nido-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2019_Ind_FC60SOCNID_1_csv.zip",
+      "bytes": 3695324,
+      "sha256": "ecbf6cf45ba89889dfbdf8fe1499b0b83ffbf19a593679915cc16f1a804e4891"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2019_xlsx.zip",
+      "bytes": 423591,
+      "sha256": "bae9771f05dbaf05686553ab5c3110d7b0eb5083c0e3322fb960afff09c1a30c"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2019_Metadati_Ind_FC60SOCNID_1_xlsx.zip",
+      "bytes": 12857,
+      "sha256": "184f22f3317ff27f505817ffb6218071606ebc1264348f3c4cee8e8aff88ea9e"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "csvEncoding": "utf-8-sig",
+  "decimalSeparator": ",",
+  "csvRowCount": 573939,
+  "indicatorDefinitionCount": 76,
+  "indicatorDescriptions": {
+    "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
+    "FST_RIPROPORZIONATO_BI_PROAB": "Spesa standard - Euro per abitante",
+    "SPESA_STORICA": "Spesa storica - Euro",
+    "SPESA_STORICA_PROAB": "Spesa storica - Euro per abitante",
+    "DIFF_OUT_PERC": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+    "POSIZIONE_SPESA_PERC": "Livello della spesa - Da 0 a 10",
+    "POSIZIONE_OUTPUT_PERC": "Livello dei servizi erogati - Da 0 a 10",
+    "DESCR_NON_VALUTABILE_SPESA": "Motivo di non valutabilità per la spesa",
+    "DESCR_NON_VALUTABILE_OUT": "Motivo di non valutabilità per i servizi offerti"
+  },
+  "municipalities": 6566,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 403,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 328,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1507,
+    "MARCHE": 228,
+    "MOLISE": 136,
+    "PIEMONTE": 1181,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 563
+  },
+  "excludedIncompleteHistorical": [],
+  "excludedScientificHistorical": [
+    "KR016SIF11FI"
+  ],
+  "excludedNonPositiveStandard": [],
+  "coverageWarning": "RSS e Province autonome fuori perimetro; esclusi gli aggregati di Italia, regioni, aree e fasce. Pallagorio (101016) resta fuori perché la fonte pubblica la spesa storica in notazione scientifica (residui come 3,637979E-12), non come importo decimale: nessuna riscrittura a zero.",
+  "nationalTotals": {
+    "reproportioned": false,
+    "historicalSpendingCents": 652651721978,
+    "standardSpendingCentsPublished": 715780913897,
+    "standardSpendingCentsExcluded": 11639012,
+    "sourceNationalAggregateHistorical": "6526517219,8",
+    "sourceNationalAggregateStandard": "7157925529",
+    "note": "Per Sociale e asili nido la fonte non riproporziona il fabbisogno sul totale della spesa storica. Sui 6.566 Comuni pubblicati la spesa storica è 6.526.517.219,78 € e il fabbisogno 7.157.809.138,97 €, superiore del 9,7%. L'aggregato ZZ999ITA001 pubblica 6.526.517.219,80 € di spesa storica e 7.157.925.529,00 € di fabbisogno. La differenza aggregata non è un risultato e non va letta come risparmio, spreco o fabbisogno scoperto."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

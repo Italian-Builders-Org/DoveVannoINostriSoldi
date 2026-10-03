@@ -6,11 +6,18 @@ fonti. Questa guida definisce decisioni e verifiche, non una capacità garantita
 
 ## Configurazione di riferimento
 
-Il 25 settembre 2026 le build DVNS risultano su Enhanced (8 vCPU, 16 GB).
-La stessa revisione ha fallito su Standard ed è riuscita su Enhanced: questo
-giustifica mantenere temporaneamente Enhanced, ma non identifica da solo la
-risorsa esaurita. Distinguere RAM e disco temporaneo del container; eliminare
-vecchi deployment non aumenta lo spazio disponibile alla singola build.
+Il 30 settembre 2026 il progetto è stato fissato a Enhanced (8 vCPU, 16 GB
+RAM, 64 GB disco temporaneo), con concorrenza on-demand disattivata. Elastic
+indicava Turbo da 30 core per la prossima build. Il supporto Vercel ha confermato che Standard
+(4 vCPU, 8 GB RAM, 32 GB disco) esauriva il disco durante la pubblicazione;
+Enhanced ha pubblicato correttamente la stessa revisione. Il tetto attuale
+evita l'assegnazione automatica di 30 core, ma non dimostra una percentuale di
+risparmio: confrontare durata e Build CPU Minutes su revisioni comparabili.
+
+Eliminare vecchi deployment non aumenta lo spazio temporaneo della singola
+build e non riduce Fluid Active CPU. Un ritorno a Standard richiede prima una
+riduzione dimostrata del picco di packaging e la verifica degli artifact
+necessari, come descritto in [Costi runtime](RUNTIME_COSTS.md#scelte-operative).
 
 Riferimento precedente, verificato il 5 settembre 2026: build Standard (4 vCPU, 8 GB), on-demand
 concurrency disattivata, priorità produzione attiva; Fluid Compute attivo,
@@ -102,7 +109,10 @@ misurare anche RSS/heap prima di aumentare i limiti. Gli oggetti restituiti dagl
 adapter sono condivisi e vanno trattati come immutabili.
 
 `node --experimental-strip-types scripts/bench/procurement.mjs` confronta batch
-di enti e operatori diversi in due shard. Per esercitare anche il ricambio delle
+di enti e operatori diversi in due shard. Il batch enti include il filtro sulla
+prima categoria CPV classificata (o sulle procedure non classificate), così
+misura anche la ricostruzione di importi esatti, ranking e concentrazione.
+Per esercitare anche il ricambio delle
 cache, aumentare gli shard (da 1 a 256):
 
 ```bash
@@ -272,7 +282,7 @@ con il profilo avviene anche a cache calda. Il limite combinato shard/record è
 Per gli operatori gli offset sono legati a digest e bucket, limitati a 8 MiB;
 la validazione del record selezionato resta obbligatoria prima della sua cache.
 
-### WAF: mitigazione del 26 settembre 2026
+### WAF: mitigazione del 26 settembre, aggiornata il 1 ottobre 2026
 
 Le impostazioni WAF sono esterne al Git: questo testo documenta lo stato
 applicato, non provisiona regole. Prima di cambiarle leggere configurazione
@@ -281,8 +291,8 @@ necessaria al rollback senza segreti o log con IP.
 
 | Regola | Ambito | Limite / 60 secondi |
 | --- | --- | --- |
-| `training-bot-operator-cap` | ClaudeBot, GPTBot, CCBot, Meta-ExternalAgent su tutti i percorsi del progetto | 10 per IP |
-| `training-bot-procurement-fingerprint-cap` | Stessi crawler, tutti i percorsi | 30 per JA4, per regione |
+| `training-bot-operator-cap` | ClaudeBot, GPTBot, CCBot, Meta-ExternalAgent, Amazonbot, Bytespider, Applebot-Extended su tutti i percorsi del progetto | 10 per IP |
+| `training-bot-procurement-fingerprint-cap` | Stessi crawler, tutti i percorsi | 10 per JA4, per regione |
 
 I nomi storici delle regole sono conservati; non indicano più una restrizione
 ai soli operatori o appalti. Anche le nuove pagine rientrano nel limite.
@@ -301,7 +311,14 @@ client, osservare traffico legittimo e falsi positivi; non bloccare interi paesi
 perché un campione proviene da lì. Il WAF precede il runtime, il limiter del
 proxy è soltanto un fallback per istanza e non va presentato come globale.
 
-Rollback mirato: ripristinare la regola preesistente a 30/minuto/IP sul solo
+L’aggiornamento del 1 ottobre allinea il riconoscimento per IP a quello per
+JA4 e al proxy, con confini del nome e confronto indipendente dalle maiuscole.
+Il tetto JA4 passa da 30 a 10/minuto, solo per questi crawler: cambiare IP non
+moltiplica più quel limite nella stessa regione se l’impronta resta uguale.
+Rollback di questo aggiornamento: riportare JA4 a 30/minuto e la corrispondenza
+per IP alle quattro famiglie iniziali; conservare le altre regole.
+
+Rollback mirato della mitigazione iniziale: ripristinare la regola preesistente a 30/minuto/IP sul solo
 prefisso `/appalti/operatori` e disabilitare la regola JA4 aggiunta; riesaminare
 il diff prima di pubblicarlo. Non disabilitare l'intero firewall. Verificare
 subito navigazione normale e agenti avviati dagli utenti, poi il traffico

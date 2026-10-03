@@ -13,6 +13,7 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
 | `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
+| `/api/search` | Dinamica, `no-store` | Campi del catalogo e identità comunali normalizzati una volta per istanza; record IPA elaborati dalla risposta corrente, senza cache delle query |
 | `/enti/[codice]` e API ente | Dinamica dove usa IPA live | Profilo completo, inclusi patrimonio e scuole; identità ufficiali riconciliate |
 | `/dati/[dataset]`, API dati e MCP | Politica del selector/trasporto esistente | Scansione limitata e cursori del rilascio; riuso bounded dei chunk già validati |
 | Altre pagine ad alta cardinalità | Politica specifica della route | Crawler dichiarati coperti dal proxy; includere le nuove route nel matcher e nell'inventario |
@@ -21,8 +22,15 @@ Le route interne `/snapshot-pages/...` servono esclusivamente i rewrite del prox
 Le viste predefinite usano la stessa cache; i filtri
 redirigono all'URL pubblico. Anche gli alias attraversano il limite crawler.
 Non pubblicare link o sitemap verso questi alias; `robots.txt` li esclude per i crawler cooperativi. I parametri ignorati dalle pagine, come quelli
-di campagna, non creano nuove varianti del contenuto. Parametri semantici ripetuti
-non entrano nella cache della vista predefinita.
+di campagna, non creano nuove varianti del contenuto. Filtri effettivi ripetuti
+non entrano nella cache della vista predefinita; i parametri inutilizzati non
+moltiplicano le chiavi, anche se ripetuti. CPV e anno vuoti nei form equivalgono
+all’assenza del filtro. Il parametro `operator` filtra
+solo la vista `operator`; non divide la cache delle quattro viste predefinite.
+`metric` ordina soltanto `operators` e seleziona il denominatore di `concentration`.
+I link non propagano questi parametri nelle viste che non li usano. Filtri CPV,
+anno, dettaglio operatore, pagine successive e 50 righe conservano la risposta
+dinamica; non creare cache HTML per combinazioni arbitrarie di query.
 
 Next gestisce HTML, RSC, `Vary` e `_rsc`: non impostare indiscriminatamente
 `Cache-Control: public` sulle risposte dinamiche. Non leggere cookie, header,
@@ -39,6 +47,38 @@ aggiornamento dello snapshot prima di cambiare questa politica.
 
 ## Cache dei dati
 
+La ricerca degli operatori conserva il parser e l'indice validato esistenti.
+Conta tutti i risultati, ma ordina soltanto i migliori 50 al massimo; conserva
+precedenza dei prefissi, conteggi, ordine italiano e stabilità delle parità.
+Non conserva risultati delle query. Il confronto locale Node 24.19.0 su nove
+query riduce la mediana CPU calda del batch da 869 a 151 ms, con digest
+integrale invariato. Le 128 query distinte senza risultati mantengono la stessa
+scansione e non trattengono heap aggiuntivo dopo GC. RSS e tempi a freddo
+variano con il carico del Mac: non dimostrano un risparmio di memoria.
+Riprodurre con `scripts/bench/operator-search-efficiency.mjs`, impostando
+`OPERATOR_SEARCH_COMPACT=1` e passando `--expose-gc` a Node.
+
+Il selettore storico operatori confronta importi decimali validati come
+stringhe, senza conversioni BigInt ripetute, arrotondamenti o cache. Su 108
+query dei sei operatori principali la mediana CPU calda passa da 1.247 a
+626 ms, con gli stessi risultati. Il guadagno riguarda i filtri monetari:
+lettura, validazione e rendering restano costi distinti.
+
+I sottoinsiemi CPV/anno degli enti riusano la somma esatta degli importi,
+formattando una volta per totale. La pagina non invoca il filtro CPV quando
+è vuoto; il reader continua a verificare e riconciliare la classificazione.
+`scripts/bench/entity-procurement-filters.mjs` confronta risultati completi,
+CPU e memoria su Roma, Milano e Bologna. Queste misure locali non stimano
+la riduzione della fattura: confrontare finestre complete di traffico su Vercel.
+
+La ricerca globale riusa solo i campi normalizzati del catalogo e delle identità
+comunali versionate nel deployment. L'indice nasce alla prima ricerca; non cresce
+con le query e non conserva testo degli utenti. I risultati vengono ricostruiti
+a ogni richiesta. Le funzioni di ranking con input esterno elaborano sempre i
+record ricevuti: una risposta IPA aggiornata o un alias modificato non deve
+riusare campi obsoleti. Per modificare il ranking, confrontare risultati completi,
+ordine, refusi, Unicode, limiti, costo freddo/caldo e memoria con `bench:runtime`.
+
 Il profilo finanziario è condiviso con quello completo, senza inventare stati
 «dato assente» per sezioni non richieste. Gli indici SIOPE sono limitati agli anni
 delle fonti validate. I confronti comunali hanno una LRU da 128 elementi e 4 MiB
@@ -54,6 +94,17 @@ byte identici vengono riutilizzati. Non memorizzare errori, valori parziali o
 promesse rifiutate. Conservare i limiti di concorrenza e l'annullamento per consumer.
 Non sostituire questa verifica con una cache senza versionamento dell'intero
 profilo dell'ente o del corpus.
+
+L'indice CPV conserva fino a 256 prove di validazione completa, legate a
+partizione, SHA-256 compresso, cardinalità e dimensione dichiarata. I 96 KiB
+riservati alle prove sono sottratti agli 8 MiB della cache degli shard.
+Una rilettura verifica ancora hash, identità, cardinalità e fingerprint del
+file; byte nuovi richiedono la validazione completa di tutti i record.
+Il confronto locale Node 24 su 256 shard riduce la mediana CPU calda da
+820 a 492 ms, con gli stessi valori e ordine degli array. Non dimostra un
+risparmio in fattura: il picco RSS del test cresce da 308 a 344 MiB e non emerge
+un vantaggio affidabile a freddo. Le proprietà degli oggetti JSON possono
+essere serializzate in ordine diverso dopo il riuso della prova.
 
 ## Misura locale del 30 settembre 2026
 
@@ -125,7 +176,9 @@ Il fallback in memoria non è un limite distribuito. In Vercel verificare anche
 le regole WAF prima delle funzioni. Il 30 settembre 2026 il limite già presente
 per impronta JA4 è stato esteso ad Amazonbot, Bytespider e Applebot-Extended,
 oltre a ClaudeBot, GPTBot, CCBot e Meta-ExternalAgent. Soglia: 30 richieste ogni
-60 secondi, risposta 429. È limitazione dello scraping dichiarato, non un divieto.
+60 secondi, risposta 429. Il 1 ottobre la soglia JA4 è stata ridotta a 10/minuto
+per regione e la regola per IP allineata alle stesse sette famiglie.
+È limitazione dello scraping dichiarato, non un divieto.
 Claude-User, Claude-SearchBot e i browser non corrispondono a questa regola.
 
 Un'impronta può essere condivisa o cambiare; il limite JA4 non è un tetto globale
@@ -139,6 +192,12 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 
 ## Scelte operative
 
+- Nei calcoli monetari ANAC mantenere interi `BigInt` e scala decimale fino
+  alla fine della somma: formattare ogni totale parziale aumenta le conversioni.
+  Non passare a `Number` né arrotondare i subcentesimi. I confronti rapidi con
+  zero presuppongono il controllo del formato canonico, incluso il rifiuto dello
+  zero negativo, al confine dei dati. Verificare somme e ranking oltre la
+  precisione di `Number`, scale diverse, importi nulli e partizioni non attribuite.
 - Riutilizzare aggregati ANAC e pack esistenti. Aggiungere nuovi duplicati solo
   dopo aver misurato un hot path ancora costoso; non perdere controlli, coorti
   o provenance per risparmiare parsing.
@@ -149,7 +208,7 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
   Il risparmio dipende dai deployment effettivamente avviati, non dal numero
   dei commit conservati su GitHub. Vedi [DEPLOYMENT_APPROVAL.md](DEPLOYMENT_APPROVAL.md).
 - Il 30 settembre il progetto è stato fissato a Enhanced (8 core, 16 GB RAM,
-  64 GB disco). Elastic stava assegnando Turbo da 30 core; Enhanced aveva già
+  64 GB disco). Il pannello Elastic indicava Turbo da 30 core per la prossima build; Enhanced aveva già
   pubblicato correttamente lo stesso commit fallito su Standard. È un tetto
   alle risorse, non una percentuale di risparmio: confrontare anche la durata
   fatturata della prossima build. Nessun nuovo deployment diagnostico avviato.
@@ -178,6 +237,9 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
    segnali CDN dopo il rilascio. Il gate salva prove in
    `artifacts/browser/runtime-cache/`. Verificare anche mobile, tablet, desktop,
    tastiera, prefetch, overflow ed errori di idratazione.
+   Per i clic E2E preferire `page.locator(...).click()`: attende visibilità e
+   posizione stabile del controllo anche dopo uno scroll. Conservare le
+   verifiche sull'URL e sul contenuto, senza sostituirle con attese fisse.
 5. Dopo il deployment verificare READY, cache CDN reale, filtri e sottodomini.
    Confrontare almeno 24 ore complete per route: invocazioni, CPU per richiesta,
    HIT/MISS, 429, errori e p95. Monitorare anche letture/scritture ISR, trasferimento
@@ -186,3 +248,52 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 Fonti: [cache CDN Next.js](https://nextjs.org/docs/app/guides/cdn-caching),
 [ISR Vercel e costi](https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing),
 [macchine di build](https://vercel.com/docs/builds/managing-builds#build-machines).
+
+## Verifica del consumo residuo, 1 ottobre 2026
+
+Nel ciclo 23 settembre–23 ottobre, al momento della verifica, DVNS totalizza
+232 ore e 45 minuti Active CPU, il 99,8% della squadra. Gli altri progetti
+non spiegano il consumo residuo.
+
+La finestra produzione 30 settembre 23:14–1 ottobre 11:14 (ora italiana)
+mostra circa 112 mila invocazioni e 7 ore Active CPU per gli appalti degli enti;
+16 mila e un’ora per gli operatori. Sono valori arrotondati della dashboard; la finestra attraversa più revisioni
+e serve a identificare le route dominanti, non a confrontare due deployment.
+Nel campione consecutivo esportato delle 11:19–11:20, 59 invocazioni della stessa
+produzione risultano MISS: 6 dichiarano Meta-ExternalAgent, le altre User-Agent
+browser. Queste stringhe non provano l’identità dei client. I filtri effettivi e
+il dettaglio operatore spiegano molti percorsi dinamici; i link propagavano anche
+`operator` in viste che non lo usano. Con la correzione, 16 URL del campione
+possono riusare le quattro viste già previste, senza aggiungere chiavi ISR.
+Il campione non è una stima della quota su un’intera giornata.
+
+Riprodurre il costo del percorso HTTP completo, non solo quello del loader:
+server `next start`, stesso Node e corpus, campione di URL reali sanitizzato,
+CPU del processo prima/dopo e profilo `--cpu-prof`; includere un secondo campione
+che attraversa tutti i 256 shard, superando gli slot della cache. Distinguere
+caricamento iniziale, rendering dinamico e risposta ISR calda. Confrontare i dati
+nel DOM: l’HTML statico e quello in streaming possono differire nei placeholder.
+Non attribuire il risparmio locale alla fattura. Prima di cambiare ancora budget
+cache o hardware, misurare CPU/1.000 richieste, MISS, URL distinte, memoria,
+errori e scritture ISR dopo il deployment, su finestre della stessa revisione.
+
+### Confrontare il costo delle macchine
+
+Alle tariffe pubblicate il 1 ottobre 2026, Elastic costa $0,0035 per CPU-minuto
+e Enhanced $0,028 per minuto (8 core). A parità di durata, Enhanced costa il
+doppio di Elastic a 4 core, quanto Elastic a 8 core e meno di Elastic a 30 core.
+Il rapporto 8× confronta unità diverse: minuto della macchina e CPU-minuto.
+Il costo effettivo dipende dai core assegnati e dai minuti fatturabili arrotondati,
+che includono anche la fase dopo la build. L'ultima produzione #710 riporta
+11 minuti fatturabili e 88 CPU-minuti: circa $0,308 prima di crediti e imposte.
+Questo non dimostra un risparmio rispetto a una build Elastic comparabile.
+
+Fonti: [tariffe Vercel](https://vercel.com/pricing),
+[minuti fatturabili](https://vercel.com/changelog/deployments-now-show-billable-duration-and-cpu-minutes).
+
+Le pagine di catalogo e copertura usano cataloghi e prove di rilascio, non le
+righe dei dataset. Il controllo dei trace deve richiedere tutti questi metadati
+ed escludere le righe solo da quelle pagine/API. Il dettaglio operatore deve
+conservare tutti i pack dello storico, senza aggiungere gli indici di ricerca
+dell'elenco. Gli inventari NFT sono logici: non sommarli per stimare il disco
+o i byte dei pacchetti fisici raggruppati da Vercel.

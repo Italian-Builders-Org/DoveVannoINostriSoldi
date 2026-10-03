@@ -68,8 +68,9 @@ documentazione del limite invece di inventare valori.
 
 ## Verifica locale
 
-La CI è organizzata in cinque job paralleli (`static`, `security`, `node`,
-`etl`, `production`) aggregati da `CI / required`. Il job `security` esegue la
+La CI è organizzata in sette job paralleli (`static`, `security`, `node`,
+`etl`, `etl-snapshots`, `production`, `production-core`) aggregati da
+`CI / required`: `etl` esegue `test:etl`, `etl-snapshots` `test:snapshots`. Il job `security` esegue la
 scansione Zizmor dei workflow ed è bloccante. Per riprodurla usa Zizmor 1.29.0:
 `zizmor --persona auditor .github/workflows/`. Il job static include anche
 `actionlint` 1.7.12 e `npm run ci:action-pins`. I gate applicativi sono:
@@ -111,6 +112,8 @@ deterministica riproducibile.
 `ci:static` esegue lint, typecheck, `reports:check`, `design:check`, `brand:check`,
 `agent-context:check` e `agent-public:check` in quest'ordine. `typecheck` genera
 i tipi Next anche in una checkout appena installata.
+Artifact dei test/benchmark e virtualenv sono esclusi da lint e typecheck;
+le copie di sorgenti salvate lì non entrano nel progetto TypeScript.
 Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`
 (per esempio `PYTHON=python npm run test:node`): i test che attraversano il
 confine ETL usano quel nome, il default resta `python3`.
@@ -120,10 +123,20 @@ browser core/editoriale/report, CSP e Lighthouse. Rifiuta una porta occupata e
 termina il proprio server anche se un gate fallisce. Il log è in
 `artifacts/production/next.log`; i fallimenti browser salvano screenshot e
 diagnostica in `artifacts/browser/`; Lighthouse scrive in `.lighthouseci/`.
-In GitHub, il job `production` conserva la sola cache del compilatore
+In GitHub i gate sono divisi in due job, ciascuno con build e server propri:
+`production-core` esegue la suite browser core in modalità chiara e scura
+(`PRODUCTION_GATES=core`), `production` tutti gli altri gate nello stesso ordine
+(`PRODUCTION_GATES=main`). In locale `test:production` li esegue tutti.
+Entrambi conservano la sola cache del compilatore
 `.next/cache/turbopack`, separata per runtime, dipendenze e configurazione.
 Il build e tutti i gate vengono comunque eseguiti; le risposte della Data Cache
 non vengono ripristinate. I job senza browser evitano il download di Chromium.
+Il job `security` usa un checkout sparse di `.github`: conserva tutti i workflow,
+le azioni locali e i file di configurazione alla radice, senza materializzare
+il corpus dati.
+Un controllo preliminare blocca il job se manca un input di audit versionato;
+per nuove azioni fuori da `.github`, estendi i percorsi del checkout sparse.
+La versione, le regole e il risultato bloccante di Zizmor restano gli stessi.
 `NEXT_LOG_FILE` permette un percorso alternativo. Per ripetere un solo test
 browser avvia `npm start -- --hostname 127.0.0.1 --port 3218` e usa, per esempio,
 `DVNS_BASE_URL=http://127.0.0.1:3218 npm run test:browser:core`.
@@ -181,9 +194,9 @@ Il publisher dei refresh automatici aggiorna e include il riepilogo per le
 fonti interessate, usando gli stessi validator con il network guard attivo.
 
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
-quel deployment esegue `next build`, mentre i test browser girano nel job
-`production` di GitHub Actions. Il download resta attivo con `npm ci` locale
-e nel job `production`; gli altri job CI lo saltano. TypeScript, audit delle
+quel deployment esegue `next build`, mentre i test browser girano nei job
+`production` e `production-core` di GitHub Actions. Il download resta attivo con
+`npm ci` locale e in quei due job; gli altri job CI lo saltano. TypeScript, audit delle
 dipendenze e tutti i gate restano attivi.
 
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA

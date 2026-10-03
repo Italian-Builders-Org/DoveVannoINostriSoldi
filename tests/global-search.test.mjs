@@ -339,3 +339,25 @@ test("distribution indicators lead to the inequality page", () => {
     assert.ok(searchSiteDocuments(query).some((result) => result.href === "/disuguaglianza"), query);
   }
 });
+
+
+test("caller-owned search documents reflect title and alias changes between queries", () => {
+  const record = document({ title: "Sanità", aliases: ["ospedali"] });
+  assert.equal(rankSearchDocuments([record], "sanita")[0].match.reason, "title-exact");
+  record.title = "Istruzione";
+  record.aliases[0] = "scuole";
+  assert.deepEqual(rankSearchDocuments([record], "sanita"), []);
+  assert.deepEqual(rankSearchDocuments([record], "ospedali"), []);
+  assert.equal(rankSearchDocuments([record], "scuole")[0].title, "Istruzione");
+});
+
+test("current IPA records reflect a changed name and entity kind on the next ranking", () => {
+  const record = entity({ denominazione: "COMUNE DI MILANO" });
+  assert.equal(rankEntitySearchResults([record], "Milano")[0].context, "Comune · Registro IPA");
+  record.denominazione = "Città Metropolitana di Bologna";
+  record.tipologia = "Città Metropolitana";
+  assert.deepEqual(rankEntitySearchResults([record], "Milano"), []);
+  const result = rankEntitySearchResults([record], "Bologna")[0];
+  assert.equal(result.title, "Città Metropolitana di Bologna");
+  assert.equal(result.context, "Registro IPA");
+});

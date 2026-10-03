@@ -290,7 +290,7 @@ sommati. Valore assoluto, quota di PIL, euro per abitante ed euro per km²
 restano misure distinte; i denominatori delle ultime tre sono calcolati
 dall'editore ma non versionati nel record. Una riga assente non diventa zero.
 
-### Spesa del Bilancio dello Stato per territorio destinatario 2020-2022
+### Spesa del Bilancio dello Stato per territorio destinatario 2008-2013 e 2020-2022
 
 Gli esercizi 2020, 2021 e 2022 della stessa serie `SRS_SPE_BIL_SPESR_001`
 entrano nel corpus integrato come tre dataset `rgs-spesa-statale-regionalizzata-*`
@@ -302,9 +302,15 @@ dimensioni, zeri pubblicati e riconciliazione tra Italia, Regioni e
 ripartizioni. `scripts/etl/rgs_spesa_statale_regionalizzata_corpus.py --check`
 ricostruisce le proiezioni dalla fonte e le confronta con il corpus.
 
-Lo schema cambia fra annualità: 2020 e 2021 hanno un'ottava colonna vuota, il
-2021 elenca ancora la missione 033 «Fondi da ripartire» e le categorie non
-coincidono con il 2023. Come nel 2023, i file contengono righe della categoria 09
+Gli esercizi dal 2008 al 2013 entrano come seconda fetta, con un proprio lock
+`scripts/etl/specs/rgs-spesa-statale-regionalizzata-2008-2013.source.json` e gli
+stessi controlli: sei dataset, da 20.248 a 20.712 righe l'uno, 122.400 in tutto.
+Ogni fetta si pubblica una volta sola con `--slice`; `--check` le verifica tutte.
+Italia, Regioni e ripartizioni riconciliano entro 0,33 milioni in ogni anno.
+
+Lo schema cambia fra annualità: dal 2008 al 2013 e nel 2020 e 2021 c'è un'ottava
+colonna vuota; le categorie sono 15 dal 2008 al 2010 e 16 poi, e non coincidono con
+il 2023; la missione 033 «Fondi da ripartire» compare dal 2008 al 2017 e nel 2021. Come nel 2023, i file contengono righe della categoria 09
 con missione 034 «Debito pubblico» anche se la scheda descrive la spesa al netto
 degli interessi: il corpus le conserva come pubblicate. Il pacchetto CKAN riporta
 `cc-by`, ma pagina e file non dichiarano una licenza: lo stato resta

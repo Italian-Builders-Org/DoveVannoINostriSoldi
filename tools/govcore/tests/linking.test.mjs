@@ -12,7 +12,6 @@ const { getMunicipalitySearchEntities, getSiopeMunicipalityDetailByIpaCode }=awa
 
 const readOnlyEntities=getMunicipalitySearchEntities(), byIpa=new Map(readOnlyEntities.map(entity=>[entity.codiceIpa,entity]));
 const get=code=>{const entity=byIpa.get(code);assert.ok(entity,`current DVNS snapshot identity ${code}`);return entity;};
-const ipaCodes=['c_d150','c_f023','c_d969','c_c580','c_l219'];
 const source=()=>createHash('sha256').update(readFileSync(new URL('../../../src/data/generated/siope-municipal-detail.json',import.meta.url))).digest('hex');
 const evidence={source_id:'synthetic-local',source_url:'https://example.test/public-identity-fixture',retrieved_at:'2026-10-03T00:00:00Z',verified_at:'2026-10-03T01:00:00Z',content_sha256:'b'.repeat(64),verification_status:'verified',valid_from:null,valid_to:null,scope:'institutional',competences:[]};
 const entity=(row,char)=>({id:'gov_'+char.repeat(32),kind:'municipality',name:row.denominazione,status:'active',provenance:[evidence],identifiers:[{scheme:'ipa',value:row.codiceIpa,valid_from:null,valid_to:null,provenance:[evidence]},{scheme:'tax_code',value:row.codiceFiscale,valid_from:null,valid_to:null,provenance:[evidence]}],aliases:[],facts:[]});

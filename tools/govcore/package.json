@@ -1,5 +1,5 @@
 {
-  "name": "dvns-govcore-offline-link-proof",
+  "name": "dvns-govcore-public-identity-links",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs --test tests/*.test.mjs",
-    "link": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs link-public-entities.mjs",
+    "link": "node --experimental-strip-types link-public-entities.mjs",
     "bench": "node --experimental-strip-types --import ../../scripts/ci/node-test-setup.mjs bench.mjs"
   },
   "dependencies": {

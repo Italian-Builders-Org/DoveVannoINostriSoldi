@@ -146,6 +146,12 @@ jobs:
       - name: Node test suite
         run: npm run test:node
 
+      - name: Optional GovCore identity overlay (offline fixtures)
+        run: |
+          npm ci --offline --ignore-scripts --no-audit --no-fund --prefix tools/govcore
+          npx tsc -p tools/govcore/tsconfig.json
+          npm test --prefix tools/govcore
+
   etl:
     name: etl
     runs-on: ubuntu-24.04

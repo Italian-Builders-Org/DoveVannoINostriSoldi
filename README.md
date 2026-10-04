@@ -233,6 +233,8 @@ Se vuoi contribuire anche senza scrivere codice, sono utili:
 
 Prima di una PR leggi [CONTRIBUTING.md](CONTRIBUTING.md).
 
+Il [comando GovCore facoltativo](docs/GOVCORE.md) aggiunge riferimenti pubblici separati alla proiezione degli enti, senza modificare contabilità o attivare lookup nelle pagine.
+
 Ruoli dei maintainer e regole di decisione: [GOVERNANCE.md](GOVERNANCE.md).
 
 Per una vulnerabilità non ancora corretta non aprire una issue: usa il [canale privato](SECURITY.md).

@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "source_repository": "https://github.com/metaforismo/gov-core",
+  "source_commit": "0fb9ed30a3e4d1a0a6d57e0cfbe95f90dd7d91e2",
+  "source_directory": "sdk/typescript",
+  "license": "MIT",
+  "artifact": "gov-core-client-0.1.0.tgz",
+  "artifact_sha256": "d9053197ad93d3ce10575ce8b7ca0b11808d4e3b20e3771aa84abcb779d2be02",
+  "source_files": {
+    "LICENSE": "cd944d88bbd3a391b078f57b9a6a4372993499265a6bbf99ebb7ebb016ef0cf0",
+    "README.md": "561f0c20c47039b739d3fe6fbcc1afd6907593e46f118cefd2465c45961eb20f",
+    "package.json": "71a19b562b73d74a3f1633f81a3fdd56f24e72f6f4e33c319d59684d38ec0488",
+    "src/client.ts": "278e4043736eb43d35990d3723d75799f74b1eee78c7d2aa51734a3aedb90361",
+    "src/dvns.ts": "f1acb54c5621236db3e981c93c83cb1e2e792e639c0be3a747db63b04186b7a0",
+    "src/index.ts": "370566ad8d9d6736f4f54728dc0ee872b8e13f42180f3514751ad466c2607680",
+    "src/types.ts": "53afa5bf7f68b87819b4c5c7038cd298798db3c927ace4b0237da713d343c748"
+  }
+}

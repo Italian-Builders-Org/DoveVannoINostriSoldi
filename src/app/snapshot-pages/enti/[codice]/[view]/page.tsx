@@ -1,8 +1,8 @@
 import Page from "@/app/enti/[codice]/appalti/page";
 export { generateMetadata } from "@/app/enti/[codice]/appalti/page";
 
-// Populate only visited URLs; never prebuild the national corpus.
-export const revalidate = 21_600;
+// All inputs are committed snapshots. A new deployment owns a new render cache.
+export const revalidate = false;
 export function generateStaticParams() { return []; }
 
 export default async function SnapshotPage({ params }: { params: Promise<{ codice: string; view: string }> }) {

@@ -3157,6 +3157,162 @@
       "sourceSpec": "scripts/etl/specs/opencivitas-2021-polizia.source.json"
     },
     {
+      "id": "opencivitas-2019-istruzione",
+      "owner": "OpenCivitas municipal 2019 FC60ISTRUZ",
+      "files": [
+        "src/data/generated/opencivitas-2019-istruzione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_istruzione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_istruzione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60ISTRUZ 2019 (Istruzione) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6555 Comuni RSO; 30 aggregati esclusi; 10 Comuni con spesa storica vuota e 2 in notazione scientifica (Ceraso, Locana) esclusi senza imputazione; Nola pubblica 1 € e resta pubblicata, riconciliata sull'ultima cifra del valore per abitante. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-istruzione.source.json"
+    },
+    {
+      "id": "opencivitas-2019-polizia",
+      "owner": "OpenCivitas municipal 2019 FC60POLIZIA",
+      "files": [
+        "src/data/generated/opencivitas-2019-polizia.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_polizia_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_polizia_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60POLIZIA 2019 (Polizia locale) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6564 Comuni RSO; 30 aggregati esclusi; 3 Comuni con spesa storica vuota esclusi senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-polizia.source.json"
+    },
+    {
+      "id": "opencivitas-2019-viabilita",
+      "owner": "OpenCivitas municipal 2019 FC60TERRVIAB",
+      "files": [
+        "src/data/generated/opencivitas-2019-viabilita.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_viabilita_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_viabilita_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60TERRVIAB 2019 (Viabilità e territorio) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6566 Comuni RSO; 30 aggregati esclusi; 1 Comune con spesa storica vuota escluso senza imputazione. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-viabilita.source.json"
+    },
+    {
+      "id": "opencivitas-2019-rifiuti",
+      "owner": "OpenCivitas municipal 2019 FC60RIFIUTI",
+      "files": [
+        "src/data/generated/opencivitas-2019-rifiuti.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_rifiuti_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_rifiuti_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60RIFIUTI 2019 (Rifiuti) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6567 Comuni RSO; 30 aggregati esclusi; nessun Comune RSO escluso; CSV senza colonna Privacy dichiarato nel lock. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-rifiuti.source.json"
+    },
+    {
+      "id": "opencivitas-2019-sociale-asili",
+      "owner": "OpenCivitas municipal 2019 FC60SOCNID",
+      "files": [
+        "src/data/generated/opencivitas-2019-sociale-asili.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_sociale_asili_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_sociale_asili_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60SOCNID 2019 (Sociale e asili nido) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6566 Comuni RSO; 30 aggregati esclusi; Pallagorio (notazione scientifica) escluso senza imputazione; la fonte non riproporziona il fabbisogno e il contratto lo dichiara. Totali nazionali bloccati senza riproporzionamento. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-sociale-asili.source.json"
+    },
+    {
+      "id": "opencivitas-2019-amministrazione",
+      "owner": "OpenCivitas municipal 2019 FC60AMMIN",
+      "files": [
+        "src/data/generated/opencivitas-2019-amministrazione.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python scripts/etl/opencivitas_2019_amministrazione_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_opencivitas_2019_functions_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/opencivitas-2019-functions-contract.test.mjs",
+        "tests/opencivitas-2019-functions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python scripts/etl/opencivitas_2019_amministrazione_snapshot.py --input-dir /path/to/official-zips",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "trustModel": "ZIP ufficiali FC60AMMIN 2019 (Amministrazione) vincolati per byte/SHA-256 nella spec e in issue 282. Contratto distinto da FC60TOT 2019 e dalla stessa funzione 2021/2022. Join di 6494 Comuni RSO; 30 aggregati esclusi; 73 Comuni con spesa storica vuota esclusi senza imputazione; CSV cp1252 dichiarato nel lock. Il fabbisogno riproporziona sul totale della spesa storica. Digest semantico verificato in Python e TypeScript.",
+      "sourceSpec": "scripts/etl/specs/opencivitas-2019-amministrazione.source.json"
+    },
+    {
       "id": "mantova-offices",
       "owner": "Comune di Mantova — organi e mandati del pilota #405",
       "files": [

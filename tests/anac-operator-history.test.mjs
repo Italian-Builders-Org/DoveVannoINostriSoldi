@@ -131,3 +131,56 @@ test("la paginazione conserva il totale filtrato anche oltre la pagina richiesta
 test("invalid amount intervals fail before loading operator history", () => {
   assert.throws(() => parseOperatorHistorySearch({ minAmount: "10.01", maxAmount: "10" }));
 });
+
+test("gli intervalli monetari ordinano esattamente segni, zero con scala e cifre oltre Number", () => {
+  const history = historySummarySchema.parse(fixture);
+  const largest = `${"9".repeat(50)}.${"9".repeat(49)}`;
+  const largestBefore = `${"9".repeat(50)}.${"9".repeat(48)}8`;
+  const amounts = [
+    "-10", "-0.0001", "-0.00", "0", "0.0000", "0.0001",
+    "1.01", "1.1", "9.999", "10", "9007199254740992.01",
+    "9007199254740992.02", largestBefore, largest, null,
+  ];
+  history.detail.filterRows = amounts.map((amount) => [2025, null, null, amount]);
+  const positions = (input) => selectOperatorHistoryPage(history, input).positions;
+  assert.deepEqual(positions({ minAmount: "0", maxAmount: "0.00000" }), [2, 3, 4]);
+  assert.deepEqual(positions({ maxAmount: "0" }), [0, 1, 2, 3, 4]);
+  assert.deepEqual(positions({ minAmount: "0.00010", maxAmount: "1.1000" }), [5, 6, 7]);
+  assert.deepEqual(positions({ minAmount: "9.9990", maxAmount: "10.000" }), [8, 9]);
+  assert.deepEqual(positions({ minAmount: "9007199254740992.010", maxAmount: "9007199254740992.0100" }), [10]);
+  assert.deepEqual(positions({ minAmount: largestBefore, maxAmount: largestBefore }), [12]);
+  assert.deepEqual(positions({ minAmount: largest, maxAmount: largest }), [13]);
+  for (const value of ["-1", "-0", "01", "1e2", "Infinity", "NaN"]) {
+    assert.throws(() => selectOperatorHistoryPage(history, { minAmount: value }));
+    assert.throws(() => selectOperatorHistoryPage(history, { maxAmount: value }));
+  }
+});
+
+test("la query monetaria conta tutte le pagine e osserva righe sostituite senza stato condiviso", () => {
+  const history = historySummarySchema.parse(fixture);
+  history.detail.filterRows = Array.from({ length: 110 }, (_, index) => [
+    index % 2 ? 2024 : 2025,
+    index % 2 ? "authority-00000002" : "authority-00000001",
+    "PROCEDURA PUBBLICATA",
+    index === 0 ? null : "1.00000",
+  ]);
+  const query = {
+    year: 2025,
+    authority: "authority-00000001",
+    procedure: "PROCEDURA PUBBLICATA",
+    minAmount: "1",
+    maxAmount: "1.00",
+    page: 3,
+  };
+  const expected = { total: 54, page: 3, pageCount: 3, positions: [102, 104, 106, 108] };
+  const before = structuredClone(history.detail.filterRows);
+  assert.deepEqual(selectOperatorHistoryPage(history, query), expected);
+  assert.deepEqual(history.detail.filterRows, before);
+  assert.deepEqual(selectOperatorHistoryPage(history, { ...query, page: 4 }), {
+    total: 54, page: 4, pageCount: 3, positions: [],
+  });
+  history.detail.filterRows[0] = [2025, "authority-00000001", "PROCEDURA PUBBLICATA", "1"];
+  assert.deepEqual(selectOperatorHistoryPage(history, query), {
+    total: 55, page: 3, pageCount: 3, positions: [100, 102, 104, 106, 108],
+  });
+});

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import type { GiudiziarioCase } from "@/lib/data/parlamento-giudiziario-contract";
-import { formatSentenceMonths, graphPersonId, OUTCOME_LABELS } from "@/lib/parlamento-giudiziario";
+import { formatSentenceMonths, graphPersonId, OUTCOME_LABELS } from "@/lib/parlamento-giudiziario-format";
 import type { RepublicMap } from "@/lib/politici-repubblica";
 import { normalizeSearch, type GraphSelection } from "./atlas-model";
 import { Icon, Portrait } from "./atlas-primitives";
@@ -45,9 +45,8 @@ export function ConvictionsDirectory({
       <span className={styles.tag}>{visible.length}</span>
     </div>
     <p className={styles.sectionLead}>
-      Elenco delle condanne penali e della Corte dei conti presenti nello snapshot curato. Una condanna non definitiva
-      non è una colpevolezza accertata (art. 27 della Costituzione). Non compare chi non ha una condanna documentata:
-      l’assenza da questa lista non certifica un casellario vuoto.
+      Una condanna non definitiva non è una colpevolezza accertata (art. 27 della Costituzione).
+      L’assenza da questa lista non certifica un casellario vuoto.
     </p>
     <p className={styles.note}>
       {penal} penali · {accounting} contabili · {coverageNote}

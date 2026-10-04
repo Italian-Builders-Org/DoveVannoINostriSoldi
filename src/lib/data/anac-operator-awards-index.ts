@@ -678,20 +678,36 @@ export function searchAnacOperators(options?: {
     return { query: trimmed, normalizedQuery, hits: [], matched: 0, limit, meta };
   }
   const index = loadSearchIndex();
-  const matchedHits = index
-    .filter((hit) => hit.searchKey.includes(normalizedQuery))
-    .sort((left, right) => {
-      const leftPrefix = left.searchKey.startsWith(normalizedQuery) ? 0 : 1;
-      const rightPrefix = right.searchKey.startsWith(normalizedQuery) ? 0 : 1;
-      if (leftPrefix !== rightPrefix) return leftPrefix - rightPrefix;
-      if (right.awardCount !== left.awardCount) return right.awardCount - left.awardCount;
-      return left.name.localeCompare(right.name, "it");
-    });
+  const matches = index.filter((hit) => hit.searchKey.includes(normalizedQuery));
+  const matchedHits: AnacOperatorSearchHit[] = [];
+  // Array.slice truncates fractional limits; preserve that public behavior.
+  const capacity = Math.trunc(limit);
+  const compare = (left: AnacOperatorSearchHit, right: AnacOperatorSearchHit): number => {
+    const leftPrefix = left.searchKey.startsWith(normalizedQuery) ? 0 : 1;
+    const rightPrefix = right.searchKey.startsWith(normalizedQuery) ? 0 : 1;
+    if (leftPrefix !== rightPrefix) return leftPrefix - rightPrefix;
+    if (right.awardCount !== left.awardCount) return right.awardCount - left.awardCount;
+    return left.name.localeCompare(right.name, "it");
+  };
+  for (let position = 0; position < matches.length; position += 1) {
+    const hit = matches[position];
+    if (matchedHits.length === capacity && compare(hit, matchedHits[capacity - 1]) >= 0) continue;
+    let low = 0;
+    let high = matchedHits.length;
+    while (low < high) {
+      const middle = (low + high) >>> 1;
+      // Insert after comparator ties, matching stable Array.sort source order.
+      if (compare(hit, matchedHits[middle]) < 0) high = middle;
+      else low = middle + 1;
+    }
+    matchedHits.splice(low, 0, hit);
+    if (matchedHits.length > capacity) matchedHits.pop();
+  }
   return {
     query: trimmed,
     normalizedQuery,
-    hits: matchedHits.slice(0, limit),
-    matched: matchedHits.length,
+    hits: matchedHits,
+    matched: matches.length,
     limit,
     meta,
   };

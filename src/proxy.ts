@@ -97,16 +97,23 @@ function snapshotPath(request: NextRequest, path: string): string | null {
     : path === "/comuni" ? ["ente", "q"] : [];
   // These pages ignore other parameters (including campaign tags). ISR keys
   // depend on the resolved pathname, while Next retains the RSC query/headers.
-  const semantic = keys.filter(key => query.has(key));
+  const entityView = query.get("view") || "summary";
+  const defaultEntityView = Boolean(entity && CACHED_ENTITY_VIEWS.has(entityView));
+  // Only parameters used by this view can split its content. Keep duplicate
+  // actual filters dynamic so their existing validation can reject ambiguity.
+  const semantic = keys.filter(key => query.has(key) && !(defaultEntityView && (
+    key === "operator" || key === "selection" || (key === "metric" && entityView !== "operators")
+  )));
   if (semantic.some(key => query.getAll(key).length !== 1)) return null;
-  if (entity && semantic.every(key => key === "view"
+  if (entity && CACHED_ENTITY_VIEWS.has(entityView) && semantic.every(key => key === "view"
     || (key === "page" && query.get(key) === "1")
     || (key === "pageSize" && query.get(key) === "25")
+    || ((key === "cpv" || key === "awardYear") && query.get(key) === "")
     || (key === "metric" && query.get(key) === "count"))) {
-    const view = query.get("view") || "summary";
-    return CACHED_ENTITY_VIEWS.has(view) ? `${SNAPSHOT_PREFIX}enti/${entity[1]}/${view}` : null;
+    return `${SNAPSHOT_PREFIX}enti/${entity[1]}/${entityView}`;
   }
-  if (operator && semantic.every(key => key === "page" && query.get(key) === "1")) return `${SNAPSHOT_PREFIX}operatori/${operator[1]}`;
+  if (operator && semantic.every(key => query.get(key) === ""
+    || (key === "page" && query.get(key) === "1"))) return `${SNAPSHOT_PREFIX}operatori/${operator[1]}`;
   if (path === "/comuni" && semantic.every(key => key === "ente")) {
     const code = query.get("ente") || "c_e897";
     return IPA_CODE.test(code) ? `${SNAPSHOT_PREFIX}comuni/${code}` : null;

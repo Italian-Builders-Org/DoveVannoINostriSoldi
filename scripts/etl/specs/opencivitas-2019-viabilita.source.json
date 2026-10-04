@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "referenceYear": 2019,
+  "family": "FC60TERRVIAB",
+  "releaseVersion": 1,
+  "publishedAt": "2023-05-30",
+  "modifiedAt": "2023-05-30",
+  "datasetPageUrl": "https://www.opencivitas.it/it/dataset/2019-comuni-viabilita-e-territorio-indicatori-e-determinanti",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "owner": "Ragioneria Generale dello Stato",
+  "publisher": "SOSE",
+  "files": {
+    "data": {
+      "url": "https://docs.opencivitas.it/2019_Ind_FC60TERRVIAB_1_csv.zip",
+      "bytes": 3394645,
+      "sha256": "7e8e5aecee698c71c2d8e2b8d419abf331e73a9d24c73688e632a5746ed91d06"
+    },
+    "entities": {
+      "url": "https://docs.opencivitas.it/Metadati_Enti_2019_xlsx.zip",
+      "bytes": 423591,
+      "sha256": "bae9771f05dbaf05686553ab5c3110d7b0eb5083c0e3322fb960afff09c1a30c"
+    },
+    "indicators": {
+      "url": "https://docs.opencivitas.it/2019_Metadati_Ind_FC60TERRVIAB_1_xlsx.zip",
+      "bytes": 8064,
+      "sha256": "b8fdffdb5e0031baf19f17e7a71757312df58588c5aba46f4a8d6ba0bf576a57"
+    }
+  },
+  "csvHeaders": [
+    "USERNAME",
+    "Indicatore/Determinante",
+    "Valore",
+    "Anomalia",
+    "Privacy"
+  ],
+  "csvEncoding": "utf-8-sig",
+  "decimalSeparator": ",",
+  "csvRowCount": 534357,
+  "indicatorDefinitionCount": 68,
+  "indicatorDescriptions": {
+    "FST_RIPROPORZIONATO_BI": "Spesa standard - Euro",
+    "FST_RIPROPORZIONATO_BI_PROAB": "Spesa standard - Euro per abitante",
+    "SPESA_STORICA": "Spesa storica - Euro",
+    "SPESA_STORICA_PROAB": "Spesa storica - Euro per abitante",
+    "DIFF_OUT_PERC": "Quantità di servizi offerti dal comune rispetto alla media di fascia di popolazione - %",
+    "POSIZIONE_SPESA_PERC": "Livello della spesa - Da 0 a 10",
+    "POSIZIONE_OUTPUT_PERC": "Livello dei servizi erogati - Da 0 a 10",
+    "DESCR_NON_VALUTABILE_SPESA": "Motivo di non valutabilità per la spesa",
+    "DESCR_NON_VALUTABILE_OUT": "Motivo di non valutabilità per i servizi offerti"
+  },
+  "municipalities": 6566,
+  "regionCounts": {
+    "ABRUZZO": 305,
+    "BASILICATA": 131,
+    "CALABRIA": 404,
+    "CAMPANIA": 550,
+    "EMILIA-ROMAGNA": 328,
+    "LAZIO": 378,
+    "LIGURIA": 234,
+    "LOMBARDIA": 1507,
+    "MARCHE": 228,
+    "MOLISE": 136,
+    "PIEMONTE": 1181,
+    "PUGLIA": 257,
+    "TOSCANA": 273,
+    "UMBRIA": 92,
+    "VENETO": 562
+  },
+  "excludedIncompleteHistorical": [
+    "VI001SIF11NN"
+  ],
+  "excludedScientificHistorical": [],
+  "excludedNonPositiveStandard": [],
+  "coverageWarning": "RSS e Province autonome fuori perimetro; esclusi gli aggregati di Italia, regioni, aree e fasce. Escluso 1 Comune con SPESA_STORICA e SPESA_STORICA_PROAB vuoti nella fonte (fabbisogno presente): nessuna imputazione a zero.",
+  "nationalTotals": {
+    "reproportioned": true,
+    "historicalSpendingCents": 468128302093,
+    "standardSpendingCentsPublished": 468113019634,
+    "standardSpendingCentsExcluded": 15282437,
+    "roundingToleranceCents": 100,
+    "sourceNationalAggregateHistorical": "4681283020,9",
+    "sourceNationalAggregateStandard": "4681283020,8",
+    "note": "Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Sui 6.566 Comuni pubblicati la spesa storica è 4.681.283.020,93 € e il fabbisogno 4.681.130.196,34 €. Il Comune escluso porta 152.824,37 € di fabbisogno: sommato al fabbisogno pubblicato fa 4.681.283.020,71 €, a 0,22 € dalla spesa storica pubblicata. L'aggregato ZZ999ITA001 pubblica 4.681.283.020,90 € di spesa storica e 4.681.283.020,80 € di fabbisogno. La differenza aggregata non è un risultato e non va letta come risparmio o spreco."
+  },
+  "excludedAggregates": [
+    "ZZ999ARE001",
+    "ZZ999ARE002",
+    "ZZ999ARE003",
+    "ZZ999ARE004",
+    "ZZ999FAS001",
+    "ZZ999FAS002",
+    "ZZ999FAS003",
+    "ZZ999FAS004",
+    "ZZ999FAS005",
+    "ZZ999FAS006",
+    "ZZ999FAS007",
+    "ZZ999FAS008",
+    "ZZ999FAS009",
+    "ZZ999FAS010",
+    "ZZ999ITA001",
+    "ZZ999REG001",
+    "ZZ999REG003",
+    "ZZ999REG005",
+    "ZZ999REG007",
+    "ZZ999REG008",
+    "ZZ999REG009",
+    "ZZ999REG010",
+    "ZZ999REG011",
+    "ZZ999REG012",
+    "ZZ999REG013",
+    "ZZ999REG014",
+    "ZZ999REG015",
+    "ZZ999REG016",
+    "ZZ999REG017",
+    "ZZ999REG018"
+  ]
+}

@@ -132,6 +132,20 @@ const pensionsRuntimeFiles = [
 const openCivitas2015RuntimeFiles = ["src/data/generated/opencivitas-2015.json"];
 const openCivitas2016RuntimeFiles = ["src/data/generated/opencivitas-2016.json"];
 const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
+const openCivitas2019AmministrazioneRuntimeFiles = [
+  "src/data/generated/opencivitas-2019-amministrazione.json",
+];
+const openCivitas2019IstruzioneRuntimeFiles = [
+  "src/data/generated/opencivitas-2019-istruzione.json",
+];
+const openCivitas2019PoliziaRuntimeFiles = ["src/data/generated/opencivitas-2019-polizia.json"];
+const openCivitas2019RifiutiRuntimeFiles = ["src/data/generated/opencivitas-2019-rifiuti.json"];
+const openCivitas2019SocialeAsiliRuntimeFiles = [
+  "src/data/generated/opencivitas-2019-sociale-asili.json",
+];
+const openCivitas2019ViabilitaRuntimeFiles = [
+  "src/data/generated/opencivitas-2019-viabilita.json",
+];
 const naspiRuntimeFiles = ["src/data/generated/inps-naspi-2018-2022.data.json"];
 const assegnoUnicoRuntimeFiles = ["src/data/generated/inps-assegno-unico-2022-2024.data.json"];
 const integrazioniSalarialiRuntimeFiles = [
@@ -187,6 +201,19 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
+    "/*": ["data/source-ledger/elements/**/*"],
+    // contains:true also matches descendants. !(/**) keeps each hub exact;
+    // the procurement, structure and cached procurement routes do not read childcare.
+    "/app/enti!(/**)": childcareRuntimeFiles,
+    "/app/api/enti!(/**)": childcareRuntimeFiles,
+    "/app/enti/*/appalti/**": childcareRuntimeFiles,
+    "/app/api/enti/*/struttura": childcareRuntimeFiles,
+    "/app/snapshot-pages/enti/**": childcareRuntimeFiles,
+    ...Object.fromEntries(
+      ["/app/fonti/catalogo/**", "/app/fonti/copertura/**", "/app/api/fonti/catalogo/**"].map(
+        (route) => [route, ["src/data/generated/integrated/rows/*"]],
+      ),
+    ),
     "/app/snapshot-pages/operatori/**": [
       "src/data/generated/anac-operator-awards-index/operators/*",
       "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
@@ -197,13 +224,12 @@ const nextConfig: NextConfig = {
       routesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
     ),
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
-    "/appalti/operatori/\\[ref\\]": [
+    "/app/appalti/operatori/*/**": [
       "src/data/generated/anac-operator-awards-index/operators/*",
       "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
       "src/data/generated/anac-operator-awards-index/summaries.json",
       "src/data/generated/anac-operator-browse/*",
     ],
-    "/api/mcp": ["data/source-ledger/elements/**/*"],
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
   },
   outputFileTracingIncludes: {
@@ -223,7 +249,7 @@ const nextConfig: NextConfig = {
     "/coesione/asili": childcareRuntimeFiles,
     "/progetti/*": childcareRuntimeFiles,
     "/api/pnrr/asili": childcareRuntimeFiles,
-    "/api/enti/*": childcareRuntimeFiles,
+    "/app/api/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     "/api/lavoro/naspi": naspiRuntimeFiles,
     "/api/famiglia/assegno-unico": assegnoUnicoRuntimeFiles,
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
@@ -244,21 +270,23 @@ const nextConfig: NextConfig = {
     "/api/spese/opencivitas-2015": openCivitas2015RuntimeFiles,
     "/api/spese/opencivitas-2016": openCivitas2016RuntimeFiles,
     "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
+    "/api/spese/opencivitas-2019-amministrazione": openCivitas2019AmministrazioneRuntimeFiles,
+    "/api/spese/opencivitas-2019-istruzione": openCivitas2019IstruzioneRuntimeFiles,
+    "/api/spese/opencivitas-2019-polizia": openCivitas2019PoliziaRuntimeFiles,
+    "/api/spese/opencivitas-2019-rifiuti": openCivitas2019RifiutiRuntimeFiles,
+    "/api/spese/opencivitas-2019-sociale-asili": openCivitas2019SocialeAsiliRuntimeFiles,
+    "/api/spese/opencivitas-2019-viabilita": openCivitas2019ViabilitaRuntimeFiles,
 
-    "/appalti/operatori": [
-      "src/data/generated/anac-operator-awards-index/meta.json",
-      "src/data/generated/anac-operator-awards-index/summaries.json",
-      "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
-      "src/data/generated/anac-operator-browse/*",
-      "scripts/etl/specs/anac-operator-awards-index.source.json",
-    ],
+    // The hub's literal reads are traced automatically. A hub-wide include also
+    // adds its search/ranking files to detail pages; runtime guards check both.
     "/appalti/operatori/\\[ref\\]": [
       "src/data/generated/anac-operator-history/*",
       "src/data/generated/anac-operator-awards-index/meta.json",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
-    "/enti/*": [...entityProcurementRuntimeFiles, ...childcareRuntimeFiles],
+    "/enti/*": entityProcurementRuntimeFiles,
+    "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/enti/*/appalti/confronti": [
       "src/data/generated/anac-procurement-peers/*",
@@ -318,6 +346,12 @@ const nextConfig: NextConfig = {
       ...openCivitas2015RuntimeFiles,
       ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
+      ...openCivitas2019AmministrazioneRuntimeFiles,
+      ...openCivitas2019IstruzioneRuntimeFiles,
+      ...openCivitas2019PoliziaRuntimeFiles,
+      ...openCivitas2019RifiutiRuntimeFiles,
+      ...openCivitas2019SocialeAsiliRuntimeFiles,
+      ...openCivitas2019ViabilitaRuntimeFiles,
     ],
     "/api/mcp": [
       ...integratedSourceRuntimeFiles,
@@ -346,6 +380,12 @@ const nextConfig: NextConfig = {
       ...openCivitas2015RuntimeFiles,
       ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
+      ...openCivitas2019AmministrazioneRuntimeFiles,
+      ...openCivitas2019IstruzioneRuntimeFiles,
+      ...openCivitas2019PoliziaRuntimeFiles,
+      ...openCivitas2019RifiutiRuntimeFiles,
+      ...openCivitas2019SocialeAsiliRuntimeFiles,
+      ...openCivitas2019ViabilitaRuntimeFiles,
     ],
   },
 };

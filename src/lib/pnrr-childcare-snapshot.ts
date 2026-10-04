@@ -86,8 +86,14 @@ function boundedInteger(value: number | undefined, fallback: number, minimum: nu
   return value;
 }
 
+// Only validated snapshot references enter this index; user queries are never retained.
+// A new snapshot/module has new project references and builds its own index.
+const searchableProjects = new WeakMap<PnrrChildcareProject, string>();
+
 function searchable(project: PnrrChildcareProject): string {
-  return normalizedSearch([
+  const cached = searchableProjects.get(project);
+  if (cached !== undefined) return cached;
+  const value = normalizedSearch([
     project.cup,
     project.title,
     project.summary,
@@ -101,6 +107,8 @@ function searchable(project: PnrrChildcareProject): string {
       location.municipalityCode,
     ]),
   ].filter(Boolean).join(" "));
+  searchableProjects.set(project, value);
+  return value;
 }
 
 export function getPnrrChildcareProject(rawCup: string): PnrrChildcareProject | null {

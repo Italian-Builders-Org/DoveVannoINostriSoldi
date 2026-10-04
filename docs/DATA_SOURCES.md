@@ -290,7 +290,7 @@ sommati. Valore assoluto, quota di PIL, euro per abitante ed euro per km²
 restano misure distinte; i denominatori delle ultime tre sono calcolati
 dall'editore ma non versionati nel record. Una riga assente non diventa zero.
 
-### Spesa del Bilancio dello Stato per territorio destinatario 2020-2022
+### Spesa del Bilancio dello Stato per territorio destinatario 2008-2013 e 2020-2022
 
 Gli esercizi 2020, 2021 e 2022 della stessa serie `SRS_SPE_BIL_SPESR_001`
 entrano nel corpus integrato come tre dataset `rgs-spesa-statale-regionalizzata-*`
@@ -302,9 +302,15 @@ dimensioni, zeri pubblicati e riconciliazione tra Italia, Regioni e
 ripartizioni. `scripts/etl/rgs_spesa_statale_regionalizzata_corpus.py --check`
 ricostruisce le proiezioni dalla fonte e le confronta con il corpus.
 
-Lo schema cambia fra annualità: 2020 e 2021 hanno un'ottava colonna vuota, il
-2021 elenca ancora la missione 033 «Fondi da ripartire» e le categorie non
-coincidono con il 2023. Come nel 2023, i file contengono righe della categoria 09
+Gli esercizi dal 2008 al 2013 entrano come seconda fetta, con un proprio lock
+`scripts/etl/specs/rgs-spesa-statale-regionalizzata-2008-2013.source.json` e gli
+stessi controlli: sei dataset, da 20.248 a 20.712 righe l'uno, 122.400 in tutto.
+Ogni fetta si pubblica una volta sola con `--slice`; `--check` le verifica tutte.
+Italia, Regioni e ripartizioni riconciliano entro 0,33 milioni in ogni anno.
+
+Lo schema cambia fra annualità: dal 2008 al 2013 e nel 2020 e 2021 c'è un'ottava
+colonna vuota; le categorie sono 15 dal 2008 al 2010 e 16 poi, e non coincidono con
+il 2023; la missione 033 «Fondi da ripartire» compare dal 2008 al 2017 e nel 2021. Come nel 2023, i file contengono righe della categoria 09
 con missione 034 «Debito pubblico» anche se la scheda descrive la spesa al netto
 degli interessi: il corpus le conserva come pubblicate. Il pacchetto CKAN riporta
 `cc-by`, ma pagina e file non dichiarano una licenza: lo stato resta
@@ -862,6 +868,15 @@ Fonte, lock e perimetro in [OpenCivitas 2021 Sociale e asili](OPENCIVITAS_2021_S
 
 È integrata anche **FC70POLIZIA 2021** (Polizia locale, 6.556 Comuni RSO; 9 esclusi per spesa storica vuota nella fonte), con contratto distinto, `/api/spese/opencivitas-2021-polizia` e MCP `opencivitas_polizia_2021`. Il fabbisogno standard è riproporzionato sul totale della spesa storica della funzione. Nessuna somma o confronto silenzioso con FC70TOT 2021 o con la stessa funzione nel 2022. Fonte, lock e perimetro in [OpenCivitas 2021 Polizia locale](OPENCIVITAS_2021_POLIZIA.md).
 
+Sono integrate anche le **sei funzioni FC60 2019** (Istruzione, Polizia locale,
+Viabilità e territorio, Rifiuti, Sociale e asili nido, Amministrazione; da 6.494
+a 6.567 Comuni RSO), ciascuna con contratto distinto da FC60TOT 2019 e dalla
+stessa funzione 2021/2022, API `/api/spese/opencivitas-2019-<funzione>` e MCP
+`opencivitas_<funzione>_2019`. Spesa storica vuota o in notazione scientifica
+resta esclusa senza imputazione; Sociale e asili nido non riproporziona il
+fabbisogno sul totale della spesa storica. Fonte, lock ed esclusioni in
+[OpenCivitas 2019 · funzioni](OPENCIVITAS_2019_FUNZIONI.md).
+
 È integrato anche FC40TOT 2017 versione 1 (6.627 Comuni RSO), con contratto
 distinto, `/api/spese/opencivitas-2017` e MCP `opencivitas_fabbisogni_2017`.
 Fonte, lock e perimetro sono documentati in [OpenCivitas 2017](OPENCIVITAS_2017.md).
@@ -977,8 +992,8 @@ Altre fonti da valutare nella fase 2:
 - personale pubblico;
 - sanità;
 - dati regionali e comunali con maggiore granularità;
-- ulteriori funzioni e annualità ufficiali OpenCivitas oltre alle serie già integrate
-  2015–2019/2021–2022 già integrati (nessuna imputazione del 2020);
+- funzioni OpenCivitas 2015–2018 (servizi totali 2015–2019/2021–2022 e funzioni
+  2019/2021/2022 già integrati; nessuna imputazione del 2020);
 - Corte dei conti per contesto e referti, senza confondere contestazioni, sentenze e dati di spesa.
 
 ### MIM · scuole statali per Comune

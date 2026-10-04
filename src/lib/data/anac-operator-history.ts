@@ -121,6 +121,7 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
   const recordKey = `${ref}:${fingerprint}`;
   const cached = cache.get(recordKey);
   if (cached) return cached;
+  let requestedRecord: unknown;
   let lines = shardCache.get(fingerprint);
   if (!lines) {
     const compressed = readBytes(
@@ -143,6 +144,9 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
             throw new Error("Identità dello storico operatori non valida");
           }
           offsets.set(candidate.ref, { start, end: start + line.length });
+          // The index pass already parses every sibling. Reuse only the
+          // requested summary locally, without retaining neighbour objects.
+          if (candidate.ref === ref) requestedRecord = candidate;
         }
         start += line.length + 1;
       }
@@ -157,7 +161,7 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
   const range = lines.index.get(ref);
   if (range) {
     const line = lines.raw.slice(range.start, range.end);
-    const candidate = JSON.parse(line);
+    const candidate = requestedRecord ?? JSON.parse(line);
     const result = historySummarySchema.parse(candidate);
     const bytes = Buffer.byteLength(line);
     if (bytes <= 8_388_608) {

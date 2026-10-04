@@ -116,6 +116,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `consulenze-pnrr` | Consulenze PNRR | consultancies | 213 | 213 | 213 | rows | documented-fact | not-declared |
 | `corte-conti` | Atti della Corte dei conti | oversight | 93 | 93 | 93 | rows | documented-fact | not-declared |
 | `cv-incarichi` | CV e incarichi | consultancies | 139 | 0 | 119 | catalog-only | needs-explanation | not-declared |
+| `eurostat-disuguaglianza-redditi` | Disuguaglianza del reddito · Italia · EU-SILC 2014-2025 | social-conditions | 24 | 24 | 24 | rows | documented-fact | verified-open-eu-reuse |
 | `eventi-convegni` | Eventi e convegni | operations | 109 | 109 | 109 | rows | documented-fact | not-declared |
 | `fuori-consip` | Contratti da rendere comparabili | procurement | 207 | 207 | 206 | rows | needs-explanation | not-declared |
 | `gruppi-vincitori` | Gruppi e fornitori | procurement | 27 | 0 | 17 | catalog-only | needs-explanation | not-declared |
@@ -163,6 +164,12 @@ fornisce comunque un percorso di provenienza verificabile.
 | `rimborsi-spese` | Rimborsi spese | operations | 21 | 21 | 21 | rows | documented-fact | not-declared |
 | `rimborsi-spese-buchi` | Rimborsi spese: copertura mancante | transparency | 14 | 14 | 11 | rows | missing-data | not-declared |
 | `rinnovi-proroghe` | Rinnovi e proroghe | procurement | 440 | 440 | 440 | rows | needs-explanation | not-declared |
+| `salute-classificazione-cnd` | Dispositivi medici · classificazione CND · 2026-09-01 | health | 11.115 | 11.115 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-dispositivi-bdrdm` | Dispositivi medici · anagrafica BD/RDM · 2026-09-14 | health | 2.416.708 | 2.416.708 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2018` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2018 | health | 718.808 | 718.808 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2019` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2019 | health | 768.233 | 768.233 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2020` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2020 | health | 787.845 | 787.845 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2021` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2021 | health | 846.878 | 846.878 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
 | `segnalazioni` | Segnali da verificare | evidence | 168 | 168 | 168 | rows | needs-explanation | not-declared |
 | `segnalazioni-card` | Righe preparatorie per schede | evidence | 2.812 | 0 | 2.812 | derived-only | needs-explanation | not-declared |
 | `segnalazioni-parti` | Soggetti collegati alle segnalazioni | evidence | 164 | 164 | 0 | rows | needs-explanation | not-declared |
@@ -211,10 +218,10 @@ prima del calcolo dell'hash pubblico della riga.
 
 ## Superfici pubbliche
 
-- `/dati`: tutti i 79 dataset e i loro stati;
-- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle 57 proiezioni;
+- `/dati`: tutti i dataset del catalogo e i loro stati;
+- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle proiezioni interrogabili;
 - `/fonti/copertura`: riconciliazione dei tre livelli del rilascio e metadati di
-  fonte e freschezza per tutti i 79 dataset;
+  fonte e freschezza per tutti i dataset;
 - `/fonti/catalogo` e `/api/fonti/catalogo`: tutte le 34.071 identità;
 - `/appalti`, `/incarichi`, `/spese`, `/controlli` e `/confronti`: anteprime
   concise di non più di tre percorsi pertinenti;
@@ -224,9 +231,10 @@ prima del calcolo dell'hash pubblico della riga.
 - 21 pagine tematiche sotto `/appalti`, `/incarichi`, `/spese`, `/controlli`,
   `/confronti` e `/trasparenza`: risultati, confini probatori, prime righe e
   collegamento al dataset completo;
-- un'anteprima dedicata in `/partecipazioni`, che mantiene primaria la vista
-  nazionale MEF e conduce ai tre insiemi di approfondimento; 21 pagine e questa
-  anteprima rappresentano insieme tutti i 79 dataset una sola volta;
+- anteprime di superficie, fra cui quella di `/partecipazioni`, che mantiene
+  primaria la vista nazionale MEF e conduce ai tre insiemi di approfondimento;
+  pagine tematiche e anteprime rappresentano insieme ogni dataset del catalogo
+  una sola volta (`tests/integrated-editorial.test.mjs`);
 - MCP `spesa_pa_dettaglio`: lo stesso selettore pubblico con `code`, `query`,
   `limit` e `offset`.
 

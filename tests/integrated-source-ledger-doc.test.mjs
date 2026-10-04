@@ -44,3 +44,26 @@ test("the closed contract of the ledger matches the published catalog totals", (
   assert.match(ledger, new RegExp(`catalogo delle identità di fonte e ${totals.datasets} ricevute dataset\\.`));
   assert.match(ledger, new RegExp(`Le ${italian(totals.publicRows).replaceAll(".", "\\.")} righe della proiezione pubblica`));
 });
+
+test("the ledger lists every catalog dataset once, with the catalog values", () => {
+  const listed = new Map();
+  for (const line of ledger.split("\n")) {
+    const match = /^\| `([^`]+)` \| (.*) \|$/.exec(line);
+    if (!match) continue;
+    assert.ok(!listed.has(match[1]), `${match[1]}: riga duplicata nel registro`);
+    listed.set(match[1], match[2].split(" | "));
+  }
+  assert.deepEqual([...listed.keys()].sort(), catalog.datasets.map((dataset) => dataset.id).sort());
+  for (const dataset of catalog.datasets) {
+    assert.deepEqual(listed.get(dataset.id), [
+      dataset.title,
+      dataset.domain,
+      italian(dataset.rows),
+      italian(dataset.publicRows),
+      italian(dataset.rowsWithPublicSource),
+      dataset.publication,
+      dataset.evidenceLabel,
+      dataset.licenseStatus,
+    ], `${dataset.id}: riga del registro divergente dal catalogo`);
+  }
+});

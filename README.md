@@ -18,7 +18,7 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 - Capire rapidamente che cosa il dato misura, e che cosa non misura.
 - Fare domande al catalogo dati e al server MCP in sola lettura.
 
-Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, **opere pubbliche (previsto vs effettivo)**, enti, appalti ANAC, povertà, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 60 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 96 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
+Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, **opere pubbliche (previsto vs effettivo)**, enti, appalti ANAC, povertà, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 60 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 102 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
 
 ![Home: spesa pubblica Eurostat COFOG, bilancio dello Stato e pagamenti dei Comuni](docs/readme/home.jpg)
 
@@ -76,7 +76,7 @@ Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, impre
 | [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Chat con la tua AI personale, dati verificati del sito e allegati |
 | [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, catalogo, copertura e calendario |
 | [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
-| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato (110 dataset) |
+| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato (116 dataset) |
 | [Report](https://www.dovevannoinostrisoldi.com/report) | Articoli mensili e approfondimenti |
 
 Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [operatori ANAC](https://www.dovevannoinostrisoldi.com/appalti/operatori), [opere pubbliche](https://www.dovevannoinostrisoldi.com/opere), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [studio asili PNRR](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti).

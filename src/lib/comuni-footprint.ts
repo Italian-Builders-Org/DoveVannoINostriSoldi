@@ -10,6 +10,12 @@ import {
   buildMunicipalitySpendingRows,
   type MunicipalitySpendingRow,
 } from "@/lib/municipality-spending-view";
+import { loadAnacEntityProcurementPage } from "@/lib/data/anac-entity-procurement-page";
+import {
+  MEF_IRPEF_INCOME_BAND_MEASURE_ORDER,
+  type MefIrpefIncomeBandMeasureKey,
+} from "@/lib/data/mef-irpef-contract";
+import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import {
   getMunicipalityFinancialProfile,
   type MunicipalityPeerBenchmark,
@@ -82,11 +88,151 @@ export type ComuniFootprint = Readonly<{
   }>[];
   openCivitas: MunicipalityFinancialProfile["openCivitas"];
   irpef: MunicipalityFinancialProfile["irpef"];
+  irpefIncomeBands: readonly ComuniIrpefIncomeBand[] | null;
+  anac: ComuniAnacOverview;
+  pnrr: ComuniPnrrOverview;
   pnrrChildcare: MunicipalityFinancialProfile["pnrrChildcare"];
   methodology: MunicipalityFinancialProfile["siope"]["methodology"];
   sources: MunicipalityFinancialProfile["siope"]["sources"];
   entityHref: `/enti/${string}`;
+  appaltiHref: `/enti/${string}/appalti`;
 }>;
+
+export type ComuniIrpefIncomeBand = Readonly<{
+  key: MefIrpefIncomeBandMeasureKey;
+  label: string;
+  frequency: number | null;
+  amountCents: number | null;
+  coverage: ReportedMeasure["coverage"];
+}>;
+
+export type ComuniAnacOverview =
+  | Readonly<{
+      status: "available";
+      procedureCount: number;
+      awardCount: number;
+      awardValueLabel: string;
+      awardeeCount: number;
+      topOperators: readonly Readonly<{
+        ref: string;
+        name: string;
+        awardCount: number;
+        attributedValueLabel: string;
+      }>[];
+      observedAt: string;
+      appaltiHref: `/enti/${string}/appalti`;
+    }>
+  | Readonly<{ status: "unavailable"; message: string }>;
+
+export type ComuniPnrrOverview = Readonly<{
+  referenceDate: string;
+  localizedRegistrations: number | null;
+  implementerRegistrations: number | null;
+  sampleProjects: readonly Readonly<{
+    cup: string;
+    title: string;
+    fundingLabel: string;
+  }>[];
+  projectsHref: string;
+  methodologyNote: string;
+}>;
+
+const IRPEF_BAND_LABELS: Readonly<Record<MefIrpefIncomeBandMeasureKey, string>> = {
+  nonPositiveComprehensiveIncome: "≤ 0 €",
+  comprehensiveIncome0To10000: "0-10 mila",
+  comprehensiveIncome10000To15000: "10-15 mila",
+  comprehensiveIncome15000To26000: "15-26 mila",
+  comprehensiveIncome26000To55000: "26-55 mila",
+  comprehensiveIncome55000To75000: "55-75 mila",
+  comprehensiveIncome75000To120000: "75-120 mila",
+  comprehensiveIncomeOver120000: "> 120 mila",
+};
+
+function measureFrequency(measure: ReportedMeasure): number | null {
+  if (measure.coverage === "complete") return measure.frequency;
+  return measure.knownFrequency;
+}
+
+function measureAmountCents(measure: ReportedMeasure): number | null {
+  if (measure.coverage === "complete") return measure.amountCents;
+  return measure.knownAmountCents;
+}
+
+function decimalEuroLabel(value: string): string {
+  if (!/^[0-9]+(?:\.[0-9]+)?$/.test(value)) return "n.d.";
+  const [euros, fraction = ""] = value.split(".");
+  return `${euros.replace(/\B(?=(\d{3})+(?!\d))/g, ".")},${fraction.padEnd(2, "0").slice(0, 2)} €`;
+}
+
+function irpefIncomeBandsFromProfile(
+  irpef: MunicipalityFinancialProfile["irpef"],
+): readonly ComuniIrpefIncomeBand[] | null {
+  if (irpef.status !== "available") return null;
+  const bands = irpef.data.record.breakdowns?.incomeBands;
+  if (!bands) return null;
+  return MEF_IRPEF_INCOME_BAND_MEASURE_ORDER.map((key) => {
+    const measure = bands[key];
+    return {
+      key,
+      label: IRPEF_BAND_LABELS[key],
+      frequency: measureFrequency(measure),
+      amountCents: measureAmountCents(measure),
+      coverage: measure.coverage,
+    };
+  });
+}
+
+async function loadAnacOverview(profile: MunicipalityFinancialProfile): Promise<ComuniAnacOverview> {
+  const appaltiHref = `/enti/${encodeURIComponent(profile.identifiers.codiceIpa)}/appalti` as const;
+  const state = await loadAnacEntityProcurementPage({
+    codiceIpa: profile.identifiers.codiceIpa,
+    currentEntityCf: profile.identifiers.taxCode,
+    verifyLiveFiscalCode: true,
+  });
+  if (state.status !== "available") {
+    return { status: "unavailable", message: state.message };
+  }
+  const { summary, operators, meta } = state.profile;
+  return {
+    status: "available",
+    procedureCount: summary.procedureCount,
+    awardCount: summary.awardCount,
+    awardValueLabel: decimalEuroLabel(summary.awardValue),
+    awardeeCount: summary.awardeeCount,
+    topOperators: operators.slice(0, 5).map((operator) => ({
+      ref: operator.ref,
+      name: operator.name,
+      awardCount: operator.awardCount,
+      attributedValueLabel: decimalEuroLabel(operator.attributedValue),
+    })),
+    observedAt: meta.observedAt,
+    appaltiHref,
+  };
+}
+
+async function loadPnrrOverview(profile: MunicipalityFinancialProfile): Promise<ComuniPnrrOverview> {
+  // Counts only from the committed ReGiS index. Loading public rows would pull
+  // data/source-ledger into the /comuni NFT, which runtime-trace forbids.
+  const { pnrrMatchingRows, pnrrProjectMetadata } = await import("@/lib/pnrr-projects-index");
+  const istatCode = profile.identifiers.istatCode;
+  const taxCode = profile.identifiers.taxCode;
+  const localizedRegistrations = istatCode
+    ? (await pnrrMatchingRows({ territory: istatCode }))?.length ?? 0
+    : null;
+  const implementerRefs = await pnrrMatchingRows({ code: taxCode });
+  const projectsHref = istatCode
+    ? `/pnrr?territory=${encodeURIComponent(istatCode)}`
+    : "/pnrr";
+  return {
+    referenceDate: pnrrProjectMetadata.referenceDate,
+    localizedRegistrations,
+    implementerRegistrations: implementerRefs?.length ?? 0,
+    sampleProjects: [],
+    projectsHref,
+    methodologyNote:
+      "Le registrazioni PNRR contano CUP×CLP×submisura. Localizzazione e soggetto attuatore sono perimetri distinti.",
+  };
+}
 
 export function featuredComuni(): readonly ComuniSearchHit[] {
   return FEATURED_IPA.flatMap((code) => {
@@ -295,7 +441,13 @@ function buildIndicators(
   });
 }
 
-export function buildComuniFootprint(profile: MunicipalityFinancialProfile): ComuniFootprint {
+export function buildComuniFootprint(
+  profile: MunicipalityFinancialProfile,
+  extras: Readonly<{
+    anac: ComuniAnacOverview;
+    pnrr: ComuniPnrrOverview;
+  }>,
+): ComuniFootprint {
   const latest = profile.siope.data.years[0]!;
   const peer = profile.siope.peerBenchmark;
   const receipts = getSiopeMunicipalityReceipts(profile.identifiers.taxCode, latest.year);
@@ -348,10 +500,14 @@ export function buildComuniFootprint(profile: MunicipalityFinancialProfile): Com
       })),
     openCivitas: profile.openCivitas,
     irpef: profile.irpef,
+    irpefIncomeBands: irpefIncomeBandsFromProfile(profile.irpef),
+    anac: extras.anac,
+    pnrr: extras.pnrr,
     pnrrChildcare: profile.pnrrChildcare,
     methodology: profile.siope.methodology,
     sources: profile.siope.sources,
     entityHref: `/enti/${encodeURIComponent(profile.identifiers.codiceIpa)}`,
+    appaltiHref: `/enti/${encodeURIComponent(profile.identifiers.codiceIpa)}/appalti`,
   };
 }
 
@@ -364,5 +520,9 @@ export async function getComuniFootprintByIpaCode(rawCode: string): Promise<Comu
   if (!entity) return null;
   const profile = await getMunicipalityFinancialProfile(entity, { allowCommittedIstatIdentity: true });
   if (!profile) return null;
-  return buildComuniFootprint(profile);
+  const [anac, pnrr] = await Promise.all([
+    loadAnacOverview(profile),
+    loadPnrrOverview(profile),
+  ]);
+  return buildComuniFootprint(profile, { anac, pnrr });
 }

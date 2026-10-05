@@ -69,6 +69,25 @@ test("Mantova footprint exposes indexed indicators against peer median", async (
   assert.equal(footprint.indicators.some((item) => item.id === "irpef-taxpayers"), false);
   assert.ok(footprint.receiptsPerCapitaCents !== null);
   assert.equal(footprint.entityHref, "/enti/c_e897");
+  assert.equal(footprint.appaltiHref, "/enti/c_e897/appalti");
+  assert.ok(footprint.irpefIncomeBands?.length === 8);
+  assert.ok(footprint.irpefIncomeBands.some((band) => band.frequency !== null && band.frequency > 0));
+  assert.equal("schoolServices" in footprint, false);
+  assert.ok(footprint.pnrr.localizedRegistrations !== null && footprint.pnrr.localizedRegistrations > 0);
+  assert.equal(footprint.pnrr.sampleProjects.length, 0);
+  assert.match(footprint.pnrr.projectsHref, /^\/pnrr\?territory=/);
+  assert.ok(footprint.anac.status === "available" || footprint.anac.status === "unavailable");
+});
+
+test("Caserta footprint surfaces national PNRR localization even without childcare attuatore rows", async () => {
+  const footprint = await getComuniFootprintByIpaCode("c_b963");
+  assert.ok(footprint);
+  assert.equal(footprint.displayName, "Caserta");
+  assert.ok(footprint.pnrr.localizedRegistrations !== null && footprint.pnrr.localizedRegistrations > 0);
+  assert.equal(footprint.pnrr.sampleProjects.length, 0);
+  assert.equal(footprint.pnrrChildcare.data.totalProjects, 0);
+  assert.ok(footprint.irpef.status === "available");
+  assert.ok(footprint.irpefIncomeBands?.length === 8);
 });
 
 test("Milano falls back to large-city peer group instead of staying unmatched", async () => {

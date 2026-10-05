@@ -68,6 +68,9 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
                 <li>SIOPE · pagamenti e incassi di cassa.</li>
                 <li>Geografia ISTAT · definizione del gruppo di pari.</li>
                 <li>OpenCivitas · spesa storica rispetto allo standard, se collegabile.</li>
+                <li>IRPEF MEF · contribuenti, misure e fasce di reddito, se collegabili.</li>
+                <li>ANAC · profilo appalti dell’ente, se pubblicato.</li>
+                <li>PNRR ReGiS localizzato + slice asili; sedi scolastiche MIM sulla scheda ente.</li>
                 <li>BDAP (autonomia, FCDE, rigidità) non è inventata: resta fuori finché non c’è la fonte.</li>
               </ul>
               <p>
@@ -104,7 +107,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
               <ul className={styles.resultList}>
                 {searchHits.map((hit) => (
                   <li key={hit.codiceIpa}>
-                    <Link prefetch={false} href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
+                    <Link href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
                       <strong>{displayMunicipalityName(hit.name)}</strong>
                       <span>Codice IPA {hit.codiceIpa}</span>
                     </Link>
@@ -121,7 +124,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
               <ul className={styles.featuredGrid}>
                 {featured.map((hit) => (
                   <li key={hit.codiceIpa}>
-                    <Link prefetch={false} href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
+                    <Link href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}>
                       <strong>{displayMunicipalityName(hit.name)}</strong>
                       <span>
                         {[hit.province, hit.region].filter(Boolean).join(" · ") || hit.codiceIpa}

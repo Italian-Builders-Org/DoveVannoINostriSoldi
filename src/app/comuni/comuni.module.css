@@ -1,4 +1,4 @@
-/* Immersive /comuni: institutional DVNS tokens from design-system.css. */
+/* Immersive /comuni — institutional DVNS tokens from design-system.css. */
 
 .immersivePage {
   display: flex;
@@ -233,7 +233,7 @@
 
 .heroMetrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: var(--space-3);
 }
 .heroMetrics > div {
@@ -417,6 +417,64 @@
 .indicatorMeaning { color: var(--color-neutral-700); font-size: 13px; line-height: 1.5; }
 .indicatorNote { color: var(--color-neutral-600); font-size: 12px; }
 
+.idCodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+.idCodes li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.idCodes span {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-weight: 600;
+}
+.idCodes strong {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.domainNav {
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  margin: 0 calc(-1 * clamp(12px, 2.5vw, 32px));
+  padding: var(--space-2) clamp(12px, 2.5vw, 32px);
+  background: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  border-bottom: 1px solid var(--color-neutral-300);
+  backdrop-filter: blur(8px);
+  scrollbar-width: thin;
+}
+.domainNav a {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.domainNav a:hover,
+.domainNav a:focus-visible {
+  border-color: var(--color-accent-800);
+  color: var(--color-accent-800);
+}
+
 .deepDossier { display: grid; gap: var(--space-4); }
 .sectionTitle {
   font-family: var(--font-heading);
@@ -436,18 +494,132 @@
   display: grid;
   gap: var(--space-3);
   min-width: 0;
+  scroll-margin-top: 180px;
 }
 .panel h3 {
   font-size: 12px; font-weight: 700; letter-spacing: .06em;
   text-transform: uppercase; color: var(--color-neutral-600);
 }
+.panelHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+}
+.panelTag {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+  border: 1px solid var(--color-neutral-300);
+  padding: 4px 8px;
+}
+.panelLead {
+  color: var(--color-neutral-600);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.panelSubhead {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.bandChart {
+  display: grid;
+  gap: var(--space-2);
+}
+.bandChart li {
+  display: grid;
+  grid-template-columns: minmax(72px, 96px) minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+}
+.bandChart strong { font-weight: 600; }
+.bandTrack {
+  display: block;
+  height: 8px;
+  background: var(--chart-data-track);
+  overflow: hidden;
+}
+.bandTrack > span {
+  display: block;
+  height: 100%;
+  width: var(--share);
+  min-width: 2px;
+  background: var(--chart-data-primary);
+}
+.sourceInline {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.sourceInline a { color: var(--color-accent-800); }
+.emptyNote {
+  color: var(--color-neutral-600);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mixLayout {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.mixRing {
+  width: min(100%, 160px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-inline: auto;
+}
+.mixRingHole {
+  width: 58%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-raised);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  padding: 8px;
+  line-height: 1.2;
+}
+.mixSwatch {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--chart-data-primary);
+}
+.mixSwatch[data-tone="1"] { background: var(--color-accent-800); }
+.mixSwatch[data-tone="2"] { background: var(--color-neutral-700); }
+.mixSwatch[data-tone="3"] { background: var(--color-neutral-500); }
+.mixSwatch[data-tone="4"] { background: var(--color-neutral-400); }
+.mixSwatch[data-tone="5"] { background: var(--color-neutral-300); }
 
 .spendingList { display: grid; gap: var(--space-3); }
 .spendingRow {
   display: flex; justify-content: space-between; gap: var(--space-3);
   font-variant-numeric: tabular-nums;
 }
-.spendingRow strong { min-width: 0; overflow-wrap: anywhere; }
+.spendingRow strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  display: inline-flex;
+  align-items: center;
+}
 .spendingBar {
   height: 4px; background: var(--chart-data-track); margin: 6px 0;
   overflow: hidden;
@@ -459,34 +631,190 @@
 }
 .spendingList p { color: var(--color-neutral-600); font-size: 12px; line-height: 1.5; }
 
-.trendList { display: grid; gap: var(--space-3); }
-.trendMeta {
-  display: flex; justify-content: space-between; gap: var(--space-3);
+.trendColumns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: var(--space-3);
+  align-items: end;
+  min-height: 220px;
+}
+.trendColumns li {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  text-align: center;
   font-variant-numeric: tabular-nums;
 }
-.trendBar {
-  height: 4px; background: var(--chart-data-track); margin: 6px 0;
-  overflow: hidden;
+.trendColumns strong { font-size: 13px; }
+.trendColumns b {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-neutral-700);
 }
-.trendBar::after {
-  content: "";
-  display: block; height: 100%; width: var(--share);
-  background: var(--color-neutral-700);
+.trendPlot {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background:
+    linear-gradient(to top, transparent 0, transparent calc(100% - 1px), var(--color-neutral-200) calc(100% - 1px)),
+    repeating-linear-gradient(
+      to top,
+      transparent 0,
+      transparent 27px,
+      color-mix(in srgb, var(--color-neutral-300) 55%, transparent) 27px,
+      color-mix(in srgb, var(--color-neutral-300) 55%, transparent) 28px
+    );
 }
-.trendList small { color: var(--color-neutral-600); font-size: 12px; }
+.trendColComplete,
+.trendColPartial,
+.trendColEmpty {
+  display: block;
+  width: min(36px, 70%);
+  height: var(--bar-height);
+  min-height: 2px;
+  transition: height 240ms ease;
+}
+.trendColComplete { background: var(--chart-data-primary); }
+.trendColPartial {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--chart-data-primary),
+    var(--chart-data-primary) 4px,
+    color-mix(in srgb, var(--chart-data-primary) 45%, white) 4px,
+    color-mix(in srgb, var(--chart-data-primary) 45%, white) 8px
+  );
+}
+.trendColEmpty { background: var(--chart-data-track); height: 4px; }
+.trendColumns small {
+  color: var(--color-neutral-600);
+  font-size: 11px;
+  line-height: 1.35;
+}
 
-.extraGrid {
+.benchmarkChart {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
 }
-.extraValue {
-  font-size: clamp(20px, 2.5vw, 24px);
-  font-weight: 600;
+.benchmarkChart li {
+  display: grid;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.benchmarkChart strong { font-size: 13px; }
+.benchmarkChart b { font-size: 13px; font-weight: 700; }
+.benchmarkTrack {
+  display: block;
+  height: 10px;
+  background: var(--chart-data-track);
+  overflow: hidden;
+}
+.benchmarkHistorical,
+.benchmarkStandard {
+  display: block;
+  height: 100%;
+  width: var(--share);
+  min-width: 2px;
+}
+.benchmarkHistorical { background: var(--chart-data-primary); }
+.benchmarkStandard { background: var(--color-neutral-600); }
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.factGrid > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.factGrid dt {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.factGrid dd {
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 700;
   letter-spacing: -.02em;
   font-variant-numeric: tabular-nums;
 }
-.extraGrid p:last-child { color: var(--color-neutral-600); font-size: 13px; }
+.factGrid small {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.levelRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.levelCard {
+  display: grid;
+  gap: 8px;
+  padding: var(--space-3);
+  border: 1px solid var(--color-neutral-300);
+  background: color-mix(in srgb, var(--color-bg) 70%, var(--color-raised));
+}
+.levelHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+.levelHead strong { font-size: 13px; }
+.levelTrack {
+  height: 8px;
+  background: var(--chart-data-track);
+  overflow: hidden;
+}
+.levelTrack > span {
+  display: block;
+  height: 100%;
+  width: var(--share);
+  background: linear-gradient(90deg, var(--chart-data-primary), var(--color-accent-800));
+}
+.levelCard p {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.projectList {
+  display: grid;
+  gap: var(--space-3);
+}
+.projectList li {
+  display: grid;
+  gap: 4px;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-neutral-300);
+}
+.projectList a {
+  color: var(--color-accent-800);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.projectList a:hover,
+.projectList a:focus-visible { text-decoration: underline; }
+.projectList span {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.extraValue {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
 
 .sourcesDetails {
   border: 1px solid var(--color-neutral-300);
@@ -525,13 +853,21 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .dossierGrid,
-  .extraGrid {
+  .factGrid,
+  .levelRow,
+  .mixLayout {
     grid-template-columns: 1fr;
   }
 }
 
 /* —— Mobile —— */
 @media (max-width: 720px) {
+  .domainNav {
+    top: 112px;
+  }
+  .panel {
+    scroll-margin-top: 220px;
+  }
   .immersiveChrome {
     flex-wrap: wrap;
     gap: var(--space-2);

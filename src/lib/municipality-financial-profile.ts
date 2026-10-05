@@ -240,6 +240,7 @@ export async function getMunicipalityFinancialProfile(
         level: "municipality",
         code: candidateIstatCode,
         limit: 1,
+        detail: "income-bands",
       });
       const record = result.data[0];
       if (

@@ -9,15 +9,31 @@ const integratedSourceRuntimeFilesWithoutRows = [
   "src/data/generated/pnrr-projects-index/*.json.gz",
 ];
 
+const integratedRowRuntimeFiles = [
+  "src/data/generated/integrated/rows/*.jsonl.gz",
+];
+
 const integratedSourceRuntimeFiles = [
   ...integratedSourceRuntimeFilesWithoutRows,
-  "src/data/generated/integrated/rows/*.jsonl.gz",
+  ...integratedRowRuntimeFiles,
 ];
 
 const medicalDeviceRuntimeRows = [
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-*.jsonl.gz",
   "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.part-*.jsonl.gz",
   "src/data/generated/integrated/rows/salute-classificazione-cnd.part-*.jsonl.gz",
+];
+
+const medicalDeviceIndexRuntimeFiles = [
+  "src/data/generated/medical-device-spending-index/**/*",
+];
+
+// Chat/MCP import the integrated loader and would otherwise NFT-trace every
+// row shard (~650 MiB) plus other fat indexes, blowing the 250 MB Vercel limit.
+// Row bytes stay on /dati and /api/dati; those routes remain the corpus home.
+const routesWithoutIntegratedRows = [
+  "/app/api/assistant/**",
+  "/app/mcp",
 ];
 
 // Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
@@ -51,12 +67,15 @@ const routesWithoutMedicalDeviceRows = [
   "/app/trasparenza/**",
 ];
 
-const operatorRuntimeFiles = [
+const operatorCatalogRuntimeFiles = [
   "src/data/generated/anac-operator-awards-index/meta.json",
   "src/data/generated/anac-operator-awards-index/summaries.json",
   "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
-  "src/data/generated/anac-operator-awards-index/operators/*.jsonl.gz",
   "scripts/etl/specs/anac-operator-awards-index.source.json",
+];
+
+const operatorShardRuntimeFiles = [
+  "src/data/generated/anac-operator-awards-index/operators/*",
 ];
 
 const entityProcurementRuntimeFiles = [
@@ -214,6 +233,21 @@ const nextConfig: NextConfig = {
         (route) => [route, ["src/data/generated/integrated/rows/*"]],
       ),
     ),
+    ...Object.fromEntries(
+      routesWithoutIntegratedRows.map((route) => [
+        route,
+        [
+          ...integratedRowRuntimeFiles,
+          ...medicalDeviceIndexRuntimeFiles,
+          ...operatorShardRuntimeFiles,
+        ],
+      ]),
+    ),
+    "/app/api/mcp": [
+      ...integratedRowRuntimeFiles,
+      ...medicalDeviceIndexRuntimeFiles,
+      ...operatorShardRuntimeFiles,
+    ],
     "/app/snapshot-pages/operatori/**": [
       "src/data/generated/anac-operator-awards-index/operators/*",
       "src/data/generated/anac-operator-awards-index/search.jsonl.gz",
@@ -297,6 +331,7 @@ const nextConfig: NextConfig = {
       "src/data/generated/istat-municipality-geography.json",
     ],
     "/dati/\\[dataset\\]": integratedSourceRuntimeFiles,
+    "/api/dati/\\[dataset\\]": integratedSourceRuntimeFiles,
     "/pnrr": integratedSourceRuntimeFilesWithoutRows,
     "/api/pnrr/progetti": integratedSourceRuntimeFilesWithoutRows,
     "/fonti/copertura": integratedSourceRuntimeFilesWithoutRows,
@@ -321,7 +356,6 @@ const nextConfig: NextConfig = {
       ...eurostatAropeRuntimeFiles,
     ],
     "/api/assistant/chat": [
-      ...operatorRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
       ...euVatGapItalyRuntimeFiles,
       ...istatBesRelazioniRuntimeFiles,
@@ -354,8 +388,8 @@ const nextConfig: NextConfig = {
       ...openCivitas2019ViabilitaRuntimeFiles,
     ],
     "/api/mcp": [
-      ...integratedSourceRuntimeFiles,
-      ...operatorRuntimeFiles,
+      ...integratedSourceRuntimeFilesWithoutRows,
+      ...operatorCatalogRuntimeFiles,
       ...istatBesLavoroRuntimeFiles,
       ...euVatGapItalyRuntimeFiles,
       ...istatBesRelazioniRuntimeFiles,

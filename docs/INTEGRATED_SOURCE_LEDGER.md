@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 116 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 122 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 116 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 116 | 94 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.731.261 | 7.748.915 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.930.426.289 | somma dei byte impegnati nelle 116 ricevute |
+| Dataset correnti | 122 | 100 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.848.065 | 7.865.719 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.964.835.079 | somma dei byte impegnati nelle 122 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.748.915 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.865.719 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -64,7 +64,9 @@ totale nazionale con Regioni e ripartizioni entro un milione di euro.
 Gli esercizi dal 2008 al 2013 aggiungono altre 122.400 righe della stessa serie,
 un dataset per anno (`rgs-spesa-statale-regionalizzata-2008` … `-2013`), con un
 proprio lock e gli stessi controlli.
-[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2008-2013-e-2020-2022).
+Gli esercizi dal 2014 al 2019 completano la serie con altre 116.804 righe
+(`rgs-spesa-statale-regionalizzata-2014` … `-2019`).
+[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2008-2022).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -161,6 +163,12 @@ fornisce comunque un percorso di provenienza verificabile.
 | `procurement-indici-mimit` | Indice laterale bandi MIMIT | procurement | 2.794 | 0 | 2.794 | catalog-only | documented-fact | not-declared |
 | `procurement-mimit-dork` | Atti MIMIT supplementari | procurement | 27 | 27 | 27 | rows | documented-fact | not-declared |
 | `procurement-partecipate` | Affidamenti delle partecipate | procurement | 11.115 | 11.115 | 11.115 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2014` | RGS · spesa statale regionalizzata 2014 | state-accounts | 20.168 | 20.168 | 20.168 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2015` | RGS · spesa statale regionalizzata 2015 | state-accounts | 20.356 | 20.356 | 20.356 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2016` | RGS · spesa statale regionalizzata 2016 | state-accounts | 20.428 | 20.428 | 20.428 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2017` | RGS · spesa statale regionalizzata 2017 | state-accounts | 18.816 | 18.816 | 18.816 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2018` | RGS · spesa statale regionalizzata 2018 | state-accounts | 18.328 | 18.328 | 18.328 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2019` | RGS · spesa statale regionalizzata 2019 | state-accounts | 18.708 | 18.708 | 18.708 | rows | documented-fact | not-declared |
 | `rimborsi-spese` | Rimborsi spese | operations | 21 | 21 | 21 | rows | documented-fact | not-declared |
 | `rimborsi-spese-buchi` | Rimborsi spese: copertura mancante | transparency | 14 | 14 | 11 | rows | missing-data | not-declared |
 | `rinnovi-proroghe` | Rinnovi e proroghe | procurement | 440 | 440 | 440 | rows | needs-explanation | not-declared |

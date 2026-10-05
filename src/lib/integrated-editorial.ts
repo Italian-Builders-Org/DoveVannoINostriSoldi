@@ -1120,6 +1120,26 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   },
   {
     surface: "/dati",
+    title: "Spesa statale per territorio 2014–2016",
+    description: "Spesa del Bilancio dello Stato per territorio destinatario, un dataset per esercizio: Italia, ripartizioni e Regioni sono livelli sovrapposti da non sommare.",
+    datasets: [
+      { id: "rgs-spesa-statale-regionalizzata-2014", label: "Esercizio 2014" },
+      { id: "rgs-spesa-statale-regionalizzata-2015", label: "Esercizio 2015" },
+      { id: "rgs-spesa-statale-regionalizzata-2016", label: "Esercizio 2016" },
+    ],
+  },
+  {
+    surface: "/dati",
+    title: "Spesa statale per territorio 2017–2019",
+    description: "Spesa del Bilancio dello Stato per territorio destinatario, un dataset per esercizio: Italia, ripartizioni e Regioni sono livelli sovrapposti da non sommare.",
+    datasets: [
+      { id: "rgs-spesa-statale-regionalizzata-2017", label: "Esercizio 2017" },
+      { id: "rgs-spesa-statale-regionalizzata-2018", label: "Esercizio 2018" },
+      { id: "rgs-spesa-statale-regionalizzata-2019", label: "Esercizio 2019" },
+    ],
+  },
+  {
+    surface: "/dati",
     title: "Spesa statale per territorio 2020–2022",
     description: "Spesa del Bilancio dello Stato per territorio destinatario, un dataset per esercizio: Italia, ripartizioni e Regioni sono livelli sovrapposti da non sommare.",
     datasets: [

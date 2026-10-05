@@ -100,6 +100,11 @@ test("assistant and mcp exclude integrated row shards while dati keeps non-medic
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, rowShard), false, route);
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalRow), true, route);
     assert.equal(explicitRuntimeFile(route, medicalRow), false, route);
+    assert.equal(
+      matchingRuntimeFile(nextConfig.outputFileTracingIncludes, route, medicalRow),
+      false,
+      `${route} must not include medical row shards`,
+    );
   }
 });
 

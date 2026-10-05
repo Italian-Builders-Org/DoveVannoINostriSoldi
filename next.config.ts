@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs";
 import type { NextConfig } from "next";
 
 const integratedSourceRuntimeFilesWithoutRows = [
@@ -9,19 +10,31 @@ const integratedSourceRuntimeFilesWithoutRows = [
   "src/data/generated/pnrr-projects-index/*.json.gz",
 ];
 
-const integratedRowRuntimeFiles = [
-  "src/data/generated/integrated/rows/*.jsonl.gz",
-];
-
-const integratedSourceRuntimeFiles = [
-  ...integratedSourceRuntimeFilesWithoutRows,
-  ...integratedRowRuntimeFiles,
-];
-
 const medicalDeviceRuntimeRows = [
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-*.jsonl.gz",
   "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.part-*.jsonl.gz",
   "src/data/generated/integrated/rows/salute-classificazione-cnd.part-*.jsonl.gz",
+];
+
+const medicalRowFilePrefixes = [
+  "salute-spesa-dispositivi-",
+  "salute-dispositivi-bdrdm",
+  "salute-classificazione-cnd",
+] as const;
+
+function isMedicalRowShard(name: string): boolean {
+  return medicalRowFilePrefixes.some((prefix) => name.startsWith(prefix));
+}
+
+// Broad rows/* would re-add medical shards after excludes (Next applies includes
+// last). List non-medical shards so /api/dati stays under the 250 MB serverless cap.
+const integratedRowRuntimeFiles = readdirSync("src/data/generated/integrated/rows")
+  .filter((name) => name.endsWith(".jsonl.gz") && !isMedicalRowShard(name))
+  .map((name) => `src/data/generated/integrated/rows/${name}`);
+
+const integratedSourceRuntimeFiles = [
+  ...integratedSourceRuntimeFilesWithoutRows,
+  ...integratedRowRuntimeFiles,
 ];
 
 const medicalDeviceIndexRuntimeFiles = [

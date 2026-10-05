@@ -76,7 +76,7 @@ Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, impre
 | [Assistente](https://www.dovevannoinostrisoldi.com/assistente) | Chat con la tua AI personale, dati verificati del sito e allegati |
 | [Fonti](https://www.dovevannoinostrisoldi.com/fonti) | Stato dei collegamenti, catalogo, copertura e calendario |
 | [MCP](https://www.dovevannoinostrisoldi.com/mcp) | Catalogo e istruzioni per collegare un client AI in sola lettura |
-| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato (116 dataset) |
+| [Dati](https://www.dovevannoinostrisoldi.com/dati) | Catalogo integrato (122 dataset) |
 | [Report](https://www.dovevannoinostrisoldi.com/report) | Articoli mensili e approfondimenti |
 
 Pagine di dettaglio: [pensioni](https://www.dovevannoinostrisoldi.com/spese/pensioni), [sanità](https://www.dovevannoinostrisoldi.com/spese/sanita), [invalidità civile](https://www.dovevannoinostrisoldi.com/spese/invalidita), [operatori ANAC](https://www.dovevannoinostrisoldi.com/appalti/operatori), [opere pubbliche](https://www.dovevannoinostrisoldi.com/opere), [pagella dei governi](https://www.dovevannoinostrisoldi.com/governi), [confronto Comuni](https://www.dovevannoinostrisoldi.com/territori/confronto), [partecipazioni](https://www.dovevannoinostrisoldi.com/partecipazioni), [studio asili PNRR](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti).

@@ -30,10 +30,18 @@ const medicalDeviceIndexRuntimeFiles = [
 
 // Chat/MCP import the integrated loader and would otherwise NFT-trace every
 // row shard (~650 MiB) plus other fat indexes, blowing the 250 MB Vercel limit.
-// Row bytes stay on /dati and /api/dati; those routes remain the corpus home.
+// Non-medical row bytes stay on /dati and /api/dati. Medical row shards (~430 MiB)
+// stay out of every serverless function: the dispositivi UI/API uses the index.
 const routesWithoutIntegratedRows = [
   "/app/api/assistant/**",
   "/app/mcp",
+];
+
+// Without Fluid Compute, classic serverless caps at 250 MB uncompressed. Keeping
+// medical rows in the shared [dataset] function pushed /api/dati to ~673 MB.
+const corpusRoutesWithoutMedicalDeviceRows = [
+  "/app/dati/**",
+  "/app/api/dati/**",
 ];
 
 // Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
@@ -256,6 +264,9 @@ const nextConfig: NextConfig = {
     ],
     ...Object.fromEntries(
       routesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
+    ),
+    ...Object.fromEntries(
+      corpusRoutesWithoutMedicalDeviceRows.map((route) => [route, medicalDeviceRuntimeRows]),
     ),
     "/appalti/operatori": ["src/data/generated/anac-operator-awards-index/operators/*"],
     "/app/appalti/operatori/*/**": [

@@ -55,12 +55,13 @@ consumati. Lo snapshot PNRR asili è richiesto dalle schede enti e dalle API che
 lo leggono; hub, struttura e pagine appalti non devono includerlo.
 
 I chunk `src/data/generated/integrated/rows/*.jsonl.gz` (centinaia di MiB) restano
-solo sulle superfici corpus `/dati/[dataset]` e `/api/dati/[dataset]`. Le route
-`/api/assistant/**` e `/api/mcp` li escludono dal NFT: importano il loader
-integrato e altrimenti traccerebbero ogni shard, superando il limite Vercel di
-250 MB non compressi per funzione. Entrambe escludono anche l’indice dispositivi
-medici (~138 MiB) e gli shard `operators/*` ANAC; MCP conserva meta/search
-operatori e gli snapshot tipizzati, senza i chunk row.
+sulle superfici corpus `/dati/[dataset]` e `/api/dati/[dataset]`, **eccetto** gli
+shard dispositivi medici (~430 MiB: spesa 2018–2021, BD/RDM, CND). Senza Fluid
+Compute il limite serverless è 250 MB non compressi: con quei shard `/api/dati`
+supera ~670 MB. Le query dispositivi passano da `/spese/sanita/dispositivi` e
+dall’indice dedicato. Le route `/api/assistant/**` e `/api/mcp` escludono tutti i
+chunk row, l’indice dispositivi (~138 MiB) e gli shard `operators/*` ANAC; MCP
+conserva meta/search operatori e gli snapshot tipizzati.
 
 I pattern Next vengono confrontati anche con nomi interni `/app/...` e con
 `contains: true`: un pattern della scheda può includere involontariamente i suoi

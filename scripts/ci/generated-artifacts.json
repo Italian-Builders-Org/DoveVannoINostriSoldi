@@ -505,6 +505,29 @@
       "trustModel": "Partitioned JSONL.gz row files derived from the source ledger. Validated by the ETL test suite which loads and checks the committed rows."
     },
     {
+      "id": "mim-school-services-municipal",
+      "owner": "Compact municipal projection of MIM school sites for /comuni",
+      "files": [
+        "src/data/generated/mim-school-services-municipal.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node scripts/etl/mim_school_services_municipal_index.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/comuni-footprint.test.mjs"
+      ],
+      "generator": {
+        "command": "node scripts/etl/mim_school_services_municipal_index.mjs",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/mim-school-services.source.json",
+      "trustModel": "Derived offline from committed mim-scuole-statali-comuni integrated row shards. Counts must match the corpus municipality projection; no network and no invented geography."
+    },
+    {
       "id": "istat-municipality-geography",
       "owner": "ISTAT SITUAS municipal geography snapshot",
       "files": [

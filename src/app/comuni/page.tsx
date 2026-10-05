@@ -70,7 +70,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
                 <li>OpenCivitas · spesa storica rispetto allo standard, se collegabile.</li>
                 <li>IRPEF MEF · contribuenti, misure e fasce di reddito, se collegabili.</li>
                 <li>ANAC · profilo appalti dell’ente, se pubblicato.</li>
-                <li>PNRR ReGiS localizzato + slice asili; sedi scolastiche MIM sulla scheda ente.</li>
+                <li>MIM · sedi scolastiche; PNRR ReGiS localizzato + slice asili.</li>
                 <li>BDAP (autonomia, FCDE, rigidità) non è inventata: resta fuori finché non c’è la fonte.</li>
               </ul>
               <p>

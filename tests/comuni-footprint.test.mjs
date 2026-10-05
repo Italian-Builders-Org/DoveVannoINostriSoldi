@@ -72,22 +72,41 @@ test("Mantova footprint exposes indexed indicators against peer median", async (
   assert.equal(footprint.appaltiHref, "/enti/c_e897/appalti");
   assert.ok(footprint.irpefIncomeBands?.length === 8);
   assert.ok(footprint.irpefIncomeBands.some((band) => band.frequency !== null && band.frequency > 0));
-  assert.equal("schoolServices" in footprint, false);
+  assert.equal(footprint.schoolServices.status, "available");
+  assert.ok(footprint.schoolServices.status === "available" && footprint.schoolServices.data.schoolSites > 0);
   assert.ok(footprint.pnrr.localizedRegistrations !== null && footprint.pnrr.localizedRegistrations > 0);
+  assert.ok((footprint.pnrr.implementerRegistrations ?? 0) > 0);
+  assert.ok(footprint.pnrrChildcare.data.totalProjects > 0);
   assert.equal(footprint.pnrr.sampleProjects.length, 0);
   assert.match(footprint.pnrr.projectsHref, /^\/pnrr\?territory=/);
-  assert.ok(footprint.anac.status === "available" || footprint.anac.status === "unavailable");
+  assert.equal(footprint.anac.status, "available");
 });
 
-test("Caserta footprint surfaces national PNRR localization even without childcare attuatore rows", async () => {
+test("Caserta footprint joins ReGiS/asili even when Italia Domani CF differs from SIOPE", async () => {
   const footprint = await getComuniFootprintByIpaCode("c_b963");
   assert.ok(footprint);
   assert.equal(footprint.displayName, "Caserta");
   assert.ok(footprint.pnrr.localizedRegistrations !== null && footprint.pnrr.localizedRegistrations > 0);
   assert.equal(footprint.pnrr.sampleProjects.length, 0);
-  assert.equal(footprint.pnrrChildcare.data.totalProjects, 0);
+  assert.ok((footprint.pnrr.implementerRegistrations ?? 0) > 0);
+  assert.ok(footprint.pnrrChildcare.data.totalProjects > 0);
+  assert.equal(footprint.schoolServices.status, "available");
+  assert.equal(footprint.anac.status, "available");
   assert.ok(footprint.irpef.status === "available");
   assert.ok(footprint.irpefIncomeBands?.length === 8);
+});
+
+test("Roma Capitale surfaces schools, ANAC, ReGiS implementer aliases and asili", async () => {
+  const footprint = await getComuniFootprintByIpaCode("c_h501");
+  assert.ok(footprint);
+  assert.equal(footprint.displayName, "Roma Capitale");
+  assert.equal(footprint.schoolServices.status, "available");
+  assert.equal(footprint.schoolServices.status === "available" && footprint.schoolServices.data.schoolSites, 944);
+  assert.equal(footprint.anac.status, "available");
+  assert.ok(footprint.anac.status === "available" && footprint.anac.awardCount > 0);
+  assert.ok((footprint.pnrr.localizedRegistrations ?? 0) > 1000);
+  assert.ok((footprint.pnrr.implementerRegistrations ?? 0) > 0);
+  assert.ok(footprint.pnrrChildcare.data.totalProjects >= 12);
 });
 
 test("Milano falls back to large-city peer group instead of staying unmatched", async () => {

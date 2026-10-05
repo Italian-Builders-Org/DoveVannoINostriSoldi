@@ -382,6 +382,23 @@ const nextConfig: NextConfig = {
     ],
     "/enti/*": entityProcurementRuntimeFiles,
     "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
+    // /comuni opens ANAC shards by IPA hash; without an include Vercel omits them
+    // and the dossier surfaces "shard assente" for large cities such as Roma.
+    "/comuni": [
+      ...entityProcurementRuntimeFiles,
+      "src/data/generated/mim-school-services-municipal.json",
+      ...childcareRuntimeFiles,
+    ],
+    "/app/comuni": [
+      ...entityProcurementRuntimeFiles,
+      "src/data/generated/mim-school-services-municipal.json",
+      ...childcareRuntimeFiles,
+    ],
+    "/snapshot-pages/comuni/*": [
+      ...entityProcurementRuntimeFiles,
+      "src/data/generated/mim-school-services-municipal.json",
+      ...childcareRuntimeFiles,
+    ],
     "/enti/*/appalti": entityProcurementRuntimeFiles,
     "/enti/*/appalti/confronti": [
       "src/data/generated/anac-procurement-peers/*",

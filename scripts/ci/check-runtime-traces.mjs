@@ -117,6 +117,11 @@ export function checkRuntimeTraces(root = process.cwd()) {
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
     ...Object.values(json(`${SPEC}/anac-procurement-peers.source.json`).inputs).map((entry) => entry.path),
   ];
+  const comuniRuntimeFiles = [
+    ...entityFiles,
+    "src/data/generated/mim-school-services-municipal.json",
+    "src/data/generated/pnrr-childcare.data.json",
+  ];
   const requirements = new Map([
     ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/page.js.nft.json", [...entityFiles, ...cpvFiles]],
@@ -125,6 +130,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["appalti/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
     ["snapshot-pages/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
     ["snapshot-pages/enti/[codice]/[view]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
+    ["comuni/page.js.nft.json", comuniRuntimeFiles],
+    ["snapshot-pages/comuni/[codice]/page.js.nft.json", comuniRuntimeFiles],
   ]);
   for (const route of SOURCE_METADATA_ROUTES) {
     requirements.set(route, [

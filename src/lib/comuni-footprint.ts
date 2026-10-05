@@ -21,6 +21,10 @@ import {
   type MunicipalityPeerBenchmark,
   type MunicipalityFinancialProfile,
 } from "@/lib/municipality-financial-profile";
+import {
+  getMunicipalitySchoolServicesFromIndex,
+  type ComuniSchoolServices,
+} from "@/lib/mim-school-services-municipal";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import {
   getSiopeMunicipalityDetailByIpaCode,
@@ -89,6 +93,7 @@ export type ComuniFootprint = Readonly<{
   openCivitas: MunicipalityFinancialProfile["openCivitas"];
   irpef: MunicipalityFinancialProfile["irpef"];
   irpefIncomeBands: readonly ComuniIrpefIncomeBand[] | null;
+  schoolServices: ComuniSchoolServices;
   anac: ComuniAnacOverview;
   pnrr: ComuniPnrrOverview;
   pnrrChildcare: MunicipalityFinancialProfile["pnrrChildcare"];
@@ -182,12 +187,21 @@ function irpefIncomeBandsFromProfile(
   });
 }
 
+function loadSchoolServices(profile: MunicipalityFinancialProfile): ComuniSchoolServices {
+  const identity = profile.irpef.status === "available" && profile.irpef.data.record.territory.level === "municipality"
+    ? profile.irpef.data.record.territory
+    : null;
+  return getMunicipalitySchoolServicesFromIndex(identity?.code ?? profile.identifiers.istatCode, identity?.cadastralCode ?? null);
+}
+
 async function loadAnacOverview(profile: MunicipalityFinancialProfile): Promise<ComuniAnacOverview> {
   const appaltiHref = `/enti/${encodeURIComponent(profile.identifiers.codiceIpa)}/appalti` as const;
+  // Offline shard read only: live IPA verification is unnecessary here and would
+  // hide missing NFT shards behind unrelated network errors.
   const state = await loadAnacEntityProcurementPage({
     codiceIpa: profile.identifiers.codiceIpa,
     currentEntityCf: profile.identifiers.taxCode,
-    verifyLiveFiscalCode: true,
+    verifyLiveFiscalCode: false,
   });
   if (state.status !== "available") {
     return { status: "unavailable", message: state.message };
@@ -214,23 +228,29 @@ async function loadPnrrOverview(profile: MunicipalityFinancialProfile): Promise<
   // Counts only from the committed ReGiS index. Loading public rows would pull
   // data/source-ledger into the /comuni NFT, which runtime-trace forbids.
   const { pnrrMatchingRows, pnrrProjectMetadata } = await import("@/lib/pnrr-projects-index");
+  const { getPnrrImplementerTaxCodesForMunicipality } = await import("@/lib/pnrr-childcare-snapshot");
   const istatCode = profile.identifiers.istatCode;
   const taxCode = profile.identifiers.taxCode;
   const localizedRegistrations = istatCode
     ? (await pnrrMatchingRows({ territory: istatCode }))?.length ?? 0
     : null;
-  const implementerRefs = await pnrrMatchingRows({ code: taxCode });
+  // Italia Domani may publish a municipal CF distinct from the current SIOPE/IPA code.
+  const implementerCodes = getPnrrImplementerTaxCodesForMunicipality(taxCode, profile.siope.data.name);
+  let implementerRegistrations = 0;
+  for (const code of implementerCodes) {
+    implementerRegistrations += (await pnrrMatchingRows({ code }))?.length ?? 0;
+  }
   const projectsHref = istatCode
     ? `/pnrr?territory=${encodeURIComponent(istatCode)}`
     : "/pnrr";
   return {
     referenceDate: pnrrProjectMetadata.referenceDate,
     localizedRegistrations,
-    implementerRegistrations: implementerRefs?.length ?? 0,
+    implementerRegistrations,
     sampleProjects: [],
     projectsHref,
     methodologyNote:
-      "Le registrazioni PNRR contano CUP×CLP×submisura. Localizzazione e soggetto attuatore sono perimetri distinti.",
+      "Le registrazioni PNRR contano CUP×CLP×submisura. Localizzazione e soggetto attuatore sono perimetri distinti; i CF attuatore storici della fonte restano distinti dal CF SIOPE corrente.",
   };
 }
 
@@ -444,6 +464,7 @@ function buildIndicators(
 export function buildComuniFootprint(
   profile: MunicipalityFinancialProfile,
   extras: Readonly<{
+    schoolServices: ComuniSchoolServices;
     anac: ComuniAnacOverview;
     pnrr: ComuniPnrrOverview;
   }>,
@@ -501,6 +522,7 @@ export function buildComuniFootprint(
     openCivitas: profile.openCivitas,
     irpef: profile.irpef,
     irpefIncomeBands: irpefIncomeBandsFromProfile(profile.irpef),
+    schoolServices: extras.schoolServices,
     anac: extras.anac,
     pnrr: extras.pnrr,
     pnrrChildcare: profile.pnrrChildcare,
@@ -520,9 +542,10 @@ export async function getComuniFootprintByIpaCode(rawCode: string): Promise<Comu
   if (!entity) return null;
   const profile = await getMunicipalityFinancialProfile(entity, { allowCommittedIstatIdentity: true });
   if (!profile) return null;
+  const schoolServices = loadSchoolServices(profile);
   const [anac, pnrr] = await Promise.all([
     loadAnacOverview(profile),
     loadPnrrOverview(profile),
   ]);
-  return buildComuniFootprint(profile, { anac, pnrr });
+  return buildComuniFootprint(profile, { schoolServices, anac, pnrr });
 }

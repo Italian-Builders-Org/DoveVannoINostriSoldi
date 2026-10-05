@@ -323,8 +323,10 @@ export async function getMunicipalityFinancialProfile(
     );
   }
 
-  const pnrrProjects = [...pnrrModule.getPnrrChildcareProjectsByImplementerTaxCode(taxCode)]
-    .sort((left, right) => left.cup.localeCompare(right.cup, "en"));
+  const pnrrProjects = [...pnrrModule.getPnrrChildcareProjectsForMunicipality({
+    taxCode,
+    entityName: siope.name,
+  })];
   const projectsWithKnownFunding = pnrrProjects.filter((project) => project.funding.totalCents !== null);
 
   return {

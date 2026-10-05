@@ -756,20 +756,12 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
               </small>
             </div>
           </dl>
-          {pnrr.sampleProjects.length > 0 ? (
-            <ul className={styles.projectList}>
-              {pnrr.sampleProjects.map((project) => (
-                <li key={project.cup}>
-                  <a href={`${PUBLIC_SITE_URL}/progetti/${encodeURIComponent(project.cup)}`}>
-                    {project.title}
-                  </a>
-                  <span>
-                    CUP {project.cup}
-                    {project.fundingLabel === "Non disponibile" ? "" : ` · ${project.fundingLabel}`}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          {(pnrr.localizedRegistrations ?? 0) > 0 || (pnrr.implementerRegistrations ?? 0) > 0 ? (
+            <p className={styles.sourceInline}>
+              <a href={`${PUBLIC_SITE_URL}${pnrr.projectsHref}`}>
+                Apri l&apos;elenco progetti PNRR filtrato ↗
+              </a>
+            </p>
           ) : (
             <p className={styles.emptyNote}>
               Nessuna registrazione PNRR localizzata su questo codice ISTAT nel catalogo pubblicato.

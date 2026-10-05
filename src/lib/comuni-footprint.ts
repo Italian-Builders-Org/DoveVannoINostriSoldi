@@ -27,7 +27,6 @@ import {
   getSiopeMunicipalityDetailByIpaCode,
 } from "@/lib/siope-municipality-detail";
 import { getSiopeMunicipalityReceipts } from "@/lib/siope-receipts";
-import { pnrrFunding } from "@/lib/pnrr-projects-view";
 
 export { displayMunicipalityName, searchComuni, type ComuniSearchHit };
 
@@ -223,33 +222,24 @@ async function loadAnacOverview(profile: MunicipalityFinancialProfile): Promise<
 }
 
 async function loadPnrrOverview(profile: MunicipalityFinancialProfile): Promise<ComuniPnrrOverview> {
+  // Counts only from the committed ReGiS index. Loading public rows would pull
+  // data/source-ledger into the /comuni NFT, which runtime-trace forbids.
+  const { pnrrMatchingRows, pnrrProjectMetadata } = await import("@/lib/pnrr-projects-index");
   const istatCode = profile.identifiers.istatCode;
   const taxCode = profile.identifiers.taxCode;
-  const [{ pnrrMatchingRows, pnrrProjectMetadata }, { selectPnrrProjects }] = await Promise.all([
-    import("@/lib/pnrr-projects-index"),
-    import("@/lib/integrated-public-view"),
-  ]);
-  let localizedRegistrations: number | null = null;
-  let sampleProjects: ComuniPnrrOverview["sampleProjects"] = [];
-  if (istatCode) {
-    const refs = await pnrrMatchingRows({ territory: istatCode });
-    localizedRegistrations = refs?.length ?? 0;
-    if (localizedRegistrations > 0) {
-      const page = await selectPnrrProjects({ territory: istatCode, limit: 6 });
-      sampleProjects = page.rows.map((row) => ({
-        cup: row.cells["CUP"] ?? "",
-        title: row.cells["Titolo Progetto"] ?? "Progetto PNRR",
-        fundingLabel: pnrrFunding(row.cells["Finanziamento PNRR"] ?? null),
-      })).filter((project) => /^[A-Z0-9]{15}$/.test(project.cup));
-    }
-  }
+  const localizedRegistrations = istatCode
+    ? (await pnrrMatchingRows({ territory: istatCode }))?.length ?? 0
+    : null;
   const implementerRefs = await pnrrMatchingRows({ code: taxCode });
+  const projectsHref = istatCode
+    ? `/pnrr?territory=${encodeURIComponent(istatCode)}`
+    : "/pnrr";
   return {
     referenceDate: pnrrProjectMetadata.referenceDate,
     localizedRegistrations,
     implementerRegistrations: implementerRefs?.length ?? 0,
-    sampleProjects,
-    projectsHref: "/progetti",
+    sampleProjects: [],
+    projectsHref,
     methodologyNote:
       "Le registrazioni PNRR contano CUP×CLP×submisura. Localizzazione e soggetto attuatore sono perimetri distinti.",
   };

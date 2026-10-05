@@ -7,16 +7,15 @@ const CPV = "src/data/generated/anac-procurement-cpv";
 const OPERATOR = "src/data/generated/anac-operator-awards-index";
 const SPEC = "scripts/etl/specs";
 const MEDICAL_DEVICE_ROW_PREFIXES = [
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2018.",
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2019.",
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-2020.",
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-2021.",
   "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.",
   "src/data/generated/integrated/rows/salute-classificazione-cnd.",
 ];
-const MEDICAL_DEVICE_QUERY_ROUTES = new Set([
-  "api/dati/[dataset]/route.js.nft.json",
-  "dati/page.js.nft.json",
-  "dati/[dataset]/page.js.nft.json",
-]);
+// Medical rows are never bundled: classic serverless is 250 MB without Fluid.
+// Query them via /spese/sanita/dispositivi (index), not /api/dati/[dataset].
 const INTEGRATED_ROW_HOME_ROUTES = new Set([
   "api/dati/[dataset]/route.js.nft.json",
   "dati/[dataset]/page.js.nft.json",
@@ -206,7 +205,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
     if (SOURCE_METADATA_ROUTES.has(route)) forbidden.push("src/data/generated/integrated/rows");
-    const forbiddenFilePrefixes = MEDICAL_DEVICE_QUERY_ROUTES.has(route) ? [] : [...MEDICAL_DEVICE_ROW_PREFIXES];
+    // Medical row shards are forbidden on every route, including corpus homes.
+    const forbiddenFilePrefixes = [...MEDICAL_DEVICE_ROW_PREFIXES];
     if (["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) {
       forbidden.push(browse);
       forbiddenFilePrefixes.push(`${OPERATOR}/search.jsonl.gz`, `${OPERATOR}/summaries.json`);

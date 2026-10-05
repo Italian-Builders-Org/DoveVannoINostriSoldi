@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Project RGS "Spesa Statale Regionalizzata" 2008-2013 and 2020-2022 into public corpus rows.
+"""Project RGS "Spesa Statale Regionalizzata" 2008-2022 into public corpus rows.
 
 Same BDAP series as the typed 2023 slice (SRS_SPE_BIL_SPESR_001), one file per
 year, fail-closed per year: source bytes, shape, dimensions and the
@@ -38,6 +38,7 @@ ROOT = Path(__file__).resolve().parents[2]
 # One lock per slice, published separately; the corpus accepts only new datasets.
 SLICES = {
     "2008-2013": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2008-2013.source.json", tuple(range(2008, 2014))),
+    "2014-2019": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2014-2019.source.json", tuple(range(2014, 2020))),
     "2020-2022": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2020-2022.source.json", (2020, 2021, 2022)),
 }
 CORPUS_SPEC = ROOT / "scripts/etl/specs/integrated-curated-datasets.source.json"

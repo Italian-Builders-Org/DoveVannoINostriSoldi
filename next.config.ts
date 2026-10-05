@@ -1,4 +1,3 @@
-import { readdirSync } from "node:fs";
 import type { NextConfig } from "next";
 
 const integratedSourceRuntimeFilesWithoutRows = [
@@ -10,31 +9,69 @@ const integratedSourceRuntimeFilesWithoutRows = [
   "src/data/generated/pnrr-projects-index/*.json.gz",
 ];
 
-const medicalDeviceRuntimeRows = [
-  "src/data/generated/integrated/rows/salute-spesa-dispositivi-*.jsonl.gz",
-  "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.part-*.jsonl.gz",
-  "src/data/generated/integrated/rows/salute-classificazione-cnd.part-*.jsonl.gz",
+// Full rows glob for excludes (assistant/MCP must drop every shard).
+const allIntegratedRowRuntimeFiles = [
+  "src/data/generated/integrated/rows/*.jsonl.gz",
 ];
 
-const medicalRowFilePrefixes = [
-  "salute-spesa-dispositivi-",
-  "salute-dispositivi-bdrdm",
-  "salute-classificazione-cnd",
-] as const;
-
-function isMedicalRowShard(name: string): boolean {
-  return medicalRowFilePrefixes.some((prefix) => name.startsWith(prefix));
-}
-
-// Broad rows/* would re-add medical shards after excludes (Next applies includes
-// last). List non-medical shards so /api/dati stays under the 250 MB serverless cap.
-const integratedRowRuntimeFiles = readdirSync("src/data/generated/integrated/rows")
-  .filter((name) => name.endsWith(".jsonl.gz") && !isMedicalRowShard(name))
-  .map((name) => `src/data/generated/integrated/rows/${name}`);
+// Broad rows/* pulls ~430 MiB of medical shards and exceeds the 250 MB serverless
+// cap once Fluid is off. Keep compact non-medical globs (not thousands of paths:
+// Turbopack Glob::new fails on huge include lists).
+const integratedRowRuntimeFiles = [
+  "src/data/generated/integrated/rows/affidamenti-*.jsonl.gz",
+  "src/data/generated/integrated/rows/affitti-*.jsonl.gz",
+  "src/data/generated/integrated/rows/auto-*.jsonl.gz",
+  "src/data/generated/integrated/rows/buchi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/campagne-*.jsonl.gz",
+  "src/data/generated/integrated/rows/capitoli-*.jsonl.gz",
+  "src/data/generated/integrated/rows/catalogo-*.jsonl.gz",
+  "src/data/generated/integrated/rows/cdp-*.jsonl.gz",
+  "src/data/generated/integrated/rows/cig-*.jsonl.gz",
+  "src/data/generated/integrated/rows/collaboratori-*.jsonl.gz",
+  "src/data/generated/integrated/rows/consip-*.jsonl.gz",
+  "src/data/generated/integrated/rows/consulenze-*.jsonl.gz",
+  "src/data/generated/integrated/rows/corte-*.jsonl.gz",
+  "src/data/generated/integrated/rows/eurostat-*.jsonl.gz",
+  "src/data/generated/integrated/rows/eventi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/fuori-*.jsonl.gz",
+  "src/data/generated/integrated/rows/incarichi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/indennita-*.jsonl.gz",
+  "src/data/generated/integrated/rows/indice-*.jsonl.gz",
+  "src/data/generated/integrated/rows/istat-*.jsonl.gz",
+  "src/data/generated/integrated/rows/mef-*.jsonl.gz",
+  "src/data/generated/integrated/rows/mim-*.jsonl.gz",
+  "src/data/generated/integrated/rows/missioni*.jsonl.gz",
+  "src/data/generated/integrated/rows/nominativi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/openbdap-*.jsonl.gz",
+  "src/data/generated/integrated/rows/opencup-*.jsonl.gz",
+  "src/data/generated/integrated/rows/partecipate-*.jsonl.gz",
+  "src/data/generated/integrated/rows/parti-*.jsonl.gz",
+  "src/data/generated/integrated/rows/personale*.jsonl.gz",
+  "src/data/generated/integrated/rows/pnrr-*.jsonl.gz",
+  "src/data/generated/integrated/rows/problemi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/procurement-*.jsonl.gz",
+  "src/data/generated/integrated/rows/rgs-*.jsonl.gz",
+  "src/data/generated/integrated/rows/rimborsi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/rinnovi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/salute-posti-*.jsonl.gz",
+  "src/data/generated/integrated/rows/segnalazioni*.jsonl.gz",
+  "src/data/generated/integrated/rows/siope-*.jsonl.gz",
+  "src/data/generated/integrated/rows/staff-*.jsonl.gz",
+  "src/data/generated/integrated/rows/ted-*.jsonl.gz",
+  "src/data/generated/integrated/rows/trasparenza-*.jsonl.gz",
+  "src/data/generated/integrated/rows/url-*.jsonl.gz",
+  "src/data/generated/integrated/rows/vincitori*.jsonl.gz",
+];
 
 const integratedSourceRuntimeFiles = [
   ...integratedSourceRuntimeFilesWithoutRows,
   ...integratedRowRuntimeFiles,
+];
+
+const medicalDeviceRuntimeRows = [
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-*.jsonl.gz",
+  "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.part-*.jsonl.gz",
+  "src/data/generated/integrated/rows/salute-classificazione-cnd.part-*.jsonl.gz",
 ];
 
 const medicalDeviceIndexRuntimeFiles = [
@@ -258,14 +295,14 @@ const nextConfig: NextConfig = {
       routesWithoutIntegratedRows.map((route) => [
         route,
         [
-          ...integratedRowRuntimeFiles,
+          ...allIntegratedRowRuntimeFiles,
           ...medicalDeviceIndexRuntimeFiles,
           ...operatorShardRuntimeFiles,
         ],
       ]),
     ),
     "/app/api/mcp": [
-      ...integratedRowRuntimeFiles,
+      ...allIntegratedRowRuntimeFiles,
       ...medicalDeviceIndexRuntimeFiles,
       ...operatorShardRuntimeFiles,
     ],

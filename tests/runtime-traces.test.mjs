@@ -80,7 +80,7 @@ test("entity tracing includes childcare only in its runtime consumers", () => {
   }
 });
 
-test("assistant and mcp exclude integrated row shards while dati keeps non-medical rows", () => {
+test("assistant and mcp exclude integrated row shards; dati keeps non-medical rows only", () => {
   const rowShard = "src/data/generated/integrated/rows/rgs-spesa-statale-regionalizzata-2019.part-00000.jsonl.gz";
   const medicalRow = "src/data/generated/integrated/rows/salute-spesa-dispositivi-2021.part-00000.jsonl.gz";
   const medicalIndex = "src/data/generated/medical-device-spending-index/meta.json";
@@ -97,14 +97,9 @@ test("assistant and mcp exclude integrated row shards while dati keeps non-medic
   assert.equal(explicitRuntimeFile("api/mcp", rowShard), false);
   for (const route of ["dati/[dataset]", "api/dati/[dataset]"]) {
     assert.equal(explicitRuntimeFile(route, rowShard), true, route);
-    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, rowShard), false, route);
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingIncludes, route, medicalRow), false, route);
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalRow), true, route);
     assert.equal(explicitRuntimeFile(route, medicalRow), false, route);
-    assert.equal(
-      matchingRuntimeFile(nextConfig.outputFileTracingIncludes, route, medicalRow),
-      false,
-      `${route} must not include medical row shards`,
-    );
   }
 });
 

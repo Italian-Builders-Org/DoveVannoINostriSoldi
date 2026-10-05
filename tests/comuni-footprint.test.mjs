@@ -72,7 +72,7 @@ test("Mantova footprint exposes indexed indicators against peer median", async (
   assert.equal(footprint.appaltiHref, "/enti/c_e897/appalti");
   assert.ok(footprint.irpefIncomeBands?.length === 8);
   assert.ok(footprint.irpefIncomeBands.some((band) => band.frequency !== null && band.frequency > 0));
-  assert.equal(footprint.schoolServices.status, "available");
+  assert.equal("schoolServices" in footprint, false);
   assert.ok(footprint.pnrr.localizedRegistrations !== null && footprint.pnrr.localizedRegistrations > 0);
   assert.equal(footprint.pnrr.sampleProjects.length, 0);
   assert.match(footprint.pnrr.projectsHref, /^\/pnrr\?territory=/);

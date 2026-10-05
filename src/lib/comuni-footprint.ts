@@ -21,7 +21,6 @@ import {
   type MunicipalityPeerBenchmark,
   type MunicipalityFinancialProfile,
 } from "@/lib/municipality-financial-profile";
-import { getMunicipalitySchoolServices, type MunicipalitySchoolServices } from "@/lib/municipality-school-services";
 import { municipalitySnapshotEntity } from "@/lib/municipality-snapshot-entity";
 import {
   getSiopeMunicipalityDetailByIpaCode,
@@ -90,7 +89,6 @@ export type ComuniFootprint = Readonly<{
   openCivitas: MunicipalityFinancialProfile["openCivitas"];
   irpef: MunicipalityFinancialProfile["irpef"];
   irpefIncomeBands: readonly ComuniIrpefIncomeBand[] | null;
-  schoolServices: MunicipalitySchoolServices;
   anac: ComuniAnacOverview;
   pnrr: ComuniPnrrOverview;
   pnrrChildcare: MunicipalityFinancialProfile["pnrrChildcare"];
@@ -182,15 +180,6 @@ function irpefIncomeBandsFromProfile(
       coverage: measure.coverage,
     };
   });
-}
-
-async function loadSchoolServices(
-  profile: MunicipalityFinancialProfile,
-): Promise<MunicipalitySchoolServices> {
-  const identity = profile.irpef.status === "available" && profile.irpef.data.record.territory.level === "municipality"
-    ? profile.irpef.data.record.territory
-    : null;
-  return getMunicipalitySchoolServices(identity);
 }
 
 async function loadAnacOverview(profile: MunicipalityFinancialProfile): Promise<ComuniAnacOverview> {
@@ -455,7 +444,6 @@ function buildIndicators(
 export function buildComuniFootprint(
   profile: MunicipalityFinancialProfile,
   extras: Readonly<{
-    schoolServices: MunicipalitySchoolServices;
     anac: ComuniAnacOverview;
     pnrr: ComuniPnrrOverview;
   }>,
@@ -513,7 +501,6 @@ export function buildComuniFootprint(
     openCivitas: profile.openCivitas,
     irpef: profile.irpef,
     irpefIncomeBands: irpefIncomeBandsFromProfile(profile.irpef),
-    schoolServices: extras.schoolServices,
     anac: extras.anac,
     pnrr: extras.pnrr,
     pnrrChildcare: profile.pnrrChildcare,
@@ -533,10 +520,9 @@ export async function getComuniFootprintByIpaCode(rawCode: string): Promise<Comu
   if (!entity) return null;
   const profile = await getMunicipalityFinancialProfile(entity, { allowCommittedIstatIdentity: true });
   if (!profile) return null;
-  const [schoolServices, anac, pnrr] = await Promise.all([
-    loadSchoolServices(profile),
+  const [anac, pnrr] = await Promise.all([
     loadAnacOverview(profile),
     loadPnrrOverview(profile),
   ]);
-  return buildComuniFootprint(profile, { schoolServices, anac, pnrr });
+  return buildComuniFootprint(profile, { anac, pnrr });
 }

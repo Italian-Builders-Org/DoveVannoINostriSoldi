@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { footprintStatusLabel, type ComuniFootprint } from "@/lib/comuni-footprint";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
-import { schoolServicesSource } from "@/lib/municipality-school-services";
+import { schoolServicesSource } from "@/lib/mim-school-services-source";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import { ChangeComuneButton } from "./change-comune-button";
 import { ComuniRadar } from "./comuni-radar";
@@ -98,7 +98,6 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
   const peer = footprint.peer;
   const openCivitas = footprint.openCivitas.status === "available" ? footprint.openCivitas.data : null;
   const irpef = footprint.irpef.status === "available" ? footprint.irpef.data : null;
-  const schools = footprint.schoolServices.status === "available" ? footprint.schoolServices.data : null;
   const pnrrChildcare = footprint.pnrrChildcare.data;
   const pnrr = footprint.pnrr;
   const anac = footprint.anac;
@@ -134,6 +133,9 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
   const cadastralCode = irpef?.record.territory.level === "municipality"
     ? irpef.record.territory.cadastralCode
     : null;
+  const schoolsDatasetHref = istatCode
+    ? `/dati/${schoolServicesSource.datasetId}?q=${encodeURIComponent(istatCode)}`
+    : `/dati/${schoolServicesSource.datasetId}`;
 
   return (
     <div className={styles.dossierShell}>
@@ -246,13 +248,6 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
             <dt>Vs standard</dt>
             <dd>{signedEuro(openCivitas.record.differenceCents)}</dd>
             <small>OpenCivitas {openCivitas.referenceYear}</small>
-          </div>
-        ) : null}
-        {schools ? (
-          <div>
-            <dt>Sedi scolastiche</dt>
-            <dd>{integer(schools.schoolSites)}</dd>
-            <small>MIM · a.s. {schools.schoolYear}</small>
           </div>
         ) : null}
         <div>
@@ -634,34 +629,25 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
               <h3 id="scuole-title">Scuole statali</h3>
               <span className={styles.panelTag}>a.s. {schoolServicesSource.schoolYear}</span>
             </div>
-            {schools ? (
-              <>
-                <p className={styles.panelLead}>
-                  Sedi censite nell’anagrafe MIM al {longDate(schoolServicesSource.dataAsOf)}.
-                  Conta la presenza nel file, non qualità didattica né posti disponibili.
-                </p>
-                <p className={styles.extraValue}>{integer(schools.schoolSites)}</p>
-                <p>
-                  Codici scuola indicati come sedi
-                  {schools.otherRegistryCodes > 0
-                    ? ` · altri ${integer(schools.otherRegistryCodes)} codici anagrafe`
-                    : ""}.
-                </p>
-                <p className={styles.sourceInline}>
-                  Fonte:{" "}
-                  <a href={schoolServicesSource.landingUrl} target="_blank" rel="noopener noreferrer">
-                    MIM · anagrafe scuole statali ↗
-                  </a>
-                  . Fuori perimetro: paritarie, nidi e altre strutture.
-                </p>
-              </>
-            ) : (
-              <p className={styles.emptyNote}>
-                {footprint.schoolServices.status === "available"
-                  ? null
-                  : footprint.schoolServices.message}
-              </p>
-            )}
+            <p className={styles.panelLead}>
+              Anagrafe MIM al {longDate(schoolServicesSource.dataAsOf)}.
+              Il conteggio per Comune resta sulla scheda ente e sul corpus
+              `/dati`, fuori dal bundle immersivo.
+            </p>
+            <p className={styles.sourceInline}>
+              <a href={`${PUBLIC_SITE_URL}${footprint.entityHref}#dati-scuole`}>
+                Apri le sedi scolastiche sulla scheda ente ↗
+              </a>
+              {" · "}
+              <a href={`${PUBLIC_SITE_URL}${schoolsDatasetHref}`}>
+                Tabella MIM ↗
+              </a>
+              {" · "}
+              <a href={schoolServicesSource.landingUrl} target="_blank" rel="noopener noreferrer">
+                Fonte ufficiale ↗
+              </a>
+              .
+            </p>
           </section>
         </div>
 

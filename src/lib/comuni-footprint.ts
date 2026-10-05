@@ -142,12 +142,12 @@ export type ComuniPnrrOverview = Readonly<{
 
 const IRPEF_BAND_LABELS: Readonly<Record<MefIrpefIncomeBandMeasureKey, string>> = {
   nonPositiveComprehensiveIncome: "≤ 0 €",
-  comprehensiveIncome0To10000: "0–10 mila",
-  comprehensiveIncome10000To15000: "10–15 mila",
-  comprehensiveIncome15000To26000: "15–26 mila",
-  comprehensiveIncome26000To55000: "26–55 mila",
-  comprehensiveIncome55000To75000: "55–75 mila",
-  comprehensiveIncome75000To120000: "75–120 mila",
+  comprehensiveIncome0To10000: "0-10 mila",
+  comprehensiveIncome10000To15000: "10-15 mila",
+  comprehensiveIncome15000To26000: "15-26 mila",
+  comprehensiveIncome26000To55000: "26-55 mila",
+  comprehensiveIncome55000To75000: "55-75 mila",
+  comprehensiveIncome75000To120000: "75-120 mila",
   comprehensiveIncomeOver120000: "> 120 mila",
 };
 

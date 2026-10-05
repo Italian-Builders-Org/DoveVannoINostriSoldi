@@ -674,7 +674,6 @@
   width: min(36px, 70%);
   height: var(--bar-height);
   min-height: 2px;
-  transition: height 240ms ease;
 }
 .trendColComplete { background: var(--chart-data-primary); }
 .trendColPartial {

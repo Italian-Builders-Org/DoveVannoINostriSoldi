@@ -404,7 +404,7 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(hubLinks.size, 92);
+  assert.equal(hubLinks.size, 111);
   assert.ok(hubLinks.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Catalogo dei dati"));
   const catalogLinks = new Set(await page.$$eval('a[href^="/dati/"]', (nodes) =>

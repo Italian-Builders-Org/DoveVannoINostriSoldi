@@ -240,6 +240,7 @@ export async function getMunicipalityFinancialProfile(
         level: "municipality",
         code: candidateIstatCode,
         limit: 1,
+        detail: "income-bands",
       });
       const record = result.data[0];
       if (
@@ -322,8 +323,10 @@ export async function getMunicipalityFinancialProfile(
     );
   }
 
-  const pnrrProjects = [...pnrrModule.getPnrrChildcareProjectsByImplementerTaxCode(taxCode)]
-    .sort((left, right) => left.cup.localeCompare(right.cup, "en"));
+  const pnrrProjects = [...pnrrModule.getPnrrChildcareProjectsForMunicipality({
+    taxCode,
+    entityName: siope.name,
+  })];
   const projectsWithKnownFunding = pnrrProjects.filter((project) => project.funding.totalCents !== null);
 
   return {

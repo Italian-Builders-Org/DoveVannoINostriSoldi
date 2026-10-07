@@ -400,6 +400,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       "I confronti internazionali restano candidati finché unità e perimetri non sono normalizzati.",
       "Piani di gestione, organici e compensi degli organi hanno unità diverse e non vengono sommati.",
       "Il Conto Annuale 2020 è storico: personale al 31 dicembre e costo annuale hanno coperture diverse. Non è SIOPE cassa.",
+      "La serie per tipo di istituzione 2010–2024 conta persone; il lavoro flessibile è in unità annue e non si somma al personale. I tipi cambiano negli anni.",
     ],
     datasets: [
       {
@@ -433,6 +434,16 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
           { key: "Descrizione qualifica", label: "Qualifica" },
           { key: "Tempo pieno uomini", label: "Tempo pieno uomini" },
           { key: "Tempo pieno donne", label: "Tempo pieno donne" },
+        ],
+      },
+      {
+        id: "rgs-conto-annuale-occupazione-tipologia-2010-2024",
+        label: "Conto Annuale · personale per tipo di istituzione 2010–2024",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Tipo istituzione", label: "Tipo di istituzione" },
+          { key: "Numero Dipendenti Uomini Tempo Pieno", label: "Tempo pieno uomini" },
+          { key: "Numero Dipendenti Donne Tempo Pieno", label: "Tempo pieno donne" },
         ],
       },
       { id: "staff-funzioni", label: "Staff per funzione" },

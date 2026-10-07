@@ -63,7 +63,7 @@ export default function ProgrammiElettoraliPage() {
         <h2 id="come-funziona">Cosa arriverà</h2>
         <p>
           Non un debate generato a macchina. Un percorso trasparente: testo del programma, claim
-          espliciti, serie ufficiali collegate e un esito leggibile — confermato, incompleto o non
+          espliciti, serie ufficiali collegate e un esito leggibile: confermato, incompleto o non
           verificabile con le fonti disponibili.
         </p>
         <div className={styles.grid}>

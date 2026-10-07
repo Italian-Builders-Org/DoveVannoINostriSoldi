@@ -26,6 +26,7 @@
 - [Mappa della politica](https://www.dovevannoinostrisoldi.com/politici): Presidenza, Governo, Camera e Senato della XIX legislatura in una sola mappa (anche su https://politici.dovevannoinostrisoldi.com).
 - [Mappa dei Comuni](https://www.dovevannoinostrisoldi.com/comuni): impronta finanziaria SIOPE di ogni Comune rispetto ai territori simili (anche su https://comuni.dovevannoinostrisoldi.com).
 - [Pagella economica dei governi](https://www.dovevannoinostrisoldi.com/governi): Core macroeconomico annuale dal 1995, confronto con tre paesi europei, contesto e misure separati dall'attribuzione causale.
+- [Programmi elettorali 2027](https://www.dovevannoinostrisoldi.com/programmi): sezione in arrivo per confrontare le promesse di campagna con i numeri ufficiali; l’AI struttura i claim, i dati pubblici restano la prova.
 - [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli): indicatori e segnali per orientare verifiche ulteriori.
 - [Fonti](https://www.dovevannoinostrisoldi.com/fonti): registro, copertura, aggiornamento e stato operativo delle fonti.
 

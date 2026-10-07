@@ -1,0 +1,235 @@
+.page {
+  max-width: 1120px;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  margin: 0 calc(-1 * var(--space-4, 1rem));
+  padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(2rem, 5vw, 3.5rem);
+  background:
+    radial-gradient(120% 80% at 12% 0%, color-mix(in srgb, var(--color-accent-700) 18%, transparent), transparent 55%),
+    linear-gradient(
+      165deg,
+      color-mix(in srgb, var(--color-neutral-100) 88%, var(--color-accent-100, #f8e9eb)) 0%,
+      var(--color-raised) 48%,
+      color-mix(in srgb, var(--color-neutral-100) 70%, #d7e3ea) 100%
+    );
+  border-block: 1px solid var(--color-neutral-300);
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% -40% 40%;
+  height: 70%;
+  background: repeating-linear-gradient(
+    -18deg,
+    transparent 0 14px,
+    color-mix(in srgb, var(--color-text) 6%, transparent) 14px 15px
+  );
+  opacity: 0.55;
+  pointer-events: none;
+  animation: drift 18s linear infinite;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-36px, 18px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after {
+    animation: none;
+  }
+}
+
+.brand {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.eyebrow {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 var(--space-3);
+  color: var(--color-accent-800, var(--color-accent-700));
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pulse {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--color-accent-700);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-700) 55%, transparent);
+  animation: pulse 2.4s ease-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent-700) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 0.7rem transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+.hero h1 {
+  position: relative;
+  z-index: 1;
+  max-width: 16ch;
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  font-size: clamp(2.35rem, 7vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.lead {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+  margin: 0 0 var(--space-5);
+  font-size: clamp(1.05rem, 2.1vw, 1.2rem);
+  line-height: 1.65;
+  color: var(--color-neutral-800, var(--color-neutral-700));
+}
+
+.actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.1rem;
+  align-items: center;
+}
+
+.section {
+  margin-block: clamp(2rem, 5vw, 3.25rem);
+}
+
+.section h2 {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.section > p {
+  max-width: 68ch;
+  margin: 0 0 var(--space-4);
+  line-height: 1.7;
+  color: var(--color-neutral-700);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.step {
+  min-width: 0;
+  padding: var(--space-4) 0;
+  border-top: 2px solid var(--color-text);
+}
+
+.step span {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--color-accent-700);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.step h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1.15rem;
+}
+
+.step p {
+  margin: 0;
+  color: var(--color-neutral-700);
+  line-height: 1.65;
+}
+
+.promise {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-5);
+  padding: var(--space-5) 0;
+  border-block: 1px solid var(--color-neutral-300);
+}
+
+.promise dl {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.promise dt {
+  font-weight: 700;
+}
+
+.promise dd {
+  margin: 0.2rem 0 0;
+  color: var(--color-neutral-700);
+  line-height: 1.6;
+}
+
+.note {
+  max-width: 70ch;
+  margin: 0;
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--color-accent-700);
+  line-height: 1.7;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 820px) {
+  .grid,
+  .promise {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    margin-inline: 0;
+  }
+}

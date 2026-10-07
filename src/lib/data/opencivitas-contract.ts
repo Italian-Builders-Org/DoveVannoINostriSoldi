@@ -1,7 +1,7 @@
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
-const LANDING_URL = "https://www.opencivitas.it/it/open-data";
+const LANDING_URL = "https://www.opencivitas.it/portale/open-data";
 const DATASET_URL =
-  "https://www.opencivitas.it/it/dataset/2022-comuni-servizi-totali-indicatori-e-determinanti";
+  "https://www.opencivitas.it/portale/w/2022-comuni-servizi-totali-indicatori-e-determinanti";
 const DATA_URL = "https://docs.opencivitas.it/2022_Ind_FC80TOT_2_csv.zip";
 const ENTITIES_URL = "https://docs.opencivitas.it/Metadati_Enti_2022_xlsx.zip";
 const INDICATORS_URL =

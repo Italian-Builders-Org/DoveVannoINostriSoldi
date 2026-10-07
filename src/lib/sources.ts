@@ -703,7 +703,7 @@ export const sourceCatalog: PublicSource[] = [
     cadence: "Irregolare; verifica del rilascio 2022 ogni 24 ore",
     coverage: "6.557 Comuni delle Regioni a statuto ordinario, annualità 2022",
     format: "ZIP · CSV · XLSX",
-    url: "https://www.opencivitas.it/it/open-data",
+    url: "https://www.opencivitas.it/portale/open-data",
     note: "Confronto comunale attivo tra spesa storica e spesa standard, con valori per abitante e livello dei servizi. La differenza non viene presentata come spreco.",
     joinKeys: ["codice ISTAT Comune"],
   },

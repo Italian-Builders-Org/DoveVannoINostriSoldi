@@ -7,7 +7,7 @@ const css = fs.readFileSync(new URL("../src/app/istituzioni/istituzioni.module.c
 const navigation = fs.readFileSync(new URL("../src/lib/site-navigation.ts", import.meta.url), "utf8");
 
 test("Institutions hub indexes five separate routes without a combined total", () => {
-  for (const route of ["/parlamento", "/palazzo-chigi", "/governi", "/ministeri", "/regioni"]) {
+  for (const route of ["/parlamento", "/palazzo-chigi", "/governi", "/programmi", "/ministeri", "/regioni"]) {
     assert.match(page, new RegExp(`href: "${route}"`));
     assert.match(navigation, new RegExp(`"${route}"`));
   }

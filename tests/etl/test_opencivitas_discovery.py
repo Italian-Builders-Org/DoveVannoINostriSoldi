@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import unittest
-from unittest import mock
+from unittest import TestCase, main, mock
 
 import opencivitas_snapshot as oc
 
 
-class OpenCivitasDiscoveryTest(unittest.TestCase):
+class OpenCivitasDiscoveryTest(TestCase):
     def test_discovers_from_wider_landing_when_default_page_omits_totals(self) -> None:
         landing_empty = (
             '<html><a href="/portale/w/2023-comuni-rifiuti-indicatori-e-determinanti-1">x</a></html>'
@@ -58,4 +57,4 @@ class OpenCivitasDiscoveryTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

@@ -371,18 +371,28 @@ function rowContains(row: IntegratedPublicRow, foldedQuery: string): boolean {
 
 function rowMatchesEquals(
   row: IntegratedPublicRow,
-  equals: Readonly<Record<string, string>>,
+  equals: readonly (readonly [string, string])[],
 ): boolean {
-  for (const [header, expected] of Object.entries(equals)) {
+  for (const [header, expected] of equals) {
     const actual = row.cells[header];
     if (actual === null || actual === undefined) return false;
-    if (actual.toLocaleLowerCase("it-IT") !== expected.toLocaleLowerCase("it-IT")) return false;
+    if (actual.toLocaleLowerCase("it-IT") !== expected) return false;
   }
   return true;
 }
 
-function rowMatchesFilter(row: IntegratedPublicRow, filter: DatasetScanFilter): boolean {
-  if (Object.keys(filter.equals).length > 0 && !rowMatchesEquals(row, filter.equals)) return false;
+function prepareRowFilter(filter: DatasetScanFilter) {
+  const foldEquals = (equals: Readonly<Record<string, string>>) =>
+    Object.entries(equals).map(([header, expected]) => [header, expected.toLocaleLowerCase("it-IT")] as const);
+  return {
+    q: filter.q?.toLocaleLowerCase("it-IT") ?? null,
+    equals: foldEquals(filter.equals),
+    matchAnyEquals: filter.matchAnyEquals.map(foldEquals),
+  };
+}
+
+function rowMatchesFilter(row: IntegratedPublicRow, filter: ReturnType<typeof prepareRowFilter>): boolean {
+  if (filter.equals.length > 0 && !rowMatchesEquals(row, filter.equals)) return false;
   if (
     filter.matchAnyEquals.length > 0
     && !filter.matchAnyEquals.some((candidate) => rowMatchesEquals(row, candidate))
@@ -390,7 +400,7 @@ function rowMatchesFilter(row: IntegratedPublicRow, filter: DatasetScanFilter): 
     return false;
   }
   if (filter.q === null) return true;
-  return rowContains(row, filter.q.toLocaleLowerCase("it-IT"));
+  return rowContains(row, filter.q);
 }
 
 export async function getIntegratedDataOverview() {
@@ -497,6 +507,8 @@ export async function selectIntegratedDataset(
   // Free-text search stays budgeted; structured equals may scan the whole public corpus.
   const maxSearchChunks = hasStructuredFilter ? Number.POSITIVE_INFINITY : INTEGRATED_MAX_SEARCH_CHUNKS;
   const maxSearchRows = hasStructuredFilter ? Number.POSITIVE_INFINITY : INTEGRATED_MAX_SEARCH_ROWS;
+  // Prepare only this request's matcher; the original filter still binds cursors.
+  const rowFilter = prepareRowFilter(filter);
 
   scan: while (nextSourceRow <= dataset.publicRows && selected.length < limit) {
     const ordinal = Math.floor((nextSourceRow - 1) / INTEGRATED_ROW_CHUNK_ROWS);
@@ -521,7 +533,7 @@ export async function selectIntegratedDataset(
       scannedRows += 1;
       scanEndSourceRow = row.sourceRow;
       nextSourceRow = row.sourceRow + 1;
-      if (!hasScanFilter || rowMatchesFilter(row, filter)) selected.push(row);
+      if (!hasScanFilter || rowMatchesFilter(row, rowFilter)) selected.push(row);
       if (selected.length >= limit) break scan;
     }
   }

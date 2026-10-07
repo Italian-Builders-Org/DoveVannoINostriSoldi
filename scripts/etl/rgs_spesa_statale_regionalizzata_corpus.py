@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Project RGS "Spesa Statale Regionalizzata" 2020-2022 into public corpus rows.
+"""Project RGS "Spesa Statale Regionalizzata" 2008-2022 into public corpus rows.
 
 Same BDAP series as the typed 2023 slice (SRS_SPE_BIL_SPESR_001), one file per
 year, fail-closed per year: source bytes, shape, dimensions and the
@@ -10,9 +10,12 @@ The official CSVs are kept as deterministic gzip fixtures: the lock pins the
 original bytes, verified after decompression, so compression is only a way of
 storing them (about 4% of the original size).
 
-Schema drift between years is expected and declared, not normalised: 2020 and
-2021 carry an empty eighth column, 2021 still lists mission 033 "Fondi da
-ripartire", and category 09 changes label in 2023. Corpus rows are text cells,
+Each slice has its own lock and is published once; --check verifies all of them.
+
+Schema drift between years is expected and declared, not normalised: 2008-2013,
+2020 and 2021 carry an empty eighth column, 2008-2010 have 15 categories instead
+of 16, mission 033 "Fondi da ripartire" appears up to 2017 and again in 2021,
+and category 09 changes label in 2023. Corpus rows are text cells,
 so each year keeps its own labels and codes are never compared across years.
 """
 
@@ -32,7 +35,12 @@ import integrated_curated_datasets as corpus
 from integrated_corpus_append import append_integrated_datasets
 
 ROOT = Path(__file__).resolve().parents[2]
-SPEC = ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2020-2022.source.json"
+# One lock per slice, published separately; the corpus accepts only new datasets.
+SLICES = {
+    "2008-2013": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2008-2013.source.json", tuple(range(2008, 2014))),
+    "2014-2019": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2014-2019.source.json", tuple(range(2014, 2020))),
+    "2020-2022": (ROOT / "scripts/etl/specs/rgs-spesa-statale-regionalizzata-2020-2022.source.json", (2020, 2021, 2022)),
+}
 CORPUS_SPEC = ROOT / "scripts/etl/specs/integrated-curated-datasets.source.json"
 CATALOG = ROOT / "src/data/generated/integrated/catalog.json"
 ROWS_DIR = ROOT / "src/data/generated/integrated/rows"
@@ -41,7 +49,6 @@ DATASET_PROOF = ROOT / "data/source-ledger/dataset-proof.json"
 RELEASE_PROOF = ROOT / "data/source-ledger/release-proof.json"
 
 RECORD_ID = "SRS_SPE_BIL_SPESR_001"
-YEARS = (2020, 2021, 2022)
 SOURCE_HEADERS = [
     "Anno di Interesse",
     "Territorio",
@@ -102,7 +109,7 @@ def expected_metadata(year_entry: dict, series: dict) -> dict:
     }
 
 
-def validate_contract(spec: dict) -> None:
+def validate_contract(spec: dict, years: tuple[int, ...]) -> None:
     series = spec.get("series")
     if not isinstance(series, dict):
         raise SourceError("contratto della serie mancante")
@@ -116,8 +123,8 @@ def validate_contract(spec: dict) -> None:
         or series.get("sourceHeaders") != SOURCE_HEADERS
     ):
         raise SourceError("identità, licenza o formato della serie divergenti")
-    if [entry.get("year") for entry in spec.get("years", [])] != list(YEARS):
-        raise SourceError("annualità divergenti dal perimetro 2020-2022")
+    if [entry.get("year") for entry in spec.get("years", [])] != list(years):
+        raise SourceError(f"annualità divergenti dal perimetro {years[0]}-{years[-1]}")
 
     semantics = spec.get("semantics")
     if not isinstance(semantics, dict) or set(semantics) != {"soldi", "periodo", "provenance"}:
@@ -234,8 +241,8 @@ def projection(rows: list[list[str]], entry: dict) -> bytes:
     return output.getvalue().encode("utf-8")
 
 
-def projections(spec: dict, input_dir: Path | None = None) -> dict[str, bytes]:
-    validate_contract(spec)
+def projections(spec: dict, years: tuple[int, ...], input_dir: Path | None = None) -> dict[str, bytes]:
+    validate_contract(spec, years)
     payloads: dict[str, bytes] = {}
     for entry in spec["years"]:
         rows = parse_year(verified_source(entry, input_dir), entry, spec["series"])
@@ -286,8 +293,14 @@ def publish(payloads: dict[str, bytes]) -> None:
         )
 
 
+def load_slice(name: str) -> tuple[dict, tuple[int, ...]]:
+    path, years = SLICES[name]
+    return json.loads(path.read_text(encoding="utf-8")), years
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--slice", choices=sorted(SLICES), help="fetta da proiettare o pubblicare")
     parser.add_argument("--input-dir", type=Path, help="CSV originali srs-ANNO.csv, soggetti allo stesso lock")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--publish", action="store_true")
@@ -295,9 +308,12 @@ def main() -> int:
     args = parser.parse_args()
     if sum(bool(value) for value in (args.output_dir, args.publish, args.check)) != 1:
         parser.error("specificare una sola azione: --output-dir, --publish o --check")
-    spec = json.loads(SPEC.read_text(encoding="utf-8"))
+    if (args.output_dir or args.publish) and not args.slice:
+        parser.error("--output-dir e --publish richiedono --slice")
+    names = [args.slice] if args.slice else sorted(SLICES)
     if args.output_dir:
         # Prima della registrazione nel corpus: proietta senza controllare gli override.
+        spec, _ = load_slice(args.slice)
         args.output_dir.mkdir(parents=True, exist_ok=True)
         for entry in spec["years"]:
             rows = parse_year(verified_source(entry, args.input_dir), entry, spec["series"])
@@ -306,12 +322,14 @@ def main() -> int:
             (args.output_dir / f"{entry['datasetId']}.psv").write_bytes(body)
             print(f"{entry['datasetId']}: bytes={len(body)} sha256={corpus.sha256_bytes(body)} rows={len(rows)}")
     else:
-        payloads = projections(spec, args.input_dir)
-        if args.publish:
-            publish(payloads)
-        else:
-            check_committed(payloads)
-    print("PASS: spesa statale regionalizzata 2020-2022, fonte e riconciliazioni verificate")
+        for name in names:
+            spec, years = load_slice(name)
+            payloads = projections(spec, years, args.input_dir)
+            if args.publish:
+                publish(payloads)
+            else:
+                check_committed(payloads)
+    print(f"PASS: spesa statale regionalizzata {', '.join(names)}, fonte e riconciliazioni verificate")
     return 0
 
 

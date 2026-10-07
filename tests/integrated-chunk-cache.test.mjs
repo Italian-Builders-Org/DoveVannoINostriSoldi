@@ -43,5 +43,5 @@ test('corruption after a cache fill is rejected in an isolated snapshot director
     const bytes=await readFile(path);bytes[bytes.length-1]^=1;await writeFile(path,bytes);
     await assert.rejects(loader.loadIntegratedDatasetChunk(bundle,dataset,0),/divergono/);
   `;
-  await promisify(execFile)(process.execPath, ['--experimental-strip-types', '--import', resolve('scripts/ci/node-test-setup.mjs'), '--import', resolve('tests/helpers/register-ts-alias.mjs'), '--input-type=module', '-e', script], { cwd: directory, timeout: 30_000 });
+  await promisify(execFile)(process.execPath, ['--experimental-strip-types', '--import', new URL('../scripts/ci/node-test-setup.mjs', import.meta.url).href, '--import', new URL('./helpers/register-ts-alias.mjs', import.meta.url).href, '--input-type=module', '-e', script], { cwd: directory, timeout: 30_000 });
 });

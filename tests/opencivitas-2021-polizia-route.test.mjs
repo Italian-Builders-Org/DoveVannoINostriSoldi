@@ -31,6 +31,7 @@ test("FC70POLIZIA API and MCP share pagination, provenance and region alias beha
   assert.deepEqual(body, await queryPublicDataset({ dataset: "opencivitas_polizia_2021", year: 2021, region: "Lazio", limit: 2, offset: 2 }));
   assert.equal(body.pagination.total, 378);
   assert.equal(body.referenceYear, 2021);
+  assert.equal(body.datasetId, descriptor.id);
   assert.equal(body.family, "FC70POLIZIA");
   assert.equal(body.function, "POLIZIA");
   assert.equal(body.modifiedAt, "2024-05-30");

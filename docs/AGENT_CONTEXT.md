@@ -116,7 +116,8 @@ a caso.
   - [scripts/ci/generated-artifacts.json](../scripts/ci/generated-artifacts.json):
     registro che lega ogni artifact a generatore, verifica offline e refresh.
   - [.github/workflows/ci.yml](../.github/workflows/ci.yml): job `static`,
-    `security`, `node`, `etl`, `production` e aggregatore `required`.
+    `security`, `node`, `etl`, `etl-snapshots`, `production`, `production-core`
+    e aggregatore `required`.
   - [docs/CAPACITY_AND_INCIDENTS.md](CAPACITY_AND_INCIDENTS.md): picchi e
     capacità, diagnosi di build/pubblicazione e criteri per gli upgrade,
     separati dai test deterministici.
@@ -209,6 +210,7 @@ a caso.
   - Fonti e contratti OpenCivitas:
     [docs/OPENCIVITAS_2015.md](OPENCIVITAS_2015.md),
     [docs/OPENCIVITAS_2016.md](OPENCIVITAS_2016.md),
+    [docs/OPENCIVITAS_2019_FUNZIONI.md](OPENCIVITAS_2019_FUNZIONI.md),
     [docs/OPENCIVITAS_2021_AMMINISTRAZIONE.md](OPENCIVITAS_2021_AMMINISTRAZIONE.md),
     [docs/OPENCIVITAS_2021_ISTRUZIONE.md](OPENCIVITAS_2021_ISTRUZIONE.md),
     [docs/OPENCIVITAS_2021_POLIZIA.md](OPENCIVITAS_2021_POLIZIA.md),
@@ -244,6 +246,7 @@ a caso.
   [tests/company-atlas.test.mjs](../tests/company-atlas.test.mjs),
   [tests/education-atlas.test.mjs](../tests/education-atlas.test.mjs),
   [tests/opencivitas-2015-route.test.mjs](../tests/opencivitas-2015-route.test.mjs),
+  [tests/opencivitas-2019-functions-route.test.mjs](../tests/opencivitas-2019-functions-route.test.mjs),
   [tests/opencivitas-2021-amministrazione-route.test.mjs](../tests/opencivitas-2021-amministrazione-route.test.mjs),
   [tests/opencivitas-2021-rifiuti-route.test.mjs](../tests/opencivitas-2021-rifiuti-route.test.mjs),
   [tests/opencivitas-2021-sociale-asili-route.test.mjs](../tests/opencivitas-2021-sociale-asili-route.test.mjs),
@@ -289,6 +292,9 @@ a caso.
   - [src/lib/politici-group-history.ts](../src/lib/politici-group-history.ts):
     gruppi nella XIX dalle adesioni datate degli snapshot Camera e Senato; il
     passaggio dal Misto a un gruppo nel giorno della sua costituzione non è un cambio.
+  - [src/lib/politici-group-timeline.ts](../src/lib/politici-group-timeline.ts):
+    composizione dei gruppi a una data per il cursore degli emicicli, servita da
+    `/api/politici/gruppi-nel-tempo` (statica, caricata su richiesta).
   - [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
     contratto fail-closed dello snapshot giudiziario curato.
   - [docs/POLITICI.md](POLITICI.md): riferimento operativo rapido per moduli,
@@ -313,6 +319,7 @@ a caso.
   [tests/parlamento-giudiziario-contract.test.mjs](../tests/parlamento-giudiziario-contract.test.mjs),
   [tests/parlamento-mandati-contract.test.mjs](../tests/parlamento-mandati-contract.test.mjs),
   [tests/politici-group-history.test.mjs](../tests/politici-group-history.test.mjs),
+  [tests/politici-group-timeline.test.mjs](../tests/politici-group-timeline.test.mjs),
   [tests/parlamento-giudiziario-route.test.mjs](../tests/parlamento-giudiziario-route.test.mjs),
   [tests/politici-news-route.test.mjs](../tests/politici-news-route.test.mjs).
   Per verifiche browser vedi [docs/POLITICI.md](POLITICI.md).

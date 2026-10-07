@@ -7,24 +7,44 @@ const CPV = "src/data/generated/anac-procurement-cpv";
 const OPERATOR = "src/data/generated/anac-operator-awards-index";
 const SPEC = "scripts/etl/specs";
 const MEDICAL_DEVICE_ROW_PREFIXES = [
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2018.",
+  "src/data/generated/integrated/rows/salute-spesa-dispositivi-2019.",
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-2020.",
   "src/data/generated/integrated/rows/salute-spesa-dispositivi-2021.",
   "src/data/generated/integrated/rows/salute-dispositivi-bdrdm.",
   "src/data/generated/integrated/rows/salute-classificazione-cnd.",
 ];
-const MEDICAL_DEVICE_QUERY_ROUTES = new Set([
+// Medical rows are never bundled: classic serverless is 250 MB without Fluid.
+// Query them via /spese/sanita/dispositivi (index), not /api/dati/[dataset].
+const INTEGRATED_ROW_HOME_ROUTES = new Set([
+  "api/dati/[dataset]/route.js.nft.json",
+  "dati/[dataset]/page.js.nft.json",
+]);
+const ROUTES_WITHOUT_INTEGRATED_ROWS = new Set([
   "api/assistant/route.js.nft.json",
   "api/assistant/chat/route.js.nft.json",
-  "api/dati/[dataset]/route.js.nft.json",
+  "api/assistant/quota/route.js.nft.json",
   "api/mcp/route.js.nft.json",
-  "dati/page.js.nft.json",
-  "dati/[dataset]/page.js.nft.json",
+  "mcp/page.js.nft.json",
+]);
+const SOURCE_METADATA_ROUTES = new Set([
+  "fonti/catalogo/page.js.nft.json",
+  "fonti/copertura/page.js.nft.json",
+  "api/fonti/catalogo/route.js.nft.json",
 ]);
 const HISTORY_ROUTES = new Set([
   "spese/sanita/storico/page.js.nft.json",
   "api/spese/sanita/storico/route.js.nft.json",
   "stato/legislature/page.js.nft.json",
   "api/spese/stato/legislature/route.js.nft.json",
+]);
+const CHILDCARE_NONCONSUMER_ROUTES = new Set([
+  "enti/page.js.nft.json",
+  "enti/[codice]/appalti/page.js.nft.json",
+  "enti/[codice]/appalti/confronti/page.js.nft.json",
+  "snapshot-pages/enti/[codice]/[view]/page.js.nft.json",
+  "api/enti/route.js.nft.json",
+  "api/enti/[codice]/struttura/route.js.nft.json",
 ]);
 
 function walk(directory) {
@@ -42,7 +62,12 @@ export function checkTrace(root, manifest, required = [], forbidden = [], forbid
   }
   const paths = new Set(trace.files.map((file) => resolve(dirname(manifest), file)));
   const files = [...paths].map((file) => relative(root, file).replaceAll("\\", "/"));
+  const route = relative(resolve(root, ".next/server/app"), manifest).replaceAll("\\", "/");
+  // Intake is verified offline; runtime validates aggregate proofs and row chunks.
+  // Childcare remains required below for the routes that publish its data.
   const unexpected = files.filter((file) => /^(tests|docs|research)\//.test(file)
+    || file.startsWith("data/source-ledger/elements/")
+    || (CHILDCARE_NONCONSUMER_ROUTES.has(route) && file === "src/data/generated/pnrr-childcare.data.json")
     || forbidden.some((prefix) => file.startsWith(`${prefix}/`))
     || forbiddenFilePrefixes.some((prefix) => file.startsWith(prefix)));
   if (unexpected.length) throw new Error(`${relative(root, manifest)} traces unrelated files: ${unexpected.slice(0, 5).join(", ")}`);
@@ -92,6 +117,11 @@ export function checkRuntimeTraces(root = process.cwd()) {
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
     ...Object.values(json(`${SPEC}/anac-procurement-peers.source.json`).inputs).map((entry) => entry.path),
   ];
+  const comuniRuntimeFiles = [
+    ...entityFiles,
+    "src/data/generated/mim-school-services-municipal.json",
+    "src/data/generated/pnrr-childcare.data.json",
+  ];
   const requirements = new Map([
     ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/page.js.nft.json", [...entityFiles, ...cpvFiles]],
@@ -100,14 +130,25 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["appalti/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
     ["snapshot-pages/operatori/[ref]/page.js.nft.json", operatorDetailFiles],
     ["snapshot-pages/enti/[codice]/[view]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
+    ["comuni/page.js.nft.json", comuniRuntimeFiles],
+    ["snapshot-pages/comuni/[codice]/page.js.nft.json", comuniRuntimeFiles],
   ]);
+  for (const route of SOURCE_METADATA_ROUTES) {
+    requirements.set(route, [
+      "data/source-ledger/release-proof.json", "data/source-ledger/receipt.json",
+      "data/source-ledger/sources.jsonl", "data/source-ledger/dataset-proof.json",
+      "src/data/generated/integrated/catalog.json",
+    ]);
+  }
   for (const [file, routes] of [
-    ["integrated/rows/istat-economia-non-osservata-territori.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
-    ["integrated/rows/mef-patrimonio-beni-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
-    ["integrated/rows/mef-patrimonio-contratti-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
-    ["integrated/rows/mef-patrimonio-adempimento-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
-    ["integrated/rows/mef-patrimonio-fabbricati-fermi-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route", "patrimonio/page", "api/patrimonio/punti/route"]],
-    ["integrated/rows/rgs-spesa-statale-regionalizzata-2022.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["integrated/rows/istat-economia-non-osservata-territori.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/mef-patrimonio-beni-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/mef-patrimonio-contratti-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/mef-patrimonio-adempimento-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/mef-patrimonio-fabbricati-fermi-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "patrimonio/page", "api/patrimonio/punti/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-2013.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-2019.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-2022.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["istat-bes-relazioni-2011-2024.data.json", ["api/territori/bes-relazioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-politica-2004-2024.data.json", ["api/territori/bes-politica/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-sicurezza-2004-2023.data.json", ["api/territori/bes-sicurezza/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -119,13 +160,19 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["istat-poverta-soglia-relativa-2014-2024.data.json", ["api/territori/poverta-soglia-relativa/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-poverta-regioni-2014-2024.data.json", ["api/territori/poverta-regioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["eurostat-arope-2015-2025.data.json", ["api/spese/arope/route", "api/assistant/chat/route", "api/mcp/route", "poverta/page"]],
-    ["integrated/rows/eurostat-disuguaglianza-redditi.part-00000.jsonl.gz", ["disuguaglianza/page", "dati/[dataset]/page", "api/dati/[dataset]/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["integrated/rows/eurostat-disuguaglianza-redditi.part-00000.jsonl.gz", ["disuguaglianza/page", "dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-pensions-2012-2022.data.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-pensions-2012-2022.meta.json", ["spese/pensioni/page", "api/spese/pensioni/route", "fonti/page", "api/assistant/chat/route", "api/mcp/route"]],
     ["opencivitas-2015.json", ["api/spese/opencivitas-2015/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["opencivitas-2016.json", ["api/spese/opencivitas-2016/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["opencivitas-2017.json", ["api/spese/opencivitas-2017/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-amministrazione.json", ["api/spese/opencivitas-2019-amministrazione/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-istruzione.json", ["api/spese/opencivitas-2019-istruzione/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-polizia.json", ["api/spese/opencivitas-2019-polizia/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-rifiuti.json", ["api/spese/opencivitas-2019-rifiuti/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-sociale-asili.json", ["api/spese/opencivitas-2019-sociale-asili/route", "api/assistant/chat/route", "api/mcp/route"]],
+    ["opencivitas-2019-viabilita.json", ["api/spese/opencivitas-2019-viabilita/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-naspi-2018-2022.data.json", ["fonti/page", "api/lavoro/naspi/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-assegno-unico-2022-2024.data.json", ["fonti/page", "api/famiglia/assegno-unico/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["inps-integrazioni-salariali-2023.data.json", ["fonti/page", "api/lavoro/integrazioni-salariali/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -149,12 +196,28 @@ export function checkRuntimeTraces(root = process.cwd()) {
       forbidden.push("src/data/generated/integrated/rows", "data/source-ledger");
     }
     if (route === "mcp/page.js.nft.json") forbidden.push(ENTITY, CPV, `${OPERATOR}/operators`, "src/data/generated/integrated/rows");
+    if (ROUTES_WITHOUT_INTEGRATED_ROWS.has(route) && !INTEGRATED_ROW_HOME_ROUTES.has(route)) {
+      forbidden.push("src/data/generated/integrated/rows");
+    }
+    if (
+      route === "api/assistant/chat/route.js.nft.json"
+      || route === "api/assistant/route.js.nft.json"
+      || route === "api/mcp/route.js.nft.json"
+    ) {
+      forbidden.push(`${OPERATOR}/operators`, "src/data/generated/medical-device-spending-index");
+    }
     if (route.startsWith("appalti/operatori/")) forbidden.push(`${OPERATOR}/operators`);
     if (HISTORY_ROUTES.has(route) || route === "fonti/stato/page.js.nft.json"
       || route === "api/fonti/stato/route.js.nft.json") {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
-    const forbiddenFilePrefixes = MEDICAL_DEVICE_QUERY_ROUTES.has(route) ? [] : MEDICAL_DEVICE_ROW_PREFIXES;
+    if (SOURCE_METADATA_ROUTES.has(route)) forbidden.push("src/data/generated/integrated/rows");
+    // Medical row shards are forbidden on every route, including corpus homes.
+    const forbiddenFilePrefixes = [...MEDICAL_DEVICE_ROW_PREFIXES];
+    if (["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) {
+      forbidden.push(browse);
+      forbiddenFilePrefixes.push(`${OPERATOR}/search.jsonl.gz`, `${OPERATOR}/summaries.json`);
+    }
     results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden, forbiddenFilePrefixes) });
     requirements.delete(route);
   }

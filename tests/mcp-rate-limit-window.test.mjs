@@ -76,3 +76,22 @@ test("production scheduling starts its conservative interval after the contract 
   assert.ok(residualWaitIndex > completedIndex, "the residual wait must consume the completed timestamp");
   assert.doesNotMatch(runner, /setTimeout\([^\n]*60_?100|setTimeout\([^\n]*60100/);
 });
+
+test("the contract smoke starts after the browser suites' API window has elapsed", () => {
+  // The atlas, runtime-cache and Europa suites call /api/politici/* from the same
+  // loopback IP; without this wait the contract POSTs can hit the local 429 limit.
+  const runner = readFileSync(new URL("../scripts/ci/run-production-gates.sh", import.meta.url), "utf8");
+  const lastBrowserSuite = runner.indexOf("node scripts/browser/politici-europa.mjs");
+  const completedIndex = runner.indexOf("BROWSER_API_WINDOW_COMPLETED_MS=");
+  const waitIndex = runner.indexOf('node scripts/ci/mcp-rate-limit-window.mjs "$BROWSER_API_WINDOW_COMPLETED_MS"');
+  const contractIndex = runner.indexOf("npm run test:mcp:http -- --mode contract");
+
+  assert.ok(lastBrowserSuite >= 0, "production runner must execute the Europa browser suite");
+  assert.ok(completedIndex > lastBrowserSuite, "the timestamp must follow the last browser suite before the contract");
+  assert.ok(waitIndex > completedIndex, "the wait must consume that timestamp");
+  assert.ok(contractIndex > waitIndex, "the contract smoke must start after the wait");
+  for (const suite of ["scripts/browser/politici-atlas.mjs", "scripts/browser/runtime-cache.mjs"]) {
+    const index = runner.indexOf(suite);
+    assert.ok(index >= 0 && index < completedIndex, `${suite} must run inside the waited window`);
+  }
+});

@@ -30,6 +30,8 @@ export type AtlasState = {
   themeExpressedOnly: boolean;
   /** Tab iniziale della scheda persona (es. da Storico voti). */
   panelTab: AtlasPanelTab | null;
+  /** Hemicycle composition on this day of the XIX (#556); `null` shows today. */
+  asOf: string | null;
 };
 export type SearchHit = { key: string; label: string; detail: string; selection: GraphSelection; };
 
@@ -116,6 +118,11 @@ function withArticle(preposition: "da" | "a", date: string): string {
   const text = longDate(date);
   const elided = /^(8|11) /u.test(text);
   return `${preposition === "da" ? "dal" : "al"}${elided ? "l'" : " "}${text}`;
+}
+
+/** "al 3 maggio 2024", "all'8 marzo 2023": the day a composition refers to (#556). */
+export function atDate(date: string): string {
+  return withArticle("a", date);
 }
 
 export function groupPeriod(entry: { startDate: string; endDate: string | null; }): string {
@@ -208,13 +215,14 @@ export function readAtlasState(params: URLSearchParams, map: RepublicMap): { sta
       themeChamber: scope === "storico-voti" ? themeChamber : "tutti",
       themeExpressedOnly: params.get("espressi") === "0" ? false : true,
       panelTab: selection.kind === "person" ? panelTab : null,
+      asOf: supportsTimeline(scope) && isCalendarDay(params.get("al")) ? params.get("al") : null,
     },
   };
 }
 
 export function atlasUrl(href: string, state: AtlasState): string {
   const url = new URL(href);
-  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico", "mandato", "cambi", "tema", "ramo", "espressi", "scheda"]) {
+  for (const name of ["person", "deputy", "group", "istituzione", "vista", "modo", "q", "famiglia", "incarico", "mandato", "cambi", "tema", "ramo", "espressi", "scheda", "al"]) {
     url.searchParams.delete(name);
   }
   url.searchParams.set("vista", state.scope);
@@ -237,6 +245,7 @@ export function atlasUrl(href: string, state: AtlasState): string {
   if (state.selection.kind === "person" && state.panelTab && state.panelTab !== "profilo") {
     url.searchParams.set("scheda", state.panelTab);
   }
+  if (state.asOf && supportsTimeline(state.scope)) url.searchParams.set("al", state.asOf);
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
@@ -251,6 +260,21 @@ export function matchesRole(person: RepublicMapPerson, role: RoleFilter): boolea
   if (role === "governo") return person.government;
   if (role === "capigruppo") return person.groupLeader;
   return ["capo-stato", "presidente-assemblea", "vicepresidente-assemblea", "questore", "segretario-presidenza"].includes(person.roleKind);
+}
+
+/**
+ * A real calendar day as `YYYY-MM-DD`. Local rather than imported: this model has
+ * no runtime dependencies and the atlas tests load it without the path alias.
+ */
+function isCalendarDay(value: string | null): value is string {
+  if (value === null || !/^\d{4}-\d{2}-\d{2}$/u.test(value)) return false;
+  const time = Date.parse(`${value}T00:00:00Z`);
+  return Number.isFinite(time) && new Date(time).toISOString().startsWith(value);
+}
+
+/** Only the Camera and Senato hemicycles draw seats by group, so only they read a date (#556). */
+export function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" {
+  return scope === "camera" || scope === "senato";
 }
 
 /** Condanne and Storico voti render their own directories, which read neither the term nor the group-change filter. */

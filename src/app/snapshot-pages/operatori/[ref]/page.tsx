@@ -4,8 +4,8 @@ export async function generateMetadata({ params }: { params: Promise<{ ref: stri
   return metadata({ params, searchParams: Promise.resolve({}) });
 }
 
-// Populate only visited URLs; never prebuild the national corpus.
-export const revalidate = 21_600;
+// All inputs are committed snapshots. A new deployment owns a new render cache.
+export const revalidate = false;
 export function generateStaticParams() { return []; }
 
 export default async function SnapshotPage({ params }: { params: Promise<{ ref: string }> }) {

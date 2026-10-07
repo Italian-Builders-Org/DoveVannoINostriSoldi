@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 110 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 122 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 110 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 110 | 88 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.608.861 | 7.626.515 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.894.874.587 | somma dei byte impegnati nelle 110 ricevute |
+| Dataset correnti | 122 | 100 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.848.065 | 7.865.719 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.964.835.079 | somma dei byte impegnati nelle 122 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.626.515 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.865.719 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -61,7 +61,12 @@ righe dal record RGS `SRS_SPE_BIL_SPESR_001`, un dataset per esercizio: spesa
 del Bilancio dello Stato per territorio destinatario, con Italia, ripartizioni
 e Regioni come livelli sovrapposti da non sommare. Ogni anno riconcilia il
 totale nazionale con Regioni e ripartizioni entro un milione di euro.
-[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2020-2022).
+Gli esercizi dal 2008 al 2013 aggiungono altre 122.400 righe della stessa serie,
+un dataset per anno (`rgs-spesa-statale-regionalizzata-2008` … `-2013`), con un
+proprio lock e gli stessi controlli.
+Gli esercizi dal 2014 al 2019 completano la serie con altre 116.804 righe
+(`rgs-spesa-statale-regionalizzata-2014` … `-2019`).
+[Contratto e riproduzione](DATA_SOURCES.md#spesa-del-bilancio-dello-stato-per-territorio-destinatario-2008-2022).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -113,6 +118,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `consulenze-pnrr` | Consulenze PNRR | consultancies | 213 | 213 | 213 | rows | documented-fact | not-declared |
 | `corte-conti` | Atti della Corte dei conti | oversight | 93 | 93 | 93 | rows | documented-fact | not-declared |
 | `cv-incarichi` | CV e incarichi | consultancies | 139 | 0 | 119 | catalog-only | needs-explanation | not-declared |
+| `eurostat-disuguaglianza-redditi` | Disuguaglianza del reddito · Italia · EU-SILC 2014-2025 | social-conditions | 24 | 24 | 24 | rows | documented-fact | verified-open-eu-reuse |
 | `eventi-convegni` | Eventi e convegni | operations | 109 | 109 | 109 | rows | documented-fact | not-declared |
 | `fuori-consip` | Contratti da rendere comparabili | procurement | 207 | 207 | 206 | rows | needs-explanation | not-declared |
 | `gruppi-vincitori` | Gruppi e fornitori | procurement | 27 | 0 | 17 | catalog-only | needs-explanation | not-declared |
@@ -157,9 +163,21 @@ fornisce comunque un percorso di provenienza verificabile.
 | `procurement-indici-mimit` | Indice laterale bandi MIMIT | procurement | 2.794 | 0 | 2.794 | catalog-only | documented-fact | not-declared |
 | `procurement-mimit-dork` | Atti MIMIT supplementari | procurement | 27 | 27 | 27 | rows | documented-fact | not-declared |
 | `procurement-partecipate` | Affidamenti delle partecipate | procurement | 11.115 | 11.115 | 11.115 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2014` | RGS · spesa statale regionalizzata 2014 | state-accounts | 20.168 | 20.168 | 20.168 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2015` | RGS · spesa statale regionalizzata 2015 | state-accounts | 20.356 | 20.356 | 20.356 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2016` | RGS · spesa statale regionalizzata 2016 | state-accounts | 20.428 | 20.428 | 20.428 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2017` | RGS · spesa statale regionalizzata 2017 | state-accounts | 18.816 | 18.816 | 18.816 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2018` | RGS · spesa statale regionalizzata 2018 | state-accounts | 18.328 | 18.328 | 18.328 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2019` | RGS · spesa statale regionalizzata 2019 | state-accounts | 18.708 | 18.708 | 18.708 | rows | documented-fact | not-declared |
 | `rimborsi-spese` | Rimborsi spese | operations | 21 | 21 | 21 | rows | documented-fact | not-declared |
 | `rimborsi-spese-buchi` | Rimborsi spese: copertura mancante | transparency | 14 | 14 | 11 | rows | missing-data | not-declared |
 | `rinnovi-proroghe` | Rinnovi e proroghe | procurement | 440 | 440 | 440 | rows | needs-explanation | not-declared |
+| `salute-classificazione-cnd` | Dispositivi medici · classificazione CND · 2026-09-01 | health | 11.115 | 11.115 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-dispositivi-bdrdm` | Dispositivi medici · anagrafica BD/RDM · 2026-09-14 | health | 2.416.708 | 2.416.708 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2018` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2018 | health | 718.808 | 718.808 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2019` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2019 | health | 768.233 | 768.233 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2020` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2020 | health | 787.845 | 787.845 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
+| `salute-spesa-dispositivi-2021` | Dispositivi medici · spesa rilevata per azienda sanitaria · 2021 | health | 846.878 | 846.878 | 0 | rows | documented-fact | verified-open-iodl-2.0 |
 | `segnalazioni` | Segnali da verificare | evidence | 168 | 168 | 168 | rows | needs-explanation | not-declared |
 | `segnalazioni-card` | Righe preparatorie per schede | evidence | 2.812 | 0 | 2.812 | derived-only | needs-explanation | not-declared |
 | `segnalazioni-parti` | Soggetti collegati alle segnalazioni | evidence | 164 | 164 | 0 | rows | needs-explanation | not-declared |
@@ -169,6 +187,12 @@ fornisce comunque un percorso di provenienza verificabile.
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-spesa-statale-regionalizzata-2008` | RGS · spesa statale regionalizzata 2008 | state-accounts | 20.352 | 20.352 | 20.352 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2009` | RGS · spesa statale regionalizzata 2009 | state-accounts | 20.400 | 20.400 | 20.400 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2010` | RGS · spesa statale regionalizzata 2010 | state-accounts | 20.296 | 20.296 | 20.296 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2011` | RGS · spesa statale regionalizzata 2011 | state-accounts | 20.712 | 20.712 | 20.712 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2012` | RGS · spesa statale regionalizzata 2012 | state-accounts | 20.248 | 20.248 | 20.248 | rows | documented-fact | not-declared |
+| `rgs-spesa-statale-regionalizzata-2013` | RGS · spesa statale regionalizzata 2013 | state-accounts | 20.392 | 20.392 | 20.392 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2020` | RGS · spesa statale regionalizzata 2020 | state-accounts | 19.356 | 19.356 | 19.356 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2021` | RGS · spesa statale regionalizzata 2021 | state-accounts | 19.872 | 19.872 | 19.872 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2022` | RGS · spesa statale regionalizzata 2022 | state-accounts | 20.260 | 20.260 | 20.260 | rows | documented-fact | not-declared |
@@ -202,10 +226,10 @@ prima del calcolo dell'hash pubblico della riga.
 
 ## Superfici pubbliche
 
-- `/dati`: tutti i 79 dataset e i loro stati;
-- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle 57 proiezioni;
+- `/dati`: tutti i dataset del catalogo e i loro stati;
+- `/dati/<id>` e `/api/dati/<id>`: ricerca e paginazione delle proiezioni interrogabili;
 - `/fonti/copertura`: riconciliazione dei tre livelli del rilascio e metadati di
-  fonte e freschezza per tutti i 79 dataset;
+  fonte e freschezza per tutti i dataset;
 - `/fonti/catalogo` e `/api/fonti/catalogo`: tutte le 34.071 identità;
 - `/appalti`, `/incarichi`, `/spese`, `/controlli` e `/confronti`: anteprime
   concise di non più di tre percorsi pertinenti;
@@ -215,9 +239,10 @@ prima del calcolo dell'hash pubblico della riga.
 - 21 pagine tematiche sotto `/appalti`, `/incarichi`, `/spese`, `/controlli`,
   `/confronti` e `/trasparenza`: risultati, confini probatori, prime righe e
   collegamento al dataset completo;
-- un'anteprima dedicata in `/partecipazioni`, che mantiene primaria la vista
-  nazionale MEF e conduce ai tre insiemi di approfondimento; 21 pagine e questa
-  anteprima rappresentano insieme tutti i 79 dataset una sola volta;
+- anteprime di superficie, fra cui quella di `/partecipazioni`, che mantiene
+  primaria la vista nazionale MEF e conduce ai tre insiemi di approfondimento;
+  pagine tematiche e anteprime rappresentano insieme ogni dataset del catalogo
+  una sola volta (`tests/integrated-editorial.test.mjs`);
 - MCP `spesa_pa_dettaglio`: lo stesso selettore pubblico con `code`, `query`,
   `limit` e `offset`.
 

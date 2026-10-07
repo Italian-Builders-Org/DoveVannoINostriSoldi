@@ -8,7 +8,7 @@ withholding only unsafe identity values.
 - `coverage-receipt` shows 51.303 accounted elements.
 - `source-equation` reconciles 34.071 identities.
 - `quarantine-visible` exposes opaque IDs and reasons without values.
-- `row-equation` reconciles 20.354.415 source rows.
+- `row-equation` reconciles the source rows declared in `src/data/generated/integrated/catalog.json` (`totals.sourceRows`).
 
 ## How to get to it (user POV)
 

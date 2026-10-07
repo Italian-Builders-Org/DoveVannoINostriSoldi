@@ -1,0 +1,106 @@
+{
+  "groups": [
+    {"id":"accesso-concessioni","title":"Accesso alle professioni e concessioni","description":"Costi per gli utenti, condizioni di accesso e uso di beni pubblici: ambiti diversi dalla sola spesa dello Stato.","items":[
+      {"id":"taxi","name":"Tassisti","question":"Quali effetti hanno contingentamento delle licenze e regole del servizio su disponibilità, qualità e prezzi?"},
+      {"id":"balneari","name":"Concessioni balneari","question":"Come confrontare canoni, valore dei beni concessi e risultati delle gare, distinguendo maggior gettito da risparmio?"},
+      {"id":"notai","name":"Notai","question":"Quali attività garantiscono certezza giuridica e quali potrebbero essere semplificate senza ridurre le tutele?"},
+      {"id":"farmacie","name":"Farmacie","question":"Come incidono i vincoli di accesso su prezzi, accessibilità territoriale e continuità del servizio?"},
+      {"id":"tabaccai","name":"Tabaccai","question":"Quali vincoli distributivi hanno una giustificazione sanitaria o fiscale e quali costi producono?"},
+      {"id":"edicole","name":"Edicolanti","question":"Quali regole di accesso e sostegni incidono sulla distribuzione, anche nelle aree poco servite?"},
+      {"id":"autostrade","name":"Concessionari autostradali","question":"Come confrontare pedaggi, investimenti, manutenzione e remunerazione del capitale nei contratti di concessione?"},
+      {"id":"concessioni-gioco","name":"Concessioni gioco e slot","question":"Quali effetti hanno le concessioni su gettito, concorrenza e costi di vigilanza, separati dai danni sociali?"},
+      {"id":"tv-frequenze","name":"Concessioni TV e frequenze","question":"Come sono assegnate e valorizzate le frequenze, e quali alternative sono compatibili con il pluralismo?"},
+      {"id":"porti-turistici","name":"Concessioni porti turistici","question":"Canoni e procedure di assegnazione riflettono il valore dei beni pubblici e gli obblighi di investimento?"},
+      {"id":"funerari","name":"Servizi cimiteriali e funebri","question":"Quali costi derivano da vincoli di accesso, affidamenti e possibili conflitti di interesse locali?"},
+      {"id":"ordini","name":"Ordini professionali","question":"Quali funzioni di tutela svolgono gli ordini e quali oneri potrebbero essere ridotti mantenendole?"},
+      {"id":"casse","name":"Casse professionali","question":"Come confrontare costi di gestione e prestazioni, senza trattare contributi previdenziali come spreco?"},
+      {"id":"siae","name":"SIAE","question":"Quali costi di intermediazione e vincoli di concorrenza emergono nella gestione dei diritti d'autore?"},
+      {"id":"editoria","name":"Editoria e aiuti pubblici","question":"Quali sostegni sono aggiuntivi rispetto al mercato e quali risultati producono per il pluralismo?"}
+    ]},
+    {"id":"enti-intermediazioni","title":"Enti e intermediazioni obbligatorie","description":"Verificare natura giuridica, funzioni, finanziamento e duplicazioni: i soggetti elencati non sono tutti enti pubblici.","items":[
+      {"id":"aci-pra","name":"ACI / PRA e Motorizzazione","question":"Quali duplicazioni restano dopo il Documento Unico tra PRA gestito dall'ACI e funzioni della Motorizzazione?"},
+      {"id":"camere","name":"Camere di Commercio","question":"Quali costi del Registro Imprese e delle altre funzioni sarebbero eliminati, anziché trasferiti, con un accorpamento?"},
+      {"id":"bollo","name":"Bollo auto: intermediazione e aggi","question":"Quali oneri di riscossione sono evitabili con canali diretti, preservando accessibilità e assistenza?"},
+      {"id":"bonifica","name":"Consorzi di bonifica","question":"Quali sovrapposizioni gestionali esistono e quali costi di manutenzione e sicurezza idraulica resterebbero comunque?"},
+      {"id":"dop-doc","name":"Consorzi DOP/DOC","question":"Quali funzioni di tutela e promozione sono finanziate e quali oneri risultano evitabili?"},
+      {"id":"riciclo","name":"Consorzi obbligatori riciclo (CONAI, COBAT)","question":"Come confrontare contributi, costi operativi e risultati ambientali nel rispetto della responsabilità del produttore?"},
+      {"id":"sport","name":"Federazioni sportive e CONI","question":"Quali eventuali sovrapposizioni esistono tra federazioni, CONI e altri soggetti del sistema sportivo?"},
+      {"id":"caa","name":"CAA agricoli","question":"Quali pratiche possono essere semplificate mantenendo assistenza e controlli sui contributi?"},
+      {"id":"cnel","name":"CNEL e organi simili","question":"Quali costi netti sono evitabili e quali funzioni e vincoli costituzionali vanno considerati?"},
+      {"id":"fondazioni-bancarie","name":"Fondazioni bancarie","question":"Come misurare efficienza delle erogazioni e costi di gestione senza confondere patrimoni privati e bilancio pubblico?"}
+    ]},
+    {"id":"reti-servizi","title":"Reti e mercati regolati","description":"Confrontare tariffe, qualità, investimenti e costi efficienti. Il ricavo di un servizio non è una misura dello spreco.","items":[
+      {"id":"terna-snam","name":"Terna e Snam","question":"La remunerazione regolata del capitale è coerente con rischio, investimenti e confronti europei omogenei?"},
+      {"id":"multiutility","name":"Multiutility locali (Hera, A2A, IREN)","question":"Quali margini di efficienza emergono separando servizi regolati, attività di mercato e qualità erogata?"},
+      {"id":"aeroporti","name":"Aeroporti (ADR, SEA)","question":"Come confrontare tariffe aeroportuali, obblighi di investimento e condizioni delle concessioni?"},
+      {"id":"telecom","name":"Telecomunicazioni","question":"Quali maggiori costi risultano da confronti omogenei per copertura, velocità e qualità?"},
+      {"id":"energia-retail","name":"Energia retail","question":"Quali componenti di prezzo dipendono da intermediazione e concorrenza, anziché da energia, reti e fiscalità?"},
+      {"id":"poste","name":"Poste Italiane","question":"Come distinguere costo del servizio universale, compensazioni pubbliche e attività commerciali?"},
+      {"id":"rai","name":"RAI","question":"Quali costi evitabili emergono a parità di obblighi di servizio pubblico, copertura e produzione?"}
+    ]},
+    {"id":"finanza-assicurazioni","title":"Finanza e assicurazioni","description":"Costi sostenuti soprattutto da clienti privati; un eventuale beneficio per gli utenti non coincide con risparmio del bilancio pubblico.","items":[
+      {"id":"banche","name":"Banche: commissioni","question":"Quali commissioni superano benchmark comparabili per servizio, rischio e profilo del cliente?"},
+      {"id":"assicurazioni","name":"Assicurazioni (RC Auto, Vita e altre)","question":"Quali differenze di premio restano dopo aver corretto per rischio, sinistri, frodi e coperture?"},
+      {"id":"risparmio-gestito","name":"Risparmio gestito","question":"Quali costi e conflitti di interesse risultano rispetto ad alternative equivalenti, evitando sovrapposizioni con le commissioni bancarie?"},
+      {"id":"buoni-pasto","name":"Buoni pasto","question":"Quali commissioni e costi amministrativi sono evitabili mantenendo il servizio e il trattamento fiscale?"},
+      {"id":"polizze-obbligatorie","name":"Polizze obbligatorie emergenti","question":"Quali obblighi e premi trasferiscono rischi in modo efficiente e quali possibili oneri eccedenti generano?"},
+      {"id":"bonifici","name":"Bonifici e commissioni internazionali","question":"Quali commissioni e spread valutari sono evitabili, senza contarli anche nella voce banche?"},
+      {"id":"informazioni-creditizie","name":"Informazioni creditizie e rating (CRIF, Cerved)","question":"Quali servizi sono effettivamente obbligatori e quali costi possono essere confrontati tra operatori equivalenti?"},
+      {"id":"broker","name":"Broker assicurativi e finanziari","question":"Quale valore aggiunge l'intermediazione e quali commissioni sono già comprese nei costi di polizze e prodotti?"}
+    ]},
+    {"id":"complessita","title":"Intermediazione e complessità amministrativa","description":"Identificare gli adempimenti eliminabili prima di attribuire all'intermediario l'intero costo del servizio.","items":[
+      {"id":"commercialisti","name":"Commercialisti","question":"Quali oneri dipendono da adempimenti semplificabili e quali da consulenza, contabilità e controllo necessari?"},
+      {"id":"patronati","name":"Patronati (INAS, INCA, ITAL)","question":"Quali pratiche possono diventare dirette senza escludere utenti fragili o trasferire loro i costi?"},
+      {"id":"caf","name":"CAF","question":"Quali adempimenti fiscali possono essere rimossi o precompilati mantenendo assistenza e tutele?"},
+      {"id":"agenzie-auto","name":"Agenzie pratiche auto","question":"Quali passaggi e costi sono evitabili, distinti dalle tariffe ACI/PRA e della Motorizzazione?"},
+      {"id":"geometri","name":"Geometri e pratiche edilizie","question":"Quali costi derivano da procedure ridondanti e quali da progettazione, sicurezza e responsabilità tecniche?"},
+      {"id":"riscossione-locale","name":"Concessionari riscossione locale","question":"Come confrontare costi e recuperi netti dei diversi modelli di riscossione?"},
+      {"id":"software","name":"Software gestionali","question":"Quale quota dei costi è dovuta ad adempimenti evitabili, anziché a funzioni produttive del software?"},
+      {"id":"editori-giuridici","name":"Editori giuridici e fiscali (Wolters Kluwer, Giuffrè)","question":"Quali costi informativi derivano dalla complessità normativa e quali da servizi professionali aggiuntivi?"},
+      {"id":"formazione","name":"Patentini e formazione obbligatoria","question":"Quali obblighi duplicano competenze già certificate e quali prevengono rischi documentati?"},
+      {"id":"traduzioni","name":"Traduttori giurati e apostille","question":"Quali attestazioni possono essere riconosciute o digitalizzate senza ridurre affidabilità e certezza giuridica?"},
+      {"id":"immobiliare","name":"Mediazione immobiliare","question":"Quali commissioni e vincoli di mercato risultano evitabili e quale servizio è effettivamente fornito?"}
+    ]},
+    {"id":"servizi-pubblici","title":"Servizi pubblici e attività collegate","description":"Il gruppo include anche attività private. Misurare l'eventuale inefficienza a parità di servizio e impedire doppioni tra appalti e settori.","items":[
+      {"id":"sanita","name":"Sanità, privato convenzionato e ticket","question":"Quali costi evitabili emergono a parità di esiti e accesso, distinguendo ticket, finanziamento e inefficienze?"},
+      {"id":"tpl","name":"Trasporto pubblico locale","question":"Come confrontare costo per servizio e qualità tenendo conto di domanda, territorio e obblighi di copertura?"},
+      {"id":"partecipate","name":"Società partecipate locali","question":"Quali società hanno funzioni duplicative, separando le attività già considerate in rifiuti, trasporti e utility?"},
+      {"id":"ater","name":"ATER / IACP ed edilizia popolare","question":"Quali costi gestionali e patrimoni inutilizzati sono recuperabili mantenendo manutenzione e finalità sociali?"},
+      {"id":"cooperative","name":"Cooperative sociali e appalti","question":"Quali maggiori costi emergono a parità di servizio, utenza assistita e condizioni di lavoro?"},
+      {"id":"ristorazione","name":"Ristorazione collettiva pubblica","question":"Quali differenze di prezzo restano a parità di qualità, pasti, requisiti nutrizionali e logistica?"},
+      {"id":"pulizie","name":"Pulizie e vigilanza pubbliche","question":"Quali costi evitabili risultano da confronti omogenei per ore, superfici, sicurezza e condizioni contrattuali?"},
+      {"id":"appalti","name":"Aste pubbliche e appalti","question":"Quali inefficienze specifiche sono documentabili senza sommare nuovamente i costi dei settori affidati?"},
+      {"id":"tributi-locali","name":"Tassazione locale","question":"Quali costi di amministrazione e adempimento sono evitabili, distinti dal gettito dei tributi?"},
+      {"id":"difesa","name":"Difesa e industria militare","question":"Quali costi evitabili risultano a parità di capacità, sicurezza e obblighi operativi?"},
+      {"id":"rifiuti-speciali","name":"Demolizioni e smaltimento rifiuti speciali","question":"Quali maggiori costi derivano da vincoli evitabili, anziché da trattamento e sicurezza ambientale necessari?"},
+      {"id":"npl","name":"Concordati, NPL e restructuring","question":"Quali costi dipendono da inefficienze procedurali e quali da perdite su crediti e servizi di ristrutturazione?"},
+      {"id":"catasto","name":"Catasto, conservatorie e intermediazione","question":"Quali duplicazioni informative e pratiche possono essere rimosse preservando la certezza dei diritti immobiliari?"},
+      {"id":"agenzie-fiscali","name":"Agenzia Entrate, AdR e Demanio","question":"Quali sovrapposizioni o costi evitabili sono dimostrabili a parità di recupero fiscale e gestione patrimoniale?"},
+      {"id":"banca-italia","name":"Banca d'Italia","question":"Quali effetti economici della struttura proprietaria sono dimostrabili, separati dai costi delle funzioni istituzionali?"},
+      {"id":"vigilanza","name":"IVASS e CONSOB","question":"Quali sovrapposizioni sono eliminabili senza ridurre indipendenza, controlli e tutela del risparmio?"},
+      {"id":"universita","name":"Università e formazione parallela","question":"Quali percorsi duplicano attività finanziate e quali rispondono a bisogni formativi differenti?"},
+      {"id":"mercati","name":"Mercati ortofrutticoli all'ingrosso","question":"Quali costi e vincoli distributivi sono evitabili mantenendo logistica, controlli e sicurezza alimentare?"},
+      {"id":"tari","name":"TARI e rifiuti urbani","question":"Quali costi efficientabili emergono a parità di raccolta e trattamento, senza confondere tariffa e spreco?"},
+      {"id":"cultura","name":"Fondazioni culturali e attività culturali","question":"Quali costi e sovrapposizioni risultano evitabili considerando accesso, conservazione e benefici pubblici?"},
+      {"id":"rsa","name":"RSA e case di riposo","question":"Quali costi evitabili emergono a parità di assistenza, intensità di cura e condizioni degli ospiti?"},
+      {"id":"gioco-sociale","name":"Slot machine e gioco: costi sociali","question":"Come misurare i danni sociali netti, evitando di confonderli con spesa pubblica o concessioni già considerate?"},
+      {"id":"editori-scolastici","name":"Editori scolastici","question":"Quali costi per le famiglie sono evitabili con alternative equivalenti e compatibili con qualità e accessibilità?"},
+      {"id":"uibm","name":"UIBM, marche, brevetti e certificazioni","question":"Quali procedure e oneri sono ridondanti, distinti dalle funzioni necessarie di tutela e verifica?"}
+    ]},
+    {"id":"sistemici","title":"Tempo, produttività e costi sistemici","description":"Ipotesi controfattuali, non voci direttamente tagliabili in bilancio. Possono sovrapporsi fra loro e con tutti gli altri gruppi.","items":[
+      {"id":"tempo","name":"Tempo perso da cittadini e imprese in burocrazia","question":"Come misurare ore e valore del tempo senza ricontare gli oneri degli intermediari?"},
+      {"id":"pil-mancante","name":"PIL non generato: imprese non nate e talenti emigrati","question":"Quale controfattuale e quale evidenza causale permettono di attribuire un effetto alle inefficienze individuate?"},
+      {"id":"produttivita","name":"Produttività mancante delle imprese esistenti","question":"Quale parte del divario è attribuibile ai meccanismi analizzati e non ad altri fattori?"},
+      {"id":"digitale","name":"Gap digitale strutturale","question":"Quali effetti causali della digitalizzazione sono identificabili e già compresi nelle stime di tempo e produttività?"}
+    ]}
+  ],
+  "proposals": [
+    {"id":"aci-pra","title":"ACI/PRA e Motorizzazione","action":"Valutare una banca dati e una gestione unificate delle pratiche veicolo.","limits":"Ricostruire il perimetro dopo il Documento Unico; distinguere duplicazioni residue, funzioni differenti, tariffe, imposte, costi trasferiti e costi di migrazione. Risparmio netto non quantificato."},
+    {"id":"camere","title":"Camere di Commercio","action":"Valutare la proposta di trasferire il Registro Imprese all'Agenzia delle Entrate.","limits":"Censire anche le altre funzioni camerali; il trasferimento non elimina automaticamente personale, sistemi e servizi. Confrontare con semplificazioni interne. Risparmio netto non quantificato."},
+    {"id":"cnel","title":"CNEL","action":"Valutare abolizione o riorganizzazione delle funzioni.","limits":"L'abolizione richiede revisione costituzionale; documentare costi netti e destinazione delle funzioni. Non è un intervento amministrativo immediato. Risparmio netto non quantificato."},
+    {"id":"patronati-caf","title":"Patronati e CAF","action":"Valutare servizi diretti INPS e Agenzia delle Entrate con meno adempimenti.","limits":"Mantenere assistenza accessibile e canali non digitali; conteggiare sistemi, supporto e oneri eventualmente trasferiti agli utenti. Risparmio netto non quantificato."},
+    {"id":"balneari","title":"Concessioni balneari","action":"Valutare gare trasparenti e criteri di valorizzazione dei beni pubblici.","limits":"Verificare normativa e stato delle gare, obblighi e contenzioso. L'eventuale incremento di canoni è maggior gettito, non taglio di spesa. Impatto netto non quantificato."},
+    {"id":"ordini","title":"Ordini professionali","action":"Valutare albi amministrativi in alternativa all'attuale organizzazione.","limits":"Preservare controllo dei requisiti, disciplina e tutele; separare quote degli iscritti, costi dei servizi e bilancio dello Stato. Beneficio netto non quantificato."},
+    {"id":"bonifica","title":"Consorzi di bonifica","action":"Valutare il trasferimento delle funzioni alle Regioni.","limits":"Manutenzione, irrigazione e sicurezza idraulica restano necessarie; dimostrare economie di gestione al netto di transizione e costi trasferiti. Risparmio netto non quantificato."}
+  ]
+}

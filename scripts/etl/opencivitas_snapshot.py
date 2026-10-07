@@ -26,8 +26,8 @@ from monetary import MAX_SAFE_CENTS as MAX_SAFE_INTEGER
 
 REFERENCE_YEAR = 2022
 PUBLISHED_AT = "2025-08-07"
-LANDING_URL = "https://www.opencivitas.it/it/open-data"
-DATASET_URL = "https://www.opencivitas.it/it/dataset/2022-comuni-servizi-totali-indicatori-e-determinanti"
+LANDING_URL = "https://www.opencivitas.it/portale/open-data"
+DATASET_URL = "https://www.opencivitas.it/portale/w/2022-comuni-servizi-totali-indicatori-e-determinanti"
 DATA_URL = "https://docs.opencivitas.it/2022_Ind_FC80TOT_2_csv.zip"
 ENTITIES_URL = "https://docs.opencivitas.it/Metadati_Enti_2022_xlsx.zip"
 INDICATORS_URL = "https://docs.opencivitas.it/2022_Metadati_Ind_FC80TOT_1_xlsx.zip"
@@ -120,7 +120,8 @@ def discover_latest_total_services_year(timeout: int) -> int:
     years = {
         int(year)
         for year in re.findall(
-            r'href=["\'](?:https://www\.opencivitas\.it)?/it/dataset/(\d{4})-comuni-servizi-totali-indicatori-e-determinanti["\']',
+            r'href=["\'](?:https://www\.opencivitas\.it)?'
+            r'(?:/it/dataset|/portale/w)/(\d{4})-comuni-servizi-totali-indicatori-e-determinanti(?:-\d+)?["\']',
             html,
         )
     }

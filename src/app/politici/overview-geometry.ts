@@ -133,8 +133,28 @@ function orderedGroupIds(map: RepublicMap, chamberId: ChamberId): string[] {
     .map((group) => group.id);
 }
 
+/** Members per group of one chamber on a past day (#556), already in display order. */
+export type ChamberGroupCount = { groupId: string; family: string; count: number; };
+
+function todayCounts(map: RepublicMap, chamberId: ChamberId): { counts: ChamberGroupCount[]; total: number; } {
+  const members = map.people.filter((person) => person.chamberId === chamberId);
+  return {
+    counts: orderedGroupIds(map, chamberId).map((groupId) => ({
+      groupId,
+      family: map.groups.find((group) => group.id === groupId)?.partyFamily ?? "misto",
+      count: members.filter((person) => person.groupId === groupId).length,
+    })),
+    // Today's bands are shares of every sitting member, as before #556.
+    total: members.length,
+  };
+}
+
+function pastCounts(counts: readonly ChamberGroupCount[]): { counts: readonly ChamberGroupCount[]; total: number; } {
+  return { counts, total: counts.reduce((sum, item) => sum + item.count, 0) };
+}
+
 function buildCard(
-  map: RepublicMap,
+  { counts, total }: { counts: readonly ChamberGroupCount[]; total: number; },
   chamberId: ChamberId,
   x: number,
   y: number,
@@ -145,14 +165,11 @@ function buildCard(
   const cy = y + height - 10;
   const rOuter = Math.min(74, width * 0.3);
   const rInner = rOuter * 0.42;
-  const members = map.people.filter((person) => person.chamberId === chamberId);
   const wedges: OverviewWedge[] = [];
   let start = Math.PI;
-  for (const groupId of orderedGroupIds(map, chamberId)) {
-    const count = members.filter((person) => person.groupId === groupId).length;
+  for (const { groupId, family, count } of counts) {
     if (count === 0) continue;
-    const end = start - (Math.PI * count) / members.length;
-    const family = map.groups.find((group) => group.id === groupId)?.partyFamily ?? "misto";
+    const end = start - (Math.PI * count) / total;
     const mid = (start + end) / 2;
     const padding = 0.004;
     const anchor = polar(cx, cy, rOuter, mid);
@@ -197,7 +214,12 @@ function spreadOnArc(
   });
 }
 
-export function buildOverviewGeometry(map: RepublicMap, layout: OverviewLayout = "wide"): OverviewGeometry {
+/** `past` replaces a chamber's bands with its composition on a past day (#556); the layout does not move. */
+export function buildOverviewGeometry(
+  map: RepublicMap,
+  layout: OverviewLayout = "wide",
+  past: Partial<Record<ChamberId, readonly ChamberGroupCount[]>> = {},
+): OverviewGeometry {
   const canvas = overviewCanvas(layout);
   const { cx, cy } = canvas;
   const byRole = (kind: string) => map.people.filter((person) => person.roleKind === kind);
@@ -273,8 +295,8 @@ export function buildOverviewGeometry(map: RepublicMap, layout: OverviewLayout =
   const cameraOrigin = placeCard(cameraAnchor.x, cameraAnchor.y);
   const senatoOrigin = placeCard(senatoAnchor.x, senatoAnchor.y);
   const cards = [
-    buildCard(map, "camera", cameraOrigin.x, cameraOrigin.y, cardW, cardH),
-    buildCard(map, "senato", senatoOrigin.x, senatoOrigin.y, cardW, cardH),
+    buildCard(past.camera ? pastCounts(past.camera) : todayCounts(map, "camera"), "camera", cameraOrigin.x, cameraOrigin.y, cardW, cardH),
+    buildCard(past.senato ? pastCounts(past.senato) : todayCounts(map, "senato"), "senato", senatoOrigin.x, senatoOrigin.y, cardW, cardH),
   ];
 
   return {

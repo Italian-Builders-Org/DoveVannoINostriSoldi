@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { RepublicMap, RepublicMapPerson } from "@/lib/politici-repubblica";
-import type { GraphSelection } from "./atlas-model";
+import {
+  clampTimelineDate, currentRoleStarted, groupCountsAt, sharedTimelineRange, timelineChangeDates,
+  type GovernmentTimeline,
+} from "@/lib/politici-group-timeline";
+import { atDate, longDate, type GraphSelection } from "./atlas-model";
 import { Icon, Portrait } from "./atlas-primitives";
+import { TimelineControl, useGroupTimeline } from "./atlas-timeline";
+import timelineStyles from "./atlas-timeline.module.css";
 import { curve } from "./graph-geometry";
 import {
   buildOverviewGeometry,
@@ -18,17 +24,37 @@ import {
 } from "./overview-geometry";
 import styles from "./politici.module.css";
 
+/** A day of the XIX on the Grafo (#556): chamber bands from the dated adhesions, government roles by start date. */
+type PastDay = {
+  date: string;
+  government: GovernmentTimeline;
+  labels: Map<string, string>;
+  totals: Record<"camera" | "senato", number>;
+};
+
+/** On a past day, the start of a current government role that had not begun yet; otherwise `null`. */
+function laterRoleStart(past: PastDay | null, personId: string): string | null {
+  if (!past || currentRoleStarted(past.government, personId, past.date) !== false) return null;
+  return past.government.members.find((member) => member.personId === personId)!.since;
+}
+
 export function InstitutionalGraph({
   map,
   selection,
   matchingIds,
   onSelect,
+  asOf = null,
+  onAsOf,
 }: {
   map: RepublicMap;
   selection: GraphSelection;
   matchingIds: Set<string>;
   onSelect: (selection: GraphSelection) => void;
+  /** Day of the XIX shown by the chamber bands and government roles (#556); `null` is today. */
+  asOf?: string | null;
+  onAsOf?: (asOf: string | null) => void;
 }) {
+  const id = useId();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(1);
   const previousZoom = useRef(1);
@@ -61,7 +87,33 @@ export function InstitutionalGraph({
     }
   };
 
-  const overview = useMemo(() => buildOverviewGeometry(map, layout), [map, layout]);
+  // Time slider (#556): the series loads on first use; until it is ready the Grafo shows today.
+  const [timelineOpen, setTimelineOpen] = useState(asOf !== null);
+  const timeline = useGroupTimeline(timelineOpen);
+  const series = timeline.resource.status === "ready" ? timeline.resource.data : null;
+  const range = useMemo(() => series ? sharedTimelineRange(series) : null, [series]);
+  const historicalDate = range && asOf !== null ? clampTimelineDate(range, asOf) : null;
+  const past = useMemo(() => {
+    if (!series || !historicalDate) return null;
+    const camera = groupCountsAt(series.camera, historicalDate);
+    const senato = groupCountsAt(series.senato, historicalDate);
+    const day: PastDay = {
+      date: historicalDate,
+      government: series.government,
+      labels: new Map([...camera, ...senato].map((item) => [item.groupId, item.label])),
+      totals: {
+        camera: camera.reduce((total, item) => total + item.count, 0),
+        senato: senato.reduce((total, item) => total + item.count, 0),
+      },
+    };
+    return { day, counts: { camera, senato } };
+  }, [series, historicalDate]);
+  const toggleTimeline = () => {
+    if (timelineOpen) onAsOf?.(null);
+    setTimelineOpen((value) => !value);
+  };
+
+  const overview = useMemo(() => buildOverviewGeometry(map, layout, past?.counts), [map, layout, past]);
   const peopleById = useMemo(() => new Map(map.people.map((person) => [person.id, person])), [map.people]);
   const groupById = useMemo(() => new Map(map.groups.map((group) => [group.id, group])), [map.groups]);
   const institutionById = useMemo(
@@ -95,7 +147,23 @@ export function InstitutionalGraph({
         <h2>Il Grafo Istituzionale</h2>
       </div>
       <span className={styles.countMark}>{map.coverage.people}</span>
+      {onAsOf ? <button
+        type="button"
+        className={timelineStyles.toggle}
+        aria-expanded={timelineOpen}
+        aria-controls={`${id}-timeline`}
+        onClick={toggleTimeline}>
+        Nel tempo
+      </button> : null}
     </div>
+    {timelineOpen && onAsOf ? <div id={`${id}-timeline`}>
+      {series && range ? <TimelineControl series={range} changes={timelineChangeDates(series)} asOf={historicalDate} onAsOf={onAsOf} />
+        : timeline.resource.status === "error" ? <p className={timelineStyles.status} role="alert">
+          La serie storica non è disponibile: il grafo mostra la composizione attuale.{" "}
+          <button type="button" className={styles.textButton} onClick={timeline.retry}>Riprova</button>
+        </p>
+          : <p className={timelineStyles.status} role="status">Caricamento delle adesioni ai gruppi e degli incarichi…</p>}
+    </div> : null}
     <p className={styles.sectionLead}>
       Presidenza, Governo, Camera e Senato nello stesso schema. Le linee sono rapporti istituzionali della base dati, non una misura di influenza.
     </p>
@@ -176,6 +244,7 @@ export function InstitutionalGraph({
           key={card.chamberId}
           card={card}
           groupById={groupById}
+          pastLabels={past?.day.labels ?? null}
           highlightedGroupIds={highlightedGroupIds} />)}
       </svg>
       <div className={styles.graphOverlay}>
@@ -194,6 +263,7 @@ export function InstitutionalGraph({
           litIds={litIds}
           selection={selection}
           overview={overview}
+          past={past?.day ?? null}
           onSelect={onSelect} />
         <span
           className={styles.graphBandLabel}
@@ -211,6 +281,7 @@ export function InstitutionalGraph({
           selection={selection}
           size={22}
           overview={overview}
+          past={past?.day ?? null}
           onSelect={onSelect} />)}
         {overview.ministers.map((node) => <PersonDot
           key={node.personId}
@@ -220,6 +291,7 @@ export function InstitutionalGraph({
           selection={selection}
           size={30}
           overview={overview}
+          past={past?.day ?? null}
           onSelect={onSelect} />)}
         {overview.vicePresidents.map((node) => <PersonDot
           key={node.personId}
@@ -229,6 +301,7 @@ export function InstitutionalGraph({
           selection={selection}
           size={40}
           overview={overview}
+          past={past?.day ?? null}
           onSelect={onSelect} />)}
         {overview.cards.map((card) => {
           const institution = institutionById.get(card.chamberId);
@@ -238,6 +311,7 @@ export function InstitutionalGraph({
             institution={institution}
             people={peopleById}
             overview={overview}
+            past={past?.day ?? null}
             onSelect={onSelect} /> : null;
         })}
       </div>
@@ -249,6 +323,9 @@ export function InstitutionalGraph({
       <li><span data-kind="promulgate" /> Promulgazione / scioglimento</li>
     </ul>
     </div>
+    {past && series ? <p className={styles.note} role="note">
+      Camera e Senato secondo i gruppi {atDate(past.day.date)}, dalle adesioni datate pubblicate dalle due Camere (rilevazione del {longDate(series.camera.lastDate)} e del {longDate(series.senato.lastDate)}); chi non è più in carica è contato nelle bande. Il Governo resta quello di oggi: la fonte elenca solo gli incarichi in corso, con la data d’inizio. I ritratti tratteggiati sono di chi {atDate(past.day.date)} non aveva ancora l’incarico attuale e poteva averne un altro; chi ha lasciato il Governo non compare. Filtri e ricerca usano i dati di oggi.
+    </p> : null}
     <p className={styles.note}>Clicca Camera o Senato per aprire l’emiciclo. I ritratti aprono la scheda della persona.</p>
   </section>;
 }
@@ -256,10 +333,13 @@ export function InstitutionalGraph({
 function ChamberMini({
   card,
   groupById,
+  pastLabels,
   highlightedGroupIds,
 }: {
   card: ChamberCard;
   groupById: Map<string, RepublicMap["groups"][number]>;
+  /** Short names in force on a past day (#556); `null` is today. */
+  pastLabels: Map<string, string> | null;
   highlightedGroupIds: Set<string>;
 }) {
   return <g className={styles.graphChamberMini} data-chamber={card.chamberId}>
@@ -278,9 +358,11 @@ function ChamberMini({
         key={wedge.groupId}
         className={styles.graphChamberBand}
         d={wedge.bandPath}
-        data-family={group.partyFamily}
+        data-family={wedge.family}
+        data-group-id={wedge.groupId}
+        data-seats={wedge.seatCount}
         data-active={active ? "true" : "false"}>
-        <title>{`${group.label} · ${wedge.seatCount}`}</title>
+        <title>{`${pastLabels?.get(wedge.groupId) ?? group.label} · ${wedge.seatCount}`}</title>
       </path>;
     })}
   </g>;
@@ -291,16 +373,19 @@ function ChamberPortal({
   institution,
   people,
   overview,
+  past,
   onSelect,
 }: {
   card: ChamberCard;
   institution: RepublicMap["institutions"][number];
   people: Map<string, RepublicMapPerson>;
   overview: OverviewGeometry;
+  past: PastDay | null;
   onSelect: (selection: GraphSelection) => void;
 }) {
   const leader = institution.leaderPersonId ? people.get(institution.leaderPersonId) ?? null : null;
   const headerHeight = card.height - 8;
+  const pastTotal = past ? past.totals[card.chamberId] : null;
   return <button
     type="button"
     className={styles.graphChamberEnter}
@@ -314,9 +399,11 @@ function ChamberPortal({
     onClick={() => onSelect({ kind: "institution", id: card.chamberId })}>
     <span className={styles.graphChamberEnterTitle}>{institution.shortLabel}</span>
     <span className={styles.graphChamberEnterMeta}>
-      {institution.vacantSeats
-        ? `${institution.memberCount} in carica · ${institution.vacantSeats} vacanti`
-        : `${institution.memberCount} in carica`}
+      {past && pastTotal !== null
+        ? `${pastTotal} componenti ${atDate(past.date)}`
+        : institution.vacantSeats
+          ? `${institution.memberCount} in carica · ${institution.vacantSeats} vacanti`
+          : `${institution.memberCount} in carica`}
     </span>
     {leader ? <span className={styles.graphChamberEnterLeader}>
       <Portrait person={leader} size={36} />
@@ -380,6 +467,7 @@ function ExecutiveCluster({
   litIds,
   selection,
   overview,
+  past,
   onSelect,
 }: {
   institution: RepublicMap["institutions"][number] | undefined;
@@ -388,11 +476,13 @@ function ExecutiveCluster({
   litIds: Set<string> | null;
   selection: GraphSelection;
   overview: OverviewGeometry;
+  past: PastDay | null;
   onSelect: (selection: GraphSelection) => void;
 }) {
   if (!institution || !node) return null;
   const leader = institution.leaderPersonId ? people.get(institution.leaderPersonId) ?? null : null;
   if (!leader) return null;
+  const startsLater = laterRoleStart(past, leader.id);
   return <div
     className={styles.graphExecutive}
     style={{
@@ -402,11 +492,13 @@ function ExecutiveCluster({
     <span className={styles.graphBandLabel} data-inline="true">Esecutivo</span>
     <button
       type="button"
-      className={styles.graphExecutivePortrait}
+      className={`${styles.graphExecutivePortrait} ${startsLater ? timelineStyles.notStarted : ""}`}
       data-lit={litIds === null || litIds.has(leader.id) ? "true" : "false"}
       data-selected={selection.kind === "person" && selection.id === leader.id ? "true" : "false"}
+      data-graph-person={leader.id}
+      data-role-later={startsLater ? "true" : undefined}
       aria-pressed={selection.kind === "person" && selection.id === leader.id}
-      aria-label={`${leader.name}, ${leader.roleLabel}`}
+      aria-label={startsLater ? `${leader.name}, ${leader.roleLabel} dal ${longDate(startsLater)}` : `${leader.name}, ${leader.roleLabel}`}
       onClick={() => onSelect({ kind: "person", id: leader.id })}>
       <Portrait person={leader} size={56} eager />
     </button>
@@ -427,6 +519,7 @@ function PersonDot({
   selection,
   size,
   overview,
+  past,
   onSelect,
 }: {
   node: ApexNode;
@@ -435,13 +528,16 @@ function PersonDot({
   selection: GraphSelection;
   size: number;
   overview: OverviewGeometry;
+  past: PastDay | null;
   onSelect: (selection: GraphSelection) => void;
 }) {
   const person = people.get(node.personId);
   if (!person) return null;
+  const startsLater = laterRoleStart(past, person.id);
+  const label = startsLater ? `${person.name}, ${person.roleLabel} dal ${longDate(startsLater)}` : `${person.name}, ${person.roleLabel}`;
   return <button
     type="button"
-    className={styles.graphPortraitNode}
+    className={`${styles.graphPortraitNode} ${startsLater ? timelineStyles.notStarted : ""}`}
     style={{
       left: `${(node.x / overview.width) * 100}%`,
       top: `${(node.y / overview.height) * 100}%`,
@@ -450,9 +546,11 @@ function PersonDot({
     }}
     data-lit={litIds === null || litIds.has(person.id) ? "true" : "false"}
     data-selected={selection.kind === "person" && selection.id === person.id ? "true" : "false"}
+    data-graph-person={person.id}
+    data-role-later={startsLater ? "true" : undefined}
     aria-pressed={selection.kind === "person" && selection.id === person.id}
-    aria-label={`${person.name}, ${person.roleLabel}`}
-    title={`${person.name} · ${person.roleLabel}`}
+    aria-label={label}
+    title={label}
     onClick={() => onSelect({ kind: "person", id: person.id })}>
     <Portrait person={person} size={size} />
   </button>;

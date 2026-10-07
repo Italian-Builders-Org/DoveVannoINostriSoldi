@@ -1,0 +1,1486 @@
+{
+  "schemaVersion": 1,
+  "series": {
+    "holder": "Ragioneria Generale dello Stato",
+    "publication": "Spesa Statale Regionalizzata - Pagato Regionalizzato",
+    "licenseStatus": "not-declared",
+    "licenseNote": "I pacchetti CKAN riportano license_id cc-by, ma pagine e file non dichiarano una licenza: come per la serie Bilancio SRS_SPE_BIL_SPESR_001 lo stato resta not-declared.",
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "lineEnding": "CRLF",
+    "sourceHeaders": [
+      "Anno di Interesse",
+      "Territorio",
+      "Tipo Misura",
+      "Importo"
+    ],
+    "acquisitionDate": "2026-10-07",
+    "checkedAt": "2026-10-07",
+    "updateFrequency": "annuale; acquisizione e promozione manuali",
+    "compression": "I CSV ufficiali sono conservati come gzip deterministico (mtime 0, livello 9): il lock vincola byte e SHA-256 dell'originale, verificati dopo la decompressione.",
+    "formatNote": "Due formati: importi senza virgolette e un separatore a fine riga, cioè una quinta colonna vuota, oppure importi fra virgolette senza colonna vuota (Consolidata 2022 e 2023, Enti 2023). trailingEmptyColumn li distingue anno per anno.",
+    "landingNote": "Per il 2016 la pagina /content/… non esiste (404), come per la serie Bilancio: la scheda ufficiale dell'anno è sotto /opendata/<nome del pacchetto CKAN>."
+  },
+  "semantics": {
+    "soldi": {
+      "present": true,
+      "measure": "Spesa Complessiva - Valori Assoluti (mln)",
+      "unit": "milioni di euro, due decimali come pubblicati",
+      "note": "Solo la misura in valori assoluti è un importo. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record."
+    },
+    "periodo": {
+      "referencePeriod": "Esercizi finanziari dal 2008 al 2023, un dataset per serie con la colonna Anno",
+      "note": "Pubblicazione, dati osservati, acquisizione e anno di interesse restano date distinte."
+    },
+    "provenance": {
+      "holder": "Ragioneria Generale dello Stato",
+      "license": "not-declared",
+      "note": "Tre serie BDAP, un pacchetto CKAN e un file per anno; la scheda della consolidata ripete la descrizione della serie Bilancio."
+    }
+  },
+  "identity": {
+    "rule": "Bilancio dello Stato (SRS_SPE_BIL_SPESR_001) + Enti (SRS_SPE_PAR_SPENT_001) + Fondi (SRS_SPE_PAR_SPFON_001) = Consolidata (SRS_SPE_PAR_SPESR_001), per anno e territorio, misura Valori Assoluti (mln)",
+    "bilancioSources": "Fixture gzip 2008-2022 dei lock rgs-spesa-statale-regionalizzata-*.source.json (somma per territorio delle righe in valori assoluti) e snapshot tipizzato rgs-state-budget-territorial-2023.json per il 2023",
+    "toleranceHundredthsMillionEur": 15,
+    "toleranceNote": "Scarto massimo misurato: 13 centesimi di milione (Abruzzo 2008, Sardegna 2022) su 16 anni e 26 territori. È l'arrotondamento a due decimali di quattro valori, uno dei quali (Bilancio) è a sua volta la somma di centinaia di righe arrotondate. La soglia di 15 lascia due centesimi di margine.",
+    "years": [
+      {
+        "year": 2008,
+        "bilancioHundredthsMillionEur": 24151558,
+        "nationalResidualHundredthsMillionEur": -2,
+        "maxAbsResidualHundredthsMillionEur": 13,
+        "sumAbsResidualHundredthsMillionEur": 74
+      },
+      {
+        "year": 2009,
+        "bilancioHundredthsMillionEur": 22815677,
+        "nationalResidualHundredthsMillionEur": 1,
+        "maxAbsResidualHundredthsMillionEur": 10,
+        "sumAbsResidualHundredthsMillionEur": 82
+      },
+      {
+        "year": 2010,
+        "bilancioHundredthsMillionEur": 22128716,
+        "nationalResidualHundredthsMillionEur": -3,
+        "maxAbsResidualHundredthsMillionEur": 9,
+        "sumAbsResidualHundredthsMillionEur": 87
+      },
+      {
+        "year": 2011,
+        "bilancioHundredthsMillionEur": 22986608,
+        "nationalResidualHundredthsMillionEur": -10,
+        "maxAbsResidualHundredthsMillionEur": 10,
+        "sumAbsResidualHundredthsMillionEur": 96
+      },
+      {
+        "year": 2012,
+        "bilancioHundredthsMillionEur": 22275281,
+        "nationalResidualHundredthsMillionEur": -3,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 79
+      },
+      {
+        "year": 2013,
+        "bilancioHundredthsMillionEur": 22684282,
+        "nationalResidualHundredthsMillionEur": 4,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 89
+      },
+      {
+        "year": 2014,
+        "bilancioHundredthsMillionEur": 21949933,
+        "nationalResidualHundredthsMillionEur": 3,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 80
+      },
+      {
+        "year": 2015,
+        "bilancioHundredthsMillionEur": 22207097,
+        "nationalResidualHundredthsMillionEur": -4,
+        "maxAbsResidualHundredthsMillionEur": 9,
+        "sumAbsResidualHundredthsMillionEur": 61
+      },
+      {
+        "year": 2016,
+        "bilancioHundredthsMillionEur": 22522110,
+        "nationalResidualHundredthsMillionEur": -4,
+        "maxAbsResidualHundredthsMillionEur": 11,
+        "sumAbsResidualHundredthsMillionEur": 99
+      },
+      {
+        "year": 2017,
+        "bilancioHundredthsMillionEur": 23330005,
+        "nationalResidualHundredthsMillionEur": 0,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 84
+      },
+      {
+        "year": 2018,
+        "bilancioHundredthsMillionEur": 24027843,
+        "nationalResidualHundredthsMillionEur": 2,
+        "maxAbsResidualHundredthsMillionEur": 7,
+        "sumAbsResidualHundredthsMillionEur": 72
+      },
+      {
+        "year": 2019,
+        "bilancioHundredthsMillionEur": 24959510,
+        "nationalResidualHundredthsMillionEur": 4,
+        "maxAbsResidualHundredthsMillionEur": 9,
+        "sumAbsResidualHundredthsMillionEur": 76
+      },
+      {
+        "year": 2020,
+        "bilancioHundredthsMillionEur": 27358903,
+        "nationalResidualHundredthsMillionEur": -12,
+        "maxAbsResidualHundredthsMillionEur": 12,
+        "sumAbsResidualHundredthsMillionEur": 101
+      },
+      {
+        "year": 2021,
+        "bilancioHundredthsMillionEur": 28849242,
+        "nationalResidualHundredthsMillionEur": -1,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 79
+      },
+      {
+        "year": 2022,
+        "bilancioHundredthsMillionEur": 28363560,
+        "nationalResidualHundredthsMillionEur": 1,
+        "maxAbsResidualHundredthsMillionEur": 13,
+        "sumAbsResidualHundredthsMillionEur": 78
+      },
+      {
+        "year": 2023,
+        "bilancioHundredthsMillionEur": 29735168,
+        "nationalResidualHundredthsMillionEur": 4,
+        "maxAbsResidualHundredthsMillionEur": 8,
+        "sumAbsResidualHundredthsMillionEur": 74
+      }
+    ]
+  },
+  "datasets": {
+    "consolidata": {
+      "recordId": "SRS_SPE_PAR_SPESR_001",
+      "datasetId": "rgs-spesa-statale-regionalizzata-consolidata",
+      "title": "Territorio destinatario finale della spesa consolidata - Spesa Statale Regionalizzata",
+      "scope": "spesa consolidata (Bilancio dello Stato, Enti e Fondi oggetto della pubblicazione) per territorio destinatario finale",
+      "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPESR_001",
+      "years": [
+        {
+          "year": 2008,
+          "packageName": "spd_srs_spe_par_spesr_01_2008",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-05-16",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2008-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/a5f16a81-fae7-48a4-a940-b351755ec81a.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2008.csv.gz",
+          "bytes": 7533,
+          "sha256": "e9f561dba010c535e73db6bef231016feb88af8f25e6de99b6fd280f0869c371",
+          "compressedBytes": 1228,
+          "compressedSha256": "ccde859c68e8371114976977115064169b076747d7c091515e7da22ef1c6e1ba",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 52083695,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2009,
+          "packageName": "spd_srs_spe_par_spesr_01_2009",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2009-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/88e0d9d4-9a52-4d43-8e09-94a9d9e83f59.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2009.csv.gz",
+          "bytes": 7533,
+          "sha256": "6bdf38713fcd44384b8c0b40a94b70e15fab41b915ff76942e31bd2e26fce7d5",
+          "compressedBytes": 1215,
+          "compressedSha256": "fa73bd581d1857e37f8481edd0226abe37384cd82d1b4b8cddf2f1161a3fcef4",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 52434036,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2010,
+          "packageName": "spd_srs_spe_par_spesr_01_2010",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2010-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4b962718-bdfe-4fc3-93dc-41080f9ae7b2.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2010.csv.gz",
+          "bytes": 7534,
+          "sha256": "2d5d34fb915d175173e748e62079d4c61f0f25b3ac0d68fb485b1f697587614d",
+          "compressedBytes": 1214,
+          "compressedSha256": "b8125ec5e4c33cd2c1dd5fb01410dc6e26e297290407c77fe0959af37143d8a8",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 52596077,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2011,
+          "packageName": "spd_srs_spe_par_spesr_01_2011",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2011-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/1774df03-f986-4110-8aaf-9b88ad963779.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2011.csv.gz",
+          "bytes": 7553,
+          "sha256": "e8e2f7d0c0ca6e3b8fa688e5fa553ce0e9d3ff291bbdd017a5125bc6a65c5c21",
+          "compressedBytes": 1227,
+          "compressedSha256": "eb87c85528d4c182aad3aaf74d4e8adf8889802bb69a5ed2a6ec2f072e764775",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 54017252,
+              "regionDeltaHundredthsMillionEur": -3,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2012,
+          "packageName": "spd_srs_spe_par_spesr_01_2012",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2012-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/8df47c8a-12d6-49bd-8caf-0382d2f253bb.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2012.csv.gz",
+          "bytes": 7534,
+          "sha256": "2e243cf24f92b7549480bfb5c23b6a2fff3382ccc89f92804985ea2a0d24901c",
+          "compressedBytes": 1230,
+          "compressedSha256": "b25737039ab5f1f5d2220f55ac85c5466504e63418dcaf07f0051518fe3e9480",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 54073253,
+              "regionDeltaHundredthsMillionEur": -2,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2013,
+          "packageName": "spd_srs_spe_par_spesr_01_2013",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2013-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/b5ab22b7-72bf-470d-a15c-280048157c3b.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2013.csv.gz",
+          "bytes": 7536,
+          "sha256": "2b1e8312c6da42ab1ae19d1726f4494b04faea486d0848da84512ca2d881e6e7",
+          "compressedBytes": 1206,
+          "compressedSha256": "bca7cc06ebfb70edb4904b3bac5405a197a4d9916c608d511419fe7e88b5d6b9",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 55299295,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2014,
+          "packageName": "spd_srs_spe_par_spesr_01_2014",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2014-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/83b304d4-caa2-4948-afcb-71d1dbb5d5ac.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2014.csv.gz",
+          "bytes": 7534,
+          "sha256": "08ee57173884651be561a6976c9220e71a862a84eb3925a2893ed23ad6c90469",
+          "compressedBytes": 1216,
+          "compressedSha256": "8f8878dd7e290a859d71148ec66d14a108d52002c815c0e3aebaaea7a42f4fc5",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 55120290,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2015,
+          "packageName": "spd_srs_spe_par_spesr_01_2015",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2015-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/f3f7c199-6cf8-4633-894c-ab7f27431f43.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2015.csv.gz",
+          "bytes": 7534,
+          "sha256": "1f3f108625fbef92223cdec2861feef2aff7e0c7d4d3401b9b08cd78c1323255",
+          "compressedBytes": 1222,
+          "compressedSha256": "0e52d6d6c82daa57fc844481e25299047db9c20b26e8684b198a9a37a7e072ed",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 56510561,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "packageName": "spd_srs_spe_par_spesr_01_2016",
+          "publicationDate": "2018-11-08",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/opendata/spd_srs_spe_par_spesr_01_2016",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/6789849e-cf3d-43e9-93a4-556584556df4.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2016.csv.gz",
+          "bytes": 7535,
+          "sha256": "89c54b7a0e17e48e1b27db7ab9ceb01318e44bd7defb13b9b8399de5acbb4d83",
+          "compressedBytes": 1217,
+          "compressedSha256": "b7a9ed861a6dc19b3ab626b398b9b8b3c2400f8f88648b6295bce64ffdb45b3a",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 56492932,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "packageName": "spd_srs_spe_par_spesr_01_2017",
+          "publicationDate": "2019-11-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2017-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/b0bd12e7-2eb4-44ee-bca9-8a6a0451084c.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2017.csv.gz",
+          "bytes": 7536,
+          "sha256": "8128b564d2c6186a2c00d920fdcd12db6a08211320af64085b8cf07fb9c6dcf1",
+          "compressedBytes": 1222,
+          "compressedSha256": "f6f75435aa18bd02a622d9c897c13f347c51bc5e9d811bb338b4680bac75ac67",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 57734457,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "packageName": "spd_srs_spe_par_spesr_01_2018",
+          "publicationDate": "2020-10-27",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2018-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/054f884f-a7be-4193-addc-0a9631cf377b.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2018.csv.gz",
+          "bytes": 7537,
+          "sha256": "7359f25513600a1a6a094b8b8fc9736da3d8432417ba692208790ab34e0af9f3",
+          "compressedBytes": 1223,
+          "compressedSha256": "36cb66def7908cd3741b9d0c05b5e855beec9cced40baec46b2bc6847bb42003",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 58811064,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "packageName": "spd_srs_spe_par_spesr_01_2019",
+          "publicationDate": "2021-10-07",
+          "metadataModified": "2021-10-07",
+          "dataObservedAt": "2021-10-05",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2019-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/96be182a-a360-46c4-ac50-15e0362c9683.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2019.csv.gz",
+          "bytes": 7544,
+          "sha256": "c09a34451d1ff64f94ed61392acafce5705af75ed7fba56c07534ce31693bd2a",
+          "compressedBytes": 1212,
+          "compressedSha256": "5a08a70cda0f9e922977c54500beb20fa4c743590fedbe0e6719b5c8b4539c37",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 61255162,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "packageName": "spd_srs_spe_par_spesr_01_2020",
+          "publicationDate": "2022-10-21",
+          "metadataModified": "2022-10-21",
+          "dataObservedAt": "2022-10-18",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2020-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/dbc78230-a823-4f6c-b3b0-5cb47c044593.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2020.csv.gz",
+          "bytes": 7556,
+          "sha256": "864d2430836d390305dfcdeb260744fcdb87828b1bc19d6e1e39768e0e993b60",
+          "compressedBytes": 1216,
+          "compressedSha256": "d6a9134243d11f114bf828eadf404a9dcf032f097bc1a290ca0fae8f10bc7452",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 68884288,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "packageName": "spd_srs_spe_par_spesr_01_2021",
+          "publicationDate": "2023-10-23",
+          "metadataModified": "2023-10-30",
+          "dataObservedAt": "2023-10-02",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2021-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/63e5a9ea-e440-4071-9ff5-d8df7479e141.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2021.csv.gz",
+          "bytes": 7556,
+          "sha256": "ffddbc09eec1e4fe654189d69526f20bb58c2ab7bf8ca606bf368c035b0fe267",
+          "compressedBytes": 1242,
+          "compressedSha256": "8b9edec16a78c6f6c564f137f90db83bf985cf8d4a5b5fb70102c7c05a47dbe3",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 70652767,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "packageName": "spd_srs_spe_par_spesr_01_2022",
+          "publicationDate": "2024-11-04",
+          "metadataModified": "2024-11-04",
+          "dataObservedAt": "2024-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2022-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/076d56c4-fbad-41f7-ab9e-1f76b5fef531.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2022.csv.gz",
+          "bytes": 7659,
+          "sha256": "80064a0bfe3509bf2de2ebdf55d8770e4f5dcc48f0d2b081523eed9ac666344f",
+          "compressedBytes": 1216,
+          "compressedSha256": "2038bf08870a4428274a0fc83ec38e6de4e9f68d02b891c35eb89931e7ddaa5f",
+          "trailingEmptyColumn": false,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 71475152,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "packageName": "spd_srs_spe_par_spesr_01_2023",
+          "publicationDate": "2025-11-21",
+          "metadataModified": "2025-11-21",
+          "dataObservedAt": "2025-09-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2023-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/75132685-9595-45d1-882d-80a912ca017b.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spesr-2023.csv.gz",
+          "bytes": 7660,
+          "sha256": "33ecaf6ff206b329f6ab6e4275a886f911fb8f6e8a70b72c07416a96df132dfd",
+          "compressedBytes": 1227,
+          "compressedSha256": "fdf4fa16af97f9a1f7c7bfc487b92c9f60e8a55d024e50b319bb6e7ef4c2633d",
+          "trailingEmptyColumn": false,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 77723295,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        }
+      ]
+    },
+    "enti": {
+      "recordId": "SRS_SPE_PAR_SPENT_001",
+      "datasetId": "rgs-spesa-statale-regionalizzata-enti",
+      "title": "Distribuzione territoriale della spesa degli Enti oggetto della pubblicazione - Spesa Statale Regionalizzata",
+      "scope": "spesa degli Enti oggetto della pubblicazione per territorio destinatario finale",
+      "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPENT_001",
+      "years": [
+        {
+          "year": 2008,
+          "packageName": "spd_srs_spe_par_spent_01_2008",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-05-16",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2008-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/96fa951a-92b2-4cd1-b42b-7239c04a5604.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2008.csv.gz",
+          "bytes": 7501,
+          "sha256": "f8373b1836145ed30280d7373c2c3a637602967e8b15f00d2c0d4c6a646fca7f",
+          "compressedBytes": 1194,
+          "compressedSha256": "3e6cd80522b950505f79f5b174ab0aaec475c5d2db2c20e0daf44e4bc6f06fe5",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 26735652,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2009,
+          "packageName": "spd_srs_spe_par_spent_01_2009",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2009-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/ffd1425b-4be9-4c09-8ce9-3a60cdd3a13a.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2009.csv.gz",
+          "bytes": 7502,
+          "sha256": "8cd1dab91d1fcb3b8ade9d9ac79b38f4e566c386dbd3951a50ca801bb1c0957a",
+          "compressedBytes": 1189,
+          "compressedSha256": "318dc88ee950c56e76347f001bca2cf3f4a1a08c69bc1da8060adbec92027777",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 28701501,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": -2
+            }
+          }
+        },
+        {
+          "year": 2010,
+          "packageName": "spd_srs_spe_par_spent_01_2010",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2010-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/37f755da-a934-4657-bb15-ae0b8b149749.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2010.csv.gz",
+          "bytes": 7503,
+          "sha256": "3a81d7cc9c81c53b02aa9f9cbd99c606f1a22c8810f8e961a371bdc61c512e37",
+          "compressedBytes": 1202,
+          "compressedSha256": "279bc32278dbbbf76a839134badfea60cd6a5a09177fc88e1030be25279bc988",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 29299382,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2011,
+          "packageName": "spd_srs_spe_par_spent_01_2011",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2011-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/5ce9c603-d44b-480d-9520-a331caa79b9c.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2011.csv.gz",
+          "bytes": 7518,
+          "sha256": "29ba58ab726874baf0a16dfa088a7b645768133b3f2e66b4949621f6161aa437",
+          "compressedBytes": 1205,
+          "compressedSha256": "0725ecfa5b36745aafa0813123d144f4dc9eaf3725808bd4a560981e484efa1f",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 30152462,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2012,
+          "packageName": "spd_srs_spe_par_spent_01_2012",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2012-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/e2a05714-9120-439e-b768-8d3d1c29a9ff.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2012.csv.gz",
+          "bytes": 7505,
+          "sha256": "da27f26b49eede5896371e397c3a31c1dbdc5bedab6e7ee28d77d5ae93b0bd15",
+          "compressedBytes": 1200,
+          "compressedSha256": "e50ee259f215a94cd539becae8f41abd4e88e74d07f9836b14cbe242e63c3e70",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 30602605,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2013,
+          "packageName": "spd_srs_spe_par_spent_01_2013",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2013-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/1095367f-0d15-4e58-a35f-aa92aa18b990.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2013.csv.gz",
+          "bytes": 7505,
+          "sha256": "7c6612d9e5eac1b06bac094b92215286bce9e1fb606bd4d893937799451297b0",
+          "compressedBytes": 1202,
+          "compressedSha256": "192ee287711c1941e9a42a3385165f0889a4eb7732ad29e9aabeabf8a3a1db73",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 30903872,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2014,
+          "packageName": "spd_srs_spe_par_spent_01_2014",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2014-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/b49e114a-4c5e-4fa5-baaf-471fa86a0379.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2014.csv.gz",
+          "bytes": 7506,
+          "sha256": "304dfd8916f5106a129cc95c33ca3f544d47865811306923b4d092983e437500",
+          "compressedBytes": 1204,
+          "compressedSha256": "a06104f59527cbb6edb17cb559891aaa7be1b752bd21a5e3cf3691f71f162d7c",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 31188380,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2015,
+          "packageName": "spd_srs_spe_par_spent_01_2015",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2015-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/c8c32a71-f962-4c73-baf0-eb84402365b1.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2015.csv.gz",
+          "bytes": 7506,
+          "sha256": "b16cc2f5f1a8269ecf5ce1b20e9362c386c7d965acf344d5456568101ba75679",
+          "compressedBytes": 1192,
+          "compressedSha256": "e1bc7229f2aee6aad7bc788c785f2cf3438b5ededa85b9a35d5c7f5c4ce64084",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 31083786,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "packageName": "spd_srs_spe_par_spent_01_2016",
+          "publicationDate": "2018-11-08",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/opendata/spd_srs_spe_par_spent_01_2016",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/dd1f8cc1-3506-4791-be81-18835c53982e.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2016.csv.gz",
+          "bytes": 7506,
+          "sha256": "f92bc81529b31d7ff142063129b2fad52eb075d1c084654dda57510b101c9dd5",
+          "compressedBytes": 1207,
+          "compressedSha256": "781cf15a471578a2e8c36582566f1d59dbdb2a1093589f86822a741f7e80c925",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 31493856,
+              "regionDeltaHundredthsMillionEur": 4,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "packageName": "spd_srs_spe_par_spent_01_2017",
+          "publicationDate": "2019-11-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2017-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/37b5fa52-eb67-44ec-9374-776ccaba32dc.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2017.csv.gz",
+          "bytes": 7506,
+          "sha256": "74132d21fa24034a5d5bdc4cd696a0400a17cb0656eddb2d3ef0d238746b8fb1",
+          "compressedBytes": 1209,
+          "compressedSha256": "bf9c688307a65e481af8eba4f4451d69dc3aebc10866b0c82d5845d4dde3f885",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 31989645,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "packageName": "spd_srs_spe_par_spent_01_2018",
+          "publicationDate": "2020-10-27",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2018-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/f019f88d-3527-4140-947d-d5da907bcdeb.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2018.csv.gz",
+          "bytes": 7506,
+          "sha256": "fb42a82cd0de2c486f451a90c0a73f655a1d4e4db32798e327ad168f03ab66c0",
+          "compressedBytes": 1208,
+          "compressedSha256": "08c5176d9491d3826f8f02cac88e28bd2ece7df68244180057220005797963e9",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 32527653,
+              "regionDeltaHundredthsMillionEur": -2,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "packageName": "spd_srs_spe_par_spent_01_2019",
+          "publicationDate": "2021-10-07",
+          "metadataModified": "2021-10-07",
+          "dataObservedAt": "2021-10-05",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2019-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/1b6e0401-7ae5-40df-b2c3-beeac8fd4d4b.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2019.csv.gz",
+          "bytes": 7508,
+          "sha256": "7501e200962ee72f79226e512a060e33668374c8d32013777f51dfd3f994edc6",
+          "compressedBytes": 1198,
+          "compressedSha256": "0a36942e23fe453ae31f54a5519f281b01d885be4d6b7350c0440f620113de39",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 33965993,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "packageName": "spd_srs_spe_par_spent_01_2020",
+          "publicationDate": "2022-10-21",
+          "metadataModified": "2022-10-21",
+          "dataObservedAt": "2022-10-18",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2020-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/7919ab67-a7ad-4fa7-8ee8-52e07f3280cb.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2020.csv.gz",
+          "bytes": 7514,
+          "sha256": "3c1f3f203dca169977f0750b8afc37a3266571158dcfe2fa0f818fe0f9d46eaa",
+          "compressedBytes": 1201,
+          "compressedSha256": "ed686be216eac6f0c888dcdc3a8309d79e045cc34d335ae0de597d7ad02a24b1",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 37747735,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "packageName": "spd_srs_spe_par_spent_01_2021",
+          "publicationDate": "2023-10-23",
+          "metadataModified": "2023-10-30",
+          "dataObservedAt": "2023-10-02",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2021-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/55f05774-64d9-4339-a6b7-b39154b25702.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2021.csv.gz",
+          "bytes": 7513,
+          "sha256": "89ac56fac74aed53e9e654c59ffa88bf9b3af5a6caca4586f394e8d66409d2d1",
+          "compressedBytes": 1197,
+          "compressedSha256": "2f5e0292c04fa8e305ce5d2db5ae70d19bdafd516e503ec8e6157122b3551fad",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 37155456,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 1
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "packageName": "spd_srs_spe_par_spent_01_2022",
+          "publicationDate": "2024-11-04",
+          "metadataModified": "2024-11-04",
+          "dataObservedAt": "2024-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2022-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/028034f3-e2fa-4242-9f96-676c155a7acf.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2022.csv.gz",
+          "bytes": 7517,
+          "sha256": "a41032596ee38f9210bdcecc083650b67053f0134a6fc3afc8de88dfc3a77223",
+          "compressedBytes": 1197,
+          "compressedSha256": "392d73dd6f044881d208ced4040a60f7205a7e9843085182568e923b2529d913",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 38658888,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "packageName": "spd_srs_spe_par_spent_01_2023",
+          "publicationDate": "2025-11-21",
+          "metadataModified": "2025-11-21",
+          "dataObservedAt": "2025-09-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4a6883cd-e08f-40c7-8db4-d846ecc0e109.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spent-2023.csv.gz",
+          "bytes": 7619,
+          "sha256": "e4b66b81d08e29f338fdef3d484ba56843a3db686ae70f81c14bd745a0fe57bd",
+          "compressedBytes": 1204,
+          "compressedSha256": "611ad2bc4fed5d1c5b25b83f46fa17845359da3daf24fbfec5fc6a1e006e007f",
+          "trailingEmptyColumn": false,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 41090690,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        }
+      ]
+    },
+    "fondi": {
+      "recordId": "SRS_SPE_PAR_SPFON_001",
+      "datasetId": "rgs-spesa-statale-regionalizzata-fondi",
+      "title": "Distribuzione territoriale della spesa effettuata attraverso i Fondi oggetto della pubblicazione - Spesa Statale Regionalizzata",
+      "scope": "spesa effettuata attraverso i Fondi oggetto della pubblicazione per territorio destinatario finale",
+      "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPFON_001",
+      "years": [
+        {
+          "year": 2008,
+          "packageName": "spd_srs_spe_par_spfon_01_2008",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-05-16",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2008-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/c52a94d2-330c-42a4-a0c3-6b6f28033fcd.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2008.csv.gz",
+          "bytes": 7380,
+          "sha256": "2e1782d98d3d18cdcd19c46338d1657063341ec924a937291a664193d198327e",
+          "compressedBytes": 1114,
+          "compressedSha256": "ffc9df602e9127125a9881fb6c58bdd977bb78251ec6d5ca759ecdcaf0a9b9e3",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 1196483,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2009,
+          "packageName": "spd_srs_spe_par_spfon_01_2009",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2009-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/0ae28b29-5135-4b59-b21a-3ac70d7fd832.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2009.csv.gz",
+          "bytes": 7364,
+          "sha256": "eeca0e15c94d072f692f46974e15293eb3e6c05a77f7d57f3faf3379ef6f8961",
+          "compressedBytes": 1102,
+          "compressedSha256": "a007aa1371de0e0248bd3e0de085c6f309359e10c27a04ed9294d7bfa4d208d2",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 916859,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2010,
+          "packageName": "spd_srs_spe_par_spfon_01_2010",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2018-12-07",
+          "dataObservedAt": "2018-05-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2010-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/2c77d82d-ec31-4a3e-bc4a-012b782e9ea0.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2010.csv.gz",
+          "bytes": 7369,
+          "sha256": "d215b66e0bcf894b0388c69b4a65e1631d4f5083feb0c9d8c34454c9c9dd834d",
+          "compressedBytes": 1101,
+          "compressedSha256": "5187b36dcb042b547377b391ca4be18aa7344df16d2474f671188c6360814053",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 1167976,
+              "regionDeltaHundredthsMillionEur": -3,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2011,
+          "packageName": "spd_srs_spe_par_spfon_01_2011",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2011-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/067d8d31-cce2-4297-badd-98e9edeb936e.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2011.csv.gz",
+          "bytes": 7375,
+          "sha256": "dd50a907687fa521d5689f1978df00229588a814e1fd98b724983dbdcf617365",
+          "compressedBytes": 1115,
+          "compressedSha256": "d90d9a49ad3fdf4d7d6f7079569ca2e4ff0b8ff7d077a4632960e62c08027255",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 878172,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2012,
+          "packageName": "spd_srs_spe_par_spfon_01_2012",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2012-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/b2a682fd-bbb0-4e90-805e-a1d5310660f9.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2012.csv.gz",
+          "bytes": 7384,
+          "sha256": "b7adf4cc6886c325042c8b554c6a4c0397fa28dde8e560ecb1886182d2c4d901",
+          "compressedBytes": 1114,
+          "compressedSha256": "6ea07f8f476b5eac42f88241e5020b48fd0e0dc5cc278674ef8ea02d3c0ecca7",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 1195364,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2013,
+          "packageName": "spd_srs_spe_par_spfon_01_2013",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2013-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/52597fa6-4199-4e4c-8bff-7ab1ba10ea01.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2013.csv.gz",
+          "bytes": 7389,
+          "sha256": "cbe9b1a84de2050d13b2d57ae9d85da698f8e078e69931bf9adb17d191a41fd6",
+          "compressedBytes": 1126,
+          "compressedSha256": "4db6576ebea3ad5039137c21b812615bbcec786ed3b1d079298b69ae49b312f9",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 1711145,
+              "regionDeltaHundredthsMillionEur": -2,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2014,
+          "packageName": "spd_srs_spe_par_spfon_01_2014",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2014-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/23d524cd-8ab0-41a3-9157-357b42e0db61.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2014.csv.gz",
+          "bytes": 7387,
+          "sha256": "86534dc434dc2929205cb0f3520a3081e4b4d6d908debdbfd239ea98c20c041e",
+          "compressedBytes": 1125,
+          "compressedSha256": "a3e2801c93f1453572a5a9ab38e7d0f900daaf0ca89ec0e17be9fde65ac41cac",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 1981980,
+              "regionDeltaHundredthsMillionEur": 1,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2015,
+          "packageName": "spd_srs_spe_par_spfon_01_2015",
+          "publicationDate": "2018-05-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2015-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/61556d10-a0af-479c-84ce-968266f59726.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2015.csv.gz",
+          "bytes": 7403,
+          "sha256": "dd93723dfdfe00aa3a7d990c08a2d3e079267d159c1ac9c7cd0b6836465e5ac9",
+          "compressedBytes": 1150,
+          "compressedSha256": "f798b553ab511a88c813b60ec0f16574fb9e9f36b263411e10628320eace0b44",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 3219674,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2016,
+          "packageName": "spd_srs_spe_par_spfon_01_2016",
+          "publicationDate": "2018-11-08",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-11-21",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/opendata/spd_srs_spe_par_spfon_01_2016",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4ebc6968-6830-4332-92d6-1a28f16ad190.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2016.csv.gz",
+          "bytes": 7393,
+          "sha256": "dfadf1bc32402aeb95184bd163fbaf592045af08ab1679093b5d5ed528a02f1c",
+          "compressedBytes": 1133,
+          "compressedSha256": "6e79a4b3ced30c97c5ab26b6bf5c007380f8210af6556618fb76503db79303f7",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 2476962,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2017,
+          "packageName": "spd_srs_spe_par_spfon_01_2017",
+          "publicationDate": "2019-11-04",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2019-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2017-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/31ab3340-d352-49d6-922a-1295224e2e46.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2017.csv.gz",
+          "bytes": 7393,
+          "sha256": "c740c202df4f6bb3acf2b1b4aae0691b78cad2d7e3dd61f8b19e7cd8984cdf55",
+          "compressedBytes": 1125,
+          "compressedSha256": "d4c9eb4cfe2dd25aca8503158914c56f77e1a03975e949f7d80b6f62ecb4ec84",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 2414807,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2018,
+          "packageName": "spd_srs_spe_par_spfon_01_2018",
+          "publicationDate": "2020-10-27",
+          "metadataModified": "2020-11-19",
+          "dataObservedAt": "2020-10-23",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2018-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/0693af16-96ab-439a-8fe2-b590671795a6.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2018.csv.gz",
+          "bytes": 7393,
+          "sha256": "b0e2a6fe81a19ddd444d283748a69ed7a32c424603c24efc332c40a645acde50",
+          "compressedBytes": 1111,
+          "compressedSha256": "155a2ee35706182a682d6b968fed2b96b8060f45e3b3ea370961f4347eee1d2c",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 2255570,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2019,
+          "packageName": "spd_srs_spe_par_spfon_01_2019",
+          "publicationDate": "2021-10-07",
+          "metadataModified": "2021-10-07",
+          "dataObservedAt": "2021-10-05",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2019-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/2e13de53-46e6-4345-9a98-b96432820146.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2019.csv.gz",
+          "bytes": 7393,
+          "sha256": "e3a74f61603558aa55465c2be81557c200edad55dd8e403f0bf867deed99263a",
+          "compressedBytes": 1124,
+          "compressedSha256": "ae46d0636e1d88623b597d5df7a856c9908b581be9cdccb836e032cd9ac1010a",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 2329663,
+              "regionDeltaHundredthsMillionEur": -2,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        },
+        {
+          "year": 2020,
+          "packageName": "spd_srs_spe_par_spfon_01_2020",
+          "publicationDate": "2022-10-21",
+          "metadataModified": "2022-10-21",
+          "dataObservedAt": "2022-10-18",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2020-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/0162621f-07d4-418c-9487-d0715ce6b70a.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2020.csv.gz",
+          "bytes": 7404,
+          "sha256": "a78fcc791e59490a6c39861c15b82248a3ae72747edbae506954ed39e94b82a2",
+          "compressedBytes": 1135,
+          "compressedSha256": "0ae351c17d901da01f3f4cd502a4a43cf76ccfa4ee39d4c90a5ea682ea56d03f",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 3777638,
+              "regionDeltaHundredthsMillionEur": 2,
+              "macroareaDeltaHundredthsMillionEur": -2
+            }
+          }
+        },
+        {
+          "year": 2021,
+          "packageName": "spd_srs_spe_par_spfon_01_2021",
+          "publicationDate": "2023-10-23",
+          "metadataModified": "2023-10-30",
+          "dataObservedAt": "2023-10-02",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2021-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/25ed86c3-1305-40d5-82c2-99f4900dcdc8.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2021.csv.gz",
+          "bytes": 7415,
+          "sha256": "cc548e32db3069a333526b4c44ca9f58a6d9fc353b4235f920f5ac73073ebbf6",
+          "compressedBytes": 1140,
+          "compressedSha256": "c7ca6e1254a4066813234f0d5b50fb5c5a0d2679332aed1bb3377e2515bf7d67",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 4648068,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2022,
+          "packageName": "spd_srs_spe_par_spfon_01_2022",
+          "publicationDate": "2024-11-04",
+          "metadataModified": "2024-11-04",
+          "dataObservedAt": "2024-10-31",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2022-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/ac6605e8-d5e2-42c1-a1bd-d627f2204c9e.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2022.csv.gz",
+          "bytes": 7410,
+          "sha256": "6acad03733b85dc3c5e182b3d0a959025c53787a884d760cfc69f37e601af292",
+          "compressedBytes": 1133,
+          "compressedSha256": "9d35c2cd7e77ea45051407ccab2837b00d253b9a89e410bbfe2d043ce17ec967",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 4452705,
+              "regionDeltaHundredthsMillionEur": -1,
+              "macroareaDeltaHundredthsMillionEur": -1
+            }
+          }
+        },
+        {
+          "year": 2023,
+          "packageName": "spd_srs_spe_par_spfon_01_2023",
+          "publicationDate": "2025-11-21",
+          "metadataModified": "2025-11-21",
+          "dataObservedAt": "2025-09-03",
+          "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall",
+          "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/411f17b9-0f1d-49b5-b954-12921c60af30.csv",
+          "fixture": "tests/fixtures/rgs-spesa-regionalizzata/spfon-2023.csv.gz",
+          "bytes": 7429,
+          "sha256": "2b4c33b6a24ea55dcf6aecd8cbe5eb351660f27587a6bac14c8258b63612e8c4",
+          "compressedBytes": 1148,
+          "compressedSha256": "5718e8638f2f6b1d481c2ccff2963bad04a610e00f24a97bc106f4cd111b71fe",
+          "trailingEmptyColumn": true,
+          "reconciliationCeilingHundredths": 5,
+          "expected": {
+            "rows": 104,
+            "territories": 26,
+            "measures": 4,
+            "zeroValues": 0,
+            "reconciliation": {
+              "nationalHundredthsMillionEur": 6897441,
+              "regionDeltaHundredthsMillionEur": 0,
+              "macroareaDeltaHundredthsMillionEur": 0
+            }
+          }
+        }
+      ]
+    }
+  }
+}

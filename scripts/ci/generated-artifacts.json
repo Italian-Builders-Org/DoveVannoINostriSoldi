@@ -728,7 +728,8 @@
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_monetary_adapters.py"
+        "tests/etl/test_monetary_adapters.py",
+        "tests/etl/test_opencivitas_discovery.py"
       ],
       "nodeTests": [
         "tests/opencivitas-contract.test.mjs"

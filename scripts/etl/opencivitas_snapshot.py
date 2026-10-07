@@ -116,15 +116,22 @@ def download_text(url: str, timeout: int) -> str:
 
 
 def discover_latest_total_services_year(timeout: int) -> int:
-    html = download_text(LANDING_URL, timeout)
-    years = {
-        int(year)
-        for year in re.findall(
-            r'href=["\'](?:https://www\.opencivitas\.it)?'
-            r'(?:/it/dataset|/portale/w)/(\d{4})-comuni-servizi-totali-indicatori-e-determinanti(?:-\d+)?["\']',
-            html,
-        )
-    }
+    # The Liferay landing paginates; the default page may omit servizi-totali.
+    # Probe a wider first page, then the official search index, fail-closed if empty.
+    year_pattern = re.compile(
+        r'(?:href=["\'](?:https://www\.opencivitas\.it)?)?'
+        r'(?:/it/dataset|/portale/w)/(\d{4})-comuni-servizi-totali-indicatori-e-determinanti(?:-\d+)?'
+    )
+    pages = (
+        LANDING_URL,
+        f"{LANDING_URL}?delta=50&start=0",
+        "https://www.opencivitas.it/portale/search?q=servizi+totali",
+    )
+    years: set[int] = set()
+    for page_url in pages:
+        years.update(int(year) for year in year_pattern.findall(download_text(page_url, timeout)))
+        if years:
+            break
     if not years:
         raise StructuralError("OpenCivitas: nessuna annualità dei servizi totali trovata")
     return max(years)

@@ -330,7 +330,7 @@
       },
       "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",
       "publication": {
-        "branch": "automation/data/consulenti-v3",
+        "branch": "automation/data/consulenti-v4",
         "commitTitle": "chore(data): refresh Consulenti Pubblici snapshot",
         "prTitle": "data: refresh Consulenti Pubblici snapshot",
         "upstreamUrl": "https://consulentipubblici.dfp.gov.it/progetto"
@@ -742,7 +742,7 @@
         "branch": "automation/data/opencivitas-v2",
         "commitTitle": "chore(data): refresh OpenCivitas municipal snapshot",
         "prTitle": "data: refresh OpenCivitas municipal snapshot",
-        "upstreamUrl": "https://www.opencivitas.it/it/open-data"
+        "upstreamUrl": "https://www.opencivitas.it/portale/open-data"
       },
       "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
     },

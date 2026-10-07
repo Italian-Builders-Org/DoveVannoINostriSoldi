@@ -2,7 +2,7 @@
 
 import { useId, useMemo, useRef, useState } from "react";
 import type { RepublicMap } from "@/lib/politici-repubblica";
-import { clampTimelineDate, compositionAt, groupNameAt } from "@/lib/politici-group-timeline";
+import { changeDates, clampTimelineDate, compositionAt, groupCountsAt, groupNameAt } from "@/lib/politici-group-timeline";
 import { atDate, longDate, type GraphSelection } from "./atlas-model";
 import { TimelineControl, useGroupTimeline } from "./atlas-timeline";
 import timelineStyles from "./atlas-timeline.module.css";
@@ -68,12 +68,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
   const groupOf = (seat: { personId: string | null; groupId: string | null; }) => composition && seat.personId
     ? composition.byPerson.get(seat.personId) ?? null
     : seat.groupId;
-  const historicalLegend = composition && historicalDate ? [...composition.counts]
-    .map(([groupId, count]) => {
-      const group = timelineGroups.get(groupId)!;
-      return { groupId, count, family: group.family, label: groupNameAt(group, historicalDate)?.shortLabel ?? groupId };
-    })
-    .sort((a, b) => a.label.localeCompare(b.label, "it") || a.groupId.localeCompare(b.groupId)) : null;
+  const historicalLegend = series && historicalDate ? groupCountsAt(series, historicalDate) : null;
   const historicalTotal = historicalLegend?.reduce((total, item) => total + item.count, 0) ?? 0;
   const toggleTimeline = () => {
     if (timelineOpen) onAsOf?.(null);
@@ -99,7 +94,7 @@ export function Hemicycle({ map, chamberId, selection, matchingIds, judicialIds,
       </button> : null}
     </div>
     {timelineOpen && onAsOf ? <div id={`${id}-timeline`}>
-      {series ? <TimelineControl series={series} asOf={historicalDate} onAsOf={onAsOf} />
+      {series ? <TimelineControl series={series} changes={changeDates(series)} asOf={historicalDate} onAsOf={onAsOf} />
         : timeline.resource.status === "error" ? <p className={timelineStyles.status} role="alert">
           La serie storica dei gruppi non è disponibile: l’emiciclo mostra la composizione attuale.{" "}
           <button type="button" className={styles.textButton} onClick={timeline.retry}>Riprova</button>

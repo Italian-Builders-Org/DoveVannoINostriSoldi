@@ -328,7 +328,9 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
                   map={map}
                   selection={state.selection}
                   matchingIds={matchingIds}
-                  onSelect={select} />
+                  onSelect={select}
+                  asOf={state.asOf}
+                  onAsOf={(asOf) => update({ ...stateRef.current, asOf })} />
                   : <RepublicOverview map={map} people={people} onSelect={select} filtered={filterCount > 0} />}
         <div className={styles.workspaceFootnote}>
           <span><span className={styles.liveDot} aria-hidden="true" /> Dati da fonti ufficiali</span>

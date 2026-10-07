@@ -26,6 +26,7 @@ class RefreshTests(unittest.TestCase):
         self.payload = ameco_zip(self.spec)
         self.core = score.build_snapshot(self.spec, self.payload, '2026-09-03T08:00:00Z')
         self.page = page._load(page.OUTPUT)
+        self.page['as_of_date'] = '2026-09-03'
         self.registry = page._load(page.CHRONOLOGY_PATH)
         self.page['sources'][0] = page._ameco_source(self.core)
         self.page['series'][1] = page._ameco_series(self.core, self.page['sources'][0])[0]

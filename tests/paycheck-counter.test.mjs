@@ -32,6 +32,7 @@ const { searchSiteDocuments } = await import("../src/lib/global-search.ts");
 const { PUBLIC_INDEXABLE_PATHS } = await import("../src/lib/public-discovery.ts");
 const { PRIMARY_NAV, SITE_MAP_GROUPS } = await import("../src/lib/site-navigation.ts");
 const { getPaycheckCounterView } = await import("../src/lib/paycheck-counter-view.ts");
+const { comparePaycheckNetsByRegion } = await import("../src/lib/paycheck-region-comparison.ts");
 
 const page = await readFile(new URL("../src/app/busta-paga/page.tsx", import.meta.url), "utf8");
 const docs = await readFile(new URL("../docs/DATA_SOURCES.md", import.meta.url), "utf8");
@@ -256,6 +257,25 @@ test("paycheck counter view wires all regions to published-2026", async () => {
   assert.ok(view.regions.every((row) => row.regionalSchedule === "published-2026"));
   assert.ok(view.caveats.some((text) => /Mensilità/i.test(text)));
   assert.ok(view.caveats.some((text) => /Dipartimento delle Finanze/i.test(text)));
+  assert.ok(view.caveats.some((text) => /mappa/i.test(text)));
+});
+
+test("region net map ranks Trentino high and Lazio low at 50k / 12m", async () => {
+  const view = await getPaycheckCounterView();
+  const comparison = comparePaycheckNetsByRegion({
+    annualGrossEur: 50_000,
+    payMonths: 12,
+    regions: view.regions,
+    missions: view.missions,
+  });
+  assert.equal(comparison.rows.length, 20);
+  assert.equal(comparison.rows[0].code, "04");
+  assert.equal(comparison.rows.at(-1)?.code, "12");
+  assert.ok(comparison.maxNetCents - comparison.minNetCents > 5_000);
+  // Lombardia mid-pack, near ChatGPT ~2717–2720
+  const lombardia = comparison.rows.find((row) => row.code === "03");
+  assert.ok(lombardia);
+  assert.ok(lombardia.monthlyNetCents >= 271_000 && lombardia.monthlyNetCents <= 272_500);
 });
 
 test("busta-paga page is wired in nav, sitemap, search and docs", () => {

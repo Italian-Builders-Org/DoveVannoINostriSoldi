@@ -27,6 +27,7 @@ export default async function BustaPagaPage() {
         </p>
         <p className={styles.links}>
           <a href="#busta-contatore">Contatore ↓</a>
+          <a href="#busta-mappa-title">Mappa Regioni ↓</a>
           <a href="#busta-limiti">Limiti ↓</a>
           <Link href="/cuneo-fiscale">Cuneo fiscale OECD →</Link>
           <Link href="/territori/irpef">IRPEF territoriale →</Link>

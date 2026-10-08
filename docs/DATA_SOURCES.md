@@ -117,9 +117,10 @@ o 14 mensilità, senza familiari a carico): IRPEF a scaglioni 2026 con
 detrazione art. 13 TUIR, contributi INPS IVS ordinario ≈ 9,19%, addizionale
 regionale con scaglioni e aliquote MEF 2026 per tutte le Regioni (soglie
 preferenziali Lazio, Umbria, FVG, Valle d'Aosta), addizionale comunale come
-media regionale MEF, e ripartizione illustrativa della sola IRPEF erariale
-sulle missioni OpenBDAP Legge di Bilancio. Card social firmata con tag
-@DVNSoldi. Non è una busta paga reale né cassa SIOPE.
+media regionale MEF, mappa coropletica del netto per Regione a parità di RAL,
+e ripartizione illustrativa della sola IRPEF erariale sulle missioni OpenBDAP
+Legge di Bilancio. Card social firmata con tag @DVNSoldi. Non è una busta paga
+reale né cassa SIOPE.
 
 ## Cuneo fiscale · OECD Taxing Wages
 

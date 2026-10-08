@@ -168,6 +168,7 @@ export async function getPaycheckCounterView(): Promise<PaycheckCounterView> {
       `Addizionale regionale: scaglioni e aliquote pubblicati dal Dipartimento delle Finanze per il ${PAYCHECK_TAX_YEAR} (con soglie preferenziali Lazio, Umbria, FVG, Valle d'Aosta). Trentino-Alto Adige usa le bande comuni delle Province autonome, senza esenzioni/detrazioni provinciali.`,
       `Addizionale comunale: media regionale MEF anno d'imposta ${MEF_IRPEF_TAX_YEAR} (per alcune Regioni sui soli comuni non oscurati): il comune di domicilio può discostarsi.`,
       "La ripartizione sulle missioni usa solo l'IRPEF erariale e le quote di stanziamento della Legge di Bilancio (OpenBDAP, competenza A1): è statistica illustrativa, non cassa né vincolo di destinazione delle tue imposte, e non include addizionali né contributi.",
+      "La mappa confronta il netto per cedolino a parità di RAL e mensilità: le differenze tra Regioni dipendono solo dalle addizionali (regionale a scaglioni MEF e comunale come media regionale).",
     ],
   };
 }

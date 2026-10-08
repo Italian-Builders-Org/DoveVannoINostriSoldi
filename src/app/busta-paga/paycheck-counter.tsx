@@ -19,6 +19,7 @@ import {
 } from "@/lib/paycheck-share-card";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import shareStyles from "@/components/share-fact/share-fact.module.css";
+import { PaycheckRegionsMap } from "./paycheck-regions-map";
 import styles from "./busta-paga.module.css";
 
 type PaycheckCounterProps = {
@@ -151,6 +152,16 @@ export function PaycheckCounter({
         </dl>
         <PaycheckShareButton computation={computation} />
       </section>
+
+      <PaycheckRegionsMap
+        annualGrossEur={parsePaycheckAnnualGross(annualGross)}
+        payMonths={payMonths}
+        regions={regions}
+        missions={missions}
+        selectedRegionCode={region.code}
+        onSelectRegion={setRegionCode}
+        taxYear={taxYear}
+      />
 
       <section className={styles.breakdown} aria-labelledby="busta-trattenute-title">
         <h2 id="busta-trattenute-title" className="panel-title">

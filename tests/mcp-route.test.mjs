@@ -69,8 +69,12 @@ test("MCP endpoint accepts known public connector origins", async () => {
   for (const origin of [
     "https://chatgpt.com",
     "https://chat.openai.com",
+    "https://platform.openai.com",
+    "https://openai.com",
+    "https://www.openai.com",
     "https://claude.ai",
     "https://www.claude.ai",
+    "https://console.anthropic.com",
     "https://cursor.com",
     "https://www.cursor.com",
   ]) {

@@ -69,9 +69,11 @@ Riferimenti ufficiali:
 
 Il server si collega come custom remote connector usando lo stesso endpoint. I
 connector browser (Claude, ChatGPT, Cursor) inviano un header `Origin`: le
-origini note sono in allowlist di default; CLI e probe senza `Origin` non sono
-bloccati. La directory Anthropic ha una candidatura separata: un test riuscito
-nel client non equivale all'accettazione pubblica.
+origini note sono in allowlist di default (`chatgpt.com`, `platform.openai.com`,
+`claude.ai`, `console.anthropic.com`, Cursor, …); CLI e probe senza `Origin` non
+sono bloccati. Usare sempre l’host `www` dell’endpoint: l’apex fa redirect 308
+e alcuni client non riprovano il POST. La directory Anthropic ha una candidatura
+separata: un test riuscito nel client non equivale all'accettazione pubblica.
 
 - [Claude: custom remote MCP connector](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
 - [Claude: submission di un remote MCP server](https://support.claude.com/it/articles/12922490-guida-all-invio-di-remote-mcp-server)

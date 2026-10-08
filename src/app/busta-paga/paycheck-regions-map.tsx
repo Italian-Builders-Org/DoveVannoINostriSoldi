@@ -71,7 +71,7 @@ export function PaycheckRegionsMap({
 
   const displayedCode = hoveredCode ?? selectedRegionCode;
   const selected = byCode.get(displayedCode) ?? byCode.get(selectedRegionCode);
-  const navigableCodes = italyRegionGeometry.map((geometry) => geometry.code);
+  const navigableCodes: string[] = italyRegionGeometry.map((geometry) => geometry.code);
   const outlinedCodes = [selectedRegionCode, hoveredCode].filter(
     (code, index, codes): code is string => code !== null && codes.indexOf(code) === index,
   );

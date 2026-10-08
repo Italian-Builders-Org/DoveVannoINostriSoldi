@@ -50,6 +50,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/economia",
   "/edilizia",
   "/cuneo-fiscale",
+  "/busta-paga",
   "/pil",
   "/incarichi",
   "/incarichi/dettaglio",

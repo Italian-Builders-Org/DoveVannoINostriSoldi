@@ -1,0 +1,220 @@
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.counter {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--color-neutral-700);
+}
+
+.field input,
+.field select {
+  min-height: 44px;
+  padding: 10px 12px;
+  color: var(--color-text);
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-300);
+  font: inherit;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--space-5);
+  align-items: end;
+}
+
+.regionLine {
+  margin: 0 0 4px;
+  color: var(--color-neutral-700);
+  font-size: 14px;
+}
+
+.net {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+
+.netLabel {
+  max-width: 40ch;
+  margin: 10px 0 0;
+  color: var(--color-neutral-700);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-neutral-100);
+}
+
+.metrics > div {
+  min-width: 0;
+  padding: var(--space-4);
+  border-right: 1px solid var(--color-neutral-300);
+}
+
+.metrics > div:last-child {
+  border-right: 0;
+}
+
+.metrics dt {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.metrics dd {
+  margin: 6px 0 0;
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.breakdown {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.deductionList,
+.missionList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.deductionList li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.deductionList li > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.deductionList strong {
+  font-weight: 650;
+}
+
+.deductionList span {
+  color: var(--color-neutral-700);
+  font-size: 13px;
+}
+
+.deductionList em {
+  font-style: normal;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.missionIntro,
+.emptyMissions {
+  margin: 0;
+  color: var(--color-neutral-700);
+  max-width: 68ch;
+}
+
+.missionList li {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.missionHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.missionHead strong {
+  font-weight: 650;
+}
+
+.missionHead span {
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.missionBar {
+  height: 6px;
+  background: var(--color-text);
+}
+
+.caveatList {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--color-neutral-700);
+}
+
+.caveatList li {
+  margin: 0.4em 0;
+}
+
+.sourceLine {
+  margin: var(--space-3) 0 0;
+  color: var(--color-neutral-700);
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .controls,
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .metrics > div:last-child {
+    border-bottom: 0;
+  }
+
+  .missionHead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -172,6 +172,9 @@ a caso.
     cautele dichiarate di ogni dataset finanziario e territoriale.
   - [docs/MEF_IRPEF_COMUNALE.md](MEF_IRPEF_COMUNALE.md): perimetro e limiti
     IRPEF comunale.
+  - [src/lib/paycheck-counter.ts](../src/lib/paycheck-counter.ts) e
+    [src/app/busta-paga/](../src/app/busta-paga/): contatore busta paga
+    illustrativo (MEF + OECD + quote bilancio) e card social `/api/share/busta-paga`.
   - [docs/SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md): pagamenti e incassi di cassa.
   - [docs/ISTAT_REGIONAL_MAP.md](ISTAT_REGIONAL_MAP.md): geografia e perimetri
     territoriali ISTAT.

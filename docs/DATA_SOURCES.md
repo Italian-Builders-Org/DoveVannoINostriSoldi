@@ -110,6 +110,15 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
 
+## Contatore busta paga · stima illustrativa
+
+La pagina `/busta-paga` combina tre fonti già pubblicate sul sito: aliquote
+effettive medie MEF IRPEF per Regione (imposta e addizionali sul reddito
+imponibile), contributi del lavoratore OECD Taxing Wages sul profilo tipo, e
+quote di stanziamento delle missioni OpenBDAP Legge di Bilancio. È una stima
+illustrativa con card social firmata: non è una busta paga reale, non applica
+scaglioni individuali e non è cassa SIOPE.
+
 ## Cuneo fiscale · OECD Taxing Wages
 
 La pagina `/cuneo-fiscale` pubblica il cuneo fiscale italiano da OECD Taxing

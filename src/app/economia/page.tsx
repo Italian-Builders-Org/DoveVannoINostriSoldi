@@ -25,6 +25,13 @@ const dossiers = [
       "Quanto pesano IRPEF e contributi su un lavoratore tipo. Non è la busta paga di una persona reale né l’IRPEF territoriale.",
   },
   {
+    href: "/busta-paga",
+    title: "Contatore busta paga",
+    period: "MEF IRPEF · OECD · OpenBDAP",
+    description:
+      "Dal lordo annuo al mensile: trattenute medie per Regione e ripartizione delle tasse sulle missioni di bilancio. Stima illustrativa, non una busta paga reale.",
+  },
+  {
     href: "/pil",
     title: "PIL e conti nazionali",
     period: "Eurostat SEC 2010 · trimestrale e annuale",

@@ -112,12 +112,14 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 
 ## Contatore busta paga · stima illustrativa
 
-La pagina `/busta-paga` combina tre fonti già pubblicate sul sito: aliquote
-effettive medie MEF IRPEF per Regione (imposta e addizionali sul reddito
-imponibile), contributi del lavoratore OECD Taxing Wages sul profilo tipo, e
-quote di stanziamento delle missioni OpenBDAP Legge di Bilancio. È una stima
-illustrativa con card social firmata: non è una busta paga reale, non applica
-scaglioni individuali e non è cassa SIOPE.
+La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13
+o 14 mensilità, senza familiari a carico): IRPEF a scaglioni 2026 con
+detrazione art. 13 TUIR, contributi INPS IVS ordinario ≈ 9,19%, addizionale
+regionale con scaglioni e aliquote MEF 2026 per tutte le Regioni (soglie
+preferenziali Lazio, Umbria, FVG, Valle d'Aosta), addizionale comunale come
+media regionale MEF, e ripartizione illustrativa della sola IRPEF erariale
+sulle missioni OpenBDAP Legge di Bilancio. Card social firmata con tag
+@DVNSoldi. Non è una busta paga reale né cassa SIOPE.
 
 ## Cuneo fiscale · OECD Taxing Wages
 

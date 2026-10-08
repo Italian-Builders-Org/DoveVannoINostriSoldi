@@ -28,6 +28,8 @@ export type PaycheckShareCardInput = {
   monthlyNetLabel: string;
   monthlyGrossLabel: string;
   annualGrossLabel: string;
+  /** e.g. "12 mensilità" — shown on the card subtitle. */
+  payMonthsLabel: string;
   deductions: readonly PaycheckShareLine[];
   missions: readonly PaycheckShareLine[];
 };
@@ -108,6 +110,7 @@ export function buildPaycheckShareCardInput(computation: PaycheckComputation): P
     monthlyNetLabel: formatPaycheckEuro(computation.monthlyNetCents),
     monthlyGrossLabel: formatPaycheckEuro(computation.monthlyGrossCents),
     annualGrossLabel: formatPaycheckEuro(computation.annualGrossCents),
+    payMonthsLabel: `${computation.payMonths} mensilità`,
     deductions,
     missions,
   };
@@ -120,6 +123,7 @@ export function parsePaycheckShareCardSearchParams(
   const monthlyNetLabel = requireField(params.get("net"), "net", VALUE_MAX);
   const monthlyGrossLabel = requireField(params.get("gross"), "gross", VALUE_MAX);
   const annualGrossLabel = requireField(params.get("annual"), "annual", VALUE_MAX);
+  const payMonthsLabel = requireField(params.get("months") ?? "12 mensilità", "months", VALUE_MAX);
   const deductions = parseLines(params.get("deductions"), "deductions");
   const missions = parseLines(params.get("missions"), "missions");
   if (deductions.length === 0) throw new PaycheckShareCardError("missing_deductions");
@@ -132,6 +136,7 @@ export function parsePaycheckShareCardSearchParams(
     monthlyNetLabel,
     monthlyGrossLabel,
     annualGrossLabel,
+    payMonthsLabel,
     deductions,
     missions,
     pageUrl,
@@ -145,11 +150,14 @@ export function buildPaycheckShareCardPath(input: PaycheckShareCardInput): strin
   params.set("net", collapseWhitespace(input.monthlyNetLabel));
   params.set("gross", collapseWhitespace(input.monthlyGrossLabel));
   params.set("annual", collapseWhitespace(input.annualGrossLabel));
+  params.set("months", collapseWhitespace(input.payMonthsLabel));
   params.set("deductions", encodeLines(input.deductions));
   if (input.missions.length > 0) params.set("missions", encodeLines(input.missions));
   parsePaycheckShareCardSearchParams(params);
   return `/api/share/busta-paga?${params.toString()}`;
 }
+
+export const PAYCHECK_SHARE_X_HANDLE = "@DVNSoldi";
 
 export function buildPaycheckShareMessage(input: PaycheckShareCardInput, pageUrl?: string): string {
   const parsed = parsePaycheckShareCardSearchParams(
@@ -158,14 +166,15 @@ export function buildPaycheckShareMessage(input: PaycheckShareCardInput, pageUrl
       net: input.monthlyNetLabel,
       gross: input.monthlyGrossLabel,
       annual: input.annualGrossLabel,
+      months: input.payMonthsLabel,
       deductions: encodeLines(input.deductions),
       ...(input.missions.length > 0 ? { missions: encodeLines(input.missions) } : {}),
     }),
   );
   const url = pageUrl ?? parsed.pageUrl;
   return (
-    `Busta paga stimata in ${parsed.regionName}: ${parsed.monthlyNetLabel} netti al mese ` +
-    `(lordo ${parsed.monthlyGrossLabel}). Dove vanno le tasse? ` +
-    `Fonte e dettaglio su Dove Vanno I Nostri Soldi: ${url}`
+    `Busta paga stimata in ${parsed.regionName}: ${parsed.monthlyNetLabel} netti ` +
+    `(${parsed.payMonthsLabel}, lordo ${parsed.monthlyGrossLabel}). Dove vanno le tasse? ` +
+    `Dettaglio su Dove Vanno I Nostri Soldi ${PAYCHECK_SHARE_X_HANDLE} → ${url}`
   ).replace(/\s+/g, " ").trim();
 }

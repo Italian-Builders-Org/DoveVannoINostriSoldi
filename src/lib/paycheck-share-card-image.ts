@@ -93,10 +93,10 @@ export function createPaycheckShareCardImageResponse(
           ),
           box(
             {
-              fontSize: 28,
+              fontSize: 26,
               color: COLORS.muted,
             },
-            `netto / mese · lordo ${card.monthlyGrossLabel} · annuo ${card.annualGrossLabel}`,
+            `netto / cedolino · ${card.payMonthsLabel} · lordo ${card.monthlyGrossLabel} · annuo ${card.annualGrossLabel}`,
           ),
         ),
       ),
@@ -197,15 +197,32 @@ export function createPaycheckShareCardImageResponse(
             color: COLORS.muted,
             lineHeight: 1.35,
           },
-          "Stima illustrativa · MEF IRPEF, OECD, OpenBDAP · non è una busta paga reale",
+          "Stima illustrativa · IRPEF 2026, INPS, addizionali MEF, OpenBDAP · non è una busta paga reale",
         ),
         box(
           {
-            fontSize: 26,
-            fontWeight: 700,
-            color: COLORS.accent,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            gap: 16,
           },
-          `${card.hostLabel}/busta-paga`,
+          box(
+            {
+              fontSize: 26,
+              fontWeight: 700,
+              color: COLORS.accent,
+            },
+            `${card.hostLabel}/busta-paga`,
+          ),
+          box(
+            {
+              fontSize: 26,
+              fontWeight: 700,
+              color: COLORS.ink,
+            },
+            "@DVNSoldi",
+          ),
         ),
       ),
     ),

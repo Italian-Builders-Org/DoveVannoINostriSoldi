@@ -6,7 +6,9 @@ import {
   formatPaycheckEuro,
   formatPaycheckPercent,
   parsePaycheckAnnualGross,
+  parsePaycheckMonths,
   type PaycheckMissionShare,
+  type PaycheckMonthCount,
   type PaycheckRegionRates,
 } from "@/lib/paycheck-counter";
 import {
@@ -23,23 +25,29 @@ type PaycheckCounterProps = {
   regions: readonly PaycheckRegionRates[];
   defaultRegionCode: string;
   defaultAnnualGrossEur: number;
-  employeeSscRate: number;
+  defaultPayMonths: PaycheckMonthCount;
+  payMonthOptions: readonly PaycheckMonthCount[];
   missions: readonly PaycheckMissionShare[];
   budgetYear: number | null;
+  taxYear: number;
 };
 
 export function PaycheckCounter({
   regions,
   defaultRegionCode,
   defaultAnnualGrossEur,
-  employeeSscRate,
+  defaultPayMonths,
+  payMonthOptions,
   missions,
   budgetYear,
+  taxYear,
 }: PaycheckCounterProps) {
   const [annualGross, setAnnualGross] = useState(String(defaultAnnualGrossEur));
   const [regionCode, setRegionCode] = useState(defaultRegionCode);
+  const [payMonths, setPayMonths] = useState<PaycheckMonthCount>(defaultPayMonths);
   const annualId = useId();
   const regionId = useId();
+  const monthsId = useId();
 
   const region = regions.find((row) => row.code === regionCode) ?? regions[0];
 
@@ -48,10 +56,10 @@ export function PaycheckCounter({
       computePaycheck({
         annualGrossEur: parsePaycheckAnnualGross(annualGross),
         region,
-        employeeSscRate,
         missions,
+        payMonths,
       }),
-    [annualGross, region, employeeSscRate, missions],
+    [annualGross, region, missions, payMonths],
   );
 
   const maxMission = Math.max(...computation.missions.map((row) => row.monthlyCents), 1);
@@ -95,6 +103,21 @@ export function PaycheckCounter({
             ))}
           </select>
         </label>
+        <label className={styles.field} htmlFor={monthsId}>
+          <span>Mensilità</span>
+          <select
+            id={monthsId}
+            value={payMonths}
+            onChange={(event) => setPayMonths(parsePaycheckMonths(event.target.value))}
+            data-testid="paycheck-months"
+          >
+            {payMonthOptions.map((count) => (
+              <option key={count} value={count}>
+                {count} mensilità
+              </option>
+            ))}
+          </select>
+        </label>
       </form>
 
       <section className={styles.summary} aria-labelledby="busta-sintesi-title">
@@ -106,7 +129,9 @@ export function PaycheckCounter({
           <strong className={styles.net} data-testid="paycheck-monthly-net">
             {formatPaycheckEuro(computation.monthlyNetCents)}
           </strong>
-          <p className={styles.netLabel}>netto dopo trattenute illustrative</p>
+          <p className={styles.netLabel}>
+            netto medio per cedolino ({taxYear}, {computation.payMonths} mensilità)
+          </p>
         </div>
         <dl className={styles.metrics}>
           <div>
@@ -149,10 +174,11 @@ export function PaycheckCounter({
           Dove vanno le tasse{budgetYear != null ? ` · bilancio ${budgetYear}` : ""}
         </h2>
         <p className={styles.missionIntro}>
-          Ripartizione illustrativa della sola IRPEF erariale mensile secondo le quote di
-          stanziamento delle missioni di bilancio dello Stato (OpenBDAP, competenza A1).
-          Le addizionali restano a Regione e Comune; i contributi previdenziali non entrano
-          in questo riparto. Non è cassa e non è un vincolo di destinazione dell’IRPEF.
+          Ripartizione statistica illustrativa della sola IRPEF erariale mensile secondo le
+          quote di stanziamento delle missioni di bilancio dello Stato (OpenBDAP, competenza
+          A1). Non significa che esattamente quella cifra della tua IRPEF vada a quella
+          missione. Le addizionali restano a Regione e Comune; i contributi previdenziali
+          non entrano in questo riparto. Non è cassa e non è un vincolo di destinazione.
         </p>
         {computation.missions.length === 0 ? (
           <p className={styles.emptyMissions}>Quote di bilancio non disponibili in questo momento.</p>

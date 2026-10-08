@@ -27,9 +27,9 @@ const dossiers = [
   {
     href: "/busta-paga",
     title: "Contatore busta paga",
-    period: "MEF IRPEF · OECD · OpenBDAP",
+    period: "IRPEF 2026 · addizionali MEF · OpenBDAP",
     description:
-      "Dal lordo annuo al mensile: trattenute medie per Regione e ripartizione delle tasse sulle missioni di bilancio. Stima illustrativa, non una busta paga reale.",
+      "Dal lordo annuo al cedolino (12/13/14): scaglioni IRPEF, addizionali per Regione e ripartizione illustrativa sulle missioni. Stima, non una busta paga reale.",
   },
   {
     href: "/pil",

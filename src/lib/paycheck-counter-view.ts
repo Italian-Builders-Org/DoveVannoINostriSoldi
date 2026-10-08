@@ -4,10 +4,16 @@ import { MEF_IRPEF_TAX_YEAR } from "@/lib/data/mef-irpef-contract";
 import { queryMefMunicipalIrpef, type ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import {
   PAYCHECK_DEFAULT_ANNUAL_GROSS_EUR,
+  PAYCHECK_DEFAULT_MONTHS,
   type PaycheckMissionShare,
   type PaycheckRegionRates,
 } from "@/lib/paycheck-counter";
-import { getTaxWedgeView } from "@/lib/tax-wedge";
+import {
+  EMPLOYEE_SSC_RATE,
+  PAYCHECK_MONTH_OPTIONS,
+  PAYCHECK_TAX_YEAR,
+  REGIONAL_SURTAX_BY_CODE,
+} from "@/lib/paycheck-tax-rules";
 
 /**
  * Prefer complete amounts; for partial MEF cells use the known (non-suppressed)
@@ -39,21 +45,20 @@ function buildRegionRates(
   name: string,
   measures: {
     taxableIncome?: ReportedMeasure;
-    netTaxDeclared?: ReportedMeasure;
     regionalSurtaxDue?: ReportedMeasure;
     municipalSurtaxDue?: ReportedMeasure;
   },
 ): PaycheckRegionRates | null {
-  const irpef = rateAgainstTaxable(measures.netTaxDeclared, measures.taxableIncome);
   const regional = rateAgainstTaxable(measures.regionalSurtaxDue, measures.taxableIncome);
   const municipal = rateAgainstTaxable(measures.municipalSurtaxDue, measures.taxableIncome);
-  if (irpef == null || regional == null || municipal == null) return null;
+  if (regional == null || municipal == null) return null;
+  const hasPublished = Boolean(REGIONAL_SURTAX_BY_CODE[code]);
   return {
     code,
     name,
-    effectiveIrpefRate: irpef,
     effectiveRegionalSurtaxRate: regional,
     effectiveMunicipalSurtaxRate: municipal,
+    regionalSchedule: hasPublished ? "published-2026" : "mef-average",
   };
 }
 
@@ -76,23 +81,24 @@ function missionSharesFromBudget(
 export type PaycheckCounterView = {
   defaultAnnualGrossEur: number;
   defaultRegionCode: string;
+  defaultPayMonths: typeof PAYCHECK_DEFAULT_MONTHS;
+  payMonthOptions: typeof PAYCHECK_MONTH_OPTIONS;
   regions: readonly PaycheckRegionRates[];
   employeeSscRate: number;
-  employeeSscYear: number;
+  taxYear: typeof PAYCHECK_TAX_YEAR;
   missions: readonly PaycheckMissionShare[];
   budgetYear: number | null;
-  irpefTaxYear: typeof MEF_IRPEF_TAX_YEAR;
+  mefIrpefTaxYear: typeof MEF_IRPEF_TAX_YEAR;
   provenance: {
     irpefSourceUrl: string;
-    oecdSourceUrl: string;
     budgetLabel: string;
+    regionalSurtaxLabel: string;
   };
   caveats: readonly string[];
 };
 
 export async function getPaycheckCounterView(): Promise<PaycheckCounterView> {
   const irpef = queryMefMunicipalIrpef({ level: "region", limit: 100, detail: "summary" });
-  const taxWedge = getTaxWedgeView();
 
   const regions: PaycheckRegionRates[] = [];
   for (const row of irpef.data) {
@@ -104,6 +110,15 @@ export async function getPaycheckCounterView(): Promise<PaycheckCounterView> {
 
   if (regions.length === 0) {
     throw new Error("Paycheck counter: nessuna regione MEF IRPEF con misure complete.");
+  }
+
+  const missingSchedules = regions.filter((row) => !REGIONAL_SURTAX_BY_CODE[row.code]);
+  if (missingSchedules.length > 0) {
+    throw new Error(
+      `Paycheck counter: scaglioni regionali 2026 mancanti per ${missingSchedules
+        .map((row) => row.code)
+        .join(", ")}.`,
+    );
   }
 
   let budgetYear: number | null = null;
@@ -132,25 +147,27 @@ export async function getPaycheckCounterView(): Promise<PaycheckCounterView> {
   return {
     defaultAnnualGrossEur: PAYCHECK_DEFAULT_ANNUAL_GROSS_EUR,
     defaultRegionCode,
+    defaultPayMonths: PAYCHECK_DEFAULT_MONTHS,
+    payMonthOptions: PAYCHECK_MONTH_OPTIONS,
     regions,
-    // OECD Taxing Wages view exposes percentages (e.g. 9.49), not unit fractions.
-    employeeSscRate: taxWedge.latest.employeeSsc / 100,
-    employeeSscYear: taxWedge.latest.year,
+    employeeSscRate: EMPLOYEE_SSC_RATE,
+    taxYear: PAYCHECK_TAX_YEAR,
     missions,
     budgetYear,
-    irpefTaxYear: MEF_IRPEF_TAX_YEAR,
+    mefIrpefTaxYear: MEF_IRPEF_TAX_YEAR,
     provenance: {
       irpefSourceUrl: irpef.provenance.source.landingUrl,
-      oecdSourceUrl: taxWedge.metadata.source.landingUrl,
       budgetLabel,
+      regionalSurtaxLabel: `Addizionale regionale MEF anno d'imposta ${PAYCHECK_TAX_YEAR}`,
     },
     caveats: [
       "Stima illustrativa: non è la busta paga di una persona reale né un calcolo CAF.",
-      `Aliquote IRPEF e addizionali: medie effettive MEF anno d'imposta ${MEF_IRPEF_TAX_YEAR} (imposta / reddito imponibile) per Regione, non scaglioni individuali.`,
-      `Contributi lavoratore: quota OECD Taxing Wages ${taxWedge.latest.year} sul profilo single al 100% del salario medio, applicata al lordo inserito.`,
-      "La ripartizione sulle missioni usa solo l'IRPEF erariale e le quote di stanziamento della Legge di Bilancio (OpenBDAP, competenza A1): non è cassa, non è un vincolo di destinazione e non include addizionali né contributi.",
-      "L'addizionale comunale è la media regionale MEF (per alcune Regioni sui soli comuni non oscurati): il comune di domicilio può discostarsi.",
-      "Le aliquote MEF sono medie effettive su tutti i contribuenti della Regione (imposta / imponibile), applicate al lordo inserito: per un reddito tipico da lavoro dipendente l'IRPEF personale può risultare diversa.",
+      `IRPEF ${PAYCHECK_TAX_YEAR}: scaglioni statutari (23% / 33% / 43%) e detrazione per lavoro dipendente (art. 13 TUIR), su imponibile dopo contributi. Nessun familiare a carico, nessun altro credito o bonus.`,
+      "Contributi lavoratore: quota IVS ordinaria del settore privato ≈ 9,19% sul lordo.",
+      "Mensilità: la RAL resta annuale; 12/13/14 cambia solo come si ripartisce il netto medio per cedolino (tasse e contributi restano sul reddito annuo).",
+      `Addizionale regionale: scaglioni e aliquote pubblicati dal Dipartimento delle Finanze per il ${PAYCHECK_TAX_YEAR} (con soglie preferenziali Lazio, Umbria, FVG, Valle d'Aosta). Trentino-Alto Adige usa le bande comuni delle Province autonome, senza esenzioni/detrazioni provinciali.`,
+      `Addizionale comunale: media regionale MEF anno d'imposta ${MEF_IRPEF_TAX_YEAR} (per alcune Regioni sui soli comuni non oscurati): il comune di domicilio può discostarsi.`,
+      "La ripartizione sulle missioni usa solo l'IRPEF erariale e le quote di stanziamento della Legge di Bilancio (OpenBDAP, competenza A1): è statistica illustrativa, non cassa né vincolo di destinazione delle tue imposte, e non include addizionali né contributi.",
     ],
   };
 }

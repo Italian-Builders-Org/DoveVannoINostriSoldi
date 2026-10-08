@@ -172,9 +172,12 @@ a caso.
     cautele dichiarate di ogni dataset finanziario e territoriale.
   - [docs/MEF_IRPEF_COMUNALE.md](MEF_IRPEF_COMUNALE.md): perimetro e limiti
     IRPEF comunale.
-  - [src/lib/paycheck-counter.ts](../src/lib/paycheck-counter.ts) e
+  - [src/lib/paycheck-counter.ts](../src/lib/paycheck-counter.ts),
+    [src/lib/paycheck-tax-rules.ts](../src/lib/paycheck-tax-rules.ts) e
     [src/app/busta-paga/](../src/app/busta-paga/): contatore busta paga
-    illustrativo (MEF + OECD + quote bilancio) e card social `/api/share/busta-paga`.
+    illustrativo (IRPEF 2026 a scaglioni + INPS 9,19% + addizionali regionali
+    MEF 2026 per tutte le Regioni + 12/13/14 mensilità + quote bilancio) e
+    card social `/api/share/busta-paga` con @DVNSoldi.
   - [docs/SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md): pagamenti e incassi di cassa.
   - [docs/ISTAT_REGIONAL_MAP.md](ISTAT_REGIONAL_MAP.md): geografia e perimetri
     territoriali ISTAT.

@@ -1,5 +1,5 @@
 import { shortLabel } from "@/app/spese/legge-di-bilancio/reallocation";
-import { getBudgetLawMissionSeries } from "@/lib/bdap-legge-bilancio";
+import { getCommittedBudgetLawMissionSeries } from "@/lib/bdap-legge-bilancio";
 import { MEF_IRPEF_TAX_YEAR } from "@/lib/data/mef-irpef-contract";
 import { queryMefMunicipalIrpef, type ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import {
@@ -121,20 +121,18 @@ export async function getPaycheckCounterView(): Promise<PaycheckCounterView> {
     );
   }
 
+  // Snapshot-only: the paycheck counter is illustrative and must stay offline-safe
+  // (no live OpenBDAP refresh at request time).
   let budgetYear: number | null = null;
   let missions: PaycheckMissionShare[] = [];
   let budgetLabel = "OpenBDAP Legge di Bilancio (snapshot)";
 
   try {
-    const series = await getBudgetLawMissionSeries({
-      allowSnapshot: true,
-      windowYears: 2,
-      fallbackOnAbort: true,
-    });
+    const series = getCommittedBudgetLawMissionSeries(2);
     budgetYear = series.years.at(-1) ?? null;
     if (budgetYear != null) {
       missions = missionSharesFromBudget(series.allocations, budgetYear);
-      budgetLabel = `OpenBDAP Legge di Bilancio ${budgetYear} (competenza A1)`;
+      budgetLabel = `OpenBDAP Legge di Bilancio ${budgetYear} (competenza A1, snapshot)`;
     }
   } catch {
     missions = [];

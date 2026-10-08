@@ -17,6 +17,7 @@
 - [Griglia territoriale ISTAT 1 km](https://www.dovevannoinostrisoldi.com/territori/griglia): aggregati statici ufficiali della popolazione legale del Censimento 2021 sulla griglia Eurostat 1 km2; nessuna spesa o bot di refresh a runtime.
 - [Mobilità](https://www.dovevannoinostrisoldi.com/mobilita): auto registrate per 1.000 abitanti (Eurostat 2025), offerta TPL nei Comuni capoluogo (ISTAT 2024), segnali sulla spesa familiare (ISTAT 2024) e stima carburante con prezzo MIMIT datato; non misura proprietà individuale, traffico, emissioni o spesa media per famiglia.
 - [IRPEF territoriale](https://www.dovevannoinostrisoldi.com/territori/irpef): contribuenti, redditi, imposta netta dichiarata e addizionali MEF 2024 per Regione, Provincia e Comune.
+- [Contatore busta paga](https://www.dovevannoinostrisoldi.com/busta-paga): stima illustrativa dal lordo annuo al mensile con trattenute medie MEF per Regione, contributi OECD e ripartizione sulle missioni di bilancio; card social firmata; non è una busta paga reale.
 - [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato): pagamenti OpenBDAP per missione, amministrazione e categoria.
 - [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio): variazione dello stanziamento pubblicato per missione (OpenBDAP, competenza A1) e scenario ipotetico di riallocazione. Non è cassa né una previsione.
 - [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione): aggregati OpenCoesione su costi, pagamenti, temi, nature e stati.

@@ -39,6 +39,7 @@ export default function TaxWedgePage() {
           <a href="#cuneo-andamento">Andamento Italia ↓</a>
           <a href="#cuneo-confronto">Confronto europeo ↓</a>
           <a href="#cuneo-fonti">Fonti e limiti ↓</a>
+          <Link href="/busta-paga">Contatore busta paga →</Link>
           <Link href="/economia">Economia →</Link>
           <Link href="/territori/irpef">IRPEF territoriale →</Link>
         </p>

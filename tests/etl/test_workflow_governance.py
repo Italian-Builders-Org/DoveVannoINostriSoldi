@@ -93,11 +93,11 @@ class WorkflowGovernanceTests(unittest.TestCase):
             text,
         )
         self.assertIn(
-            "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7",
+            "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7",
             text,
         )
         self.assertIn(
-            "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7",
+            "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7",
             text,
         )
         self.assertRegex(text, r"node-version:\s*[\"']22(?:\.\d+\.\d+)?[\"']")

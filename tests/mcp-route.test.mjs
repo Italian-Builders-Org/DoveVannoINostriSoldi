@@ -65,6 +65,21 @@ test("MCP endpoint rejects an untrusted browser origin", async () => {
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
 });
 
+test("MCP endpoint accepts known public connector origins", async () => {
+  for (const origin of [
+    "https://chatgpt.com",
+    "https://chat.openai.com",
+    "https://claude.ai",
+    "https://www.claude.ai",
+    "https://cursor.com",
+    "https://www.cursor.com",
+  ]) {
+    const response = await POST(request({ Origin: origin }));
+    assert.equal(response.status, 200, origin);
+    assert.equal(response.headers.get("access-control-allow-origin"), origin, origin);
+  }
+});
+
 test("MCP endpoint fails closed when the client address is unavailable", async () => {
   const { POST: anonymousPost } = await import(
     `../src/app/api/mcp/route.ts?anonymous-rate-limit=${Date.now()}`

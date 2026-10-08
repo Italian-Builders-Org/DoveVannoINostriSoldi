@@ -120,7 +120,11 @@ Un adapter non deve accettare URL arbitrari, SQL, percorsi file o nomi di funzio
 - Nessun tool modifica dati o avvia refresh.
 - Nessuna credenziale di ingestione passa al client.
 - Il body HTTP dichiarato è limitato a 1 MB.
-- Se `Origin` è presente, deve coincidere con l'origine del deployment o con una voce esplicita in `MCP_ALLOWED_ORIGINS`.
+- Se `Origin` è presente, deve coincidere con l'origine del deployment, con un
+  connector browser noto (ChatGPT, Claude, Cursor) o con una voce esplicita in
+  `MCP_ALLOWED_ORIGINS`. Senza `Origin` (CLI, curl, server-side) la richiesta
+  passa il check; è per questo che un probe locale funziona e un connector web
+  può ricevere `403 Origin non consentita` se l'origine non è in allowlist.
 - Le richieste browser ricevono una preflight CORS solo per origini autorizzate. La superficie HTTP pubblica è intenzionalmente stateless e limitata a `POST` e `OPTIONS`; non espone sessioni SSE tramite `GET` o `DELETE`.
 - In produzione gli host pubblici ammessi vanno dichiarati, separati da virgola, in `MCP_ALLOWED_HOSTS`. Su Vercel vengono considerati anche `VERCEL_PROJECT_PRODUCTION_URL` e `VERCEL_URL`.
 - Ogni dataset accetta soltanto i filtri dichiarati nel catalogo. Un filtro incompatibile produce un errore esplicito e non viene ignorato.

@@ -306,7 +306,7 @@ def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
 
     spec = copy.deepcopy(spec)
     spec["integrity"]["dataArtifact"] = {
-        "path": str(data_path.relative_to(ROOT)).replace("\\", "/"),
+        "path": data_path.relative_to(ROOT).as_posix(),
         "bytes": data_path.stat().st_size,
         "sha256": sha256_bytes(data_path.read_bytes()),
     }

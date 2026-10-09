@@ -439,10 +439,10 @@
       "files": [
         "src/data/generated/inps-casellario-sistema.json"
       ],
-      "verificationMode": "generated-check",
+      "verificationMode": "source-lock",
       "offlineCheck": {
         "command": "python3 scripts/etl/inps_casellario_sistema_snapshot.py --check",
-        "coveredBy": "etl-suite"
+        "coveredBy": "standalone"
       },
       "reconciliationTests": [
         "tests/etl/test_inps_casellario_sistema_snapshot.py"

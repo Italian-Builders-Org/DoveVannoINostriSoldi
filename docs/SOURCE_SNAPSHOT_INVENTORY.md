@@ -60,6 +60,7 @@ La revisione e il merge restano umani.
 | `indire-pnrr-assignments` | aggiornamento aprile 2026 | 2026-08-23 | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/indire_pnrr_assignments.py --validate-committed` |
 | `inps-civil-invalidity` | non dichiarato nello snapshot | 2026-08-20T22:30:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `inps-pensions-osservatorio` | non dichiarato nello snapshot | 2026-09-01T12:00:00+02:00 | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
+| `inps-casellario-sistema` | 2023-2024 (stock 31/12) | 2026-10-09 | https://servizi2.inps.it/servizi/osservatoristatistici/4 | nessuno | nessuno | manuale | `python3 scripts/etl/inps_casellario_sistema_snapshot.py --check` |
 | `integrated-catalog` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `integrated-rows` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `mim-school-services-municipal` | non dichiarato nello snapshot | non dichiarato | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT | nessuno | nessuno | manuale | `node scripts/etl/mim_school_services_municipal_index.mjs` |

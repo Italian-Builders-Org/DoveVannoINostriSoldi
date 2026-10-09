@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { queryInpsCasellarioSistema } from "@/lib/inps-casellario-sistema-snapshot";
 import { queryInpsPensionsOsservatorio } from "@/lib/inps-pensions-snapshot";
 import { queryIstatPensions } from "@/lib/istat-pensions-snapshot";
 
@@ -37,11 +38,14 @@ export function GET(request: NextRequest) {
 
   try {
     const istat = queryIstatPensions({ year, territory: territoryValue ?? undefined });
+    const national = istat.territory === "IT";
     return Response.json({
       ...istat,
-      inpsOsservatorio: istat.territory === "IT" ? queryInpsPensionsOsservatorio() : null,
-      ...(istat.territory === "IT" ? {} : {
+      inpsOsservatorio: national ? queryInpsPensionsOsservatorio() : null,
+      inpsCasellarioSistema: national ? queryInpsCasellarioSistema() : null,
+      ...(national ? {} : {
         inpsOsservatorioNote: "L’Osservatorio INPS non è disponibile con filtro territoriale in questo endpoint.",
+        inpsCasellarioSistemaNote: "Il Casellario INPS di sistema è solo nazionale in questo endpoint.",
       }),
     }, {
       headers: { "Cache-Control": CACHE_CONTROL },

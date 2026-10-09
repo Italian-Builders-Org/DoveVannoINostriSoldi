@@ -57,7 +57,8 @@
     "test:mcp:load": "node scripts/mcp_load.mjs",
     "test:browser:procurement-peers": "node scripts/browser/procurement-peers.mjs",
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs",
-    "test:browser:mobilita": "node scripts/browser/mobilita.mjs"
+    "test:browser:mobilita": "node scripts/browser/mobilita.mjs",
+    "test:browser:pensioni": "node scripts/browser/pensioni.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.4",

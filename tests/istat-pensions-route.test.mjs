@@ -14,6 +14,9 @@ test("the pensions API returns the requested ISTAT year", async () => {
   assert.equal(payload === null, false);
   assert.equal(payload.inpsOsservatorio.stock.pensionCount, 21_257_999);
   assert.equal(payload.inpsOsservatorio.vintageCube.osservatorioId, "388");
+  assert.equal(payload.inpsCasellarioSistema.stock.pensionCount, 23_015_011);
+  assert.equal(payload.inpsCasellarioSistema.stock.pensionerCount, 16_305_880);
+  assert.equal(payload.inpsCasellarioSistema.series.observations.length, 2);
 });
 
 test("the pensions API rejects non-canonical years", () => {
@@ -47,7 +50,9 @@ test("territorial pension queries preserve the national default and reject ambig
   const regional = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=itf3")).json();
   assert.equal(regional.territory, "ITF3");
   assert.equal(regional.inpsOsservatorio, null);
+  assert.equal(regional.inpsCasellarioSistema, null);
   assert.match(regional.inpsOsservatorioNote, /filtro territoriale/);
+  assert.match(regional.inpsCasellarioSistemaNote, /solo nazionale/);
   assert.ok(regional.pensionBenefits.length > 0);
   assert.ok(regional.pensionBenefits.every((row) => row.territory === "ITF3" && row.year === 2022));
   const abolished = await GET(new NextRequest("http://localhost/api/spese/pensioni?anno=2022&territorio=ITG29")).json();

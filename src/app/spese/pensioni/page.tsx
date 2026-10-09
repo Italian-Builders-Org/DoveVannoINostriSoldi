@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { compactEuroFromCents, exactEuro, integer, longDate, percent } from "@/lib/format";
 import type { IstatPensionCategory } from "@/lib/data/istat-pensions-contract";
+import { millionEurosToCents } from "@/lib/data/inps-casellario-sistema-contract";
 import { millionTenthsToCents } from "@/lib/data/inps-pensions-contract";
+import { inpsCasellarioSistemaSnapshot as casellario } from "@/lib/inps-casellario-sistema-snapshot";
 import { inpsPensionsOsservatorioSnapshot as inps } from "@/lib/inps-pensions-snapshot";
 import {
   istatPensionsData,
@@ -13,7 +15,7 @@ import styles from "./pensioni.module.css";
 export const metadata: Metadata = {
   title: "Pensioni e pensionati · INPS e ISTAT",
   description:
-    "Pensioni erogate dall'INPS al 1 gennaio 2026 e Casellario ISTAT 2012-2022, con perimetri, fonti e limiti tenuti distinti.",
+    "Pensioni erogate dall'INPS al 1 gennaio 2026, Casellario ISTAT 2012-2022 e aggiornamento Casellario INPS 2023-2024, con perimetri tenuti distinti.",
 };
 
 type BenefitPoint = {
@@ -191,15 +193,21 @@ export default function PensionsPage() {
   const inpsSeries = [...inps.stockSeries.observations].reverse();
   const previdenziali = inps.nature.items[0];
   const assistenziali = inps.nature.items[1];
+  const casellarioLatest = casellario.series.observations.at(-1);
+  if (!casellarioLatest) {
+    throw new Error("Serie Casellario INPS assente");
+  }
+  const casellarioAmountCents = millionEurosToCents(casellarioLatest.amountMillionEuros);
+  const casellarioRows = [...casellario.series.observations].reverse();
 
   return (
     <main className="shell page">
       <header className="page-intro">
         <h1>Pensioni e pensionati: quanto valgono</h1>
         <p>
-          Due perimetri restano distinti. L’INPS pubblica le pensioni che eroga, vigenti al 1
-          gennaio 2026. ISTAT pubblica il Casellario di tutti gli enti osservati, con ultimo anno
-          2022. I numeri non si sommano.
+          Tre perimetri restano distinti. L’INPS pubblica le pensioni che eroga, vigenti al 1
+          gennaio 2026. Il Casellario di sistema va dal 2012 al 2022 con ISTAT e prosegue nel
+          2023-2024 con l’Osservatorio INPS. I numeri non si sommano.
         </p>
       </header>
 
@@ -390,46 +398,58 @@ export default function PensionsPage() {
 
       <div className={`stat-strip ${styles.stats}`}>
         <div>
-          <span className="stat-label">Prestazioni Casellario ISTAT · {latestYear}</span>
-          <span className="stat-value">{integer(latestBenefits.pensionCount)}</span>
-          <span className="stat-note">stock al 31 dicembre · tutti gli enti del Casellario</span>
+          <span className="stat-label">Prestazioni Casellario · {casellarioLatest.year}</span>
+          <span className="stat-value">{integer(casellarioLatest.pensionCount)}</span>
+          <span className="stat-note">stock al 31 dicembre · sistema pensionistico (Osservatorio INPS)</span>
         </div>
         <div>
-          <span className="stat-label">Pensionati ISTAT · {latestYear}</span>
-          <span className="stat-value">{integer(latestPensioners.pensionerCount)}</span>
-          <span className="stat-note">persone con almeno una prestazione nel perimetro ISTAT</span>
+          <span className="stat-label">Pensionati Casellario · {casellarioLatest.year}</span>
+          <span className="stat-value">{integer(casellarioLatest.pensionerCount)}</span>
+          <span className="stat-note">persone con almeno una prestazione; non sono le 21 mln di pensioni INPS-erogatore</span>
         </div>
         <div>
-          <span className="stat-label">Prestazioni per pensionato · {latestYear}</span>
-          <span className="stat-value">{ratio(pensionsPerPensionerBps)}</span>
-          <span className="stat-note">rapporto tra i due stock, non persone diverse</span>
+          <span className="stat-label">Prestazioni per pensionato · {casellarioLatest.year}</span>
+          <span className="stat-value">{ratio(casellarioLatest.pensionsPerPensionerTenths * 10)}</span>
+          <span className="stat-note">1,4 in media: una persona può cumulare più trattamenti</span>
         </div>
         <div>
-          <span className="stat-label">Spesa lorda ISTAT · {latestYear}</span>
-          <span className="stat-value">{compactEuroFromCents(latestBenefits.grossAmountCents)}</span>
-          <span className="stat-note">importi nominali, non depurati dall’inflazione</span>
+          <span className="stat-label">Spesa lorda Casellario · {casellarioLatest.year}</span>
+          <span className="stat-value">{compactEuroFromCents(casellarioAmountCents)}</span>
+          <span className="stat-note">importo complessivo annuo del comunicato INPS del 23 ottobre 2025</span>
         </div>
       </div>
 
-      <section className="panel" aria-labelledby="series-title">
-        <h2 className="panel-title" id="series-title">Casellario ISTAT dal 2012 al {latestYear}</h2>
+      <div className="notice">
+        <strong>Il Casellario continua dopo ISTAT 2022</strong>
+        <p>
+          {casellario.methodology.progressioneIstat} Ultimo anno ISTAT in pagina: {latestYear}
+          {" "}({integer(latestBenefits.pensionCount)} prestazioni, {integer(latestPensioners.pensionerCount)} pensionati).
+          Non confondere con lo stock INPS-erogatore sopra.
+        </p>
+      </div>
+
+      <section className="panel" aria-labelledby="casellario-progress-title">
+        <h2 className="panel-title" id="casellario-progress-title">
+          Casellario di sistema: ISTAT {latestYear} e aggiornamento INPS 2023-2024
+        </h2>
         <p className={styles.note}>
-          Stock rilevati al 31 dicembre. La spesa è lorda e nominale; la media per pensione e il
-          reddito medio per pensionato sono indicatori descrittivi del rispettivo perimetro.
+          {casellario.series.warning} Le medie restano quelle pubblicate dalla fonte (non è
+          disponibile una mediana nazionale in questo rilascio).
         </p>
         <div
           className="table-scroll"
           role="region"
-          aria-label="Serie ISTAT di pensioni, pensionati e spesa; scorri orizzontalmente per vedere tutte le colonne"
+          aria-label="Serie Casellario ISTAT e prosecuzione INPS; scorri orizzontalmente per vedere tutte le colonne"
           tabIndex={0}
         >
           <table className="table">
             <caption className={styles.visuallyHidden}>
-              Pensioni, pensionati e spesa pensionistica ISTAT dal 2012 al {latestYear}.
+              Pensioni, pensionati e spesa del Casellario: ISTAT fino al {latestYear}, poi Osservatorio INPS 2023-2024.
             </caption>
             <thead>
               <tr>
                 <th scope="col">Anno</th>
+                <th scope="col">Fonte</th>
                 <th scope="col" className="num">Pensioni</th>
                 <th scope="col" className="num">Pensionati</th>
                 <th scope="col" className="num">Spesa lorda</th>
@@ -438,9 +458,21 @@ export default function PensionsPage() {
               </tr>
             </thead>
             <tbody>
-              {[...rows].reverse().map((point) => (
-                <tr key={point.year}>
+              {casellarioRows.map((point) => (
+                <tr key={`inps-casellario-${point.year}`}>
                   <th scope="row">{point.year}</th>
+                  <td>Osservatorio INPS</td>
+                  <td className="num">{integer(point.pensionCount)}</td>
+                  <td className="num">{integer(point.pensionerCount)}</td>
+                  <td className="num">{compactEuroFromCents(millionEurosToCents(point.amountMillionEuros))}</td>
+                  <td className="num">{exactEuro(point.meanBenefitEuros)}</td>
+                  <td className="num">{exactEuro(point.meanPensionerIncomeEuros)}</td>
+                </tr>
+              ))}
+              {[...rows].reverse().map((point) => (
+                <tr key={`istat-${point.year}`}>
+                  <th scope="row">{point.year}</th>
+                  <td>ISTAT</td>
                   <td className="num">{integer(point.pensionCount)}</td>
                   <td className="num">{integer(point.pensionerCount)}</td>
                   <td className="num">{compactEuroFromCents(point.grossAmountCents)}</td>
@@ -451,7 +483,36 @@ export default function PensionsPage() {
             </tbody>
           </table>
         </div>
+        <p className={styles.note}>
+          Quote 2024 sul numero di prestazioni:{" "}
+          {casellario.natureShares.items.map((item) => `${item.label} ${percent(item.sharePercent)}`).join(" · ")}.
+          {" "}Reddito medio annuo per sesso: uomini {exactEuro(casellario.gender.maschiMeanEuros)}, donne{" "}
+          {exactEuro(casellario.gender.femmineMeanEuros)}.
+        </p>
       </section>
+
+      <div className={`stat-strip ${styles.stats}`}>
+        <div>
+          <span className="stat-label">Prestazioni Casellario ISTAT · {latestYear}</span>
+          <span className="stat-value">{integer(latestBenefits.pensionCount)}</span>
+          <span className="stat-note">ultimo anno della serie ISTAT · stock al 31 dicembre</span>
+        </div>
+        <div>
+          <span className="stat-label">Pensionati ISTAT · {latestYear}</span>
+          <span className="stat-value">{integer(latestPensioners.pensionerCount)}</span>
+          <span className="stat-note">persone con almeno una prestazione nel perimetro ISTAT</span>
+        </div>
+        <div>
+          <span className="stat-label">Prestazioni per pensionato · {latestYear}</span>
+          <span className="stat-value">{ratio(pensionsPerPensionerBps)}</span>
+          <span className="stat-note">rapporto tra i due stock ISTAT, non persone diverse</span>
+        </div>
+        <div>
+          <span className="stat-label">Spesa lorda ISTAT · {latestYear}</span>
+          <span className="stat-value">{compactEuroFromCents(latestBenefits.grossAmountCents)}</span>
+          <span className="stat-note">importi nominali, non depurati dall’inflazione</span>
+        </div>
+      </div>
 
       <section className="panel" aria-labelledby="composition-title">
         <div className={styles.sectionHead}>
@@ -509,19 +570,23 @@ export default function PensionsPage() {
             <li>{inps.methodology.perimeter}</li>
             <li>{inps.methodology.definitions}</li>
             <li>{inps.methodology.amounts}</li>
+            <li>{casellario.methodology.perimeter}</li>
+            <li>{casellario.methodology.progressioneIstat}</li>
+            <li>{casellario.methodology.priorYear}</li>
             {data.methodology.map((item) => <li key={item}>{item}</li>)}
           </ul>
           <ul className={styles.methodList}>
+            {casellario.caveats.map((item) => <li key={item}>{item}</li>)}
             {data.caveats.map((item) => <li key={item}>{item}</li>)}
           </ul>
         </section>
         <section className="panel" aria-labelledby="scope-title">
           <h2 className="panel-title" id="scope-title">Perimetro da ricordare</h2>
           <dl className={styles.scopeList}>
-            <div><dt>INPS</dt><dd>stock al 1 gennaio 2026, solo ente erogatore INPS</dd></div>
-            <div><dt>ISTAT</dt><dd>stock al 31 dicembre {latestYear}, tutti gli enti del Casellario</dd></div>
-            <div><dt>Importi INPS</dt><dd>complessivo annuo da mensilità di gennaio, con arrotondamento della fonte</dd></div>
-            <div><dt>Importi ISTAT</dt><dd>lordi, nominali, senza rivalutazione</dd></div>
+            <div><dt>INPS erogatore</dt><dd>stock al 1 gennaio 2026, solo ente erogatore INPS</dd></div>
+            <div><dt>Casellario ISTAT</dt><dd>stock al 31 dicembre {latestYear}, tutti gli enti osservati</dd></div>
+            <div><dt>Casellario INPS</dt><dd>stock al 31 dicembre 2023-2024, stesso perimetro di sistema</dd></div>
+            <div><dt>Importi</dt><dd>lordi da mensilità di stock; medie della fonte, non mediane</dd></div>
           </dl>
         </section>
       </div>
@@ -529,6 +594,19 @@ export default function PensionsPage() {
       <section className="panel" aria-labelledby="sources-title">
         <h2 className="panel-title" id="sources-title">Fonti ufficiali e riproducibilità</h2>
         <ul className={styles.sourceList}>
+          {casellario.sources.map((source) => (
+            <li key={source.id}>
+              <a href={source.url} target="_blank" rel="noreferrer" aria-label={`${source.title}, si apre in una nuova scheda`}>
+                {source.title} ↗
+              </a>
+              <span>
+                Osservatorio{" "}
+                <a href={source.landingUrl} target="_blank" rel="noreferrer">servizi2.inps.it/…/4</a>
+                {" · "}pubblicato il {longDate(source.publicationDate)}
+              </span>
+              <code>sha256:{source.sha256}</code>
+            </li>
+          ))}
           {inps.sources.map((source) => (
             <li key={source.id}>
               <a href={source.url} target="_blank" rel="noreferrer" aria-label={`${source.title}, si apre in una nuova scheda`}>

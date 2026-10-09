@@ -434,6 +434,33 @@
       "trustModel": "Curated committed artifact transcribed from the official INPS osservatorio brief and table 388 schema. Validated by Node contract tests that reconcile stock, categories, management groups and the 2012-2026 count series."
     },
     {
+      "id": "inps-casellario-sistema",
+      "owner": "INPS Casellario sistema pensionistico",
+      "files": [
+        "src/data/generated/inps-casellario-sistema.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/inps_casellario_sistema_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_inps_casellario_sistema_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/inps-casellario-sistema.test.mjs",
+        "tests/pensions-ui.test.mjs",
+        "tests/istat-pensions-route.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/inps_casellario_sistema_snapshot.py",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/inps-casellario-sistema.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Hash-pinned INPS press-release PDF for the 31.12.2024 Casellario stock; 2023 prior-year totals of the same Osservatorio release reconciled to published YoY percentages."
+    },
+    {
       "id": "integrated-catalog",
       "owner": "Integrated source release catalog",
       "files": [

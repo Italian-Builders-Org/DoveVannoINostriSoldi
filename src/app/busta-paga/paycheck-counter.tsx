@@ -2,11 +2,22 @@
 
 import { useId, useMemo, useRef, useState, useEffect } from "react";
 import {
+  EMPLOYER_PROFILES,
+  INAIL_PRESETS,
+  INPS_CONTRIBUTION_CEILING_2026_EUR,
+  type EmployerProfileId,
+  type InailPresetId,
+} from "@/lib/paycheck-employer";
+import {
+  buildPaycheckCurve,
   computePaycheck,
   formatPaycheckEuro,
   formatPaycheckPercent,
+  formatPaycheckRate,
   parsePaycheckAnnualGross,
   parsePaycheckMonths,
+  solveAnnualGrossForAnnualNetEur,
+  solveAnnualGrossForMonthlyNetEur,
   type PaycheckMissionShare,
   type PaycheckMonthCount,
   type PaycheckRegionRates,
@@ -19,8 +30,28 @@ import {
 } from "@/lib/paycheck-share-card";
 import { PUBLIC_SITE_URL } from "@/lib/site";
 import shareStyles from "@/components/share-fact/share-fact.module.css";
+import { PaycheckCurveChart } from "./paycheck-curve-chart";
 import { PaycheckRegionsMap } from "./paycheck-regions-map";
 import styles from "./busta-paga.module.css";
+
+function euroInput(cents: number): string {
+  return String(Math.round(cents / 100));
+}
+
+function initialNet(
+  regions: readonly PaycheckRegionRates[],
+  regionCode: string,
+  annualGrossEur: number,
+  payMonths: PaycheckMonthCount,
+  missions: readonly PaycheckMissionShare[],
+) {
+  const region = regions.find((row) => row.code === regionCode) ?? regions[0];
+  const result = computePaycheck({ annualGrossEur, region, missions, payMonths });
+  return {
+    monthlyCents: result.monthlyNetCents,
+    annualCents: result.monthlyNetCents * result.payMonths,
+  };
+}
 
 type PaycheckCounterProps = {
   regions: readonly PaycheckRegionRates[];
@@ -44,24 +75,152 @@ export function PaycheckCounter({
   taxYear,
 }: PaycheckCounterProps) {
   const [annualGross, setAnnualGross] = useState(String(defaultAnnualGrossEur));
+  const [monthlyGross, setMonthlyGross] = useState(
+    String(Math.round(defaultAnnualGrossEur / defaultPayMonths)),
+  );
+  const [monthlyNet, setMonthlyNet] = useState(() =>
+    euroInput(initialNet(regions, defaultRegionCode, defaultAnnualGrossEur, defaultPayMonths, missions).monthlyCents),
+  );
+  const [annualNet, setAnnualNet] = useState(() =>
+    euroInput(initialNet(regions, defaultRegionCode, defaultAnnualGrossEur, defaultPayMonths, missions).annualCents),
+  );
   const [regionCode, setRegionCode] = useState(defaultRegionCode);
   const [payMonths, setPayMonths] = useState<PaycheckMonthCount>(defaultPayMonths);
+  const [employerProfileId, setEmployerProfileId] = useState<EmployerProfileId>("commerce-to-50");
+  const [inailPresetId, setInailPresetId] = useState<InailPresetId>("office");
   const annualId = useId();
+  const monthlyId = useId();
+  const monthlyNetId = useId();
+  const annualNetId = useId();
   const regionId = useId();
   const monthsId = useId();
+  const profileId = useId();
+  const inailId = useId();
 
   const region = regions.find((row) => row.code === regionCode) ?? regions[0];
+  const annualGrossEur = parsePaycheckAnnualGross(annualGross);
 
   const computation = useMemo(
     () =>
       computePaycheck({
-        annualGrossEur: parsePaycheckAnnualGross(annualGross),
+        annualGrossEur,
         region,
         missions,
         payMonths,
+        employerProfileId,
+        inailPresetId,
       }),
-    [annualGross, region, missions, payMonths],
+    [annualGrossEur, region, missions, payMonths, employerProfileId, inailPresetId],
   );
+
+  const curve = useMemo(
+    () =>
+      buildPaycheckCurve({
+        annualGrossEur,
+        region,
+        missions,
+        payMonths,
+        employerProfileId,
+        inailPresetId,
+      }),
+    [annualGrossEur, region, missions, payMonths, employerProfileId, inailPresetId],
+  );
+
+  function writeNets(annual: number, months: PaycheckMonthCount, nextRegion: PaycheckRegionRates) {
+    const result = computePaycheck({
+      annualGrossEur: annual,
+      region: nextRegion,
+      missions,
+      payMonths: months,
+      employerProfileId,
+      inailPresetId,
+    });
+    setMonthlyNet(euroInput(result.monthlyNetCents));
+    setAnnualNet(euroInput(result.monthlyNetCents * result.payMonths));
+  }
+
+  function onAnnualChange(raw: string) {
+    setAnnualGross(raw);
+    const annual = Number(raw);
+    if (!Number.isFinite(annual) || raw.trim() === "") return;
+    setMonthlyGross(String(Math.round(annual / payMonths)));
+    writeNets(annual, payMonths, region);
+  }
+
+  function onMonthlyChange(raw: string) {
+    setMonthlyGross(raw);
+    const monthly = Number(raw);
+    if (!Number.isFinite(monthly) || raw.trim() === "") return;
+    const annual = Math.round(monthly * payMonths);
+    setAnnualGross(String(annual));
+    writeNets(annual, payMonths, region);
+  }
+
+  function onMonthlyNetChange(raw: string) {
+    setMonthlyNet(raw);
+    const monthly = Number(raw);
+    if (!Number.isFinite(monthly) || raw.trim() === "") return;
+    const gross = solveAnnualGrossForMonthlyNetEur({
+      targetMonthlyNetEur: monthly,
+      region,
+      missions,
+      payMonths,
+      employerProfileId,
+      inailPresetId,
+    });
+    setAnnualGross(String(gross));
+    setMonthlyGross(String(Math.round(gross / payMonths)));
+    const result = computePaycheck({
+      annualGrossEur: gross,
+      region,
+      missions,
+      payMonths,
+      employerProfileId,
+      inailPresetId,
+    });
+    setAnnualNet(euroInput(result.monthlyNetCents * result.payMonths));
+  }
+
+  function onAnnualNetChange(raw: string) {
+    setAnnualNet(raw);
+    const annualTarget = Number(raw);
+    if (!Number.isFinite(annualTarget) || raw.trim() === "") return;
+    const gross = solveAnnualGrossForAnnualNetEur({
+      targetAnnualNetEur: annualTarget,
+      region,
+      missions,
+      payMonths,
+      employerProfileId,
+      inailPresetId,
+    });
+    setAnnualGross(String(gross));
+    setMonthlyGross(String(Math.round(gross / payMonths)));
+    const result = computePaycheck({
+      annualGrossEur: gross,
+      region,
+      missions,
+      payMonths,
+      employerProfileId,
+      inailPresetId,
+    });
+    setMonthlyNet(euroInput(result.monthlyNetCents));
+  }
+
+  function onMonthsChange(next: PaycheckMonthCount) {
+    setPayMonths(next);
+    const annual = Number(annualGross);
+    if (!Number.isFinite(annual) || annualGross.trim() === "") return;
+    setMonthlyGross(String(Math.round(annual / next)));
+    writeNets(annual, next, region);
+  }
+
+  function onRegionChange(code: string) {
+    setRegionCode(code);
+    const nextRegion = regions.find((row) => row.code === code) ?? region;
+    const annual = Number(annualGross);
+    if (!Number.isFinite(annual) || annualGross.trim() === "") return;
+    writeNets(annual, payMonths, nextRegion);
+  }
 
   const maxMission = Math.max(...computation.missions.map((row) => row.monthlyCents), 1);
 
@@ -85,8 +244,50 @@ export function PaycheckCounter({
             max={500000}
             step={500}
             value={annualGross}
-            onChange={(event) => setAnnualGross(event.target.value)}
+            onChange={(event) => onAnnualChange(event.target.value)}
             data-testid="paycheck-annual-gross"
+          />
+        </label>
+        <label className={styles.field} htmlFor={monthlyId}>
+          <span>Stipendio mensile lordo (€)</span>
+          <input
+            id={monthlyId}
+            type="number"
+            inputMode="decimal"
+            min={100}
+            max={50000}
+            step={50}
+            value={monthlyGross}
+            onChange={(event) => onMonthlyChange(event.target.value)}
+            data-testid="paycheck-monthly-gross-input"
+          />
+        </label>
+        <label className={styles.field} htmlFor={monthlyNetId}>
+          <span>Stipendio mensile netto (€)</span>
+          <input
+            id={monthlyNetId}
+            type="number"
+            inputMode="decimal"
+            min={0}
+            max={50000}
+            step={50}
+            value={monthlyNet}
+            onChange={(event) => onMonthlyNetChange(event.target.value)}
+            data-testid="paycheck-monthly-net-input"
+          />
+        </label>
+        <label className={styles.field} htmlFor={annualNetId}>
+          <span>Stipendio annuo netto (€)</span>
+          <input
+            id={annualNetId}
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={500000}
+            step={500}
+            value={annualNet}
+            onChange={(event) => onAnnualNetChange(event.target.value)}
+            data-testid="paycheck-annual-net-input"
           />
         </label>
         <label className={styles.field} htmlFor={regionId}>
@@ -94,7 +295,7 @@ export function PaycheckCounter({
           <select
             id={regionId}
             value={region.code}
-            onChange={(event) => setRegionCode(event.target.value)}
+            onChange={(event) => onRegionChange(event.target.value)}
             data-testid="paycheck-region"
           >
             {regions.map((row) => (
@@ -109,7 +310,7 @@ export function PaycheckCounter({
           <select
             id={monthsId}
             value={payMonths}
-            onChange={(event) => setPayMonths(parsePaycheckMonths(event.target.value))}
+            onChange={(event) => onMonthsChange(parsePaycheckMonths(event.target.value))}
             data-testid="paycheck-months"
           >
             {payMonthOptions.map((count) => (
@@ -119,7 +320,42 @@ export function PaycheckCounter({
             ))}
           </select>
         </label>
+        <label className={styles.field} htmlFor={profileId}>
+          <span>Profilo contributi del datore</span>
+          <select
+            id={profileId}
+            value={employerProfileId}
+            onChange={(event) => setEmployerProfileId(event.target.value as EmployerProfileId)}
+            data-testid="paycheck-employer-profile"
+          >
+            {EMPLOYER_PROFILES.map((profile) => (
+              <option key={profile.id} value={profile.id}>
+                {profile.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className={styles.field} htmlFor={inailId}>
+          <span>Tasso INAIL illustrativo</span>
+          <select
+            id={inailId}
+            value={inailPresetId}
+            onChange={(event) => setInailPresetId(event.target.value as InailPresetId)}
+            data-testid="paycheck-inail"
+          >
+            {INAIL_PRESETS.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </form>
+      <p className={styles.hint}>
+        Puoi partire dal lordo o dal netto. Il mensile e l’annuo si aggiornano insieme. Se
+        inserisci un netto, la RAL è quella che ci si avvicina di più. Cambiare le mensilità tiene
+        ferma la RAL.
+      </p>
 
       <section className={styles.summary} aria-labelledby="busta-sintesi-title">
         <div>
@@ -132,6 +368,9 @@ export function PaycheckCounter({
           </strong>
           <p className={styles.netLabel}>
             netto medio per cedolino ({taxYear}, {computation.payMonths} mensilità)
+          </p>
+          <p className={styles.annualNet} data-testid="paycheck-annual-net">
+            Netto annuo {formatPaycheckEuro(computation.monthlyNetCents * computation.payMonths)}
           </p>
         </div>
         <dl className={styles.metrics}>
@@ -149,12 +388,26 @@ export function PaycheckCounter({
             <dt>Tasse (IRPEF + addizionali)</dt>
             <dd>{formatPaycheckEuro(computation.monthlyTaxCents)}</dd>
           </div>
+          <div>
+            <dt>Oneri del datore</dt>
+            <dd data-testid="paycheck-employer-monthly">
+              {formatPaycheckEuro(computation.monthlyEmployerCents)}
+            </dd>
+          </div>
+          <div>
+            <dt>Costo azienda / mese</dt>
+            <dd data-testid="paycheck-company-monthly">
+              {formatPaycheckEuro(computation.monthlyCompanyCostCents)}
+            </dd>
+          </div>
         </dl>
         <PaycheckShareButton computation={computation} />
       </section>
 
+      <PaycheckCurveChart points={curve} enteredAnnualEur={annualGrossEur} />
+
       <PaycheckRegionsMap
-        annualGrossEur={parsePaycheckAnnualGross(annualGross)}
+        annualGrossEur={annualGrossEur}
         payMonths={payMonths}
         regions={regions}
         missions={missions}
@@ -178,6 +431,47 @@ export function PaycheckCounter({
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className={styles.breakdown} aria-labelledby="busta-datore-title">
+        <h2 id="busta-datore-title" className="panel-title">
+          Oneri a carico del datore
+        </h2>
+        <p className={styles.hint}>
+          {computation.employerProfileLabel}. Questi importi non escono dal netto: il datore li
+          versa o li accantona oltre la RAL. INPS è di tabella 2026, fino al massimale di{" "}
+          {new Intl.NumberFormat("it-IT").format(INPS_CONTRIBUTION_CEILING_2026_EUR)} €. Il TFR è
+          la retribuzione divisa per 13,5: lo 0,50% è il contributo all’INPS, il resto
+          l’accantonamento. L’INAIL ({computation.inailPerMille}‰) è un tasso illustrativo, non il
+          premio della posizione assicurativa.
+        </p>
+        {computation.inpsBaseCapped ? (
+          <p className={styles.hint}>
+            La RAL supera il massimale: i contributi INPS non crescono oltre quella soglia. TFR e
+            INAIL in questa stima restano sulla RAL intera.
+          </p>
+        ) : null}
+        <ul className={styles.deductionList} data-testid="paycheck-employer-lines">
+          {computation.employerCharges.map((row) => (
+            <li key={row.key}>
+              <div>
+                <strong>{row.label}</strong>
+                <span>
+                  {row.key === "inail"
+                    ? `${computation.inailPerMille}‰ sulla RAL`
+                    : `${formatPaycheckRate(row.rate)} ${
+                        row.base === "inps" ? "sull’imponibile INPS" : "sulla RAL"
+                      }`}
+                </span>
+              </div>
+              <em>{formatPaycheckEuro(row.monthlyCents)}</em>
+            </li>
+          ))}
+        </ul>
+        <p className={styles.employerTotals} data-testid="paycheck-employer-total">
+          Oneri annui del datore {formatPaycheckEuro(computation.annualEmployerCents)} · costo
+          azienda annuo {formatPaycheckEuro(computation.annualCompanyCostCents)}
+        </p>
       </section>
 
       <section className={styles.breakdown} aria-labelledby="busta-missioni-title">

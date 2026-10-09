@@ -291,18 +291,21 @@ def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
     snapshot = build_snapshot(spec, pdf_path, payload)
     encoded = canonical_bytes(snapshot)
     data_path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = tempfile.NamedTemporaryFile("wb", delete=False, dir=str(data_path.parent))
+    with tempfile.NamedTemporaryFile(
+        "wb",
+        delete=False,
+        dir=str(data_path.parent),
+        prefix=f".{data_path.name}.",
+        suffix=".tmp",
+    ) as handle:
+        temporary = Path(handle.name)
+        handle.write(encoded)
+        handle.write(b"\n")
+        handle.flush()
     try:
-        tmp.write(encoded)
-        tmp.write(b"\n")
-        tmp.flush()
-        tmp.close()
-        Path(tmp.name).replace(data_path)
+        temporary.replace(data_path)
     finally:
-        try:
-            Path(tmp.name).unlink(missing_ok=True)
-        except OSError:
-            pass
+        temporary.unlink(missing_ok=True)
 
     spec = copy.deepcopy(spec)
     spec["integrity"]["dataArtifact"] = {

@@ -209,6 +209,12 @@ const pensionsRuntimeFiles = [
 const openCivitas2015RuntimeFiles = ["src/data/generated/opencivitas-2015.json"];
 const openCivitas2016RuntimeFiles = ["src/data/generated/opencivitas-2016.json"];
 const openCivitas2017RuntimeFiles = ["src/data/generated/opencivitas-2017.json"];
+const openCivitas2018AmministrazioneRuntimeFiles = ["src/data/generated/opencivitas-2018-amministrazione.json"];
+const openCivitas2018IstruzioneRuntimeFiles = ["src/data/generated/opencivitas-2018-istruzione.json"];
+const openCivitas2018PoliziaRuntimeFiles = ["src/data/generated/opencivitas-2018-polizia.json"];
+const openCivitas2018RifiutiRuntimeFiles = ["src/data/generated/opencivitas-2018-rifiuti.json"];
+const openCivitas2018SocialeAsiliRuntimeFiles = ["src/data/generated/opencivitas-2018-sociale-asili.json"];
+const openCivitas2018ViabilitaRuntimeFiles = ["src/data/generated/opencivitas-2018-viabilita.json"];
 const openCivitas2019AmministrazioneRuntimeFiles = [
   "src/data/generated/opencivitas-2019-amministrazione.json",
 ];
@@ -365,6 +371,12 @@ const nextConfig: NextConfig = {
     "/api/spese/opencivitas-2015": openCivitas2015RuntimeFiles,
     "/api/spese/opencivitas-2016": openCivitas2016RuntimeFiles,
     "/api/spese/opencivitas-2017": openCivitas2017RuntimeFiles,
+    "/api/spese/opencivitas-2018-amministrazione": openCivitas2018AmministrazioneRuntimeFiles,
+    "/api/spese/opencivitas-2018-istruzione": openCivitas2018IstruzioneRuntimeFiles,
+    "/api/spese/opencivitas-2018-polizia": openCivitas2018PoliziaRuntimeFiles,
+    "/api/spese/opencivitas-2018-rifiuti": openCivitas2018RifiutiRuntimeFiles,
+    "/api/spese/opencivitas-2018-sociale-asili": openCivitas2018SocialeAsiliRuntimeFiles,
+    "/api/spese/opencivitas-2018-viabilita": openCivitas2018ViabilitaRuntimeFiles,
     "/api/spese/opencivitas-2019-amministrazione": openCivitas2019AmministrazioneRuntimeFiles,
     "/api/spese/opencivitas-2019-istruzione": openCivitas2019IstruzioneRuntimeFiles,
     "/api/spese/opencivitas-2019-polizia": openCivitas2019PoliziaRuntimeFiles,
@@ -458,6 +470,12 @@ const nextConfig: NextConfig = {
       ...openCivitas2015RuntimeFiles,
       ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
+      ...openCivitas2018AmministrazioneRuntimeFiles,
+      ...openCivitas2018IstruzioneRuntimeFiles,
+      ...openCivitas2018PoliziaRuntimeFiles,
+      ...openCivitas2018RifiutiRuntimeFiles,
+      ...openCivitas2018SocialeAsiliRuntimeFiles,
+      ...openCivitas2018ViabilitaRuntimeFiles,
       ...openCivitas2019AmministrazioneRuntimeFiles,
       ...openCivitas2019IstruzioneRuntimeFiles,
       ...openCivitas2019PoliziaRuntimeFiles,
@@ -492,6 +510,12 @@ const nextConfig: NextConfig = {
       ...openCivitas2015RuntimeFiles,
       ...openCivitas2016RuntimeFiles,
       ...openCivitas2017RuntimeFiles,
+      ...openCivitas2018AmministrazioneRuntimeFiles,
+      ...openCivitas2018IstruzioneRuntimeFiles,
+      ...openCivitas2018PoliziaRuntimeFiles,
+      ...openCivitas2018RifiutiRuntimeFiles,
+      ...openCivitas2018SocialeAsiliRuntimeFiles,
+      ...openCivitas2018ViabilitaRuntimeFiles,
       ...openCivitas2019AmministrazioneRuntimeFiles,
       ...openCivitas2019IstruzioneRuntimeFiles,
       ...openCivitas2019PoliziaRuntimeFiles,

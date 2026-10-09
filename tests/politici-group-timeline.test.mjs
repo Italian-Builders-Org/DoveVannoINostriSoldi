@@ -3,9 +3,10 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
-  addDays, changeDates, clampTimelineDate, compositionAt, groupAt, groupNameAt, parseGroupTimeline,
+  addDays, changeDates, clampTimelineDate, compositionAt, currentRoleStarted, groupAt, groupCountsAt, groupNameAt,
+  parseGroupTimeline, sharedTimelineRange, timelineChangeDates,
 } = await import("../src/lib/politici-group-timeline.ts");
-const { getRepubblicaGroupTimeline, getRepubblicaMap } = await import("../src/lib/politici-repubblica.ts");
+const { getRepubblicaGraph, getRepubblicaGroupTimeline, getRepubblicaMap } = await import("../src/lib/politici-repubblica.ts");
 const { GET } = await import("../src/app/api/politici/gruppi-nel-tempo/route.ts");
 const { readAtlasState, atlasUrl, atDate } = await import("../src/app/politici/atlas-model.ts");
 
@@ -24,6 +25,9 @@ const fixture = {
   ],
   former: [{ groupId: "senato-a", start: "2022-10-18", until: "2023-05-01" }],
 };
+// Government appointments carry only the start of each person's current role.
+const government = { members: [{ personId: "gov-1", since: "2022-10-21" }, { personId: "sen-s1", since: "2023-09-01" }] };
+const document = (senato = fixture, camera = { ...fixture, chamber: "camera" }, gov = government) => ({ camera, senato, government: gov });
 
 test("groupAt treats `until` as exclusive and dates before the first adhesion as out of office (#556)", () => {
   const [first, second] = fixture.members;
@@ -55,6 +59,28 @@ test("change dates are the days the composition moves, inside the published rang
   assert.deepEqual(changeDates(fixture), ["2022-10-18", "2023-05-01", "2023-06-01", "2023-11-22"]);
 });
 
+test("group counts on a day follow the official names then in force, former members included (#556)", () => {
+  assert.deepEqual(groupCountsAt(fixture, "2023-01-10"), [{ groupId: "senato-a", family: "fam-a", label: "A", count: 2 }]);
+  assert.deepEqual(groupCountsAt(fixture, "2023-06-15"), [
+    { groupId: "senato-a", family: "fam-a", label: "A2", count: 1 },
+    { groupId: "senato-misto", family: "misto", label: "Misto", count: 1 },
+  ]);
+  assert.deepEqual(groupCountsAt(fixture, "2022-10-17"), [], "nobody had joined a group yet");
+});
+
+test("the Grafo moves both chambers and the Government on one shared range (#556)", () => {
+  const timeline = document(fixture, { ...fixture, chamber: "camera", firstDate: "2022-10-19", lastDate: "2024-02-15" });
+  assert.deepEqual(sharedTimelineRange(timeline), { firstDate: "2022-10-19", lastDate: "2024-01-31" }, "only days both chambers publish");
+  assert.deepEqual(timelineChangeDates(timeline), ["2022-10-21", "2023-05-01", "2023-06-01", "2023-09-01", "2023-11-22"]);
+});
+
+test("a current government role starts on its published day; earlier roles are not in the source (#556)", () => {
+  assert.equal(currentRoleStarted(government, "gov-1", "2022-10-20"), false);
+  assert.equal(currentRoleStarted(government, "gov-1", "2022-10-21"), true);
+  assert.equal(currentRoleStarted(government, "sen-s1", "2023-08-31"), false);
+  assert.equal(currentRoleStarted(government, "dep-9", "2022-10-18"), null, "not a government member");
+});
+
 test("dates are validated, clamped to the range and moved in UTC days (#556)", () => {
   assert.equal(addDays("2024-02-28", 1), "2024-02-29");
   assert.equal(addDays("2024-03-01", -1), "2024-02-29");
@@ -65,14 +91,17 @@ test("dates are validated, clamped to the range and moved in UTC days (#556)", (
 });
 
 test("the parser refuses an overlapping, unknown or unordered timeline instead of drawing it (#556)", () => {
-  assert.doesNotThrow(() => parseGroupTimeline({ camera: { ...fixture, chamber: "camera" }, senato: fixture }));
+  assert.doesNotThrow(() => parseGroupTimeline(document()));
   const overlapping = structuredClone(fixture);
   overlapping.members[0].segments[1].start = "2023-11-01";
-  assert.throws(() => parseGroupTimeline({ camera: { ...fixture, chamber: "camera" }, senato: overlapping }), /sovrappost/);
+  assert.throws(() => parseGroupTimeline(document(overlapping)), /sovrappost/);
   const unknown = structuredClone(fixture);
   unknown.former[0].groupId = "senato-x";
-  assert.throws(() => parseGroupTimeline({ camera: { ...fixture, chamber: "camera" }, senato: unknown }), /gruppo sconosciuto/);
+  assert.throws(() => parseGroupTimeline(document(unknown)), /gruppo sconosciuto/);
   assert.throws(() => parseGroupTimeline({ camera: fixture }), /Risposta/);
+  assert.throws(() => parseGroupTimeline({ camera: { ...fixture, chamber: "camera" }, senato: fixture }), /governo/, "a document without appointments is not drawn");
+  assert.throws(() => parseGroupTimeline(document(fixture, undefined, { members: [{ personId: "gov-1", since: "2022-02-30" }] })), /incarico di governo/);
+  assert.throws(() => parseGroupTimeline(document(fixture, undefined, { members: [government.members[0], government.members[0]] })), /incarico di governo/);
 });
 
 test("committed snapshots: the composition on the observation date is today's map (#556)", () => {
@@ -95,6 +124,21 @@ test("committed snapshots: the composition on the observation date is today's ma
     for (const item of series.groups) assert.ok(map.groups.some((group) => group.id === item.id && group.partyFamily === item.family));
   }
   assert.ok(timeline.camera.former.length > 0 && timeline.senato.former.length > 0);
+  // Government: one entry per member, the earliest current appointment, all in force on the last shared day.
+  const members = map.people.filter((person) => person.government);
+  assert.deepEqual(new Set(timeline.government.members.map((member) => member.personId)), new Set(members.map((person) => person.id)));
+  const { firstDate, lastDate } = sharedTimelineRange(timeline);
+  for (const member of timeline.government.members) {
+    assert.ok(member.since <= lastDate, member.personId);
+    assert.equal(currentRoleStarted(timeline.government, member.personId, lastDate), true, member.personId);
+  }
+  const graph = getRepubblicaGraph();
+  for (const member of timeline.government.members) {
+    const since = graph.people.find((person) => person.id === member.personId).roles
+      .filter((role) => role.institutionId === "governo").map((role) => role.since).sort()[0];
+    assert.equal(member.since, since, member.personId);
+  }
+  assert.ok(timeline.government.members.some((member) => member.since > firstDate), "some current roles began after the first day");
   // First day of the groups: every sitting member then had a group, and names exist for every group in use.
   for (const chamber of ["camera", "senato"]) {
     const series = timeline[chamber];
@@ -114,12 +158,13 @@ test("the timeline endpoint is one static, cacheable document (#556)", async () 
   assert.deepEqual(parseGroupTimeline(body), parseGroupTimeline(getRepubblicaGroupTimeline()));
 });
 
-test("the chosen date is shareable in the URL only where the hemicycle shows it (#556)", () => {
+test("the chosen date is shareable in the URL only where a view shows it (#556)", () => {
   const map = getRepubblicaMap();
   const read = (query) => readAtlasState(new URLSearchParams(query), map).state;
   assert.equal(read("vista=camera&al=2023-11-22").asOf, "2023-11-22");
   assert.equal(read("vista=senato&al=2023-02-30").asOf, null);
   assert.equal(read("vista=senato&al=2023-13-45").asOf, null, "an impossible month is ignored, not thrown");
+  assert.equal(read("vista=grafo&al=2023-11-22").asOf, "2023-11-22");
   assert.equal(read("vista=governo&al=2023-11-22").asOf, null);
   assert.equal(read("vista=camera").asOf, null);
   const url = atlasUrl("https://example.test/politici?utm=x", read("vista=camera&al=2023-11-22"));

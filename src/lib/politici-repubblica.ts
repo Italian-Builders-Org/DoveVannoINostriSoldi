@@ -1353,7 +1353,14 @@ export function getRepubblicaGroupTimeline(): GroupTimeline {
         until: name.endDate === null ? null : addDays(name.endDate, 1),
       })));
 
-  return { camera: cameraTimeline, senato: senatoTimeline };
+  // Government: the earliest appointment in force per member. Ended roles are not in the source.
+  const governmentMembers = graph.people.filter((person) => person.isGovernmentMember).map((person) => {
+    const since = person.roles.filter((role) => role.institutionId === "governo").map((role) => role.since).toSorted()[0];
+    require(typeof since === "string", `incarico di governo senza data: ${person.id}`);
+    return { personId: person.id, since: since! };
+  }).sort((left, right) => left.personId.localeCompare(right.personId));
+
+  return { camera: cameraTimeline, senato: senatoTimeline, government: { members: governmentMembers } };
 }
 
 export type RepublicParliamentaryTerms = {

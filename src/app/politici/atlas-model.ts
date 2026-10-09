@@ -272,9 +272,9 @@ function isCalendarDay(value: string | null): value is string {
   return Number.isFinite(time) && new Date(time).toISOString().startsWith(value);
 }
 
-/** Only the Camera and Senato hemicycles draw seats by group, so only they read a date (#556). */
-export function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" {
-  return scope === "camera" || scope === "senato";
+/** The hemicycles and the Grafo draw groups by day, so only they read a date (#556). */
+export function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" | "grafo" {
+  return scope === "camera" || scope === "senato" || scope === "grafo";
 }
 
 /** Condanne and Storico voti render their own directories, which read neither the term nor the group-change filter. */

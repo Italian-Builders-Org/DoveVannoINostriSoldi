@@ -9,7 +9,7 @@ const {
   getRepubblicaLegislativeActs,
   getRepubblicaLegislativeSources,
 } = await import("../../src/lib/politici-repubblica.ts");
-const { addDays, changeDates, compositionAt } = await import("../../src/lib/politici-group-timeline.ts");
+const { addDays, changeDates, compositionAt, groupCountsAt, sharedTimelineRange } = await import("../../src/lib/politici-group-timeline.ts");
 import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitForServer } from "./harness.mjs";
 
 // Run against the real Next server. Only the final failure scenario intercepts API
@@ -255,6 +255,49 @@ try {
       assert.equal(await page.evaluate(() => [...document.querySelectorAll('[role="note"]')].some((note) => note.textContent.includes("Filtri e ricerca usano i dati di oggi") && note.textContent.includes("pubblicate dal Senato"))), true);
     });
   }
+  // Grafo (#556): both chamber cards follow the series; government portraits whose current role starts later are dashed.
+  const grafoBands = (page) => page.$$eval("[data-chamber] path[data-group-id]", (paths) => paths.map((path) =>
+    `${path.closest("[data-chamber]").dataset.chamber}:${path.dataset.groupId}:${path.dataset.seats}`).sort());
+  const expectedBands = (date) => ["camera", "senato"].flatMap((chamber) =>
+    groupCountsAt(timeline[chamber], date).filter((item) => item.count > 0).map((item) => `${chamber}:${item.groupId}:${item.count}`)).sort();
+  const todayBands = ["camera", "senato"].flatMap((chamber) => map.groups
+    .filter((group) => group.chamberId === chamber)
+    .map((group) => [group.id, map.people.filter((person) => person.chamberId === chamber && person.groupId === group.id).length])
+    .filter(([, count]) => count > 0)
+    .map(([groupId, count]) => `${chamber}:${groupId}:${count}`)).sort();
+  const laterRoles = (page) => page.$$eval('[data-graph-person][data-role-later="true"]', (items) => items.map((item) => item.dataset.graphPerson).sort());
+  const grafoRange = sharedTimelineRange(timeline);
+  // The day before the last government appointment: someone's current role had not started, and groups had moved.
+  const lastAppointment = timeline.government.members.map((member) => member.since).sort().at(-1);
+  const grafoDay = addDays(lastAppointment, -1);
+  assert.ok(grafoDay > grafoRange.firstDate && grafoDay < grafoRange.lastDate, "Serve un giorno interno alla serie del Grafo");
+  assert.notDeepEqual(expectedBands(grafoDay), todayBands, "Il giorno scelto deve avere una composizione diversa da oggi");
+  for (const width of [390, 1280]) {
+    await scenario(`group-timeline-grafo-${width}`, `${urls[0]}?vista=grafo&al=${grafoDay}`, width, async (page) => {
+      await page.waitForSelector('input[type="range"]');
+      await page.waitForFunction(() => document.querySelector('[data-graph-person][data-role-later="true"]'));
+      assert.deepEqual(await grafoBands(page), expectedBands(grafoDay));
+      const rendered = await page.$$eval("[data-graph-person]", (items) => items.map((item) => item.dataset.graphPerson));
+      const expectedLater = timeline.government.members
+        .filter((member) => member.since > grafoDay && rendered.includes(member.personId))
+        .map((member) => member.personId).sort();
+      assert.ok(expectedLater.length > 0);
+      assert.deepEqual(await laterRoles(page), expectedLater);
+      const label = await page.$eval('[data-role-later="true"]', (item) => item.getAttribute("aria-label"));
+      assert.match(label, / dal \d{1,2} \p{L}+ \d{4}$/u, "Il ritratto tratteggiato dice da quando vale l’incarico attuale");
+      assert.equal(await page.evaluate(() => [...document.querySelectorAll('[role="note"]')].some((note) =>
+        note.textContent.includes("Filtri e ricerca usano i dati di oggi") && note.textContent.includes("chi ha lasciato il Governo non compare"))), true);
+      await page.focus('input[type="range"]');
+      await page.keyboard.press("ArrowRight");
+      await page.waitForFunction((date) => new URL(location.href).searchParams.get("al") === date, {}, lastAppointment);
+      assert.deepEqual(await grafoBands(page), expectedBands(lastAppointment));
+      await clickText(page, "Torna a oggi");
+      await page.waitForFunction(() => !new URL(location.href).searchParams.has("al"));
+      assert.deepEqual(await grafoBands(page), todayBands);
+      assert.deepEqual(await laterRoles(page), []);
+    });
+  }
+
   await scenario("group-timeline-error-retry", `${urls[0]}?vista=camera`, 390, async (page) => {
     let fail = true;
     await page.setRequestInterception(true);

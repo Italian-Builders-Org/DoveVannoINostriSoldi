@@ -216,6 +216,27 @@ test("institutional overview geometry stays deterministic and anchors hierarchy 
   assert.ok(stacked.height > wide.height);
 });
 
+test("overview cards draw a past day's composition in the given order and proportions (#556)", () => {
+  const today = buildOverviewGeometry(map, "wide");
+  const past = buildOverviewGeometry(map, "wide", {
+    camera: [
+      { groupId: "past-b", family: "misto", label: "B", count: 3 },
+      { groupId: "past-empty", family: "misto", label: "Vuoto", count: 0 },
+      { groupId: "past-a", family: "misto", label: "A", count: 1 },
+    ],
+  });
+  const camera = past.cards.find((card) => card.chamberId === "camera");
+  assert.deepEqual(camera.wedges.map((wedge) => [wedge.groupId, wedge.seatCount]), [["past-b", 3], ["past-a", 1]], "empty groups have no band");
+  assert.deepEqual(past.cards.find((card) => card.chamberId === "senato"), today.cards.find((card) => card.chamberId === "senato"), "a chamber without a day keeps today's bands");
+  // Bands split the half circle by count: three quarters, then one quarter.
+  const [first, second] = camera.wedges;
+  // Anchors are rounded to hundredths of a unit.
+  const angle = (wedge) => Math.atan2(camera.cy - wedge.anchorY, wedge.anchorX - camera.cx);
+  assert.ok(Math.abs(angle(first) - (Math.PI - (Math.PI * 3) / 8)) < 1e-3);
+  assert.ok(Math.abs(angle(second) - (Math.PI / 8)) < 1e-3);
+  assert.deepEqual(past.cards.map((card) => [card.x, card.y, card.width]), today.cards.map((card) => [card.x, card.y, card.width]));
+});
+
 test("legislature filter (#556) reads per-chamber terms and excludes people outside Parliament", () => {
   const firstInChamber = filteredPeople(map, { ...state, scope: "repubblica", term: "primo-ramo" });
   assert.ok(firstInChamber.length > 0);

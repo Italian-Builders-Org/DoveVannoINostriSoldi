@@ -123,6 +123,9 @@ const mandatoryDatasetIds = [
   "rgs-spesa-statale-regionalizzata-2020",
   "rgs-spesa-statale-regionalizzata-2021",
   "rgs-spesa-statale-regionalizzata-2022",
+  "rgs-spesa-statale-regionalizzata-consolidata",
+  "rgs-spesa-statale-regionalizzata-enti",
+  "rgs-spesa-statale-regionalizzata-fondi",
   "rimborsi-spese",
   "rimborsi-spese-buchi",
   "rinnovi-proroghe",
@@ -154,7 +157,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 122,
+  datasets: 125,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -190,6 +193,9 @@ const expectedReferencePeriods = {
   "rgs-spesa-statale-regionalizzata-2020": "Esercizio finanziario 2020; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2021": "Esercizio finanziario 2021; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2022": "Esercizio finanziario 2022; spesa del Bilancio dello Stato per territorio destinatario finale",
+  "rgs-spesa-statale-regionalizzata-consolidata": "Esercizi finanziari 2008-2023; spesa consolidata (Bilancio dello Stato, Enti e Fondi oggetto della pubblicazione) per territorio destinatario finale",
+  "rgs-spesa-statale-regionalizzata-enti": "Esercizi finanziari 2008-2023; spesa degli Enti oggetto della pubblicazione per territorio destinatario finale",
+  "rgs-spesa-statale-regionalizzata-fondi": "Esercizi finanziari 2008-2023; spesa effettuata attraverso i Fondi oggetto della pubblicazione per territorio destinatario finale",
   "pnrr-progetti": "2026-06-13",
   "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
   "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",

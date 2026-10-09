@@ -334,6 +334,44 @@ degli interessi: il corpus le conserva come pubblicate. Il pacchetto CKAN riport
 `cc-by`, ma pagina e file non dichiarano una licenza: lo stato resta
 `not-declared`.
 
+### Spesa statale consolidata, Enti e Fondi per territorio 2008-2023
+
+La stessa pubblicazione RGS («Spesa Statale Regionalizzata - Pagato
+Regionalizzato») ha, accanto alla serie Bilancio, tre serie territoriali con un
+pacchetto CKAN e un file da 104 righe per anno (26 territori per 4 misure):
+`SRS_SPE_PAR_SPESR_001` (spesa consolidata), `SRS_SPE_PAR_SPENT_001` (spesa
+degli Enti oggetto della pubblicazione) e `SRS_SPE_PAR_SPFON_001` (spesa
+effettuata attraverso i Fondi oggetto della pubblicazione). Entrano nel corpus
+come tre dataset, uno per serie con tutti gli esercizi dal 2008 al 2023 e la
+colonna `Anno`: `rgs-spesa-statale-regionalizzata-consolidata`, `-enti` e
+`-fondi`, 1.664 righe l'uno. Con poche righe per anno un dataset per esercizio
+avrebbe moltiplicato ricevute e voci di catalogo senza aggiungere controllo.
+
+La scheda CKAN della consolidata ripete la descrizione della serie Bilancio
+(«al netto degli interessi sul debito pubblico, dei fondi e degli enti»), ma gli
+importi sono da 2,2 a 2,6 volte quelli del Bilancio (#728). Il perimetro è
+quindi verificato sui dati: per ogni anno e per ognuno dei 26 territori,
+Bilancio + Enti + Fondi = Consolidata entro 15 centesimi di milione. Lo scarto
+massimo misurato è 0,13 milioni (Abruzzo 2008, Sardegna 2022), quello nazionale resta entro
+0,12: sono gli arrotondamenti a due decimali delle componenti. La parte
+Bilancio è la somma per territorio delle righe in valori assoluti delle fixture
+2008-2022 e, per il 2023, dello snapshot tipizzato. Se l'identità non torna,
+`scripts/etl/rgs_spesa_regionalizzata_consolidata_corpus.py` si ferma.
+
+Il lock `scripts/etl/specs/rgs-spesa-regionalizzata-consolidata-enti-fondi.source.json`
+vincola per ognuno dei 48 file byte e SHA-256 dell'originale, conservato come
+gzip deterministico in `tests/fixtures/rgs-spesa-regionalizzata/`, date CKAN
+(creazione, ultima modifica, dati osservati), righe, zeri e riconciliazione tra
+Italia, Regioni e ripartizioni (entro 0,05 milioni), oltre ai residui
+dell'identità per anno. `--check` ricostruisce le proiezioni dalla fonte e le
+confronta con il corpus; `--input-dir` accetta i CSV originali con il nome del
+pacchetto CKAN. I file hanno due formati: fino al 2021 importi senza virgolette
+e una quinta colonna vuota, poi importi fra virgolette e, per Consolidata
+2022-2023 ed Enti 2023, nessuna colonna vuota. Per il 2016 la pagina
+`/content/…` non esiste e il lock usa `/opendata/<pacchetto>`, come per il
+Bilancio. Il file non elenca quali enti e quali fondi siano compresi.
+Licenza `not-declared`: i pacchetti riportano `cc-by`, pagine e file no.
+
 ### Conto Economico degli enti del SSN 2024
 
 **Dataset:** `spd_ssn_cce_elb_voccn_01_2024`, Modello di rilevazione del Conto Economico degli enti del SSN.

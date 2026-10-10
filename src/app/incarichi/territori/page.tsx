@@ -5,7 +5,6 @@ import {
   consulentiRegionaliSnapshot as snapshot,
   getConsulentiRegionaliYear,
 } from "@/lib/consulenti-regionali-snapshot";
-import incarichiStyles from "../incarichi.module.css";
 import styles from "./territori.module.css";
 
 type SearchValue = string | string[] | undefined;
@@ -53,7 +52,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
 
   return (
     <main className={`shell page ${styles.page}`}>
-      <nav className={incarichiStyles.breadcrumb} aria-label="Percorso">
+      <nav className={styles.breadcrumb} aria-label="Percorso">
         <Link href="/">Home</Link>
         <span aria-hidden="true">/</span>
         <Link href="/incarichi">Incarichi pubblici</Link>
@@ -70,7 +69,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
         </p>
       </header>
 
-      <div className={incarichiStyles.scopeBand} role="group" aria-label="Perimetro della vista">
+      <div className={styles.scopeBand} role="group" aria-label="Perimetro della vista">
         <div>
           <span>Periodo</span>
           <strong>{yearRange}</strong>
@@ -164,7 +163,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
       </section>
 
       <section className="panel" aria-labelledby="territori-table-title">
-        <div className={incarichiStyles.sectionHead}>
+        <div className={styles.sectionHead}>
           <h2 id="territori-table-title" className="panel-title">
             Ripartizione per territorio · {selected.year}
           </h2>
@@ -178,7 +177,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
           tabIndex={0}
           data-testid="territori-table"
         >
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 <th scope="col">Territorio</th>

@@ -37,10 +37,8 @@ class ConsulentiRegionaliSnapshotTests(unittest.TestCase):
         national_row = etl.national_years(national)[0]
         year = int(national_row["year"])
         rows = etl.load_json(FIXTURES / f"regioni-{year}.json")
-        forged = json.loads(json.dumps(rows, default=str))
-        # Re-load with Decimal so money parsing stays valid, then duplicate a label.
-        forged = etl.load_json(FIXTURES / f"regioni-{year}.json")
-        assert isinstance(forged, list)
+        assert isinstance(rows, list)
+        forged = [dict(row) for row in rows]
         forged.append(dict(forged[0]))
         with self.assertRaisesRegex(etl.StructuralError, "etichette territorio duplicate"):
             etl.normalize_year(year, forged, national_row)

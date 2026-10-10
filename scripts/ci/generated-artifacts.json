@@ -318,7 +318,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python scripts/etl/consulenti_snapshot.py --check && python3 scripts/etl/consulenti_regionali_snapshot.py --check",
+        "command": "bash scripts/etl/consulenti_pubblici_check.sh",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
@@ -330,7 +330,7 @@
         "tests/consulenti-regionali-route.test.mjs"
       ],
       "generator": {
-        "command": "python scripts/etl/consulenti_snapshot.py && python3 scripts/etl/consulenti_regionali_snapshot.py",
+        "command": "bash scripts/etl/consulenti_pubblici_refresh.sh",
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",

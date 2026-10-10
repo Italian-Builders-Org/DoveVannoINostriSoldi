@@ -4,12 +4,20 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
+  buildPaycheckCurve,
   computePaycheck,
   formatPaycheckEuro,
   parsePaycheckAnnualGross,
   PAYCHECK_DEFAULT_ANNUAL_GROSS_EUR,
   EMPLOYEE_SSC_RATE,
+  solveAnnualGrossForAnnualNetEur,
+  solveAnnualGrossForMonthlyNetEur,
 } = await import("../src/lib/paycheck-counter.ts");
+const {
+  employerInpsRate,
+  employerProfileById,
+  INPS_CONTRIBUTION_CEILING_2026_EUR,
+} = await import("../src/lib/paycheck-employer.ts");
 const {
   irpefNetEur,
   applyProgressiveTax,
@@ -35,7 +43,15 @@ const { getPaycheckCounterView } = await import("../src/lib/paycheck-counter-vie
 const { comparePaycheckNetsByRegion } = await import("../src/lib/paycheck-region-comparison.ts");
 
 const page = await readFile(new URL("../src/app/busta-paga/page.tsx", import.meta.url), "utf8");
+const counterUi = await readFile(
+  new URL("../src/app/busta-paga/paycheck-counter.tsx", import.meta.url),
+  "utf8",
+);
 const docs = await readFile(new URL("../docs/DATA_SOURCES.md", import.meta.url), "utf8");
+const chartUi = await readFile(
+  new URL("../src/app/busta-paga/paycheck-curve-chart.tsx", import.meta.url),
+  "utf8",
+);
 const shareImage = await readFile(
   new URL("../src/lib/paycheck-share-card-image.ts", import.meta.url),
   "utf8",
@@ -278,10 +294,166 @@ test("region net map ranks Trentino high and Lazio low at 50k / 12m", async () =
   assert.ok(lombardia.monthlyNetCents >= 271_000 && lombardia.monthlyNetCents <= 272_500);
 });
 
+test("employer charges use statutory INPS lines, TFR / 13.5 and illustrative INAIL", () => {
+  assert.equal(INPS_CONTRIBUTION_CEILING_2026_EUR, 122_295);
+  assert.ok(Math.abs(employerInpsRate(employerProfileById("commerce-to-50")) - 0.2898) < 1e-9);
+  assert.ok(Math.abs(employerInpsRate(employerProfileById("industry-clerical-16-50")) - 0.2906) < 1e-9);
+  assert.ok(Math.abs(employerInpsRate(employerProfileById("industry-blue-16-50")) - 0.3128) < 1e-9);
+  assert.ok(Math.abs(employerInpsRate(employerProfileById("construction-blue-16-50")) - 0.3428) < 1e-9);
+
+  // 2.000 € × 14 mensilità. TFR is pay / 13.5, not a rounded 31% of RAL.
+  const example = computePaycheck({
+    annualGrossEur: 2_000 * 14,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 14,
+    employerProfileId: "commerce-to-50",
+    inailPresetId: "office",
+  });
+  assert.equal(example.annualGrossCents, 2_800_000);
+  assert.equal(example.monthlyGrossCents, 200_000);
+  const tfrAnnual = example.employerCharges
+    .filter((row) => row.key === "tfrFinancing" || row.key === "tfrAccrual")
+    .reduce((sum, row) => sum + row.annualCents, 0);
+  assert.equal(tfrAnnual, Math.round((28_000 / 13.5) * 100));
+  const inpsAnnual = example.employerCharges
+    .filter((row) => row.key.startsWith("inps"))
+    .reduce((sum, row) => sum + row.annualCents, 0);
+  assert.equal(inpsAnnual, Math.round(28_000 * 0.2898 * 100));
+  assert.notEqual(inpsAnnual, Math.round(28_000 * 0.31 * 100));
+  const inail = example.employerCharges.find((row) => row.key === "inail");
+  assert.equal(inail?.annualCents, 11_200);
+  assert.equal(
+    example.annualCompanyCostCents,
+    example.annualGrossCents + example.annualEmployerCents,
+  );
+  assert.ok(example.monthlyEmployerCents > 0);
+  assert.ok(example.monthlyCompanyCostCents > example.monthlyGrossCents);
+});
+
+test("INPS contributions stop at the 2026 ceiling; TFR stays on full pay", () => {
+  const high = computePaycheck({
+    annualGrossEur: 200_000,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 12,
+  });
+  assert.equal(high.inpsBaseCapped, true);
+  assert.equal(high.inpsBaseCents, INPS_CONTRIBUTION_CEILING_2026_EUR * 100);
+  const ivs = high.employerCharges.find((row) => row.key === "inpsIvs");
+  assert.equal(ivs?.annualCents, Math.round(INPS_CONTRIBUTION_CEILING_2026_EUR * 0.2381 * 100));
+  const ssc = high.deductions.find((row) => row.key === "employeeSsc");
+  const cappedMonthlySsc = Math.round(
+    Math.round(INPS_CONTRIBUTION_CEILING_2026_EUR * EMPLOYEE_SSC_RATE * 100) / 12,
+  );
+  assert.equal(ssc?.monthlyCents, cappedMonthlySsc);
+  const tfrAnnual = high.employerCharges
+    .filter((row) => row.key === "tfrFinancing" || row.key === "tfrAccrual")
+    .reduce((sum, row) => sum + row.annualCents, 0);
+  assert.equal(tfrAnnual, Math.round((200_000 / 13.5) * 100));
+});
+
+test("net curve rises with annual gross and with employer charges", () => {
+  const curve = buildPaycheckCurve({
+    annualGrossEur: 30_000,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 12,
+    employerProfileId: "commerce-to-50",
+    inailPresetId: "office",
+  });
+  const current = curve.find((point) => point.isCurrent);
+  assert.ok(current);
+  assert.equal(current.annualGrossEur, 30_000);
+  assert.equal(curve.length, 20);
+  assert.equal(curve[0].annualGrossEur, 5_000);
+  assert.equal(curve.at(-1).annualGrossEur, 100_000);
+  assert.equal(curve[1].annualGrossEur - curve[0].annualGrossEur, 5_000);
+  assert.ok(!curve.some((point) => point.annualGrossEur > 100_000));
+  assert.ok(curve.at(-1).monthlyNetEur > curve[0].monthlyNetEur);
+  assert.ok(curve.at(-1).employerAnnualEur > curve[0].employerAnnualEur);
+  assert.ok(current.employerAnnualEur < current.annualGrossEur);
+  assert.ok(current.annualNetEur > 0);
+  assert.ok(current.annualNetEur < current.annualGrossEur);
+  assert.ok(current.companyAnnualEur > current.annualGrossEur);
+  for (let index = 1; index < curve.length; index += 1) {
+    assert.ok(curve[index].annualGrossEur > curve[index - 1].annualGrossEur);
+  }
+});
+
+test("monthly and annual net invert to a nearby RAL", () => {
+  const known = computePaycheck({
+    annualGrossEur: 30_000,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 13,
+  });
+  const monthlyTarget = Math.round(known.monthlyNetCents / 100);
+  const fromMonthly = solveAnnualGrossForMonthlyNetEur({
+    targetMonthlyNetEur: monthlyTarget,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 13,
+  });
+  const backMonthly = computePaycheck({
+    annualGrossEur: fromMonthly,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 13,
+  });
+  assert.ok(Math.abs(backMonthly.monthlyNetCents - monthlyTarget * 100) <= 100);
+
+  const annualTarget = Math.round((known.monthlyNetCents * known.payMonths) / 100);
+  const fromAnnual = solveAnnualGrossForAnnualNetEur({
+    targetAnnualNetEur: annualTarget,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 13,
+  });
+  const backAnnual = computePaycheck({
+    annualGrossEur: fromAnnual,
+    region: lombardia,
+    missions: sampleMissions,
+    payMonths: 13,
+  });
+  assert.ok(Math.abs(backAnnual.monthlyNetCents * backAnnual.payMonths - annualTarget * 100) <= 100);
+
+  assert.equal(
+    solveAnnualGrossForMonthlyNetEur({
+      targetMonthlyNetEur: 1,
+      region: lombardia,
+      missions: sampleMissions,
+      payMonths: 12,
+    }),
+    5_000,
+  );
+  assert.equal(
+    solveAnnualGrossForMonthlyNetEur({
+      targetMonthlyNetEur: 400_000,
+      region: lombardia,
+      missions: sampleMissions,
+      payMonths: 12,
+    }),
+    500_000,
+  );
+});
+
 test("busta-paga page is wired in nav, sitemap, search and docs", () => {
   assert.match(page, /Contatore busta paga/);
   assert.match(page, /Non sostituisce/);
-  assert.match(page, /scaglioni/);
+  assert.match(page, /scaglioni|IRPEF 2026/);
+  assert.match(page, /art\. 2120/);
+  assert.match(counterUi, /paycheck-monthly-gross-input/);
+  assert.match(counterUi, /paycheck-monthly-net-input/);
+  assert.match(counterUi, /paycheck-annual-net-input/);
+  assert.match(counterUi, /PaycheckCurveChart/);
+  assert.match(chartUi, /BarChart/);
+  assert.match(chartUi, /RAL dipendente/);
+  assert.match(chartUi, /Netto dipendente/);
+  assert.match(chartUi, /Costo azienda annuale/);
+  assert.doesNotMatch(chartUi, /type="checkbox"/);
+  assert.doesNotMatch(chartUi, /LineChart/);
+  assert.match(counterUi, /Oneri a carico del datore/);
   assert.match(docs, /Contatore busta paga/);
   assert.match(docs, /9,19%/);
   const economy = PRIMARY_NAV.find((section) => section.href === "/economia");

@@ -119,8 +119,26 @@ regionale con scaglioni e aliquote MEF 2026 per tutte le Regioni (soglie
 preferenziali Lazio, Umbria, FVG, Valle d'Aosta), addizionale comunale come
 media regionale MEF, mappa coropletica del netto per Regione a parità di RAL,
 e ripartizione illustrativa della sola IRPEF erariale sulle missioni OpenBDAP
-Legge di Bilancio. Card social firmata con tag @DVNSoldi. Non è una busta paga
-reale né cassa SIOPE.
+Legge di Bilancio. Il lordo si inserisce come RAL o come stipendio mensile
+lordo (RAL = mensile × mensilità).
+
+Gli oneri del datore sono voci distinte, non una percentuale unica. INPS:
+IVS datore 23,81% (quota del 33% FPLD), NASpI 1,61%, CUAF 0,68%, malattia
+2,22% dove il profilo la prevede, maternità 0,46%, fondo di garanzia TFR
+0,20%, più CIGO 1,70% (4,70% per gli operai edili) e CIGS quota datore 0,60%
+nei profili industria ed edilizia. Base imponibile tagliata al massimale
+122.295 € della circolare INPS 30 gennaio 2026, n. 6. TFR = retribuzione /
+13,5 (art. 2120 c.c.), di cui 0,50% è il contributo all’INPS (art. 3, L.
+297/1982). INAIL è un tasso per mille illustrativo sulla RAL (tariffe D.I.
+27 febbraio 2019; l’oscillazione 2026 è nel D.I. 2 aprile 2026), non il premio
+della PAT. Il FIS non è nel profilo commercio. Una media giornalistica del
+31% della RAL non è applicata. Il grafico a colonne ha la RAL in euro
+sull’asse orizzontale, da 5.000 a 100.000 € a passi di 5.000, senza filtri:
+ogni passo ha tre colonne annue, RAL dipendente, netto dipendente e costo
+azienda (RAL più INPS, INAIL e TFR). Dal netto mensile o annuo si risale alla
+RAL più vicina. Card
+social firmata con tag @DVNSoldi. Non è una busta paga reale né
+cassa SIOPE.
 
 ## Cuneo fiscale · OECD Taxing Wages
 

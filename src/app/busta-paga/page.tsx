@@ -7,7 +7,7 @@ import styles from "./busta-paga.module.css";
 export const metadata: Metadata = {
   title: "Contatore busta paga: dal lordo alle voci di spesa",
   description:
-    "Stima illustrativa della busta paga mensile dal lordo annuo: IRPEF 2026 a scaglioni con detrazione lavoro dipendente, contributi INPS 9,19%, addizionali e ripartizione illustrativa sulle missioni di bilancio OpenBDAP. Non è una busta paga reale.",
+    "Stima illustrativa della busta paga da lordo o netto, mensile o annuo: IRPEF 2026, contributi INPS 9,19%, addizionali, oneri del datore (INPS, INAIL, TFR) e grafico a colonne fino a 100.000 €. Non è una busta paga reale.",
   alternates: { canonical: "/busta-paga" },
 };
 
@@ -20,13 +20,16 @@ export default async function BustaPagaPage() {
         <p className="eyebrow">Lavoro · stima illustrativa {view.taxYear}</p>
         <h1>Contatore busta paga</h1>
         <p>
-          Inserisci lo stipendio annuo lordo, la Regione e il numero di mensilità (12, 13 o 14):
-          ottieni il lordo per cedolino, le trattenute (IRPEF a scaglioni, addizionali regionali MEF
-          2026, contributi) e una ripartizione illustrativa della sola IRPEF erariale sulle missioni
-          di bilancio dello Stato. Non sostituisce un CAF né la busta paga del datore di lavoro.
+          Inserisci il lordo o il netto, annuo o mensile, la Regione e le mensilità (12, 13 o 14):
+          ottieni il netto per cedolino, le trattenute del lavoratore e gli oneri che il datore
+          versa o accantona in più (INPS di tabella, INAIL, TFR). Il grafico a colonne va da 5.000 a
+          100.000 € di RAL, a passi di 5.000, e mostra sempre RAL dipendente, netto dipendente e
+          costo azienda annuale. Non sostituisce un CAF né la busta paga del datore di lavoro.
         </p>
         <p className={styles.links}>
           <a href="#busta-contatore">Contatore ↓</a>
+          <a href="#busta-curva">Grafico ↓</a>
+          <a href="#busta-datore-title">Oneri del datore ↓</a>
           <a href="#busta-mappa-title">Mappa Regioni ↓</a>
           <a href="#busta-limiti">Limiti ↓</a>
           <Link href="/cuneo-fiscale">Cuneo fiscale OECD →</Link>
@@ -63,8 +66,27 @@ export default async function BustaPagaPage() {
         </ul>
         <p className={styles.sourceLine}>
           Fonti: scaglioni IRPEF {view.taxYear} e detrazione lavoro dipendente (art. 13 TUIR) ·
-          contributi INPS IVS ordinario ≈ 9,19% · {view.provenance.regionalSurtaxLabel} ·
-          addizionale comunale{" "}
+          contributi INPS IVS ordinario ≈ 9,19% e quota datore 23,81%, più NASpI, CUAF, malattia,
+          maternità, fondo garanzia TFR e CIGO/CIGS dove il profilo le prevede · massimale 122.295 €{" "}
+          <a href="https://www.inps.it/content/dam/inps-site/it/scorporati/circolari-e-messaggi/2026/01/Circolare_15151/Allegati/16546_Circolare-numero-6-del-30-01-2026.pdf">
+            circolare INPS n. 6/2026
+          </a>
+          {" · "}
+          TFR{" "}
+          <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:codice.civile:1942-03-16~art2120">
+            art. 2120 c.c.
+          </a>{" "}
+          e contributo 0,50%{" "}
+          <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1982-05-29;297">
+            L. 297/1982
+          </a>
+          {" · "}
+          INAIL, tariffe D.I. 27 febbraio 2019 e{" "}
+          <a href="https://www.inail.it/portale/it/atti-e-documenti/note-provvedimenti-e-istruzioni-operative/normativa-circolari-inail/dettaglio.2026.06.circ-n-28-del-12-giugno-2026.html">
+            circolare INAIL n. 28/2026
+          </a>
+          {" · "}
+          {view.provenance.regionalSurtaxLabel} · addizionale comunale{" "}
           <a href={view.provenance.irpefSourceUrl}>MEF {view.mefIrpefTaxYear}</a>
           {" · "}
           {view.provenance.budgetLabel}.

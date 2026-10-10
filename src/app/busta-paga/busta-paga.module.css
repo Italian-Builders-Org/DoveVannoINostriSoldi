@@ -18,6 +18,113 @@
   background: var(--color-neutral-100);
 }
 
+.hint,
+.employerTotals {
+  margin: 0;
+  max-width: 78ch;
+  color: var(--color-neutral-700);
+  font-size: 14px;
+}
+
+.employerTotals {
+  font-variant-numeric: tabular-nums;
+}
+
+.curve {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.curveHead {
+  display: grid;
+  gap: 8px;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+}
+
+.legend small {
+  display: block;
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+
+.swatch {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  background: var(--chart-data-primary);
+}
+
+.swatchCompany {
+  background: var(--chart-country-italy);
+}
+
+.swatchGross {
+  background: var(--color-text);
+}
+
+.swatchNet {
+  background: var(--chart-data-primary);
+}
+
+.chartScroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.chart {
+  width: 100%;
+  min-width: 880px;
+  height: 420px;
+}
+
+.tooltip {
+  max-width: 280px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-neutral-400);
+  color: var(--color-on-strong);
+  background: var(--color-text);
+}
+
+.tooltip span,
+.tooltip strong,
+.tooltip b {
+  display: block;
+}
+
+.tooltip span,
+.tooltip strong {
+  color: var(--color-on-strong-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.tooltip b {
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip b:last-child {
+  margin-bottom: 0;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -28,6 +135,9 @@
 
 .field input,
 .field select {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 44px;
   padding: 10px 12px;
   color: var(--color-text);
@@ -67,9 +177,16 @@
   color: var(--color-neutral-700);
 }
 
+.annualNet {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
 .metrics {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
   margin: 0;
   border: 1px solid var(--color-neutral-300);
   background: var(--color-neutral-100);
@@ -194,10 +311,20 @@
   font-size: 14px;
 }
 
+@media (max-width: 960px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 @media (max-width: 720px) {
   .controls,
   .summary {
     grid-template-columns: 1fr;
+  }
+
+  .chart {
+    height: 260px;
   }
 
   .metrics {

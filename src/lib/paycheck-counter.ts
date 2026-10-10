@@ -9,6 +9,15 @@
  */
 
 import {
+  TFR_DIVISOR,
+  employerChargeDrafts,
+  inailPresetById,
+  parseEmployerProfileId,
+  parseInailPresetId,
+  type EmployerProfileId,
+  type InailPresetId,
+} from "@/lib/paycheck-employer";
+import {
   EMPLOYEE_SSC_RATE,
   PAYCHECK_DEFAULT_MONTHS,
   PAYCHECK_TAX_YEAR,
@@ -59,6 +68,16 @@ export type PaycheckDeductionLine = {
   rate: number;
 };
 
+export type PaycheckEmployerLine = {
+  key: string;
+  label: string;
+  /** Statutory rate on the line base (INPS imponibile or full RAL). */
+  rate: number;
+  annualCents: number;
+  monthlyCents: number;
+  base: "inps" | "gross";
+};
+
 export type PaycheckMissionLine = {
   mission: string;
   label: string;
@@ -79,6 +98,20 @@ export type PaycheckComputation = {
   monthlyNetCents: number;
   monthlyTaxCents: number;
   monthlyStateIrpefCents: number;
+  employerProfileId: EmployerProfileId;
+  employerProfileLabel: string;
+  inailPresetId: InailPresetId;
+  inailPerMille: number;
+  /** True when RAL is above the 2026 INPS contribution ceiling. */
+  inpsBaseCapped: boolean;
+  inpsBaseCents: number;
+  employerCharges: readonly PaycheckEmployerLine[];
+  /** INPS + INAIL + TFR, per cedolino. Does not include gross pay. */
+  monthlyEmployerCents: number;
+  annualEmployerCents: number;
+  /** Gross pay plus employer charges. */
+  monthlyCompanyCostCents: number;
+  annualCompanyCostCents: number;
   missions: readonly PaycheckMissionLine[];
   otherMissionsCents: number;
   otherMissionsShare: number;
@@ -116,6 +149,13 @@ export function formatPaycheckPercent(rate: number): string {
   }).format(rate * 100)}%`;
 }
 
+export function formatPaycheckRate(rate: number): string {
+  return `${new Intl.NumberFormat("it-IT", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(rate * 100)}%`;
+}
+
 export function parsePaycheckAnnualGross(raw: unknown): number {
   if (typeof raw === "number") return clampAnnualGross(raw);
   if (typeof raw === "string") {
@@ -144,6 +184,8 @@ export function computePaycheck(input: {
   payMonths?: PaycheckMonthCount | number;
   /** Override only for tests; default is the ordinary private-sector IVS share. */
   employeeSscRate?: number;
+  employerProfileId?: EmployerProfileId | string;
+  inailPresetId?: InailPresetId | string;
 }): PaycheckComputation {
   const annualGrossCents = eurosToCents(clampAnnualGross(input.annualGrossEur));
   const payMonths = parsePaycheckMonths(input.payMonths ?? PAYCHECK_DEFAULT_MONTHS);
@@ -151,9 +193,17 @@ export function computePaycheck(input: {
   const { region } = input;
   const employeeSscRate = Math.max(0, input.employeeSscRate ?? EMPLOYEE_SSC_RATE);
   const hasPublishedSchedule = Boolean(REGIONAL_SURTAX_BY_CODE[region.code]);
+  const employerProfileId = parseEmployerProfileId(input.employerProfileId);
+  const inailPresetId = parseInailPresetId(input.inailPresetId);
 
   const annualGrossEur = centsToEuros(annualGrossCents);
-  const annualSscEur = annualGrossEur * employeeSscRate;
+  const employerDraft = employerChargeDrafts({
+    annualGrossEur,
+    profileId: employerProfileId,
+    inailPerMille: inailPresetById(inailPresetId).perMille,
+  });
+  const inpsBaseEur = employerDraft.inpsBaseEur;
+  const annualSscEur = inpsBaseEur * employeeSscRate;
   const annualTaxableEur = Math.max(0, annualGrossEur - annualSscEur);
   const annualTaxableCents = eurosToCents(annualTaxableEur);
 
@@ -199,6 +249,27 @@ export function computePaycheck(input: {
 
   const totalDeductionsCents = deductions.reduce((sum, row) => sum + row.monthlyCents, 0);
   const monthlyNetCents = Math.max(0, monthlyGrossCents - totalDeductionsCents);
+
+  const employerCharges: PaycheckEmployerLine[] = employerDraft.lines.map((line) => {
+    const annualCents = eurosToCents(line.annualEur);
+    return {
+      key: line.key,
+      label: line.label,
+      rate: line.rate,
+      annualCents,
+      monthlyCents: Math.round(annualCents / payMonths),
+      base: line.base,
+    };
+  });
+  const tfrFinancing = employerCharges.find((row) => row.key === "tfrFinancing");
+  const tfrAccrual = employerCharges.find((row) => row.key === "tfrAccrual");
+  if (tfrFinancing && tfrAccrual) {
+    const tfrTotalCents = eurosToCents(annualGrossEur / TFR_DIVISOR);
+    tfrAccrual.annualCents = Math.max(0, tfrTotalCents - tfrFinancing.annualCents);
+    tfrAccrual.monthlyCents = Math.round(tfrAccrual.annualCents / payMonths);
+  }
+  const annualEmployerCents = employerCharges.reduce((sum, row) => sum + row.annualCents, 0);
+  const monthlyEmployerCents = employerCharges.reduce((sum, row) => sum + row.monthlyCents, 0);
   const monthlyTaxCents = monthlyIrpefCents + monthlyRegionalCents + monthlyMunicipalCents;
   const monthlyStateIrpefCents = monthlyIrpefCents;
 
@@ -236,8 +307,128 @@ export function computePaycheck(input: {
     monthlyNetCents,
     monthlyTaxCents,
     monthlyStateIrpefCents,
+    employerProfileId,
+    employerProfileLabel: employerDraft.profile.label,
+    inailPresetId,
+    inailPerMille: employerDraft.inailPerMille,
+    inpsBaseCapped: employerDraft.capped,
+    inpsBaseCents: eurosToCents(inpsBaseEur),
+    employerCharges,
+    monthlyEmployerCents,
+    annualEmployerCents,
+    monthlyCompanyCostCents: monthlyGrossCents + monthlyEmployerCents,
+    annualCompanyCostCents: annualGrossCents + annualEmployerCents,
     missions,
     otherMissionsCents,
     otherMissionsShare: otherShare,
   };
+}
+
+/** Column chart window: every step is drawn, with no series filter. */
+export const PAYCHECK_CURVE_MIN_ANNUAL_EUR = 5_000;
+export const PAYCHECK_CURVE_MAX_ANNUAL_EUR = 100_000;
+export const PAYCHECK_CURVE_STEP_EUR = 5_000;
+
+export type PaycheckCurvePoint = {
+  annualGrossEur: number;
+  /** Annual net: monthly net × number of paychecks. */
+  annualNetEur: number;
+  monthlyNetEur: number;
+  /** INPS + INAIL + TFR paid or accrued by the employer. Excludes gross pay. */
+  employerAnnualEur: number;
+  /** Annual gross plus employer charges. */
+  companyAnnualEur: number;
+  isCurrent: boolean;
+};
+
+/** Fixed 5.000 € steps from 5.000 € through 100.000 €. The entered RAL is not inserted off-grid. */
+export function paycheckCurveAnnualGrid(): number[] {
+  const values: number[] = [];
+  for (
+    let value = PAYCHECK_CURVE_MIN_ANNUAL_EUR;
+    value <= PAYCHECK_CURVE_MAX_ANNUAL_EUR;
+    value += PAYCHECK_CURVE_STEP_EUR
+  ) {
+    values.push(value);
+  }
+  return values;
+}
+
+type PaycheckSolveInput = {
+  region: PaycheckRegionRates;
+  missions: readonly PaycheckMissionShare[];
+  payMonths?: PaycheckMonthCount | number;
+  employerProfileId?: EmployerProfileId | string;
+  inailPresetId?: InailPresetId | string;
+};
+
+function netCentsAtGross(
+  annualGrossEur: number,
+  input: PaycheckSolveInput,
+  kind: "monthly" | "annual",
+): number {
+  const point = computePaycheck({ ...input, annualGrossEur });
+  return kind === "monthly" ? point.monthlyNetCents : point.monthlyNetCents * point.payMonths;
+}
+
+/** Smallest annual gross whose net is closest to the target. Net rises with gross. */
+function solveAnnualGrossForNetCents(
+  targetCents: number,
+  input: PaycheckSolveInput,
+  kind: "monthly" | "annual",
+): number {
+  const target = Math.max(0, Math.round(targetCents));
+  let low = PAYCHECK_MIN_ANNUAL_GROSS_EUR;
+  let high = PAYCHECK_MAX_ANNUAL_GROSS_EUR;
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    if (netCentsAtGross(mid, input, kind) < target) low = mid + 1;
+    else high = mid;
+  }
+  const previous = Math.max(PAYCHECK_MIN_ANNUAL_GROSS_EUR, low - 1);
+  const atLow = netCentsAtGross(low, input, kind);
+  const atPrevious = netCentsAtGross(previous, input, kind);
+  return Math.abs(atPrevious - target) <= Math.abs(atLow - target) ? previous : low;
+}
+
+export function solveAnnualGrossForMonthlyNetEur(
+  input: PaycheckSolveInput & { targetMonthlyNetEur: number },
+): number {
+  return solveAnnualGrossForNetCents(eurosToCents(input.targetMonthlyNetEur), input, "monthly");
+}
+
+export function solveAnnualGrossForAnnualNetEur(
+  input: PaycheckSolveInput & { targetAnnualNetEur: number },
+): number {
+  return solveAnnualGrossForNetCents(eurosToCents(input.targetAnnualNetEur), input, "annual");
+}
+
+/** Annual gross, net, employer charges and company cost along a RAL grid. */
+export function buildPaycheckCurve(input: {
+  annualGrossEur: number;
+  region: PaycheckRegionRates;
+  missions: readonly PaycheckMissionShare[];
+  payMonths?: PaycheckMonthCount | number;
+  employerProfileId?: EmployerProfileId | string;
+  inailPresetId?: InailPresetId | string;
+}): PaycheckCurvePoint[] {
+  const currentAnnual = clampAnnualGross(input.annualGrossEur);
+  return paycheckCurveAnnualGrid().map((annualGrossEur) => {
+    const point = computePaycheck({
+      annualGrossEur,
+      region: input.region,
+      missions: input.missions,
+      payMonths: input.payMonths,
+      employerProfileId: input.employerProfileId,
+      inailPresetId: input.inailPresetId,
+    });
+    return {
+      annualGrossEur,
+      annualNetEur: centsToEuros(point.monthlyNetCents * point.payMonths),
+      monthlyNetEur: centsToEuros(point.monthlyNetCents),
+      employerAnnualEur: centsToEuros(point.annualEmployerCents),
+      companyAnnualEur: centsToEuros(point.annualCompanyCostCents),
+      isCurrent: annualGrossEur === currentAnnual,
+    };
+  });
 }

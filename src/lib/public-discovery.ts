@@ -53,6 +53,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/busta-paga",
   "/pil",
   "/incarichi",
+  "/incarichi/territori",
   "/incarichi/dettaglio",
   "/istituzioni",
   "/istruzione",

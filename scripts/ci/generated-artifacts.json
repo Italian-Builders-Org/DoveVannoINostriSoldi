@@ -313,19 +313,24 @@
       "id": "consulenti-pubblici",
       "owner": "Consulenti Pubblici national snapshot",
       "files": [
-        "src/data/generated/consulenti-overview.json"
+        "src/data/generated/consulenti-overview.json",
+        "src/data/generated/consulenti-regionali.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "python scripts/etl/consulenti_snapshot.py --check",
+        "command": "python scripts/etl/consulenti_snapshot.py --check && python3 scripts/etl/consulenti_regionali_snapshot.py --check",
         "coveredBy": "standalone"
       },
-      "reconciliationTests": [],
+      "reconciliationTests": [
+        "tests/etl/test_consulenti_regionali_snapshot.py"
+      ],
       "nodeTests": [
-        "tests/consulenti-contract.test.mjs"
+        "tests/consulenti-contract.test.mjs",
+        "tests/consulenti-regionali-contract.test.mjs",
+        "tests/consulenti-regionali-route.test.mjs"
       ],
       "generator": {
-        "command": "python scripts/etl/consulenti_snapshot.py",
+        "command": "python scripts/etl/consulenti_snapshot.py && python3 scripts/etl/consulenti_regionali_snapshot.py",
         "requiresNetworkInput": true
       },
       "refreshWorkflow": ".github/workflows/consulenti-refresh.yml",
@@ -335,7 +340,7 @@
         "prTitle": "data: refresh Consulenti Pubblici snapshot",
         "upstreamUrl": "https://consulentipubblici.dfp.gov.it/progetto"
       },
-      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official source; review and PR-side validation govern publication of the snapshot."
+      "trustModel": "Scheduled workflow creates a bot-authored managed PR candidate from the official Perla PA national and Regione aggregates; euro territorial totals must match the national series before cent conversion, with a bounded rounding residual. Labels are source-published and not merged."
     },
     {
       "id": "cpt-regional-fiscal",

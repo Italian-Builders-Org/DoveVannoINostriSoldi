@@ -1,0 +1,191 @@
+[
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 2729,
+    "ammontareErogato": 6471517.184,
+    "incarichiConclusi": 1464,
+    "personaFisicaCount": 2648,
+    "personaGiuridicaCount": 81,
+    "regionePa": "Abruzzo"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 1500,
+    "ammontareErogato": 6388461.359,
+    "incarichiConclusi": 689,
+    "personaFisicaCount": 1473,
+    "personaGiuridicaCount": 27,
+    "regionePa": "Basilicata"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 4417,
+    "ammontareErogato": 13666852.346000000018,
+    "incarichiConclusi": 1987,
+    "personaFisicaCount": 4385,
+    "personaGiuridicaCount": 32,
+    "regionePa": "Calabria"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 9472,
+    "ammontareErogato": 17458316.465,
+    "incarichiConclusi": 4942,
+    "personaFisicaCount": 9093,
+    "personaGiuridicaCount": 379,
+    "regionePa": "Campania"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 43,
+    "ammontareErogato": 353592.15,
+    "incarichiConclusi": 35,
+    "personaFisicaCount": 28,
+    "personaGiuridicaCount": 15,
+    "regionePa": "Emilia Romagna"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 22591,
+    "ammontareErogato": 58357985.159,
+    "incarichiConclusi": 11850,
+    "personaFisicaCount": 21654,
+    "personaGiuridicaCount": 937,
+    "regionePa": "Emilia-Romagna"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 6728,
+    "ammontareErogato": 16531004.119,
+    "incarichiConclusi": 3129,
+    "personaFisicaCount": 6568,
+    "personaGiuridicaCount": 160,
+    "regionePa": "Friuli-Venezia Giulia"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 24382,
+    "ammontareErogato": 173686877.032999999951,
+    "incarichiConclusi": 12243,
+    "personaFisicaCount": 23871,
+    "personaGiuridicaCount": 511,
+    "regionePa": "Lazio"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 4411,
+    "ammontareErogato": 16648435.762,
+    "incarichiConclusi": 2429,
+    "personaFisicaCount": 4007,
+    "personaGiuridicaCount": 404,
+    "regionePa": "Liguria"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 47388,
+    "ammontareErogato": 212139326.550003,
+    "incarichiConclusi": 21364,
+    "personaFisicaCount": 44967,
+    "personaGiuridicaCount": 2421,
+    "regionePa": "Lombardia"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 7183,
+    "ammontareErogato": 20107539.8152,
+    "incarichiConclusi": 4010,
+    "personaFisicaCount": 7016,
+    "personaGiuridicaCount": 167,
+    "regionePa": "Marche"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 1204,
+    "ammontareErogato": 1194043.62,
+    "incarichiConclusi": 545,
+    "personaFisicaCount": 1188,
+    "personaGiuridicaCount": 16,
+    "regionePa": "Molise"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 13680,
+    "ammontareErogato": 33983002.373,
+    "incarichiConclusi": 9357,
+    "personaFisicaCount": 12897,
+    "personaGiuridicaCount": 783,
+    "regionePa": "Piemonte"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 8851,
+    "ammontareErogato": 13772500.709,
+    "incarichiConclusi": 4214,
+    "personaFisicaCount": 8604,
+    "personaGiuridicaCount": 247,
+    "regionePa": "Puglia"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 6645,
+    "ammontareErogato": 20615909.463,
+    "incarichiConclusi": 4837,
+    "personaFisicaCount": 6587,
+    "personaGiuridicaCount": 58,
+    "regionePa": "Sardegna"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 15266,
+    "ammontareErogato": 32115695.033,
+    "incarichiConclusi": 7384,
+    "personaFisicaCount": 15124,
+    "personaGiuridicaCount": 142,
+    "regionePa": "Sicilia"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 17078,
+    "ammontareErogato": 45436217.264,
+    "incarichiConclusi": 6285,
+    "personaFisicaCount": 16642,
+    "personaGiuridicaCount": 436,
+    "regionePa": "Toscana"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 11863,
+    "ammontareErogato": 53446712.138,
+    "incarichiConclusi": 8311,
+    "personaFisicaCount": 11369,
+    "personaGiuridicaCount": 494,
+    "regionePa": "Trentino-Alto Adige/Südtirol"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 2975,
+    "ammontareErogato": 8876451.74000000001,
+    "incarichiConclusi": 1756,
+    "personaFisicaCount": 2868,
+    "personaGiuridicaCount": 107,
+    "regionePa": "Umbria"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 653,
+    "ammontareErogato": 3497825.41,
+    "incarichiConclusi": 488,
+    "personaFisicaCount": 642,
+    "personaGiuridicaCount": 11,
+    "regionePa": "Valle d'Aosta/Vallée d'Aoste"
+  },
+  {
+    "annoConferimento": 2024,
+    "numeroIncarichi": 19571,
+    "ammontareErogato": 68804260.125,
+    "incarichiConclusi": 12086,
+    "personaFisicaCount": 18653,
+    "personaGiuridicaCount": 918,
+    "regionePa": "Veneto"
+  }
+]

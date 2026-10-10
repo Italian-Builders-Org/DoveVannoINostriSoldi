@@ -1,0 +1,172 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.summary {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.metricList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.metricList > div {
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-surface);
+}
+
+.metricList dt {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.metricList dd {
+  margin: 6px 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.metricList strong,
+.metricList small {
+  display: block;
+}
+
+.metricList small {
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+}
+
+.filterForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.filterForm label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.filterForm select {
+  min-width: 10rem;
+}
+
+.scrollHint {
+  margin: 0 0 var(--space-2);
+  color: var(--color-neutral-600);
+  font-size: 0.85rem;
+}
+
+.tableScroll {
+  outline-offset: 2px;
+}
+
+.tableScroll table {
+  width: max(100%, 42rem);
+  border-collapse: collapse;
+}
+
+.tableScroll th,
+.tableScroll td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+  vertical-align: middle;
+}
+
+.tableScroll tbody th {
+  font-weight: 600;
+  text-align: left;
+}
+
+.barTrack {
+  display: block;
+  width: min(100%, 8rem);
+  height: 0.45rem;
+  overflow: hidden;
+  background: var(--color-neutral-200);
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  background: var(--color-accent-700);
+}
+
+.linkList {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.sources {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: var(--space-3);
+}
+
+.sources summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.sources dl {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+}
+
+.sources dt {
+  color: var(--color-neutral-600);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sources dd {
+  margin: 0.25rem 0 0;
+}
+
+@media (max-width: 720px) {
+  .metricList {
+    grid-template-columns: 1fr;
+  }
+}

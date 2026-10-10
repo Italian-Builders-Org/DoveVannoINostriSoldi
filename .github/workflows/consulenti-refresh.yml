@@ -31,9 +31,9 @@ jobs:
         with:
           python-version: "3.12"
       - name: Refresh official statistics
-        run: python scripts/etl/consulenti_snapshot.py
+        run: bash scripts/etl/consulenti_pubblici_refresh.sh
       - name: Validate offline snapshot
-        run: python scripts/etl/consulenti_snapshot.py --check
+        run: bash scripts/etl/consulenti_pubblici_check.sh
       - name: Publish generated data
         uses: ./.github/actions/publish-data-refresh
         with:

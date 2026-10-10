@@ -1014,6 +1014,19 @@ export async function queryPublicDataset(
         employeeAppointments: filterYear(consulentiSnapshot.employeeAppointments),
       });
     }
+    case "consulenti_incarichi_territori": {
+      const {
+        consulentiRegionaliSnapshot,
+        getConsulentiRegionaliYear,
+      } = await import("@/lib/consulenti-regionali-snapshot");
+      if (query.year !== undefined) {
+        return jsonSafe({
+          ...consulentiRegionaliSnapshot,
+          years: [getConsulentiRegionaliYear(query.year)],
+        });
+      }
+      return jsonSafe(consulentiRegionaliSnapshot);
+    }
     case "parlamento_bilanci": {
       const { parliamentSnapshot } = await import("@/lib/parliament-snapshot");
       return jsonSafe({

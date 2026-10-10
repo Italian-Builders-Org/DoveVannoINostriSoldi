@@ -209,6 +209,11 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   ],
   "/appalti/ted": ["ted", "avvisi ted", "guue", "appalti europei"],
   "/incarichi": ["incarichi", "consulenze", "personale"],
+  "/incarichi/territori": [
+    "incarichi territorio",
+    "consulenze regionali",
+    "consulenti pubblici territorio",
+  ],
   "/incarichi/dettaglio": ["incarichi dettagli", "consulenti", "collaborazioni"],
   "/dati": ["dataset", "catalogo dati", "dati integrati"],
   "/controlli": ["segnali", "verifiche", "controlli"],

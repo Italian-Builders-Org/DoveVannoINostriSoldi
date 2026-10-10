@@ -1,0 +1,82 @@
+{
+  "consulenti": [
+    {
+      "annoConferimento": 2023,
+      "numeroIncarichi": 205082,
+      "ammontareErogato": 743600592.252000000071,
+      "incarichiConclusi": 109553,
+      "personaFisicaCount": 122730,
+      "personaGiuridicaCount": 4910
+    },
+    {
+      "annoConferimento": 2024,
+      "numeroIncarichi": 228630,
+      "ammontareErogato": 823552525.817202999979,
+      "incarichiConclusi": 119405,
+      "personaFisicaCount": 137874,
+      "personaGiuridicaCount": 4515
+    },
+    {
+      "annoConferimento": 2025,
+      "numeroIncarichi": 214775,
+      "ammontareErogato": 532947635.2130999999852,
+      "incarichiConclusi": 93852,
+      "personaFisicaCount": 132948,
+      "personaGiuridicaCount": 3417
+    },
+    {
+      "annoConferimento": 2026,
+      "numeroIncarichi": 101531,
+      "ammontareErogato": 82333001.920,
+      "incarichiConclusi": 24811,
+      "personaFisicaCount": 71253,
+      "personaGiuridicaCount": 1674
+    }
+  ],
+  "dipendenti": [
+    {
+      "paConferenteCount": 267377,
+      "dirigentiCount": 74297,
+      "nonDirigentiCount": 332694,
+      "annoConferimento": 2023,
+      "numeroIncarichi": 406991,
+      "ammontareErogato": 223783164.8625000000112,
+      "incarichiConclusi": 200907,
+      "personaFisicaCount": 12964,
+      "personaGiuridicaCount": 126659
+    },
+    {
+      "paConferenteCount": 446173,
+      "dirigentiCount": 75740,
+      "nonDirigentiCount": 521244,
+      "annoConferimento": 2024,
+      "numeroIncarichi": 596984,
+      "ammontareErogato": 352370840.37170500000022,
+      "incarichiConclusi": 297605,
+      "personaFisicaCount": 17645,
+      "personaGiuridicaCount": 133166
+    },
+    {
+      "paConferenteCount": 420326,
+      "dirigentiCount": 73772,
+      "nonDirigentiCount": 499463,
+      "annoConferimento": 2025,
+      "numeroIncarichi": 573235,
+      "ammontareErogato": 292810868.46956880787581,
+      "incarichiConclusi": 238641,
+      "personaFisicaCount": 16341,
+      "personaGiuridicaCount": 136568
+    },
+    {
+      "paConferenteCount": 175963,
+      "dirigentiCount": 46675,
+      "nonDirigentiCount": 218725,
+      "annoConferimento": 2026,
+      "numeroIncarichi": 265400,
+      "ammontareErogato": 53656608.48470000001001,
+      "incarichiConclusi": 52857,
+      "personaFisicaCount": 6963,
+      "personaGiuridicaCount": 82474
+    }
+  ]
+}

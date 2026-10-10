@@ -7,6 +7,7 @@ import { inspectEpea } from "./epea.mjs";
 import { inspectCulture, inspectCultureJourney, inspectInvalidCultureYears } from "./culture.mjs";
 import { inspectOfficialSeries } from "./official-series.mjs";
 import { inspectDefence } from "./defence.mjs";
+import { inspectIncarichiTerritori } from "./incarichi-territori.mjs";
 import { inspectHealthHistory, inspectInvalidHealthYears } from "./health-public-spending.mjs";
 import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
 import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
@@ -976,6 +977,17 @@ try {
     const label = `Spesa per la difesa ${width}px`;
     await runScenario(browser, {
       label, pathname: "/", width, validate: inspectDefence,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Incarichi per territorio ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/incarichi/territori",
+      width,
+      validate: inspectIncarichiTerritori,
     });
     completed.push(label);
   }

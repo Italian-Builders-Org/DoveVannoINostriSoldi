@@ -370,6 +370,21 @@ export default function IncarichiPage() {
         </p>
       </section>
 
+      <section className="panel" aria-labelledby="territori-link-title">
+        <h2 id="territori-link-title" className="panel-title">
+          Ripartizione per territorio
+        </h2>
+        <p>
+          Lo stesso perimetro degli incarichi esterni, suddiviso per etichetta geografica delle PA
+          conferenti pubblicata da Consulenti Pubblici.
+        </p>
+        <p>
+          <Link className="btn" href="/incarichi/territori">
+            Apri incarichi esterni per territorio
+          </Link>
+        </p>
+      </section>
+
       <IntegratedSectionPreview
         section="incarichi"
         title="Apri incarichi, consulenze e persone"

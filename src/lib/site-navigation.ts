@@ -79,6 +79,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/spese/ambiente", label: "Protezione dell’ambiente" },
       { href: "/spese/sicurezza", label: "Ordine pubblico e sicurezza" },
       { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/incarichi/territori", label: "Incarichi esterni per territorio" },
       { href: "/spese/territoriale", label: "Spesa statale per territorio" },
       { href: "/spese/operative", label: "Spese operative" },
       {
@@ -187,6 +188,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         href: "/incarichi",
         label: "Incarichi",
         children: [
+          { href: "/incarichi/territori", label: "Per territorio" },
           { href: "/incarichi/dettaglio", label: "Dettaglio" },
         ],
       },
@@ -266,6 +268,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/ambiente", label: "Protezione dell’ambiente" },
       { href: "/spese/sicurezza", label: "Ordine pubblico e sicurezza" },
       { href: "/spese/consulenze", label: "Consulenze ministeriali" },
+      { href: "/incarichi/territori", label: "Incarichi esterni per territorio" },
       { href: "/spese/territoriale", label: "Spesa statale per territorio" },
       { href: "/spese/operative", label: "Spese operative" },
       { href: "/stato", label: "Amministrazioni centrali" },
@@ -339,6 +342,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
       { href: "/appalti/ted", label: "Avvisi TED" },
       { href: "/incarichi", label: "Incarichi" },
+      { href: "/incarichi/territori", label: "Incarichi per territorio" },
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },
       { href: "/dati", label: "Catalogo dati" },
       { href: "/controlli", label: "Segnali" },

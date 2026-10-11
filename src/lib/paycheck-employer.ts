@@ -5,9 +5,12 @@
  * - IVS employer share 23.81% of the 33% FPLD rate (employee 9.19% lives in
  *   paycheck-tax-rules). Minor INPS lines follow the 2026 private-sector
  *   tables (NASpI, CUAF, sickness, maternity, TFR guarantee fund, CIGO/CIGS).
- * - Contribution base stops at the 2026 ceiling in INPS circular 6/2026.
+ * - The 2026 massimale (INPS circular 6/2026) caps IVS and the L. 297/1982
+ *   TFR financing line. Minor INPS lines (NASpI, CUAF, sickness, …) stay on
+ *   full RAL: worker-specific ceiling eligibility is not modelled.
  * - TFR accrual is art. 2120 c.c. (pay / 13.5). The 0.50% financing
- *   contribution (art. 3, L. 297/1982) is part of that quota, paid to INPS.
+ *   contribution (art. 3, L. 297/1982) is carved from that quota and paid to
+ *   INPS; it is not part of the 23.81% IVS rate.
  * - INAIL is a per-mille premium on gross pay. The real rate is the PAT
  *   tariff (D.I. 27 February 2019); the presets are illustrative magnitudes.
  *
@@ -197,13 +200,17 @@ export function employerChargeDrafts(input: {
   const profile = employerProfileById(input.profileId);
   const perMille = clampInailPerMille(input.inailPerMille);
   const inpsBaseEur = inpsContributionBaseEur(annualGrossEur);
-  const inpsLines: EmployerChargeDraft[] = profile.lines.map((line) => ({
-    key: line.key,
-    label: line.label,
-    rate: line.rate,
-    annualEur: inpsBaseEur * line.rate,
-    base: "inps",
-  }));
+  const inpsLines: EmployerChargeDraft[] = profile.lines.map((line) => {
+    const cappedIvs = line.key === "inpsIvs";
+    const baseEur = cappedIvs ? inpsBaseEur : annualGrossEur;
+    return {
+      key: line.key,
+      label: line.label,
+      rate: line.rate,
+      annualEur: baseEur * line.rate,
+      base: cappedIvs ? "inps" : "gross",
+    };
+  });
 
   const inail: EmployerChargeDraft = {
     key: "inail",
@@ -235,7 +242,7 @@ export function employerChargeDrafts(input: {
       {
         key: "tfrAccrual",
         label: "Accantonamento TFR",
-        rate: 1 / TFR_DIVISOR - TFR_INPS_FINANCING_RATE,
+        rate: 1 / TFR_DIVISOR,
         annualEur: tfrAccrualEur,
         base: "gross",
       },

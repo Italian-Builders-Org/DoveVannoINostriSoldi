@@ -331,7 +331,7 @@ test("employer charges use statutory INPS lines, TFR / 13.5 and illustrative INA
   assert.ok(example.monthlyCompanyCostCents > example.monthlyGrossCents);
 });
 
-test("INPS contributions stop at the 2026 ceiling; TFR stays on full pay", () => {
+test("IVS and TFR financing stop at the 2026 ceiling; minor INPS lines and TFR accrual stay on full pay", () => {
   const high = computePaycheck({
     annualGrossEur: 200_000,
     region: lombardia,
@@ -342,11 +342,18 @@ test("INPS contributions stop at the 2026 ceiling; TFR stays on full pay", () =>
   assert.equal(high.inpsBaseCents, INPS_CONTRIBUTION_CEILING_2026_EUR * 100);
   const ivs = high.employerCharges.find((row) => row.key === "inpsIvs");
   assert.equal(ivs?.annualCents, Math.round(INPS_CONTRIBUTION_CEILING_2026_EUR * 0.2381 * 100));
+  const naspi = high.employerCharges.find((row) => row.key === "inpsNaspi");
+  assert.equal(naspi?.annualCents, Math.round(200_000 * 0.0161 * 100));
   const ssc = high.deductions.find((row) => row.key === "employeeSsc");
   const cappedMonthlySsc = Math.round(
     Math.round(INPS_CONTRIBUTION_CEILING_2026_EUR * EMPLOYEE_SSC_RATE * 100) / 12,
   );
   assert.equal(ssc?.monthlyCents, cappedMonthlySsc);
+  const tfrFinancing = high.employerCharges.find((row) => row.key === "tfrFinancing");
+  assert.equal(
+    tfrFinancing?.annualCents,
+    Math.round(INPS_CONTRIBUTION_CEILING_2026_EUR * 0.005 * 100),
+  );
   const tfrAnnual = high.employerCharges
     .filter((row) => row.key === "tfrFinancing" || row.key === "tfrAccrual")
     .reduce((sum, row) => sum + row.annualCents, 0);

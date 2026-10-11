@@ -9,6 +9,8 @@ import {
   type InailPresetId,
 } from "@/lib/paycheck-employer";
 import {
+  PAYCHECK_MAX_ANNUAL_GROSS_EUR,
+  PAYCHECK_MIN_ANNUAL_GROSS_EUR,
   buildPaycheckCurve,
   computePaycheck,
   formatPaycheckEuro,
@@ -143,8 +145,15 @@ export function PaycheckCounter({
     setAnnualGross(raw);
     const annual = Number(raw);
     if (!Number.isFinite(annual) || raw.trim() === "") return;
-    setMonthlyGross(String(Math.round(annual / payMonths)));
-    writeNets(annual, payMonths, region);
+    const clamped = Math.min(
+      PAYCHECK_MAX_ANNUAL_GROSS_EUR,
+      Math.max(PAYCHECK_MIN_ANNUAL_GROSS_EUR, Math.round(annual)),
+    );
+    if (clamped !== Math.round(annual)) {
+      setAnnualGross(String(clamped));
+    }
+    setMonthlyGross(String(Math.round(clamped / payMonths)));
+    writeNets(clamped, payMonths, region);
   }
 
   function onMonthlyChange(raw: string) {
@@ -152,8 +161,13 @@ export function PaycheckCounter({
     const monthly = Number(raw);
     if (!Number.isFinite(monthly) || raw.trim() === "") return;
     const annual = Math.round(monthly * payMonths);
-    setAnnualGross(String(annual));
-    writeNets(annual, payMonths, region);
+    const clamped = Math.min(
+      PAYCHECK_MAX_ANNUAL_GROSS_EUR,
+      Math.max(PAYCHECK_MIN_ANNUAL_GROSS_EUR, annual),
+    );
+    setAnnualGross(String(clamped));
+    setMonthlyGross(String(Math.round(clamped / payMonths)));
+    writeNets(clamped, payMonths, region);
   }
 
   function onMonthlyNetChange(raw: string) {
@@ -254,8 +268,8 @@ export function PaycheckCounter({
             id={monthlyId}
             type="number"
             inputMode="decimal"
-            min={100}
-            max={50000}
+            min={Math.ceil(PAYCHECK_MIN_ANNUAL_GROSS_EUR / payMonths)}
+            max={Math.floor(PAYCHECK_MAX_ANNUAL_GROSS_EUR / payMonths)}
             step={50}
             value={monthlyGross}
             onChange={(event) => onMonthlyChange(event.target.value)}
@@ -395,7 +409,7 @@ export function PaycheckCounter({
             </dd>
           </div>
           <div>
-            <dt>Costo azienda / mese</dt>
+            <dt>Costo azienda / cedolino</dt>
             <dd data-testid="paycheck-company-monthly">
               {formatPaycheckEuro(computation.monthlyCompanyCostCents)}
             </dd>
@@ -412,7 +426,7 @@ export function PaycheckCounter({
         regions={regions}
         missions={missions}
         selectedRegionCode={region.code}
-        onSelectRegion={setRegionCode}
+        onSelectRegion={onRegionChange}
         taxYear={taxYear}
       />
 

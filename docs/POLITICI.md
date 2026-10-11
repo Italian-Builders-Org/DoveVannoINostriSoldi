@@ -45,7 +45,10 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
   pubblicata, al Senato il giorno successivo. Alla data della rilevazione la
   composizione ricostruita coincide con i gruppi correnti, e un test lo verifica.
   Le adesioni di chi non è più in carica contano nei totali ma non hanno un
-  seggio.
+  seggio. Per il Grafo la serie porta anche, per ogni membro del Governo, la
+  data d'inizio del primo incarico in corso: `governo-meloni.json` elenca solo
+  gli incarichi in corso, quindi un incarico precedente o chi ha lasciato il
+  Governo non sono ricostruibili.
 - [src/lib/parlamento-giudiziario.ts](../src/lib/parlamento-giudiziario.ts) e
   [src/lib/data/parlamento-giudiziario-contract.ts](../src/lib/data/parlamento-giudiziario-contract.ts):
   accesso e contratto dello snapshot curato dei procedimenti documentati; lo
@@ -72,8 +75,9 @@ snapshot e contratti rimandano ai documenti specialistici collegati.
 - [src/app/api/politici/voti-tema/route.ts](../src/app/api/politici/voti-tema/route.ts):
   directory dello storico per tema su tutti i parlamentari (vista **Storico voti**).
 - [src/app/api/politici/gruppi-nel-tempo/route.ts](../src/app/api/politici/gruppi-nel-tempo/route.ts):
-  serie delle adesioni ai gruppi per il cursore temporale. È statica
-  (`force-static`, un URL senza parametri, circa 5 KB compressi) e viene
+  serie delle adesioni ai gruppi e delle date d'inizio degli incarichi di
+  governo per il cursore temporale di emicicli e Grafo. È statica
+  (`force-static`, un URL senza parametri, circa 6 KB compressi) e viene
   scaricata solo quando si apre «Nel tempo», quindi la pagina non la porta con sé.
 - [src/app/api/politici/giudiziario/route.ts](../src/app/api/politici/giudiziario/route.ts):
   procedimenti documentati, copertura, cautele e fonti per persona.
@@ -110,8 +114,15 @@ sviluppo.
   disposizione dei seggi resta quella di oggi, le fasce dei gruppi sul bordo si
   nascondono e la legenda conta anche chi non è più in carica. Il contorno
   tratteggiato indica chi non era ancora in carica. I filtri restano sui dati
-  di oggi. `al` vale solo in `vista=camera|senato` e una data non valida viene
-  ignorata.
+  di oggi. `al` vale solo in `vista=camera|senato|grafo` e una data non valida
+  viene ignorata.
+- Grafo nel tempo (#556): in `vista=grafo` lo stesso cursore ricalcola le bande
+  dei gruppi nelle schede di Camera e Senato per il giorno scelto, contando
+  anche chi non è più in carica, e il conteggio dei componenti di quel giorno.
+  L'intervallo è quello pubblicato da entrambe le Camere. Il Governo resta
+  quello di oggi: i ritratti tratteggiati sono di chi quel giorno non aveva
+  ancora l'incarico attuale, che può averne avuto un altro non presente nella
+  fonte. Chi ha lasciato il Governo non compare.
 - Istituzione: `/politici?istituzione=<id>`.
 - Condanne documentate nello snapshot curato: `/politici?vista=condanne`.
 - Storico voti per tema (directory cercabile su tutti i parlamentari):
@@ -185,6 +196,62 @@ espliciti. I dati provengono dagli archivi pubblicati dalle istituzioni e portan
 le loro date di osservazione. «Primo mandato» conta soltanto le legislature
 repubblicane alla Camera e al Senato: non misura altri incarichi né il diritto al
 vitalizio.
+
+### Vitalizio: gap documentato (#556)
+
+L'issue #556 chiede un filtro «ha già maturato il vitalizio / non ancora» solo se
+regole e fonte ufficiale permettono di ricostruirlo in modo verificabile. Al
+30/09/2026 non è così, e l'atlante non mostra il filtro.
+
+**Cosa pubblicano le istituzioni** (verificato il 30/09/2026):
+
+- **Regole, non posizioni individuali.** La
+  [pagina sul trattamento economico della Camera](https://www.camera.it/deputati/trattamento-economico)
+  descrive il regime:
+  - l'assegno vitalizio è superato dal 1° gennaio 2012 e sostituito da una
+    pensione contributiva;
+  - per chi era in carica si applica un pro rata, cioè la quota di vitalizio
+    maturata al 31/12/2011 più la quota contributiva successiva;
+  - il diritto richiede almeno 5 anni effettivi di mandato e 65 anni di età,
+    ridotti di un anno per ogni anno di mandato in più, fino a 60;
+  - il pagamento è sospeso in caso di rielezione e di alcuni incarichi
+    incompatibili.
+
+  La [pagina del Senato](https://www.senato.it/composizione/senatori/trattamento-economico)
+  ricorda la riforma del 2007, che ha portato il mandato minimo da 2 anni e
+  6 mesi a 5 anni, il passaggio al contributivo del 2012 e la rideterminazione
+  dei vitalizi del 16 ottobre 2018.
+- **Un elenco nominativo, solo al Senato.** Il Senato pubblica gli
+  [ex senatori percettori di trattamenti previdenziali](https://www.senato.it/composizione/senatori/trattamento-economico-vitalizi):
+  1.223 voci, di cui 804 ex senatori con trattamento diretto e 419 deceduti con
+  trattamento di reversibilità. Per ciascuno ci sono nome, date di nascita e
+  morte e legislature svolte. Non ci sono importi né la distinzione fra vitalizio
+  e pensione contributiva, e manca un identificativo: il collegamento con la
+  mappa si potrebbe fare solo su nome e data di nascita.
+  La Camera non pubblica un elenco equivalente sulle sue pagine ufficiali.
+- **Nessun dato aperto.** Né `dati.camera.it` né `dati.senato.it` modellano
+  trattamenti previdenziali o vitalizi: le schede delle persone riportano
+  anagrafica, mandati, gruppi e incarichi.
+
+**Perché non si ricostruisce:**
+
+- «Ha maturato» dipende da mandati effettivi nei due rami, età e regole cambiate
+  nel 2007, nel 2012 e nel 2018, oltre che da decisioni degli organi interni. Le
+  Camere non pubblicano la posizione individuale: calcolarla dalle date dei
+  mandati sarebbe una stima, esclusa dall'issue («nessun vitalizio calcolato a
+  occhio»).
+- L'elenco del Senato riguarda chi ha lasciato il Parlamento e riceve il
+  trattamento. Chi siede oggi lo ha sospeso per regola. Un confronto di sola
+  ricerca su cognome e data di nascita, non usato nel prodotto, non trova nessuno
+  dei 603 parlamentari in carica. Le 12 date di nascita coincidenti appartengono
+  a persone diverse.
+- L'identità nell'atlante si unifica solo su identificativi ufficiali, mai per
+  somiglianza di nome.
+
+Il filtro diventa possibile se una delle Camere pubblica la posizione
+previdenziale individuale con un identificativo ufficiale. Un eventuale uso
+dell'elenco del Senato, per esempio una vista sugli ex senatori, sarebbe una
+funzione diversa da proporre a parte.
 
 La rappresentanza al Parlamento europeo resta fuori da questo atlante nazionale:
 vedi issue #566. Ritratti e simboli di partito passano dai proxy

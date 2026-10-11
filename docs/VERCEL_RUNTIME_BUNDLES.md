@@ -54,6 +54,15 @@ trace runtime. Release proof, receipt, catalogo e chunk restano inclusi dove
 consumati. Lo snapshot PNRR asili è richiesto dalle schede enti e dalle API che
 lo leggono; hub, struttura e pagine appalti non devono includerlo.
 
+I chunk `src/data/generated/integrated/rows/*.jsonl.gz` (centinaia di MiB) restano
+sulle superfici corpus `/dati/[dataset]` e `/api/dati/[dataset]`, **eccetto** gli
+shard dispositivi medici (~430 MiB: spesa 2018–2021, BD/RDM, CND). Senza Fluid
+Compute il limite serverless è 250 MB non compressi: con quei shard `/api/dati`
+supera ~670 MB. Le query dispositivi passano da `/spese/sanita/dispositivi` e
+dall’indice dedicato. Le route `/api/assistant/**` e `/api/mcp` escludono tutti i
+chunk row, l’indice dispositivi (~138 MiB) e gli shard `operators/*` ANAC; MCP
+conserva meta/search operatori e gli snapshot tipizzati.
+
 I pattern Next vengono confrontati anche con nomi interni `/app/...` e con
 `contains: true`: un pattern della scheda può includere involontariamente i suoi
 discendenti. I test verificano consumatori e non consumatori con il matcher

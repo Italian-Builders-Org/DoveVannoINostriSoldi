@@ -150,9 +150,10 @@ l'inventario e mantengono i propri nomi. Dopo il merge di questa modifica,
 non aggiungere commit umani alla branch gestita dal bot.
 
 Il 23 settembre i dati Consulenti sono stati integrati con #615, chiudendo le
-candidate #595 e #607. Consulenti riparte da `automation/data/consulenti-v3`:
-il publisher non riapre una candidata chiusa senza merge e non modifica la
-vecchia branch. Gli altri nomi restano invariati.
+candidate #595 e #607. Dopo la candidata #678 chiusa senza merge su
+`automation/data/consulenti-v3`, Consulenti riparte da
+`automation/data/consulenti-v4`: il publisher non riapre una candidata chiusa
+senza merge e non modifica la vecchia branch. Gli altri nomi restano invariati.
 
 Dopo push e aggiornamenti della PR, il publisher ripete soltanto le letture:
 al massimo cinque tentativi, con 15 secondi di attesa complessiva fra le chiamate.
@@ -192,11 +193,11 @@ Il workflow controlla ogni 6 ore l'endpoint ufficiale usato dal portale. Gli imp
 
 ### OpenCivitas
 
-Il rilascio comunale 2022 viene verificato ogni giorno. L'ETL controlla i metadati degli indicatori, il join sul codice ISTAT, gli importi, i livelli dei servizi e gli avvisi della fonte prima di scrivere lo snapshot.
+Il rilascio comunale 2022 viene verificato ogni giorno sulle URL `/portale/`. L'ETL controlla i metadati degli indicatori, il join sul codice ISTAT, gli importi, i livelli dei servizi e gli avvisi della fonte prima di scrivere lo snapshot. La discovery delle annualità non si ferma alla prima pagina Liferay (spesso senza servizi totali): prova anche `delta=50` e l'indice di ricerca ufficiale.
 
 Il server OpenCivitas non invia al momento il certificato intermedio della propria catena TLS. La verifica resta attiva: l'ETL aggiunge il solo certificato pubblico intermedio verificato e documentato in `scripts/etl/certs/README.md`. Non usa `--insecure`, proxy o fonti alternative.
 
-Una nuova annualità non viene accettata alla cieca. Il workflow la rileva e si ferma con un errore esplicito, lasciando disponibile l'ultimo snapshot valido. Prima si convalidano schema, definizioni e copertura; poi si aggiorna il contratto e si abilita il nuovo anno.
+Una nuova annualità non viene accettata alla cieca. Il workflow la rileva e si ferma con un errore esplicito, lasciando disponibile l'ultimo snapshot valido. Il portale espone già i servizi totali 2023 (`…/portale/w/2023-comuni-servizi-totali-indicatori-e-determinanti-1`); finché schema, definizioni e copertura non sono convalidati, il refresh resta bloccato sul 2022.
 
 ### OpenBDAP MOP
 

@@ -8,8 +8,10 @@ public-spending release.
 - Build the exact checkout with `npm run build`.
 - Launch a new `next start` instance on a unique loopback port.
 - Record its PID and use a new `.verification-artifacts` run directory.
-- Run the skill doctor and require 103 datasets, 20.354.415 source rows, 7.372.069
-  public rows, 34.071 source identities and a complete release.
+- Run the skill doctor. It reads the expected totals from `src/data/generated/integrated/catalog.json`
+  (`totals`, `corpusContract.elements`) and `data/source-ledger/release-proof.json`
+  (`sourceCatalog.identities`), and requires the public pages to show them; a data
+  PR that changes the corpus does not need to edit the skill.
 - Never drive a pre-existing dev server or a port not owned by the captured PID.
 
 ## Driving conventions

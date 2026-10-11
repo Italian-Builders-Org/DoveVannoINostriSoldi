@@ -1,6 +1,6 @@
 # Integrated data catalog
 
-The catalog exposes all 103 datasets and lets a user search a row-level dataset
+The catalog exposes every dataset listed in `src/data/generated/integrated/catalog.json` and lets a user search a row-level dataset
 without changing missing values, zeroes, sources or evidence labels.
 
 ## Sub-features
@@ -24,7 +24,7 @@ Preconditions:
 - The skill doctor passes for the run-owned server.
 - `integrated_source_release.py --check` passes offline.
 
-- **Open catalog.** Run `node .agents/skills/verify-dvns-integrated-sources/scripts/verify.mjs drive integrated-data-catalog`. The H1 is `Catalogo dei dati`. The default view `/dati` leads with readable recipient/amount datasets (`Numeri da leggere`) and demotes coverage gaps (`Cosa manca ancora`); `/dati?vista=tutti` has 103 unique detail links.
+- **Open catalog.** Run `node .agents/skills/verify-dvns-integrated-sources/scripts/verify.mjs drive integrated-data-catalog`. The H1 is `Catalogo dei dati`. The default view `/dati` leads with readable recipient/amount datasets (`Numeri da leggere`) and demotes coverage gaps (`Cosa manca ancora`); `/dati?vista=tutti` has one unique detail link per catalog dataset (`catalog.datasets.length`).
 - **Open detail.** The same drive navigates to `/dati/consulenze-legali?q=2024&limit=5`. The H1 is `Consulenze legali` and at most five matching rows render.
 - **Confirm API parity.** The drive requests `/api/dati/consulenze-legali?q=2024&limit=5`, requires the same dataset ID and row bound, and stores the response.
 - **Open municipal context.** The drive opens all three `istat-misura-comune-*` details with `q=Mappano&limit=5`, checks the unit and experimental-source note, and compares every displayed data cell with the API. The original `..` marker and six-digit municipality code must survive.
@@ -34,8 +34,9 @@ Preconditions:
 
 ## Gotchas
 
-- Twenty-two datasets are not row-queryable: nineteen are intentionally
-  `catalog-only` and three are `derived-only`; they must remain visible without
-  invented rows.
+- Datasets with `publication` `catalog-only` or `derived-only` are not
+  row-queryable and must remain visible without invented rows. `source-index`
+  datasets are queryable (`isQueryable` in `src/lib/integrated-public-view.ts`),
+  so they are not part of this group. Count them from the catalog, not here.
 - `not-declared` is a reuse caveat, not a row-access gate.
 - A blank string, `null` and `"0"` have different meanings.

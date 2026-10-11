@@ -39,6 +39,13 @@ const dossiers = [
       "Indicatori economici, confronto europeo e contesto per ciascun governo.",
   },
   {
+    href: "/programmi",
+    title: "Programmi elettorali 2027",
+    period: "In arrivo · campagne 2027",
+    description:
+      "Promesse di campagna confrontate con i numeri ufficiali: catalogo dei programmi, claim strutturati e verifica fail-closed sulle fonti del portale.",
+  },
+  {
     href: "/ministeri",
     title: "Ministeri",
     period: "Rendiconto dello Stato 2025",

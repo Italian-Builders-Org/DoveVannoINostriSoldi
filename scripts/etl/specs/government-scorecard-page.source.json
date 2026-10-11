@@ -21,7 +21,10 @@
     }
   },
   "sourceContract": {
-    "formats": ["AMECO CSV ZIP via the registered core artifact", "Eurostat JSON-stat 2.0"],
+    "formats": [
+      "AMECO CSV ZIP via the registered core artifact",
+      "Eurostat JSON-stat 2.0"
+    ],
     "hashRule": "SHA-256 is calculated from every acquired response and stored in the generated snapshot; derived points preserve component hashes.",
     "schemaRule": "Dataset code, dimensions, filters, countries, periods, numeric values and publication flags are validated fail-closed.",
     "license": {
@@ -34,12 +37,21 @@
     ]
   },
   "period": {
-    "frequencies": ["annual", "quarterly", "monthly"],
+    "frequencies": [
+      "annual",
+      "quarterly",
+      "monthly"
+    ],
     "firstPeriod": "1995",
     "latestRule": "latest published period available independently for each display series, preserving observed, provisional and estimated status",
     "missingRule": "omit unavailable source observations; never interpolate"
   },
-  "geographies": ["IT", "FR", "DE", "ES"],
+  "geographies": [
+    "IT",
+    "FR",
+    "DE",
+    "ES"
+  ],
   "sources": [
     {
       "datasetCode": "AMECO",
@@ -51,55 +63,105 @@
       "datasetCode": "prc_hicp_minr",
       "role": "monthly inflation",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
-      "filters": {"freq": "M", "unit": "RCH_A", "coicop18": "TOTAL"}
+      "filters": {
+        "freq": "M",
+        "unit": "RCH_A",
+        "coicop18": "TOTAL"
+      }
     },
     {
       "datasetCode": "une_rt_m",
       "role": "monthly unemployment rate",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
-      "filters": {"freq": "M", "s_adj": "SA", "age": "TOTAL", "unit": "PC_ACT", "sex": "T"}
+      "filters": {
+        "freq": "M",
+        "s_adj": "SA",
+        "age": "TOTAL",
+        "unit": "PC_ACT",
+        "sex": "T"
+      }
     },
     {
       "datasetCode": "lfsi_emp_q",
       "role": "quarterly seasonally adjusted employment rate",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
-      "filters": {"freq": "Q", "indic_em": "EMP_LFS", "s_adj": "SA", "unit": "PC_POP", "sex": "T", "age": "Y20-64"}
+      "filters": {
+        "freq": "Q",
+        "indic_em": "EMP_LFS",
+        "s_adj": "SA",
+        "unit": "PC_POP",
+        "sex": "T",
+        "age": "Y20-64"
+      }
     },
     {
       "datasetCode": "namq_10_pc",
       "role": "quarterly real GDP per capita",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
-      "filters": {"freq": "Q", "unit": "CLV_I20_HAB", "s_adj": "NSA", "na_item": "B1GQ"}
+      "filters": {
+        "freq": "Q",
+        "unit": "CLV_I20_HAB",
+        "s_adj": "NSA",
+        "na_item": "B1GQ"
+      }
     },
     {
       "datasetCode": "gov_10dd_edpt1",
       "role": "general-government consolidated gross debt stock",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
-      "filters": {"freq": "A", "unit": "MIO_EUR", "sector": "S13", "na_item": "GD"}
+      "filters": {
+        "freq": "A",
+        "unit": "MIO_EUR",
+        "sector": "S13",
+        "na_item": "GD"
+      }
     },
     {
       "datasetCode": "gov_10q_ggdebt",
       "role": "quarterly general-government debt ratio",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
-      "filters": {"freq": "Q", "unit": "PC_GDP", "sector": "S13", "na_item": "GD"}
+      "filters": {
+        "freq": "Q",
+        "unit": "PC_GDP",
+        "sector": "S13",
+        "na_item": "GD"
+      }
     },
     {
       "datasetCode": "gov_10q_ggnfa",
       "role": "quarterly primary balance derived from net lending plus interest payable",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
-      "filters": {"freq": "Q", "unit": "PC_GDP", "s_adj": "NSA", "sector": "S13", "na_item": ["B9", "D41PAY"]}
+      "filters": {
+        "freq": "Q",
+        "unit": "PC_GDP",
+        "s_adj": "NSA",
+        "sector": "S13",
+        "na_item": [
+          "B9",
+          "D41PAY"
+        ]
+      }
     },
     {
       "datasetCode": "namq_10_gdp",
       "role": "quarterly investment share of GDP",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
-      "filters": {"freq": "Q", "unit": "PC_GDP", "s_adj": "SCA", "na_item": "P51G"}
+      "filters": {
+        "freq": "Q",
+        "unit": "PC_GDP",
+        "s_adj": "SCA",
+        "na_item": "P51G"
+      }
     },
     {
       "datasetCode": "nama_10_pe",
       "role": "annual population denominator",
       "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
-      "filters": {"freq": "A", "unit": "THS_PER", "na_item": "POP_NC"}
+      "filters": {
+        "freq": "A",
+        "unit": "THS_PER",
+        "na_item": "POP_NC"
+      }
     }
   ],
   "derivations": {
@@ -136,9 +198,9 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-01T23:00:00+0200",
-        "raw_bytes": 34093,
-        "raw_sha256": "956328f6b1faf0df194c7d875fcc99eb56d6b86336592e34c76f6233c1f0bd65"
+        "upstream_updated_at": "2026-10-02T11:00:00+0200",
+        "raw_bytes": 34171,
+        "raw_sha256": "1443d75cfe99604d6eb9fb374c6b860d643633520d7e83ed2403ea1c47200235"
       },
       {
         "id": "eurostat:une_rt_m",
@@ -148,9 +210,9 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?lang=en&freq=M&s_adj=SA&age=TOTAL&sex=T&unit=PC_ACT&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1997-01",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-01T11:00:00+0200",
-        "raw_bytes": 30824,
-        "raw_sha256": "55c27931bf65ab8819cca2ae504c86a82f0d9886bc0bec094c224576998c1ff3"
+        "upstream_updated_at": "2026-10-02T23:00:00+0200",
+        "raw_bytes": 30894,
+        "raw_sha256": "3f9d551c50f165383fb806052cdd6135e2939881e407f2b4797cf9cf4e8987e4"
       },
       {
         "id": "eurostat:lfsi_emp_q",
@@ -160,9 +222,9 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/lfsi_emp_q?lang=en&freq=Q&indic_em=EMP_LFS&s_adj=SA&sex=T&age=Y20-64&unit=PC_POP&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2009-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-06-11T23:00:00+0200",
-        "raw_bytes": 9530,
-        "raw_sha256": "7e770c1467f45eabcda60daade28ad6f35eddfa678f956291ab05ff1fded9bcd"
+        "upstream_updated_at": "2026-09-10T23:00:00+0200",
+        "raw_bytes": 9563,
+        "raw_sha256": "ee4963f69bc08909bffa206c4a6dcc5f736b75a304ec98e9b8a6cfdd90ae7855"
       },
       {
         "id": "eurostat:namq_10_pc",
@@ -172,9 +234,9 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_pc?lang=en&freq=Q&unit=CLV_I20_HAB&s_adj=NSA&na_item=B1GQ&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-03T11:00:00+0200",
-        "raw_bytes": 14119,
-        "raw_sha256": "0487b09adc59e4b80c870f3c56feabf2efc47ca0fc15fdc1f46d0903a6da20b5"
+        "upstream_updated_at": "2026-10-07T11:00:00+0200",
+        "raw_bytes": 14113,
+        "raw_sha256": "3f9cf52b484ed9decdd533de5805c6c763e5278ddce4c331fcb34acfc02cd5a4"
       },
       {
         "id": "eurostat:gov_10dd_edpt1",
@@ -220,9 +282,9 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?lang=en&freq=Q&unit=PC_GDP&s_adj=SCA&na_item=P51G&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-03T11:00:00+0200",
-        "raw_bytes": 13020,
-        "raw_sha256": "ad1fcf26cb8cfb4a2d18e3c676964e799606970b52ac196eb4215747e33eb820"
+        "upstream_updated_at": "2026-10-06T23:00:00+0200",
+        "raw_bytes": 13017,
+        "raw_sha256": "6dab5e2f634b03a6f12a016a4f7b40c498884c2ddab2d17c53f16a72f4f83911"
       },
       {
         "id": "eurostat:nama_10_pe",
@@ -232,15 +294,15 @@
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_pe?lang=en&freq=A&unit=THS_PER&na_item=POP_NC&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
         "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-03T11:00:00+0200",
-        "raw_bytes": 5491,
-        "raw_sha256": "bcc55ecbb2f5410d93ea6c6d993fc3a94f581d4b52b7bf9318cef9e656fd358d"
+        "upstream_updated_at": "2026-10-07T11:00:00+0200",
+        "raw_bytes": 5466,
+        "raw_sha256": "0e4ed53aaf00683bb6e85fac06aea0dea233df7f668c9929c40b12564a7f9b90"
       }
     ],
     "approvedPeriods": [
       {
         "indicator_id": "inflation",
-        "period": "2026-08"
+        "period": "2026-09"
       },
       {
         "indicator_id": "real_compensation",
@@ -248,11 +310,11 @@
       },
       {
         "indicator_id": "unemployment",
-        "period": "2026-07"
+        "period": "2026-08"
       },
       {
         "indicator_id": "employment_rate",
-        "period": "2026-Q1"
+        "period": "2026-Q2"
       },
       {
         "indicator_id": "real_gdp_per_capita",

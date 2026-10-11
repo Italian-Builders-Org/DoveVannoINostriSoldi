@@ -2,8 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import {
-  addDays, changeDates, clampTimelineDate, dayIndex, parseGroupTimeline,
-  type ChamberTimeline, type GroupTimeline,
+  addDays, clampTimelineDate, dayIndex, parseGroupTimeline, type GroupTimeline,
 } from "@/lib/politici-group-timeline";
 import type { Resource } from "./atlas-data";
 import { atDate, longDate } from "./atlas-model";
@@ -49,15 +48,16 @@ export function useGroupTimeline(enabled: boolean): { resource: Resource<GroupTi
 /**
  * Day slider over the XIX. `asOf === null` is the snapshot's current composition;
  * picking the observation day returns to it, so the URL only records real past days.
+ * `changes` are the days the view can move: the step buttons jump between them.
  */
-export function TimelineControl({ series, asOf, onAsOf }: {
-  series: ChamberTimeline;
+export function TimelineControl({ series, changes, asOf, onAsOf }: {
+  series: { firstDate: string; lastDate: string; };
+  changes: readonly string[];
   asOf: string | null;
   onAsOf: (asOf: string | null) => void;
 }) {
   const id = useId();
   const date = asOf === null ? series.lastDate : clampTimelineDate(series, asOf) ?? series.lastDate;
-  const changes = changeDates(series);
   const previous = changes.filter((change) => change < date).at(-1) ?? null;
   const next = changes.find((change) => change > date) ?? null;
   const total = dayIndex(series.firstDate, series.lastDate);

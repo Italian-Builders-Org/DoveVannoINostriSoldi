@@ -65,7 +65,7 @@ Non è una misura di esperienza politica complessiva. Incarichi regionali,
 locali, europei o di governo senza seggio non sono contati, e «primo mandato
 parlamentare» non significa prima esperienza istituzionale. Non è un calcolo di
 vitalizio: requisiti e importi dipendono da regole e periodi che questo
-snapshot non contiene. Il filtro esclude i membri del Governo che non siedono in
+snapshot non contiene (vedi [Vitalizio: gap documentato](POLITICI.md#vitalizio-gap-documentato-556)). Il filtro esclude i membri del Governo che non siedono in
 Parlamento, perché per loro nessun ramo pubblica mandati.
 
 ## Verifiche

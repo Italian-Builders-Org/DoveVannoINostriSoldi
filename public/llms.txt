@@ -17,6 +17,7 @@
 - [Griglia territoriale ISTAT 1 km](https://www.dovevannoinostrisoldi.com/territori/griglia): aggregati statici ufficiali della popolazione legale del Censimento 2021 sulla griglia Eurostat 1 km2; nessuna spesa o bot di refresh a runtime.
 - [Mobilità](https://www.dovevannoinostrisoldi.com/mobilita): auto registrate per 1.000 abitanti (Eurostat 2025), offerta TPL nei Comuni capoluogo (ISTAT 2024), segnali sulla spesa familiare (ISTAT 2024) e stima carburante con prezzo MIMIT datato; non misura proprietà individuale, traffico, emissioni o spesa media per famiglia.
 - [IRPEF territoriale](https://www.dovevannoinostrisoldi.com/territori/irpef): contribuenti, redditi, imposta netta dichiarata e addizionali MEF 2024 per Regione, Provincia e Comune.
+- [Contatore busta paga](https://www.dovevannoinostrisoldi.com/busta-paga): stima illustrativa dal lordo annuo al cedolino (12/13/14 mensilità) con IRPEF 2026 a scaglioni, detrazione lavoro dipendente, contributi INPS 9,19%, addizionali regionali MEF 2026, mappa del netto per Regione e ripartizione statistica sulle missioni di bilancio; card social @DVNSoldi; non è una busta paga reale.
 - [Spese dello Stato](https://www.dovevannoinostrisoldi.com/stato): pagamenti OpenBDAP per missione, amministrazione e categoria.
 - [Legge di Bilancio](https://www.dovevannoinostrisoldi.com/spese/legge-di-bilancio): variazione dello stanziamento pubblicato per missione (OpenBDAP, competenza A1) e scenario ipotetico di riallocazione. Non è cassa né una previsione.
 - [Fondi e progetti](https://www.dovevannoinostrisoldi.com/coesione): aggregati OpenCoesione su costi, pagamenti, temi, nature e stati.
@@ -26,6 +27,7 @@
 - [Mappa della politica](https://www.dovevannoinostrisoldi.com/politici): Presidenza, Governo, Camera e Senato della XIX legislatura in una sola mappa (anche su https://politici.dovevannoinostrisoldi.com).
 - [Mappa dei Comuni](https://www.dovevannoinostrisoldi.com/comuni): impronta finanziaria SIOPE di ogni Comune rispetto ai territori simili (anche su https://comuni.dovevannoinostrisoldi.com).
 - [Pagella economica dei governi](https://www.dovevannoinostrisoldi.com/governi): Core macroeconomico annuale dal 1995, confronto con tre paesi europei, contesto e misure separati dall'attribuzione causale.
+- [Programmi elettorali 2027](https://www.dovevannoinostrisoldi.com/programmi): sezione in arrivo per confrontare le promesse di campagna con i numeri ufficiali; l’AI struttura i claim, i dati pubblici restano la prova.
 - [Cosa controllare](https://www.dovevannoinostrisoldi.com/controlli): indicatori e segnali per orientare verifiche ulteriori.
 - [Fonti](https://www.dovevannoinostrisoldi.com/fonti): registro, copertura, aggiornamento e stato operativo delle fonti.
 

@@ -25,6 +25,13 @@ const dossiers = [
       "Quanto pesano IRPEF e contributi su un lavoratore tipo. Non è la busta paga di una persona reale né l’IRPEF territoriale.",
   },
   {
+    href: "/busta-paga",
+    title: "Contatore busta paga",
+    period: "IRPEF 2026 · addizionali MEF · OpenBDAP",
+    description:
+      "Dal lordo annuo al cedolino (12/13/14): scaglioni IRPEF, addizionali per Regione e ripartizione illustrativa sulle missioni. Stima, non una busta paga reale.",
+  },
+  {
     href: "/pil",
     title: "PIL e conti nazionali",
     period: "Eurostat SEC 2010 · trimestrale e annuale",

@@ -335,7 +335,7 @@ export const SOURCE_POLICIES: Readonly<Record<SourceId, SourcePolicy>> = {
     id: "opencivitas",
     label: "OpenCivitas",
     owner: "Sogei",
-    sourceUrl: "https://www.opencivitas.it/it/open-data",
+    sourceUrl: "https://www.opencivitas.it/portale/open-data",
     cadence: "periodica",
     cadenceNote:
       "La fonte dichiara frequenza irregolare. Il rilascio 2022 viene verificato ogni giorno; una nuova annualità richiede la convalida del contratto dati.",

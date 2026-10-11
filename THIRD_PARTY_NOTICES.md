@@ -68,7 +68,7 @@ Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2026. CC BY 4.0. Adap
 
 - **Work:** Comuni, servizi totali, indicatori e determinanti 2022;
 - **Publisher:** OpenCivitas, a Sogei project;
-- **Source:** https://www.opencivitas.it/it/dataset/2022-comuni-servizi-totali-indicatori-e-determinanti;
+- **Source:** https://www.opencivitas.it/portale/w/2022-comuni-servizi-totali-indicatori-e-determinanti;
 - **License:** Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/;
 - **Changes:** selected measures were normalized to integer cents and basis points, joined to official municipality metadata by ISTAT code, and supplied with derived differences and validation warnings.
 

@@ -2,8 +2,9 @@
 
 import assert from "node:assert/strict";
 import { access, mkdir, writeFile } from "node:fs/promises";
-import { constants as fsConstants } from "node:fs";
+import { constants as fsConstants, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import puppeteer from "puppeteer";
 
 const mode = process.argv[2];
@@ -28,6 +29,24 @@ if (!/^https?:$/.test(baseUrl.protocol)) {
 if (!viewport) {
   throw new Error("DVNS_VERIFY_VIEWPORT deve essere desktop, tablet oppure mobile.");
 }
+
+// Release totals come from the committed artifacts, so each data PR does not have to
+// edit this script: the pages must show what the catalog and the release proof declare.
+const repositoryRoot = fileURLToPath(new URL("../../../../", import.meta.url));
+const readJson = (relativePath) => JSON.parse(readFileSync(resolve(repositoryRoot, relativePath), "utf8"));
+const catalog = readJson("src/data/generated/integrated/catalog.json");
+const releaseProof = readJson("data/source-ledger/release-proof.json");
+// The pages group every thousand ("2.841"); it-IT leaves four digits ungrouped.
+const italian = (value) => String(value).replace(/\B(?=(\d{3})+$)/g, ".");
+const literal = (value) => new RegExp(italian(value).replaceAll(".", "\\."));
+const expected = {
+  datasets: catalog.datasets.length,
+  elements: catalog.corpusContract.elements,
+  identities: releaseProof.sourceCatalog.identities,
+  sourceRows: catalog.totals.sourceRows,
+  publicRows: catalog.totals.publicRows,
+};
+assert.equal(catalog.totals.datasets, expected.datasets, "catalog.json: totals.datasets diverge dai dataset elencati");
 
 function url(pathname) {
   return new URL(pathname, baseUrl).toString();
@@ -72,10 +91,9 @@ async function doctor() {
   const coverageText = await coverageResponse.text();
   const dataset = await datasetResponse.json();
   const rgsText = await rgsResponse.text();
-  assert.match(coverageText, /51\.303/);
-  assert.match(coverageText, /34\.071/);
-  assert.match(coverageText, /20\.354\.415/);
-  assert.match(coverageText, /7\.372\.069/);
+  for (const key of ["elements", "identities", "sourceRows", "publicRows"]) {
+    assert.match(coverageText, literal(expected[key]), `/fonti/copertura: ${key} ${italian(expected[key])} assente`);
+  }
   assert.equal(dataset.dataset.id, "consulenze-legali");
   assert.equal(dataset.rows.length, 1);
   assert.match(rgsText, /Consulenze e lavoro parasubordinato nei conti RGS/);
@@ -86,6 +104,7 @@ async function doctor() {
       datasetApi: true,
       rgsConsulting: true,
     },
+    expected,
     observed: {
       datasetId: dataset.dataset.id,
       publicRows: dataset.dataset.publicRows,
@@ -201,7 +220,7 @@ async function driveCatalog(page, directory) {
   const links = await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   );
-  assert.equal(links.length, 103);
+  assert.equal(links.length, expected.datasets);
   await screenshot(page, directory, "catalog-tutti.png");
 
   actions.push(await goto(
@@ -385,13 +404,13 @@ async function driveHubs(page, directory) {
       await writeFile(resolve(directory, "posti-letto-api.json"), `${JSON.stringify(capacity, null, 2)}\n`);
     }
   }
-  assert.equal(hubLinks.size, 92);
+  assert.equal(hubLinks.size, 111);
   assert.ok(hubLinks.has("/dati/ted-avvisi-italia-2026-08"));
   actions.push(await goto(page, "/dati?vista=tutti", "Catalogo dei dati"));
   const catalogLinks = new Set(await page.$$eval('a[href^="/dati/"]', (nodes) =>
     [...new Set(nodes.map((node) => node.getAttribute("href")))].filter(Boolean),
   ));
-  assert.equal(catalogLinks.size, 103);
+  assert.equal(catalogLinks.size, expected.datasets);
   for (const year of [2018, 2019]) {
     assert.ok(catalogLinks.has(`/dati/salute-spesa-dispositivi-${year}`));
   }

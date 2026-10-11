@@ -25,12 +25,58 @@ assertPnrrChildcareReconciliation(pnrrChildcareData, pnrrChildcareMeta);
 
 const projectsByCup = new Map(pnrrChildcareData.projects.map((project) => [project.cup, project]));
 const projectsByImplementerTaxCode = new Map<string, PnrrChildcareProject[]>();
+const projectsByLocationMunicipality = new Map<string, PnrrChildcareProject[]>();
+const implementerTaxCodesByEntityName = new Map<string, Set<string>>();
+
+function normalizedTerritoryName(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleUpperCase("it-IT")
+    .replace(/['’`]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function entityNameKeys(rawName: string): readonly string[] {
+  const normalized = normalizedTerritoryName(rawName);
+  if (!normalized) return [];
+  const keys = new Set<string>([normalized]);
+  const stripped = normalized
+    .replace(/^COMUNE DI\s+/, "")
+    .replace(/^CITTA['’]?\s+DI\s+/, "")
+    .replace(/^CITTA\s+DI\s+/, "")
+    .trim();
+  if (stripped) keys.add(stripped);
+  if (stripped === "ROMA" || normalized === "ROMA CAPITALE") {
+    keys.add("ROMA");
+    keys.add("ROMA CAPITALE");
+  }
+  return [...keys];
+}
+
 for (const project of pnrrChildcareData.projects) {
   const taxCode = project.implementer.taxCode?.trim();
-  if (!taxCode) continue;
-  const projects = projectsByImplementerTaxCode.get(taxCode) ?? [];
-  projects.push(project);
-  projectsByImplementerTaxCode.set(taxCode, projects);
+  if (taxCode) {
+    const projects = projectsByImplementerTaxCode.get(taxCode) ?? [];
+    projects.push(project);
+    projectsByImplementerTaxCode.set(taxCode, projects);
+    if (project.implementer.name) {
+      for (const key of entityNameKeys(project.implementer.name)) {
+        const codes = implementerTaxCodesByEntityName.get(key) ?? new Set<string>();
+        codes.add(taxCode);
+        implementerTaxCodesByEntityName.set(key, codes);
+      }
+    }
+  }
+  for (const location of project.locations) {
+    if (!location.municipality) continue;
+    for (const key of entityNameKeys(location.municipality)) {
+      const projects = projectsByLocationMunicipality.get(key) ?? [];
+      projects.push(project);
+      projectsByLocationMunicipality.set(key, projects);
+    }
+  }
 }
 
 export type PnrrChildcareQuery = {
@@ -121,6 +167,47 @@ export function getPnrrChildcareProjectsByImplementerTaxCode(
   const taxCode = rawTaxCode.trim();
   if (!/^\d{11}$/.test(taxCode)) return [];
   return projectsByImplementerTaxCode.get(taxCode) ?? [];
+}
+
+/**
+ * Official ReGiS/Italia Domani often publish a municipal CF that differs from
+ * the current SIOPE/IPA fiscal code (e.g. Roma Capitale). Resolve alternate
+ * implementer codes by exact entity-name match on the committed snapshot.
+ */
+export function getPnrrImplementerTaxCodesForMunicipality(
+  taxCode: string,
+  entityName: string,
+): readonly string[] {
+  const codes = new Set<string>();
+  const primary = taxCode.trim();
+  if (/^\d{11}$/.test(primary)) codes.add(primary);
+  for (const key of entityNameKeys(entityName)) {
+    for (const code of implementerTaxCodesByEntityName.get(key) ?? []) codes.add(code);
+  }
+  return [...codes].sort();
+}
+
+/**
+ * Childcare projects localised on the municipality by official place name.
+ * Municipality codes in the snapshot are not ISTAT-6; name match is the
+ * fail-closed join available without inventing geography.
+ */
+export function getPnrrChildcareProjectsForMunicipality(input: Readonly<{
+  taxCode: string;
+  entityName: string;
+}>): readonly PnrrChildcareProject[] {
+  const byCup = new Map<string, PnrrChildcareProject>();
+  for (const code of getPnrrImplementerTaxCodesForMunicipality(input.taxCode, input.entityName)) {
+    for (const project of projectsByImplementerTaxCode.get(code) ?? []) {
+      byCup.set(project.cup, project);
+    }
+  }
+  for (const key of entityNameKeys(input.entityName)) {
+    for (const project of projectsByLocationMunicipality.get(key) ?? []) {
+      byCup.set(project.cup, project);
+    }
+  }
+  return [...byCup.values()].sort((left, right) => left.cup.localeCompare(right.cup, "en"));
 }
 
 export function awardeesForTender(project: PnrrChildcareProject, tender: PnrrChildcareProject["tenders"][number]) {

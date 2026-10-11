@@ -6608,8 +6608,8 @@
   "source": {
     "owner": "OpenCivitas · Sogei",
     "dataset": "Comuni · Servizi totali · Indicatori e determinanti 2022",
-    "landingUrl": "https://www.opencivitas.it/it/open-data",
-    "datasetUrl": "https://www.opencivitas.it/it/dataset/2022-comuni-servizi-totali-indicatori-e-determinanti",
+    "landingUrl": "https://www.opencivitas.it/portale/open-data",
+    "datasetUrl": "https://www.opencivitas.it/portale/w/2022-comuni-servizi-totali-indicatori-e-determinanti",
     "dataUrl": "https://docs.opencivitas.it/2022_Ind_FC80TOT_2_csv.zip",
     "entitiesUrl": "https://docs.opencivitas.it/Metadati_Enti_2022_xlsx.zip",
     "indicatorsUrl": "https://docs.opencivitas.it/2022_Metadati_Ind_FC80TOT_1_xlsx.zip",

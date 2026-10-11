@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "inps-casellario-sistema",
+  "period": {
+    "from": 2023,
+    "to": 2024
+  },
+  "source": {
+    "owner": "INPS — Coordinamento Generale Statistico Attuariale / Osservatori statistici",
+    "landingUrl": "https://servizi2.inps.it/servizi/osservatoristatistici/4",
+    "newsUrl": "https://www.inps.it/it/it/inps-comunica/notizie/dettaglio-news-page.news.2025.10.prestazioni-pensionistiche-e-beneficiari-pubblicato-l-osservatorio.html",
+    "licenseId": "not-declared",
+    "licenseNote": "Il comunicato e l’osservatorio INPS non dichiarano una licenza di riuso sul file. Si pubblica not-declared senza inferenze.",
+    "publicationDate": "2025-10-23",
+    "acquiredAt": "2026-10-09",
+    "checkedAt": "2026-10-09",
+    "geography": "Italia (sistema pensionistico / Casellario centrale)",
+    "updateFrequency": "annuale",
+    "assets": {
+      "comunicatoStampa": {
+        "id": "cs-osservatorio-casellario-2024",
+        "title": "INPS · Comunicato stampa Osservatorio prestazioni pensionistiche e beneficiari (31.12.2024)",
+        "url": "https://www.inps.it/content/dam/inps-site/it/scorporati/comunicati-stampa/2025/10/Allegati/3913_Cs_Osservatorio-Prestazioni-pensionistiche-e-beneficiari-del-sistema-pensionistico-italiano.pdf",
+        "path": "tests/fixtures/inps-casellario/3913_Cs_Osservatorio-Prestazioni-pensionistiche-e-beneficiari-del-sistema-pensionistico-italiano.pdf",
+        "bytes": 107656,
+        "sha256": "a326db72e16b60fcf0b69e12fae753b485f0fad250a46c256723456522f4754b",
+        "documentDate": "2025-10-23",
+        "referenceAsOf": "2024-12-31"
+      }
+    }
+  },
+  "expected": {
+    "asOf": "2024-12-31",
+    "observations": [
+      {
+        "year": 2023,
+        "asOf": "2023-12-31",
+        "pensionCount": 22919888,
+        "pensionerCount": 16230157,
+        "amountMillionEuros": 347032,
+        "meanBenefitEuros": 15141,
+        "meanPensionerIncomeEuros": 21382,
+        "evidence": "prior-year-totale-stesso-rilascio-osservatorio; riconciliato ai delta percentuali del comunicato"
+      },
+      {
+        "year": 2024,
+        "asOf": "2024-12-31",
+        "pensionCount": 23015011,
+        "pensionerCount": 16305880,
+        "amountMillionEuros": 364132,
+        "meanBenefitEuros": 15821,
+        "meanPensionerIncomeEuros": 22331,
+        "evidence": "estratto dal comunicato stampa PDF hashed"
+      }
+    ],
+    "yoyPercentsFromComunicato": {
+      "pensionCount": 0.4,
+      "pensionerCount": 0.5,
+      "amountMillionEuros": 4.9
+    },
+    "natureSharesPercent": {
+      "previdenzialiIvs": 77.2,
+      "assistenziali": 20.2,
+      "indennitarie": 2.7
+    },
+    "genderMeanPensionerIncomeEuros": {
+      "maschi": 25712,
+      "femmine": 19140
+    },
+    "pensionsPerPensionerTenths": 14
+  },
+  "integrity": {
+    "dataArtifact": {
+      "path": "src/data/generated/inps-casellario-sistema.json",
+      "bytes": 3913,
+      "sha256": "46cac03870e9074f17f1164977b1e4ad44980b9e4c7a4fdc27dac6da3d1e7acb"
+    },
+    "lockSha256": "ee3c5830c431679c1ab1d84f363aa6b8eaaf7df2c52d2b3b3a41c750edecaa74"
+  }
+}

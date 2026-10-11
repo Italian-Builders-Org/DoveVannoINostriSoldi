@@ -80,6 +80,29 @@ test("entity tracing includes childcare only in its runtime consumers", () => {
   }
 });
 
+test("assistant and mcp exclude integrated row shards; dati keeps non-medical rows only", () => {
+  const rowShard = "src/data/generated/integrated/rows/rgs-spesa-statale-regionalizzata-2019.part-00000.jsonl.gz";
+  const medicalRow = "src/data/generated/integrated/rows/salute-spesa-dispositivi-2021.part-00000.jsonl.gz";
+  const medicalIndex = "src/data/generated/medical-device-spending-index/meta.json";
+  const operatorShard = "src/data/generated/anac-operator-awards-index/operators/00.jsonl.gz";
+  for (const route of ["api/assistant/chat", "api/assistant/quota"]) {
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, rowShard), true, route);
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalIndex), true, route);
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, operatorShard), true, route);
+    assert.equal(explicitRuntimeFile(route, rowShard), false, route);
+  }
+  assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, "api/mcp", rowShard), true);
+  assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, "api/mcp", medicalIndex), true);
+  assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, "api/mcp", operatorShard), true);
+  assert.equal(explicitRuntimeFile("api/mcp", rowShard), false);
+  for (const route of ["dati/[dataset]", "api/dati/[dataset]"]) {
+    assert.equal(explicitRuntimeFile(route, rowShard), true, route);
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingIncludes, route, medicalRow), false, route);
+    assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalRow), true, route);
+    assert.equal(explicitRuntimeFile(route, medicalRow), false, route);
+  }
+});
+
 test("runtime package guard rejects CI intake without dropping proofs or row chunks", (t) => {
   const required = ["data/source-ledger/release-proof.json", "data/source-ledger/receipt.json",
     "data/source-ledger/dataset-proof.json", "data/source-ledger/sources.jsonl",

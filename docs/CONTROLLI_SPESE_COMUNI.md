@@ -40,7 +40,7 @@ Comuni resta non valutata.
 
 ## Provenienza e superfici
 
-- Fonte: [OpenCivitas open data](https://www.opencivitas.it/it/open-data), rilascio 2022 pubblicato
+- Fonte: [OpenCivitas open data](https://www.opencivitas.it/portale/open-data), rilascio 2022 pubblicato
   il 7 agosto 2025, licenza CC BY 4.0 come dichiarato nello snapshot versionato.
 - REST: `GET /api/controlli/spesa-comuni?anno=2022&limit=50&offset=0`, con filtro opzionale
   `regione`. La risposta include periodo, provenance, warning, totale non paginato e pagina corrente.

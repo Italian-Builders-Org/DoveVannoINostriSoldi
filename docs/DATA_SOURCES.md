@@ -110,6 +110,18 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
 
+## Contatore busta paga · stima illustrativa
+
+La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13
+o 14 mensilità, senza familiari a carico): IRPEF a scaglioni 2026 con
+detrazione art. 13 TUIR, contributi INPS IVS ordinario ≈ 9,19%, addizionale
+regionale con scaglioni e aliquote MEF 2026 per tutte le Regioni (soglie
+preferenziali Lazio, Umbria, FVG, Valle d'Aosta), addizionale comunale come
+media regionale MEF, mappa coropletica del netto per Regione a parità di RAL,
+e ripartizione illustrativa della sola IRPEF erariale sulle missioni OpenBDAP
+Legge di Bilancio. Card social firmata con tag @DVNSoldi. Non è una busta paga
+reale né cassa SIOPE.
+
 ## Cuneo fiscale · OECD Taxing Wages
 
 La pagina `/cuneo-fiscale` pubblica il cuneo fiscale italiano da OECD Taxing

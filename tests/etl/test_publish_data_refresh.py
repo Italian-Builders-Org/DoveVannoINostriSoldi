@@ -179,7 +179,7 @@ class PublishDataRefreshTests(TestCase):
             {
                 "automation/data/company-atlas-v2",
                 "automation/data/education-atlas",
-                "automation/data/consulenti-v3",
+                "automation/data/consulenti-v4",
                 "automation/data/government-scorecard-v2",
                 "automation/data/mef-participations-v2",
                 "automation/data/budget-law",

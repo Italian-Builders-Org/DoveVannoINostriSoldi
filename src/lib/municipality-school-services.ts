@@ -2,16 +2,12 @@ import "server-only";
 
 import spec from "../../scripts/etl/specs/mim-school-services.source.json";
 import { selectIntegratedSortedDatasetRows, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
+import { schoolServicesSource } from "@/lib/mim-school-services-source";
 import type { MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
 
-type MunicipalIdentity = Extract<MefIrpefTerritoryRecord["territory"], { level: "municipality" }>;
+export { schoolServicesSource };
 
-export const schoolServicesSource = {
-  datasetId: spec.datasetId,
-  schoolYear: spec.schoolYearLabel,
-  dataAsOf: spec.dataAsOf,
-  landingUrl: spec.source.landingUrl,
-} as const;
+type MunicipalIdentity = Extract<MefIrpefTerritoryRecord["territory"], { level: "municipality" }>;
 
 export type MunicipalitySchoolServices =
   | Readonly<{

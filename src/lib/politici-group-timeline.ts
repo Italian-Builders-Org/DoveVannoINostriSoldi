@@ -5,6 +5,9 @@
  *
  * Every segment carries an exclusive `until`: the Camera publishes exclusive end
  * dates, the Senato inclusive ones, so the builder adds a day to the Senato's.
+ *
+ * The Government source lists only appointments in force, each with its start:
+ * a member who held another role earlier, or who has left, is not in it.
  */
 
 export type TimelineSegment = { groupId: string; start: string; until: string | null; };
@@ -22,7 +25,10 @@ export type ChamberTimeline = {
   /** Adhesions of people no longer in office: counted in the totals, without a seat or a name. */
   former: TimelineSegment[];
 };
-export type GroupTimeline = { camera: ChamberTimeline; senato: ChamberTimeline; };
+/** Earliest current appointment of each government member, keyed on the map's person ids. */
+export type GovernmentTimeline = { members: Array<{ personId: string; since: string; }>; };
+export type GroupTimeline = { camera: ChamberTimeline; senato: ChamberTimeline; government: GovernmentTimeline; };
+export type GroupCount = { groupId: string; family: string; label: string; count: number; };
 export type Composition = {
   /** `null` when the person was not yet (or no longer) in office that day. */
   byPerson: Map<string, string | null>;
@@ -78,6 +84,47 @@ export function compositionAt(timeline: ChamberTimeline, date: string): Composit
     count(segment.groupId);
   }
   return { byPerson, counts, formerInOffice };
+}
+
+/** Groups with members on a day, under the short name then in force, in alphabetical order. */
+export function groupCountsAt(timeline: ChamberTimeline, date: string): GroupCount[] {
+  const groups = new Map(timeline.groups.map((group) => [group.id, group]));
+  return [...compositionAt(timeline, date).counts]
+    .map(([groupId, count]) => {
+      const group = groups.get(groupId)!;
+      return { groupId, family: group.family, label: groupNameAt(group, date)?.shortLabel ?? groupId, count };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, "it") || a.groupId.localeCompare(b.groupId));
+}
+
+/**
+ * Whether the person's current government role had started on the day; `null`
+ * for someone outside the Government. `false` does not mean out of government:
+ * an earlier role is not in the source.
+ */
+export function currentRoleStarted(government: GovernmentTimeline, personId: string, date: string): boolean | null {
+  const member = government.members.find((item) => item.personId === personId);
+  return member ? member.since <= date : null;
+}
+
+/** Days both chambers publish: the Grafo shows them together. */
+export function sharedTimelineRange(timeline: Pick<GroupTimeline, "camera" | "senato">): { firstDate: string; lastDate: string; } {
+  const { camera, senato } = timeline;
+  return {
+    firstDate: camera.firstDate > senato.firstDate ? camera.firstDate : senato.firstDate,
+    lastDate: camera.lastDate < senato.lastDate ? camera.lastDate : senato.lastDate,
+  };
+}
+
+/** Days on which the Grafo can move: a group change in either chamber or a current government role starting. */
+export function timelineChangeDates(timeline: GroupTimeline): string[] {
+  const { firstDate, lastDate } = sharedTimelineRange(timeline);
+  const dates = new Set([
+    ...changeDates(timeline.camera),
+    ...changeDates(timeline.senato),
+    ...timeline.government.members.map((member) => member.since),
+  ]);
+  return [...dates].filter((date) => date >= firstDate && date <= lastDate).sort();
 }
 
 /** Days on which some adhesion starts or ends: the only days the composition can move. */
@@ -147,8 +194,25 @@ function parseChamber(value: unknown, chamber: "camera" | "senato"): ChamberTime
   };
 }
 
+function parseGovernment(value: unknown): GovernmentTimeline {
+  if (!object(value) || !Array.isArray(value.members)) return invalid("incarichi di governo");
+  const personIds = new Set<string>();
+  const members = value.members.map((member) => {
+    if (!object(member) || !text(member.personId) || personIds.has(member.personId) || !isIsoDate(member.since)) {
+      return invalid("incarico di governo");
+    }
+    personIds.add(member.personId);
+    return { personId: member.personId, since: member.since };
+  });
+  return { members };
+}
+
 /** Validate the served series; a broken response is never drawn as a composition. */
 export function parseGroupTimeline(payload: unknown): GroupTimeline {
   if (!object(payload)) return invalid("documento");
-  return { camera: parseChamber(payload.camera, "camera"), senato: parseChamber(payload.senato, "senato") };
+  return {
+    camera: parseChamber(payload.camera, "camera"),
+    senato: parseChamber(payload.senato, "senato"),
+    government: parseGovernment(payload.government),
+  };
 }

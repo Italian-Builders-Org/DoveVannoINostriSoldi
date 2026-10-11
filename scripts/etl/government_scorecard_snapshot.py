@@ -30,6 +30,13 @@ MAX_UNCOMPRESSED_BYTES = 80 * 1024 * 1024
 EXPECTED_ARCHIVE_FILES = {f"AMECO{index}.CSV" for index in range(1, 19)}
 EXPECTED_YEARS = tuple(range(1960, 2028))
 COUNTRIES = (("italy", "ITA"), ("france", "FRA"), ("germany", "DEU"), ("spain", "ESP"))
+# AMECO7 uses the linked-Germany label for DEU while other cubes keep "Germany".
+AMECO_COUNTRY_NAMES = {
+    "italy": frozenset({"Italy"}),
+    "france": frozenset({"France"}),
+    "germany": frozenset({"Germany", 'Germany ("linked")'}),
+    "spain": frozenset({"Spain"}),
+}
 VALUE_RANGES = {
     "real_compensation": (0, 1_000),
     "unemployment": (0, 100),
@@ -257,7 +264,7 @@ def extract_indicators(spec: dict[str, Any], method: dict[str, Any], payload: by
         row = files[config["file"]].get(code)
         expected_unit = config["rawUnitTemplate"].format(currency=ameco["countries"][country_id]["currencyCode"])
         if (row is None or row["TITLE"] != config["title"] or row["UNIT"] != expected_unit
-                or row["COUNTRY"] != country_id.title()):
+                or row["COUNTRY"] not in AMECO_COUNTRY_NAMES[country_id]):
             fail(f"AMECO: serie mancante o identita divergente {code}")
         return code, row
 

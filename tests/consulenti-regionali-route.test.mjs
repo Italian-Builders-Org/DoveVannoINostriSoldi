@@ -33,6 +33,20 @@ test("the territorial page keeps Perla PA separate from RGS consulting", () => {
   assert.doesNotMatch(page, /paidCents\s*\+[^\n]*paidCents/);
 });
 
+test("the territorial page explains external appointments without leaving the page", () => {
+  assert.match(page, /data-testid="territori-reading"/);
+  assert.match(page, /Cosa sono gli incarichi esterni/);
+  assert.match(page, /soggetti esterni/);
+  assert.match(page, /non sono dipendenti pubblici/);
+  assert.match(page, /href="\/incarichi"/);
+  assert.match(page, /methodology\.rgsSeparation/);
+  assert.match(page, /methodology\.territoryMeaning/);
+  assert.match(page, /methodology\.currentYearWarning/);
+  assert.match(page, /data-testid="territori-partial-year"/);
+  assert.match(page, /non sommare a Perla PA/i);
+  assert.doesNotMatch(page, /spreco automatico|classifica di utilit/i);
+});
+
 test("the territorial API route wires snapshot helpers and year selection", () => {
   assert.match(apiRoute, /getConsulentiRegionaliYear/);
   assert.match(apiRoute, /Parametro sconosciuto o ripetuto/);

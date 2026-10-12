@@ -137,6 +137,41 @@
   font-size: 0.95rem;
 }
 
+.readingList {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-3) 0 0;
+}
+
+.readingList > div {
+  min-width: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.readingList > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.readingList dt {
+  margin: 0;
+  color: var(--color-neutral-800);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.readingList dd {
+  margin: 0.35rem 0 0;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+}
+
+.linkHint {
+  color: var(--color-neutral-600);
+  font-size: 0.9rem;
+}
+
 .filterForm {
   display: flex;
   flex-wrap: wrap;

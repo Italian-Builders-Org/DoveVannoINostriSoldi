@@ -15,7 +15,7 @@ type PageProps = {
 export const metadata: Metadata = {
   title: "Consulenze e incarichi esterni per territorio",
   description:
-    "Ammontare erogato degli incarichi esterni comunicati a Consulenti Pubblici, ripartito per territorio delle PA conferenti.",
+    "Incarichi affidati a soggetti esterni (non dipendenti), comunicati a Consulenti Pubblici · Perla PA e ripartiti per territorio delle PA conferenti. Serie distinta dagli incarichi ai dipendenti e dalle consulenze RGS.",
 };
 
 function one(value: SearchValue): string | undefined {
@@ -64,8 +64,10 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
         <p className={styles.eyebrow}>Consulenti Pubblici · Perla PA</p>
         <h1>Incarichi esterni per territorio</h1>
         <p>
-          Ammontare erogato degli incarichi esterni comunicati dalle amministrazioni, ripartito
-          per l&apos;etichetta geografica <code>regionePa</code> della fonte. Periodo {yearRange}.
+          Qui vedi gli incarichi affidati a <strong>soggetti esterni</strong> (persone o
+          organizzazioni che non sono dipendenti pubblici), comunicati dalle amministrazioni a
+          Consulenti Pubblici · Perla PA. Gli importi sono ripartiti per l&apos;etichetta geografica{" "}
+          <code>regionePa</code> delle PA conferenti. Periodo {yearRange}.
         </p>
       </header>
 
@@ -91,6 +93,66 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
         </div>
       </div>
 
+      <section
+        className="panel"
+        aria-labelledby="territori-reading-title"
+        data-testid="territori-reading"
+      >
+        <h2 id="territori-reading-title" className="panel-title">
+          Cosa sono gli incarichi esterni
+        </h2>
+        <p className={styles.note}>
+          Un incarico esterno è un incarico che la pubblica amministrazione affida a qualcuno
+          fuori dal rapporto di lavoro dipendente e comunica sulla piattaforma Consulenti
+          Pubblici · Perla PA. Non è un giudizio su utilità, spreco o irregolarità: è il conteggio
+          e l&apos;ammontare erogato pubblicati dalla fonte.
+        </p>
+        <dl className={styles.readingList}>
+          <div>
+            <dt>Cosa misura questa pagina</dt>
+            <dd>
+              Per ogni etichetta territoriale: quanti incarichi esterni risultano conferiti,
+              quanti risultano conclusi e quanto risulta pagato.{" "}
+              {snapshot.methodology.amountMeaning}
+            </dd>
+          </div>
+          <div>
+            <dt>Cosa significa <code>regionePa</code></dt>
+            <dd>{snapshot.methodology.territoryMeaning}</dd>
+          </div>
+          <div>
+            <dt>Distinto dal quadro nazionale</dt>
+            <dd>
+              Il{" "}
+              <Link href="/incarichi">quadro nazionale degli incarichi</Link> tiene separate due
+              serie: esterni e incarichi ai dipendenti. Questa pagina è solo la ripartizione
+              territoriale degli <strong>esterni</strong>; non include gli incarichi ai dipendenti.
+            </dd>
+          </div>
+          <div>
+            <dt>Distinto dalle consulenze RGS</dt>
+            <dd>
+              {snapshot.methodology.rgsSeparation} Non sommare questa serie a{" "}
+              <Link href="/spese/consulenze">/spese/consulenze</Link>.
+            </dd>
+          </div>
+          <div>
+            <dt>Anno più recente</dt>
+            <dd>
+              {snapshot.methodology.currentYearWarning} Un confronto definitivo con gli anni
+              chiusi non è appropriato finché l&apos;anno resta parziale.
+            </dd>
+          </div>
+        </dl>
+        <p className={styles.note}>
+          Fonte ufficiale:{" "}
+          <a href={snapshot.provenance.landingUrl} rel="noreferrer">
+            Dati Aggregati · Consulenti Pubblici
+          </a>
+          .
+        </p>
+      </section>
+
       <div className="notice warning-notice" data-testid="territori-scope-notice">
         <strong>Non sono i bilanci delle sole Regioni</strong>
         <p>
@@ -100,7 +162,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
       </div>
 
       {isPartial ? (
-        <div className="notice warning-notice">
+        <div className="notice warning-notice" data-testid="territori-partial-year">
           <strong>{selected.year} è un anno parziale</strong>
           <p>{snapshot.methodology.currentYearWarning}</p>
         </div>
@@ -136,7 +198,7 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
         </dl>
         <p className={styles.note}>
           Totale nazionale ufficiale dell&apos;anno, riconciliato con la somma delle etichette
-          territoriali. {snapshot.methodology.amountMeaning}
+          territoriali. Include solo gli incarichi esterni di questa serie Perla PA.
         </p>
       </section>
 
@@ -235,16 +297,24 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
         <ul className={styles.linkList}>
           <li>
             <Link href="/incarichi">Quadro nazionale incarichi</Link>
+            <span className={styles.linkHint}>
+              {" "}
+              — esterni e dipendenti, aggregato Italia (serie diversa da questa ripartizione)
+            </span>
           </li>
           <li>
             <Link href="/spese/consulenze">Consulenze ministeriali RGS</Link>
+            <span className={styles.linkHint}>
+              {" "}
+              — categorie contabili dello Stato; non sommare a Perla PA
+            </span>
           </li>
           <li>
             <a href="/api/incarichi/territori">JSON di questa vista</a>
           </li>
           <li>
-            <a href={`${snapshot.provenance.landingUrl}`} rel="noreferrer">
-              Dati Aggregati · Consulenti Pubblici
+            <a href={snapshot.provenance.landingUrl} rel="noreferrer">
+              Fonte ufficiale · Dati Aggregati Consulenti Pubblici
             </a>
           </li>
         </ul>

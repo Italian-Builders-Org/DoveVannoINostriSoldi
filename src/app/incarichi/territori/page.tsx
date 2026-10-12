@@ -299,14 +299,14 @@ export default async function IncarichiTerritoriPage({ searchParams }: PageProps
             <Link href="/incarichi">Quadro nazionale incarichi</Link>
             <span className={styles.linkHint}>
               {" "}
-              — esterni e dipendenti, aggregato Italia (serie diversa da questa ripartizione)
+              (esterni e dipendenti, aggregato Italia; serie diversa da questa ripartizione)
             </span>
           </li>
           <li>
             <Link href="/spese/consulenze">Consulenze ministeriali RGS</Link>
             <span className={styles.linkHint}>
               {" "}
-              — categorie contabili dello Stato; non sommare a Perla PA
+              (categorie contabili dello Stato; non sommare a Perla PA)
             </span>
           </li>
           <li>

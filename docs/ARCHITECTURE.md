@@ -74,6 +74,9 @@ Per OpenCUP è proposta una
 ancora inattiva finché provisioning e ripristino non saranno verificati.
 Supabase PostgreSQL conserva soltanto i contatori della quota gratuita dell’assistente;
 non serve per leggere gli snapshot, usare BYOK o avviare il sito locale.
+Le board cittadine (studio: [DVNS_BOARDS.md](DVNS_BOARDS.md)) prevedono un
+**secondo** progetto Supabase con Auth e ricette utente, separato dalla quota;
+i fatti restano negli snapshot/MCP e non vanno duplicati in Postgres.
 Le credenziali dei refresh e dell'App GitHub per le segnalazioni sono soltanto
 server-side; l'avvio locale non le richiede.
 

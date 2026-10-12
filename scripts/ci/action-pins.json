@@ -1,7 +1,7 @@
 {
   "$schema": "1",
   "description": "SHA-pinned GitHub Actions used across all workflows. Every third-party action must be pinned to an immutable commit SHA. The tag comment in the workflow file documents which semantic version the SHA corresponds to. The pin checker (scripts/ci/check-action-pins.mjs) verifies supported uses locations in workflows and composite actions.",
-  "pinnedAt": "2026-08-25",
+  "pinnedAt": "2026-10-08",
   "actions": {
     "actions/checkout": {
       "tag": "v6",
@@ -9,7 +9,7 @@
     },
     "actions/setup-node": {
       "tag": "v7",
-      "sha": "820762786026740c76f36085b0efc47a31fe5020"
+      "sha": "949feb2413d6458794dcd2491c4babbbce0c15c1"
     },
     "actions/cache": {
       "tag": "v5",
@@ -25,7 +25,7 @@
     },
     "actions/upload-artifact": {
       "tag": "v7",
-      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+      "sha": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
     },
     "github/codeql-action/init": {
       "tag": "v4.37.8",

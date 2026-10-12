@@ -123,6 +123,7 @@ export const DATASET_IDS = [
   "ipa_struttura",
   "mef_partecipazioni",
   "consulenti_incarichi",
+  "consulenti_incarichi_territori",
   "parlamento_bilanci",
   "controlli_segnali",
   "debito_pubblico_italiano",
@@ -396,6 +397,10 @@ const exampleQueries = {
   ipa_struttura: { dataset: "ipa_struttura", code: "agid", limit: 20 },
   mef_partecipazioni: { dataset: "mef_partecipazioni" },
   consulenti_incarichi: { dataset: "consulenti_incarichi", year: 2024 },
+  consulenti_incarichi_territori: {
+    dataset: "consulenti_incarichi_territori",
+    year: 2024,
+  },
   parlamento_bilanci: { dataset: "parlamento_bilanci", chamber: "camera", year: 2024 },
   controlli_segnali: { dataset: "controlli_segnali", area: "spesa-comuni", year: 2022, limit: 20 },
   debito_pubblico_italiano: { dataset: "debito_pubblico_italiano" },
@@ -1627,6 +1632,17 @@ const datasetDescriptors: DatasetDescriptorInput[] = [
   { id: "ipa_struttura", title: "Struttura organizzativa IPA", summary: "Unità organizzative e aree organizzative omogenee di un ente.", sourceIds: ["ipa-struttura"], freshness: "live", filters: ["code", "limit", "offset"] },
   { id: "mef_partecipazioni", title: "Partecipazioni pubbliche", summary: "Aggregati della rilevazione annuale MEF sulle partecipazioni pubbliche.", sourceIds: ["partecipazioni-pubbliche"], freshness: "snapshot", filters: [] },
   { id: "consulenti_incarichi", title: "Incarichi e consulenze", summary: "Statistiche nazionali ufficiali su incarichi esterni e a dipendenti pubblici.", sourceIds: ["consulenti"], freshness: "snapshot", filters: ["year"] },
+  {
+    id: "consulenti_incarichi_territori",
+    title: "Incarichi esterni per territorio",
+    summary:
+      "Ammontare erogato degli incarichi esterni Consulenti Pubblici ripartito per etichetta geografica regionePa delle PA conferenti.",
+    sourceIds: ["consulenti"],
+    freshness: "snapshot",
+    filters: ["year"],
+    caveat:
+      "regionePa è il territorio delle PA conferenti, non il solo bilancio delle Giunte regionali. Non sommare alle categorie contabili RGS di /spese/consulenze. L'anno più recente è parziale.",
+  },
   { id: "parlamento_bilanci", title: "Bilanci del Parlamento", summary: "Documenti e valori strutturati verificati per Camera e Senato quando disponibili.", sourceIds: ["camera"], freshness: "snapshot", filters: ["chamber", "year"] },
   { id: "controlli_segnali", title: "Segnali da controllare", summary: "Indicatori, classificazioni e screening derivati che orientano verifiche ulteriori.", sourceIds: ["opencivitas"], freshness: "snapshot", filters: ["area", "year", "region", "limit", "offset"], caveat: "Un segnale, compreso lo screening OpenCivitas, non attribuisce responsabilità e non dimostra da solo spreco o illecito." },
   { id: "debito_pubblico_italiano", title: "Debito pubblico italiano", summary: "Stock Maastricht, variazioni mensili, composizione, detentori, vita residua e interessi annuali.", sourceIds: ["bancaditalia", "eurostat"], freshness: "snapshot", filters: [], caveat: "Stock, flussi netti, detentori e interessi hanno periodi diversi. Le fonti pubblicano importi in milioni di euro: la conversione in centesimi interi non aggiunge precisione alla misura originaria. Gli indicatori per il cittadino descrivono esposizioni e meccanismi, non previsioni né effetti individuali." },

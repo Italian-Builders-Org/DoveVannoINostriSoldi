@@ -16,6 +16,25 @@ const MAX_REQUEST_BYTES = 1_000_000;
 const MCP_HANDLER_TIMEOUT_MS = 12_000;
 const MCP_INSTANCE_POST_LIMIT = 30;
 const MCP_INSTANCE_POST_WINDOW_MS = 60_000;
+
+/**
+ * Browser-hosted MCP connectors (ChatGPT, Claude, Cursor) send an `Origin`
+ * header. Without these defaults they get 403 while curl/CLI (no Origin) work.
+ * ChatGPT Apps / connector management often uses `platform.openai.com`.
+ * Extra origins can still be added via `MCP_ALLOWED_ORIGINS`.
+ */
+const DEFAULT_MCP_CONNECTOR_ORIGINS = [
+  "https://chatgpt.com",
+  "https://chat.openai.com",
+  "https://platform.openai.com",
+  "https://openai.com",
+  "https://www.openai.com",
+  "https://claude.ai",
+  "https://www.claude.ai",
+  "https://console.anthropic.com",
+  "https://cursor.com",
+  "https://www.cursor.com",
+] as const;
 const mcpLimiter = new SlidingWindowLimiter({
   windowMs: MCP_INSTANCE_POST_WINDOW_MS,
   max: MCP_INSTANCE_POST_LIMIT,
@@ -86,9 +105,13 @@ function allowedOrigins(request: Request): Set<string> {
     .filter(Boolean)
     .map(normalizedOrigin)
     .filter((value): value is string => value !== null);
-  return new Set([requestUrl.origin, validatedHostOrigin, equivalentLoopbackOrigin, ...configured].filter(
-    (value): value is string => value !== null,
-  ));
+  return new Set([
+    requestUrl.origin,
+    validatedHostOrigin,
+    equivalentLoopbackOrigin,
+    ...DEFAULT_MCP_CONNECTOR_ORIGINS,
+    ...configured,
+  ].filter((value): value is string => value !== null));
 }
 
 function normalizedHost(value: string): string | null {

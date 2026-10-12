@@ -1,4 +1,4 @@
-/* Time slider on the Camera/Senato hemicycles (#556). Tokens from the atlas theme. */
+/* Time slider on the Camera/Senato hemicycles and the Grafo (#556). Tokens from the atlas theme. */
 .toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--atlas-line); border-radius: 8px; background: transparent; color: var(--atlas-ink); font-size: 12px; }
 .toggle[aria-expanded="true"] { border-color: var(--atlas-accent); background: var(--atlas-accent-soft); }
 .control { display: grid; gap: 6px; margin: 12px 0 4px; padding: 10px 12px 4px; border: 1px solid var(--atlas-line); border-radius: 10px; }
@@ -15,6 +15,9 @@
 /* Not yet in office that day: an outline, like a vacant seat, but still focusable.
    Doubled class so it wins over `.seat > rect` regardless of module order. */
 .absentSeat.absentSeat > rect { fill: none; stroke: var(--atlas-muted); stroke-width: 1; stroke-dasharray: 2 1; }
+/* Grafo: a government portrait whose current role had not started that day.
+   Still a button: the profile explains the role. Doubled class beats the base border. */
+.notStarted.notStarted { border-style: dashed; border-color: var(--atlas-muted); opacity: 0.5; filter: grayscale(1); }
 
 @media (prefers-reduced-motion: no-preference) {
   /* Recolouring rather than reshuffling keeps each seat under the eye across days. */

@@ -1,0 +1,755 @@
+{
+  "schemaVersion": 1,
+  "transformVersion": 1,
+  "scope": "territorial-external-appointments",
+  "generatedAt": "2026-10-10T07:48:06Z",
+  "latestYear": 2026,
+  "appointmentKind": "external",
+  "years": [
+    {
+      "year": 2023,
+      "territoryCount": 21,
+      "assignments": 205082,
+      "paidCents": 74360059225,
+      "territoryPaidCentsSum": 74360059226,
+      "roundingResidualCents": 1,
+      "territories": [
+        {
+          "territoryLabel": "Lazio",
+          "assignments": 22166,
+          "paidCents": 16612397758,
+          "completedAssignments": 11852,
+          "individualRecipients": 21647,
+          "organizationRecipients": 519
+        },
+        {
+          "territoryLabel": "Lombardia",
+          "assignments": 43772,
+          "paidCents": 16569753759,
+          "completedAssignments": 19649,
+          "individualRecipients": 41043,
+          "organizationRecipients": 2729
+        },
+        {
+          "territoryLabel": "Veneto",
+          "assignments": 18015,
+          "paidCents": 6630465988,
+          "completedAssignments": 11390,
+          "individualRecipients": 16732,
+          "organizationRecipients": 1283
+        },
+        {
+          "territoryLabel": "Emilia-Romagna",
+          "assignments": 20609,
+          "paidCents": 6430328981,
+          "completedAssignments": 11153,
+          "individualRecipients": 19578,
+          "organizationRecipients": 1031
+        },
+        {
+          "territoryLabel": "Trentino-Alto Adige/Südtirol",
+          "assignments": 11992,
+          "paidCents": 5740340206,
+          "completedAssignments": 7851,
+          "individualRecipients": 11513,
+          "organizationRecipients": 479
+        },
+        {
+          "territoryLabel": "Toscana",
+          "assignments": 15307,
+          "paidCents": 3751533908,
+          "completedAssignments": 5145,
+          "individualRecipients": 14809,
+          "organizationRecipients": 498
+        },
+        {
+          "territoryLabel": "Piemonte",
+          "assignments": 13467,
+          "paidCents": 3437490162,
+          "completedAssignments": 9863,
+          "individualRecipients": 12517,
+          "organizationRecipients": 950
+        },
+        {
+          "territoryLabel": "Sicilia",
+          "assignments": 11159,
+          "paidCents": 2444358341,
+          "completedAssignments": 4922,
+          "individualRecipients": 11003,
+          "organizationRecipients": 156
+        },
+        {
+          "territoryLabel": "Friuli-Venezia Giulia",
+          "assignments": 6176,
+          "paidCents": 1781110535,
+          "completedAssignments": 2973,
+          "individualRecipients": 6009,
+          "organizationRecipients": 167
+        },
+        {
+          "territoryLabel": "Puglia",
+          "assignments": 7268,
+          "paidCents": 1600795488,
+          "completedAssignments": 3799,
+          "individualRecipients": 7011,
+          "organizationRecipients": 257
+        },
+        {
+          "territoryLabel": "Marche",
+          "assignments": 6117,
+          "paidCents": 1544832600,
+          "completedAssignments": 3633,
+          "individualRecipients": 5944,
+          "organizationRecipients": 173
+        },
+        {
+          "territoryLabel": "Sardegna",
+          "assignments": 5623,
+          "paidCents": 1415452455,
+          "completedAssignments": 4242,
+          "individualRecipients": 5573,
+          "organizationRecipients": 50
+        },
+        {
+          "territoryLabel": "Campania",
+          "assignments": 7196,
+          "paidCents": 1370754549,
+          "completedAssignments": 3808,
+          "individualRecipients": 6874,
+          "organizationRecipients": 322
+        },
+        {
+          "territoryLabel": "Liguria",
+          "assignments": 4057,
+          "paidCents": 1314338081,
+          "completedAssignments": 2275,
+          "individualRecipients": 3640,
+          "organizationRecipients": 417
+        },
+        {
+          "territoryLabel": "Calabria",
+          "assignments": 3496,
+          "paidCents": 858848060,
+          "completedAssignments": 1917,
+          "individualRecipients": 3463,
+          "organizationRecipients": 33
+        },
+        {
+          "territoryLabel": "Abruzzo",
+          "assignments": 2577,
+          "paidCents": 811417452,
+          "completedAssignments": 1414,
+          "individualRecipients": 2497,
+          "organizationRecipients": 80
+        },
+        {
+          "territoryLabel": "Umbria",
+          "assignments": 2665,
+          "paidCents": 712400512,
+          "completedAssignments": 1672,
+          "individualRecipients": 2509,
+          "organizationRecipients": 156
+        },
+        {
+          "territoryLabel": "Basilicata",
+          "assignments": 1604,
+          "paidCents": 564232516,
+          "completedAssignments": 833,
+          "individualRecipients": 1575,
+          "organizationRecipients": 29
+        },
+        {
+          "territoryLabel": "Molise",
+          "assignments": 1163,
+          "paidCents": 423338508,
+          "completedAssignments": 552,
+          "individualRecipients": 1149,
+          "organizationRecipients": 14
+        },
+        {
+          "territoryLabel": "Valle d'Aosta/Vallée d'Aoste",
+          "assignments": 602,
+          "paidCents": 309720244,
+          "completedAssignments": 569,
+          "individualRecipients": 587,
+          "organizationRecipients": 15
+        },
+        {
+          "territoryLabel": "Emilia Romagna",
+          "assignments": 51,
+          "paidCents": 36149123,
+          "completedAssignments": 41,
+          "individualRecipients": 36,
+          "organizationRecipients": 15
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "territoryCount": 21,
+      "assignments": 228630,
+      "paidCents": 82355252582,
+      "territoryPaidCentsSum": 82355252582,
+      "roundingResidualCents": 0,
+      "territories": [
+        {
+          "territoryLabel": "Lombardia",
+          "assignments": 47388,
+          "paidCents": 21213932655,
+          "completedAssignments": 21364,
+          "individualRecipients": 44967,
+          "organizationRecipients": 2421
+        },
+        {
+          "territoryLabel": "Lazio",
+          "assignments": 24382,
+          "paidCents": 17368687703,
+          "completedAssignments": 12243,
+          "individualRecipients": 23871,
+          "organizationRecipients": 511
+        },
+        {
+          "territoryLabel": "Veneto",
+          "assignments": 19571,
+          "paidCents": 6880426013,
+          "completedAssignments": 12086,
+          "individualRecipients": 18653,
+          "organizationRecipients": 918
+        },
+        {
+          "territoryLabel": "Emilia-Romagna",
+          "assignments": 22591,
+          "paidCents": 5835798516,
+          "completedAssignments": 11850,
+          "individualRecipients": 21654,
+          "organizationRecipients": 937
+        },
+        {
+          "territoryLabel": "Trentino-Alto Adige/Südtirol",
+          "assignments": 11863,
+          "paidCents": 5344671214,
+          "completedAssignments": 8311,
+          "individualRecipients": 11369,
+          "organizationRecipients": 494
+        },
+        {
+          "territoryLabel": "Toscana",
+          "assignments": 17078,
+          "paidCents": 4543621726,
+          "completedAssignments": 6285,
+          "individualRecipients": 16642,
+          "organizationRecipients": 436
+        },
+        {
+          "territoryLabel": "Piemonte",
+          "assignments": 13680,
+          "paidCents": 3398300237,
+          "completedAssignments": 9357,
+          "individualRecipients": 12897,
+          "organizationRecipients": 783
+        },
+        {
+          "territoryLabel": "Sicilia",
+          "assignments": 15266,
+          "paidCents": 3211569503,
+          "completedAssignments": 7384,
+          "individualRecipients": 15124,
+          "organizationRecipients": 142
+        },
+        {
+          "territoryLabel": "Sardegna",
+          "assignments": 6645,
+          "paidCents": 2061590946,
+          "completedAssignments": 4837,
+          "individualRecipients": 6587,
+          "organizationRecipients": 58
+        },
+        {
+          "territoryLabel": "Marche",
+          "assignments": 7183,
+          "paidCents": 2010753982,
+          "completedAssignments": 4010,
+          "individualRecipients": 7016,
+          "organizationRecipients": 167
+        },
+        {
+          "territoryLabel": "Campania",
+          "assignments": 9472,
+          "paidCents": 1745831647,
+          "completedAssignments": 4942,
+          "individualRecipients": 9093,
+          "organizationRecipients": 379
+        },
+        {
+          "territoryLabel": "Liguria",
+          "assignments": 4411,
+          "paidCents": 1664843576,
+          "completedAssignments": 2429,
+          "individualRecipients": 4007,
+          "organizationRecipients": 404
+        },
+        {
+          "territoryLabel": "Friuli-Venezia Giulia",
+          "assignments": 6728,
+          "paidCents": 1653100412,
+          "completedAssignments": 3129,
+          "individualRecipients": 6568,
+          "organizationRecipients": 160
+        },
+        {
+          "territoryLabel": "Puglia",
+          "assignments": 8851,
+          "paidCents": 1377250071,
+          "completedAssignments": 4214,
+          "individualRecipients": 8604,
+          "organizationRecipients": 247
+        },
+        {
+          "territoryLabel": "Calabria",
+          "assignments": 4417,
+          "paidCents": 1366685235,
+          "completedAssignments": 1987,
+          "individualRecipients": 4385,
+          "organizationRecipients": 32
+        },
+        {
+          "territoryLabel": "Umbria",
+          "assignments": 2975,
+          "paidCents": 887645174,
+          "completedAssignments": 1756,
+          "individualRecipients": 2868,
+          "organizationRecipients": 107
+        },
+        {
+          "territoryLabel": "Abruzzo",
+          "assignments": 2729,
+          "paidCents": 647151718,
+          "completedAssignments": 1464,
+          "individualRecipients": 2648,
+          "organizationRecipients": 81
+        },
+        {
+          "territoryLabel": "Basilicata",
+          "assignments": 1500,
+          "paidCents": 638846136,
+          "completedAssignments": 689,
+          "individualRecipients": 1473,
+          "organizationRecipients": 27
+        },
+        {
+          "territoryLabel": "Valle d'Aosta/Vallée d'Aoste",
+          "assignments": 653,
+          "paidCents": 349782541,
+          "completedAssignments": 488,
+          "individualRecipients": 642,
+          "organizationRecipients": 11
+        },
+        {
+          "territoryLabel": "Molise",
+          "assignments": 1204,
+          "paidCents": 119404362,
+          "completedAssignments": 545,
+          "individualRecipients": 1188,
+          "organizationRecipients": 16
+        },
+        {
+          "territoryLabel": "Emilia Romagna",
+          "assignments": 43,
+          "paidCents": 35359215,
+          "completedAssignments": 35,
+          "individualRecipients": 28,
+          "organizationRecipients": 15
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "territoryCount": 21,
+      "assignments": 214775,
+      "paidCents": 53294763521,
+      "territoryPaidCentsSum": 53294763521,
+      "roundingResidualCents": 0,
+      "territories": [
+        {
+          "territoryLabel": "Lombardia",
+          "assignments": 43226,
+          "paidCents": 12799946184,
+          "completedAssignments": 16753,
+          "individualRecipients": 41378,
+          "organizationRecipients": 1848
+        },
+        {
+          "territoryLabel": "Lazio",
+          "assignments": 21021,
+          "paidCents": 8137862646,
+          "completedAssignments": 8204,
+          "individualRecipients": 20746,
+          "organizationRecipients": 275
+        },
+        {
+          "territoryLabel": "Veneto",
+          "assignments": 18662,
+          "paidCents": 4763817237,
+          "completedAssignments": 9358,
+          "individualRecipients": 18078,
+          "organizationRecipients": 584
+        },
+        {
+          "territoryLabel": "Trentino-Alto Adige/Südtirol",
+          "assignments": 10909,
+          "paidCents": 4181496626,
+          "completedAssignments": 6815,
+          "individualRecipients": 10515,
+          "organizationRecipients": 394
+        },
+        {
+          "territoryLabel": "Emilia-Romagna",
+          "assignments": 22233,
+          "paidCents": 3964642029,
+          "completedAssignments": 10659,
+          "individualRecipients": 21553,
+          "organizationRecipients": 680
+        },
+        {
+          "territoryLabel": "Toscana",
+          "assignments": 15179,
+          "paidCents": 3220356933,
+          "completedAssignments": 4826,
+          "individualRecipients": 14882,
+          "organizationRecipients": 297
+        },
+        {
+          "territoryLabel": "Sicilia",
+          "assignments": 14992,
+          "paidCents": 2828460026,
+          "completedAssignments": 5946,
+          "individualRecipients": 14897,
+          "organizationRecipients": 95
+        },
+        {
+          "territoryLabel": "Sardegna",
+          "assignments": 6592,
+          "paidCents": 2198567069,
+          "completedAssignments": 4290,
+          "individualRecipients": 6552,
+          "organizationRecipients": 40
+        },
+        {
+          "territoryLabel": "Piemonte",
+          "assignments": 13093,
+          "paidCents": 2091473375,
+          "completedAssignments": 6676,
+          "individualRecipients": 12531,
+          "organizationRecipients": 562
+        },
+        {
+          "territoryLabel": "Campania",
+          "assignments": 9172,
+          "paidCents": 1483399228,
+          "completedAssignments": 4122,
+          "individualRecipients": 8950,
+          "organizationRecipients": 222
+        },
+        {
+          "territoryLabel": "Friuli-Venezia Giulia",
+          "assignments": 6571,
+          "paidCents": 1273127601,
+          "completedAssignments": 2544,
+          "individualRecipients": 6469,
+          "organizationRecipients": 102
+        },
+        {
+          "territoryLabel": "Puglia",
+          "assignments": 8425,
+          "paidCents": 1145245265,
+          "completedAssignments": 3153,
+          "individualRecipients": 8277,
+          "organizationRecipients": 148
+        },
+        {
+          "territoryLabel": "Marche",
+          "assignments": 6497,
+          "paidCents": 1056132129,
+          "completedAssignments": 3022,
+          "individualRecipients": 6399,
+          "organizationRecipients": 98
+        },
+        {
+          "territoryLabel": "Calabria",
+          "assignments": 4679,
+          "paidCents": 995176647,
+          "completedAssignments": 1604,
+          "individualRecipients": 4660,
+          "organizationRecipients": 19
+        },
+        {
+          "territoryLabel": "Liguria",
+          "assignments": 4177,
+          "paidCents": 916507644,
+          "completedAssignments": 1719,
+          "individualRecipients": 3890,
+          "organizationRecipients": 287
+        },
+        {
+          "territoryLabel": "Umbria",
+          "assignments": 2605,
+          "paidCents": 604728052,
+          "completedAssignments": 1306,
+          "individualRecipients": 2527,
+          "organizationRecipients": 78
+        },
+        {
+          "territoryLabel": "Valle d'Aosta/Vallée d'Aoste",
+          "assignments": 874,
+          "paidCents": 589672970,
+          "completedAssignments": 464,
+          "individualRecipients": 859,
+          "organizationRecipients": 15
+        },
+        {
+          "territoryLabel": "Basilicata",
+          "assignments": 1674,
+          "paidCents": 506645649,
+          "completedAssignments": 568,
+          "individualRecipients": 1659,
+          "organizationRecipients": 15
+        },
+        {
+          "territoryLabel": "Abruzzo",
+          "assignments": 3046,
+          "paidCents": 430297798,
+          "completedAssignments": 1335,
+          "individualRecipients": 2986,
+          "organizationRecipients": 60
+        },
+        {
+          "territoryLabel": "Molise",
+          "assignments": 1108,
+          "paidCents": 78215392,
+          "completedAssignments": 457,
+          "individualRecipients": 1097,
+          "organizationRecipients": 11
+        },
+        {
+          "territoryLabel": "Emilia Romagna",
+          "assignments": 40,
+          "paidCents": 28993021,
+          "completedAssignments": 31,
+          "individualRecipients": 26,
+          "organizationRecipients": 14
+        }
+      ]
+    },
+    {
+      "year": 2026,
+      "territoryCount": 21,
+      "assignments": 101531,
+      "paidCents": 8233300192,
+      "territoryPaidCentsSum": 8233300192,
+      "roundingResidualCents": 0,
+      "territories": [
+        {
+          "territoryLabel": "Lombardia",
+          "assignments": 20416,
+          "paidCents": 1677965858,
+          "completedAssignments": 5107,
+          "individualRecipients": 19675,
+          "organizationRecipients": 741
+        },
+        {
+          "territoryLabel": "Lazio",
+          "assignments": 10854,
+          "paidCents": 1278470298,
+          "completedAssignments": 1502,
+          "individualRecipients": 10713,
+          "organizationRecipients": 141
+        },
+        {
+          "territoryLabel": "Trentino-Alto Adige/Südtirol",
+          "assignments": 6160,
+          "paidCents": 906356634,
+          "completedAssignments": 2160,
+          "individualRecipients": 5973,
+          "organizationRecipients": 187
+        },
+        {
+          "territoryLabel": "Toscana",
+          "assignments": 6830,
+          "paidCents": 662576417,
+          "completedAssignments": 1328,
+          "individualRecipients": 6689,
+          "organizationRecipients": 141
+        },
+        {
+          "territoryLabel": "Emilia-Romagna",
+          "assignments": 12609,
+          "paidCents": 623806167,
+          "completedAssignments": 3351,
+          "individualRecipients": 12284,
+          "organizationRecipients": 325
+        },
+        {
+          "territoryLabel": "Veneto",
+          "assignments": 8099,
+          "paidCents": 519888358,
+          "completedAssignments": 2836,
+          "individualRecipients": 7888,
+          "organizationRecipients": 211
+        },
+        {
+          "territoryLabel": "Piemonte",
+          "assignments": 5086,
+          "paidCents": 394955047,
+          "completedAssignments": 1736,
+          "individualRecipients": 4869,
+          "organizationRecipients": 217
+        },
+        {
+          "territoryLabel": "Sardegna",
+          "assignments": 3745,
+          "paidCents": 393206997,
+          "completedAssignments": 1164,
+          "individualRecipients": 3716,
+          "organizationRecipients": 29
+        },
+        {
+          "territoryLabel": "Campania",
+          "assignments": 3995,
+          "paidCents": 317762500,
+          "completedAssignments": 729,
+          "individualRecipients": 3910,
+          "organizationRecipients": 85
+        },
+        {
+          "territoryLabel": "Friuli-Venezia Giulia",
+          "assignments": 3797,
+          "paidCents": 288070213,
+          "completedAssignments": 885,
+          "individualRecipients": 3755,
+          "organizationRecipients": 42
+        },
+        {
+          "territoryLabel": "Sicilia",
+          "assignments": 4823,
+          "paidCents": 287812926,
+          "completedAssignments": 847,
+          "individualRecipients": 4768,
+          "organizationRecipients": 55
+        },
+        {
+          "territoryLabel": "Marche",
+          "assignments": 3360,
+          "paidCents": 198581811,
+          "completedAssignments": 879,
+          "individualRecipients": 3333,
+          "organizationRecipients": 27
+        },
+        {
+          "territoryLabel": "Puglia",
+          "assignments": 3541,
+          "paidCents": 164028049,
+          "completedAssignments": 652,
+          "individualRecipients": 3468,
+          "organizationRecipients": 73
+        },
+        {
+          "territoryLabel": "Umbria",
+          "assignments": 1226,
+          "paidCents": 151563213,
+          "completedAssignments": 332,
+          "individualRecipients": 1183,
+          "organizationRecipients": 43
+        },
+        {
+          "territoryLabel": "Calabria",
+          "assignments": 1828,
+          "paidCents": 138138452,
+          "completedAssignments": 278,
+          "individualRecipients": 1817,
+          "organizationRecipients": 11
+        },
+        {
+          "territoryLabel": "Liguria",
+          "assignments": 2051,
+          "paidCents": 89566150,
+          "completedAssignments": 367,
+          "individualRecipients": 1936,
+          "organizationRecipients": 115
+        },
+        {
+          "territoryLabel": "Abruzzo",
+          "assignments": 1569,
+          "paidCents": 68446121,
+          "completedAssignments": 334,
+          "individualRecipients": 1536,
+          "organizationRecipients": 33
+        },
+        {
+          "territoryLabel": "Valle d'Aosta/Vallée d'Aoste",
+          "assignments": 305,
+          "paidCents": 24256619,
+          "completedAssignments": 105,
+          "individualRecipients": 304,
+          "organizationRecipients": 1
+        },
+        {
+          "territoryLabel": "Basilicata",
+          "assignments": 634,
+          "paidCents": 23998499,
+          "completedAssignments": 115,
+          "individualRecipients": 630,
+          "organizationRecipients": 4
+        },
+        {
+          "territoryLabel": "Molise",
+          "assignments": 572,
+          "paidCents": 21106345,
+          "completedAssignments": 102,
+          "individualRecipients": 565,
+          "organizationRecipients": 7
+        },
+        {
+          "territoryLabel": "Emilia Romagna",
+          "assignments": 31,
+          "paidCents": 2743518,
+          "completedAssignments": 2,
+          "individualRecipients": 22,
+          "organizationRecipients": 9
+        }
+      ]
+    }
+  ],
+  "soldi": {
+    "metric": "ammontareErogato",
+    "unit": "EUR-cents",
+    "meaning": "Compenso totale erogato comunicato dalle amministrazioni alla data di consultazione, convertito in centesimi senza arrotondamenti intermedi."
+  },
+  "periodo": {
+    "grain": "calendar-year",
+    "field": "annoConferimento",
+    "from": 2023,
+    "to": 2026,
+    "partialLatestYear": true
+  },
+  "provenance": {
+    "owner": "Dipartimento della Funzione Pubblica",
+    "dataset": "Consulenti Pubblici · statistiche incarichi esterni per territorio (regionePa)",
+    "landingUrl": "https://consulentipubblici.dfp.gov.it/dati-aggregati",
+    "projectUrl": "https://consulentipubblici.dfp.gov.it/progetto",
+    "nationalEndpoint": "https://adp-api.perlapa.gov.it/api/public/incarichi/StatisticheIncarichi",
+    "regionalEndpoint": "https://adp-api.perlapa.gov.it/api/public/Incarichi/StatisticheIncarichi/Regione",
+    "licenseUrl": "https://www.perlapa.gov.it/cd-note-legali.html",
+    "reuseTerms": "Riuso consentito con attribuzione e licenza identica o equivalente",
+    "observedAt": "2026-10-10T07:48:06Z",
+    "declaredCadence": "Aggiornamento per singola amministrazione e incarico",
+    "platformCheckCadence": "Ogni 6 ore"
+  },
+  "methodology": {
+    "territoryMeaning": "regionePa è l'etichetta geografica pubblicata dalla fonte per le PA conferenti del territorio: non coincide con i soli bilanci delle Giunte regionali.",
+    "amountMeaning": "Ammontare erogato comunicato dalle amministrazioni alla data di consultazione; non coincide necessariamente con il compenso lordo previsto.",
+    "currentYearWarning": "L'anno più recente è parziale e i valori possono crescere o cambiare con nuove comunicazioni.",
+    "responsibilityWarning": "I dati sono comunicati dalle singole amministrazioni sotto la propria responsabilità.",
+    "rgsSeparation": "Questa serie Perla PA non equivale alle categorie contabili RGS di /spese/consulenze e non va sommata a quel rendiconto.",
+    "labelDuplicates": "Le etichette sono quelle pubblicate dalla fonte. Grafie diverse della stessa Regione restano distinte finché la fonte le pubblica separate."
+  }
+}

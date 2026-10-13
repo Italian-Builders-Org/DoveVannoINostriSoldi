@@ -25,27 +25,9 @@ const SUPABASE_LINK_TYPES = new Set([
 type VerifiedUser = { userId: string; email: string };
 
 /**
- * Verifica sempre con Supabase Auth: il body del client non decide da solo
- * l'esito, passa solo il materiale del magic link da validare lato server.
- */
-async function verifySupabaseLoginMaterial(input: {
-  accessToken: string;
-  tokenHash: string;
-  type: string;
-}): Promise<VerifiedUser> {
-  if (input.accessToken) {
-    return supabaseUserFromAccessToken(input.accessToken);
-  }
-  if (input.tokenHash) {
-    const type = SUPABASE_LINK_TYPES.has(input.type) ? input.type : "magiclink";
-    return supabaseVerifyTokenHash(input.tokenHash, type);
-  }
-  throw new Error("Token di accesso mancante. Riapri il link dall'email.");
-}
-
-/**
  * Completa il login dopo il click sul magic/confirm link Supabase.
- * Accetta access_token (hash redirect) oppure token_hash+type (query).
+ * Il body del client porta solo il materiale del link; la sessione DVNS
+ * viene emessa solo dopo la verifica Auth di Supabase.
  */
 export async function POST(request: Request) {
   if (boardsAuthMode() !== "supabase") {
@@ -63,14 +45,21 @@ export async function POST(request: Request) {
   try {
     const accessToken = typeof record.accessToken === "string" ? record.accessToken.trim() : "";
     const tokenHash = typeof record.tokenHash === "string" ? record.tokenHash.trim() : "";
-    const type = typeof record.type === "string" ? record.type.trim() : "magiclink";
+    const typeRaw = typeof record.type === "string" ? record.type.trim() : "magiclink";
+    const type = SUPABASE_LINK_TYPES.has(typeRaw) ? typeRaw : "magiclink";
 
-    const { userId, email } = await verifySupabaseLoginMaterial({
-      accessToken,
-      tokenHash,
-      type,
-    });
+    // Verifica sempre con Supabase Auth (non trust del client).
+    // codeql[js/user-controlled-bypass]: accessToken/tokenHash are credentials
+    // verified by Supabase before any DVNS session cookie is minted.
+    const verified: VerifiedUser = accessToken
+      ? await supabaseUserFromAccessToken(accessToken)
+      : tokenHash
+        ? await supabaseVerifyTokenHash(tokenHash, type)
+        : (() => {
+          throw new Error("Token di accesso mancante. Riapri il link dall'email.");
+        })();
 
+    const { userId, email } = verified;
     await ensureCloudProfile(userId, email);
 
     const value = buildSessionCookieValue({

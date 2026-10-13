@@ -39,7 +39,8 @@ function sanitizeStyle(value: string): string | null {
 /** Sanitizza HTML lato client (DOMParser). */
 export function sanitizeBoardHtml(html: string): string {
   if (typeof DOMParser === "undefined") {
-    return stripTagsFallback(html);
+    // Senza DOM non ricostruiamo HTML: solo testo escapato.
+    return paragraphHtml(plainTextFromHtml(html));
   }
   const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
   const root = doc.body.firstElementChild;
@@ -94,53 +95,20 @@ export function sanitizeBoardHtml(html: string): string {
   return Array.from(root.childNodes).map(walk).join("").slice(0, 8_000);
 }
 
-/** Rimuove script/style in loop finché il markup non cambia (anti nested injection). */
-function stripDangerousBlocks(html: string): string {
-  let current = html;
-  let previous = "";
-  while (current !== previous) {
-    previous = current;
-    current = current
-      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/giu, "")
-      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/giu, "");
-  }
-  return current;
-}
-
-/**
- * Fallback senza DOMParser: solo tag allowlist, attributi limitati a style filtrato.
- */
-function stripTagsFallback(html: string): string {
-  const withoutDanger = stripDangerousBlocks(html);
-  return withoutDanger
-    .replace(/<\/?([a-z0-9]+)([^>]*)>/giu, (full, rawTag: string, attrs: string) => {
-      const tag = rawTag.toUpperCase();
-      const closing = full.startsWith("</");
-      if (tag === "BR") return closing ? "" : "<br>";
-      if (!ALLOWED_TAGS.has(tag)) return "";
-      if (closing) return `</${tag.toLowerCase()}>`;
-      const styleMatch = attrs.match(/\sstyle\s*=\s*("([^"]*)"|'([^']*)')/iu);
-      const style = styleMatch ? sanitizeStyle(styleMatch[2] ?? styleMatch[3] ?? "") : null;
-      return style ? `<${tag.toLowerCase()} style="${style}">` : `<${tag.toLowerCase()}>`;
-    })
-    .slice(0, 8_000);
-}
-
-/** Testo piano per title/export. */
+/** Testo piano per title/export (nessuna ricostruzione HTML). */
 export function plainTextFromHtml(html: string): string {
-  const withoutTags = stripDangerousBlocks(html)
-    .replace(/<br\s*\/?\s*>/giu, "\n")
-    .replace(/<\/p\s*>/giu, "\n")
-    .replace(/<[^>]*>/gu, "");
-  // Decodifica entità in ordine sicuro: &amp; per ultimo.
-  const text = withoutTags
-    .replace(/&nbsp;/gu, " ")
-    .replace(/&lt;/gu, "<")
-    .replace(/&gt;/gu, ">")
-    .replace(/&quot;/gu, '"')
-    .replace(/&#39;/gu, "'")
-    .replace(/&amp;/gu, "&")
-    .replace(/\n{3,}/gu, "\n\n")
+  if (typeof DOMParser !== "undefined") {
+    const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
+    const text = (doc.body.textContent ?? "")
+      .replace(/\u00a0/gu, " ")
+      .replace(/\n{3,}/gu, "\n\n")
+      .trim();
+    return text.slice(0, 120) || "Testo";
+  }
+  // Fallback Node senza DOM: togli i tag in modo grezzo, poi escapa in paragraphHtml.
+  const text = html
+    .replace(/<[^>]*>/gu, " ")
+    .replace(/\s+/gu, " ")
     .trim();
   return text.slice(0, 120) || "Testo";
 }

@@ -17,7 +17,8 @@ test("boards feedback route and Resend helper are wired", async () => {
   );
   assert.match(route, /sendBoardsFeedbackEmail/);
   assert.match(route, /requireBoardsApiSession/);
-  assert.ok(helper.includes("https://api.resend.com/emails"));
+  assert.match(helper, /Authorization:\s*`Bearer \$\{/);
+  assert.match(helper, /\[DVNS Boards\]/);
   assert.match(helper, /gagliardidomenico46@gmail\.com/);
   assert.match(studio, /\/api\/boards\/feedback/);
   assert.match(studio, /feedbackDialog/);

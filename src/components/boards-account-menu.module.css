@@ -90,6 +90,14 @@
 }
 
 @media (max-width: 720px) {
+  .guestAccess {
+    display: none;
+  }
+
+  .placeholder {
+    display: none;
+  }
+
   .triggerLabel {
     display: none;
   }

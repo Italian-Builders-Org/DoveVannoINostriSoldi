@@ -1,25 +1,23 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
+
+// In Node non c'è DOMParser: si verifica il fallback sicuro (solo testo escapato).
+const {
   ensureBoardHtml,
   plainTextFromHtml,
   sanitizeBoardHtml,
-} from "../src/lib/boards/board-html.ts";
+} = await import("../src/lib/boards/board-html.ts");
 
-test("sanitizeBoardHtml strips scripts and keeps safe inline styles", () => {
+test("sanitizeBoardHtml without DOMParser falls back to escaped plain text", () => {
   const dirty =
-    '<p style="color: #b42332; font-size: 1.2rem" onclick="alert(1)">Ciao <script>x()</script><em>mondo</em></p>';
+    '<p style="color: #b42332" onclick="alert(1)">Ciao <script>x()</script><em>mondo</em></p>';
   const clean = sanitizeBoardHtml(dirty);
-  assert.match(clean, /<p style="color: #b42332; font-size: 1.2rem">/);
-  assert.match(clean, /<em>mondo<\/em>/);
-  assert.doesNotMatch(clean, /script|onclick/i);
+  assert.equal(clean, "<p>Ciao x() mondo</p>");
+  assert.doesNotMatch(clean, /script|onclick|style=/i);
 });
 
-test("ensureBoardHtml wraps plain text and preserves HTML", () => {
+test("ensureBoardHtml wraps plain text and flattens HTML without DOMParser", () => {
   assert.equal(ensureBoardHtml("Solo testo"), "<p>Solo testo</p>");
-  assert.equal(
-    ensureBoardHtml('<p style="font-size: 1rem">Già HTML</p>'),
-    '<p style="font-size: 1rem">Già HTML</p>',
-  );
+  assert.equal(ensureBoardHtml('<p style="font-size: 1rem">Già HTML</p>'), "<p>Già HTML</p>");
   assert.equal(plainTextFromHtml("<p>Titolo <strong>forte</strong></p>"), "Titolo forte");
 });

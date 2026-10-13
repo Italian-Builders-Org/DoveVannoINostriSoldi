@@ -202,7 +202,6 @@
   z-index: 0;
   background:
     url("/boards/accedi-hero.png") center / cover no-repeat;
-  transform: scale(1.02);
 }
 
 .boardsCardMedia::after {

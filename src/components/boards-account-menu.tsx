@@ -72,8 +72,14 @@ export function BoardsAccountMenu() {
   }
 
   if (session.status === "guest") {
+    // Boards è web-only: su viewport stretti nascondiamo il CTA header
+    // (resta raggiungibile da /accedi e dalla card in home).
     return (
-      <Link className="header-action" href="/accedi" aria-label="Accedi alla dashboard">
+      <Link
+        className={`header-action ${styles.guestAccess}`}
+        href="/accedi"
+        aria-label="Accedi alla dashboard (solo web)"
+      >
         Accedi
       </Link>
     );

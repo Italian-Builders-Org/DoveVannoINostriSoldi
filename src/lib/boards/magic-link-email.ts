@@ -1,4 +1,5 @@
 import "server-only";
+import { boardsResendFromAddress } from "./resend-from";
 import { boardsSupabaseConfig } from "./supabase";
 
 type GeneratedMagicLink = {
@@ -128,7 +129,23 @@ async function generateMagicLink(email: string, redirectTo: string): Promise<Gen
           : "generate_link fallita";
     throw new Error(msg);
   }
-  return parseGenerateLink(generated.data);
+  const parsed = parseGenerateLink(generated.data);
+  // Se Site URL Supabase è ancora localhost, generate_link può ignorare
+  // redirect_to non in allowlist: forziamo il parametro sul link inviato.
+  return {
+    ...parsed,
+    actionLink: forceActionLinkRedirect(parsed.actionLink, redirectTo),
+  };
+}
+
+function forceActionLinkRedirect(actionLink: string, redirectTo: string): string {
+  try {
+    const url = new URL(actionLink);
+    url.searchParams.set("redirect_to", redirectTo);
+    return url.toString();
+  } catch {
+    return actionLink;
+  }
 }
 
 function magicLinkHtml(email: string, actionLink: string): string {
@@ -171,9 +188,7 @@ async function sendResendEmail(to: string, actionLink: string): Promise<void> {
       "Mancano RESEND_API_KEY e RESEND_FROM_EMAIL in .env.local (stesse chiavi del SMTP su Supabase).",
     );
   }
-  const from = resend.from.includes("<")
-    ? resend.from
-    : `DVNS Boards <${resend.from}>`;
+  const from = boardsResendFromAddress(resend.from);
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {

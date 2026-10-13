@@ -16,8 +16,8 @@ test("boards feedback route and Resend helper are wired", async () => {
     "utf8",
   );
   assert.match(route, /sendBoardsFeedbackEmail/);
-  assert.match(route, /readBoardsSession/);
-  assert.match(helper, /api\.resend\.com\/emails/);
+  assert.match(route, /requireBoardsApiSession/);
+  assert.ok(helper.includes("https://api.resend.com/emails"));
   assert.match(helper, /gagliardidomenico46@gmail\.com/);
   assert.match(studio, /\/api\/boards\/feedback/);
   assert.match(studio, /feedbackDialog/);

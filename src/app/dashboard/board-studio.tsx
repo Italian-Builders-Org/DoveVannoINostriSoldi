@@ -91,7 +91,7 @@ const VIEW_LABEL: Record<BoardTileView, string> = {
 const FILTER_LABEL: Record<string, string> = {
   code: "Codice ente / amministrazione",
   year: "Anno",
-  month: "Mese (1–12)",
+  month: "Mese (1-12)",
   region: "Regione",
   cup: "CUP",
   territory: "Territorio",
@@ -1261,7 +1261,7 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
                               value={current}
                               onChange={(event) => commitFilter(event.target.value)}
                             >
-                              <option value="">—</option>
+                              <option value="">(nessuno)</option>
                               {YEAR_OPTIONS.map((year) => (
                                 <option key={year} value={year}>
                                   {year}
@@ -1303,7 +1303,7 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
                               name === "code"
                                 ? "Codice OpenBDAP / CF / IPA"
                                 : name === "month"
-                                  ? "1–12"
+                                  ? "1-12"
                                   : undefined
                             }
                             onBlur={(event) => commitFilter(event.target.value.trim())}

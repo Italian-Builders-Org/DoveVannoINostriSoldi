@@ -99,28 +99,74 @@ function defaultQueryFor(datasetId: string): Omit<DatasetQuery, "dataset"> {
   return {};
 }
 
+const ALLOWED_FILTER_KEYS = new Set([
+  "year",
+  "month",
+  "years",
+  "limit",
+  "offset",
+  "region",
+  "code",
+  "query",
+  "view",
+  "dimension",
+  "deviceType",
+  "country",
+  "territory",
+  "breakdown",
+  "family",
+  "level",
+  "table",
+  "cursor",
+]);
+
+const NUMERIC_FILTER_KEYS = new Set(["year", "month", "limit", "offset", "years"]);
+
 function mergeFilters(datasetId: string, filters: BoardTileFilters): DatasetQuery {
   const base = defaultQueryFor(datasetId);
   const query: DatasetQuery = { dataset: datasetId as DatasetQuery["dataset"], ...base };
   for (const [key, value] of Object.entries(filters)) {
-    if (key === "series_key") continue;
+    if (!ALLOWED_FILTER_KEYS.has(key)) continue;
     if (value === null || value === undefined || value === "") continue;
-    if (key === "year" || key === "month" || key === "limit" || key === "offset" || key === "years") {
+    if (NUMERIC_FILTER_KEYS.has(key)) {
       if (typeof value === "number" && Number.isFinite(value)) {
-        (query as Record<string, unknown>)[key] = value;
+        if (key === "year") query.year = value;
+        else if (key === "month") query.month = value;
+        else if (key === "limit") query.limit = value;
+        else if (key === "offset") query.offset = value;
+        else if (key === "years") query.years = value;
       } else if (typeof value === "string" && /^\d+$/u.test(value)) {
-        (query as Record<string, unknown>)[key] = Number(value);
+        const numeric = Number(value);
+        if (key === "year") query.year = numeric;
+        else if (key === "month") query.month = numeric;
+        else if (key === "limit") query.limit = numeric;
+        else if (key === "offset") query.offset = numeric;
+        else if (key === "years") query.years = numeric;
       }
       continue;
     }
     if (key === "region" && typeof value === "string") {
       const normalized = normalizeBoardRegionFilter(datasetId, value);
-      if (normalized) (query as Record<string, unknown>).region = normalized;
+      if (normalized) query.region = normalized;
       continue;
     }
-    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-      (query as Record<string, unknown>)[key] = value;
-    }
+    if (typeof value !== "string") continue;
+    if (key === "code") query.code = value;
+    else if (key === "query") query.query = value;
+    else if (key === "view" && (value === "search" || value === "aggregate" || value === "device" || value === "facts" || value === "filters")) {
+      query.view = value;
+    } else if (key === "dimension" && (value === "territory" || value === "classification" || value === "manufacturer")) {
+      query.dimension = value;
+    } else if (key === "deviceType" && (value === "1" || value === "2")) {
+      query.deviceType = value;
+    } else if (key === "country") query.country = value;
+    else if (key === "territory") query.territory = value;
+    else if (key === "breakdown") query.breakdown = value;
+    else if (key === "family") query.family = value;
+    else if (key === "level" && (value === "region" || value === "province" || value === "municipality")) {
+      query.level = value;
+    } else if (key === "table") query.table = value;
+    else if (key === "cursor") query.cursor = value;
   }
   return query;
 }

@@ -136,7 +136,7 @@ function magicLinkHtml(email: string, actionLink: string): string {
   const safeLink = actionLink.replace(/"/gu, "&quot;");
   return `<!DOCTYPE html>
 <html lang="it">
-<body style="margin:0;padding:0;background:#f3f5f7;font-family:Geist,Helvetica,Arial,sans-serif;line-height:1.5;color:#182b3a;">
+<body style="margin:0;padding:0;background:#f3f5f7;font-family:system-ui,sans-serif;line-height:1.5;color:#182b3a;">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f3f5f7;padding:28px 16px;">
     <tr><td align="center">
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid #c5cfd8;">

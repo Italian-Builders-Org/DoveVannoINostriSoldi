@@ -567,21 +567,34 @@ export async function queryPublicDataset(
         throw new Error("Questo dataset OpenCivitas per funzione copre solo il 2019. I servizi totali 2019 restano su opencivitas_fabbisogni_2019; 2021 e 2022 nei rispettivi dataset.");
       }
       // Import per funzione: ogni richiesta carica un solo snapshot, non tutti e sei.
-      const loaders = {
-        opencivitas_istruzione_2019: async () => (await import("@/lib/opencivitas-2019-istruzione-snapshot")).queryOpenCivitas2019Istruzione,
-        opencivitas_polizia_2019: async () => (await import("@/lib/opencivitas-2019-polizia-snapshot")).queryOpenCivitas2019Polizia,
-        opencivitas_viabilita_2019: async () => (await import("@/lib/opencivitas-2019-viabilita-snapshot")).queryOpenCivitas2019Viabilita,
-        opencivitas_rifiuti_2019: async () => (await import("@/lib/opencivitas-2019-rifiuti-snapshot")).queryOpenCivitas2019Rifiuti,
-        opencivitas_sociale_asili_2019: async () => (await import("@/lib/opencivitas-2019-sociale-asili-snapshot")).queryOpenCivitas2019SocialeAsili,
-        opencivitas_amministrazione_2019: async () => (await import("@/lib/opencivitas-2019-amministrazione-snapshot")).queryOpenCivitas2019Amministrazione,
-      };
-      const queryFunction = await loaders[query.dataset]();
-      return jsonSafe(queryFunction({
+      const args = {
         region: query.region,
         code: query.code,
         limit: query.limit,
         offset: query.offset,
-      }));
+      };
+      if (query.dataset === "opencivitas_istruzione_2019") {
+        const { queryOpenCivitas2019Istruzione } = await import("@/lib/opencivitas-2019-istruzione-snapshot");
+        return jsonSafe(queryOpenCivitas2019Istruzione(args));
+      }
+      if (query.dataset === "opencivitas_polizia_2019") {
+        const { queryOpenCivitas2019Polizia } = await import("@/lib/opencivitas-2019-polizia-snapshot");
+        return jsonSafe(queryOpenCivitas2019Polizia(args));
+      }
+      if (query.dataset === "opencivitas_viabilita_2019") {
+        const { queryOpenCivitas2019Viabilita } = await import("@/lib/opencivitas-2019-viabilita-snapshot");
+        return jsonSafe(queryOpenCivitas2019Viabilita(args));
+      }
+      if (query.dataset === "opencivitas_rifiuti_2019") {
+        const { queryOpenCivitas2019Rifiuti } = await import("@/lib/opencivitas-2019-rifiuti-snapshot");
+        return jsonSafe(queryOpenCivitas2019Rifiuti(args));
+      }
+      if (query.dataset === "opencivitas_sociale_asili_2019") {
+        const { queryOpenCivitas2019SocialeAsili } = await import("@/lib/opencivitas-2019-sociale-asili-snapshot");
+        return jsonSafe(queryOpenCivitas2019SocialeAsili(args));
+      }
+      const { queryOpenCivitas2019Amministrazione } = await import("@/lib/opencivitas-2019-amministrazione-snapshot");
+      return jsonSafe(queryOpenCivitas2019Amministrazione(args));
     }
     case "opencoesione_progetti": {
       const {

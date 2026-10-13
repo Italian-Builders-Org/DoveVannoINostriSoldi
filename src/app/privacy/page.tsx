@@ -182,8 +182,7 @@ export default function PrivacyPage() {
           <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>
           . Se hai un account Boards puoi anche eliminarlo da{" "}
           <a href="/dashboard/settings">Impostazioni</a>. Invia soltanto le informazioni necessarie
-          a gestire la richiesta, senza password o altre credenziali. Le issue GitHub sono
-          pubbliche: non usarle per richieste privacy o dati personali. Puoi presentare reclamo al
+          a gestire la richiesta, senza password o altre credenziali. Le issue GitHub sono pubbliche: non usarle per richieste privacy o dati personali. Puoi presentare reclamo al
           Garante per la protezione dei dati personali. Per assistenza tecnica consulta la pagina{" "}
           <a href="/supporto">Supporto</a>.
         </p>

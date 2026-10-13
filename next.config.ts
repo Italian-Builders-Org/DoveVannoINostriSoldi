@@ -97,6 +97,7 @@ const corpusRoutesWithoutMedicalDeviceRows = [
 // Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
 // Anchoring here prevents `/dati` from also matching routes such as `/api/.../dati`.
 const routesWithoutMedicalDeviceRows = [
+  "/app/api/boards/**",
   "/app/api/comuni/**",
   "/app/api/enti/**",
   "/app/api/fonti/**",

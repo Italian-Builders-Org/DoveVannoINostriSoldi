@@ -14,6 +14,35 @@ import { boardsAuthMode } from "@/lib/boards/auth-mode";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const SUPABASE_LINK_TYPES = new Set([
+  "signup",
+  "magiclink",
+  "email",
+  "invite",
+  "recovery",
+]);
+
+type VerifiedUser = { userId: string; email: string };
+
+/**
+ * Verifica sempre con Supabase Auth: il body del client non decide da solo
+ * l'esito, passa solo il materiale del magic link da validare lato server.
+ */
+async function verifySupabaseLoginMaterial(input: {
+  accessToken: string;
+  tokenHash: string;
+  type: string;
+}): Promise<VerifiedUser> {
+  if (input.accessToken) {
+    return supabaseUserFromAccessToken(input.accessToken);
+  }
+  if (input.tokenHash) {
+    const type = SUPABASE_LINK_TYPES.has(input.type) ? input.type : "magiclink";
+    return supabaseVerifyTokenHash(input.tokenHash, type);
+  }
+  throw new Error("Token di accesso mancante. Riapri il link dall'email.");
+}
+
 /**
  * Completa il login dopo il click sul magic/confirm link Supabase.
  * Accetta access_token (hash redirect) oppure token_hash+type (query).
@@ -32,27 +61,15 @@ export async function POST(request: Request) {
   const record = typeof body === "object" && body ? (body as Record<string, unknown>) : {};
 
   try {
-    let userId: string;
-    let email: string;
-
     const accessToken = typeof record.accessToken === "string" ? record.accessToken.trim() : "";
     const tokenHash = typeof record.tokenHash === "string" ? record.tokenHash.trim() : "";
-    const type = typeof record.type === "string" ? record.type.trim() : "signup";
+    const type = typeof record.type === "string" ? record.type.trim() : "magiclink";
 
-    if (accessToken.length >= 20) {
-      const user = await supabaseUserFromAccessToken(accessToken);
-      userId = user.userId;
-      email = user.email;
-    } else if (tokenHash.length >= 20) {
-      const verified = await supabaseVerifyTokenHash(tokenHash, type || "signup");
-      userId = verified.userId;
-      email = verified.email;
-    } else {
-      return NextResponse.json(
-        { error: "Token di accesso mancante. Riapri il link dall'email." },
-        { status: 400 },
-      );
-    }
+    const { userId, email } = await verifySupabaseLoginMaterial({
+      accessToken,
+      tokenHash,
+      type,
+    });
 
     await ensureCloudProfile(userId, email);
 
@@ -71,6 +88,7 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Accesso non riuscito.";
-    return NextResponse.json({ error: message }, { status: 401 });
+    const status = /mancante/iu.test(message) ? 400 : 401;
+    return NextResponse.json({ error: message }, { status });
   }
 }

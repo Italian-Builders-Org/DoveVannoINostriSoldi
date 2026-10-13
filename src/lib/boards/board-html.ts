@@ -94,11 +94,24 @@ export function sanitizeBoardHtml(html: string): string {
   return Array.from(root.childNodes).map(walk).join("").slice(0, 8_000);
 }
 
+/** Rimuove script/style in loop finché il markup non cambia (anti nested injection). */
+function stripDangerousBlocks(html: string): string {
+  let current = html;
+  let previous = "";
+  while (current !== previous) {
+    previous = current;
+    current = current
+      .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/giu, "")
+      .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/giu, "");
+  }
+  return current;
+}
+
+/**
+ * Fallback senza DOMParser: solo tag allowlist, attributi limitati a style filtrato.
+ */
 function stripTagsFallback(html: string): string {
-  // Fallback senza DOMParser: solo tag consentiti, niente attributi tranne style filtrato.
-  const withoutDanger = html
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/giu, "")
-    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/giu, "");
+  const withoutDanger = stripDangerousBlocks(html);
   return withoutDanger
     .replace(/<\/?([a-z0-9]+)([^>]*)>/giu, (full, rawTag: string, attrs: string) => {
       const tag = rawTag.toUpperCase();
@@ -115,14 +128,18 @@ function stripTagsFallback(html: string): string {
 
 /** Testo piano per title/export. */
 export function plainTextFromHtml(html: string): string {
-  const text = html
-    .replace(/<br\s*\/?>/giu, "\n")
-    .replace(/<\/p>/giu, "\n")
-    .replace(/<[^>]+>/gu, "")
+  const withoutTags = stripDangerousBlocks(html)
+    .replace(/<br\s*\/?\s*>/giu, "\n")
+    .replace(/<\/p\s*>/giu, "\n")
+    .replace(/<[^>]*>/gu, "");
+  // Decodifica entità in ordine sicuro: &amp; per ultimo.
+  const text = withoutTags
     .replace(/&nbsp;/gu, " ")
-    .replace(/&amp;/gu, "&")
     .replace(/&lt;/gu, "<")
     .replace(/&gt;/gu, ">")
+    .replace(/&quot;/gu, '"')
+    .replace(/&#39;/gu, "'")
+    .replace(/&amp;/gu, "&")
     .replace(/\n{3,}/gu, "\n\n")
     .trim();
   return text.slice(0, 120) || "Testo";

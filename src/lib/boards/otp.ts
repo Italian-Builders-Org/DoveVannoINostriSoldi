@@ -19,7 +19,14 @@ const requestLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 8 });
 
 export function normalizeEmail(raw: string): string | null {
   const email = raw.trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email) || email.length > 254) return null;
+  if (email.length < 3 || email.length > 254 || email.includes(" ")) return null;
+  const at = email.indexOf("@");
+  if (at <= 0 || at !== email.lastIndexOf("@")) return null;
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  if (!local || !domain || domain.startsWith(".") || domain.endsWith(".")) return null;
+  const dot = domain.lastIndexOf(".");
+  if (dot <= 0 || dot === domain.length - 1) return null;
   return email;
 }
 

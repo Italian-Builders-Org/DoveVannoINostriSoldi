@@ -150,7 +150,12 @@ export function proxy(request: NextRequest) {
   if (pathname === "/" && requestHostname(request) === COMUNI_HOST) {
     pathname = "/comuni";
   }
-  if (pathname.startsWith("/api/")) {
+  // Session Boards è un GET leggero chiamato dal chrome su ogni pagina: non
+  // deve consumare il budget condiviso /api né far fallire i browser gate.
+  if (
+    pathname.startsWith("/api/")
+    && pathname !== "/api/boards/auth/session"
+  ) {
     const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
   }

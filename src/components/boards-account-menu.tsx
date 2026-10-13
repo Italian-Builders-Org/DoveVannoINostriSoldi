@@ -28,6 +28,11 @@ export function BoardsAccountMenu() {
     let cancelled = false;
     fetch("/api/boards/auth/session", { credentials: "same-origin" })
       .then(async (response) => {
+        if (cancelled) return;
+        if (!response.ok) {
+          setSession({ status: "guest" });
+          return;
+        }
         const data = (await response.json()) as {
           authenticated?: boolean;
           email?: string;

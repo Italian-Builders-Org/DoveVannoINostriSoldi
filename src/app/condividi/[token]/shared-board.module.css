@@ -84,6 +84,7 @@
   border: 1px solid var(--boards-line);
   border-radius: 10px;
   background: var(--boards-tile);
+  border-inline-start: 2px solid var(--tile-accent, var(--boards-accent));
   overflow: hidden;
 }
 
@@ -98,8 +99,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding: 0.55rem 0.7rem;
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--tile-accent, var(--boards-accent)) 55%, var(--boards-line));
+  border-bottom: 1px solid var(--boards-line);
   font-size: 0.8rem;
 }
 

@@ -1,6 +1,9 @@
 import "server-only";
 import { createHash, createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import { boardsAuthMode, boardsAuthSecret } from "./auth-mode";
+import { normalizeEmail } from "./normalize-email";
+
+export { normalizeEmail };
 import { SlidingWindowLimiter } from "../report/rate-limit";
 
 const OTP_TTL_MS = 10 * 60_000;
@@ -16,19 +19,6 @@ type PendingOtp = {
 /** In-memory pending codes for local_preview (single Node instance). */
 const pending = new Map<string, PendingOtp>();
 const requestLimiter = new SlidingWindowLimiter({ windowMs: 60_000, max: 8 });
-
-export function normalizeEmail(raw: string): string | null {
-  const email = raw.trim().toLowerCase();
-  if (email.length < 3 || email.length > 254 || email.includes(" ")) return null;
-  const at = email.indexOf("@");
-  if (at <= 0 || at !== email.lastIndexOf("@")) return null;
-  const local = email.slice(0, at);
-  const domain = email.slice(at + 1);
-  if (!local || !domain || domain.startsWith(".") || domain.endsWith(".")) return null;
-  const dot = domain.lastIndexOf(".");
-  if (dot <= 0 || dot === domain.length - 1) return null;
-  return email;
-}
 
 function hashCode(secret: string, email: string, code: string): string {
   return createHmac("sha256", secret).update(`otp:${email}:${code}`).digest("hex");

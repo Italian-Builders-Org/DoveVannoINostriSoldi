@@ -5,7 +5,6 @@ import { readBoardsApiSession } from "@/lib/boards/api-session";
 import { buildBoardTileCatalog } from "@/lib/boards/build-tile-catalog";
 import { normalizeBoardRegionFilter } from "@/lib/boards/board-region";
 import { projectBoardTileSeries } from "@/lib/boards/tile-series";
-import { queryPublicDataset } from "@/lib/mcp/datasets";
 import type { DatasetQuery } from "@/lib/mcp/catalog";
 
 export const runtime = "nodejs";
@@ -99,74 +98,152 @@ function defaultQueryFor(datasetId: string): Omit<DatasetQuery, "dataset"> {
   return {};
 }
 
-const ALLOWED_FILTER_KEYS = new Set([
-  "year",
-  "month",
-  "years",
-  "limit",
-  "offset",
-  "region",
-  "code",
-  "query",
-  "view",
-  "dimension",
-  "deviceType",
-  "country",
-  "territory",
-  "breakdown",
-  "family",
-  "level",
-  "table",
-  "cursor",
-]);
+function assignNumericQueryField(
+  query: DatasetQuery,
+  field: "year" | "month" | "limit" | "offset" | "years",
+  value: unknown,
+): void {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    query[field] = value;
+    return;
+  }
+  if (typeof value === "string" && /^\d+$/u.test(value)) {
+    query[field] = Number(value);
+  }
+}
 
-const NUMERIC_FILTER_KEYS = new Set(["year", "month", "limit", "offset", "years"]);
+function assignStringQueryField(query: DatasetQuery, field: keyof DatasetQuery, value: unknown): void {
+  if (typeof value !== "string" || value === "") return;
+  if (field === "region") {
+    const normalized = normalizeBoardRegionFilter(String(query.dataset), value);
+    if (normalized) query.region = normalized;
+    return;
+  }
+  if (
+    field === "query"
+    || field === "code"
+    || field === "cup"
+    || field === "area"
+    || field === "territory"
+    || field === "table"
+    || field === "measure"
+    || field === "family"
+    || field === "breakdown"
+    || field === "tax"
+    || field === "country"
+    || field === "cofog"
+    || field === "period"
+    || field === "sector"
+    || field === "sex"
+    || field === "cepa"
+    || field === "band"
+    || field === "mission"
+    || field === "component"
+    || field === "submeasure"
+    || field === "schoolType"
+    || field === "pathway"
+    || field === "deviceNumber"
+    || field === "value"
+    || field === "province"
+    || field === "cursor"
+  ) {
+    query[field] = value;
+  }
+}
 
 function mergeFilters(datasetId: string, filters: BoardTileFilters): DatasetQuery {
   const base = defaultQueryFor(datasetId);
   const query: DatasetQuery = { dataset: datasetId as DatasetQuery["dataset"], ...base };
   for (const [key, value] of Object.entries(filters)) {
-    if (!ALLOWED_FILTER_KEYS.has(key)) continue;
+    if (key === "series_key") continue;
     if (value === null || value === undefined || value === "") continue;
-    if (NUMERIC_FILTER_KEYS.has(key)) {
-      if (typeof value === "number" && Number.isFinite(value)) {
-        if (key === "year") query.year = value;
-        else if (key === "month") query.month = value;
-        else if (key === "limit") query.limit = value;
-        else if (key === "offset") query.offset = value;
-        else if (key === "years") query.years = value;
-      } else if (typeof value === "string" && /^\d+$/u.test(value)) {
-        const numeric = Number(value);
-        if (key === "year") query.year = numeric;
-        else if (key === "month") query.month = numeric;
-        else if (key === "limit") query.limit = numeric;
-        else if (key === "offset") query.offset = numeric;
-        else if (key === "years") query.years = numeric;
-      }
-      continue;
+    switch (key) {
+      case "year":
+      case "month":
+      case "limit":
+      case "offset":
+      case "years":
+        assignNumericQueryField(query, key, value);
+        break;
+      case "region":
+        assignStringQueryField(query, "region", value);
+        break;
+      case "query":
+      case "code":
+      case "cup":
+      case "area":
+      case "territory":
+      case "table":
+      case "measure":
+      case "family":
+      case "breakdown":
+      case "tax":
+      case "country":
+      case "cofog":
+      case "period":
+      case "sector":
+      case "sex":
+      case "cepa":
+      case "band":
+      case "mission":
+      case "component":
+      case "submeasure":
+      case "schoolType":
+      case "pathway":
+      case "deviceNumber":
+      case "value":
+      case "province":
+      case "cursor":
+      case "level":
+        if (value === "region" || value === "province" || value === "municipality") {
+          query.level = value;
+        }
+        break;
+      case "detail":
+        if (
+          value === "summary"
+          || value === "income-sources"
+          || value === "income-bands"
+          || value === "all"
+        ) {
+          query.detail = value;
+        }
+        break;
+      case "chamber":
+        if (value === "camera" || value === "senato") query.chamber = value;
+        break;
+      case "view":
+        if (
+          value === "search"
+          || value === "aggregate"
+          || value === "device"
+          || value === "facts"
+          || value === "filters"
+        ) {
+          query.view = value;
+        }
+        break;
+      case "deviceType":
+        if (value === "1" || value === "2") query.deviceType = value;
+        break;
+      case "dimension":
+        if (
+          value === "territory"
+          || value === "classification"
+          || value === "manufacturer"
+        ) {
+          query.dimension = value;
+        }
+        break;
+      case "role":
+        if (value === "fabbricante" || value === "assemblatore") query.role = value;
+        break;
+      case "channel":
+        if (value === "convenzioni" || value === "mepa") query.channel = value;
+        break;
+      default:
+        break;
     }
-    if (key === "region" && typeof value === "string") {
-      const normalized = normalizeBoardRegionFilter(datasetId, value);
-      if (normalized) query.region = normalized;
-      continue;
-    }
-    if (typeof value !== "string") continue;
-    if (key === "code") query.code = value;
-    else if (key === "query") query.query = value;
-    else if (key === "view" && (value === "search" || value === "aggregate" || value === "device" || value === "facts" || value === "filters")) {
-      query.view = value;
-    } else if (key === "dimension" && (value === "territory" || value === "classification" || value === "manufacturer")) {
-      query.dimension = value;
-    } else if (key === "deviceType" && (value === "1" || value === "2")) {
-      query.deviceType = value;
-    } else if (key === "country") query.country = value;
-    else if (key === "territory") query.territory = value;
-    else if (key === "breakdown") query.breakdown = value;
-    else if (key === "family") query.family = value;
-    else if (key === "level" && (value === "region" || value === "province" || value === "municipality")) {
-      query.level = value;
-    } else if (key === "table") query.table = value;
-    else if (key === "cursor") query.cursor = value;
   }
   return query;
 }
@@ -208,6 +285,7 @@ export async function POST(request: Request) {
 
   try {
     const query = mergeFilters(datasetId, filters);
+    const { queryPublicDataset } = await import("@/lib/mcp/datasets");
     const raw = await queryPublicDataset(query);
     const payload = projectBoardTileSeries(datasetId, raw, filters);
     return NextResponse.json(

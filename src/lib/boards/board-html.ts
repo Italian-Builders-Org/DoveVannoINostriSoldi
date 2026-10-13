@@ -1,3 +1,8 @@
+import { parseHTML } from "linkedom";
+
+const TEXT_NODE = 3;
+const ELEMENT_NODE = 1;
+
 /** HTML consentito nelle tile di testo board (no script, no eventi). */
 
 const ALLOWED_TAGS = new Set([
@@ -36,22 +41,28 @@ function sanitizeStyle(value: string): string | null {
   return parts.length > 0 ? parts.join("; ") : null;
 }
 
+function parseSanitizeRoot(html: string): Element | null {
+  const wrapped = `<div>${html}</div>`;
+  if (typeof DOMParser !== "undefined") {
+    const doc = new DOMParser().parseFromString(wrapped, "text/html");
+    return doc.body.firstElementChild;
+  }
+  const { document } = parseHTML(wrapped);
+  return document.firstElementChild;
+}
+
 /** Sanitizza HTML lato client (DOMParser). */
 export function sanitizeBoardHtml(html: string): string {
-  if (typeof DOMParser === "undefined") {
-    // Senza DOM non ricostruiamo HTML: solo testo escapato.
-    return paragraphHtml(plainTextFromHtml(html));
-  }
-  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
-  const root = doc.body.firstElementChild;
+  const root = parseSanitizeRoot(html);
   if (!root) return "";
   const walk = (node: Node): string => {
-    if (node.nodeType === Node.TEXT_NODE) {
+    if (node.nodeType === TEXT_NODE) {
       return node.textContent ?? "";
     }
-    if (node.nodeType !== Node.ELEMENT_NODE) return "";
+    if (node.nodeType !== ELEMENT_NODE) return "";
     const el = node as HTMLElement;
     const tag = el.tagName;
+    if (tag === "SCRIPT" || tag === "STYLE") return "";
     // execCommand produce ancora <font>; lo convertiamo in <span style="…">.
     if (tag === "FONT") {
       const parts: string[] = [];
@@ -95,20 +106,11 @@ export function sanitizeBoardHtml(html: string): string {
   return Array.from(root.childNodes).map(walk).join("").slice(0, 8_000);
 }
 
-/** Testo piano per title/export (nessuna ricostruzione HTML). */
+/** Testo piano per title/export. */
 export function plainTextFromHtml(html: string): string {
-  if (typeof DOMParser !== "undefined") {
-    const doc = new DOMParser().parseFromString(`<div>${html}</div>`, "text/html");
-    const text = (doc.body.textContent ?? "")
-      .replace(/\u00a0/gu, " ")
-      .replace(/\n{3,}/gu, "\n\n")
-      .trim();
-    return text.slice(0, 120) || "Testo";
-  }
-  // Fallback Node senza DOM: togli i tag in modo grezzo, poi escapa in paragraphHtml.
-  const text = html
-    .replace(/<[^>]*>/gu, " ")
-    .replace(/\s+/gu, " ")
+  const root = parseSanitizeRoot(html);
+  const text = (root?.textContent ?? html)
+    .replace(/\n{3,}/gu, "\n\n")
     .trim();
   return text.slice(0, 120) || "Testo";
 }

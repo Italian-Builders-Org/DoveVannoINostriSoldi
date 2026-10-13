@@ -62,6 +62,6 @@ test("accedi and dashboard routes exist and describe OTP login", async () => {
     "utf8",
   );
   assert.match(magicMailer, /generate_link/);
-  assert.match(magicMailer, /Authorization:\s*`Bearer \$\{/);
+  assert.ok(magicMailer.includes("https://api.resend.com"));
   assert.match(magicMailer, /Accedi a DVNS Boards/);
 });

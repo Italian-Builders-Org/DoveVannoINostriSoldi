@@ -329,7 +329,6 @@
   border-right: 1px solid var(--boards-line);
   background: var(--boards-panel);
   overflow: hidden;
-  transition: opacity 160ms ease;
 }
 
 .sidebarBody {

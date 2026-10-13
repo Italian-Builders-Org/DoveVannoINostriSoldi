@@ -10,24 +10,14 @@ import {
   supabaseVerifyTokenHash,
 } from "@/lib/boards/supabase";
 import { boardsAuthMode } from "@/lib/boards/auth-mode";
+import { parseSupabaseCallbackCredentials } from "@/lib/boards/supabase-callback";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const SUPABASE_LINK_TYPES = new Set([
-  "signup",
-  "magiclink",
-  "email",
-  "invite",
-  "recovery",
-]);
-
-type VerifiedUser = { userId: string; email: string };
-
 /**
  * Completa il login dopo il click sul magic/confirm link Supabase.
- * Il body del client porta solo il materiale del link; la sessione DVNS
- * viene emessa solo dopo la verifica Auth di Supabase.
+ * Accetta access_token (hash redirect) oppure token_hash+type (query).
  */
 export async function POST(request: Request) {
   if (boardsAuthMode() !== "supabase") {
@@ -43,23 +33,26 @@ export async function POST(request: Request) {
   const record = typeof body === "object" && body ? (body as Record<string, unknown>) : {};
 
   try {
-    const accessToken = typeof record.accessToken === "string" ? record.accessToken.trim() : "";
-    const tokenHash = typeof record.tokenHash === "string" ? record.tokenHash.trim() : "";
-    const typeRaw = typeof record.type === "string" ? record.type.trim() : "magiclink";
-    const type = SUPABASE_LINK_TYPES.has(typeRaw) ? typeRaw : "magiclink";
+    let userId: string;
+    let email: string;
 
-    // Verifica sempre con Supabase Auth (non trust del client).
-    // codeql[js/user-controlled-bypass]: accessToken/tokenHash are credentials
-    // verified by Supabase before any DVNS session cookie is minted.
-    const verified: VerifiedUser = accessToken
-      ? await supabaseUserFromAccessToken(accessToken)
-      : tokenHash
-        ? await supabaseVerifyTokenHash(tokenHash, type)
-        : (() => {
-          throw new Error("Token di accesso mancante. Riapri il link dall'email.");
-        })();
+    const credentials = parseSupabaseCallbackCredentials(record);
+    if (credentials.kind === "invalid") {
+      return NextResponse.json({ error: credentials.error }, { status: 400 });
+    }
+    if (credentials.kind === "access_token") {
+      const user = await supabaseUserFromAccessToken(credentials.accessToken);
+      userId = user.userId;
+      email = user.email;
+    } else {
+      const verified = await supabaseVerifyTokenHash(
+        credentials.tokenHash,
+        credentials.linkType,
+      );
+      userId = verified.userId;
+      email = verified.email;
+    }
 
-    const { userId, email } = verified;
     await ensureCloudProfile(userId, email);
 
     const value = buildSessionCookieValue({
@@ -77,7 +70,6 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Accesso non riuscito.";
-    const status = /mancante/iu.test(message) ? 400 : 401;
-    return NextResponse.json({ error: message }, { status });
+    return NextResponse.json({ error: message }, { status: 401 });
   }
 }

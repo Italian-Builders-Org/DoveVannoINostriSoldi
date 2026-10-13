@@ -127,7 +127,7 @@ function BoardTileChartView({ tile, onFiltersChange, payload, loading, error }: 
                     <td key={id}>
                       {typeof point.values[id] === "number"
                         ? euroCompact.format(point.values[id]!)
-                        : "n/d"}
+                        : "n.d."}
                     </td>
                   ))}
                 </tr>
@@ -367,12 +367,12 @@ export function BoardLocalTileChart({ tile }: { tile: BoardTile }) {
       return {
         datasetId: "local_csv",
         title: tile.title ?? "Dati importati",
-        periodLabel: "n/d",
+        periodLabel: "n.d.",
         unitLabel: "valore",
         caveat: error instanceof Error ? error.message : "CSV non plotabile.",
         provenance: {
           readAt: tile.localTable.importedAt,
-          periodLabel: "n/d",
+          periodLabel: "n.d.",
           caveat: null,
           sourceIds: [],
           datasetId: "local_csv",

@@ -1261,7 +1261,7 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
                               value={current}
                               onChange={(event) => commitFilter(event.target.value)}
                             >
-                              <option value="">(nessuno)</option>
+                              <option value="">Nessuno</option>
                               {YEAR_OPTIONS.map((year) => (
                                 <option key={year} value={year}>
                                   {year}

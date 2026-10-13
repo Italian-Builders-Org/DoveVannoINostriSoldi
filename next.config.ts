@@ -85,6 +85,7 @@ const medicalDeviceIndexRuntimeFiles = [
 const routesWithoutIntegratedRows = [
   "/app/api/assistant/**",
   "/app/mcp",
+  "/app/api/boards/tile-data",
 ];
 
 // Without Fluid Compute, classic serverless caps at 250 MB uncompressed. Keeping
@@ -303,6 +304,11 @@ const nextConfig: NextConfig = {
       ]),
     ),
     "/app/api/mcp": [
+      ...allIntegratedRowRuntimeFiles,
+      ...medicalDeviceIndexRuntimeFiles,
+      ...operatorShardRuntimeFiles,
+    ],
+    "/app/api/boards/tile-data": [
       ...allIntegratedRowRuntimeFiles,
       ...medicalDeviceIndexRuntimeFiles,
       ...operatorShardRuntimeFiles,

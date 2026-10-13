@@ -73,11 +73,9 @@ try {
     const upload=async paths=>{const input=await page.$('input[type="file"]');await input.uploadFile(...paths);};
     const ready=async count=>page.waitForFunction(count=>document.querySelectorAll('[aria-label="Allegati da inviare"] li[data-ready="true"][data-error="false"]').length===count,{timeout:dialogTimeout},count).catch(async error=>{await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-failure.png`,fullPage:true});console.error(JSON.stringify({width,errors,workerEvents,preparationTimeline:await page.evaluate(()=>window.__preparationTimeline),files:await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({title:el.title,ready:el.dataset.ready,error:el.dataset.error}))),alerts:await page.$$eval('[role="alert"]',els=>els.map(el=>el.textContent))}));throw error;});
     const click=async label=>{
-      await page.evaluate((ariaLabel)=>{
-        const el=document.querySelector(`button[aria-label="${ariaLabel}"]`);
-        el?.scrollIntoView({block:'nearest',inline:'nearest'});
-        el?.click();
-      },label);
+      const sel=`button[aria-label="${label}"]`;
+      await page.$eval(sel,el=>el.scrollIntoView({block:'nearest',inline:'nearest'}));
+      await page.click(sel);
     };
     const complete=number=>page.waitForFunction(number=>!!document.querySelector('[data-assistant-reply] table')&&document.querySelector('[data-assistant-reply]')?.textContent.includes(`Risposta di prova ${number}.`)&&!document.querySelector('button[aria-label="Interrompi ricerca"]'),{},number);
     await upload(['riepilogo.pdf','relazione.docx','pagamenti.xlsx','nota.txt','criteri.md','nota.txt','criteri.md','nota.txt'].map(fixture));await ready(8);

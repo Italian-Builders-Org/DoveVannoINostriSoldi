@@ -7,9 +7,11 @@ import { gzipSync } from "node:zlib";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 import { operatorHistoryFixture } from "./helpers/operator-history-fixture.mjs";
-const { getOperatorHistory, readOperatorHistoryAwards } = await import(
-  "../src/lib/data/anac-operator-history.ts"
-);
+const {
+  getOperatorHistory,
+  readOperatorHistoryAwards,
+  resetAnacOperatorHistoryCachesForTests,
+} = await import("../src/lib/data/anac-operator-history.ts");
 
 const fixture = operatorHistoryFixture();
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -113,6 +115,7 @@ test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alter
       });
       writeFileSync(join(directory, bucket + ".jsonl.gz"), compressed);
       writeFileSync(manifestPath, JSON.stringify(manifest));
+      resetAnacOperatorHistoryCachesForTests();
     }
     replaceShard(summaryLine + '\n{"ref":\n');
     assert.throws(() => getOperatorHistory(fixture.summary.ref), SyntaxError);

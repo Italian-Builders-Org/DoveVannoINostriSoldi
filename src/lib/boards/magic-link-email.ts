@@ -1,4 +1,5 @@
 import "server-only";
+import { forceActionLinkRedirect } from "./public-origin";
 import { boardsResendFromAddress } from "./resend-from";
 import { boardsSupabaseConfig } from "./supabase";
 
@@ -136,16 +137,6 @@ async function generateMagicLink(email: string, redirectTo: string): Promise<Gen
     ...parsed,
     actionLink: forceActionLinkRedirect(parsed.actionLink, redirectTo),
   };
-}
-
-function forceActionLinkRedirect(actionLink: string, redirectTo: string): string {
-  try {
-    const url = new URL(actionLink);
-    url.searchParams.set("redirect_to", redirectTo);
-    return url.toString();
-  } catch {
-    return actionLink;
-  }
 }
 
 function magicLinkHtml(email: string, actionLink: string): string {

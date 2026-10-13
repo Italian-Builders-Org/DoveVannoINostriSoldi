@@ -1,5 +1,3 @@
-import "server-only";
-
 /**
  * Mittente Resend per Boards: riusa la mailbox verificata (anche se in env
  * è ancora `Consulenza <consulenza@…>`), ma forza sempre il nome DVNS Boards.

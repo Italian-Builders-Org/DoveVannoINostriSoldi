@@ -8,6 +8,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HeaderSearch } from "@/components/header-search";
+import { BoardsAccountMenu } from "@/components/boards-account-menu";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
 import { readStoredSidebarState, setSidebarState } from "@/lib/sidebar";
@@ -292,6 +293,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <HeaderSearch />
           <div className="header-actions">
             <ThemeToggle />
+            <BoardsAccountMenu />
             <IntentLink className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</IntentLink>
             <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
               aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">

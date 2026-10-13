@@ -74,8 +74,14 @@ test("the public discovery catalog is canonical, unique and complete for static 
 });
 
 test("search results stay crawlable for noindex while remaining outside the sitemap", async () => {
-  assert.deepEqual(PUBLIC_NOINDEX_PATHS, ["/cerca"]);
+  assert.deepEqual(PUBLIC_NOINDEX_PATHS, [
+    "/cerca",
+    "/accedi/callback",
+    "/dashboard",
+    "/dashboard/settings",
+  ]);
   assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/cerca"), false);
+  assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/dashboard"), false);
 
   const searchPage = await readFile(path.join(appRoot, "cerca", "page.tsx"), "utf8");
   assert.match(searchPage, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*,?\s*\}/);

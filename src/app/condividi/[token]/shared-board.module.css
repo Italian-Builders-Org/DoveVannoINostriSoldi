@@ -1,0 +1,147 @@
+.shell {
+  --boards-bg: #0f1419;
+  --boards-panel: #171d24;
+  --boards-line: #2a3440;
+  --boards-ink: #e8eef4;
+  --boards-muted: #93a0ae;
+  --boards-accent: #3d9b74;
+  --boards-canvas: #121820;
+  --boards-tile: #1a222c;
+  min-height: 100dvh;
+  color: var(--boards-ink);
+  background: var(--boards-bg);
+  font-family: var(--font-geist), "IBM Plex Sans", system-ui, sans-serif;
+}
+
+:global(html[data-theme="light"]) .shell {
+  --boards-bg: #f4f6f8;
+  --boards-panel: #ffffff;
+  --boards-line: #d5dde6;
+  --boards-ink: #15202b;
+  --boards-muted: #5b6b7c;
+  --boards-accent: #1f7a56;
+  --boards-canvas: #e8edf2;
+  --boards-tile: #ffffff;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--boards-line);
+  background: var(--boards-panel);
+}
+
+.kicker {
+  margin: 0;
+  color: var(--boards-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.meta {
+  margin: 0.35rem 0 0;
+  color: var(--boards-muted);
+  font-size: 0.8rem;
+}
+
+.link {
+  color: var(--boards-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  align-self: start;
+}
+
+.canvas {
+  position: relative;
+  min-height: 70dvh;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, #fff 8%, transparent) 1px, transparent 0)
+      0 0 / 20px 20px,
+    var(--boards-canvas);
+}
+
+.empty {
+  margin: 0;
+  padding: 3rem;
+  text-align: center;
+  color: var(--boards-muted);
+}
+
+.tile {
+  position: absolute;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid var(--boards-line);
+  border-radius: 10px;
+  background: var(--boards-tile);
+  box-shadow: inset 3px 0 0 var(--tile-accent, var(--boards-accent));
+  overflow: hidden;
+}
+
+.tile[data-kind="heading"],
+.tile[data-kind="note"] {
+  grid-template-rows: minmax(0, 1fr);
+  overflow: visible;
+}
+
+.tileHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid var(--boards-line);
+  font-size: 0.8rem;
+}
+
+.tileHeader span {
+  color: var(--boards-muted);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.tileBody {
+  min-height: 0;
+  padding: 0.4rem;
+}
+
+.richText {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow: visible;
+  height: auto;
+}
+
+.richText :global(p) {
+  margin: 0;
+}
+
+.richText :global(p + p) {
+  margin-top: 0.35em;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.footer {
+  padding: 0.85rem 1.25rem 1.5rem;
+  color: var(--boards-muted);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--boards-line);
+}

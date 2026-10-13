@@ -136,6 +136,13 @@
   font-size: 12px; font-weight: 600; text-decoration: none;
 }
 .immersiveActions :global(.header-action) { width: 44px; padding: 0; justify-content: center; }
+.immersiveActions :global(.theme-toggle) {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
 .sourcesDisclosure { position: relative; }
 .sourcesDisclosure > summary { cursor: pointer; list-style: none; }
 .sourcesDisclosure > summary::-webkit-details-marker { display: none; }

@@ -37,6 +37,7 @@
 - [Pagina MCP](https://www.dovevannoinostrisoldi.com/mcp): pagina informativa per configurare il client e consultare i limiti. Per compatibilità, lo stesso percorso accetta anche `POST` e `OPTIONS` MCP; il riferimento canonico resta `/api/mcp`.
 - [Indice Markdown per agenti](/for-agents): una scheda Markdown UTF-8 per ogni dataset del catalogo MCP attivo, con fonte, periodo, unità, filtri, esempio e limiti. Per interrogare i dati usa `/api/mcp`.
 - [Assistente testuale](https://www.dovevannoinostrisoldi.com/assistente): interfaccia deterministica read-only con pochi intenti allowlisted; non usa provider LLM o voce e non conserva il prompt.
+- [DVNS Boards](https://www.dovevannoinostrisoldi.com/accedi): laboratorio web (non mobile) per comporre viste private sui dataset pubblici del sito; accesso email senza password.
 - [API assistente](https://www.dovevannoinostrisoldi.com/api/assistant): `POST` JSON same-origin con `{ "prompt": "..." }`; una sola query, prompt massimo 500 caratteri e timeout bounded.
 - [Catalogo fonti via API](https://www.dovevannoinostrisoldi.com/api/fonti/stato): stato operativo delle fonti quando disponibile.
 - [API pagamenti comunali](https://www.dovevannoinostrisoldi.com/api/spese/comuni): `GET` statico con aggregati SIOPE nazionali e regionali e i primi 100 Comuni per totale, pro capite o per km²; non accetta parametri di query e non isola un singolo Comune. Per i filtri dichiarati (anno, regione) usa `list_datasets`/`query_dataset` su `/api/mcp`.
@@ -77,7 +78,7 @@ descrive il contratto e la procedura di integrazione.
 
 ## Privacy e codice
 
-- [Privacy](https://www.dovevannoinostrisoldi.com/privacy): il sito non richiede account.
+- [Privacy](https://www.dovevannoinostrisoldi.com/privacy): consultazione pubblica senza account; Boards opzionale con email.
 - [Chi ci sostiene](https://www.dovevannoinostrisoldi.com/supporter): chi sostiene il progetto con infrastruttura o community.
 - [Repository](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi): codice, ETL, test, documentazione, AGPL-3.0 e licenza commerciale opzionale.
 - [Attribuzioni di terze parti](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/blob/main/THIRD_PARTY_NOTICES.md): licenze delle fonti e dei componenti riusati.

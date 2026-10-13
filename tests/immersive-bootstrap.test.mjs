@@ -11,7 +11,18 @@ test("prepaint bootstrap and client navigation agree for atlas, comuni, subdomai
     "comuni.dovevannoinostrisoldi.com",
     "localhost",
   ];
-  const paths = ["/", "/politici", "/politici/", "/politici/europa", "/comuni", "/comuni/", "/privacy"];
+  const paths = [
+    "/",
+    "/politici",
+    "/politici/",
+    "/politici/europa",
+    "/comuni",
+    "/comuni/",
+    "/privacy",
+    "/dashboard",
+    "/dashboard/settings",
+    "/accedi",
+  ];
   for (const hostname of hosts) {
     for (const pathname of paths) {
       const document = { documentElement: { dataset: {} } };

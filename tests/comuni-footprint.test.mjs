@@ -126,6 +126,9 @@ test("comuni immersive helpers recognise path and subdomain", () => {
   assert.equal(immersiveKind("/politici", "localhost"), "politici");
   assert.equal(immersiveKind("/comuni", "localhost"), "comuni");
   assert.equal(immersiveKind("/snapshot-pages/comuni/c_f205", "localhost"), "comuni");
+  assert.equal(immersiveKind("/dashboard", "localhost"), "boards");
+  assert.equal(immersiveKind("/dashboard/settings", "localhost"), "boards");
+  assert.equal(immersiveKind("/accedi", "localhost"), "boards");
   assert.equal(immersiveKind("/enti", "localhost"), null);
 });
 

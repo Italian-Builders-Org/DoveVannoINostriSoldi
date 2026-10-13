@@ -1,12 +1,13 @@
 # DVNS Boards - laboratorio cittadino sui dati pubblici
 
-Studio di sistema (ottobre 2026). Nessuna UI di board è ancora in produzione.
-Questo documento fissa decisioni, verifica infrastruttura, contratto delle
-ricette, privacy e fasi di implementazione.
+Studio di sistema (ottobre 2026). Anteprima locale su `/accedi` + `/dashboard`
+(shell immersiva senza menu/header del sito, come politici/comuni). Questo
+documento fissa decisioni, infrastruttura, contratto delle ricette, privacy e
+fasi di implementazione.
 
 ## Decisioni di prodotto
 
-- **Account reali** (magic link email), sync multi-device.
+- **Account reali** (magic link email, senza password), sync multi-device.
 - **Solo serie pubbliche** già esposte da DVNS (catalogo MCP / snapshot /
   corpus). Niente upload CSV dell’utente mescolati ai dati ufficiali.
 - **Feedback dati**: canale per chiedere nuove serie; una richiesta non
@@ -87,25 +88,14 @@ Invarianti:
 - nessuna somma o join cross-fonte nella ricetta;
 - caveat e provenance arrivano a runtime dalla query, non dalla ricetta.
 
-### Tile catalog v1 (candidati MCP)
+### Tile catalog (catalogo MCP attivo)
 
-Selezione iniziale (filtri semplici, serie già pubbliche). Espandere solo dopo
-che Auth + CRUD board sono stabili.
+Il composer espone **tutti** i dataset in `ACTIVE_DATASET_IDS` (oltre 100).
+Dodici id restano “in evidenza” (`BOARD_TILE_FEATURED_IDS`) solo per l’ordine
+in sidebar. Elementi non-dato ammessi: `note`, `link`, `image` (URL HTTPS).
 
-| datasetId | Filtri tipici tile | Vista suggerita |
-|---|---|---|
-| `debito_pubblico_italiano` | (nessuno) | kpi, line |
-| `siope_comuni` | year, region | kpi, bar |
-| `siope_entrate_comuni` | year, region | kpi, bar |
-| `openbdap_spesa_stato` | year, month | line, kpi |
-| `openbdap_ssn_storico_nazionale` | (nessuno) | line |
-| `opencivitas_fabbisogni` | year, region | table, bar |
-| `consulenti_incarichi` | year | kpi, line |
-| `inps_pensioni_vigenti` | (nessuno) | kpi |
-| `inps_invalidita_civile` | year, region | bar, table |
-| `eurostat_cofog` | country, year, cofog | line, bar |
-| `istat_cofog` | territory, year, cofog | line, bar |
-| `cpt_finanza_regionale` | year, region | table, bar |
+Proiezioni grafiche dedicate: debito, SIOPE comuni, SSN storico. Gli altri
+dataset usano una proiezione euristica fail-soft (serie/KPI se riconoscibili).
 
 Ogni tile in UI deve mostrare fonte, periodo e caveat del dataset. Vietato
 etichettare differenze come «spreco».
@@ -122,13 +112,76 @@ etichettare differenze come «spreco».
 | IP / log hosting | Sicurezza (Vercel) | Policy host |
 | Quota assistente HMAC | Separata, senza account | Giornaliera (vedi ASSISTENTE.md) |
 
-### Flusso magic link
+### Flusso magic link (senza password)
 
-1. Utente inserisce email su `/accedi`.
-2. Server richiede OTP/magic link a Supabase Auth (SMTP Resend).
-3. Click → `/auth/callback` scambia codice per sessione cookie httpOnly (`@supabase/ssr`).
-4. Area `/mio` richiede sessione; senza sessione redirect a `/accedi`.
-5. Logout invalida sessione; «Elimina account» cancella `auth.users` + righe RLS cascata e conferma.
+1. Utente apre `/accedi` (login e registrazione sono lo stesso percorso).
+2. Inserisce email + consenso.
+3. Server (cloud): `admin/generate_link` (service role) + invio email **diretto via Resend**
+   (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`). **Non** usa i template Supabase Auth
+   (restano inaffidabili se qualcuno mette `{{ .Token }}` al posto del link).
+4. Click sul link → verify GoTrue → redirect `/accedi/callback` → cookie httpOnly → `/dashboard`.
+5. Anteprima locale (senza Supabase): codice a sei cifre in pagina.
+6. Logout invalida la sessione. Elimina account da `/dashboard/settings` (conferma `ELIMINA`) cancella utente Auth + ricette + share.
+
+Env locali minime per cloud: `BOARDS_*` + `RESEND_API_KEY` + `RESEND_FROM_EMAIL`.
+
+### Template email Supabase (incolla così)
+
+Il subject di default **Your sign-in link** è il template **Magic Link**.
+Se nel body c'è solo `{{ .Token }}`, Gmail mostra un codice (es. `81994728`) e
+**non** un link: non è un bug dell'app, è il template.
+
+Dashboard progetto Boards → **Authentication → Emails → Templates** → apri
+**Magic Link** (e anche **Confirm sign up**).
+
+**URL Configuration** (obbligatorio):
+
+- Site URL (dev): `http://127.0.0.1:3055`
+- Redirect URLs: `http://127.0.0.1:3055/**` e `http://127.0.0.1:3055/accedi/callback`
+
+Poi: **cancella tutto il body**, incolla sotto, **Save**, richiedi una **nuova** email
+(quelle vecchie restano col codice).
+
+#### Magic Link — Subject
+
+```text
+Accedi a DVNS Boards
+```
+
+#### Magic Link — Body (link diretto alla nostra callback)
+
+```html
+<h2>DVNS Boards</h2>
+<p>Ciao,</p>
+<p>Hai chiesto di accedere a DVNS Boards. Clicca il link (nessuna password, nessun codice da copiare).</p>
+<p>
+  <a href="{{ .SiteURL }}/accedi/callback?token_hash={{ .TokenHash }}&type=email">Accedi a DVNS Boards</a>
+</p>
+<p>Se non hai richiesto tu l'accesso, ignora questa email.</p>
+<p>Il link scade in poco tempo. Vale solo per {{ .Email }}.</p>
+```
+
+#### Confirm sign up — Subject
+
+```text
+Conferma email · DVNS Boards
+```
+
+#### Confirm sign up — Body
+
+```html
+<h2>DVNS Boards</h2>
+<p>Ciao,</p>
+<p>Conferma l'email per creare il tuo accesso a DVNS Boards (nessuna password).</p>
+<p>
+  <a href="{{ .SiteURL }}/accedi/callback?token_hash={{ .TokenHash }}&type=signup">Conferma e accedi</a>
+</p>
+<p>Se non hai richiesto tu la registrazione, ignora questa email.</p>
+<p>Il link vale solo per {{ .Email }}.</p>
+```
+
+Vietato: body con solo `Il tuo codice … {{ .Token }}` senza un `<a href=…>`.
+Alternativa ufficiale Supabase: `{{ .ConfirmationURL }}` al posto del link sopra.
 
 ### Diritti
 
@@ -144,14 +197,41 @@ Distinto da [`/api/segnalazioni`](../src/app/api/segnalazioni/route.ts) (bug →
 Stati: `received` → `triaged` → `wont` | `roadmap` | `shipped` (con link issue).
 Triage maintainer; nessuna promessa automatica di import.
 
-## Fasi di implementazione
+## Stato v1 (ottobre 2026)
 
-1. **Auth skeleton** - progetto Boards, Resend SMTP, `/accedi`, callback, privacy, delete.
-2. **Board CRUD** - crea/rinomina/elimina, lista `/mio`, persistenza RLS.
-3. **Tile catalog v1** - composer sulle 12 serie sopra; `POST /api/boards/query` con rate-limit per `user_id`.
-4. **Share unlisted** - link sola lettura.
-5. **Data-requests** - form + triage.
-6. **Espansione catalogo** - altri dataset MCP con filtri stabili.
+Target: giornalisti, enti di ricerca, centri studi. Anteprima locale resta
+`local_preview` (OTP in pagina + `localStorage`). Cloud si attiva quando
+`BOARDS_AUTH_SECRET` + `BOARDS_SUPABASE_*` sono valorizzati.
+
+| Capacità | Stato |
+|---|---|
+| Home multi-board + categorie | Fatto (`/dashboard`) |
+| Composer free-canvas + catalogo MCP | Fatto (`/dashboard/b/[id]`) |
+| Auth OTP locale | Fatto |
+| Auth OTP Supabase (+ profilo) | Fatto (env `BOARDS_*` + Resend) |
+| Sync board Postgres (`boards_private`) | Fatto |
+| Share unlisted sola lettura | Fatto (`/condividi/[token]`) |
+| Export JSON ricetta + CSV tile | Fatto in UI |
+| Provenance `readAt` su tile | Fatto nel payload serie |
+| Filtri umani (anno/regione/etichette) | Fatto (base) |
+| Data-requests | Feedback via Resend; tabella triage non ancora |
+| Delete account / privacy page update | Fatto (`/dashboard/settings` + `/privacy`) |
+| Proiezioni dedicate oltre debito/SIOPE/SSN | Euristica ampliata (catalogo quasi completo) |
+
+### Provisioning cloud (checklist)
+
+1. Creare progetto Supabase `dvns-boards` (distinto da ASSISTANT_*).
+2. Applicare `supabase/migrations/20261012140000_boards_private.sql`.
+3. Esporre lo schema `boards_private` in PostgREST (API → Exposed schemas).
+4. Auth Email OTP + SMTP Resend.
+5. Env Vercel: `BOARDS_AUTH_SECRET`, `BOARDS_SUPABASE_URL`, `BOARDS_SUPABASE_ANON_KEY`, `BOARDS_SUPABASE_SECRET_KEY` (+ Resend).
+
+## Fasi residue
+
+1. Ship PR + env `BOARDS_*` su Vercel + redeploy unico.
+2. Smoke preview (magic link → settings delete → share).
+3. Soft launch (link nav/home).
+4. Data-requests strutturati (opzionale; feedback email già attivo).
 
 Fuori scope v1: SQL libero, upload utente, join automatici, giudizi AI di spreco, billing.
 

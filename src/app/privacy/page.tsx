@@ -13,9 +13,43 @@ export default function PrivacyPage() {
         <h1>Informativa privacy</h1>
         <p>
           Questa pagina descrive i dati tecnici necessari a erogare il sito. Il portale legge fonti
-          pubbliche e non chiede un account.
+          pubbliche. La consultazione delle pagine e dei dataset non richiede un account. L&apos;accesso
+          opzionale a <a href="/accedi">DVNS Boards</a> usa un account email solo per salvare le
+          tue ricette private.
         </p>
       </div>
+
+      <section className="panel">
+        <h2 className="panel-title">DVNS Boards (account opzionale)</h2>
+        <p>
+          Boards è un laboratorio su dati pubblici già pubblicati da DVNS. Per sincronizzare le
+          board tra dispositivi puoi accedere con un magic link all&apos;email: non usiamo password.
+          Trattiamo l&apos;indirizzo email, il consenso all&apos;accesso, le ricette delle board
+          (layout e filtri, non i fatti numerici) e, se attivi la condivisione, un token di lettura
+          unlisted. I numeri restano ricalcolati a ogni apertura dal catalogo pubblico.
+        </p>
+        <p>
+          Conservazione: fino alla cancellazione dell&apos;account o della singola board. L&apos;invio
+          del magic link e dell&apos;eventuale feedback editoriale usa Resend; l&apos;account e le
+          ricette restano su un progetto Supabase dedicato a Boards (distinto dalla quota
+          dell&apos;assistente). Consulta le informative di{" "}
+          <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noreferrer">
+            Resend
+          </a>{" "}
+          e{" "}
+          <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">
+            Supabase
+          </a>
+          .
+        </p>
+        <p>
+          Puoi esportare le tue ricette in JSON dallo studio e cancellare l&apos;account da{" "}
+          <a href="/dashboard/settings">Impostazioni</a>: vengono eliminati profilo, board e link
+          di condivisione. I log tecnici di hosting restano soggetti alla policy Vercel descritta
+          sotto. Per altre richieste privacy usa{" "}
+          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>.
+        </p>
+      </section>
 
       <section className="panel">
         <h2 className="panel-title">Dati tecnici</h2>
@@ -145,11 +179,13 @@ export default function PrivacyPage() {
         <p>
           Per accesso, correzione, cancellazione, limitazione, portabilità quando applicabile o
           opposizione, usa il canale privato{" "}
-          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>.
-          Invia soltanto le informazioni necessarie a gestire la richiesta, senza password o
-          altre credenziali. Le issue GitHub sono pubbliche: non usarle per richieste privacy o
-          dati personali. Puoi presentare reclamo al Garante per la protezione dei dati personali.
-          Per assistenza tecnica consulta la pagina <a href="/supporto">Supporto</a>.
+          <a href="mailto:info@mantoventure.com">info@mantoventure.com</a>
+          . Se hai un account Boards puoi anche eliminarlo da{" "}
+          <a href="/dashboard/settings">Impostazioni</a>. Invia soltanto le informazioni necessarie
+          a gestire la richiesta, senza password o altre credenziali. Le issue GitHub sono
+          pubbliche: non usarle per richieste privacy o dati personali. Puoi presentare reclamo al
+          Garante per la protezione dei dati personali. Per assistenza tecnica consulta la pagina{" "}
+          <a href="/supporto">Supporto</a>.
         </p>
       </section>
     </main>

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { ChromeUnlessImmersive, ImmersiveDocumentFlag } from "@/components/immersive-chrome";
 import { IMMERSIVE_INIT_SCRIPT } from "@/lib/politici-immersive";
@@ -65,12 +66,16 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: IMMERSIVE_INIT_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
-      </head>
       <body>
+        <Script id="dvns-immersive-init" strategy="beforeInteractive">
+          {IMMERSIVE_INIT_SCRIPT}
+        </Script>
+        <Script id="dvns-theme-init" strategy="beforeInteractive">
+          {THEME_INIT_SCRIPT}
+        </Script>
+        <Script id="dvns-sidebar-init" strategy="beforeInteractive">
+          {SIDEBAR_INIT_SCRIPT}
+        </Script>
         <GoogleAnalytics />
         <ImmersiveDocumentFlag />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>

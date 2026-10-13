@@ -66,12 +66,13 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
+      <head>
+        {/* Inline so saved theme applies before paint even when script bundles are blocked. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         <Script id="dvns-immersive-init" strategy="beforeInteractive">
           {IMMERSIVE_INIT_SCRIPT}
-        </Script>
-        <Script id="dvns-theme-init" strategy="beforeInteractive">
-          {THEME_INIT_SCRIPT}
         </Script>
         <Script id="dvns-sidebar-init" strategy="beforeInteractive">
           {SIDEBAR_INIT_SCRIPT}

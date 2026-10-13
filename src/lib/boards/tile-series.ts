@@ -79,6 +79,16 @@ function attachProvenance(draft: BoardTileSeriesDraft): BoardTileSeriesPayload {
   };
 }
 
+type BoardTileSeriesWithBundles = BoardTileSeriesDraft & {
+  bundles?: Record<string, BoardSeriesPoint[]>;
+};
+
+function stripSeriesBundles(draft: BoardTileSeriesWithBundles): BoardTileSeriesDraft {
+  const next = { ...draft };
+  delete next.bundles;
+  return next;
+}
+
 function emptyPayload(datasetId: string, message: string): BoardTileSeriesDraft {
   const entry = boardTileCatalogEntry(datasetId);
   return {
@@ -2039,9 +2049,8 @@ export function projectBoardTileSeries(
     const activeSeries = projected.series.filter((item) =>
       points.some((point) => item.id in point.values),
     );
-    const { bundles: _b, ...rest } = projected;
     return attachProvenance({
-      ...rest,
+      ...stripSeriesBundles(projected),
       points,
       series: activeSeries.length > 0 ? activeSeries : projected.series,
     });
@@ -2049,9 +2058,8 @@ export function projectBoardTileSeries(
 
   // For debt default stock; for SSN keep all series on same points
   if (projected.bundles?.stock && !series_key) {
-    const { bundles: _b, ...rest } = projected;
     return attachProvenance({
-      ...rest,
+      ...stripSeriesBundles(projected),
       points: projected.bundles.stock,
       series: projected.series.filter((item) => item.id === "stock" || item.id === "interest"),
     });
@@ -2064,16 +2072,14 @@ export function projectBoardTileSeries(
     && projected.bundles.function.length >= 2
     && (filters.year !== undefined && filters.year !== null && filters.year !== "")
   ) {
-    const { bundles: _b, ...rest } = projected;
     return attachProvenance({
-      ...rest,
+      ...stripSeriesBundles(projected),
       points: projected.bundles.function,
       series: projected.series.filter((item) => item.id === "function"),
     });
   }
 
-  const { bundles: _bundles, ...payload } = projected;
-  return attachProvenance(payload);
+  return attachProvenance(stripSeriesBundles(projected));
 }
 
 export function resolveActiveSeriesIds(

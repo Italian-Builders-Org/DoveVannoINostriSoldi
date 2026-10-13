@@ -7,7 +7,7 @@ import {
   saveCloudBoard,
   updateCloudBoardMeta,
 } from "@/lib/boards/cloud-store";
-import { readBoardsSession } from "@/lib/boards/session";
+import { requireBoardsApiSession } from "@/lib/boards/api-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,10 +19,9 @@ function badId(boardId: string): boolean {
 }
 
 export async function GET(_request: Request, context: Ctx) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ storage: "local" });
   }
@@ -41,10 +40,9 @@ export async function GET(_request: Request, context: Ctx) {
 }
 
 export async function PUT(request: Request, context: Ctx) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ error: "Storage cloud non configurato." }, { status: 503 });
   }
@@ -73,10 +71,9 @@ export async function PUT(request: Request, context: Ctx) {
 }
 
 export async function PATCH(request: Request, context: Ctx) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ error: "Storage cloud non configurato." }, { status: 503 });
   }
@@ -105,10 +102,9 @@ export async function PATCH(request: Request, context: Ctx) {
 }
 
 export async function DELETE(_request: Request, context: Ctx) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ error: "Storage cloud non configurato." }, { status: 503 });
   }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { type BoardTileFilters } from "@/lib/data/boards-document";
 import { getSharedBoard, isCloudBoardsEnabled } from "@/lib/boards/cloud-store";
-import { readBoardsSession } from "@/lib/boards/session";
+import { readBoardsApiSession } from "@/lib/boards/api-session";
 import { buildBoardTileCatalog } from "@/lib/boards/build-tile-catalog";
 import { normalizeBoardRegionFilter } from "@/lib/boards/board-region";
 import { projectBoardTileSeries } from "@/lib/boards/tile-series";
@@ -134,7 +134,8 @@ export async function POST(request: Request) {
   }
   const record = typeof body === "object" && body ? (body as Record<string, unknown>) : {};
   const shareToken = typeof record.shareToken === "string" ? record.shareToken : "";
-  const session = await readBoardsSession();
+  const { session, revoked } = await readBoardsApiSession();
+  if (revoked) return revoked;
 
   if (!session) {
     if (!shareToken || !isCloudBoardsEnabled()) {

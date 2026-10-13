@@ -43,72 +43,16 @@ type Props = {
   inlinePayload?: BoardTileSeriesPayload | null;
 };
 
-export function BoardTileChart({ tile, onFiltersChange, shareToken, inlinePayload }: Props) {
-  const [payload, setPayload] = useState<BoardTileSeriesPayload | null>(inlinePayload ?? null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(!inlinePayload);
+type ViewProps = {
+  tile: BoardTile;
+  onFiltersChange?: (filters: BoardTileFilters) => void;
+  payload: BoardTileSeriesPayload | null;
+  loading: boolean;
+  error: string | null;
+};
+
+function BoardTileChartView({ tile, onFiltersChange, payload, loading, error }: ViewProps) {
   const colors = seriesColors(tile.color);
-
-  const filterKey = JSON.stringify(tile.filters ?? {});
-  const localKey = tile.localTable
-    ? `${tile.localTable.filename}:${tile.localTable.labelColumn}:${tile.localTable.valueColumns.join(",")}:${tile.localTable.rows.length}`
-    : "";
-
-  useEffect(() => {
-    if (inlinePayload) {
-      setPayload(inlinePayload);
-      setError(null);
-      setLoading(false);
-      return;
-    }
-    if (!tile.datasetId) {
-      setLoading(false);
-      setError("Dataset mancante.");
-      return;
-    }
-    let cancelled = false;
-    const controller = new AbortController();
-    setLoading(true);
-    setError(null);
-    fetch("/api/boards/tile-data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        datasetId: tile.datasetId,
-        filters: tile.filters,
-        ...(shareToken ? { shareToken } : {}),
-      }),
-      signal: controller.signal,
-      credentials: "same-origin",
-    })
-      .then(async (response) => {
-        const data = (await response.json()) as {
-          error?: string;
-          payload?: BoardTileSeriesPayload;
-        };
-        if (cancelled) return;
-        if (!response.ok || !data.payload) {
-          setError(data.error ?? "Dati non disponibili.");
-          setPayload(null);
-          return;
-        }
-        setPayload(data.payload);
-      })
-      .catch((err: unknown) => {
-        if (cancelled || (err instanceof DOMException && err.name === "AbortError")) return;
-        setError("Lettura dati non riuscita.");
-        setPayload(null);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [tile.datasetId, filterKey, shareToken, inlinePayload, localKey]);
-
-  // tile.color only affects paint; no refetch
 
   const activeIds = useMemo(
     () => (payload ? resolveActiveSeriesIds(payload, tile.filters ?? {}) : []),
@@ -309,6 +253,107 @@ export function BoardTileChart({ tile, onFiltersChange, shareToken, inlinePayloa
           : ""}
       </p>
     </div>
+  );
+}
+
+function BoardTileChartRemote({
+  tile,
+  onFiltersChange,
+  shareToken,
+}: Omit<Props, "inlinePayload">) {
+  const [payload, setPayload] = useState<BoardTileSeriesPayload | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!tile.datasetId) return;
+    let cancelled = false;
+    const controller = new AbortController();
+    fetch("/api/boards/tile-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        datasetId: tile.datasetId,
+        filters: tile.filters,
+        ...(shareToken ? { shareToken } : {}),
+      }),
+      signal: controller.signal,
+      credentials: "same-origin",
+    })
+      .then(async (response) => {
+        const data = (await response.json()) as {
+          error?: string;
+          payload?: BoardTileSeriesPayload;
+        };
+        if (cancelled) return;
+        if (!response.ok || !data.payload) {
+          setError(data.error ?? "Dati non disponibili.");
+          setPayload(null);
+          return;
+        }
+        setPayload(data.payload);
+      })
+      .catch((err: unknown) => {
+        if (cancelled || (err instanceof DOMException && err.name === "AbortError")) return;
+        setError("Lettura dati non riuscita.");
+        setPayload(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [tile.datasetId, tile.filters, shareToken]);
+
+  return (
+    <BoardTileChartView
+      tile={tile}
+      onFiltersChange={onFiltersChange}
+      payload={payload}
+      loading={loading}
+      error={error}
+    />
+  );
+}
+
+export function BoardTileChart({ tile, onFiltersChange, shareToken, inlinePayload }: Props) {
+  const filterKey = JSON.stringify(tile.filters ?? {});
+  const localKey = tile.localTable
+    ? `${tile.localTable.filename}:${tile.localTable.labelColumn}:${tile.localTable.valueColumns.join(",")}:${tile.localTable.rows.length}`
+    : "";
+
+  if (inlinePayload) {
+    return (
+      <BoardTileChartView
+        tile={tile}
+        onFiltersChange={onFiltersChange}
+        payload={inlinePayload}
+        loading={false}
+        error={null}
+      />
+    );
+  }
+  if (!tile.datasetId) {
+    return (
+      <BoardTileChartView
+        tile={tile}
+        onFiltersChange={onFiltersChange}
+        payload={null}
+        loading={false}
+        error="Dataset mancante."
+      />
+    );
+  }
+  const remoteKey = `${tile.datasetId}|${filterKey}|${shareToken ?? ""}|${localKey}`;
+  return (
+    <BoardTileChartRemote
+      key={remoteKey}
+      tile={tile}
+      onFiltersChange={onFiltersChange}
+      shareToken={shareToken}
+    />
   );
 }
 

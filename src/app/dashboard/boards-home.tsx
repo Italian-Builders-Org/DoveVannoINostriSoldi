@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -43,6 +45,7 @@ function formatUpdated(iso: string): string {
 }
 
 export function BoardsHome({ email, userId, siteHref }: Props) {
+  const router = useRouter();
   const [boards, setBoards] = useState<BoardMeta[] | null>(null);
   const [caps, setCaps] = useState<BoardsCapabilities | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,8 +58,8 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
   const [editTitle, setEditTitle] = useState("");
   const [editCategory, setEditCategory] = useState("");
 
-  async function refresh() {
-    setError(null);
+  const refresh = useCallback(async (options?: { clearError?: boolean }) => {
+    if (options?.clearError !== false) setError(null);
     try {
       const nextCaps = await fetchBoardsCapabilities();
       setCaps(nextCaps);
@@ -66,10 +69,26 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
       setError(err instanceof Error ? err.message : "Caricamento non riuscito.");
       setBoards([]);
     }
-  }
+  }, [userId]);
 
   useEffect(() => {
-    void refresh();
+    let cancelled = false;
+    void (async () => {
+      try {
+        const nextCaps = await fetchBoardsCapabilities();
+        const listed = await listBoardsClient(userId);
+        if (cancelled) return;
+        setCaps(nextCaps);
+        setBoards(listed.boards);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Caricamento non riuscito.");
+        setBoards([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   const groups = useMemo(() => {
@@ -95,7 +114,7 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
       setDraftTitle("");
       setDraftCategory("Generale");
       setCreating(false);
-      window.location.href = `/dashboard/b/${meta.id}`;
+      router.push(`/dashboard/b/${meta.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Creazione non riuscita.");
     }
@@ -171,7 +190,7 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
             onClick={() => {
               startLogout(async () => {
                 await fetch("/api/boards/auth/logout", { method: "POST" });
-                window.location.href = "/accedi";
+                router.push("/accedi");
               });
             }}
           >

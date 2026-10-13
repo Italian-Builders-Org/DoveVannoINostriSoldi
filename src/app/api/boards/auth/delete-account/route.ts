@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { boardsAuthMode } from "@/lib/boards/auth-mode";
 import { deleteCloudAccountData, isCloudBoardsEnabled } from "@/lib/boards/cloud-store";
+import { requireBoardsApiSession } from "@/lib/boards/api-session";
 import {
   boardsSessionCookieName,
-  readBoardsSession,
   sessionCookieOptions,
 } from "@/lib/boards/session";
 import { supabaseAdminDeleteUser } from "@/lib/boards/supabase";
@@ -15,10 +15,9 @@ export const dynamic = "force-dynamic";
 export const DELETE_ACCOUNT_CONFIRMATION = "ELIMINA";
 
 export async function POST(request: Request) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
 
   let body: unknown;
   try {

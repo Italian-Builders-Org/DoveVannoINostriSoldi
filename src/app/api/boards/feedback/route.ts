@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { clientAddress } from "@/lib/report/rate-limit";
-import { readBoardsSession } from "@/lib/boards/session";
+import { requireBoardsApiSession } from "@/lib/boards/api-session";
 import {
   sendBoardsFeedbackEmail,
   type BoardsFeedbackKind,
@@ -12,10 +12,9 @@ export const dynamic = "force-dynamic";
 const KINDS = new Set<BoardsFeedbackKind>(["problema", "feedback", "idea"]);
 
 export async function POST(request: Request) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
 
   let body: unknown;
   try {

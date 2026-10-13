@@ -5,16 +5,15 @@ import {
   listCloudShares,
   revokeCloudShare,
 } from "@/lib/boards/cloud-store";
-import { readBoardsSession } from "@/lib/boards/session";
+import { requireBoardsApiSession } from "@/lib/boards/api-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ error: "Share richiede storage cloud." }, { status: 503 });
   }
@@ -32,10 +31,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json(
       { error: "La condivisione richiede Auth cloud (Supabase Boards)." },
@@ -68,10 +66,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const session = await readBoardsSession();
-  if (!session) {
-    return NextResponse.json({ error: "Autenticazione richiesta." }, { status: 401 });
-  }
+  const auth = await requireBoardsApiSession();
+  if (auth.response) return auth.response;
+  const session = auth.session;
   if (!isCloudBoardsEnabled()) {
     return NextResponse.json({ error: "Share richiede storage cloud." }, { status: 503 });
   }

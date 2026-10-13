@@ -51,6 +51,13 @@ export function isCloudBoardsEnabled(): boolean {
   return boardsCloudStorageAvailable();
 }
 
+export async function cloudProfileExists(userId: string): Promise<boolean> {
+  const { data } = await boardsRest<{ user_id: string }[]>(
+    `/profiles?user_id=eq.${encodeURIComponent(userId)}&select=user_id&limit=1`,
+  );
+  return Boolean(data?.[0]?.user_id);
+}
+
 export async function ensureCloudProfile(
   userId: string,
   email: string,

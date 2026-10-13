@@ -15,7 +15,7 @@ export function boardsAuthMode(): BoardsAuthMode {
   if (url.startsWith("https://") && anon.length >= 20 && secretKey.length >= 20 && authSecret) {
     return "supabase";
   }
-  if (process.env.VERCEL_ENV === "production") {
+  if (process.env.VERCEL_ENV === "production" || process.env.VERCEL) {
     return "unavailable";
   }
   const secret = boardsAuthSecret();

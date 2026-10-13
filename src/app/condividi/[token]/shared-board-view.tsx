@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { BoardDocument } from "@/lib/data/boards-document";
 import { ensureBoardHtml } from "@/lib/boards/board-html";
 import { BoardLocalTileChart, BoardTileChart } from "@/app/dashboard/board-tile-chart";
@@ -28,9 +29,9 @@ export function SharedBoardView({ token, title, category, updatedAt, document }:
             }).format(new Date(updatedAt))}
           </p>
         </div>
-        <a className={styles.link} href="/">
+        <Link className={styles.link} href="/">
           dovevannoinostrisoldi.com
-        </a>
+        </Link>
       </header>
       <div className={styles.canvas}>
         {document.tiles.length === 0 ? (

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { readBoardsSession } from "@/lib/boards/session";
+import { readBoardsApiSession } from "@/lib/boards/api-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const session = await readBoardsSession();
+  const { session, revoked } = await readBoardsApiSession();
+  if (revoked) return revoked;
   if (!session) {
     return NextResponse.json(
       { authenticated: false },

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -102,6 +104,7 @@ const YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
 const FRAME_MIN_W = 160;
 const FRAME_MIN_H = 120;
 export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
+  const router = useRouter();
   const [document, setDocument] = useState<BoardDocument | null>(null);
   const [missing, setMissing] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -276,11 +279,11 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
     );
   }
 
-  function removeSelected() {
+  const removeSelected = useCallback(() => {
     if (!selectedId) return;
     updateTiles((tiles) => tiles.filter((tile) => tile.id !== selectedId));
     setSelectedId(null);
-  }
+  }, [selectedId]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -304,7 +307,7 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selectedId]);
+  }, [selectedId, removeSelected]);
 
   function addDataset(datasetId: string, origin?: Readonly<{ x: number; y: number }>) {
     updateTiles((tiles) => {
@@ -667,7 +670,7 @@ export function BoardStudio({ userId, boardId, siteHref, catalog }: Props) {
             onClick={() => {
               startLogout(async () => {
                 await fetch("/api/boards/auth/logout", { method: "POST" });
-                window.location.href = "/accedi";
+                router.push("/accedi");
               });
             }}
           >

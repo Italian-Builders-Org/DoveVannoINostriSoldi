@@ -92,12 +92,14 @@ export async function requestBoardsOtp(
       }
 
       const { actionLink } = await createBoardsMagicLink(email, options.redirectTo);
+      const devOnlyLocalLink =
+        process.env.NODE_ENV !== "production" && !process.env.VERCEL ? actionLink : undefined;
       return {
         ok: true,
         mode: "supabase",
         expiresInSec: Math.floor(OTP_TTL_MS / 1000),
         magicLink: true,
-        localMagicLink: actionLink,
+        ...(devOnlyLocalLink ? { localMagicLink: devOnlyLocalLink } : {}),
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Invio email non riuscito.";

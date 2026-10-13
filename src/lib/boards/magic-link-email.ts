@@ -179,7 +179,9 @@ async function sendResendEmail(to: string, actionLink: string): Promise<void> {
       "Mancano RESEND_API_KEY e RESEND_FROM_EMAIL in .env.local (stesse chiavi del SMTP su Supabase).",
     );
   }
-  const from = boardsResendFromAddress(resend.from);
+  const from = boardsResendFromAddress(resend.from, {
+    boardsFrom: process.env.BOARDS_RESEND_FROM_EMAIL,
+  });
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {

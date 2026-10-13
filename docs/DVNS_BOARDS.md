@@ -48,7 +48,8 @@ Checklist operativa prima della prima PR Auth:
    - `BOARDS_SUPABASE_URL`
    - `BOARDS_SUPABASE_ANON_KEY` (solo se cookie SSR richiede publishable lato server con RLS)
    - `BOARDS_SUPABASE_SECRET_KEY` (service role, solo server, per admin/export)
-   - riuso di `RESEND_API_KEY` / `RESEND_FROM_EMAIL` se il mittente è lo stesso
+   - riuso di `RESEND_API_KEY` / `RESEND_FROM_EMAIL` (API key condivisa; From Boards
+     diventa `DVNS Boards <boards@stesso-dominio>` oppure override `BOARDS_RESEND_FROM_EMAIL`)
 
 ## Modello dati applicativo
 
@@ -117,13 +118,17 @@ etichettare differenze come «spreco».
 1. Utente apre `/accedi` (login e registrazione sono lo stesso percorso).
 2. Inserisce email + consenso.
 3. Server (cloud): `admin/generate_link` (service role) + invio email **diretto via Resend**
-   (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`). **Non** usa i template Supabase Auth
-   (restano inaffidabili se qualcuno mette `{{ .Token }}` al posto del link).
+   (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`). Il mittente è sempre
+   `DVNS Boards <boards@dominio>` (stesso dominio di `RESEND_FROM_EMAIL`, non
+   `consulenza@`), oppure `BOARDS_RESEND_FROM_EMAIL` se impostato. **Non** usa i
+   template Supabase Auth (restano inaffidabili se qualcuno mette `{{ .Token }}`
+   al posto del link).
 4. Click sul link → verify GoTrue → redirect `/accedi/callback` → cookie httpOnly → `/dashboard`.
 5. Anteprima locale (senza Supabase): codice a sei cifre in pagina.
 6. Logout invalida la sessione. Elimina account da `/dashboard/settings` (conferma `ELIMINA`) cancella utente Auth + ricette + share.
 
-Env locali minime per cloud: `BOARDS_*` + `RESEND_API_KEY` + `RESEND_FROM_EMAIL`.
+Env locali minime per cloud: `BOARDS_*` + `RESEND_API_KEY` + `RESEND_FROM_EMAIL`
+(opzionale `BOARDS_RESEND_FROM_EMAIL`).
 
 ### Template email Supabase (incolla così)
 

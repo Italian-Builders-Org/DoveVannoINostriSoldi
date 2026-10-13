@@ -96,7 +96,9 @@ export async function sendBoardsFeedbackEmail(
   <pre style="white-space:pre-wrap;background:#f4f6f8;padding:12px;border:1px solid #d5dde6;">${escapeText(message)}</pre>
 </body></html>`;
 
-  const from = boardsResendFromAddress(resend.from);
+  const from = boardsResendFromAddress(resend.from, {
+    boardsFrom: process.env.BOARDS_RESEND_FROM_EMAIL,
+  });
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",

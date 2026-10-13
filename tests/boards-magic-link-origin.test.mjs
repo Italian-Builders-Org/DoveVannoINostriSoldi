@@ -52,14 +52,20 @@ test("forceActionLinkRedirect overwrites Supabase redirect_to even when Site URL
   assert.equal(url.searchParams.get("token"), "abc");
 });
 
-test("boards Resend from always shows DVNS Boards, never Consulenza display name", () => {
+test("boards Resend from uses boards@ on the shared domain, never consulenza@", () => {
   assert.equal(
     boardsResendFromAddress("Consulenza <consulenza@dovevannoinostrisoldi.com>"),
-    "DVNS Boards <consulenza@dovevannoinostrisoldi.com>",
+    "DVNS Boards <boards@dovevannoinostrisoldi.com>",
   );
   assert.equal(
     boardsResendFromAddress("consulenza@dovevannoinostrisoldi.com"),
-    "DVNS Boards <consulenza@dovevannoinostrisoldi.com>",
+    "DVNS Boards <boards@dovevannoinostrisoldi.com>",
+  );
+  assert.equal(
+    boardsResendFromAddress("Consulenza <consulenza@dovevannoinostrisoldi.com>", {
+      boardsFrom: "Boards <boards@custom.example>",
+    }),
+    "DVNS Boards <boards@custom.example>",
   );
   assert.throws(() => boardsResendFromAddress("not-an-email"), /non valido/);
 });

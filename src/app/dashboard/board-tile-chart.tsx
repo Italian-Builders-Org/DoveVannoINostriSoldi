@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import type { BoardTile, BoardTileFilters, BoardTileView } from "@/lib/data/boards-document";
 import { projectLocalTable } from "@/lib/boards/local-csv";
+import { tableRowAxisLabel } from "@/lib/boards/table-axis";
 import {
   resolveActiveSeriesIds,
   type BoardTileSeriesPayload,
@@ -111,7 +112,7 @@ function BoardTileChartView({ tile, onFiltersChange, payload, loading, error }: 
           <table className={styles.table}>
             <thead>
               <tr>
-                <th scope="col">Periodo</th>
+                <th scope="col">{tableRowAxisLabel(payload.points)}</th>
                 {activeIds.map((id) => (
                   <th key={id} scope="col">
                     {payload.series.find((item) => item.id === id)?.label ?? id}
@@ -120,7 +121,7 @@ function BoardTileChartView({ tile, onFiltersChange, payload, loading, error }: 
               </tr>
             </thead>
             <tbody>
-              {payload.points.slice(-8).map((point) => (
+              {payload.points.map((point) => (
                 <tr key={point.label}>
                   <th scope="row">{point.label}</th>
                   {activeIds.map((id) => (

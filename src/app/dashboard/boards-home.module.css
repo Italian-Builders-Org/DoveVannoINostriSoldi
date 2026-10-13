@@ -195,6 +195,13 @@
   color: color-mix(in srgb, var(--boards-danger) 80%, var(--boards-ink));
 }
 
+.createBlock {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--boards-line);
+}
+
 .createRow,
 .editRow {
   display: grid;
@@ -203,6 +210,49 @@
   align-items: center;
   padding: 0.55rem 0;
   border-bottom: 1px solid var(--boards-line);
+}
+
+.createBlock .createRow {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.categoryHelp {
+  margin: 0;
+  color: var(--boards-muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.categoryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.categoryChip,
+.categoryChipActive {
+  appearance: none;
+  margin: 0;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--boards-line);
+  border-radius: 0;
+  background: var(--boards-panel);
+  color: var(--boards-muted);
+  font-size: 0.72rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.categoryChip:hover {
+  color: var(--boards-ink);
+  border-color: color-mix(in srgb, var(--boards-accent) 35%, var(--boards-line));
+}
+
+.categoryChipActive {
+  border-color: var(--boards-accent);
+  color: var(--boards-ink);
+  background: color-mix(in srgb, var(--boards-accent) 12%, var(--boards-panel));
 }
 
 .group {

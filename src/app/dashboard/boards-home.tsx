@@ -206,8 +206,9 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
         <div className={styles.toolbar}>
           <h1 className={styles.title}>Board</h1>
           <p className={styles.storageHint}>
-            {caps?.storage === "cloud" ? "Sync cloud" : "Solo questo dispositivo"}
-            {caps?.share ? " · share on" : ""}
+            Private · solo tu le vedi
+            {caps?.storage === "cloud" ? " · sync cloud" : " · solo questo dispositivo"}
+            {caps?.share ? " · link solo se le condividi" : ""}
           </p>
           <label className={styles.search}>
             <span className={styles.srOnly}>Cerca</span>
@@ -238,33 +239,53 @@ export function BoardsHome({ email, userId, siteHref }: Props) {
         ) : null}
 
         {creating ? (
-          <form className={styles.createRow} onSubmit={onCreate}>
-            <input
-              value={draftTitle}
-              onChange={(event) => setDraftTitle(event.target.value)}
-              placeholder="Nome"
-              maxLength={120}
-              autoComplete="off"
-              autoFocus
-              required
-            />
-            <input
-              list="board-category-suggestions"
-              value={draftCategory}
-              onChange={(event) => setDraftCategory(event.target.value)}
-              placeholder="Categoria"
-              maxLength={48}
-              autoComplete="off"
-            />
-            <datalist id="board-category-suggestions">
+          <div className={styles.createBlock}>
+            <form className={styles.createRow} onSubmit={onCreate}>
+              <input
+                value={draftTitle}
+                onChange={(event) => setDraftTitle(event.target.value)}
+                placeholder="Nome"
+                maxLength={120}
+                autoComplete="off"
+                autoFocus
+                required
+              />
+              <input
+                list="board-category-suggestions"
+                value={draftCategory}
+                onChange={(event) => setDraftCategory(event.target.value)}
+                placeholder="Categoria (scrivi o scegli)"
+                maxLength={48}
+                autoComplete="off"
+                aria-describedby="board-category-help"
+              />
+              <datalist id="board-category-suggestions">
+                {BOARD_CATEGORY_SUGGESTIONS.map((name) => (
+                  <option key={name} value={name} />
+                ))}
+              </datalist>
+              <button type="submit" className={styles.newBtn}>
+                Crea
+              </button>
+            </form>
+            <p id="board-category-help" className={styles.categoryHelp}>
+              Categoria libera: scegli un suggerimento o digita un nome nuovo (es. «Bilancio 2025»).
+            </p>
+            <div className={styles.categoryChips} role="group" aria-label="Suggerimenti categoria">
               {BOARD_CATEGORY_SUGGESTIONS.map((name) => (
-                <option key={name} value={name} />
+                <button
+                  key={name}
+                  type="button"
+                  className={
+                    draftCategory === name ? styles.categoryChipActive : styles.categoryChip
+                  }
+                  onClick={() => setDraftCategory(name)}
+                >
+                  {name}
+                </button>
               ))}
-            </datalist>
-            <button type="submit" className={styles.newBtn}>
-              Crea
-            </button>
-          </form>
+            </div>
+          </div>
         ) : null}
 
         {boards.length === 0 ? (

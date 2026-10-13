@@ -66,25 +66,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-<<<<<<< HEAD
-        {/* Inline so saved theme applies before paint even when script bundles are blocked. */}
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-      </head>
-      <body>
-        <Script id="dvns-immersive-init" strategy="beforeInteractive">
-          {IMMERSIVE_INIT_SCRIPT}
-        </Script>
-        <Script id="dvns-sidebar-init" strategy="beforeInteractive">
-          {SIDEBAR_INIT_SCRIPT}
-        </Script>
-=======
         {/* Inline in <head>: devono girare anche se i bundle esterni sono bloccati. */}
         <script dangerouslySetInnerHTML={{ __html: IMMERSIVE_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
       </head>
       <body>
->>>>>>> 3de51bd0 (fix(boards): tema inline e session fuori dal rate-limit /api)
         <GoogleAnalytics />
         <ImmersiveDocumentFlag />
         <a className="skip-link" href="#contenuto-principale">Salta al contenuto principale</a>

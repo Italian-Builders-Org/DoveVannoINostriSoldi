@@ -98,56 +98,100 @@ function defaultQueryFor(datasetId: string): Omit<DatasetQuery, "dataset"> {
   return {};
 }
 
-function assignNumericQueryField(
-  query: DatasetQuery,
-  field: "year" | "month" | "limit" | "offset" | "years",
-  value: unknown,
-): void {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    query[field] = value;
-    return;
-  }
-  if (typeof value === "string" && /^\d+$/u.test(value)) {
-    query[field] = Number(value);
-  }
+function parseNumericFilter(value: unknown): number | undefined {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && /^\d+$/u.test(value)) return Number(value);
+  return undefined;
 }
 
-function assignStringQueryField(query: DatasetQuery, field: keyof DatasetQuery, value: unknown): void {
+function assignStringFilter(query: DatasetQuery, field: string, value: unknown): void {
   if (typeof value !== "string" || value === "") return;
-  if (field === "region") {
-    const normalized = normalizeBoardRegionFilter(String(query.dataset), value);
-    if (normalized) query.region = normalized;
-    return;
-  }
-  if (
-    field === "query"
-    || field === "code"
-    || field === "cup"
-    || field === "area"
-    || field === "territory"
-    || field === "table"
-    || field === "measure"
-    || field === "family"
-    || field === "breakdown"
-    || field === "tax"
-    || field === "country"
-    || field === "cofog"
-    || field === "period"
-    || field === "sector"
-    || field === "sex"
-    || field === "cepa"
-    || field === "band"
-    || field === "mission"
-    || field === "component"
-    || field === "submeasure"
-    || field === "schoolType"
-    || field === "pathway"
-    || field === "deviceNumber"
-    || field === "value"
-    || field === "province"
-    || field === "cursor"
-  ) {
-    query[field] = value;
+  switch (field) {
+    case "query":
+      query.query = value;
+      break;
+    case "code":
+      query.code = value;
+      break;
+    case "cup":
+      query.cup = value;
+      break;
+    case "area":
+      query.area = value;
+      break;
+    case "territory":
+      query.territory = value;
+      break;
+    case "table":
+      query.table = value;
+      break;
+    case "measure":
+      query.measure = value;
+      break;
+    case "family":
+      query.family = value;
+      break;
+    case "breakdown":
+      query.breakdown = value;
+      break;
+    case "tax":
+      query.tax = value;
+      break;
+    case "country":
+      query.country = value;
+      break;
+    case "cofog":
+      query.cofog = value;
+      break;
+    case "period":
+      query.period = value;
+      break;
+    case "sector":
+      query.sector = value;
+      break;
+    case "sex":
+      query.sex = value;
+      break;
+    case "cepa":
+      query.cepa = value;
+      break;
+    case "band":
+      query.band = value;
+      break;
+    case "mission":
+      query.mission = value;
+      break;
+    case "component":
+      query.component = value;
+      break;
+    case "submeasure":
+      query.submeasure = value;
+      break;
+    case "schoolType":
+      query.schoolType = value;
+      break;
+    case "pathway":
+      query.pathway = value;
+      break;
+    case "deviceNumber":
+      query.deviceNumber = value;
+      break;
+    case "value":
+      query.value = value;
+      break;
+    case "province":
+      query.province = value;
+      break;
+    case "cursor":
+      query.cursor = value;
+      break;
+    case "region": {
+      const normalized = normalizeBoardRegionFilter(String(query.dataset), value);
+      if (normalized) query.region = normalized;
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -162,12 +206,16 @@ function mergeFilters(datasetId: string, filters: BoardTileFilters): DatasetQuer
       case "month":
       case "limit":
       case "offset":
-      case "years":
-        assignNumericQueryField(query, key, value);
+      case "years": {
+        const n = parseNumericFilter(value);
+        if (n === undefined) break;
+        if (key === "year") query.year = n;
+        else if (key === "month") query.month = n;
+        else if (key === "limit") query.limit = n;
+        else if (key === "offset") query.offset = n;
+        else if (key === "years") query.years = n;
         break;
-      case "region":
-        assignStringQueryField(query, "region", value);
-        break;
+      }
       case "query":
       case "code":
       case "cup":
@@ -194,6 +242,9 @@ function mergeFilters(datasetId: string, filters: BoardTileFilters): DatasetQuer
       case "value":
       case "province":
       case "cursor":
+      case "region":
+        assignStringFilter(query, key, value);
+        break;
       case "level":
         if (value === "region" || value === "province" || value === "municipality") {
           query.level = value;

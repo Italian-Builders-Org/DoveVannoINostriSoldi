@@ -108,6 +108,7 @@ const mandatoryDatasetIds = [
   "procurement-partecipate",
   "rgs-conto-annuale-costo-2020",
   "rgs-conto-annuale-personale-2020",
+  "rgs-rendiconto-entrate-tributarie-2011-2025",
   "rgs-spesa-statale-regionalizzata-2008",
   "rgs-spesa-statale-regionalizzata-2009",
   "rgs-spesa-statale-regionalizzata-2010",
@@ -154,7 +155,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 122,
+  datasets: 123,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -175,6 +176,7 @@ const expectedReferencePeriods = {
   "mef-patrimonio-fabbricati-fermi-2023": "Anno 2023 dichiarato dalla fonte; per gli enti che non hanno comunicato nel 2023 i dati possono risalire a comunicazioni precedenti; aggregazione DVNS per comune del bene, ente, stato d'uso e tipologia",
   "rgs-conto-annuale-costo-2020": "Anno 2020; costo del lavoro annuale",
   "rgs-conto-annuale-personale-2020": "Anno 2020; personale al 31 dicembre",
+  "rgs-rendiconto-entrate-tributarie-2011-2025": "Esercizi finanziari 2011-2025; entrate tributarie (Titolo I) per natura, categoria e tipologia: previsioni, accertato, versato e residui in competenza, residui e cassa",
   "rgs-spesa-statale-regionalizzata-2008": "Esercizio finanziario 2008; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2009": "Esercizio finanziario 2009; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2010": "Esercizio finanziario 2010; spesa del Bilancio dello Stato per territorio destinatario finale",

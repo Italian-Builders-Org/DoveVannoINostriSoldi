@@ -352,6 +352,113 @@ degli interessi: il corpus le conserva come pubblicate. Il pacchetto CKAN riport
 `cc-by`, ma pagina e file non dichiarano una licenza: lo stato resta
 `not-declared`.
 
+### Entrate dello Stato per tipologia di imposta 2011-2025
+
+| Dataset | Righe | Esercizi | Fonte |
+| --- | ---: | --- | --- |
+| `rgs-rendiconto-entrate-tributarie-2011-2025` | 310 | 2011–2025 | [OpenBDAP, serie `RND_ENT_ELB_CAPAR_001`](https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=RND_ENT_ELB_CAPAR_001) |
+
+Il Rendiconto generale dello Stato, lato entrate, è pubblicato su OpenBDAP come
+un pacchetto CKAN per esercizio, `spd_rnd_ent_elb_art_01_<anno>`: un CSV per
+capitolo e articolo con 42 colonne di competenza (CP), residui (RS) e cassa
+(CS). Il corpus tiene solo il Titolo I, entrate tributarie, sommato per
+esercizio, natura (ricorrente o non ricorrente), categoria e tipologia: è il
+livello in cui IRPEF, IRES, IVA e imposte sostitutive sono distinguibili. I
+Titoli II, III e IV restano fuori: il IV è l'accensione di prestiti e nessuno
+dei tre è un'imposta. La pagina ufficiale di ogni esercizio
+(`/content/<anno>-rendiconto-pubblicato-elaborabile-entrate-articolo?metadati=showall`)
+riporta nel campo «LICENZA» [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/),
+i pacchetti CKAN `license_id: cc-by`: lo stato è `verified-open-cc-by-3.0`.
+Attribuzione: MEF–Ragioneria Generale dello Stato, OpenBDAP; proiezione DVNS.
+
+Titolo I, miliardi di euro:
+
+| Esercizio | Articoli | Previsioni definitive (= saldi) | Accertato | Versato in competenza | Versato in cassa |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2011 | 442 | 452,261 | 452,731 | 397,921 | 415,649 |
+| 2012 | 468 | 482,459 | 463,769 | 404,223 | 426,006 |
+| 2013 | 474 | 470,025 | 464,884 | 405,343 | 427,901 |
+| 2014 | 478 | 478,538 | 460,253 | 399,720 | 425,588 |
+| 2015 | 481 | 478,138 | 477,178 | 416,797 | 449,786 |
+| 2016 | 482 | 487,775 | 488,795 | 430,134 | 456,817 |
+| 2017 | 491 | 497,002 | 491,418 | 436,129 | 465,579 |
+| 2018 | 493 | 504,526 | 501,300 | 444,573 | 482,280 |
+| 2019 | 481 | 505,532 | 513,990 | 454,539 | 479,633 |
+| 2020 | 487 | 462,925 | 480,774 | 425,713 | 454,197 |
+| 2021 | 490 | 505,228 | 523,790 | 472,584 | 500,888 |
+| 2022 | 493 | 589,553 | 578,741 | 521,126 | 550,416 |
+| 2023 | 503 | 585,809 | 618,501 | 548,104 | 586,605 |
+| 2024 | 513 | 620,228 | 653,888 | 582,651 | 619,677 |
+| 2025 | 515 | 651,975 | 661,930 | 600,388 | 642,300 |
+
+- **Accertato e previsioni:** `Accertato CP` è la colonna sorgente «Totale
+  CP» e vale versato + rimasto da versare + rimasto da riscuotere. Previsioni
+  iniziali e definitive sono stime di bilancio, non entrate realizzate.
+  Competenza, residui e cassa sono gestioni distinte e non si sommano: il
+  versato in cassa comprende anche quanto incassato sui residui degli anni
+  precedenti.
+- **Classificazione:** dal 2023 categorie e tipologie hanno codici ed
+  etichette nuovi (IRPEF da 1 a 11, IRES da 2 a 12, imposte sostitutive da 3 a
+  13, IVA da 5 a 21) e il codice 13 indica «Altre imposte indirette» fino al
+  2022 e le imposte sostitutive dal 2023; fino al 2013 l'IRPEF si chiama
+  «Imposta sui redditi». Fra anni si confrontano le etichette, non i codici. Le
+  righe per esercizio passano da 20–22 a 16–17.
+- **Più righe per imposta:** la stessa tipologia compare come entrata
+  ricorrente e non ricorrente, e fino al 2022 «Altre imposte indirette» compare
+  in più categorie. Il totale di un'imposta somma le sue righe: nel 2025
+  l'accertato è di 242,2 miliardi per l'IRPEF, 206,5 per l'IVA, 65,1 per
+  l'IRES e 50,9 per le imposte sostitutive (48,3 ricorrenti e 2,6 non
+  ricorrenti); nel 2015 di 187,6 per l'IRPEF, 139,1 per l'IVA e 41,0 per l'IRES.
+- **Perimetro:** contabilità finanziaria del Bilancio dello Stato, non le
+  entrate della PA in termini SEC (Eurostat `gov_10a_taxag`): non comprende le
+  imposte di Regioni, Comuni ed enti di previdenza.
+- **Date distinte:** esercizio finanziario, pubblicazione del pacchetto CKAN
+  (dal 24 novembre 2016 per il 2011–2015; per il 2025 il 28 maggio 2026) e
+  acquisizione DVNS del 14 ottobre 2026. RGS può ripubblicare un esercizio: il
+  lock vincola i byte acquisiti.
+
+#### Controlli fail-closed
+
+Il lock `scripts/etl/specs/rgs-rendiconto-entrate-tributarie.source.json`
+vincola per ognuno dei 15 file byte e SHA-256 dell'originale, conservato come
+gzip deterministico in `tests/fixtures/rgs-rendiconto-entrate/` (da 151 a 217
+KB), URL di pagina e file, formato di fine riga, numero di righe, articoli e
+righe del Titolo I e i suoi tredici totali. Un'istantanea delle risposte CKAN
+`package_show` verifica offline licenza, date di creazione e modifica, titolo,
+codice della serie e dimensione della risorsa. Il controllo si ferma se:
+
+1. un file cambia schema, esercizio, numero di righe o totali, o se un importo
+   non ha due decimali;
+2. su un qualsiasi articolo di un qualsiasi esercizio, di ogni Titolo, il
+   «Totale CP» non è uguale al centesimo a versato + rimasto da versare +
+   rimasto da riscuotere in competenza; lo stesso per i residui, per il versato
+   in cassa (= versato sui residui + in competenza) e per i residui al 31/12
+   (= rimasto da versare e da riscuotere, sui residui e in competenza). Sulle
+   27.190 righe dei 15 file lo scarto massimo è 0,00 euro;
+3. le previsioni definitive del Titolo I di un esercizio non coincidono al
+   centesimo con la colonna `ENTRATE_TRIBUTARIE` della serie storica dei saldi
+   del Rendiconto (`RND_SAL_CRU_ESERC_001`, 2003–2025, vincolata con lo stesso
+   lock). Lo scarto è 0,00 euro in tutti i 15 esercizi.
+
+La serie dei saldi riporta le **previsioni definitive**, non il consuntivo:
+per il 2025 dà 651,975 miliardi di entrate tributarie, l'accertato è 661,930.
+È usata solo come controllo e solo per `ENTRATE_TRIBUTARIE`. Le altre colonne
+non sono proiettate né controllate: nel 2023 `SPESE_INTERESSI` conta la sola
+sottocategoria 9.1 degli interessi passivi (74,276 miliardi), mentre
+`AVANZO_PRIMARIO` usa l'intera categoria 9 (85,504), e lo scarto di 11,228
+miliardi è la 9.2.
+
+```bash
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_rendiconto_entrate_corpus.py --check
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_rendiconto_entrate_corpus.py --check --input-dir /percorso/csv-originali
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_rgs_rendiconto_entrate_corpus.py'
+```
+
+`--input-dir` accetta i CSV originali con il nome del pacchetto CKAN
+(`spd_rnd_ent_elb_art_01_<anno>.csv`,
+`rendiconto_pubblicato_serie_storica_saldi_new.csv`) e li sottopone allo
+stesso lock; `--publish` riscrive righe, ricevuta e prove del corpus.
+
 ### Conto Economico degli enti del SSN 2024
 
 **Dataset:** `spd_ssn_cce_elb_voccn_01_2024`, Modello di rilevazione del Conto Economico degli enti del SSN.

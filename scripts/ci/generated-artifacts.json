@@ -514,6 +514,7 @@
         "tests/etl/test_istat_economia_non_osservata.py",
         "tests/etl/test_istat_economia_non_osservata_territoriale.py",
         "tests/etl/test_mef_patrimonio_immobiliare.py",
+        "tests/etl/test_rgs_rendiconto_entrate_corpus.py",
         "tests/etl/test_medical_device_spending_profile.py",
         "tests/etl/test_medical_device_spending_model.py"
       ],

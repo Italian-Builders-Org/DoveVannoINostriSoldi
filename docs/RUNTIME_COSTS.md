@@ -15,7 +15,8 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 | `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
 | `/api/search` | Dinamica, `no-store` | Campi del catalogo e identità comunali normalizzati una volta per istanza; record IPA elaborati dalla risposta corrente, senza cache delle query |
 | `/enti/[codice]` e API ente | Dinamica dove usa IPA live | Profilo completo, inclusi patrimonio e scuole; identità ufficiali riconciliate |
-| `/dati/[dataset]`, API dati e MCP | Politica del selector/trasporto esistente | Scansione limitata e cursori del rilascio; riuso bounded dei chunk già validati |
+| `/dati/[dataset]` | Snapshot per deployment per la prima pagina senza filtri; altre query dinamiche | Stesso selettore pubblico, righe e aggregazioni validate |
+| API dati e MCP | Politica del selector/trasporto esistente | Scansione limitata e cursori del rilascio; riuso bounded dei chunk già validati |
 | Altre pagine ad alta cardinalità | Politica specifica della route | Crawler dichiarati coperti dal proxy; includere le nuove route nel matcher e nell'inventario |
 
 Le route interne `/snapshot-pages/...` servono esclusivamente i rewrite del proxy.
@@ -53,6 +54,18 @@ La prima visita richiede ancora generazione e validazione; URL nuovi, filtri
 dinamici e varianti HTML/RSC possono ancora produrre miss. Il TTL non acquisisce
 nuove fonti e non corregge questi costi. Prima di cambiare la politica verificare
 anche un aggiornamento dello snapshot in un nuovo deployment.
+
+La prima pagina senza filtri di `/dati/[dataset]` usa lo stesso schema ISR,
+tramite `/snapshot-pages/dati/[dataset]`. Solo i valori equivalenti alla vista
+iniziale (`q`/`cursor` vuoti, `limit=50`, `offset=0`, `pagina=1`) condividono
+la cache; parametri ripetuti, ricerca, altre pagine/limiti e richieste autorizzate
+rimangono dinamici. I controlli sulle righe, hash e provenienza restano nel
+selettore pubblico. Un nuovo deployment invalida il rendering; non parte una
+nuova acquisizione. Il wrapper non precostruisce tutti i dataset durante il build.
+Le sue tracce ereditano i file richiesti dalla pagina pubblica, mantenendo esclusi
+i grandi shard sanitari. Il gate `runtime-cache.mjs` prova HIT, HTML/RSC,
+filtri e dataset inesistenti su produzione locale. Quando aggiungi parametri alla
+pagina, aggiorna l’elenco semantico nel proxy e le prove di esclusione dalla cache.
 
 ## Cache dei dati
 

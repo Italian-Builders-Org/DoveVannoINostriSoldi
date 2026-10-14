@@ -19,6 +19,7 @@ const MEDICAL_DEVICE_ROW_PREFIXES = [
 const INTEGRATED_ROW_HOME_ROUTES = new Set([
   "api/dati/[dataset]/route.js.nft.json",
   "dati/[dataset]/page.js.nft.json",
+  "snapshot-pages/dati/[dataset]/page.js.nft.json",
 ]);
 const ROUTES_WITHOUT_INTEGRATED_ROWS = new Set([
   "api/assistant/route.js.nft.json",
@@ -187,6 +188,10 @@ export function checkRuntimeTraces(root = process.cwd()) {
       requirements.set(manifest, [...(requirements.get(manifest) ?? []), `src/data/generated/${file}`]);
     }
   }
+  // The ISR wrapper reads the same corpus as the public dataset page.
+  // Reuse its requirements so future datasets cannot omit the cached route.
+  requirements.set("snapshot-pages/dati/[dataset]/page.js.nft.json",
+    [...requirements.get("dati/[dataset]/page.js.nft.json")]);
   const appRoot = resolve(root, ".next/server/app");
   const results = [];
   for (const manifest of walk(appRoot).filter((path) => path.endsWith(".nft.json"))) {

@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
-import { SNAPSHOT_PREFIX, IPA_CODE, CACHED_ENTITY_VIEWS, publicSnapshotPath } from "@/lib/snapshot-routing";
+import { SNAPSHOT_PREFIX, IPA_CODE, DATASET_ID, CACHED_ENTITY_VIEWS, publicSnapshotPath } from "@/lib/snapshot-routing";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent|Amazonbot|Bytespider|Applebot-Extended)(?:\/|[ );]|$)/i;
@@ -91,9 +91,11 @@ function snapshotPath(request: NextRequest, path: string): string | null {
   if (!["GET", "HEAD"].includes(request.method) || request.headers.has("authorization")) return null;
   const query = request.nextUrl.searchParams;
   const entity = /^\/enti\/([A-Za-z0-9_]{1,100})\/appalti$/.exec(path);
+  const dataset = /^\/dati\/([a-z0-9-]{1,200})$/.exec(path);
   const operator = /^\/appalti\/operatori\/(op-[0-9]{8})$/.exec(path);
   const keys = entity ? ["view", "page", "pageSize", "metric", "operator", "cpv", "awardYear", "selection"]
     : operator ? ["year", "authority", "procedure", "minAmount", "maxAmount", "page"]
+    : dataset ? ["q", "limit", "offset", "cursor", "pagina"]
     : path === "/comuni" ? ["ente", "q"] : [];
   // These pages ignore other parameters (including campaign tags). ISR keys
   // depend on the resolved pathname, while Next retains the RSC query/headers.
@@ -111,6 +113,13 @@ function snapshotPath(request: NextRequest, path: string): string | null {
     || ((key === "cpv" || key === "awardYear") && query.get(key) === "")
     || (key === "metric" && query.get(key) === "count"))) {
     return `${SNAPSHOT_PREFIX}enti/${entity[1]}/${entityView}`;
+  }
+  if (dataset && DATASET_ID.test(dataset[1]!) && semantic.every(key =>
+    ((key === "q" || key === "cursor" || key === "offset") && query.get(key) === "")
+    || (key === "limit" && query.get(key) === "50")
+    || (key === "offset" && query.get(key) === "0")
+    || (key === "pagina" && query.get(key) === "1"))) {
+    return `${SNAPSHOT_PREFIX}dati/${dataset[1]}`;
   }
   if (operator && semantic.every(key => query.get(key) === ""
     || (key === "page" && query.get(key) === "1"))) return `${SNAPSHOT_PREFIX}operatori/${operator[1]}`;

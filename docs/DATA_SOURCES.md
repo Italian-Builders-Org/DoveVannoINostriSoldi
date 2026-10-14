@@ -1352,6 +1352,15 @@ Le distribuzioni ufficiali DFP, CC BY 4.0, aggiungono 244.566 righe di costo e
 chiave amministrazione RGS; coperture distinte, nessun totale sintetico né
 assimilazione a SIOPE cassa. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md).
 
+### Conto Annuale RGS · occupazione per tipo di istituzione 2010-2024
+
+Il catalogo RGS OpenBDAP (serie `PCA_OCC_DIP_TENT_001`, un pacchetto CKAN per
+anno, CC BY 3.0 dichiarata sulle pagine) aggiunge 575 righe: personale al 31
+dicembre e lavoro flessibile in unità annue per tipo di istituzione, dal 2010
+al 2024, in un solo dataset con la colonna `Anno`. Sul 2020 i totali sono
+ricalcolati dal file per ente e riscontrati con lo snapshot DFP; ogni scarto non
+dichiarato ferma l'ETL. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md#occupazione-per-tipo-di-istituzione-2010-2024).
+
 ### ISTAT Bes dei territori · Salute
 
 Il dominio completo `BES_01`, edizione 2025, aggiunge sei indicatori e 46.157

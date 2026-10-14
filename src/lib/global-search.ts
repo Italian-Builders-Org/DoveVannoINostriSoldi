@@ -224,6 +224,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/controlli": ["segnali", "verifiche", "controlli"],
   "/trasparenza": ["trasparenza", "documenti mancanti", "atti"],
   "/assistente": ["domande", "domande testuali", "ai dati"],
+  "/accedi": ["boards", "lavagna", "componi viste", "dashboard dati"],
   "/mcp": ["model context protocol", "protocollo mcp", "api dati"],
   "/supporto": ["aiuto", "assistenza"],
   "/fonti": ["fonti", "sorgenti", "origine dati"],

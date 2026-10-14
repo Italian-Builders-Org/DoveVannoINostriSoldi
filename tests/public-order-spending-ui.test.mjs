@@ -9,6 +9,7 @@ import "./helpers/register-ts-alias.mjs";
 
 const reactUrl = new URL("../node_modules/react/index.js", import.meta.url).href;
 const linkUrl = `data:text/javascript,${encodeURIComponent(`import { createElement } from ${JSON.stringify(reactUrl)}; export default function Link(props) { return createElement('a', props); }`)}`;
+const navigationUrl = `data:text/javascript,${encodeURIComponent("export function useRouter() { return { push() {}, replace() {} }; } export function usePathname() { return '/'; } export function useSearchParams() { return new URLSearchParams(); } export function notFound() { throw new Error('notFound'); } export function redirect() { throw new Error('redirect'); }")}`;
 const cssUrl = `data:text/javascript,${encodeURIComponent("export default new Proxy({}, {get: (_, key) => String(key)});")}`;
 const componentUrls = new Set([
   new URL("../src/app/spese/sicurezza/page.tsx", import.meta.url).href,
@@ -18,7 +19,7 @@ const componentUrls = new Set([
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === "next/link") return { url: linkUrl, shortCircuit: true };
-    if (specifier === "next/navigation") return nextResolve("next/navigation.js", context);
+    if (specifier === "next/navigation") return { url: navigationUrl, shortCircuit: true };
     if (specifier.endsWith(".module.css")) return { url: cssUrl, shortCircuit: true };
     return nextResolve(specifier, context);
   },

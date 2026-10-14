@@ -200,6 +200,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     ],
   },
   { href: "/assistente", label: "Assistente", icon: "assistant" },
+  { href: "/accedi", label: "Boards", icon: "projects", aliases: ["/dashboard"] },
   {
     href: "/fonti",
     label: "Fonti",
@@ -354,6 +355,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     title: "Strumenti",
     links: [
       { href: "/assistente", label: "Assistente" },
+      { href: "/accedi", label: "DVNS Boards" },
       { href: "/mcp", label: "Istruzioni MCP" },
       { href: "/supporto", label: "Supporto" },
       { href: "/supporter", label: "Chi ci sostiene" },

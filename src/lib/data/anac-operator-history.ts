@@ -172,6 +172,18 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
   return null;
 }
 
+/** Invalidates in-process caches after fixture edits in tests. */
+export function resetAnacOperatorHistoryCachesForTests(): void {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("resetAnacOperatorHistoryCachesForTests non disponibile in produzione");
+  }
+  cachedManifest = undefined;
+  manifestFingerprint = "";
+  cache.clear();
+  shardCache.clear();
+  shardIndexes.clear();
+}
+
 export function readOperatorHistoryAwards(
   history: OperatorHistorySummary,
   positions: readonly number[],

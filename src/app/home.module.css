@@ -167,6 +167,108 @@
   font-weight: 700;
 }
 
+.boardsSection {
+  display: grid;
+  min-width: 0;
+}
+
+.boardsCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  min-height: 15.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-neutral-300);
+  color: inherit;
+  text-decoration: none;
+  background: var(--color-raised);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-neutral-900) 4%, transparent);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.boardsCard:hover,
+.boardsCard:focus-visible {
+  border-color: color-mix(in srgb, var(--color-accent-700) 40%, var(--color-neutral-300));
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-900) 8%, transparent);
+  transform: translateY(-2px);
+}
+
+.boardsCardMedia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    url("/boards/accedi-hero.png") center / cover no-repeat;
+}
+
+.boardsCardMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) 94%, transparent) 34%,
+      color-mix(in srgb, var(--color-bg) 55%, transparent) 58%,
+      color-mix(in srgb, var(--color-bg) 18%, transparent) 78%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-bg) 55%, transparent) 0%,
+      transparent 48%
+    );
+}
+
+.boardsCardBody {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  max-width: 34rem;
+}
+
+.boardsEyebrow {
+  color: var(--color-accent-800);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.boardsTitle {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 1vw + 1.1rem, 1.7rem);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.boardsCopy {
+  color: var(--color-neutral-700);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.boardsCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  color: var(--color-accent-700);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 .exploreSection {
   display: grid;
   gap: var(--space-3);
@@ -742,6 +844,48 @@
   .secondaryGrid,
   .mapGrid {
     grid-template-columns: 1fr;
+  }
+
+  .boardsCard {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    transform: none;
+  }
+
+  .boardsCard:hover,
+  .boardsCard:focus-visible {
+    transform: none;
+  }
+
+  .boardsCardMedia {
+    /* Atmosphere only on narrow screens; text stays readable via stronger wash. */
+    opacity: 0.88;
+    background-position: 58% center;
+  }
+
+  .boardsCardMedia::after {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-bg) 92%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 84%, transparent) 48%,
+        color-mix(in srgb, var(--color-bg) 94%, transparent) 100%
+      );
+  }
+
+  .boardsCardBody {
+    max-width: none;
+    padding: var(--space-4) var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .boardsCopy {
+    font-size: 0.92rem;
+  }
+
+  .boardsCta {
+    min-height: 2.75rem;
+    align-items: center;
   }
 
   .mapCard {

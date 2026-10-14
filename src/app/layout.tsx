@@ -66,6 +66,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/* Inline in <head>: devono girare anche se i bundle esterni sono bloccati. */}
         <script dangerouslySetInnerHTML={{ __html: IMMERSIVE_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />

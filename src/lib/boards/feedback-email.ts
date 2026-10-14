@@ -1,5 +1,6 @@
 import "server-only";
 import { SlidingWindowLimiter } from "@/lib/report/rate-limit";
+import { boardsResendFromAddress } from "./resend-from";
 
 const FEEDBACK_TO =
   (process.env.BOARDS_FEEDBACK_TO ?? "").trim() || "gagliardidomenico46@gmail.com";
@@ -95,9 +96,9 @@ export async function sendBoardsFeedbackEmail(
   <pre style="white-space:pre-wrap;background:#f4f6f8;padding:12px;border:1px solid #d5dde6;">${escapeText(message)}</pre>
 </body></html>`;
 
-  const from = resend.from.includes("<")
-    ? resend.from
-    : `DVNS Boards <${resend.from}>`;
+  const from = boardsResendFromAddress(resend.from, {
+    boardsFrom: process.env.BOARDS_RESEND_FROM_EMAIL,
+  });
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",

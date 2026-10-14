@@ -738,6 +738,45 @@
           "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/f929ec20-e46c-4d33-963b-fbbe8dc2b1bd.csv",
           "https://bdap-opendata.rgs.mef.gov.it/content/2019-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall"
         ]
+      },
+      "rgs-spesa-statale-regionalizzata-consolidata": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizi finanziari 2008-2023; spesa consolidata (Bilancio dello Stato, Enti e Fondi oggetto della pubblicazione) per territorio destinatario finale",
+        "publicationDate": "2025-11-21",
+        "acquisitionDate": "2026-10-07",
+        "checkedAt": "2026-10-07",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPESR_001",
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/75132685-9595-45d1-882d-80a912ca017b.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2023-territorio-destinatario-finale-della-spesa-consolidata-spesa-statale-regionalizzata?metadati=showall"
+        ]
+      },
+      "rgs-spesa-statale-regionalizzata-enti": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizi finanziari 2008-2023; spesa degli Enti oggetto della pubblicazione per territorio destinatario finale",
+        "publicationDate": "2025-11-21",
+        "acquisitionDate": "2026-10-07",
+        "checkedAt": "2026-10-07",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPENT_001",
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4a6883cd-e08f-40c7-8db4-d846ecc0e109.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-degli-enti-oggetto-della-pubblicazione-spesa?metadati=showall"
+        ]
+      },
+      "rgs-spesa-statale-regionalizzata-fondi": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Esercizi finanziari 2008-2023; spesa effettuata attraverso i Fondi oggetto della pubblicazione per territorio destinatario finale",
+        "publicationDate": "2025-11-21",
+        "acquisitionDate": "2026-10-07",
+        "checkedAt": "2026-10-07",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=SRS_SPE_PAR_SPFON_001",
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/411f17b9-0f1d-49b5-b954-12921c60af30.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall"
+        ]
       }
     }
   },
@@ -7216,6 +7255,121 @@
           "Titolo",
           "Categoria",
           "Missione",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-consolidata",
+      "title": "RGS · spesa statale regionalizzata consolidata 2008-2023",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-consolidata.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa consolidata = Bilancio dello Stato + Enti + Fondi oggetto della pubblicazione, quote regionalizzate (Spesa Statale Regionalizzata RGS, SRS_SPE_PAR_SPESR_001). Non è la spesa delle Regioni come ente, non sono pagamenti di cassa SIOPE e non è la spesa consolidata dei Conti pubblici territoriali.",
+        "La scheda CKAN della serie ripete la descrizione della serie Bilancio («al netto degli interessi sul debito pubblico, dei fondi e degli enti»), ma gli importi comprendono Enti e Fondi: sono da 2,2 a 2,6 volte la sola spesa del Bilancio dello Stato.",
+        "Controllo DVNS fail-closed: per ogni anno e territorio Bilancio dello Stato (SRS_SPE_BIL_SPESR_001, dataset rgs-spesa-statale-regionalizzata-2008 … -2022 e fetta tipizzata 2023) + Enti + Fondi = Consolidata entro 0,15 milioni; lo scarto massimo misurato è 0,13 milioni, l'arrotondamento a due decimali delle componenti.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni territorio e anno: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Un solo dataset per gli esercizi dal 2008 al 2023, distinti dalla colonna Anno: gli importi non vanno sommati fra anni. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Licenza del payload not-declared: i pacchetti CKAN riportano cc-by, ma le pagine della serie e i file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 306153,
+        "sha256": "4f077d659fb252cbafe690a733fdf8cf0f4848bc4b4f44feac30f3c1fa32c7cc",
+        "rows": 1664,
+        "columns": 6,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-enti",
+      "title": "RGS · spesa regionalizzata degli enti 2008-2023",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-enti.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa degli Enti oggetto della pubblicazione, quota regionalizzata (Spesa Statale Regionalizzata RGS, SRS_SPE_PAR_SPENT_001): una delle tre componenti della spesa consolidata, con Bilancio dello Stato e Fondi. Il file non elenca quali enti siano compresi.",
+        "Controllo DVNS fail-closed: per ogni anno e territorio Bilancio dello Stato (SRS_SPE_BIL_SPESR_001, dataset rgs-spesa-statale-regionalizzata-2008 … -2022 e fetta tipizzata 2023) + Enti + Fondi = Consolidata entro 0,15 milioni; lo scarto massimo misurato è 0,13 milioni, l'arrotondamento a due decimali delle componenti.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni territorio e anno: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Un solo dataset per gli esercizi dal 2008 al 2023, distinti dalla colonna Anno: gli importi non vanno sommati fra anni. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Licenza del payload not-declared: i pacchetti CKAN riportano cc-by, ma le pagine della serie e i file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 305617,
+        "sha256": "42c28d869251b6304e952daa845c77210501d1fbf3e432f568cdbe0456e134ed",
+        "rows": 1664,
+        "columns": 6,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
+          "Misura",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-spesa-statale-regionalizzata-fondi",
+      "title": "RGS · spesa regionalizzata attraverso i fondi 2008-2023",
+      "domain": "state-accounts",
+      "relativePath": "rgs-spesa-statale-regionalizzata-fondi.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "not-declared",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Spesa effettuata attraverso i Fondi oggetto della pubblicazione, quota regionalizzata (Spesa Statale Regionalizzata RGS, SRS_SPE_PAR_SPFON_001): una delle tre componenti della spesa consolidata, con Bilancio dello Stato ed Enti. Il file non elenca quali fondi siano compresi.",
+        "Controllo DVNS fail-closed: per ogni anno e territorio Bilancio dello Stato (SRS_SPE_BIL_SPESR_001, dataset rgs-spesa-statale-regionalizzata-2008 … -2022 e fetta tipizzata 2023) + Enti + Fondi = Consolidata entro 0,15 milioni; lo scarto massimo misurato è 0,13 milioni, l'arrotondamento a due decimali delle componenti.",
+        "Italia, ripartizioni e regioni sono livelli sovrapposti pubblicati dalla fonte: non vanno sommati fra loro e l'Italia non va ricostruita sommando le regioni. La colonna Livello territoriale li distingue.",
+        "Quattro misure separate per ogni territorio e anno: solo «Valori Assoluti (mln)» è un importo, in milioni di euro. Rapporto al PIL, per abitante e per km² sono rapporti calcolati dall'editore con denominatori non versionati nel record.",
+        "Un solo dataset per gli esercizi dal 2008 al 2023, distinti dalla colonna Anno: gli importi non vanno sommati fra anni. I valori sono i decimali pubblicati, senza arrotondamento DVNS.",
+        "Licenza del payload not-declared: i pacchetti CKAN riportano cc-by, ma le pagine della serie e i file non dichiarano una licenza, come per gli altri dataset OpenBDAP nel corpus."
+      ],
+      "expected": {
+        "bytes": 303766,
+        "sha256": "41d187addd2b81612f298f720432e678b8cf8ce0ecba77823c2c67536c832bed",
+        "rows": 1664,
+        "columns": 6,
+        "headers": [
+          "Anno",
+          "Territorio",
+          "Livello territoriale",
           "Misura",
           "Valore",
           "URL fonte"

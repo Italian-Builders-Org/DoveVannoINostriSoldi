@@ -1149,6 +1149,16 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     ],
   },
   {
+    surface: "/dati",
+    title: "Spesa statale consolidata per territorio 2008–2023",
+    description: "Spesa consolidata = Bilancio dello Stato + Enti + Fondi oggetto della pubblicazione, quote regionalizzate: tre dataset con tutti gli esercizi, livelli territoriali sovrapposti da non sommare.",
+    datasets: [
+      { id: "rgs-spesa-statale-regionalizzata-consolidata", label: "Spesa consolidata" },
+      { id: "rgs-spesa-statale-regionalizzata-enti", label: "Componente Enti" },
+      { id: "rgs-spesa-statale-regionalizzata-fondi", label: "Componente Fondi" },
+    ],
+  },
+  {
     surface: "/spese/sanita",
     title: "La dotazione ospedaliera",
     description: "Posti letto al 1° gennaio 2023 accanto ai costi CE 2024, con anni e unità distinti.",

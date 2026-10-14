@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requestBoardsOtp } from "@/lib/boards/otp";
+import { boardsMagicLinkCallbackUrl } from "@/lib/boards/public-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,8 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "JSON non valido." }, { status: 400 });
   }
   const email = typeof body === "object" && body && "email" in body ? String((body as { email: unknown }).email) : "";
-  const origin = new URL(request.url).origin;
-  const redirectTo = `${origin}/accedi/callback`;
+  const redirectTo = boardsMagicLinkCallbackUrl(request.url);
   const result = await requestBoardsOtp(email, clientKey(request), { redirectTo });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: result.status });

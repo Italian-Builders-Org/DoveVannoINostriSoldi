@@ -117,6 +117,9 @@ test("API proxy preserves shared capacity after per-client rejection and resets 
   const requestFor = (ip) => new NextRequest("https://example.test/api/health", {
     headers: { "x-forwarded-for": ip },
   });
+  const sessionFor = (ip) => new NextRequest("https://example.test/api/boards/auth/session", {
+    headers: { "x-forwarded-for": ip },
+  });
   const assertAllowed = (ip) => {
     assert.equal(proxy(requestFor(ip)).headers.get("x-middleware-next"), "1");
   };
@@ -134,6 +137,10 @@ test("API proxy preserves shared capacity after per-client rejection and resets 
     for (let i = 0; i < 120; i += 1) assertAllowed(`192.0.2.${client}`);
   }
   assertLimited("192.0.2.6");
+  // Boards session is chrome-polled on every page: keep it outside /api budget.
+  for (let i = 0; i < 40; i += 1) {
+    assert.equal(proxy(sessionFor("192.0.2.1")).headers.get("x-middleware-next"), "1");
+  }
 
   now += 60_000;
   assertAllowed("192.0.2.1");

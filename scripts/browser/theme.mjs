@@ -3,10 +3,10 @@ import { closeBrowser, defaultBaseUrl, installDiagnostics, launchBrowser, naviga
 
 const baseUrl = defaultBaseUrl();
 const browser = await launchBrowser();
-const selector = '[aria-label="Attiva modalità scura"], [aria-label="Attiva modalità chiara"]';
+const selector = '[aria-label="Passa al tema scuro"], [aria-label="Passa al tema chiaro"]';
 async function expectTheme(page, theme) {
   await page.waitForFunction((expected) => document.documentElement.dataset.theme === expected, {}, theme);
-  const label = theme === "dark" ? "Attiva modalità chiara" : "Attiva modalità scura";
+  const label = theme === "dark" ? "Passa al tema chiaro" : "Passa al tema scuro";
   await page.waitForSelector(`button[aria-label="${label}"]`);
 }
 try {

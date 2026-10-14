@@ -258,6 +258,31 @@ export default async function HomePage({
         </ul>
       </section>
 
+      <section className={styles.boardsSection} aria-labelledby="boards-home-title">
+        <Link
+          className={styles.boardsCard}
+          href="/accedi"
+          data-testid="home-boards-entry"
+        >
+          <span className={styles.boardsCardMedia} aria-hidden="true" />
+          <span className={styles.boardsCardBody}>
+            <span className={styles.boardsEyebrow}>Strumento · web</span>
+            <span className={styles.boardsTitle} id="boards-home-title">
+              DVNS Boards
+            </span>
+            <span className={styles.boardsCopy}>
+              Componi viste private sui dataset pubblici già sul sito: grafici, filtri e
+              note sulla stessa lavagna. Accesso con email, senza password. Pensato per
+              desktop e laptop.
+            </span>
+            <span className={styles.boardsCta}>
+              Apri Boards
+              <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+            </span>
+          </span>
+        </Link>
+      </section>
+
       <section className={styles.exploreSection} aria-labelledby="explore-title">
         <h2 id="explore-title" className={styles.sectionTitle}>
           Sezioni

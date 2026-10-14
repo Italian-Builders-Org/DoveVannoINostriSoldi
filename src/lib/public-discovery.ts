@@ -24,6 +24,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/appalti/operatori",
   "/appalti/ted",
   "/assistente",
+  "/accedi",
   "/coesione",
   "/coesione/asili",
   "/coesione/logistica-mercati",
@@ -134,6 +135,9 @@ export const PUBLIC_INDEXABLE_PATHS = [
 /** Public pages that crawlers may visit but must not index. */
 export const PUBLIC_NOINDEX_PATHS = [
   "/cerca",
+  "/accedi/callback",
+  "/dashboard",
+  "/dashboard/settings",
 ] as const satisfies readonly PublicPath[];
 
 /** Legacy entry points redirect to canonical pages and stay out of the sitemap. */
@@ -169,6 +173,7 @@ export const LLMS_DISCOVERY_PATHS = [
   "/fonti",
   "/mcp",
   "/assistente",
+  "/accedi",
   "/metodologia",
   "/privacy",
   "/report",

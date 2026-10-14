@@ -60,6 +60,13 @@
 .immersiveActions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
 .immersiveActions :global(.header-action), .immersiveHomeLink, .sourcesDisclosure > summary { min-height: 44px; border: 1px solid var(--atlas-line); background: transparent; color: var(--atlas-ink); border-radius: 9px; padding: 10px 13px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; text-decoration: none; font-weight: 550; }
 .immersiveActions :global(.header-action) { width: 44px; height: 44px; padding: 0; }
+.immersiveActions :global(.theme-toggle) {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
 .sourcesDisclosure { position: relative; }
 .sourcesDisclosure > summary { cursor: pointer; list-style: none; }
 .sourcesDisclosure > summary::-webkit-details-marker { display: none; }

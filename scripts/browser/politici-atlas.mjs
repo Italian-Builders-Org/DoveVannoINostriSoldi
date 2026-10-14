@@ -127,7 +127,7 @@ try {
 
         await page.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
         assert.equal(await page.$eval("[data-seat-person]", (element) => getComputedStyle(element).transitionDuration), "0s");
-        const toggle = await page.$('[aria-label="Attiva modalità scura"]');
+        const toggle = await page.$('[aria-label="Passa al tema scuro"]');
         if (toggle) await toggle.click();
         assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), "dark");
       });

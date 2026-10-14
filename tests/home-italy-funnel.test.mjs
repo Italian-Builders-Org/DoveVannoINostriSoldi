@@ -94,6 +94,11 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /Mappa della politica/);
   assert.match(page, /mapsSection/);
   assert.match(page, /maps-title[\s\S]*?Mappe/);
+  assert.match(page, /home-boards-entry/);
+  assert.match(page, /href="\/accedi"/);
+  assert.match(page, /DVNS Boards/);
+  assert.match(css, /\.boardsCard \{/);
+  assert.match(css, /accedi-hero\.png/);
   assert.match(page, /href: "\/imprese"/);
   assert.match(page, /href: "\/territori"/);
   assert.match(page, /href: "\/spese"/);

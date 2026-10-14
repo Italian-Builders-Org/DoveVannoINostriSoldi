@@ -69,14 +69,19 @@ try {
         }
       }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']});
     });
+    const dialogTimeout=90_000;
     const upload=async paths=>{const input=await page.$('input[type="file"]');await input.uploadFile(...paths);};
-    const ready=async count=>page.waitForFunction(count=>document.querySelectorAll('[aria-label="Allegati da inviare"] li[data-ready="true"][data-error="false"]').length===count,{timeout:90_000},count).catch(async error=>{await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-failure.png`,fullPage:true});console.error(JSON.stringify({width,errors,workerEvents,preparationTimeline:await page.evaluate(()=>window.__preparationTimeline),files:await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({title:el.title,ready:el.dataset.ready,error:el.dataset.error}))),alerts:await page.$$eval('[role="alert"]',els=>els.map(el=>el.textContent))}));throw error;});
-    const click=label=>page.click(`button[aria-label="${label}"]`);
+    const ready=async count=>page.waitForFunction(count=>document.querySelectorAll('[aria-label="Allegati da inviare"] li[data-ready="true"][data-error="false"]').length===count,{timeout:dialogTimeout},count).catch(async error=>{await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-failure.png`,fullPage:true});console.error(JSON.stringify({width,errors,workerEvents,preparationTimeline:await page.evaluate(()=>window.__preparationTimeline),files:await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>({title:el.title,ready:el.dataset.ready,error:el.dataset.error}))),alerts:await page.$$eval('[role="alert"]',els=>els.map(el=>el.textContent))}));throw error;});
+    const click=async label=>{
+      const sel=`button[aria-label="${label}"]`;
+      await page.$eval(sel,el=>el.scrollIntoView({block:'nearest',inline:'nearest'}));
+      await page.click(sel);
+    };
     const complete=number=>page.waitForFunction(number=>!!document.querySelector('[data-assistant-reply] table')&&document.querySelector('[data-assistant-reply]')?.textContent.includes(`Risposta di prova ${number}.`)&&!document.querySelector('button[aria-label="Interrompi ricerca"]'),{},number);
     await upload(['riepilogo.pdf','relazione.docx','pagamenti.xlsx','nota.txt','criteri.md','nota.txt','criteri.md','nota.txt'].map(fixture));await ready(8);
     assert.equal(requests.length,0,'preparation must not call the provider');
     for(const [name,text] of [['riepilogo.pdf','Biblioteca'],['relazione.docx','120.000'],['pagamenti.xlsx','120000']]){
-      await click('Anteprima '+name);await page.waitForSelector('dialog[open] pre');assert.ok((await page.$eval('dialog pre',el=>el.textContent)).includes(text));await click('Chiudi anteprima allegato');await page.waitForFunction(name=>document.activeElement?.getAttribute('aria-label')==='Anteprima '+name,{},name);
+      await click('Anteprima '+name);await page.waitForSelector('dialog[open] pre',{timeout:dialogTimeout});assert.ok((await page.$eval('dialog pre',el=>el.textContent)).includes(text));await click('Chiudi anteprima allegato');await page.waitForFunction(name=>document.activeElement?.getAttribute('aria-label')==='Anteprima '+name,{timeout:dialogTimeout},name);
     }
     await page.type('#assistant-prompt','Confronta i tre allegati sintetici. Verifica la coerenza delle cifre, calcola residui e percentuali di pagamento per biblioteca e parco, poi il totale e la percentuale complessiva ponderata. Cita i file e segnala cosa manca nel Word. Non consultare dataset ufficiali per questi dati inventati.');
     const bounds=await page.evaluate(()=>{
@@ -87,7 +92,7 @@ try {
     assert.ok(bounds.footerTop>=bounds.suggestionsBottom,`${width}: footer overlaps suggestions`);assert.ok(bounds.footerTop>=bounds.composerBottom);assert.ok(bounds.overflow<=1);
     assert.deepEqual(await page.$$eval('[aria-label="Allegati da inviare"] li',els=>els.map(el=>el.dataset.format)),['pdf','word','sheet','text','code','text','code','text']);
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-documents.png`,fullPage:true});
-    await click('Invia domanda');await page.waitForSelector('dialog[open]');assert.equal(requests.length,0);
+    await click('Invia domanda');await page.waitForSelector('dialog[open]',{timeout:dialogTimeout});assert.equal(requests.length,0);
     await page.select('#assistant-reasoning','medium');await page.type('#assistant-api-key','test-only-attachment-key');await page.click('dialog input[type="checkbox"]');await page.click('button[type="submit"]::-p-text(Usa in questa scheda)');
     await click('Invia domanda');await complete(1);
     assert.equal(requests[0].reasoning,"medium");assert.equal(requests[0].messages[0].attachments.length,8);assert.ok(requests[0].messages[0].attachments.every(f=>f.kind==='text'));assert.equal(await page.$$eval('[aria-label="Allegati da inviare"]',els=>els.length),0);
@@ -99,7 +104,7 @@ try {
     await click('Rigenera risposta');await complete(2);assert.deepEqual(requests[1].messages[0].attachments,requests[0].messages[0].attachments);
     await click('Modifica domanda');await page.waitForSelector('[id^="edit-message-"]');await page.$eval('[id^="edit-message-"]',el=>{el.focus();el.select();});await page.keyboard.press('Backspace');await page.type('[id^="edit-message-"]','Confronta soltanto la biblioteca nei file.');await page.click('button::-p-text(Invia modifica)');await complete(3);assert.deepEqual(requests[2].messages[0].attachments,requests[0].messages[0].attachments);
     await upload(['grafico.png','nota.txt','criteri.md'].map(fixture));await ready(3);
-    await click('Anteprima grafico.png');await page.waitForSelector('dialog[open] img');assert.equal(await page.$eval('dialog img',el=>el.naturalWidth),1000);await click('Chiudi anteprima allegato');
+    await click('Anteprima grafico.png');await page.waitForSelector('dialog[open] img',{timeout:dialogTimeout});assert.equal(await page.$eval('dialog img',el=>el.naturalWidth),1000);await click('Chiudi anteprima allegato');
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-image-text.png`,fullPage:true});
     await page.type('#assistant-prompt','Leggi questi nuovi allegati.');await click('Invia domanda');await page.waitForFunction(()=>document.querySelectorAll('[data-assistant-reply] table').length===2&&!document.querySelector('button[aria-label="Interrompi ricerca"]'));
     assert.ok(await page.$eval('main',el=>el.innerText.includes('i file dei messaggi più vecchi non sono inclusi')));

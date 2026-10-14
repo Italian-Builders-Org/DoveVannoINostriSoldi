@@ -85,6 +85,7 @@ const medicalDeviceIndexRuntimeFiles = [
 const routesWithoutIntegratedRows = [
   "/app/api/assistant/**",
   "/app/mcp",
+  "/app/api/boards/tile-data",
 ];
 
 // Without Fluid Compute, classic serverless caps at 250 MB uncompressed. Keeping
@@ -97,6 +98,7 @@ const corpusRoutesWithoutMedicalDeviceRows = [
 // Next 16.3.4 evaluates exclusions against internal `app/...` entry names.
 // Anchoring here prevents `/dati` from also matching routes such as `/api/.../dati`.
 const routesWithoutMedicalDeviceRows = [
+  "/app/api/boards/**",
   "/app/api/comuni/**",
   "/app/api/enti/**",
   "/app/api/fonti/**",
@@ -302,6 +304,11 @@ const nextConfig: NextConfig = {
       ]),
     ),
     "/app/api/mcp": [
+      ...allIntegratedRowRuntimeFiles,
+      ...medicalDeviceIndexRuntimeFiles,
+      ...operatorShardRuntimeFiles,
+    ],
+    "/app/api/boards/tile-data": [
       ...allIntegratedRowRuntimeFiles,
       ...medicalDeviceIndexRuntimeFiles,
       ...operatorShardRuntimeFiles,

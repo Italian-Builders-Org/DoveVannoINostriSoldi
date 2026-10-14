@@ -4,7 +4,8 @@ Guida operativa per scegliere il prossimo lavoro. Non è un elenco di idee:
 ogni riga ha priorità, stato nel repo, issue o PR se esiste, e un prossimo
 passo concreto.
 
-Verificato sul repository il 2 settembre 2026 (issue e PR aperte lette da GitHub).
+Verificato sul repository il 12 ottobre 2026 (issue e PR aperte lette da GitHub;
+studio DVNS Boards in [DVNS_BOARDS.md](DVNS_BOARDS.md)).
 I codici tipo `T-001` / `X-028` vengono dalla sintesi dei feedback community;
 non sono issue GitHub.
 
@@ -87,8 +88,8 @@ Come usare questo file:
 
 | Iniziativa | Copertura | Implementabile | Effort | Issue / PR | Prossimo passo |
 |---|---|---|---|---|---|
-| Home personalizzata | Assente | Sì | Alto | Nessuna | Preferenze locali prima di qualsiasi account. Feedback: X-013, X-058, T-028. |
-| Auth, API commerciali, funzioni a pagamento | MCP pubblico gratuito su `main` | Dipende da decisione | Alto | Nessuna | Separare dal dato pubblico gratuito. Feedback: T-022, A-010. |
+| Home personalizzata / DVNS Boards | Studio e contratto ricette su branch; UI Auth e composer assenti | Sì (slice Auth dopo provisioning) | Alto | [#757](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/757) | Account magic link + board di tile solo su serie MCP pubbliche; progetto Supabase distinto dalla quota assistente; Resend già in env Vercel ma non cablato. Spec: [DVNS_BOARDS.md](DVNS_BOARDS.md). Feedback: X-013, X-058, T-028. |
+| Auth, API commerciali, funzioni a pagamento | MCP pubblico gratuito su `main`; Auth Boards in studio | Dipende | Alto | [#757](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/757) per Auth cittadino; API a pagamento resta separata | Auth Boards non introduce billing. Feedback: T-022, A-010. |
 | Agenti di raccomandazione / piste investigative | Explorer relazioni su `main`; motori automatici no | Dipende | Alto | [#190](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/190), [#193](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/193) aperte; alimentano [#243](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/243) solo dopo review | Solo percorsi conservativi con review umana. Niente tagli automatici. Feedback: T-024. |
 | Contenuti video e post automatici | Fuori dal portale | Sì, ma non nel backlog prodotto | Medio | Nessuna | Workflow editoriale a parte; bozze sempre approvate. Feedback: X-002, X-004, T-025. |
 

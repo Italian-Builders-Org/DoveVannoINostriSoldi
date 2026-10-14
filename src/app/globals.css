@@ -272,6 +272,30 @@ nav li a { text-decoration: none; }
 }
 .header-action-icon:hover { color: var(--color-accent-700); }
 
+/* Theme: solo icona, senza box — allineata al testo dell'header. */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  flex: none;
+}
+.theme-toggle:hover {
+  color: var(--color-accent-700);
+  background: transparent;
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-accent-700);
+  outline-offset: 2px;
+}
+
 /* ── primary navigation ─────────────────────────────────────────────────── */
 
 /* Sidebar disclosures use normal links and buttons in document order. */
@@ -415,6 +439,41 @@ html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) #conten
   height: auto;
   padding: 0;
   max-width: none;
+}
+
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .site-content {
+  margin-left: 0;
+  padding: 0;
+}
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .desktop-sidebar,
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .mobile-menu-trigger,
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .header,
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .site-header,
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) header.site-header {
+  display: none !important;
+}
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) body {
+  overflow: hidden;
+  background: #0f1419;
+}
+html[data-theme="light"]:is([data-immersive="boards"], :has([data-immersive-page="boards"])) body {
+  background: #f4f6f8;
+}
+html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) #contenuto-principale {
+  min-height: 100dvh;
+  height: 100dvh;
+  padding: 0;
+  max-width: none;
+}
+@media (max-width: 900px) {
+  html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) #contenuto-principale {
+    height: auto;
+    min-height: 100dvh;
+  }
 }
 
 /* Mobile: unlock document scroll so list/panel read as one page, not nested panes. */

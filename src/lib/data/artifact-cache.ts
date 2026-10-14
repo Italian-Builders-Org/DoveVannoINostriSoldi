@@ -30,6 +30,11 @@ export class ArtifactCache<T> {
     return entry.value;
   }
 
+  clear(): void {
+    this.entries.clear();
+    this.bytes = 0;
+  }
+
   set(key: string, value: T, bytes: number): void {
     const previous = this.entries.get(key);
     if (previous) {

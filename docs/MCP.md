@@ -27,6 +27,16 @@ va duplicato su un secondo runtime.
 
 I dataset live interrogano soltanto adapter ufficiali già usati dalle API del sito. I dataset snapshot leggono gli artefatti versionati e validati dagli ETL.
 
+Su Vercel, `spesa_pa_dettaglio` e `salute_posti_letto` riusano `/api/dati/[dataset]`
+sul dominio pubblico canonico: MCP non contiene gli shard del corpus. L'API mantiene
+validazione, provenance e cursori; il trasporto non accetta host del chiamante,
+non inoltra credenziali, non segue redirect, non ritenta e limita tempo e byte.
+Non aggiunge cache Next per ogni query: resta la cache HTTP già presente nell'API.
+Anche le preview Vercel interrogano il corpus **pubblicato**; per verificare nuovi
+snapshot non ancora pubblicati usare le API della preview e i gate locali.
+In locale e nel self-hosting la selezione resta diretta sugli snapshot. Le query
+MCP con filtri strutturati SIOPE e gli altri adapter mantengono il proprio percorso.
+
 `anac_operatori` usa lo stesso indice storico nazionale delle pagine `/appalti/operatori` e dell'assistente BYOK. Accetta **uno solo** di `query` (denominazione, 3-120 caratteri), `code` (riferimento pubblico `op-########` dello snapshot) o `measure` (`awardCount` o `attributedValue`, classifica); senza selettore restituisce le prime posizioni per conteggio. `limit` è tra 1 e 10, predefinito 5: limita le imprese, oppure i CIG recenti nella scheda. I risultati mantengono valori decimali esatti in EUR, date di osservazione e delle fonti, copertura, hash e limiti. Non accetta anni o territori che il contratto non sa filtrare. I riferimenti operatore possono cambiare tra snapshot.
 
 Esempi: `{"dataset":"anac_operatori","query":"autostrade","limit":5}` e `{"dataset":"anac_operatori","measure":"attributedValue","limit":5}`. Per una scheda, usare `code` con un riferimento restituito dalla ricerca. Il conteggio completo delle aggiudicazioni, il valore attribuibile all'operatore unico e il campione di CIG recenti restano distinti: aggiudicazione non significa pagamento o incasso. La chat limita ulteriormente il campione a 3 CIG e dichiara le omissioni; non mantiene un inventario separato dei dataset nel prompt.

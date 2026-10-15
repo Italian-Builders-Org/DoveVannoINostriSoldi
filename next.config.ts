@@ -416,6 +416,7 @@ const nextConfig: NextConfig = {
       "src/data/generated/istat-municipality-geography.json",
     ],
     "/dati/\\[dataset\\]": integratedSourceRuntimeFiles,
+    "/snapshot-pages/dati/*": integratedSourceRuntimeFiles,
     "/api/dati/\\[dataset\\]": integratedSourceRuntimeFiles,
     "/pnrr": integratedSourceRuntimeFilesWithoutRows,
     "/api/pnrr/progetti": integratedSourceRuntimeFilesWithoutRows,

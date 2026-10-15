@@ -17,10 +17,10 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
 }
 
 const snapshotEvidence = [];
-for (const [route, seconds] of [["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
+for (const [route, seconds] of [["/dati/affidamenti-diretti", 31536000], ["/dati/rgs-conto-annuale-occupazione-tipologia-2010-2024", 31536000], ["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/enti/c_h501/appalti?view=operators", 31536000], ["/enti/c_h501/appalti?view=awards", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
   const first = await fetch(new URL(route, base));
   assert.equal(first.status, 200, route);
-  const html = await first.text();
+  let html = await first.text();
   const initialCache = first.headers.get("x-nextjs-cache");
   let current = first;
   // A persisted local Next cache resumes as STALE after process restart.
@@ -30,7 +30,12 @@ for (const [route, seconds] of [["/enti/c_h501/appalti", 31536000], ["/enti/c_h5
     do {
       await new Promise(resolve => setTimeout(resolve, 100));
       current = await fetch(new URL(route, base));
-      assert.equal(await current.text(), html, "Regeneration must preserve the committed snapshot");
+      const regenerated = await current.text();
+      // Next can move this font bookkeeping tag during regeneration. Keep all
+      // application markup and hydration payloads exact, including metadata.
+      const fontMarker = '<meta name="next-size-adjust" content=""/>';
+      assert.equal(regenerated.replaceAll(fontMarker, ""), html.replaceAll(fontMarker, ""), "Regeneration must preserve the committed snapshot");
+      html = regenerated;
     } while (current.headers.get("x-nextjs-cache") !== "HIT" && Date.now() < deadline);
     assert.equal(current.headers.get("x-nextjs-cache"), "HIT", route);
   }
@@ -45,6 +50,19 @@ for (const [route, seconds] of [["/enti/c_h501/appalti", 31536000], ["/enti/c_h5
   await rsc.arrayBuffer();
   snapshotEvidence.push({ route, initialCache, cache: "HIT", rsc: true, sha256: createHash("sha256").update(html).digest("hex") });
 }
+const datasetPath = "/dati/affidamenti-diretti";
+const datasetDefault = await fetch(new URL(datasetPath, base));
+const datasetHtml = await datasetDefault.text();
+const datasetBlank = await fetch(new URL(`${datasetPath}?q=&limit=50&offset=0&cursor=&pagina=1&utm_source=cache-proof`, base));
+assert.equal(datasetBlank.headers.get("x-nextjs-cache"), "HIT", "Default dataset parameters must reuse the snapshot");
+assert.equal(await datasetBlank.text(), datasetHtml, "Default parameters must preserve the dataset body");
+const datasetHead = await fetch(new URL(datasetPath, base), { method: "HEAD" });
+assert.equal(datasetHead.status, 200);
+assert.equal(datasetHead.headers.get("x-nextjs-cache"), "HIT", "HEAD must reuse the dataset snapshot");
+const datasetAuthorized = await fetch(new URL(datasetPath, base), { headers: { authorization: "Bearer local-cache-proof" } });
+assert.match(datasetAuthorized.headers.get("cache-control") ?? "", /no-store/, "Authorization must bypass shared dataset caching");
+await datasetAuthorized.arrayBuffer();
+
 // Historical links carry an operator into tabs that do not filter by it.
 // Those URLs must share the default snapshot; an actual operator detail must not.
 for (const view of ["summary", "operators", "procedures", "awards"]) {
@@ -53,7 +71,7 @@ for (const view of ["summary", "operators", "procedures", "awards"]) {
   assert.match(legacy.headers.get("cache-control") ?? "", /s-maxage=31536000(?:,|$)/, view);
   assert.equal(await legacy.text(), await canonical.text(), `Ignored operator must not split ${view} snapshots`);
 }
-for (const route of ["/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=operators&metric=value", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
+for (const route of ["/dati/affidamenti-diretti?q=Roma", "/dati/affidamenti-diretti?offset=50", "/dati/affidamenti-diretti?limit=25", "/dati/affidamenti-diretti?q=&q=Roma", "/dati/affidamenti-diretti?cursor=invalid", "/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=operators&metric=value", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
   const response = await fetch(new URL(route, base));
   assert.match(response.headers.get("cache-control") ?? "", /no-store/, route);
   await response.arrayBuffer();
@@ -94,6 +112,9 @@ for (const route of ["/comuni?ente=not_a_published_municipality", "/enti/no_such
   const html = await response.text();
   assert.doesNotMatch(html, /DYNAMIC_SERVER_USAGE|Application error/, route);
 }
+const missingDataset = await fetch(new URL("/dati/no-such-public-dataset", base));
+assert.equal(missingDataset.status, 404);
+await missingDataset.arrayBuffer();
 const missingOperator = await fetch(new URL("/appalti/operatori/op-99999999", base));
 assert.equal(missingOperator.status, 404);
 await missingOperator.arrayBuffer();

@@ -510,6 +510,7 @@
         "tests/etl/test_ted_notices.py",
         "tests/etl/test_pnrr_projects.py",
         "tests/etl/test_conto_annuale.py",
+        "tests/etl/test_rgs_conto_annuale_occupazione_corpus.py",
         "tests/etl/test_eurostat_inequality_corpus.py",
         "tests/etl/test_istat_economia_non_osservata.py",
         "tests/etl/test_istat_economia_non_osservata_territoriale.py",

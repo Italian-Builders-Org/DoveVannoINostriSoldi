@@ -1,4 +1,4 @@
-# Conto Annuale RGS: personale e costo del lavoro 2020
+# Conto Annuale RGS: personale e costo del lavoro
 
 Due distribuzioni ufficiali DFP di dati forniti da MEF–RGS, pubblicate con
 **CC BY 4.0**, entrano nel corpus come righe interrogabili:
@@ -12,11 +12,14 @@ Due distribuzioni ufficiali DFP di dati forniti da MEF–RGS, pubblicate con
 risorse di queste distribuzioni al controllo del 7 settembre 2026. Le risorse
 CSV sono state pubblicate il 23 settembre 2022 e acquisite il 7 settembre 2026.
 La frequenza dichiarata dal catalogo è annuale; l'aggiornamento DVNS è manuale.
-Il download diretto RGS 2024, pur accessibile, non è incluso: non è stata trovata
-una licenza esplicita applicabile a quella distribuzione. La licenza DFP non
-viene estesa ad altri export.
+Il download diretto dal sito del Conto Annuale RGS (export 2024), pur
+accessibile, non è incluso: non è stata trovata una licenza esplicita
+applicabile a quella distribuzione. La licenza DFP non viene estesa ad altri
+export. È un canale diverso dal catalogo RGS OpenBDAP, le cui pagine dichiarano
+CC BY 3.0: da lì viene la serie per tipo di istituzione 2010–2024 descritta
+[più sotto](#occupazione-per-tipo-di-istituzione-2010-2024).
 
-## Significato e raccordo
+## Snapshot DFP 2020: significato e raccordo
 
 - **Costo:** importi annuali in euro interi per ente, contratto e voce di spesa.
   L’allegato alla [circolare RGS 18/2021](https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/CIRCOLARI/2021/18/allegato-2020.pdf)
@@ -50,7 +53,7 @@ viene estesa ad altri export.
 Attribuzione: MEF–Ragioneria Generale dello Stato, distribuzione Dipartimento
 della Funzione Pubblica; proiezione DVNS, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-## Riproduzione e verifiche
+## Snapshot DFP 2020: riproduzione e verifiche
 
 `scripts/etl/specs/conto-annuale.source.json` blocca URL, risorse annuali,
 schema, conteggi, byte e SHA-256. I gzip in `tests/fixtures/conto-annuale/`
@@ -77,3 +80,92 @@ Le schede `/dati/<dataset-id>`, le API `/api/dati/<dataset-id>` e MCP
 `query_dataset(dataset="spesa_pa_dettaglio", code="<dataset-id>", query="U:11799")`
 riusano lo stesso selettore pubblico con paginazione limitata. I campi restano
 `string | null`; nessun secondo snapshot di pagina o nuovo tool MCP.
+
+## Occupazione per tipo di istituzione 2010-2024
+
+| Dataset | Righe | Anni | Fonte |
+| --- | ---: | --- | --- |
+| `rgs-conto-annuale-occupazione-tipologia-2010-2024` | 575 | 2010–2024 | [OpenBDAP, serie `PCA_OCC_DIP_TENT_001`](https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=PCA_OCC_DIP_TENT_001) |
+
+Il catalogo RGS OpenBDAP pubblica il Conto Annuale anche come un pacchetto
+CKAN per anno, `spd_pca_occ_dip_tent_01_<anno>`: una riga per tipo di
+istituzione con le persone al 31 dicembre (donne e uomini, tempo pieno e due
+fasce part time) e quattro forme di lavoro flessibile. La pagina ufficiale di
+ogni anno (`/content/<anno>-dipendenti-pubblici-occupazione-complessiva-dati-tipologia-ente?metadati=show`)
+riporta nel campo «LICENZA» [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/),
+i pacchetti CKAN `license_id: cc-by`: per questo canale lo stato è
+`verified-open-cc-by-3.0`, distinto dalla CC BY 4.0 della distribuzione DFP
+e dal download diretto senza licenza. Attribuzione: MEF–Ragioneria Generale
+dello Stato, OpenBDAP; proiezione DVNS.
+
+| Anno | Tipi di istituzione | Tempo pieno | Part time | Personale | Lavoro flessibile (unità annue) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2010 | 35 | 3.141.024 | 174.323 | 3.315.347 | 121.828 |
+| 2015 | 36 | 3.076.158 | 181.211 | 3.257.369 | 106.156 |
+| 2020 | 41 | 3.053.043 | 190.456 | 3.243.499 | 109.698 |
+| 2023 | 44 | 3.142.127 | 185.727 | 3.327.854 | 112.549,19 |
+| 2024 | 45 | 3.203.478 | 185.316 | 3.388.794 | 116.890,45 |
+
+- **Persone e unità di lavoro:** il personale è tempo pieno + part time fino
+  al 50% + part time oltre il 50%, persone e non equivalenti a tempo pieno.
+  Tempo determinato, formazione lavoro, interinale e LSU sono unità annue,
+  frazionarie dal 2021: non sono persone e non si sommano al personale, anche
+  se l'intestazione della fonte dice «Numero Dipendenti».
+- **Classificazione:** i tipi di istituzione sono 35 nel 2010, 34 nel
+  2012–2013 e 45 nel 2024, sempre in 8 tipologie. Un tipo che compare o
+  scompare non è una variazione di personale: fra anni si confrontano i totali
+  o i tipi presenti in entrambi.
+- **Solo persone:** nessun costo del lavoro; il costo resta nello snapshot DFP
+  2020.
+- **Date distinte:** anno di rilevazione, data dei dati osservati dichiarata da
+  RGS (19 aprile 2022 per gli anni 2010–2020; 8 febbraio 2023, 18 marzo 2024,
+  2 luglio 2025 e 8 marzo 2026 per il 2021–2024), creazione del pacchetto CKAN
+  e acquisizione DVNS (7 ottobre 2026). RGS può rivedere anni già pubblicati:
+  il lock vincola i byte acquisiti.
+- **Formato:** valori come pubblicati, interi fino al 2020 e con due decimali
+  dal 2021 (il personale resta intero). Il pacchetto storico
+  `PCA_OCC_DIP_STOR_001` diverge dai file annuali in 5 anni su 15 (fino a
+  −2.627 persone nel 2023) e non è usato.
+
+### Controlli fail-closed
+
+Il lock `scripts/etl/specs/rgs-conto-annuale-occupazione-tipologia.source.json`
+vincola per ognuno dei 15 file byte e SHA-256 dell'originale, conservato come
+gzip deterministico in `tests/fixtures/rgs-conto-annuale-occupazione/`, URL di
+pagina e file, formato dei valori e totali (righe, tipi, tipologie, tempo
+pieno, part time, personale, lavoro flessibile). Un'istantanea delle risposte
+CKAN `package_show` verifica offline licenza, date di creazione e modifica,
+data dei dati osservati e dimensione della risorsa. Il controllo si ferma se:
+
+1. un file cambia schema, anno, numero di tipi o totali, o se il personale non
+   è un intero non negativo;
+2. i totali 2020 per tipo non si ricalcolano dal file per ente
+   `spd_pca_occ_dip_ente_01_2020` (41.593 righe, 10.433 amministrazioni,
+   conservato come gzip da 510 KB): il personale deve coincidere per ogni tipo;
+   il lavoro flessibile, arrotondato per ente nel file analitico e per tipo in
+   quello aggregato, deve restare entro 50 unità per tipo e misura (massimo
+   misurato 47, COMUNI) e con gli scarti vincolati nel lock;
+3. il personale 2020 per tipo diverge dallo snapshot DFP
+   `rgs-conto-annuale-personale-2020` per un tipo diverso da MINISTERI, o se
+   cambia lo scarto dichiarato dei MINISTERI (+8 donne e +30 uomini a tempo
+   pieno in OpenBDAP). Il raccordo usa le etichette, con un solo alias
+   dichiarato (`ENTI  PREVIDENZIALI E ASSISTENZIALI`, con doppio spazio, nel
+   CSV DFP). Per amministrazione: le 10.330 di DFP sono tutte in OpenBDAP,
+   uguali tranne i codici 8652 (+17) e 10400 (+21); le 103 presenti solo in
+   OpenBDAP hanno personale zero.
+
+Gli anni diversi dal 2020 non hanno un file per ente vincolato: i loro totali
+per tipo sono controllati sul lock, non ricalcolati. Dettaglio per
+amministrazione e flussi (assunzioni, cessazioni) restano fuori da questa
+prima parte.
+
+```bash
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_conto_annuale_occupazione_corpus.py --check
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_conto_annuale_occupazione_corpus.py --check --input-dir /percorso/csv-originali
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_rgs_conto_annuale_occupazione_corpus.py'
+```
+
+`--input-dir` accetta i CSV originali con il nome del pacchetto CKAN
+(`spd_pca_occ_dip_tent_01_<anno>.csv`, `spd_pca_occ_dip_ente_01_2020.csv`) e
+li sottopone allo stesso lock; `--publish` riscrive righe, ricevuta e prove
+del corpus.

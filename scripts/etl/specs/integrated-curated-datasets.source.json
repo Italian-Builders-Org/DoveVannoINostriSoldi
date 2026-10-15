@@ -739,6 +739,20 @@
           "https://bdap-opendata.rgs.mef.gov.it/content/2019-distribuzione-territoriale-della-spesa-del-bilancio-dello-stato-spesa-statale?metadati=showall"
         ]
       },
+      "rgs-conto-annuale-occupazione-tipologia-2010-2024": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Rilevazioni 2010-2024; personale al 31 dicembre per tipo di istituzione (tempo pieno e part time) e lavoro flessibile in unità annue",
+        "publicationDate": "2026-03-18",
+        "acquisitionDate": "2026-10-07",
+        "checkedAt": "2026-10-07",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=PCA_OCC_DIP_TENT_001",
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/956f02ce-eec4-4540-8bcf-e974adb44778.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2024-dipendenti-pubblici-occupazione-complessiva-dati-tipologia-ente?metadati=show",
+          "https://creativecommons.org/licenses/by/3.0/"
+        ]
+      },
       "rgs-spesa-statale-regionalizzata-consolidata": {
         "holder": "Ragioneria Generale dello Stato",
         "referencePeriod": "Esercizi finanziari 2008-2023; spesa consolidata (Bilancio dello Stato, Enti e Fondi oggetto della pubblicazione) per territorio destinatario finale",
@@ -7257,6 +7271,56 @@
           "Missione",
           "Misura",
           "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-conto-annuale-occupazione-tipologia-2010-2024",
+      "title": "Conto Annuale · occupazione per tipo di istituzione · 2010-2024",
+      "domain": "personnel",
+      "relativePath": "rgs-conto-annuale-occupazione-tipologia-2010-2024.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-3.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Personale delle amministrazioni pubbliche al 31 dicembre di ogni anno per tipo di istituzione, dal Conto Annuale RGS su OpenBDAP (serie PCA_OCC_DIP_TENT_001), licenza CC BY 3.0; proiezione DVNS. Solo numero di persone: nessun costo del lavoro.",
+        "Personale = tempo pieno + part time fino al 50% + part time oltre il 50%: persone, non equivalenti a tempo pieno. Tempo determinato, formazione lavoro, interinale e LSU sono unità annue di lavoro (frazionarie dal 2021), non persone: non si sommano al personale, anche se l'intestazione della fonte dice «Numero Dipendenti».",
+        "La classificazione cambia nel tempo: da 34 a 45 tipi di istituzione in 8 tipologie (35 nel 2010, 41 nel 2020, 45 nel 2024). Un tipo che compare o scompare non è una variazione di personale: fra anni si confrontano i totali o i tipi presenti in entrambi.",
+        "Un solo dataset per le rilevazioni dal 2010 al 2024, distinte dalla colonna Anno: i valori non vanno sommati fra anni. Valori come pubblicati: interi fino al 2020, con due decimali dal 2021.",
+        "Date distinte: anno di rilevazione, data dei dati osservati dichiarata da RGS (19 aprile 2022 per gli anni 2010-2020), pubblicazione del pacchetto CKAN e acquisizione DVNS del 7 ottobre 2026. RGS può rivedere anni già pubblicati: il lock vincola i byte acquisiti.",
+        "Controlli DVNS fail-closed sul 2020: il personale di ogni tipo coincide con la somma del file RGS per ente (il lavoro flessibile entro l'arrotondamento, con scarti vincolati) e con lo snapshot DFP rgs-conto-annuale-personale-2020, tranne MINISTERI: 38 persone a tempo pieno in più in OpenBDAP, da due amministrazioni."
+      ],
+      "expected": {
+        "bytes": 128289,
+        "sha256": "5f667d3ec3739d533d1ae86bd3220d0e4390f8760561d7c9722b46c639b4952f",
+        "rows": 575,
+        "columns": 18,
+        "headers": [
+          "Anno",
+          "Tipologia amministrazione",
+          "Tipo istituzione",
+          "Numero Dipendenti Donne Tempo Pieno",
+          "Numero Dipendenti Uomini Tempo Pieno",
+          "Numero Dipendenti Donne Part time Inf. 50%",
+          "Numero Dipendenti Uomini Part time Inf. 50%",
+          "Numero Dipendenti Donne Part time Sup. 50%",
+          "Numero Dipendenti Uomini Part time Sup. 50%",
+          "Numero Dipendenti Donne Tempo Determinato",
+          "Numero Dipendenti Uomini Tempo Determinato",
+          "Numero Dipendenti Donne Formazione Lavoro",
+          "Numero Dipendenti Uomini Formazione Lavoro",
+          "Numero Dipendenti Donne Lavoro Interinale",
+          "Numero Dipendenti Uomini Lavoro Interinale",
+          "Numero Dipendenti Donne Lavoro Socialmente Utile",
+          "Numero Dipendenti Uomini Lavoro Socialmente Utile",
           "URL fonte"
         ]
       }

@@ -264,9 +264,15 @@ def aggregate_rows(groups: dict, labels_for=None) -> list[dict]:
     rows = []
     for key, values in sorted(groups.items()):
         code, label, role = key if isinstance(key, tuple) else (key, None, None)
-        labels = labels_for(key) if labels_for else []
+        if labels_for:
+            # Company views carry the registry names: a single name is also the label.
+            labels = labels_for(key)
+            row_label = labels[0] if len(labels) == 1 else None
+        else:
+            labels = []
+            row_label = label or None
         rows.append({"code": code or None,
-                     "label": labels[0] if len(labels) == 1 else None if labels_for else label or None,
+                     "label": row_label,
                      "labels": labels, "role": role or None, "rows": values[0],
                      "spending": cents_to_euro(values[1]), "negativeRows": values[2], "zeroRows": values[3],
                      "matchedRows": values[4], "unresolvedRows": values[6]})
@@ -293,13 +299,10 @@ def scope_payloads(connection: sqlite3.Connection, scopes: list[dict]) -> Iterat
     manufacturers: dict[tuple, dict] = {}
     company_names: dict[tuple, set[str]] = {}
 
-    def scope_keys(year: int, region: str, company: str) -> tuple[tuple, tuple, tuple]:
-        return (year, None, None), (year, region, None), (year, region, company)
-
     for year, region, company, name, cnd, *values in connection.execute(
             f"""SELECT year,region,company,company_name,source_cnd,{GROUP_TOTALS}
             FROM scope_groups GROUP BY year,region,company,company_name,source_cnd"""):
-        year_key, region_key, company_key = scope_keys(year, region, company)
+        year_key, region_key, company_key = (year, None, None), (year, region, None), (year, region, company)
         company_names.setdefault((year, region, company), set()).add(name)
         add_totals(territories.setdefault(year_key, {}), region, values)
         add_totals(territories.setdefault(region_key, {}), company, values)
@@ -309,7 +312,7 @@ def scope_payloads(connection: sqlite3.Connection, scopes: list[dict]) -> Iterat
     for year, region, company, maker, role, *values in connection.execute(
             f"""SELECT year,region,company,maker,role,{GROUP_TOTALS}
             FROM scope_groups GROUP BY year,region,company,maker,role"""):
-        for key in scope_keys(year, region, company):
+        for key in ((year, None, None), (year, region, None), (year, region, company)):
             add_totals(manufacturers.setdefault(key, {}), (None, maker, role), values)
     connection.execute("DROP TABLE scope_groups")
 

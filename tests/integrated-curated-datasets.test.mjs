@@ -154,11 +154,13 @@ const mandatoryDatasetIds = [
   "vincitori",
   "vincitori-cig",
   "eurostat-disuguaglianza-redditi",
+  "arera-entrate-2024-2025",
+  "arera-spese-2024-2025",
 ].sort();
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 126,
+  datasets: 128,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -170,6 +172,8 @@ const expectedTotals = {
 // data_aggiornamento) or an explicit derived-dataset contract supplies the
 // boundary. Narrative text and years embedded only in URLs are not used.
 const expectedReferencePeriods = {
+  "arera-entrate-2024-2025": "Esercizi 2024-2025; rendiconti della gestione ARERA",
+  "arera-spese-2024-2025": "Esercizi 2024-2025; rendiconti della gestione ARERA",
   "istat-economia-non-osservata-componenti": "Anni 2011-2023; valori nazionali correnti e incidenza sul PIL",
   "istat-economia-sommersa-branche": "Anni 2011-2023; incidenza nazionale per branca di attività economica",
   "istat-economia-non-osservata-territori": "Anno 2023; incidenza percentuale regionale e di ripartizione sul valore aggiunto totale",

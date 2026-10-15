@@ -196,3 +196,10 @@ test('RGS values retain the source measure on mixed and filtered pages', () => {
     assert.equal(amountColumnKeys(headers, page).has('Valore'), false, page[0].cells.Misura);
   }
 });
+
+test("explicit parenthesized euro units format cells without enabling recipient rankings", () => {
+  const headers = ["Voce", "Accertamenti (euro)", "Incassi totali (euro)", "Codice (euro)"];
+  const rows = [{ cells: { "Voce": "Contributi", "Accertamenti (euro)": "81062274.92", "Incassi totali (euro)": "0.00", "Codice (euro)": "E.1.01" } }];
+  assert.deepEqual([...amountColumnKeys(headers, rows)], ["Accertamenti (euro)", "Incassi totali (euro)"]);
+  assert.equal(isInsightCapable(["nome", "Accertamenti (euro)"], true), false);
+});

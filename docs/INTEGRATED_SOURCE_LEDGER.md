@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 126 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 128 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 126 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 126 | 104 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.853.632 | 7.871.286 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.965.878.904 | somma dei byte impegnati nelle 126 ricevute |
+| Dataset correnti | 128 | 106 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.853.692 | 7.871.346 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.965.892.117 | somma dei byte impegnati nelle 128 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.871.286 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.871.346 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -99,6 +99,8 @@ fornisce comunque un percorso di provenienza verificabile.
 | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
 | `affidamenti-diretti` | Affidamenti diretti | procurement | 6.506 | 6.506 | 6.501 | rows | documented-fact | not-declared |
 | `affitti-immobili` | Affitti e immobili | operations | 1.172 | 1.172 | 1.169 | rows | documented-fact | not-declared |
+| `arera-entrate-2024-2025` | ARERA · entrate e contributi 2024-2025 | public-revenue | 54 | 54 | 54 | rows | documented-fact | verified-open-cc-by-sa-4.0 |
+| `arera-spese-2024-2025` | ARERA · spese per titolo 2024-2025 | operations | 6 | 6 | 6 | rows | documented-fact | verified-open-cc-by-sa-4.0 |
 | `auto-welfare` | Auto e welfare | operations | 153 | 153 | 128 | rows | documented-fact | not-declared |
 | `benchmark-consulenze` | Benchmark consulenze | benchmarks | 56 | 0 | 52 | catalog-only | needs-explanation | not-declared |
 | `benchmark-contratti` | Benchmark contratti | benchmarks | 11 | 0 | 11 | catalog-only | needs-explanation | not-declared |

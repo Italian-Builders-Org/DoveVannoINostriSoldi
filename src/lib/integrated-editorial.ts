@@ -661,6 +661,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       },
     ],
     readingNotes: [
+      "ARERA è un pilota distinto dal bilancio dello Stato: entrate, spese, competenza e cassa non si sommano tra loro.",
       "Un capitolo è un’unità contabile e non identifica automaticamente beneficiario o singolo contratto.",
       "Il 2026 è una previsione nel perimetro documentato e non viene sommato ai pagamenti 2024-2025.",
       "Il dettaglio CE2/CE3 non si somma alle viste aggregate né agli incarichi nominativi.",
@@ -764,6 +765,26 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
           { key: "year", label: "Anno" },
           { key: "month", label: "Mese" },
           { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
+        id: "arera-entrate-2024-2025",
+        label: "ARERA · entrate e contributi 2024-2025",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Voce", label: "Voce" },
+          { key: "Accertamenti (euro)", label: "Accertamenti" },
+          { key: "Incassi totali (euro)", label: "Incassi" },
+        ],
+      },
+      {
+        id: "arera-spese-2024-2025",
+        label: "ARERA · spese per titolo 2024-2025",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Voce", label: "Voce" },
+          { key: "Impegni (euro)", label: "Impegni" },
+          { key: "Pagamenti totali (euro)", label: "Pagamenti" },
         ],
       },
     ],

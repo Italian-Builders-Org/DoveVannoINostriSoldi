@@ -318,6 +318,9 @@ function publicationNote(dataset: IntegratedDatasetCatalogEntry): string {
 }
 
 function reuseNote(dataset: IntegratedDatasetCatalogEntry): string {
+  if (dataset.licenseStatus === "verified-open-cc-by-sa-4.0") {
+    return "Riuso verificato: CC BY-SA 4.0. Attribuire la fonte e condividere gli adattamenti con la stessa licenza.";
+  }
   if (dataset.licenseStatus === "verified-open-eu-reuse") {
     return "Riuso degli avvisi GUUE consentito dalla nota TED, salvo diversa indicazione (decisione 2011/833/UE); metadati SIMAP CC0 1.0.";
   }

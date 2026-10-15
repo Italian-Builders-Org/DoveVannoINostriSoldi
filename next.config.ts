@@ -18,6 +18,7 @@ const allIntegratedRowRuntimeFiles = [
 // cap once Fluid is off. Keep compact non-medical globs (not thousands of paths:
 // Turbopack Glob::new fails on huge include lists).
 const integratedRowRuntimeFiles = [
+  "src/data/generated/integrated/rows/arera-*.jsonl.gz",
   "src/data/generated/integrated/rows/affidamenti-*.jsonl.gz",
   "src/data/generated/integrated/rows/affitti-*.jsonl.gz",
   "src/data/generated/integrated/rows/auto-*.jsonl.gz",

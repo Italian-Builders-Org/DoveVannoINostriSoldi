@@ -791,6 +791,38 @@
           "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/411f17b9-0f1d-49b5-b954-12921c60af30.csv",
           "https://bdap-opendata.rgs.mef.gov.it/content/2023-distribuzione-territoriale-della-spesa-effettuata-attraverso-i-fondi-oggetto-della?metadati=showall"
         ]
+      },
+      "arera-entrate-2024-2025": {
+        "holder": "Autorità di Regolazione per Energia Reti e Ambiente (ARERA)",
+        "referencePeriod": "Esercizi 2024-2025; rendiconti della gestione ARERA",
+        "publicationDate": "2026-05-05",
+        "acquisitionDate": "2026-10-15",
+        "checkedAt": "2026-10-15",
+        "updateFrequency": "Annuale",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by-sa/4.0/",
+          "https://www.arera.it/atti-e-provvedimenti/dettaglio/25/164-25",
+          "https://www.arera.it/atti-e-provvedimenti/dettaglio/26/137-26",
+          "https://www.arera.it/fileadmin/allegati/docs/25/164-2025-A-ALLEGATO_A.xlsx",
+          "https://www.arera.it/fileadmin/allegati/docs/26/137-2026-A-ALLEGATO_A.xlsx",
+          "https://www.arera.it/termini-e-condizioni-uso-del-sito"
+        ]
+      },
+      "arera-spese-2024-2025": {
+        "holder": "Autorità di Regolazione per Energia Reti e Ambiente (ARERA)",
+        "referencePeriod": "Esercizi 2024-2025; rendiconti della gestione ARERA",
+        "publicationDate": "2026-05-05",
+        "acquisitionDate": "2026-10-15",
+        "checkedAt": "2026-10-15",
+        "updateFrequency": "Annuale",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by-sa/4.0/",
+          "https://www.arera.it/atti-e-provvedimenti/dettaglio/25/164-25",
+          "https://www.arera.it/atti-e-provvedimenti/dettaglio/26/137-26",
+          "https://www.arera.it/fileadmin/allegati/docs/25/164-2025-A-ALLEGATO_A.xlsx",
+          "https://www.arera.it/fileadmin/allegati/docs/26/137-2026-A-ALLEGATO_A.xlsx",
+          "https://www.arera.it/termini-e-condizioni-uso-del-sito"
+        ]
       }
     }
   },
@@ -7436,6 +7468,89 @@
           "Livello territoriale",
           "Misura",
           "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "arera-entrate-2024-2025",
+      "title": "ARERA · entrate e contributi 2024-2025",
+      "domain": "public-revenue",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-sa-4.0",
+      "dataKind": "delimited",
+      "relativePath": "arera-entrate-2024-2025.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Pilota ARERA, esercizi 2024 e 2025. Non rappresenta il totale delle autorità indipendenti né il bilancio dello Stato.",
+        "Previsioni, competenza, residui e cassa sono colonne distinte: non sommarle. Le partite di giro restano incluse e riconoscibili dal codice.",
+        "Entrate: capitoli al V livello con codice ARERA; riepiloghi gerarchici e avanzo di amministrazione esclusi.",
+        "Importi in euro, resi al centesimo come nel formato XLSX; celle vuote mantenute mancanti. Fonte: ARERA; proiezioni derivate distribuite con licenza CC BY-SA 4.0."
+      ],
+      "expected": {
+        "bytes": 11790,
+        "sha256": "8f8cd8e5bf4f156ea9a69772badfbf4559b3c201d639e9e275675f92f904cc70",
+        "rows": 54,
+        "columns": 12,
+        "headers": [
+          "Anno",
+          "Codice",
+          "Capitolo ARERA",
+          "Voce",
+          "Previsioni definitive (euro)",
+          "Riscosso in competenza (euro)",
+          "Da riscuotere in competenza (euro)",
+          "Accertamenti (euro)",
+          "Riscosso su residui (euro)",
+          "Incassi totali (euro)",
+          "Residui attivi finali (euro)",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "arera-spese-2024-2025",
+      "title": "ARERA · spese per titolo 2024-2025",
+      "domain": "operations",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-sa-4.0",
+      "dataKind": "delimited",
+      "relativePath": "arera-spese-2024-2025.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Pilota ARERA, esercizi 2024 e 2025. Non rappresenta il totale delle autorità indipendenti né il bilancio dello Stato.",
+        "Previsioni, competenza, residui e cassa sono colonne distinte: non sommarle. Le partite di giro restano incluse e riconoscibili dal codice.",
+        "Uscite: soli titoli al I livello; nessuna somma con i capitoli di dettaglio. Variazioni annuali non misurano efficienza o sprechi.",
+        "Importi in euro, resi al centesimo come nel formato XLSX; celle vuote mantenute mancanti. Fonte: ARERA; proiezioni derivate distribuite con licenza CC BY-SA 4.0."
+      ],
+      "expected": {
+        "bytes": 1423,
+        "sha256": "94194bc7db2735a7eced043f652774764b686606be0a84c6a42af212dcdf397e",
+        "rows": 6,
+        "columns": 11,
+        "headers": [
+          "Anno",
+          "Codice",
+          "Voce",
+          "Previsioni definitive (euro)",
+          "Pagato in competenza (euro)",
+          "Da pagare in competenza (euro)",
+          "Impegni (euro)",
+          "Pagato su residui (euro)",
+          "Pagamenti totali (euro)",
+          "Residui passivi finali (euro)",
           "URL fonte"
         ]
       }

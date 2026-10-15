@@ -12,7 +12,7 @@ import arera_bilanci as arera
 class AreraBilanciTests(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.spec = json.loads(arera.SPEC.read_text())
+        cls.spec = json.loads(arera.SPEC.read_text(encoding="utf-8"))
 
     def test_official_rows_preserve_period_money_natures_and_reconcile(self):
         projected = arera.projections(self.spec)

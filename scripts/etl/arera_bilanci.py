@@ -204,7 +204,7 @@ def main() -> int:
     action.add_argument('--publish', action='store_true')
     action.add_argument('--check', action='store_true')
     args = parser.parse_args()
-    payloads = projections(json.loads(SPEC.read_text()))
+    payloads = projections(json.loads(SPEC.read_text(encoding="utf-8")))
     if args.publish:
         publish(payloads)
     else:

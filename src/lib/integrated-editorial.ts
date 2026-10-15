@@ -661,6 +661,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       },
     ],
     readingNotes: [
+      "Il 5 per mille riporta importi erogabili agli enti, non pagamenti verificati; le categorie di ammissione possono sovrapporsi.",
       "ARERA è un pilota distinto dal bilancio dello Stato: entrate, spese, competenza e cassa non si sommano tra loro.",
       "Un capitolo è un’unità contabile e non identifica automaticamente beneficiario o singolo contratto.",
       "Il 2026 è una previsione nel perimetro documentato e non viene sommato ai pagamenti 2024-2025.",
@@ -765,6 +766,16 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
           { key: "year", label: "Anno" },
           { key: "month", label: "Mese" },
           { key: "amountCents", label: "Importo in centesimi" },
+        ],
+      },
+      {
+        id: "ade-cinque-per-mille-territori-2024",
+        label: "5 per mille 2024 · importi erogabili",
+        columns: [
+          { key: "Territorio", label: "Territorio" },
+          { key: "Enti ammessi", label: "Enti ammessi" },
+          { key: "Enti senza importo erogabile pubblicato", label: "Senza importo" },
+          { key: "Totale erogabile pubblicato (euro)", label: "Erogabile pubblicato" },
         ],
       },
       {

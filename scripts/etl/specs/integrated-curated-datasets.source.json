@@ -823,6 +823,20 @@
           "https://www.arera.it/fileadmin/allegati/docs/26/137-2026-A-ALLEGATO_A.xlsx",
           "https://www.arera.it/termini-e-condizioni-uso-del-sito"
         ]
+      },
+      "ade-cinque-per-mille-territori-2024": {
+        "holder": "Agenzia delle Entrate",
+        "referencePeriod": "Anno finanziario 2024; aggregati territoriali degli enti ammessi al 5 per mille e importi erogabili",
+        "publicationDate": "2026-06-17",
+        "acquisitionDate": "2026-10-15",
+        "checkedAt": "2026-10-15",
+        "updateFrequency": "Annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://www.agenziaentrate.gov.it/portale/elenco-complessivo-dei-beneficiari",
+          "https://www.agid.gov.it/sites/agid/files/2024-05/lg-open-data_v.1.0_1.pdf",
+          "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art52!vig="
+        ]
       }
     }
   },
@@ -7551,6 +7565,49 @@
           "Pagato su residui (euro)",
           "Pagamenti totali (euro)",
           "Residui passivi finali (euro)",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "ade-cinque-per-mille-territori-2024",
+      "title": "5 per mille AF 2024 · territorio degli enti",
+      "domain": "public-revenue",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cad-art52-cc-by-4.0",
+      "dataKind": "delimited",
+      "relativePath": "ade-cinque-per-mille-territori-2024.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Tutti i 90.627 enti ammessi delle sette parti originali AdE sono riconciliati in 22 aggregati: 21 territori come pubblicati (Trento e Bolzano distinti) e una riga per i 323 enti senza regione pubblicata. Non sono 22 regioni e non si somma un totale Italia alle righe.",
+        "Importi erogabili pubblicati, non pagamenti o stanziamenti. Le celle individuali vuote non diventano zero: i conteggi senza importo o numero scelte ne documentano la copertura. Le componenti non si sommano al totale.",
+        "Le categorie di ammissione possono sovrapporsi: ogni ente è contato una sola volta e non è attribuito a ciascuna categoria l’intero importo. Le quote della singola categoria inferiori a 100 euro non erogabili sono escluse secondo la nota AdE.",
+        "Il catalogo/API/MCP espongono gli aggregati territoriali. I sette CSV originali completi sono scaricabili come archivio statico versionato, senza caricarne il dettaglio nelle Functions.",
+        "Riuso: art. 52, comma 2, CAD e requisito 20 Linee guida AgID 2023, CC BY 4.0 per apertura predefinita dei dati pubblici non personali. La pagina AdE non dichiara una licenza specifica: questa base normativa è distinta da una dichiarazione dell’editore."
+      ],
+      "expected": {
+        "bytes": 3818,
+        "sha256": "c1f37c70d0e78fb54977c9189aabbde445f597928bedb1fc5bfde57683aa43d4",
+        "rows": 22,
+        "columns": 12,
+        "headers": [
+          "Anno finanziario",
+          "Territorio",
+          "Enti ammessi",
+          "Enti con importo erogabile pubblicato",
+          "Enti senza importo erogabile pubblicato",
+          "Scelte pubblicate",
+          "Enti senza numero scelte pubblicato",
+          "Scelte espresse (euro)",
+          "Scelte generiche (euro)",
+          "Redistribuzione quote sotto soglia (euro)",
+          "Totale erogabile pubblicato (euro)",
           "URL fonte"
         ]
       }

@@ -68,6 +68,7 @@ export function checkTrace(root, manifest, required = [], forbidden = [], forbid
   // Childcare remains required below for the routes that publish its data.
   const unexpected = files.filter((file) => /^(tests|docs|research)\//.test(file)
     || file.startsWith("data/source-ledger/elements/")
+    || file === "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"
     || (CHILDCARE_NONCONSUMER_ROUTES.has(route) && file === "src/data/generated/pnrr-childcare.data.json")
     || forbidden.some((prefix) => file.startsWith(`${prefix}/`))
     || forbiddenFilePrefixes.some((prefix) => file.startsWith(prefix)));
@@ -153,6 +154,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["integrated/rows/rgs-spesa-statale-regionalizzata-consolidata.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-enti.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-fondi.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/ade-cinque-per-mille-territori-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/arera-entrate-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/arera-spese-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-conto-annuale-occupazione-tipologia-2010-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],

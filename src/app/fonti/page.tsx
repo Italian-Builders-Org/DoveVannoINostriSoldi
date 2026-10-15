@@ -79,15 +79,16 @@ export default function SourcesPage() {
           e <Link href="/dati/arera-spese-2024-2025">spese per titolo</Link>. Fonte ARERA, licenza{" "}
           <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0 ↗</a>.
         </p>
+        <p><Link href="/dati/ade-cinque-per-mille-territori-2024">5 per mille 2024 per territorio</Link>{" "}
+          e <a href="/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip" download>CSV originali (ZIP)</a>. Fonte: Agenzia delle Entrate. Importi erogabili, non pagamenti verificati.</p>
         <details className="data-details">
           <summary>Fonti non ancora integrate</summary>
           <p>I collegamenti seguenti portano ai dati degli enti: non sono ancora interrogabili su DVNS.</p>
           <ul>
             <li>Consorzi di bonifica: <a href="https://www.consorziobonificalitoralenord.it/amministrazione-trasparente/" target="_blank" rel="noreferrer">Litorale Nord ↗</a>{" "}
               (successore di Tevere e Agro Romano) e <a href="https://www.consorziobonifica8rg.it/amministrazione-trasparente/bilanci/bilancio-preventivo-e-consuntivo.html" target="_blank" rel="noreferrer">Ragusa ↗</a>.</li>
-            <li>Contributi ambientali: <a href="https://www.conai.org/imprese/servizi-gestione-adempimenti-consortili-e-opportunita-imprese/contributo-ambientale/" target="_blank" rel="noreferrer">CONAI ↗</a>.</li>
-            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer">8 per mille ↗</a>,{" "}
-              <a href="https://www.agenziaentrate.gov.it/portale/elenco-complessivo-dei-beneficiari" target="_blank" rel="noreferrer">5 per mille ↗</a>{" "}
+            <li>Contributi ambientali: <a href="https://www.conai.org/" target="_blank" rel="noreferrer">CONAI ↗</a>.</li>
+            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer">8 per mille ↗</a>{" "}
               e <a href="https://www1.finanze.gov.it/finanze/2xmille/public/index.php?tree=2025AADUEXM0101" target="_blank" rel="noreferrer">2 per mille ↗</a>.</li>
           </ul>
         </details>

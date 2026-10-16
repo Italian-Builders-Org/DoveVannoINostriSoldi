@@ -318,6 +318,12 @@ function publicationNote(dataset: IntegratedDatasetCatalogEntry): string {
 }
 
 function reuseNote(dataset: IntegratedDatasetCatalogEntry): string {
+  if (dataset.licenseStatus === "verified-open-cad-art52-cc-by-4.0") {
+    return "Riuso ai sensi dell’art. 52 CAD e delle linee guida AgID: CC BY 4.0 per apertura predefinita; nessuna licenza specifica indicata dalla fonte.";
+  }
+  if (dataset.licenseStatus === "verified-open-cc-by-sa-4.0") {
+    return "Riuso verificato: CC BY-SA 4.0. Attribuire la fonte e condividere gli adattamenti con la stessa licenza.";
+  }
   if (dataset.licenseStatus === "verified-open-eu-reuse") {
     return "Riuso degli avvisi GUUE consentito dalla nota TED, salvo diversa indicazione (decisione 2011/833/UE); metadati SIMAP CC0 1.0.";
   }

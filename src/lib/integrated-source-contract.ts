@@ -53,7 +53,7 @@ export function siopeProjectionMeasurements(value: unknown) {
   }
   const rows = Object.values(native.projections).reduce((sum, item) => sum + item.rows, 0);
   const bytes = Object.values(native.projections).reduce((sum, item) => sum + item.bytes, 0);
-  if (!Number.isSafeInteger(rows + 20_042_482) || !Number.isSafeInteger(bytes + 3_765_877_636)) {
+  if (!Number.isSafeInteger(rows + 20_042_564) || !Number.isSafeInteger(bytes + 3_765_894_667)) {
     throw new Error("SIOPE: totali fuori dal limite intero sicuro");
   }
   return { projections: native.projections, acquisitionDate: native.acquiredAt.slice(0, 10), rows, bytes };
@@ -68,14 +68,14 @@ export const INTEGRATED_CORPUS_CONTRACT = {
   regularFiles: 46_438,
   hardlinks: 4_860,
   symlinks: 5,
-  datasets: 126,
+  datasets: 129,
   sourceIdentities: 34_071,
   quarantinedSourceIdentities: 1_493,
-  sourceRows: 20_042_482 + siopeRows,
-  publicRows: 7_060_136 + siopeRows,
+  sourceRows: 20_042_564 + siopeRows,
+  publicRows: 7_060_218 + siopeRows,
   catalogOnlyRows: 12_979_505,
   derivedOnlyRows: 2_841,
-  sourceBytes: 3_765_877_636 + siopeBytes,
+  sourceBytes: 3_765_894_667 + siopeBytes,
 } as const;
 
 export const INTEGRATED_ROW_CHUNK_ROWS = 1_000;
@@ -123,6 +123,8 @@ export type IntegratedEvidenceLabel = z.infer<typeof evidenceLabelSchema>;
 export const licenseStatusSchema = z.enum([
   "not-declared",
   "verified-open-cc-by-4.0",
+  "verified-open-cc-by-sa-4.0",
+  "verified-open-cad-art52-cc-by-4.0",
   "verified-open-cc-by-3.0",
   "verified-open-iodl-2.0",
   "verified-open-eu-reuse",

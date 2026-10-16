@@ -208,14 +208,16 @@ function sourceValue(row: UnknownRecord, fields: MopFieldMap, field: MopField): 
   return row[fields[field]];
 }
 
-function moneyCents(value: unknown, field: string): number {
-  if (typeof value !== "string" || !/^\d+(?:\.\d{1,2})?$/.test(value.trim())) {
+function moneyCents(value: unknown, field: string, allowNegative = false): number {
+  const raw = typeof value === "string" ? value.trim() : "";
+  const unsigned = allowNegative ? raw.replace(/^-/, "") : raw;
+  if (!/^\d+(?:\.\d{1,2})?$/.test(unsigned)) {
     throw new Error(`OpenBDAP MOP: importo non valido in ${field}`);
   }
-  const [euros, decimals = ""] = value.trim().split(".");
+  const [euros, decimals = ""] = unsigned.split(".");
   const cents = Number(euros) * 100 + Number(decimals.padEnd(2, "0"));
   if (!Number.isSafeInteger(cents)) throw new Error(`OpenBDAP MOP: importo oltre il limite sicuro in ${field}`);
-  return cents;
+  return raw.startsWith("-") && cents !== 0 ? -cents : cents;
 }
 
 function dateValue(
@@ -316,6 +318,12 @@ export function normalizeMopRow(
   const privateCents = moneyCents(sourceValue(row, fields, "privateFunding"), "finanziamenti privati");
   const otherCents = moneyCents(sourceValue(row, fields, "otherFunding"), "altre fonti");
 
+  // OpenBDAP publishes signed residual balances, including CUP J84C20001920001.
+  const toFindCents = moneyCents(sourceValue(row, fields, "fundingToFind"), "finanziamenti da reperire", true);
+  if (toFindCents < 0) {
+    warnings.push("Finanziamenti da reperire: saldo negativo pubblicato dalla fonte, da verificare.");
+  }
+
   const withoutSignals: Omit<PublicWork, "signals"> = {
     localCode: text(sourceValue(row, fields, "localCode"), "codice locale"),
     cup: normalizeCup(text(sourceValue(row, fields, "cup"), "CUP")),
@@ -363,7 +371,7 @@ export function normalizeMopRow(
       privateCents,
       otherCents,
       securedTotalCents: stateCents + europeanCents + territorialCents + privateCents + otherCents,
-      toFindCents: moneyCents(sourceValue(row, fields, "fundingToFind"), "finanziamenti da reperire"),
+      toFindCents,
       economiesCents: moneyCents(sourceValue(row, fields, "economies"), "economie"),
     },
     dataQualityWarnings: warnings,

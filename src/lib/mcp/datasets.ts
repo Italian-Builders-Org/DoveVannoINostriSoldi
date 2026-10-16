@@ -85,11 +85,11 @@ export async function queryPublicDataset(
       }));
     }
     case "salute_posti_letto": {
-      const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
-      return jsonSafe(await selectIntegratedDataset({
-        datasetId: "salute-posti-letto-2023", q: query.query, limit,
-        offset: query.offset, cursor: query.cursor, signal: options.signal,
-      }));
+      const { queryIntegratedMcpDataset } = await import("@/lib/mcp/integrated-dataset");
+      return jsonSafe(await queryIntegratedMcpDataset({
+        code: "salute-posti-letto-2023", query: query.query, limit,
+        offset: query.offset, cursor: query.cursor,
+      }, options.signal));
     }
     case "salute_dispositivi_medici": {
       const {
@@ -1124,15 +1124,10 @@ export async function queryPublicDataset(
     }
     case "spesa_pa_dettaglio": {
       const code = requireText(query.code, "code");
-      const { selectIntegratedDataset } = await import("@/lib/integrated-public-view");
-      return jsonSafe(await selectIntegratedDataset({
-        datasetId: code,
-        q: query.query,
-        limit,
-        offset: query.offset,
-        cursor: query.cursor,
-        signal: options.signal,
-      }));
+      const { queryIntegratedMcpDataset } = await import("@/lib/mcp/integrated-dataset");
+      return jsonSafe(await queryIntegratedMcpDataset({
+        code, query: query.query, limit, offset: query.offset, cursor: query.cursor,
+      }, options.signal));
     }
     case "company_active_enterprises":
     case "company_workforce":

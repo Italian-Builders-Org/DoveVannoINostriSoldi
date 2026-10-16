@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "ade-cinque-per-mille-territori-2024",
+  "holder": "Agenzia delle Entrate",
+  "financialYear": 2024,
+  "publicationDate": "2026-06-17",
+  "acquisitionDate": "2026-10-15",
+  "license": {
+    "status": "verified-open-cad-art52-cc-by-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "basis": "Art. 52, comma 2, CAD; requisito 20 delle Linee guida AgID 2023, pp. 86-87. Dati pubblici non personali di enti beneficiari; nessuna licenza specifica nelle pagine acquisite. Non riguarda nomi o scelte dei contribuenti.",
+    "legalUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art52!vig=",
+    "evidence": [
+      {
+        "url": "https://www.agid.gov.it/sites/agid/files/2024-05/lg-open-data_v.1.0_1.pdf",
+        "path": "tests/fixtures/ade-cinque-per-mille/agid-open-data.pdf.gz",
+        "sha256": "5d3ce8627747fc7aeb027c45a86e1295016b3f09cd8c0ed56009a534174e426c",
+        "bytes": 4041421
+      },
+      {
+        "url": "https://www.agenziaentrate.gov.it/portale/elenco-complessivo-dei-beneficiari",
+        "path": "tests/fixtures/ade-cinque-per-mille/entrate5mille.html.gz",
+        "sha256": "e1c70fa8f32a93fbcafb2fbb6c25ec8233f8f05e893d500a835024e8ac409fd4",
+        "bytes": 120194
+      },
+      {
+        "url": "https://www.agenziaentrate.gov.it/portale/web/guest/privacy",
+        "path": "tests/fixtures/ade-cinque-per-mille/entrate-privacy.html.gz",
+        "sha256": "e13242f27d4e31a00eb47d0233d7ba5e417ea194d2cccd728b5b809c4e27984d",
+        "bytes": 119218
+      }
+    ]
+  },
+  "parts": [
+    {
+      "part": 1,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-1-agg-17-06-2026-3",
+      "bytes": 1705789,
+      "sha256": "b7d14e7954fde2bf879858dc63451d3fced7380cb884bb85aef980fcdd42bcdb",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-1.csv"
+    },
+    {
+      "part": 2,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-2-agg-17-06-2026-2",
+      "bytes": 1685812,
+      "sha256": "22226014de2998daea3768ac7bb615a9bdebe3d70b4e6c3d329da8bb8ed91964",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-2.csv"
+    },
+    {
+      "part": 3,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-3-agg-17-06-2026-2",
+      "bytes": 1658744,
+      "sha256": "abb789b459433b8046c1cd8ed5968cd9f88fa285dadaec7ccc41289561754f0d",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-3.csv"
+    },
+    {
+      "part": 4,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-4-agg-17-06-2026-2",
+      "bytes": 1605783,
+      "sha256": "a7be8002b0343564fca387f3e95a348eb6dcb9cb4b4f99912b3bd4eaef1cb083",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-4.csv"
+    },
+    {
+      "part": 5,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-5-agg-17-06-2026-2",
+      "bytes": 1573074,
+      "sha256": "435ba501816e27de8ff349750bbf6c74705b0964e697f3827b196a2a14058d31",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-5.csv"
+    },
+    {
+      "part": 6,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-6-agg-17-06-2026-2",
+      "bytes": 1350356,
+      "sha256": "c6ddac4bf7b3f7c77612aff6c9633d73fe3b00072c8c27a437d91868dd7d7c33",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 13770,
+      "member": "af2024-parte-6.csv"
+    },
+    {
+      "part": 7,
+      "url": "https://www.agenziaentrate.gov.it/portale/documents/d/guest/5x1000-af-2024-elenco-destinatari-ammessi-al-contributo-7-agg-17-06-2026-2",
+      "bytes": 740398,
+      "sha256": "e0be316d23eae6c9e405c8527e0a5d1dd24101ca68d453630f2c038e98dbda3e",
+      "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      "rows": 8007,
+      "member": "af2024-parte-7.csv"
+    }
+  ],
+  "expected": {
+    "rows": 90627,
+    "missingNumericCells": [
+      9647,
+      17820,
+      25508,
+      25863,
+      17820
+    ],
+    "observedSums": [
+      "15177992",
+      "449579413.21",
+      "72944513.76",
+      "426239.15",
+      "522950166.12"
+    ],
+    "territories": 22
+  },
+  "archive": {
+    "path": "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+    "bytes": 3444445,
+    "sha256": "58e5fc410ce03f3398684729bbb2cf5afdc233bc0007cd7536781a5336e79a2d",
+    "readmeSha256": "19018160f8e666d5fa1271240c8fc18fe5e26b13458959e79c66f69d31f820f3"
+  }
+}

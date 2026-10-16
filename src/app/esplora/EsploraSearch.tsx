@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { integer } from "@/lib/format";
 import styles from "./esplora.module.css";
 
 type Relation = {
@@ -86,7 +87,7 @@ export function EsploraSearch({ initialCount }: { initialCount: number }) {
         {loading
           ? "Ricerca…"
           : query.trim().length < 2
-            ? `${initialCount.toLocaleString("it-IT")} relazioni indicizzate`
+            ? `${integer(initialCount)} relazioni indicizzate`
             : `${results.length} risultati`}
       </p>
       {error ? (

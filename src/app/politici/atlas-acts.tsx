@@ -4,6 +4,7 @@ import { useEffect, useId, useState } from "react";
 import type { RepublicActSummary, RepublicLegislativeActivity } from "@/lib/politici-repubblica";
 import type { Resource } from "./atlas-data";
 import { filterActs, loadLegislation, OWN_VOTE_LABELS, type LegislativeData } from "./atlas-legislation";
+import { integer } from "@/lib/format";
 import { longDate } from "./atlas-model";
 import { Icon, SourceLink, Status } from "./atlas-primitives";
 import styles from "./politici.module.css";
@@ -63,15 +64,15 @@ function ActsBrowser({ data, activity }: { data: LegislativeData; activity: Repu
       di conteggio distinti.
     </p> : null}
     {comparison ? <p className={styles.note}>
-        Mediana {chamberLabel}: {comparison.chamberMedianFirstSigned.toLocaleString("it-IT")} a prima firma
+        Mediana {chamberLabel}: {integer(comparison.chamberMedianFirstSigned)} a prima firma
         {comparison.groupMedianFirstSigned !== null && comparison.groupLabel
-          ? ` · mediana ${comparison.groupLabel}: ${comparison.groupMedianFirstSigned.toLocaleString("it-IT")}`
+          ? ` · mediana ${comparison.groupLabel}: ${integer(comparison.groupMedianFirstSigned)}`
           : ""}
         .
       </p> : null}
     <p className={styles.note}>{data.source.chamber === "camera"
       ? "Le votazioni finali Camera comprendono atti di iniziativa parlamentare e governativa nel perimetro verificato. "
-      : `Lo snapshot Senato include ${data.source.coverage.finalVotesIncluded.toLocaleString("it-IT")} votazioni finali sugli atti a prima firma senatore e sulle iniziative governative con fase Senato; ${data.source.coverage.finalVotesExcluded.toLocaleString("it-IT")} votazioni osservate su altri atti sono escluse. `}
+      : `Lo snapshot Senato include ${integer(data.source.coverage.finalVotesIncluded)} votazioni finali sugli atti a prima firma senatore e sulle iniziative governative con fase Senato; ${integer(data.source.coverage.finalVotesExcluded)} votazioni osservate su altri atti sono escluse. `}
       Il numero di firme non misura qualità o efficacia dell’attività parlamentare.</p>
     <div className={extra.actRoleSwitch} role="group" aria-label="Vista degli atti">
       {data.voted.length ? <button type="button" aria-pressed={role === "voted"} onClick={() => { setRole("voted"); setLimit(8); }}>Votazioni finali</button> : null}

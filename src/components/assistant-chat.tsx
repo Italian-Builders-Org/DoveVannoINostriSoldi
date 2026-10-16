@@ -17,6 +17,7 @@ import type { AiActivity } from "@/lib/assistant/activity-contracts";
 import { AssistantAttachments, AssistantAttachmentPreview } from "@/components/assistant-attachments";
 import { useAssistantAttachments } from "@/components/use-assistant-attachments";
 import { ATTACHMENT_ACCEPT, ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TEXT_CHARS, attachmentTextSize, type AiAttachment } from "@/lib/assistant/attachment-contracts";
+import { integer } from "@/lib/format";
 import { useAssistantVoice } from "@/components/use-assistant-voice";
 import styles from "@/app/assistente/assistant.module.css";
 
@@ -283,7 +284,7 @@ export function AssistantChat() {
                     {editing?.id === turn.id ? <form className={styles.editMessage} onSubmit={(event) => { event.preventDefault(); void ask(editing.value, turn.id); }}>
                       <label className={styles.srOnly} htmlFor={`edit-message-${turn.id}`}>Modifica la domanda</label>
                       <textarea id={`edit-message-${turn.id}`} autoFocus value={editing.value} aria-invalid={editing.value.length > AI_MAX_PROMPT_CHARS || undefined} onChange={(event) => setEditing({ id: turn.id, value: event.target.value })} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); setEditing(null); } }} />
-                      <p>{editing.value.length > AI_MAX_PROMPT_CHARS ? `Massimo 8.000 caratteri. Rimuovine ${(editing.value.length - AI_MAX_PROMPT_CHARS).toLocaleString("it-IT")} per inviare.` : "La modifica sostituirà la risposta e gli eventuali messaggi successivi."}</p>
+                      <p>{editing.value.length > AI_MAX_PROMPT_CHARS ? `Massimo 8.000 caratteri. Rimuovine ${integer(editing.value.length - AI_MAX_PROMPT_CHARS)} per inviare.` : "La modifica sostituirà la risposta e gli eventuali messaggi successivi."}</p>
                       <div><button type="button" onClick={() => setEditing(null)}>Annulla modifica</button><button type="submit" disabled={!editing.value.trim() || editing.value.length > AI_MAX_PROMPT_CHARS || loading}>Invia modifica</button></div>
                     </form> : <><div className={styles.userMessage}><span className={styles.srOnly}>Tu: </span>{turn.prompt}</div>
                     <div className={styles.messageActions}>
@@ -383,7 +384,7 @@ export function AssistantChat() {
             </form>
           </div>
           {attachments.error ? <p key={attachments.noticeVersion} className={styles.limitNotice} role="alert">{attachments.error}</p> : null}
-          {tooLong ? <p id="assistant-prompt-limit" className={styles.draftError} role="alert">Massimo 8.000 caratteri. Rimuovine {(draft.length - AI_MAX_PROMPT_CHARS).toLocaleString("it-IT")} per inviare.</p> : null}
+          {tooLong ? <p id="assistant-prompt-limit" className={styles.draftError} role="alert">Massimo 8.000 caratteri. Rimuovine {integer(draft.length - AI_MAX_PROMPT_CHARS)} per inviare.</p> : null}
           {atLimit ? <p className={styles.draftError}>Hai raggiunto il limite di questa conversazione. Apri una nuova chat per continuare.</p> : null}
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
             {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}

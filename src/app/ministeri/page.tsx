@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getStateAdministrationIdentity } from "@/lib/data/state-administration-identities";
-import { compactEuro, exactEuro, longDate } from "@/lib/format";
+import { compactEuro, exactEuro, integer, longDate } from "@/lib/format";
 import { rgsMinistriesMetadata, rgsMinistriesSnapshot } from "@/lib/rgs-ministries-snapshot";
 import { MinistryCommitmentTreemap } from "./ministry-commitment-treemap";
 import styles from "./ministeri.module.css";
@@ -83,7 +83,7 @@ export default function MinistriesPage() {
               Impegnato, pagato e ancora da pagare, in euro.
             </p>
           </div>
-          <span>5.395 righe riconciliate</span>
+          <span>{integer(coverage.rowsReconciled)} righe riconciliate</span>
         </div>
         <p className={styles.scrollHint}>Scorri la tabella verso destra per vedere tutti gli importi.</p>
 
@@ -169,13 +169,13 @@ export default function MinistriesPage() {
           <div><span>Controllato da noi</span><strong>{longDate(source.acquiredAt)}</strong></div>
           <div>
             <span>Copertura</span>
-            <strong>{coverage.ministries} Ministeri · {coverage.rowsReconciled.toLocaleString("it-IT")} righe su {coverage.sourceRows.toLocaleString("it-IT")}</strong>
+            <strong>{coverage.ministries} Ministeri · {integer(coverage.rowsReconciled)} righe su {integer(coverage.sourceRows)}</strong>
           </div>
         </div>
         <p className={styles.sourceNote}>
           Abbiamo verificato le 41 colonne e tutte le identità contabili prima di aggregare.
           Ogni importo è convertito in centesimi interi senza arrotondamenti intermedi; tutte
-          le {coverage.sourceRows.toLocaleString("it-IT")} righe sorgente sono incluse. Nel quadro
+          le {integer(coverage.sourceRows)} righe sorgente sono incluse. Nel quadro
           mostrato, il totale impegnato coincide esattamente con già pagato più ancora da pagare
           (Totale CP = Pagato CP + Rimasto CP). Fonte {source.sourceRecordId},
           licenza {source.licenseName} dichiarata sulla scheda di questo rilascio.

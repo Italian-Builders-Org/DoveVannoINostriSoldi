@@ -19,6 +19,7 @@ const MEDICAL_DEVICE_ROW_PREFIXES = [
 const INTEGRATED_ROW_HOME_ROUTES = new Set([
   "api/dati/[dataset]/route.js.nft.json",
   "dati/[dataset]/page.js.nft.json",
+  "snapshot-pages/dati/[dataset]/page.js.nft.json",
 ]);
 const ROUTES_WITHOUT_INTEGRATED_ROWS = new Set([
   "api/assistant/route.js.nft.json",
@@ -67,6 +68,7 @@ export function checkTrace(root, manifest, required = [], forbidden = [], forbid
   // Childcare remains required below for the routes that publish its data.
   const unexpected = files.filter((file) => /^(tests|docs|research)\//.test(file)
     || file.startsWith("data/source-ledger/elements/")
+    || file === "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"
     || (CHILDCARE_NONCONSUMER_ROUTES.has(route) && file === "src/data/generated/pnrr-childcare.data.json")
     || forbidden.some((prefix) => file.startsWith(`${prefix}/`))
     || forbiddenFilePrefixes.some((prefix) => file.startsWith(prefix)));
@@ -151,6 +153,11 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["integrated/rows/rgs-spesa-statale-regionalizzata-2019.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-2022.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-consolidata.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-enti.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/rgs-spesa-statale-regionalizzata-fondi.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/ade-cinque-per-mille-territori-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/arera-entrate-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/arera-spese-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-conto-annuale-occupazione-tipologia-2010-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["istat-bes-relazioni-2011-2024.data.json", ["api/territori/bes-relazioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-politica-2004-2024.data.json", ["api/territori/bes-politica/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -188,6 +195,10 @@ export function checkRuntimeTraces(root = process.cwd()) {
       requirements.set(manifest, [...(requirements.get(manifest) ?? []), `src/data/generated/${file}`]);
     }
   }
+  // The ISR wrapper reads the same corpus as the public dataset page.
+  // Reuse its requirements so future datasets cannot omit the cached route.
+  requirements.set("snapshot-pages/dati/[dataset]/page.js.nft.json",
+    [...requirements.get("dati/[dataset]/page.js.nft.json")]);
   const appRoot = resolve(root, ".next/server/app");
   const results = [];
   for (const manifest of walk(appRoot).filter((path) => path.endsWith(".nft.json"))) {

@@ -255,6 +255,9 @@ try {
     for (const width of [390, 1280]) await runScenario(browser, {
       label:`Sidebar attiva ${pathname} ${width}px`, pathname, width, suite:'navigation',
       validate: async(page) => {
+        // Child aria-current is added by NavigationSearchSync after hydration.
+        const child = `.nav-submenu a[href="${pathname}"]`;
+        if (await page.$(child)) await page.waitForSelector(`${child}[aria-current="page"]`);
         if (width < 1100) await openMobile(page);
         const root = width < 1100 ? '#mobile-navigation-links' : '#desktop-navigation';
         assert.deepEqual(await page.$$eval(`${root} .nav-item > a[data-section-active="true"]`, (links) => links.map((link) => link.textContent.trim())), [label]);

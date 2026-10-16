@@ -300,3 +300,30 @@ test("runtime validation rejects missing or divergent distribution metadata", as
     /presenza dei quantili/i,
   );
 });
+
+test("a newest month far below the previous median is partial and left out of the headline", async () => {
+  const {
+    availableSiopeYears,
+    getSiopeMunicipalSnapshot,
+    partialMonth,
+    settledNationalPerCapita,
+    settledTotalPaid,
+  } = await import("../src/lib/siope-snapshot.ts");
+
+  for (const year of availableSiopeYears) {
+    const data = getSiopeMunicipalSnapshot(year);
+    const latest = data.monthly.at(-1);
+    const previous = data.monthly.slice(0, -1).map((point) => point.flow).sort((a, b) => a - b);
+    if (previous.length === 0) continue;
+    const middle = Math.floor(previous.length / 2);
+    const median = previous.length % 2 === 1
+      ? previous[middle]
+      : (previous[middle - 1] + previous[middle]) / 2;
+    if (latest.flow >= median / 2) continue;
+
+    assert.equal(partialMonth(data), latest.month, `${year}: ${latest.label} must be partial`);
+    if (latest.completeness !== undefined) assert.equal(latest.completeness, "partial");
+    assertMoneyClose(settledTotalPaid(data), data.totalPaid - latest.flow);
+    assert.notEqual(settledNationalPerCapita(data), data.nationalPerCapita);
+  }
+});

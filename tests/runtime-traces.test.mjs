@@ -100,7 +100,7 @@ test("assistant and mcp exclude integrated row shards; dati keeps non-medical ro
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalIndex), true, route);
     assert.equal(explicitRuntimeFile(route, rowShard), false, route);
   }
-  for (const route of ["dati/[dataset]", "api/dati/[dataset]"]) {
+  for (const route of ["dati/[dataset]", "snapshot-pages/dati/[dataset]", "api/dati/[dataset]"]) {
     assert.equal(explicitRuntimeFile(route, rowShard), true, route);
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingIncludes, route, medicalRow), false, route);
     assert.equal(matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, medicalRow), true, route);

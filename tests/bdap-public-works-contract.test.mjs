@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import {
   MOP_DATASET_ID,
   MOP_SCHEMA,
@@ -119,4 +120,36 @@ test("MOP input and monetary fields reject unsafe values", () => {
   const row = rowFixture(schema.fields);
   row[schema.fields.actualWorksCost] = "non disponibile";
   assert.throws(() => normalizeMopRow(row, schema.fields, "2026-08-20"), /importo non valido/);
+});
+
+test("MOP preserves the published negative funding balance instead of rejecting CUP J84C20001920001", () => {
+  const fixture = JSON.parse(readFileSync(new URL("./fixtures/bdap-mop-negative-balance.json", import.meta.url), "utf8"));
+  const fields = Object.fromEntries(Object.entries(MOP_SCHEMA).map(([field, [physical]]) => [field, fixture.aliases[physical]]));
+  const work = normalizeMopRow(fixture.row, fields, fixture.source.observedAt);
+  assert.equal(work.cup, "J84C20001920001");
+  assert.equal(work.funding.toFindCents, -6_065_244);
+  assert.equal(work.funding.stateCents, 356_065_244);
+  assert.equal(work.funding.otherCents, 488_000_000);
+  assert.ok(work.dataQualityWarnings.some((warning) => /finanziamenti da reperire.*negativo/i.test(warning)));
+  assert.ok(work.signals.some((signal) => signal.code === "data-quality"));
+  assert.ok(work.signals.every((signal) => signal.code !== "funding-gap"));
+});
+
+test("MOP accepts signed funding balances only and keeps malformed amounts fail closed", () => {
+  const schema = parseMopSchema(schemaFixture());
+  for (const [value, expected] of [["-0.00", 0], ["-0.01", -1], ["-60652.44", -6_065_244], ["0.00", 0], ["20.50", 2050]]) {
+    const row = rowFixture(schema.fields);
+    row[schema.fields.fundingToFind] = value;
+    assert.equal(normalizeMopRow(row, schema.fields, "2026-10-15").funding.toFindCents, expected);
+  }
+  for (const value of ["--1", "1e3", "-1.001", "NaN", "", null, 0, "-90071992547409.92"]) {
+    const row = rowFixture(schema.fields);
+    row[schema.fields.fundingToFind] = value;
+    assert.throws(() => normalizeMopRow(row, schema.fields, "2026-10-15"), /importo/);
+  }
+  for (const field of ["plannedWorksCost", "stateFunding", "economies"]) {
+    const row = rowFixture(schema.fields);
+    row[schema.fields[field]] = "-1.00";
+    assert.throws(() => normalizeMopRow(row, schema.fields, "2026-10-15"), /importo non valido/);
+  }
 });

@@ -82,3 +82,22 @@ test('default internal snapshots render without redirect loops or bypassing craw
   assert.equal(new URL(filtered.headers.get('location')).pathname, '/comuni');
   assert.equal(proxy(request('/snapshot-pages/enti/c_e897/unknown')).status, 404);
 });
+
+test('dataset first pages share ISR while searches, pagination and ambiguous inputs remain dynamic', () => {
+  const path = '/dati/affidamenti-diretti';
+  for (const query of ['', '?_rsc=proof&utm_source=share', '?q=&limit=50&offset=0&cursor=&pagina=1']) {
+    const response = proxy(request(`${path}${query}`));
+    assert.equal(response.headers.get('x-middleware-rewrite'), `https://example.test/snapshot-pages/dati/affidamenti-diretti${query}`);
+  }
+  for (const query of ['q=Roma', 'limit=25', 'offset=50', 'cursor=token', 'pagina=2', 'limit=invalid', 'q=&q=', 'pagina=1&pagina=2']) {
+    assert.equal(proxy(request(`${path}?${query}`)).headers.get('x-middleware-rewrite'), null, query);
+  }
+  for (const options of [{method:'POST'}, {headers:{authorization:'Bearer example'}}]) {
+    assert.equal(proxy(new NextRequest(`https://example.test${path}`, options)).headers.get('x-middleware-rewrite'), null);
+  }
+  assert.equal(proxy(request('/snapshot-pages/dati/affidamenti-diretti')).headers.get('x-middleware-next'), '1');
+  const filtered = proxy(request('/snapshot-pages/dati/affidamenti-diretti?q=Roma'));
+  assert.equal(filtered.status, 307);
+  assert.equal(filtered.headers.get('location'), `https://example.test${path}?q=Roma`);
+  assert.equal(proxy(request('/snapshot-pages/dati/invalid--id')).status, 404);
+});

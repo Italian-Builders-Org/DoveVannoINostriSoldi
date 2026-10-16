@@ -112,7 +112,9 @@ export function amountColumnKeys(
   const unitHeader = headers.find((header) => /^(unit[àa]|misura)$/i.test(header.trim()));
   return new Set(
     headers.filter((header) => {
-      if (!looksLikeAmountHeader(header)) return false;
+      // L'unità esplicita formatta le celle senza abilitare classifiche per destinatario.
+      const explicitEuroUnit = /\((?:euro|eur|€)\)\s*$/i.test(header);
+      if (!looksLikeAmountHeader(header) && !explicitEuroUnit) return false;
       // An explicit unit overrides the ambiguous "Valore" header.
       if (/^valore$/i.test(header.trim()) && unitHeader
         && rows.some((row) => !/^(eur|euro|€)$/i.test(row.cells[unitHeader]?.trim() ?? ""))) return false;

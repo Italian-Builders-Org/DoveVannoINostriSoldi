@@ -264,6 +264,40 @@ class MunicipalReceiptsTests(unittest.TestCase):
         self.assertEqual(result["distribution"]["coverage"]["municipalitiesWithMovements"], 4)
         self.assertEqual(result["_municipalityDetail"]["titleOrder"], ["0", "1", "2", "3", "4", "5", "7"])
 
+    def build_expenditure(self, observed_at):
+        with patch.object(expenditure, "utc_now", return_value=observed_at):
+            return expenditure.build_snapshot(
+                year=2026, movements_zip=self.movements, registry_zip=self.registry,
+                ipa_path=self.ipa, validators=self.validators(),
+            )
+
+    def test_expenditure_settled_figures_leave_out_the_running_month(self):
+        # C pays only in the running month; D has no valid population.
+        self.write_movements(
+            "A,2026,01,1.01.01.01.001,100000\nA,2026,02,1.01.01.01.001,20000\n"
+            "B,2026,01,1.01.01.01.001,200000\nC,2026,02,1.01.01.01.001,300000\n"
+            "D,2026,01,1.01.01.01.001,50000\n",
+            "USCITE_2026.csv",
+        )
+        running = self.build_expenditure("2026-03-05T00:00:00+00:00")
+        self.assertEqual([item["completeness"] for item in running["monthly"]], ["complete", "partial"])
+        self.assertEqual(running["totalPaid"], 6700)
+        self.assertEqual(running["nationalPerCapita"], 10.33)
+        self.assertEqual(running["totalPaidSettled"], 3500)
+        # C leaves the denominator instead of counting as zero.
+        self.assertEqual(running["nationalPerCapitaSettled"], 10)
+
+        closed = self.build_expenditure("2027-01-10T00:00:00+00:00")
+        self.assertEqual([item["completeness"] for item in closed["monthly"]], ["complete", "complete"])
+        self.assertEqual(closed["totalPaidSettled"], closed["totalPaid"])
+        self.assertEqual(closed["nationalPerCapitaSettled"], closed["nationalPerCapita"])
+
+        self.write_movements("A,2026,01,1.01.01.01.001,100000\n", "USCITE_2026.csv")
+        january = self.build_expenditure("2026-01-20T00:00:00+00:00")
+        self.assertEqual([item["completeness"] for item in january["monthly"]], ["partial"])
+        self.assertIsNone(january["totalPaidSettled"])
+        self.assertIsNone(january["nationalPerCapitaSettled"])
+
     def test_committed_official_receipts_all_years_validate_offline(self):
         result = check_committed_snapshots()
         self.assertEqual([item["year"] for item in result], [2024, 2025, 2026])

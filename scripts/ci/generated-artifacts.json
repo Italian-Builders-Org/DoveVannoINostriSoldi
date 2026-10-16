@@ -517,7 +517,9 @@
         "tests/etl/test_istat_economia_non_osservata_territoriale.py",
         "tests/etl/test_mef_patrimonio_immobiliare.py",
         "tests/etl/test_medical_device_spending_profile.py",
-        "tests/etl/test_medical_device_spending_model.py"
+        "tests/etl/test_medical_device_spending_model.py",
+        "tests/etl/test_arera_bilanci.py",
+        "tests/etl/test_ade_cinque_per_mille.py"
       ],
       "nodeTests": [
         "tests/salute-hospital-beds.test.mjs",
@@ -3394,6 +3396,57 @@
       },
       "refreshWorkflow": null,
       "trustModel": "Snapshot limitato a Giunta e Consiglio di Mantova, con fonti istituzionali e licenza CC BY 4.0 verificate; URL, date e hash dei documenti sono conservati nel payload. Il producer rifiuta cambi di organico, identità discordanti e licenza assente. I test di contratto controllano identità, intervalli, provenienza e copertura; lo storico e i compensi restano non coperti."
+    },
+    {
+      "id": "arera-bilanci-source",
+      "owner": "ARERA · rendiconti ufficiali 2024-2025",
+      "files": [
+        "tests/fixtures/arera"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/arera_bilanci.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_arera_bilanci.py"
+      ],
+      "nodeTests": [
+        "tests/integrated-curated-datasets.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/arera_bilanci.py --publish",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/arera-bilanci.source.json",
+      "trustModel": "Byte XLSX ufficiali e termini CC BY-SA 4.0 vincolati per SHA-256. Entrate per capitolo e spese per titolo; riconciliazioni al centesimo con i rispettivi totali, senza sommare competenza, residui e cassa. Ricostruzione offline delle righe pubbliche, ricevute e metadati; aggiornamento manuale dopo revisione della nuova annualità."
+    },
+    {
+      "id": "ade-cinque-per-mille-source",
+      "owner": "AdE · 5 per mille AF 2024",
+      "files": [
+        "tests/fixtures/ade-cinque-per-mille",
+        "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/ade_cinque_per_mille.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_ade_cinque_per_mille.py"
+      ],
+      "nodeTests": [
+        "tests/integrated-curated-datasets.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/ade_cinque_per_mille.py --publish",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/ade-cinque-per-mille.source.json",
+      "trustModel": "Sette CSV ufficiali completi vincolati per hash, schema, progressivi, enti unici, somme osservate e celle mancanti. Base normativa di riuso per dati pubblici non personali, distinta da una dichiarazione AdE. Importi erogabili e categorie sovrapposte, non pagamenti. Proiezione territoriale piccola nel runtime; sette CSV originali completi in ZIP statico, escluso da tutte le tracce Functions."
     }
   ]
 }

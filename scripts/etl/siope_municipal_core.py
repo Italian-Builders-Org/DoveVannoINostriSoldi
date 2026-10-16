@@ -317,6 +317,7 @@ class MunicipalCash:
     months_seen: set[int]
     rows_total: int
     rows_included: int
+    municipality_monthly_cents: dict[str, dict[int, int]]
 
     @property
     def latest_month(self) -> int:
@@ -335,6 +336,7 @@ def aggregate_cash(
     )
     totals: dict[str, int] = defaultdict(int)
     by_title: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    by_month: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
     regions: dict[str, int] = defaultdict(int)
     national_titles: dict[str, int] = defaultdict(int)
     monthly = [0] * 12
@@ -369,6 +371,7 @@ def aggregate_cash(
         digit = management_code[0]
         totals[key] = safe_cents(totals[key] + cents)
         by_title[key][digit] = safe_cents(by_title[key][digit] + cents)
+        by_month[key][month] = safe_cents(by_month[key][month] + cents)
         if region:
             regions[region] = safe_cents(regions[region] + cents)
         national_titles[digit] = safe_cents(national_titles[digit] + cents)
@@ -386,7 +389,7 @@ def aggregate_cash(
             raise RuntimeError(f"SIOPE: titoli comunali non riconciliati per {key}")
     return MunicipalCash(
         municipalities, totals, by_title, regions, national_titles, monthly,
-        observed, months, rows_total, rows_included,
+        observed, months, rows_total, rows_included, by_month,
     )
 
 
@@ -406,16 +409,29 @@ def build_regions(cash: MunicipalCash) -> list[dict]:
     return sorted(regions, key=lambda item: item["value"], reverse=True)
 
 
-def build_monthly(cash: MunicipalCash) -> list[dict]:
+def partial_month_of(year: int, latest_month: int, observed_at: str) -> int | None:
+    """Python twin of partialMonthOf in src/lib/siope-calendar.ts."""
+    observed_year = datetime.fromisoformat(observed_at.replace("Z", "+00:00")).year
+    return latest_month if observed_year == year else None
+
+
+def build_monthly(
+    cash: MunicipalCash, *, year: int | None = None, observed_at: str | None = None,
+) -> list[dict]:
+    # Opt-in: the receipts contract keeps a strict four-field monthly point.
+    partial = None if observed_at is None else partial_month_of(year, cash.latest_month, observed_at)
     monthly = []
     cumulative = 0
     for month in sorted(cash.months_seen):
         cents = cash.national_monthly[month - 1]
         cumulative = safe_cents(cumulative + cents)
-        monthly.append({
+        point = {
             "month": month, "label": MONTH_NAMES[month - 1],
             "flow": euro(cents), "cumulative": euro(cumulative),
-        })
+        }
+        if observed_at is not None:
+            point["completeness"] = "partial" if month == partial else "complete"
+        monthly.append(point)
     return monthly
 
 

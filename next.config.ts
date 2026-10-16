@@ -18,6 +18,8 @@ const allIntegratedRowRuntimeFiles = [
 // cap once Fluid is off. Keep compact non-medical globs (not thousands of paths:
 // Turbopack Glob::new fails on huge include lists).
 const integratedRowRuntimeFiles = [
+  "src/data/generated/integrated/rows/ade-*.jsonl.gz",
+  "src/data/generated/integrated/rows/arera-*.jsonl.gz",
   "src/data/generated/integrated/rows/affidamenti-*.jsonl.gz",
   "src/data/generated/integrated/rows/affitti-*.jsonl.gz",
   "src/data/generated/integrated/rows/auto-*.jsonl.gz",
@@ -267,6 +269,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
         source: "/:path*",
         headers: [
           {
@@ -280,7 +286,7 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
-    "/*": ["data/source-ledger/elements/**/*"],
+    "/*": ["data/source-ledger/elements/**/*", "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"],
     // contains:true also matches descendants. !(/**) keeps each hub exact;
     // the procurement, structure and cached procurement routes do not read childcare.
     "/app/enti!(/**)": childcareRuntimeFiles,

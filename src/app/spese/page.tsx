@@ -9,6 +9,8 @@ import {
   completedMonths,
   getSiopeMunicipalSnapshot,
   partialMonth,
+  settledNationalPerCapita,
+  settledTotalPaid,
   siopeTitleShare,
 } from "@/lib/siope-snapshot";
 import styles from "./spese.module.css";
@@ -50,6 +52,8 @@ export default async function MoneyPage({
     settledMonths.length > 0
       ? `da ${settledMonths[0].label.toLocaleLowerCase("it-IT")} a ${settledMonths[settledMonths.length - 1].label.toLocaleLowerCase("it-IT")} ${data.year}`
       : "nessun mese completo";
+  const settledTotal = settledTotalPaid(data);
+  const settledPerCapita = settledNationalPerCapita(data);
 
   const maxFlow = Math.max(...data.monthly.map((point) => point.flow), 0);
   const titles = data.titles.map((title) => ({
@@ -93,13 +97,24 @@ export default async function MoneyPage({
       <div className="stat-strip">
         <div>
           <span className="stat-label">Totale pagato</span>
-          <span className="stat-value">{compactEuro(data.totalPaid)}</span>
-          <span className="stat-note">{exactEuro(data.totalPaid)} esatti</span>
+          <span className="stat-value">{compactEuro(settledTotal ?? data.totalPaid)}</span>
+          <span className="stat-note">
+            {exactEuro(settledTotal ?? data.totalPaid)} esatti
+            {runningMonth === null
+              ? ""
+              : settledTotal === null
+                ? " · parziale"
+                : ` · ${completedRange}, ${monthLabel} parziale escluso`}
+          </span>
         </div>
         <div>
           <span className="stat-label">Pagamenti al netto delle partite di giro</span>
           <span className="stat-value">{compactEuro(netPayments)}</span>
-          <span className="stat-note">totale meno le uscite per conto terzi</span>
+          <span className="stat-note">
+            {runningMonth === null
+              ? "totale meno le uscite per conto terzi"
+              : `da gennaio a ${monthLabel} (parziale), meno le uscite per conto terzi`}
+          </span>
         </div>
         <div>
           <span className="stat-label">Media dei mesi completi</span>
@@ -109,9 +124,17 @@ export default async function MoneyPage({
         <div>
           <span className="stat-label">Per abitante</span>
           <span className="stat-value">
-            {data.nationalPerCapita === null ? "Non disponibile" : exactEuro(data.nationalPerCapita)}
+            {settledPerCapita !== null
+              ? exactEuro(settledPerCapita)
+              : data.nationalPerCapita === null
+                ? "Non disponibile"
+                : `${exactEuro(data.nationalPerCapita)} (parziale)`}
           </span>
-          <span className="stat-note">su {integer(data.populationCovered)} abitanti</span>
+          <span className="stat-note">
+            {runningMonth !== null && settledPerCapita !== null
+              ? completedRange
+              : `su ${integer(data.populationCovered)} abitanti`}
+          </span>
         </div>
       </div>
 

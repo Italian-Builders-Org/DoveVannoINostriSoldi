@@ -98,8 +98,10 @@ try:
         title_digit,
         euro,
         per_capita,
+        safe_cents,
         aggregate_cash,
         build_regions,
+        partial_month_of,
         build_monthly,
         build_detail,
         build_source,
@@ -121,8 +123,10 @@ except ImportError:  # Direct CLI execution.
         title_digit,
         euro,
         per_capita,
+        safe_cents,
         aggregate_cash,
         build_regions,
+        partial_month_of,
         build_monthly,
         build_detail,
         build_source,
@@ -268,7 +272,7 @@ def build_distribution(
         for row in rows
         if row.get("population") is None or row["population"] <= 0
     ]
-    observed_year = datetime.fromisoformat(observed_at.replace("Z", "+00:00")).year
+    partial = partial_month_of(year, latest_month, observed_at)
 
     bands: list[dict] = []
     for band_id, label, lower, upper in POPULATION_BANDS:
@@ -306,7 +310,7 @@ def build_distribution(
             "year": year,
             "startMonth": 1,
             "endMonth": latest_month,
-            "completeness": "partial" if observed_year == year else "complete",
+            "completeness": "complete" if partial is None else "partial",
         },
         "coverage": {
             "municipalitiesWithMovements": len(rows),
@@ -434,7 +438,18 @@ def build_snapshot(
         )
     ]
 
-    monthly = build_monthly(cash)
+    observed_at = utc_now()
+    monthly = build_monthly(cash, year=year, observed_at=observed_at)
+    partial = partial_month_of(year, latest_month, observed_at)
+    # A municipality seen only in the partial month has no settled payments.
+    settled_cents = {
+        key: safe_cents(sum(cents for month, cents in months.items() if month != partial))
+        for key, months in cash.municipality_monthly_cents.items()
+        if any(month != partial for month in months)
+    }
+    settled_with_population = [
+        key for key in settled_cents if municipalities[key]["population"] is not None
+    ]
 
     observed_population = sum(
         municipalities[key]["population"] or 0 for key in observed_keys
@@ -457,7 +472,6 @@ def build_snapshot(
         municipality["region"] is not None for municipality in municipalities.values()
     )
     latest_total_cents = sum(national_monthly)
-    observed_at = utc_now()
     distribution = build_distribution(
         rows=analysis_rows,
         year=year,
@@ -480,11 +494,18 @@ def build_snapshot(
         "latestMonth": latest_month,
         "latestMonthLabel": MONTH_NAMES[latest_month - 1],
         "totalPaid": euro(latest_total_cents),
+        "totalPaidSettled": (
+            euro(safe_cents(sum(settled_cents.values()))) if settled_cents else None
+        ),
         "paymentsWithPopulation": euro(payments_with_population_cents),
         "populationCovered": observed_population,
         "nationalPerCapita": per_capita(
             payments_with_population_cents,
             observed_population,
+        ),
+        "nationalPerCapitaSettled": per_capita(
+            safe_cents(sum(settled_cents[key] for key in settled_with_population)),
+            sum(municipalities[key]["population"] for key in settled_with_population),
         ),
         "coverage": {
             "activeSiopeMunicipalities": active_siope_count,

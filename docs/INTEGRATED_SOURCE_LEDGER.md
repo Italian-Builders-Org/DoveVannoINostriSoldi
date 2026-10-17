@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 129 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 130 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 129 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 129 | 107 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.853.714 | 7.871.368 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.965.895.935 | somma dei byte impegnati nelle 129 ricevute |
+| Dataset correnti | 130 | 108 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 20.854.024 | 7.871.678 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 3.966.017.349 | somma dei byte impegnati nelle 130 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.871.368 righe della proiezione pubblica restano invece interrogabili anche
+Le 7.871.678 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -56,6 +56,14 @@ aggiunge 7.977 righe, una per Comune o ente ERP del file di adempimento dello
 stesso rilascio; `mef-patrimonio-fabbricati-fermi-2023` aggiunge 25.235 righe che
 contano per Comune, ente, stato d'uso e tipologia 133.293 fabbricati fermi.
 [Contratto e riproduzione](MEF_PATRIMONIO_IMMOBILIARE.md).
+`rgs-rendiconto-entrate-tributarie-2011-2025` aggiunge 310 righe dal
+Rendiconto generale dello Stato su OpenBDAP (serie `RND_ENT_ELB_CAPAR_001`,
+CC BY 3.0): le entrate tributarie (Titolo I) per esercizio, natura, categoria e
+tipologia, con previsioni, accertato, versato e residui in campi distinti.
+L'ETL si ferma se su un articolo l'accertato non è uguale al centesimo a
+versato, rimasto da versare e rimasto da riscuotere, o se le previsioni
+definitive del Titolo I divergono dalle entrate tributarie della serie dei saldi.
+[Contratto e riproduzione](DATA_SOURCES.md#entrate-dello-stato-per-tipologia-di-imposta-2011-2025).
 `rgs-spesa-statale-regionalizzata-2020`, `-2021` e `-2022` aggiungono 59.488
 righe dal record RGS `SRS_SPE_BIL_SPESR_001`, un dataset per esercizio: spesa
 del Bilancio dello Stato per territorio destinatario, con Italia, ripartizioni
@@ -205,6 +213,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-occupazione-tipologia-2010-2024` | Conto Annuale · occupazione per tipo di istituzione · 2010-2024 | personnel | 575 | 575 | 575 | rows | documented-fact | verified-open-cc-by-3.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-rendiconto-entrate-tributarie-2011-2025` | Rendiconto dello Stato · entrate tributarie per tipologia · 2011-2025 | state-accounts | 310 | 310 | 310 | rows | documented-fact | verified-open-cc-by-3.0 |
 | `rgs-spesa-statale-regionalizzata-2008` | RGS · spesa statale regionalizzata 2008 | state-accounts | 20.352 | 20.352 | 20.352 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2009` | RGS · spesa statale regionalizzata 2009 | state-accounts | 20.400 | 20.400 | 20.400 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-2010` | RGS · spesa statale regionalizzata 2010 | state-accounts | 20.296 | 20.296 | 20.296 | rows | documented-fact | not-declared |

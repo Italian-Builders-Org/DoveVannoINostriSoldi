@@ -401,6 +401,7 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       "Piani di gestione, organici e compensi degli organi hanno unità diverse e non vengono sommati.",
       "Il Conto Annuale 2020 è storico: personale al 31 dicembre e costo annuale hanno coperture diverse. Non è SIOPE cassa.",
       "La serie per tipo di istituzione 2010–2024 conta persone; il lavoro flessibile è in unità annue e non si somma al personale. I tipi cambiano negli anni.",
+      "La serie per istituzione 2010–2024 ha una riga per anno ed ente: enti e denominazioni cambiano negli anni, e la somma per tipo ridà la serie per tipo.",
     ],
     datasets: [
       {
@@ -441,6 +442,17 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
         label: "Conto Annuale · personale per tipo di istituzione 2010–2024",
         columns: [
           { key: "Anno", label: "Anno" },
+          { key: "Tipo istituzione", label: "Tipo di istituzione" },
+          { key: "Numero Dipendenti Uomini Tempo Pieno", label: "Tempo pieno uomini" },
+          { key: "Numero Dipendenti Donne Tempo Pieno", label: "Tempo pieno donne" },
+        ],
+      },
+      {
+        id: "rgs-conto-annuale-occupazione-ente-2010-2024",
+        label: "Conto Annuale · personale per istituzione 2010–2024",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Ente", label: "Istituzione" },
           { key: "Tipo istituzione", label: "Tipo di istituzione" },
           { key: "Numero Dipendenti Uomini Tempo Pieno", label: "Tempo pieno uomini" },
           { key: "Numero Dipendenti Donne Tempo Pieno", label: "Tempo pieno donne" },

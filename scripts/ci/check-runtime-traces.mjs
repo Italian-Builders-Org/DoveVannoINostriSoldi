@@ -158,6 +158,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["integrated/rows/arera-entrate-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/arera-spese-2024-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-conto-annuale-occupazione-tipologia-2010-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/rgs-conto-annuale-occupazione-ente-2010-2024.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["istat-bes-relazioni-2011-2024.data.json", ["api/territori/bes-relazioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-politica-2004-2024.data.json", ["api/territori/bes-politica/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["istat-bes-sicurezza-2004-2023.data.json", ["api/territori/bes-sicurezza/route", "api/assistant/chat/route", "api/mcp/route"]],

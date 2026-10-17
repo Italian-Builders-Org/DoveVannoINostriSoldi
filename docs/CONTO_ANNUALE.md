@@ -16,8 +16,10 @@ Il download diretto dal sito del Conto Annuale RGS (export 2024), pur
 accessibile, non è incluso: non è stata trovata una licenza esplicita
 applicabile a quella distribuzione. La licenza DFP non viene estesa ad altri
 export. È un canale diverso dal catalogo RGS OpenBDAP, le cui pagine dichiarano
-CC BY 3.0: da lì viene la serie per tipo di istituzione 2010–2024 descritta
-[più sotto](#occupazione-per-tipo-di-istituzione-2010-2024).
+CC BY 3.0: da lì vengono la serie per tipo di istituzione 2010–2024 e quella
+per singola istituzione descritte più sotto
+([per tipo](#occupazione-per-tipo-di-istituzione-2010-2024),
+[per istituzione](#occupazione-per-istituzione-2010-2024)).
 
 ## Snapshot DFP 2020: significato e raccordo
 
@@ -154,10 +156,9 @@ data dei dati osservati e dimensione della risorsa. Il controllo si ferma se:
    uguali tranne i codici 8652 (+17) e 10400 (+21); le 103 presenti solo in
    OpenBDAP hanno personale zero.
 
-Gli anni diversi dal 2020 non hanno un file per ente vincolato: i loro totali
-per tipo sono controllati sul lock, non ricalcolati. Dettaglio per
-amministrazione e flussi (assunzioni, cessazioni) restano fuori da questa
-prima parte.
+Gli altri anni sono ricalcolati dai file per ente nel dataset per istituzione
+(sezione seguente), che si ferma se la somma per tipo non dà questo file. I
+flussi (assunzioni, cessazioni) restano fuori.
 
 ```bash
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_conto_annuale_occupazione_corpus.py --check
@@ -169,3 +170,107 @@ DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unitt
 (`spd_pca_occ_dip_tent_01_<anno>.csv`, `spd_pca_occ_dip_ente_01_2020.csv`) e
 li sottopone allo stesso lock; `--publish` riscrive righe, ricevuta e prove
 del corpus.
+
+## Occupazione per istituzione 2010-2024
+
+| Dataset | Righe | Anni | Fonte |
+| --- | ---: | --- | --- |
+| `rgs-conto-annuale-occupazione-ente-2010-2024` | 153.121 | 2010–2024 | [OpenBDAP, serie `PCA_OCC_DIP_ENTE_001`](https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=PCA_OCC_DIP_ENTE_001) |
+
+Stessa rilevazione e stessa licenza della serie per tipo: un pacchetto CKAN
+per anno, `spd_pca_occ_dip_ente_01_<anno>`, con una riga per ente, contratto,
+macrocategoria e categoria e le stesse quattordici misure. La pagina ufficiale
+di ognuno dei 15 anni
+(`/content/<anno>-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show`)
+riporta nel campo «LICENZA» [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)
+(verificato il 15 ottobre 2026), i pacchetti CKAN `license_id: cc-by`.
+Attribuzione: MEF–Ragioneria Generale dello Stato, OpenBDAP; proiezione DVNS.
+
+La proiezione somma le righe di ogni istituzione: una riga per anno e
+`Codice istituzione`, con codice ente BDAP, denominazione, tipo di istituzione,
+comparto, le 14 misure e l'URL del file dell'anno. Nessuna qualifica, nessun
+dato territoriale: la fonte non li ha a questo livello.
+
+| Anno | Righe della fonte | Istituzioni | Personale | Scarto massimo del flessibile sul file per tipo |
+| --- | ---: | ---: | ---: | ---: |
+| 2010 | 44.587 | 9.921 | 3.315.347 | 55 |
+| 2014 | 43.617 | 10.049 | 3.259.613 | 64 |
+| 2019 | 42.960 | 10.517 | 3.245.112 | 69 |
+| 2020 | 41.593 | 10.433 | 3.243.499 | 47 |
+| 2021 | 42.767 | 10.569 | 3.240.397 | 0 |
+| 2024 | 42.694 | 10.915 | 3.388.794 | 0 |
+
+Le istituzioni più grandi nel 2024 sono il Ministero dell'istruzione e del
+merito (1.254.522 persone), il Ministero della difesa (290.361), il Ministero
+dell'interno (149.910), il Ministero della giustizia (85.879, più 11.841 unità
+annue di lavoro flessibile) e il Ministero dell'economia e delle finanze
+(68.175).
+
+- **Persone e unità di lavoro:** come nella serie per tipo, il personale è
+  tempo pieno + part time, persone e non equivalenti a tempo pieno; il lavoro
+  flessibile è in unità annue e non si somma al personale.
+- **Istituzioni che cambiano:** 12.454 codici in tutto, 8.315 presenti in tutti
+  i 15 anni; da 9.770 (2018) a 10.915 (2024) istituzioni l'anno. Gli enti
+  nascono, cessano e si accorpano: una riga che compare o scompare non è una
+  variazione di personale. Le denominazioni sono quelle dell'anno: nel 2021 RGS
+  le riscrive per circa 9.700 enti (per esempio «AIFA-AGENZIA ITALIANA DEL
+  FARMACO» diventa «AGENZIA ITALIANA DEL FARMACO - AIFA»); 108 codici cambiano
+  tipo di istituzione nel periodo, come la classificazione dei tipi (da 34 a 45).
+- **Comparto:** un ente con personale di più contratti li elenca in ordine
+  alfabetico separati da « / » (da 95 a 108 enti l'anno, soprattutto
+  università con il personale in regime di diritto pubblico).
+- **Codice ente BDAP:** vuoto, come pubblicato, per 87 enti nel 2010 e per 2
+  dal 2021.
+- **Valori:** somme scritte nel formato dell'anno, interi fino al 2020 e con due
+  decimali dal 2021. Fino al 2020 un'istituzione può avere tutte le misure a
+  zero (da 5 a 29 l'anno); dal 2021 nessuna.
+- **Date distinte:** anno di rilevazione, data dei dati osservati (19 aprile
+  2022 per il 2010–2020; 8 febbraio 2023, 18 marzo 2024, 2 luglio 2025 e 8
+  marzo 2026 per il 2021–2024), creazione del pacchetto CKAN e acquisizione
+  DVNS (15 ottobre 2026).
+- **Snapshot DFP 2020:** per le istituzioni comuni il personale 2020 coincide
+  con `rgs-conto-annuale-personale-2020` tranne i codici 8652 (+17) e 10400
+  (+21); le 103 istituzioni presenti solo in OpenBDAP hanno personale zero (lo
+  verifica l'ETL della serie per tipo sullo stesso file).
+
+### Controlli fail-closed e file originali
+
+I 15 CSV originali pesano 148 MB (da 8,9 a 12,8 MB l'uno) e non sono
+versionati, come gli archivi del censimento MEF del patrimonio immobiliare:
+il lock `scripts/etl/specs/rgs-conto-annuale-occupazione-ente.source.json`
+vincola per ogni anno byte, SHA-256, URL di pagina e file, formato dei valori,
+separatore finale e numero di righe della fonte. Il 2020 è lo stesso file già
+conservato come fixture della serie per tipo, e il lock lo verifica.
+
+Con `--input-dir` l'ETL verifica e somma i 15 originali e confronta la
+proiezione con l'impronta del lock e con righe, ricevuta e voce di catalogo
+del corpus. Senza originali (`--check` offline) rilegge le righe del corpus:
+devono riprodurre la stessa impronta, e il 2020 deve coincidere con il
+ricalcolo dalla fixture. In entrambi i casi il controllo si ferma se:
+
+1. un file cambia intestazione, separatore finale, fine riga, anno o numero di
+   righe, se un codice istituzione non è numerico, o se un ente ha nello stesso
+   anno tipo, codice BDAP o denominazione diversi fra le sue righe;
+2. un'istituzione compare due volte nello stesso anno;
+3. per un anno qualsiasi la somma per tipo non dà il file per tipo vincolato
+   da `rgs-conto-annuale-occupazione-tipologia.source.json`: personale identico
+   per ogni tipo; lavoro flessibile identico dal 2021 e, fino al 2020, entro
+   100 unità per tipo e misura (soglia fissata nel codice; massimo misurato 69,
+   nel 2019), con scarti netti, somma e massimo degli scarti vincolati anno per
+   anno;
+4. cambiano i totali dell'anno vincolati nel lock (istituzioni, tipi, enti con
+   più comparti, senza codice BDAP o senza personale, tempo pieno, part time,
+   lavoro flessibile) o l'istantanea CKAN di licenza, date e risorsa.
+
+Uno spostamento fra due enti dello stesso tipo lascia invariati totali e
+ricalcolo: lo ferma l'impronta della proiezione.
+
+```bash
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_conto_annuale_occupazione_ente_corpus.py --check
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/rgs_conto_annuale_occupazione_ente_corpus.py --check --input-dir /percorso/csv-originali
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_rgs_conto_annuale_occupazione_ente_corpus.py'
+```
+
+`--input-dir` accetta i CSV con il nome del pacchetto CKAN
+(`spd_pca_occ_dip_ente_01_<anno>.csv`); `--publish` e `--output-dir` lo
+richiedono.

@@ -1,0 +1,711 @@
+{
+  "schemaVersion": 1,
+  "dataset": {
+    "datasetId": "rgs-conto-annuale-occupazione-ente-2010-2024",
+    "recordId": "PCA_OCC_DIP_ENTE_001",
+    "title": "Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+    "scope": "personale al 31 dicembre per istituzione (tempo pieno e part time) e lavoro flessibile in unità annue",
+    "catalogUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=PCA_OCC_DIP_ENTE_001"
+  },
+  "series": {
+    "holder": "Ragioneria Generale dello Stato",
+    "publication": "Conto Annuale - Dipendenti Pubblici - Occupazione Complessiva (OpenBDAP)",
+    "licenseStatus": "verified-open-cc-by-3.0",
+    "license": {
+      "id": "CC-BY-3.0",
+      "url": "http://creativecommons.org/licenses/by/3.0",
+      "ckanLicenseId": "cc-by",
+      "evidence": "Ogni pagina ufficiale dell'anno (landingUrl, ?metadati=show) riporta il campo «LICENZA:» con collegamento a http://creativecommons.org/licenses/by/3.0 (verificato il 2026-10-15 su tutte le 15 pagine per ente); i pacchetti CKAN riportano license_id cc-by, verificato offline sull'istantanea ckanSnapshot. Stessa licenza e stesso canale della serie per tipologia rgs-conto-annuale-occupazione-tipologia-2010-2024."
+    },
+    "encoding": "cp1252",
+    "delimiter": ";",
+    "lineEnding": "CRLF",
+    "sourceHeaders": [
+      "Anno Rilevazione",
+      "Descrizione Tipo Istituzione",
+      "Codice Istituzione",
+      "Codice Ente BDAP",
+      "Descrizione Ente",
+      "Codice Comparto",
+      "Descrizione Comparto",
+      "Codice Contratto Lavoro",
+      "Descrizione Contratto Lavoro",
+      "Codice Macrocategoria",
+      "Descrizione Macrocategoria",
+      "Codice Categoria",
+      "Descrizione Categoria",
+      "Numero Dipendenti Donne Tempo Pieno",
+      "Numero Dipendenti Uomini Tempo Pieno",
+      "Numero Dipendenti Donne Part time Inf. 50%",
+      "Numero Dipendenti Uomini Part time Inf. 50%",
+      "Numero Dipendenti Donne Part time Sup. 50%",
+      "Numero Dipendenti Uomini Part time Sup. 50%",
+      "Numero Dipendenti Donne Tempo Determinato",
+      "Numero Dipendenti Uomini Tempo Determinato",
+      "Numero Dipendenti Donne Formazione Lavoro",
+      "Numero Dipendenti Uomini Formazione Lavoro",
+      "Numero Dipendenti Donne Lavoro Interinale",
+      "Numero Dipendenti Uomini Lavoro Interinale",
+      "Numero Dipendenti Donne Lavoro Socialmente Utile",
+      "Numero Dipendenti Uomini Lavoro Socialmente Utile"
+    ],
+    "acquisitionDate": "2026-10-15",
+    "checkedAt": "2026-10-15",
+    "updateFrequency": "annuale; acquisizione e promozione manuali",
+    "storage": "I 15 CSV originali (circa 148 MB) non sono versionati: restano in una directory locale passata con --input-dir e sono verificati per byte e SHA-256 contro questo lock. Il 2020 è già nel repository come fixture gzip della serie per tipologia ed è riusato. Senza --input-dir il controllo rilegge le righe pubblicate nel corpus: devono riprodurre l'impronta della proiezione (projection), i totali e il ricalcolo per tipo di ogni anno, e il 2020 deve coincidere con il ricalcolo dalla fixture.",
+    "formatNote": "Una riga per ente, contratto, macrocategoria e categoria; la proiezione somma per Codice Istituzione. Tutti gli anni hanno la stessa intestazione di 27 colonne; tutti tranne il 2023 chiudono ogni riga, intestazione compresa, con il separatore (colonna vuota finale): il 2023 no, e mette i valori fra virgolette (trailingSeparator). Fino al 2020 i valori sono interi, dal 2021 hanno due decimali; la proiezione scrive le somme nello stesso formato dell'anno."
+  },
+  "semantics": {
+    "persone": {
+      "permanent": "Personale = tempo pieno + part time fino al 50% + part time oltre il 50%: persone al 31 dicembre, non equivalenti a tempo pieno",
+      "flexible": "Tempo determinato, formazione lavoro, interinale e LSU: unità annue di lavoro, frazionarie dal 2021; non sono persone e non si sommano al personale"
+    },
+    "periodo": {
+      "referencePeriod": "Rilevazioni dal 2010 al 2024, una riga per anno e istituzione",
+      "note": "Anno di rilevazione, data dei dati osservati, pubblicazione CKAN e acquisizione restano date distinte."
+    },
+    "istituzioni": {
+      "key": "Codice Istituzione: unico per anno; tipo, codice ente BDAP e denominazione costanti fra le righe di un ente nello stesso anno (verificato).",
+      "comparto": "Un ente con personale di più comparti (soprattutto università: istruzione e ricerca più personale in regime di diritto pubblico) li elenca in ordine alfabetico separati da « / ».",
+      "drift": "Fra anni i codici restano, ma le denominazioni sono riscritte nel 2021 (circa 9.700 enti) e 108 codici cambiano tipo di istituzione; 12.454 codici in tutto, 8.315 presenti in tutti i 15 anni."
+    },
+    "provenance": {
+      "holder": "Ragioneria Generale dello Stato",
+      "license": "CC BY 3.0",
+      "note": "Un pacchetto CKAN e un file per anno, stessa rilevazione della serie per tipologia PCA_OCC_DIP_TENT_001."
+    }
+  },
+  "typeCrossCheck": {
+    "rule": "Per ogni anno la somma per tipo di istituzione delle righe per ente deve dare il file per tipologia vincolato da rgs-conto-annuale-occupazione-tipologia.source.json: personale (tempo pieno e part time) identico per ogni tipo; lavoro flessibile entro FLEXIBLE_ROUNDING_TOLERANCE (100 unità per tipo e misura negli anni a valori interi, nessuna dal 2021), con gli scarti osservati vincolati anno per anno in expected.typeCrossCheck.",
+    "flexibleNote": "Fino al 2020 il file per tipologia arrotonda il lavoro flessibile una volta per tipo, quello per ente per ente, contratto e categoria: massimo osservato 69 unità (2019). Dal 2021 entrambi hanno due decimali e coincidono al centesimo."
+  },
+  "projection": {
+    "bytes": 35082780,
+    "sha256": "4689e417cbeb47363b446e6dc22f63265355b5e70339daf0a802347eadf7c48d",
+    "rows": 153121
+  },
+  "ckanSnapshot": {
+    "packageName": "CKAN package_show",
+    "note": "Campo result delle risposte package_show dei 15 pacchetti per ente, acquisite il 2026-10-15: licenza, date, risorsa CSV, identificativo della serie e data dei dati osservati sono verificati offline.",
+    "fixture": "tests/fixtures/rgs-conto-annuale-occupazione-ente/ckan-package-show.json.gz",
+    "compressedBytes": 4283,
+    "compressedSha256": "13bb44d81efe99e4a4b04370e65d3e2209668c53c18abc391eb4672f4aa64cf8"
+  },
+  "years": [
+    {
+      "year": 2010,
+      "packageName": "spd_pca_occ_dip_ente_01_2010",
+      "packageId": "cc60a67e-51ff-4d65-b29a-3939e7f1f696",
+      "title": "2010 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-14",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2010-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/cc60a67e-51ff-4d65-b29a-3939e7f1f696.csv",
+      "bytes": 9384216,
+      "sha256": "308967f7fc3f7d3ac54c827245fb63559302a189af58a6407f9b47f7e8572f0f",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 44587,
+      "expected": {
+        "institutions": 9921,
+        "types": 35,
+        "multipleComparti": 105,
+        "withoutBdapCode": 87,
+        "withoutStaff": 5,
+        "fullTime": 3141024,
+        "partTime": 174323,
+        "permanent": 3315347,
+        "flexibleHundredths": 12206500,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            6000,
+            8900,
+            400,
+            0,
+            -600,
+            0,
+            3600,
+            5400
+          ],
+          "flexibleSumAbsDeltaHundredths": 34700,
+          "flexibleMaxAbsDeltaHundredths": 5500
+        }
+      }
+    },
+    {
+      "year": 2011,
+      "packageName": "spd_pca_occ_dip_ente_01_2011",
+      "packageId": "0c1763ba-c08e-42b4-842f-16ac2de3e28c",
+      "title": "2011 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2011-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/0c1763ba-c08e-42b4-842f-16ac2de3e28c.csv",
+      "bytes": 9443207,
+      "sha256": "b1f900ab0a2b0f181f60a8c0e84fda55f29fd413fe593052c3d73cce909eeb57",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 44830,
+      "expected": {
+        "institutions": 10006,
+        "types": 35,
+        "multipleComparti": 106,
+        "withoutBdapCode": 68,
+        "withoutStaff": 10,
+        "fullTime": 3119524,
+        "partTime": 164260,
+        "permanent": 3283784,
+        "flexibleHundredths": 11169000,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            6400,
+            7400,
+            0,
+            -400,
+            -600,
+            -800,
+            3500,
+            5300
+          ],
+          "flexibleSumAbsDeltaHundredths": 34400,
+          "flexibleMaxAbsDeltaHundredths": 5100
+        }
+      }
+    },
+    {
+      "year": 2012,
+      "packageName": "spd_pca_occ_dip_ente_01_2012",
+      "packageId": "47a50751-7ee9-449e-beb8-b48535414ec2",
+      "title": "2012 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2012-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/47a50751-7ee9-449e-beb8-b48535414ec2.csv",
+      "bytes": 9329704,
+      "sha256": "ffe88d953b6e1fba8260b17b3fa73728724a62986fe76cd0c414e0f8c6b6957c",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 44291,
+      "expected": {
+        "institutions": 9928,
+        "types": 34,
+        "multipleComparti": 108,
+        "withoutBdapCode": 29,
+        "withoutStaff": 10,
+        "fullTime": 3065502,
+        "partTime": 173447,
+        "permanent": 3238949,
+        "flexibleHundredths": 10441000,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            6100,
+            2500,
+            -300,
+            -200,
+            -1200,
+            -200,
+            3100,
+            5200
+          ],
+          "flexibleSumAbsDeltaHundredths": 29200,
+          "flexibleMaxAbsDeltaHundredths": 5000
+        }
+      }
+    },
+    {
+      "year": 2013,
+      "packageName": "spd_pca_occ_dip_ente_01_2013",
+      "packageId": "bda98431-cc1d-4e58-bc6e-a23477f88d3b",
+      "title": "2013 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2013-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/bda98431-cc1d-4e58-bc6e-a23477f88d3b.csv",
+      "bytes": 9251206,
+      "sha256": "1e449fd5d1b80ab2d6f92388cbe6c982c4f69d58bc9ccd562315f2e103f01f5f",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 43891,
+      "expected": {
+        "institutions": 9928,
+        "types": 34,
+        "multipleComparti": 107,
+        "withoutBdapCode": 17,
+        "withoutStaff": 12,
+        "fullTime": 3059345,
+        "partTime": 173776,
+        "permanent": 3233121,
+        "flexibleHundredths": 10292200,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            7900,
+            8600,
+            -100,
+            -100,
+            -300,
+            -600,
+            2000,
+            4700
+          ],
+          "flexibleSumAbsDeltaHundredths": 31100,
+          "flexibleMaxAbsDeltaHundredths": 5100
+        }
+      }
+    },
+    {
+      "year": 2014,
+      "packageName": "spd_pca_occ_dip_ente_01_2014",
+      "packageId": "04cf11bd-d259-482c-825b-16b6370e8cd3",
+      "title": "2014 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2014-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/04cf11bd-d259-482c-825b-16b6370e8cd3.csv",
+      "bytes": 9211123,
+      "sha256": "2c1fa675238d4c7e4ac7458d312e7ac39ebf9cab2fe510839dbf029e4e110a93",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 43617,
+      "expected": {
+        "institutions": 10049,
+        "types": 35,
+        "multipleComparti": 107,
+        "withoutBdapCode": 11,
+        "withoutStaff": 18,
+        "fullTime": 3082891,
+        "partTime": 176722,
+        "permanent": 3259613,
+        "flexibleHundredths": 10704500,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            4900,
+            4800,
+            -100,
+            -200,
+            -100,
+            -1700,
+            3900,
+            7000
+          ],
+          "flexibleSumAbsDeltaHundredths": 33300,
+          "flexibleMaxAbsDeltaHundredths": 6400
+        }
+      }
+    },
+    {
+      "year": 2015,
+      "packageName": "spd_pca_occ_dip_ente_01_2015",
+      "packageId": "c5c6875d-04b7-4451-b424-f5577396086f",
+      "title": "2015 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2015-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/c5c6875d-04b7-4451-b424-f5577396086f.csv",
+      "bytes": 9156952,
+      "sha256": "c5188d098703f0704587f685c90273e26232544a016b7420f9e4674a7ee5df24",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 43334,
+      "expected": {
+        "institutions": 9997,
+        "types": 36,
+        "multipleComparti": 107,
+        "withoutBdapCode": 10,
+        "withoutStaff": 14,
+        "fullTime": 3076158,
+        "partTime": 181211,
+        "permanent": 3257369,
+        "flexibleHundredths": 10636200,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            6100,
+            7900,
+            0,
+            -200,
+            800,
+            -200,
+            1800,
+            4400
+          ],
+          "flexibleSumAbsDeltaHundredths": 30600,
+          "flexibleMaxAbsDeltaHundredths": 5500
+        }
+      }
+    },
+    {
+      "year": 2016,
+      "packageName": "spd_pca_occ_dip_ente_01_2016",
+      "packageId": "547316df-7189-413f-b1ee-36b22415695e",
+      "title": "2016 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2016-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/547316df-7189-413f-b1ee-36b22415695e.csv",
+      "bytes": 9007255,
+      "sha256": "9969b903186cc90082fd82d1128f567c9af4781b9e981fd5fe65db40016d785d",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 42609,
+      "expected": {
+        "institutions": 9875,
+        "types": 36,
+        "multipleComparti": 104,
+        "withoutBdapCode": 10,
+        "withoutStaff": 19,
+        "fullTime": 3066081,
+        "partTime": 183607,
+        "permanent": 3249688,
+        "flexibleHundredths": 10775800,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            1800,
+            3100,
+            -100,
+            200,
+            -2500,
+            -700,
+            3200,
+            3100
+          ],
+          "flexibleSumAbsDeltaHundredths": 21300,
+          "flexibleMaxAbsDeltaHundredths": 3200
+        }
+      }
+    },
+    {
+      "year": 2017,
+      "packageName": "spd_pca_occ_dip_ente_01_2017",
+      "packageId": "82231a46-f3fc-4a8e-8dff-9f2a1c33f081",
+      "title": "2017 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2017-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/82231a46-f3fc-4a8e-8dff-9f2a1c33f081.csv",
+      "bytes": 8914158,
+      "sha256": "d65441200ceb47a6a10e63f3bc388de92b1215733aa003128118d8f7f46cde56",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 42138,
+      "expected": {
+        "institutions": 9825,
+        "types": 36,
+        "multipleComparti": 104,
+        "withoutBdapCode": 10,
+        "withoutStaff": 21,
+        "fullTime": 3058399,
+        "partTime": 186595,
+        "permanent": 3244994,
+        "flexibleHundredths": 12138000,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            700,
+            1100,
+            -300,
+            200,
+            -300,
+            600,
+            1300,
+            2100
+          ],
+          "flexibleSumAbsDeltaHundredths": 22000,
+          "flexibleMaxAbsDeltaHundredths": 1900
+        }
+      }
+    },
+    {
+      "year": 2018,
+      "packageName": "spd_pca_occ_dip_ente_01_2018",
+      "packageId": "82cb6d1d-3d82-4da0-98ea-25f007363c3e",
+      "title": "2018 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2018-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/82cb6d1d-3d82-4da0-98ea-25f007363c3e.csv",
+      "bytes": 8894737,
+      "sha256": "57eb0471ea1c327b8a7ab8109cb3f7589e1ab67d4e0a5090df0d1e255ec8b26d",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 42010,
+      "expected": {
+        "institutions": 9770,
+        "types": 36,
+        "multipleComparti": 104,
+        "withoutBdapCode": 9,
+        "withoutStaff": 15,
+        "fullTime": 3036102,
+        "partTime": 190165,
+        "permanent": 3226267,
+        "flexibleHundredths": 11640300,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            500,
+            3600,
+            -200,
+            0,
+            -1100,
+            -900,
+            -100,
+            -600
+          ],
+          "flexibleSumAbsDeltaHundredths": 23800,
+          "flexibleMaxAbsDeltaHundredths": 2800
+        }
+      }
+    },
+    {
+      "year": 2019,
+      "packageName": "spd_pca_occ_dip_ente_01_2019",
+      "packageId": "6d0ea442-2cbc-4261-b5d4-85545578fc3d",
+      "title": "2019 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2019-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/6d0ea442-2cbc-4261-b5d4-85545578fc3d.csv",
+      "bytes": 9170964,
+      "sha256": "421cae6bb55ae5ad64da3653163b5286e66b6dab1619a492e775cf9aaf49ee95",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 42960,
+      "expected": {
+        "institutions": 10517,
+        "types": 40,
+        "multipleComparti": 103,
+        "withoutBdapCode": 9,
+        "withoutStaff": 29,
+        "fullTime": 3049060,
+        "partTime": 196052,
+        "permanent": 3245112,
+        "flexibleHundredths": 11037600,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            -2900,
+            -7000,
+            200,
+            200,
+            -700,
+            500,
+            1300,
+            2000
+          ],
+          "flexibleSumAbsDeltaHundredths": 29000,
+          "flexibleMaxAbsDeltaHundredths": 6900
+        }
+      }
+    },
+    {
+      "year": 2020,
+      "packageName": "spd_pca_occ_dip_ente_01_2020",
+      "packageId": "113120a0-0f0c-4558-bd57-e6dabeac27d6",
+      "title": "2020 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2022-09-15",
+      "metadataModified": "2023-03-01",
+      "dataObservedAt": "2022-04-19",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2020-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/113120a0-0f0c-4558-bd57-e6dabeac27d6.csv",
+      "bytes": 8885731,
+      "sha256": "b09ab9900bf97c404c924e36510f9cc302d19f9301f2b1f3e46ea78f6de1c872",
+      "valueFormat": "integer",
+      "trailingSeparator": true,
+      "sourceRows": 41593,
+      "expected": {
+        "institutions": 10433,
+        "types": 41,
+        "multipleComparti": 101,
+        "withoutBdapCode": 8,
+        "withoutStaff": 25,
+        "fullTime": 3053043,
+        "partTime": 190456,
+        "permanent": 3243499,
+        "flexibleHundredths": 10961500,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            -4300,
+            -4600,
+            400,
+            100,
+            300,
+            -600,
+            1000,
+            -600
+          ],
+          "flexibleSumAbsDeltaHundredths": 26100,
+          "flexibleMaxAbsDeltaHundredths": 4700
+        }
+      }
+    },
+    {
+      "year": 2021,
+      "packageName": "spd_pca_occ_dip_ente_01_2021",
+      "packageId": "f5615c2e-731f-4c3c-af5f-2b70d58b36aa",
+      "title": "2021 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2023-02-27",
+      "metadataModified": "2025-07-03",
+      "dataObservedAt": "2023-02-08",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2021-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/f5615c2e-731f-4c3c-af5f-2b70d58b36aa.csv",
+      "bytes": 11449600,
+      "sha256": "67b4c38f7488ff56f33dab144f399b31211625876f6cf6dde6c42522f5fd6a7d",
+      "valueFormat": "decimal2",
+      "trailingSeparator": true,
+      "sourceRows": 42767,
+      "expected": {
+        "institutions": 10569,
+        "types": 44,
+        "multipleComparti": 102,
+        "withoutBdapCode": 2,
+        "withoutStaff": 0,
+        "fullTime": 3050780,
+        "partTime": 189617,
+        "permanent": 3240397,
+        "flexibleHundredths": 12512895,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "flexibleSumAbsDeltaHundredths": 0,
+          "flexibleMaxAbsDeltaHundredths": 0
+        }
+      }
+    },
+    {
+      "year": 2022,
+      "packageName": "spd_pca_occ_dip_ente_01_2022",
+      "packageId": "4514355c-509f-433a-a638-01cdd71e8032",
+      "title": "2022 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2024-03-18",
+      "metadataModified": "2025-07-03",
+      "dataObservedAt": "2024-03-18",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2022-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/4514355c-509f-433a-a638-01cdd71e8032.csv",
+      "bytes": 11471403,
+      "sha256": "bb2a86bb1e7db7a5d408eda1c2aad3c3d2c2b8e20a0df16b4c826c79a5163e8f",
+      "valueFormat": "decimal2",
+      "trailingSeparator": true,
+      "sourceRows": 42798,
+      "expected": {
+        "institutions": 10632,
+        "types": 44,
+        "multipleComparti": 99,
+        "withoutBdapCode": 2,
+        "withoutStaff": 0,
+        "fullTime": 3084116,
+        "partTime": 187331,
+        "permanent": 3271447,
+        "flexibleHundredths": 12811571,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "flexibleSumAbsDeltaHundredths": 0,
+          "flexibleMaxAbsDeltaHundredths": 0
+        }
+      }
+    },
+    {
+      "year": 2023,
+      "packageName": "spd_pca_occ_dip_ente_01_2023",
+      "packageId": "21f79855-dbca-4a52-9833-d55986543724",
+      "title": "2023 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2025-07-03",
+      "metadataModified": "2025-07-03",
+      "dataObservedAt": "2025-07-02",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2023-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/21f79855-dbca-4a52-9833-d55986543724.csv",
+      "bytes": 12827403,
+      "sha256": "09348c0f3ec798ca676f431d01b70151d9ca4858e7ba7caa510206595758ba88",
+      "valueFormat": "decimal2",
+      "trailingSeparator": false,
+      "sourceRows": 42818,
+      "expected": {
+        "institutions": 10756,
+        "types": 44,
+        "multipleComparti": 95,
+        "withoutBdapCode": 2,
+        "withoutStaff": 0,
+        "fullTime": 3142127,
+        "partTime": 185727,
+        "permanent": 3327854,
+        "flexibleHundredths": 11254919,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "flexibleSumAbsDeltaHundredths": 0,
+          "flexibleMaxAbsDeltaHundredths": 0
+        }
+      }
+    },
+    {
+      "year": 2024,
+      "packageName": "spd_pca_occ_dip_ente_01_2024",
+      "packageId": "d9393c78-9cb2-4cb1-95e6-c1c33ffe93af",
+      "title": "2024 - Dipendenti Pubblici - Occupazione Complessiva - Dati analitici per Ente",
+      "publicationDate": "2026-03-18",
+      "metadataModified": "2026-03-18",
+      "dataObservedAt": "2026-03-08",
+      "landingUrl": "https://bdap-opendata.rgs.mef.gov.it/content/2024-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+      "url": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/d9393c78-9cb2-4cb1-95e6-c1c33ffe93af.csv",
+      "bytes": 11638039,
+      "sha256": "ddf9ad3f29d58e4061813f9daf97f70ce3568998190b5bff4f2253ee8160d568",
+      "valueFormat": "decimal2",
+      "trailingSeparator": true,
+      "sourceRows": 42694,
+      "expected": {
+        "institutions": 10915,
+        "types": 45,
+        "multipleComparti": 96,
+        "withoutBdapCode": 2,
+        "withoutStaff": 0,
+        "fullTime": 3203478,
+        "partTime": 185316,
+        "permanent": 3388794,
+        "flexibleHundredths": 11689045,
+        "typeCrossCheck": {
+          "flexibleDeltaByMeasureHundredths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "flexibleSumAbsDeltaHundredths": 0,
+          "flexibleMaxAbsDeltaHundredths": 0
+        }
+      }
+    }
+  ]
+}

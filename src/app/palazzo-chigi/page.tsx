@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { compactEuro, exactEuro, longDate } from "@/lib/format";
+import { compactEuro, exactEuro, integer, longDate } from "@/lib/format";
 import {
   pcmFinancialMetadata,
   pcmFinancialSnapshot,
@@ -61,7 +61,7 @@ export default function PalazzoChigiPage() {
           <dt>Periodo e copertura</dt>
           <dd>{data.referenceYear}</dd>
           <span className="stat-note">
-            {data.coverage.sourceRows.toLocaleString("it-IT")} righe riconciliate
+            {integer(data.coverage.sourceRows)} righe riconciliate
           </span>
         </div>
       </dl>
@@ -169,7 +169,7 @@ export default function PalazzoChigiPage() {
           </div>
           <div>
             <span>File verificato</span>
-            <strong>{pcmFinancialMetadata.asset.bytes.toLocaleString("it-IT")} byte · XLSX</strong>
+            <strong>{integer(pcmFinancialMetadata.asset.bytes)} byte · XLSX</strong>
           </div>
         </div>
         <p className={styles.sourceNote}>

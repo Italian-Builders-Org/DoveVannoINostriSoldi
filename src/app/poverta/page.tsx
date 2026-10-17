@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { compactEuroFromCents, longDate, percent } from "@/lib/format";
+import { compactEuroFromCents, integer, longDate, percent } from "@/lib/format";
 import {
   buildPovertaPageView,
   type PovertaAbsoluteThresholdView,
@@ -29,7 +29,7 @@ function aropeRate(tenths: number): string {
 }
 
 function aropePersons(thousands: number): string {
-  return `${thousands.toLocaleString("it-IT")} mila`;
+  return `${integer(thousands)} mila`;
 }
 
 function FamilySection({ family }: { family: PovertaFamilyView }) {

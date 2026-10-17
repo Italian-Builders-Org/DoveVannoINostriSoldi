@@ -1,3 +1,4 @@
+import { integer } from "@/lib/format";
 import type { IncomePoint } from "@/lib/inequality-page";
 import styles from "./disuguaglianza.module.css";
 
@@ -34,7 +35,7 @@ export function IncomeSeriesChart({
         {[0, ceiling / 2, ceiling].map((value) => (
           <g key={value}>
             <line x1="40" x2="520" y1={y(value)} y2={y(value)} className={styles.gridline} />
-            <text x="30" y={y(value) + 5} textAnchor="end">{value.toLocaleString("it-IT")}</text>
+            <text x="30" y={y(value) + 5} textAnchor="end">{integer(value)}</text>
           </g>
         ))}
         <path d={path} className={styles.series} />

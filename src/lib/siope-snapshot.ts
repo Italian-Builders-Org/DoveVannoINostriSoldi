@@ -8,6 +8,7 @@ export type SiopeMunicipalMonthlyPoint = {
   label: string;
   flow: number;
   cumulative: number;
+  completeness?: "complete" | "partial";
 };
 
 export type SiopeRegionPoint = {
@@ -117,9 +118,12 @@ export type SiopeMunicipalSnapshot = {
   latestMonth: number;
   latestMonthLabel: string;
   totalPaid: number;
+  /** Optional settled fields: the committed snapshots predate them. */
+  totalPaidSettled?: number | null;
   paymentsWithPopulation: number;
   populationCovered: number;
   nationalPerCapita: number | null;
+  nationalPerCapitaSettled?: number | null;
   coverage: {
     activeSiopeMunicipalities: number;
     matchedToIpaRegion: number;
@@ -606,6 +610,23 @@ export function completedMonths(
 ): SiopeMunicipalMonthlyPoint[] {
   const partial = partialMonth(data);
   return data.monthly.filter((point) => point.month !== partial);
+}
+
+export function settledTotalPaid(
+  data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,
+): number | null {
+  if (data.totalPaidSettled !== undefined) return data.totalPaidSettled;
+  // The partial month is always the newest one.
+  const settled = completedMonths(data);
+  return settled.length > 0 ? settled[settled.length - 1].cumulative : null;
+}
+
+export function settledNationalPerCapita(
+  data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,
+): number | null {
+  if (data.nationalPerCapitaSettled !== undefined) return data.nationalPerCapitaSettled;
+  // Older snapshots cannot split the covered payments by month.
+  return partialMonth(data) === null ? data.nationalPerCapita : null;
 }
 
 export function regionsByPerCapita(

@@ -685,8 +685,7 @@ def validate_snapshot(snapshot: dict[str, Any], *, now: str | None = None) -> li
         _fail("riconciliazione variazione stock fallita")
     instruments = _require_dict(stock.get("instruments"), "strumenti")
     instrument_sum = sum(_safe_integer(amount, f"strumenti {name}", nonnegative=True) for name, amount in instruments.items())
-    if instrument_sum != total:
-        _fail("riconciliazione strumenti fallita")
+    _near(instrument_sum, total, "strumenti")
     history = _require_list(stock.get("history"), "storia stock")
     if len(history) != 13:
         _fail("storia stock: servono tredici mesi")

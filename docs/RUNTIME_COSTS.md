@@ -67,6 +67,21 @@ i grandi shard sanitari. Il gate `runtime-cache.mjs` prova HIT, HTML/RSC,
 filtri e dataset inesistenti su produzione locale. Quando aggiungi parametri alla
 pagina, aggiorna l’elenco semantico nel proxy e le prove di esclusione dalla cache.
 
+## OpenBDAP MOP
+
+La vista `/opere?cup=...` prepara solo il dettaglio live richiesto. Riepiloghi,
+scansione e ordinamento delle opere locali appartengono alla pagina elenco:
+non eseguirli quando grafici ed elenco non vengono renderizzati. La ricerca del
+CUP conserva costi, fonte e stati di errore del lookup live.
+
+`/api/opere` conserva la cache CDN di sei ore per le risposte valide. Il campo
+«finanziamenti da reperire» può contenere un saldo negativo pubblicato dalla
+fonte: conservarne i centesimi e segnalare il dato da verificare, senza generare
+un falso finanziamento mancante o scartare tutta la scheda. La fixture del CUP
+`J84C20001920001` riproduce il precedente 502. Gli altri importi, i formati
+malformati e i valori oltre gli interi sicuri restano fail-closed; non
+memorizzare gli errori come risposte valide.
+
 ## Cache dei dati
 
 La ricerca degli operatori conserva il parser e l'indice validato esistenti.

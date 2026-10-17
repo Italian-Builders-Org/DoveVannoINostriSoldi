@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "holder": "Autorità di Regolazione per Energia Reti e Ambiente (ARERA)",
+  "acquisitionDate": "2026-10-15",
+  "license": {
+    "status": "verified-open-cc-by-sa-4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "termsUrl": "https://www.arera.it/termini-e-condizioni-uso-del-sito",
+    "path": "tests/fixtures/arera/termini.html.gz",
+    "sha256": "455272156e959af0bf50200544988301a14d5d42f226cba8134b4b60647758ca"
+  },
+  "years": [
+    {
+      "year": 2024,
+      "path": "tests/fixtures/arera/rendiconto-2024.xlsx",
+      "url": "https://www.arera.it/fileadmin/allegati/docs/25/164-2025-A-ALLEGATO_A.xlsx",
+      "landingUrl": "https://www.arera.it/atti-e-provvedimenti/dettaglio/25/164-25",
+      "publicationDate": "2025-04-16",
+      "bytes": 388261,
+      "sha256": "dc6a5325cdc1f71085c173d6ef2cd4134acccb35f3241ebda7ad76c843fccebe",
+      "incomeSheet": "bilancio_riclassificato_5_liv_",
+      "spendingSheet": "Bilancio_riclassificato_2_liv_"
+    },
+    {
+      "year": 2025,
+      "path": "tests/fixtures/arera/rendiconto-2025.xlsx",
+      "url": "https://www.arera.it/fileadmin/allegati/docs/26/137-2026-A-ALLEGATO_A.xlsx",
+      "landingUrl": "https://www.arera.it/atti-e-provvedimenti/dettaglio/26/137-26",
+      "publicationDate": "2026-05-05",
+      "bytes": 430992,
+      "sha256": "54c2522c58176ba277fb8096e292d82360fb8010ea54870983c979b1310fa724",
+      "incomeSheet": "bilancio riclassificato 5 liv.",
+      "spendingSheet": "Bilancio riclassificato 2 liv."
+    }
+  ]
+}

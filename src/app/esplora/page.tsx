@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { EsploraSearch } from "./EsploraSearch";
 import Link from "next/link";
+import { integer } from "@/lib/format";
 import { loadInvestigativeMeta } from "@/lib/investigative-explorer";
 import styles from "./esplora.module.css";
 
@@ -22,7 +23,7 @@ export default function EsploraPage() {
       <section className={styles.intro}>
         <h1>Esplora relazioni</h1>
         <p>
-          Cerca persone, enti e riferimenti agli atti in <strong>{searchable.toLocaleString("it-IT")}</strong> relazioni tra incarichi ed enti pubblici.
+          Cerca persone, enti e riferimenti agli atti in <strong>{integer(searchable)}</strong> relazioni tra incarichi ed enti pubblici.
           Un collegamento indica dove approfondire; non dimostra un’irregolarità.
         </p>
 
@@ -41,7 +42,7 @@ export default function EsploraPage() {
         <p>La ricerca usa il dataset <code>incarichi-nominativi-shard</code>. Non unisce persone con lo stesso nome senza un identificativo stabile. I riferimenti CIG, CUP e agli atti sono ricercabili.</p>
         {suspects > 0 ? (
           <p className={styles.caveat}>
-            {suspects.toLocaleString("it-IT")} record con importi sospetti (stesso atto, rapporto
+            {integer(suspects)} record con importi sospetti (stesso atto, rapporto
             ×100 o ×1000) restano nel file di origine ma sono esclusi da aggregati e ricerca.
           </p>
         ) : null}

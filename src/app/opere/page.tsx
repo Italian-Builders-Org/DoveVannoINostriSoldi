@@ -176,9 +176,9 @@ export default async function OperePage({
     }
   }
 
-  const comparableMeta = tryComparableMeta();
-  const summaries = tryComparableSummaries();
-  const listing = tryComparableListing({
+  const comparableMeta = cup ? null : tryComparableMeta();
+  const summaries = cup ? null : tryComparableSummaries();
+  const listing = cup ? null : tryComparableListing({
     q,
     sector: settore,
     category: categoria,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { integer } from "@/lib/format";
 import { FuelCostEstimator } from "./fuel-cost-estimator";
 import styles from "./mobilita.module.css";
 
@@ -103,7 +104,7 @@ export default function MobilitaPage() {
               <div className={styles.supplyRow} key={item.label}>
                 <div className={styles.supplyLabel}>
                   <span>{item.label}</span>
-                  <strong>{item.value.toLocaleString("it-IT")}</strong>
+                  <strong>{integer(item.value)}</strong>
                 </div>
                 <span className={styles.supplyTrack} aria-hidden="true">
                   <i style={{ width: `${(item.value / TPL_SUPPLY[0].value) * 100}%` }} />

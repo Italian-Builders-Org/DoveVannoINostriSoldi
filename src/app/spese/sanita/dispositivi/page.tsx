@@ -9,6 +9,7 @@ import {
   medicalDeviceRegionName,
   searchMedicalDevices,
 } from "@/lib/medical-device-spending";
+import { integer } from "@/lib/format";
 import styles from "./dispositivi.module.css";
 import { TerritoryFilters } from "./territory-filters";
 
@@ -127,7 +128,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
         {searchError ? <p className={styles.error} role="alert">{searchError}</p> : null}
         {search ? <>
           <div className={styles.summary}>
-            <p><strong>{search.matched.toLocaleString("it-IT")}</strong> dispositivi trovati; {search.pagination.returned} mostrati.</p>
+            <p><strong>{integer(search.matched)}</strong> dispositivi trovati; {search.pagination.returned} mostrati.</p>
             <a href={href("/api/spese/sanita/dispositivi", { vista: "ricerca", q, tipo: type, anno: searchYear, regione: region, azienda: company })}>Risultati in JSON</a>
           </div>
           {search.requiresType ? <p className={styles.error}>Lo stesso numero compare nei tipi 1 e 2. Scegli il tipo per distinguere i due dispositivi.</p> : null}
@@ -165,7 +166,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
         {aggregateError ? <p className={styles.error} role="alert">{aggregateError}</p> : aggregate ? <>
           <div className="stat-strip">
             <div><span className="stat-label">Spesa rilevata</span><span className={`stat-value ${styles.money}`}>{euro(aggregate.coverage.spending)}</span><span className="stat-note">anno {aggregate.scope.year}</span></div>
-            <div><span className="stat-label">Righe</span><span className="stat-value">{aggregate.coverage.rows.toLocaleString("it-IT")}</span><span className="stat-note">{aggregate.coverage.negativeRows.toLocaleString("it-IT")} rettifiche negative</span></div>
+            <div><span className="stat-label">Righe</span><span className="stat-value">{integer(aggregate.coverage.rows)}</span><span className="stat-note">{integer(aggregate.coverage.negativeRows)} rettifiche negative</span></div>
           </div>
           <div className="table-scroll" role="region" aria-label="Aggregati della spesa per dispositivi medici" tabIndex={0}>
             <table className="table"><caption className={styles.visuallyHidden}>Spesa rilevata raggruppata per {dimensionLabel}</caption><thead><tr><th scope="col">{dimensionColumnLabel}</th><th scope="col" className="num">Righe</th><th scope="col" className="num">Spesa</th><th scope="col">Dati</th></tr></thead><tbody>
@@ -174,7 +175,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
                 const label = dimension === "territory" && aggregate.scope.region === null && row.code
                   ? medicalDeviceRegionName(row.code)
                   : row.label ?? row.code ?? "Non collegato";
-                return <tr key={`${row.code ?? row.label ?? "non-collegato"}-${row.role ?? ""}-${index}`}><th scope="row">{label}{row.role ? <small className={styles.blockMeta}>{row.role}</small> : null}</th><td className="num">{row.rows.toLocaleString("it-IT")}</td><td className={`num ${styles.money}`}>{euro(row.spending)}</td><td><a href={href("/api/spese/sanita/dispositivi", { vista: "righe", anno: aggregateYear, regione: aggregateRegion, azienda: aggregateCompany, dimensione: dimension, valore: value, ruolo: row.role ?? undefined, limit: "100" })}>Righe JSON</a></td></tr>;
+                return <tr key={`${row.code ?? row.label ?? "non-collegato"}-${row.role ?? ""}-${index}`}><th scope="row">{label}{row.role ? <small className={styles.blockMeta}>{row.role}</small> : null}</th><td className="num">{integer(row.rows)}</td><td className={`num ${styles.money}`}>{euro(row.spending)}</td><td><a href={href("/api/spese/sanita/dispositivi", { vista: "righe", anno: aggregateYear, regione: aggregateRegion, azienda: aggregateCompany, dimensione: dimension, valore: value, ruolo: row.role ?? undefined, limit: "100" })}>Righe JSON</a></td></tr>;
               })}
             </tbody></table>
           </div>

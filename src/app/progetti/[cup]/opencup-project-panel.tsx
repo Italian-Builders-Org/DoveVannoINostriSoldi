@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { OpenCupProjectSelection } from "@/lib/integrated-public-view";
+import { integer } from "@/lib/format";
 import { formatOpenCupEuro } from "@/lib/opencup-money";
 import styles from "./project.module.css";
 
@@ -17,7 +18,7 @@ function OpenCupRecord({ row, ordinal }: { row: OpenCupRow; ordinal: number }) {
       <summary>
         <span>Registrazione {ordinal}</span>
         <strong>{shown(row.cells.DESCRIZIONE_SINTETICA_CUP)}</strong>
-        <small>riga fonte {row.sourceRow.toLocaleString("it-IT")}</small>
+        <small>riga fonte {integer(row.sourceRow)}</small>
       </summary>
       <div className={styles.openCupRecordBody}>
         <dl className={styles.definitionGrid}>
@@ -70,7 +71,7 @@ export function OpenCupProjectPanel({ initial }: { initial: OpenCupProjectSelect
     <section className={styles.openCupPanel} aria-labelledby="opencup-title">
       <div className={styles.sectionHeading}>
         <h2 id="opencup-title" ref={headingRef} tabIndex={-1}>Registrazioni OpenCUP</h2>
-        <p>{initial.matchedRows.toLocaleString("it-IT")} registrazioni nel rilascio consultato. Le righe duplicate della fonte restano distinte.</p>
+        <p>{integer(initial.matchedRows)} registrazioni nel rilascio consultato. Le righe duplicate della fonte restano distinte.</p>
       </div>
       <div className={styles.openCupList}>
         {rows.map((row, index) => (

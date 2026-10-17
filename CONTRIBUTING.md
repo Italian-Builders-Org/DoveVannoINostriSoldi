@@ -202,11 +202,17 @@ dipendenze e tutti i gate restano attivi.
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
 attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
 Salta soltanto modifiche a documentazione Markdown, test, template di issue/PR,
-al workflow `.github/workflows/ci.yml` e al registro `scripts/ci/action-pins.json`.
+al workflow `.github/workflows/ci.yml`, al registro `scripts/ci/action-pins.json`
+e ai producer offline esplicitamente verificati nello script. L'elenco include
+`scripts/etl/medical_device_spending_index.py`: il sito legge i suoi artifact
+versionati, senza eseguire il producer durante installazione, build o richieste.
+Una modifica ai dati generati richiede comunque il deployment, anche quando
+nello stesso intervallo cambiano il producer o i suoi test.
 Non salta i dati sotto `docs/research/data`, le specifiche ETL, gli altri workflow
 o percorsi nuovi: sono input del deployment o richiedono una nuova verifica.
 Primo deployment, redeploy della stessa SHA, metadati mancanti e cronologia
-Git incompleta eseguono sempre il build. Le preview del codice restano attive.
+Git incompleta eseguono sempre il build. Le preview restano manuali secondo
+[Approvazione delle build](docs/DEPLOYMENT_APPROVAL.md).
 La CI GitHub continua a eseguire tutti i controlli anche se Vercel salta il build.
 
 Test mirato: `node --import ./scripts/ci/node-test-setup.mjs --test tests/vercel-ignore-build.test.mjs`.

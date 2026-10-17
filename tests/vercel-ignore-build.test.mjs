@@ -58,6 +58,16 @@ test("Vercel skips only non-deployment changes since the last successful build",
   expect("f".repeat(40), tests, 1); // Missing/shallow Git history.
   expect(initial, "", 1);
 
+  const producerPath = "scripts/etl/medical_device_spending_index.py";
+  const producer = commit(producerPath, "Offline index producer");
+  const producerTests = commit("tests/etl/test_medical_device_spending_index.py", "Producer assertions");
+  expect(design, producer, 0);
+  expect(design, producerTests, 0); // Producer and tests alone publish no new data.
+  const snapshot = commit("src/data/generated/medical-device-spending-index/manifest.json", "Updated data");
+  expect(design, snapshot, 1); // The producer exemption must not hide its output.
+  const specification = commit("scripts/etl/specs/medical-device-spending.json", "Updated specification");
+  expect(producerTests, specification, 1);
+
   const code = commit("src/app/page.tsx", "export default 2;");
   const laterDocs = commit("README.md", "Documentation after a failed code build");
   expect(tests, laterDocs, 1); // HEAD^ alone would incorrectly skip the code.
@@ -66,12 +76,17 @@ test("Vercel skips only non-deployment changes since the last successful build",
   expect(tests, laterCi, 1); // Le modifiche CI non devono nascondere codice non ancora distribuito.
   expect(code, laterCi, 0);
 
-  let previous = laterCi;
+  const laterProducer = commit(producerPath, "Faster offline index producer");
+  expect(specification, laterProducer, 1); // Include runtime changes since the last successful deployment.
+  expect(code, laterProducer, 0);
+
+  let previous = laterProducer;
   for (const file of [
     "docs/research/data/anac.json", "docs/research/data/raw.md", "scripts/etl/specs/source.json",
     "src/data/generated/data.json", "data/source-ledger/receipt.json",
     "public/logo.svg", "package-lock.json", "next.config.ts", "vercel.json",
     "scripts/ci/check-runtime-traces.mjs", "scripts/ci/vercel-ignore-build.mjs",
+    "scripts/etl/unreviewed_producer.py", "scripts/etl/medical_device_spending_index.py.json",
     ".github/workflows/custom-deploy.yml", "unknown-new-input.txt",
   ]) {
     const current = commit(file, "changed");

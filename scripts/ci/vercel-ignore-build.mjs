@@ -7,6 +7,13 @@ const previous = process.env.VERCEL_GIT_PREVIOUS_SHA;
 const current = process.env.VERCEL_GIT_COMMIT_SHA;
 const sha = /^[0-9a-f]{40}$/i;
 
+// Producer offline verificati: il sito legge gli artifact versionati, non esegue
+// questi script. Non estendere a tutta scripts/etl: le specifiche sono runtime
+// e nuovi producer potrebbero essere richiamati durante installazione/build.
+const offlineProducers = new Set([
+  "scripts/etl/medical_device_spending_index.py",
+]);
+
 function decide() {
   if (!sha.test(previous ?? "") || !sha.test(current ?? "") || previous === current) {
     return { skip: false, reason: "Primo deployment, redeploy o metadati del commit mancanti." };
@@ -26,6 +33,7 @@ function decide() {
     /^(README|CONTRIBUTING|AGENTS|CLAUDE|CODE_OF_CONDUCT|SECURITY|DESIGN)\.md$/.test(file) ||
     (/^docs\/.*\.md$/.test(file) && !file.startsWith("docs/research/data/")) ||
     file.startsWith("tests/") ||
+    offlineProducers.has(file) ||
     file.startsWith("scripts/browser/") ||
     file.startsWith("scripts/bench/") ||
     // Agenti/editor: non entrano nel bundle runtime Next.
@@ -42,7 +50,7 @@ function decide() {
   if (runtimeFile) return { skip: false, reason: `Input del deployment modificato: ${runtimeFile}` };
   // docs/research/data e scripts/etl/specs sono input del runtime.
   // I percorsi sconosciuti richiedono il build: l'elenco contiene solo le eccezioni.
-  return { skip: true, reason: `${files.length} file modificati: solo documentazione, test o configurazione CI, oppure contenuti identici.` };
+  return { skip: true, reason: `${files.length} file modificati: solo documentazione, test, configurazione CI o producer offline verificati, oppure contenuti identici.` };
 }
 
 const result = decide();

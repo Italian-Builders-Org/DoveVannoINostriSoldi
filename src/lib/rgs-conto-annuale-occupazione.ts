@@ -247,4 +247,3 @@ function occupationDatasetMetadata(): IntegratedDatasetMetadata {
     reuseNote: "Attribuzione MEF–RGS, OpenBDAP; proiezione DVNS.",
   };
 }
-

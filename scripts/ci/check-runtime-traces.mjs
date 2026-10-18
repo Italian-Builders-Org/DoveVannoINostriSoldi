@@ -119,9 +119,20 @@ export function checkRuntimeTraces(root = process.cwd()) {
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
     ...Object.values(json(`${SPEC}/anac-procurement-peers.source.json`).inputs).map((entry) => entry.path),
   ];
-  const occupationIndexFiles = [
-    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
+  const occupationEntiFiles = [
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
     "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+  ];
+  const occupationHubFiles = [
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+  ];
+  const occupationDetailFiles = [
+    ...occupationHubFiles,
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/manifest.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/bucket-000.json",
   ];
   const comuniRuntimeFiles = [
     ...entityFiles,
@@ -129,11 +140,11 @@ export function checkRuntimeTraces(root = process.cwd()) {
     "src/data/generated/pnrr-childcare.data.json",
   ];
   const requirements = new Map([
-    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles, ...occupationIndexFiles]],
-    ["personale-pa/conto-annuale/page.js.nft.json", occupationIndexFiles],
-    ["personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationIndexFiles],
-    ["snapshot-pages/personale-pa/conto-annuale/page.js.nft.json", occupationIndexFiles],
-    ["snapshot-pages/personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationIndexFiles],
+    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles, ...occupationEntiFiles]],
+    ["personale-pa/conto-annuale/page.js.nft.json", occupationHubFiles],
+    ["personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationDetailFiles],
+    ["snapshot-pages/personale-pa/conto-annuale/page.js.nft.json", occupationHubFiles],
+    ["snapshot-pages/personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationDetailFiles],
     ["enti/[codice]/appalti/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/confronti/page.js.nft.json", peerFiles],
     ["appalti/operatori/page.js.nft.json", operatorBrowseFiles],

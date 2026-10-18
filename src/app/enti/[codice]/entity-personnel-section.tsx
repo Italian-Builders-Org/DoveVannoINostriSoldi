@@ -1,10 +1,9 @@
 import Link from "next/link";
+import { formatStaffCount, formatStaffDelta } from "@/lib/rgs-conto-annuale-occupazione-format";
 import {
-  formatStaffCount,
-  formatStaffDelta,
   getOccupazioneInstitutionSummary,
   resolveInstitutionCodeFromDenominazione,
-} from "@/lib/rgs-conto-annuale-occupazione";
+} from "@/lib/rgs-conto-annuale-occupazione-resolve";
 import styles from "./scheda.module.css";
 
 export function EntityPersonnelSection({

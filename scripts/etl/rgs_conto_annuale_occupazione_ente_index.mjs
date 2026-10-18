@@ -23,6 +23,11 @@ const TIPO_ID = "rgs-conto-annuale-occupazione-tipologia-2010-2024";
 const YEARS = enteSpec.years.map((entry) => entry.year);
 const BASELINE = YEARS[0];
 const LATEST = YEARS[YEARS.length - 1];
+const SHARD_COUNT = 256;
+
+function shardIdForCode(code) {
+  return String(Number(code) % SHARD_COUNT).padStart(3, "0");
+}
 
 const PERMANENT = [
   "Numero Dipendenti Donne Tempo Pieno",
@@ -235,8 +240,11 @@ const nationalSeries = YEARS.map((year) => {
 });
 
 mkdirSync(outDir, { recursive: true });
-const payload = {
-  schemaVersion: 1,
+const shardDir = join(outDir, "shards");
+mkdirSync(shardDir, { recursive: true });
+
+const summaryPayload = {
+  schemaVersion: 2,
   datasetId: ENTE_ID,
   tipologiaDatasetId: TIPO_ID,
   years: YEARS,
@@ -256,21 +264,105 @@ const payload = {
     .sort((a, b) => b.permanent - a.permanent),
   growth,
   shrink,
-  comuneNameToCode: Object.fromEntries([...comuneNameToCode.entries()].filter(([, code]) => code !== null)),
-  institutions: search,
 };
-const json = `${JSON.stringify(payload)}\n`;
-writeFileSync(join(outDir, "index.json"), json);
+
+const searchPayload = search.map(({ code, name, type, permanentLatest }) => ({
+  code,
+  name,
+  type,
+  permanentLatest,
+}));
+
+const exactNameToCode = new Map();
+for (const record of search) {
+  for (const name of [record.name, ...record.nameVariants]) {
+    const key = institutionKey(name);
+    const previous = exactNameToCode.get(key);
+    if (previous === undefined) exactNameToCode.set(key, record.code);
+    else if (previous !== record.code) exactNameToCode.set(key, null);
+  }
+}
+
+const byCodePayload = Object.fromEntries(
+  search.map(({ code, name, type, bdap, permanentLatest, flexibleLatest, permanentBaseline, peakPermanent, peakYear }) => [
+    code,
+    { code, name, type, bdap, permanentLatest, flexibleLatest, permanentBaseline, peakPermanent, peakYear },
+  ]),
+);
+
+const resolvePayload = {
+  schemaVersion: 1,
+  comuneNameToCode: Object.fromEntries([...comuneNameToCode.entries()].filter(([, code]) => code !== null)),
+  exactNameToCode: Object.fromEntries([...exactNameToCode.entries()].filter(([, code]) => code !== null)),
+};
+
+const shardBuckets = new Map();
+for (const record of search) {
+  const shardId = shardIdForCode(record.code);
+  let bucket = shardBuckets.get(shardId);
+  if (!bucket) {
+    bucket = { schemaVersion: 1, bucket: Number(shardId), institutions: {} };
+    shardBuckets.set(shardId, bucket);
+  }
+  const { series, ...summaryFields } = record;
+  bucket.institutions[record.code] = { ...summaryFields, series };
+}
+
+const summaryJson = `${JSON.stringify(summaryPayload)}\n`;
+const searchJson = `${JSON.stringify(searchPayload)}\n`;
+const resolveJson = `${JSON.stringify(resolvePayload)}\n`;
+const byCodeJson = `${JSON.stringify({ schemaVersion: 1, byCode: byCodePayload })}\n`;
+
+writeFileSync(join(outDir, "summary.json"), summaryJson);
+writeFileSync(join(outDir, "search.json"), searchJson);
+writeFileSync(join(outDir, "resolve.json"), resolveJson);
+writeFileSync(join(outDir, "by-code.json"), byCodeJson);
+
+const shardManifest = { schemaVersion: 1, shardCount: SHARD_COUNT, buckets: [] };
+let seriesBytes = 0;
+for (let bucket = 0; bucket < SHARD_COUNT; bucket += 1) {
+  const shardId = String(bucket).padStart(3, "0");
+  const payload = shardBuckets.get(shardId) ?? { schemaVersion: 1, bucket, institutions: {} };
+  const shardJson = `${JSON.stringify(payload)}\n`;
+  seriesBytes += Buffer.byteLength(shardJson);
+  writeFileSync(join(shardDir, `bucket-${shardId}.json`), shardJson);
+  shardManifest.buckets.push({
+    id: shardId,
+    path: `shards/bucket-${shardId}.json`,
+    bytes: Buffer.byteLength(shardJson),
+    institutions: Object.keys(payload.institutions).length,
+  });
+}
+
+const manifestJson = `${JSON.stringify(shardManifest)}\n`;
+writeFileSync(join(shardDir, "manifest.json"), manifestJson);
+
 writeFileSync(
   join(outDir, "meta.json"),
   `${JSON.stringify({
-    schemaVersion: 1,
+    schemaVersion: 2,
     datasetId: ENTE_ID,
-    indexPath: "index.json",
-    bytes: Buffer.byteLength(json),
-    sha256: createHash("sha256").update(json).digest("hex"),
+    summaryPath: "summary.json",
+    searchPath: "search.json",
+    resolvePath: "resolve.json",
+    byCodePath: "by-code.json",
+    shardManifestPath: "shards/manifest.json",
+    summaryBytes: Buffer.byteLength(summaryJson),
+    searchBytes: Buffer.byteLength(searchJson),
+    resolveBytes: Buffer.byteLength(resolveJson),
+    byCodeBytes: Buffer.byteLength(byCodeJson),
+    seriesBytes,
+    sha256: createHash("sha256")
+      .update(summaryJson)
+      .update(searchJson)
+      .update(resolveJson)
+      .update(byCodeJson)
+      .digest("hex"),
     institutionCount: search.length,
     generatedFromRowsSha256: enteMeta.rowsSha256,
   })}\n`,
 );
-console.log(`Wrote ${outDir} (${search.length} istituzioni indicizzate)`);
+
+console.log(
+  `Wrote ${outDir} (${search.length} istituzioni; summary ${Buffer.byteLength(summaryJson)} B, search ${Buffer.byteLength(searchJson)} B, resolve ${Buffer.byteLength(resolveJson)} B, by-code ${Buffer.byteLength(byCodeJson)} B, series ${seriesBytes} B)`,
+);

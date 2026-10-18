@@ -567,8 +567,12 @@
       "id": "rgs-conto-annuale-occupazione-ente-index",
       "owner": "Search index and aggregates for /personale-pa/conto-annuale",
       "files": [
-        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
-        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json"
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/manifest.json"
       ],
       "verificationMode": "curated-committed",
       "offlineCheck": {
@@ -577,7 +581,8 @@
       },
       "reconciliationTests": [],
       "nodeTests": [
-        "tests/rgs-conto-annuale-occupazione-page.test.mjs"
+        "tests/rgs-conto-annuale-occupazione-page.test.mjs",
+        "tests/rgs-conto-annuale-occupazione-index-size.test.mjs"
       ],
       "generator": {
         "command": "node scripts/etl/rgs_conto_annuale_occupazione_ente_index.mjs",

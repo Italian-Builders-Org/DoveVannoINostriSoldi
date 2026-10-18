@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { integer } from "@/lib/format";
+import { formatStaffCount, formatStaffDelta } from "@/lib/rgs-conto-annuale-occupazione-format";
 import {
   ENTE_DATASET_ID,
-  formatStaffCount,
-  formatStaffDelta,
-  getOccupazioneIndex,
+  getOccupazioneHubIndex,
+  getOccupazioneSearchIndex,
   TIPOLOGIA_DATASET_ID,
-} from "@/lib/rgs-conto-annuale-occupazione";
+} from "@/lib/rgs-conto-annuale-occupazione-hub";
 import { InstitutionSearch } from "./institution-search";
 import { StaffSeriesChart } from "./staff-series-chart";
 import styles from "./conto-annuale.module.css";
@@ -23,18 +23,13 @@ export default async function ContoAnnualeOccupazioneHubPage({
 }: {
   searchParams: Promise<{ q?: string | string[] }>;
 }) {
-  const index = getOccupazioneIndex();
+  const index = getOccupazioneHubIndex();
   const params = await searchParams;
   const initialQuery = Array.isArray(params.q) ? params.q[0] ?? "" : params.q ?? "";
   const latestNational = index.nationalSeries.at(-1)!;
   const baselineNational = index.nationalSeries[0]!;
   const nationalDelta = latestNational.permanent - baselineNational.permanent;
-  const searchInstitutions = index.institutions.map((institution) => ({
-    code: institution.code,
-    name: institution.name,
-    type: institution.type,
-    permanentLatest: institution.permanentLatest,
-  }));
+  const searchInstitutions = getOccupazioneSearchIndex();
 
   return (
     <main className={`shell page ${styles.page}`}>

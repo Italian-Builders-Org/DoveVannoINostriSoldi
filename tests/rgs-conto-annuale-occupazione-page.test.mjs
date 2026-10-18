@@ -5,13 +5,16 @@ import "./helpers/register-ts-alias.mjs";
 
 const {
   getOccupazioneCorpusPublicRows,
-  getOccupazioneIndex,
   getOccupazioneInstitutionSummary,
   loadInstitutionStaffView,
   resolveInstitutionCodeFromDenominazione,
   sumPermanentFromCells,
   sumFlexibleFromCells,
 } = await import("../src/lib/rgs-conto-annuale-occupazione.ts");
+const { getOccupazioneHubIndex, getOccupazioneSearchIndex } = await import(
+  "../src/lib/rgs-conto-annuale-occupazione-hub.ts"
+);
+const { getOccupazioneShardInstitution } = await import("../src/lib/rgs-conto-annuale-occupazione-shards.ts");
 
 const { selectIntegratedDataset } = await import("../src/lib/integrated-public-view.ts");
 
@@ -36,7 +39,9 @@ async function verifyInstitutionSeriesAgainstCorpus(code) {
       };
     })
     .sort((a, b) => a.year - b.year);
-  const indexPoints = summary.series.map(([year, name, permanent, flexible, sourceUrl]) => ({
+  const shard = getOccupazioneShardInstitution(code);
+  assert.ok(shard?.series.length, "series shard");
+  const indexPoints = shard.series.map(([year, name, permanent, flexible, sourceUrl]) => ({
     year,
     name,
     permanent,
@@ -53,12 +58,13 @@ const SPOT_CHECKS = [
 ];
 
 test("occupazione index reconciles with corpus metadata", () => {
-  const index = getOccupazioneIndex();
+  const index = getOccupazioneHubIndex();
+  const search = getOccupazioneSearchIndex();
   const meta = JSON.parse(
     readFileSync("src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json", "utf8"),
   );
-  assert.equal(index.schemaVersion, 1);
-  assert.equal(index.searchableCount, index.institutions.length);
+  assert.equal(index.schemaVersion, 2);
+  assert.equal(index.searchableCount, search.length);
   assert.equal(meta.institutionCount, index.searchableCount);
   assert.equal(index.nationalSeries.length, 15);
   assert.equal(index.nationalSeries.at(-1).year, 2024);

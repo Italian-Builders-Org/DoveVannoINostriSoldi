@@ -140,9 +140,21 @@ const operatorShardRuntimeFiles = [
   "src/data/generated/anac-operator-awards-index/operators/*",
 ];
 
-const occupationIndexRuntimeFiles = [
-  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
+const occupationEntiRuntimeFiles = [
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
   "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+];
+
+const occupationHubRuntimeFiles = [
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+];
+
+const occupationDetailRuntimeFiles = [
+  ...occupationHubRuntimeFiles,
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/*",
 ];
 
 const entityProcurementRuntimeFiles = [
@@ -344,6 +356,19 @@ const nextConfig: NextConfig = {
       "src/data/generated/anac-operator-browse/*",
     ],
     "/opere": ["docs/**/*", "tests/**/*", "research/**/*"],
+    "/personale-pa/conto-annuale/**": ["research/**/*"],
+    "/app/personale-pa/conto-annuale/**": ["research/**/*"],
+    "/snapshot-pages/personale-pa/conto-annuale/**": ["research/**/*"],
+    "/enti/*": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/**/*",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+    ],
+    "/app/enti/*": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/**/*",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+    ],
   },
   outputFileTracingIncludes: {
     "/snapshot-pages/enti/*/*": entityProcurementRuntimeFiles,
@@ -398,11 +423,11 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
-    "/enti/*": [...entityProcurementRuntimeFiles, ...occupationIndexRuntimeFiles],
-    "/personale-pa/conto-annuale": occupationIndexRuntimeFiles,
-    "/personale-pa/conto-annuale/*": occupationIndexRuntimeFiles,
-    "/snapshot-pages/personale-pa/conto-annuale": occupationIndexRuntimeFiles,
-    "/snapshot-pages/personale-pa/conto-annuale/*": occupationIndexRuntimeFiles,
+    "/enti/*": [...entityProcurementRuntimeFiles, ...occupationEntiRuntimeFiles],
+    "/personale-pa/conto-annuale": occupationHubRuntimeFiles,
+    "/personale-pa/conto-annuale/*": occupationDetailRuntimeFiles,
+    "/snapshot-pages/personale-pa/conto-annuale": occupationHubRuntimeFiles,
+    "/snapshot-pages/personale-pa/conto-annuale/*": occupationDetailRuntimeFiles,
     "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     // /comuni opens ANAC shards by IPA hash; without an include Vercel omits them
     // and the dossier surfaces "shard assente" for large cities such as Roma.

@@ -1,13 +1,39 @@
 import "server-only";
 
-import { join } from "node:path";
-import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
-import { decimal, integer } from "@/lib/format";
+import { formatStaffCount, formatStaffDelta } from "@/lib/rgs-conto-annuale-occupazione-format";
 import { computeStaffPeakSummary } from "@/lib/staff-series-chart";
 import type { IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
+import { ENTE_DATASET_ID, TIPOLOGIA_DATASET_ID } from "@/lib/rgs-conto-annuale-occupazione-constants";
+import {
+  getOccupazioneCorpusPublicRows,
+  getOccupazioneHubIndex,
+  getOccupazioneSearchIndex,
+  occupationHubMetadata,
+  type OccupazioneHubIndex,
+  type OccupazioneSearchEntry,
+} from "@/lib/rgs-conto-annuale-occupazione-hub";
+import {
+  getOccupazioneInstitutionSummary,
+  resolveComuneInstitutionCode,
+  resolveInstitutionCodeFromDenominazione,
+  type OccupazioneInstitutionSummary,
+} from "@/lib/rgs-conto-annuale-occupazione-resolve";
+import { getOccupazioneShardInstitution } from "@/lib/rgs-conto-annuale-occupazione-shards";
 
-export const ENTE_DATASET_ID = "rgs-conto-annuale-occupazione-ente-2010-2024";
-export const TIPOLOGIA_DATASET_ID = "rgs-conto-annuale-occupazione-tipologia-2010-2024";
+export { ENTE_DATASET_ID, TIPOLOGIA_DATASET_ID };
+export type { OccupazioneHubIndex as OccupazioneIndex, OccupazioneInstitutionSummary, OccupazioneSearchEntry };
+
+export {
+  getOccupazioneCorpusPublicRows,
+  getOccupazioneInstitutionSummary,
+  resolveComuneInstitutionCode,
+  resolveInstitutionCodeFromDenominazione,
+};
+
+/** @deprecated Prefer {@link getOccupazioneHubIndex} for hub-only aggregates. */
+export function getOccupazioneIndex(): OccupazioneHubIndex {
+  return getOccupazioneHubIndex();
+}
 
 const PERMANENT_HEADERS = [
   "Numero Dipendenti Donne Tempo Pieno",
@@ -28,43 +54,6 @@ const FLEXIBLE_HEADERS = [
   "Numero Dipendenti Donne Lavoro Socialmente Utile",
   "Numero Dipendenti Uomini Lavoro Socialmente Utile",
 ] as const;
-
-type IndexInstitution = Readonly<{
-  code: string;
-  name: string;
-  type: string;
-  bdap: string | null;
-  permanentLatest: number;
-  flexibleLatest: number;
-  permanentBaseline: number | null;
-  peakPermanent: number;
-  peakYear: number;
-  nameVariants: readonly string[];
-  series: readonly (readonly [number, string, number, number, string])[];
-}>;
-
-type OccupazioneIndex = Readonly<{
-  schemaVersion: 1;
-  datasetId: string;
-  tipologiaDatasetId: string;
-  years: readonly number[];
-  baselineYear: number;
-  latestYear: number;
-  institutionCount: number;
-  publicRows: number;
-  searchableCount: number;
-  catalogSha256: string;
-  rowsSha256: string;
-  sourceMetadata: IntegratedDatasetMetadata["sourceMetadata"];
-  caveats: readonly string[];
-  licenseStatus: IntegratedDatasetMetadata["licenseStatus"];
-  nationalSeries: readonly Readonly<{ year: number; permanent: number; flexible: number; types: number }>[];
-  typeTotalsLatest: readonly Readonly<{ type: string; permanent: number; flexible: number; institutions: number }>[];
-  growth: readonly Readonly<{ code: string; name: string; type: string; baseline: number; latest: number; delta: number }>[];
-  shrink: readonly Readonly<{ code: string; name: string; type: string; baseline: number; latest: number; delta: number }>[];
-  comuneNameToCode: Readonly<Record<string, string>>;
-  institutions: readonly IndexInstitution[];
-}>;
 
 export type StaffYearPoint = Readonly<{
   year: number;
@@ -92,15 +81,6 @@ export type InstitutionStaffView = Readonly<{
   }>;
   dataset: IntegratedDatasetMetadata;
 }>;
-
-const index = readJsonSnapshot(
-  join(process.cwd(), "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json"),
-  32 * 1024 * 1024,
-) as OccupazioneIndex;
-
-if (index.schemaVersion !== 1 || index.datasetId !== ENTE_DATASET_ID) {
-  throw new Error("Indice Conto Annuale occupazione: schema o dataset divergenti.");
-}
 
 function parseMeasure(raw: string | null, decimalYear: boolean): number {
   if (raw === null || raw.trim() === "") {
@@ -132,93 +112,65 @@ export function sumFlexibleFromCells(cells: Readonly<Record<string, string | nul
   return Math.round(total * 100) / 100;
 }
 
-export function getOccupazioneIndex(): OccupazioneIndex {
-  return index;
-}
-
-/** Righe pubblicate nel corpus integrato (153.121 per ente×anno). */
-export function getOccupazioneCorpusPublicRows(): number {
-  const rows = index.publicRows;
-  if (!Number.isFinite(rows) || rows < 1) {
-    throw new Error("Indice occupazione: publicRows non valido.");
-  }
-  return rows;
-}
-
-export function searchOccupazioneInstitutions(query: string, limit = 12): readonly IndexInstitution[] {
+export function searchOccupazioneInstitutions(query: string, limit = 12): readonly OccupazioneSearchEntry[] {
   const trimmed = query.trim().toLocaleUpperCase("it-IT");
   if (trimmed.length < 2) return [];
-  const matches = index.institutions.filter((institution) => {
-    if (institution.code === trimmed) return true;
-    if (institution.name.toLocaleUpperCase("it-IT").includes(trimmed)) return true;
-    return institution.nameVariants.some((name) => name.toLocaleUpperCase("it-IT").includes(trimmed));
-  });
-  return matches.slice(0, limit);
+  return getOccupazioneSearchIndex()
+    .filter((institution) => {
+      if (institution.code === trimmed) return true;
+      return institution.name.toLocaleUpperCase("it-IT").includes(trimmed);
+    })
+    .slice(0, limit);
 }
 
-export function getOccupazioneInstitutionSummary(code: string): IndexInstitution | null {
-  if (!/^[1-9]\d*$/.test(code)) return null;
-  return index.institutions.find((institution) => institution.code === code) ?? null;
+export { formatStaffCount, formatStaffDelta };
+
+function occupationDatasetMetadata(): IntegratedDatasetMetadata {
+  const hub = occupationHubMetadata();
+  return {
+    id: ENTE_DATASET_ID,
+    title: "Conto Annuale · occupazione per istituzione · 2010-2024",
+    domain: "personnel",
+    authority: "official-primary",
+    licenseStatus: hub.licenseStatus,
+    publication: "rows",
+    evidenceLabel: "documented-fact",
+    sourceRows: getOccupazioneCorpusPublicRows(),
+    publicRows: getOccupazioneCorpusPublicRows(),
+    rowsWithPublicSource: getOccupazioneCorpusPublicRows(),
+    headers: ["Anno", "Codice istituzione", "Ente", "Tipo istituzione", ...PERMANENT_HEADERS, ...FLEXIBLE_HEADERS, "URL fonte"],
+    caveats: hub.caveats,
+    sourceMetadata: hub.sourceMetadata,
+    provenanceHref: `/dati/${ENTE_DATASET_ID}`,
+    queryable: true,
+    publicationNote: "Righe pubblicate con fonte puntuale per ogni anno.",
+    reuseNote: "Attribuzione MEF-RGS, OpenBDAP; proiezione DVNS.",
+  };
 }
 
-export function resolveComuneInstitutionCode(rawName: string): string | null {
-  const key = rawName.trim().toLocaleUpperCase("it-IT");
-  if (!key) return null;
-  const direct = index.comuneNameToCode[key];
-  if (direct) return direct;
-  const withPrefix = `COMUNE DI ${key.replace(/^COMUNE\s+DI\s+/i, "").trim()}`;
-  return index.comuneNameToCode[withPrefix] ?? null;
-}
-
-export function resolveInstitutionCodeFromDenominazione(rawName: string): string | null {
-  const comune = resolveComuneInstitutionCode(rawName);
-  if (comune) return comune;
-  const key = rawName.trim().toLocaleUpperCase("it-IT");
-  if (!key) return null;
-  const matches = index.institutions.filter(
-    (institution) =>
-      institution.name.toLocaleUpperCase("it-IT") === key ||
-      institution.nameVariants.some((name) => name.toLocaleUpperCase("it-IT") === key),
-  );
-  if (matches.length === 1) return matches[0]!.code;
-  return null;
-}
-
-export function formatStaffCount(value: number): string {
-  return Number.isInteger(value) ? integer(value) : decimal(value, 2);
-}
-
-export function formatStaffDelta(value: number): string {
-  const sign = value > 0 ? "+" : value < 0 ? "−" : "";
-  return `${sign}${formatStaffCount(Math.abs(value))}`;
-}
-
-function pointsFromIndexSeries(summary: IndexInstitution): StaffYearPoint[] {
-  return summary.series.map(([year, name, permanent, flexible, sourceUrl]) => ({
+export async function loadInstitutionStaffView(code: string): Promise<InstitutionStaffView | null> {
+  const institution = getOccupazioneShardInstitution(code);
+  if (!institution || institution.series.length === 0) return null;
+  const points: StaffYearPoint[] = institution.series.map(([year, name, permanent, flexible, sourceUrl]) => ({
     year,
     name,
     permanent,
     flexible,
     sourceUrl,
   }));
-}
-
-export async function loadInstitutionStaffView(code: string): Promise<InstitutionStaffView | null> {
-  const summary = getOccupazioneInstitutionSummary(code);
-  if (!summary || summary.series.length === 0) return null;
-  const points = pointsFromIndexSeries(summary);
   if (points.some((point, index) => index > 0 && point.year <= points[index - 1]!.year)) {
     throw new Error("Serie istituzionale non ordinata.");
   }
+  const hub = getOccupazioneHubIndex();
   const latest = points.at(-1)!;
-  const baseline = points.find((point) => point.year === index.baselineYear) ?? null;
+  const baseline = points.find((point) => point.year === hub.baselineYear) ?? null;
   const peakSummary = computeStaffPeakSummary(points);
   return {
     code,
-    latestName: summary.name,
-    type: summary.type,
-    bdap: summary.bdap,
-    nameVariants: summary.nameVariants,
+    latestName: institution.name,
+    type: institution.type,
+    bdap: institution.bdap,
+    nameVariants: institution.nameVariants,
     points,
     summary: {
       latestPermanent: latest.permanent,
@@ -230,27 +182,5 @@ export async function loadInstitutionStaffView(code: string): Promise<Institutio
       latestFlexible: latest.flexible,
     },
     dataset: occupationDatasetMetadata(),
-  };
-}
-
-function occupationDatasetMetadata(): IntegratedDatasetMetadata {
-  return {
-    id: ENTE_DATASET_ID,
-    title: "Conto Annuale · occupazione per istituzione · 2010-2024",
-    domain: "personnel",
-    authority: "official-primary",
-    licenseStatus: index.licenseStatus,
-    publication: "rows",
-    evidenceLabel: "documented-fact",
-    sourceRows: getOccupazioneCorpusPublicRows(),
-    publicRows: getOccupazioneCorpusPublicRows(),
-    rowsWithPublicSource: getOccupazioneCorpusPublicRows(),
-    headers: ["Anno", "Codice istituzione", "Ente", "Tipo istituzione", ...PERMANENT_HEADERS, ...FLEXIBLE_HEADERS, "URL fonte"],
-    caveats: index.caveats,
-    sourceMetadata: index.sourceMetadata,
-    provenanceHref: `/dati/${ENTE_DATASET_ID}`,
-    queryable: true,
-    publicationNote: "Righe pubblicate con fonte puntuale per ogni anno.",
-    reuseNote: "Attribuzione MEF-RGS, OpenBDAP; proiezione DVNS.",
   };
 }

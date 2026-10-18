@@ -17,7 +17,7 @@ import {
   staffChartUsesDualAxis,
   toStaffChartPoints,
 } from "@/lib/staff-series-chart";
-import styles from "./conto-annuale.module.css";
+import styles from "./staff-series-chart.module.css";
 
 type TooltipPayload = Readonly<{
   year: number;

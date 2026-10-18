@@ -152,8 +152,13 @@ const occupationHubRuntimeFiles = [
   "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
 ];
 
+const occupationSummaryRuntimeFiles = [
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+];
+
 const occupationDetailRuntimeFiles = [
-  ...occupationHubRuntimeFiles,
+  ...occupationSummaryRuntimeFiles,
   "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/*",
 ];
 
@@ -359,6 +364,26 @@ const nextConfig: NextConfig = {
     "/personale-pa/conto-annuale/**": ["research/**/*"],
     "/app/personale-pa/conto-annuale/**": ["research/**/*"],
     "/snapshot-pages/personale-pa/conto-annuale/**": ["research/**/*"],
+    "/app/personale-pa/conto-annuale/\\[codice\\]": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
+    ],
+    "/app/snapshot-pages/personale-pa/conto-annuale/\\[codice\\]": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
+    ],
+    "/app/personale-pa/conto-annuale!(/**)": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/**/*",
+    ],
+    "/app/snapshot-pages/personale-pa/conto-annuale!(/**)": [
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
+      "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/**/*",
+    ],
     "/enti/*": [
       "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/**/*",
       "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
@@ -415,8 +440,8 @@ const nextConfig: NextConfig = {
     "/api/spese/opencivitas-2019-sociale-asili": openCivitas2019SocialeAsiliRuntimeFiles,
     "/api/spese/opencivitas-2019-viabilita": openCivitas2019ViabilitaRuntimeFiles,
 
-    // The hub's literal reads are traced automatically. A hub-wide include also
-    // adds its search/ranking files to detail pages; runtime guards check both.
+    // Hub reads summary/search via static imports; do not use a parent include here
+    // or detail routes inherit search.json into their serverless bundle.
     "/appalti/operatori/\\[ref\\]": [
       "src/data/generated/anac-operator-history/*",
       "src/data/generated/anac-operator-awards-index/meta.json",
@@ -424,10 +449,10 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
     "/enti/*": [...entityProcurementRuntimeFiles, ...occupationEntiRuntimeFiles],
-    "/personale-pa/conto-annuale": occupationHubRuntimeFiles,
-    "/personale-pa/conto-annuale/*": occupationDetailRuntimeFiles,
-    "/snapshot-pages/personale-pa/conto-annuale": occupationHubRuntimeFiles,
-    "/snapshot-pages/personale-pa/conto-annuale/*": occupationDetailRuntimeFiles,
+    "/app/personale-pa/conto-annuale": occupationHubRuntimeFiles,
+    "/app/personale-pa/conto-annuale/\\[codice\\]": occupationDetailRuntimeFiles,
+    "/app/snapshot-pages/personale-pa/conto-annuale": occupationHubRuntimeFiles,
+    "/app/snapshot-pages/personale-pa/conto-annuale/\\[codice\\]": occupationDetailRuntimeFiles,
     "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     // /comuni opens ANAC shards by IPA hash; without an include Vercel omits them
     // and the dossier surfaces "shard assente" for large cities such as Roma.

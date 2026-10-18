@@ -2,16 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { integer, longDate } from "@/lib/format";
+import { ENTE_DATASET_ID } from "@/lib/rgs-conto-annuale-occupazione-constants";
 import {
-  ENTE_DATASET_ID,
-  formatStaffCount,
-  formatStaffDelta,
-  getOccupazioneCorpusPublicRows,
-  getOccupazioneInstitutionSummary,
+  getOccupazioneInstitutionHeadline,
   loadInstitutionStaffView,
-} from "@/lib/rgs-conto-annuale-occupazione";
+} from "@/lib/rgs-conto-annuale-occupazione-detail";
+import { formatStaffCount, formatStaffDelta } from "@/lib/rgs-conto-annuale-occupazione-format";
+import { getOccupazioneCorpusPublicRows } from "@/lib/rgs-conto-annuale-occupazione-summary";
 import { StaffSeriesChart } from "../staff-series-chart";
-import styles from "../conto-annuale.module.css";
+import styles from "./conto-annuale-detail.module.css";
 
 type PageProps = {
   params: Promise<{ codice: string }>;
@@ -19,11 +18,11 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { codice } = await params;
-  const summary = getOccupazioneInstitutionSummary(codice);
-  if (!summary) return { title: "Istituzione non trovata" };
+  const headline = getOccupazioneInstitutionHeadline(codice);
+  if (!headline) return { title: "Istituzione non trovata" };
   return {
-    title: `${summary.name} · personale PA 2010-2024`,
-    description: `Personale al 31 dicembre e lavoro flessibile per ${summary.name} (${summary.type}), Conto Annuale RGS dal 2010 al 2024.`,
+    title: `${headline.name} · personale PA 2010-2024`,
+    description: `Personale al 31 dicembre e lavoro flessibile per ${headline.name} (${headline.type}), Conto Annuale RGS dal 2010 al 2024.`,
   };
 }
 

@@ -100,99 +100,6 @@
   overflow-wrap: anywhere;
 }
 
-.chartFigure {
-  margin: 0;
-  min-width: 0;
-}
-
-.chartPlot {
-  width: 100%;
-  height: min(320px, 52vw);
-  min-height: 240px;
-}
-
-.chartTooltip {
-  padding: 0.65rem 0.75rem;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 0.5rem;
-  background: var(--color-raised);
-  font-size: 0.92rem;
-}
-
-.chartTooltip dl {
-  margin: 0.35rem 0 0;
-  display: grid;
-  gap: 0.25rem;
-}
-
-.chartTooltip dt {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-neutral-600);
-}
-
-.chartTooltip dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.25rem;
-  margin-top: 0.75rem;
-  color: var(--text-muted);
-  font-size: 0.92rem;
-}
-
-.legendPermanent,
-.legendFlexible {
-  display: inline-block;
-  width: 1.25rem;
-  height: 0.2rem;
-  margin-right: 0.35rem;
-  vertical-align: middle;
-  border-radius: 1px;
-}
-
-.legendPermanent {
-  background: var(--accent, var(--chart-primary));
-}
-
-.legendFlexible {
-  background: repeating-linear-gradient(
-    90deg,
-    var(--chart-secondary, #7a5c00) 0 5px,
-    transparent 5px 9px
-  );
-}
-
-.tableScroll {
-  overflow-x: auto;
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-}
-
-.tableScroll table {
-  width: 100%;
-  min-width: 0;
-  border-collapse: collapse;
-}
-
-.tableScroll th,
-.tableScroll td {
-  padding: 0.55rem 0.65rem;
-  border-bottom: 1px solid var(--border-subtle);
-  text-align: left;
-}
-
-.tableScroll td.num,
-.tableScroll th.num {
-  text-align: right;
-  white-space: nowrap;
-}
-
 .method {
   border-top: 1px solid var(--border-subtle);
   padding-top: 1rem;
@@ -201,11 +108,6 @@
 .method summary {
   cursor: pointer;
   font-weight: 600;
-}
-
-.missingValue {
-  color: var(--text-muted);
-  font-style: italic;
 }
 
 .exactZero {

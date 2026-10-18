@@ -129,11 +129,21 @@ export function checkRuntimeTraces(root = process.cwd()) {
     "src/data/generated/rgs-conto-annuale-occupazione-ente-index/search.json",
     "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
   ];
+  const occupationSummaryFiles = [
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/summary.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+  ];
   const occupationDetailFiles = [
-    ...occupationHubFiles,
+    ...occupationSummaryFiles,
     "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/manifest.json",
     "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/bucket-000.json",
   ];
+  const occupationIndexRoot = "src/data/generated/rgs-conto-annuale-occupazione-ente-index";
+  const occupationResolveFile = `${occupationIndexRoot}/resolve.json`;
+  const occupationByCodeFile = `${occupationIndexRoot}/by-code.json`;
+  const occupationSearchFile = `${occupationIndexRoot}/search.json`;
+  const occupationSummaryFile = `${occupationIndexRoot}/summary.json`;
+  const occupationShardsPrefix = `${occupationIndexRoot}/shards/`;
   const comuniRuntimeFiles = [
     ...entityFiles,
     "src/data/generated/mim-school-services-municipal.json",
@@ -251,6 +261,21 @@ export function checkRuntimeTraces(root = process.cwd()) {
       forbidden.push(browse);
       forbiddenFilePrefixes.push(`${OPERATOR}/search.jsonl.gz`, `${OPERATOR}/summaries.json`);
     }
+    if (
+      route === "personale-pa/conto-annuale/page.js.nft.json"
+      || route === "snapshot-pages/personale-pa/conto-annuale/page.js.nft.json"
+    ) {
+      forbiddenFilePrefixes.push(occupationResolveFile, occupationByCodeFile, occupationShardsPrefix);
+    }
+    if (
+      route === "personale-pa/conto-annuale/[codice]/page.js.nft.json"
+      || route === "snapshot-pages/personale-pa/conto-annuale/[codice]/page.js.nft.json"
+    ) {
+      forbiddenFilePrefixes.push(occupationResolveFile, occupationByCodeFile, occupationSearchFile);
+    }
+    if (route === "enti/[codice]/page.js.nft.json") {
+      forbiddenFilePrefixes.push(occupationShardsPrefix, occupationSummaryFile, occupationSearchFile);
+    }
     results.push({ route, ...checkTrace(root, manifest, requirements.get(route), forbidden, forbiddenFilePrefixes) });
     requirements.delete(route);
   }
@@ -261,7 +286,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const results = checkRuntimeTraces();
   console.log(`Runtime traces: ${results.length} checked; required ANAC artifacts present; no tests, docs or research bundled.`);
-  for (const result of results.filter(({ route }) => /^(enti\/\[codice\]|appalti\/operatori)/.test(route))) {
+  for (const result of results.filter(({ route }) =>
+    /^(enti\/\[codice\]|appalti\/operatori|personale-pa\/conto-annuale|snapshot-pages\/personale-pa\/conto-annuale)/.test(route))) {
     console.log(`${result.route}: ${result.files} files, ${(result.bytes / 1024 / 1024).toFixed(1)} MiB`);
   }
 }

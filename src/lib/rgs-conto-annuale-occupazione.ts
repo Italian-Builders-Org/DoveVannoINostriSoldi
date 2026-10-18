@@ -3,6 +3,7 @@ import "server-only";
 import { join } from "node:path";
 import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import { decimal, integer } from "@/lib/format";
+import { computeStaffPeakSummary } from "@/lib/staff-series-chart";
 import type { IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
 
 export const ENTE_DATASET_ID = "rgs-conto-annuale-occupazione-ente-2010-2024";
@@ -135,6 +136,15 @@ export function getOccupazioneIndex(): OccupazioneIndex {
   return index;
 }
 
+/** Righe pubblicate nel corpus integrato (153.121 per ente×anno). */
+export function getOccupazioneCorpusPublicRows(): number {
+  const rows = index.publicRows;
+  if (!Number.isFinite(rows) || rows < 1) {
+    throw new Error("Indice occupazione: publicRows non valido.");
+  }
+  return rows;
+}
+
 export function searchOccupazioneInstitutions(query: string, limit = 12): readonly IndexInstitution[] {
   const trimmed = query.trim().toLocaleUpperCase("it-IT");
   if (trimmed.length < 2) return [];
@@ -202,10 +212,7 @@ export async function loadInstitutionStaffView(code: string): Promise<Institutio
   }
   const latest = points.at(-1)!;
   const baseline = points.find((point) => point.year === index.baselineYear) ?? null;
-  let peak = latest;
-  for (const point of points) {
-    if (point.permanent > peak.permanent) peak = point;
-  }
+  const peakSummary = computeStaffPeakSummary(points);
   return {
     code,
     latestName: summary.name,
@@ -217,9 +224,9 @@ export async function loadInstitutionStaffView(code: string): Promise<Institutio
       latestPermanent: latest.permanent,
       baselinePermanent: baseline?.permanent ?? null,
       deltaBaseline: baseline ? latest.permanent - baseline.permanent : null,
-      peakPermanent: peak.permanent,
-      peakYear: peak.year,
-      deltaPeak: latest.permanent - peak.permanent,
+      peakPermanent: peakSummary.peakPermanent,
+      peakYear: peakSummary.peakYear,
+      deltaPeak: peakSummary.deltaPeak,
       latestFlexible: latest.flexible,
     },
     dataset: occupationDatasetMetadata(),
@@ -235,9 +242,9 @@ function occupationDatasetMetadata(): IntegratedDatasetMetadata {
     licenseStatus: index.licenseStatus,
     publication: "rows",
     evidenceLabel: "documented-fact",
-    sourceRows: index.publicRows,
-    publicRows: index.publicRows,
-    rowsWithPublicSource: index.publicRows,
+    sourceRows: getOccupazioneCorpusPublicRows(),
+    publicRows: getOccupazioneCorpusPublicRows(),
+    rowsWithPublicSource: getOccupazioneCorpusPublicRows(),
     headers: ["Anno", "Codice istituzione", "Ente", "Tipo istituzione", ...PERMANENT_HEADERS, ...FLEXIBLE_HEADERS, "URL fonte"],
     caveats: index.caveats,
     sourceMetadata: index.sourceMetadata,

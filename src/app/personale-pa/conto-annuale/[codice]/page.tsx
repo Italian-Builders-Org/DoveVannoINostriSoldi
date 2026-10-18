@@ -6,6 +6,7 @@ import {
   ENTE_DATASET_ID,
   formatStaffCount,
   formatStaffDelta,
+  getOccupazioneCorpusPublicRows,
   getOccupazioneInstitutionSummary,
   loadInstitutionStaffView,
 } from "@/lib/rgs-conto-annuale-occupazione";
@@ -123,7 +124,7 @@ export default async function ContoAnnualeInstitutionPage({ params }: PageProps)
         <h2 id="provenienza">Provenienza</h2>
         <p>
           Dataset integrato <Link href={`/dati/${ENTE_DATASET_ID}`}>{ENTE_DATASET_ID}</Link>
-          {" · "}{integer(view.points.length)} anni caricati dal corpus ({integer(view.dataset.publicRows)} righe totali nel dataset).
+          {" · "}{integer(view.points.length)} anni caricati dal corpus ({integer(getOccupazioneCorpusPublicRows())} righe totali nel dataset).
         </p>
         <p>
           Verifica del corpus:{" "}

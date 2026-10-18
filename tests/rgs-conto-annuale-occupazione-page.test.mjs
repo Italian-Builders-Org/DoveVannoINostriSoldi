@@ -4,6 +4,7 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
+  getOccupazioneCorpusPublicRows,
   getOccupazioneIndex,
   getOccupazioneInstitutionSummary,
   loadInstitutionStaffView,
@@ -61,6 +62,8 @@ test("occupazione index reconciles with corpus metadata", () => {
   assert.equal(meta.institutionCount, index.searchableCount);
   assert.equal(index.nationalSeries.length, 15);
   assert.equal(index.nationalSeries.at(-1).year, 2024);
+  assert.equal(getOccupazioneCorpusPublicRows(), index.publicRows);
+  assert.ok(Number.isFinite(getOccupazioneCorpusPublicRows()));
 });
 
 test("resolve institution codes for comune and ministero names", () => {
@@ -84,9 +87,20 @@ for (const spot of SPOT_CHECKS) {
     assert.ok(latest, "2024 point");
     assert.equal(latest.permanent, spot.latestPermanent);
     if (baseline) assert.equal(baseline.permanent, spot.baselinePermanent);
+    assert.ok(Number.isFinite(view.dataset.publicRows));
+    assert.equal(view.dataset.publicRows, getOccupazioneCorpusPublicRows());
     await verifyInstitutionSeriesAgainstCorpus(spot.code);
   });
 }
+
+test("Agenzia Entrate peak year is 2014 not 2010", async () => {
+  const view = await loadInstitutionStaffView("9847");
+  assert.ok(view);
+  assert.equal(view.summary.peakYear, 2014);
+  const baseline2010 = view.points.find((p) => p.year === 2010);
+  assert.ok(baseline2010);
+  assert.ok(view.summary.peakPermanent > baseline2010.permanent);
+});
 
 test("measure helpers parse integer and decimal years", () => {
   const integerCells = {

@@ -1,63 +1,157 @@
+"use client";
+
 import {
-  formatStaffCount,
-  type StaffYearPoint,
-} from "@/lib/rgs-conto-annuale-occupazione";
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { integer } from "@/lib/format";
+import {
+  formatStaffAxisTick,
+  staffChartUsesDualAxis,
+  toStaffChartPoints,
+} from "@/lib/staff-series-chart";
 import styles from "./conto-annuale.module.css";
+
+type TooltipPayload = Readonly<{
+  year: number;
+  permanent: number;
+  flexible: number;
+}>;
+
+function StaffTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload?: TooltipPayload }>;
+}) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0]?.payload;
+  if (!point) return null;
+  return (
+    <div className={styles.chartTooltip}>
+      <strong>{point.year}</strong>
+      <dl>
+        <div>
+          <dt>Personale</dt>
+          <dd>{formatStaffAxisTick(point.permanent, "permanent")}</dd>
+        </div>
+        <div>
+          <dt>Lavoro flessibile</dt>
+          <dd>{formatStaffAxisTick(point.flexible, "flexible")}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
+type ChartPointInput = Readonly<{
+  year: number;
+  permanent: number;
+  flexible: number;
+}>;
 
 export function StaffSeriesChart({
   points,
   id,
   label,
 }: {
-  points: readonly StaffYearPoint[];
+  points: readonly ChartPointInput[];
   id: string;
   label: string;
 }) {
   if (points.length === 0) return <p>Serie non disponibile.</p>;
-  const firstYear = points[0]!.year;
-  const lastYear = points[points.length - 1]!.year;
-  const maxPermanent = Math.max(...points.map((point) => point.permanent));
-  const maxFlexible = Math.max(...points.map((point) => point.flexible));
-  const maximum = Math.max(1, maxPermanent, maxFlexible);
-  const step = maximum > 100_000 ? 50_000 : maximum > 10_000 ? 5_000 : maximum > 1_000 ? 500 : 100;
-  const ceiling = Math.ceil(maximum / step) * step;
-  const x = (year: number) => 48 + ((year - firstYear) / Math.max(1, lastYear - firstYear)) * 472;
-  const y = (value: number) => 170 - (value / ceiling) * 140;
-  const permanentPath = points
-    .map((point, index) => `${index === 0 ? "M" : "L"}${x(point.year)},${y(point.permanent)}`)
-    .join(" ");
-  const flexiblePath = points
-    .map((point, index) => `${index === 0 ? "M" : "L"}${x(point.year)},${y(point.flexible)}`)
-    .join(" ");
+
+  const data = toStaffChartPoints(points);
+  const dualAxis = staffChartUsesDualAxis(data);
+  const firstYear = data[0]!.year;
+  const lastYear = data.at(-1)!.year;
+  const maxPermanent = Math.max(...data.map((point) => point.permanent));
+  const maxFlexible = Math.max(...data.map((point) => point.flexible));
 
   return (
     <figure className={styles.chartFigure}>
-      <svg viewBox="0 0 560 205" role="img" aria-labelledby={`${id}-title ${id}-desc`}>
-        <title id={`${id}-title`}>{`${label}: personale e lavoro flessibile dal ${firstYear} al ${lastYear}`}</title>
-        <desc id={`${id}-desc`}>
-          Linea continua: personale al 31 dicembre in persone. Linea tratteggiata: lavoro flessibile in unità annue.
-          I valori esatti sono nella tabella sottostante.
-        </desc>
-        {[0, ceiling / 2, ceiling].map((value) => (
-          <g key={value}>
-            <line x1="48" x2="520" y1={y(value)} y2={y(value)} className={styles.gridline} />
-            <text x="40" y={y(value) + 4} textAnchor="end">{formatStaffCount(value)}</text>
-          </g>
-        ))}
-        <path d={permanentPath} className={styles.seriesPermanent} />
-        <path d={flexiblePath} className={styles.seriesFlexible} />
-        {points.map((point) => (
-          <g key={point.year}>
-            <circle cx={x(point.year)} cy={y(point.permanent)} r="3.5" className={styles.dotPermanent} />
-            <circle cx={x(point.year)} cy={y(point.flexible)} r="3" className={styles.dotFlexible} />
-          </g>
-        ))}
-        <text x="48" y="198">{firstYear}</text>
-        <text x="520" y="198" textAnchor="end">{lastYear}</text>
-      </svg>
+      <div
+        className={styles.chartPlot}
+        role="img"
+        aria-labelledby={`${id}-title ${id}-desc`}
+        data-testid="staff-series-chart"
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 12, right: dualAxis ? 56 : 16, left: 4, bottom: 4 }} accessibilityLayer>
+            <CartesianGrid vertical={false} stroke="var(--color-neutral-300)" />
+            <XAxis
+              dataKey="year"
+              axisLine={false}
+              tickLine={false}
+              interval="preserveStartEnd"
+              minTickGap={28}
+              tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
+            />
+            <YAxis
+              yAxisId="permanent"
+              axisLine={false}
+              tickLine={false}
+              width={72}
+              domain={[0, Math.max(1, maxPermanent * 1.05)]}
+              tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
+              tickFormatter={(value: number) => formatStaffAxisTick(value, "permanent")}
+            />
+            {dualAxis ? (
+              <YAxis
+                yAxisId="flexible"
+                orientation="right"
+                axisLine={false}
+                tickLine={false}
+                width={64}
+                domain={[0, Math.max(1, maxFlexible * 1.1)]}
+                tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
+                tickFormatter={(value: number) => formatStaffAxisTick(value, "flexible")}
+              />
+            ) : null}
+            <Tooltip isAnimationActive={false} content={<StaffTooltip />} />
+            <Line
+              yAxisId="permanent"
+              type="monotone"
+              dataKey="permanent"
+              name="Personale"
+              stroke="var(--accent, var(--chart-primary))"
+              strokeWidth={2.5}
+              dot={{ r: 3, fill: "var(--accent, var(--chart-primary))" }}
+              activeDot={{ r: 4 }}
+              isAnimationActive={false}
+            />
+            <Line
+              yAxisId={dualAxis ? "flexible" : "permanent"}
+              type="monotone"
+              dataKey="flexible"
+              name="Lavoro flessibile"
+              stroke="var(--chart-secondary, #7a5c00)"
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              dot={{ r: 2.5, fill: "var(--chart-secondary, #7a5c00)" }}
+              activeDot={{ r: 3.5 }}
+              isAnimationActive={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <title id={`${id}-title`}>{`${label}: personale e lavoro flessibile dal ${firstYear} al ${lastYear}`}</title>
+      <desc id={`${id}-desc`}>
+        Personale al 31 dicembre in persone
+        {dualAxis ? " (asse sinistro)" : ""}
+        ; lavoro flessibile in unità annue
+        {dualAxis ? " (asse destro)" : ""}
+        . Valori esatti nella tabella.
+      </desc>
       <figcaption className={styles.legend}>
-        <span>Personale al 31 dicembre (persone)</span>
-        <span>Lavoro flessibile (unità annue, non sommabile al personale)</span>
+        <span><i className={styles.legendPermanent} aria-hidden="true" />Personale al 31 dicembre ({integer(maxPermanent)} max.)</span>
+        <span><i className={styles.legendFlexible} aria-hidden="true" />Lavoro flessibile ({formatStaffAxisTick(maxFlexible, "flexible")} max.)</span>
       </figcaption>
     </figure>
   );

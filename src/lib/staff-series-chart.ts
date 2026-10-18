@@ -41,6 +41,20 @@ export function formatStaffAxisTick(value: number, kind: "permanent" | "flexible
   return Number.isInteger(value) ? integer(value) : decimal(value, 2);
 }
 
+/** Recharts YAxis width: Italian grouped thousands need room so ticks are not clipped. */
+export function staffChartPermanentAxisWidth(maxPermanent: number): number {
+  if (maxPermanent >= 1_000_000) return 92;
+  if (maxPermanent >= 100_000) return 80;
+  if (maxPermanent >= 10_000) return 72;
+  return 56;
+}
+
+export function staffChartFlexibleAxisWidth(maxFlexible: number): number {
+  if (maxFlexible >= 100_000) return 76;
+  if (maxFlexible >= 10_000) return 68;
+  return 56;
+}
+
 export function toStaffChartPoints(
   points: readonly Readonly<{ year: number; permanent: number; flexible: number }>[],
 ): StaffChartPoint[] {

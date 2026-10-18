@@ -12,6 +12,8 @@ import {
 import { integer } from "@/lib/format";
 import {
   formatStaffAxisTick,
+  staffChartFlexibleAxisWidth,
+  staffChartPermanentAxisWidth,
   staffChartUsesDualAxis,
   toStaffChartPoints,
 } from "@/lib/staff-series-chart";
@@ -73,6 +75,8 @@ export function StaffSeriesChart({
   const lastYear = data.at(-1)!.year;
   const maxPermanent = Math.max(...data.map((point) => point.permanent));
   const maxFlexible = Math.max(...data.map((point) => point.flexible));
+  const permanentAxisWidth = staffChartPermanentAxisWidth(maxPermanent);
+  const flexibleAxisWidth = dualAxis ? staffChartFlexibleAxisWidth(maxFlexible) : 0;
 
   return (
     <figure className={styles.chartFigure}>
@@ -83,7 +87,16 @@ export function StaffSeriesChart({
         data-testid="staff-series-chart"
       >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 12, right: dualAxis ? 56 : 16, left: 4, bottom: 4 }} accessibilityLayer>
+          <LineChart
+            data={data}
+            margin={{
+              top: 12,
+              right: dualAxis ? flexibleAxisWidth + 8 : 16,
+              left: 4,
+              bottom: 4,
+            }}
+            accessibilityLayer
+          >
             <CartesianGrid vertical={false} stroke="var(--color-neutral-300)" />
             <XAxis
               dataKey="year"
@@ -97,7 +110,7 @@ export function StaffSeriesChart({
               yAxisId="permanent"
               axisLine={false}
               tickLine={false}
-              width={72}
+              width={permanentAxisWidth}
               domain={[0, Math.max(1, maxPermanent * 1.05)]}
               tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
               tickFormatter={(value: number) => formatStaffAxisTick(value, "permanent")}
@@ -108,7 +121,7 @@ export function StaffSeriesChart({
                 orientation="right"
                 axisLine={false}
                 tickLine={false}
-                width={64}
+                width={flexibleAxisWidth}
                 domain={[0, Math.max(1, maxFlexible * 1.1)]}
                 tick={{ fill: "var(--color-neutral-600)", fontSize: 11 }}
                 tickFormatter={(value: number) => formatStaffAxisTick(value, "flexible")}

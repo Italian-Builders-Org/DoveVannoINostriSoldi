@@ -5,6 +5,8 @@ const {
   computeStaffPeakSummary,
   formatStaffAxisTick,
   staffChartAxisTicks,
+  staffChartFlexibleAxisWidth,
+  staffChartPermanentAxisWidth,
   staffChartUsesDualAxis,
 } = await import("../src/lib/staff-series-chart.ts");
 
@@ -45,4 +47,9 @@ test("peak summary is not always 2010", () => {
 test("flexible axis allows decimals from 2021", () => {
   assert.equal(formatStaffAxisTick(1729.51, "flexible"), "1.729,51");
   assert.equal(formatStaffAxisTick(1729, "flexible"), "1.729");
+});
+
+test("axis widths scale with national totals", () => {
+  assert.ok(staffChartPermanentAxisWidth(3_388_794) >= staffChartPermanentAxisWidth(25_523));
+  assert.ok(staffChartFlexibleAxisWidth(128_115) >= staffChartFlexibleAxisWidth(1_729));
 });

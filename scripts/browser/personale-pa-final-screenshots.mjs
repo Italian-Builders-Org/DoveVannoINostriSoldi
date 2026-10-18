@@ -6,7 +6,6 @@ import {
   defaultArtifactsDir,
   defaultBaseUrl,
   launchBrowser,
-  navigate,
   runScenario,
   waitForServer,
 } from "./harness.mjs";

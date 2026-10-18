@@ -25,6 +25,7 @@ import { MunicipalityEconomics } from "./municipality-economics";
 import { MunicipalityOffices } from "./municipality-offices";
 import { NonMunicipalEconomics } from "./nonmunicipal-economics";
 import { EntityInformation } from "./entity-information";
+import { EntityPersonnelSection } from "./entity-personnel-section";
 import { EntityProcurementSection } from "./entity-procurement-section";
 import styles from "./scheda.module.css";
 
@@ -313,6 +314,7 @@ export default async function EntityPage({ params, searchParams }: PageProps) {
         ) : null}
         {nonMunicipalSnapshot ? <NonMunicipalEconomics entity={nonMunicipalSnapshot} year={search.siopeAnno} /> : null}
         <EntityProcurementSection state={procurementState} />
+        <EntityPersonnelSection denominazione={displayName} />
         <EntityInformation
           entity={entity}
           responsible={responsible}

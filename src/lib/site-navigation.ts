@@ -190,6 +190,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         children: [
           { href: "/incarichi/territori", label: "Per territorio" },
           { href: "/incarichi/dettaglio", label: "Dettaglio" },
+          { href: "/personale-pa/conto-annuale", label: "Personale PA 2010-2024" },
         ],
       },
       { href: "/dati", label: "Catalogo dati" },

@@ -119,13 +119,21 @@ export function checkRuntimeTraces(root = process.cwd()) {
     `${peers}/meta.json`, `${peers}/snapshot.json.gz`, `${SPEC}/anac-procurement-peers.source.json`,
     ...Object.values(json(`${SPEC}/anac-procurement-peers.source.json`).inputs).map((entry) => entry.path),
   ];
+  const occupationIndexFiles = [
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
+    "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+  ];
   const comuniRuntimeFiles = [
     ...entityFiles,
     "src/data/generated/mim-school-services-municipal.json",
     "src/data/generated/pnrr-childcare.data.json",
   ];
   const requirements = new Map([
-    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles]],
+    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles, ...occupationIndexFiles]],
+    ["personale-pa/conto-annuale/page.js.nft.json", occupationIndexFiles],
+    ["personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationIndexFiles],
+    ["snapshot-pages/personale-pa/conto-annuale/page.js.nft.json", occupationIndexFiles],
+    ["snapshot-pages/personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationIndexFiles],
     ["enti/[codice]/appalti/page.js.nft.json", [...entityFiles, ...cpvFiles]],
     ["enti/[codice]/appalti/confronti/page.js.nft.json", peerFiles],
     ["appalti/operatori/page.js.nft.json", operatorBrowseFiles],

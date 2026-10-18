@@ -56,6 +56,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/incarichi",
   "/incarichi/territori",
   "/incarichi/dettaglio",
+  "/personale-pa/conto-annuale",
   "/istituzioni",
   "/istruzione",
   "/istruzione/universita-ricerca",

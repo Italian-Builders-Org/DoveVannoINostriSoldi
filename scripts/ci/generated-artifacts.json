@@ -564,6 +564,30 @@
       "trustModel": "Derived offline from committed mim-scuole-statali-comuni integrated row shards. Counts must match the corpus municipality projection; no network and no invented geography."
     },
     {
+      "id": "rgs-conto-annuale-occupazione-ente-index",
+      "owner": "Search index and aggregates for /personale-pa/conto-annuale",
+      "files": [
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node scripts/etl/rgs_conto_annuale_occupazione_ente_index.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/rgs-conto-annuale-occupazione-page.test.mjs"
+      ],
+      "generator": {
+        "command": "node scripts/etl/rgs_conto_annuale_occupazione_ente_index.mjs",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/rgs-conto-annuale-occupazione-ente.source.json",
+      "trustModel": "Derived offline from committed integrated row shards for occupation by institution and by type. Rankings and national series must reconcile with corpus totals; no network."
+    },
+    {
       "id": "istat-municipality-geography",
       "owner": "ISTAT SITUAS municipal geography snapshot",
       "files": [

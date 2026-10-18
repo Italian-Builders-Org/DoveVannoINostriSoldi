@@ -140,6 +140,11 @@ const operatorShardRuntimeFiles = [
   "src/data/generated/anac-operator-awards-index/operators/*",
 ];
 
+const occupationIndexRuntimeFiles = [
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/index.json",
+  "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
+];
+
 const entityProcurementRuntimeFiles = [
   "src/data/generated/anac-procurement-cpv/*.jsonl.gz",
   "src/data/generated/anac-procurement-cpv/meta.json",
@@ -393,7 +398,11 @@ const nextConfig: NextConfig = {
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
     ],
-    "/enti/*": entityProcurementRuntimeFiles,
+    "/enti/*": [...entityProcurementRuntimeFiles, ...occupationIndexRuntimeFiles],
+    "/personale-pa/conto-annuale": occupationIndexRuntimeFiles,
+    "/personale-pa/conto-annuale/*": occupationIndexRuntimeFiles,
+    "/snapshot-pages/personale-pa/conto-annuale": occupationIndexRuntimeFiles,
+    "/snapshot-pages/personale-pa/conto-annuale/*": occupationIndexRuntimeFiles,
     "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
     // /comuni opens ANAC shards by IPA hash; without an include Vercel omits them
     // and the dossier surfaces "shard assente" for large cities such as Roma.

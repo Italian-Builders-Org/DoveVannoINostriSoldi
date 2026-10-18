@@ -34,6 +34,7 @@ export type EditorialTopic = Readonly<{
   facts: readonly EditorialFact[];
   readingNotes: readonly string[];
   datasets: readonly EditorialDatasetPreview[];
+  featuredExploration?: Readonly<{ href: string; title: string; description: string }>;
 }>;
 
 export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
@@ -403,6 +404,11 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
       "La serie per tipo di istituzione 2010–2024 conta persone; il lavoro flessibile è in unità annue e non si somma al personale. I tipi cambiano negli anni.",
       "La serie per istituzione 2010–2024 ha una riga per anno ed ente: enti e denominazioni cambiano negli anni, e la somma per tipo ridà la serie per tipo.",
     ],
+    featuredExploration: {
+      href: "/personale-pa/conto-annuale",
+      title: "Quanti dipendenti ha il tuo ente · 2010-2024",
+      description: "Cerca Comuni, Ministeri e altre istituzioni nel Conto Annuale RGS: serie, variazioni e lavoro flessibile con fonte OpenBDAP.",
+    },
     datasets: [
       {
         id: "personale",

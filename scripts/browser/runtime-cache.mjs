@@ -17,7 +17,7 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
 }
 
 const snapshotEvidence = [];
-for (const [route, seconds] of [["/dati/affidamenti-diretti", 31536000], ["/dati/rgs-conto-annuale-occupazione-tipologia-2010-2024", 31536000], ["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/enti/c_h501/appalti?view=operators", 31536000], ["/enti/c_h501/appalti?view=awards", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
+for (const [route, seconds] of [["/dati/affidamenti-diretti", 31536000], ["/dati/rgs-conto-annuale-occupazione-tipologia-2010-2024", 31536000], ["/personale-pa/conto-annuale", 31536000], ["/personale-pa/conto-annuale/6144", 31536000], ["/personale-pa/conto-annuale/8659", 31536000], ["/personale-pa/conto-annuale/3", 31536000], ["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/enti/c_h501/appalti?view=operators", 31536000], ["/enti/c_h501/appalti?view=awards", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
   const first = await fetch(new URL(route, base));
   assert.equal(first.status, 200, route);
   let html = await first.text();

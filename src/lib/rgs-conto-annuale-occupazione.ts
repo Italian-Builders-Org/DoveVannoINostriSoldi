@@ -6,7 +6,6 @@ import {
   getOccupazioneCorpusPublicRows,
   getOccupazioneHubIndex,
   getOccupazioneSearchIndex,
-  occupationHubMetadata,
   type OccupazioneHubIndex,
   type OccupazioneSearchEntry,
 } from "@/lib/rgs-conto-annuale-occupazione-hub";

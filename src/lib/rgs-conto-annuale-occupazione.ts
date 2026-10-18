@@ -244,6 +244,6 @@ function occupationDatasetMetadata(): IntegratedDatasetMetadata {
     provenanceHref: `/dati/${ENTE_DATASET_ID}`,
     queryable: true,
     publicationNote: "Righe pubblicate con fonte puntuale per ogni anno.",
-    reuseNote: "Attribuzione MEF–RGS, OpenBDAP; proiezione DVNS.",
+    reuseNote: "Attribuzione MEF-RGS, OpenBDAP; proiezione DVNS.",
   };
 }

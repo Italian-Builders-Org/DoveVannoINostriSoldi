@@ -190,7 +190,7 @@ export default async function ContoAnnualeOccupazioneHubPage({
           </a>
         </p>
         <p>
-          Fonte: MEF – Ragioneria Generale dello Stato, OpenBDAP. Selezione e presentazione a cura di DoveVannoINostriSoldi.
+          Fonte: MEF, Ragioneria Generale dello Stato, OpenBDAP. Selezione e presentazione a cura di DoveVannoINostriSoldi.
         </p>
       </details>
     </main>

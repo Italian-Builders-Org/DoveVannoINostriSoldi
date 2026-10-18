@@ -79,6 +79,7 @@ test("search results stay crawlable for noindex while remaining outside the site
     "/accedi/callback",
     "/dashboard",
     "/dashboard/settings",
+    "/snapshot-pages/personale-pa/conto-annuale",
   ]);
   assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/cerca"), false);
   assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/dashboard"), false);

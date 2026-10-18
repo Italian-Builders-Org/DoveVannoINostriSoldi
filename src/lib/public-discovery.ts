@@ -139,6 +139,7 @@ export const PUBLIC_NOINDEX_PATHS = [
   "/accedi/callback",
   "/dashboard",
   "/dashboard/settings",
+  "/snapshot-pages/personale-pa/conto-annuale",
 ] as const satisfies readonly PublicPath[];
 
 /** Legacy entry points redirect to canonical pages and stay out of the sitemap. */

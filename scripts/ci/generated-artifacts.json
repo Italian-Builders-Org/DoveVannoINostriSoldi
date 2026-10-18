@@ -572,7 +572,7 @@
         "src/data/generated/rgs-conto-annuale-occupazione-ente-index/resolve.json",
         "src/data/generated/rgs-conto-annuale-occupazione-ente-index/by-code.json",
         "src/data/generated/rgs-conto-annuale-occupazione-ente-index/meta.json",
-        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards/manifest.json"
+        "src/data/generated/rgs-conto-annuale-occupazione-ente-index/shards"
       ],
       "verificationMode": "curated-committed",
       "offlineCheck": {

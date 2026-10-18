@@ -26,7 +26,7 @@ test("public debt snapshot validates and derived values reconcile", () => {
 });
 
 test("runtime contract fails closed on every monetary reconciliation", () => {
-  assertInvalid((value) => { value.stock.instruments.currencyAndDepositsCents += 1; }, /strumenti/);
+  assertInvalid((value) => { value.stock.instruments.currencyAndDepositsCents += 10_000_001; }, /strumenti/);
   assertInvalid((value) => { value.stock.changeCents += 1; }, /variazione stock/);
   assertInvalid((value) => { value.change.borrowingRequirementCents += 1; }, /fabbisogno/);
   assertInvalid((value) => { value.change.liquidityContributionCents += 1; }, /liquidità/);
@@ -40,6 +40,12 @@ test("runtime contract fails closed on every monetary reconciliation", () => {
   assertInvalid((value) => { value.residualMaturity.upToOneYearCents += 100_000_001; }, /vita residua/);
   assertInvalid((value) => { value.annualInterest.interestShareBasisPoints += 1; }, /interessi/);
   assertInvalid((value) => { value.annualInterest.totalGovernmentExpenditureCents = 0; });
+});
+
+test("runtime contract accepts instrument rounding within MONEY_TOLERANCE_CENTS", () => {
+  const candidate = structuredClone(snapshot);
+  candidate.stock.instruments.currencyAndDepositsCents += 10_000_000;
+  assert.equal(parsePublicDebtSnapshot(candidate).stock.totalCents, snapshot.stock.totalCents);
 });
 
 test("runtime contract rejects divergent periods and histories", () => {

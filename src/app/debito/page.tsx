@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PublicDebtHistoryChart } from "@/components/charts/public-debt-history-chart";
 import { ShareFactButton } from "@/components/share-fact/ShareFactButton";
-import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
+import { compactEuro, decimal, exactEuro, longDate, percent } from "@/lib/format";
 import { getPublicDebtView } from "@/lib/public-debt";
 import styles from "./debito.module.css";
 
@@ -196,7 +196,7 @@ export default function PublicDebtPage() {
         <div className={styles.tableWrap} role="region" aria-label="Vita residua del debito in euro convertiti" tabIndex={0}>
           <table className="table"><thead><tr><th scope="col">Vita residua</th><th scope="col" className="num">Importo</th><th scope="col" className="num">Quota</th></tr></thead><tbody>{maturityBands.map((item) => <tr key={item.id}><th scope="row">{item.label}</th><td className="num">{exactEuro(euro(item.cents))}</td><td className="num">{bpPercent(item.share)}</td></tr>)}</tbody></table>
         </div>
-        <p>Vita media residua: <strong>{residualMaturity.averageYears.toLocaleString("it-IT")} anni</strong>. Le fasce sommano al totale del {longDate(residualMaturity.referenceDate)}.</p>
+        <p>Vita media residua: <strong>{decimal(residualMaturity.averageYears, 1)} anni</strong>. Le fasce sommano al totale del {longDate(residualMaturity.referenceDate)}.</p>
         <p>“Fino a un anno” non è una previsione di crisi né il calendario delle singole aste: misura quanto stock entra presto nella finestra di rifinanziamento.</p>
         <p className={styles.meta}>Unità: euro, percentuale dello stock e anni · <a href={data.sources.bancaditalia.bdsUrl} target="_blank" rel="noreferrer">Fonte: BDS Banca d’Italia</a></p>
       </section>
@@ -236,7 +236,7 @@ export default function PublicDebtPage() {
           <article>
             <h3>Quanto rapidamente possono cambiare i costi</h3>
             <h4>Cosa vediamo</h4>
-            <p>{bpPercent(refinancing.upToOneYearShareBasisPoints)} dello stock ha vita residua fino a un anno; vita media {refinancing.averageYears.toLocaleString("it-IT")} anni, al {longDate(refinancing.referenceDate)}. Fonte Banca d’Italia, unità: percentuale e anni.</p>
+            <p>{bpPercent(refinancing.upToOneYearShareBasisPoints)} dello stock ha vita residua fino a un anno; vita media {decimal(refinancing.averageYears, 1)} anni, al {longDate(refinancing.referenceDate)}. Fonte Banca d’Italia, unità: percentuale e anni.</p>
             <h4>Come funziona</h4>
             <p>Quando una parte maggiore del debito deve essere rifinanziata presto, i tassi delle nuove emissioni possono trasferirsi più rapidamente sulla spesa futura per interessi. Una durata media più lunga rallenta questo passaggio, ma non elimina il rischio.</p>
             <h4>Come può arrivare alla tua vita</h4>

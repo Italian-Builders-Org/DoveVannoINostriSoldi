@@ -2,6 +2,7 @@
 
 import type { RepublicGroupHistory, RepublicMap, RepublicParliamentaryTerms, RepublicProfile } from "@/lib/politici-repubblica";
 import type { EducationDistribution } from "@/lib/politici-education";
+import { integer } from "@/lib/format";
 import { formatPercent } from "@/lib/politici-education";
 import { programForGroup } from "@/lib/politici-electoral-programs";
 import type { GraphSelection } from "./atlas-model";
@@ -126,7 +127,7 @@ export function VoteAttendance({ attendance }: { attendance: NonNullable<Republi
       </div>
     </dl>
     <p className={styles.note}>Le missioni non sono presenze fisiche in Aula. Il dato riguarda le votazioni elettroniche, non il lavoro nelle commissioni.</p>
-    <p className={styles.note}>{attendance.votesCast.toLocaleString("it-IT")} voti · {attendance.missions.toLocaleString("it-IT")} missioni · {attendance.absences.toLocaleString("it-IT")} assenze, di cui {attendance.justifiedAbsences.toLocaleString("it-IT")} giustificate.</p>
+    <p className={styles.note}>{integer(attendance.votesCast)} voti · {integer(attendance.missions)} missioni · {integer(attendance.absences)} assenze, di cui {integer(attendance.justifiedAbsences)} giustificate.</p>
     <p className={styles.note}>Periodo: {attendance.periodLabel}. Rilevazione: {longDate(attendance.observedDate)}.</p>
     <SourceLink href={attendance.sourceUrl}>
       {attendance.sourceLabel}

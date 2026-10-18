@@ -38,6 +38,8 @@ test("project trace labels observed, linked, derived and missing evidence", asyn
   assert.match(mopPanel, /previsto|effettivo/i);
   assert.match(mopPanel, /non sono\s+finanziamento PNRR/);
   assert.match(page, /importi di gara/);
+  assert.match(page, /formatDerivedTenderTotal\(project\.tenders, "amountCents"\)/);
+  assert.doesNotMatch(page, /tender\.amountCents \?\? 0/);
   assert.match(mopPanel, /Landing OpenBDAP MOP|Landing ufficiale/);
   assert.match(page, /\?fonte=mop|fonte=mop/);
   assert.equal(page.match(/<h1\b/g)?.length, 2);

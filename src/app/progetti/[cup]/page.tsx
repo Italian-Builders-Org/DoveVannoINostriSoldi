@@ -21,6 +21,7 @@ import {
   type MasafMercatiProject,
 } from "@/lib/masaf-logistica-mercati-snapshot";
 import { OpenCupUnavailableError } from "@/lib/opencup-projects-index";
+import { formatDerivedTenderTotal } from "@/lib/pnrr-childcare-tender-totals";
 import {
   PnrrChildcareQueryError,
   awardeesForTender,
@@ -341,8 +342,6 @@ export default async function ProjectPage({
   const cup = lookup.cup;
   const project = lookup.pnrr;
   const masaf = lookup.masaf;
-  const tenderTotal = project?.tenders.reduce((sum, tender) => sum + (tender.amountCents ?? 0), 0) ?? 0;
-  const awardTotal = project?.tenders.reduce((sum, tender) => sum + (tender.awardAmountCents ?? 0), 0) ?? 0;
   const linkedAwardees = new Set(project?.tenders.flatMap((tender) => awardeesForTender(project, tender)) ?? []);
   const unmatchedAwardees = project?.awardees.filter((awardee) => !linkedAwardees.has(awardee)) ?? [];
   const primaryPlace = project?.locations[0];
@@ -419,8 +418,8 @@ export default async function ProjectPage({
         <div className={styles.sectionHeading}><h2 id="flow-title">Finanziamenti, gare e pagamenti</h2></div>
         <div className={styles.flowGrid}>
           <div><span>Finanziamento PNRR registrato</span><strong>{money(project.funding.pnrrCents)}</strong><Evidence kind="osservato" /></div>
-          <div><span>Importi di gara</span><strong>{exactEuro(tenderTotal / 100)}</strong><Evidence kind="derivato" /></div>
-          <div><span>Importi di aggiudicazione</span><strong>{exactEuro(awardTotal / 100)}</strong><Evidence kind="derivato" /></div>
+          <div><span>Importi di gara</span><strong>{formatDerivedTenderTotal(project.tenders, "amountCents")}</strong><Evidence kind="derivato" /></div>
+          <div><span>Importi di aggiudicazione</span><strong>{formatDerivedTenderTotal(project.tenders, "awardAmountCents")}</strong><Evidence kind="derivato" /></div>
           <div><span>Pagamenti ReGiS</span><strong>non disponibili</strong><Evidence kind="mancante" /></div>
         </div>
         <p className={styles.caveat}>{pnrrChildcareMeta.methodology.fundingWarning}</p>

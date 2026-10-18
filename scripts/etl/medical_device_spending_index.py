@@ -234,59 +234,111 @@ def scope_rows(connection: sqlite3.Connection) -> list[dict]:
     return scopes
 
 
-def where_for(scope: dict) -> tuple[str, tuple]:
-    if scope["company"] is not None:
-        return "f.year=? AND f.region=? AND f.company=?", (scope["year"], scope["region"], scope["company"])
-    if scope["region"] is not None:
-        return "f.year=? AND f.region=?", (scope["year"], scope["region"])
-    return "f.year=?", (scope["year"],)
+# Exact integer totals of the facts in a group (FACT_TOTALS) and of a set of groups
+# (GROUP_TOTALS): rows, cents, negative and zero rows,
+# rows and cents matched to the registry, rows and cents left unresolved.
+FACT_TOTALS = """count(*) AS fact_rows,sum(f.cents) AS cents,sum(f.negative) AS negative_rows,sum(f.zero) AS zero_rows,
+    sum(d.registry_record_id IS NOT NULL) AS matched_rows,
+    sum(CASE WHEN d.registry_record_id IS NOT NULL THEN f.cents ELSE 0 END) AS matched_cents,
+    sum(d.registry_record_id IS NULL) AS unresolved_rows,
+    sum(CASE WHEN d.registry_record_id IS NULL THEN f.cents ELSE 0 END) AS unresolved_cents"""
+GROUP_TOTALS = """sum(fact_rows),sum(cents),sum(negative_rows),sum(zero_rows),
+    sum(matched_rows),sum(matched_cents),sum(unresolved_rows),sum(unresolved_cents)"""
 
 
-def aggregate_rows(connection: sqlite3.Connection, scope: dict, field: str) -> list[dict]:
-    where, params = where_for(scope)
-    if field == "territory":
-        if scope["company"] is not None:
-            return []
-        group = "f.region" if scope["region"] is None else "f.company"
-        label = "NULL" if scope["region"] is None else "group_concat(DISTINCT hex(f.company_name))"
-        sql = f"""SELECT {group},{label},NULL,count(*),sum(f.cents),sum(f.negative),sum(f.zero),
-                  sum(d.registry_record_id IS NOT NULL),sum(d.registry_record_id IS NULL)
-                  FROM facts f JOIN devices d ON d.ref=f.ref WHERE {where} GROUP BY {group}"""
-    elif field == "cnd":
-        sql = f"""SELECT f.source_cnd,NULL,NULL,count(*),sum(f.cents),sum(f.negative),sum(f.zero),
-                  sum(d.registry_record_id IS NOT NULL),sum(d.registry_record_id IS NULL)
-                  FROM facts f JOIN devices d ON d.ref=f.ref WHERE {where} GROUP BY f.source_cnd"""
+def add_totals(groups: dict, key: object, values: tuple) -> None:
+    totals = groups.get(key)
+    if totals is None:
+        groups[key] = list(values)
     else:
-        sql = f"""SELECT NULL,nullif(d.maker,''),nullif(d.role,''),count(*),sum(f.cents),sum(f.negative),sum(f.zero),
-                  sum(d.registry_record_id IS NOT NULL),sum(d.registry_record_id IS NULL)
-                  FROM facts f JOIN devices d ON d.ref=f.ref WHERE {where}
-                  GROUP BY coalesce(d.maker,''),coalesce(d.role,'')"""
+        for position, value in enumerate(values):
+            totals[position] += value
+
+
+def aggregate_rows(groups: dict, labels_for=None) -> list[dict]:
+    """Rows of one view, ordered by spending, label and code as the public contract requires.
+
+    Groups are visited in ascending key order, the order of SQLite GROUP BY under the
+    BINARY collation, so equal sort keys keep the tie-break of the per-scope queries.
+    """
     rows = []
-    for row in connection.execute(sql, params):
-        labels = (sorted(bytes.fromhex(label).decode("utf-8") for label in row[1].split(","))
-                  if field == "territory" and row[1] else [])
-        rows.append({"code": row[0] or None,
-                     "label": labels[0] if len(labels) == 1 else (row[1] or None) if field != "territory" else None,
-                     "labels": labels, "role": row[2] or None, "rows": row[3],
-                     "spending": cents_to_euro(row[4]), "negativeRows": row[5], "zeroRows": row[6],
-                     "matchedRows": row[7], "unresolvedRows": row[8]})
+    for key, values in sorted(groups.items()):
+        code, label, role = key if isinstance(key, tuple) else (key, None, None)
+        if labels_for:
+            # Company views carry the registry names: a single name is also the label.
+            labels = labels_for(key)
+            row_label = labels[0] if len(labels) == 1 else None
+        else:
+            labels = []
+            row_label = label or None
+        rows.append({"code": code or None,
+                     "label": row_label,
+                     "labels": labels, "role": role or None, "rows": values[0],
+                     "spending": cents_to_euro(values[1]), "negativeRows": values[2], "zeroRows": values[3],
+                     "matchedRows": values[4], "unresolvedRows": values[6]})
     rows.sort(key=lambda item: (-euro_to_cents(item["spending"].replace(".", ",")), item["label"] or "", item["code"] or ""))
     return rows
 
 
-def scope_payload(connection: sqlite3.Connection, scope: dict) -> dict:
-    where, params = where_for(scope)
-    values = connection.execute(f"""SELECT count(*),sum(f.cents),sum(f.negative),sum(f.zero),
-        sum(d.registry_record_id IS NOT NULL),sum(CASE WHEN d.registry_record_id IS NOT NULL THEN f.cents ELSE 0 END),
-        sum(d.registry_record_id IS NULL),sum(CASE WHEN d.registry_record_id IS NULL THEN f.cents ELSE 0 END)
-        FROM facts f JOIN devices d ON d.ref=f.ref WHERE {where}""", params).fetchone()
-    coverage = {"rows": values[0], "spending": cents_to_euro(values[1]), "negativeRows": values[2],
-                "zeroRows": values[3], "matchedRows": values[4], "matchedSpending": cents_to_euro(values[5]),
-                "unresolvedRows": values[6], "unresolvedSpending": cents_to_euro(values[7])}
-    return {"schemaVersion": 1, "scope": scope, "coverage": coverage,
-            "territories": aggregate_rows(connection, scope, "territory"),
-            "classifications": aggregate_rows(connection, scope, "cnd"),
-            "manufacturers": aggregate_rows(connection, scope, "maker")}
+def scope_payloads(connection: sqlite3.Connection, scopes: list[dict]) -> Iterator[dict]:
+    """Aggregate every scope from a single join of the facts with the registry.
+
+    The facts are grouped once at the finest grain (company, CND, manufacturer); the
+    views are rolled up from those groups, and region and year totals are exact integer
+    sums of the company groups, instead of one join per scope and view.
+    """
+    connection.execute(f"""CREATE TEMP TABLE scope_groups AS
+        SELECT f.year AS year,f.region AS region,f.company AS company,f.company_name AS company_name,
+          f.source_cnd AS source_cnd,coalesce(d.maker,'') AS maker,coalesce(d.role,'') AS role,
+          {FACT_TOTALS}
+        FROM facts f JOIN devices d ON d.ref=f.ref
+        GROUP BY f.year,f.region,f.company,f.company_name,f.source_cnd,coalesce(d.maker,''),coalesce(d.role,'')""")
+    totals: dict[tuple, list[int]] = {}
+    territories: dict[tuple, dict] = {}
+    classifications: dict[tuple, dict] = {}
+    manufacturers: dict[tuple, dict] = {}
+    company_names: dict[tuple, set[str]] = {}
+
+    for year, region, company, name, cnd, *values in connection.execute(
+            f"""SELECT year,region,company,company_name,source_cnd,{GROUP_TOTALS}
+            FROM scope_groups GROUP BY year,region,company,company_name,source_cnd"""):
+        year_key, region_key, company_key = (year, None, None), (year, region, None), (year, region, company)
+        company_names.setdefault((year, region, company), set()).add(name)
+        add_totals(territories.setdefault(year_key, {}), region, values)
+        add_totals(territories.setdefault(region_key, {}), company, values)
+        for key in (year_key, region_key, company_key):
+            add_totals(totals, key, values)
+            add_totals(classifications.setdefault(key, {}), cnd, values)
+    for year, region, company, maker, role, *values in connection.execute(
+            f"""SELECT year,region,company,maker,role,{GROUP_TOTALS}
+            FROM scope_groups GROUP BY year,region,company,maker,role"""):
+        for key in ((year, None, None), (year, region, None), (year, region, company)):
+            add_totals(manufacturers.setdefault(key, {}), (None, maker, role), values)
+    connection.execute("DROP TABLE scope_groups")
+
+    def names_for(year: int, region: str):
+        def labels(company: str) -> list[str]:
+            names = company_names[(year, region, company)]
+            # As group_concat(DISTINCT hex(...)) did: a lone empty name yields no labels.
+            return [] if names == {""} else sorted(names)
+        return labels
+
+    for scope in scopes:
+        key = (scope["year"], scope["region"], scope["company"])
+        values = totals[key]
+        coverage = {"rows": values[0], "spending": cents_to_euro(values[1]), "negativeRows": values[2],
+                    "zeroRows": values[3], "matchedRows": values[4], "matchedSpending": cents_to_euro(values[5]),
+                    "unresolvedRows": values[6], "unresolvedSpending": cents_to_euro(values[7])}
+        if scope["company"] is not None:
+            territory_rows = []
+        elif scope["region"] is not None:
+            territory_rows = aggregate_rows(territories[key], names_for(scope["year"], scope["region"]))
+        else:
+            territory_rows = aggregate_rows(territories[key])
+        yield {"schemaVersion": 1, "scope": scope, "coverage": coverage,
+               "territories": territory_rows,
+               "classifications": aggregate_rows(classifications[key]),
+               "manufacturers": aggregate_rows(manufacturers[key])}
 
 
 def write_packed(path: Path, payloads: Iterator[tuple[str, bytes]]) -> tuple[list[dict], int, str]:
@@ -403,7 +455,7 @@ def build_artifacts(connection: sqlite3.Connection, destination: Path, proof: di
                       "facts": detail_counts[block["key"]][1]} for block in detail_blocks]
     scope_blocks, scope_bytes, scope_sha = write_packed(
         destination / "aggregates.json.gz",
-        ((scope["key"], corpus.canonical_json(scope_payload(connection, scope))) for scope in scopes),
+        ((payload["scope"]["key"], corpus.canonical_json(payload)) for payload in scope_payloads(connection, scopes)),
     )
     report("aggregate artifact")
     device_count = connection.execute("SELECT count(*) FROM devices").fetchone()[0]

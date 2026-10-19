@@ -2,6 +2,12 @@
   gap: var(--space-6);
 }
 
+.featuredExploration {
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-accent-700) 22%, var(--color-neutral-300));
+  background: color-mix(in srgb, var(--color-accent-700) 5%, transparent);
+}
+
 .intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);

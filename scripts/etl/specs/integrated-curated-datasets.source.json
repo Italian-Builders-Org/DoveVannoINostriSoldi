@@ -768,6 +768,20 @@
           "https://creativecommons.org/licenses/by/3.0/"
         ]
       },
+      "rgs-conto-annuale-occupazione-ente-2010-2024": {
+        "holder": "Ragioneria Generale dello Stato",
+        "referencePeriod": "Rilevazioni 2010-2024; personale al 31 dicembre per istituzione (tempo pieno e part time) e lavoro flessibile in unità annue",
+        "publicationDate": "2026-03-18",
+        "acquisitionDate": "2026-10-15",
+        "checkedAt": "2026-10-15",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=PCA_OCC_DIP_ENTE_001",
+          "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/datastore/dump/d9393c78-9cb2-4cb1-95e6-c1c33ffe93af.csv",
+          "https://bdap-opendata.rgs.mef.gov.it/content/2024-dipendenti-pubblici-occupazione-complessiva-dati-analitici-ente?metadati=show",
+          "https://creativecommons.org/licenses/by/3.0/"
+        ]
+      },
       "rgs-spesa-statale-regionalizzata-consolidata": {
         "holder": "Ragioneria Generale dello Stato",
         "referencePeriod": "Esercizi finanziari 2008-2023; spesa consolidata (Bilancio dello Stato, Enti e Fondi oggetto della pubblicazione) per territorio destinatario finale",
@@ -7423,6 +7437,60 @@
           "Anno",
           "Tipologia amministrazione",
           "Tipo istituzione",
+          "Numero Dipendenti Donne Tempo Pieno",
+          "Numero Dipendenti Uomini Tempo Pieno",
+          "Numero Dipendenti Donne Part time Inf. 50%",
+          "Numero Dipendenti Uomini Part time Inf. 50%",
+          "Numero Dipendenti Donne Part time Sup. 50%",
+          "Numero Dipendenti Uomini Part time Sup. 50%",
+          "Numero Dipendenti Donne Tempo Determinato",
+          "Numero Dipendenti Uomini Tempo Determinato",
+          "Numero Dipendenti Donne Formazione Lavoro",
+          "Numero Dipendenti Uomini Formazione Lavoro",
+          "Numero Dipendenti Donne Lavoro Interinale",
+          "Numero Dipendenti Uomini Lavoro Interinale",
+          "Numero Dipendenti Donne Lavoro Socialmente Utile",
+          "Numero Dipendenti Uomini Lavoro Socialmente Utile",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "rgs-conto-annuale-occupazione-ente-2010-2024",
+      "title": "Conto Annuale · occupazione per istituzione · 2010-2024",
+      "domain": "personnel",
+      "relativePath": "rgs-conto-annuale-occupazione-ente-2010-2024.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-3.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Personale di ogni istituzione pubblica al 31 dicembre, dal 2010 al 2024, dal Conto Annuale RGS su OpenBDAP (serie PCA_OCC_DIP_ENTE_001), licenza CC BY 3.0; proiezione DVNS: una riga per anno e istituzione, somma delle righe per contratto e categoria pubblicate da RGS. Solo numero di persone: nessun costo del lavoro, nessuna qualifica.",
+        "Personale = tempo pieno + part time fino al 50% + part time oltre il 50%: persone, non equivalenti a tempo pieno. Tempo determinato, formazione lavoro, interinale e LSU sono unità annue di lavoro (frazionarie dal 2021), non persone: non si sommano al personale, anche se l'intestazione della fonte dice «Numero Dipendenti».",
+        "La chiave è Codice istituzione, la stessa dello snapshot DFP 2020 (codi_istituzione); fra anni gli enti nascono, cessano e si accorpano (12.454 codici in tutto, 8.315 presenti in tutti i 15 anni; da 9.770 a 10.915 enti l'anno). Le denominazioni sono quelle pubblicate per l'anno, riscritte da RGS nel 2021 per circa 9.700 enti; 108 codici cambiano tipo di istituzione. Il Codice ente BDAP manca per alcuni enti (87 nel 2010, 2 dal 2021).",
+        "La classificazione dei tipi di istituzione cambia nel tempo (da 34 a 45 tipi): un tipo che compare o scompare non è una variazione di personale. Comparto elenca in ordine alfabetico, separati da « / », i comparti di un ente con personale di più contratti (circa 100 enti l'anno, soprattutto università). Nessun dato territoriale nella fonte.",
+        "Un solo dataset per le rilevazioni dal 2010 al 2024, distinte dalla colonna Anno: i valori non vanno sommati fra anni. Somme scritte nel formato dell'anno: interi fino al 2020, due decimali dal 2021.",
+        "Date distinte: anno di rilevazione, data dei dati osservati dichiarata da RGS (19 aprile 2022 per gli anni 2010-2020, poi dall'8 febbraio 2023 all'8 marzo 2026), pubblicazione del pacchetto CKAN e acquisizione DVNS del 15 ottobre 2026. RGS può rivedere anni già pubblicati: il lock vincola i byte acquisiti.",
+        "Controlli DVNS fail-closed per ogni anno: sommate per tipo, le righe danno il dataset rgs-conto-annuale-occupazione-tipologia-2010-2024 (personale identico; lavoro flessibile identico dal 2021, entro l'arrotondamento fino al 2020, al massimo 69 unità per tipo e misura). Sul 2020 il personale coincide con lo snapshot DFP rgs-conto-annuale-personale-2020 per ogni istituzione comune tranne due (codici 8652 +17 e 10400 +21 persone); le 103 istituzioni presenti solo in OpenBDAP hanno personale zero."
+      ],
+      "expected": {
+        "bytes": 35082780,
+        "sha256": "4689e417cbeb47363b446e6dc22f63265355b5e70339daf0a802347eadf7c48d",
+        "rows": 153121,
+        "columns": 21,
+        "headers": [
+          "Anno",
+          "Codice istituzione",
+          "Codice ente BDAP",
+          "Ente",
+          "Tipo istituzione",
+          "Comparto",
           "Numero Dipendenti Donne Tempo Pieno",
           "Numero Dipendenti Uomini Tempo Pieno",
           "Numero Dipendenti Donne Part time Inf. 50%",

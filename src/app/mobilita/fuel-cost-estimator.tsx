@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { integer } from "@/lib/format";
 import styles from "./mobilita.module.css";
 
 type FuelPrice = Readonly<{ label: string; price: number }>;
@@ -109,7 +110,7 @@ export function FuelCostEstimator({ prices }: Readonly<{ prices: readonly FuelPr
           <>
             <strong>{euro.format(annualCost)}<small> / anno</small></strong>
             <span className={styles.monthlyCost}>{euro.format(annualCost / 12)} al mese</span>
-            <span className={styles.litres}>{Math.round(annualLitres!).toLocaleString("it-IT")} litri stimati all’anno</span>
+            <span className={styles.litres}>{integer(Math.round(annualLitres!))} litri stimati all’anno</span>
           </>
         )}
         <div className={styles.budgetResult}>

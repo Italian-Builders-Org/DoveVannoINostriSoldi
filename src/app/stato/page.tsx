@@ -16,6 +16,7 @@ import {
   parseStateOverviewSelection,
   STATE_CONSUNTIVO_YEAR,
 } from "@/lib/data/state-overview-period";
+import { compactEuro, integer } from "@/lib/format";
 import styles from "./stato.module.css";
 
 export const dynamic = "force-dynamic";
@@ -28,28 +29,6 @@ export const metadata: Metadata = {
   description:
     "Pagamenti del Bilancio dello Stato da RGS/OpenBDAP, spiegati con grafici, date e fonti.",
 };
-
-const exactEuro = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  maximumFractionDigits: 2,
-  useGrouping: "always",
-});
-
-function compactEuro(value: number): string {
-  const absolute = Math.abs(value);
-  if (absolute >= 1_000_000_000) {
-    return `${(value / 1_000_000_000).toLocaleString("it-IT", {
-      maximumFractionDigits: 1,
-    })} mld €`;
-  }
-  if (absolute >= 1_000_000) {
-    return `${(value / 1_000_000).toLocaleString("it-IT", {
-      maximumFractionDigits: 1,
-    })} mln €`;
-  }
-  return exactEuro.format(value);
-}
 
 function formatDateTime(value: string | null): string {
   if (!value) return "non disponibile";
@@ -198,15 +177,15 @@ function SpendingDashboard({ snapshot }: { snapshot: StateSpendingSnapshot }) {
         <div className={styles.facts}>
           <div className={styles.fact}>
             <span>Missioni presenti</span>
-            <strong>{snapshot.counts.missions.toLocaleString("it-IT")}</strong>
+            <strong>{integer(snapshot.counts.missions)}</strong>
           </div>
           <div className={styles.fact}>
             <span>Amministrazioni centrali</span>
-            <strong>{snapshot.counts.administrations > 0 ? snapshot.counts.administrations.toLocaleString("it-IT") : "Non disponibile"}</strong>
+            <strong>{snapshot.counts.administrations > 0 ? integer(snapshot.counts.administrations) : "Non disponibile"}</strong>
           </div>
           <div className={styles.fact}>
             <span>Categorie economiche</span>
-            <strong>{snapshot.counts.economicCategories > 0 ? snapshot.counts.economicCategories.toLocaleString("it-IT") : "Non disponibile"}</strong>
+            <strong>{snapshot.counts.economicCategories > 0 ? integer(snapshot.counts.economicCategories) : "Non disponibile"}</strong>
           </div>
           <div className={styles.fact}>
             <span>Frequenza di controllo</span>

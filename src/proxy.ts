@@ -1,6 +1,13 @@
 import { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
-import { SNAPSHOT_PREFIX, IPA_CODE, DATASET_ID, CACHED_ENTITY_VIEWS, publicSnapshotPath } from "@/lib/snapshot-routing";
+import {
+  SNAPSHOT_PREFIX,
+  IPA_CODE,
+  DATASET_ID,
+  CACHED_ENTITY_VIEWS,
+  OCCUPAZIONE_INSTITUTION_CODE,
+  publicSnapshotPath,
+} from "@/lib/snapshot-routing";
 
 const MCP_TRANSPORT_METHODS = new Set(["POST", "OPTIONS", "HEAD"]);
 const TRAINING_CRAWLER = /(?:^|[ (])(?:ClaudeBot|GPTBot|CCBot|Meta-ExternalAgent|Amazonbot|Bytespider|Applebot-Extended)(?:\/|[ );]|$)/i;
@@ -93,9 +100,12 @@ function snapshotPath(request: NextRequest, path: string): string | null {
   const entity = /^\/enti\/([A-Za-z0-9_]{1,100})\/appalti$/.exec(path);
   const dataset = /^\/dati\/([a-z0-9-]{1,200})$/.exec(path);
   const operator = /^\/appalti\/operatori\/(op-[0-9]{8})$/.exec(path);
+  const occupationHub = path === "/personale-pa/conto-annuale";
+  const occupationDetail = /^\/personale-pa\/conto-annuale\/(\d{1,10})$/.exec(path);
   const keys = entity ? ["view", "page", "pageSize", "metric", "operator", "cpv", "awardYear", "selection"]
     : operator ? ["year", "authority", "procedure", "minAmount", "maxAmount", "page"]
     : dataset ? ["q", "limit", "offset", "cursor", "pagina"]
+    : occupationHub ? ["q"]
     : path === "/comuni" ? ["ente", "q"] : [];
   // These pages ignore other parameters (including campaign tags). ISR keys
   // depend on the resolved pathname, while Next retains the RSC query/headers.
@@ -126,6 +136,12 @@ function snapshotPath(request: NextRequest, path: string): string | null {
   if (path === "/comuni" && semantic.every(key => key === "ente")) {
     const code = query.get("ente") || "c_e897";
     return IPA_CODE.test(code) ? `${SNAPSHOT_PREFIX}comuni/${code}` : null;
+  }
+  if (occupationHub && semantic.every(key => key === "q" && query.get(key) === "")) {
+    return `${SNAPSHOT_PREFIX}personale-pa/conto-annuale`;
+  }
+  if (occupationDetail && OCCUPAZIONE_INSTITUTION_CODE.test(occupationDetail[1]!) && semantic.length === 0) {
+    return `${SNAPSHOT_PREFIX}personale-pa/conto-annuale/${occupationDetail[1]}`;
   }
   return null;
 }
@@ -168,7 +184,7 @@ export function proxy(request: NextRequest) {
     const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
   }
-  if (/^\/(?:enti|appalti|comuni|dati|progetti|confronti|controlli|patrimonio|politici)(?:\/|$)/.test(pathname)
+  if (/^\/(?:enti|appalti|comuni|dati|personale-pa|progetti|confronti|controlli|patrimonio|politici)(?:\/|$)/.test(pathname)
     && TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? "")) {
     const blocked = rateLimit(request, entityState, ENTITY_PER_IP_MAX);
     if (blocked) return blocked;
@@ -199,5 +215,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/mcp", "/enti/:path*", "/appalti/:path*", "/comuni/:path*", "/dati/:path*", "/progetti/:path*", "/confronti/:path*", "/controlli/:path*", "/patrimonio/:path*", "/politici/:path*", "/snapshot-pages/:path*", "/api/:path*"],
+  matcher: ["/", "/mcp", "/enti/:path*", "/appalti/:path*", "/comuni/:path*", "/dati/:path*", "/personale-pa/:path*", "/progetti/:path*", "/confronti/:path*", "/controlli/:path*", "/patrimonio/:path*", "/politici/:path*", "/snapshot-pages/:path*", "/api/:path*"],
 };

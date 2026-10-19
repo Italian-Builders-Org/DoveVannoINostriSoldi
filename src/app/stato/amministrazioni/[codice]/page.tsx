@@ -7,7 +7,7 @@ import {
   type StateAdministrationSpending,
 } from "@/lib/bdap-payments";
 import { parseReferencePeriod } from "@/lib/data/reference-period";
-import { compactEuro, exactEuro, longDate, percent } from "@/lib/format";
+import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
 import localStyles from "./amministrazione.module.css";
 import styles from "../../stato.module.css";
 
@@ -121,15 +121,15 @@ function AdministrationDashboard({ data }: { data: StateAdministrationSpending }
         <div className={styles.facts}>
           <div className={styles.fact}>
             <span>Missioni</span>
-            <strong>{data.counts.missions.toLocaleString("it-IT")}</strong>
+            <strong>{integer(data.counts.missions)}</strong>
           </div>
           <div className={styles.fact}>
             <span>Categorie economiche</span>
-            <strong>{data.counts.economicCategories.toLocaleString("it-IT")}</strong>
+            <strong>{integer(data.counts.economicCategories)}</strong>
           </div>
           <div className={styles.fact}>
             <span>Dettagli economici</span>
-            <strong>{data.counts.economicDetails.toLocaleString("it-IT")}</strong>
+            <strong>{integer(data.counts.economicDetails)}</strong>
           </div>
           <div className={styles.fact}>
             <span>Collegamento IPA</span>

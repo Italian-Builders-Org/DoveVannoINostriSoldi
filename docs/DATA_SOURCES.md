@@ -1361,6 +1361,16 @@ al 2024, in un solo dataset con la colonna `Anno`. Sul 2020 i totali sono
 ricalcolati dal file per ente e riscontrati con lo snapshot DFP; ogni scarto non
 dichiarato ferma l'ETL. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md#occupazione-per-tipo-di-istituzione-2010-2024).
 
+### Conto Annuale RGS · occupazione per istituzione 2010-2024
+
+La serie OpenBDAP per ente (`PCA_OCC_DIP_ENTE_001`, un pacchetto CKAN per anno,
+CC BY 3.0 dichiarata sulle pagine) aggiunge 153.121 righe: una per anno e
+istituzione, con le stesse misure della serie per tipo, sommate dalle righe per
+contratto e categoria. Per ogni anno la somma per tipo deve ridare la serie per
+tipo (personale identico, lavoro flessibile entro l'arrotondamento fino al
+2020). I 15 CSV originali (148 MB) non sono versionati: il lock ne vincola byte
+e SHA-256. [Fonte, limiti e riproduzione](CONTO_ANNUALE.md#occupazione-per-istituzione-2010-2024).
+
 ### ISTAT Bes dei territori · Salute
 
 Il dominio completo `BES_01`, edizione 2025, aggiunge sei indicatori e 46.157

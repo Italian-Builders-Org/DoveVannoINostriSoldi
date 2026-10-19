@@ -510,7 +510,7 @@ class PublicDebtSnapshotTests(unittest.TestCase):
         lock = load_lock()
         original = valid_snapshot(lock)
         mutations = [
-            (lambda value: value["stock"]["instruments"].__setitem__("currencyAndDepositsCents", value["stock"]["instruments"]["currencyAndDepositsCents"] + 1), "strument"),
+            (lambda value: value["stock"]["instruments"].__setitem__("currencyAndDepositsCents", value["stock"]["instruments"]["currencyAndDepositsCents"] + 10_000_001), "strument"),
             (lambda value: value["stock"].__setitem__("changeCents", value["stock"]["changeCents"] + 1), "variazione"),
             (lambda value: value["change"].__setitem__("borrowingRequirementCents", value["change"]["borrowingRequirementCents"] + 1), "fabbisogno"),
             (lambda value: value["change"].__setitem__("liquidityContributionCents", value["change"]["liquidityContributionCents"] + 1), "liquid"),
@@ -536,6 +536,12 @@ class PublicDebtSnapshotTests(unittest.TestCase):
         balanced_shares["holders"]["sectors"][1]["shareBasisPoints"] -= 100
         with self.assertRaisesRegex(ETL.SnapshotError, "quota detentore"):
             ETL.validate_snapshot(balanced_shares, now="2026-08-24T09:00:00Z")
+
+    def test_instrument_reconciliation_accepts_rounding_within_money_tolerance(self):
+        lock = load_lock()
+        candidate = valid_snapshot(lock)
+        candidate["stock"]["instruments"]["currencyAndDepositsCents"] += ETL.MONEY_TOLERANCE_CENTS
+        ETL.validate_snapshot(candidate, now="2026-08-24T09:00:00Z")
 
     def test_holder_latency_future_period_and_annual_staleness_are_enforced(self):
         lock = load_lock()

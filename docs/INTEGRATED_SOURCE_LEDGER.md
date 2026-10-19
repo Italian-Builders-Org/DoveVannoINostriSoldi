@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 130 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 131 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 130 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 130 | 108 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 20.854.024 | 7.871.678 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 3.966.017.349 | somma dei byte impegnati nelle 130 ricevute |
+| Dataset correnti | 131 | 109 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 21.007.145 | 8.024.799 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 4.001.100.129 | somma dei byte impegnati nelle 131 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 7.871.678 righe della proiezione pubblica restano invece interrogabili anche
+Le 8.024.799 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -89,6 +89,12 @@ lavoro flessibile in unità annue, da non sommare fra loro. Sul 2020 l'ETL
 ricalcola i totali dal file per ente e li riscontra con lo snapshot DFP;
 si ferma se compare uno scarto non dichiarato.
 [Contratto e riproduzione](CONTO_ANNUALE.md#occupazione-per-tipo-di-istituzione-2010-2024).
+`rgs-conto-annuale-occupazione-ente-2010-2024` aggiunge 153.121 righe dalla
+serie per ente della stessa rilevazione (`PCA_OCC_DIP_ENTE_001`, CC BY 3.0):
+una riga per anno e istituzione. Per ogni anno l'ETL somma le righe per tipo e
+si ferma se non ridanno la serie per tipo; i 15 CSV originali non sono
+versionati e sono vincolati per byte e SHA-256.
+[Contratto e riproduzione](CONTO_ANNUALE.md#occupazione-per-istituzione-2010-2024).
 Il catalogo pubblico delle fonti occupa 9.286.646 byte e ha SHA-256
 `bd28e08c84f5f99f127a7e350b0268314c90f9290881803140f20d6c2662448f`.
 
@@ -211,6 +217,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `url-morti` | URL non raggiungibili | transparency | 98 | 98 | 98 | rows | missing-data | not-declared |
 | `pnrr-progetti` | PNRR · catalogo nazionale dei progetti · 13 giugno 2026 | cohesion | 291.398 | 291.398 | 291.398 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-conto-annuale-costo-2020` | Conto Annuale · costo del lavoro PA · 2020 | personnel | 244.566 | 244.566 | 244.566 | rows | documented-fact | verified-open-cc-by-4.0 |
+| `rgs-conto-annuale-occupazione-ente-2010-2024` | Conto Annuale · occupazione per istituzione · 2010-2024 | personnel | 153.121 | 153.121 | 153.121 | rows | documented-fact | verified-open-cc-by-3.0 |
 | `rgs-conto-annuale-occupazione-tipologia-2010-2024` | Conto Annuale · occupazione per tipo di istituzione · 2010-2024 | personnel | 575 | 575 | 575 | rows | documented-fact | verified-open-cc-by-3.0 |
 | `rgs-conto-annuale-personale-2020` | Conto Annuale · personale PA · 2020 | personnel | 101.546 | 101.546 | 101.546 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `rgs-rendiconto-entrate-tributarie-2011-2025` | Rendiconto dello Stato · entrate tributarie per tipologia · 2011-2025 | state-accounts | 310 | 310 | 310 | rows | documented-fact | verified-open-cc-by-3.0 |

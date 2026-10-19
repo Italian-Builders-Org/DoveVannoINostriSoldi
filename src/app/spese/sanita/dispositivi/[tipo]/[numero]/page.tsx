@@ -8,6 +8,7 @@ import {
   listMedicalDeviceFacts,
   medicalDeviceRegionLabel,
 } from "@/lib/medical-device-spending";
+import { integer } from "@/lib/format";
 import styles from "../../dispositivi.module.css";
 
 type RouteParams = { tipo: string; numero: string };
@@ -101,21 +102,21 @@ export default async function MedicalDevicePage({ params, searchParams }: {
         <PeriodSelector activeYear={selectedYear} years={years} pathname={`/spese/sanita/dispositivi/${tipo}/${numero}`} />
         <div className="stat-strip">
           <div><span className="stat-label">Spesa {selectedYear}</span><span className={`stat-value ${styles.money}`}>{euro(annual.spending)}</span><span className="stat-note">somma esatta delle righe pubblicate</span></div>
-          <div><span className="stat-label">Righe</span><span className="stat-value">{annual.rows.toLocaleString("it-IT")}</span><span className="stat-note">{annual.negativeRows} rettifiche negative · {annual.zeroRows} zeri</span></div>
-          <div><span className="stat-label">Territori</span><span className="stat-value">{annual.regions.length.toLocaleString("it-IT")}</span><span className="stat-note">codici Regione nella fonte</span></div>
+          <div><span className="stat-label">Righe</span><span className="stat-value">{integer(annual.rows)}</span><span className="stat-note">{annual.negativeRows} rettifiche negative · {annual.zeroRows} zeri</span></div>
+          <div><span className="stat-label">Territori</span><span className="stat-value">{integer(annual.regions.length)}</span><span className="stat-note">codici Regione nella fonte</span></div>
         </div>
         <div className="table-scroll" role="region" aria-label={`Spesa ${selectedYear} per Regione e azienda sanitaria`} tabIndex={0}>
           <table className="table"><caption className={styles.visuallyHidden}>Distribuzione territoriale della spesa rilevata</caption><thead><tr><th scope="col">Regione</th><th scope="col">Azienda sanitaria</th><th scope="col" className="num">Righe</th><th scope="col" className="num">Spesa</th></tr></thead><tbody>
-            {annual.regions.flatMap((region) => region.companies.map((company, index) => <tr key={`${region.code}-${company.code}`}><th scope="row">{index === 0 ? medicalDeviceRegionLabel(region.code) : <span className={styles.visuallyHidden}>{medicalDeviceRegionLabel(region.code)}</span>}</th><td>{company.names.join(" / ") || company.code}<small className={styles.blockMeta}>codice {company.code}</small></td><td className="num">{company.rows.toLocaleString("it-IT")}</td><td className={`num ${styles.money}`}>{euro(company.spending)}</td></tr>))}
+            {annual.regions.flatMap((region) => region.companies.map((company, index) => <tr key={`${region.code}-${company.code}`}><th scope="row">{index === 0 ? medicalDeviceRegionLabel(region.code) : <span className={styles.visuallyHidden}>{medicalDeviceRegionLabel(region.code)}</span>}</th><td>{company.names.join(" / ") || company.code}<small className={styles.blockMeta}>codice {company.code}</small></td><td className="num">{integer(company.rows)}</td><td className={`num ${styles.money}`}>{euro(company.spending)}</td></tr>))}
           </tbody></table>
         </div>
       </section>
 
       <section className="panel" aria-labelledby="righe-title">
-        <div className={styles.summary}><div><h2 className="panel-title" id="righe-title">Righe della fonte</h2><p>{facts.matched.toLocaleString("it-IT")} righe nel {selectedYear}; {facts.pagination.returned} mostrate.</p></div><a href={`/api/spese/sanita/dispositivi?vista=dispositivo&tipo=${device.type}&numero=${device.number}&anno=${selectedYear}`}>Righe in JSON</a></div>
+        <div className={styles.summary}><div><h2 className="panel-title" id="righe-title">Righe della fonte</h2><p>{integer(facts.matched)} righe nel {selectedYear}; {facts.pagination.returned} mostrate.</p></div><a href={`/api/spese/sanita/dispositivi?vista=dispositivo&tipo=${device.type}&numero=${device.number}&anno=${selectedYear}`}>Righe in JSON</a></div>
         <div className="table-scroll" role="region" aria-label={`Righe di spesa ${selectedYear}`} tabIndex={0}>
           <table className="table"><caption className={styles.visuallyHidden}>Righe del dataset del Ministero della Salute</caption><thead><tr><th scope="col">Azienda sanitaria</th><th scope="col">Regione</th><th scope="col">CND nella riga</th><th scope="col" className="num">Spesa</th><th scope="col">Fonte</th></tr></thead><tbody>
-            {facts.rows.map((fact) => <tr key={`${fact.datasetId}-${fact.sourceRow}`}><th scope="row">{fact.companyName}<small className={styles.blockMeta}>codice {fact.company}</small></th><td>{medicalDeviceRegionLabel(fact.region)}</td><td>{fact.sourceClassification || "Non indicata"}</td><td className={`num ${styles.money}`}>{euro(fact.spending)}</td><td><Link href={fact.catalog.href}>Riga {fact.sourceRow.toLocaleString("it-IT")}</Link></td></tr>)}
+            {facts.rows.map((fact) => <tr key={`${fact.datasetId}-${fact.sourceRow}`}><th scope="row">{fact.companyName}<small className={styles.blockMeta}>codice {fact.company}</small></th><td>{medicalDeviceRegionLabel(fact.region)}</td><td>{fact.sourceClassification || "Non indicata"}</td><td className={`num ${styles.money}`}>{euro(fact.spending)}</td><td><Link href={fact.catalog.href}>Riga {integer(fact.sourceRow)}</Link></td></tr>)}
           </tbody></table>
         </div>
         {facts.pagination.nextCursor ? <p><Link className="btn btn-secondary" href={nextHref(tipo, numero, selectedYear, facts.pagination.nextCursor)}>Righe successive</Link></p> : null}

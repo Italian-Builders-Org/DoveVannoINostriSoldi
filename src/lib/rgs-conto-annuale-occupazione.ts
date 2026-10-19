@@ -4,8 +4,6 @@ import { formatStaffCount, formatStaffDelta } from "@/lib/rgs-conto-annuale-occu
 import { ENTE_DATASET_ID, TIPOLOGIA_DATASET_ID } from "@/lib/rgs-conto-annuale-occupazione-constants";
 import {
   getOccupazioneCorpusPublicRows,
-  getOccupazioneHubIndex,
-  getOccupazioneSearchIndex,
   type OccupazioneHubIndex,
   type OccupazioneSearchEntry,
 } from "@/lib/rgs-conto-annuale-occupazione-hub";
@@ -32,11 +30,6 @@ export {
   resolveComuneInstitutionCode,
   resolveInstitutionCodeFromDenominazione,
 };
-
-/** @deprecated Prefer {@link getOccupazioneHubIndex} for hub-only aggregates. */
-export function getOccupazioneIndex(): OccupazioneHubIndex {
-  return getOccupazioneHubIndex();
-}
 
 const PERMANENT_HEADERS = [
   "Numero Dipendenti Donne Tempo Pieno",
@@ -86,17 +79,6 @@ export function sumFlexibleFromCells(cells: Readonly<Record<string, string | nul
     0,
   );
   return Math.round(total * 100) / 100;
-}
-
-export function searchOccupazioneInstitutions(query: string, limit = 12): readonly OccupazioneSearchEntry[] {
-  const trimmed = query.trim().toLocaleUpperCase("it-IT");
-  if (trimmed.length < 2) return [];
-  return getOccupazioneSearchIndex()
-    .filter((institution) => {
-      if (institution.code === trimmed) return true;
-      return institution.name.toLocaleUpperCase("it-IT").includes(trimmed);
-    })
-    .slice(0, limit);
 }
 
 export { formatStaffCount, formatStaffDelta };

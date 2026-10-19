@@ -106,10 +106,123 @@
   line-height: 1.45;
 }
 
+.kicker {
+  margin: 0 0 0.35rem;
+  color: var(--doc-muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .detail {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.5rem;
   max-width: 46rem;
+}
+
+.block {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.classPath {
+  display: grid;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+@media (min-width: 720px) {
+  .classPath {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+  }
+}
+
+.classLabel {
+  margin: 0;
+  color: var(--doc-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.classValue {
+  margin: 0.15rem 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.classHelp {
+  margin: 0;
+  color: var(--doc-muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.classArrow {
+  margin: 0;
+  color: var(--doc-muted);
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  border-top: 1px solid var(--doc-line);
+}
+
+.timeline li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--doc-line);
+}
+
+.timeline span {
+  color: var(--doc-muted);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.timeline strong {
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+.timeline em {
+  color: var(--doc-muted);
+  font-size: 0.86rem;
+  font-style: normal;
+  line-height: 1.4;
+}
+
+.note {
+  margin: 0;
+  color: var(--doc-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.sourceList {
+  margin: 0.35rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.sourceList a {
+  color: var(--doc-ink);
 }
 
 .points {

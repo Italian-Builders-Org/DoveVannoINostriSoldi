@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   ACCESS_LABELS,
   BODY_LABELS,
+  READINESS_LABELS,
   THEME_LABELS,
   getDocumentiDeclassificati,
   listDocumentiDeclassificati,
@@ -145,13 +146,20 @@ export default async function DocumentiPage({ searchParams }: { searchParams: Se
                 </Link>
                 <div className={styles.meta}>
                   <span className={styles.badge}>{THEME_LABELS[doc.theme] ?? doc.theme}</span>
+                  <span className={styles.badge}>
+                    {ACCESS_LABELS[doc.accessStatus] ?? doc.accessStatus}
+                  </span>
                   <span>{doc.issuingBodyLabel}</span>
                   <span>
                     {doc.classificationBefore} → {doc.classificationAfter}
                   </span>
-                  <span>{ACCESS_LABELS[doc.accessStatus] ?? doc.accessStatus}</span>
+                  <span>{doc.eventPeriodLabel}</span>
+                  <span>{READINESS_LABELS[doc.readiness] ?? doc.readiness}</span>
                 </div>
                 <p className={styles.summary}>{doc.summary}</p>
+                <p className={styles.note}>
+                  {doc.keyPoints.length} punti chiave · verificato {doc.verifiedAt}
+                </p>
               </li>
             ))}
           </ul>

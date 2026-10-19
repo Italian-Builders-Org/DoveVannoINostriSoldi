@@ -54,7 +54,7 @@ fonte. Alimenta `/documenti`, `/documenti/[id]` e `/api/documenti`.
 python3 scripts/etl/documenti_declassificati_snapshot.py --check
 python3 scripts/etl/documenti_declassificati_snapshot.py --write
 DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest discover -s tests/etl -p 'test_documenti_declassificati_snapshot.py'
-node --experimental-strip-types --test tests/documenti-declassificati-contract.test.mjs tests/documenti-declassificati-page.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/documenti-declassificati-contract.test.mjs tests/documenti-declassificati-page.test.mjs
 ```
 
 ## Fuori v1

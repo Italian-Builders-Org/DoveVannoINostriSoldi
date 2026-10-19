@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 129
+- Artefatti nel registro: 130
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 112 (PR umana dopo revisione)
+- manuale: 113 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -159,7 +159,7 @@ La revisione e il merge restano umani.
 | `senato-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-23T08:38:08+00:00 | https://dati.senato.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check` |
 | `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 | `parlamento-giudiziario-xix` | XIX legislatura, dal 2022-10-13 | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/555 | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check` |
-| `documenti-declassificati` | pilota 1970-2024 | 2026-10-19 | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796 | nessuno | nessuno | manuale | `python3 scripts/etl/documenti_declassificati_snapshot.py --check` |
+| `documenti-declassificati` | Pilota 1970-2024: Commissioni Moro e Terrorismo e stragi, atti Camera XVII e fondi Senato declassificati | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796 | nessuno | nessuno | manuale | `python3 scripts/etl/documenti_declassificati_snapshot.py --check` |
 | `opencivitas-2022-polizia` | 2022 | 2026-09-22T13:19:50Z | https://www.opencivitas.it/it/dataset/2022-comuni-polizia-locale-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_polizia_snapshot.py --check` |
 | `opencivitas-2022-istruzione` | 2022 | 2026-09-22T13:37:40Z | https://www.opencivitas.it/it/dataset/2022-comuni-istruzione-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_istruzione_snapshot.py --check` |
 | `opencivitas-2021-sociale-asili` | 2021 | 2026-09-22T14:24:12Z | https://www.opencivitas.it/it/dataset/2021-comuni-sociale-e-asili-nido-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2021_sociale_asili_snapshot.py --check` |

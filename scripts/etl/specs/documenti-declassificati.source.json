@@ -1,0 +1,92 @@
+{
+  "datasetId": "documenti-declassificati",
+  "title": "Documenti governativi italiani declassificati e desecretati (pilota curato)",
+  "landingUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796",
+  "period": {
+    "label": "Pilota 1970-2024 · Commissioni Moro e Terrorismo e stragi + quadro normativo",
+    "from": "1970",
+    "to": "2024"
+  },
+  "source": {
+    "owner": "DoveVannoINostriSoldi, raccolta curata",
+    "authority": "secondary",
+    "license": "not-declared",
+    "licenseNote": "Si pubblicano fatto, attribuzione, riassunto curato e link; non si hostano PDF e non si ripubblica il testo integrale.",
+    "committedInput": {
+      "path": "data/documenti-declassificati/catalogo-verificato.json",
+      "bytes": 18242,
+      "sha256": "0e33972d056945021d623cd9ddf4b606a80d86b3023a85c60e87773d653a78ad"
+    },
+    "primaryPortals": [
+      {
+        "owner": "Archivio storico del Senato della Repubblica",
+        "url": "https://patrimonio.archivio.senato.it/declassificati"
+      },
+      {
+        "owner": "Camera dei deputati",
+        "url": "https://documenti.camera.it/"
+      },
+      {
+        "owner": "Archivio Centrale dello Stato",
+        "url": "https://acs.cultura.gov.it/"
+      }
+    ]
+  },
+  "expected": {
+    "minDocuments": 8,
+    "maxDocuments": 64,
+    "issuingBodies": [
+      "camera",
+      "senato",
+      "acs",
+      "stato"
+    ],
+    "themes": [
+      "moro",
+      "terrorismo-stragi",
+      "declassifica-procedure"
+    ],
+    "classificationBefore": [
+      "riservato",
+      "riservatissimo",
+      "segreto",
+      "segretissimo",
+      "classificato",
+      "segreto-di-stato-o-classificato",
+      "non-applicabile"
+    ],
+    "classificationAfter": [
+      "riservato",
+      "libero",
+      "pubblico",
+      "declassificato",
+      "desecretato-o-declassificato"
+    ],
+    "accessStatuses": [
+      "public-online",
+      "spid-required",
+      "on-site-only",
+      "request-required"
+    ],
+    "readiness": [
+      "metadata-only",
+      "summary-curated"
+    ],
+    "allowedSourceHosts": [
+      "documenti.camera.it",
+      "www.camera.it",
+      "patrimonio.archivio.senato.it",
+      "www.senato.it",
+      "acs.cultura.gov.it",
+      "archivi.cultura.gov.it",
+      "www.normattiva.it",
+      "www.governo.it"
+    ]
+  },
+  "rules": {
+    "evidence": "Ogni documento richiede almeno un URL HTTPS su host ufficiale ammesso.",
+    "soldi": "soldi resta null salvo importo ufficiale in centesimi interi attribuito alla fonte; assente ≠ zero.",
+    "dates": "Tenere distinti eventPeriod*, declassifiedAt, releasedAt, verifiedAt, acquisitionDate e checkedAt.",
+    "noOcr": "I punti chiave sono curati nel catalogo; nessun OCR automatico in CI."
+  }
+}

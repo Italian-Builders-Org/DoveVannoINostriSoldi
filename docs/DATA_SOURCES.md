@@ -1388,3 +1388,13 @@ attestato. Chiavi di join `d<numero>_19` e `s<id>`, le stesse dei roster Camera 
 Senato. Snapshot `parlamento-giudiziario-xix`, API
 `/api/politici/giudiziario`, UI nella scheda personale di `/politici`, nessun
 dataset MCP. [Perimetro, regole di evidenza e limiti](PARLAMENTO_GIUDIZIARIO.md).
+
+### Documenti declassificati (pilota)
+
+Raccolta curata secondaria di schede su atti e fondi ufficiali italiani
+declassificati o desecretati (Senato, Camera Commissione Moro, ACS, quadro
+normativo). Ogni scheda ha URL HTTPS ufficiale, stato di accesso, date distinte
+e punti chiave curati; `soldi` è esplicito e di regola assente. Non è un
+archivio ufficiale completo e declassificare ≠ pubblicare online. Snapshot
+`documenti-declassificati`, UI `/documenti`, API `/api/documenti`, nessun dataset
+MCP. [Perimetro e limiti](DOCUMENTI_DECLASSIFICATI.md).

@@ -79,9 +79,14 @@ a caso.
     `src/lib/data/source-policy.ts` governano accesso e policy; le route
     applicano budget e limiti di concorrenza.
   - **`/politici`**: vedi la sezione «Politici».
-  - **Pagine editoriali e atlanti** (`/governi`, `/parlamento`, `/imprese`,
-    `/istruzione`): segui il contratto e i componenti della pagina; non
-    attraversare il corpus integrato se il dato è uno snapshot tipizzato.
+  - **Pagine editoriali e atlanti** (`/governi`, `/parlamento`, `/documenti`,
+    `/imprese`, `/istruzione`): segui il contratto e i componenti della pagina;
+    non attraversare il corpus integrato se il dato è uno snapshot tipizzato.
+    Per `/documenti`: snapshot tipizzato secondario
+    [src/lib/documenti-declassificati.ts](../src/lib/documenti-declassificati.ts),
+    contratto
+    [src/lib/data/documenti-declassificati-contract.ts](../src/lib/data/documenti-declassificati-contract.ts),
+    docs [DOCUMENTI_DECLASSIFICATI.md](DOCUMENTI_DECLASSIFICATI.md).
 - **Fonti iniziali**:
   - [src/lib/integrated-public-view.ts](../src/lib/integrated-public-view.ts):
     confine pubblico del corpus integrato.

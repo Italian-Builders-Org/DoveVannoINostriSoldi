@@ -187,6 +187,7 @@ const ROUTE_ALIASES: Readonly<Record<string, readonly string[]>> = {
   "/pnrr/incarichi": ["incarichi pnrr", "indire"],
   "/istituzioni": ["istituzioni", "enti istituzionali"],
   "/parlamento": ["camera", "senato", "assemblee"],
+  "/documenti": ["declassificati", "desecretati", "segreto di stato", "caso moro", "archivio storico"],
   "/politici": ["politici", "deputati", "senatori", "ministri", "governo", "gruppi parlamentari", "mappa della politica", "camera", "senato", "xix legislatura"],
   "/politici/europa": ["eurodeputati", "parlamento europeo", "meps", "europarlamento", "rappresentanza europea"],
   "/palazzo-chigi": ["presidenza del consiglio", "pcm", "governo"],

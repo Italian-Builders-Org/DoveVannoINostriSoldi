@@ -6,7 +6,7 @@ import styles from "./istituzioni.module.css";
 export const metadata: Metadata = {
   title: "Istituzioni pubbliche",
   description:
-    "Percorsi separati per Parlamento, mappa della politica, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
+    "Percorsi separati per Parlamento, documenti declassificati, mappa della politica, Palazzo Chigi, governi, Ministeri e Regioni, con periodo, perimetro e fonte visibili.",
 };
 
 const dossiers = [
@@ -16,6 +16,13 @@ const dossiers = [
     period: "Camera: dati 2025 · documenti 2024 per Camera e Senato",
     description:
       "Bilanci e documenti di Camera e Senato, con la copertura disponibile per ciascuna istituzione.",
+  },
+  {
+    href: "/documenti",
+    title: "Documenti declassificati",
+    period: "Pilota curato · Senato, Camera, ACS",
+    description:
+      "Schede verificate di atti e fondi declassificati o desecretati, con punti chiave e link alle fonti ufficiali. Declassificare non significa pubblicare online.",
   },
   {
     href: PUBLIC_POLITICI_URL,

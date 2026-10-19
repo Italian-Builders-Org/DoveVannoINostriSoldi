@@ -3142,6 +3142,32 @@
       "trustModel": "La raccolta non e una tabella ufficiale: in Italia il casellario giudiziale non e pubblico e gran parte delle sentenze di merito non viene pubblicata. L'input verificato e committato in data/parlamento-giudiziario/casi-verificati.json e bloccato per byte e sha256 nello spec; --check lo riproietta e fallisce se lo snapshot committato diverge, se un caso non ha un atto ufficiale o due editori indipendenti, se l'etichetta official-finding compare senza condanna definitiva con atto, se un bucket non coincide con lo stato, se un importo non e in centesimi interi, se la copertura non torna, se statusAsOf non coincide con la data dell'ultimo grado registrato o se manca la data dell'ultimo controllo (verifiedAt). Un procedimento non definitivo non riverificato entro la finestra dichiarata viene marcato da-riverificare e il workflow mensile fallisce oltre il doppio della finestra. Il controllo offline dimostra la coerenza interna e il rispetto delle regole di evidenza, non la veridicita delle sentenze citate: quella resta affidata alle fonti elencate caso per caso."
     },
     {
+      "id": "documenti-declassificati",
+      "owner": "DoveVannoINostriSoldi — pilota curato di documenti governativi italiani declassificati/desecretati (Senato, Camera, ACS)",
+      "files": [
+        "src/data/generated/documenti-declassificati.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/documenti_declassificati_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_documenti_declassificati_snapshot.py"
+      ],
+      "nodeTests": [
+        "tests/documenti-declassificati-contract.test.mjs",
+        "tests/documenti-declassificati-page.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/documenti_declassificati_snapshot.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/documenti-declassificati.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Raccolta secondaria: catalogo curato in data/documenti-declassificati/catalogo-verificato.json bloccato per byte e sha256 nello spec. Ogni scheda richiede URL HTTPS su host ufficiali (camera.it, senato.it, cultura.gov.it, governo.it, normattiva.it), soldi esplicito (di regola null), date distinte e 3-7 punti chiave curati nel catalogo (niente OCR in CI). --check riproietta e fallisce su drift, host non ammessi, enum fuori contratto o copertura incoerente. Le fonti ufficiali restano autoritative; declassificare non implica pubblicazione online."
+    },
+    {
       "id": "opencivitas-2022-polizia",
       "owner": "OpenCivitas municipal 2022 FC80POLIZIA",
       "files": [

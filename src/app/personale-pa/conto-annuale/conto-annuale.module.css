@@ -1,0 +1,115 @@
+.page {
+  display: grid;
+  gap: 1.75rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.page :global(.stat-strip) {
+  min-width: 0;
+}
+
+.page :global(.stat-strip) .stat-note {
+  overflow-wrap: anywhere;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.hero code {
+  overflow-wrap: anywhere;
+}
+
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+}
+
+.panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: var(--surface-elevated);
+  min-width: 0;
+}
+
+.statGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+}
+
+.searchForm {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  font: inherit;
+}
+
+.results {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.resultLink {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: inherit;
+}
+
+.resultLink:hover,
+.resultLink:focus-visible {
+  border-color: var(--accent);
+}
+
+.resultMeta {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.rankList {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.rankItem {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.rankValues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.method {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
+}
+
+.method summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.exactZero {
+  color: var(--text-muted);
+}

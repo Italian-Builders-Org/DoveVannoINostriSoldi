@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { inspectInequality } from "./inequality.mjs";
+import { inspectContoAnnualeOccupazione } from "./conto-annuale-occupazione.mjs";
 import { inspectInflation } from "./inflation.mjs";
 import { inspectAnnouncements } from "./announcements.mjs";
 import { inspectReceipts } from "./receipts.mjs";
@@ -2618,6 +2619,14 @@ try {
     const label = `Disuguaglianza dei redditi ${width}px`;
     await runScenario(browser, {
       label, pathname: "/disuguaglianza", width, validate: inspectInequality,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
+    const label = `Personale PA Conto Annuale ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/personale-pa/conto-annuale", width, validate: inspectContoAnnualeOccupazione,
     });
     completed.push(label);
   }

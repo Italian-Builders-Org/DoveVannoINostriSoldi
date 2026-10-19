@@ -56,6 +56,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/incarichi",
   "/incarichi/territori",
   "/incarichi/dettaglio",
+  "/personale-pa/conto-annuale",
   "/istituzioni",
   "/istruzione",
   "/istruzione/universita-ricerca",
@@ -138,6 +139,7 @@ export const PUBLIC_NOINDEX_PATHS = [
   "/accedi/callback",
   "/dashboard",
   "/dashboard/settings",
+  "/snapshot-pages/personale-pa/conto-annuale",
 ] as const satisfies readonly PublicPath[];
 
 /** Legacy entry points redirect to canonical pages and stay out of the sitemap. */

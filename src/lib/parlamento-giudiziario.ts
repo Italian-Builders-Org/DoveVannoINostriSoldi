@@ -29,47 +29,6 @@ const OUTCOME_ORDER: Record<GiudiziarioOutcome, number> = {
   non_condannato: 3,
 };
 
-/** Cases of one person, most serious documented outcome first. */
-export function casesForMember(memberId: string): GiudiziarioCase[] {
-  return getParlamentoGiudiziario()
-    .cases.filter((item) => item.memberId === memberId)
-    .sort(
-      (left, right) =>
-        OUTCOME_ORDER[left.outcomeBucket] - OUTCOME_ORDER[right.outcomeBucket] ||
-        right.statusAsOf.localeCompare(left.statusAsOf),
-    );
-}
-
-export type MemberJudicialSummary = {
-  memberId: string;
-  /** What the marker on the graph says: presence of documented proceedings, never a severity score. */
-  hasDocumentedCase: boolean;
-  convictions: number;
-  accounting: number;
-  cleared: number;
-  undocumentedOutcome: number;
-};
-
-export function summaryForMember(memberId: string): MemberJudicialSummary | null {
-  const cases = casesForMember(memberId);
-  if (cases.length === 0) {
-    return null;
-  }
-  return {
-    memberId,
-    hasDocumentedCase: true,
-    convictions: cases.filter((item) => item.outcomeBucket === "condannato").length,
-    accounting: cases.filter((item) => item.outcomeBucket === "contabile").length,
-    cleared: cases.filter((item) => item.outcomeBucket === "non_condannato").length,
-    undocumentedOutcome: cases.filter((item) => item.outcomeBucket === "esito_ignoto").length,
-  };
-}
-
-/** Member ids with at least one documented proceeding, for the graph marker. */
-export function membersWithDocumentedCases(): ReadonlySet<string> {
-  return new Set(getParlamentoGiudiziario().cases.map((item) => item.memberId));
-}
-
 /** Graph person ids with at least one documented proceeding, for the marker on the node. */
 export function graphPeopleWithDocumentedCases(): string[] {
   const ids = new Set<string>();

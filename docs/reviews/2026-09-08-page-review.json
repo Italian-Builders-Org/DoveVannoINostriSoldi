@@ -779,7 +779,7 @@
     "buildId": "Mrpv9mWTtBL7jfQENfiew",
     "productFingerprint": "629cf2420823ff2466076cb3adc219bc0ea30c38717c3ab05baa9e1351396cd9",
     "localPreview": "http://localhost:3416",
-    "productFilesManifest": "artifacts/browser/ui-clarity/final-build.json"
+    "productFilesManifest": null
   },
   "finalVerification": {
     "status": "PASS_LOCAL",

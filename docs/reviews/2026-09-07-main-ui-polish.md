@@ -37,9 +37,9 @@ Due riepiloghi generici sono stati disattivati: quello che mescolava livelli AT 
 
 I controlli di produzione sono stati completati in più blocchi sulla stessa build. L'esecuzione di `test:production` ha superato i 170 scenari delle pagine, poi si è fermata su una lettura troppo anticipata della selezione di un grafico; corretta l'attesa, sono stati ripetuti quel gruppo e i successivi. Il percorso verso gli studi ora apre esplicitamente la mappa del sito prima di seguire il collegamento. I selettori sono aggiornati ai dettagli espandibili, conservando le verifiche di dati, unità, filtri e accessibilità. Non si attesta una singola esecuzione ininterrotta di `test:production`.
 
-Log locali conservati in `artifacts/review/final/`. Screenshot e prove di layout in `artifacts/browser/ui-clarity/`; report Lighthouse in `.lighthouseci/`.
+Log locali conservati in `artifacts/review/final/`. Screenshot e prove di layout in `artifacts/browser/`; report Lighthouse in `.lighthouseci/`.
 
-Build locale: `Mrpv9mWTtBL7jfQENfiew`. Impronta dei 124 file prodotto modificati: `629cf2420823ff2466076cb3adc219bc0ea30c38717c3ab05baa9e1351396cd9`. Il manifesto dei file è in `artifacts/browser/ui-clarity/final-build.json`.
+Build locale: `Mrpv9mWTtBL7jfQENfiew`. Impronta dei 124 file prodotto modificati: `629cf2420823ff2466076cb3adc219bc0ea30c38717c3ab05baa9e1351396cd9`.
 
 ## Consegna
 

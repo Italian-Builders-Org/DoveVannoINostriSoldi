@@ -643,12 +643,6 @@ export function regionsByPerCapita(
     });
 }
 
-export function municipalitiesByPerCapita(
-  data: SiopeMunicipalSnapshot = siopeMunicipalSnapshot,
-): SiopeMunicipalityPoint[] {
-  return data.topMunicipalitiesByPerCapita;
-}
-
 export function siopeTitleShare(
   data: SiopeMunicipalSnapshot,
   titleCode: string,

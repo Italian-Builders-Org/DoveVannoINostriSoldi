@@ -1,0 +1,63 @@
+.page {
+  display: grid;
+  gap: 1.75rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.page :global(.stat-strip) {
+  min-width: 0;
+}
+
+.page :global(.stat-strip) .stat-note {
+  overflow-wrap: anywhere;
+}
+
+.hero {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: var(--surface-elevated);
+  min-width: 0;
+}
+
+.resultMeta {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tableScroll table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+}
+
+.tableScroll th,
+.tableScroll td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.tableScroll td.num,
+.tableScroll th.num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.missingValue {
+  color: var(--text-muted);
+  font-style: italic;
+}

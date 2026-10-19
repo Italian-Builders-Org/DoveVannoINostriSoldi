@@ -123,6 +123,39 @@ test("runtime package guard rejects CI intake without dropping proofs or row chu
   assert.throws(() => checkTrace(intake.root, intake.manifest, required), /traces unrelated files/);
 });
 
+const occupationIndex = "src/data/generated/rgs-conto-annuale-occupazione-ente-index";
+const occupationResolve = `${occupationIndex}/resolve.json`;
+const occupationByCode = `${occupationIndex}/by-code.json`;
+const occupationSearch = `${occupationIndex}/search.json`;
+const occupationSummary = `${occupationIndex}/summary.json`;
+const occupationShard = `${occupationIndex}/shards/bucket-000.json`;
+
+test("occupation index tracing matches route consumers", () => {
+  const hubRoutes = ["personale-pa/conto-annuale", "snapshot-pages/personale-pa/conto-annuale"];
+  const detailRoutes = [
+    "personale-pa/conto-annuale/[codice]",
+    "snapshot-pages/personale-pa/conto-annuale/[codice]",
+  ];
+  for (const route of hubRoutes) {
+    assert.equal(explicitRuntimeFile(route, occupationSummary), true, route);
+    assert.equal(explicitRuntimeFile(route, occupationSearch), true, route);
+    assert.equal(explicitRuntimeFile(route, occupationResolve), false, route);
+    assert.equal(explicitRuntimeFile(route, occupationShard), false, route);
+  }
+  for (const route of detailRoutes) {
+    assert.equal(explicitRuntimeFile(route, occupationSummary), true, route);
+    assert.equal(explicitRuntimeFile(route, occupationShard), true, route);
+    assert.equal(explicitRuntimeFile(route, occupationSearch), false, route);
+    assert.equal(explicitRuntimeFile(route, occupationResolve), false, route);
+    assert.equal(explicitRuntimeFile(route, occupationByCode), false, route);
+  }
+  const entiRoute = "enti/8000393";
+  assert.equal(explicitRuntimeFile(entiRoute, occupationResolve), true);
+  assert.equal(explicitRuntimeFile(entiRoute, occupationByCode), true);
+  assert.equal(explicitRuntimeFile(entiRoute, occupationSummary), false);
+  assert.equal(explicitRuntimeFile(entiRoute, occupationShard), false);
+});
+
 test("runtime package guard rejects childcare in nonconsumer entity routes and requires it in consumers", (t) => {
   for (const [route, consumer] of entityChildcareRoutes) {
     const { root, manifest } = fixture(t, [childcare], route);

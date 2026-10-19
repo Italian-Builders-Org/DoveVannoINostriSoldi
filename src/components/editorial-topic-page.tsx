@@ -97,6 +97,14 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
         <DatasetInsightPanel insights={insights} />
       ) : null}
 
+      {topic.featuredExploration ? (
+        <section className={styles.featuredExploration} aria-labelledby="explorazione-in-evidenza">
+          <h2 id="explorazione-in-evidenza">{topic.featuredExploration.title}</h2>
+          <p>{topic.featuredExploration.description}</p>
+          <p><Link href={topic.featuredExploration.href}>Apri l&apos;esplorazione →</Link></p>
+        </section>
+      ) : null}
+
       <section className="stat-strip" aria-label={`Copertura di ${topic.title}`}>
         <div>
           <span className="stat-label">Dataset</span>

@@ -7,9 +7,14 @@ import {
   CLASSIFICATION_HELP,
   READINESS_LABELS,
   THEME_LABELS,
+  formatClassificationLabel,
   formatIsoDateIt,
+  formatLicenseLabel,
+  formatProvenanceForReaders,
+  formatSoldiForReaders,
   getDocumentoDeclassificato,
   getDocumentiDeclassificati,
+  PERIODO_READER_HELP,
 } from "@/lib/documenti-declassificati";
 import styles from "../documenti.module.css";
 
@@ -57,7 +62,8 @@ export default async function DocumentoPage({ params }: { params: Params }) {
         <div className={styles.meta}>
           <span className={styles.badge}>{THEME_LABELS[doc.theme] ?? doc.theme}</span>
           <span className={styles.badge}>
-            {doc.classificationBefore} → {doc.classificationAfter}
+            {formatClassificationLabel(doc.classificationBefore)} →{" "}
+            {formatClassificationLabel(doc.classificationAfter)}
           </span>
           <span className={styles.badge}>
             {ACCESS_LABELS[doc.accessStatus] ?? doc.accessStatus}
@@ -74,7 +80,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
           <div className={styles.classPath}>
             <div>
               <p className={styles.classLabel}>Prima</p>
-              <p className={styles.classValue}>{doc.classificationBefore}</p>
+              <p className={styles.classValue}>{formatClassificationLabel(doc.classificationBefore)}</p>
               {beforeHelp ? <p className={styles.classHelp}>{beforeHelp}</p> : null}
             </div>
             <p className={styles.classArrow} aria-hidden="true">
@@ -82,7 +88,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
             </p>
             <div>
               <p className={styles.classLabel}>Dopo</p>
-              <p className={styles.classValue}>{doc.classificationAfter}</p>
+              <p className={styles.classValue}>{formatClassificationLabel(doc.classificationAfter)}</p>
               {afterHelp ? <p className={styles.classHelp}>{afterHelp}</p> : null}
             </div>
           </div>
@@ -132,7 +138,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
               <em>ultimo controllo nostro su URL e metadati</em>
             </li>
           </ol>
-          <p className={styles.note}>{snapshot.semantics.periodo}</p>
+          <p className={styles.note}>{PERIODO_READER_HELP}</p>
         </section>
 
         <dl className={styles.dl}>
@@ -152,15 +158,11 @@ export default async function DocumentoPage({ params }: { params: Params }) {
           </div>
           <div>
             <dt>Soldi</dt>
-            <dd>
-              {doc.soldi
-                ? `${doc.soldi.kind}: ${doc.soldi.amountEuroCents} centesimi${doc.soldi.note ? ` (${doc.soldi.note})` : ""}`
-                : "Assente (non è un atto di spesa in questo pilota)"}
-            </dd>
+            <dd>{formatSoldiForReaders(doc.soldi)}</dd>
           </div>
           <div>
             <dt>Provenienza</dt>
-            <dd>{snapshot.semantics.provenance}</dd>
+            <dd>{formatProvenanceForReaders(snapshot.source.authority)}</dd>
           </div>
         </dl>
 
@@ -208,7 +210,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
           <p className={styles.note}>
             Regola di evidenza: {snapshot.source.evidenceRule} Acquisizione catalogo:{" "}
             {formatIsoDateIt(snapshot.source.acquisitionDate)}. Licenza dichiarata:{" "}
-            {snapshot.source.license}
+            {formatLicenseLabel(snapshot.source.license)}
             {snapshot.source.licenseNote ? `. ${snapshot.source.licenseNote}` : ""}.
           </p>
         </section>

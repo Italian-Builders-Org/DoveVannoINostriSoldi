@@ -5,6 +5,8 @@ import {
   BODY_LABELS,
   READINESS_LABELS,
   THEME_LABELS,
+  formatClassificationLabel,
+  formatIsoDateIt,
   getDocumentiDeclassificati,
   listDocumentiDeclassificati,
 } from "@/lib/documenti-declassificati";
@@ -51,7 +53,7 @@ export default async function DocumentiPage({ searchParams }: { searchParams: Se
         <p>
           <strong>Declassificare non significa pubblicare online.</strong>{" "}
           {snapshot.coverage.documentsPublished} schede nel pilota · controllato il{" "}
-          {snapshot.coverage.checkedAt}.{" "}
+          {formatIsoDateIt(snapshot.coverage.checkedAt)}.{" "}
           {snapshot.caveats[0]}
         </p>
       </div>
@@ -151,14 +153,16 @@ export default async function DocumentiPage({ searchParams }: { searchParams: Se
                   </span>
                   <span>{doc.issuingBodyLabel}</span>
                   <span>
-                    {doc.classificationBefore} → {doc.classificationAfter}
+                    {formatClassificationLabel(doc.classificationBefore)} →{" "}
+                    {formatClassificationLabel(doc.classificationAfter)}
                   </span>
                   <span>{doc.eventPeriodLabel}</span>
                   <span>{READINESS_LABELS[doc.readiness] ?? doc.readiness}</span>
                 </div>
                 <p className={styles.summary}>{doc.summary}</p>
                 <p className={styles.note}>
-                  {doc.keyPoints.length} punti chiave · verificato {doc.verifiedAt}
+                  {doc.keyPoints.length} punti chiave · verificato{" "}
+                  {formatIsoDateIt(doc.verifiedAt)}
                 </p>
               </li>
             ))}

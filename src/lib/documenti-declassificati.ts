@@ -90,3 +90,47 @@ export function formatIsoDateIt(value: string | null | undefined): string {
   if (!match) return value;
   return `${match[3]}/${match[2]}/${match[1]}`;
 }
+
+/** Codici licenza del dataset → etichette per lettori (non per API/contratto). */
+export const LICENSE_LABELS: Record<string, string> = {
+  "not-declared": "non dichiarata",
+  "cc-by-4.0": "Creative Commons Attribution 4.0",
+  "cc-by-sa-4.0": "Creative Commons Attribution-ShareAlike 4.0",
+};
+
+export function formatLicenseLabel(code: string): string {
+  return LICENSE_LABELS[code] ?? code.replace(/-/g, " ");
+}
+
+const AUTHORITY_LABELS: Record<string, string> = {
+  secondary: "Link e metadati da portali ufficiali",
+  "official-primary": "Dati da fonte primaria ufficiale",
+};
+
+export function formatProvenanceForReaders(authority: string): string {
+  const lead = AUTHORITY_LABELS[authority] ?? "Fonti verificate";
+  return `${lead}; riassunti e punti chiave curati da DVNS.`;
+}
+
+/** Spiega in italiano piano perché le date in scheda restano distinte. */
+export const PERIODO_READER_HELP =
+  "Il periodo del fatto o dell'atto, la data di declassifica, quella di pubblicazione online e l'ultimo controllo DVNS sono campi separati: non vanno scambiati tra loro.";
+
+export function formatClassificationLabel(value: string): string {
+  return value.replace(/-/g, " ");
+}
+
+export function formatSoldiForReaders(
+  soldi: DocumentoDeclassificato["soldi"],
+): string {
+  if (!soldi) {
+    return "Assente (non è un atto di spesa in questo pilota)";
+  }
+  const euros = (soldi.amountEuroCents / 100).toLocaleString("it-IT", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  });
+  const note = soldi.note ? ` ${soldi.note}` : "";
+  return `${euros}${note}`;
+}

@@ -31,6 +31,20 @@ test("hub declares the declassify ≠ online caveat and filters", () => {
   assert.match(detail, /Leggi sulla fonte ufficiale/u);
 });
 
+test("public pages avoid developer semantics and raw enum codes", () => {
+  assert.doesNotMatch(hub, /semantics\.(periodo|provenance)/u);
+  assert.doesNotMatch(detail, /semantics\.(periodo|provenance)/u);
+  assert.doesNotMatch(
+    `${hub}\n${detail}`,
+    /eventPeriod\*|declassifiedAt\/releasedAt|amountEuroCents centesimi|authority secondary:|"not-declared"/u,
+  );
+  assert.match(hub, /formatIsoDateIt\(doc\.verifiedAt\)/u);
+  assert.match(hub, /formatIsoDateIt\(snapshot\.coverage\.checkedAt\)/u);
+  assert.match(detail, /formatLicenseLabel\(snapshot\.source\.license\)/u);
+  assert.match(detail, /formatProvenanceForReaders\(snapshot\.source\.authority\)/u);
+  assert.match(detail, /PERIODO_READER_HELP/u);
+});
+
 test("navigation exposes Documenti under Istituzioni", () => {
   assert.match(navigation, /href: "\/documenti", label: "Documenti declassificati"/u);
   assert.match(navigation, /aliases: \[[^\]]*\/documenti/u);

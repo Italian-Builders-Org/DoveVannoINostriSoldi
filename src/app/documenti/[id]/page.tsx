@@ -154,7 +154,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
             <dt>Soldi</dt>
             <dd>
               {doc.soldi
-                ? `${doc.soldi.kind}: ${doc.soldi.amountEuroCents} centesimi${doc.soldi.note ? ` — ${doc.soldi.note}` : ""}`
+                ? `${doc.soldi.kind}: ${doc.soldi.amountEuroCents} centesimi${doc.soldi.note ? ` (${doc.soldi.note})` : ""}`
                 : "Assente (non è un atto di spesa in questo pilota)"}
             </dd>
           </div>
@@ -209,7 +209,7 @@ export default async function DocumentoPage({ params }: { params: Params }) {
             Regola di evidenza: {snapshot.source.evidenceRule} Acquisizione catalogo:{" "}
             {formatIsoDateIt(snapshot.source.acquisitionDate)}. Licenza dichiarata:{" "}
             {snapshot.source.license}
-            {snapshot.source.licenseNote ? ` — ${snapshot.source.licenseNote}` : ""}.
+            {snapshot.source.licenseNote ? `. ${snapshot.source.licenseNote}` : ""}.
           </p>
         </section>
       </div>

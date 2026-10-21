@@ -217,6 +217,10 @@ echo "::endgroup::"
 echo "::group::Browser core suite in modalità scura"
 DVNS_COLOR_SCHEME=dark DVNS_CORE_MODE=theme npm run test:browser:core
 echo "::endgroup::"
+
+echo "::group::Browser documenti declassificati"
+node scripts/browser/documenti.mjs
+echo "::endgroup::"
 fi
 
 if run_part main; then

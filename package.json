@@ -59,7 +59,8 @@
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs",
     "test:browser:mobilita": "node scripts/browser/mobilita.mjs",
     "test:browser:pensioni": "node scripts/browser/pensioni.mjs",
-    "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs"
+    "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs",
+    "test:browser:documenti": "node scripts/browser/documenti.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.5",

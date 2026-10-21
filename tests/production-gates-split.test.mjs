@@ -27,7 +27,11 @@ test("each production gate runs in exactly one CI part", () => {
   const parts = groupsByPart();
 
   assert.deepEqual(parts.shared, ["Start next start", "Wait for server readiness"]);
-  assert.deepEqual(parts.core, ["Browser core suite", "Browser core suite in modalità scura"]);
+  assert.deepEqual(parts.core, [
+    "Browser core suite",
+    "Browser core suite in modalità scura",
+    "Browser documenti declassificati",
+  ]);
   assert.ok(parts.main.includes("MCP HTTP smoke"));
   assert.equal(parts.main.at(-1), "Lighthouse budget");
   assert.equal(new Set([...parts.main, ...parts.core]).size, parts.main.length + parts.core.length);

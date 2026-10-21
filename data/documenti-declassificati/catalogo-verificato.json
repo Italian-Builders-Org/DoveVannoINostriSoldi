@@ -476,7 +476,7 @@
       "declassifiedAt": null,
       "releasedAt": null,
       "verifiedAt": "2026-10-21",
-      "summary": "Punto di accesso istituzionale dell'Archivio Centrale dello Stato (Ministero della Cultura) agli elenchi e alla documentazione desecretata o declassificata versata in archivio (stragi, caso Moro, Gladio, P2 e versamenti legati alle direttive Prodi, Renzi e Draghi). Online spesso ci sono guide ed elenchi; la consultazione integrale avviene tipicamente in sala di studio. Scheda metadata-only: non afferma che ogni fascicolo sia scaricabile dal web.",
+      "summary": "Punto di accesso istituzionale dell'Archivio Centrale dello Stato (Ministero della Cultura) agli elenchi e alla documentazione desecretata o declassificata versata in archivio (stragi, caso Moro, Gladio, P2 e versamenti legati alle direttive Prodi, Renzi e Draghi). Online spesso ci sono guide ed elenchi; la consultazione integrale avviene tipicamente in sala di studio. Scheda con soli metadati: non afferma che ogni fascicolo sia scaricabile dal web.",
       "keyPoints": [
         "ACS e il deposito principale per molti versamenti desecretati delle direttive di Palazzo Chigi.",
         "Temi ricorrenti: stragi, caso Moro, Gladio, P2.",
@@ -491,7 +491,7 @@
         "https://acs.cultura.gov.it/",
         "https://archivi.cultura.gov.it/"
       ],
-      "caveat": "Scheda metadata-only: verifica elenchi e modalita di accesso sul sito ACS; non afferma la disponibilita online di ogni fascicolo.",
+      "caveat": "Scheda con soli metadati: verifica elenchi e modalita di accesso sul sito ACS; non afferma la disponibilita online di ogni fascicolo.",
       "relatedDocuments": [
         {
           "id": "acs-sala-raccolte-desecretate",

@@ -12,6 +12,37 @@ const api = await readFile(new URL("../src/app/api/documenti/route.ts", import.m
 
 const { GET } = await import("../src/app/api/documenti/route.ts");
 
+const snapshot = (
+  await import("../src/data/generated/documenti-declassificati.json", { with: { type: "json" } })
+).default;
+
+const READER_FACING_ENUM =
+  /metadata-only|on-site-only|request-required|not-declared|public-online|summary-curated|spid-required/u;
+
+test("reader-facing catalog strings avoid raw English enum codes", () => {
+  const globalStrings = [
+    ...(snapshot.caveats ?? []),
+    snapshot.source?.licenseNote,
+    snapshot.source?.referencePeriod,
+    snapshot.source?.evidenceRule,
+  ].filter(Boolean);
+  for (const text of globalStrings) {
+    assert.doesNotMatch(text, READER_FACING_ENUM, `caveat/source: ${text.slice(0, 80)}`);
+  }
+  for (const doc of snapshot.documents) {
+    const fields = [
+      doc.title,
+      doc.summary,
+      doc.caveat,
+      doc.declassificationNote,
+      ...(doc.keyPoints ?? []),
+    ].filter(Boolean);
+    for (const text of fields) {
+      assert.doesNotMatch(text, READER_FACING_ENUM, `${doc.id}: ${text.slice(0, 80)}`);
+    }
+  }
+});
+
 test("hub and detail pages go through the adapter, not the raw JSON", () => {
   assert.match(adapter, /parseDocumentiDeclassificatiSnapshot/);
   assert.match(adapter, /^import "server-only";/m);

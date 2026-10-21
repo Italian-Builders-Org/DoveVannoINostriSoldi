@@ -9,11 +9,11 @@ fonte. Alimenta `/documenti`, `/documenti/[id]` e `/api/documenti`.
 | Voce | Valore |
 | --- | --- |
 | Periodo di riferimento | Pilota 1970-2024 (Commissioni Moro / Terrorismo e stragi + quadro normativo) |
-| Documenti pubblicati | 10 schede verificate |
+| Documenti pubblicati | 17 schede verificate (espansione v2, issue [#799](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/799)) |
 | Titolare | raccolta curata DoveVannoINostriSoldi (`authority: secondary`) |
 | Licenza | `not-declared`: fatto, attribuzione, riassunto e link; niente PDF hostati in v1 |
 | Aggiornamento | manuale |
-| Issue | [#796](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796) |
+| Issue pilota | [#796](https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796) |
 
 ## Che cosa il dato NON misura
 
@@ -57,6 +57,12 @@ DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python3 -m unittest disco
 node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test tests/documenti-declassificati-contract.test.mjs tests/documenti-declassificati-page.test.mjs
 ```
 
-## Fuori v1
+## v2 (catalogo ampliato)
 
-Pin PDF, OCR, elenchi ACS completi, FOIA live, reading room full-text.
+- Schede aggiuntive Senato (introduzioni archivistiche Moro e Terrorismo/stragi), Camera/normativa (l. 82/2014), MiC/ACS (guide stragi, elenchi PDF, Direttiva Draghi Gladio/P2, sala ACS).
+- Metadati UI: `relatedDocuments`, `cameraActRefs`, `declassificationNote` (catena segreto → riservato → libero su atti Camera XVII).
+- Pin selettivi di PDF gia pubblici: solo `url` + `sha256` in `scripts/etl/specs/documenti-declassificati.source.json` (`pinnedPublicPdfs`), senza file nel repo.
+
+## Fuori scope attuale
+
+Recheck periodico automatico, filtri/indice avanzati, OCR, reading room full-text, dump completi, FOIA live.

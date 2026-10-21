@@ -3165,7 +3165,7 @@
       },
       "sourceSpec": "scripts/etl/specs/documenti-declassificati.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Raccolta secondaria: catalogo curato in data/documenti-declassificati/catalogo-verificato.json bloccato per byte e sha256 nello spec. Ogni scheda richiede URL HTTPS su host ufficiali (camera.it, senato.it, cultura.gov.it, governo.it, normattiva.it), soldi esplicito (di regola null), date distinte e 3-7 punti chiave curati nel catalogo (niente OCR in CI). --check riproietta e fallisce su drift, host non ammessi, enum fuori contratto o copertura incoerente. Le fonti ufficiali restano autoritative; declassificare non implica pubblicazione online."
+      "trustModel": "Raccolta secondaria: catalogo curato in data/documenti-declassificati/catalogo-verificato.json bloccato per byte e sha256 nello spec. Ogni scheda richiede URL HTTPS su host ufficiali (camera.it, senato.it, cultura.gov.it, governo.it, normattiva.it), soldi esplicito (di regola null), date distinte, collegamenti opzionali tra schede verificati e 3-7 punti chiave curati nel catalogo (niente OCR in CI). PDF Camera/MiC gia online: pin url+sha256 in pinnedPublicPdfs senza hosting nel repo. --check riproietta e fallisce su drift, host non ammessi, enum fuori contratto, pin incoerenti o copertura incoerente. Le fonti ufficiali restano autoritative; declassificare non implica pubblicazione online."
     },
     {
       "id": "opencivitas-2022-polizia",

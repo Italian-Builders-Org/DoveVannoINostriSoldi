@@ -233,6 +233,49 @@
   line-height: 1.45;
 }
 
+.refList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.refList code {
+  font-size: 0.88rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--doc-line);
+  background: var(--doc-raised);
+}
+
+.relatedList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.relatedList a {
+  color: var(--doc-accent);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.relatedList a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.relatedRelation {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--doc-muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
 .cta {
   display: inline-flex;
   align-items: center;

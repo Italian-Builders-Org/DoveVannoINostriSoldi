@@ -21,6 +21,14 @@ test("hub and detail pages go through the adapter, not the raw JSON", () => {
   assert.match(detail, /getDocumentoDeclassificato/u);
 });
 
+test("detail page renders related links and Camera act refs without raw enum codes", () => {
+  assert.match(detail, /Schede correlate/u);
+  assert.match(detail, /Identificativi atti Camera citati/u);
+  assert.match(detail, /relatedCards/u);
+  assert.match(detail, /cameraActRefs/u);
+  assert.doesNotMatch(detail, /on-site-only|public-online|metadata-only/u);
+});
+
 test("hub declares the declassify ≠ online caveat and filters", () => {
   assert.match(hub, /Declassificare non significa pubblicare online/u);
   assert.match(hub, /name="tema"/u);

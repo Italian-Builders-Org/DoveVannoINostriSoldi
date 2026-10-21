@@ -16,6 +16,17 @@ const widths = [
   { width: 1280, height: 900, label: "desktop" },
 ];
 
+const v2DetailIds = [
+  "senato-moro-viii-introduzione",
+  "senato-terrorismo-stragi-introduzione",
+  "normattiva-legge-82-2014",
+  "archivi-carte-delle-stragi",
+  "archivi-elenco-versamenti-stragi",
+  "archivi-direttiva-draghi-gladio-p2",
+  "acs-sala-raccolte-desecretate",
+  "camera-moro-bollettino-2018-01-17",
+];
+
 await waitForServer(defaultBaseUrl());
 const browser = await launchBrowser();
 const base = defaultBaseUrl();
@@ -68,9 +79,32 @@ try {
     assert.equal(detail.overflow, false, `${viewport.label}: overflow detail`);
 
     await page.screenshot({
-      path: path.join(artifacts, `documenti-${viewport.label}.png`),
+      path: path.join(artifacts, `documenti-hub-${viewport.label}.png`),
       fullPage: true,
     });
+
+    for (const docId of v2DetailIds) {
+      await navigate(page, {
+        url: new URL(`/documenti/${docId}`, base).href,
+        label: `documenti ${docId} ${viewport.label}`,
+        readySelector: '[data-testid="documenti-detail"]',
+      });
+      const card = await page.$eval('[data-testid="documenti-detail"]', (el) => ({
+        h1: el.querySelector("h1")?.textContent?.trim() ?? "",
+        hasAccessLabel: /Consultabile online|Consultazione in sede|Richiesta SPID|Su richiesta/u.test(
+          el.textContent ?? "",
+        ),
+        overflow: el.scrollWidth > el.clientWidth + 1,
+      }));
+      assert.ok(card.h1.length > 0, `${docId} ${viewport.label}: titolo mancante`);
+      assert.equal(card.hasAccessLabel, true, `${docId} ${viewport.label}: accesso in italiano`);
+      assert.equal(card.overflow, false, `${docId} ${viewport.label}: overflow`);
+      await page.screenshot({
+        path: path.join(artifacts, `documenti-${docId}-${viewport.label}.png`),
+        fullPage: true,
+      });
+    }
+
     assert.deepEqual(errors, [], `${viewport.label}: errori console\n${errors.join("\n")}`);
     await page.close();
   }

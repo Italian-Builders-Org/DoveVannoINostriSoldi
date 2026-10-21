@@ -42,6 +42,11 @@ export default async function DocumentoPage({ params }: { params: Params }) {
   const primaryUrl = doc.sourceUrls[0]!;
   const beforeHelp = CLASSIFICATION_HELP[doc.classificationBefore];
   const afterHelp = CLASSIFICATION_HELP[doc.classificationAfter];
+  const relatedCards =
+    doc.relatedDocuments?.map((link) => {
+      const target = getDocumentoDeclassificato(link.id);
+      return target ? { ...link, title: target.title } : null;
+    }).filter((item): item is NonNullable<typeof item> => item !== null) ?? [];
 
   return (
     <main className={`shell page ${styles.shell}`} data-testid="documenti-detail">
@@ -92,11 +97,51 @@ export default async function DocumentoPage({ params }: { params: Params }) {
               {afterHelp ? <p className={styles.classHelp}>{afterHelp}</p> : null}
             </div>
           </div>
+          {doc.declassificationNote ? (
+            <p className={styles.summary} role="note">
+              {doc.declassificationNote}
+            </p>
+          ) : null}
           <p className={styles.note}>
             Declassificare non significa pubblicare online: lo stato di accesso sotto resta
             decisivo.
           </p>
         </section>
+
+        {doc.cameraActRefs && doc.cameraActRefs.length > 0 ? (
+          <section aria-labelledby="identificativi-camera" className={styles.block}>
+            <h2 id="identificativi-camera" className="panel-title">
+              Identificativi atti Camera citati
+            </h2>
+            <ul className={styles.refList}>
+              {doc.cameraActRefs.map((ref) => (
+                <li key={ref}>
+                  <code>{ref}</code>
+                </li>
+              ))}
+            </ul>
+            <p className={styles.note}>
+              Codici come compaiono nei resoconti ufficiali; i fascicoli integrali vanno cercati
+              negli allegati o negli atti della Commissione sulla fonte.
+            </p>
+          </section>
+        ) : null}
+
+        {relatedCards.length > 0 ? (
+          <section aria-labelledby="correlate" className={styles.block}>
+            <h2 id="correlate" className="panel-title">
+              Schede correlate
+            </h2>
+            <ul className={styles.relatedList}>
+              {relatedCards.map((item) => (
+                <li key={item.id}>
+                  <Link href={`/documenti/${item.id}`}>{item.title}</Link>
+                  <span className={styles.relatedRelation}>{item.relation}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <section aria-labelledby="accesso" className={styles.block}>
           <h2 id="accesso" className="panel-title">

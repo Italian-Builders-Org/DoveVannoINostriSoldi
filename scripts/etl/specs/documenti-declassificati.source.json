@@ -1,7 +1,7 @@
 {
   "datasetId": "documenti-declassificati",
   "title": "Documenti governativi italiani declassificati e desecretati (pilota curato)",
-  "landingUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796",
+  "landingUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/799",
   "period": {
     "label": "Pilota 1970-2024 · Commissioni Moro e Terrorismo e stragi + quadro normativo",
     "from": "1970",
@@ -14,8 +14,8 @@
     "licenseNote": "Si pubblicano fatto, attribuzione, riassunto curato e link; non si hostano PDF e non si ripubblica il testo integrale.",
     "committedInput": {
       "path": "data/documenti-declassificati/catalogo-verificato.json",
-      "bytes": 23249,
-      "sha256": "d18df65047191ed0a7e3db0078f06d5cbd22c757482124dda73bc1dac6f91784"
+      "bytes": 43314,
+      "sha256": "02ec7fb6623364fbe7ec0afa873289f3e9f62e59a3d1300e9242cc3417420bc0"
     },
     "primaryPortals": [
       {
@@ -32,6 +32,43 @@
       }
     ]
   },
+  "pinnedPublicPdfs": [
+    {
+      "documentId": "camera-moro-bollettino-2017-03-08",
+      "url": "https://documenti.camera.it/leg17/resoconti/commissioni/bollettini/pdf/2017/03/08/leg.17.bol0780.data20170308.com68.pdf",
+      "sha256": "9921f9ca48f4dd72d4bdb8f17431d0575e6e823227a20efed6dd877572fab3e9"
+    },
+    {
+      "documentId": "camera-moro-stenografico-2017-11-07",
+      "url": "https://documenti.camera.it/leg17/resoconti/commissioni/stenografici/pdf/68/audiz2/audizione/2017/11/07/leg.17.stencomm.data20171107.U1.com68.audiz2.audizione.0154.pdf",
+      "sha256": "2e6ecf2de17341841d37bd08c20d6940525019ee2dd7114a66dd680844dd24b1"
+    },
+    {
+      "documentId": "camera-moro-bollettino-2018-01-17",
+      "url": "https://documenti.camera.it/leg17/resoconti/commissioni/bollettini/pdf/2018/01/17/leg.17.bol0944.data20180117.com68.pdf",
+      "sha256": "c8d7c709343236a2ab7ae5135696d91024ffbb82c80f9d348c0657418a508a9c"
+    },
+    {
+      "documentId": "camera-moro-seduta-2014-10-29",
+      "url": "https://documenti.camera.it/leg17/resoconti/commissioni/stenografici/pdf/68/audiz2/audizione/2014/10/29/leg.17.stencomm.data20141029.U1.com68.audiz2.audizione.0003.pdf",
+      "sha256": "3735752d4631e583c992c2212bdd8b289626a07b04b3b4fdee0410df88d89de0"
+    },
+    {
+      "documentId": "camera-moro-relazione-2016",
+      "url": "https://documenti.camera.it/_dati/leg17/lavori/documentiparlamentari/indiceetesti/023/023/INTERO.pdf",
+      "sha256": "01d0b10e9877a7ee366c40926c59ea7e8dd21541cf5c9dddef9cff95ef77258b"
+    },
+    {
+      "documentId": "archivi-elenco-versamenti-stragi",
+      "url": "https://archivi.cultura.gov.it/fileadmin/risorse/PDF_Files/Elenchi_di_versamento_Direttive_vers._2.0_con_link.pdf",
+      "sha256": "4dd1cc411ff9a0cb9f7f662a4afe61f70dcfd59e15696ebc1886f72d911b0231"
+    },
+    {
+      "documentId": "archivi-direttiva-draghi-gladio-p2",
+      "url": "https://archivi.cultura.gov.it/fileadmin/risorse/PDF_Files/Direttiva_Governo_DRAGHI.pdf",
+      "sha256": "f5487b148883fbe825aee60d69f3701923a4493df271bb15d6e18cb827ffec5b"
+    }
+  ],
   "expected": {
     "minDocuments": 8,
     "maxDocuments": 64,
@@ -87,6 +124,7 @@
     "evidence": "Ogni documento richiede almeno un URL HTTPS su host ufficiale ammesso.",
     "soldi": "soldi resta null salvo importo ufficiale in centesimi interi attribuito alla fonte; assente ≠ zero.",
     "dates": "Tenere distinti eventPeriod*, declassifiedAt, releasedAt, verifiedAt, acquisitionDate e checkedAt.",
-    "noOcr": "I punti chiave sono curati nel catalogo; nessun OCR automatico in CI."
+    "noOcr": "I punti chiave sono curati nel catalogo; nessun OCR automatico in CI.",
+    "pinnedPublicPdfs": "Solo hash sha256 e URL ufficiale nello spec; nessun PDF committato nel repo."
   }
 }

@@ -16,12 +16,29 @@ function clone() {
 test("the committed snapshot satisfies the contract", () => {
   const parsed = parseDocumentiDeclassificatiSnapshot(clone());
   assert.equal(parsed.dataset, "documenti-declassificati");
-  assert.ok(parsed.documents.length >= 8);
+  assert.ok(parsed.documents.length >= 15);
   assert.ok(parsed.caveats.length > 0);
   assert.equal(parsed.coverage.documentsPublished, parsed.documents.length);
   assert.ok(parsed.semantics.soldi.length > 0);
   assert.ok(parsed.semantics.periodo.length > 0);
   assert.ok(parsed.semantics.provenance.length > 0);
+});
+
+test("related document links and ACS access statuses stay coherent", () => {
+  const parsed = parseDocumentiDeclassificatiSnapshot(clone());
+  const byId = new Map(parsed.documents.map((doc) => [doc.id, doc]));
+  const bollettino2018 = byId.get("camera-moro-bollettino-2018-01-17");
+  assert.ok(bollettino2018?.declassificationNote?.includes("riservato"));
+  assert.ok(bollettino2018?.relatedDocuments?.some((link) => link.id === "camera-moro-stenografico-2017-11-07"));
+  const acsSala = byId.get("acs-sala-raccolte-desecretate");
+  assert.equal(acsSala?.accessStatus, "on-site-only");
+  assert.equal(acsSala?.readiness, "metadata-only");
+  for (const doc of parsed.documents) {
+    for (const link of doc.relatedDocuments ?? []) {
+      assert.ok(byId.has(link.id), `${doc.id} → ${link.id} assente`);
+      assert.ok(link.relation.length >= 4);
+    }
+  }
 });
 
 test("every document declares soldi explicitly and keeps 3–7 key points", () => {

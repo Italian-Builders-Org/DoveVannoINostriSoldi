@@ -85,6 +85,66 @@ def require_iso(value: Any, label: str) -> str:
     return value
 
 
+def validate_related_documents(doc: dict[str, Any], known_ids: set[str]) -> None:
+    tag = doc.get("id", "?")
+    related = doc.get("relatedDocuments")
+    if related is None:
+        return
+    if not isinstance(related, list) or not related:
+        fail(f"{tag}: relatedDocuments deve essere un elenco non vuoto")
+    for index, link in enumerate(related):
+        if not isinstance(link, dict):
+            fail(f"{tag}: relatedDocuments[{index}] non oggetto")
+        rel_id = link.get("id")
+        relation = link.get("relation")
+        if not isinstance(rel_id, str) or not DOC_ID.match(rel_id):
+            fail(f"{tag}: relatedDocuments[{index}].id non valido")
+        if rel_id not in known_ids:
+            fail(f"{tag}: relatedDocuments[{index}] punta a id assente ({rel_id})")
+        if rel_id == doc["id"]:
+            fail(f"{tag}: relatedDocuments non puo puntare a se stesso")
+        if not isinstance(relation, str) or len(relation.strip()) < 4:
+            fail(f"{tag}: relatedDocuments[{index}].relation troppo corta")
+    refs = doc.get("cameraActRefs")
+    if refs is not None:
+        if not isinstance(refs, list) or not refs:
+            fail(f"{tag}: cameraActRefs deve essere un elenco non vuoto")
+        for ref in refs:
+            if not isinstance(ref, str) or len(ref.strip()) < 2:
+                fail(f"{tag}: cameraActRefs contiene valore non valido")
+    note = doc.get("declassificationNote")
+    if note is not None and (not isinstance(note, str) or len(note.strip()) < 12):
+        fail(f"{tag}: declassificationNote troppo corta")
+
+
+def validate_pinned_pdfs(spec: dict[str, Any], documents: list[dict[str, Any]]) -> None:
+    pins = spec.get("pinnedPublicPdfs")
+    if pins is None:
+        return
+    if not isinstance(pins, list):
+        fail("spec: pinnedPublicPdfs deve essere un elenco")
+    allowed = spec["expected"]["allowedSourceHosts"]
+    by_id = {doc["id"]: doc for doc in documents}
+    for index, pin in enumerate(pins):
+        label = f"pinnedPublicPdfs[{index}]"
+        if not isinstance(pin, dict):
+            fail(f"{label}: non oggetto")
+        url = pin.get("url")
+        digest = pin.get("sha256")
+        doc_id = pin.get("documentId")
+        if not isinstance(url, str) or not url.startswith("https://"):
+            fail(f"{label}: url non HTTPS")
+        if not host_ok(url, allowed):
+            fail(f"{label}: host non ammesso")
+        if not isinstance(digest, str) or not SHA_RE.match(digest):
+            fail(f"{label}: sha256 non valido")
+        if doc_id is not None:
+            if not isinstance(doc_id, str) or doc_id not in by_id:
+                fail(f"{label}: documentId sconosciuto ({doc_id!r})")
+            if url not in by_id[doc_id].get("sourceUrls", []):
+                fail(f"{label}: url non presente in sourceUrls di {doc_id}")
+
+
 def validate_document(doc: dict[str, Any], spec: dict[str, Any], seen: set[str]) -> None:
     expected = spec["expected"]
     tag = doc.get("id", "?")
@@ -180,6 +240,11 @@ def build_snapshot(payload: dict[str, Any], spec: dict[str, Any]) -> dict[str, A
         if not isinstance(doc, dict):
             fail("documento non oggetto")
         validate_document(doc, spec, seen)
+    known_ids = {doc["id"] for doc in documents if isinstance(doc, dict)}
+    for doc in documents:
+        if isinstance(doc, dict):
+            validate_related_documents(doc, known_ids)
+    validate_pinned_pdfs(spec, documents)
     themes = sorted({doc["theme"] for doc in documents})
     bodies = sorted({doc["issuingBody"] for doc in documents})
     if set(themes) != set(coverage.get("themes") or []):

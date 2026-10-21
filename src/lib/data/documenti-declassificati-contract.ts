@@ -53,6 +53,13 @@ const moneySchema = z
   })
   .strict();
 
+const relatedDocumentLinkSchema = z
+  .object({
+    id: docId,
+    relation: z.string().min(4).max(120),
+  })
+  .strict();
+
 const documentSchema = z
   .object({
     id: docId,
@@ -75,6 +82,9 @@ const documentSchema = z
     soldi: moneySchema.nullable(),
     sourceUrls: z.array(z.string().url()).min(1),
     caveat: z.string().min(1),
+    relatedDocuments: z.array(relatedDocumentLinkSchema).min(1).max(12).optional(),
+    cameraActRefs: z.array(z.string().min(2).max(40)).min(1).max(24).optional(),
+    declassificationNote: z.string().min(12).max(480).optional(),
   })
   .strict()
   .superRefine((doc, context) => {

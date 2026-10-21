@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "dataset": "documenti-declassificati",
   "coverage": {
-    "documentsPublished": 10,
+    "documentsPublished": 17,
     "documentsCataloguedOnly": 0,
-    "checkedAt": "2026-10-19",
+    "checkedAt": "2026-10-21",
     "periodFrom": "1970",
     "periodTo": "2024",
     "themes": [
@@ -19,13 +19,13 @@
       "stato"
     ],
     "byAccessStatus": {
-      "public-online": 7,
+      "public-online": 13,
       "spid-required": 2,
-      "on-site-only": 1
+      "on-site-only": 2
     },
     "byReadiness": {
-      "metadata-only": 1,
-      "summary-curated": 9
+      "metadata-only": 5,
+      "summary-curated": 12
     }
   },
   "source": {
@@ -33,10 +33,10 @@
     "authority": "secondary",
     "license": "not-declared",
     "licenseNote": "Si pubblicano fatto, attribuzione, riassunto curato e link alle fonti ufficiali; non si hostano PDF e non si ripubblica il testo integrale degli atti.",
-    "referencePeriod": "Pilota 1970-2024: Commissioni Moro e Terrorismo e stragi, atti Camera XVII e fondi Senato declassificati",
+    "referencePeriod": "Pilota 1970-2024: Commissioni Moro e Terrorismo e stragi, atti Camera XVII, fondi Senato declassificati e guide ACS/archivi",
     "publicationDate": null,
-    "acquisitionDate": "2026-10-19",
-    "checkedAt": "2026-10-19",
+    "acquisitionDate": "2026-10-21",
+    "checkedAt": "2026-10-21",
     "updateFrequency": "manuale, a ogni nuovo documento verificato",
     "canonicalUrls": [
       "https://patrimonio.archivio.senato.it/declassificati",
@@ -44,7 +44,7 @@
       "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2007-08-03;124"
     ],
     "evidenceRule": "Ogni scheda cita almeno un URL HTTPS ufficiale (camera.it, senato.it, cultura.gov.it o governo.it / normattiva.it) che consente di verificare titolo, declassifica o accesso.",
-    "issueUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/796"
+    "issueUrl": "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/799"
   },
   "semantics": {
     "soldi": "Assente su ogni scheda del pilota: non e un dataset di spesa. Un importo futuro resterebbe in centesimi interi attribuiti alla fonte.",
@@ -74,7 +74,7 @@
       "eventPeriodTo": null,
       "declassifiedAt": "2020-07-22",
       "releasedAt": null,
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Portale ufficiale dell'Archivio storico del Senato dedicato ai documenti delle Commissioni parlamentari d'inchiesta declassificati dopo il nulla osta dell'ente originatore. La base citata e il decreto del presidente del Senato n. 12785/2020 (art. 4 c. 3). Qui partono i fondi Moro (VIII leg.) e Terrorismo e stragi (X-XIII leg.): non e un singolo PDF, ma l'ingresso istituzionale per capire cosa e stato reso consultabile, con quali limiti (SPID, sala, parzialmente consultabile) e dopo quali decisioni presidenziali.",
       "keyPoints": [
         "Base normativa citata: d.p.s. 12785 del 22 luglio 2020, art. 4 c. 3 (declassifica dopo nulla osta).",
@@ -89,7 +89,25 @@
       "sourceUrls": [
         "https://patrimonio.archivio.senato.it/declassificati"
       ],
-      "caveat": "Hub di accesso: non e un singolo atto. Lo stato di accesso dei singoli fascicoli puo variare."
+      "caveat": "Hub di accesso: non e un singolo atto. Lo stato di accesso dei singoli fascicoli puo variare.",
+      "relatedDocuments": [
+        {
+          "id": "senato-fondo-moro-viii",
+          "relation": "Fondo Moro (VIII leg.) nel portale"
+        },
+        {
+          "id": "senato-fondo-terrorismo-stragi",
+          "relation": "Fondo Terrorismo e stragi (X-XIII leg.)"
+        },
+        {
+          "id": "senato-moro-viii-introduzione",
+          "relation": "Introduzione archivistica al fondo Moro"
+        },
+        {
+          "id": "senato-terrorismo-stragi-introduzione",
+          "relation": "Introduzione al fondo stragi"
+        }
+      ]
     },
     {
       "id": "senato-fondo-moro-viii",
@@ -106,7 +124,7 @@
       "eventPeriodTo": "1983",
       "declassifiedAt": null,
       "releasedAt": null,
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Scheda di fondo dell'Archivio storico del Senato sul patrimonio della Commissione parlamentare d'inchiesta sul caso Moro (VIII legislatura). Il portale declassificati espone l'inventario (unita archivistiche, rapporti DIGOS, carteggi, documentazione sul sequestro e sull'omicidio di Aldo Moro) con segnature ASSR. Copertura dichiarata 1970-1983. E il punto di ingresso per capire cosa e stato declassificato nel ramo Senato sul caso Moro, non una trascrizione integrale online.",
       "keyPoints": [
         "Copertura dichiarata del fondo: 1970-1983 (VIII legislatura).",
@@ -121,7 +139,21 @@
       "sourceUrls": [
         "https://patrimonio.archivio.senato.it/declassificati/archivi-commissioni-parlamentari-inchiesta/moro-viii-leg"
       ],
-      "caveat": "Scheda di fondo: elenca il perimetro archivistico, non trascrive i singoli atti."
+      "caveat": "Scheda di fondo: elenca il perimetro archivistico, non trascrive i singoli atti.",
+      "relatedDocuments": [
+        {
+          "id": "senato-hub-declassificati",
+          "relation": "Hub documenti declassificati Senato"
+        },
+        {
+          "id": "senato-moro-viii-introduzione",
+          "relation": "Contesto archivistico del fondo"
+        },
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Atti pubblici Camera (XVII leg.) complementari"
+        }
+      ]
     },
     {
       "id": "senato-fondo-terrorismo-stragi",
@@ -138,7 +170,7 @@
       "eventPeriodTo": "2001",
       "declassifiedAt": "2021-08-02",
       "releasedAt": null,
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Sezione Senato del fondo della Commissione stragi / Terrorismo e stragi (X-XIII legislatura). Il portale espone unita con date di declassifica esplicite (anche 2021-2022) e stati di consultabilita (consultabile / parzialmente consultabile). Copertura dichiarata 1942-2001. Comprende serie su Bologna, caso Moro, carteggi Sisde e ministero dell'Interno. E una delle rare superfici ufficiali dove la data di declassifica compare come metadato di pezzo.",
       "keyPoints": [
         "Copertura dichiarata: 1942-2001 (X-XIII legislatura).",
@@ -153,7 +185,21 @@
       "sourceUrls": [
         "https://patrimonio.archivio.senato.it/declassificati/archivi-commissioni-parlamentari-inchiesta/terrorismo-e-stragi-x-xiii-leg"
       ],
-      "caveat": "Lo stato «consultabile» sul portale non equivale a un PDF unico scaricabile di tutto il fondo."
+      "caveat": "Lo stato «consultabile» sul portale non equivale a un PDF unico scaricabile di tutto il fondo.",
+      "relatedDocuments": [
+        {
+          "id": "senato-hub-declassificati",
+          "relation": "Hub documenti declassificati Senato"
+        },
+        {
+          "id": "senato-terrorismo-stragi-introduzione",
+          "relation": "Filoni d'inchiesta (Gladio, P2, stragi)"
+        },
+        {
+          "id": "archivi-carte-delle-stragi",
+          "relation": "Versamenti negli Archivi di Stato"
+        }
+      ]
     },
     {
       "id": "camera-moro-seduta-2014-10-29",
@@ -170,7 +216,7 @@
       "eventPeriodTo": "2014-10-29",
       "declassifiedAt": null,
       "releasedAt": "2014-10-29",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Resoconto stenografico pubblico della Commissione parlamentare di inchiesta sul caso Moro (XVII legislatura), seduta del 29 ottobre 2014. Spiega in aula la differenza tra classifica di segretezza e segreto di Stato, i livelli della l. 124/2007 e il ruolo delle direttive Prodi (2008) e Renzi (2014) sulla declassificazione di archivi di intelligence e amministrazioni. Non e un fascicolo ex-segreto: e la seduta che inquadra le regole del gioco per le ondate successive.",
       "keyPoints": [
         "Declassificazione ≠ desecretazione: la seconda riguarda il segreto di Stato.",
@@ -185,7 +231,21 @@
       "sourceUrls": [
         "https://documenti.camera.it/leg17/resoconti/commissioni/stenografici/pdf/68/audiz2/audizione/2014/10/29/leg.17.stencomm.data20141029.U1.com68.audiz2.audizione.0003.pdf"
       ],
-      "caveat": "E un resoconto parlamentare pubblico che descrive procedure di declassifica; non e esso stesso un fascicolo ex-segreto."
+      "caveat": "E un resoconto parlamentare pubblico che descrive procedure di declassifica; non e esso stesso un fascicolo ex-segreto.",
+      "relatedDocuments": [
+        {
+          "id": "normattiva-legge-124-2007",
+          "relation": "Quadro normativo citato in seduta"
+        },
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Relazione di attivita successiva"
+        },
+        {
+          "id": "camera-moro-bollettino-2017-03-08",
+          "relation": "Prima ondata di declassifica a liberi (2017)"
+        }
+      ]
     },
     {
       "id": "camera-moro-bollettino-2017-03-08",
@@ -202,7 +262,7 @@
       "eventPeriodTo": "2017-03-08",
       "declassifiedAt": "2017-03-08",
       "releasedAt": "2017-03-08",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Bollettino ufficiale della Commissione Moro dell'8 marzo 2017. L'Ufficio di presidenza conviene di declassificare e rendere disponibili come «documenti liberi», previa obliterazione dei dati personali sensibili, i documenti identificati come 776/1, 843/1 e 871/1. E una traccia esplicita di passaggio a libero con condizioni di privacy: il bollettino registra la decisione; i fascicoli vanno cercati negli allegati/atti della Commissione.",
       "keyPoints": [
         "Atto di declassifica esplicito a «documenti liberi».",
@@ -217,7 +277,27 @@
       "sourceUrls": [
         "https://documenti.camera.it/leg17/resoconti/commissioni/bollettini/pdf/2017/03/08/leg.17.bol0780.data20170308.com68.pdf"
       ],
-      "caveat": "Il bollettino registra la decisione; i fascicoli numerati vanno cercati negli allegati/atti della Commissione."
+      "caveat": "Il bollettino registra la decisione; i fascicoli numerati vanno cercati negli allegati/atti della Commissione.",
+      "relatedDocuments": [
+        {
+          "id": "camera-moro-seduta-2014-10-29",
+          "relation": "Contesto procedurale (direttive Prodi/Renzi)"
+        },
+        {
+          "id": "camera-moro-stenografico-2017-11-07",
+          "relation": "Passaggio successivo segreto → riservato"
+        },
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Relazione di attivita della Commissione"
+        }
+      ],
+      "cameraActRefs": [
+        "776/1",
+        "843/1",
+        "871/1"
+      ],
+      "declassificationNote": "Prima ondata registrata nel pilota: da classificato a documento libero, con obliterazione privacy. Non e ancora il passaggio riservato → libero del 2018."
     },
     {
       "id": "camera-moro-stenografico-2017-11-07",
@@ -234,7 +314,7 @@
       "eventPeriodTo": "2017-11-07",
       "declassifiedAt": "2017-11-07",
       "releasedAt": "2017-11-07",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Resoconto stenografico del 7 novembre 2017 in cui il Presidente comunica la declassifica da «segreti» a «riservati» di un elenco di documenti (tra cui 181/0-1, 950/1, 896/1-6, 951/1 e altri). Nella stessa seduta risultano incarichi istruttori e richieste documentali ad AISE, AISI, Arma dei Carabinieri e Polizia di Stato. Importante: riservato non e ancora libero — il contenuto puo restare non integralmente pubblico.",
       "keyPoints": [
         "Passaggio di classifica: segreto → riservato (non ancora «libero»).",
@@ -249,7 +329,24 @@
       "sourceUrls": [
         "https://documenti.camera.it/leg17/resoconti/commissioni/stenografici/pdf/68/audiz2/audizione/2017/11/07/leg.17.stencomm.data20171107.U1.com68.audiz2.audizione.0154.pdf"
       ],
-      "caveat": "Declassifica a riservato: il contenuto puo restare non integralmente pubblico anche dopo questa seduta."
+      "caveat": "Declassifica a riservato: il contenuto puo restare non integralmente pubblico anche dopo questa seduta.",
+      "relatedDocuments": [
+        {
+          "id": "camera-moro-bollettino-2017-03-08",
+          "relation": "Declassifica precedente a documenti liberi"
+        },
+        {
+          "id": "camera-moro-bollettino-2018-01-17",
+          "relation": "Passaggio successivo riservato → libero (319 atti)"
+        }
+      ],
+      "cameraActRefs": [
+        "181/0-1",
+        "950/1",
+        "896/1-6",
+        "951/1"
+      ],
+      "declassificationNote": "Passaggio intermedio: da segreto a riservato. Il contenuto puo restare non pubblico online fino al bollettino del 17 gennaio 2018 (319 atti a liberi)."
     },
     {
       "id": "camera-moro-bollettino-2018-01-17",
@@ -266,7 +363,7 @@
       "eventPeriodTo": "2018-01-17",
       "declassifiedAt": "2018-01-17",
       "releasedAt": "2018-01-17",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Bollettino del 17 gennaio 2018: l'Ufficio di presidenza della Commissione Moro conviene di declassificare da «riservati» a «liberi» 319 documenti, con elenco da pubblicare in allegato al resoconto stenografico. E la traccia quantitativa piu chiara del pilota: non elenca qui ogni titolo, ma fissa volume, direzione della classifica e rinvio all'allegato ufficiale.",
       "keyPoints": [
         "Volume dichiarato: 319 documenti.",
@@ -281,7 +378,18 @@
       "sourceUrls": [
         "https://documenti.camera.it/leg17/resoconti/commissioni/bollettini/pdf/2018/01/17/leg.17.bol0944.data20180117.com68.pdf"
       ],
-      "caveat": "Questa scheda documenta la decisione quantitativa; l'elenco nominativo e nell'allegato della seduta."
+      "caveat": "Questa scheda documenta la decisione quantitativa; l'elenco nominativo e nell'allegato della seduta.",
+      "relatedDocuments": [
+        {
+          "id": "camera-moro-stenografico-2017-11-07",
+          "relation": "Dopo la declassifica a riservato (2017)"
+        },
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Contesto istituzionale dei lavori"
+        }
+      ],
+      "declassificationNote": "Chiude la catena segreto → riservato (7 nov. 2017) → libero (319 atti). L'elenco nominativo e nell'allegato al resoconto stenografico, non nel bollettino."
     },
     {
       "id": "camera-moro-relazione-2016",
@@ -298,7 +406,7 @@
       "eventPeriodTo": "2016-12-20",
       "declassifiedAt": null,
       "releasedAt": "2016-12-20",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Relazione ufficiale sull'attivita svolta dalla Commissione parlamentare di inchiesta sul caso Moro (istituita con l. 82/2014), approvata il 20 dicembre 2016, relatore Giuseppe Fioroni. Documento parlamentare pubblico (indice e testo INTERO su documenti.camera.it). Non e un fascicolo ex-segreto: e la mappa istituzionale dei lavori, delle audizioni e del contesto in cui maturano le declassifiche del 2017-2018. Va letta prima dei bollettini e degli stenografici che registrano i passaggi di classifica.",
       "keyPoints": [
         "Istituita dalla legge 30 maggio 2014, n. 82.",
@@ -313,7 +421,21 @@
       "sourceUrls": [
         "https://documenti.camera.it/_dati/leg17/lavori/documentiparlamentari/indiceetesti/023/023/INTERO.pdf"
       ],
-      "caveat": "Relazione pubblica di attivita, non un fascicolo ex-segreto; inclusa perche inquadra le declassifiche successive."
+      "caveat": "Relazione pubblica di attivita, non un fascicolo ex-segreto; inclusa perche inquadra le declassifiche successive.",
+      "relatedDocuments": [
+        {
+          "id": "normattiva-legge-82-2014",
+          "relation": "Legge istitutiva della Commissione"
+        },
+        {
+          "id": "camera-moro-bollettino-2017-03-08",
+          "relation": "Onde di declassifica 2017-2018"
+        },
+        {
+          "id": "camera-moro-seduta-2014-10-29",
+          "relation": "Seduta sulle procedure di declassifica"
+        }
+      ]
     },
     {
       "id": "normattiva-legge-124-2007",
@@ -330,7 +452,7 @@
       "eventPeriodTo": null,
       "declassifiedAt": null,
       "releasedAt": "2007-08-03",
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Legge 3 agosto 2007, n. 124 (testo vigente su Normattiva): quadro del sistema di informazione per la sicurezza della Repubblica. Contiene il regime di classifica e i meccanismi di declassificazione automatica (art. 42) e di segreto di Stato (art. 39), distinti dall'accesso FOIA (d.lgs. 97/2016) e dalla consultabilita archivistica (d.lgs. 42/2004 art. 122). Non e un documento «declassificato»: e la fonte primaria del meccanismo italiano. Necessaria per interpretare ogni scheda del pilota.",
       "keyPoints": [
         "Art. 42: dopo 5 anni la classifica scende di un livello; dopo 10 anni cessa di regola, salvo proroghe.",
@@ -345,7 +467,13 @@
       "sourceUrls": [
         "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2007-08-03;124"
       ],
-      "caveat": "Norma vigente: non e un documento «declassificato», ma la fonte primaria del meccanismo italiano di declassifica."
+      "caveat": "Norma vigente: non e un documento «declassificato», ma la fonte primaria del meccanismo italiano di declassifica.",
+      "relatedDocuments": [
+        {
+          "id": "camera-moro-seduta-2014-10-29",
+          "relation": "Spiegazione in Commissione Moro"
+        }
+      ]
     },
     {
       "id": "acs-documentazione-desecretata",
@@ -362,7 +490,7 @@
       "eventPeriodTo": null,
       "declassifiedAt": null,
       "releasedAt": null,
-      "verifiedAt": "2026-10-19",
+      "verifiedAt": "2026-10-21",
       "summary": "Punto di accesso istituzionale dell'Archivio Centrale dello Stato (Ministero della Cultura) agli elenchi e alla documentazione desecretata o declassificata versata in archivio (stragi, caso Moro, Gladio, P2 e versamenti legati alle direttive Prodi, Renzi e Draghi). Online spesso ci sono guide ed elenchi; la consultazione integrale avviene tipicamente in sala di studio. Scheda metadata-only: non afferma che ogni fascicolo sia scaricabile dal web.",
       "keyPoints": [
         "ACS e il deposito principale per molti versamenti desecretati delle direttive di Palazzo Chigi.",
@@ -378,7 +506,324 @@
         "https://acs.cultura.gov.it/",
         "https://archivi.cultura.gov.it/"
       ],
-      "caveat": "Scheda metadata-only: verifica elenchi e modalita di accesso sul sito ACS; non afferma la disponibilita online di ogni fascicolo."
+      "caveat": "Scheda metadata-only: verifica elenchi e modalita di accesso sul sito ACS; non afferma la disponibilita online di ogni fascicolo.",
+      "relatedDocuments": [
+        {
+          "id": "acs-sala-raccolte-desecretate",
+          "relation": "Sala di consultazione in sede"
+        },
+        {
+          "id": "archivi-carte-delle-stragi",
+          "relation": "Guide MiC sugli elenchi di versamento"
+        }
+      ]
+    },
+    {
+      "id": "senato-moro-viii-introduzione",
+      "title": "Senato — introduzione archivistica al fondo Moro (VIII legislatura)",
+      "issuingBody": "senato",
+      "issuingBodyLabel": "Archivio storico del Senato della Repubblica",
+      "theme": "moro",
+      "classificationBefore": "classificato",
+      "classificationAfter": "declassificato",
+      "accessStatus": "public-online",
+      "readiness": "summary-curated",
+      "eventPeriodLabel": "1970-1983 (VIII legislatura)",
+      "eventPeriodFrom": "1970",
+      "eventPeriodTo": "1983",
+      "declassifiedAt": null,
+      "releasedAt": null,
+      "verifiedAt": "2026-10-21",
+      "summary": "Introduzione archivistica ufficiale al fondo della Commissione parlamentare d'inchiesta sul caso Moro (VIII legislatura) nell'inventario del patrimonio dell'Archivio storico del Senato. La pagina inquadra copertura 1970-1983, collegamenti al portale declassificati e alla struttura del fondo. Non e un fascicolo ex-segreto: e la scheda istituzionale per orientarsi prima di aprire le unita declassificate (spesso con SPID).",
+      "keyPoints": [
+        "Copertura dichiarata: 1970-1983, Commissione Moro VIII legislatura.",
+        "Link al portale declassificati e all'inventario/struttura del fondo.",
+        "Complementare agli atti pubblici della Commissione Moro Camera (XVII leg.).",
+        "La declassifica Senato non implica tutti i pezzi scaricabili senza autenticazione.",
+        "Utile per capire segnature e perimetro prima di cercare un documento specifico.",
+        "Collegata al hub declassificati e al fondo Moro dello stesso portale."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://patrimonio.archivio.senato.it/inventario/archivi-commissioni-parlamentari-inchiesta/moro-viii-leg/introduzione"
+      ],
+      "caveat": "Scheda di inventario: descrive il fondo, non sostituisce la consultazione delle unita declassificate.",
+      "relatedDocuments": [
+        {
+          "id": "senato-fondo-moro-viii",
+          "relation": "Fondo declassificato sul portale Senato"
+        },
+        {
+          "id": "senato-hub-declassificati",
+          "relation": "Hub generale declassificati"
+        },
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Lavori Camera XVII leg. sul caso Moro"
+        }
+      ]
+    },
+    {
+      "id": "senato-terrorismo-stragi-introduzione",
+      "title": "Senato — introduzione al fondo Terrorismo e stragi (X-XIII legislatura)",
+      "issuingBody": "senato",
+      "issuingBodyLabel": "Archivio storico del Senato della Repubblica",
+      "theme": "terrorismo-stragi",
+      "classificationBefore": "classificato",
+      "classificationAfter": "declassificato",
+      "accessStatus": "public-online",
+      "readiness": "summary-curated",
+      "eventPeriodLabel": "1942-2001 (filoni d'inchiesta)",
+      "eventPeriodFrom": "1942",
+      "eventPeriodTo": "2001",
+      "declassifiedAt": "2020-07-22",
+      "releasedAt": null,
+      "verifiedAt": "2026-10-21",
+      "summary": "Introduzione archivistica al fondo Terrorismo e stragi (X-XIII legislatura) sul patrimonio dell'Archivio storico del Senato. La pagina elenca i filoni d'inchiesta (tra cui Bologna, Ustica, Gladio, Loggia P2, caso Moro) e richiama il d.p.s. 12785/2020 sulla declassifica progressiva. E una mappa ufficiale del perimetro, non un dump PDF.",
+      "keyPoints": [
+        "Filoni citati includono Gladio, Loggia P2, Bologna, Ustica, caso Moro e molti altri.",
+        "Richiama d.p.s. 12785/2020 e accesso progressivo (online, sala, parzialmente consultabile).",
+        "Copertura dichiarata 1942-2001; lavoro di inventario ancora in corso.",
+        "Collegamento esplicito al portale documenti declassificati (1020+ unita indicate).",
+        "Complementare agli elenchi ACS e agli atti Camera, non sostitutiva.",
+        "Consultabilita pezzo per pezzo: verificare la scheda dell'unita sul portale."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://patrimonio.archivio.senato.it/inventario/archivi-commissioni-parlamentari-inchiesta/terrorismo-e-stragi-x-xiii-leg/introduzione"
+      ],
+      "caveat": "Introduzione di inventario: non elenca qui ogni documento declassificato ne garantisce accesso online integrale.",
+      "relatedDocuments": [
+        {
+          "id": "senato-fondo-terrorismo-stragi",
+          "relation": "Sezione declassificati del fondo"
+        },
+        {
+          "id": "senato-hub-declassificati",
+          "relation": "Hub declassificati Senato"
+        },
+        {
+          "id": "archivi-direttiva-draghi-gladio-p2",
+          "relation": "Versamenti Gladio/P2 (Direttiva Draghi)"
+        }
+      ]
+    },
+    {
+      "id": "normattiva-legge-82-2014",
+      "title": "Legge 30 maggio 2014, n. 82 — istituzione Commissione Moro (XVII legislatura)",
+      "issuingBody": "stato",
+      "issuingBodyLabel": "Stato italiano (Normattiva)",
+      "theme": "moro",
+      "classificationBefore": "non-applicabile",
+      "classificationAfter": "pubblico",
+      "accessStatus": "public-online",
+      "readiness": "summary-curated",
+      "eventPeriodLabel": "Istituita il 30 maggio 2014",
+      "eventPeriodFrom": "2014-05-30",
+      "eventPeriodTo": null,
+      "declassifiedAt": null,
+      "releasedAt": "2014-05-30",
+      "verifiedAt": "2026-10-21",
+      "summary": "Legge 30 maggio 2014, n. 82 (testo su Normattiva): istituisce la Commissione parlamentare di inchiesta sul caso Moro nella XVII legislatura. Non e un atto declassificato: e la base istituzionale degli atti Camera citati nel pilota (relazione 2016, bollettini e stenografici 2017-2018).",
+      "keyPoints": [
+        "Base legale della Commissione Moro Camera (XVII legislatura).",
+        "Cita l'istituzione dell'inchiesta sul sequestro e omicidio di Aldo Moro.",
+        "Testo pubblico su Normattiva (URN ufficiale).",
+        "Utile prima di leggere relazione, bollettini e stenografici della Commissione.",
+        "Distinta dalla Commissione Moro Senato (VIII leg.) e dai fondi declassificati ASSR.",
+        "Non regola da sola le classifiche: quelle restano sulla l. 124/2007."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2014-05-30;82"
+      ],
+      "caveat": "Norma istitutiva pubblica, non un fascicolo ex-segreto declassificato.",
+      "relatedDocuments": [
+        {
+          "id": "camera-moro-relazione-2016",
+          "relation": "Relazione di attivita della Commissione"
+        },
+        {
+          "id": "camera-moro-seduta-2014-10-29",
+          "relation": "Seduta sulle procedure di declassifica"
+        }
+      ]
+    },
+    {
+      "id": "archivi-carte-delle-stragi",
+      "title": "MiC — Le carte delle stragi (guide agli elenchi di versamento)",
+      "issuingBody": "acs",
+      "issuingBodyLabel": "Direzione generale Archivi · Ministero della Cultura",
+      "theme": "terrorismo-stragi",
+      "classificationBefore": "segreto-di-stato-o-classificato",
+      "classificationAfter": "desecretato-o-declassificato",
+      "accessStatus": "public-online",
+      "readiness": "metadata-only",
+      "eventPeriodLabel": "Direttive Prodi (2008), Renzi (2014) e Draghi (2021)",
+      "eventPeriodFrom": "2008",
+      "eventPeriodTo": "2021",
+      "declassifiedAt": null,
+      "releasedAt": null,
+      "verifiedAt": "2026-10-21",
+      "summary": "Pagina ufficiale della Direzione generale Archivi sulle «carte delle stragi»: spiega versamenti negli Archivi di Stato dopo le direttive Prodi, Renzi e Draghi, con link agli elenchi PDF aggiornati. La consultazione integrale del materiale avviene in sala; online restano guide ed elenchi, non l'intero corpus.",
+      "keyPoints": [
+        "Contesto istituzionale: stragi 1969-1984 (Renzi) e ampliamento Draghi (Gladio, P2).",
+        "Link agli elenchi PDF di versamento e alle direttive citate.",
+        "Banca dati ACS consultabile anche in alcuni Archivi di Stato periferici.",
+        "Metadata-only: non afferma PDF integrali di ogni fascicolo sul web.",
+        "Complementare al fondo Senato Terrorismo e stragi e alla sala ACS.",
+        "Ultimo aggiornamento pagina indicato dal MiC (verificare in sede per accesso)."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://archivi.cultura.gov.it/in-evidenza/le-carte-delle-stragi"
+      ],
+      "caveat": "Guida istituzionale ed elenchi: la lettura integrale resta in sala o su richiesta agli archivi.",
+      "relatedDocuments": [
+        {
+          "id": "archivi-elenco-versamenti-stragi",
+          "relation": "PDF elenchi di versamento"
+        },
+        {
+          "id": "archivi-direttiva-draghi-gladio-p2",
+          "relation": "Direttiva Draghi (Gladio e P2)"
+        },
+        {
+          "id": "acs-sala-raccolte-desecretate",
+          "relation": "Consultazione in sede all'ACS"
+        }
+      ]
+    },
+    {
+      "id": "archivi-elenco-versamenti-stragi",
+      "title": "MiC — elenco PDF versamenti stragi (Direttive Prodi e Renzi)",
+      "issuingBody": "acs",
+      "issuingBodyLabel": "Direzione generale Archivi · Ministero della Cultura",
+      "theme": "terrorismo-stragi",
+      "classificationBefore": "segreto-di-stato-o-classificato",
+      "classificationAfter": "desecretato-o-declassificato",
+      "accessStatus": "public-online",
+      "readiness": "metadata-only",
+      "eventPeriodLabel": "Elenchi di versamento (versione 2.0 con link)",
+      "eventPeriodFrom": null,
+      "eventPeriodTo": null,
+      "declassifiedAt": null,
+      "releasedAt": null,
+      "verifiedAt": "2026-10-21",
+      "summary": "PDF ufficiale MiC con gli elenchi aggiornati della documentazione sulle stragi versata agli Archivi di Stato secondo le direttive Prodi e Renzi. E un indice di versamento con link, non la pubblicazione integrale dei fascicoli desecretati.",
+      "keyPoints": [
+        "Formato: elenco di versamento (v. 2.0) con riferimenti e link.",
+        "Copre documentazione versata per le stragi indicate nelle direttive Renzi.",
+        "Consultazione del materiale indicato: tipicamente in Archivio di Stato o ACS.",
+        "Non sostituisce inventari Senato/Camera ne atti parlamentari.",
+        "Hash del PDF bloccato nello spec per controllo drift (senza hosting in repo).",
+        "Da leggere insieme alla pagina «Le carte delle stragi»."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://archivi.cultura.gov.it/fileadmin/risorse/PDF_Files/Elenchi_di_versamento_Direttive_vers._2.0_con_link.pdf"
+      ],
+      "caveat": "Elenchi e metadati di versamento: non contiene il testo integrale desecretato di ogni fascicolo.",
+      "relatedDocuments": [
+        {
+          "id": "archivi-carte-delle-stragi",
+          "relation": "Pagina guida MiC collegata"
+        },
+        {
+          "id": "acs-sala-raccolte-desecretate",
+          "relation": "Sala consultazione ACS"
+        }
+      ]
+    },
+    {
+      "id": "archivi-direttiva-draghi-gladio-p2",
+      "title": "MiC — Direttiva Draghi (2021) su Gladio e Loggia P2 (PDF)",
+      "issuingBody": "acs",
+      "issuingBodyLabel": "Direzione generale Archivi · Ministero della Cultura",
+      "theme": "terrorismo-stragi",
+      "classificationBefore": "segreto-di-stato-o-classificato",
+      "classificationAfter": "desecretato-o-declassificato",
+      "accessStatus": "public-online",
+      "readiness": "metadata-only",
+      "eventPeriodLabel": "Direttiva pubblicata G.U. n. 190 del 10 agosto 2021",
+      "eventPeriodFrom": "2021-08-10",
+      "eventPeriodTo": null,
+      "declassifiedAt": "2021-08-10",
+      "releasedAt": "2021-08-10",
+      "verifiedAt": "2026-10-21",
+      "summary": "PDF ufficiale MiC con la direttiva del Presidente del Consiglio Draghi (agosto 2021) che amplia i versamenti desecretati/declassificati concernenti l'organizzazione Gladio e la Loggia massonica P2. E l'atto di indirizzo, non i fascicoli integrali online.",
+      "keyPoints": [
+        "Ampliamento rispetto alla direttiva Renzi 2014: Gladio e P2 esplicitamente citati.",
+        "Pubblicazione indicata sulla Gazzetta Ufficiale n. 190/2021.",
+        "Versamento ad ACS e Archivi di Stato; consultazione integrale non libera sul web.",
+        "Collegata al fondo Senato Terrorismo e stragi (filoni Gladio e Loggia P2).",
+        "Hash PDF bloccato nello spec; punti chiave curati, niente OCR in CI.",
+        "Metadata-only: verificare modalita di accesso sul sito ACS/archivi."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://archivi.cultura.gov.it/fileadmin/risorse/PDF_Files/Direttiva_Governo_DRAGHI.pdf"
+      ],
+      "caveat": "Direttiva di indirizzo pubblicata online: i fascicoli restano in archivio, non in reading room web.",
+      "relatedDocuments": [
+        {
+          "id": "senato-terrorismo-stragi-introduzione",
+          "relation": "Filoni Gladio e Loggia P2 in inventario Senato"
+        },
+        {
+          "id": "archivi-carte-delle-stragi",
+          "relation": "Quadro MiC sulle carte delle stragi"
+        },
+        {
+          "id": "acs-sala-raccolte-desecretate",
+          "relation": "Consultazione documentazione versata"
+        }
+      ]
+    },
+    {
+      "id": "acs-sala-raccolte-desecretate",
+      "title": "ACS — sala raccolte speciali (documentazione desecretata Prodi, Renzi, Draghi)",
+      "issuingBody": "acs",
+      "issuingBodyLabel": "Archivio Centrale dello Stato · Ministero della Cultura",
+      "theme": "terrorismo-stragi",
+      "classificationBefore": "segreto-di-stato-o-classificato",
+      "classificationAfter": "desecretato-o-declassificato",
+      "accessStatus": "on-site-only",
+      "readiness": "metadata-only",
+      "eventPeriodLabel": "Versamenti dopo le direttive di Palazzo Chigi",
+      "eventPeriodFrom": null,
+      "eventPeriodTo": null,
+      "declassifiedAt": null,
+      "releasedAt": null,
+      "verifiedAt": "2026-10-21",
+      "summary": "Pagina ufficiale ACS sulla sala delle raccolte speciali per la documentazione desecretata/declassificata versata dopo le direttive Prodi, Renzi e Draghi. La consultazione avviene in sede a Roma; online restano informazioni, elenchi e rinvii, non un archivio PDF completo.",
+      "keyPoints": [
+        "Sala al secondo piano ACS per documentazione desecretata/declassificata.",
+        "Temi: stragi, caso Moro, Gladio, P2 e altri versamenti delle direttive citate.",
+        "Accesso in sala di studio / appuntamento; non reading room web integrale.",
+        "Complementare agli elenchi MiC e ai fondi Senato declassificati.",
+        "Desecretazione e declassifica restano distinte pezzo per pezzo.",
+        "Verificare regolamento e prenotazione sul sito ACS prima della visita."
+      ],
+      "soldi": null,
+      "sourceUrls": [
+        "https://acs.cultura.gov.it/modalita-di-accesso-e-regolamento/sala-delle-raccolte-speciali-documentazione-desecretata/"
+      ],
+      "caveat": "Consultazione in sede: la pagina non garantisce disponibilita online dei fascicoli integrali.",
+      "relatedDocuments": [
+        {
+          "id": "acs-documentazione-desecretata",
+          "relation": "Panoramica ACS sul patrimonio desecretato"
+        },
+        {
+          "id": "archivi-carte-delle-stragi",
+          "relation": "Guide MiC e elenchi di versamento"
+        },
+        {
+          "id": "archivi-elenco-versamenti-stragi",
+          "relation": "PDF elenchi stragi"
+        }
+      ]
     }
   ]
 }

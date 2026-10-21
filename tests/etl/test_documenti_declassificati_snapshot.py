@@ -78,6 +78,26 @@ class DocumentiDeclassificatiSnapshotTest(unittest.TestCase):
         with self.assertRaisesRegex(SnapshotError, "accessStatus"):
             self.rebuild(mutate)
 
+    def test_rejects_related_document_to_missing_id(self) -> None:
+        def mutate(payload):
+            payload["documents"][0]["relatedDocuments"] = [
+                {"id": "scheda-inesistente", "relation": "collegamento di prova"}
+            ]
+
+        with self.assertRaisesRegex(SnapshotError, "assente"):
+            self.rebuild(mutate)
+
+    def test_pinned_pdf_url_must_match_document_source(self) -> None:
+        spec = load_spec()
+        pins = spec.get("pinnedPublicPdfs") or []
+        self.assertGreaterEqual(len(pins), 5)
+        payload = load_input(spec)
+        by_id = {doc["id"]: doc for doc in payload["documents"]}
+        for pin in pins:
+            doc_id = pin["documentId"]
+            self.assertIn(doc_id, by_id)
+            self.assertIn(pin["url"], by_id[doc_id]["sourceUrls"])
+
 
 if __name__ == "__main__":
     unittest.main()

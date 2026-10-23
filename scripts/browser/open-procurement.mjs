@@ -19,7 +19,10 @@ export async function inspectOpenProcurement(page) {
     page.click('a[href="/appalti/mepa"]'),
   ]);
   assert.match(await page.$eval("h1", (node) => node.textContent), /MePA e bandi del programma Consip/);
-  assert.match(await page.$eval("#mepa-limits", (node) => node.textContent), /non replica la vetrina operativa/);
+  assert.match(
+    await page.$eval('aside[aria-labelledby="mepa-limits"]', (node) => node.textContent),
+    /non replica la vetrina operativa/,
+  );
   assert.ok(await page.$$eval(mepaSelector, (rows) => rows.length > 0));
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
 }

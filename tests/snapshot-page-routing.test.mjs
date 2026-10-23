@@ -23,6 +23,21 @@ test('filters and duplicate parameters never receive an unfiltered cached page',
   ]) assert.equal(proxy(request(path)).headers.get('x-middleware-rewrite'), null, path);
 });
 
+test('operators ranking by value shares a dedicated deployment snapshot', () => {
+  const rewritten = new URL(proxy(request('/enti/c_e897/appalti?view=operators&metric=value')).headers.get('x-middleware-rewrite'));
+  assert.equal(rewritten.pathname, '/snapshot-pages/enti/c_e897/operators-value');
+  assert.equal(
+    proxy(request('/enti/c_e897/appalti?view=operators&metric=value&utm_source=share')).headers.get('x-middleware-rewrite'),
+    'https://example.test/snapshot-pages/enti/c_e897/operators-value?view=operators&metric=value&utm_source=share',
+  );
+  const internal = proxy(request('/snapshot-pages/enti/c_e897/operators-value'));
+  assert.equal(internal.status, 200);
+  assert.equal(internal.headers.get('x-middleware-next'), '1');
+  const filtered = proxy(request('/snapshot-pages/enti/c_e897/operators-value?cpv=12345678'));
+  assert.equal(filtered.status, 307);
+  assert.equal(filtered.headers.get('location'), 'https://example.test/enti/c_e897/appalti?cpv=12345678&view=operators&metric=value');
+});
+
 test('default pages and tracking parameters do not create uncached rendering variants', () => {
   assert.ok(proxy(request('/enti/c_e897/appalti?view=summary&page=1&pageSize=25&metric=count&utm_source=share')).headers.get('x-middleware-rewrite')?.includes('/snapshot-pages/enti/c_e897/summary'));
   assert.ok(proxy(request('/appalti/operatori/op-00000001?page=1&fbclid=tracking')).headers.get('x-middleware-rewrite')?.includes('/snapshot-pages/operatori/op-00000001'));

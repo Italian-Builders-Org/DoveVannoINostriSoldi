@@ -8,7 +8,7 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 
 | Percorso | Risposta | Lavoro e limiti |
 | --- | --- | --- |
-| `/enti/[codice]/appalti` | Snapshot per deployment per riepilogo, operatori, procedure e aggiudicazioni senza filtri | Snapshot ANAC validati; filtri e concentrazione restano dinamici |
+| `/enti/[codice]/appalti` | Snapshot per deployment per riepilogo, operatori (conteggio e valore), procedure e aggiudicazioni senza filtri | Snapshot ANAC validati; CPV, anno, paginazione, dettaglio operatore e concentrazione restano dinamici. Ogni client condivide 30 req/min per IP su queste superfici (non solo i crawler dichiarati). |
 | `/appalti/operatori/[ref]` | Snapshot per deployment per la prima pagina senza filtri | Letture degli intervalli del pack; altre pagine e filtri restano dinamici |
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
@@ -329,6 +329,17 @@ precisa e verificare browser, lettori assistivi, crawler di ricerca e trasporti.
 Fonti: [cache CDN Next.js](https://nextjs.org/docs/app/guides/cdn-caching),
 [ISR Vercel e costi](https://vercel.com/docs/incremental-static-regeneration/limits-and-pricing),
 [macchine di build](https://vercel.com/docs/builds/managing-builds#build-machines).
+
+## Osservazione produzione, 23 ottobre 2026
+
+In circa 12 ore, Observability ha attribuito ~201k invocazioni e ~3 ore Active CPU
+a `/enti/[codice]/appalti` (route dinamica), contro ~2,5k invocazioni sullo snapshot
+ISR. La vista `operators&metric=value` (linkati dalla scheda ente) restava dinamica:
+ora condivide uno snapshot dedicato `operators-value`. Il proxy applica inoltre il
+tetto di 30 req/min per IP a ogni client sulle superfici ANAC ente/operatore, non
+solo ai crawler dichiarati. Filtri CPV/anno, paginazione e dettaglio operatore
+restano dinamici. Confrontare invocazioni, HIT/MISS e 429 su almeno 24 ore dopo
+il deploy; il WAF resta il limite distribuito.
 
 ## Verifica del consumo residuo, 1 ottobre 2026
 

@@ -17,7 +17,7 @@ for (const [route, seconds] of [["/privacy", 31536000], ["/fonti/stato", 300], [
 }
 
 const snapshotEvidence = [];
-for (const [route, seconds] of [["/dati/affidamenti-diretti", 31536000], ["/dati/rgs-conto-annuale-occupazione-tipologia-2010-2024", 31536000], ["/personale-pa/conto-annuale", 31536000], ["/personale-pa/conto-annuale/6144", 31536000], ["/personale-pa/conto-annuale/8659", 31536000], ["/personale-pa/conto-annuale/3", 31536000], ["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/enti/c_h501/appalti?view=operators", 31536000], ["/enti/c_h501/appalti?view=awards", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
+for (const [route, seconds] of [["/dati/affidamenti-diretti", 31536000], ["/dati/rgs-conto-annuale-occupazione-tipologia-2010-2024", 31536000], ["/personale-pa/conto-annuale", 31536000], ["/personale-pa/conto-annuale/6144", 31536000], ["/personale-pa/conto-annuale/8659", 31536000], ["/personale-pa/conto-annuale/3", 31536000], ["/enti/c_h501/appalti", 31536000], ["/enti/c_h501/appalti?view=procedures", 31536000], ["/enti/c_h501/appalti?view=operators", 31536000], ["/enti/c_h501/appalti?view=operators&metric=value", 31536000], ["/enti/c_h501/appalti?view=awards", 31536000], ["/appalti/operatori/op-00000001", 31536000], ["/comuni?ente=c_f205", 21600]]) {
   const first = await fetch(new URL(route, base));
   assert.equal(first.status, 200, route);
   let html = await first.text();
@@ -71,7 +71,7 @@ for (const view of ["summary", "operators", "procedures", "awards"]) {
   assert.match(legacy.headers.get("cache-control") ?? "", /s-maxage=31536000(?:,|$)/, view);
   assert.equal(await legacy.text(), await canonical.text(), `Ignored operator must not split ${view} snapshots`);
 }
-for (const route of ["/dati/affidamenti-diretti?q=Roma", "/dati/affidamenti-diretti?offset=50", "/dati/affidamenti-diretti?limit=25", "/dati/affidamenti-diretti?q=&q=Roma", "/dati/affidamenti-diretti?cursor=invalid", "/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=operators&metric=value", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
+for (const route of ["/dati/affidamenti-diretti?q=Roma", "/dati/affidamenti-diretti?offset=50", "/dati/affidamenti-diretti?limit=25", "/dati/affidamenti-diretti?q=&q=Roma", "/dati/affidamenti-diretti?cursor=invalid", "/comuni?q=Roma", "/enti/c_h501/appalti?view=operator&operator=op-000001", "/enti/c_h501/appalti?view=awards&page=2", "/enti/c_h501/appalti?awardYear=2024", "/appalti/operatori/op-00000001?year=2024"]) {
   const response = await fetch(new URL(route, base));
   assert.match(response.headers.get("cache-control") ?? "", /no-store/, route);
   await response.arrayBuffer();

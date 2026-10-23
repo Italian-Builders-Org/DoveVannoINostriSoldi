@@ -6,6 +6,8 @@ import {
   DATASET_ID,
   CACHED_ENTITY_VIEWS,
   OCCUPAZIONE_INSTITUTION_CODE,
+  entitySnapshotSlug,
+  entitySearchParamsFromSlug,
   publicSnapshotPath,
 } from "@/lib/snapshot-routing";
 
@@ -22,6 +24,14 @@ const ENTITY_PER_IP_MAX = 30;
 const GLOBAL_WINDOW_MS = 60_000;
 const GLOBAL_MAX = 600;
 const MAX_TRACKED_IPS = 10_000;
+
+/** High-cardinality ANAC surfaces: rate-limit every client, not only declared crawlers. */
+function isProcurementSurface(pathname: string): boolean {
+  return /^\/enti\/[^/]+\/appalti(?:\/|$)/.test(pathname)
+    || /^\/appalti\/operatori(?:\/|$)/.test(pathname)
+    || /^\/snapshot-pages\/enti\//.test(pathname)
+    || /^\/snapshot-pages\/operatori\//.test(pathname);
+}
 
 type RateState = { ipHits: Map<string, number[]>; globalHits: number[] };
 const apiState: RateState = { ipHits: new Map(), globalHits: [] };
@@ -59,6 +69,10 @@ function getClientIp(request: NextRequest): string {
 function rateLimit(request: NextRequest, state: RateState, perIpMax: number): NextResponse | null {
   const now = Date.now();
   const { ipHits, globalHits } = state;
+  // Vercel always forwards a client address. Without one, do not share a single
+  // "unknown" bucket across local probes and the on-demand renderer.
+  const ip = getClientIp(request);
+  if (ip === "unknown") return null;
 
   slidingCount(globalHits, now, GLOBAL_WINDOW_MS);
   if (globalHits.length >= GLOBAL_MAX) {
@@ -67,7 +81,6 @@ function rateLimit(request: NextRequest, state: RateState, perIpMax: number): Ne
       { status: 429, headers: { "Retry-After": "60", "Cache-Control": "private, no-store" } },
     );
   }
-  const ip = getClientIp(request);
   const timestamps = ipHits.get(ip) ?? [];
   slidingCount(timestamps, now, PER_IP_WINDOW_MS);
   if (timestamps.length >= perIpMax) {
@@ -121,8 +134,11 @@ function snapshotPath(request: NextRequest, path: string): string | null {
     || (key === "page" && query.get(key) === "1")
     || (key === "pageSize" && query.get(key) === "25")
     || ((key === "cpv" || key === "awardYear") && query.get(key) === "")
-    || (key === "metric" && query.get(key) === "count"))) {
-    return `${SNAPSHOT_PREFIX}enti/${entity[1]}/${entityView}`;
+    || (key === "metric" && (query.get(key) === "count"
+      || (entityView === "operators" && query.get(key) === "value"))))) {
+    const slug = entitySnapshotSlug(entityView, query.get("metric"));
+    if (!slug) return null;
+    return `${SNAPSHOT_PREFIX}enti/${entity[1]}/${slug}`;
   }
   if (dataset && DATASET_ID.test(dataset[1]!) && semantic.every(key =>
     ((key === "q" || key === "cursor" || key === "offset") && query.get(key) === "")
@@ -156,13 +172,20 @@ export function proxy(request: NextRequest) {
     const destination = request.nextUrl.clone();
     destination.pathname = publicPath;
     const parts = pathname.slice(SNAPSHOT_PREFIX.length).split("/");
-    if (parts[0] === "enti" && !destination.searchParams.has("view")) destination.searchParams.set("view", parts[2]!);
+    if (parts[0] === "enti") {
+      const resolved = entitySearchParamsFromSlug(parts[2]!);
+      if (!resolved) return new NextResponse(null, { status: 404 });
+      if (!destination.searchParams.has("view")) destination.searchParams.set("view", resolved.view);
+      if (resolved.metric && !destination.searchParams.has("metric")) {
+        destination.searchParams.set("metric", resolved.metric);
+      }
+    }
     if (parts[0] === "comuni" && !destination.searchParams.has("ente")) destination.searchParams.set("ente", parts[1]!);
     const publicRequest = new NextRequest(destination, { method: request.method, headers: request.headers });
     // Next's on-demand renderer requests this path again. Redirecting a default
     // snapshot here also redirects the public rewrite, producing a loop.
     if (snapshotPath(publicRequest, publicPath) !== pathname) return NextResponse.redirect(destination, 307);
-    if (TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? "")) {
+    if (isProcurementSurface(pathname) || TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? "")) {
       const blocked = rateLimit(request, entityState, ENTITY_PER_IP_MAX);
       if (blocked) return blocked;
     }
@@ -184,8 +207,11 @@ export function proxy(request: NextRequest) {
     const blocked = rateLimit(request, apiState, API_PER_IP_MAX);
     if (blocked) return blocked;
   }
-  if (/^\/(?:enti|appalti|comuni|dati|personale-pa|progetti|confronti|controlli|patrimonio|politici)(?:\/|$)/.test(pathname)
-    && TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? "")) {
+  // ANAC entity/operator pages dominate Fluid Active CPU: cap every client.
+  // Declared training crawlers keep the broader surface allowance below.
+  if (isProcurementSurface(pathname)
+    || (/^\/(?:enti|appalti|comuni|dati|personale-pa|progetti|confronti|controlli|patrimonio|politici)(?:\/|$)/.test(pathname)
+      && TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? ""))) {
     const blocked = rateLimit(request, entityState, ENTITY_PER_IP_MAX);
     if (blocked) return blocked;
   }

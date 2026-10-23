@@ -459,8 +459,15 @@
   letter-spacing: -0.01em;
 }
 
+.tableWrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .dataTable {
   width: 100%;
+  min-width: 28rem;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
   font-size: 0.92rem;

@@ -15,7 +15,16 @@ export type EditorialDatasetPreview = Readonly<{
 }>;
 
 export type EditorialSurfacePreview = Readonly<{
-  surface: "/partecipazioni" | "/spese/sanita" | "/dati" | "/enti" | "/appalti/ted" | "/pnrr" | "/disuguaglianza";
+  surface:
+    | "/partecipazioni"
+    | "/spese/sanita"
+    | "/dati"
+    | "/enti"
+    | "/appalti/ted"
+    | "/appalti/bandi-aperti"
+    | "/appalti/mepa"
+    | "/pnrr"
+    | "/disuguaglianza";
   title: string;
   description: string;
   datasets: readonly EditorialDatasetPreview[];
@@ -1096,6 +1105,18 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
     datasets: [
       { id: "ted-avvisi-italia-2026-08", label: "Avvisi pubblicati ad agosto 2026" },
     ],
+  },
+  {
+    surface: "/appalti/bandi-aperti",
+    title: "Bandi aperti con committente in Italia",
+    description: "Avvisi TED con scadenza delle offerte pubblicata e committente in Italia; lavori, servizi e forniture distinguibili.",
+    datasets: [{ id: "ted-bandi-aperti-italia-2026-10", label: "Bandi TED con scadenza futura" }],
+  },
+  {
+    surface: "/appalti/mepa",
+    title: "MePA e bandi del programma Consip",
+    description: "Metadati open data Consip su iniziative e lotti; non sostituisce la bacheca live né gli ordini conclusi.",
+    datasets: [{ id: "consip-bandi-gare-programma-2026", label: "Bandi e gare programma 2026" }],
   },
   {
     surface: "/enti",

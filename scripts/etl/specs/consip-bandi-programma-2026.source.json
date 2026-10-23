@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "consip-bandi-gare-programma-2026",
+  "url": "https://dati.consip.it/dataset/dataset-bandi-e-gare",
+  "holder": "Consip S.p.A.",
+  "license": "CC BY 4.0",
+  "referencePeriod": "Bandi e gare del programma · file bandiegare2026.csv",
+  "acquisitionDate": "2026-10-23",
+  "openDeadlineCutoff": "2026-10-23",
+  "input": {
+    "path": "tests/fixtures/consip-bandiegare2026.csv",
+    "bytes": 540145,
+    "sha256": "d9d694b6db813e37c50bb617fe0b8e63cc6d361f57945c5307bf47e37de15cba",
+    "rows": 1839
+  },
+  "instruments": {
+    "Convenzione": 592,
+    "SDA": 122,
+    "Accordo Quadro": 733,
+    "MePA": 392
+  },
+  "openRowsAtAcquisition": 293,
+  "missingDeadlineRows": 737,
+  "publicHeaders": [
+    "Identificativo lotto",
+    "Denominazione bando",
+    "Denominazione lotto",
+    "Tipo strumento",
+    "Categoria merceologica",
+    "Data pubblicazione",
+    "Data termine",
+    "Base asta eurocent",
+    "Importo massimale eurocent",
+    "URL dataset"
+  ],
+  "expected": {
+    "bytes": 396418,
+    "sha256": "30a7aada679763f511dd2d1d10e94698b1d5204666de46a1542c83a0b46e6888",
+    "rows": 1839,
+    "columns": 10,
+    "headers": [
+      "Identificativo lotto",
+      "Denominazione bando",
+      "Denominazione lotto",
+      "Tipo strumento",
+      "Categoria merceologica",
+      "Data pubblicazione",
+      "Data termine",
+      "Base asta eurocent",
+      "Importo massimale eurocent",
+      "URL dataset"
+    ]
+  }
+}

@@ -851,6 +851,32 @@
           "https://www.agid.gov.it/sites/agid/files/2024-05/lg-open-data_v.1.0_1.pdf",
           "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art52!vig="
         ]
+      },
+      "ted-bandi-aperti-italia-2026-10": {
+        "holder": "Ufficio delle pubblicazioni dell'Unione europea",
+        "referencePeriod": "Scadenza presentazione offerte dal 23 ottobre 2026; committenti ITA",
+        "publicationDate": null,
+        "acquisitionDate": "2026-10-23",
+        "checkedAt": "2026-10-23",
+        "updateFrequency": "quotidiana alla fonte; snapshot con acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://api.ted.europa.eu/v3/notices/search",
+          "https://docs.ted.europa.eu/ODS/latest/reuse/search-api.html",
+          "https://ted.europa.eu/en/legal-notice"
+        ]
+      },
+      "consip-bandi-gare-programma-2026": {
+        "holder": "Consip S.p.A.",
+        "referencePeriod": "Bandi e gare del programma · anno 2026",
+        "publicationDate": null,
+        "acquisitionDate": "2026-10-23",
+        "checkedAt": "2026-10-23",
+        "updateFrequency": "mensile per l'anno corrente (dichiarato da Consip)",
+        "canonicalUrls": [
+          "https://dati.consip.it/dataset/dataset-bandi-e-gare",
+          "https://dati.consip.it/download/dataset/bandiegare2026.csv",
+          "https://www.acquistinretepa.it/opencms/opencms/vetrina_iniziative.html"
+        ]
       }
     }
   },
@@ -958,6 +984,92 @@
           "Paesi committenti",
           "Codici CPV",
           "URL avviso"
+        ]
+      }
+    },
+    {
+      "id": "ted-bandi-aperti-italia-2026-10",
+      "title": "Bandi TED aperti · committenti in Italia · ottobre 2026",
+      "domain": "procurement",
+      "relativePath": "ted-bandi-aperti-italia-2026-10.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-eu-reuse",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL avviso"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Unità: avvisi di gara/consultazione/aggiudicazione diretta prevista con scadenza presentazione offerte non precedente al 23 ottobre 2026. Non sono contratti conclusi, ordini MePA o aggiudicazioni ANAC.",
+        "Perimetro: almeno un committente con buyer-country=ITA; include enti UE con sede in Italia e avvisi multinazionali. Non copre gli appalti sotto soglia non pubblicati su TED.",
+        "Stato aperto: la scadenza è quella massima tra i lotti con data pubblicata da TED; senza scadenza la riga non entra. L'importo stimato è in eurocent solo se la fonte dichiara EUR; valute diverse restano vuote.",
+        "Natura contratto (lavori/servizi/forniture) proviene da contract-nature-main-proc. TED e ANAC/Consip possono sovrapporsi: non sommare i perimetri né dedurre opportunità migliori.",
+        "Snapshot acquisito il 23 ottobre 2026; una scadenza passata dopo l'acquisizione non viene aggiornata finché non si rigenera lo snapshot.",
+        "Riuso GUUE come per gli altri dataset TED; © Unione europea; proiezione DVNS."
+      ],
+      "expected": {
+        "bytes": 858176,
+        "sha256": "07b015586ce0039137034de91cf2d18121b6c69b957ebd3ebf4c66cc17c29186",
+        "rows": 1707,
+        "columns": 13,
+        "headers": [
+          "Numero pubblicazione",
+          "Data pubblicazione",
+          "Tipo avviso",
+          "Natura contratto",
+          "Titolo",
+          "Committenti",
+          "Lingua committenti",
+          "Paesi committenti",
+          "Codici CPV",
+          "Scadenza offerte",
+          "Importo stimato eurocent",
+          "Luoghi esecuzione",
+          "URL avviso"
+        ]
+      }
+    },
+    {
+      "id": "consip-bandi-gare-programma-2026",
+      "title": "Bandi e gare Consip · programma · 2026",
+      "domain": "procurement",
+      "relativePath": "consip-bandi-gare-programma-2026.psv",
+      "dataKind": "delimited",
+      "delimiter": "pipe",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-4.0",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL dataset"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Metadati del file bandiegare2026.csv su dati.consip.it: iniziative/lotti del programma Consip, non la bacheca live di MePA né ordini conclusi.",
+        "737 righe non pubblicano Data_Termine: non vanno presentate come bandi aperti. Solo una Data_Termine ≥ 23 ottobre 2026 indica apertura al momento dell'acquisizione.",
+        "515 righe senza Identificativo_Lotto ricevono un id sintetico senza-id-… per la tabella: non è un link operativo su acquistinretepa.it.",
+        "Tipo strumento distingue MePA, SDA, Convenzione e Accordo Quadro. Importi base asta/massimale sono lower bound quando presenti.",
+        "Non è un ranking di opportunità né un giudizio su operatori economici."
+      ],
+      "expected": {
+        "bytes": 396418,
+        "sha256": "30a7aada679763f511dd2d1d10e94698b1d5204666de46a1542c83a0b46e6888",
+        "rows": 1839,
+        "columns": 10,
+        "headers": [
+          "Identificativo lotto",
+          "Denominazione bando",
+          "Denominazione lotto",
+          "Tipo strumento",
+          "Categoria merceologica",
+          "Data pubblicazione",
+          "Data termine",
+          "Base asta eurocent",
+          "Importo massimale eurocent",
+          "URL dataset"
         ]
       }
     },

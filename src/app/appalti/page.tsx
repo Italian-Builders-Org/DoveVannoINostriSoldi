@@ -398,6 +398,8 @@ export default function AppaltiPage() {
       </section>
 
       <p><Link href="/appalti/operatori">Imprese aggiudicatarie ANAC</Link> · Ricerca nazionale sullo storico degli aggiudicatari (importo dichiarato, non incassato).</p>
+      <p><Link href="/appalti/bandi-aperti">Bandi aperti (TED)</Link> · Gare con scadenza futura e committente in Italia; lavori, servizi e forniture distinguibili.</p>
+      <p><Link href="/appalti/mepa">MePA e bandi Consip</Link> · Metadati open data del programma; non confondere con ordini conclusi o aggiudicazioni ANAC.</p>
       <p><Link href="/appalti/ted">Avvisi europei TED con committenti in Italia</Link> · Pubblicazioni di agosto 2026, in un perimetro distinto dai CIG ANAC.</p>
 
       <IntegratedSectionPreview

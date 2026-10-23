@@ -14,6 +14,7 @@ import { inspectInstitutionalPalette } from "./institutional-palette.mjs";
 import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
+import { inspectOpenProcurement } from "./open-procurement.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
@@ -2603,6 +2604,14 @@ try {
     const label = `Avvisi TED ${width}px`;
     await runScenario(browser, {
       label, pathname: "/appalti", width, validate: inspectTedNotices,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Bandi aperti e MePA ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/appalti", width, validate: inspectOpenProcurement,
     });
     completed.push(label);
   }

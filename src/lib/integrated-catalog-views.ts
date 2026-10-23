@@ -209,6 +209,12 @@ export function relatedReadingForDataset(
   if (dataset.id === "ted-avvisi-italia-2026-08") {
     return { href: "/appalti/ted", label: "Avvisi TED con committenti in Italia" };
   }
+  if (dataset.id === "ted-bandi-aperti-italia-2026-10") {
+    return { href: "/appalti/bandi-aperti", label: "Bandi aperti TED" };
+  }
+  if (dataset.id === "consip-bandi-gare-programma-2026") {
+    return { href: "/appalti/mepa", label: "MePA e bandi Consip" };
+  }
   if (dataset.id === "salute-posti-letto-2023") {
     return { href: "/spese/sanita#posti-letto", label: "La dotazione ospedaliera" };
   }

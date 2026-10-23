@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "ted-bandi-aperti-italia-2026-10",
+  "url": "https://api.ted.europa.eu/v3/notices/search",
+  "holder": "Ufficio delle pubblicazioni dell'Unione europea",
+  "license": "Riuso libero degli avvisi GUUE, salvo diversa indicazione; decisione 2011/833/UE; metadati SIMAP CC0 1.0",
+  "referencePeriod": "Scadenza presentazione offerte dal 23 ottobre 2026 in poi; committenti ITA",
+  "acquisitionDate": "2026-10-23",
+  "openDeadlineCutoff": "2026-10-23",
+  "publicationDate": null,
+  "request": {
+    "query": "buyer-country = ITA AND form-type IN (competition, consultation, dir-awa-pre) AND deadline-receipt-tender-date-lot >= 20261023 SORT BY deadline-receipt-tender-date-lot",
+    "fields": [
+      "publication-number",
+      "publication-date",
+      "notice-title",
+      "buyer-name",
+      "buyer-country",
+      "form-type",
+      "classification-cpv",
+      "deadline-receipt-tender-date-lot",
+      "contract-nature-main-proc",
+      "estimated-value-proc",
+      "BT-27-Procedure-Currency",
+      "place-of-performance-city-lot",
+      "place-of-performance-country-lot",
+      "place-of-performance-post-code-lot"
+    ],
+    "limit": 250,
+    "scope": "ALL",
+    "checkQuerySyntax": false,
+    "paginationMode": "PAGE_NUMBER"
+  },
+  "totalNotices": 1707,
+  "forms": {
+    "competition": 1707
+  },
+  "natures": {
+    "works": 105,
+    "supplies": 501,
+    "services": 1101
+  },
+  "internationalNotices": 4,
+  "englishBuyerNotices": 9,
+  "missingEstimatedValue": 10,
+  "pages": [
+    {
+      "path": "page-01.json",
+      "bytes": 2744638,
+      "sha256": "c156f98aa2f6a275f4fffd97d7025123be372060091b1787e6f078ea26d787c6",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-01.json.gz",
+        "bytes": 287829,
+        "sha256": "457aaca1b45c082056f22962e8f9ce20e989ddcbbdc8d5552f0b1140943bf72f"
+      }
+    },
+    {
+      "path": "page-02.json",
+      "bytes": 2688993,
+      "sha256": "0f7961dba862c41f413c8fc85cba96d00ce6277ecce2a8067856bc197a909dab",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-02.json.gz",
+        "bytes": 283258,
+        "sha256": "74cf01b39882246696b37c55a61b13da46438c171d43d20f618575a441675ee6"
+      }
+    },
+    {
+      "path": "page-03.json",
+      "bytes": 2721688,
+      "sha256": "b3be9f84d73d74ff615f4f7b3e014fc2bc27490febe8e6c75480bcbdb91d4100",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-03.json.gz",
+        "bytes": 289397,
+        "sha256": "cebd7d46655bd84160e84cd3814b70f34c438b605bf252547f529a6cd464eb1b"
+      }
+    },
+    {
+      "path": "page-04.json",
+      "bytes": 2645603,
+      "sha256": "e1bcdff73412937f5a908a2d1d692102edd0d0be8ec15fd816d27e1bd5658c90",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-04.json.gz",
+        "bytes": 285947,
+        "sha256": "049a7ff23e603b274fa136cf498dc4de2e47048e3eb9a0454ada122da48ac948"
+      }
+    },
+    {
+      "path": "page-05.json",
+      "bytes": 2717153,
+      "sha256": "819e9e59b56a831b58b778177519f5af7713c29ccd6f53d003f4ed698910362e",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-05.json.gz",
+        "bytes": 277238,
+        "sha256": "298b09bb346cc2559057892ee22b768b56e9fbb052bf63b54cbffdc9a3f148d9"
+      }
+    },
+    {
+      "path": "page-06.json",
+      "bytes": 2695534,
+      "sha256": "dd6659ff11c3c2db4bfc717d96d34f83be75cd32bee6c489baabd26b1e861aa8",
+      "rows": 250,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-06.json.gz",
+        "bytes": 291940,
+        "sha256": "7808d573f66d2183505994d354fcb35172333efeffe67d9101fe6ca5fc6f78a7"
+      }
+    },
+    {
+      "path": "page-07.json",
+      "bytes": 2147055,
+      "sha256": "2c35fe26511db1089d1778f337512102f257584bfc9d38a44f770180575d8c91",
+      "rows": 207,
+      "fixture": {
+        "path": "tests/fixtures/ted-open-notices/page-07.json.gz",
+        "bytes": 234598,
+        "sha256": "b9539a3e2509bef55e58efa481cf83bd05348b0c1001d1a54d50fd9320803432"
+      }
+    }
+  ],
+  "publicHeaders": [
+    "Numero pubblicazione",
+    "Data pubblicazione",
+    "Tipo avviso",
+    "Natura contratto",
+    "Titolo",
+    "Committenti",
+    "Lingua committenti",
+    "Paesi committenti",
+    "Codici CPV",
+    "Scadenza offerte",
+    "Importo stimato eurocent",
+    "Luoghi esecuzione",
+    "URL avviso"
+  ],
+  "expected": {
+    "bytes": 858176,
+    "sha256": "07b015586ce0039137034de91cf2d18121b6c69b957ebd3ebf4c66cc17c29186",
+    "rows": 1707,
+    "columns": 13,
+    "headers": [
+      "Numero pubblicazione",
+      "Data pubblicazione",
+      "Tipo avviso",
+      "Natura contratto",
+      "Titolo",
+      "Committenti",
+      "Lingua committenti",
+      "Paesi committenti",
+      "Codici CPV",
+      "Scadenza offerte",
+      "Importo stimato eurocent",
+      "Luoghi esecuzione",
+      "URL avviso"
+    ]
+  }
+}

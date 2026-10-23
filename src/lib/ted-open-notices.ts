@@ -1,7 +1,12 @@
 import "server-only";
 
 import { z } from "zod";
-import { selectIntegratedDataset } from "@/lib/integrated-public-view";
+import {
+  FULL_DATASET_PAGE_SIZE,
+  loadAllIntegratedDatasetRows,
+  pageOffsetFromCursor,
+  paginateFilteredRows,
+} from "@/lib/integrated-full-dataset-page";
 import type { IntegratedPublicRow } from "@/lib/integrated-source-contract";
 
 export const TED_OPEN_DATASET = "ted-bandi-aperti-italia-2026-10";
@@ -83,6 +88,14 @@ function normalizeNature(value: unknown): TedOpenNature | undefined {
   return undefined;
 }
 
+function compareTedOpenNotices(
+  left: ReturnType<typeof parseTedOpenNotice>,
+  right: ReturnType<typeof parseTedOpenNotice>,
+): number {
+  if (left.deadline !== right.deadline) return left.deadline.localeCompare(right.deadline);
+  return left.number.localeCompare(right.number);
+}
+
 export async function getTedOpenNoticePage(input: {
   q?: unknown;
   cursor?: unknown;
@@ -94,14 +107,34 @@ export async function getTedOpenNoticePage(input: {
     throw new Error("Filtro tipo non valido: usare lavori, servizi o forniture.");
   }
   const includeExpired = input.includeExpired === "1" || input.includeExpired === "true";
-  const result = await selectIntegratedDataset({ datasetId: TED_OPEN_DATASET, q: input.q, cursor: input.cursor, limit: 25 });
-  if (result.dataset.publicRows !== 1707 || result.dataset.licenseStatus !== "verified-open-eu-reuse") {
+  const offset = pageOffsetFromCursor(input.cursor);
+  const loaded = await loadAllIntegratedDatasetRows(TED_OPEN_DATASET, input.q);
+  if (loaded.dataset.publicRows !== 1707 || loaded.dataset.licenseStatus !== "verified-open-eu-reuse") {
     throw new Error("Dataset TED bandi aperti incompleto o condizioni di riuso divergenti.");
   }
-  let notices = result.rows.map(parseTedOpenNotice);
+  let notices = loaded.rows.map(parseTedOpenNotice);
   if (nature) notices = notices.filter((notice) => notice.nature === nature);
   if (!includeExpired) notices = notices.filter((notice) => notice.stillOpen);
-  return { ...result, notices, nature, includeExpired };
+  notices.sort(compareTedOpenNotices);
+  const paged = paginateFilteredRows(notices, offset, FULL_DATASET_PAGE_SIZE);
+  const rowById = new Map(loaded.rows.map((row) => [row.id, row]));
+  const pageRows = paged.page.map((notice) => {
+    const row = rowById.get(notice.rowId);
+    if (!row) throw new Error("Riga TED bandi aperti mancante dopo il filtro.");
+    return row;
+  });
+  return {
+    dataset: loaded.dataset,
+    query: loaded.query,
+    limit: paged.limit,
+    offset: paged.offset,
+    matchedRows: paged.matchedRows,
+    rows: pageRows,
+    pagination: paged.pagination,
+    notices: paged.page,
+    nature,
+    includeExpired,
+  };
 }
 
 export async function getTedOpenNoticeByNumber(number: string) {

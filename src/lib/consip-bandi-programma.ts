@@ -1,7 +1,12 @@
 import "server-only";
 
 import { z } from "zod";
-import { selectIntegratedDataset } from "@/lib/integrated-public-view";
+import {
+  FULL_DATASET_PAGE_SIZE,
+  loadAllIntegratedDatasetRows,
+  pageOffsetFromCursor,
+  paginateFilteredRows,
+} from "@/lib/integrated-full-dataset-page";
 import type { IntegratedPublicRow } from "@/lib/integrated-source-contract";
 
 export const CONSIP_BANDI_DATASET = "consip-bandi-gare-programma-2026";
@@ -74,6 +79,20 @@ function normalizeInstrument(value: unknown): ConsipInstrument | undefined {
   return undefined;
 }
 
+function consipDeadlineSortKey(deadline: string): string {
+  return deadline === "" ? "9999-12-31" : deadline;
+}
+
+function compareConsipBandiRows(
+  left: ReturnType<typeof parseConsipBandiRow>,
+  right: ReturnType<typeof parseConsipBandiRow>,
+): number {
+  const leftKey = consipDeadlineSortKey(left.deadline);
+  const rightKey = consipDeadlineSortKey(right.deadline);
+  if (leftKey !== rightKey) return leftKey.localeCompare(rightKey);
+  return left.lotId.localeCompare(right.lotId);
+}
+
 export async function getConsipBandiPage(input: {
   q?: unknown;
   cursor?: unknown;
@@ -85,12 +104,32 @@ export async function getConsipBandiPage(input: {
     throw new Error("Filtro strumento non valido.");
   }
   const openOnly = input.soloAperti === "1" || input.soloAperti === "true";
-  const result = await selectIntegratedDataset({ datasetId: CONSIP_BANDI_DATASET, q: input.q, cursor: input.cursor, limit: 25 });
-  if (result.dataset.publicRows !== 1839 || result.dataset.licenseStatus !== "verified-open-cc-by-4.0") {
+  const offset = pageOffsetFromCursor(input.cursor);
+  const loaded = await loadAllIntegratedDatasetRows(CONSIP_BANDI_DATASET, input.q);
+  if (loaded.dataset.publicRows !== 1839 || loaded.dataset.licenseStatus !== "verified-open-cc-by-4.0") {
     throw new Error("Dataset Consip bandi incompleto o licenza divergente.");
   }
-  let rows = result.rows.map(parseConsipBandiRow);
-  if (instrument) rows = rows.filter((row) => row.instrument === instrument);
-  if (openOnly) rows = rows.filter((row) => row.openStatus === "aperto");
-  return { ...result, bandi: rows, instrument, openOnly };
+  let bandi = loaded.rows.map(parseConsipBandiRow);
+  if (instrument) bandi = bandi.filter((row) => row.instrument === instrument);
+  if (openOnly) bandi = bandi.filter((row) => row.openStatus === "aperto");
+  bandi.sort(compareConsipBandiRows);
+  const paged = paginateFilteredRows(bandi, offset, FULL_DATASET_PAGE_SIZE);
+  const rowById = new Map(loaded.rows.map((row) => [row.id, row]));
+  const pageRows = paged.page.map((bandiRow) => {
+    const row = rowById.get(bandiRow.rowId);
+    if (!row) throw new Error("Riga Consip bandi mancante dopo il filtro.");
+    return row;
+  });
+  return {
+    dataset: loaded.dataset,
+    query: loaded.query,
+    limit: paged.limit,
+    offset: paged.offset,
+    matchedRows: paged.matchedRows,
+    rows: pageRows,
+    pagination: paged.pagination,
+    bandi: paged.page,
+    instrument,
+    openOnly,
+  };
 }

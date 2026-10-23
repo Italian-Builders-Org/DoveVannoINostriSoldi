@@ -48,7 +48,7 @@ export default async function BandiApertiPage({ searchParams }: { searchParams: 
   if (includeExpired) next.set("scaduti", "1");
   if (result.pagination.nextCursor) next.set("cursor", result.pagination.nextCursor);
 
-  const openCount = result.notices.filter((notice) => notice.stillOpen).length;
+  const filteredTotal = result.matchedRows ?? result.notices.length;
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -70,10 +70,11 @@ export default async function BandiApertiPage({ searchParams }: { searchParams: 
           <span className="stat-note">acquisizione {longDate(TED_OPEN_ACQUISITION_DATE)}</span>
         </div>
         <div>
-          <span className="stat-label">Mostrati in pagina</span>
-          <strong className="stat-value">{integer(result.notices.length)}</strong>
+          <span className="stat-label">Dopo i filtri</span>
+          <strong className="stat-value">{integer(filteredTotal)}</strong>
           <span className="stat-note">
-            {includeExpired ? "inclusi avvisi con scadenza già passata" : `${integer(openCount)} con scadenza oggi o futura`}
+            {integer(result.notices.length)} in questa pagina
+            {includeExpired ? " · scadenze passate incluse se selezionate" : " · solo scadenza oggi o futura"}
           </span>
         </div>
       </div>
@@ -120,15 +121,15 @@ export default async function BandiApertiPage({ searchParams }: { searchParams: 
               <input type="checkbox" name="scaduti" value="1" defaultChecked={includeExpired} />
               Mostra anche scadenze già passate
             </label>
-            <button className="btn" type="submit">Applica</button>
+            <button className="btn" id="bandi-applica-filtri" type="submit">Applica</button>
             {(result.query || tipo || includeExpired) ? <Link href="/appalti/bandi-aperti">Azzera filtri</Link> : null}
           </div>
         </form>
         {queryError ? <p role="alert" className="notice">{queryError}</p> : null}
         <p className={styles.results} role="status">
-          {result.notices.length === 0
+          {filteredTotal === 0
             ? "Nessun avviso corrisponde ai filtri."
-            : `${integer(result.notices.length)} ${result.notices.length === 1 ? "avviso" : "avvisi"} in questa pagina${result.matchedRows !== null && result.query ? ` · ${integer(result.matchedRows)} corrispondenze nel dataset` : ""}.`}
+            : `${integer(filteredTotal)} ${filteredTotal === 1 ? "avviso" : "avvisi"} ${result.query || tipo || !includeExpired ? "con i filtri applicati" : "totali"} · pagina con ${integer(result.notices.length)} ${result.notices.length === 1 ? "risultato" : "risultati"}.`}
         </p>
         <ol className={styles.notices} aria-label="Bandi TED aperti">
           {result.notices.map((notice) => (

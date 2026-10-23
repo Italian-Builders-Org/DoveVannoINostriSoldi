@@ -53,7 +53,7 @@ export default async function MepaPage({ searchParams }: { searchParams: Promise
   if (soloAperti) next.set("aperti", "1");
   if (result.pagination.nextCursor) next.set("cursor", result.pagination.nextCursor);
 
-  const openInPage = result.bandi.filter((row) => row.openStatus === "aperto").length;
+  const filteredTotal = result.matchedRows ?? result.bandi.length;
 
   return (
     <main className={`shell page ${styles.page}`}>
@@ -75,10 +75,11 @@ export default async function MepaPage({ searchParams }: { searchParams: Promise
           <span className="stat-note">acquisizione {longDate(CONSIP_BANDI_ACQUISITION_DATE)}</span>
         </div>
         <div>
-          <span className="stat-label">In pagina</span>
-          <strong className="stat-value">{integer(result.bandi.length)}</strong>
+          <span className="stat-label">Dopo i filtri</span>
+          <strong className="stat-value">{integer(filteredTotal)}</strong>
           <span className="stat-note">
-            {soloAperti ? "solo righe con scadenza futura" : `${integer(openInPage)} con scadenza futura`}
+            {integer(result.bandi.length)} in questa pagina
+            {soloAperti ? " · solo scadenza futura nel CSV" : ""}
           </span>
         </div>
       </div>
@@ -139,9 +140,9 @@ export default async function MepaPage({ searchParams }: { searchParams: Promise
         </form>
         {queryError ? <p role="alert" className="notice">{queryError}</p> : null}
         <p role="status">
-          {result.bandi.length === 0
+          {filteredTotal === 0
             ? "Nessuna riga corrisponde ai filtri."
-            : `${integer(result.bandi.length)} ${result.bandi.length === 1 ? "riga" : "righe"} in pagina.`}
+            : `${integer(filteredTotal)} ${filteredTotal === 1 ? "riga" : "righe"} con i filtri applicati · pagina con ${integer(result.bandi.length)} ${result.bandi.length === 1 ? "risultato" : "risultati"}.`}
         </p>
         <ol className={styles.list} aria-label="Bandi Consip programma">
           {result.bandi.map((row) => (

@@ -852,6 +852,45 @@
           "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art52!vig="
         ]
       },
+      "ade-immobili-prelievo-2015-2024": {
+        "holder": "Agenzia delle Entrate",
+        "referencePeriod": "Prelievo fiscale sugli immobili 2015-2024 (miliardi di euro); tabella 4.4 edizione 2026",
+        "publicationDate": null,
+        "acquisitionDate": "2026-10-23",
+        "checkedAt": "2026-10-23",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/3.0/it/",
+          "https://www.agenziaentrate.gov.it/portale/gli-immobili-in-italia-2026",
+          "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_04_01_05&cq=1"
+        ]
+      },
+      "ade-immobili-utilizzo-provincia-2023": {
+        "holder": "Agenzia delle Entrate",
+        "referencePeriod": "Anno d'imposta 2023; utilizzo immobiliare per provincia (sigla)",
+        "publicationDate": null,
+        "acquisitionDate": "2026-10-23",
+        "checkedAt": "2026-10-23",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/3.0/it/",
+          "https://www.agenziaentrate.gov.it/portale/gli-immobili-in-italia-2026",
+          "https://www1.finanze.gov.it/finanze/immobili/public/contenuti/opendata.zip"
+        ]
+      },
+      "ade-immobili-tabelle-2026": {
+        "holder": "Agenzia delle Entrate",
+        "referencePeriod": "Edizione 2026; celle delle tabelle API disponibili (anno d'imposta 2023)",
+        "publicationDate": null,
+        "acquisitionDate": "2026-10-23",
+        "checkedAt": "2026-10-23",
+        "updateFrequency": "annuale; acquisizione e promozione manuali",
+        "canonicalUrls": [
+          "https://creativecommons.org/licenses/by/3.0/it/",
+          "https://www.agenziaentrate.gov.it/portale/gli-immobili-in-italia-2026",
+          "https://www1.finanze.gov.it/finanze/immobili/public/#/"
+        ]
+      },
       "ted-bandi-aperti-italia-2026-10": {
         "holder": "Ufficio delle pubblicazioni dell'Unione europea",
         "referencePeriod": "Scadenza presentazione offerte dal 23 ottobre 2026; committenti ITA",
@@ -7788,6 +7827,112 @@
           "Scelte generiche (euro)",
           "Redistribuzione quote sotto soglia (euro)",
           "Totale erogabile pubblicato (euro)",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "ade-immobili-prelievo-2015-2024",
+      "title": "AdE · prelievo fiscale sugli immobili 2015-2024",
+      "domain": "public-revenue",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-3.0-it",
+      "dataKind": "delimited",
+      "relativePath": "ade-immobili-prelievo-2015-2024.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Serie tabella 4.4 in miliardi di euro: gettito/prelievo pubblicato, non cassa comunale né pagamenti SIOPE.",
+        "IMU, TASI, cedolare secca e IRPEF/IRES immobiliari sono voci distinte: non sommarle senza verificare il perimetro della riga madre.",
+        "L'ultimo anno pubblicato è 2024; non confonderlo con l'anno d'imposta 2023 dello stock open data.",
+        "Licenza CC BY 3.0 IT dal portale open data AdE/MEF."
+      ],
+      "expected": {
+        "bytes": 22969,
+        "sha256": "3ad31107f84f31bb80013b68c6537d477e1d73c658f8d3516c6143fc81ed543a",
+        "rows": 180,
+        "columns": 4,
+        "headers": [
+          "Voce",
+          "Anno",
+          "Importo (mld euro)",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "ade-immobili-utilizzo-provincia-2023",
+      "title": "AdE · utilizzo immobiliare per provincia 2023",
+      "domain": "territory",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-3.0-it",
+      "dataKind": "delimited",
+      "relativePath": "ade-immobili-utilizzo-provincia-2023.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Anno d'imposta 2023; province in sigla catastale, non codice ISTAT comunale.",
+        "Numero immobili, rendita catastale e VSM sono nature diverse: non sommarle tra indicatori.",
+        "Persone fisiche e non fisiche restano colonne distinte nella fonte: non inventare totali unificati.",
+        "Open data CSV del portale AdE/MEF; licenza CC BY 3.0 IT."
+      ],
+      "expected": {
+        "bytes": 2437319,
+        "sha256": "0f879887242c223c70faf448de9464782dff4923051a7cdeb287632927496985",
+        "rows": 16632,
+        "columns": 6,
+        "headers": [
+          "Anno imposta",
+          "Provincia (sigla)",
+          "Categoria utilizzo",
+          "Indicatore",
+          "Valore",
+          "URL fonte"
+        ]
+      }
+    },
+    {
+      "id": "ade-immobili-tabelle-2026",
+      "title": "AdE · tabelle «Immobili in Italia 2026» (API)",
+      "domain": "territory",
+      "authority": "official-primary",
+      "licenseStatus": "verified-open-cc-by-3.0-it",
+      "dataKind": "delimited",
+      "relativePath": "ade-immobili-tabelle-2026.psv",
+      "delimiter": "pipe",
+      "publication": "rows",
+      "evidenceLabel": "documented-fact",
+      "sourceFields": [
+        "URL fonte"
+      ],
+      "privateFields": [],
+      "caveats": [
+        "Celle normalizzate dall'API ufficiale get_table dell'edizione 2026; 14 tabelle rispondono null e sono escluse (solo PDF).",
+        "VSM, rendite, numeri e percentuali restano come pubblicati: non convertiamo in euro di bilancio.",
+        "Ogni riga conserva id tabella, titolo e URL puntuale alla fonte.",
+        "Licenza CC BY 3.0 IT dal portale open data AdE/MEF."
+      ],
+      "expected": {
+        "bytes": 747936,
+        "sha256": "e6cf3814566fe7979c745886b158468b7b38aafb70b84ea02ce9e2d3acb0946d",
+        "rows": 3033,
+        "columns": 6,
+        "headers": [
+          "Tabella id",
+          "Titolo tabella",
+          "Riga",
+          "Colonna",
+          "Valore",
           "URL fonte"
         ]
       }

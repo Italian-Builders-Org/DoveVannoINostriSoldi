@@ -115,6 +115,7 @@ const routesWithoutMedicalDeviceRows = [
   "/app/confronti/**",
   "/app/controlli/**",
   "/app/disuguaglianza",
+  "/app/analisi/**",
   "/app/enti/**",
   "/app/fonti/**",
   "/app/incarichi/**",
@@ -501,6 +502,10 @@ const nextConfig: NextConfig = {
     "/api/territori/poverta-soglia-relativa": istatPovertaSogliaRelativaRuntimeFiles,
     "/api/territori/poverta-regioni": istatPovertaRegioniRuntimeFiles,
     "/api/spese/arope": eurostatAropeRuntimeFiles,
+    "/analisi/immobili-italia-2026": [
+      "src/data/generated/ade-immobili-italia-2026.data.json",
+      "src/data/generated/ade-immobili-italia-2026.meta.json",
+    ],
     "/poverta": [
       ...istatPovertaSogliaAssolutaRuntimeFiles,
       ...istatPovertaSogliaRelativaRuntimeFiles,

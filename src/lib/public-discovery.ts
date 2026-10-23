@@ -50,6 +50,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/programmi",
   "/imprese",
   "/inflazione",
+  "/analisi/immobili-italia-2026",
   "/economia",
   "/edilizia",
   "/cuneo-fiscale",

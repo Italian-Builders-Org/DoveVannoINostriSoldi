@@ -3502,6 +3502,34 @@
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/ade-cinque-per-mille.source.json",
       "trustModel": "Sette CSV ufficiali completi vincolati per hash, schema, progressivi, enti unici, somme osservate e celle mancanti. Base normativa di riuso per dati pubblici non personali, distinta da una dichiarazione AdE. Importi erogabili e categorie sovrapposte, non pagamenti. Proiezione territoriale piccola nel runtime; sette CSV originali completi in ZIP statico, escluso da tutte le tracce Functions."
+    },
+    {
+      "id": "ade-immobili-italia-2026",
+      "owner": "AdE · Gli immobili in Italia 2026",
+      "files": [
+        "tests/fixtures/ade-immobili-italia-2026",
+        "src/data/generated/ade-immobili-italia-2026.data.json",
+        "src/data/generated/ade-immobili-italia-2026.meta.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/ade_immobili_italia_2026.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_ade_immobili_italia_2026.py"
+      ],
+      "nodeTests": [
+        "tests/ade-immobili-italia-2026.test.mjs",
+        "tests/integrated-curated-datasets.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/ade_immobili_italia_2026.py --publish",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/ade-immobili-italia-2026.source.json",
+      "trustModel": "Open data ZIP e API get_table dell'edizione 2026 vincolati per hash; tre dataset integrati più snapshot analisi. Fail-closed su licenza CC BY 3.0 IT, celle mancanti (API null) e nature distinte (VSM, rendite, gettito). Nessun dato per-comune IMU finché non pubblicato in formato machine-readable."
     }
   ]
 }

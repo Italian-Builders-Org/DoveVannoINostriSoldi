@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 130
+- Artefatti nel registro: 131
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 113 (PR umana dopo revisione)
+- manuale: 114 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -173,6 +173,7 @@ La revisione e il merge restano umani.
 | `mantova-offices` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | test Node |
 | `arera-bilanci-source` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/arera_bilanci.py --check` |
 | `ade-cinque-per-mille-source` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 scripts/etl/ade_cinque_per_mille.py --check` |
+| `ade-immobili-italia-2026` | 2023 | non dichiarato | https://www.agenziaentrate.gov.it/portale/gli-immobili-in-italia-2026 | nessuno | nessuno | manuale | `python3 scripts/etl/ade_immobili_italia_2026.py --check` |
 
 ## Prossimo passo
 

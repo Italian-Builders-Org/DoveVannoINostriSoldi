@@ -160,11 +160,14 @@ const mandatoryDatasetIds = [
   "arera-entrate-2024-2025",
   "arera-spese-2024-2025",
   "ade-cinque-per-mille-territori-2024",
+  "ade-immobili-prelievo-2015-2024",
+  "ade-immobili-utilizzo-provincia-2023",
+  "ade-immobili-tabelle-2026",
 ].sort();
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 132,
+  datasets: 135,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -179,6 +182,9 @@ const expectedReferencePeriods = {
   "arera-entrate-2024-2025": "Esercizi 2024-2025; rendiconti della gestione ARERA",
   "arera-spese-2024-2025": "Esercizi 2024-2025; rendiconti della gestione ARERA",
   "ade-cinque-per-mille-territori-2024": "Anno finanziario 2024; aggregati territoriali degli enti ammessi al 5 per mille e importi erogabili",
+  "ade-immobili-prelievo-2015-2024": "Prelievo fiscale sugli immobili 2015-2024 (miliardi di euro); tabella 4.4 edizione 2026",
+  "ade-immobili-utilizzo-provincia-2023": "Anno d'imposta 2023; utilizzo immobiliare per provincia (sigla)",
+  "ade-immobili-tabelle-2026": "Edizione 2026; celle delle tabelle API disponibili (anno d'imposta 2023)",
   "istat-economia-non-osservata-componenti": "Anni 2011-2023; valori nazionali correnti e incidenza sul PIL",
   "istat-economia-sommersa-branche": "Anni 2011-2023; incidenza nazionale per branca di attività economica",
   "istat-economia-non-osservata-territori": "Anno 2023; incidenza percentuale regionale e di ripartizione sul valore aggiunto totale",

@@ -8,9 +8,10 @@ const {
   ADE_IMMOBILI_UTILIZZO_DATASET,
   buildPrelievoChartSeries,
   getAdeImmobiliAnalysis,
-  getAdeImmobiliTabellePage,
-  getAdeImmobiliUtilizzoPage,
+  prelievoMldFromSource,
 } = await import("../src/lib/ade-immobili-italia-2026.ts");
+const { getAdeImmobiliUtilizzoPage } = await import("../src/lib/ade-immobili-utilizzo-page.ts");
+const { getAdeImmobiliTabellePage } = await import("../src/lib/ade-immobili-tabelle-page.ts");
 
 test("analysis snapshot pins IMU 2024 and open data URL", () => {
   const analysis = getAdeImmobiliAnalysis();
@@ -24,6 +25,11 @@ test("analysis snapshot pins IMU 2024 and open data URL", () => {
   assert.ok(imu);
   assert.equal(imu.points.at(-1)?.year, 2024);
   assert.equal(imu.points.at(-1)?.mld, 20.98);
+  const tasi = series.find((voice) => voice.voice === "TASI di cui");
+  assert.ok(tasi);
+  assert.equal(tasi.points.find((point) => point.year === 2019)?.mld, 1.2);
+  assert.equal(tasi.points.find((point) => point.year === 2024)?.mld, null);
+  assert.equal(prelievoMldFromSource("TASI di cui", 2023, "0.0"), null);
 });
 
 test("utilizzo pagination covers filtered AG rows end to end", async () => {

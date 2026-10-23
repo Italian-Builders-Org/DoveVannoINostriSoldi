@@ -12,9 +12,9 @@ import {
   UTILIZZO_CATEGORIES,
   buildPrelievoChartSeries,
   getAdeImmobiliAnalysis,
-  getAdeImmobiliTabellePage,
-  getAdeImmobiliUtilizzoPage,
 } from "@/lib/ade-immobili-italia-2026";
+import { getAdeImmobiliTabellePage } from "@/lib/ade-immobili-tabelle-page";
+import { getAdeImmobiliUtilizzoPage } from "@/lib/ade-immobili-utilizzo-page";
 import { PrelievoChart } from "./prelievo-chart";
 import styles from "./immobili-italia-2026.module.css";
 
@@ -218,7 +218,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
         <p className={styles.results} role="status" data-testid="utilizzo-status">
           {utilizzo.rows.length === 0
             ? "Nessuna riga corrisponde ai filtri sull'utilizzo provincia."
-            : `${integer(utilizzo.rows.length)} righe in pagina su ${integer(utilizzo.matchedRows)} corrispondenze (dataset ${integer(utilizzo.dataset.publicRows)} righe).`}
+            : `${utilizzo.provincia ? `Prov. ${utilizzo.provincia} · ` : ""}${integer(utilizzo.rows.length)} righe in pagina su ${integer(utilizzo.matchedRows ?? utilizzo.rows.length)} corrispondenze (dataset ${integer(utilizzo.dataset.publicRows)} righe).`}
         </p>
         <div className={styles.tableWrap} role="region" aria-label="Utilizzo immobiliare per provincia">
           <table>
@@ -293,7 +293,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
         <p className={styles.results} role="status" data-testid="tabelle-status">
           {tabelle.rows.length === 0
             ? "Nessuna cella corrisponde ai filtri sulle tabelle API."
-            : `${integer(tabelle.rows.length)} celle in pagina su ${integer(tabelle.matchedRows)} corrispondenze (dataset ${integer(tabelle.dataset.publicRows)} righe).`}
+            : `${integer(tabelle.rows.length)} celle in pagina su ${integer(tabelle.matchedRows ?? tabelle.rows.length)} corrispondenze (dataset ${integer(tabelle.dataset.publicRows)} righe).`}
         </p>
         <div className={styles.tableWrap} role="region" aria-label="Celle tabelle AdE immobili 2026">
           <table>

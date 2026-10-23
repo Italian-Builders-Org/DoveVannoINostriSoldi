@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 const utilRows = '[aria-label="Utilizzo immobiliare per provincia"] tbody tr';
 const tabRows = '[aria-label="Celle tabelle AdE immobili 2026"] tbody tr';
 
-async function paginateSection(page, nextLabel, rowSelector, statusTestId) {
-  const first = await page.$$eval(`${rowSelector} td:first-child`, (cells) => cells.map((cell) => cell.textContent));
+async function paginateSection(page, nextLabel, rowSelector, statusTestId, cellIndex = 1) {
+  const cellSelector = `${rowSelector} td:nth-child(${cellIndex})`;
+  const first = await page.$$eval(cellSelector, (cells) => cells.map((cell) => cell.textContent));
   assert.ok(first.length > 0);
   const statusBefore = await page.$eval(`[data-testid="${statusTestId}"]`, (node) => node.textContent);
   const matched = Number(statusBefore.match(/su ([0-9.]+)/)?.[1]?.replace(/\./g, "") ?? "0");
@@ -13,7 +14,7 @@ async function paginateSection(page, nextLabel, rowSelector, statusTestId) {
     page.waitForNavigation({ waitUntil: "networkidle0" }),
     page.click(`nav[aria-label="${nextLabel}"] a[href*="cursor="]`),
   ]);
-  const second = await page.$$eval(`${rowSelector} td:first-child`, (cells) => cells.map((cell) => cell.textContent));
+  const second = await page.$$eval(cellSelector, (cells) => cells.map((cell) => cell.textContent));
   assert.notDeepEqual(first, second);
   return matched;
 }
@@ -54,7 +55,7 @@ export async function inspectImmobiliItalia2026(page) {
     page.waitForNavigation({ waitUntil: "networkidle0" }),
     page.click('#tabelle button[type="submit"]'),
   ]);
-  await paginateSection(page, "Paginazione tabelle AdE", tabRows, "tabelle-status");
+  await paginateSection(page, "Paginazione tabelle AdE", tabRows, "tabelle-status", 2);
   const tabApi = await page.evaluate(async () => {
     const response = await fetch("/api/dati/ade-immobili-tabelle-2026?q=2026_04_01_05&limit=25");
     if (!response.ok) throw new Error(`API tabelle ${response.status}`);

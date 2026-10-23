@@ -16,6 +16,8 @@
 # INPS integrazioni salariali CSV are published with CRLF; hashes pin those exact bytes.
 /tests/fixtures/inps-integrazioni-salariali/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 /tests/fixtures/inps-cig-fondi-solidarieta/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# AdE open-data portal i18n snapshot: byte-pinned license evidence (sha256 in ETL spec).
+/tests/fixtures/ade-immobili-italia-2026/i18n-it.json -text whitespace=false
 
 *.gz binary
 *.ico binary

@@ -237,7 +237,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
                   <td>{row.provincia}</td>
                   <td>{row.categoria}</td>
                   <td>{row.indicatore}</td>
-                  <td>{row.valore}</td>
+                  <td>{row.valore || "—"}</td>
                   <td>
                     <a href={row.sourceUrl} rel="noreferrer" target="_blank">
                       Open data ↗

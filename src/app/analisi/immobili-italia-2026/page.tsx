@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { integer } from "@/lib/format";
-import { IntegratedQueryError } from "@/lib/integrated-public-view";
 import {
   ADE_IMMOBILI_ACQUISITION_DATE,
   ADE_IMMOBILI_LANDING,
@@ -9,21 +8,40 @@ import {
   ADE_IMMOBILI_PRELIEVO_DATASET,
   ADE_IMMOBILI_TABELLE_DATASET,
   ADE_IMMOBILI_UTILIZZO_DATASET,
-  UTILIZZO_CATEGORIES,
   buildPrelievoChartSeries,
   getAdeImmobiliAnalysis,
 } from "@/lib/ade-immobili-italia-2026";
-import { getAdeImmobiliTabellePage } from "@/lib/ade-immobili-tabelle-page";
-import { getAdeImmobiliUtilizzoPage } from "@/lib/ade-immobili-utilizzo-page";
+import {
+  getAdeImmobiliHousingInsights,
+  type HousingTerritoryInsight,
+} from "@/lib/ade-immobili-utilizzo-insights";
+import { getAdeImmobiliTabelleInsights } from "@/lib/ade-immobili-tabelle-insights";
 import { PrelievoChart } from "./prelievo-chart";
 import styles from "./immobili-italia-2026.module.css";
 
 export const metadata: Metadata = {
   title: "Gli immobili in Italia 2026 · fiscalità e stock catastale",
   description:
-    "Analisi su dati ufficiali AdE (anno d'imposta 2023, edizione 2026): prelievo IMU/TASI, utilizzo immobiliare per provincia e tabelle API del volume «Gli immobili in Italia».",
+    "Come leggere i dati AdE 2026: quanto preleva l’Italia su IMU e cedolare secca, e come sono usate le abitazioni (anno d’imposta 2023).",
   alternates: { canonical: "/analisi/immobili-italia-2026" },
 };
+
+const moneyMld = new Intl.NumberFormat("it-IT", {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 2,
+});
+
+const pctFormat = new Intl.NumberFormat("it-IT", {
+  style: "percent",
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 1,
+});
+
+const euroFormat = new Intl.NumberFormat("it-IT", {
+  style: "currency",
+  currency: "EUR",
+  maximumFractionDigits: 0,
+});
 
 type Search = Record<string, string | string[] | undefined>;
 
@@ -31,319 +49,440 @@ function param(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function mergeSearchParams(search: Search, overrides: Record<string, string | undefined>) {
-  const next = new URLSearchParams();
-  for (const [key, value] of Object.entries(search)) {
-    const resolved = param(value);
-    if (resolved) next.set(key, resolved);
-  }
-  for (const [key, value] of Object.entries(overrides)) {
-    if (value) next.set(key, value);
-    else next.delete(key);
-  }
-  return next;
+function formatMld(raw: string): string {
+  return moneyMld.format(Number.parseFloat(raw.replace(",", ".")));
 }
 
-export default async function AdeImmobiliItalia2026Page({ searchParams }: { searchParams: Promise<Search> }) {
+const STACK_COLORS = [
+  "var(--color-accent-700)",
+  "var(--color-accent-500, #c45c4a)",
+  "var(--color-neutral-600)",
+  "var(--color-neutral-500)",
+  "var(--color-neutral-400)",
+  "var(--color-neutral-300)",
+  "var(--color-neutral-200)",
+];
+
+function HousingBars({
+  insight,
+  muted = false,
+  showStack = false,
+}: {
+  insight: HousingTerritoryInsight;
+  muted?: boolean;
+  showStack?: boolean;
+}) {
+  const max = Math.max(...insight.uses.map((use) => use.count), 1);
+  const accounted = insight.uses.reduce((sum, use) => sum + use.count, 0);
+  return (
+    <div>
+      {showStack && insight.totalHomes && accounted > 0 ? (
+        <>
+          <div
+            className={styles.stack}
+            role="img"
+            aria-label={`Composizione abitazioni · ${insight.territoryLabel}`}
+          >
+            {insight.uses.map((use, index) => (
+              <div
+                key={use.label}
+                className={styles.stackSeg}
+                style={{
+                  width: `${(use.count / accounted) * 100}%`,
+                  background: STACK_COLORS[index % STACK_COLORS.length],
+                  opacity: muted ? 0.55 : 1,
+                }}
+                title={`${use.label}: ${integer(use.count)}`}
+              />
+            ))}
+          </div>
+          <ul className={styles.stackLegend}>
+            {insight.uses.slice(0, 4).map((use, index) => (
+              <li key={use.label}>
+                <span className={styles.swatch} style={{ background: STACK_COLORS[index % STACK_COLORS.length] }} />
+                {use.label}
+                {use.shareOfTotal !== null ? ` ${pctFormat.format(use.shareOfTotal)}` : ""}
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      <div className={styles.bars} role="list" aria-label={`Utilizzo abitazioni · ${insight.territoryLabel}`}>
+        {insight.uses.map((use) => {
+          const width = `${Math.max(2, (use.count / max) * 100)}%`;
+          return (
+            <div key={use.label} className={styles.barRow} role="listitem">
+              <div className={styles.barLabel}>
+                <strong>{use.label}</strong>
+                <span className={styles.barMeta}>
+                  {integer(use.count)}
+                  {use.shareOfTotal !== null ? ` · ${pctFormat.format(use.shareOfTotal)}` : ""}
+                </span>
+              </div>
+              <div className={styles.track} aria-hidden="true">
+                <div className={muted ? styles.fillMuted : styles.fill} style={{ width }} />
+              </div>
+              <p className={styles.barHint}>{use.hint}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default async function AdeImmobiliItalia2026Page({
+  searchParams,
+}: {
+  searchParams: Promise<Search>;
+}) {
   const search = await searchParams;
   const analysis = getAdeImmobiliAnalysis();
   const prelievoSeries = buildPrelievoChartSeries(analysis);
+  const housing = await getAdeImmobiliHousingInsights(param(search.prov));
+  const tables = await getAdeImmobiliTabelleInsights();
 
-  let utilizzo;
-  let utilizzoError: string | null = null;
-  try {
-    utilizzo = await getAdeImmobiliUtilizzoPage({
-      q: search.u_q,
-      cursor: search.u_cursor,
-      provincia: search.u_prov,
-      categoria: search.u_cat,
-    });
-  } catch (error) {
-    if (error instanceof IntegratedQueryError) {
-      utilizzoError = error.message;
-      utilizzo = await getAdeImmobiliUtilizzoPage({
-        provincia: search.u_prov,
-        categoria: search.u_cat,
-      });
-    } else if (error instanceof Error && (error.message.includes("provincia") || error.message.includes("Categoria"))) {
-      utilizzoError = error.message;
-      utilizzo = await getAdeImmobiliUtilizzoPage({ q: search.u_q, cursor: search.u_cursor });
-    } else {
-      throw error;
-    }
-  }
-
-  let tabelle;
-  let tabelleError: string | null = null;
-  try {
-    tabelle = await getAdeImmobiliTabellePage({
-      q: search.t_q,
-      cursor: search.t_cursor,
-      tabella: search.t_id,
-    });
-  } catch (error) {
-    if (error instanceof IntegratedQueryError) {
-      tabelleError = error.message;
-      tabelle = await getAdeImmobiliTabellePage({ tabella: search.t_id });
-    } else if (error instanceof Error && error.message.includes("tabella")) {
-      tabelleError = error.message;
-      tabelle = await getAdeImmobiliTabellePage({ q: search.t_q, cursor: search.t_cursor });
-    } else {
-      throw error;
-    }
-  }
-
-  const utilNext = mergeSearchParams(search, { u_cursor: utilizzo.pagination.nextCursor ?? undefined });
-  const utilFirst = mergeSearchParams(search, { u_cursor: undefined });
-  const tabNext = mergeSearchParams(search, { t_cursor: tabelle.pagination.nextCursor ?? undefined });
-  const tabFirst = mergeSearchParams(search, { t_cursor: undefined });
+  const imu2024 = formatMld(analysis.hero.imuGettito2024Mld);
+  const cedolare2024 = prelievoSeries
+    .find((voice) => voice.voice === "Cedolare secca")
+    ?.points.find((point) => point.year === 2024)?.mld;
+  const cedolare2015 = prelievoSeries
+    .find((voice) => voice.voice === "Cedolare secca")
+    ?.points.find((point) => point.year === 2015)?.mld;
+  const principali = housing.national.uses.find((use) => use.label === "Abitazione principale");
 
   return (
     <main className={`shell page ${styles.page}`}>
-      <header className="page-intro">
-        <p className="eyebrow">Agenzia delle Entrate · edizione 2026</p>
+      <header className={styles.intro}>
+        <p className={styles.eyebrow}>Agenzia delle Entrate · volume 2026</p>
         <h1>Gli immobili in Italia</h1>
-        <p>
-          Stock catastale e dichiarazioni fiscali con <strong>anno d&apos;imposta 2023</strong>, pubblicati nel volume 2026.
-          Qui: prelievo patrimoniale (fino al 2024), utilizzi per provincia e le tabelle scaricabili via API ufficiale.
+        <p className={styles.lede}>
+          Nel 2024 l’IMU ha portato circa <strong>{imu2024} miliardi di euro</strong> di gettito
+          nazionale. Nel frattempo la cedolare secca sugli affitti è cresciuta da{" "}
+          {cedolare2015 !== null && cedolare2015 !== undefined ? moneyMld.format(cedolare2015) : "n.d."} a{" "}
+          {cedolare2024 !== null && cedolare2024 !== undefined ? moneyMld.format(cedolare2024) : "n.d."}{" "}
+          miliardi. Sotto: come leggere queste tasse e come sono usate le abitazioni catastali
+          (anno d’imposta {analysis.coverage.taxYear}).
         </p>
-        <p className={styles.links}>
-          <a href="#prelievo">Prelievo fiscale ↓</a>
-          <a href="#utilizzo">Utilizzo per provincia ↓</a>
-          <a href="#tabelle">Tabelle API ↓</a>
-          <a href="#fonti">Fonti e limiti ↓</a>
-          <Link href="/territori/irpef">Redditi IRPEF per territorio →</Link>
-          <Link href="/patrimonio">Patrimonio immobiliare pubblico →</Link>
+        <p className={styles.meta}>
+          Fonte ufficiale AdE · acquisizione snapshot {ADE_IMMOBILI_ACQUISITION_DATE}. Non sono
+          bilanci comunali né pagamenti SIOPE.
         </p>
+        <nav className={styles.jump} aria-label="Sezioni">
+          <a href="#prelievo">Prelievo fiscale</a>
+          <a href="#stock">Come si usano le case</a>
+          <a href="#aree">Nord, Centro, Sud</a>
+          <a href="#valore">Valore per regione</a>
+          <a href="#proprietari">Chi possiede</a>
+          <a href="#provincia">La tua provincia</a>
+          <a href="#fonti">Fonti</a>
+        </nav>
       </header>
 
-      <div className={`stat-strip ${styles.stats}`} aria-label="Numeri chiave dal volume AdE">
-        <div>
-          <span className="stat-label">Gettito IMU 2024</span>
-          <strong className={`stat-value ${styles.heroRate}`} data-testid="ade-imu-2024-mld">
-            {analysis.hero.imuGettito2024Mld.replace(".", ",")}
-          </strong>
-          <span className="stat-note">mld € · tabella 4.4 · gettito nazionale, non aliquote comunali</span>
-        </div>
-        <div>
-          <span className="stat-label">Righe open data provincia</span>
-          <strong className="stat-value">{integer(analysis.coverage.utilizzoProvinciaRows)}</strong>
-          <span className="stat-note">anno d&apos;imposta {analysis.coverage.taxYear}</span>
-        </div>
-        <div>
-          <span className="stat-label">Tabelle via API</span>
-          <strong className="stat-value">{integer(analysis.coverage.tablesAvailableViaApi)}</strong>
-          <span className="stat-note">su {integer(analysis.coverage.tableCount)} nel volume · acquisizione {ADE_IMMOBILI_ACQUISITION_DATE}</span>
-        </div>
-      </div>
+      <aside className={styles.note}>
+        <strong>Come leggere i numeri</strong>
+        IMU e cedolare secca qui sono <em>gettito nazionale</em> pubblicato da AdE (tabella 4.4), non
+        l’aliquota del tuo Comune. Stock e utilizzi sono dati catastali/dichiarativi 2023: contano
+        immobili, non euro di bilancio.
+      </aside>
 
-      <aside className="notice" aria-labelledby="ade-immobili-scope">
-        <h2 id="ade-immobili-scope">Che cosa stai leggendo</h2>
+      <dl className={styles.stats} aria-label="Tre numeri da ricordare">
+        <div>
+          <dt>Gettito IMU 2024</dt>
+          <dd data-testid="ade-imu-2024-mld">{imu2024}</dd>
+          <span className={styles.hint}>miliardi di € · Italia intera</span>
+        </div>
+        <div>
+          <dt>Cedolare secca 2024</dt>
+          <dd>
+            {cedolare2024 !== null && cedolare2024 !== undefined ? moneyMld.format(cedolare2024) : "n.d."}
+          </dd>
+          <span className={styles.hint}>miliardi di € · quasi il doppio del 2015</span>
+        </div>
+        <div>
+          <dt>Abitazioni principali</dt>
+          <dd>{principali ? integer(principali.count) : "n.d."}</dd>
+          <span className={styles.hint}>
+            unità · {principali?.shareOfTotal !== null && principali?.shareOfTotal !== undefined
+              ? pctFormat.format(principali.shareOfTotal)
+              : "n.d."}{" "}
+            dello stock abitativo 2023
+          </span>
+        </div>
+      </dl>
+
+      <section id="prelievo" className={styles.sectionWide} aria-labelledby="prelievo-title">
+        <h2 id="prelievo-title">Quanto si preleva sugli immobili</h2>
         <p>
-          I dati catastali e fiscali descrivono <strong>stock, rendite, VSM e gettito</strong> pubblicato da AdE.
-          Non sono pagamenti SIOPE, entrate di bilancio comunale verificate né IRPEF territoriale MEF.
+          Dal 2015 l’IMU resta intorno ai 21 miliardi. La TASI sparisce dopo il 2019 (abolita). La
+          cedolare secca, invece, cresce ogni anno: è l’imposta sostitutiva sugli affitti abitativi.
         </p>
+        <ul className={styles.takeaways}>
+          <li>
+            <strong>IMU: stabile</strong>
+            Tra 20,3 e 21,2 miliardi dal 2016 al 2024. Non confonderla con «quanto paga il mio
+            Comune»: qui manca ancora il dettaglio per comune nelle tabelle API.
+          </li>
+          <li>
+            <strong>Cedolare secca: in salita</strong>
+            Da {cedolare2015 !== null && cedolare2015 !== undefined ? moneyMld.format(cedolare2015) : "n.d."}{" "}
+            mld (2015) a{" "}
+            {cedolare2024 !== null && cedolare2024 !== undefined ? moneyMld.format(cedolare2024) : "n.d."}{" "}
+            mld (2024). Segnale di più locazioni tassate in questo regime, non di IMU comunale.
+          </li>
+          <li>
+            <strong>TASI: fuori scena</strong>
+            Nei dati AdE dopo il 2019 il valore non è più significativo (abolizione). Nel grafico
+            diventa «n.d.».
+          </li>
+        </ul>
+        <PrelievoChart series={prelievoSeries} />
+        <p className={styles.datasetLinks}>
+          <Link href={`/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}`}>Dataset prelievo 2015–2024 →</Link>
+        </p>
+      </section>
+
+      <section id="stock" className={styles.sectionWide} aria-labelledby="stock-title">
+        <h2 id="stock-title">Come sono usate le abitazioni in Italia</h2>
         <p>
-          Il capitolo «IMU per comune» e margini di manovra del volume 2026 <strong>non sono ancora</strong> nelle API/tabelle
-          scaricabili: per le aliquote comunali usa i redditi e le pagine territoriali quando disponibili, senza sommare perimetri diversi.
+          Open data AdE, anno d’imposta {housing.national.taxYear}. Contiamo le unità nella categoria
+          «abitazioni». Sul totale nazionale (
+          {housing.national.totalHomes ? integer(housing.national.totalHomes) : "n.d."} immobili PF+PNF)
+          la fetta più grande è l’abitazione principale; poi locati e immobili a disposizione.
+        </p>
+        <HousingBars insight={housing.national} showStack />
+        <p className={styles.datasetLinks}>
+          <Link href={`/dati/${ADE_IMMOBILI_UTILIZZO_DATASET}`}>Dataset utilizzo per provincia →</Link>
+          <Link href="/territori/irpef">Redditi IRPEF per territorio →</Link>
+        </p>
+      </section>
+
+      <section id="aree" className={styles.sectionWide} aria-labelledby="aree-title" data-testid="macro-aree">
+        <h2 id="aree-title">Nord, Centro, Sud: come cambia l’uso</h2>
+        <p>
+          Immobili di proprietà di <strong>persone fisiche</strong>, anno 2023. Tutti gli usi AdE
+          dell’area (quote sul totale unità PF; arrotondamenti AdE a 0,1 pp). In evidenza
+          abitazione principale, a disposizione e locati; sotto, pertinenze e residui.
+        </p>
+        <div className={styles.areaGrid}>
+          {tables.macroAreas.map((area) => (
+            <article key={area.area} className={styles.areaCard}>
+              <h3>{area.area}</h3>
+              <ul>
+                {area.uses.map((use) => (
+                  <li key={use.label} className={use.focus ? undefined : styles.areaUseMuted}>
+                    <span>{use.label}</span>
+                    <strong>
+                      {pctFormat.format(use.share)}
+                      <span className={styles.areaCount}>{integer(use.count)}</span>
+                    </strong>
+                  </li>
+                ))}
+              </ul>
+              <a className={styles.areaSource} href={area.sourceUrl} rel="noreferrer" target="_blank">
+                Tabella AdE ↗
+              </a>
+            </article>
+          ))}
+        </div>
+        <p className={styles.caption}>
+          Nel Sud la quota «a disposizione» è più alta (
+          {pctFormat.format(
+            tables.macroAreas.find((area) => area.area === "Sud")!.uses.find((use) => use.label === "A disposizione")!.share,
+          )}
+          ); al Nord pesano di più i locati (
+          {pctFormat.format(
+            tables.macroAreas.find((area) => area.area === "Nord")!.uses.find((use) => use.label === "Locati")!.share,
+          )}
+          ). Le pertinenze (garage, cantine…) spiegano gran parte del resto, soprattutto al Nord.
+        </p>
+      </section>
+
+      <section id="valore" className={styles.sectionWide} aria-labelledby="valore-title" data-testid="valore-regioni">
+        <h2 id="valore-title">Quanto vale il patrimonio residenziale</h2>
+        <p>
+          Valore stimato di mercato (VSM) di abitazioni e pertinenze, anno 2023. In Italia fa circa{" "}
+          <strong>
+            {tables.italyResidentialMld !== null ? `${moneyMld.format(tables.italyResidentialMld)} mld €` : "n.d."}
+          </strong>
+          {tables.italyResidentialOverGdp !== null
+            ? ` — ${moneyMld.format(tables.italyResidentialOverGdp)} volte il PIL 2023`
+            : ""}
+          . Non è gettito fiscale.
+        </p>
+        <div className={styles.tableWrap} role="region" aria-label="VSM residenziale per regione">
+          <table className={styles.dataTable}>
+            <thead>
+              <tr>
+                <th scope="col">Regione</th>
+                <th scope="col">VSM residenziale</th>
+                <th scope="col">Quota Italia</th>
+                <th scope="col">VSM / PIL</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tables.regions.map((region) => (
+                <tr key={region.region}>
+                  <th scope="row">{region.region}</th>
+                  <td>{moneyMld.format(region.residentialMld)} mld €</td>
+                  <td>{pctFormat.format(region.territorialShare)}</td>
+                  <td>{moneyMld.format(region.residentialOverGdp)}×</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className={styles.datasetLinks}>
+          <a href={tables.sources.regions} rel="noreferrer" target="_blank">
+            Fonte tabella 2026_02_01_03 ↗
+          </a>
+        </p>
+      </section>
+
+      <section id="proprietari" className={styles.sectionWide} aria-labelledby="proprietari-title" data-testid="proprietari">
+        <h2 id="proprietari-title">Chi possiede (e con quale reddito)</h2>
+        <p>
+          Tra i contribuenti, la quota di chi risulta proprietario di immobili sale con il reddito
+          complessivo. Sotto: classi di reddito e, a parte, i proprietari di abitazioni per tipo di
+          reddito prevalente (con VSM medio).
+        </p>
+        <h3 className={styles.subhead}>Tasso di proprietà per classe di reddito</h3>
+        <div className={styles.bars} role="list" aria-label="Proprietà per classe di reddito">
+          {tables.incomeClasses.map((row) => (
+            <div key={row.label} className={styles.barRow} role="listitem">
+              <div className={styles.barLabel}>
+                <strong>{row.label}</strong>
+                <span className={styles.barMeta}>
+                  {pctFormat.format(row.ownershipRate)} proprietari · {integer(row.owners)} su{" "}
+                  {integer(row.taxpayers)}
+                </span>
+              </div>
+              <div className={styles.track} aria-hidden="true">
+                <div className={styles.fill} style={{ width: `${Math.max(2, row.ownershipRate * 100)}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <h3 className={styles.subhead}>Proprietari di abitazioni per reddito prevalente</h3>
+        <div className={styles.tableWrap} role="region" aria-label="Proprietari per tipo di reddito">
+          <table className={styles.dataTable}>
+            <thead>
+              <tr>
+                <th scope="col">Reddito prevalente</th>
+                <th scope="col">Proprietari</th>
+                <th scope="col">Reddito medio</th>
+                <th scope="col">VSM medio (stima mercato)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tables.incomeTypes.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">{row.label}</th>
+                  <td>{integer(row.owners)}</td>
+                  <td>{euroFormat.format(row.meanIncome)}</td>
+                  <td>{euroFormat.format(row.meanVsm)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className={styles.caption}>
+          Chi ha reddito prevalente da fabbricati è pochi proprietari ma con VSM medio più alto (
+          {euroFormat.format(tables.incomeTypes.find((row) => row.label === "Fabbricati")?.meanVsm ?? 0)}
+          ): profilo diverso da dipendenti e pensionati, non un «ricchi vs poveri» automatico.
+        </p>
+        <p className={styles.datasetLinks}>
+          <a href={tables.sources.incomeClasses} rel="noreferrer" target="_blank">
+            Classi di reddito ↗
+          </a>
+          <a href={tables.sources.incomeTypes} rel="noreferrer" target="_blank">
+            Reddito prevalente ↗
+          </a>
+        </p>
+      </section>
+
+      <section id="provincia" className={styles.sectionWide} aria-labelledby="provincia-title">
+        <h2 id="provincia-title">Confronta con una provincia</h2>
+        <p>
+          Stessi indicatori, stessa fonte. Scegli una sigla catastale: a sinistra resta l’Italia, a
+          destra la provincia. Le percentuali sono sul totale abitazioni di quel territorio.
+        </p>
+        <form action="/analisi/immobili-italia-2026#provincia" method="get" className={styles.provinceForm}>
+          <label htmlFor="prov">
+            Provincia
+            <select className="input" id="prov" name="prov" defaultValue={housing.requestedProvince ?? ""}>
+              <option value="">Scegli…</option>
+              {housing.provinces.map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="btn btn-primary" type="submit">
+            Mostra
+          </button>
+          {housing.requestedProvince ? (
+            <Link className="btn btn-secondary" href="/analisi/immobili-italia-2026#provincia">
+              Solo Italia
+            </Link>
+          ) : null}
+        </form>
+
+        {housing.requestedProvince && !housing.selectedProvince ? (
+          <p role="alert" className="notice">
+            Sigla «{housing.requestedProvince}» non presente nell’open data AdE di questa edizione.
+          </p>
+        ) : null}
+
+        <div className={styles.compare}>
+          <div>
+            <h3>Italia</h3>
+            <p className={styles.compareLead}>
+              {housing.national.totalHomes
+                ? `${integer(housing.national.totalHomes)} abitazioni (PF+PNF)`
+                : "Totale non disponibile"}
+            </p>
+            <HousingBars insight={housing.national} muted={Boolean(housing.selectedProvince)} />
+          </div>
+          {housing.selectedProvince ? (
+            <div data-testid="utilizzo-status">
+              <h3>{housing.selectedProvince.territoryLabel}</h3>
+              <p className={styles.compareLead}>
+                {housing.selectedProvince.totalHomes
+                  ? `${integer(housing.selectedProvince.totalHomes)} abitazioni (PF+PNF)`
+                  : "Totale non disponibile"}
+              </p>
+              <HousingBars insight={housing.selectedProvince} />
+            </div>
+          ) : (
+            <div>
+              <h3>Provincia</h3>
+              <p className={styles.compareLead}>
+                Seleziona una sigla per vedere lo stesso schema sul territorio. Es. RM, MI, NA, TO.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <aside className={styles.missing} aria-labelledby="missing-title">
+        <h2 id="missing-title">Cosa non c’è (ancora) in questa pagina</h2>
+        <p>
+          Il capitolo AdE sulle <strong>aliquote IMU per Comune</strong> e i margini di manovra non
+          è nelle tabelle/API scaricabili di questa edizione ({integer(analysis.coverage.tablesMissingViaApi.length)}{" "}
+          tabelle rispondono <code>null</code>). Non inventiamo aliquote: quando saranno negli open
+          data, entreranno qui e nelle schede Comune.
         </p>
       </aside>
 
-      <section id="prelievo" aria-labelledby="prelievo-title">
-        <h2 id="prelievo-title">Prelievo fiscale sugli immobili</h2>
+      <section id="fonti" className={styles.sources} aria-labelledby="fonti-title">
+        <h2 id="fonti-title">Fonti e licenza</h2>
         <p>
-          Evoluzione nazionale di IMU, TASI e cedolare secca (miliardi di euro), dalla tabella 4.4 dell&apos;edizione 2026.
+          Anno d’imposta <strong>{analysis.coverage.taxYear}</strong> per stock e utilizzi; serie di
+          prelievo fino al <strong>2024</strong>. Licenza CC BY 3.0 IT · © Agenzia delle Entrate /
+          MEF.
         </p>
-        <PrelievoChart series={prelievoSeries} />
-        <p>
-          <Link href={`/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}`}>Dataset prelievo 2015-2024</Link>
-          {" · "}
-          <a href={`/api/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}?limit=25`}>API</a>
-        </p>
-      </section>
-
-      <section aria-labelledby="capitoli-title">
-        <h2 id="capitoli-title">Capitoli del volume (tabelle API disponibili)</h2>
-        <ul className={styles.chapterList}>
-          {analysis.chapters.map((chapter) => (
-            <li key={chapter.id}>
-              <strong>{chapter.title}</strong>
-              <span>: {integer(chapter.tables)} tabelle con celle scaricabili</span>
-            </li>
-          ))}
-        </ul>
-        {analysis.coverage.tablesMissingViaApi.length > 0 ? (
-          <p className={styles.missing}>
-            {integer(analysis.coverage.tablesMissingViaApi.length)} tabelle rispondono <code>null</code> dall&apos;API ufficiale
-            (solo PDF): {analysis.coverage.tablesMissingViaApi.join(", ")}.
-          </p>
-        ) : null}
-      </section>
-
-      <section id="utilizzo" aria-labelledby="utilizzo-title">
-        <h2 id="utilizzo-title">Utilizzo immobiliare per provincia (2023)</h2>
-        <p>
-          Open data AdE: numero immobili, rendita catastale e VSM per sigla provinciale e categoria d&apos;uso.
-          Per approfondire sul territorio: <Link href="/territori">panoramica territori</Link> e{" "}
-          <Link href="/territori/irpef">redditi IRPEF</Link> (perimetro diverso).
-        </p>
-        <form action="/analisi/immobili-italia-2026#utilizzo" method="get" className={styles.filters}>
-          <div className={styles.search}>
-            <div>
-              <label htmlFor="u-q">Cerca testo libero</label>
-              <input className="input" id="u-q" name="u_q" type="search" maxLength={200} defaultValue={utilizzo.query ?? ""} placeholder="Es. AG oppure abitazioni" />
-            </div>
-            <button className="btn btn-primary" type="submit">Applica</button>
-          </div>
-          <div className={styles.filtersRow}>
-            <div>
-              <label htmlFor="u-prov">Provincia (sigla)</label>
-              <input className="input" id="u-prov" name="u_prov" type="text" maxLength={2} defaultValue={utilizzo.provincia ?? ""} placeholder="Es. RM" />
-            </div>
-            <div>
-              <label htmlFor="u-cat">Categoria</label>
-              <select className="input" id="u-cat" name="u_cat" defaultValue={utilizzo.categoria ?? ""}>
-                <option value="">Tutte</option>
-                {UTILIZZO_CATEGORIES.map((category) => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          {param(search.t_q) ? <input type="hidden" name="t_q" value={param(search.t_q)} /> : null}
-          {param(search.t_id) ? <input type="hidden" name="t_id" value={param(search.t_id)} /> : null}
-          {param(search.t_cursor) ? <input type="hidden" name="t_cursor" value={param(search.t_cursor)} /> : null}
-        </form>
-        {utilizzoError ? <p role="alert" className="notice">{utilizzoError} Mostriamo i primi risultati utilizzo.</p> : null}
-        <p className={styles.results} role="status" data-testid="utilizzo-status">
-          {utilizzo.rows.length === 0
-            ? "Nessuna riga corrisponde ai filtri sull'utilizzo provincia."
-            : `${utilizzo.provincia ? `Prov. ${utilizzo.provincia} · ` : ""}${integer(utilizzo.rows.length)} righe in pagina su ${integer(utilizzo.matchedRows ?? utilizzo.rows.length)} corrispondenze (dataset ${integer(utilizzo.dataset.publicRows)} righe).`}
-        </p>
-        <div className={styles.tableWrap} role="region" aria-label="Utilizzo immobiliare per provincia">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Prov.</th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Indicatore</th>
-                <th scope="col">Valore</th>
-                <th scope="col">Fonte</th>
-              </tr>
-            </thead>
-            <tbody>
-              {utilizzo.rows.map((row) => (
-                <tr key={row.rowId}>
-                  <td>{row.provincia}</td>
-                  <td>{row.categoria}</td>
-                  <td>{row.indicatore}</td>
-                  <td>{row.valore || "n.d."}</td>
-                  <td>
-                    <a href={row.sourceUrl} rel="noreferrer" target="_blank">
-                      Open data ↗
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <nav className={styles.pagination} aria-label="Paginazione utilizzo provincia">
-          {param(search.u_cursor) ? (
-            <Link className="btn btn-secondary" href={`/analisi/immobili-italia-2026?${utilFirst.toString()}#utilizzo`}>
-              Primi risultati utilizzo
-            </Link>
-          ) : null}
-          {utilizzo.pagination.nextCursor ? (
-            <Link className="btn btn-secondary" href={`/analisi/immobili-italia-2026?${utilNext.toString()}#utilizzo`}>
-              Utilizzo successivo →
-            </Link>
-          ) : null}
-        </nav>
-        <p>
-          <Link href={`/dati/${ADE_IMMOBILI_UTILIZZO_DATASET}`}>Dataset utilizzo provincia</Link>
-          {" · "}
-          <a href={`/api/dati/${ADE_IMMOBILI_UTILIZZO_DATASET}?limit=25`}>API</a>
-        </p>
-      </section>
-
-      <section id="tabelle" aria-labelledby="tabelle-title">
-        <h2 id="tabelle-title">Tabelle «Immobili in Italia 2026» (API)</h2>
-        <p>Celle normalizzate dall&apos;endpoint <code>get_table</code> per l&apos;edizione 2026; ogni riga conserva l&apos;URL puntuale.</p>
-        <form action="/analisi/immobili-italia-2026#tabelle" method="get" className={styles.filters}>
-          <div className={styles.search}>
-            <div>
-              <label htmlFor="t-q">Cerca titolo, colonna o valore</label>
-              <input className="input" id="t-q" name="t_q" type="search" maxLength={200} defaultValue={tabelle.query ?? ""} />
-            </div>
-            <button className="btn btn-primary" type="submit">Cerca</button>
-          </div>
-          <div className={styles.filtersRow}>
-            <div>
-              <label htmlFor="t-id">Id tabella (es. 2026_04_01_05)</label>
-              <input className="input" id="t-id" name="t_id" type="text" maxLength={20} defaultValue={tabelle.tabella ?? ""} placeholder="2026_04_01_05" />
-            </div>
-          </div>
-          {param(search.u_q) ? <input type="hidden" name="u_q" value={param(search.u_q)} /> : null}
-          {param(search.u_prov) ? <input type="hidden" name="u_prov" value={param(search.u_prov)} /> : null}
-          {param(search.u_cat) ? <input type="hidden" name="u_cat" value={param(search.u_cat)} /> : null}
-          {param(search.u_cursor) ? <input type="hidden" name="u_cursor" value={param(search.u_cursor)} /> : null}
-        </form>
-        {tabelleError ? <p role="alert" className="notice">{tabelleError} Mostriamo le prime celle tabellari.</p> : null}
-        <p className={styles.results} role="status" data-testid="tabelle-status">
-          {tabelle.rows.length === 0
-            ? "Nessuna cella corrisponde ai filtri sulle tabelle API."
-            : `${integer(tabelle.rows.length)} celle in pagina su ${integer(tabelle.matchedRows ?? tabelle.rows.length)} corrispondenze (dataset ${integer(tabelle.dataset.publicRows)} righe).`}
-        </p>
-        <div className={styles.tableWrap} role="region" aria-label="Celle tabelle AdE immobili 2026">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Tabella</th>
-                <th scope="col">Riga</th>
-                <th scope="col">Colonna</th>
-                <th scope="col">Valore</th>
-                <th scope="col">Fonte</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tabelle.rows.map((row) => (
-                <tr key={row.rowId}>
-                  <td>{row.tableId}</td>
-                  <td>{row.row}</td>
-                  <td>{row.column}</td>
-                  <td>{row.value || "n.d."}</td>
-                  <td>
-                    <a href={row.sourceUrl} rel="noreferrer" target="_blank">
-                      API ↗
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <nav className={styles.pagination} aria-label="Paginazione tabelle AdE">
-          {param(search.t_cursor) ? (
-            <Link className="btn btn-secondary" href={`/analisi/immobili-italia-2026?${tabFirst.toString()}#tabelle`}>
-              Prime celle tabella
-            </Link>
-          ) : null}
-          {tabelle.pagination.nextCursor ? (
-            <Link className="btn btn-secondary" href={`/analisi/immobili-italia-2026?${tabNext.toString()}#tabelle`}>
-              Celle successive →
-            </Link>
-          ) : null}
-        </nav>
-        <p>
-          <Link href={`/dati/${ADE_IMMOBILI_TABELLE_DATASET}`}>Dataset tabelle API</Link>
-          {" · "}
-          <a href={`/api/dati/${ADE_IMMOBILI_TABELLE_DATASET}?limit=25`}>API</a>
-        </p>
-      </section>
-
-      <section id="fonti" className="panel" aria-labelledby="fonti-title">
-        <h2 id="fonti-title">Fonti, periodo e licenza</h2>
         <ul>
           <li>
             <a href={ADE_IMMOBILI_LANDING}>Portale AdE · Gli immobili in Italia 2026</a>
@@ -361,21 +500,19 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
             <a href={analysis.sources.licenseUrl}>Licenza CC BY 3.0 IT</a>
           </li>
         </ul>
-        <p>
-          Anno d&apos;imposta <strong>{analysis.coverage.taxYear}</strong> per stock e utilizzi open data; serie di prelievo fino al{" "}
-          <strong>2024</strong> in mld €. Acquisizione snapshot: {ADE_IMMOBILI_ACQUISITION_DATE}.
+        <p className={styles.datasetLinks}>
+          <Link href={`/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}`}>Prelievo</Link>
+          <Link href={`/dati/${ADE_IMMOBILI_UTILIZZO_DATASET}`}>Utilizzo province</Link>
+          <Link href={`/dati/${ADE_IMMOBILI_TABELLE_DATASET}`}>Celle tabelle API</Link>
         </p>
         <details>
-          <summary>Avvertenze e limiti</summary>
+          <summary>Avvertenze tecniche</summary>
           <ul>
             {analysis.caveats.map((caveat) => (
               <li key={caveat}>{caveat}</li>
             ))}
           </ul>
         </details>
-        <p>
-          © Agenzia delle Entrate / MEF. Proiezione DVNS con attribuzione; i numeri restano quelli ufficiali nelle celle citate.
-        </p>
       </section>
     </main>
   );

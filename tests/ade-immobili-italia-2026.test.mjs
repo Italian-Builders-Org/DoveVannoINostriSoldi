@@ -12,6 +12,8 @@ const {
 } = await import("../src/lib/ade-immobili-italia-2026.ts");
 const { getAdeImmobiliUtilizzoPage } = await import("../src/lib/ade-immobili-utilizzo-page.ts");
 const { getAdeImmobiliTabellePage } = await import("../src/lib/ade-immobili-tabelle-page.ts");
+const { getAdeImmobiliTabelleInsights } = await import("../src/lib/ade-immobili-tabelle-insights.ts");
+const { getAdeImmobiliHousingInsights } = await import("../src/lib/ade-immobili-utilizzo-insights.ts");
 
 test("analysis snapshot pins IMU 2024 and open data URL", () => {
   const analysis = getAdeImmobiliAnalysis();
@@ -72,4 +74,47 @@ test("integrated datasets remain queryable with expected row counts", async () =
   const tabelle = await getAdeImmobiliTabellePage({});
   assert.equal(tabelle.dataset.publicRows, 3033);
   assert.equal(tabelle.dataset.id, ADE_IMMOBILI_TABELLE_DATASET);
+});
+
+test("housing insights expose national composition and province AG", async () => {
+  const housing = await getAdeImmobiliHousingInsights("AG");
+  assert.equal(housing.national.totalHomes, 35581285);
+  assert.ok(housing.national.uses.some((use) => use.label === "Abitazione principale" && use.count === 20147097));
+  assert.equal(housing.selectedProvince?.territory, "AG");
+  assert.equal(housing.selectedProvince?.totalHomes, 332867);
+});
+
+test("tabelle insights cover macro areas, 20 regions and ownership", async () => {
+  const insights = await getAdeImmobiliTabelleInsights();
+  assert.deepEqual(insights.macroAreas.map((area) => area.area), ["Nord", "Centro", "Sud"]);
+  assert.equal(insights.macroAreas[0].uses.length, 8);
+  assert.deepEqual(
+    insights.macroAreas[0].uses.map((use) => use.label),
+    [
+      "Abitazione principale",
+      "Pertinenze",
+      "A disposizione",
+      "Locati",
+      "Uso gratuito",
+      "Altri utilizzi",
+      "Non ricostruito",
+      "Non in dichiarazione",
+    ],
+  );
+  for (const area of insights.macroAreas) {
+    const shareSum = area.uses.reduce((sum, use) => sum + use.share, 0);
+    assert.ok(Math.abs(shareSum - 1) <= 0.005, `${area.area} share sum ${shareSum}`);
+  }
+  assert.equal(insights.macroAreas[0].uses.find((use) => use.label === "Pertinenze")?.share, 0.279);
+  assert.equal(insights.regions.length, 20);
+  assert.equal(insights.regions[0].region, "Lombardia");
+  assert.equal(insights.regions[0].residentialMld, 1165.6);
+  assert.ok(Math.abs(insights.regions[0].territorialShare - 1165.6 / 6088.5) < 1e-12);
+  assert.equal(insights.italyResidentialMld, 6088.5);
+  assert.equal(insights.italyResidentialOverGdp, 2.8);
+  assert.equal(insights.incomeClasses.length, 5);
+  assert.ok(insights.incomeClasses.at(-1).ownershipRate > insights.incomeClasses[0].ownershipRate);
+  assert.equal(insights.incomeTypes.length, 4);
+  assert.equal(insights.incomeTypes[0].label, "Dipendente");
+  assert.equal(insights.incomeTypes.find((row) => row.label === "Fabbricati")?.meanVsm, 385049);
 });

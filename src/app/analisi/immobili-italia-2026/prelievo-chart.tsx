@@ -18,12 +18,12 @@ export type PrelievoSeries = Readonly<{
   points: ReadonlyArray<{ year: number; mld: number | null; sourceUrl: string }>;
 }>;
 
-const mldFormat = new Intl.NumberFormat("it-IT", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const mldFormat = new Intl.NumberFormat("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
 
-const PRELIEVO_LINE_COLORS: Record<string, string> = {
-  "IMU di cui": "var(--chart-primary)",
-  "Cedolare secca": "var(--chart-secondary)",
-  "TASI di cui": "var(--chart-category-teal)",
+const SERIES_META: Record<string, { label: string; color: string }> = {
+  "IMU di cui": { label: "IMU", color: "var(--color-accent-700)" },
+  "Cedolare secca": { label: "Cedolare secca", color: "var(--color-neutral-700)" },
+  "TASI di cui": { label: "TASI (fino al 2019)", color: "var(--color-neutral-400)" },
 };
 
 function formatMldCell(value: unknown): string {
@@ -38,7 +38,7 @@ function TooltipContent({
   label,
 }: {
   active?: boolean;
-  payload?: Array<{ dataKey?: string; value?: number | null; color?: string }>;
+  payload?: Array<{ dataKey?: string; value?: number | null; color?: string; name?: string }>;
   label?: number;
 }) {
   if (!active || !payload?.length || label === undefined) return null;
@@ -48,7 +48,7 @@ function TooltipContent({
       <ul>
         {payload.map((entry) => (
           <li key={entry.dataKey} style={{ color: entry.color }}>
-            {entry.dataKey}:{" "}
+            {entry.name}:{" "}
             {entry.value === null || entry.value === undefined
               ? "n.d."
               : `${mldFormat.format(entry.value)} mld €`}
@@ -67,55 +67,76 @@ export function PrelievoChart({ series }: { series: readonly PrelievoSeries[] })
     const row: Record<string, number | null> = { year };
     for (const voice of series) {
       const point = voice.points.find((item) => item.year === year);
+      const key = SERIES_META[voice.voice]?.label ?? voice.voice;
       if (point && point.mld !== null) {
-        row[voice.voice] = point.mld;
+        row[key] = point.mld;
       }
     }
     return row;
   });
 
+  const displaySeries = series.map((voice) => ({
+    ...voice,
+    label: SERIES_META[voice.voice]?.label ?? voice.voice,
+    color: SERIES_META[voice.voice]?.color ?? "var(--color-accent-700)",
+  }));
+
   return (
     <figure className={styles.chartFigure} aria-labelledby="prelievo-chart-caption">
-      <div className={styles.chart} role="img" aria-label="Prelievo fiscale sugli immobili in Italia 2015-2024, miliardi di euro">
+      <div
+        className={styles.chart}
+        role="img"
+        aria-label="Prelievo fiscale sugli immobili in Italia 2015-2024, miliardi di euro"
+      >
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 12, right: 20, bottom: 4, left: 0 }} accessibilityLayer>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="year" tickMargin={8} />
-            <YAxis tickFormatter={(value) => mldFormat.format(Number(value))} width={48} />
+          <LineChart data={data} margin={{ top: 16, right: 12, bottom: 8, left: 4 }} accessibilityLayer>
+            <CartesianGrid stroke="var(--color-neutral-200)" strokeDasharray="4 6" vertical={false} />
+            <XAxis
+              dataKey="year"
+              tickMargin={10}
+              tick={{ fill: "var(--color-neutral-600)", fontSize: 12 }}
+              axisLine={{ stroke: "var(--color-neutral-300)" }}
+              tickLine={false}
+            />
+            <YAxis
+              tickFormatter={(value) => mldFormat.format(Number(value))}
+              width={44}
+              tick={{ fill: "var(--color-neutral-600)", fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+              unit=""
+            />
             <Tooltip content={<TooltipContent />} />
-            <Legend />
-            {series.map((voice) => {
-              const stroke = PRELIEVO_LINE_COLORS[voice.voice] ?? "var(--chart-primary)";
-              return (
-                <Line
-                  key={voice.voice}
-                  type="monotone"
-                  name={voice.voice}
-                  dataKey={voice.voice}
-                  stroke={stroke}
-                  dot={{ r: 3, fill: stroke, stroke: "var(--color-raised)", strokeWidth: 1 }}
-                  activeDot={{ r: 4, fill: stroke, stroke: "var(--color-raised)", strokeWidth: 2 }}
-                  strokeWidth={2}
-                  connectNulls={false}
-                  isAnimationActive={false}
-                />
-              );
-            })}
+            <Legend wrapperStyle={{ paddingTop: 8 }} />
+            {displaySeries.map((voice) => (
+              <Line
+                key={voice.voice}
+                type="monotone"
+                name={voice.label}
+                dataKey={voice.label}
+                stroke={voice.color}
+                dot={{ r: 3.5, fill: voice.color, stroke: "var(--color-raised)", strokeWidth: 1.5 }}
+                activeDot={{ r: 5, fill: voice.color, stroke: "var(--color-raised)", strokeWidth: 2 }}
+                strokeWidth={voice.voice === "IMU di cui" ? 3 : 2}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            ))}
           </LineChart>
         </ResponsiveContainer>
       </div>
       <figcaption id="prelievo-chart-caption">
-        Tabella 4.4 · gettito/prelievo pubblicato da AdE (mld €), non cassa comunale.{" "}
+        Tabella 4.4 AdE · gettito nazionale in miliardi di euro (non cassa del singolo Comune).{" "}
         <a href="https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_04_01_05&amp;cq=1">
           Fonte ufficiale ↗
         </a>
       </figcaption>
       <ChartDataTable
         label="Serie prelievo 2015-2024 (mld €)"
-        columns={series.map((voice) => voice.voice)}
+        columns={displaySeries.map((voice) => voice.label)}
         rows={data.map((row) => ({
           label: String(row.year),
-          values: series.map((voice) => formatMldCell(row[voice.voice])),
+          values: displaySeries.map((voice) => formatMldCell(row[voice.label])),
         }))}
       />
     </figure>

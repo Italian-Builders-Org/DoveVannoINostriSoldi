@@ -32,7 +32,11 @@ export function consipBandiOpenStatus(deadline: string, asOf = new Date()): "ape
 
 export function parseConsipBandiRow(row: IntegratedPublicRow) {
   const cells = rowCells.parse(row.cells);
-  if (!row.sourceUrls.includes(DATASET_URL) || cells["URL dataset"] !== DATASET_URL) {
+  if (
+    !Array.isArray(row.sourceUrls)
+    || !row.sourceUrls.some((sourceUrl) => sourceUrl === DATASET_URL)
+    || cells["URL dataset"] !== DATASET_URL
+  ) {
     throw new Error("Riga Consip bandi fuori dal perimetro verificato.");
   }
   const deadline = cells["Data termine"] === "" ? "" : z.iso.date().parse(cells["Data termine"]);

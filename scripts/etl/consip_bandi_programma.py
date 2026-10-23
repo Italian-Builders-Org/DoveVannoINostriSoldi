@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import datetime
 import gzip
 import hashlib
 import io

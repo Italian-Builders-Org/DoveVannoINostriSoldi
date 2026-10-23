@@ -45,7 +45,10 @@ export function parseTedOpenNotice(row: IntegratedPublicRow) {
   const cpvs = stringList.parse(JSON.parse(cells["Codici CPV"]));
   const cities = cells["Luoghi esecuzione"] ? z.array(z.string()).parse(JSON.parse(cells["Luoghi esecuzione"])) : [];
   const amountCents = cells["Importo stimato eurocent"] === "" ? null : Number(cells["Importo stimato eurocent"]);
-  if (cells["URL avviso"] !== url || !row.sourceUrls.includes(url)
+  if (
+    cells["URL avviso"] !== url
+    || !Array.isArray(row.sourceUrls)
+    || !row.sourceUrls.some((sourceUrl) => sourceUrl === url)
     || !countries.includes("ITA") || countries.some((value) => !/^[A-Z]{3}$/.test(value))
     || cpvs.some((value) => !/^[0-9]{8}$/.test(value))
     || (amountCents !== null && (!Number.isSafeInteger(amountCents) || amountCents < 0))) {

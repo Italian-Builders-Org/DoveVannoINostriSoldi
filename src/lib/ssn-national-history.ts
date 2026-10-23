@@ -3,6 +3,7 @@ import { decodePublicDataText, parseDelimitedRows, type DelimitedRecord } from "
 import {
   isOpenBdapCsvConversionError,
   OpenBdapUnavailableError,
+  readOpenBdapJsonResponse,
 } from "@/lib/data/openbdap-response";
 import { fetchOfficialSource, SourceFetchError } from "@/lib/data/source-fetch";
 import { SSN_CCE_METRICS, type SsnCceMetricId, type SsnCceValues } from "@/lib/data/ssn-cce-contract";
@@ -237,7 +238,10 @@ async function discoverNationalPackages(
   );
   if (!response.ok) throw new Error(`OpenBDAP package_search HTTP ${response.status}`);
 
-  const payload = await withAbort(response.json() as Promise<PackageSearchResponse>, signal);
+  const payload = await withAbort(
+    readOpenBdapJsonResponse<PackageSearchResponse>(response, "package_search"),
+    signal,
+  );
   if (!payload.success || !Array.isArray(payload.result?.results)) {
     throw new Error("Risposta package_search OpenBDAP non valida");
   }
@@ -467,6 +471,7 @@ function isAbortLike(error: unknown): boolean {
 
 function isTemporarySourceFailure(error: unknown): boolean {
   if (error instanceof OpenBdapUnavailableError) return true;
+  if (error instanceof SyntaxError) return true;
   if (isAbortLike(error)) return true;
   return (
     error instanceof SourceFetchError &&

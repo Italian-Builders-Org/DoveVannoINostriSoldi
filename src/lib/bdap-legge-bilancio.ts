@@ -3,6 +3,10 @@ import {
   parseDelimitedRecords,
   type DelimitedRecord,
 } from "@/lib/data/delimited";
+import {
+  OpenBdapUnavailableError,
+  readOpenBdapJsonResponse,
+} from "@/lib/data/openbdap-response";
 import { fetchOfficialSource, SourceFetchError } from "@/lib/data/source-fetch";
 import { getSourcePolicy } from "@/lib/data/source-policy";
 import { parseOpenBdapAmount } from "@/lib/data/bdap-payment-contract";
@@ -294,7 +298,15 @@ export async function discoverBudgetLawMissionDataset(
     throw new Error(`OpenBDAP package_search HTTP ${response.status}`);
   }
 
-  const payload = (await response.json()) as PackageSearchResponse;
+  let payload: PackageSearchResponse;
+  try {
+    payload = await readOpenBdapJsonResponse<PackageSearchResponse>(response, "package_search");
+  } catch (error) {
+    if (error instanceof OpenBdapUnavailableError) {
+      throw new BudgetLawSourceTemporarilyUnavailableError(error.message);
+    }
+    throw error;
+  }
   if (!payload.success || !Array.isArray(payload.result?.results)) {
     throw new Error("Risposta package_search OpenBDAP non valida");
   }

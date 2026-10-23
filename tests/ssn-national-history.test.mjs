@@ -310,6 +310,29 @@ test("SSN national history classifies only the known conversion outage as unavai
   }
 });
 
+test("SSN national history falls back to the committed snapshot when package_search returns HTML", async () => {
+  const originalFetch = globalThis.fetch;
+  const fetchStub = async (input) => {
+    const url = new URL(input.toString());
+    if (url.pathname.endsWith("/package_search")) {
+      return new Response("<!DOCTYPE html><html><body>maintenance</body></html>", {
+        status: 200,
+        headers: { "content-type": "text/html; charset=utf-8" },
+      });
+    }
+    throw new Error(`unexpected fetch ${url}`);
+  };
+  globalThis.fetch = fetchStub;
+  try {
+    const history = await getSsnNationalHistory({ deadlineMs: 2_000 });
+    assert.equal(history.dataMode, "snapshot");
+    assert.equal(history.years.length, 13);
+    assert.deepEqual(history.years.at(-1).values, ssnCceSnapshot.national.values);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("SSN national history falls back to the committed snapshot on CSV conversion outages", async () => {
   const originalFetch = globalThis.fetch;
   const stub = stubHistoryFetch({ conversionErrorYear: 2012 });

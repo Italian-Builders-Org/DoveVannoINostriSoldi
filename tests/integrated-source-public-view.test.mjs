@@ -387,7 +387,7 @@ test("enumerating every queryable dataset does not retain all parsed row arrays"
           loader.loadIntegratedDatasetChunk(bundle, dataset, 0),
         )));
       }
-      if (loaded.length !== 110) throw new Error("Unexpected queryable dataset count");
+      if (loaded.length !== 113) throw new Error("Unexpected queryable dataset count");
     })();
     await new Promise((resolve) => setImmediate(resolve));
     const after = collect();

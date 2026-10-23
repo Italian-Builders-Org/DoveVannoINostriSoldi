@@ -1161,6 +1161,25 @@ export const EDITORIAL_SURFACE_PREVIEWS: readonly EditorialSurfacePreview[] = [
   },
   {
     surface: "/dati",
+    title: "Entrate tributarie dello Stato 2011–2025",
+    description: "Rendiconto generale dello Stato, Titolo I: accertato, versato e residui per tipologia di imposta, con le previsioni tenute separate. Dal 2023 i codici delle tipologie cambiano.",
+    datasets: [
+      {
+        id: "rgs-rendiconto-entrate-tributarie-2011-2025",
+        label: "Entrate tributarie per tipologia",
+        catalogBoundary: "Contabilità finanziaria dello Stato, non entrate della PA in termini SEC; le previsioni non sono consuntivo e i valori non si sommano fra anni.",
+        columns: [
+          { key: "Anno", label: "Anno" },
+          { key: "Tipologia", label: "Tipologia" },
+          { key: "Natura", label: "Natura" },
+          { key: "Accertato CP", label: "Accertato" },
+          { key: "Versato CP", label: "Versato" },
+        ],
+      },
+    ],
+  },
+  {
+    surface: "/dati",
     title: "Spesa statale per territorio 2008–2010",
     description: "Spesa del Bilancio dello Stato per territorio destinatario, un dataset per esercizio: Italia, ripartizioni e Regioni sono livelli sovrapposti da non sommare.",
     datasets: [

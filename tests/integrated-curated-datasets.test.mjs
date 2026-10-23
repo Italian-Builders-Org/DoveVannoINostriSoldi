@@ -110,6 +110,7 @@ const mandatoryDatasetIds = [
   "rgs-conto-annuale-occupazione-ente-2010-2024",
   "rgs-conto-annuale-occupazione-tipologia-2010-2024",
   "rgs-conto-annuale-personale-2020",
+  "rgs-rendiconto-entrate-tributarie-2011-2025",
   "rgs-spesa-statale-regionalizzata-2008",
   "rgs-spesa-statale-regionalizzata-2009",
   "rgs-spesa-statale-regionalizzata-2010",
@@ -162,7 +163,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 130,
+  datasets: 131,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -188,6 +189,7 @@ const expectedReferencePeriods = {
   "rgs-conto-annuale-occupazione-ente-2010-2024": "Rilevazioni 2010-2024; personale al 31 dicembre per istituzione (tempo pieno e part time) e lavoro flessibile in unità annue",
   "rgs-conto-annuale-occupazione-tipologia-2010-2024": "Rilevazioni 2010-2024; personale al 31 dicembre per tipo di istituzione (tempo pieno e part time) e lavoro flessibile in unità annue",
   "rgs-conto-annuale-personale-2020": "Anno 2020; personale al 31 dicembre",
+  "rgs-rendiconto-entrate-tributarie-2011-2025": "Esercizi finanziari 2011-2025; entrate tributarie (Titolo I) per natura, categoria e tipologia: previsioni, accertato, versato e residui in competenza, residui e cassa",
   "rgs-spesa-statale-regionalizzata-2008": "Esercizio finanziario 2008; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2009": "Esercizio finanziario 2009; spesa del Bilancio dello Stato per territorio destinatario finale",
   "rgs-spesa-statale-regionalizzata-2010": "Esercizio finanziario 2010; spesa del Bilancio dello Stato per territorio destinatario finale",

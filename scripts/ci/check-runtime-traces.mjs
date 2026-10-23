@@ -177,6 +177,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["integrated/rows/mef-patrimonio-contratti-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/mef-patrimonio-adempimento-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/mef-patrimonio-fabbricati-fermi-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route", "patrimonio/page", "api/patrimonio/punti/route"]],
+    ["integrated/rows/rgs-rendiconto-entrate-tributarie-2011-2025.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-2013.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-2019.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["integrated/rows/rgs-spesa-statale-regionalizzata-2022.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],

@@ -164,7 +164,7 @@ const mandatoryDatasetIds = [
 
 const expectedTotals = {
   catalogOnlyRows: 12_979_505,
-  datasets: 130,
+  datasets: 132,
   derivedOnlyRows: 2_841,
   publicRows: INTEGRATED_CORPUS_CONTRACT.publicRows,
   sourceBytes: INTEGRATED_CORPUS_CONTRACT.sourceBytes,
@@ -210,8 +210,8 @@ const expectedReferencePeriods = {
   "rgs-spesa-statale-regionalizzata-fondi": "Esercizi finanziari 2008-2023; spesa effettuata attraverso i Fondi oggetto della pubblicazione per territorio destinatario finale",
   "pnrr-progetti": "2026-06-13",
   "ted-avvisi-italia-2026-08": "Pubblicazioni TED 1–31 agosto 2026; almeno un committente con paese ITA",
-  "ted-bandi-aperti-italia-2026-10": "Scadenza offerte dal 23 ottobre 2026; committenti ITA; avvisi di gara TED",
-  "consip-bandi-gare-programma-2026": "Bandi e gare del programma Consip · file 2026",
+  "ted-bandi-aperti-italia-2026-10": "Scadenza presentazione offerte dal 23 ottobre 2026; committenti ITA",
+  "consip-bandi-gare-programma-2026": "Bandi e gare del programma · anno 2026",
   "mim-scuole-statali-comuni": "Anno scolastico 2026/27; anagrafe MIM al 1° settembre 2026; raccordo catastale/ISTAT dal rilascio MEF comunale 2024",
   "istat-misura-comune-dipendenza-anziani": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",
   "istat-misura-comune-dipendenza-strutturale": "2014-2024; valori al 31 dicembre di ciascun anno; geografia al 31 dicembre 2024",

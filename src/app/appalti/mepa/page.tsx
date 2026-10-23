@@ -24,7 +24,7 @@ function param(value: string | string[] | undefined): string | undefined {
 function openLabel(status: "aperto" | "scaduto" | "senza-scadenza"): string {
   if (status === "aperto") return "Con scadenza futura nel CSV";
   if (status === "scaduto") return "Scadenza passata nel CSV";
-  return "Senza Data_Termine nel CSV — non etichettato come aperto";
+  return "Senza Data_Termine nel CSV: non etichettato come aperto";
 }
 
 export default async function MepaPage({ searchParams }: { searchParams: Promise<Search> }) {

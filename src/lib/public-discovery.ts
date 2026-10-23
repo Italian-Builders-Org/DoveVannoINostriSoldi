@@ -20,7 +20,9 @@ export const PUBLISHED_MONTHLY_REPORT_PATHS = [
 export const PUBLIC_INDEXABLE_PATHS = [
   "/",
   "/appalti",
+  "/appalti/bandi-aperti",
   "/appalti/dettaglio",
+  "/appalti/mepa",
   "/appalti/operatori",
   "/appalti/ted",
   "/assistente",

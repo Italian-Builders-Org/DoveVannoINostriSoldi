@@ -43,7 +43,7 @@ committente in Italia: bandi/consultazioni, non aggiudicazioni ANAC né ordini
 MePA. [Contratto e riproduzione](TED_BANDI_APERTI.md).
 Il dataset `consip-bandi-gare-programma-2026` aggiunge 1.839 righe dal CSV
 bandiegare2026 su dati.consip.it (CC BY 4.0): metadati di iniziative/lotti del
-programma Consip, distinti dalla bacheca live MePA. [Contratto e riproduzione](TED_BANDI_APERTI.md#consip-programma).
+programma Consip, distinti dalla bacheca live MePA. [Contratto e riproduzione](TED_BANDI_APERTI.md).
 Il dataset `pnrr-progetti` aggiunge 291.398 registrazioni nazionali ReGiS,
 con 285.992 CUP validi distinti e localizzazioni collegate esattamente.
 Finanziamenti e pagamenti restano distinti. [Contratto e riproduzione](PNRR_PROJECTS.md).

@@ -2,7 +2,7 @@
 
 Questo documento descrive il rilascio pubblico completo del corpus integrato.
 La prova canonica è `data/source-ledger/release-proof.json`: collega ricevuta
-degli elementi, catalogo delle identità di fonte e 130 ricevute dataset.
+degli elementi, catalogo delle identità di fonte e 132 ricevute dataset.
 
 ## Contratto chiuso
 
@@ -11,13 +11,13 @@ degli elementi, catalogo delle identità di fonte e 130 ricevute dataset.
 | Elementi inventariati | 51.303 | 46.438 file regolari + 4.860 hard link + 5 link simbolici |
 | Identità di fonte | 34.071 | 32.578 pubblicate + 1.493 in quarantena |
 | Occorrenze di fonte | 262.618 | tutte associate a una delle 34.071 identità |
-| Dataset correnti | 130 | 108 interrogabili + 19 `catalog-only` + 3 `derived-only` |
-| Righe sorgente | 21.006.835 | 8.024.489 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
-| Byte delle sorgenti selezionate | 4.000.978.715 | somma dei byte impegnati nelle 130 ricevute |
+| Dataset correnti | 132 | 110 interrogabili + 19 `catalog-only` + 3 `derived-only` |
+| Righe sorgente | 21.010.381 | 8.028.035 pubbliche + 12.979.505 `catalog-only` + 2.841 `derived-only` |
+| Byte delle sorgenti selezionate | 4.002.233.309 | somma dei byte impegnati nelle 132 ricevute |
 
 La quarantena del catalogo non elimina l'identità: conserva ID opaco,
 classificazione, occorrenze e motivo, ma non il valore privato o non sicuro.
-Le 8.024.489 righe della proiezione pubblica restano invece interrogabili anche
+Le 8.028.035 righe della proiezione pubblica restano invece interrogabili anche
 quando la risorsa dichiara `licenseStatus: not-declared`; questo stato è un
 caveat di riuso, non un filtro di pubblicazione. Quattro insiemi Consip, che
 totalizzano 1.032.426 unità sorgente, hanno licenza verificata CC BY 4.0;
@@ -37,6 +37,13 @@ tramite le identità MEF (CC BY 3.0 IT). [Contratto e riproduzione](MIM_SCHOOL_S
 Il dataset `ted-avvisi-italia-2026-08` aggiunge 2.825 avvisi TED, con almeno
 un committente in Italia e pubblicazione ad agosto 2026. Riuso degli avvisi
 GUUE verificato; nessuna somma o join con ANAC. [Contratto e riproduzione](TED_NOTICES.md).
+Il dataset `ted-bandi-aperti-italia-2026-10` aggiunge 1.707 avvisi TED con
+scadenza presentazione offerte non precedente al 23 ottobre 2026 e almeno un
+committente in Italia: bandi/consultazioni, non aggiudicazioni ANAC né ordini
+MePA. [Contratto e riproduzione](TED_BANDI_APERTI.md).
+Il dataset `consip-bandi-gare-programma-2026` aggiunge 1.839 righe dal CSV
+bandiegare2026 su dati.consip.it (CC BY 4.0): metadati di iniziative/lotti del
+programma Consip, distinti dalla bacheca live MePA. [Contratto e riproduzione](TED_BANDI_APERTI.md#consip-programma).
 Il dataset `pnrr-progetti` aggiunge 291.398 registrazioni nazionali ReGiS,
 con 285.992 CUP validi distinti e localizzazioni collegate esattamente.
 Finanziamenti e pagamenti restano distinti. [Contratto e riproduzione](PNRR_PROJECTS.md).
@@ -131,6 +138,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `collaboratori-frammenti` | Frammenti collaboratori supplementari | appointments | 626 | 0 | 626 | catalog-only | documented-fact | not-declared |
 | `comparazione-ue` | Confronti UE sul personale | personnel | 127 | 0 | 125 | catalog-only | needs-explanation | not-declared |
 | `comparazione-ue-staff-funzioni` | Confronti UE per funzione | personnel | 26 | 0 | 26 | catalog-only | needs-explanation | not-declared |
+| `consip-bandi-gare-programma-2026` | Bandi e gare Consip · programma · 2026 | procurement | 1.839 | 1.839 | 1.839 | rows | documented-fact | verified-open-cc-by-4.0 |
 | `consip-contratti-riconciliati` | Contratti Consip riconciliati | procurement | 3.669 | 3.669 | 0 | rows | documented-fact | not-declared |
 | `consip-ranking` | Ranking derivato Consip | procurement | 1 | 0 | 0 | derived-only | needs-explanation | not-declared |
 | `consip-snapshot-strutturati` | Snapshot strutturati Consip | procurement | 1.028.559 | 0 | 0 | catalog-only | documented-fact | verified-open-cc-by-4.0 |
@@ -225,6 +233,7 @@ fornisce comunque un percorso di provenienza verificabile.
 | `rgs-spesa-statale-regionalizzata-enti` | RGS · spesa regionalizzata degli enti 2008-2023 | state-accounts | 1.664 | 1.664 | 1.664 | rows | documented-fact | not-declared |
 | `rgs-spesa-statale-regionalizzata-fondi` | RGS · spesa regionalizzata attraverso i fondi 2008-2023 | state-accounts | 1.664 | 1.664 | 1.664 | rows | documented-fact | not-declared |
 | `ted-avvisi-italia-2026-08` | Avvisi TED · committenti in Italia · agosto 2026 | procurement | 2.825 | 2.825 | 2.825 | rows | documented-fact | verified-open-eu-reuse |
+| `ted-bandi-aperti-italia-2026-10` | Bandi TED aperti · committenti in Italia · ottobre 2026 | procurement | 1.707 | 1.707 | 1.707 | rows | documented-fact | verified-open-eu-reuse |
 | `vincitori` | Aggregati fornitori e settori | procurement | 682 | 682 | 0 | rows | documented-fact | not-declared |
 | `vincitori-cig` | Vincitori collegati ai CIG | procurement | 120 | 120 | 119 | rows | documented-fact | not-declared |
 | `salute-posti-letto-2023` | Posti letto per Regione e disciplina · 2023 | health | 1.019 | 1.019 | 0 | rows | documented-fact | verified-open-iodl-2.0 |

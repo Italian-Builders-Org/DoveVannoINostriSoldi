@@ -97,9 +97,10 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/economia",
     label: "Economia",
     icon: "economy",
-    aliases: ["/inflazione", "/cuneo-fiscale", "/busta-paga", "/pil", "/disuguaglianza", "/edilizia"],
+    aliases: ["/inflazione", "/cuneo-fiscale", "/busta-paga", "/pil", "/disuguaglianza", "/edilizia", "/analisi/immobili-italia-2026"],
     children: [
       { href: "/economia", label: "Panoramica" },
+      { href: "/analisi/immobili-italia-2026", label: "Immobili in Italia 2026 (AdE)" },
       { href: "/inflazione", label: "Inflazione IPCA (prezzi)" },
       { href: "/cuneo-fiscale", label: "Cuneo fiscale (OECD)" },
       { href: "/busta-paga", label: "Contatore busta paga" },

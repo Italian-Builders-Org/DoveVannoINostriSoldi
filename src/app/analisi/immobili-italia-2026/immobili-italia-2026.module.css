@@ -1,0 +1,128 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+.stats {
+  margin-top: 0.5rem;
+}
+
+.heroRate {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.1;
+  display: block;
+  margin: 0.35rem 0;
+}
+
+.heroLabel {
+  color: var(--text-muted, #555);
+  margin: 0;
+}
+
+.chartFigure {
+  margin: 0;
+}
+
+.chart {
+  width: 100%;
+  height: min(320px, 55vw);
+}
+
+.chartTooltip {
+  background: var(--surface-elevated, #fff);
+  border: 1px solid var(--border-subtle, #ddd);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.chartTooltip ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.filters {
+  display: grid;
+  gap: 1rem;
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.search > div {
+  flex: 1 1 14rem;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.tableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tableWrap th,
+.tableWrap td {
+  text-align: left;
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--border-subtle, #e5e5e5);
+  vertical-align: top;
+}
+
+.tableWrap th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.results {
+  color: var(--text-muted, #555);
+  margin: 0.75rem 0;
+}
+
+.chapterList {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chapterList li {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-subtle, #e5e5e5);
+  border-radius: 0.5rem;
+}
+
+.missing {
+  font-size: 0.9rem;
+  color: var(--text-muted, #555);
+}

@@ -15,6 +15,7 @@ import { inspectHomeCompositionSpacing } from "./home-composition.mjs";
 import { inspectPnrrProjects } from "./pnrr-projects.mjs";
 import { inspectTedNotices } from "./ted-notices.mjs";
 import { inspectOpenProcurement } from "./open-procurement.mjs";
+import { inspectImmobiliItalia2026 } from "./immobili-italia-2026.mjs";
 import { inspectAnacCpv } from "./anac-cpv.mjs";
 import { inspectAnacConcentration } from "./anac-concentration.mjs";
 import { inspectUniversityResearch } from "./university-research.mjs";
@@ -2612,6 +2613,14 @@ try {
     const label = `Bandi aperti e MePA ${width}px`;
     await runScenario(browser, {
       label, pathname: "/appalti", width, validate: inspectOpenProcurement,
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `AdE immobili Italia 2026 ${width}px`;
+    await runScenario(browser, {
+      label, pathname: "/analisi/immobili-italia-2026", width, validate: inspectImmobiliItalia2026,
     });
     completed.push(label);
   }

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 
 const dossiers = [
   {
+    href: "/analisi/immobili-italia-2026",
+    title: "Immobili in Italia 2026",
+    period: "AdE · anno d'imposta 2023 · edizione 2026",
+    description:
+      "Prelievo IMU/TASI, stock per provincia e tabelle ufficiali del volume AdE. Non sono aliquote comunali né pagamenti SIOPE.",
+  },
+  {
     href: "/inflazione",
     title: "Inflazione IPCA",
     period: "Eurostat HICP · prezzi al consumo",

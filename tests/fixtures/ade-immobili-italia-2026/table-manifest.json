@@ -1,0 +1,272 @@
+{
+  "2026_01_01_01": {
+    "bytes": 1345,
+    "sha256": "d41d60528f5936d4f9cac933748843e545e41084eb25236475accae775504869",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_01&cq=1"
+  },
+  "2026_01_01_02": {
+    "bytes": 2268,
+    "sha256": "58163d46c07ebff77d94044450acce72a2cab86ec5615137d53cba4ea8012272",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_02&cq=1"
+  },
+  "2026_01_01_03": {
+    "bytes": 1503,
+    "sha256": "2b8112208414b570174ef6480e88c91b086d48b5b8c8cee5a49f5504fb618f7f",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_03&cq=1"
+  },
+  "2026_01_01_04": {
+    "bytes": 2500,
+    "sha256": "cf8890fc4e377780a5a90209b1b9f10644c257fac33cae01c0f5b9abe3be0593",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_04&cq=1"
+  },
+  "2026_01_01_05": {
+    "bytes": 1502,
+    "sha256": "e8268e46e9f0d2855bc3182b815455aa14461401f217d073dff4aa7ea985bfec",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_05&cq=1"
+  },
+  "2026_01_01_06": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_01_06&cq=1"
+  },
+  "2026_01_02_01": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_02_01&cq=1"
+  },
+  "2026_01_02_02": {
+    "bytes": 1047,
+    "sha256": "d12d2dfe3a0d027f7419d4b1305e05a8194eb2136b3c27064325120239dc6745",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_02_02&cq=1"
+  },
+  "2026_01_03_01": {
+    "bytes": 1144,
+    "sha256": "e74494370b2067b5ec7c3ac999e73715933f0598e5571030c7e91fb4c21f8135",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_01&cq=1"
+  },
+  "2026_01_03_02": {
+    "bytes": 1168,
+    "sha256": "70aa06efcefa07fad42ae5c32b34af788c0ff6f54c885cf127a6a18c28dfa445",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_02&cq=1"
+  },
+  "2026_01_03_03": {
+    "bytes": 1097,
+    "sha256": "ae1a5c8f750d6ff17df12cc56e0d8df433860dc32e3afd603e140a372ec51013",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_03&cq=1"
+  },
+  "2026_01_03_04": {
+    "bytes": 1152,
+    "sha256": "c83f079dac797c945417f6f042c02fd26e65bd071f87faafcc146a5b88fc440b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_04&cq=1"
+  },
+  "2026_01_03_05": {
+    "bytes": 1186,
+    "sha256": "47727af97e22e592d523ee1996a93bc31830c4f7daccd4974cd86a4a98d5bcc8",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_05&cq=1"
+  },
+  "2026_01_03_06": {
+    "bytes": 1161,
+    "sha256": "42dc1af80c00e4806f992a65643b5e4e1fe59a3273c31ece2af41e10999d2f77",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_06&cq=1"
+  },
+  "2026_01_03_07": {
+    "bytes": 1160,
+    "sha256": "ccba968eabf71bc8e0642f2e05e7e7fb8f63be7bc4d5a0591d99041372730129",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_07&cq=1"
+  },
+  "2026_01_03_08": {
+    "bytes": 1170,
+    "sha256": "8291c651c533a88f875fc65924d7356354385982b184cf554b5d1194de576991",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_08&cq=1"
+  },
+  "2026_01_03_09": {
+    "bytes": 1156,
+    "sha256": "fcdb860aed715c6ee3965f4d039b614fac12a1a6a317dd0217ac451c6cbfa227",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_09&cq=1"
+  },
+  "2026_01_03_10": {
+    "bytes": 1207,
+    "sha256": "25aa4404bccfeba3e2fd82137b3bfd554434d0b07cfbcbf4a303bf503943e430",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_10&cq=1"
+  },
+  "2026_01_03_11": {
+    "bytes": 1201,
+    "sha256": "ac76bb2aaa173d2ed273c4e36989b56a5379b7c820c10e4ebf4f538192e94856",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_11&cq=1"
+  },
+  "2026_01_03_12": {
+    "bytes": 1213,
+    "sha256": "879a2ec7fea3cc8cadd7c0d227649f77c5fc098aabc39d9c3b62e7db0e2604d9",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_01_03_12&cq=1"
+  },
+  "2026_02_01_01": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_01_01&cq=1"
+  },
+  "2026_02_01_02": {
+    "bytes": 3126,
+    "sha256": "6debc2c7409ec4e17d6d6d98f4ad96b73b645a6da5178f78f9cad50afdb51681",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_01_02&cq=1"
+  },
+  "2026_02_01_03": {
+    "bytes": 3269,
+    "sha256": "5753c923706deb602a056ab0b9e19bfefc72ab30d5d49fdd0b83e76f62696d79",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_01_03&cq=1"
+  },
+  "2026_02_02_04": {
+    "bytes": 1032,
+    "sha256": "afe89b6241ba7a855d6a2261f5a5bb20807064f3585cd1eb0762bcd98abdd2fa",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_02_04&cq=1"
+  },
+  "2026_02_03_01": {
+    "bytes": 3139,
+    "sha256": "fd8bdb2d2cb546c095fd39b99f6521faca96e871b2bb5d57af1193c497117854",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_03_01&cq=1"
+  },
+  "2026_03_01_02": {
+    "bytes": 1318,
+    "sha256": "c5da084565f0eafc0ba43434739c37c9c8c28b02366b1fea82b6d191a2a43d0b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_01_02&cq=1"
+  },
+  "2026_03_02_01": {
+    "bytes": 1587,
+    "sha256": "39d4a59f852f3a0c4bef78ad13d1a08b454c6914d299e1a89bb66f05ae374b0a",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_02_01&cq=1"
+  },
+  "2026_03_03_01": {
+    "bytes": 1539,
+    "sha256": "0e41767ac68e935c96d2080ba601e2999bc302e341b9c813042dddaacb4d0d5b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_03_01&cq=1"
+  },
+  "2026_03_03_02": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_03_02&cq=1"
+  },
+  "2026_03_03_03": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_03_03&cq=1"
+  },
+  "2026_03_04_01": {
+    "bytes": 2306,
+    "sha256": "2483cd0eb6fd3ba703fd5b2a75b0453caf9796577054fc0ba5c288bf625dcc68",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_04_01&cq=1"
+  },
+  "2026_03_04_02": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_04_02&cq=1"
+  },
+  "2026_03_04_03": {
+    "bytes": 698,
+    "sha256": "3dcc8f2c4c5d2c0311aa32eacf522e266aab8eef1ddf749a6111fe9f4d97c010",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_04_03&cq=1"
+  },
+  "2026_03_04_04": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_04_04&cq=1"
+  },
+  "2026_03_05_01": {
+    "bytes": 1144,
+    "sha256": "83dd9888833932ecf4bc802b98aebf5f61cf19f8c2c1cef3d461793635c7ccfb",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_05_01&cq=1"
+  },
+  "2026_03_05_02": {
+    "bytes": 1594,
+    "sha256": "f792932ca513e4f57ad099565468d83416fc429682dc780a3e355f50d019d898",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_05_02&cq=1"
+  },
+  "2026_03_06_01": {
+    "bytes": 1393,
+    "sha256": "6f237da2ad030e842a3e8c51f9386fa4c8add4ebb7bd408473a8e512b6d1eeb3",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_06_01&cq=1"
+  },
+  "2026_03_06_02": {
+    "bytes": 1084,
+    "sha256": "b63afea7d9e5add59fe43dd0a37db4cb6b002c5c8612905b858fb0e987d36e85",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_06_02&cq=1"
+  },
+  "2026_03_06_03": {
+    "bytes": 3499,
+    "sha256": "9947844c2409df34c91ce1222f56c8243307bb53fc5ff197e14b7b02bcbfb473",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_06_03&cq=1"
+  },
+  "2026_03_07_01": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_07_01&cq=1"
+  },
+  "2026_03_07_02": {
+    "bytes": 1692,
+    "sha256": "ae722f4874d76272aaf874c77d84a539f8330dd9c092837af5b8a8ff48c9a2ea",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_07_02&cq=1"
+  },
+  "2026_03_08_01": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_08_01&cq=1"
+  },
+  "2026_03_08_02": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_08_02&cq=1"
+  },
+  "2026_03_08_03": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_08_03&cq=1"
+  },
+  "2026_04_01_05": {
+    "bytes": 6584,
+    "sha256": "fcd2d73b867c27dad2fd581f2f32117d8fc18d6596136f05b86a309524d2b5ca",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_04_01_05&cq=1"
+  },
+  "2026_05_02_01": {
+    "bytes": 1465,
+    "sha256": "142585654566edf208e2b746136b526a53a708dc145f280d5db19505b50bb36e",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_01&cq=1"
+  },
+  "2026_05_02_03": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_03&cq=1"
+  },
+  "2026_05_02_04": {
+    "bytes": 2663,
+    "sha256": "c7cb91ed966f26f262332f5ba7f42aabdb5e235b5dc5b7c4993f923fb921ba7c",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_04&cq=1"
+  },
+  "2026_05_02_05": {
+    "bytes": 1400,
+    "sha256": "ce915fd636faaf10f5b0edc83ae4583e8ecb1c05f5b17253efafaa573abcb2df",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_05&cq=1"
+  },
+  "2026_05_02_08": {
+    "bytes": 1180,
+    "sha256": "61c8125329e565e8d9a2a478628f42c6431cab10da622487963dfb35910e40a9",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_08&cq=1"
+  },
+  "2026_05_02_09": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_02_09&cq=1"
+  },
+  "2026_05_03_10": {
+    "bytes": 1456,
+    "sha256": "578de27f17271f3920c2b72258f6bcedc57fbbd2105cad4004f73b31a001512a",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_03_10&cq=1"
+  },
+  "2026_05_03_11": {
+    "bytes": 4,
+    "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_03_11&cq=1"
+  },
+  "2026_05_03_12": {
+    "bytes": 2748,
+    "sha256": "cabe0d4047ece6754d75f527975d48e6536331094d8f751db6bb535562635caf",
+    "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_05_03_12&cq=1"
+  }
+}

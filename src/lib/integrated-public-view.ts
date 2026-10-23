@@ -336,6 +336,9 @@ function reuseNote(dataset: IntegratedDatasetCatalogEntry): string {
   if (dataset.licenseStatus === "verified-open-cc-by-3.0") {
     return "Riuso verificato: CC BY 3.0.";
   }
+  if (dataset.licenseStatus === "verified-open-cc-by-3.0-it") {
+    return "Riuso verificato: CC BY 3.0 IT (portale open data AdE/MEF).";
+  }
   return "Condizioni di riuso non dichiarate nella sorgente: verificare l'asset primario prima di riutilizzarlo.";
 }
 

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "taxYear": 2023,
+  "publicationEdition": 2026,
+  "landingUrl": "https://www.agenziaentrate.gov.it/portale/gli-immobili-in-italia-2026",
+  "openDataPortalUrl": "https://www1.finanze.gov.it/finanze/immobili/public/#/",
+  "license": {
+    "status": "verified-open-cc-by-3.0-it",
+    "url": "https://creativecommons.org/licenses/by/3.0/it/",
+    "termsUrl": "https://www1.finanze.gov.it/finanze/immobili/public/i18n/it.json",
+    "path": "tests/fixtures/ade-immobili-italia-2026/i18n-it.json",
+    "sha256": "925f89342df9d24c77a23d64eb824aad3f397ae1a1cf255171441b8eb7fe0dfc",
+    "bytes": 9502
+  },
+  "assets": {
+    "opendataZip": {
+      "path": "tests/fixtures/ade-immobili-italia-2026/opendata.zip",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/contenuti/opendata.zip",
+      "sha256": "8e732f9f894a5f29c1575d977ddb92ab05feb78bbd79f983aef1649251993e7c",
+      "bytes": 723163
+    },
+    "apiTree": {
+      "path": "tests/fixtures/ade-immobili-italia-2026/api-tree.json.gz",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_tree",
+      "sha256": "00ad7a1e0114ddd78ece31b6dd5c278fbc096a4add9c6951152b8cbe6a5842fa",
+      "bytes": 6540
+    },
+    "tableManifest": {
+      "path": "tests/fixtures/ade-immobili-italia-2026/table-manifest.json"
+    },
+    "tablesDir": "tests/fixtures/ade-immobili-italia-2026/tables",
+    "volumePdf": {
+      "path": null,
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/contenuti/immobili_2026.pdf",
+      "note": "PDF di sintesi citato in pagina; i numeri pubblicati qui provengono da open data CSV e API tabelle 2026."
+    }
+  },
+  "utilizzoCsvMembers": [
+    "2023/UTILIZZO_IMMOBILI/utilizzo_abitazioni_PROV_23.csv",
+    "2023/UTILIZZO_IMMOBILI/utilizzo_pertinenze_PROV_23.csv",
+    "2023/UTILIZZO_IMMOBILI/utilizzo_negozi_PROV_23.csv",
+    "2023/UTILIZZO_IMMOBILI/utilizzo_uffici_PROV_23.csv",
+    "2023/UTILIZZO_IMMOBILI/utilizzo_produttivo_PROV_23.csv",
+    "2023/UTILIZZO_IMMOBILI/utilizzo_altro_PROV_23.csv"
+  ],
+  "prelievoTableId": "2026_04_01_05",
+  "datasets": {
+    "ade-immobili-prelievo-2015-2024": {
+      "relativePath": "ade-immobili-prelievo-2015-2024.psv"
+    },
+    "ade-immobili-utilizzo-provincia-2023": {
+      "relativePath": "ade-immobili-utilizzo-provincia-2023.psv"
+    },
+    "ade-immobili-tabelle-2026": {
+      "relativePath": "ade-immobili-tabelle-2026.psv"
+    }
+  },
+  "analysisArtifact": {
+    "path": "src/data/generated/ade-immobili-italia-2026.data.json",
+    "metaPath": "src/data/generated/ade-immobili-italia-2026.meta.json"
+  }
+}

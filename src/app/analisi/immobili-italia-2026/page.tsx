@@ -168,7 +168,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
           {analysis.chapters.map((chapter) => (
             <li key={chapter.id}>
               <strong>{chapter.title}</strong>
-              <span> — {integer(chapter.tables)} tabelle con celle scaricabili</span>
+              <span>: {integer(chapter.tables)} tabelle con celle scaricabili</span>
             </li>
           ))}
         </ul>
@@ -237,7 +237,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
                   <td>{row.provincia}</td>
                   <td>{row.categoria}</td>
                   <td>{row.indicatore}</td>
-                  <td>{row.valore || "—"}</td>
+                  <td>{row.valore || "n.d."}</td>
                   <td>
                     <a href={row.sourceUrl} rel="noreferrer" target="_blank">
                       Open data ↗
@@ -312,7 +312,7 @@ export default async function AdeImmobiliItalia2026Page({ searchParams }: { sear
                   <td>{row.tableId}</td>
                   <td>{row.row}</td>
                   <td>{row.column}</td>
-                  <td>{row.value || "—"}</td>
+                  <td>{row.value || "n.d."}</td>
                   <td>
                     <a href={row.sourceUrl} rel="noreferrer" target="_blank">
                       API ↗

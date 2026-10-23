@@ -238,7 +238,7 @@ export default async function AdeImmobiliItalia2026Page({
         </ul>
         <PrelievoChart series={prelievoSeries} />
         <p className={styles.datasetLinks}>
-          <Link href={`/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}`}>Dataset prelievo 2015–2024 →</Link>
+          <Link href={`/dati/${ADE_IMMOBILI_PRELIEVO_DATASET}`}>Dataset prelievo 2015-2024 →</Link>
         </p>
       </section>
 
@@ -306,7 +306,7 @@ export default async function AdeImmobiliItalia2026Page({
             {tables.italyResidentialMld !== null ? `${moneyMld.format(tables.italyResidentialMld)} mld €` : "n.d."}
           </strong>
           {tables.italyResidentialOverGdp !== null
-            ? ` — ${moneyMld.format(tables.italyResidentialOverGdp)} volte il PIL 2023`
+            ? ` (${moneyMld.format(tables.italyResidentialOverGdp)} volte il PIL 2023)`
             : ""}
           . Non è gettito fiscale.
         </p>

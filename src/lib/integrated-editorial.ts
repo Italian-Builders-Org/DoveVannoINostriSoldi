@@ -806,6 +806,36 @@ export const EDITORIAL_TOPICS: readonly EditorialTopic[] = [
         ],
       },
       {
+        id: "ade-immobili-prelievo-2015-2024",
+        label: "AdE · prelievo fiscale sugli immobili 2015-2024",
+        columns: [
+          { key: "Voce", label: "Voce" },
+          { key: "Anno", label: "Anno" },
+          { key: "Importo (mld euro)", label: "Importo (mld €)" },
+        ],
+      },
+      {
+        id: "ade-immobili-utilizzo-provincia-2023",
+        label: "AdE · utilizzo immobiliare per provincia 2023",
+        columns: [
+          { key: "Provincia (sigla)", label: "Provincia" },
+          { key: "Categoria utilizzo", label: "Categoria" },
+          { key: "Indicatore", label: "Indicatore" },
+          { key: "Valore", label: "Valore" },
+        ],
+      },
+      {
+        id: "ade-immobili-tabelle-2026",
+        label: "AdE · tabelle Immobili in Italia 2026",
+        columns: [
+          { key: "Tabella id", label: "Tabella" },
+          { key: "Titolo tabella", label: "Titolo" },
+          { key: "Riga", label: "Riga" },
+          { key: "Colonna", label: "Colonna" },
+          { key: "Valore", label: "Valore" },
+        ],
+      },
+      {
         id: "arera-entrate-2024-2025",
         label: "ARERA · entrate e contributi 2024-2025",
         columns: [

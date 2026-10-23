@@ -274,7 +274,7 @@ test("every queryable artifact passes schema, hash, decompression and URL gates"
       view.selectIntegratedDataset({ datasetId: dataset.id, limit: 1 }),
     )));
   }
-  assert.equal(checked.length, 110);
+  assert.equal(checked.length, 113);
   assert.equal(
     checked.reduce((sum, result) => sum + result.dataset.publicRows, 0),
     INTEGRATED_CORPUS_CONTRACT.publicRows,

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server.js";
 import { NextResponse } from "next/server.js";
+import { isLoopbackHost } from "@/lib/http/public-post-guard";
 import {
   SNAPSHOT_PREFIX,
   IPA_CODE,
@@ -66,7 +67,18 @@ function getClientIp(request: NextRequest): string {
   return "unknown";
 }
 
+/** Production gates and local `next start` share one loopback client; WAF applies in prod. */
+function bypassProxyRateLimit(request: NextRequest): boolean {
+  if (process.env.VERCEL === "1") return false;
+  try {
+    return isLoopbackHost(new URL(request.url).host);
+  } catch {
+    return false;
+  }
+}
+
 function rateLimit(request: NextRequest, state: RateState, perIpMax: number): NextResponse | null {
+  if (bypassProxyRateLimit(request)) return null;
   const now = Date.now();
   const { ipHits, globalHits } = state;
   // Vercel always forwards a client address. Without one, do not share a single

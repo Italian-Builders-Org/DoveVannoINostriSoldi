@@ -63,7 +63,7 @@ test("immersive chrome helpers treat only the atlas as immersive", async () => {
   assert.equal(isPoliticiImmersive("/", "comuni.dovevannoinostrisoldi.com"), false);
 });
 
-test("training crawlers share an entity allowance without blocking user-initiated fetches", (t) => {
+test("training crawlers share an entity allowance; procurement surfaces also cap other clients on the same IP", (t) => {
   let now = Date.now() + 60_000;
   t.mock.method(Date, "now", () => now);
   const request = (userAgent, path = "/enti/c_a783/appalti", ip = "192.0.2.20") =>
@@ -80,14 +80,31 @@ test("training crawlers share an entity allowance without blocking user-initiate
     assert.equal(response.headers.get("retry-after"), "60");
     assert.equal(response.headers.get("cache-control"), "private, no-store");
   }
+  // Procurement surfaces share the IP budget with every client, including browsers.
   for (const agent of ["Claude-User/1.0", "Claude-SearchBot/1.0", "Mozilla/5.0"]) {
-    assert.equal(proxy(request(agent)).status, 200, agent);
+    assert.equal(proxy(request(agent)).status, 429, agent);
   }
   // One exhausted client cannot spend another client's or the API's allowance.
   assert.equal(proxy(request("ClaudeBot/1.0", "/enti/c_h501", "192.0.2.21")).headers.get("x-middleware-next"), "1");
   assert.equal(proxy(request("ClaudeBot/1.0", "/api/health")).headers.get("x-middleware-next"), "1");
   now += 60_000;
   assert.equal(proxy(request("ClaudeBot/1.0")).status, 200);
+});
+
+test("browser clients share the procurement surface allowance", (t) => {
+  let now = Date.now() + 120_000;
+  t.mock.method(Date, "now", () => now);
+  const request = (path, ip = "192.0.2.40") =>
+    new NextRequest(`https://example.test${path}`, {
+      headers: { "user-agent": "Mozilla/5.0", "x-forwarded-for": ip },
+    });
+  for (let i = 0; i < 30; i++) {
+    assert.equal(proxy(request("/enti/c_h501/appalti")).status, 200);
+  }
+  assert.equal(proxy(request("/enti/c_h501/appalti")).status, 429);
+  assert.equal(proxy(request("/appalti/operatori/op-00000001")).status, 429);
+  assert.equal(proxy(request("/comuni")).status, 200);
+  assert.equal(proxy(request("/enti/c_a783/appalti", "192.0.2.41")).status, 200);
 });
 
 test("MCP compatibility proxy rewrites POST, OPTIONS and HEAD to the canonical endpoint", async () => {
@@ -162,13 +179,16 @@ test("MCP compatibility proxy preserves the human-facing page for safe methods",
   assert.equal(subpath.headers.get("x-middleware-next"), "1");
 });
 
-test("ignored operator parameters cannot split the four default entity snapshots", () => {
+test("ignored operator parameters cannot split the default entity snapshots", () => {
   for (const view of ["summary", "operators", "procedures", "awards"]) {
     const response = proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?view=${view}&operator=op-000001&metric=count`));
     assert.equal(isRewrite(response), true, view);
     assert.equal(new URL(getRewrittenUrl(response)).pathname, `/snapshot-pages/enti/c_h501/${view}`);
   }
-  for (const query of ["view=operator&operator=op-000001", "view=operators&metric=value", "view=awards&page=2", "view=procedures&cpv=30121100", "view=concentration&metric=count&selection=top1&operator=op-000001", "view=operators&metric=count&metric=value"]) {
+  const byValue = proxy(new NextRequest("https://example.test/enti/c_h501/appalti?view=operators&metric=value&operator=op-000001"));
+  assert.equal(isRewrite(byValue), true);
+  assert.equal(new URL(getRewrittenUrl(byValue)).pathname, "/snapshot-pages/enti/c_h501/operators-value");
+  for (const query of ["view=operator&operator=op-000001", "view=awards&page=2", "view=procedures&cpv=30121100", "view=concentration&metric=count&selection=top1&operator=op-000001", "view=operators&metric=count&metric=value"]) {
     assert.equal(isRewrite(proxy(new NextRequest(`https://example.test/enti/c_h501/appalti?${query}`))), false, query);
   }
 });

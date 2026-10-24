@@ -4,11 +4,35 @@ export const DATASET_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 export const OPERATOR_REF = /^op-[0-9]{8}$/;
 /** Conto Annuale institution codes in the committed occupation index. */
 export const OCCUPAZIONE_INSTITUTION_CODE = /^\d{1,10}$/;
+/** Public `view=` values that share a deployment snapshot when unfiltered. */
 export const CACHED_ENTITY_VIEWS = new Set(["summary", "operators", "procedures", "awards"]);
+/**
+ * ISR path slugs under `/snapshot-pages/enti/[codice]/[view]`.
+ * `operators-value` is the unfiltered ranking by attributed value; `operators` stays count.
+ */
+export const CACHED_ENTITY_SNAPSHOT_SLUGS = new Set([
+  "summary",
+  "operators",
+  "operators-value",
+  "procedures",
+  "awards",
+]);
+
+export function entitySnapshotSlug(view: string, metric: string | null): string | null {
+  if (!CACHED_ENTITY_VIEWS.has(view)) return null;
+  if (view === "operators" && metric === "value") return "operators-value";
+  return view;
+}
+
+export function entitySearchParamsFromSlug(slug: string): { view: string; metric?: string } | null {
+  if (slug === "operators-value") return { view: "operators", metric: "value" };
+  if (CACHED_ENTITY_VIEWS.has(slug)) return { view: slug };
+  return null;
+}
 
 export function publicSnapshotPath(path: string): string | null {
   const parts = path.slice(SNAPSHOT_PREFIX.length).split("/");
-  if (parts[0] === "enti" && parts.length === 3 && IPA_CODE.test(parts[1]!) && CACHED_ENTITY_VIEWS.has(parts[2]!)) {
+  if (parts[0] === "enti" && parts.length === 3 && IPA_CODE.test(parts[1]!) && CACHED_ENTITY_SNAPSHOT_SLUGS.has(parts[2]!)) {
     return `/enti/${parts[1]}/appalti`;
   }
   if (parts[0] === "dati" && parts.length === 2 && parts[1]!.length <= 200 && DATASET_ID.test(parts[1]!)) return `/dati/${parts[1]}`;

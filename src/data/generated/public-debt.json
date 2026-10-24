@@ -46,11 +46,11 @@
       "datasetUrl": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_main/default/table?lang=en",
       "apiUrl": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10a_main?lang=en&freq=A&unit=MIO_EUR&sector=S13&na_item=D41PAY&na_item=TE&geo=IT&sinceTimePeriod=2021",
       "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-      "retrievedAt": "2026-10-24T07:10:41Z",
-      "upstreamUpdatedAt": "2026-10-21T11:00:00+0200",
+      "retrievedAt": "2026-08-24T09:21:43Z",
+      "upstreamUpdatedAt": "2026-07-21T11:00:00+0200",
       "cadence": "annuale",
       "bytes": 2994,
-      "sha256": "a312b6dd07d070eff2be2fb1ff87f1aed56a5f16bed06a670b89be4b28a37005"
+      "sha256": "165cf429d82081b4f1a6f079d9a7b2803c1fe5824c053766b8854f6c56bba44a"
     }
   },
   "stock": {
@@ -175,42 +175,42 @@
   "annualInterest": {
     "referenceYear": 2025,
     "previousYear": 2024,
-    "interestExpenseCents": 8715800000000,
-    "previousInterestExpenseCents": 8547500000000,
-    "totalGovernmentExpenditureCents": 115723900000000,
-    "previousTotalGovernmentExpenditureCents": 111169700000000,
-    "interestShareBasisPoints": 753,
-    "previousInterestShareBasisPoints": 769,
+    "interestExpenseCents": 8714600000000,
+    "previousInterestExpenseCents": 8548300000000,
+    "totalGovernmentExpenditureCents": 115530900000000,
+    "previousTotalGovernmentExpenditureCents": 110980400000000,
+    "interestShareBasisPoints": 754,
+    "previousInterestShareBasisPoints": 770,
     "history": [
       {
         "year": 2021,
-        "interestExpenseCents": 6299600000000,
-        "totalGovernmentExpenditureCents": 103322200000000,
+        "interestExpenseCents": 6300400000000,
+        "totalGovernmentExpenditureCents": 103252900000000,
         "interestShareBasisPoints": 610
       },
       {
         "year": 2022,
-        "interestExpenseCents": 8160700000000,
-        "totalGovernmentExpenditureCents": 109722000000000,
+        "interestExpenseCents": 8161400000000,
+        "totalGovernmentExpenditureCents": 109762700000000,
         "interestShareBasisPoints": 744
       },
       {
         "year": 2023,
-        "interestExpenseCents": 7777300000000,
-        "totalGovernmentExpenditureCents": 114848700000000,
+        "interestExpenseCents": 7777900000000,
+        "totalGovernmentExpenditureCents": 114908400000000,
         "interestShareBasisPoints": 677
       },
       {
         "year": 2024,
-        "interestExpenseCents": 8547500000000,
-        "totalGovernmentExpenditureCents": 111169700000000,
-        "interestShareBasisPoints": 769
+        "interestExpenseCents": 8548300000000,
+        "totalGovernmentExpenditureCents": 110980400000000,
+        "interestShareBasisPoints": 770
       },
       {
         "year": 2025,
-        "interestExpenseCents": 8715800000000,
-        "totalGovernmentExpenditureCents": 115723900000000,
-        "interestShareBasisPoints": 753
+        "interestExpenseCents": 8714600000000,
+        "totalGovernmentExpenditureCents": 115530900000000,
+        "interestShareBasisPoints": 754
       }
     ]
   },

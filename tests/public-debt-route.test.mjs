@@ -13,7 +13,7 @@ test("GET /api/debito returns the shared view with public cache policy", async (
   assert.equal(body.ok, true);
   assert.equal(body.stock.totalCents, 320_084_770_000_000);
   assert.equal(body.stock.instrumentShares.currencyAndDepositsBasisPoints, 581);
-  assert.equal(body.citizenImpact.annualInterest.euroPerHundredEuro, 7.53);
+  assert.equal(body.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
   assert.equal(body.measurement.storedUnit, "centesimi di euro interi");
   assert.match(body.measurement.transformation, /non aggiunge precisione/);
   assert.equal(body.sources.eurostat.licenseUrl, body.sources.eurostat.termsUrl);

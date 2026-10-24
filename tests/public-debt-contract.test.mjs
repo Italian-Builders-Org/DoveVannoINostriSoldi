@@ -16,7 +16,7 @@ function assertInvalid(mutator, pattern) {
 test("public debt snapshot validates and derived values reconcile", () => {
   assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_084_770_000_000);
   const view = getPublicDebtView(new Date("2026-10-24T09:00:00Z"));
-  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.53);
+  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
   assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1833);
   assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 581);
   assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1833);

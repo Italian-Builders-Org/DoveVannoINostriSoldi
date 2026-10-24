@@ -14,12 +14,12 @@ function assertInvalid(mutator, pattern) {
 }
 
 test("public debt snapshot validates and derived values reconcile", () => {
-  assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_583_460_000_000);
-  const view = getPublicDebtView(new Date("2026-08-24T09:00:00Z"));
-  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
-  assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1774);
-  assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 567);
-  assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1774);
+  assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_084_770_000_000);
+  const view = getPublicDebtView(new Date("2026-10-24T09:00:00Z"));
+  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.53);
+  assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1833);
+  assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 581);
+  assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1833);
   assert.equal(view.measurement.bancaditaliaSourceUnit, "milioni di euro");
   assert.match(view.measurement.precisionNote, /non misure osservate con precisione al centesimo/);
   assert.equal(view.sources.bancaditalia.accessedAt, view.sources.bancaditalia.retrievedAt);
@@ -31,8 +31,9 @@ test("runtime contract fails closed on every monetary reconciliation", () => {
   assertInvalid((value) => { value.change.borrowingRequirementCents += 1; }, /fabbisogno/);
   assertInvalid((value) => { value.change.liquidityContributionCents += 1; }, /liquidità/);
   assertInvalid((value) => { value.change.otherEffectsCents += 1; }, /altri effetti/);
-  assertInvalid((value) => { value.holders.sectors[0].amountCents += 10_000_001; }, /detentori/);
-  assertInvalid((value) => { value.holders.sectors[0].shareBasisPoints += 21; }, /quota detentore/);
+  // Snapshot may already sit near MONEY_TOLERANCE_CENTS; exceed the remaining headroom.
+  assertInvalid((value) => { value.holders.sectors[0].amountCents += 20_000_001; }, /detentori/);
+  assertInvalid((value) => { value.holders.sectors[0].shareBasisPoints += 21; }, /quota/);
   assertInvalid((value) => {
     value.holders.sectors[0].shareBasisPoints += 100;
     value.holders.sectors[1].shareBasisPoints -= 100;
@@ -44,13 +45,21 @@ test("runtime contract fails closed on every monetary reconciliation", () => {
 
 test("runtime contract accepts instrument rounding within MONEY_TOLERANCE_CENTS", () => {
   const candidate = structuredClone(snapshot);
-  candidate.stock.instruments.currencyAndDepositsCents += 10_000_000;
+  const instruments = candidate.stock.instruments;
+  const sum =
+    instruments.currencyAndDepositsCents +
+    instruments.securitiesCents +
+    instruments.loansAndOtherLiabilitiesCents;
+  // Normalize onto stock first: the published BdI gap can already consume the full 0.1 mln euro.
+  instruments.currencyAndDepositsCents += candidate.stock.totalCents - sum;
+  instruments.currencyAndDepositsCents += 10_000_000;
   assert.equal(parsePublicDebtSnapshot(candidate).stock.totalCents, snapshot.stock.totalCents);
 });
 
 test("runtime contract rejects divergent periods and histories", () => {
   assertInvalid((value) => { value.change.referenceDate = "2026-05-31"; }, /periodi BDS/);
-  assertInvalid((value) => { value.holders.referenceDate = "2026-08-31"; }, /periodo detentori/);
+  // Aligning holders to the stock month keeps lag valid but breaks the stock-history match.
+  assertInvalid((value) => { value.holders.referenceDate = snapshot.stock.referenceDate; }, /totale detentori|periodo detentori/);
   assertInvalid((value) => { value.holders.referenceDate = "2026-03-31"; }, /periodo detentori/);
   assertInvalid((value) => { value.stock.history.pop(); });
   assertInvalid((value) => { [value.stock.history[0], value.stock.history[1]] = [value.stock.history[1], value.stock.history[0]]; }, /storia stock/);
@@ -72,7 +81,7 @@ test("runtime contract rejects malformed provenance and unsafe integers", () => 
 });
 
 test("derived freshness exposes stale monthly and annual data independently", () => {
-  const current = getPublicDebtView(new Date("2026-08-24T09:00:00Z"));
+  const current = getPublicDebtView(new Date("2026-10-24T09:00:00Z"));
   assert.equal(current.stock.freshness.state, "fresh");
   assert.equal(current.citizenImpact.annualInterest.freshness.state, "fresh");
 

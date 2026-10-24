@@ -412,7 +412,7 @@ const exampleQueries = {
   },
   company_active_enterprises: {
     dataset: "company_active_enterprises",
-    period: "2026-07-31",
+    period: "2026-09-30",
     region: "03",
     sector: "G",
     limit: 20,

@@ -82,7 +82,9 @@ test("report:new rifiuta mesi e cutoff non semantici", () => {
 test("il generatore congela i fatti, le due figure e le venti regioni", () => {
   const companies = structuredClone(companySnapshot);
   const draft = buildMonthlyReportDraft({
-    month: "2026-08", cutoff: "2026-09-17",
+    // Mese settembre: lo stock BdI ad agosto e lo stock imprese a luglio restano
+    // periodi completi precedenti; il cutoff copre retrievedAt del debito.
+    month: "2026-09", cutoff: "2026-10-24",
     snapshots: { companies, debt: structuredClone(debtSnapshot), municipal: structuredClone(municipalSnapshot) },
     provenance,
   });
@@ -90,10 +92,8 @@ test("il generatore congela i fatti, le due figure e le venti regioni", () => {
   assert.equal(draft.figures[0].rows.length, 16);
   assert.equal(draft.figures[1].rows.length, 20);
   assert.equal(draft.facts.find((fact) => fact.id === "active-stock-latest").value.value, 5_022_940);
-  assert.equal(draft.facts.find((fact) => fact.id === "public-debt-latest").value.cents, 320_583_460_000_000);
-  // Lo snapshot SIOPE 2026 ora arriva a settembre: fuori dal mese raccontato (agosto),
-  // quindi i pagamenti comunali non entrano nella bozza di agosto.
-  assert.equal(draft.facts.find((fact) => fact.id === "municipal-payments-ytd"), undefined);
+  assert.equal(draft.facts.find((fact) => fact.id === "public-debt-latest").value.cents, 320_084_770_000_000);
+  assert.ok(draft.facts.find((fact) => fact.id === "municipal-payments-ytd"));
   const frozen = JSON.stringify(draft.figures);
   companies.observations[0].value = 999_999_999;
   assert.equal(JSON.stringify(draft.figures), frozen);

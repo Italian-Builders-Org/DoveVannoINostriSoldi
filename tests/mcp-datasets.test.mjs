@@ -147,7 +147,7 @@ test("ISTAT pension MCP projections keep benefits and persons separate", async (
 test("public debt MCP reuses the shared view and accepts no filters", async () => {
   const result = await queryPublicDataset({ dataset: "debito_pubblico_italiano" });
   assert.equal(result.ok, true);
-  assert.equal(result.stock.totalCents, 320_583_460_000_000);
+  assert.equal(result.stock.totalCents, 320_084_770_000_000);
   assert.equal(result.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
   await assert.rejects(queryPublicDataset({ dataset: "debito_pubblico_italiano", year: 2025 }), /Filtri non supportati/);
 });

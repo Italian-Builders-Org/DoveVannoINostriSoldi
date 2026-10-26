@@ -283,7 +283,13 @@ def build_snapshot(spec: dict[str, Any], pdf_path: Path, pdf_payload: bytes) -> 
     return snapshot
 
 
-def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
+def write_outputs(spec_path: Path, data_path: Path, *, artifact_path: str | None = None) -> dict[str, Any]:
+    """Write the data artifact and refresh its pin in the lock.
+
+    ``artifact_path`` is the repository path recorded in the lock. It defaults to
+    ``data_path`` relative to the repository and lets a rebuild into a temporary
+    directory still pin the committed location.
+    """
     spec = _load_json(spec_path, "source lock")
     asset = _dict(_dict(_dict(spec.get("source"), "source").get("assets"), "assets").get("comunicatoStampa"), "comunicato")
     pdf_path = ROOT / _text(asset.get("path"), "path")
@@ -309,16 +315,14 @@ def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
 
     spec = copy.deepcopy(spec)
     spec["integrity"]["dataArtifact"] = {
-        "path": data_path.relative_to(ROOT).as_posix(),
+        "path": artifact_path if artifact_path is not None else data_path.relative_to(ROOT).as_posix(),
         "bytes": data_path.stat().st_size,
         "sha256": sha256_bytes(data_path.read_bytes()),
     }
     spec["integrity"]["lockSha256"] = ""
     spec["integrity"]["lockSha256"] = canonical_lock_sha256(spec)
-    spec_path.write_text(
-        json.dumps(spec, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    # Binary write: the lock bytes are the same on every platform (no CRLF on Windows).
+    spec_path.write_bytes((json.dumps(spec, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
     return snapshot
 
 

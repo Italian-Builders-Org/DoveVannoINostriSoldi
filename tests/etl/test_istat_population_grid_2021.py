@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -20,17 +22,20 @@ class IstatPopulationGrid2021Test(unittest.TestCase):
         self.assertEqual(main(["--check"]), 0)
 
     def test_check_rejects_pin_drift(self) -> None:
-        data_path = ROOT / "src/data/generated/istat-population-grid-2021.data.json"
-        meta_path = ROOT / "src/data/generated/istat-population-grid-2021.meta.json"
-        original = data_path.read_text(encoding="utf-8")
-        try:
-            payload = json.loads(original)
+        committed_data = ROOT / "src/data/generated/istat-population-grid-2021.data.json"
+        committed_meta = ROOT / "src/data/generated/istat-population-grid-2021.meta.json"
+        before = (committed_data.read_bytes(), committed_meta.read_bytes())
+        # The drift is applied to a copy: the committed artifacts are never written.
+        with tempfile.TemporaryDirectory() as tmp:
+            data_path = Path(tmp) / committed_data.name
+            meta_path = Path(tmp) / committed_meta.name
+            shutil.copyfile(committed_meta, meta_path)
+            payload = json.loads(committed_data.read_text(encoding="utf-8"))
             payload["totals"]["residentPopulation"] += 1
             data_path.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaises(SnapshotError):
                 validate_committed(load_spec(), data_path, meta_path)
-        finally:
-            data_path.write_text(original, encoding="utf-8")
+        self.assertEqual((committed_data.read_bytes(), committed_meta.read_bytes()), before)
 
 
 if __name__ == "__main__":

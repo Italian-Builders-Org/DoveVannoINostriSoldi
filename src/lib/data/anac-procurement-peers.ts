@@ -30,6 +30,13 @@ export type AnacPeerRatio = z.infer<typeof ratio>;
 export type AnacPeerMetric = keyof z.infer<typeof metrics>;
 export type AnacPeerDimension = "count" | "value";
 export const anacPeerSource = spec;
+/** Locked to spec.inputs; literal join segments keep Turbopack from tracing docs/ (Next 16.4+). */
+const PEER_PROVENANCE_INPUTS = [
+  ["profiles", "src/data/generated/anac-entity-procurement-page/meta.json"],
+  ["cpv", "src/data/generated/anac-procurement-cpv/meta.json"],
+  ["cpvSpec", "scripts/etl/specs/anac-procurement-cpv.source.json"],
+  ["geography", "src/data/generated/istat-municipality-geography.json"],
+] as const;
 export const ANAC_PEER_MINIMUM = 10;
 /** Minimum CPV composition overlap (exact rational). Editorial v1.1: 70%, was 80%. */
 export const ANAC_PEER_CPV_MINIMUM = { numerator: "7", denominator: "10" } as const;
@@ -146,14 +153,20 @@ async function readBounded(path: string, maximum: number): Promise<Buffer> {
 
 export async function loadAnacPeerSnapshot(root = process.cwd()) {
   const hash = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
+  for (const [key, path] of PEER_PROVENANCE_INPUTS) {
+    if (spec.inputs[key].path !== path) throw new Error("Percorsi provenienza confronti non allineati allo spec.");
+  }
   const [specBytes, metaBytes, compressed, ...inputs] = await Promise.all([
     readBounded(join(root, "scripts/etl/specs/anac-procurement-peers.source.json"), 100_000),
     readBounded(join(root, "src/data/generated/anac-procurement-peers/meta.json"), 100_000),
     readBounded(join(root, "src/data/generated/anac-procurement-peers/snapshot.json.gz"), 4_000_000),
-    ...Object.values(spec.inputs).map((entry) => readBounded(join(root, entry.path), 24_000_000)),
+    readBounded(join(root, "src/data/generated/anac-entity-procurement-page/meta.json"), 24_000_000),
+    readBounded(join(root, "src/data/generated/anac-procurement-cpv/meta.json"), 24_000_000),
+    readBounded(join(root, "scripts/etl/specs/anac-procurement-cpv.source.json"), 24_000_000),
+    readBounded(join(root, "src/data/generated/istat-municipality-geography.json"), 24_000_000),
   ]);
   if (JSON.stringify(JSON.parse(specBytes.toString("utf8"))) !== JSON.stringify(spec)
-    || inputs.some((bytes, i) => hash(bytes) !== Object.values(spec.inputs)[i].sha256)) throw new Error("Provenienza indice confronti non riconciliata.");
+    || inputs.some((bytes, i) => hash(bytes) !== spec.inputs[PEER_PROVENANCE_INPUTS[i]![0]].sha256)) throw new Error("Provenienza indice confronti non riconciliata.");
   const metadata = metadataSchema.parse(JSON.parse(metaBytes.toString("utf8")));
   if (compressed.length !== metadata.bytes || hash(compressed) !== metadata.sha256) throw new Error("Hash indice confronti divergente.");
   const raw = await promisify(gunzip)(compressed, { maxOutputLength: 24_000_000 });

@@ -1,5 +1,6 @@
 import { discoverLatestStatePaymentDataset } from "@/lib/bdap-payments";
 import { discoverMopDataset } from "@/lib/bdap-public-works";
+import { OpenBdapUnavailableError } from "@/lib/data/openbdap-response";
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
 import { ipaRuntimeFetchOptions } from "@/lib/ipa-runtime-fetch";
 import {
@@ -224,17 +225,33 @@ async function probeIpaStructure(signal?: AbortSignal): Promise<SourceHealth> {
   }
 }
 
+function isOpenBdapMopOutage(error: unknown): boolean {
+  if (error instanceof OpenBdapUnavailableError) return true;
+  if (!(error instanceof Error)) return false;
+  return /OpenBDAP MOP (?:HTTP (?:429|5\d{2})|non ha restituito JSON|ha restituito HTML|ha restituito una risposta non JSON)/.test(error.message);
+}
+
 async function probeOpenBdap(signal?: AbortSignal): Promise<SourceHealth> {
   const base = baseHealth("openbdap");
   const startedAt = performance.now();
   const ssnCce = getSsnCceSourceHealth();
 
   try {
-    const [latest, mop] = await Promise.all([
-      discoverLatestStatePaymentDataset("mission", { maxMonthsBack: 6, signal }),
-      discoverMopDataset({ signal }),
-    ]);
-    const timestamps = [latest.metadataModified, mop.metadata.referenceDate]
+    const latest = await discoverLatestStatePaymentDataset("mission", { maxMonthsBack: 6, signal });
+    let mopDetail = "MOP non verificato in questo tentativo";
+    let recordCount: number | null = null;
+    let mopReferenceDate: string | null = null;
+    try {
+      const mop = await discoverMopDataset({ signal });
+      mopReferenceDate = mop.metadata.referenceDate;
+      recordCount = mop.schema.localProjectCardinality;
+      mopDetail = `MOP aggiornato al ${mop.metadata.referenceDate} · ${mop.schema.cupCardinality.toLocaleString("it-IT")} CUP distinti`;
+    } catch (error) {
+      if (!isOpenBdapMopOutage(error)) throw error;
+      mopDetail = `${error instanceof Error ? error.message : "MOP non raggiungibile"} · schema MOP verificato dallo snapshot`;
+    }
+
+    const timestamps = [latest.metadataModified, mopReferenceDate]
       .filter((value): value is string => Boolean(value))
       .map((value) => ({ value, time: new Date(value).valueOf() }))
       .filter((entry) => !Number.isNaN(entry.time))
@@ -245,8 +262,8 @@ async function probeOpenBdap(signal?: AbortSignal): Promise<SourceHealth> {
       reachability: "up",
       freshness: freshnessFor("openbdap", timestamps.at(0)?.value ?? null),
       latencyMs: Math.round(performance.now() - startedAt),
-      detail: `Pagamenti: ${latest.title} · MOP aggiornato al ${mop.metadata.referenceDate} · ${mop.schema.cupCardinality.toLocaleString("it-IT")} CUP distinti · SSN 2024: artifact e 3 input verificati`,
-      recordCount: mop.schema.localProjectCardinality,
+      detail: `Pagamenti: ${latest.title} · ${mopDetail} · SSN 2024: artifact e 3 input verificati`,
+      recordCount,
       snapshot: ssnCce,
     };
   } catch (error) {

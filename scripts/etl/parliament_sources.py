@@ -34,6 +34,7 @@ MAX_HTML_BYTES = 2_000_000
 MAX_CSV_BYTES = 8_000_000
 MAX_PDF_BYTES = 20_000_000
 CAMERA_HOSTS = {"trasparenza.camera.it", "documenti.camera.it", "www.camera.it", "camera.it"}
+CAMERA_SITE_HOSTS = {"www.camera.it", "camera.it"}
 SENATE_HOSTS = {"dati.senato.it", "www.senato.it", "senato.it"}
 QUIRINALE_HOSTS = {"www.quirinale.it", "quirinale.it", "new.quirinale.it"}
 INSTITUTION_HOSTS = {
@@ -301,6 +302,14 @@ def validate_manifest(manifest: dict[str, Any], snapshot: dict[str, Any]) -> tup
 
     camera = require_object(manifest.get("camera"), "manifest.camera")
     official_url(camera.get("landingUrl"), "manifest.camera.landingUrl", CAMERA_HOSTS)
+    archive_registry_urls = require_list(
+        camera.get("archiveRegistryUrls"),
+        "manifest.camera.archiveRegistryUrls",
+    )
+    if not archive_registry_urls:
+        raise StructuralError("manifest.camera.archiveRegistryUrls: almeno un registro storico atteso")
+    for index, raw_url in enumerate(archive_registry_urls):
+        official_url(raw_url, f"manifest.camera.archiveRegistryUrls[{index}]", CAMERA_SITE_HOSTS)
     camera_docs = [
         document_from_mapping(
             item,
@@ -432,6 +441,10 @@ class CameraLinkParser(html.parser.HTMLParser):
         self._text = []
 
 
+def camera_account_title(year: int) -> str:
+    return f"Conto consuntivo {year}"
+
+
 def parse_camera_documents(payload: str) -> list[Document]:
     parser = CameraLinkParser()
     parser.feed(payload)
@@ -444,10 +457,125 @@ def parse_camera_documents(payload: str) -> list[Document]:
         url = normalize_official_url(raw_url, "Camera.documentUrl", CAMERA_HOSTS)
         kind = "account" if account else "budget"
         year = int((account or budget).group(1))
-        found.append(Document(kind=kind, year=year, title=title, document_url=url))
+        canonical_title = camera_account_title(year) if kind == "account" else title
+        found.append(Document(kind=kind, year=year, title=canonical_title, document_url=url))
     if not found or len({item.identity() for item in found}) != len(found):
         raise StructuralError("Camera: documenti principali mancanti o duplicati")
     return sorted(found)
+
+
+CAMERA_ARCHIVE_ENTRY = re.compile(
+    r"(?P<label>(?:Progetto di Bilancio(?: per l'anno finanziario)? (?P<budget_year>\d{4})(?:[^\n<]*)|"
+    r"Conto [Cc]onsuntivo(?: per l'anno finanziario)? (?P<account_year>\d{4})[^\n<]*))"
+    r"[\s\S]{0,500}?href=\"(?P<href>//documenti\.camera\.it/apps/commonServices/getDocumento\.ashx[^\"]+)\"",
+    re.IGNORECASE,
+)
+
+
+def canonical_camera_intero_url(raw_href: str) -> str | None:
+    href = raw_href.strip().replace("&amp;", "&")
+    if href.startswith("//"):
+        href = f"https:{href}"
+    parsed = urllib.parse.urlparse(href)
+    query = urllib.parse.parse_qs(parsed.query)
+    legislature = (query.get("idLegislatura") or query.get("idlegislatura") or [None])[0]
+    category = (query.get("categoria") or [None])[0]
+    number = (query.get("numero") or [None])[0]
+    if not legislature or not category or not number or "_allegato" in number:
+        return None
+    return (
+        "https://documenti.camera.it/_dati/"
+        f"leg{legislature}/lavori/documentiparlamentari/IndiceETesti/{category}/{number}/INTERO.pdf"
+    )
+
+
+def resolve_camera_pdf_url(raw_href: str, timeout: int) -> str:
+    canonical = canonical_camera_intero_url(raw_href)
+    if canonical is not None:
+        request = urllib.request.Request(
+            canonical,
+            headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/pdf",
+                "Range": "bytes=0-0",
+            },
+        )
+        with open_official(urllib.request.build_opener(), request, CAMERA_HOSTS, timeout) as response:
+            response.read(1)
+            return normalize_official_url(response.geturl(), "Camera.documentUrl", CAMERA_HOSTS)
+    href = raw_href.strip().replace("&amp;", "&")
+    if href.startswith("//"):
+        href = f"https:{href}"
+    request = urllib.request.Request(
+        href,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/pdf",
+            "Range": "bytes=0-0",
+        },
+    )
+    with open_official(urllib.request.build_opener(), request, CAMERA_HOSTS, timeout) as response:
+        response.read(1)
+        return normalize_official_url(response.geturl(), "Camera.documentUrl", CAMERA_HOSTS)
+
+
+def parse_camera_archive_documents(payload: str, timeout: int) -> list[Document]:
+    found: list[Document] = []
+    for match in CAMERA_ARCHIVE_ENTRY.finditer(payload):
+        label = " ".join(match.group("label").replace("\xa0", " ").split())
+        if "allegato" in label.lower():
+            continue
+        account_year = match.group("account_year")
+        budget_year = match.group("budget_year")
+        if account_year:
+            year = int(account_year)
+            kind = "account"
+            title = camera_account_title(year)
+        elif budget_year:
+            year = int(budget_year)
+            kind = "budget"
+            title = label
+        else:
+            continue
+        document_url = resolve_camera_pdf_url(match.group("href"), timeout)
+        found.append(Document(kind=kind, year=year, title=title, document_url=document_url))
+    if len({item.identity() for item in found}) != len(found):
+        raise StructuralError("Camera: documenti storici duplicati")
+    return sorted(found)
+
+
+def merge_camera_documents(*groups: list[Document]) -> list[Document]:
+    merged: dict[tuple[str, int], Document] = {}
+    for group in groups:
+        for document in group:
+            merged.setdefault((document.kind, document.year), document)
+    if not merged:
+        raise StructuralError("Camera: documenti principali mancanti o duplicati")
+    return sorted(merged.values(), key=lambda item: (item.kind, item.year, item.title, item.document_url))
+
+
+def compare_camera_registry(expected: list[Document], actual: list[Document]) -> None:
+    expected_keys = {(item.kind, item.year) for item in expected}
+    actual_keys = {(item.kind, item.year) for item in actual}
+    if expected_keys <= actual_keys:
+        return
+    missing = sorted(expected_keys - actual_keys)
+    raise StructuralError(
+        "Camera: il registro ufficiale non contiene più tutti i documenti verificati "
+        f"(mancanti={missing})"
+    )
+
+
+def compare_senate_registry(expected: list[Document], actual: list[Document]) -> None:
+    expected_keys = {(item.kind, item.year, item.document_number) for item in expected}
+    actual_keys = {(item.kind, item.year, item.document_number) for item in actual}
+    if expected_keys <= actual_keys:
+        return
+    missing = sorted(expected_keys - actual_keys)
+    raise StructuralError(
+        "Senato: il registro ufficiale non contiene più tutti i documenti verificati "
+        f"(mancanti={missing})"
+    )
 
 
 def parse_senate_documents(payload: str, series: str = "VIII") -> list[Document]:
@@ -543,14 +671,35 @@ def open_official(opener: Any, request: urllib.request.Request, hosts: set[str],
     return response
 
 
-def download_camera(landing_url: str, timeout: int) -> list[Document]:
-    request = urllib.request.Request(landing_url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
-    with open_official(urllib.request.build_opener(), request, CAMERA_HOSTS, timeout) as response:
+def download_camera_html(url: str, field: str, hosts: set[str], timeout: int) -> str:
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
+    with open_official(urllib.request.build_opener(), request, hosts, timeout) as response:
         content_type = response.headers.get("Content-Type", "").split(";", 1)[0].lower()
         if content_type not in {"text/html", "application/xhtml+xml"}:
-            raise StructuralError(f"Camera: HTML atteso, ricevuto {content_type or 'nessun Content-Type'}")
-        payload = limited_read(response, MAX_HTML_BYTES, "Camera").decode("utf-8")
-    return parse_camera_documents(payload)
+            raise StructuralError(f"{field}: HTML atteso, ricevuto {content_type or 'nessun Content-Type'}")
+        return limited_read(response, MAX_HTML_BYTES, field).decode("utf-8")
+
+
+def download_camera(camera: dict[str, Any], timeout: int) -> list[Document]:
+    landing_url = require_text(camera.get("landingUrl"), "manifest.camera.landingUrl")
+    landing = parse_camera_documents(
+        download_camera_html(landing_url, "Camera landing", CAMERA_HOSTS, timeout)
+    )
+    archive_urls = require_list(camera.get("archiveRegistryUrls"), "manifest.camera.archiveRegistryUrls")
+    archive_groups: list[list[Document]] = []
+    for index, raw_url in enumerate(archive_urls):
+        archive_documents = parse_camera_archive_documents(
+            download_camera_html(
+                require_text(raw_url, f"manifest.camera.archiveRegistryUrls[{index}]"),
+                f"Camera archive[{index}]",
+                CAMERA_SITE_HOSTS,
+                timeout,
+            ),
+            timeout,
+        )
+        if archive_documents:
+            archive_groups.append(archive_documents)
+    return merge_camera_documents(landing, *archive_groups)
 
 
 def verify_camera_asset(document: Document, timeout: int) -> None:
@@ -655,8 +804,8 @@ def compare_documents(label: str, expected: list[Document], actual: list[Documen
 
 def online_check(manifest: dict[str, Any], expected_camera: list[Document], expected_senate: list[Document], known_max: int, timeout: int) -> None:
     camera = require_object(manifest["camera"], "manifest.camera")
-    actual_camera = download_camera(camera["landingUrl"], timeout)
-    compare_documents("Camera", expected_camera, actual_camera)
+    actual_camera = download_camera(camera, timeout)
+    compare_camera_registry(expected_camera, actual_camera)
     for document in expected_camera:
         verify_camera_asset(document, timeout)
 
@@ -668,7 +817,7 @@ def online_check(manifest: dict[str, Any], expected_camera: list[Document], expe
         raise StructuralError(f"Senato: nuovi documenti ufficiali da verificare: {new_documents}")
     expected_numbers = {item.document_number for item in expected_senate}
     actual_latest = [item for item in actual_senate if item.document_number in expected_numbers]
-    compare_documents("Senato", expected_senate, actual_latest)
+    compare_senate_registry(expected_senate, actual_latest)
 
 
 def parse_args() -> argparse.Namespace:

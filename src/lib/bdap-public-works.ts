@@ -1,4 +1,5 @@
 import { fetchOfficialSource } from "@/lib/data/source-fetch";
+import { readOpenBdapJsonResponse } from "@/lib/data/openbdap-response";
 import {
   MOP_DATASET_ID,
   normalizeCup,
@@ -55,11 +56,7 @@ async function jsonFrom(
     signal,
   });
   if (!response.ok) throw new Error(`OpenBDAP MOP HTTP ${response.status}`);
-  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
-  if (!contentType.includes("application/json")) {
-    throw new Error("OpenBDAP MOP non ha restituito JSON");
-  }
-  return response.json();
+  return readOpenBdapJsonResponse(response, "MOP");
 }
 
 export async function discoverMopDataset(options: { signal?: AbortSignal } = {}): Promise<{

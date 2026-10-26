@@ -9,6 +9,10 @@
   },
   "camera": {
     "landingUrl": "https://trasparenza.camera.it/bilancio-della-camera",
+    "archiveRegistryUrls": [
+      "https://www.camera.it/leg18/494?idLegislatura=18&categoria=008&tipologiaDoc=elenco_categoria",
+      "https://www.camera.it/leg19/494?idLegislatura=19&categoria=008&tipologiaDoc=elenco_categoria"
+    ],
     "documents": [
       {
         "kind": "account",

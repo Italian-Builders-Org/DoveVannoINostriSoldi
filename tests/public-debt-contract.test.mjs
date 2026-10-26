@@ -4,7 +4,7 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const snapshot = JSON.parse(await readFile(new URL("../src/data/generated/public-debt.json", import.meta.url), "utf8"));
-const { parsePublicDebtSnapshot } = await import("../src/lib/data/public-debt-contract.ts");
+const { basisPointsToEuroPerHundred, parsePublicDebtSnapshot, shareBasisPoints } = await import("../src/lib/data/public-debt-contract.ts");
 const { getPublicDebtView } = await import("../src/lib/public-debt.ts");
 
 function assertInvalid(mutator, pattern) {
@@ -16,7 +16,14 @@ function assertInvalid(mutator, pattern) {
 test("public debt snapshot validates and derived values reconcile", () => {
   assert.equal(parsePublicDebtSnapshot(snapshot).stock.totalCents, 320_084_770_000_000);
   const view = getPublicDebtView(new Date("2026-10-24T09:00:00Z"));
-  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, 7.54);
+  const expectedEuroPerHundred = basisPointsToEuroPerHundred(
+    shareBasisPoints(
+      snapshot.annualInterest.interestExpenseCents,
+      snapshot.annualInterest.totalGovernmentExpenditureCents,
+    ),
+  );
+  assert.equal(view.citizenImpact.annualInterest.euroPerHundredEuro, expectedEuroPerHundred);
+  assert.equal(expectedEuroPerHundred, 7.54);
   assert.equal(view.citizenImpact.refinancingExposure.upToOneYearShareBasisPoints, 1833);
   assert.equal(view.stock.instrumentShares.currencyAndDepositsBasisPoints, 581);
   assert.equal(view.residualMaturity.shares.upToOneYearBasisPoints, 1833);

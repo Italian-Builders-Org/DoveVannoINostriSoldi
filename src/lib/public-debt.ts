@@ -1,5 +1,10 @@
 import snapshotJson from "@/data/generated/public-debt.json";
-import { parsePublicDebtSnapshot, type PublicDebtSnapshot } from "@/lib/data/public-debt-contract";
+import {
+  basisPointsToEuroPerHundred,
+  parsePublicDebtSnapshot,
+  shareBasisPoints,
+  type PublicDebtSnapshot,
+} from "@/lib/data/public-debt-contract";
 
 const DAY = 86_400_000;
 let cachedSnapshot: PublicDebtSnapshot | undefined;
@@ -19,10 +24,6 @@ export function getPublicDebtSnapshot(): PublicDebtSnapshot {
   } catch (error) {
     throw new PublicDebtContractError(error);
   }
-}
-
-function shareBasisPoints(numerator: number, denominator: number) {
-  return Number((BigInt(numerator) * BigInt(10_000) + BigInt(denominator) / BigInt(2)) / BigInt(denominator));
 }
 
 function freshness(referenceDate: string, staleDays: number, now: Date) {
@@ -87,7 +88,12 @@ export function getPublicDebtView(now = new Date()) {
         ...snapshot.annualInterest,
         interestChangeCents: snapshot.annualInterest.interestExpenseCents - snapshot.annualInterest.previousInterestExpenseCents,
         interestShareChangeBasisPoints: snapshot.annualInterest.interestShareBasisPoints - snapshot.annualInterest.previousInterestShareBasisPoints,
-        euroPerHundredEuro: snapshot.annualInterest.interestShareBasisPoints / 100,
+        euroPerHundredEuro: basisPointsToEuroPerHundred(
+          shareBasisPoints(
+            snapshot.annualInterest.interestExpenseCents,
+            snapshot.annualInterest.totalGovernmentExpenditureCents,
+          ),
+        ),
         freshness: freshness(annualEnd, 540, now),
       },
       refinancingExposure: {

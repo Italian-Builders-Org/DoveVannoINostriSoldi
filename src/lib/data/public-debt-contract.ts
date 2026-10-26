@@ -67,8 +67,13 @@ function monthIndex(value: string) {
   return date.getUTCFullYear() * 12 + date.getUTCMonth();
 }
 
-function shareBasisPoints(numerator: number, denominator: number) {
+export function shareBasisPoints(numerator: number, denominator: number) {
   return Number((BigInt(numerator) * BigInt(10_000) + BigInt(denominator) / BigInt(2)) / BigInt(denominator));
+}
+
+/** Citizen-facing euro-per-hundred figure derived from integer basis points (Eurostat-style one-decimal percent). */
+export function basisPointsToEuroPerHundred(basisPoints: number) {
+  return basisPoints / 100;
 }
 
 function issue(context: z.RefinementCtx, message: string, path: PropertyKey[] = []) {

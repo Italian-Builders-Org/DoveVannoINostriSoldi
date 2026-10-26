@@ -394,7 +394,9 @@ def ref_file_digest(ref: str, artifact: Artifact, *, runner: Runner = subprocess
                 raise PublishError("Cannot read SIOPE candidate blob")
             payload = result.stdout
         else:
-            result = run_command(["git", "show", f"{ref}:{path}"], runner=runner)
+            result = run_command(["git", "show", f"{ref}:{path}"], runner=runner, check=False)
+            if result.returncode:
+                raise PublishError(f"managed commit {ref} is missing allowlisted file {path}")
             payload = result.stdout.encode("utf-8")
         encoded_path = path.encode("utf-8")
         digest.update(len(encoded_path).to_bytes(8, "big"))
@@ -890,31 +892,40 @@ def publish(
         existing = parse_branch_commit(observed_tip, runner=runner)
         validate_existing_commit(existing, artifact, digest=None)
         validate_single_candidate_ancestry(existing, runner=runner)
-        if ref_file_digest(existing.tip, artifact, runner=runner) != existing.trailers["Data-Refresh-Files-SHA256"]:
-            raise PublishError("managed branch tree does not match its files digest trailer")
-        tip_prs = relevant_tip_prs(prs, artifact.publication.branch, existing.tip)
-        if len(tip_prs) == 0:
-            if existing.parent != base_before or existing.trailers["Data-Refresh-Files-SHA256"] != digest:
-                raise PublishError("managed branch without a relevant pull request is stale or tampered")
-            body = provenance_body(artifact, run, base_sha=existing.parent, candidate_sha=existing.tip, digest=digest)
-            number = gh.create_pr(artifact, body)
-            confirm_pr(gh, artifact, existing, number, run.workflow_ref)
-            return "CREATED"
-        if len(tip_prs) != 1:
-            raise PublishError("existing managed branch must have exactly one relevant pull request")
-        current_pr = tip_prs[0]
-        if current_pr.state.upper() == "CLOSED" and not current_pr.merged_at:
-            raise PublishError("relevant pull request was closed without merging")
-        action = classify_existing_pr(
-            current_pr, artifact, existing, current_base=base_before,
-            current_digest=digest, changed=bool(changed), expected_workflow_ref=run.workflow_ref,
-        )
-        if action == "ALREADY_PUBLISHED":
-            return action
-        if action == "NO_CHANGE":
-            return action
-        if current_pr.state.upper() == "OPEN":
-            replacement_pr = current_pr
+        try:
+            tree_digest = ref_file_digest(existing.tip, artifact, runner=runner)
+        except PublishError as exc:
+            if "missing allowlisted file" not in str(exc):
+                raise
+            existing = None
+        else:
+            if tree_digest != existing.trailers["Data-Refresh-Files-SHA256"]:
+                raise PublishError("managed branch tree does not match its files digest trailer")
+            tip_prs = relevant_tip_prs(prs, artifact.publication.branch, existing.tip)
+            if len(tip_prs) == 0:
+                if existing.parent != base_before or existing.trailers["Data-Refresh-Files-SHA256"] != digest:
+                    raise PublishError("managed branch without a relevant pull request is stale or tampered")
+                body = provenance_body(artifact, run, base_sha=existing.parent, candidate_sha=existing.tip, digest=digest)
+                number = gh.create_pr(artifact, body)
+                confirm_pr(gh, artifact, existing, number, run.workflow_ref)
+                return "CREATED"
+            if len(tip_prs) != 1:
+                raise PublishError("existing managed branch must have exactly one relevant pull request")
+            current_pr = tip_prs[0]
+            if current_pr.state.upper() == "CLOSED" and not current_pr.merged_at:
+                if not changed:
+                    return "NO_CHANGE"
+            else:
+                action = classify_existing_pr(
+                    current_pr, artifact, existing, current_base=base_before,
+                    current_digest=digest, changed=bool(changed), expected_workflow_ref=run.workflow_ref,
+                )
+                if action == "ALREADY_PUBLISHED":
+                    return action
+                if action == "NO_CHANGE":
+                    return action
+                if current_pr.state.upper() == "OPEN":
+                    replacement_pr = current_pr
 
     observed_base = latest_main(runner=runner)
     if observed_base != base_before:

@@ -796,6 +796,67 @@ class PublishDataRefreshTests(TestCase):
             status.assert_not_called()
             push.assert_not_called()
 
+    def test_closed_pull_request_does_not_block_a_changed_refresh(self) -> None:
+        artifact, branch, closed_pr = self._managed_fixture(state="CLOSED")
+        base = branch.parent
+        candidate = "d" * 40
+        candidate_branch = publisher.BranchCommit(**{**branch.__dict__, "tip": candidate, "parent": base})
+        env = self._publish_env()
+        with (
+            mock.patch.object(publisher, "validate_run"),
+            mock.patch.object(publisher, "latest_main", return_value=base),
+            mock.patch.object(publisher, "git_sha", return_value=base),
+            mock.patch.object(publisher, "status_paths", return_value={artifact.files[0]}),
+            mock.patch.object(publisher, "file_digest", return_value="c" * 64),
+            mock.patch.object(publisher, "remote_branch_tip", return_value=branch.tip),
+            mock.patch.object(publisher, "parse_branch_commit", side_effect=[branch, candidate_branch]),
+            mock.patch.object(publisher, "validate_single_candidate_ancestry"),
+            mock.patch.object(publisher, "ref_file_digest", return_value="c" * 64),
+            mock.patch.object(publisher, "make_candidate", return_value=candidate),
+            mock.patch.object(publisher, "push_candidate"),
+            mock.patch.object(publisher.GhClient, "setup_git"),
+            mock.patch.object(publisher.GhClient, "prs", side_effect=[[closed_pr], []]),
+            mock.patch.object(publisher.GhClient, "create_pr", return_value=11) as create,
+            mock.patch.object(publisher, "confirm_pr"),
+        ):
+            self.assertEqual(publisher.publish(artifact.artifact_id, env=env), "CREATED")
+            create.assert_called_once()
+
+    def test_managed_branch_missing_registry_file_republishes(self) -> None:
+        artifact, branch, _ = self._managed_fixture()
+        base = branch.parent
+        candidate = "d" * 40
+        candidate_branch = publisher.BranchCommit(**{**branch.__dict__, "tip": candidate, "parent": base})
+        env = self._publish_env()
+
+        def ref_digest(ref, selected_artifact, *, runner=None):
+            if ref == branch.tip:
+                raise publisher.PublishError(
+                    f"managed commit {ref} is missing allowlisted file {selected_artifact.files[-1]}"
+                )
+            return "c" * 64
+
+        with (
+            mock.patch.object(publisher, "validate_run"),
+            mock.patch.object(publisher, "latest_main", return_value=base),
+            mock.patch.object(publisher, "git_sha", return_value=base),
+            mock.patch.object(publisher, "status_paths", return_value=set(artifact.files)),
+            mock.patch.object(publisher, "file_digest", return_value="c" * 64),
+            mock.patch.object(publisher, "remote_branch_tip", return_value=branch.tip),
+            mock.patch.object(publisher, "parse_branch_commit", side_effect=[branch, candidate_branch]),
+            mock.patch.object(publisher, "validate_single_candidate_ancestry"),
+            mock.patch.object(publisher, "ref_file_digest", side_effect=ref_digest),
+            mock.patch.object(publisher, "make_candidate", return_value=candidate),
+            mock.patch.object(publisher, "push_candidate") as push,
+            mock.patch.object(publisher.GhClient, "setup_git"),
+            mock.patch.object(publisher.GhClient, "prs", return_value=[]),
+            mock.patch.object(publisher.GhClient, "create_pr", return_value=12) as create,
+            mock.patch.object(publisher, "confirm_pr"),
+        ):
+            self.assertEqual(publisher.publish(artifact.artifact_id, env=env), "CREATED")
+            push.assert_called_once()
+            create.assert_called_once()
+
 
 if __name__ == "__main__":
     main()

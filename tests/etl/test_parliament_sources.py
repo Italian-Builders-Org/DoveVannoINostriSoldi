@@ -36,6 +36,7 @@ class ParliamentSourceParserTests(unittest.TestCase):
         )
         self.assertEqual([item.kind for item in documents], ["account", "budget"])
         self.assertEqual([item.year for item in documents], [2025, 2026])
+        self.assertEqual(documents[0].title, "Conto consuntivo 2025")
 
     def test_senate_filters_doc_viii_and_normalizes_official_https(self) -> None:
         documents = MODULE.parse_senate_documents(
@@ -72,7 +73,7 @@ class ParliamentSourceParserTests(unittest.TestCase):
             patch.object(MODULE, "download_camera", return_value=camera),
             patch.object(MODULE, "verify_camera_asset"),
             patch.object(MODULE, "download_senate", return_value=actual_senate),
-            self.assertRaisesRegex(MODULE.StructuralError, "registro ufficiale è cambiato"),
+            self.assertRaisesRegex(MODULE.StructuralError, "non contiene più tutti i documenti verificati"),
         ):
             MODULE.online_check(manifest, camera, senate, known_max, 1)
 
@@ -121,7 +122,7 @@ class ParliamentSourceParserTests(unittest.TestCase):
             patch.object(MODULE, "download_camera", return_value=camera),
             patch.object(MODULE, "verify_camera_asset"),
             patch.object(MODULE, "download_senate", return_value=senate[1:]),
-            self.assertRaisesRegex(MODULE.StructuralError, "mancanti_o_modificati"),
+            self.assertRaisesRegex(MODULE.StructuralError, "non contiene più tutti i documenti verificati"),
         ):
             MODULE.online_check(manifest, camera, senate, known_max, 1)
 

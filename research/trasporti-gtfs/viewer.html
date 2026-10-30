@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Tram · Velocità programmate | DVNS</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #19302e;
+        --muted: #5e6e6b;
+        --line: #d9e0dc;
+        --paper: #f6f7f3;
+        --green: #216d5e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font:
+          15px/1.5 system-ui,
+          -apple-system,
+          sans-serif;
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+        color: inherit;
+      }
+      button,
+      select {
+        min-height: 42px;
+        border: 1px solid #cbd6d0;
+        border-radius: 7px;
+        background: white;
+        padding: 7px 12px;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:hover {
+        background: #edf2ed;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      button:focus-visible,
+      select:focus-visible,
+      input:focus-visible,
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid #387dba;
+        outline-offset: 3px;
+      }
+      a {
+        color: var(--green);
+        text-underline-offset: 3px;
+      }
+      .mast {
+        border-bottom: 1px solid var(--line);
+        padding: 16px max(22px, calc((100vw - 1400px) / 2));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand {
+        font-weight: 750;
+        letter-spacing: 0.04em;
+      }
+      .status {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      main {
+        max-width: 1444px;
+        margin: auto;
+        padding: 30px 22px 45px;
+      }
+      h1 {
+        font-size: clamp(29px, 4vw, 43px);
+        letter-spacing: -0.045em;
+        line-height: 1.1;
+        margin: 0 0 12px;
+      }
+      h2 {
+        font-size: 19px;
+        line-height: 1.3;
+        margin: 0 0 8px;
+      }
+      .intro {
+        margin: 0;
+        color: var(--muted);
+        max-width: 790px;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: end;
+        margin: 26px 0 18px;
+      }
+      .control {
+        display: grid;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 650;
+      }
+      .control select {
+        min-width: 155px;
+        font-weight: 450;
+      }
+      .mode {
+        display: flex;
+        gap: 4px;
+        margin-left: auto;
+      }
+      .mode button[aria-pressed="true"] {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        overflow: hidden;
+      }
+      .map-wrap {
+        position: relative;
+        min-width: 0;
+        background: linear-gradient(#f8faf7, #edf1ea);
+        border-right: 1px solid var(--line);
+      }
+      .map-top {
+        position: absolute;
+        top: 16px;
+        left: 20px;
+        right: 20px;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+        gap: 10px;
+      }
+      .map-top strong {
+        font-size: 13px;
+      }
+      .map-top span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .map-tools {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        padding: 12px 18px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
+      .map-tools label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .map-tools input {
+        width: 100px;
+      }
+      .map-tools button {
+        min-height: 36px;
+        font-size: 12px;
+      }
+      .map-note {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0;
+        padding: 0 18px 12px;
+      }
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        min-height: 300px;
+        touch-action: pan-y;
+      }
+      svg .ridge {
+        cursor: pointer;
+        stroke-width: 2.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+      svg .ridge:hover {
+        stroke-width: 5;
+      }
+      aside {
+        padding: 24px 20px;
+        min-width: 0;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 10px;
+        font-weight: 750;
+        color: var(--muted);
+        margin: 0 0 12px;
+      }
+      .selected-route {
+        display: inline-flex;
+        background: #edf3ec;
+        color: var(--green);
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 4px;
+        margin-bottom: 14px;
+      }
+      .trip {
+        font-size: 19px;
+        line-height: 1.35;
+        margin: 0 0 20px;
+        overflow-wrap: anywhere;
+      }
+      .metric {
+        font-size: 45px;
+        font-weight: 650;
+        letter-spacing: -0.05em;
+        line-height: 1.1;
+      }
+      .unit {
+        font-size: 15px;
+        letter-spacing: 0;
+        font-weight: 450;
+      }
+      .metric-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 5px 0 22px;
+      }
+      dl {
+        margin: 0;
+      }
+      dl div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid var(--line);
+        padding: 9px 0;
+        font-size: 12px;
+      }
+      dt {
+        color: var(--muted);
+      }
+      dd {
+        margin: 0;
+        text-align: right;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin: 14px 0 22px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .swatch {
+        height: 3px;
+        width: 20px;
+        border-radius: 2px;
+      }
+      .below {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+        gap: 36px;
+        margin-top: 30px;
+      }
+      .table-scroll {
+        overflow: auto;
+        max-height: 430px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: white;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 12px;
+        text-align: left;
+      }
+      thead {
+        position: sticky;
+        top: 0;
+        background: #edf1ea;
+      }
+      th,
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      th {
+        font-weight: 650;
+      }
+      td:nth-child(3),
+      th:nth-child(3) {
+        white-space: nowrap;
+        text-align: right;
+      }
+      td button {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        min-height: 32px;
+        text-align: left;
+        font-size: 12px;
+        min-width: 38px;
+        color: var(--green);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .section-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 0 0 12px;
+      }
+      .source {
+        font-size: 13px;
+      }
+      .source p {
+        margin: 8px 0;
+      }
+      .source strong {
+        font-weight: 650;
+      }
+      details {
+        border-top: 1px solid var(--line);
+        margin-top: 16px;
+        padding-top: 12px;
+      }
+      summary {
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      details p,
+      details li {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      details ul {
+        padding-left: 17px;
+      }
+      .hash {
+        font:
+          11px/1.6 ui-monospace,
+          monospace;
+        overflow-wrap: anywhere;
+      }
+      .empty {
+        padding: 80px 25px;
+        color: var(--muted);
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        margin-top: 32px;
+        padding-top: 16px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .small {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      @media (max-width: 900px) {
+        .workspace {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .map-wrap {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        aside {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 10px 25px;
+        }
+        .selected-main {
+          min-width: 0;
+        }
+        .trip {
+          font-size: 16px;
+        }
+        .metric {
+          font-size: 34px;
+        }
+        .below {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .map-top span {
+          display: none;
+        }
+      }
+      @media (max-width: 520px) {
+        main {
+          padding: 24px 14px;
+        }
+        .mast {
+          padding: 14px;
+        }
+        .controls {
+          gap: 12px;
+        }
+        .control {
+          flex: 1;
+          min-width: 130px;
+        }
+        .control select {
+          width: 100%;
+          min-width: 0;
+        }
+        .mode {
+          margin-left: 0;
+        }
+        .map-tools {
+          gap: 12px;
+        }
+        aside {
+          padding: 18px 14px;
+          gap: 10px 14px;
+        }
+        .legend {
+          gap: 12px;
+        }
+        .status {
+          font-size: 10px;
+        }
+        .map-top {
+          left: 14px;
+          top: 12px;
+        }
+        .table-scroll {
+          max-height: 360px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="mast">
+      <span class="brand">DVNS / TRASPORTI</span
+      ><span class="status">Prototipo locale · GTFS programmato</span>
+    </header>
+    <main>
+      <h1>Dove il tram rallenta, secondo gli orari.</h1>
+      <p class="intro">
+        Una mappa dei tempi previsti tra fermate. I picchi indicano più minuti
+        per chilometro: non sono ritardi misurati.
+      </p>
+      <div class="controls">
+        <label class="control"
+          >Città<select id="city" aria-label="Città"></select></label
+        ><label class="control"
+          >Fascia oraria<select id="band" aria-label="Fascia oraria">
+            <option value="morning">07–10 · mattina</option>
+            <option value="day">10–16 · giorno</option>
+            <option value="evening">16–20 · sera</option>
+            <option value="all">Intero giorno di servizio</option>
+          </select></label
+        ><label class="control"
+          >Linea<select id="route" aria-label="Linea"></select
+        ></label>
+        <div class="mode" role="group" aria-label="Vista mappa">
+          <button id="mode3d" aria-pressed="true">3D</button
+          ><button id="mode2d" aria-pressed="false">2D</button>
+        </div>
+      </div>
+      <section class="workspace" aria-label="Mappa e tratto selezionato">
+        <div class="map-wrap">
+          <div class="map-top">
+            <strong id="map-title"></strong
+            ><span>Geometria delle linee dal GTFS</span>
+          </div>
+          <svg
+            id="map"
+            viewBox="0 0 1000 650"
+            role="img"
+            aria-labelledby="map-title map-desc"
+          >
+            <desc id="map-desc">
+              Rete tramviaria con rilievi che rappresentano i tempi programmati.
+              Gli stessi valori sono disponibili nella tabella sotto.
+            </desc>
+          </svg>
+          <div class="map-tools">
+            <label
+              >Ruota<input
+                id="bearing"
+                type="range"
+                min="-180"
+                max="180"
+                value="-20"
+                aria-label="Rotazione mappa" /></label
+            ><label
+              >Zoom<input
+                id="zoom"
+                type="range"
+                min="70"
+                max="170"
+                value="100"
+                aria-label="Zoom mappa" /></label
+            ><button id="reset">Ripristina</button>
+          </div>
+          <p class="map-note">
+            Più alto = più lento · quota grafica limitata a 12 min/km, valori
+            completi nella tabella.
+          </p>
+        </div>
+        <aside id="inspector" aria-live="polite"></aside>
+      </section>
+      <div class="legend" aria-label="Velocità prevista">
+        <span
+          ><i class="swatch" style="background: #93423c"></i>Meno di 10
+          km/h</span
+        ><span><i class="swatch" style="background: #bf883b"></i>10–15</span
+        ><span><i class="swatch" style="background: #87955b"></i>15–25</span
+        ><span
+          ><i class="swatch" style="background: #427c70"></i>Almeno 25</span
+        >
+      </div>
+      <div class="below">
+        <section>
+          <h2>I tratti programmati più lenti</h2>
+          <p class="section-note" id="coverage"></p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Linea</th>
+                  <th>Tra fermate</th>
+                  <th>km/h</th>
+                  <th>Corse</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="source">
+          <h2>Fonte e metodo</h2>
+          <div id="source"></div>
+          <details>
+            <summary>Come leggere la mappa</summary>
+            <p>
+              Tempi mediani tra la partenza da una fermata e l’arrivo alla
+              successiva, per le corse attive nella data di servizio. La
+              distanza segue il tracciato GTFS. Le soste sono escluse; percorsi
+              alternativi e direzioni restano separati.
+            </p>
+            <p>
+              Le corse sono campioni di orario, non viaggi osservati né
+              passeggeri. Il GTFS può contenere tempi stimati o arrotondati. Non
+              misura traffico reale, puntualità, qualità del servizio o
+              responsabilità. Le reti e i periodi possono differire: questa
+              vista non classifica le città.
+            </p>
+            <p>
+              I picchi sono una rappresentazione grafica dei min/km. Il suolo
+              mostra solo la rete del feed: non è una mappa stradale completa e
+              la quota non è altitudine.
+            </p>
+          </details>
+          <details>
+            <summary>Copertura e dati esclusi</summary>
+            <div id="quality"></div>
+          </details>
+          <details>
+            <summary>Ricevuta dei dati e licenza</summary>
+            <div id="receipt"></div>
+          </details>
+        </section>
+      </div>
+      <footer>
+        Analisi offline. Nessun dato in tempo reale, chiamata AI o caricamento
+        di mappe esterne. Per la pubblicazione su DVNS servono integrazione nel
+        corpus e verifica delle condizioni di riuso.
+      </footer>
+    </main>
+    <script id="data" type="application/json">
+      /*__GTFS_PAYLOAD__*/
+    </script>
+    <script>
+      "use strict";
+      const data = JSON.parse(document.getElementById("data").textContent),
+        $ = (id) => document.getElementById(id),
+        ns = "http://www.w3.org/2000/svg";
+      const fmt = (n, d = 1) =>
+        new Intl.NumberFormat("it-IT", { maximumFractionDigits: d }).format(n);
+      let city = data.cities[0],
+        band = "morning",
+        route = "",
+        mode3d = true,
+        selected = null,
+        shown = [];
+      const make = (tag, text, cls) => {
+        const n = document.createElement(tag);
+        if (text !== undefined) n.textContent = text;
+        if (cls) n.className = cls;
+        return n;
+      };
+      const add = (parent, tag, text, cls) => {
+        const n = make(tag, text, cls);
+        parent.append(n);
+        return n;
+      };
+      const link = (parent, label, url) => {
+        const n = add(parent, "a", label);
+        n.href = url;
+        n.target = "_blank";
+        n.rel = "noopener noreferrer";
+        return n;
+      };
+      const option = (value, label) => {
+        const n = make("option", label);
+        n.value = value;
+        return n;
+      };
+      const color = (s) =>
+        s.bands[band].kmh < 10
+          ? "#93423c"
+          : s.bands[band].kmh < 15
+            ? "#bf883b"
+            : s.bands[band].kmh < 25
+              ? "#87955b"
+              : "#427c70";
+      for (const c of data.cities) $("city").append(option(c.id, c.name));
+      function updateRoutes() {
+        route = "";
+        $("route").replaceChildren(option("", "Tutte le linee tram"));
+        for (const name of [...new Set(city.segments.map((s) => s.route))].sort(
+          (a, b) => a.localeCompare(b, "it", { numeric: true }),
+        ))
+          $("route").append(option(name, "Linea " + name));
+      }
+      function sourceInfo() {
+        const target = $("source");
+        target.replaceChildren();
+        if (city.attribution)
+          link(add(target, "p"), city.attribution, city.attributionUrl);
+        else add(target, "p", city.holder);
+        const p = add(target, "p");
+        link(p, "Feed e documentazione ufficiale ↗", city.landingUrl);
+        add(
+          target,
+          "p",
+          "Servizio: " +
+            new Date(city.serviceDate + "T12:00:00").toLocaleDateString(
+              "it-IT",
+              { day: "numeric", month: "long", year: "numeric" },
+            ),
+        );
+        add(
+          target,
+          "p",
+          "Acquisito: " +
+            new Date(city.receipt.acquiredAt).toLocaleString("it-IT"),
+        );
+        const receipt = $("receipt");
+        receipt.replaceChildren();
+        add(
+          receipt,
+          "p",
+          city.license === "not-declared"
+            ? "Licenza non verificata: pubblicazione bloccata."
+            : city.license,
+        );
+        if (city.licenseUrl)
+          link(receipt, "Condizioni di riuso ↗", city.licenseUrl);
+        add(
+          receipt,
+          "p",
+          "Archivio: " + fmt(city.receipt.bytes / 1024 / 1024, 1) + " MiB",
+        );
+        add(receipt, "p", "SHA-256 " + city.receipt.sha256, "hash");
+        const quality = $("quality");
+        quality.replaceChildren();
+        add(
+          quality,
+          "p",
+          (city.coverage.activeScheduledTrips ?? 0) +
+            " corse tram attive (escluse quelle a frequenza). Linee con corse: " +
+            (city.coverage.activeTramRoutes ?? 0) +
+            " su " +
+            (city.coverage.tramRoutesInFeed ?? 0) +
+            " linee tram elencate nel feed.",
+        );
+        const labels = {
+          candidate_pairs: "Coppie di fermate esaminate",
+          accepted_pairs: "Coppie incluse",
+          frequency_trip: "Corse a frequenza non espanse",
+          missing_shape: "Corse senza tracciato",
+          trip_without_stop_pairs: "Corse con meno di due fermate",
+          missing_time: "Coppie senza orari utilizzabili",
+          nonpositive_time: "Coppie con tempo nullo o negativo",
+          missing_geometry_pair: "Coppie senza geometria utilizzabile",
+          implausible_speed_above_150_kmh: "Coppie oltre 150 km/h, escluse",
+          unlocated_or_nonprogressing_pair:
+            "Coppie non collocabili nei percorsi unici",
+          short_geometry_pair: "Tratti sotto 25 m nei percorsi unici",
+        };
+        const ul = add(quality, "ul");
+        for (const [key, value] of Object.entries(city.exclusions))
+          if (value) add(ul, "li", (labels[key] ?? key) + ": " + fmt(value, 0));
+        if (city.segments.some((s) => s.estimated))
+          add(
+            quality,
+            "p",
+            "Sono presenti orari marcati come stimati (timepoint=0). Gli altri non sono per questo tempi osservati.",
+          );
+      }
+      function inspect(s) {
+        selected = s?.id ?? null;
+        const panel = $("inspector");
+        panel.replaceChildren();
+        if (!s) {
+          add(panel, "p", "Nessun tratto confrontabile per questa scelta.");
+          return;
+        }
+        const metrics = s.bands[band],
+          left = add(panel, "div", undefined, "selected-main");
+        add(left, "p", "Tratto selezionato", "eyebrow");
+        add(left, "span", "Linea " + s.route, "selected-route");
+        add(left, "p", s.from + " → " + s.to, "trip");
+        const value = add(left, "div", fmt(metrics.kmh), "metric");
+        add(value, "span", " km/h", "unit");
+        add(left, "p", "Velocità prevista dal tempo mediano", "metric-label");
+        if (s.from.toLocaleLowerCase() === s.to.toLocaleLowerCase())
+          add(
+            left,
+            "p",
+            "Fermate omonime: il tratto può includere manovre o capolinea.",
+            "small",
+          );
+        const dl = add(panel, "dl");
+        for (const [label, value] of [
+          ["Tempo previsto", fmt(metrics.seconds / 60) + " min"],
+          ["Distanza sul tracciato", fmt(s.metres, 0) + " m"],
+          ["Corse nella fascia", fmt(metrics.samples, 0)],
+          ["Direzione GTFS", s.direction || "non indicata"],
+        ]) {
+          const row = add(dl, "div");
+          add(row, "dt", label);
+          add(row, "dd", value);
+        }
+      }
+      function render() {
+        shown = city.segments
+          .filter((s) => s.bands[band] && (!route || s.route === route))
+          .sort(
+            (a, b) =>
+              a.bands[band].kmh - b.bands[band].kmh || a.id.localeCompare(b.id),
+          );
+        $("map-title").textContent =
+          city.name +
+          " · " +
+          city.serviceDate +
+          " · " +
+          (route ? "linea " + route : "tram");
+        $("coverage").textContent = shown.length
+          ? "Fino a 20 tratti più lenti su " +
+            fmt(shown.length, 0) +
+            " disponibili nella selezione."
+          : "Nessun dato confrontabile nella selezione: non equivale a velocità zero.";
+        const tbody = $("rows");
+        tbody.replaceChildren();
+        for (const s of shown.slice(0, 20)) {
+          const row = add(tbody, "tr");
+          const td = add(row, "td"),
+            button = add(td, "button", s.route);
+          button.type = "button";
+          button.setAttribute(
+            "aria-label",
+            "Seleziona linea " + s.route + ", " + s.from + " verso " + s.to,
+          );
+          button.onclick = () => inspect(s);
+          add(row, "td", s.from + " → " + s.to);
+          add(row, "td", fmt(s.bands[band].kmh));
+          add(row, "td", fmt(s.bands[band].samples, 0));
+        }
+        inspect(shown.find((s) => s.id === selected) ?? shown[0]);
+        draw();
+      }
+      function draw() {
+        const svg = $("map");
+        svg.querySelectorAll("g,text").forEach((n) => n.remove());
+        if (!shown.length) {
+          const t = document.createElementNS(ns, "text");
+          t.setAttribute("x", "60");
+          t.setAttribute("y", "200");
+          t.textContent = "Nessun tratto disponibile per questa data e fascia.";
+          svg.append(t);
+          return;
+        }
+        const all = city.segments.flatMap((s) => s.coordinates),
+          lat = all.reduce((sum, p) => sum + p[1], 0) / all.length,
+          c = Math.cos((lat * Math.PI) / 180),
+          xs = all.map((p) => p[0] * c),
+          ys = all.map((p) => p[1]),
+          minX = Math.min(...xs),
+          maxX = Math.max(...xs),
+          minY = Math.min(...ys),
+          maxY = Math.max(...ys),
+          cx = (minX + maxX) / 2,
+          cy = (minY + maxY) / 2;
+        const scale =
+            (Math.min(
+              680 / Math.max(maxX - minX, 0.0001),
+              470 / Math.max(maxY - minY, 0.0001),
+            ) *
+              Number($("zoom").value)) /
+            100,
+          angle = (Number($("bearing").value) * Math.PI) / 180,
+          tilt = mode3d ? (55 * Math.PI) / 180 : 0;
+        const project = (p, h = 0) => {
+          const x = (p[0] * c - cx) * scale,
+            y = -(p[1] - cy) * scale;
+          return [
+            500 + x * Math.cos(angle) - y * Math.sin(angle),
+            370 +
+              (x * Math.sin(angle) + y * Math.cos(angle)) * Math.cos(tilt) -
+              h * Math.sin(tilt),
+          ];
+        };
+        const group = document.createElementNS(ns, "g");
+        svg.append(group);
+        const path = (coords, attributes) => {
+          const p = document.createElementNS(ns, "path");
+          p.setAttribute(
+            "d",
+            coords
+              .map(
+                (v, i) =>
+                  (i ? "L" : "M") + v.map((n) => n.toFixed(1)).join(","),
+              )
+              .join(" "),
+          );
+          for (const [k, v] of Object.entries(attributes)) p.setAttribute(k, v);
+          group.append(p);
+          return p;
+        };
+        for (const s of city.segments)
+          path(
+            s.coordinates.map((p) => project(p)),
+            { stroke: "#d0d9cf", "stroke-width": "2.3", fill: "none" },
+          );
+        const ordered = [...shown].sort(
+          (a, b) => project(a.coordinates[0])[1] - project(b.coordinates[0])[1],
+        );
+        for (const s of ordered) {
+          const points = s.coordinates,
+            dist = [0];
+          for (let i = 1; i < points.length; i++)
+            dist.push(
+              dist.at(-1) +
+                Math.hypot(
+                  (points[i][0] - points[i - 1][0]) * c,
+                  points[i][1] - points[i - 1][1],
+                ),
+            );
+          const total = dist.at(-1) || 1,
+            coords = [];
+          const height = Math.min(60 / s.bands[band].kmh, 12) * 6;
+          for (let i = 1; i < points.length; i++) {
+            const steps = Math.max(
+              1,
+              Math.ceil(((dist[i] - dist[i - 1]) / total) * 16),
+            );
+            for (let j = 0; j < steps; j++) {
+              const t = j / steps,
+                progress = (dist[i - 1] + (dist[i] - dist[i - 1]) * t) / total,
+                p = [
+                  points[i - 1][0] + (points[i][0] - points[i - 1][0]) * t,
+                  points[i - 1][1] + (points[i][1] - points[i - 1][1]) * t,
+                ];
+              coords.push(
+                project(p, height * Math.sin(progress * Math.PI) ** 2),
+              );
+            }
+          }
+          coords.push(project(points.at(-1)));
+          const ridge = path(coords, { stroke: color(s), class: "ridge" }),
+            title = document.createElementNS(ns, "title");
+          title.textContent =
+            "Linea " +
+            s.route +
+            " · " +
+            s.from +
+            " → " +
+            s.to +
+            ": " +
+            fmt(s.bands[band].kmh) +
+            " km/h";
+          ridge.append(title);
+          ridge.onclick = () => inspect(s);
+        }
+      }
+      $("city").onchange = () => {
+        city = data.cities.find((c) => c.id === $("city").value);
+        selected = null;
+        updateRoutes();
+        sourceInfo();
+        render();
+      };
+      $("band").onchange = () => {
+        band = $("band").value;
+        render();
+      };
+      $("route").onchange = () => {
+        route = $("route").value;
+        render();
+      };
+      for (const id of ["bearing", "zoom"]) $(id).oninput = draw;
+      function setMode(value) {
+        mode3d = value;
+        $("mode3d").setAttribute("aria-pressed", String(value));
+        $("mode2d").setAttribute("aria-pressed", String(!value));
+        draw();
+      }
+      $("mode3d").onclick = () => setMode(true);
+      $("mode2d").onclick = () => setMode(false);
+      $("reset").onclick = () => {
+        $("bearing").value = -20;
+        $("zoom").value = 100;
+        draw();
+      };
+      updateRoutes();
+      sourceInfo();
+      render();
+    </script>
+  </body>
+</html>

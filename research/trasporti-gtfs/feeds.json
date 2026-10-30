@@ -1,0 +1,34 @@
+[
+  {
+    "id": "milano",
+    "name": "Milano",
+    "holder": "Comune di Milano / AMAT, servizio ATM",
+    "landingUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "url": "https://dati.comune.milano.it/gtfs.zip",
+    "license": "CC-BY (versione non specificata nel campo dataset)",
+    "licenseUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "cadence": "quindicinale, secondo il catalogo"
+  },
+  {
+    "id": "roma",
+    "name": "Roma",
+    "holder": "Roma Servizi per la Mobilità",
+    "landingUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "cadence": "quasi quotidiana, secondo il titolare"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it"
+  }
+]

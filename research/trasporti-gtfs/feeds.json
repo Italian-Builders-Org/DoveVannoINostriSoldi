@@ -7,7 +7,10 @@
     "url": "https://dati.comune.milano.it/gtfs.zip",
     "license": "CC-BY (versione non specificata nel campo dataset)",
     "licenseUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
-    "cadence": "quindicinale, secondo il catalogo"
+    "cadence": "quindicinale, secondo il catalogo",
+    "focus": [9.19, 45.465],
+    "mapBounds": [9.12, 45.425, 9.26, 45.51],
+    "mode": "tram"
   },
   {
     "id": "roma",
@@ -17,7 +20,10 @@
     "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
     "license": "not-declared",
     "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
-    "cadence": "quasi quotidiana, secondo il titolare"
+    "cadence": "quasi quotidiana, secondo il titolare",
+    "focus": [12.476, 41.887],
+    "mapBounds": [12.43, 41.855, 12.53, 41.93],
+    "mode": "tram"
   },
   {
     "id": "torino",
@@ -29,6 +35,73 @@
     "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
     "cadence": null,
     "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
-    "attributionUrl": "https://www.gtt.to.it"
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [7.685, 45.069],
+    "mapBounds": [7.61, 45.01, 7.76, 45.13],
+    "mode": "tram"
+  },
+  {
+    "id": "firenze",
+    "name": "Firenze",
+    "holder": "Regione Toscana / GEST",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/1f62d551-65f4-49f8-9a99-e19b02077be3",
+    "mode": "tram",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [11.25, 43.773],
+    "mapBounds": [11.17, 43.735, 11.31, 43.81],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/1f62d551-65f4-49f8-9a99-e19b02077be3/download/gest.gtfs"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "holder": "TPER S.p.A.",
+    "landingUrl": "https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsbo&source=",
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11",
+      "700",
+      "701",
+      "702",
+      "703",
+      "704",
+      "705",
+      "706",
+      "707",
+      "708",
+      "709",
+      "710",
+      "711",
+      "712",
+      "713",
+      "714",
+      "715",
+      "716",
+      "800"
+    ],
+    "license": "CC-BY 3.0 Italia",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "cadence": null,
+    "focus": [11.343, 44.495],
+    "mapBounds": [11.28, 44.45, 11.41, 44.54],
+    "studyBounds": [11.2, 44.4, 11.48, 44.58],
+    "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsbo&format=zip&source=solweb.tper.it&version=20261027"
+  },
+  {
+    "id": "bari",
+    "name": "Bari",
+    "holder": "AMTAB S.p.A.",
+    "landingUrl": "https://www.amtab.it/it/openmobilitydata",
+    "mode": "bus",
+    "routeTypes": ["3", "11", "700", "800"],
+    "license": "not-declared",
+    "licenseUrl": "https://www.amtab.it/it/openmobilitydata",
+    "cadence": null,
+    "focus": [16.869, 41.12],
+    "mapBounds": [16.81, 41.08, 16.94, 41.15],
+    "studyBounds": [16.73, 41.03, 16.99, 41.19],
+    "url": "https://www.amtabservizio.it/gtfs/google_transit.zip"
   }
 ]

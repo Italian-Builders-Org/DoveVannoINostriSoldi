@@ -1,32 +1,50 @@
-# Verifica ripetibile del prototipo
+# Verifica ripetibile
 
 ## Dati
 
-1. Acquisire o verificare gli archivi con `acquire.py` (vedi README).
-2. Generare `analysis.json` e `index.html` con `analyze.py`, data 2026-10-30.
-3. Verificare con gli stessi byte i conteggi e gli hash nel README.
-4. Eseguire gli undici test offline. Le fixture sono sintetiche, non usate dalla UI.
+1. Acquisire/verificare GTFS e OSM con i comandi del README.
+2. Generare `analysis.json` e HTML per il servizio 2026-10-30. Gli hash devono
+   coincidere con `observed-results.json`; un feed successivo non riproduce gli
+   stessi numeri anche se ha il medesimo URL.
+3. Eseguire i venti test offline e il controllo sintattico JS. Le fixture sono
+   sintetiche, mai usate dal visualizzatore.
+4. Confrontare i segmenti di Milano, Roma e Torino con l'artifact della prima
+   iterazione: devono rimanere identici, inclusi geometrie e statistiche per fascia.
+5. Verificare separatamente ricevute OSM: hash, byte, perimetro, provider,
+   acquisizione e data base OSM. Nessuna risposta parziale deve essere accettata.
 
-## Interfaccia
+## Browser
 
-Servire `output` in loopback sulla porta 3274. Usare Browser, senza accedere a
-variabili globali dell'app o modificare il DOM per simulare interazioni.
+Servire l'output in loopback. Interagire con il Browser senza modificare DOM o
+stato interno per simulare i risultati. Le misure `data-*` del Canvas descrivono
+solo l'ultimo disegno, non prestazioni certificate del dispositivo o costi hosted.
 
-1. Desktop 1280 × 900: scegliere ciascuna delle tre città e tutte le quattro fasce.
-   La mappa deve mostrare tratti, la tabella fino a 20 righe. Selezionare la prima
-   riga e confrontare km/h nel dettaglio con il valore della riga; un cambio fascia
-   conserva il tratto selezionato se ancora disponibile, non sceglie sempre il primo.
-2. Passare a 2D e tornare a 3D: `aria-pressed` deve rispecchiare la vista.
-3. Selezionare una linea; usare anche la tastiera per selettore e bottone della riga.
-   Il titolo della mappa e il dettaglio devono riferirsi alla selezione corrente.
-4. Muovere rotazione e zoom con le frecce. Ripristina deve riportarli a −20° e 100.
-5. Ripetere le tre città a 320, 390 e 768 px. Larghezza documento uguale al viewport;
-   tabella scorrevole nel proprio contenitore, controlli raggiungibili.
-6. Aprire Copertura e dati esclusi: Roma deve riportare 1 linea attiva su 5, non
-   fingere la copertura integrale della rete. La licenza non verificata deve restare
-   esplicita; per Torino deve apparire l'attribuzione GTT.
-7. Controllare console warning/error; salvare screenshot desktop e mobile e gli
-   esiti strutturati con città, fascia, viewport, numero tratti e righe.
+- Desktop: cinque città utilizzabili × quattro fasce. Mappa con strade e tratti,
+  tabella paginata di 20 righe, fonte corrispondente alla città. Bari deve mostrare
+  indisponibilità e zero righe per tutte le fasce, senza cambiare data.
+- Tabella: selezionare una riga e confrontare km/h e corse con il dettaglio.
+  Il cambio fascia conserva il tratto se disponibile; cambio città/linea elimina
+  selezioni incompatibili. Provare pagine successive/precedenti e reset della
+  pagina dopo un filtro; la tabella deve consentire tutti i tratti della selezione. La selezione dalla tabella porta alla mappa.
+- 2D/3D: stato `aria-pressed` coerente, colori e statistiche invariati. Pan con
+  trascinamento, zoom e rotazione da controlli/tastiera. Inquadra selezione e Centro
+  svolgono azioni distinte; Ripristina riporta −20°, zoom 100 e vista 3D.
+- Cambiare rapidamente città: l'ultima scelta deve prevalere anche durante la
+  decompressione. Filtri e righe non devono provenire dalla città precedente.
+- Ripetere a 320, 390 e 768 px: nessun overflow del documento, tabella scorrevole
+  nel proprio contenitore, attribuzione visibile, dettagli chiudibili e controlli
+  raggiungibili. Salvare screenshot desktop e mobile.
+- Controllare copertura: Roma solo linea 8 nel feed acquisito; Bologna autobus
+  nell'area di studio; Bari senza calendario del giorno. Licenze da verificare
+  rimangono esplicite, attribuzione GTT e OSM preservata.
+- Console warning/error e richieste di rete: nessun errore applicativo, nessun
+  servizio remoto contattato dall'HTML durante esplorazione o cambio città.
 
-Le prove della task sono locali. Non certificano dati real-time, integrazione
-nel sito, CI o deployment. Nessuna preview/build Vercel deve partire per questa prova.
+Il Browser in-app non supporta `Input.dispatchTouchEvent`: pinch e scorrimento
+su telefono fisico restano **NOT RUN**. Non presentarli come verificati da una
+semplice emulazione di viewport. I listener gestiscono due pointer, ma questo
+richiede una prova reale prima della pubblicazione.
+
+Gli artifact della task sono locali: non certificano integrazione nel sito,
+CI, deployment, realtime o risparmio in fattura. Nessuna build Vercel per questa
+ricerca. Prima di integrare: gate del prodotto, ledger e review delle licenze.

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Offline scheduled tram speeds. Standard library only; never called by a site visit."""
+"""Offline scheduled transit speeds. Standard library only; never called by a site visit."""
 import argparse
+import base64
 import bisect
 import csv
+import gzip
 import hashlib
 import io
 import json
@@ -254,6 +256,17 @@ def analyze_feed(path, service_date, receipt, source):
     excluded = Counter()
     segments = {}
     geometry_cache = {}
+    accepted_trips = set()
+    accepted_routes = set()
+    bounds = source.get("studyBounds")
+
+    def in_area(point):
+        return (
+            not bounds
+            or bounds[0] <= point[0] <= bounds[2]
+            and bounds[1] <= point[1] <= bounds[3]
+        )
+
     result = {
         **source,
         "serviceDate": service_date.isoformat(),
@@ -276,23 +289,24 @@ def analyze_feed(path, service_date, receipt, source):
         trips = unique(
             a.rows("trips.txt", ("trip_id", "route_id", "service_id")), "trip_id"
         )
-        all_tram = {
+        route_types = set(source.get("routeTypes", TRAM_TYPES))
+        eligible_trips = {
             key: r
             for key, r in trips.items()
-            if routes[r["route_id"]]["route_type"] in TRAM_TYPES
+            if routes[r["route_id"]]["route_type"] in route_types
         }
         selected = {
-            key: r for key, r in all_tram.items() if r["service_id"] in services
+            key: r for key, r in eligible_trips.items() if r["service_id"] in services
         }
         had_active_trips = bool(selected)
         frequency = {r["trip_id"] for r in a.rows("frequencies.txt", ("trip_id",))}
         excluded["frequency_trip"] = len(frequency & selected.keys())
         selected = {key: r for key, r in selected.items() if key not in frequency}
         result["coverage"] = {
-            "tramRoutesInFeed": sum(
-                r["route_type"] in TRAM_TYPES for r in routes.values()
+            "routesInFeed": sum(
+                r["route_type"] in route_types for r in routes.values()
             ),
-            "activeTramRoutes": len({r["route_id"] for r in selected.values()}),
+            "activeRoutes": len({r["route_id"] for r in selected.values()}),
             "activeScheduledTrips": len(selected),
             "activeServices": len(services),
         }
@@ -352,6 +366,11 @@ def analyze_feed(path, service_date, receipt, source):
                 geometry_cache[key] = geometries(shape, rows, stops, excluded)
             for left, right, geometry in zip(rows, rows[1:], geometry_cache[key]):
                 excluded["candidate_pairs"] += 1
+                if not in_area(stops[left["stop_id"]]["point"]) or not in_area(
+                    stops[right["stop_id"]]["point"]
+                ):
+                    excluded["outside_study_area"] += 1
+                    continue
                 if not geometry:
                     excluded["missing_geometry_pair"] += 1
                     continue
@@ -402,6 +421,8 @@ def analyze_feed(path, service_date, receipt, source):
                 if left.get("timepoint") == "0" or right.get("timepoint") == "0":
                     segment["estimated"] += 1
                 excluded["accepted_pairs"] += 1
+                accepted_trips.add(trip_id)
+                accepted_routes.add(trip["route_id"])
     for segment in segments.values():
         segment["bands"] = {
             band: {
@@ -415,8 +436,41 @@ def analyze_feed(path, service_date, receipt, source):
     result["exclusions"] = dict(excluded)
     result["coverage"]["geometryPatterns"] = len(geometry_cache)
     result["coverage"]["segments"] = len(segments)
+    result["coverage"]["analyzedScheduledTrips"] = len(accepted_trips)
+    result["coverage"]["analyzedRoutes"] = len(accepted_routes)
     result["status"] = "ready" if segments else "no-comparable-segments"
     return result
+
+
+def write_viewer(payload, output):
+    here = Path(__file__).parent
+    manifest = {k: v for k, v in payload.items() if k != "cities"}
+    manifest["cities"] = [
+        {k: c.get(k) for k in ["id", "name", "mode", "status", "serviceDate"]}
+        for c in payload["cities"]
+    ]
+    blocks = []
+    for city in payload["cities"]:
+        if not re.fullmatch(r"[a-z][a-z0-9-]{0,31}", city["id"]):
+            raise ValueError("Invalid city identifier")
+        encoded = base64.b64encode(
+            gzip.compress(safe_json(city).encode(), mtime=0)
+        ).decode()
+        blocks.append(
+            '<script type="application/octet-stream" id="city-'
+            + city["id"]
+            + '">'
+            + encoded
+            + "</script>"
+        )
+    html = (here / "viewer.html").read_text()
+    html = html.replace("/*__GTFS_MANIFEST__*/", safe_json(manifest)).replace(
+        "<!--__GTFS_CITIES__-->", "\n".join(blocks)
+    )
+    html = html.replace(
+        "/*__GTFS_STYLE__*/", (here / "viewer.css").read_text()
+    ).replace("/*__GTFS_VIEWER__*/", (here / "viewer.js").read_text())
+    (output / "index.html").write_text(html)
 
 
 def main():
@@ -424,6 +478,7 @@ def main():
     p.add_argument("--cache", type=Path, required=True)
     p.add_argument("--date", type=date.fromisoformat, required=True)
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--basemap-cache", type=Path)
     args = p.parse_args()
     here = Path(__file__).parent
     sources = json.loads((here / "feeds.json").read_text())
@@ -434,6 +489,10 @@ def main():
         if not archive.exists() or not receipt.exists():
             raise ValueError("Missing acquired feed/receipt: " + source["id"])
         city = analyze_feed(archive, args.date, json.loads(receipt.read_text()), source)
+        if args.basemap_cache:
+            from basemap import load_map
+
+            city["basemap"] = load_map(source, args.basemap_cache)
         cities.append(city)
         print(
             source["id"],
@@ -443,17 +502,14 @@ def main():
             flush=True,
         )
     payload = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "metric": "scheduled-segment-travel-time",
         "method": "median of scheduled adjacent-stop arrival minus departure; distance along GTFS shape; no dwell; no realtime",
         "cities": cities,
     }
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "analysis.json").write_text(safe_json(payload))
-    template = (here / "viewer.html").read_text()
-    (args.output / "index.html").write_text(
-        template.replace("/*__GTFS_PAYLOAD__*/", safe_json(payload))
-    )
+    write_viewer(payload, args.output)
     print("Wrote", args.output / "index.html", flush=True)
 
 

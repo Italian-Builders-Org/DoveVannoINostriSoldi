@@ -212,5 +212,37 @@ class AnalysisTests(unittest.TestCase):
         )
 
 
+class ExtendedCoverageTests(unittest.TestCase):
+    def test_bus_perimeter_is_explicit_not_mislabeled_as_trams(self):
+        with tempfile.TemporaryDirectory() as root:
+            path, receipt = archive(
+                Path(root),
+                {
+                    "routes.txt": [
+                        ["route_id", "route_type", "route_short_name"],
+                        ["r", "3", "25"],
+                    ]
+                },
+            )
+            data = analyze_feed(
+                path,
+                date(2026, 10, 30),
+                receipt,
+                {**SOURCE, "mode": "bus", "routeTypes": ["3"]},
+            )
+            self.assertEqual(data["status"], "ready")
+            self.assertEqual(len(data["segments"]), 2)
+            self.assertEqual(data["coverage"]["routesInFeed"], 1)
+
+    def test_study_area_does_not_keep_pairs_outside_the_declared_perimeter(self):
+        with tempfile.TemporaryDirectory() as root:
+            path, receipt = archive(Path(root))
+            source = {**SOURCE, "studyBounds": [9.1, 45.1, 9.2, 45.2]}
+            data = analyze_feed(path, date(2026, 10, 30), receipt, source)
+            self.assertEqual(data["segments"], [])
+            self.assertEqual(data["exclusions"]["outside_study_area"], 2)
+            self.assertEqual(data["status"], "no-comparable-segments")
+
+
 if __name__ == "__main__":
     unittest.main()

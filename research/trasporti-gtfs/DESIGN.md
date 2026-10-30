@@ -1,4 +1,4 @@
-# Struttura della prima iterazione
+# Struttura del prototipo
 
 ## Due alternative
 
@@ -11,15 +11,17 @@ Scelta: seconda alternativa per il branch esplorativo richiesto. Nessun artifact
 
 ## Contratto visibile
 
-Una città e una fascia oraria per volta. Rete tramviaria del feed, non tutti i trasporti cittadini. Il rilievo rappresenta minuti programmati per chilometro; la quota non è altitudine. Una tabella equivalente consente selezione e lettura senza la mappa. Fonti, data del servizio, esclusioni e hash sono verificabili.
+Una città e una fascia oraria per volta. Tipi di trasporto dichiarati per città; Bologna usa un perimetro urbano bus/filobus. Il rilievo rappresenta minuti programmati per chilometro; la quota non è altitudine. Una tabella equivalente consente selezione e lettura senza la mappa. Fonti, data del servizio, esclusioni e hash sono verificabili.
 
 ## Moduli e uso
 
 `python3 analyze.py --cache DIR --date 2026-10-30 --output DIR`
 
 - feeds.json: holder, URL canonico, licenza e condizioni per città.
-- analyze.py: ZIP -> calendario attivo -> corse tram -> fermate adiacenti -> geometrie -> tempi mediani -> JSON/HTML locali.
-- viewer.html: modello statico, dati incorporati in modo sicuro, proiezione 3D SVG e tabella; niente dipendenze o richieste remote.
+- analyze.py: ZIP -> calendario attivo -> mezzi/perimetro dichiarati -> fermate adiacenti -> geometrie -> tempi mediani -> JSON/HTML locali.
+- basemap.py: estratti OSM delimitati, ricevute verificate, geometrie semplificate; acquisizione solo offline.
+- render.py: compone cartografia verificata e analisi esistente senza ripetere la scansione GTFS.
+- viewer.html / viewer.css / viewer.js: renderer Canvas con camera geografica inclinata, pan/zoom, picking e tabella equivalente; niente librerie o richieste remote. Bundle gzip per città, cache decodificata LRU di due città.
 - test_analysis.py: fixture ZIP sintetiche per rischi di calendario, orari, integrità e geometria. Le fixture non sono dati del prodotto.
 
 `analyze_feed(path, service_date, receipt, source) -> CityAnalysis`
@@ -42,3 +44,13 @@ Una città e una fascia oraria per volta. Rete tramviaria del feed, non tutti i 
 ## Costi
 
 Una copia del feed per analisi, con SHA-256 e data acquisizione. Archivio raw fuori Git. Elaborazioni soltanto offline; visualizzatore autosufficiente. Nessuna modifica Vercel, acquisizione periodica, API AI, tiles o nuovo pacchetto. Nessun aggiornamento automatico attivato.
+
+## Iterazione 2: cartografia reale
+
+| Prima                                           | Dopo                                                                    | Perché                                                                   |
+| ----------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Piccola rete isolata su fondo vuoto             | Rete sopra strade, aree verdi, acqua e nomi OSM                         | Riconoscere città e quartieri come nel riferimento                       |
+| Quota SVG in pixel e prospettiva ortografica    | Proiezione geografica con camera inclinata e scala del rilievo coerente | Ridurre l'effetto di pareti ripetute e mantenere il legame con le strade |
+| Inquadratura dell'intera rete con molto margine | Vista centrale ampia, pan/zoom e comando inquadra rete                  | Esplorare i tratti senza comprimere tutto in un simbolo                  |
+
+Alternative: MapLibre con servizio tile esterno oppure renderer Canvas su estratti vettoriali OSM locali. Scelta: estratti locali, per non aggiungere richieste a ogni visita, chiavi o servizi a pagamento. L'attribuzione ODbL rimane visibile. Il basemap è un contesto cartografico distinto dalle misure GTFS: non deve modificare distanze o tempi dell'analisi.

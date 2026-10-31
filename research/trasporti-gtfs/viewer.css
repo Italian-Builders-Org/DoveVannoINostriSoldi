@@ -257,14 +257,7 @@ main {
   gap: 9px;
   align-items: center;
 }
-.mode-label {
-  display: inline-flex;
-  background: #eaf0e4;
-  color: #526a45;
-  border-radius: 4px;
-  padding: 2px 7px;
-  font-size: 10px;
-}
+
 .text-button {
   border: 0;
   background: transparent;
@@ -1010,9 +1003,7 @@ footer {
   .selection-bar > div {
     gap: 7px;
   }
-  .mode-label {
-    font-size: 9px;
-  }
+
   .map-shell {
     height: 65svh;
     min-height: 480px;
@@ -1468,8 +1459,8 @@ details.disclosure {
 .disclosure > summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  justify-content: flex-start;
+  gap: 11px;
   list-style: none;
   min-height: 50px;
   padding: 12px 15px;
@@ -1483,12 +1474,11 @@ details.disclosure {
   display: none;
 }
 .disclosure > summary > svg {
-  width: 23px;
-  height: 23px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
-  padding: 3px;
-  border-radius: 50%;
-  background: #eff3eb;
+  padding: 0;
+  background: transparent;
   color: #35563f;
   stroke-width: 1.8;
 }
@@ -1563,5 +1553,178 @@ details.disclosure {
 @media (prefers-reduced-motion: reduce) {
   .disclosure-vertical {
     transition: none;
+  }
+}
+
+/* Enhanced menus keep all choices within the viewport, including long rail names. */
+.select-enhanced > svg {
+  display: none;
+}
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 450;
+  text-align: left;
+}
+.select-trigger > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.select-trigger > svg {
+  width: 18px;
+  height: 18px;
+  color: #536b5e;
+}
+.select-trigger[aria-expanded="true"] {
+  border-color: #54765e;
+  box-shadow: 0 0 0 2px #315c4710;
+}
+.select-trigger[aria-expanded="true"] > svg {
+  transform: rotate(180deg);
+}
+.vehicle-field {
+  max-width: 150px;
+  min-width: 0;
+}
+.vehicle-field .select-trigger {
+  width: auto;
+  min-width: 96px;
+  min-height: 34px;
+  margin: 3px 0;
+  padding: 4px 9px;
+  background: #eaf0e4;
+  border-color: transparent;
+  color: #315c47;
+  font-size: 11px;
+}
+.selection-bar > div:first-child {
+  min-width: 0;
+}
+.select-popup {
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border: 1px solid #cfd9cc;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow:
+    0 4px 10px #233a3109,
+    0 16px 40px #233a311c;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.select-filter {
+  padding: 3px 3px 7px;
+  flex: none;
+  border-bottom: 1px solid #e7ece4;
+  margin-bottom: 4px;
+}
+.select-filter input {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  font-size: 16px;
+  padding: 7px 10px;
+  background: #f6f8f2;
+  border: 1px solid transparent;
+}
+.select-filter input:focus-visible {
+  outline: 2px solid #4a7da5;
+  outline-offset: -2px;
+}
+.select-options {
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scroll-padding: 4px;
+}
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  min-height: 42px;
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 13px;
+}
+.option-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.option-copy small {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.option-check {
+  visibility: hidden;
+  color: #315c47;
+  font-size: 15px;
+  flex: none;
+}
+.select-option[aria-selected="true"] {
+  background: #eaf0e4;
+  color: #234c37;
+  font-weight: 600;
+}
+.select-option[aria-selected="true"] .option-check {
+  visibility: visible;
+}
+.select-option[data-active="true"] {
+  box-shadow: inset 0 0 0 1px #9eafa0;
+  background: #f1f5ec;
+}
+.select-option:focus-visible {
+  outline: 2px solid #4a7da5;
+  outline-offset: -2px;
+}
+.select-empty {
+  color: var(--muted);
+  font-size: 12px;
+  padding: 12px;
+  margin: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .select-option:hover {
+    background: #f1f5ec;
+  }
+}
+@media (max-width: 600px) {
+  .select-trigger {
+    padding: 8px 10px;
+  }
+  .selection-bar {
+    min-height: 46px;
+    align-items: center;
+  }
+  .selection-bar > div:first-child {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .vehicle-field .select-trigger {
+    min-height: 38px;
+    font-size: 11px;
+    min-width: 88px;
+    gap: 6px;
+  }
+  .select-option {
+    min-height: 44px;
   }
 }

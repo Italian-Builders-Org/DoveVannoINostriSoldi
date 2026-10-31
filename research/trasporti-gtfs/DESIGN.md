@@ -117,3 +117,22 @@ Cambio città, resize e sostituzione del dettaglio completano le animazioni atti
 prima di aggiornare il contenuto. Nessun observer permanente per ogni pannello,
 loop inattivo, servizio remoto o richiesta aggiuntiva. L’animazione dell’altezza
 è limitata ai pannelli informativi e non ricostruisce la mappa.
+
+## Iterazione 6: menu aperti e copertura multimodale
+
+| Before                                                     | After                                                                                   | Why                                                                                     |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Una sola rete per città, bus e tram senza scelta esplicita | Città raggruppata e scelta compatta del mezzo; elenco delle reti integrate nel menu     | Rendere visibile la copertura parziale senza suggerire che gli altri mezzi non esistano |
+| Popup nativi non personalizzabili                          | Menu ricercabili, check, nomi lunghi a capo, altezza e posizione limitate alla viewport | Evitare opzioni tagliate e facilitare liste con molte linee                             |
+| +/− in un cerchio a destra                                 | Icona nuda a sinistra, peso coerente e animazione breve già accessibile                 | Seguire il feedback senza aggiungere decorazioni o tempi di attesa                      |
+| Date di servizio e acquisizione                            | Anche data del file quando fornita dal titolare                                         | Rendere visibile un archivio vecchio con calendario futuro                              |
+
+Gli ID dei dataset restano distinti dagli ID delle città e dal modo di vista
+2D/3D. Non si sommano tempi o velocità di mezzi diversi. I nuovi mezzi riusano gli
+archivi e la cartografia verificati, mentre il client continua a decodificare
+solo la rete richiesta e mantiene due reti in cache.
+
+Il test Browser ha riprodotto due popup contemporanei aprendo Linea da tastiera
+dopo una ricerca fermate. L’apertura del selettore ora chiude la ricerca prima di
+spostare il focus. I menu scorrono internamente e non usano scrollIntoView per
+spostare accidentalmente la pagina. Nessuna dipendenza o loop grafico aggiunto.

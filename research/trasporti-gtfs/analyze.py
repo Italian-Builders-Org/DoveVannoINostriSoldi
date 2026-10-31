@@ -246,6 +246,15 @@ def unique(rows, key):
     return result
 
 
+def archive_id(source, key="archiveId"):
+    identifier = source.get(key, source["id"])
+    if not isinstance(identifier, str) or not re.fullmatch(
+        r"[a-z][a-z0-9-]{0,31}", identifier
+    ):
+        raise ValueError("Invalid archive identifier")
+    return identifier
+
+
 def analyze_feed(path, service_date, receipt, source):
     with open(path, "rb") as f:
         digest = hashlib.file_digest(f, "sha256").hexdigest()
@@ -253,6 +262,9 @@ def analyze_feed(path, service_date, receipt, source):
         raise ValueError("SHA-256/byte receipt mismatch")
     if receipt.get("url") != source["url"]:
         raise ValueError("Source URL receipt mismatch")
+    max_speed = source.get("maxSpeedKmh", 150)
+    if not isinstance(max_speed, int) or not 50 <= max_speed <= 350:
+        raise ValueError("Invalid speed plausibility threshold")
     excluded = Counter()
     segments = {}
     geometry_cache = {}
@@ -386,8 +398,8 @@ def analyze_feed(path, service_date, receipt, source):
                     excluded["nonpositive_time"] += 1
                     continue
                 coords, length = geometry
-                if length / duration * 3.6 > 150:
-                    excluded["implausible_speed_above_150_kmh"] += 1
+                if length / duration * 3.6 > max_speed:
+                    excluded[f"implausible_speed_above_{max_speed}_kmh"] += 1
                     continue
                 geometry_id = hashlib.sha256(safe_json(coords).encode()).hexdigest()[
                     :12
@@ -403,7 +415,12 @@ def analyze_feed(path, service_date, receipt, source):
                     route = routes[trip["route_id"]]
                     segments[key] = {
                         "id": hashlib.sha256(safe_json(key).encode()).hexdigest()[:16],
-                        "route": route.get("route_short_name") or trip["route_id"],
+                        "route": (
+                            route.get("route_long_name")
+                            if source.get("routeLabel") == "long"
+                            else route.get("route_short_name")
+                        )
+                        or trip["route_id"],
                         "routeName": route.get("route_long_name", ""),
                         "direction": trip.get("direction_id", ""),
                         "fromId": left["stop_id"],
@@ -467,7 +484,8 @@ def write_viewer(payload, output, standalone=False):
         if len(compressed) > 16 * 1024**2:
             raise ValueError("Compressed city byte budget exceeded")
         entry = {
-            k: city.get(k) for k in ["id", "name", "mode", "status", "serviceDate"]
+            k: city.get(k)
+            for k in ["id", "name", "areaId", "mode", "status", "serviceDate"]
         }
         if standalone:
             encoded = base64.b64encode(compressed).decode()
@@ -497,6 +515,8 @@ def write_viewer(payload, output, standalone=False):
     )
     modules = []
     for name in [
+        "catalog.mjs",
+        "select-menu.mjs",
         "camera.mjs",
         "explorer.mjs",
         "view-state.mjs",
@@ -547,8 +567,8 @@ def main():
     city_dates = parse_city_dates(args.city_date, {s["id"] for s in sources})
     cities = []
     for source in sources:
-        archive = args.cache / (source["id"] + ".zip")
-        receipt = args.cache / (source["id"] + ".receipt.json")
+        archive = args.cache / (archive_id(source) + ".zip")
+        receipt = args.cache / (archive_id(source) + ".receipt.json")
         if not archive.exists() or not receipt.exists():
             raise ValueError("Missing acquired feed/receipt: " + source["id"])
         city = analyze_feed(

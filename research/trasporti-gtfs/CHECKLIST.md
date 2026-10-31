@@ -113,3 +113,24 @@ verificare altri feed e stressare i flussi nel Browser. Resta ricerca locale.
 - PASS: 44 città/fascia, 11 pannelli fonte, 40 viewport reali, centraggio e campi a zero scarto; recupero da file mancanti/corrotti. I dati delle dieci voci precedenti restano identici.
 - Artifact: gtfs-20261031-v5 nella cartella visualizzazioni della chat, con confronto visivo, ricevute e prove Browser ripetibili. Commit solo locale; main ricontrollato.
 - NOT RUN: telefono fisico, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Nessun costo di build Vercel, push, PR o merge.
+
+## Iterazione 6: menu aperti e mezzi per città
+
+Base: 77512c48; main osservato 41a953e5. Solo ricerca locale, nessun deploy.
+
+- [x] Preservare checkout principale e dati precedenti; leggere feedback e riprodurre UI.
+- [x] Verificare fonti ferroviarie ufficiali, calendari e geometrie; integrare solo dati verificati.
+- [x] Definire prima del codice rischi: città con più mezzi, link precedenti, alias archivi, menu fuori viewport, focus/tastiera, ricerca vuota, carichi concorrenti e reduced motion.
+- [x] Separare città e mezzo, evitando confusione tra copertura parziale e rete reale.
+- [x] Rifinire menu aperti, +/− a sinistra senza contorno e animazioni brevi.
+- [x] Verificare dati invariati, Browser desktop/mobile, errori, link, filtri, mappa e menu.
+- [x] Salvare screenshot/prove, aggiornare documenti e commit locale.
+
+### Esito della sesta iterazione
+
+- PASS: città e mezzo distinti, menu con ricerca/check/scroll interno, nomi lunghi leggibili, tastiera e popup dentro la viewport. Icone +/− a sinistra senza sfondo, animazioni brevi.
+- PASS: aggiunti metro Milano/Roma, bus Milano e treni regionali Firenze/Pisa. 15 reti utilizzabili in 11 città; Bari ancora indisponibile. Trenord escluso per assenza di shapes, fonte Toscana datata gennaio dichiarata.
+- PASS: 50 test offline, 60 reti/fasce più Bari, 16 pannelli fonte, 24 menu responsive, 20 filtri velocità, 11 inversioni animate. Link ferroviario ripristinato esattamente; errore file e recupero senza reload; versione offline verificata.
+- PASS: dati e mappe delle 11 voci precedenti identici. Hash/byte di tutti i 16 asset verificati; console normale vuota. Main remoto ricontrollato a 41a953e5; solo ricerca locale modificata.
+- Artifact: gtfs-20261031-v6 nella cartella visualizzazioni della chat, con screenshot, statico/offline, dati, matrici e verify-final.py. Il verificatore conferma le osservazioni Browser salvate contro l'analisi.
+- NOT RUN: telefono fisico, VoiceOver, integrazione corpus, gate Next/ETL/CI e deploy del prodotto. Nessun push, PR, merge o build Vercel.

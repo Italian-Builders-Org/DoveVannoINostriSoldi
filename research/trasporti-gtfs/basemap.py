@@ -13,6 +13,8 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+from analyze import archive_id
+
 ENDPOINT = "https://overpass-api.de/api/interpreter"
 ENDPOINTS = (
     ENDPOINT,
@@ -190,8 +192,8 @@ node["place"~"^(city|town|suburb|quarter|neighbourhood)$"]["name"]({bbox});
 
 
 def load_map(source, cache):
-    path = cache / (source["id"] + ".osm.json")
-    receipt_path = cache / (source["id"] + ".osm.receipt.json")
+    path = cache / (archive_id(source, "mapId") + ".osm.json")
+    receipt_path = cache / (archive_id(source, "mapId") + ".osm.receipt.json")
     raw = path.read_bytes()
     receipt = json.loads(receipt_path.read_text())
     if (
@@ -214,8 +216,8 @@ def load_map(source, cache):
 
 
 def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib", method="POST"):
-    path = cache / (source["id"] + ".osm.json")
-    receipt_path = cache / (source["id"] + ".osm.receipt.json")
+    path = cache / (archive_id(source, "mapId") + ".osm.json")
+    receipt_path = cache / (archive_id(source, "mapId") + ".osm.receipt.json")
     if path.exists() and receipt_path.exists():
         data = load_map(source, cache)
         return {"city": source["id"], "cached": True, "features": len(data["features"])}

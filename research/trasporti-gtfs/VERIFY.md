@@ -119,3 +119,30 @@ gate del prodotto e prova fisica mobile. Nessuna build Vercel per questa ricerca
 
 Telefono fisico e gate del prodotto restano **NOT RUN**. Nessun push, PR,
 merge, deploy o build Vercel per questa iterazione locale.
+
+## Prove della sesta iterazione
+
+- Contratti scritti prima dell’implementazione per raggruppamento città/mezzo,
+  alias degli archivi, URL discordanti e collisioni ID. 50 test offline.
+- Confronto completo: gli 11 dataset precedenti, cartografia compresa, restano
+  identici. 16 asset verificati per hash/byte; 15 reti utilizzabili in 11 città.
+- Browser: 60 combinazioni rete/fascia e Bari indisponibile; conteggi, righe e
+  velocità minima confrontati con analysis.json. 16 pannelli fonti/ricevute.
+- 24 menu su viewport reali 320/390/573/768/1440 px e 573×360: niente overflow,
+  popup nello schermo e scelta corrente visibile. Ricerca vuota, Escape, ricerca
+  da tastiera, Enter e Tab verificati; uscita senza selezioni involontarie.
+- Percorso bus linea 90 → metro Milano → metro Roma → tram Torino: reset della
+  linea e preferenza del mezzo coerenti. Ripristino esatto di un link ferroviario
+  con linea, fascia, tratto, camera e 2D. Clipboard letta dopo la copia.
+- 20 filtri sulle nuove reti; zoom, nord e fit. 11 inversioni di disclosure con
+  veri eventi mouse durante animazioni attive: nessuna altezza/overflow residua.
+  Icone singole a sinistra senza sfondo e percorso reduced motion verificati.
+- Asset danneggiato: errore di dimensione esplicito, fonte vuota nascosta, menu
+  ancora utilizzabili. Cambio su rete valida e ripristino del file senza reload.
+- L’estratto Pisa ha fallito due POST (502 e timeout). Un GET esplicito ammesso
+  ha prodotto una ricevuta verificata: nessun retry automatico nel prodotto.
+- Artifact: gtfs-20261031-v6 nella cartella visualizzazioni della chat, con matrici
+  JSON, screenshot, statico/offline, verificatore ripetibile e analisi.
+
+Telefono fisico, VoiceOver sul dispositivo, integrazione corpus e gate
+Next/ETL/CI/deploy restano NOT RUN. Nessun push, PR, merge o build Vercel.

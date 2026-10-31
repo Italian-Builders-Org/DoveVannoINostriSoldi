@@ -21,7 +21,7 @@ export function enhanceDisclosure(details) {
     if (cls) line.setAttribute("class", cls);
     icon.append(line);
   }
-  summary.append(icon);
+  summary.prepend(icon);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   let expanded = details.open,
     animation = null;

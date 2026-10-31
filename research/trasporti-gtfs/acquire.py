@@ -10,14 +10,14 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from analyze import Archive
+from analyze import Archive, archive_id
 
 MAX_BYTES = 256 * 1024 * 1024
 
 
 def acquire(source, cache, refresh=False):
-    destination = cache / (source["id"] + ".zip")
-    receipt_path = cache / (source["id"] + ".receipt.json")
+    destination = cache / (archive_id(source) + ".zip")
+    receipt_path = cache / (archive_id(source) + ".receipt.json")
     if destination.exists() and receipt_path.exists() and not refresh:
         receipt = json.loads(receipt_path.read_text())
         with destination.open("rb") as stream:
@@ -71,6 +71,16 @@ def acquire(source, cache, refresh=False):
             temporary.unlink()
 
 
+def unique_archives(sources):
+    archives = {}
+    for source in sources:
+        key = archive_id(source)
+        if key in archives and archives[key]["url"] != source["url"]:
+            raise ValueError("Shared archive has conflicting URLs: " + key)
+        archives.setdefault(key, source)
+    return list(archives.values())
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache", type=Path, required=True)
@@ -84,7 +94,8 @@ def main():
     sources = json.loads((Path(__file__).parent / "feeds.json").read_text())
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         for result in pool.map(
-            lambda source: acquire(source, args.cache, args.refresh), sources
+            lambda source: acquire(source, args.cache, args.refresh),
+            unique_archives(sources),
         ):
             print(json.dumps(result, ensure_ascii=False), flush=True)
 

@@ -1,3 +1,9 @@
+import { groupAreas, sourceForArea, modeLabel } from "./catalog.mjs";
+import {
+  enhanceSelect,
+  syncSelectMenus,
+  closeSelectMenu,
+} from "./select-menu.mjs";
 import {
   baseScale,
   normalizeBearing,
@@ -74,6 +80,7 @@ let scene = null,
   requestId = 0,
   expanded = false,
   touchMode = false;
+const areas = groupAreas(manifest.cities);
 const failedAssets = new Set();
 const cache = new Map(),
   pending = new Map(),
@@ -214,9 +221,11 @@ async function decodeCity(id) {
 }
 async function selectCity(id, restored = null) {
   finishDisclosures();
+  syncArea(id);
   $("share-result").hidden = true;
   const token = ++requestId;
   controls.forEach((id) => ($(id).disabled = true));
+  syncSelectMenus();
   $("export").disabled = true;
   $("page-previous").disabled = true;
   $("page-next").disabled = true;
@@ -250,7 +259,7 @@ async function selectCity(id, restored = null) {
       year: "numeric",
       weekday: "short",
     });
-    $("mode-label").textContent = city.mode === "bus" ? "Bus" : "Tram";
+
     sourceInfo();
     if (city.scopeLabel) $("area-label").textContent = city.scopeLabel;
     controls.forEach((id) => ($(id).disabled = false));
@@ -286,7 +295,6 @@ async function selectCity(id, restored = null) {
       "quality",
       "receipt",
       "reference",
-      "mode-label",
       "area-label",
     ])
       $(id).replaceChildren();
@@ -299,6 +307,8 @@ async function selectCity(id, restored = null) {
     shell.dataset.loading = "false";
     notice(error.message);
     schedule();
+  } finally {
+    if (token === requestId) syncSelectMenus();
   }
 }
 function sourceInfo() {
@@ -327,6 +337,15 @@ function sourceInfo() {
     "p",
     "Acquisito: " + new Date(city.receipt.acquiredAt).toLocaleString("it-IT"),
   );
+  if (city.receipt.lastModified) {
+    const lastModified = new Date(city.receipt.lastModified);
+    if (!Number.isNaN(lastModified.getTime()))
+      add(
+        dates,
+        "p",
+        "File fonte: " + lastModified.toLocaleDateString("it-IT"),
+      );
+  }
   const q = $("quality");
   q.replaceChildren();
   add(
@@ -374,7 +393,17 @@ function sourceInfo() {
   };
   const ul = add(q, "ul");
   for (const [key, value] of Object.entries(city.exclusions))
-    if (value) add(ul, "li", (labels[key] ?? key) + ": " + fmt(value, 0));
+    if (value)
+      add(
+        ul,
+        "li",
+        (labels[key] ??
+          (key.match(/^implausible_speed_above_(\d+)_kmh$/)
+            ? "Coppie oltre " + key.match(/above_(\d+)/)[1] + " km/h, escluse"
+            : key)) +
+          ": " +
+          fmt(value, 0),
+      );
   if (city.segments.some((s) => s.estimated))
     add(
       q,
@@ -574,12 +603,14 @@ function clearFilters() {
   route = "";
   speedClass = null;
   $("route").value = "";
+  syncSelectMenus();
   hideSearch();
   updateData();
 }
 function setRoute(value) {
   route = value;
   $("route").value = value;
+  syncSelectMenus();
   hideSearch();
   updateData();
   if (route) fit();
@@ -588,6 +619,7 @@ function hideSearch() {
   $("stop-menu").hidden = true;
 }
 function showSearch() {
+  closeSelectMenu();
   const query = $("stop-search").value,
     results = scene ? searchStops(scene.stops, query, route, 8) : [];
   $("stop-results").replaceChildren();
@@ -1088,6 +1120,7 @@ function restoreView(state) {
     ? state.route
     : "";
   $("route").value = route;
+  syncSelectMenus();
   speedClass = state.speed;
   if (state.camera) {
     pitchDegrees = state.camera[4];
@@ -1158,7 +1191,28 @@ $("close-share").onclick = () => {
   $("share-result").hidden = true;
   $("share-view").focus();
 };
-$("city").onchange = () => selectCity($("city").value);
+function syncArea(sourceId) {
+  const entry = manifest.cities.find((c) => c.id === sourceId);
+  const area = areas.find((a) => a.id === (entry.areaId || entry.id));
+  $("city").value = area.id;
+  $("vehicle").replaceChildren(
+    ...area.sources.map((source) => {
+      const node = option(source.id, modeLabel(source.mode));
+      node.dataset.subtitle =
+        source.status === "ready" ? "" : "Dati non disponibili";
+      return node;
+    }),
+  );
+  $("vehicle").value = sourceId;
+  syncSelectMenus();
+}
+$("city").onchange = () => {
+  const preferred = manifest.cities.find(
+    (c) => c.id === $("vehicle").value,
+  )?.mode;
+  selectCity(sourceForArea(areas, $("city").value, preferred).id);
+};
+$("vehicle").onchange = () => selectCity($("vehicle").value);
 $("band").onchange = () => {
   band = $("band").value;
   updateData();
@@ -1250,20 +1304,23 @@ window
   .addEventListener("change", (event) => {
     if (event.matches) finishDisclosures();
   });
-for (const c of [...manifest.cities].sort((a, b) =>
-  a.name.localeCompare(b.name, "it"),
-))
-  $("city").append(
-    option(
-      c.id,
-      c.name + (c.status === "ready" ? "" : " · dati non disponibili"),
-    ),
-  );
+for (const area of areas) {
+  const node = option(area.id, area.name);
+  node.dataset.subtitle = area.sources
+    .map(
+      (s) =>
+        modeLabel(s.mode) +
+        (s.status === "ready" ? "" : " · dati non disponibili"),
+    )
+    .join(" · ");
+  $("city").append(node);
+}
+for (const id of ["city", "band", "route", "vehicle"])
+  enhanceSelect($(id), hideSearch);
 for (const disclosure of document.querySelectorAll(
   ".source > details, .map-help",
 ))
   enhanceDisclosure(disclosure);
 $("city").disabled = false;
 const initialView = readView(location.search, manifest.cities);
-$("city").value = initialView.city;
 selectCity(initialView.city, initialView);

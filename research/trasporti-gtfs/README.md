@@ -1,9 +1,11 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: tram a Torino, Milano, Roma, Firenze, Palermo e Padova; autobus e filobus
-nelle aree dichiarate di Bologna, Cagliari, Venezia/Mestre e Catania. Strade, acqua, parchi e quartieri OpenStreetMap
-forniscono il contesto geografico. I rilievi indicano minuti programmati per
-chilometro, non ritardi osservati, traffico, inefficienze o sprechi.
+Prototipo locale: 15 reti utilizzabili in 11 città, con tram, autobus, metro e
+treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
+mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
+Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
+I rilievi indicano minuti programmati per chilometro, non ritardi osservati,
+traffico, inefficienze o sprechi.
 
 Branch `codex/gtfs-grandi-citta`, base `41a953e5`. Nessuna modifica a pagine,
 API, dipendenze, cron o configurazione Vercel del prodotto.
@@ -47,7 +49,7 @@ origin. Nessun tile, font remoto, polling, API AI o chiave cartografica.
 
 Ricerca fermate per nome/codice, filtri di velocità e linea, tabella paginata e
 CSV mantengono gli stessi valori derivati dal GTFS. Il link alla vista conserva
-città, filtri, camera e selezione; parametri sconosciuti o non validi non
+città e mezzo, filtri, camera e selezione; parametri sconosciuti o non validi non
 diventano URL di acquisizione né valori della camera fuori budget. Il link
 descrive la vista, non congela lo snapshot: data e hash restano nelle fonti. Zoom, bussola, inclinazione,
 rilievo e vista espansa sono controllabili anche da tastiera. Su mobile
@@ -69,24 +71,35 @@ La cartografia è acquisita una volta offline, serialmente, rispettando i
 non ci sono retry o cambi automatici di provider. Risposte parziali, timeout,
 coordinate non valide e hash diversi bloccano la generazione con basemap.
 Un servizio in errore non diventa una mappa vuota. Budget OSM: 64 MiB espansi
-per città. Il perimetro cartografico centrale, dichiarato in `feeds.json`, può
+per città. `archiveId` e `mapId` riusano archivi e mappe verificati fra mezzi:
+nessun nuovo download per metro/autobus già presenti nello stesso feed. Un alias
+con URL diversi viene rifiutato; anche un alias cartografico deve avere gli stessi
+bounds della ricevuta. `areaId` raggruppa i dataset per città senza cambiare gli
+ID dei link precedenti.
+
+Il perimetro cartografico centrale, dichiarato in `feeds.json`, può
 essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 
 ## Copertura e date di servizio
 
-| Città    | Mezzo       | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
-| -------- | ----------- | -------------: | -----------: | --------------------: | ----------------------------: | --------------: |
-| Torino   | tram        |              9 |            8 |                 1.854 |                         1.854 |             591 |
-| Milano   | tram        |             17 |           17 |                 4.333 |                         4.333 |           1.024 |
-| Roma     | tram        |              5 |            1 |                   750 |                           750 |              59 |
-| Firenze  | tram        |              2 |            2 |                   874 |                           874 |             157 |
-| Bologna  | bus/filobus |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
-| Cagliari | bus/filobus |             45 |           45 |                 3.155 |                         3.116 |           2.268 |
-| Venezia  | bus         |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
-| Palermo  | tram        |              4 |            4 |                   518 |                           468 |              74 |
-| Padova   | tram SIR1   |              1 |            1 |                 1.153 |                         1.144 |              73 |
-| Catania  | bus         |             53 |           50 |                 2.868 |                         2.868 |           2.713 |
-| Bari     | bus         |             68 |            0 |                     0 |                             0 |               0 |
+| Città    | Mezzo           | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
+| -------- | --------------- | -------------: | -----------: | --------------------: | ----------------------------: | --------------: |
+| Torino   | tram            |              9 |            8 |                 1.854 |                         1.854 |             591 |
+| Milano   | tram            |             17 |           17 |                 4.333 |                         4.333 |           1.024 |
+| Roma     | tram            |              5 |            1 |                   750 |                           750 |              59 |
+| Firenze  | tram            |              2 |            2 |                   874 |                           874 |             157 |
+| Bologna  | bus/filobus     |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
+| Cagliari | bus/filobus     |             45 |           45 |                 3.155 |                         3.116 |           2.268 |
+| Venezia  | bus             |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
+| Palermo  | tram            |              4 |            4 |                   518 |                           468 |              74 |
+| Padova   | tram SIR1       |              1 |            1 |                 1.153 |                         1.144 |              73 |
+| Catania  | bus             |             53 |           50 |                 2.868 |                         2.868 |           2.713 |
+| Milano   | metro           |              5 |            5 |                 2.770 |                         2.770 |             266 |
+| Milano   | bus             |            148 |          140 |                18.026 |                        17.651 |           5.177 |
+| Roma     | metro           |              4 |            4 |                 1.379 |                         1.379 |             172 |
+| Firenze  | treni regionali |             14 |           14 |                   780 |                           392 |             408 |
+| Pisa     | treni regionali |             14 |           14 |                   780 |                           178 |             129 |
+| Bari     | bus             |             68 |            0 |                     0 |                             0 |               0 |
 
 Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
 La data diversa è una scelta esplicita: gli archivi CTM e Padova acquisiti non contengono
@@ -123,8 +136,8 @@ quattro informazioni distinte. Non sono dati monetari.
 
 1. Applicare `calendar.txt` e le eccezioni di `calendar_dates.txt` per la data
    scelta, nel fuso Europe/Rome. Nessun ripiego su un'altra data.
-2. Selezionare i tipi dichiarati per la città: tram 0 e 900–906; per le reti bus/filobus
-   solo i codici espliciti nel registro. Escludere e contare le
+2. Selezionare i tipi dichiarati per la città e il mezzo: tram 0 e 900–906,
+   metro 1, treni 2; per bus/filobus solo i codici espliciti nel registro. Escludere e contare le
    corse a frequenza non espanse.
 3. Ordinare per `stop_sequence`, bloccando sequenze numericamente duplicate.
    Considerare soltanto fermate adiacenti; applicare l'eventuale area di studio.
@@ -139,8 +152,9 @@ quattro informazioni distinte. Non sono dati monetari.
    la **mediana dei tempi**, non fare la mediana delle velocità.
 7. Separare partenze 07–10, 10–16, 16–20 e intero giorno di servizio.
 
-Durate nulle/negative, geometrie sotto 25 m e velocità oltre 150 km/h sono
-escluse e contate. Gli orari stimati/arrotondati dal titolare non sono osservazioni.
+Durate nulle/negative e geometrie sotto 25 m sono escluse e contate. Il controllo
+di plausibilità esclude velocità oltre 150 km/h; per i soli treni è dichiarato
+`maxSpeedKmh=300`, senza applicare ai treni il limite urbano. Gli orari stimati/arrotondati dal titolare non sono osservazioni.
 Fermate omonime possono includere manovre o capolinea. Le corse sono campioni
 dell'orario, non passeggeri. Non confrontare le città come una classifica.
 
@@ -164,6 +178,8 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Palermo, Comune/AMAT](https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783): condizioni specifiche tram CC BY-SA 4.0; geometrie basate su OSM sotto ODbL.
 - [Padova, Busitalia Veneto](https://gtfs-biv.fsbusitalia.com/): risorsa ufficiale TRAM SIR1, licenza non dichiarata nella pagina.
 - [Catania, AMTS](https://www.amts.ct.it/open-data): IODL 2.0; rete autobus entro il perimetro urbano dichiarato.
+- [Firenze e Pisa, Regione Toscana/Trenitalia](https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f): regionali toscani, CC-BY nel catalogo, versione non specificata. Il file è datato 15/01/2026 e contiene calendario per il 30/10: non certifica l’orario oggi in esercizio. Entrambe le fermate devono rientrare nei perimetri dichiarati. Le 14 linee e 780 corse iniziali sono regionali; le colonne successive misurano i tratti utilizzabili nelle singole aree.
+- [Lombardia/Trenord](https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9): archivio verificato ma senza `shapes.txt`, escluso dalla mappa. Nessun tracciato è ricostruito a partire da sole stazioni.
 - [Genova, AMT](https://www.amt.genova.it/amt/societa_trasparente/altri-contenuti/open-data/): nessuna geometria nel feed acquisito, non inclusa nel visualizzatore.
 - [OpenStreetMap, ODbL 1.0](https://www.openstreetmap.org/copyright): attribuzione sempre visibile e ricevuta separata. Per redistribuire gli estratti rispettare ODbL e disponibilità della banca dati derivata.
 - [Specifica GTFS Schedule](https://gtfs.org/documentation/schedule/reference/).
@@ -172,11 +188,11 @@ distanze GTFS; la quota non rappresenta altitudine.
 
 ```bash
 python3 -m unittest discover -s research/trasporti-gtfs -p 'test_*.py'
-node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test_explorer.mjs research/trasporti-gtfs/test_view_state.mjs
+node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test_explorer.mjs research/trasporti-gtfs/test_view_state.mjs research/trasporti-gtfs/test_catalog.mjs
 node --check research/trasporti-gtfs/viewer.js
 ```
 
-Quarantacinque test offline: 25 Python e 20 Node. Fixture sintetiche per calendario,
+Cinquanta test offline: 27 Python e 23 Node. Fixture sintetiche per calendario,
 geometrie, budget, date esplicite, coordinate fermate, asset statici e integrità;
 proiezione/inversa, zoom ancorato, fit, rotazione e trasformazione pinch;
 ricerca, confini dei filtri, CSV e link alla vista. I nuovi contratti sono stati provati in RED
@@ -200,3 +216,19 @@ Le sezioni informative restano `<details>` nativi. `disclosure.mjs` aggiunge
 Candidato non integrato: il file collegato dalla pagina ufficiale di Taranto,
 acquisito il 31/10/2026, non ha servizi per il 30 o 31 ottobre. Non viene
 sostituito silenziosamente con un altro giorno. Bari resta invariata.
+
+## Menu e mezzi
+
+I selettori nativi restano il fallback. Il miglioramento progressivo aggiunge
+menu con ricerca nelle liste lunghe, check della scelta, nomi a capo e spazio
+limitato alla viewport. Enter/frecce selezionano, Escape annulla, Tab esce verso
+il campo successivo. Nessun cambio viene applicato durante la sola ricerca.
+L’apertura chiude la ricerca fermate; un cambio città conserva il mezzo se
+utilizzabile, altrimenti sceglie una rete disponibile. Linea e selezione sono
+azzerate per non riusare identificativi di un altro feed.
+
+`select-menu.mjs` contiene il comportamento dei menu; il controller sincronizza
+opzioni, valore e disabilitazione nei punti che cambiano dati. Non intercetta i
+setter nativi e non installa observer per ogni opzione. Animazione di apertura
+130 ms solo da puntatore; tastiera e movimento ridotto sono immediati. Le
+ricevute distinguono file aggiornato, acquisizione e giorno di servizio.

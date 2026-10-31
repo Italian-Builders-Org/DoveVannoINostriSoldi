@@ -294,7 +294,9 @@
               disabled
               aria-label="Scarica i tratti selezionati in CSV"
             >
-              ↓ CSV
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M12 3v12m-4-4 4 4 4-4M5 17v4h14v-4" /></svg
+              >CSV
             </button>
           </div>
           <div class="table-scroll">
@@ -313,8 +315,15 @@
             </table>
           </div>
           <nav id="pages" class="pagination" aria-label="Paginazione tratti">
-            <button id="page-previous" disabled>Precedenti</button
-            ><button id="page-next" disabled>Successivi</button>
+            <button id="page-previous" disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m14 6-6 6 6 6" /></svg
+              >Precedenti</button
+            ><button id="page-next" disabled>
+              Successivi<svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m10 6 6 6-6 6" />
+              </svg>
+            </button>
           </nav>
         </section>
         <section class="source">
@@ -323,26 +332,24 @@
           <details>
             <summary>Come leggere i dati</summary>
             <p>
-              Distanza sul tracciato GTFS divisa per il tempo mediano tra
-              partenza e arrivo alla fermata successiva. Soste escluse. Le corse
-              sono campioni dell’orario, non viaggi osservati o passeggeri.
+              <strong>Velocità prevista.</strong> Distanza GTFS divisa per il
+              tempo mediano tra fermate; soste escluse. Gli orari possono essere
+              stimati o arrotondati. Le corse sono programmate, non osservate.
             </p>
             <p>
-              Gli orari possono essere stimati o arrotondati. Non misurano
-              puntualità, traffico reale o qualità del servizio. Coperture e
-              giorni disponibili possono differire: questa vista non classifica
-              le città.
+              <strong>Rilievi.</strong> Minuti/km fino a 12. Quota e curva sono
+              grafiche, non altimetria o variazioni dentro il tratto. Dettaglio
+              e CSV conservano i valori completi.
             </p>
             <p>
-              La quota è proporzionale ai minuti/km fino a 12, non è altimetria.
-              La curva fra fermate è grafica; non misura variazioni dentro il
-              tratto. Dettaglio e CSV conservano i valori completi. I punti
-              usano le coordinate GTFS delle fermate.
+              <strong>Copertura.</strong> Date e reti differiscono: nessuna
+              classifica delle città. I punti sono fermate GTFS; la cartografia
+              OSM è un estratto e non modifica tempi o distanze.
             </p>
             <p>
-              La cartografia OSM è un estratto locale distinto dagli orari.
-              Fuori dal suo perimetro le strade possono mancare; non modifica
-              tempi o distanze GTFS.
+              <strong>Limiti.</strong> Non misura ritardi, traffico, passeggeri
+              o qualità del servizio. Fuori dall’estratto cartografico le strade
+              possono mancare.
             </p>
           </details>
           <details>

@@ -90,3 +90,26 @@ migliorare mappa/UX e stressare i flussi nel Browser. Resta ricerca locale.
 - PASS: dati e mappe delle otto voci precedenti identici; asset statici verificati per hash e byte, nessuna dipendenza o API remota aggiunta.
 - Artifact: gtfs-20261031-v4 nella cartella visualizzazioni della chat, con screenshot, output a directory e offline, analisi, matrici e ricevute. Main ricontrollato; solo ricerca locale modificata.
 - NOT RUN: telefono fisico, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Nessun push, PR, merge o deploy. Licenze non dichiarate restano da verificare prima di pubblicare.
+
+## Iterazione 5: dettagli di interfaccia e disclosure
+
+Base: e765a675. Richiesta: centrare l'icona Centro, migliorare le tre sezioni
+informative con +/− e apertura/chiusura animata, rivedere dettagli di UI/UX,
+verificare altri feed e stressare i flussi nel Browser. Resta ricerca locale.
+
+- [x] Branch isolato pulito; screenshot e stili attuali riletti.
+- [x] Riprodurre il disallineamento a 573 px e misurare gli altri controlli.
+- [x] Definire rischi prima del codice: click rapidi/reversals, tastiera, reduced motion, contenuti che cambiano durante l'apertura, focus e fallback senza animazioni.
+- [x] Implementare disclosure accessibili e animazione breve, senza nuove dipendenze o lavoro continuo.
+- [x] Verificare nuove fonti, calendario/geometrie/licenze e integrare solo dati utilizzabili.
+- [x] Testare desktop/mobile, aperture/chiusure ripetute, cambi città, mappa, errori e screenshot.
+- [x] Ricontrollare main, dati precedenti e artifact; commit solo locale.
+
+### Esito della quinta iterazione
+
+- PASS: Centro centrato, campo ricerca allineato, CSV/paginazione con SVG e gruppi centrati. Metadati più ordinati e metodologia compatta.
+- PASS: disclosure native con +/−, animazione breve, tastiera/reduced motion immediati, corpi in chiusura inert e interruzioni robuste. E2E su 17 reversals, resize, cambio città/preferenza, 20 dettagli e fallback.
+- PASS: Catania autobus (2.713 tratti, 50 linee, servizio 30/10) e relativo estratto OSM verificati. Dieci città utilizzabili; Taranto esclusa per assenza di servizio alle date scelte, Bari invariata.
+- PASS: 44 città/fascia, 11 pannelli fonte, 40 viewport reali, centraggio e campi a zero scarto; recupero da file mancanti/corrotti. I dati delle dieci voci precedenti restano identici.
+- Artifact: gtfs-20261031-v5 nella cartella visualizzazioni della chat, con confronto visivo, ricevute e prove Browser ripetibili. Commit solo locale; main ricontrollato.
+- NOT RUN: telefono fisico, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Nessun costo di build Vercel, push, PR o merge.

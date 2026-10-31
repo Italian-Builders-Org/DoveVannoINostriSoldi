@@ -1,6 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "iterationBaseSha": "50ab833a",
+  "iterationBaseSha": "e765a675",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -537,11 +537,68 @@
         "labels": 20,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "catania",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "AMTS Catania S.p.A.",
+      "license": "IODL 2.0",
+      "studyBounds": [15.0, 37.43, 15.16, 37.6],
+      "receipt": {
+        "city": "catania",
+        "url": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+        "finalUrl": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+        "acquiredAt": "2026-10-31T15:23:26.732507+00:00",
+        "bytes": 3173161,
+        "sha256": "58e0849f1287955a818621d572df65ac76da63ac142941e2543a2024a43db3a2",
+        "lastModified": "Tue, 20 Oct 2026 07:07:51 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 53,
+        "activeRoutes": 50,
+        "activeScheduledTrips": 2868,
+        "activeServices": 1,
+        "geometryPatterns": 102,
+        "segments": 2713,
+        "analyzedScheduledTrips": 2868,
+        "analyzedRoutes": 50
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 67746,
+        "accepted_pairs": 66403,
+        "unlocated_or_nonprogressing_pair": 25,
+        "short_geometry_pair": 3,
+        "missing_geometry_pair": 766,
+        "outside_study_area": 562,
+        "implausible_speed_above_150_kmh": 15
+      },
+      "segmentsSha256": "5a37fd3523152b7c34e1a391fc5536b80054641fb77401e1eaca006501260507",
+      "stops": 1363,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [15.04, 37.47, 15.11, 37.55],
+          "acquiredAt": "2026-10-31T15:25:59.553003+00:00",
+          "osmBaseAt": "2026-10-31T15:24:36Z",
+          "sha256": "72ad7d00cfba01a6bce26c644c3b15d72de7f4e99ee69b45072ccc4f0ecb8ba6",
+          "bytes": 6101679,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](37.47,15.04,37.55,15.11);\nway[\"natural\"=\"water\"](37.47,15.04,37.55,15.11);way[\"waterway\"~\"^(river|canal)$\"](37.47,15.04,37.55,15.11);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](37.47,15.04,37.55,15.11);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](37.47,15.04,37.55,15.11);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](37.47,15.04,37.55,15.11);\n);out body geom;"
+        },
+        "features": 7767,
+        "labels": 45,
+        "license": "ODbL 1.0"
+      }
     }
   ],
   "delivery": {
     "mode": "static-city-assets",
-    "bootstrapBytes": 103538,
+    "bootstrapBytes": 110639,
     "cityAssets": {
       "milano-8022412e4225a47f962c2ad26b91b0883d17427c8cceb769a30f857de4c6bcb6.json.gz": 1149512,
       "roma-280f6130dee77d667e39bbb0a5bc003c5d37a4f7c00c1d8188a409a973f3400f.json.gz": 635553,
@@ -552,7 +609,8 @@
       "cagliari-142854ba3673767c53f1f01bb82cd5d162e732af8a0dc5ca525333d069aa4e98.json.gz": 686879,
       "venezia-c48204dba4a428fb60fda337bccff5d3aa48852d3222114006b570362aa7c8fd.json.gz": 1614012,
       "palermo-851cffc78d916d6de7649feafd290fb347620f1f0d3df29669928500856fcd8c.json.gz": 254364,
-      "padova-779cbcc1bc57bd03fd9c54004d2c707478ec4bd3da417c4efb0a8539516bbf34.json.gz": 261796
+      "padova-779cbcc1bc57bd03fd9c54004d2c707478ec4bd3da417c4efb0a8539516bbf34.json.gz": 261796,
+      "catania-5d93b575590bb7a29f124bff7a5213e4560bcf527023d114159c4ea33647c6ad.json.gz": 647926
     }
   }
 }

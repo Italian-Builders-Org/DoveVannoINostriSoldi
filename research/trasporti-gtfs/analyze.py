@@ -500,6 +500,7 @@ def write_viewer(payload, output, standalone=False):
         "camera.mjs",
         "explorer.mjs",
         "view-state.mjs",
+        "disclosure.mjs",
         "renderer.mjs",
         "viewer.js",
     ]:

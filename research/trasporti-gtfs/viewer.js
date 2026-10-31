@@ -14,6 +14,7 @@ import {
   selectionCSV,
   stopLabel,
 } from "./explorer.mjs";
+import { enhanceDisclosure, finishDisclosures } from "./disclosure.mjs";
 import { readView, viewURL } from "./view-state.mjs";
 import { prepareScene, createRenderer } from "./renderer.mjs";
 const $ = (id) => document.getElementById(id),
@@ -212,6 +213,7 @@ async function decodeCity(id) {
   }
 }
 async function selectCity(id, restored = null) {
+  finishDisclosures();
   $("share-result").hidden = true;
   const token = ++requestId;
   controls.forEach((id) => ($(id).disabled = true));
@@ -267,6 +269,7 @@ async function selectCity(id, restored = null) {
     shell.dataset.loading = "false";
   } catch (error) {
     if (token !== requestId) return;
+    finishDisclosures();
     scene = null;
     city = null;
     shown = [];
@@ -287,6 +290,8 @@ async function selectCity(id, restored = null) {
       "area-label",
     ])
       $(id).replaceChildren();
+    for (const id of ["quality", "receipt"])
+      $(id).closest("details").hidden = true;
     $("empty-state").hidden = true;
     $("clear-filters").hidden = true;
     $("stop-search").value = "";
@@ -297,20 +302,28 @@ async function selectCity(id, restored = null) {
   }
 }
 function sourceInfo() {
+  finishDisclosures(document.querySelector(".source"));
+  for (const id of ["quality", "receipt"])
+    $(id).closest("details").hidden = false;
   const p = $("source");
   p.replaceChildren();
-  if (city.attribution)
-    link(add(p, "p"), city.attribution, city.attributionUrl);
-  else add(p, "p", city.holder);
-  link(add(p, "p"), "Feed e documentazione ufficiale ↗", city.landingUrl);
+  const holder = add(p, "p", undefined, "source-holder");
+  if (city.attribution) link(holder, city.attribution, city.attributionUrl);
+  else holder.textContent = city.holder;
+  link(
+    add(p, "p", undefined, "source-link"),
+    "Feed e documentazione ufficiale ↗",
+    city.landingUrl,
+  );
+  const dates = add(p, "div", undefined, "source-dates");
   add(
-    p,
+    dates,
     "p",
     "Servizio: " +
       new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT"),
   );
   add(
-    p,
+    dates,
     "p",
     "Acquisito: " + new Date(city.receipt.acquiredAt).toLocaleString("it-IT"),
   );
@@ -491,6 +504,7 @@ function inspect(segment) {
 }
 function renderInspector() {
   const panel = $("inspector");
+  finishDisclosures(panel);
   panel.replaceChildren();
   const s = shown.find((s) => s.id === selected);
   panel.hidden = !s && !selectedStop;
@@ -554,6 +568,7 @@ function renderInspector() {
       (s.direction || "non indicata"),
   );
   add(details, "p", s.id);
+  enhanceDisclosure(details);
 }
 function clearFilters() {
   route = "";
@@ -1229,6 +1244,12 @@ $("export").onclick = () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 new ResizeObserver(schedule).observe(canvas);
+window.addEventListener("resize", () => finishDisclosures());
+window
+  .matchMedia("(prefers-reduced-motion: reduce)")
+  .addEventListener("change", (event) => {
+    if (event.matches) finishDisclosures();
+  });
 for (const c of [...manifest.cities].sort((a, b) =>
   a.name.localeCompare(b.name, "it"),
 ))
@@ -1238,6 +1259,10 @@ for (const c of [...manifest.cities].sort((a, b) =>
       c.name + (c.status === "ready" ? "" : " · dati non disponibili"),
     ),
   );
+for (const disclosure of document.querySelectorAll(
+  ".source > details, .map-help",
+))
+  enhanceDisclosure(disclosure);
 $("city").disabled = false;
 const initialView = readView(location.search, manifest.cities);
 $("city").value = initialView.city;

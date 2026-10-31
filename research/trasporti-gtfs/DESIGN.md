@@ -97,3 +97,23 @@ riprodotto da un test RED prima della correzione. La selezione di un tratto
 ricalcola la scala sul tratto; le altre tracce si attenuano senza invalidare i
 buffer. Le reti nuove partono da una vista completa, mentre Centro resta un
 comando distinto da Inquadra.
+
+## Iterazione 5: dettagli e disclosure
+
+| Before                                              | After                                                                          | Why                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Icona Centro 3,5 px a sinistra a 573 px             | Pulsante mobile 40×40 e icona centrata; gruppo icona/testo centrato su desktop | Allineamento ottico e hit area coerenti con gli altri controlli           |
+| Frecce native nei tre pannelli, apertura istantanea | Righe con +/− SVG e altezza animata 180/140 ms con easing breve                | Rendere apertura e chiusura leggibili senza rallentare le azioni ripetute |
+| Testi metodologici lunghi                           | Quattro paragrafi brevi con metrica, rilievi, copertura e limiti               | Ridurre lettura conservando i vincoli del dato                            |
+| Icone testuali CSV e paginazione                    | SVG dello stesso peso e gruppi centrati                                        | Evitare differenze di baseline e glifi dipendenti dal font                |
+
+`disclosure.mjs` migliora i `<details>` esistenti senza dipendenze. Una WeakMap
+impedisce doppie inizializzazioni senza trattenere pannelli rimossi. L’animazione
+si interrompe dalla sua altezza corrente; il completamento rimuove gli stili
+fissi. La tastiera e `prefers-reduced-motion` usano il cambio immediato. Il corpo
+in chiusura è inert e il focus rimane sul riepilogo.
+
+Cambio città, resize e sostituzione del dettaglio completano le animazioni attive
+prima di aggiornare il contenuto. Nessun observer permanente per ogni pannello,
+loop inattivo, servizio remoto o richiesta aggiuntiva. L’animazione dell’altezza
+è limitata ai pannelli informativi e non ricostruisce la mappa.

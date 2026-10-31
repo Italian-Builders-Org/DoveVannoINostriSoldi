@@ -1,7 +1,7 @@
 # Velocità programmate dei mezzi pubblici
 
 Prototipo locale: tram a Torino, Milano, Roma, Firenze, Palermo e Padova; autobus e filobus
-nelle aree dichiarate di Bologna, Cagliari e Venezia/Mestre. Strade, acqua, parchi e quartieri OpenStreetMap
+nelle aree dichiarate di Bologna, Cagliari, Venezia/Mestre e Catania. Strade, acqua, parchi e quartieri OpenStreetMap
 forniscono il contesto geografico. I rilievi indicano minuti programmati per
 chilometro, non ritardi osservati, traffico, inefficienze o sprechi.
 
@@ -85,6 +85,7 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Venezia  | bus         |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
 | Palermo  | tram        |              4 |            4 |                   518 |                           468 |              74 |
 | Padova   | tram SIR1   |              1 |            1 |                 1.153 |                         1.144 |              73 |
+| Catania  | bus         |             53 |           50 |                 2.868 |                         2.868 |           2.713 |
 | Bari     | bus         |             68 |            0 |                     0 |                             0 |               0 |
 
 Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
@@ -162,6 +163,7 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Venezia, ACTV](https://actv.avmspa.it/en/node/3969): feed automobilistico; licenza della risorsa da verificare prima della pubblicazione.
 - [Palermo, Comune/AMAT](https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783): condizioni specifiche tram CC BY-SA 4.0; geometrie basate su OSM sotto ODbL.
 - [Padova, Busitalia Veneto](https://gtfs-biv.fsbusitalia.com/): risorsa ufficiale TRAM SIR1, licenza non dichiarata nella pagina.
+- [Catania, AMTS](https://www.amts.ct.it/open-data): IODL 2.0; rete autobus entro il perimetro urbano dichiarato.
 - [Genova, AMT](https://www.amt.genova.it/amt/societa_trasparente/altri-contenuti/open-data/): nessuna geometria nel feed acquisito, non inclusa nel visualizzatore.
 - [OpenStreetMap, ODbL 1.0](https://www.openstreetmap.org/copyright): attribuzione sempre visibile e ricevuta separata. Per redistribuire gli estratti rispettare ODbL e disponibilità della banca dati derivata.
 - [Specifica GTFS Schedule](https://gtfs.org/documentation/schedule/reference/).
@@ -185,3 +187,16 @@ Gate Next/ETL del prodotto e CI ospitata: **NOT RUN**. La modifica è confinata
 alla ricerca locale. Prima di una futura integrazione servono registrazione
 nel corpus come derived-only, provenance/ledger, review licenze e gate del
 prodotto. Nessuna build Vercel viene avviata per il prototipo.
+
+## Dettagli dell’interfaccia
+
+Le sezioni informative restano `<details>` nativi. `disclosure.mjs` aggiunge
+
+- e −, apertura 180 ms e chiusura 140 ms. Tastiera, movimento ridotto e browser
+  senza Web Animations usano il cambio immediato. Click rapidi, cambio città,
+  resize e sostituzione del dettaglio non lasciano altezze fisse o focus nascosto.
+  Anche il cambio della preferenza di movimento completa le animazioni attive.
+
+Candidato non integrato: il file collegato dalla pagina ufficiale di Taranto,
+acquisito il 31/10/2026, non ha servizi per il 30 o 31 ottobre. Non viene
+sostituito silenziosamente con un altro giorno. Bari resta invariata.

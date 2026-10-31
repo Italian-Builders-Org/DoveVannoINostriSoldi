@@ -212,5 +212,20 @@
       "Il file ufficiale TRAM contiene la linea SIR1 “Metro Tram 1”, codificata dal titolare come route_type 3. L’originale è conservato; la rete autobus non è inclusa."
     ],
     "initialView": "network"
+  },
+  {
+    "id": "catania",
+    "name": "Catania",
+    "holder": "AMTS Catania S.p.A.",
+    "landingUrl": "https://www.amts.ct.it/open-data",
+    "url": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+    "license": "IODL 2.0",
+    "licenseUrl": "https://www.amts.ct.it/open-data",
+    "cadence": null,
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "focus": [15.079, 37.507],
+    "mapBounds": [15.04, 37.47, 15.11, 37.55],
+    "studyBounds": [15.0, 37.43, 15.16, 37.6]
   }
 ]

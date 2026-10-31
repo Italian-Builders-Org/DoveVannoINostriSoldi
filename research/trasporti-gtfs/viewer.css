@@ -191,11 +191,13 @@ main {
 .search-field svg {
   position: absolute;
   left: 11px;
-  top: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   color: #788778;
   pointer-events: none;
 }
 .search-field input {
+  min-height: 44px;
   width: 100%;
   padding-left: 36px;
   font-size: 12px;
@@ -844,7 +846,7 @@ tbody tr[data-selected="true"] {
 .source p {
   margin: 6px 0;
 }
-details:not(.camera-panel):not(.map-help) {
+details:not(.camera-panel):not(.map-help):not(.disclosure) {
   border-top: 1px solid var(--border);
   padding-top: 11px;
   margin-top: 14px;
@@ -1296,6 +1298,7 @@ input[type="range"] {
 }
 
 .camera-tools #center {
+  justify-content: center;
   display: flex;
   gap: 6px;
   align-items: center;
@@ -1306,8 +1309,10 @@ input[type="range"] {
 }
 @media (max-width: 600px) {
   .camera-tools #center {
-    min-width: 38px;
-    padding: 7px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
   }
   .camera-tools #center span {
     display: none;
@@ -1425,4 +1430,138 @@ input[type="range"] {
   font-size: 9px;
   color: var(--accent);
   flex: none;
+}
+
+.export-button,
+.pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.export-button svg,
+.pagination svg {
+  width: 15px;
+  height: 15px;
+}
+.source-holder {
+  font-weight: 600;
+  font-size: 12px;
+}
+.source-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  color: var(--muted);
+  margin: 10px 0 16px;
+}
+details.disclosure {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 0;
+  margin: 0;
+  background: #fff;
+}
+.source > .disclosure + .disclosure {
+  margin-top: 8px;
+}
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  list-style: none;
+  min-height: 50px;
+  padding: 12px 15px;
+  font-size: 12px;
+  border-radius: inherit;
+}
+.disclosure > summary::marker {
+  content: "";
+}
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.disclosure > summary > svg {
+  width: 23px;
+  height: 23px;
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 50%;
+  background: #eff3eb;
+  color: #35563f;
+  stroke-width: 1.8;
+}
+.disclosure-vertical {
+  transform-origin: 12px 12px;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.disclosure[data-expanded="true"] .disclosure-vertical {
+  transform: scaleY(0);
+}
+.disclosure-body {
+  transition: opacity 140ms cubic-bezier(0.23, 1, 0.32, 1);
+  display: flow-root;
+  padding: 0 15px 15px;
+  opacity: 1;
+}
+.disclosure[data-expanded="false"] .disclosure-body {
+  opacity: 0;
+}
+.disclosure[data-instant="true"] .disclosure-vertical,
+.disclosure[data-instant="true"] .disclosure-body {
+  transition: none;
+}
+.disclosure > summary:focus-visible {
+  outline-offset: -3px;
+}
+.map-help.disclosure {
+  margin-top: 10px;
+  background: transparent;
+  border: 0;
+}
+.map-help.disclosure > summary {
+  padding: 5px 0;
+  min-height: 34px;
+  font-size: 11px;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.map-help.disclosure > summary > svg {
+  width: 19px;
+  height: 19px;
+  order: -1;
+}
+.map-help.disclosure > .disclosure-body {
+  padding: 0 0 10px;
+}
+#inspector > details.disclosure {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  margin-top: 10px;
+}
+#inspector .disclosure > summary {
+  font-size: 10px;
+  padding: 6px 0;
+  min-height: 30px;
+  gap: 5px;
+}
+#inspector .disclosure > summary > svg {
+  width: 19px;
+  height: 19px;
+}
+#inspector .disclosure-body {
+  padding: 0 0 5px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .disclosure > summary:hover {
+    background: #f3f6ef;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .disclosure-vertical {
+    transition: none;
+  }
 }

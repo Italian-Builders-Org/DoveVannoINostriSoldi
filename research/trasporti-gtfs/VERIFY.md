@@ -10,7 +10,7 @@
 3. Eseguire 25 test Python e 20 Node con i comandi del README. Le fixture sono
    sintetiche e non entrano nel visualizzatore. I nuovi casi di errore sono
    stati definiti e verificati in RED prima delle implementazioni.
-4. Confrontare i segmenti delle città preesistenti con l'artifact v2: geometrie,
+4. Confrontare i segmenti delle città preesistenti con l’artifact dell’iterazione precedente: geometrie,
    identità e statistiche per fascia devono rimanere identiche. Controllare che
    la ricerca usi coordinate/identità di `stops.txt`, anche per nomi duplicati.
 5. Verificare hash, byte, URL, perimetro, provider, acquisizione e data base OSM
@@ -26,10 +26,10 @@ Servire l'output in loopback. Usare azioni reali senza modificare DOM o stato
 interno per simulare risultati. I dataset del Canvas descrivono l'ultimo disegno,
 non prestazioni certificate del dispositivo né costi hosted.
 
-- Dieci città × quattro fasce: nove città utilizzabili; Bari deve mostrare
+- Undici città × quattro fasce: dieci città utilizzabili; Bari deve mostrare
   indisponibilità e zero righe, conservando la data scelta. Confrontare conteggi
   e prima velocità con `analysis.json`. Fonti e data devono seguire la città.
-- Nove città × quattro classi di velocità: conteggi equivalenti al JSON,
+- Dieci città × quattro classi di velocità: conteggi equivalenti al JSON,
   confini 10/15/25 coerenti, stato vuoto e CSV disabilitato quando non ci sono
   tratti. Il cambio linea/velocità deve azzerare la pagina della tabella.
 - Tabella/dettaglio: selezionare con tastiera, verificare velocità, durata e
@@ -46,7 +46,7 @@ non prestazioni certificate del dispositivo né costi hosted.
   Fixture con asset assente e corrotto: mostrare errore e svuotare fonte,
   tabella/dettaglio. Ripristinare il file e verificare recupero da una nuova
   selezione senza ricaricare la pagina o svuotare manualmente la cache.
-- Nove città a 320, 390, 573 e 768 px: misurare la larghezza effettiva del documento,
+- Dieci città a 320, 390, 573 e 1280 px: misurare la larghezza effettiva del documento,
   non soltanto l'override richiesto al Browser. Nessun overflow globale o
   sovrapposizione fra controlli visibili. Escludere dalla misura i discendenti
   di `<details>` chiusi. Provare il dettaglio aperto a 320/390 px e lasciare
@@ -92,3 +92,30 @@ gate del prodotto e prova fisica mobile. Nessuna build Vercel per questa ricerca
 - Artifact `gtfs-20261031-v4`: screenshot, matrici, link prima/dopo, ricevuta
   clipboard, casi di errore e verifica dati. I limiti fisici/hosted sopra
   rimangono distinti e non diventano PASS per queste prove locali.
+
+## Prove della quinta iterazione
+
+- Dati e cartografia delle dieci voci precedenti identici a v4. Catania aggiunge
+  2.713 tratti derivati da 50 linee attive; data 30/10/2026 e perimetro dichiarato.
+- 44 casi città/fascia; pannelli con ricevute, hash e copertura per tutte le
+  undici città; 40 viste responsive. Centro è stato riprodotto 3,5 px a sinistra
+  e poi misurato centrato. Ricerca e selettori passano da 2 px di scarto a zero.
+- Animazioni: usare eventi mouse reali del Browser (CDP) oltre ai locator. I
+  click sintetici del locator possono avere `detail=0`, come la tastiera, e
+  attivare intenzionalmente il percorso immediato. Salvare attributi, altezze e
+  screenshot durante e dopo il completamento, non solo il comando di click.
+- Verificati puntatore con/senza movimento ridotto, Enter/Spazio, 17 inversioni
+  durante animazioni attive, cambio città/resize e cambio della preferenza a
+  metà animazione. Alla fine nessuno stile height/overflow resta applicato.
+- 20 ricostruzioni del dettaglio: una sola icona per summary, focus e stato
+  coerenti. Paginazione e fallback senza `Element.animate` verificati.
+- Asset mancanti/corrotti: copertura/ricevute vuote nascoste, metodo ancora
+  disponibile; dopo il recupero i pannelli dati tornano. I casi 404 delle
+  fixture sono separati dalla console normale.
+- Artifact `gtfs-20261031-v5`: dati, output statici/offline, confronto con v4,
+  matrici Browser, prove movimento/accessibilità e screenshot dei due dettagli.
+  I 45 test offline esistenti sono rieseguiti; il nuovo comportamento UI è
+  verificato nel Browser, senza test unitari che riscrivano la manipolazione DOM.
+
+Telefono fisico e gate del prodotto restano **NOT RUN**. Nessun push, PR,
+merge, deploy o build Vercel per questa iterazione locale.

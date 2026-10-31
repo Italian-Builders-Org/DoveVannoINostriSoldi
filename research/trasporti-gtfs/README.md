@@ -1,7 +1,7 @@
 # Velocità programmate dei mezzi pubblici
 
 Prototipo locale: tram a Torino, Milano, Roma e Firenze; autobus e filobus
-nell'area urbana di Bologna. Strade, acqua, parchi e quartieri OpenStreetMap
+nelle aree dichiarate di Bologna, Cagliari e Venezia/Mestre. Strade, acqua, parchi e quartieri OpenStreetMap
 forniscono il contesto geografico. I rilievi indicano minuti programmati per
 chilometro, non ritardi osservati, traffico, inefficienze o sprechi.
 
@@ -18,6 +18,7 @@ python3 research/trasporti-gtfs/acquire.py --cache research/trasporti-gtfs/cache
 python3 research/trasporti-gtfs/basemap.py --cache research/trasporti-gtfs/cache --transport curl
 python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
+  --city-date cagliari=2026-10-31 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -33,13 +34,25 @@ python3 research/trasporti-gtfs/render.py \
   --output research/trasporti-gtfs/output
 ```
 
-Aprire `http://127.0.0.1:3274`. L'HTML è autosufficiente, anche senza server:
-nessun tile, font remoto, polling, API AI o chiave cartografica. La Content
-Security Policy impedisce connessioni e script remoti. I bundle delle
-città sono compressi separatamente; il browser prepara solo la città scelta e
-mantiene al massimo due città decodificate. Richiede `DecompressionStream`
-nei browser correnti; un browser incompatibile riceve un messaggio esplicito.
+Aprire `http://127.0.0.1:3274`. La consegna predefinita è una directory:
+`index.html` e `cities/*.json.gz` devono restare insieme. Il browser scarica solo
+la città scelta, verifica byte e SHA-256, limita la decompressione a 64 MiB e
+mantiene al massimo due città decodificate. Richiede localhost o HTTPS e un
+browser con `DecompressionStream`; gli errori sono espliciti e recuperabili.
+
+Per un HTML unico apribile offline, aggiungere `--standalone` a `render.py` o
+`analyze.py`. In quel formato tutte le città sono incorporate e CSP vieta ogni
+connessione. Nel formato predefinito CSP consente soltanto asset sullo stesso
+origin. Nessun tile, font remoto, polling, API AI o chiave cartografica.
+
+Ricerca fermate per nome/codice, filtri di velocità e linea, tabella paginata e
+CSV mantengono gli stessi valori derivati dal GTFS. Zoom, bussola, inclinazione,
+rilievo e vista espansa sono controllabili anche da tastiera. Su mobile
+l'esplorazione con le dita è esplicita per lasciare libero lo scorrimento della
+pagina; la prova fisica pinch/rotazione resta da eseguire.
+
 Il Canvas ridisegna su interazione o ridimensionamento, senza ciclo continuo.
+Sfondo e tratti riusano due buffer; hover e selezione non riproiettano la rete.
 
 `acquire.py` riusa i raw dopo verifica di hash, dimensione e URL. `--refresh`
 richiede esplicitamente un nuovo GTFS. Limiti: 256 MiB compressi, 2 GiB espansi;
@@ -56,16 +69,25 @@ Un servizio in errore non diventa una mappa vuota. Budget OSM: 64 MiB espansi
 per città. Il perimetro cartografico centrale, dichiarato in `feeds.json`, può
 essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 
-## Copertura: servizio del 30 ottobre 2026
+## Copertura e date di servizio
 
-| Città   | Mezzo       | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
-| ------- | ----------- | -------------: | -----------: | --------------------: | ----------------------------: | --------------: |
-| Torino  | tram        |              9 |            8 |                 1.854 |                         1.854 |             591 |
-| Milano  | tram        |             17 |           17 |                 4.333 |                         4.333 |           1.024 |
-| Roma    | tram        |              5 |            1 |                   750 |                           750 |              59 |
-| Firenze | tram        |              2 |            2 |                   874 |                           874 |             157 |
-| Bologna | bus/filobus |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
-| Bari    | bus         |             68 |            0 |                     0 |                             0 |               0 |
+| Città    | Mezzo       | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
+| -------- | ----------- | -------------: | -----------: | --------------------: | ----------------------------: | --------------: |
+| Torino   | tram        |              9 |            8 |                 1.854 |                         1.854 |             591 |
+| Milano   | tram        |             17 |           17 |                 4.333 |                         4.333 |           1.024 |
+| Roma     | tram        |              5 |            1 |                   750 |                           750 |              59 |
+| Firenze  | tram        |              2 |            2 |                   874 |                           874 |             157 |
+| Bologna  | bus/filobus |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
+| Cagliari | bus/filobus |             45 |           45 |                 3.155 |                         3.116 |           2.268 |
+| Venezia  | bus         |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
+| Bari     | bus         |             68 |            0 |                     0 |                             0 |               0 |
+
+Cagliari usa il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
+La data diversa è una scelta esplicita: l'archivio CTM acquisito non contiene
+servizio per il 30 ottobre. Ogni città mostra la propria data; nessun confronto
+fra città come classifica. Venezia copre il feed automobilistico ACTV, soprattutto
+Mestre, non i vaporetti né l'intero sistema di trasporto lagunare. Le aree di
+studio di Cagliari e Venezia sono dichiarate in `feeds.json`.
 
 Questa è la copertura dei feed acquisiti, non una certificazione dell'intera
 rete cittadina. Roma contiene corse utilizzabili solo della linea 8. Bologna
@@ -75,7 +97,7 @@ copertura della mappa urbana. Nel perimetro sono utilizzabili 135 linee e
 7.030 corse programmate. I sensi opposti e le varianti geometriche restano
 separati; non sommare i tratti come fermate o chilometri.
 
-**Bari non è una sesta città analizzata:** il calendario acquisito omette il
+**Bari non è una città analizzata:** il calendario acquisito omette il
 30 ottobre. È visibile come stato non disponibile, senza ripiegare su un altro
 giorno. Il GTFS ufficiale di Genova acquisito non contiene `shapes.txt`: non
 viene trasformato in percorsi stradali inventati.
@@ -88,8 +110,8 @@ quattro informazioni distinte. Non sono dati monetari.
 
 1. Applicare `calendar.txt` e le eccezioni di `calendar_dates.txt` per la data
    scelta, nel fuso Europe/Rome. Nessun ripiego su un'altra data.
-2. Selezionare i tipi dichiarati per la città: tram 0 e 900–906; per Bologna e
-   Bari solo i codici bus/filobus espliciti nel registro. Escludere e contare le
+2. Selezionare i tipi dichiarati per la città: tram 0 e 900–906; per le reti bus/filobus
+   solo i codici espliciti nel registro. Escludere e contare le
    corse a frequenza non espanse.
 3. Ordinare per `stop_sequence`, bloccando sequenze numericamente duplicate.
    Considerare soltanto fermate adiacenti; applicare l'eventuale area di studio.
@@ -111,8 +133,9 @@ dell'orario, non passeggeri. Non confrontare le città come una classifica.
 
 La quota è lineare in min/km, saturata a 12 min/km; tabella e dettaglio
 mantengono il valore completo. La forma curva è un'interpolazione grafica tra
-fermate, non una misura della variazione di velocità dentro il tratto. I punti
-rappresentano estremi dei segmenti utilizzabili. Il basemap non cambia tempi o
+fermate, non una misura della variazione di velocità dentro il tratto. I punti della rete
+rappresentano estremi dei segmenti; la ricerca fermate usa le coordinate di
+`stops.txt`, conservando identità e omonimi distinti. Il basemap non cambia tempi o
 distanze GTFS; la quota non rappresenta altitudine.
 
 ## Fonti e riuso
@@ -123,6 +146,8 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Firenze, Regione Toscana/GEST](https://dati.toscana.it/dataset/rt-oraritb/resource/1f62d551-65f4-49f8-9a99-e19b02077be3): CC-BY nel catalogo, versione non specificata.
 - [Bologna, TPER](https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsbo&source=): CC-BY 3.0 Italia.
 - [Bari, AMTAB](https://www.amtab.it/it/openmobilitydata): condizioni da verificare; calendario del giorno assente.
+- [Cagliari, CTM / Sardegna Mobilità](https://www.sardegnamobilita.it/open-data/quadri-orari-ctm): CC-BY 4.0 secondo il portale Sardegna Mobilità.
+- [Venezia, ACTV](https://actv.avmspa.it/en/node/3969): feed automobilistico; licenza della risorsa da verificare prima della pubblicazione.
 - [Genova, AMT](https://www.amt.genova.it/amt/societa_trasparente/altri-contenuti/open-data/): nessuna geometria nel feed acquisito, non inclusa nel visualizzatore.
 - [OpenStreetMap, ODbL 1.0](https://www.openstreetmap.org/copyright): attribuzione sempre visibile e ricevuta separata. Per redistribuire gli estratti rispettare ODbL e disponibilità della banca dati derivata.
 - [Specifica GTFS Schedule](https://gtfs.org/documentation/schedule/reference/).
@@ -131,13 +156,15 @@ distanze GTFS; la quota non rappresenta altitudine.
 
 ```bash
 python3 -m unittest discover -s research/trasporti-gtfs -p 'test_*.py'
+node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test_explorer.mjs
 node --check research/trasporti-gtfs/viewer.js
 ```
 
-Venti test offline con fixture sintetiche: calendario, mezzanotte, unità delle
-shape, orari assenti, sequenze duplicate, frequenze, integrità/budget ZIP,
-escape JSON, perimetro bus, risposta OSM parziale, geometrie e gzip. I nuovi
-contratti sono stati provati in RED prima delle relative implementazioni.
+Quaranta test offline: 25 Python e 15 Node. Fixture sintetiche per calendario,
+geometrie, budget, date esplicite, coordinate fermate, asset statici e integrità;
+proiezione/inversa, zoom ancorato, fit, rotazione e trasformazione pinch;
+ricerca, confini dei filtri e CSV. I nuovi contratti sono stati provati in RED
+prima delle relative implementazioni.
 Verifica Browser e artifact ripetibili: `VERIFY.md`.
 
 Gate Next/ETL del prodotto e CI ospitata: **NOT RUN**. La modifica è confinata

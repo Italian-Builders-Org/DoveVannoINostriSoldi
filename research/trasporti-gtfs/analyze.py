@@ -273,6 +273,7 @@ def analyze_feed(path, service_date, receipt, source):
         "receipt": receipt,
         "status": "no-service",
         "segments": [],
+        "stops": [],
         "exclusions": {},
         "coverage": {},
     }
@@ -433,6 +434,15 @@ def analyze_feed(path, service_date, receipt, source):
             for band, values in segment["bands"].items()
         }
     result["segments"] = sorted(segments.values(), key=lambda s: s["id"])
+    used_stops = {
+        sid
+        for segment in segments.values()
+        for sid in (segment["fromId"], segment["toId"])
+    }
+    result["stops"] = [
+        {"id": sid, "name": stops[sid]["stop_name"], "point": list(stops[sid]["point"])}
+        for sid in sorted(used_stops)
+    ]
     result["exclusions"] = dict(excluded)
     result["coverage"]["geometryPatterns"] = len(geometry_cache)
     result["coverage"]["segments"] = len(segments)
@@ -442,35 +452,69 @@ def analyze_feed(path, service_date, receipt, source):
     return result
 
 
-def write_viewer(payload, output):
+def write_viewer(payload, output, standalone=False):
     here = Path(__file__).parent
     manifest = {k: v for k, v in payload.items() if k != "cities"}
-    manifest["cities"] = [
-        {k: c.get(k) for k in ["id", "name", "mode", "status", "serviceDate"]}
-        for c in payload["cities"]
-    ]
+    manifest["cities"] = []
     blocks = []
     for city in payload["cities"]:
         if not re.fullmatch(r"[a-z][a-z0-9-]{0,31}", city["id"]):
             raise ValueError("Invalid city identifier")
-        encoded = base64.b64encode(
-            gzip.compress(safe_json(city).encode(), mtime=0)
-        ).decode()
-        blocks.append(
-            '<script type="application/octet-stream" id="city-'
-            + city["id"]
-            + '">'
-            + encoded
-            + "</script>"
-        )
+        raw = safe_json(city).encode()
+        if len(raw) > 64 * 1024**2:
+            raise ValueError("Expanded city byte budget exceeded")
+        compressed = gzip.compress(raw, mtime=0)
+        if len(compressed) > 16 * 1024**2:
+            raise ValueError("Compressed city byte budget exceeded")
+        entry = {
+            k: city.get(k) for k in ["id", "name", "mode", "status", "serviceDate"]
+        }
+        if standalone:
+            encoded = base64.b64encode(compressed).decode()
+            blocks.append(
+                '<script type="application/octet-stream" id="city-'
+                + city["id"]
+                + '">'
+                + encoded
+                + "</script>"
+            )
+        else:
+            digest = hashlib.sha256(compressed).hexdigest()
+            relative = "cities/" + city["id"] + "-" + digest + ".json.gz"
+            (output / "cities").mkdir(parents=True, exist_ok=True)
+            (output / relative).write_bytes(compressed)
+            entry["asset"] = {
+                "path": relative,
+                "sha256": digest,
+                "bytes": len(compressed),
+            }
+        manifest["cities"].append(entry)
     html = (here / "viewer.html").read_text()
+    if not standalone:
+        html = html.replace("connect-src 'none'", "connect-src 'self'")
     html = html.replace("/*__GTFS_MANIFEST__*/", safe_json(manifest)).replace(
         "<!--__GTFS_CITIES__-->", "\n".join(blocks)
     )
+    modules = []
+    for name in ["camera.mjs", "explorer.mjs", "renderer.mjs", "viewer.js"]:
+        code = (here / name).read_text()
+        code = re.sub(r"^import\s[\s\S]*?;\n", "", code, flags=re.MULTILINE)
+        code = re.sub(r"^export\s+", "", code, flags=re.MULTILINE)
+        modules.append(code)
     html = html.replace(
         "/*__GTFS_STYLE__*/", (here / "viewer.css").read_text()
-    ).replace("/*__GTFS_VIEWER__*/", (here / "viewer.js").read_text())
+    ).replace("/*__GTFS_VIEWER__*/", "\n".join(modules))
     (output / "index.html").write_text(html)
+
+
+def parse_city_dates(values, known):
+    result = {}
+    for value in values:
+        city, separator, day = value.partition("=")
+        if not separator or city not in known or city in result:
+            raise ValueError("Unknown or duplicate explicit city date: " + city)
+        result[city] = date.fromisoformat(day)
+    return result
 
 
 def main():
@@ -479,16 +523,33 @@ def main():
     p.add_argument("--date", type=date.fromisoformat, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--basemap-cache", type=Path)
+    p.add_argument(
+        "--standalone",
+        action="store_true",
+        help="Embed all city bundles for offline file use",
+    )
+    p.add_argument(
+        "--city-date",
+        action="append",
+        default=[],
+        help="Explicit reference date override, CITY=YYYY-MM-DD; never inferred",
+    )
     args = p.parse_args()
     here = Path(__file__).parent
     sources = json.loads((here / "feeds.json").read_text())
+    city_dates = parse_city_dates(args.city_date, {s["id"] for s in sources})
     cities = []
     for source in sources:
         archive = args.cache / (source["id"] + ".zip")
         receipt = args.cache / (source["id"] + ".receipt.json")
         if not archive.exists() or not receipt.exists():
             raise ValueError("Missing acquired feed/receipt: " + source["id"])
-        city = analyze_feed(archive, args.date, json.loads(receipt.read_text()), source)
+        city = analyze_feed(
+            archive,
+            city_dates.get(source["id"], args.date),
+            json.loads(receipt.read_text()),
+            source,
+        )
         if args.basemap_cache:
             from basemap import load_map
 
@@ -502,14 +563,14 @@ def main():
             flush=True,
         )
     payload = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "metric": "scheduled-segment-travel-time",
         "method": "median of scheduled adjacent-stop arrival minus departure; distance along GTFS shape; no dwell; no realtime",
         "cities": cities,
     }
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "analysis.json").write_text(safe_json(payload))
-    write_viewer(payload, args.output)
+    write_viewer(payload, args.output, standalone=args.standalone)
     print("Wrote", args.output / "index.html", flush=True)
 
 

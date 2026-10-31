@@ -9,7 +9,14 @@ import zipfile
 from datetime import date
 from pathlib import Path
 
-from analyze import Archive, active_services, analyze_feed, seconds, safe_json
+from analyze import (
+    Archive,
+    active_services,
+    analyze_feed,
+    seconds,
+    safe_json,
+    parse_city_dates,
+)
 
 SOURCE = {"id": "fixture", "name": "Fixture", "url": "https://example.invalid/gtfs.zip"}
 
@@ -185,6 +192,24 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(data["segments"], [])
         self.assertEqual(data["exclusions"]["missing_shape"], 1)
 
+    def test_search_stops_preserve_source_coordinates_not_projected_shape_points(self):
+        data = self.run_feed(
+            {
+                "stops.txt": [
+                    ["stop_id", "stop_name", "stop_lat", "stop_lon"],
+                    ["a", "A", "45.0001", "9"],
+                    ["b", "B", "45", "9.001"],
+                    ["c", "C", "45", "9.002"],
+                ]
+            }
+        )
+        self.assertEqual(
+            data["stops"][0], {"id": "a", "name": "A", "point": [9.0, 45.0001]}
+        )
+        self.assertNotEqual(
+            data["stops"][0]["point"], data["segments"][0]["coordinates"][0]
+        )
+
     def test_bad_hash_blocks_analysis(self):
         with tempfile.TemporaryDirectory() as root:
             path, receipt = archive(Path(root))
@@ -210,6 +235,23 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(
             json.loads(encoded)["name"], "</script><script>alert(1)</script>"
         )
+
+
+class ExplicitDateTests(unittest.TestCase):
+    def test_city_dates_are_explicit_and_reject_unknown_duplicate_or_invalid_values(
+        self,
+    ):
+        self.assertEqual(
+            parse_city_dates(["cagliari=2026-10-31"], {"cagliari"}),
+            {"cagliari": date(2026, 10, 31)},
+        )
+        for values in [
+            ["roma=2026-10-31"],
+            ["cagliari=bad"],
+            ["cagliari=2026-10-31", "cagliari=2026-10-30"],
+        ]:
+            with self.assertRaises(ValueError):
+                parse_city_dates(values, {"cagliari"})
 
 
 class ExtendedCoverageTests(unittest.TestCase):

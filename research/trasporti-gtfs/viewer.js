@@ -1,8 +1,25 @@
-"use strict";
+import {
+  baseScale,
+  normalizeBearing,
+  projection,
+  zoomCamera,
+  panCamera,
+  fitCamera,
+  resizeCamera,
+  transformCamera,
+} from "./camera.mjs";
+import {
+  searchStops,
+  selectSegments,
+  selectionCSV,
+  stopLabel,
+} from "./explorer.mjs";
+import { prepareScene, createRenderer } from "./renderer.mjs";
 const $ = (id) => document.getElementById(id),
   manifest = JSON.parse($("data").textContent),
   canvas = $("map"),
-  ctx = canvas.getContext("2d");
+  shell = $("map-shell"),
+  renderer = createRenderer(canvas);
 const fmt = (n, d = 1) =>
     new Intl.NumberFormat("it-IT", { maximumFractionDigits: d }).format(n),
   make = (tag, text, cls) => {
@@ -17,137 +34,206 @@ const fmt = (n, d = 1) =>
     return n;
   };
 const link = (parent, label, url) => {
-  const n = add(parent, "a", label);
-  n.href = url;
-  n.target = "_blank";
-  n.rel = "noopener noreferrer";
-  return n;
-};
-const option = (value, label) => {
-  const n = make("option", label);
-  n.value = value;
-  return n;
-};
-const palette = ["#9e3530", "#c18a30", "#8d9c5e", "#528b78"];
-const color = (s) =>
-  palette[
-    s.bands[band].kmh < 10
-      ? 0
-      : s.bands[band].kmh < 15
-        ? 1
-        : s.bands[band].kmh < 25
-          ? 2
-          : 3
-  ];
-let current = null,
+    const n = add(parent, "a", label);
+    n.href = url;
+    n.target = "_blank";
+    n.rel = "noopener noreferrer";
+    return n;
+  },
+  option = (value, label) => {
+    const n = make("option", label);
+    n.value = value;
+    return n;
+  };
+const view = () => ({ width: canvas.clientWidth, height: canvas.clientHeight });
+let lastView = view(),
+  cam = {
+    x: 0,
+    y: 0,
+    base: baseScale(lastView),
+    scale: baseScale(lastView),
+    bearing: (-20 * Math.PI) / 180,
+    pitch: (55 * Math.PI) / 180,
+  };
+let scene = null,
   city = null,
   band = "morning",
   route = "",
+  speedClass = null,
+  shown = [],
   selected = null,
   hovered = null,
-  shown = [],
+  selectedStop = null,
   tablePage = 0,
   mode3d = true,
+  pitchDegrees = 55,
+  relief = 1,
   frame = 0,
   requestId = 0,
-  W = 1000,
-  H = 650,
-  drawn = [];
+  expanded = false,
+  touchMode = false;
+const failedAssets = new Set();
 const cache = new Map(),
-  cam = { x: 0, y: 0, scale: 0.15, bearing: (-20 * Math.PI) / 180 },
-  controlIds = [
+  pending = new Map(),
+  controls = [
     "band",
     "route",
+    "stop-search",
     "mode3d",
     "mode2d",
     "center",
     "fit",
     "zoom-in",
     "zoom-out",
+    "north",
+    "rotate-left",
+    "rotate-right",
     "reset",
+    "bearing",
+    "pitch",
+    "relief",
+    "zoom",
   ];
-let baseScale = 0.15;
 function notice(message) {
   $("notice").hidden = !message;
   $("notice").textContent = message || "";
 }
-function worldFactory(focus) {
-  const r = 6371008.8,
-    cos = Math.cos((focus[1] * Math.PI) / 180),
-    originY = Math.log(Math.tan(Math.PI / 4 + (focus[1] * Math.PI) / 360));
-  return (point) => [
-    (((point[0] - focus[0]) * Math.PI) / 180) * r * cos,
-    (Math.log(Math.tan(Math.PI / 4 + (point[1] * Math.PI) / 360)) - originY) *
-      r *
-      cos,
-  ];
-}
-function prepare(source) {
-  const world = worldFactory(source.focus),
-    feature = (f) => ({ ...f, points: f.coordinates.map(world) });
-  const features = (source.basemap?.features ?? []).map(feature),
-    segments = source.segments.map((s) => {
-      const points = s.coordinates.map(world),
-        lengths = [0];
-      for (let i = 1; i < points.length; i++)
-        lengths.push(
-          lengths.at(-1) +
-            Math.hypot(
-              points[i][0] - points[i - 1][0],
-              points[i][1] - points[i - 1][1],
-            ),
-        );
-      return { ...s, points, lengths };
-    });
-  return {
-    source,
-    features,
-    segments,
-    labels: (source.basemap?.labels ?? []).map((label) => ({
-      ...label,
-      point: world(label.point),
-    })),
-  };
+async function boundedBytes(response, limit) {
+  if (!response.body) throw Error("File della città vuoto.");
+  const reader = response.body.getReader(),
+    parts = [];
+  let size = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.length;
+      if (size > limit) {
+        await reader.cancel();
+        throw Error("Limite di dimensione della città superato.");
+      }
+      parts.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const result = new Uint8Array(size);
+  let offset = 0;
+  for (const part of parts) {
+    result.set(part, offset);
+    offset += part.length;
+  }
+  return result;
 }
 async function decodeCity(id) {
   if (cache.has(id)) {
-    const value = cache.get(id);
+    const s = cache.get(id);
     cache.delete(id);
-    cache.set(id, value);
-    return value;
+    cache.set(id, s);
+    return s;
   }
+  if (pending.has(id)) return pending.get(id);
   if (typeof DecompressionStream !== "function")
     throw Error(
       "Questo browser non supporta gli archivi compressi del prototipo.",
     );
-  const block = $("city-" + id);
-  if (!block) throw Error("Archivio della città non disponibile.");
-  const bytes = Uint8Array.from(atob(block.textContent.trim()), (c) =>
-    c.charCodeAt(0),
-  );
-  const text = await new Response(
-    new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip")),
-  ).text();
-  const value = prepare(JSON.parse(text));
-  cache.set(id, value);
-  while (cache.size > 2) cache.delete(cache.keys().next().value);
-  return value;
+  const task = (async () => {
+    const entry = manifest.cities.find((c) => c.id === id);
+    let bytes;
+    if (entry?.asset) {
+      const asset = entry.asset;
+      if (
+        !/^cities\/[a-z][a-z0-9-]{0,31}-[a-f0-9]{64}\.json\.gz$/.test(
+          asset.path,
+        ) ||
+        !asset.path.startsWith("cities/" + id + "-") ||
+        !Number.isInteger(asset.bytes) ||
+        asset.bytes < 1 ||
+        asset.bytes > 16 * 1024 ** 2
+      )
+        throw Error("Manifest della città non valido.");
+      if (!crypto.subtle)
+        throw Error(
+          "Apri l’anteprima su localhost o HTTPS, oppure usa la versione offline.",
+        );
+      try {
+        const response = await fetch(asset.path, {
+          cache: failedAssets.has(asset.path) ? "reload" : "force-cache",
+        });
+        if (!response.ok)
+          throw Error(
+            "File della città non disponibile (HTTP " + response.status + ").",
+          );
+        bytes = await boundedBytes(response, asset.bytes);
+        if (bytes.length !== asset.bytes)
+          throw Error("Dimensione del file città non valida.");
+        const digest = [
+          ...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),
+        ]
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        if (digest !== asset.sha256)
+          throw Error(
+            "Il file della città non supera la verifica di integrità.",
+          );
+        failedAssets.delete(asset.path);
+      } catch (error) {
+        failedAssets.add(asset.path);
+        throw error;
+      }
+    } else {
+      const block = $("city-" + id);
+      if (!block) throw Error("Archivio della città non disponibile.");
+      bytes = Uint8Array.from(atob(block.textContent.trim()), (c) =>
+        c.charCodeAt(0),
+      );
+    }
+    const expanded = await boundedBytes(
+      new Response(
+        new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip")),
+      ),
+      64 * 1024 ** 2,
+    );
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(expanded);
+    const source = JSON.parse(text);
+    if (source.id !== id) throw Error("Il file appartiene a un’altra città.");
+    const result = prepareScene(source);
+    cache.set(id, result);
+    while (cache.size > 2) cache.delete(cache.keys().next().value);
+    return result;
+  })();
+  pending.set(id, task);
+  try {
+    return await task;
+  } finally {
+    pending.delete(id);
+  }
 }
 async function selectCity(id) {
   const token = ++requestId;
-  controlIds.forEach((id) => ($(id).disabled = true));
+  controls.forEach((id) => ($(id).disabled = true));
+  $("export").disabled = true;
+  $("page-previous").disabled = true;
+  $("page-next").disabled = true;
+  for (const button of document.querySelectorAll("[data-speed]"))
+    button.disabled = true;
+  shell.dataset.loading = "true";
   notice("Preparazione della mappa…");
+  hideSearch();
   try {
-    const value = await decodeCity(id);
+    const result = await decodeCity(id);
     if (token !== requestId) return;
-    current = value;
-    city = value.source;
+    scene = result;
+    city = scene.source;
     selected = null;
-    tablePage = 0;
+    selectedStop = null;
     hovered = null;
     route = "";
+    speedClass = null;
+    tablePage = 0;
+    $("stop-search").value = "";
     $("route").replaceChildren(option("", "Tutte le linee"));
-    for (const name of [...new Set(city.segments.map((s) => s.route))].sort(
+    for (const name of [...new Set(scene.segments.map((s) => s.route))].sort(
       (a, b) => a.localeCompare(b, "it", { numeric: true }),
     ))
       $("route").append(option(name, "Linea " + name));
@@ -155,33 +241,54 @@ async function selectCity(id) {
       city.serviceDate + "T12:00:00",
     ).toLocaleDateString("it-IT", {
       day: "numeric",
-      month: "long",
+      month: "short",
       year: "numeric",
+      weekday: "short",
     });
-    $("mode-label").textContent =
-      city.mode === "bus" ? "Autobus e filobus" : "Tram";
+    $("mode-label").textContent = city.mode === "bus" ? "Bus" : "Tram";
     sourceInfo();
+    if (city.scopeLabel) $("area-label").textContent = city.scopeLabel;
+    controls.forEach((id) => ($(id).disabled = false));
+    for (const button of document.querySelectorAll("[data-speed]"))
+      button.disabled = !scene.segments.length;
+    $("stop-search").disabled = !scene.stops.length;
+    $("route").disabled = !scene.segments.length;
+    $("pitch").disabled = !mode3d;
+    $("relief").disabled = !mode3d;
+    renderInspector();
     home();
     updateData();
-    controlIds.forEach((id) => ($(id).disabled = false));
-    notice(
-      city.status !== "ready"
-        ? "Il feed acquisito non contiene corse utilizzabili per questa data. Non viene usato un giorno diverso."
-        : !city.basemap
-          ? "Sfondo cartografico non acquisito per questa città."
-          : null,
-    );
+    notice(city.basemap ? null : "Cartografia locale non acquisita.");
+    shell.dataset.loading = "false";
   } catch (error) {
-    if (token === requestId) {
-      current = null;
-      city = null;
-      shown = [];
-      $("rows").replaceChildren();
-      $("inspector").hidden = true;
-      notice(error.message);
-      $("map-title").textContent = "Mappa non disponibile";
-      schedule();
-    }
+    if (token !== requestId) return;
+    scene = null;
+    city = null;
+    shown = [];
+    selected = null;
+    selectedStop = null;
+    renderInspector();
+    renderTable();
+    $("map-title").textContent = "Mappa non disponibile";
+    $("selection-count").textContent = "";
+    route = "";
+    speedClass = null;
+    for (const id of [
+      "source",
+      "quality",
+      "receipt",
+      "reference",
+      "mode-label",
+      "area-label",
+    ])
+      $(id).replaceChildren();
+    $("empty-state").hidden = true;
+    $("clear-filters").hidden = true;
+    $("stop-search").value = "";
+    $("route").replaceChildren();
+    shell.dataset.loading = "false";
+    notice(error.message);
+    schedule();
   }
 }
 function sourceInfo() {
@@ -288,23 +395,52 @@ function sourceInfo() {
       ? "Area di studio urbana"
       : "Orari pubblicati · tracciati GTFS";
 }
+function filtered() {
+  return Boolean(route) || speedClass !== null;
+}
 function updateData() {
-  if (!current) return;
-  shown = current.segments
-    .filter((s) => s.bands[band] && (!route || s.route === route))
-    .sort(
-      (a, b) =>
-        a.bands[band].kmh - b.bands[band].kmh || a.id.localeCompare(b.id),
+  if (!scene) return;
+  shown = selectSegments(scene.segments, { band, route, speedClass });
+  tablePage = 0;
+  if (selected && !shown.some((s) => s.id === selected)) selected = null;
+  if (selectedStop && route && !selectedStop.routes.includes(route))
+    selectedStop = null;
+  $("map-title").textContent = city.name + (route ? " · " + route : "");
+  $("selection-count").textContent =
+    fmt(shown.length, 0) + " tratti" + (route ? " · linea " + route : "");
+  $("clear-filters").hidden = !filtered();
+  $("export").disabled = !shown.length;
+  for (const button of document.querySelectorAll("[data-speed]"))
+    button.setAttribute(
+      "aria-pressed",
+      String(
+        button.dataset.speed ===
+          (speedClass === null ? "" : String(speedClass)),
+      ),
     );
-  $("map-title").textContent = city.name + (route ? " · linea " + route : "");
+  const empty = !shown.length;
+  $("empty-state").hidden = !empty;
+  $("empty-reset").hidden = !filtered();
+  $("empty-title").textContent =
+    city.status === "ready"
+      ? "Nessun tratto con questi filtri"
+      : "Orari non disponibili";
+  $("empty-copy").textContent =
+    city.status === "ready"
+      ? "Prova un’altra fascia, linea o velocità."
+      : "Il feed acquisito non contiene corse utilizzabili per il " +
+        new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT") +
+        ".";
+  renderTable();
+  renderInspector();
+  schedule();
+}
+function renderTable() {
   tablePage = Math.max(
     0,
     Math.min(tablePage, Math.ceil(shown.length / 20) - 1),
   );
   const start = tablePage * 20;
-  $("page-previous").disabled = tablePage === 0;
-  $("page-next").disabled = start + 20 >= shown.length;
-  $("pages").hidden = !shown.length;
   $("coverage").textContent = shown.length
     ? fmt(start + 1, 0) +
       "–" +
@@ -312,58 +448,79 @@ function updateData() {
       " di " +
       fmt(shown.length, 0) +
       " tratti"
-    : "Nessun tratto confrontabile nella selezione";
-  const tbody = $("rows");
-  tbody.replaceChildren();
+    : "Nessun tratto nella selezione";
+  $("page-previous").disabled = tablePage === 0;
+  $("page-next").disabled = start + 20 >= shown.length;
+  $("pages").hidden = !shown.length;
+  const rows = $("rows");
+  rows.replaceChildren();
   for (const s of shown.slice(start, start + 20)) {
-    const row = add(tbody, "tr"),
+    const row = add(rows, "tr"),
       td = add(row, "td"),
       button = add(td, "button", s.route);
+    row.dataset.selected = String(s.id === selected);
     button.type = "button";
     button.setAttribute(
       "aria-label",
       "Seleziona linea " + s.route + ", " + s.from + " verso " + s.to,
     );
-    button.onclick = () => {
+    button.setAttribute("aria-pressed", String(s.id === selected));
+    row.onclick = () => {
       inspect(s);
       focusSegment(s);
       canvas.scrollIntoView({ block: "center", behavior: "instant" });
+      canvas.focus({ preventScroll: true });
     };
-    add(row, "td", s.from + " → " + s.to);
+    add(row, "td", stopLabel(s.from) + " → " + stopLabel(s.to));
     add(row, "td", fmt(s.bands[band].kmh));
     add(row, "td", fmt(s.bands[band].samples, 0));
   }
-  const existing = shown.find((s) => s.id === selected);
-  inspect(existing ?? null);
+}
+function inspect(segment) {
+  selected = segment?.id ?? null;
+  selectedStop = null;
+  renderInspector();
+  renderTable();
   schedule();
 }
-function inspect(s) {
-  selected = s?.id ?? null;
-  const p = $("inspector");
-  p.replaceChildren();
-  p.hidden = !s;
-  if (!s) {
-    schedule();
-    return;
-  }
-  const close = add(p, "button", "×", "close-detail");
+function renderInspector() {
+  const panel = $("inspector");
+  panel.replaceChildren();
+  const s = shown.find((s) => s.id === selected);
+  panel.hidden = !s && !selectedStop;
+  panel.classList.toggle("stop-detail", Boolean(selectedStop));
+  if (panel.hidden) return;
+  const close = add(panel, "button", "×", "close-detail");
   close.type = "button";
   close.setAttribute("aria-label", "Chiudi dettaglio");
   close.onclick = () => {
     inspect(null);
     canvas.focus({ preventScroll: true });
   };
-  add(p, "span", "Linea " + s.route, "route-badge");
-  add(p, "p", s.from + " → " + s.to, "trip");
-  const value = add(p, "div", fmt(s.bands[band].kmh), "metric");
+  if (selectedStop) {
+    add(panel, "h3", selectedStop.label);
+    add(panel, "p", "Fermata GTFS " + selectedStop.id, "detail-note");
+    const routes = add(panel, "div", undefined, "stop-routes");
+    for (const r of selectedStop.routes) {
+      const b = add(routes, "button", "Linea " + r);
+      b.type = "button";
+      b.onclick = () => setRoute(r);
+    }
+    return;
+  }
+  add(panel, "span", "Linea " + s.route, "route-badge");
+  const trip = add(panel, "div", undefined, "trip");
+  add(trip, "span", stopLabel(s.from));
+  add(trip, "span", "↓", "to-arrow");
+  add(trip, "span", stopLabel(s.to));
+  const value = add(panel, "div", fmt(s.bands[band].kmh), "metric");
   add(value, "span", " km/h");
-  add(p, "p", "Velocità prevista dal tempo mediano", "metric-label");
-  const dl = add(p, "dl");
+  add(panel, "p", "Velocità programmata", "metric-label");
+  const dl = add(panel, "dl");
   for (const [label, value] of [
-    ["Tempo previsto", fmt(s.bands[band].seconds / 60) + " min"],
-    ["Distanza sul tracciato", fmt(s.metres, 0) + " m"],
-    ["Corse nella fascia", fmt(s.bands[band].samples, 0)],
-    ["Direzione GTFS", s.direction || "non indicata"],
+    ["Tempo", fmt(s.bands[band].seconds / 60) + " min"],
+    ["Tracciato", fmt(s.metres, 0) + " m"],
+    ["Corse", fmt(s.bands[band].samples, 0)],
   ]) {
     const row = add(dl, "div");
     add(row, "dt", label);
@@ -371,415 +528,377 @@ function inspect(s) {
   }
   if (s.from.toLocaleLowerCase() === s.to.toLocaleLowerCase())
     add(
-      p,
+      panel,
       "p",
       "Fermate omonime: può includere manovre o capolinea.",
       "detail-note",
     );
-  schedule();
-}
-function parameters() {
-  const pitch = mode3d ? (55 * Math.PI) / 180 : 0;
-  return {
-    sin: Math.sin(cam.bearing),
-    cos: Math.cos(cam.bearing),
-    cp: Math.cos(pitch),
-    sp: Math.sin(pitch),
-    distance: H / (0.8 * cam.scale),
-  };
-}
-function project(point, height = 0) {
-  const p = parameters(),
-    dx = point[0] - cam.x,
-    dy = point[1] - cam.y,
-    x = dx * p.cos - dy * p.sin,
-    y = dx * p.sin + dy * p.cos,
-    den = p.distance + y * p.sp - height * p.cp;
-  if (den < p.distance * 0.12) return null;
-  const f = p.distance / den;
-  return [
-    W * 0.5 + x * cam.scale * f,
-    H * 0.53 - (y * p.cp + height * p.sp) * cam.scale * f,
-  ];
-}
-function unproject(x, y) {
-  const p = parameters(),
-    sx = x - W * 0.5,
-    sy = y - H * 0.53,
-    den = p.cp * cam.scale * p.distance + sy * p.sp;
-  if (Math.abs(den) < 1e-8) return [cam.x, cam.y];
-  const ry = (-sy * p.distance) / den,
-    f = p.distance / (p.distance + ry * p.sp),
-    rx = sx / (cam.scale * f);
-  return [cam.x + rx * p.cos + ry * p.sin, cam.y - rx * p.sin + ry * p.cos];
-}
-function offscreen(points) {
-  return (
-    !points.some(
-      (p) => p && p[0] > -50 && p[0] < W + 50 && p[1] > -50 && p[1] < H + 50,
-    ) &&
-    !points.some(
-      (p, i) =>
-        p &&
-        points[i + 1] &&
-        Math.min(p[0], points[i + 1][0]) < W &&
-        Math.max(p[0], points[i + 1][0]) > 0 &&
-        Math.min(p[1], points[i + 1][1]) < H &&
-        Math.max(p[1], points[i + 1][1]) > 0,
-    )
+  const details = add(panel, "details", undefined, "detail-note");
+  add(details, "summary", "Identificativi del tratto");
+  add(
+    details,
+    "p",
+    s.fromId +
+      " → " +
+      s.toId +
+      " · direzione GTFS " +
+      (s.direction || "non indicata"),
   );
+  add(details, "p", s.id);
 }
-function screenPath(points) {
-  ctx.beginPath();
-  let active = false;
-  for (const p of points) {
-    if (!p) {
-      active = false;
-      continue;
-    }
-    if (active) ctx.lineTo(...p);
-    else {
-      ctx.moveTo(...p);
-      active = true;
-    }
-  }
+function clearFilters() {
+  route = "";
+  speedClass = null;
+  $("route").value = "";
+  hideSearch();
+  updateData();
 }
-function roadWidth(kind) {
-  if (/motorway|trunk/.test(kind)) return 5;
-  if (/primary|secondary/.test(kind)) return 4;
-  if (/tertiary/.test(kind)) return 2.8;
-  return 1.6;
+function setRoute(value) {
+  route = value;
+  $("route").value = value;
+  hideSearch();
+  updateData();
+  if (route) fit();
 }
-function draw() {
-  frame = 0;
-  if (!ctx) return;
-  const started = performance.now(),
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
-  W = canvas.clientWidth;
-  H = canvas.clientHeight;
-  if (
-    canvas.width !== Math.round(W * ratio) ||
-    canvas.height !== Math.round(H * ratio)
-  ) {
-    canvas.width = Math.round(W * ratio);
-    canvas.height = Math.round(H * ratio);
-  }
-  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = "#edf0ea";
-  ctx.fillRect(0, 0, W, H);
-  drawn = [];
-  if (!current) {
-    canvas.dataset.segmentCount = "0";
-    canvas.dataset.streetCount = "0";
-    return;
-  }
-  const visible = [];
-  for (const feature of current.features) {
-    const points = feature.points.map((p) => project(p));
-    if (offscreen(points)) continue;
-    visible.push({ ...feature, screen: points });
-  }
-  for (const f of visible) {
-    if (f.kind === "road") continue;
-    screenPath(f.screen);
-    if (f.closed) {
-      ctx.fillStyle =
-        f.kind === "water"
-          ? "#dbe7e7"
-          : f.kind === "green"
-            ? "#e1e7dc"
-            : "#e8ebe5";
-      ctx.fill();
-    } else if (f.kind === "water") {
-      ctx.strokeStyle = "#d4e2e3";
-      ctx.lineWidth = f.class === "river" ? 15 : 6;
-      ctx.stroke();
-    }
-  }
-  for (const f of visible) {
-    if (f.kind !== "road") continue;
-    screenPath(f.screen);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#dce1da";
-    ctx.lineWidth = roadWidth(f.class) + 1;
-    ctx.stroke();
-    ctx.strokeStyle = "#fbfcf9";
-    ctx.lineWidth = roadWidth(f.class);
-    ctx.stroke();
-  }
-  const labels = [];
-  const fitsLabel = (x, y, w) => {
-    if (x < w / 2 + 5 || x > W - w / 2 - 5 || y < 45 || y > H - 45)
-      return false;
-    if (
-      labels.some(
-        (b) => Math.abs(x - b.x) < (w + b.w) / 2 + 12 && Math.abs(y - b.y) < 18,
-      )
-    )
-      return false;
-    labels.push({ x, y, w });
-    return true;
-  };
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  const names = new Set();
-  for (const f of visible) {
-    if (
-      f.kind !== "road" ||
-      !f.name ||
-      !/^(primary|secondary|tertiary)$/.test(f.class) ||
-      names.has(f.name)
-    )
-      continue;
-    const a = f.screen.find(Boolean),
-      b = f.screen.findLast(Boolean);
-    if (!a || !b || Math.hypot(b[0] - a[0], b[1] - a[1]) < 130) continue;
-    const mid = f.screen[Math.floor(f.screen.length / 2)];
-    if (!mid) continue;
-    const text = f.name.slice(0, 60);
-    ctx.font = "9px system-ui";
-    const width = ctx.measureText(text).width;
-    if (!fitsLabel(mid[0], mid[1], width)) continue;
-    ctx.strokeStyle = "#f7f9f3";
-    ctx.lineWidth = 3;
-    ctx.strokeText(text, ...mid);
-    ctx.fillStyle = "#899084";
-    ctx.fillText(text, ...mid);
-    names.add(f.name);
-    if (names.size > 22) break;
-  }
-  for (const label of current.labels) {
-    const p = project(label.point);
-    if (!p) continue;
-    const major = /city|town/.test(label.class);
-    ctx.font = (major ? "600 12px" : "500 10px") + " system-ui";
-    const text = label.name.slice(0, 50),
-      width = ctx.measureText(text).width;
-    if (!fitsLabel(...p, width)) continue;
-    ctx.strokeStyle = "#f8faf4";
-    ctx.lineWidth = 4;
-    ctx.strokeText(text, ...p);
-    ctx.fillStyle = major ? "#697467" : "#87917e";
-    ctx.fillText(text, ...p);
-  }
-  const ordered = [...shown].sort(
-    (a, b) =>
-      (project(a.points[0]) ?? [0, 0])[1] - (project(b.points[0]) ?? [0, 0])[1],
-  );
-  const stopKeys = new Set();
-  for (const s of ordered) {
-    const ground = s.points.map((p) => project(p));
-    if (offscreen(ground)) continue;
-    screenPath(ground);
-    ctx.strokeStyle = "#bec8b5";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    const coords = [],
-      total = s.lengths.at(-1) || 1;
-    // The graphic height is an encoding of scheduled min/km, not geographic elevation.
-    const height = mode3d ? Math.min(60 / s.bands[band].kmh, 12) * 30 : 0;
-    for (let i = 1; i < s.points.length; i++) {
-      const a = s.points[i - 1],
-        b = s.points[i],
-        steps = Math.max(
-          1,
-          Math.ceil(((s.lengths[i] - s.lengths[i - 1]) / total) * 18),
-        );
-      for (let j = 0; j < steps; j++) {
-        const t = j / steps,
-          progress =
-            (s.lengths[i - 1] + (s.lengths[i] - s.lengths[i - 1]) * t) / total;
-        coords.push(
-          project(
-            [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t],
-            height * Math.sin(progress * Math.PI) ** 2,
-          ),
-        );
+function hideSearch() {
+  $("stop-menu").hidden = true;
+}
+function showSearch() {
+  const query = $("stop-search").value,
+    results = scene ? searchStops(scene.stops, query, route, 8) : [];
+  $("stop-results").replaceChildren();
+  $("stop-menu").hidden = !query.trim();
+  if (!query.trim()) return;
+  for (const stop of results) {
+    const li = add($("stop-results"), "li"),
+      button = add(li, "button");
+    button.type = "button";
+    add(button, "span", stop.label);
+    add(
+      button,
+      "small",
+      "GTFS " +
+        stop.id +
+        " · " +
+        stop.routes.slice(0, 4).join(", ") +
+        (stop.routes.length > 4 ? "…" : ""),
+    );
+    button.onclick = () => chooseStop(stop);
+    button.onkeydown = (event) => {
+      const buttons = [...$("stop-results").querySelectorAll("button")],
+        index = buttons.indexOf(button);
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        buttons[(index + 1) % buttons.length].focus();
       }
-    }
-    coords.push(project(s.points.at(-1)));
-    if (s.id === selected) {
-      screenPath(coords);
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = 6;
-      ctx.stroke();
-    }
-    screenPath(coords);
-    ctx.strokeStyle = color(s);
-    ctx.lineWidth = s.id === selected || s.id === hovered ? 3.2 : 1.65;
-    ctx.stroke();
-    drawn.push({ segment: s, points: coords });
-    for (const p of [ground[0], ground.at(-1)])
-      if (p) {
-        const key = p.map((v) => Math.round(v / 3)).join(",");
-        if (stopKeys.has(key)) continue;
-        stopKeys.add(key);
-        ctx.beginPath();
-        ctx.arc(...p, 1.2, 0, Math.PI * 2);
-        ctx.fillStyle = "#4c5950";
-        ctx.fill();
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (!index) $("stop-search").focus();
+        else buttons[index - 1].focus();
       }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        hideSearch();
+        $("stop-search").focus();
+      }
+    };
   }
-  if (!city.basemap) {
-    ctx.font = "13px system-ui";
-    ctx.fillStyle = "#61705d";
-    ctx.textAlign = "left";
-    ctx.fillText("Sfondo cartografico non acquisito", 20, H - 70);
-  }
-  canvas.dataset.streetCount = String(
-    visible.filter((f) => f.kind === "road").length,
-  );
-  canvas.dataset.segmentCount = String(drawn.length);
-  canvas.dataset.renderMs = (performance.now() - started).toFixed(1);
-  canvas.dataset.camera = [cam.x, cam.y, cam.scale, cam.bearing, mode3d].join(
-    ",",
-  );
+  $("search-status").textContent = results.length
+    ? ""
+    : "Nessuna fermata trovata" + (route ? " su questa linea." : ".");
+  $("search-status").hidden = Boolean(results.length);
 }
-function schedule() {
-  if (!frame) frame = requestAnimationFrame(draw);
+function chooseStop(stop) {
+  selected = null;
+  selectedStop = stop;
+  $("camera-panel").open = false;
+  $("stop-search").value = stop.label;
+  hideSearch();
+  focusPoint(stop.world, Math.min(1.2, Math.max(cam.scale, cam.base * 2.2)));
+  renderInspector();
+  renderTable();
+  canvas.scrollIntoView({ block: "center", behavior: "instant" });
+  canvas.focus({ preventScroll: true });
+}
+function constrain() {
+  cam.bearing = normalizeBearing(cam.bearing);
+  if (!scene) return;
+  const [w, s, e, n] = scene.bounds,
+    padX = (e - w) * 0.25,
+    padY = (n - s) * 0.25;
+  cam.x = Math.max(w - padX, Math.min(e + padX, cam.x));
+  cam.y = Math.max(s - padY, Math.min(n + padY, cam.y));
 }
 function syncControls() {
-  $("bearing").value = Math.round((cam.bearing * 180) / Math.PI);
-  $("zoom").value = Math.round((cam.scale / baseScale) * 100);
+  const panel = document.querySelector(".camera-options"),
+    maxHeight = Math.min(410, Math.max(160, canvas.clientHeight - 95)) + "px";
+  if (panel.style.maxHeight !== maxHeight) panel.style.maxHeight = maxHeight;
+  $("bearing").value = (cam.bearing * 180) / Math.PI;
+  $("bearing-value").textContent = fmt((cam.bearing * 180) / Math.PI, 0) + "°";
+  $("compass").style.transform = "rotate(" + -cam.bearing + "rad)";
+  $("zoom").max = Math.min(800, (1.2 / cam.base) * 100);
+  $("zoom").step = ".1";
+  $("zoom").value = (cam.scale / cam.base) * 100;
+  $("zoom-value").textContent = fmt((cam.scale / cam.base) * 100, 0) + "%";
+  $("zoom").setAttribute(
+    "aria-valuetext",
+    fmt((cam.scale / cam.base) * 100, 0) + "%",
+  );
+  $("pitch").value = pitchDegrees;
+  $("pitch-value").textContent = mode3d ? fmt(pitchDegrees, 0) + "°" : "2D";
+  $("relief").value = relief * 100;
+  $("relief-value").textContent = fmt(relief * 100, 0) + "%";
+  $("pitch").disabled = !mode3d;
+  $("relief").disabled = !mode3d;
 }
-function home() {
-  cam.x = 0;
-  cam.y = 0;
-  cam.bearing = (-20 * Math.PI) / 180;
-  baseScale =
-    Math.min(canvas.clientWidth / 6500, canvas.clientHeight / 4300) * 1.4;
-  cam.scale = baseScale;
+function updateCamera(next) {
+  cam = next;
+  constrain();
   syncControls();
   schedule();
+}
+function home() {
+  lastView = view();
+  const base = baseScale(lastView);
+  updateCamera({ ...cam, x: 0, y: 0, base, scale: base });
 }
 function fit() {
   if (!shown.length) return;
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
-  for (const s of shown)
-    for (const p of s.points) {
-      minX = Math.min(minX, p[0]);
-      minY = Math.min(minY, p[1]);
-      maxX = Math.max(maxX, p[0]);
-      maxY = Math.max(maxY, p[1]);
-    }
-  cam.x = (minX + maxX) / 2;
-  cam.y = (minY + maxY) / 2;
-  cam.bearing = 0;
-  cam.scale =
-    Math.min(
-      (W - 80) / (maxX - minX + 1),
-      (H - 130) /
-        ((maxY - minY) * Math.cos(mode3d ? (55 * Math.PI) / 180 : 0) + 500),
-    ) * 0.8;
-  syncControls();
-  schedule();
+  const maxHeight = mode3d
+    ? shown.reduce(
+        (m, s) =>
+          Math.max(m, Math.min(60 / s.bands[band].kmh, 12) * 30 * relief),
+        0,
+      )
+    : 0;
+  updateCamera(
+    fitCamera(
+      cam,
+      view(),
+      shown.flatMap((s) => s.points),
+      { padding: canvas.clientWidth < 600 ? 28 : 48, maxHeight },
+    ),
+  );
+}
+function focusPoint(point, scale) {
+  let next = { ...cam, x: point[0], y: point[1], scale };
+  if (canvas.clientWidth < 600)
+    next = panCamera(
+      next,
+      view(),
+      [canvas.clientWidth / 2, canvas.clientHeight * 0.53],
+      [canvas.clientWidth / 2, canvas.clientHeight * 0.31],
+    );
+  updateCamera(next);
 }
 function focusSegment(s) {
-  const p = s.points[Math.floor(s.points.length / 2)];
-  cam.x = p[0];
-  cam.y = p[1];
-  cam.scale = Math.max(cam.scale, baseScale);
-  syncControls();
-  schedule();
+  focusPoint(
+    s.points[Math.floor(s.points.length / 2)],
+    Math.max(cam.scale, cam.base),
+  );
 }
-function pan(dx, dy) {
-  const p = parameters();
-  cam.x += (-dx * p.cos + (dy / p.cp) * p.sin) / cam.scale;
-  cam.y += (dx * p.sin + (dy / p.cp) * p.cos) / cam.scale;
-  syncControls();
-  schedule();
-}
-function zoomBy(factor, x = W / 2, y = H / 2) {
-  const anchor = unproject(x, y);
-  cam.scale = Math.max(0.008, Math.min(1.5, cam.scale * factor));
-  const next = unproject(x, y);
-  cam.x += anchor[0] - next[0];
-  cam.y += anchor[1] - next[1];
-  syncControls();
-  schedule();
+
+function zoomBy(
+  factor,
+  x = canvas.clientWidth / 2,
+  y = canvas.clientHeight * 0.53,
+) {
+  updateCamera(zoomCamera(cam, view(), factor, [x, y]));
 }
 function setMode(value) {
   mode3d = value;
   $("mode3d").setAttribute("aria-pressed", String(value));
   $("mode2d").setAttribute("aria-pressed", String(!value));
+  updateCamera({ ...cam, pitch: value ? (pitchDegrees * Math.PI) / 180 : 0 });
+}
+function resetView() {
+  pitchDegrees = 55;
+  relief = 1;
+  cam.bearing = (-20 * Math.PI) / 180;
+  setMode(true);
+  home();
+}
+function drawFrame() {
+  frame = 0;
+  const nextView = view();
+  if (
+    nextView.width !== lastView.width ||
+    nextView.height !== lastView.height
+  ) {
+    cam = resizeCamera(cam, lastView, nextView);
+    lastView = nextView;
+    constrain();
+    syncControls();
+  }
+  const stats = renderer.draw({
+    scene,
+    segments: shown,
+    band,
+    camera: cam,
+    selected,
+    hovered,
+    stop: selectedStop,
+    relief,
+  });
+  const scale = $("scale-bar");
+  scale.hidden = !stats.scale;
+  if (stats.scale) {
+    const label =
+      stats.scale.metres >= 1000
+        ? fmt(stats.scale.metres / 1000, 1) + " km"
+        : fmt(stats.scale.metres, 0) + " m";
+    if (scale.firstElementChild.textContent !== label)
+      scale.firstElementChild.textContent = label;
+    scale.lastElementChild.style.width = stats.scale.pixels + "px";
+  }
+}
+function schedule() {
+  if (!frame) frame = requestAnimationFrame(drawFrame);
+}
+function setTouch(value) {
+  touchMode = value;
+  shell.dataset.touch = String(value);
+  $("touch-mode").setAttribute("aria-pressed", String(value));
+  $("touch-mode").textContent = value
+    ? "Termina esplorazione"
+    : "Esplora con le dita";
+  if (value) canvas.focus({ preventScroll: true });
+}
+const inertBefore = new Map();
+let overflowBefore = "";
+function toggleExpanded() {
+  expanded = !expanded;
+  shell.classList.toggle("expanded", expanded);
+  $("expand").setAttribute("aria-expanded", String(expanded));
+  $("expand").setAttribute(
+    "aria-label",
+    expanded ? "Riduci mappa" : "Espandi mappa",
+  );
+  if (expanded) {
+    overflowBefore = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    for (const node of [
+      document.querySelector(".mast"),
+      ...[...document.querySelector("main").children].filter(
+        (n) => n !== shell,
+      ),
+    ]) {
+      inertBefore.set(node, node.inert);
+      node.inert = true;
+    }
+    shell.setAttribute("role", "dialog");
+    shell.setAttribute("aria-modal", "true");
+    canvas.focus({ preventScroll: true });
+  } else {
+    document.body.style.overflow = overflowBefore;
+    for (const [node, value] of inertBefore) node.inert = value;
+    inertBefore.clear();
+    shell.removeAttribute("role");
+    shell.removeAttribute("aria-modal");
+    $("expand").focus({ preventScroll: true });
+  }
   schedule();
 }
-function nearest(x, y) {
-  let best = null,
-    distance = 8;
-  for (const candidate of drawn) {
-    for (let i = 1; i < candidate.points.length; i++) {
-      const a = candidate.points[i - 1],
-        b = candidate.points[i];
-      if (!a || !b) continue;
-      const dx = b[0] - a[0],
-        dy = b[1] - a[1],
-        den = dx * dx + dy * dy,
-        t = den
-          ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / den))
-          : 0,
-        d = Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy);
-      if (d < distance) {
-        distance = d;
-        best = candidate.segment;
-      }
-    }
+function escape() {
+  if (!$("stop-menu").hidden) {
+    hideSearch();
+    return;
   }
-  return best;
+  if ($("camera-panel").open) {
+    $("camera-panel").open = false;
+    return;
+  }
+  if (selected || selectedStop) {
+    inspect(null);
+    return;
+  }
+  if (expanded) {
+    toggleExpanded();
+    return;
+  }
+  if (touchMode) setTouch(false);
 }
 function pointerPoint(event) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  const r = canvas.getBoundingClientRect();
+  return [event.clientX - r.left, event.clientY - r.top];
 }
 const pointers = new Map();
-let gestureMoved = false,
-  gestureStart = null,
-  pinchDistance = null;
+let moved = false,
+  dragStart = null,
+  tapOnly = null;
 canvas.addEventListener("pointerdown", (event) => {
-  if (event.button !== 0) return;
+  if (event.button !== 0 || pointers.size >= 2) return;
+  const point = pointerPoint(event);
+  if (event.pointerType === "touch" && !touchMode) {
+    tapOnly = { id: event.pointerId, point };
+    return;
+  }
   canvas.setPointerCapture(event.pointerId);
-  const p = pointerPoint(event);
-  pointers.set(event.pointerId, p);
-  gestureMoved = pointers.size > 1;
-  gestureStart = p;
-  pinchDistance = null;
+  pointers.set(event.pointerId, point);
+  moved = pointers.size > 1;
+  dragStart = point;
   canvas.classList.add("dragging");
   $("map-tip").hidden = true;
 });
 canvas.addEventListener("pointermove", (event) => {
-  const p = pointerPoint(event);
+  const point = pointerPoint(event);
+  if (tapOnly?.id === event.pointerId) {
+    if (
+      Math.hypot(point[0] - tapOnly.point[0], point[1] - tapOnly.point[1]) > 6
+    )
+      tapOnly = null;
+    return;
+  }
   if (pointers.has(event.pointerId)) {
-    const previous = pointers.get(event.pointerId);
-    pointers.set(event.pointerId, p);
+    const before = [...pointers.values()],
+      previous = pointers.get(event.pointerId);
+    pointers.set(event.pointerId, point);
     if (pointers.size === 2) {
-      gestureMoved = true;
-      const [a, b] = [...pointers.values()],
-        distance = Math.hypot(a.x - b.x, a.y - b.y);
-      if (pinchDistance && distance > 0)
-        zoomBy(distance / pinchDistance, (a.x + b.x) / 2, (a.y + b.y) / 2);
-      pinchDistance = distance;
+      moved = true;
+      const after = [...pointers.values()],
+        mid = (pair) => [
+          (pair[0][0] + pair[1][0]) / 2,
+          (pair[0][1] + pair[1][1]) / 2,
+        ],
+        distance = (pair) =>
+          Math.hypot(pair[1][0] - pair[0][0], pair[1][1] - pair[0][1]),
+        angle = (pair) =>
+          Math.atan2(pair[1][1] - pair[0][1], pair[1][0] - pair[0][0]),
+        d = distance(before);
+      if (d > 1)
+        updateCamera(
+          transformCamera(cam, view(), {
+            from: mid(before),
+            to: mid(after),
+            factor: distance(after) / d,
+            rotation: normalizeBearing(angle(after) - angle(before)),
+          }),
+        );
     } else {
       if (
-        gestureStart &&
-        Math.hypot(p.x - gestureStart.x, p.y - gestureStart.y) > 4
+        dragStart &&
+        Math.hypot(point[0] - dragStart[0], point[1] - dragStart[1]) > 4
       )
-        gestureMoved = true;
-      if (gestureMoved) {
+        moved = true;
+      if (moved) {
         if (event.shiftKey) {
-          cam.bearing += (p.x - previous.x) * 0.008;
-          syncControls();
-          schedule();
-        } else pan(p.x - previous.x, p.y - previous.y);
+          if (mode3d)
+            pitchDegrees = Math.max(
+              15,
+              Math.min(65, pitchDegrees + (point[1] - previous[1]) * 0.15),
+            );
+          updateCamera({
+            ...cam,
+            bearing: cam.bearing + (point[0] - previous[0]) * 0.008,
+            pitch: mode3d ? (pitchDegrees * Math.PI) / 180 : 0,
+          });
+        } else updateCamera(panCamera(cam, view(), previous, point));
       }
     }
     return;
   }
-  const s = nearest(p.x, p.y);
+  if (event.pointerType === "touch") return;
+  const s = renderer.nearest(...point);
   if (hovered !== s?.id) {
     hovered = s?.id ?? null;
     schedule();
@@ -789,27 +908,38 @@ canvas.addEventListener("pointermove", (event) => {
   if (s) {
     tip.textContent =
       "Linea " + s.route + " · " + fmt(s.bands[band].kmh) + " km/h";
-    tip.style.left = Math.max(8, Math.min(W - 220, p.x + 12)) + "px";
-    tip.style.top = Math.max(8, p.y - 35) + "px";
+    tip.style.transform =
+      "translate3d(" +
+      Math.max(8, Math.min(canvas.clientWidth - 235, point[0] + 12)) +
+      "px," +
+      Math.max(8, point[1] - 36) +
+      "px,0)";
   }
 });
 function endPointer(event, cancelled = false) {
-  const p = pointerPoint(event);
-  if (!cancelled && !gestureMoved && pointers.size === 1)
-    inspect(nearest(p.x, p.y));
+  if (tapOnly?.id === event.pointerId) {
+    if (!cancelled) inspect(renderer.nearest(...pointerPoint(event)));
+    tapOnly = null;
+    return;
+  }
+  if (!pointers.has(event.pointerId)) return;
+  if (!cancelled && !moved && pointers.size === 1)
+    inspect(renderer.nearest(...pointerPoint(event)));
   pointers.delete(event.pointerId);
-  pinchDistance = null;
   if (!pointers.size) {
     canvas.classList.remove("dragging");
-    gestureStart = null;
-  }
+    dragStart = null;
+  } else moved = true;
 }
 canvas.addEventListener("pointerup", (event) => endPointer(event));
 canvas.addEventListener("pointercancel", (event) => endPointer(event, true));
+canvas.addEventListener("lostpointercapture", (event) =>
+  endPointer(event, true),
+);
 canvas.addEventListener("pointerleave", () => {
   if (!pointers.size) {
-    $("map-tip").hidden = true;
     hovered = null;
+    $("map-tip").hidden = true;
     schedule();
   }
 });
@@ -817,14 +947,20 @@ canvas.addEventListener(
   "wheel",
   (event) => {
     event.preventDefault();
-    const p = pointerPoint(event);
-    zoomBy(Math.exp(-event.deltaY * 0.0015), p.x, p.y);
+    zoomBy(
+      Math.exp(-Math.max(-600, Math.min(600, event.deltaY)) * 0.0015),
+      ...pointerPoint(event),
+    );
   },
   { passive: false },
 );
+canvas.addEventListener("dblclick", (event) => {
+  zoomBy(1.6, ...pointerPoint(event));
+});
 canvas.addEventListener("keydown", (event) => {
+  if (event.metaKey || event.ctrlKey || event.altKey) return;
   if (
-    [
+    ![
       "ArrowLeft",
       "ArrowRight",
       "ArrowUp",
@@ -836,63 +972,171 @@ canvas.addEventListener("keydown", (event) => {
       "Escape",
     ].includes(event.key)
   )
-    event.preventDefault();
-  if (event.shiftKey && event.key.startsWith("Arrow")) {
-    cam.bearing += ((event.key === "ArrowLeft" ? -1 : 1) * Math.PI) / 18;
-    syncControls();
-    schedule();
+    return;
+  event.preventDefault();
+  if (event.key === "Escape") {
+    escape();
     return;
   }
-  if (event.key === "ArrowLeft") pan(60, 0);
-  if (event.key === "ArrowRight") pan(-60, 0);
-  if (event.key === "ArrowUp") pan(0, 60);
-  if (event.key === "ArrowDown") pan(0, -60);
-  if (event.key === "+" || event.key === "=") zoomBy(1.25);
-  if (event.key === "-") zoomBy(0.8);
-  if (event.key === "Home") home();
-  if (event.key === "Escape") inspect(null);
+  if (event.key === "Home") {
+    home();
+    return;
+  }
+  if (event.key === "+" || event.key === "=") {
+    zoomBy(1.25);
+    return;
+  }
+  if (event.key === "-") {
+    zoomBy(0.8);
+    return;
+  }
+  if (event.shiftKey) {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight")
+      updateCamera({
+        ...cam,
+        bearing:
+          cam.bearing + ((event.key === "ArrowLeft" ? -1 : 1) * Math.PI) / 12,
+      });
+    else if (mode3d) {
+      pitchDegrees = Math.max(
+        15,
+        Math.min(65, pitchDegrees + (event.key === "ArrowUp" ? 5 : -5)),
+      );
+      updateCamera({ ...cam, pitch: (pitchDegrees * Math.PI) / 180 });
+    }
+    return;
+  }
+  const from = [canvas.clientWidth / 2, canvas.clientHeight * 0.53],
+    delta =
+      event.key === "ArrowLeft"
+        ? [60, 0]
+        : event.key === "ArrowRight"
+          ? [-60, 0]
+          : event.key === "ArrowUp"
+            ? [0, 60]
+            : [0, -60];
+  updateCamera(
+    panCamera(cam, view(), from, [from[0] + delta[0], from[1] + delta[1]]),
+  );
 });
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented) return;
+  if (event.key === "Escape") {
+    escape();
+    return;
+  }
+  if (event.key === "Tab" && expanded) {
+    const list = [
+        ...shell.querySelectorAll(
+          "button:not([disabled]),input:not([disabled]),summary,canvas,a[href]",
+        ),
+      ].filter((n) => n.getClientRects().length),
+      first = list[0],
+      last = list.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+});
+document.addEventListener("pointerdown", (event) => {
+  if (!event.target.closest(".stop-search")) hideSearch();
+  if ($("camera-panel").open && !event.target.closest("#camera-panel"))
+    $("camera-panel").open = false;
+});
+window.addEventListener("scroll", hideSearch, { passive: true });
 $("city").onchange = () => selectCity($("city").value);
 $("band").onchange = () => {
   band = $("band").value;
-  tablePage = 0;
   updateData();
 };
-$("route").onchange = () => {
-  route = $("route").value;
-  tablePage = 0;
-  updateData();
-  if (route) fit();
-  else home();
+$("route").onchange = () => setRoute($("route").value);
+$("stop-search").oninput = showSearch;
+$("stop-search").onfocus = () => {
+  if ($("stop-search").value) showSearch();
 };
+$("stop-search").onkeydown = (event) => {
+  if (event.key === "Escape") {
+    event.preventDefault();
+    hideSearch();
+  }
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    $("stop-results").querySelector("button")?.focus();
+  }
+  if (event.key === "Enter") {
+    event.preventDefault();
+    $("stop-results").querySelector("button")?.click();
+  }
+};
+for (const button of document.querySelectorAll("[data-speed]"))
+  button.onclick = () => {
+    speedClass =
+      button.dataset.speed === "" ? null : Number(button.dataset.speed);
+    updateData();
+  };
+$("clear-filters").onclick = clearFilters;
+$("empty-reset").onclick = clearFilters;
 $("page-previous").onclick = () => {
   tablePage--;
-  updateData();
+  renderTable();
 };
 $("page-next").onclick = () => {
   tablePage++;
-  updateData();
+  renderTable();
 };
 $("mode3d").onclick = () => setMode(true);
 $("mode2d").onclick = () => setMode(false);
 $("center").onclick = home;
-$("reset").onclick = () => {
-  setMode(true);
-  home();
-};
 $("fit").onclick = fit;
+$("reset").onclick = resetView;
+$("north").onclick = () => updateCamera({ ...cam, bearing: 0 });
+$("rotate-left").onclick = () =>
+  updateCamera({ ...cam, bearing: cam.bearing - Math.PI / 12 });
+$("rotate-right").onclick = () =>
+  updateCamera({ ...cam, bearing: cam.bearing + Math.PI / 12 });
 $("zoom-in").onclick = () => zoomBy(1.3);
 $("zoom-out").onclick = () => zoomBy(1 / 1.3);
-$("bearing").oninput = () => {
-  cam.bearing = (Number($("bearing").value) * Math.PI) / 180;
+$("bearing").oninput = () =>
+  updateCamera({
+    ...cam,
+    bearing: (Number($("bearing").value) * Math.PI) / 180,
+  });
+$("pitch").oninput = () => {
+  pitchDegrees = Number($("pitch").value);
+  updateCamera({ ...cam, pitch: (pitchDegrees * Math.PI) / 180 });
+};
+$("relief").oninput = () => {
+  relief = Number($("relief").value) / 100;
+  syncControls();
   schedule();
 };
-$("zoom").oninput = () => {
-  cam.scale = (baseScale * Number($("zoom").value)) / 100;
-  schedule();
+$("zoom").oninput = () =>
+  zoomBy(((Number($("zoom").value) / 100) * cam.base) / cam.scale);
+$("expand").onclick = toggleExpanded;
+$("touch-mode").onclick = () => setTouch(!touchMode);
+$("export").onclick = () => {
+  if (!city || !shown.length) return;
+  const url = URL.createObjectURL(
+      new Blob([selectionCSV(city, shown, band)], {
+        type: "text/csv;charset=utf-8",
+      }),
+    ),
+    a = make("a");
+  a.href = url;
+  a.download = "dvns-" + city.id + "-" + city.serviceDate + "-" + band + ".csv";
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 new ResizeObserver(schedule).observe(canvas);
-for (const c of manifest.cities)
+for (const c of [...manifest.cities].sort((a, b) =>
+  a.name.localeCompare(b.name, "it"),
+))
   $("city").append(
     option(
       c.id,

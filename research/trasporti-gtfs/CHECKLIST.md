@@ -44,3 +44,26 @@ Base: 0fdea9948e112bb65870cd149747cd6d007f6f1b. Richiesta: aggiungere città e a
 - Artifact: gtfs-20261030-v2 nella cartella visualizzazioni della chat, con HTML autosufficiente (6.723 MB), analysis.json, screenshot desktop/mobile e ricevute Browser. Bundle gzip per città; massimo due città decodificate; CSP senza connessioni remote.
 - Misura descrittiva: disegni nella matrice desktop circa 4–39 ms sul Browser di questa macchina; non benchmark del telefono o prova di risparmio hosted.
 - NOT RUN: touch/pinch su dispositivo fisico, integrazione corpus, gate Next/CI/deploy. Licenze Roma/Bari da verificare; GTT solo non commerciale. Nessun push, PR, merge o deploy.
+
+## Iterazione 3: esplorazione e controlli, 31 ottobre 2026
+
+Base: 06021cdb41e8574755c135221d4fe1b78defac79. Rimane un prototipo locale nello stesso branch.
+
+- [x] Ground: checkout principale preservato, branch isolato pulito, flusso acquisizione/analisi/rendering e prove precedenti riletti.
+- [x] Sketch: confrontare UI a toolbar contro rail laterale; mantenere toolbar compatta, mappa ampia e pannello vista raggruppato. Separare matematica della camera dal DOM prima dei nuovi controlli.
+- [x] Definire prima del codice errori attesi: zoom fuori range, rotazione oltre 180°, inversa prospettica/horizon, fit a rete ruotata, resize, ricerca/filtri senza risultati, export CSV con testo ostile, asincronia tra città.
+- [x] Implementare camera coerente, bussola/inclinazione/rilievo, vista espansa e interazioni mobile senza intrappolare lo scorrimento.
+- [x] Aggiungere ricerca fermate, filtri di velocità, selezione leggibile e CSV della selezione; tutti i valori restano quelli dell'orario.
+- [x] Ridurre lavoro ripetuto per sfondo statico e hover senza aumentare richieste remote o dipendenze.
+- [x] Verificare nuovi feed ufficiali e aggiungere solo città con calendario/geometrie utilizzabili e ricevute.
+- [x] Verificare dati originali invariati; test offline mirati, Browser desktop/mobile, tastiera, confini filtri, console, screenshot. Prova telefono fisico separata.
+- [x] Ricontrollare main e diff, aggiornare documenti e artifact, commit locale. Nessun push/PR/merge/deploy.
+
+### Esito della terza iterazione
+
+- PASS: sette città utilizzabili; aggiunte Cagliari (servizio esplicito 31/10) e Venezia/Mestre automobilistico (30/10). Bari resta indisponibile, senza sostituzioni di data.
+- PASS: camera e renderer separati, zoom/rotazione coerenti, fit con rilievi, bussola/inclinazione, vista espansa, ricerca fermate, filtri velocità, tabella e CSV. Mobile con esplorazione esplicita e dettaglio che lascia liberi i comandi.
+- PASS: 40 test offline; 32 combinazioni città/fascia e 28 filtri velocità; 21 viewport reali a 320/390/768 px senza overflow o comandi visibili sovrapposti. File assente/corrotto e recupero verificati nel Browser.
+- PASS: city asset separati, hash/budget verificati, cache dati di due città, due buffer grafici. Nessuna nuova dipendenza, API o richiesta remota durante l'esplorazione.
+- Artifact: gtfs-20261031-v3, con output a directory, HTML offline, analysis.json, screenshot e prove JSON. Verifiche confrontate con i dati sorgente dell'analisi.
+- NOT RUN: gesti su telefono fisico, integrazione corpus, gate Next/CI/deploy del prodotto. Licenze Roma/Bari/Venezia da verificare; GTT solo non commerciale. Nessun push, PR, merge o deploy.

@@ -54,3 +54,20 @@ Una copia del feed per analisi, con SHA-256 e data acquisizione. Archivio raw fu
 | Inquadratura dell'intera rete con molto margine | Vista centrale ampia, pan/zoom e comando inquadra rete                  | Esplorare i tratti senza comprimere tutto in un simbolo                  |
 
 Alternative: MapLibre con servizio tile esterno oppure renderer Canvas su estratti vettoriali OSM locali. Scelta: estratti locali, per non aggiungere richieste a ogni visita, chiavi o servizi a pagamento. L'attribuzione ODbL rimane visibile. Il basemap è un contesto cartografico distinto dalle misure GTFS: non deve modificare distanze o tempi dell'analisi.
+
+## Iterazione 3: esplorazione
+
+Uso: scegliere città/orario/linea, cercare una fermata, selezionare classi di velocità; esplorare, leggere il tratto e scaricare la selezione. Nessun nuovo calcolo della metrica nei filtri.
+
+| Before                                                              | After                                                                                       | Why                                                    |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Slider zoom e camera con limiti differenti; angoli non normalizzati | Una sola camera con zoom limitato, angolo normalizzato, proiezione/inversa e fit verificati | Evitare salti, valori UI incoerenti e reti fuori vista |
+| Dettaglio sopra la mappa e controlli sparsi                         | Barra compatta, bussola e pannello Vista; dettaglio più compatto su mobile                  | Lasciare contesto geografico leggibile                 |
+| Mappa da esplorare soltanto a occhio                                | Ricerca fermata e filtro velocità, tabella e CSV della selezione                            | Trovare e verificare un tratto specifico               |
+| Sfondo riproiettato anche per hover/cambio fascia                   | Un solo buffer cartografico invalidato da città/camera/viewport                             | Evitare lavoro che non cambia il risultato             |
+
+Alternativa A: toolbar orizzontale e mappa ampia, controlli camera raggruppati e tabella sotto. Alternativa B: rail permanente sinistro e pannello dati destro. Scelta A: usa più larghezza per il contesto geografico e conserva lo stesso ordine dei controlli su mobile. La B sottrae troppo spazio quando la rete è densa e impone pannelli mobili aggiuntivi.
+
+Moduli: `camera.mjs` contiene proiezione, inversa, fit, zoom, normalizzazione e scala grafica; niente DOM. `explorer.mjs` contiene ricerca fermate/filtri ed export CSV sicuro; niente acquisizione. Il template incorpora camera, esplorazione e `renderer.mjs` prima del controller `viewer.js`. Il renderer conserva un buffer dello sfondo e uno dei tratti; la cache dati rimane di due città. La consegna predefinita separa gli asset gzip per città, verificati per hash e dimensione; `--standalone` mantiene il formato offline unico.
+
+Rischi da verificare prima: inversa/proiezione su camera ruotata e inclinata, zoom ancorato, orizzonte non proiettabile, fit su geometrie strette, resize, nomi fermata duplicati, filtro vuoto, formule/virgolette nel CSV, cambio città durante decompressione e stato del dettaglio dopo filtri. La prova touch fisica resta un confine distinto dalla verifica Browser.

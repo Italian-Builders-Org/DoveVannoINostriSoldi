@@ -14,7 +14,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ENDPOINT = "https://overpass-api.de/api/interpreter"
-ENDPOINTS = (ENDPOINT, "https://overpass.private.coffee/api/interpreter")
+ENDPOINTS = (
+    ENDPOINT,
+    "https://overpass.private.coffee/api/interpreter",
+)
 MAX_BYTES = 64 * 1024 * 1024
 
 
@@ -30,7 +33,7 @@ def read_response(response, limit=MAX_BYTES):
     return raw
 
 
-def curl_response(url):
+def curl_response(url, data=None):
     # HTTP/2 transport is useful where HTTP/1.1 chunked responses are interrupted.
     command = [
         "curl",
@@ -48,6 +51,8 @@ def curl_response(url):
         "User-Agent: DVNS-GTFS-research/1.0",
         url,
     ]
+    if data is not None:
+        command[-1:-1] = ["--data-urlencode", "data=" + data]
     with subprocess.Popen(
         command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     ) as process:
@@ -175,7 +180,7 @@ def parse_map(data):
 def query_for(bounds):
     west, south, east, north = bounds
     bbox = f"{south},{west},{north},{east}"
-    return f"""[out:json][timeout:60][maxsize:268435456];(
+    return f"""[out:json][timeout:35][maxsize:134217728];(
 way["highway"~"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$"]({bbox});
 way["natural"="water"]({bbox});way["waterway"~"^(river|canal)$"]({bbox});
 way["leisure"~"^(park|garden|pitch|nature_reserve)$"]({bbox});
@@ -208,7 +213,7 @@ def load_map(source, cache):
     }
 
 
-def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib"):
+def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib", method="POST"):
     path = cache / (source["id"] + ".osm.json")
     receipt_path = cache / (source["id"] + ".osm.receipt.json")
     if path.exists() and receipt_path.exists():
@@ -216,11 +221,17 @@ def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib"):
         return {"city": source["id"], "cached": True, "features": len(data["features"])}
     query = query_for(source["mapBounds"])
     request = urllib.request.Request(
-        endpoint + "?" + urllib.parse.urlencode({"data": query}),
+        endpoint
+        + ("?" + urllib.parse.urlencode({"data": query}) if method == "GET" else ""),
+        data=(
+            urllib.parse.urlencode({"data": query}).encode()
+            if method == "POST"
+            else None
+        ),
         headers={"User-Agent": "DVNS-GTFS-research/1.0", "Accept-Encoding": "gzip"},
     )
     if transport == "curl":
-        raw = curl_response(request.full_url)
+        raw = curl_response(request.full_url, query if method == "POST" else None)
     else:
         with urllib.request.urlopen(request, timeout=100) as response:
             raw = read_response(response)
@@ -231,6 +242,7 @@ def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib"):
     receipt = {
         "endpoint": endpoint,
         "transport": transport,
+        "method": method,
         "bounds": source["mapBounds"],
         "acquiredAt": datetime.now(timezone.utc).isoformat(),
         "osmBaseAt": parsed.get("osm3s", {}).get("timestamp_osm_base"),
@@ -260,13 +272,16 @@ def main():
     p.add_argument("--city")
     p.add_argument("--endpoint", choices=ENDPOINTS, default=ENDPOINT)
     p.add_argument("--transport", choices=["urllib", "curl"], default="urllib")
+    p.add_argument("--method", choices=["GET", "POST"], default="POST")
     args = p.parse_args()
     args.cache.mkdir(parents=True, exist_ok=True)
     sources = json.loads((Path(__file__).parent / "feeds.json").read_text())
     for source in sources:
         if args.city and source["id"] != args.city:
             continue
-        result = acquire_map(source, args.cache, args.endpoint, args.transport)
+        result = acquire_map(
+            source, args.cache, args.endpoint, args.transport, args.method
+        )
         print(json.dumps(result), flush=True)
         if not result["cached"]:
             time.sleep(2)

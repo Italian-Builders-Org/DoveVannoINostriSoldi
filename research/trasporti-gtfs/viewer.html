@@ -15,50 +15,168 @@
   <body>
     <header class="mast">
       <span class="brand">DVNS <span>/ MOBILITÀ</span></span
-      ><span class="badge">Studio locale · orari GTFS</span>
+      ><span class="badge">Studio locale · GTFS</span>
     </header>
     <main>
       <div class="heading">
         <div>
-          <h1>La velocità dei mezzi, tratto per tratto.</h1>
-          <p>
-            Tempi programmati tra fermate. I picchi non sono ritardi misurati.
-          </p>
+          <h1>La velocità dei mezzi, sulla mappa.</h1>
+          <p>Orari tra fermate, non ritardi misurati.</p>
         </div>
-        <span id="reference"></span>
+        <div class="reference">
+          <span>Giorno di servizio</span><strong id="reference"></strong>
+        </div>
       </div>
       <div class="toolbar">
         <label
-          >Città<select id="city" aria-label="Città" disabled></select></label
-        ><label
+          >Città<select id="city" aria-label="Città" disabled></select
+        ></label>
+        <label
           >Orario<select id="band" aria-label="Fascia oraria" disabled>
             <option value="morning">07–10 · mattina</option>
             <option value="day">10–16 · giorno</option>
             <option value="evening">16–20 · sera</option>
             <option value="all">Intero giorno di servizio</option>
           </select></label
-        ><label
-          >Linea<select id="route" aria-label="Linea" disabled></select></label
-        ><span id="mode-label" class="mode-label"></span>
-        <div class="views" role="group" aria-label="Vista mappa">
-          <button id="mode3d" aria-pressed="true" disabled>3D</button
-          ><button id="mode2d" aria-pressed="false" disabled>2D</button>
+        >
+        <label
+          >Linea<select id="route" aria-label="Linea" disabled></select
+        ></label>
+        <div class="stop-search">
+          <label for="stop-search">Cerca fermata</label>
+          <div class="search-field">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="10" cy="10" r="6.5" />
+              <path d="m15 15 5 5" /></svg
+            ><input
+              id="stop-search"
+              type="search"
+              placeholder="Nome o codice"
+              maxlength="80"
+              autocomplete="off"
+              aria-controls="stop-results"
+              disabled
+            />
+          </div>
+          <div class="stop-menu" id="stop-menu" hidden>
+            <ul id="stop-results"></ul>
+            <p id="search-status" role="status"></p>
+          </div>
         </div>
       </div>
-      <p id="notice" role="status" hidden></p>
-      <section class="map-shell" aria-label="Mappa interattiva">
-        <div class="map-context">
-          <strong id="map-title">Preparazione della mappa…</strong
-          ><span id="area-label"></span>
+      <div class="selection-bar">
+        <div>
+          <span id="mode-label" class="mode-label"></span
+          ><span id="selection-count" aria-live="polite"></span>
         </div>
+        <button id="clear-filters" class="text-button" hidden>
+          Azzera filtri
+        </button>
+      </div>
+      <section id="map-shell" class="map-shell" aria-label="Mappa interattiva">
         <canvas
           id="map"
           tabindex="0"
           role="img"
-          aria-label="Mappa della rete e delle velocità programmate. Frecce per spostare, più e meno per zoom. Valori equivalenti nella tabella."
+          aria-label="Mappa delle velocità programmate. Frecce: sposta; più e meno: zoom; Maiusc e frecce: ruota. Tutti i tratti sono disponibili in tabella."
           aria-describedby="map-help"
-          >Consulta la tabella dei tratti sotto la mappa.</canvas
+          >Consulta la tabella sotto la mappa.</canvas
         >
+        <div class="map-context">
+          <strong id="map-title">Preparazione…</strong
+          ><span id="area-label"></span>
+        </div>
+        <div class="top-tools">
+          <div class="views" role="group" aria-label="Vista mappa">
+            <button id="mode3d" aria-pressed="true" disabled>3D</button
+            ><button id="mode2d" aria-pressed="false" disabled>2D</button>
+          </div>
+          <details class="camera-panel" id="camera-panel">
+            <summary aria-label="Impostazioni vista">
+              Vista
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M4 7h16M4 17h16" />
+                <circle cx="9" cy="7" r="3" />
+                <circle cx="15" cy="17" r="3" />
+              </svg>
+            </summary>
+            <div class="camera-options">
+              <label
+                >Rotazione <output id="bearing-value">−20°</output
+                ><input
+                  id="bearing"
+                  aria-label="Rotazione mappa"
+                  type="range"
+                  min="-180"
+                  max="180"
+                  value="-20"
+              /></label>
+              <div class="rotation-buttons">
+                <button
+                  id="rotate-left"
+                  aria-label="Ruota a sinistra di 15 gradi"
+                >
+                  ↶ 15°</button
+                ><button
+                  id="rotate-right"
+                  aria-label="Ruota a destra di 15 gradi"
+                >
+                  15° ↷
+                </button>
+              </div>
+              <label
+                >Inclinazione <output id="pitch-value">55°</output
+                ><input
+                  id="pitch"
+                  aria-label="Inclinazione mappa"
+                  type="range"
+                  min="15"
+                  max="65"
+                  value="55"
+              /></label>
+              <label
+                >Rilievo <output id="relief-value">100%</output
+                ><input
+                  id="relief"
+                  aria-label="Ampiezza rilievi"
+                  type="range"
+                  min="40"
+                  max="160"
+                  step="10"
+                  value="100"
+              /></label>
+              <label
+                >Zoom <output id="zoom-value">100%</output
+                ><input
+                  id="zoom"
+                  aria-label="Zoom mappa"
+                  type="range"
+                  min="10"
+                  max="800"
+                  value="100"
+              /></label>
+              <button id="reset" class="wide-button" disabled>
+                Ripristina vista
+              </button>
+            </div>
+          </details>
+          <button
+            id="expand"
+            class="icon-button"
+            aria-label="Espandi mappa"
+            aria-expanded="false"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" />
+            </svg>
+          </button>
+        </div>
+        <p id="notice" class="map-notice" role="status" hidden></p>
+        <div id="empty-state" class="empty-state" hidden>
+          <strong id="empty-title"></strong>
+          <p id="empty-copy"></p>
+          <button id="empty-reset" hidden>Azzera filtri</button>
+        </div>
         <div id="map-tip" role="tooltip" hidden></div>
         <aside id="inspector" hidden aria-live="polite"></aside>
         <div class="camera-tools">
@@ -68,23 +186,33 @@
             title="Centro città"
             disabled
           >
-            Centro</button
-          ><button
-            id="fit"
-            aria-label="Inquadra selezione"
-            title="Inquadra selezione"
-            disabled
-          >
-            Inquadra</button
-          ><button id="zoom-in" aria-label="Aumenta zoom" disabled>+</button
-          ><button id="zoom-out" aria-label="Riduci zoom" disabled>−</button
-          ><button id="reset" aria-label="Ripristina vista" disabled>↺</button>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="6" />
+              <path d="M12 2v4m0 12v4M2 12h4m12 0h4" /></svg
+            ><span>Centro</span>
+          </button>
+          <button id="fit" aria-label="Inquadra selezione" disabled>
+            Inquadra
+          </button>
+          <button id="touch-mode" class="touch-mode" aria-pressed="false">
+            Esplora con le dita
+          </button>
         </div>
+        <div class="zoom-tools">
+          <button id="north" aria-label="Orienta a nord" title="Nord">
+            <svg id="compass" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m12 3 5 16-5-3-5 3Z" /></svg
+            ><span>N</span>
+          </button>
+          <div>
+            <button id="zoom-in" aria-label="Aumenta zoom" disabled>+</button
+            ><button id="zoom-out" aria-label="Riduci zoom" disabled>−</button>
+          </div>
+        </div>
+
         <div class="map-foot">
-          <span id="map-help"
-            >Trascina · rotella per zoom · Maiusc per ruotare</span
-          ><a
-            id="osm-attribution"
+          <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
+          <a
             href="https://www.openstreetmap.org/copyright"
             target="_blank"
             rel="noopener noreferrer"
@@ -93,40 +221,51 @@
         </div>
       </section>
       <div class="under-map">
-        <div class="legend" aria-label="Velocità prevista">
-          <span><i style="--swatch: #9e3530"></i>&lt; 10 km/h</span
-          ><span><i style="--swatch: #c18a30"></i>10–15</span
-          ><span><i style="--swatch: #8d9c5e"></i>15–25</span
-          ><span><i style="--swatch: #528b78"></i>≥ 25</span>
+        <div
+          class="legend"
+          role="group"
+          aria-label="Filtra per velocità prevista"
+        >
+          <span class="legend-title">km/h</span
+          ><button data-speed="" aria-pressed="true">Tutte</button
+          ><button data-speed="0" aria-pressed="false">
+            <i style="--swatch: #9e3530"></i>&lt; 10</button
+          ><button data-speed="1" aria-pressed="false">
+            <i style="--swatch: #c18a30"></i>10–15</button
+          ><button data-speed="2" aria-pressed="false">
+            <i style="--swatch: #8d9c5e"></i>15–25</button
+          ><button data-speed="3" aria-pressed="false">
+            <i style="--swatch: #528b78"></i>≥ 25
+          </button>
         </div>
-        <div class="fine-controls">
-          <label
-            >Rotazione<input
-              id="bearing"
-              type="range"
-              min="-180"
-              max="180"
-              value="-20"
-              aria-label="Rotazione mappa" /></label
-          ><label
-            >Zoom<input
-              id="zoom"
-              type="range"
-              min="10"
-              max="500"
-              value="100"
-              aria-label="Zoom mappa"
-          /></label>
-        </div>
-        <p class="height-note">
-          Più alto = più minuti per km · scala grafica limitata a 12 min/km
-        </p>
+        <span class="height-note"
+          >Più alto = più minuti/km · massimo grafico 12</span
+        >
       </div>
+      <details class="map-help">
+        <summary>Comandi mappa</summary>
+        <p id="map-help">
+          Trascina per spostare; rotella o +/− per zoom; Maiusc e trascinamento
+          per ruotare. Da tastiera: frecce, +/−, Maiusc e frecce; Home per il
+          centro, Esc per chiudere. Su telefono attiva «Esplora con le dita»;
+          termina per scorrere la pagina.
+        </p>
+      </details>
       <div class="below">
-        <section>
+        <section class="data-section">
           <div class="section-heading">
-            <h2>Tratti programmati più lenti</h2>
-            <span id="coverage"></span>
+            <div>
+              <h2>Tratti selezionati</h2>
+              <span id="coverage"></span>
+            </div>
+            <button
+              id="export"
+              class="export-button"
+              disabled
+              aria-label="Scarica i tratti selezionati in CSV"
+            >
+              ↓ CSV
+            </button>
           </div>
           <div class="table-scroll">
             <table>
@@ -134,7 +273,9 @@
                 <tr>
                   <th>Linea</th>
                   <th>Tra fermate</th>
-                  <th>km/h</th>
+                  <th aria-label="Velocità prevista, ordine crescente">
+                    km/h ↑
+                  </th>
                   <th>Corse</th>
                 </tr>
               </thead>
@@ -152,22 +293,26 @@
           <details>
             <summary>Come leggere i dati</summary>
             <p>
-              Velocità calcolata dalla distanza sul tracciato GTFS e dal tempo
-              mediano tra partenza da una fermata e arrivo alla successiva. Le
-              soste sono escluse. Le corse sono campioni dell’orario, non viaggi
-              osservati o passeggeri.
+              Distanza sul tracciato GTFS divisa per il tempo mediano tra
+              partenza e arrivo alla fermata successiva. Soste escluse. Le corse
+              sono campioni dell’orario, non viaggi osservati o passeggeri.
             </p>
             <p>
-              I tempi possono essere stimati o arrotondati. Non misurano
-              puntualità, traffico reale o qualità del servizio. Le reti hanno
-              coperture differenti: questa vista non classifica le città.
+              Gli orari possono essere stimati o arrotondati. Non misurano
+              puntualità, traffico reale o qualità del servizio. Coperture e
+              giorni disponibili possono differire: questa vista non classifica
+              le città.
             </p>
             <p>
-              I rilievi sono grafici: la quota è proporzionale ai min/km fino a
-              12 min/km, non è altimetria. La curva fra fermate è grafica, non
-              una misura delle variazioni dentro il tratto. Il valore completo
-              resta in tabella. Strade e quartieri provengono da un estratto OSM
-              distinto dal feed GTFS e non modificano i calcoli.
+              La quota è proporzionale ai minuti/km fino a 12, non è altimetria.
+              La curva fra fermate è grafica; non misura variazioni dentro il
+              tratto. Dettaglio e CSV conservano i valori completi. I punti
+              usano le coordinate GTFS delle fermate.
+            </p>
+            <p>
+              La cartografia OSM è un estratto locale distinto dagli orari.
+              Fuori dal suo perimetro le strade possono mancare; non modifica
+              tempi o distanze GTFS.
             </p>
           </details>
           <details>
@@ -181,8 +326,8 @@
         </section>
       </div>
       <footer>
-        Dati e mappe preparati offline. Nessun servizio cartografico remoto
-        viene contattato durante l’esplorazione.
+        Analisi offline di fonti ufficiali. Nessun servizio remoto durante
+        l’esplorazione.
       </footer>
     </main>
     <script id="data" type="application/json">

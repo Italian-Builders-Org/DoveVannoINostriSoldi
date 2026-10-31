@@ -1,13 +1,13 @@
 {
-  "serviceDate": "2026-10-30",
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
     {
       "id": "milano",
       "mode": "tram",
       "status": "ready",
+      "serviceDate": "2026-10-30",
       "holder": "Comune di Milano / AMAT, servizio ATM",
       "license": "CC-BY (versione non specificata nel campo dataset)",
       "studyBounds": null,
@@ -36,7 +36,8 @@
         "candidate_pairs": 116218,
         "accepted_pairs": 116218
       },
-      "segmentsSha256": "dcde357b5b715f31659ea10c5080b1da68b82d09ee4dee7fc9d416ac70544963",
+      "segmentsSha256": "99081bb2e06a1826e151a0ef3d8704129e14000b7f3a3acaaca5260fd7b7da8d",
+      "stops": 724,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -57,6 +58,7 @@
       "id": "roma",
       "mode": "tram",
       "status": "ready",
+      "serviceDate": "2026-10-30",
       "holder": "Roma Servizi per la Mobilità",
       "license": "not-declared",
       "studyBounds": null,
@@ -85,7 +87,8 @@
         "candidate_pairs": 11750,
         "accepted_pairs": 11750
       },
-      "segmentsSha256": "f86602f8a73eaf92ef6cffbfe1e8f31552f8e7e61c21a83b2d2158afbe5d910a",
+      "segmentsSha256": "7325d5af2b1ad80880daea3588697f2b13ee57e414dae9b00307f1dceefd2c7d",
+      "stops": 59,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -106,6 +109,7 @@
       "id": "torino",
       "mode": "tram",
       "status": "ready",
+      "serviceDate": "2026-10-30",
       "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
       "license": "GTT: uso non commerciale, attribuzione obbligatoria",
       "studyBounds": null,
@@ -134,7 +138,8 @@
         "candidate_pairs": 50863,
         "accepted_pairs": 50863
       },
-      "segmentsSha256": "010d0348de2c05057b6461df42cc6c4fc4bb1648d96ababc12d992ae55aa5be6",
+      "segmentsSha256": "b0302b1aeac408a51be1f2be2a256cdcc3560fbc2939c74ba043ac8255b17968",
+      "stops": 356,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -154,6 +159,7 @@
       "id": "firenze",
       "mode": "tram",
       "status": "ready",
+      "serviceDate": "2026-10-30",
       "holder": "Regione Toscana / GEST",
       "license": "CC-BY (versione non specificata nel catalogo)",
       "studyBounds": null,
@@ -185,7 +191,8 @@
         "missing_geometry_pair": 874,
         "nonpositive_time": 49
       },
-      "segmentsSha256": "aaa60368e03ea6062698aa2d7ac13e4336771fa09f774df2904b56cab36627a0",
+      "segmentsSha256": "e7c2d324a1405ea46e4c04bad9fffb5337fc68f0c8e7f0dddd517812c611bb5f",
+      "stops": 60,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -205,6 +212,7 @@
       "id": "bologna",
       "mode": "bus",
       "status": "ready",
+      "serviceDate": "2026-10-30",
       "holder": "TPER S.p.A.",
       "license": "CC-BY 3.0 Italia",
       "studyBounds": [11.2, 44.4, 11.48, 44.58],
@@ -239,7 +247,8 @@
         "implausible_speed_above_150_kmh": 7,
         "nonpositive_time": 15
       },
-      "segmentsSha256": "c68387749314386a5cd4f7b3daaf6334c20c56cc9d624f8c74a5896cca3b9a90",
+      "segmentsSha256": "ca45cd3ce2dee2fd941a362e2080f1c8e43c2d6bc25e64e933fc194f285275d2",
+      "stops": 1874,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -260,6 +269,7 @@
       "id": "bari",
       "mode": "bus",
       "status": "no-service",
+      "serviceDate": "2026-10-30",
       "holder": "AMTAB S.p.A.",
       "license": "not-declared",
       "studyBounds": [16.73, 41.03, 16.99, 41.19],
@@ -283,6 +293,7 @@
         "frequency_trip": 0
       },
       "segmentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stops": 0,
       "basemap": {
         "receipt": {
           "endpoint": "https://overpass-api.de/api/interpreter",
@@ -297,7 +308,131 @@
         "labels": 3,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "cagliari",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "CTM S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "studyBounds": [9.03, 39.17, 9.26, 39.31],
+      "receipt": {
+        "city": "cagliari",
+        "url": "https://flashnetctm.miz.it/download/gtfs/estrazione_gtfs.zip",
+        "finalUrl": "https://flashnetctm.miz.it/download/gtfs/estrazione_gtfs.zip",
+        "acquiredAt": "2026-10-31T13:24:41.881662+00:00",
+        "bytes": 1228569,
+        "sha256": "38be95b8bbd5df119af9de1ce20ac354fba00f6f5370f9fccc3bdbdf7929c467",
+        "lastModified": "Sat, 31 Oct 2026 02:27:04 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 45,
+        "activeRoutes": 45,
+        "activeScheduledTrips": 3155,
+        "activeServices": 1,
+        "geometryPatterns": 156,
+        "segments": 2268,
+        "analyzedScheduledTrips": 3116,
+        "analyzedRoutes": 43
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 102190,
+        "accepted_pairs": 94195,
+        "unlocated_or_nonprogressing_pair": 165,
+        "missing_geometry_pair": 1127,
+        "nonpositive_time": 400,
+        "outside_study_area": 6468,
+        "short_geometry_pair": 5
+      },
+      "segmentsSha256": "6e46f745769c9c932b7d303c64023d3321f7c7baa249cee10a9db20fa0a52d7f",
+      "stops": 846,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [9.08, 39.19, 9.17, 39.27],
+          "acquiredAt": "2026-10-31T13:38:02.786775+00:00",
+          "osmBaseAt": "2026-10-31T13:36:34Z",
+          "sha256": "6f76cd33148e304cacbe2cf36321a2ddc2ee6cbec005ae3501b6faaab043f2f5",
+          "bytes": 6603878,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](39.19,9.08,39.27,9.17);\nway[\"natural\"=\"water\"](39.19,9.08,39.27,9.17);way[\"waterway\"~\"^(river|canal)$\"](39.19,9.08,39.27,9.17);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](39.19,9.08,39.27,9.17);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](39.19,9.08,39.27,9.17);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](39.19,9.08,39.27,9.17);\n);out body geom;"
+        },
+        "features": 7470,
+        "labels": 46,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "venezia",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ACTV S.p.A. / AVM",
+      "license": "not-declared",
+      "studyBounds": [12.05, 45.35, 12.43, 45.65],
+      "receipt": {
+        "city": "venezia",
+        "url": "https://actv.avmspa.it/sites/default/files/attachments/opendata/automobilistico/actv_aut.zip",
+        "finalUrl": "https://actv.avmspa.it/sites/default/files/attachments/opendata/automobilistico/actv_aut.zip",
+        "acquiredAt": "2026-10-31T13:28:15.048538+00:00",
+        "bytes": 15954512,
+        "sha256": "53e6f79542be24f309d545d1e2f409a94b40af8b57a9cf5194a790e2e67a222e",
+        "lastModified": "Tue, 27 Oct 2026 14:00:16 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 94,
+        "activeRoutes": 92,
+        "activeScheduledTrips": 4212,
+        "activeServices": 1,
+        "geometryPatterns": 686,
+        "segments": 4884,
+        "analyzedScheduledTrips": 4030,
+        "analyzedRoutes": 88
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 93871,
+        "accepted_pairs": 66170,
+        "outside_study_area": 10586,
+        "nonpositive_time": 17080,
+        "implausible_speed_above_150_kmh": 35
+      },
+      "segmentsSha256": "1726494373a302d9e3b14494753684ec70b82cc3e3fdfd99cbd46af371fc6c5f",
+      "stops": 1606,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [12.18, 45.44, 12.32, 45.55],
+          "acquiredAt": "2026-10-31T13:30:56.982027+00:00",
+          "osmBaseAt": "2026-10-31T13:29:21Z",
+          "sha256": "cef16f09cb04332c9958739502dca22fe872a7ba80f632493f70d45bf378de52",
+          "bytes": 9143321,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.44,12.18,45.55,12.32);\nway[\"natural\"=\"water\"](45.44,12.18,45.55,12.32);way[\"waterway\"~\"^(river|canal)$\"](45.44,12.18,45.55,12.32);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.44,12.18,45.55,12.32);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.44,12.18,45.55,12.32);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.44,12.18,45.55,12.32);\n);out body geom;"
+        },
+        "features": 9129,
+        "labels": 20,
+        "license": "ODbL 1.0"
+      }
     }
   ],
-  "generatedHtmlBytes": 6722888
+  "delivery": {
+    "mode": "static-city-assets",
+    "bootstrapBytes": 93193,
+    "cityAssets": {
+      "torino-dc0e6a77619bf9d9761570235fcb94cfd5083cdeeb9fa8a8825ec2262b669800.json.gz": 939055,
+      "cagliari-142854ba3673767c53f1f01bb82cd5d162e732af8a0dc5ca525333d069aa4e98.json.gz": 686879,
+      "firenze-8b36be8d032e6878979c8c096452bcef849cd2062f4d743947edc81059061898.json.gz": 485889,
+      "bologna-c5cf87ba8de65c11d9db4cab668df5590a21615569919dc37c8d7fd54a83a754.json.gz": 1623362,
+      "milano-8022412e4225a47f962c2ad26b91b0883d17427c8cceb769a30f857de4c6bcb6.json.gz": 1149512,
+      "bari-9f5340f0efeba9fa2e89489e619c14ec417c3ffd63e6b39c934b6985ead3b499.json.gz": 235193,
+      "roma-280f6130dee77d667e39bbb0a5bc003c5d37a4f7c00c1d8188a409a973f3400f.json.gz": 635553,
+      "venezia-c48204dba4a428fb60fda337bccff5d3aa48852d3222114006b570362aa7c8fd.json.gz": 1614012
+    }
+  }
 }

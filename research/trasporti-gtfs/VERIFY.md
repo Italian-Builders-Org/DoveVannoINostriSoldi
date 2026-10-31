@@ -5,9 +5,9 @@
 1. Acquisire/verificare GTFS e OSM con i comandi del README. Le ricevute in
    `observed-results.json` identificano i byte usati; un download successivo
    dallo stesso URL non riproduce necessariamente questi numeri.
-2. Generare schema 3 con `--date 2026-10-30 --city-date cagliari=2026-10-31`.
+2. Generare schema 3 con `--date 2026-10-30 --city-date cagliari=2026-10-31 --city-date padova=2026-10-31`.
    Non scegliere automaticamente un giorno diverso quando il calendario manca.
-3. Eseguire 25 test Python e 15 Node con i comandi del README. Le fixture sono
+3. Eseguire 25 test Python e 20 Node con i comandi del README. Le fixture sono
    sintetiche e non entrano nel visualizzatore. I nuovi casi di errore sono
    stati definiti e verificati in RED prima delle implementazioni.
 4. Confrontare i segmenti delle città preesistenti con l'artifact v2: geometrie,
@@ -26,10 +26,10 @@ Servire l'output in loopback. Usare azioni reali senza modificare DOM o stato
 interno per simulare risultati. I dataset del Canvas descrivono l'ultimo disegno,
 non prestazioni certificate del dispositivo né costi hosted.
 
-- Otto città × quattro fasce: sette città utilizzabili; Bari deve mostrare
+- Dieci città × quattro fasce: nove città utilizzabili; Bari deve mostrare
   indisponibilità e zero righe, conservando la data scelta. Confrontare conteggi
   e prima velocità con `analysis.json`. Fonti e data devono seguire la città.
-- Sette città × quattro classi di velocità: conteggi equivalenti al JSON,
+- Nove città × quattro classi di velocità: conteggi equivalenti al JSON,
   confini 10/15/25 coerenti, stato vuoto e CSV disabilitato quando non ci sono
   tratti. Il cambio linea/velocità deve azzerare la pagina della tabella.
 - Tabella/dettaglio: selezionare con tastiera, verificare velocità, durata e
@@ -46,13 +46,13 @@ non prestazioni certificate del dispositivo né costi hosted.
   Fixture con asset assente e corrotto: mostrare errore e svuotare fonte,
   tabella/dettaglio. Ripristinare il file e verificare recupero da una nuova
   selezione senza ricaricare la pagina o svuotare manualmente la cache.
-- Sette città a 320, 390 e 768 px: misurare la larghezza effettiva del documento,
+- Nove città a 320, 390, 573 e 768 px: misurare la larghezza effettiva del documento,
   non soltanto l'override richiesto al Browser. Nessun overflow globale o
   sovrapposizione fra controlli visibili. Escludere dalla misura i discendenti
   di `<details>` chiusi. Provare il dettaglio aperto a 320/390 px e lasciare
   liberi zoom/bussola. Verificare il toggle di esplorazione mobile.
 - Preservare attribuzioni GTT/OSM e limiti di copertura. Roma solo linea 8;
-  Venezia automobilistico, non vaporetti; Cagliari 31/10, altri 30/10.
+  Venezia automobilistico, non vaporetti; Cagliari/Padova 31/10, altri 30/10.
 - Console normale senza warning/error. La consegna a directory richiede solo
   asset locali, con cache dati massima di due città; nessun servizio remoto.
   L'errore HTTP della fixture mancante è atteso e separato dalla console normale.
@@ -73,3 +73,22 @@ sono verificati separatamente; non sostituiscono una prova sul dispositivo.
 Integrazione nel sito, corpus, gate Next/ETL, CI, deployment e risparmio in
 fattura: **NOT RUN**. Prima della pubblicazione servono ledger, review licenze,
 gate del prodotto e prova fisica mobile. Nessuna build Vercel per questa ricerca.
+
+## Prove della quarta iterazione
+
+- Dataset precedenti identici a v3; due nuovi feed con calendario, hash e mappe
+  verificati. 40 casi città/fascia, 36 classi velocità, 36 viste responsive.
+- 120 azioni ai limiti di zoom/rotazione, fit con rilievo/inclinazione massimi;
+  trascinamento e rotella tramite eventi mouse del Browser. 45 cambi rapidi
+  conservano l'ultima città, la fonte e le righe corrette.
+- Ripristino di linea, fascia, modalità 2D e tratto; ripristino di fermata,
+  inclinazione e camera. Clipboard letta con `clipboard.read()` e confrontata
+  con il link generato; `readText()` inizialmente restituiva una stringa vuota.
+  Fixture senza API clipboard: campo selezionato e chiusura Escape verificati.
+- Query non valide ricadono in una vista finita e coerente. Fixture con asset
+  assente/corrotto disabilitano anche la condivisione; ripristinato il file,
+  una nuova selezione recupera senza reload. Usare percorsi univoci per le
+  fixture: un vecchio asset valido in cache non prova il caso di corruzione.
+- Artifact `gtfs-20261031-v4`: screenshot, matrici, link prima/dopo, ricevuta
+  clipboard, casi di errore e verifica dati. I limiti fisici/hosted sopra
+  rimangono distinti e non diventano PASS per queste prove locali.

@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: tram a Torino, Milano, Roma e Firenze; autobus e filobus
+Prototipo locale: tram a Torino, Milano, Roma, Firenze, Palermo e Padova; autobus e filobus
 nelle aree dichiarate di Bologna, Cagliari e Venezia/Mestre. Strade, acqua, parchi e quartieri OpenStreetMap
 forniscono il contesto geografico. I rilievi indicano minuti programmati per
 chilometro, non ritardi osservati, traffico, inefficienze o sprechi.
@@ -18,7 +18,7 @@ python3 research/trasporti-gtfs/acquire.py --cache research/trasporti-gtfs/cache
 python3 research/trasporti-gtfs/basemap.py --cache research/trasporti-gtfs/cache --transport curl
 python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
-  --city-date cagliari=2026-10-31 \
+  --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -46,7 +46,10 @@ connessione. Nel formato predefinito CSP consente soltanto asset sullo stesso
 origin. Nessun tile, font remoto, polling, API AI o chiave cartografica.
 
 Ricerca fermate per nome/codice, filtri di velocità e linea, tabella paginata e
-CSV mantengono gli stessi valori derivati dal GTFS. Zoom, bussola, inclinazione,
+CSV mantengono gli stessi valori derivati dal GTFS. Il link alla vista conserva
+città, filtri, camera e selezione; parametri sconosciuti o non validi non
+diventano URL di acquisizione né valori della camera fuori budget. Il link
+descrive la vista, non congela lo snapshot: data e hash restano nelle fonti. Zoom, bussola, inclinazione,
 rilievo e vista espansa sono controllabili anche da tastiera. Su mobile
 l'esplorazione con le dita è esplicita per lasciare libero lo scorrimento della
 pagina; la prova fisica pinch/rotazione resta da eseguire.
@@ -80,10 +83,12 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Bologna  | bus/filobus |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
 | Cagliari | bus/filobus |             45 |           45 |                 3.155 |                         3.116 |           2.268 |
 | Venezia  | bus         |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
+| Palermo  | tram        |              4 |            4 |                   518 |                           468 |              74 |
+| Padova   | tram SIR1   |              1 |            1 |                 1.153 |                         1.144 |              73 |
 | Bari     | bus         |             68 |            0 |                     0 |                             0 |               0 |
 
-Cagliari usa il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
-La data diversa è una scelta esplicita: l'archivio CTM acquisito non contiene
+Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
+La data diversa è una scelta esplicita: gli archivi CTM e Padova acquisiti non contengono
 servizio per il 30 ottobre. Ogni città mostra la propria data; nessun confronto
 fra città come classifica. Venezia copre il feed automobilistico ACTV, soprattutto
 Mestre, non i vaporetti né l'intero sistema di trasporto lagunare. Le aree di
@@ -101,6 +106,13 @@ separati; non sommare i tratti come fermate o chilometri.
 30 ottobre. È visibile come stato non disponibile, senza ripiegare su un altro
 giorno. Il GTFS ufficiale di Genova acquisito non contiene `shapes.txt`: non
 viene trasformato in percorsi stradali inventati.
+
+Palermo include TRAM1, TRAM2 e TRAM3: TRAM4 ha corse attive ma nessun tratto
+con geometria utilizzabile. Il catalogo descrive un periodo precedente al file
+indicato come ultima versione; il servizio mostrato è verificato nel calendario
+dell'archivio. Padova include solo SIR1, pubblicata nel feed ufficiale TRAM con
+`route_type=3`: l'override nel registro è esplicito e non modifica il raw.
+La licenza specifica di Padova va verificata prima della pubblicazione.
 
 Hash, URL finali, date e conteggi sono conservati in `observed-results.json`.
 `Last-Modified`, acquisizione, giorno di servizio e aggiornamento OSM rimangono
@@ -148,6 +160,8 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Bari, AMTAB](https://www.amtab.it/it/openmobilitydata): condizioni da verificare; calendario del giorno assente.
 - [Cagliari, CTM / Sardegna Mobilità](https://www.sardegnamobilita.it/open-data/quadri-orari-ctm): CC-BY 4.0 secondo il portale Sardegna Mobilità.
 - [Venezia, ACTV](https://actv.avmspa.it/en/node/3969): feed automobilistico; licenza della risorsa da verificare prima della pubblicazione.
+- [Palermo, Comune/AMAT](https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783): condizioni specifiche tram CC BY-SA 4.0; geometrie basate su OSM sotto ODbL.
+- [Padova, Busitalia Veneto](https://gtfs-biv.fsbusitalia.com/): risorsa ufficiale TRAM SIR1, licenza non dichiarata nella pagina.
 - [Genova, AMT](https://www.amt.genova.it/amt/societa_trasparente/altri-contenuti/open-data/): nessuna geometria nel feed acquisito, non inclusa nel visualizzatore.
 - [OpenStreetMap, ODbL 1.0](https://www.openstreetmap.org/copyright): attribuzione sempre visibile e ricevuta separata. Per redistribuire gli estratti rispettare ODbL e disponibilità della banca dati derivata.
 - [Specifica GTFS Schedule](https://gtfs.org/documentation/schedule/reference/).
@@ -156,14 +170,14 @@ distanze GTFS; la quota non rappresenta altitudine.
 
 ```bash
 python3 -m unittest discover -s research/trasporti-gtfs -p 'test_*.py'
-node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test_explorer.mjs
+node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test_explorer.mjs research/trasporti-gtfs/test_view_state.mjs
 node --check research/trasporti-gtfs/viewer.js
 ```
 
-Quaranta test offline: 25 Python e 15 Node. Fixture sintetiche per calendario,
+Quarantacinque test offline: 25 Python e 20 Node. Fixture sintetiche per calendario,
 geometrie, budget, date esplicite, coordinate fermate, asset statici e integrità;
 proiezione/inversa, zoom ancorato, fit, rotazione e trasformazione pinch;
-ricerca, confini dei filtri e CSV. I nuovi contratti sono stati provati in RED
+ricerca, confini dei filtri, CSV e link alla vista. I nuovi contratti sono stati provati in RED
 prima delle relative implementazioni.
 Verifica Browser e artifact ripetibili: `VERIFY.md`.
 

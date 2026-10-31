@@ -100,17 +100,46 @@ export function fitCamera(
       [east, south],
       [east, north],
     ];
+  const centered = (scale) => {
+    let candidate = { ...next, scale };
+    for (let iteration = 0; iteration < 12; iteration++) {
+      const p = projection(candidate, view);
+      const screen = corners.flatMap((point) => [
+        p.project(point),
+        p.project(point, maxHeight),
+      ]);
+      if (screen.some((point) => !point)) return null;
+      const xs = screen.map((point) => point[0]),
+        ys = screen.map((point) => point[1]);
+      const centre = [
+        (Math.min(...xs) + Math.max(...xs)) / 2,
+        (Math.min(...ys) + Math.max(...ys)) / 2,
+      ];
+      if (
+        Math.hypot(centre[0] - view.width / 2, centre[1] - view.height / 2) <
+        0.01
+      )
+        break;
+      candidate = panCamera(candidate, view, centre, [
+        view.width / 2,
+        view.height / 2,
+      ]);
+    }
+    return candidate;
+  };
   const fits = (scale) => {
-    const p = projection({ ...next, scale }, view);
+    const candidate = centered(scale);
+    if (!candidate) return false;
+    const p = projection(candidate, view);
     return corners.every((point) =>
       [0, maxHeight].every((z) => {
-        const s = p.project(point, z);
+        const screen = p.project(point, z);
         return (
-          s &&
-          s[0] >= padding &&
-          s[0] <= view.width - padding &&
-          s[1] >= padding &&
-          s[1] <= view.height - padding
+          screen &&
+          screen[0] >= padding &&
+          screen[0] <= view.width - padding &&
+          screen[1] >= padding &&
+          screen[1] <= view.height - padding
         );
       }),
     );
@@ -122,8 +151,7 @@ export function fitCamera(
     if (fits(mid)) lo = mid;
     else hi = mid;
   }
-  next.scale = lo;
-  return next;
+  return centered(lo) ?? { ...next, scale: lo };
 }
 export function resizeCamera(camera, before, after) {
   const base = baseScale(after),

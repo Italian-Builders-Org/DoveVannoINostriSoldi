@@ -391,7 +391,10 @@ export function createRenderer(canvas) {
     ctx.fillStyle = "#edf0ea";
     ctx.fillRect(0, 0, view.width, view.height);
     ctx.drawImage(back, 0, 0, view.width, view.height);
+    ctx.save();
+    ctx.globalAlpha = selected ? 0.38 : 1;
     ctx.drawImage(front, 0, 0, view.width, view.height);
+    ctx.restore();
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     for (const id of new Set([hovered, selected])) {
@@ -405,6 +408,36 @@ export function createRenderer(canvas) {
       ctx.strokeStyle = speedColor(item.segment.bands[band].kmh);
       ctx.lineWidth = id === selected ? 3.3 : 2.6;
       ctx.stroke();
+    }
+    if (selected) {
+      const segment = segments.find((s) => s.id === selected);
+      if (segment) {
+        const ends = [segment.fromId, segment.toId].map((id) =>
+          scene.stops.find((s) => s.id === id),
+        );
+        const screen = ends.map((stop) => stop && p.project(stop.world));
+        if (
+          screen.every(Boolean) &&
+          Math.hypot(screen[0][0] - screen[1][0], screen[0][1] - screen[1][1]) >
+            30
+        ) {
+          screen.forEach((xy, i) => {
+            ctx.beginPath();
+            ctx.arc(...xy, 8, 0, Math.PI * 2);
+            ctx.fillStyle = "#264b3e";
+            ctx.fill();
+            ctx.strokeStyle = "#fff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.font = "700 10px system-ui";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#fff";
+            ctx.fillText(i ? "B" : "A", xy[0], xy[1]);
+            ctx.textBaseline = "alphabetic";
+          });
+        }
+      }
     }
     if (stop) {
       const xy = p.project(stop.world);

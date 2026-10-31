@@ -496,7 +496,13 @@ def write_viewer(payload, output, standalone=False):
         "<!--__GTFS_CITIES__-->", "\n".join(blocks)
     )
     modules = []
-    for name in ["camera.mjs", "explorer.mjs", "renderer.mjs", "viewer.js"]:
+    for name in [
+        "camera.mjs",
+        "explorer.mjs",
+        "view-state.mjs",
+        "renderer.mjs",
+        "viewer.js",
+    ]:
         code = (here / name).read_text()
         code = re.sub(r"^import\s[\s\S]*?;\n", "", code, flags=re.MULTILINE)
         code = re.sub(r"^export\s+", "", code, flags=re.MULTILINE)

@@ -135,3 +135,32 @@ test("pinch and twist preserve the grabbed centre while both fingers move", asyn
   near(screen[1], to[1]);
   near(next.bearing, normalizeBearing(cam.bearing - 0.3));
 });
+
+test("fit balances the projected network and raised ridges around the viewport centre", () => {
+  const box = [
+      [0, -2000],
+      [0, 7000],
+      [12000, -2000],
+      [12000, 7000],
+    ],
+    viewport = { width: 1280, height: 700 };
+  const fitted = fitCamera(
+    { ...cam, bearing: 1.1, pitch: 1.0 },
+    viewport,
+    box,
+    { padding: 48, maxHeight: 300 },
+  );
+  const project = projection(fitted, viewport),
+    screen = box.flatMap((p) => [project.project(p), project.project(p, 300)]);
+  assert.ok(screen.every(Boolean));
+  for (const [axis, size] of [
+    [0, viewport.width],
+    [1, viewport.height],
+  ]) {
+    const values = screen.map((p) => p[axis]);
+    assert.ok(
+      Math.abs((Math.min(...values) + Math.max(...values)) / 2 - size / 2) < 1,
+      "projected bounds must be centred",
+    );
+  }
+});

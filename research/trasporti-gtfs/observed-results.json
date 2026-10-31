@@ -1,5 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
+  "iterationBaseSha": "50ab833a",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -419,20 +420,139 @@
         "labels": 20,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "palermo",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "AMAT Palermo S.p.A. / Comune di Palermo",
+      "license": "CC BY-SA 4.0 (tram); geometrie OSM sotto ODbL",
+      "studyBounds": null,
+      "receipt": {
+        "city": "palermo",
+        "url": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+        "finalUrl": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+        "acquiredAt": "2026-10-31T14:12:09.447975+00:00",
+        "bytes": 3995859,
+        "sha256": "d78ed09a46c10cd7ec5d05e7ba3a4de6ed7c4f18c2f51a2a37536d1517e2a42a",
+        "lastModified": "Mon, 31 Aug 2026 07:56:36 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 518,
+        "activeServices": 24,
+        "geometryPatterns": 7,
+        "segments": 74,
+        "analyzedScheduledTrips": 468,
+        "analyzedRoutes": 3
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 7062,
+        "accepted_pairs": 6012,
+        "unlocated_or_nonprogressing_pair": 21,
+        "missing_geometry_pair": 1050
+      },
+      "sourceNotes": [
+        "Nel file indicato dal portale come ultima versione sono utilizzabili TRAM1, TRAM2 e TRAM3. TRAM4 è esclusa per geometrie non utilizzabili. Il catalogo descrive un periodo precedente; la data mostrata segue il calendario del file. Autobus esclusi."
+      ],
+      "initialView": "network",
+      "segmentsSha256": "ce1b30bd998734dee5b12de74a504acf422dee79ca353dd203ac83d4eadb0391",
+      "stops": 60,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [13.29, 38.075, 13.385, 38.155],
+          "acquiredAt": "2026-10-31T14:15:32.535765+00:00",
+          "osmBaseAt": "2026-10-31T14:14:03Z",
+          "sha256": "d2ba4fac7732b67c9a734eebf9d1124720e26d141a7d55acf7d383e1edb1aaf7",
+          "bytes": 5433834,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](38.075,13.29,38.155,13.385);\nway[\"natural\"=\"water\"](38.075,13.29,38.155,13.385);way[\"waterway\"~\"^(river|canal)$\"](38.075,13.29,38.155,13.385);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](38.075,13.29,38.155,13.385);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](38.075,13.29,38.155,13.385);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](38.075,13.29,38.155,13.385);\n);out body geom;"
+        },
+        "features": 6978,
+        "labels": 27,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "padova",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "Busitalia Veneto S.p.A.",
+      "license": "not-declared",
+      "studyBounds": null,
+      "receipt": {
+        "city": "padova",
+        "url": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+        "finalUrl": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+        "acquiredAt": "2026-10-31T14:12:48.772999+00:00",
+        "bytes": 199545,
+        "sha256": "de81aeaf10fcf01ecbbcbccf90be0b60818d25819eb6a86d3abb4e61a09ca405",
+        "lastModified": "Sat, 31 Oct 2026 03:01:03 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 1153,
+        "activeServices": 1,
+        "geometryPatterns": 10,
+        "segments": 73,
+        "analyzedScheduledTrips": 1144,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 16058,
+        "accepted_pairs": 15911,
+        "unlocated_or_nonprogressing_pair": 1,
+        "missing_geometry_pair": 147,
+        "trip_without_stop_pairs": 9
+      },
+      "sourceNotes": [
+        "Il file ufficiale TRAM contiene la linea SIR1 “Metro Tram 1”, codificata dal titolare come route_type 3. L’originale è conservato; la rete autobus non è inclusa."
+      ],
+      "initialView": "network",
+      "segmentsSha256": "ca665673c878aee533ceebd3f814f06ddf7a84add217d9226d064896cb08143b",
+      "stops": 48,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [11.85, 45.365, 11.91, 45.445],
+          "acquiredAt": "2026-10-31T14:15:01.746400+00:00",
+          "osmBaseAt": "2026-10-31T14:14:03Z",
+          "sha256": "82452c68453e9936d294e2d8ebe915c94deed7c202b20de1ea81feb1b5addc18",
+          "bytes": 5853144,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.365,11.85,45.445,11.91);\nway[\"natural\"=\"water\"](45.365,11.85,45.445,11.91);way[\"waterway\"~\"^(river|canal)$\"](45.365,11.85,45.445,11.91);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.365,11.85,45.445,11.91);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.365,11.85,45.445,11.91);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.365,11.85,45.445,11.91);\n);out body geom;"
+        },
+        "features": 6739,
+        "labels": 20,
+        "license": "ODbL 1.0"
+      }
     }
   ],
   "delivery": {
     "mode": "static-city-assets",
-    "bootstrapBytes": 93193,
+    "bootstrapBytes": 103538,
     "cityAssets": {
+      "milano-8022412e4225a47f962c2ad26b91b0883d17427c8cceb769a30f857de4c6bcb6.json.gz": 1149512,
+      "roma-280f6130dee77d667e39bbb0a5bc003c5d37a4f7c00c1d8188a409a973f3400f.json.gz": 635553,
       "torino-dc0e6a77619bf9d9761570235fcb94cfd5083cdeeb9fa8a8825ec2262b669800.json.gz": 939055,
-      "cagliari-142854ba3673767c53f1f01bb82cd5d162e732af8a0dc5ca525333d069aa4e98.json.gz": 686879,
       "firenze-8b36be8d032e6878979c8c096452bcef849cd2062f4d743947edc81059061898.json.gz": 485889,
       "bologna-c5cf87ba8de65c11d9db4cab668df5590a21615569919dc37c8d7fd54a83a754.json.gz": 1623362,
-      "milano-8022412e4225a47f962c2ad26b91b0883d17427c8cceb769a30f857de4c6bcb6.json.gz": 1149512,
       "bari-9f5340f0efeba9fa2e89489e619c14ec417c3ffd63e6b39c934b6985ead3b499.json.gz": 235193,
-      "roma-280f6130dee77d667e39bbb0a5bc003c5d37a4f7c00c1d8188a409a973f3400f.json.gz": 635553,
-      "venezia-c48204dba4a428fb60fda337bccff5d3aa48852d3222114006b570362aa7c8fd.json.gz": 1614012
+      "cagliari-142854ba3673767c53f1f01bb82cd5d162e732af8a0dc5ca525333d069aa4e98.json.gz": 686879,
+      "venezia-c48204dba4a428fb60fda337bccff5d3aa48852d3222114006b570362aa7c8fd.json.gz": 1614012,
+      "palermo-851cffc78d916d6de7649feafd290fb347620f1f0d3df29669928500856fcd8c.json.gz": 254364,
+      "padova-779cbcc1bc57bd03fd9c54004d2c707478ec4bd3da417c4efb0a8539516bbf34.json.gz": 261796
     }
   }
 }

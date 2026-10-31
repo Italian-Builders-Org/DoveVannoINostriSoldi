@@ -71,3 +71,29 @@ Alternativa A: toolbar orizzontale e mappa ampia, controlli camera raggruppati e
 Moduli: `camera.mjs` contiene proiezione, inversa, fit, zoom, normalizzazione e scala grafica; niente DOM. `explorer.mjs` contiene ricerca fermate/filtri ed export CSV sicuro; niente acquisizione. Il template incorpora camera, esplorazione e `renderer.mjs` prima del controller `viewer.js`. Il renderer conserva un buffer dello sfondo e uno dei tratti; la cache dati rimane di due città. La consegna predefinita separa gli asset gzip per città, verificati per hash e dimensione; `--standalone` mantiene il formato offline unico.
 
 Rischi da verificare prima: inversa/proiezione su camera ruotata e inclinata, zoom ancorato, orizzonte non proiettabile, fit su geometrie strette, resize, nomi fermata duplicati, filtro vuoto, formule/virgolette nel CSV, cambio città durante decompressione e stato del dettaglio dopo filtri. La prova touch fisica resta un confine distinto dalla verifica Browser.
+
+## Iterazione 4: selettori e viste condivise
+
+| Before                                                              | After                                                                                         | Why                                                                |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Frecce native piccole e vicine al testo; opzioni lunghe su telefono | Selettori nativi con chevron SVG uniforme e spazio riservato; etichette senza parole ripetute | Hit area e tastiera restano native, freccia e testo non si coprono |
+| Vista recuperabile soltanto ripetendo i controlli                   | Link con filtri, camera e fermata/tratto, validato prima del ripristino                       | Riaprire un risultato verificabile senza richieste alla fonte      |
+| Estremi del tratto riconoscibili solo nei nomi                      | Punti A/B sulla mappa alle coordinate ufficiali e nel dettaglio                               | Collegare il percorso selezionato ai nomi delle fermate            |
+
+`view-state.mjs` limita i parametri, le identità e i valori della camera.
+Il controller verifica linea/fermata/tratto contro la città caricata prima del
+ripristino. Nessun dato grezzo, HTML o indirizzo remoto arriva dai parametri URL.
+La clipboard è facoltativa: se non disponibile compare un campo selezionabile.
+L'HTML di anteprima si apre con una versione esplicita della query per non
+riusare una vecchia copia del documento; gli asset mantengono hash completi.
+
+Palermo e Padova usano lo stesso percorso di acquisizione/analisi, senza API in
+tempo reale. Limiti particolari del feed e date diverse restano visibili nelle
+fonti, senza correzioni silenziose ai dati originali.
+
+Il fit centra gli estremi nello spazio proiettato, includendo la quota dei
+rilievi, prima di scegliere la scala. Il difetto di margini sbilanciati è
+riprodotto da un test RED prima della correzione. La selezione di un tratto
+ricalcola la scala sul tratto; le altre tracce si attenuano senza invalidare i
+buffer. Le reti nuove partono da una vista completa, mentre Centro resta un
+comando distinto da Inquadra.

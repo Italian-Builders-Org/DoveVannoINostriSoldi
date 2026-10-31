@@ -29,18 +29,26 @@
       </div>
       <div class="toolbar">
         <label
-          >Città<select id="city" aria-label="Città" disabled></select
+          >Città<span class="select-field"
+            ><select id="city" aria-label="Città" disabled></select
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" /></svg></span
         ></label>
         <label
-          >Orario<select id="band" aria-label="Fascia oraria" disabled>
-            <option value="morning">07–10 · mattina</option>
-            <option value="day">10–16 · giorno</option>
-            <option value="evening">16–20 · sera</option>
-            <option value="all">Intero giorno di servizio</option>
-          </select></label
-        >
+          >Orario<span class="select-field"
+            ><select id="band" aria-label="Fascia oraria" disabled>
+              <option value="morning">07–10</option>
+              <option value="day">10–16</option>
+              <option value="evening">16–20</option>
+              <option value="all">Giorno intero</option></select
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" /></svg></span
+        ></label>
         <label
-          >Linea<select id="route" aria-label="Linea" disabled></select
+          >Linea<span class="select-field"
+            ><select id="route" aria-label="Linea" disabled></select
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" /></svg></span
         ></label>
         <div class="stop-search">
           <label for="stop-search">Cerca fermata</label>
@@ -51,7 +59,7 @@
             ><input
               id="stop-search"
               type="search"
-              placeholder="Nome o codice"
+              placeholder="Nome o ID"
               maxlength="80"
               autocomplete="off"
               aria-controls="stop-results"
@@ -69,10 +77,28 @@
           <span id="mode-label" class="mode-label"></span
           ><span id="selection-count" aria-live="polite"></span>
         </div>
-        <button id="clear-filters" class="text-button" hidden>
-          Azzera filtri
+        <div class="selection-actions">
+          <button id="share-view" class="text-button" disabled>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path
+                d="m10 13 4-4M8 16l-1 1a4 4 0 0 1-5-5l4-4a4 4 0 0 1 5 0m2 0 1-1a4 4 0 0 1 5 5l-4 4a4 4 0 0 1-5 0"
+              /></svg
+            ><span>Copia link</span></button
+          ><button id="clear-filters" class="text-button" hidden>
+            Azzera filtri
+          </button>
+        </div>
+      </div>
+      <div id="share-result" class="share-result" hidden>
+        <label for="view-link">Link alla vista</label
+        ><input id="view-link" readonly type="url" /><button
+          id="close-share"
+          aria-label="Chiudi link"
+        >
+          ×
         </button>
       </div>
+      <p id="share-status" class="sr-only" role="status"></p>
       <section id="map-shell" class="map-shell" aria-label="Mappa interattiva">
         <canvas
           id="map"
@@ -116,12 +142,16 @@
                   id="rotate-left"
                   aria-label="Ruota a sinistra di 15 gradi"
                 >
-                  ↶ 15°</button
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M4 10V4m0 0h6M4 4l4 4a7 7 0 1 1-2 8" /></svg
+                  >15°</button
                 ><button
                   id="rotate-right"
                   aria-label="Ruota a destra di 15 gradi"
                 >
-                  15° ↷
+                  15°<svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M20 10V4m0 0h-6M20 4l-4 4a7 7 0 1 0 2 8" />
+                  </svg>
                 </button>
               </div>
               <label

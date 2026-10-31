@@ -176,5 +176,41 @@
     "mapBounds": [12.18, 45.44, 12.32, 45.55],
     "studyBounds": [12.05, 45.35, 12.43, 45.65],
     "scopeLabel": "Rete automobilistica · Mestre e Venezia"
+  },
+  {
+    "id": "palermo",
+    "name": "Palermo",
+    "holder": "AMAT Palermo S.p.A. / Comune di Palermo",
+    "landingUrl": "https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783",
+    "url": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+    "license": "CC BY-SA 4.0 (tram); geometrie OSM sotto ODbL",
+    "licenseUrl": "https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783",
+    "cadence": "bimestrale, secondo il catalogo",
+    "mode": "tram",
+    "focus": [13.339, 38.115],
+    "mapBounds": [13.29, 38.075, 13.385, 38.155],
+    "sourceNotes": [
+      "Nel file indicato dal portale come ultima versione sono utilizzabili TRAM1, TRAM2 e TRAM3. TRAM4 è esclusa per geometrie non utilizzabili. Il catalogo descrive un periodo precedente; la data mostrata segue il calendario del file. Autobus esclusi."
+    ],
+    "initialView": "network"
+  },
+  {
+    "id": "padova",
+    "name": "Padova",
+    "holder": "Busitalia Veneto S.p.A.",
+    "landingUrl": "https://gtfs-biv.fsbusitalia.com/",
+    "url": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://gtfs-biv.fsbusitalia.com/",
+    "cadence": "periodico, secondo il titolare",
+    "mode": "tram",
+    "routeTypes": ["3"],
+    "scopeLabel": "Tram SIR1",
+    "focus": [11.879, 45.407],
+    "mapBounds": [11.85, 45.365, 11.91, 45.445],
+    "sourceNotes": [
+      "Il file ufficiale TRAM contiene la linea SIR1 “Metro Tram 1”, codificata dal titolare come route_type 3. L’originale è conservato; la rete autobus non è inclusa."
+    ],
+    "initialView": "network"
   }
 ]

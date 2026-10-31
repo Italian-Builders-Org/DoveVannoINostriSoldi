@@ -148,7 +148,31 @@ main {
   font-size: 10px;
   font-weight: 650;
 }
+.select-field {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.select-field > svg {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  stroke-width: 1.8;
+  color: #536b5e;
+}
+.select-field:has(select:disabled) > svg {
+  opacity: 0.4;
+}
 .toolbar select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 42px;
+  text-overflow: ellipsis;
+  min-height: 44px;
   width: 100%;
   font-size: 12px;
   font-weight: 450;
@@ -669,12 +693,7 @@ main {
   margin: 12px 0 16px;
   overflow-wrap: anywhere;
 }
-.trip .to-arrow {
-  display: block;
-  color: #99a592;
-  font-size: 13px;
-  margin: 3px 0;
-}
+
 .metric {
   font-size: 36px;
   font-weight: 650;
@@ -959,8 +978,7 @@ footer {
   }
   .toolbar select {
     min-width: 0;
-    font-size: 12px;
-    padding: 8px;
+    padding: 8px 38px 8px 10px;
   }
   .stop-search {
     grid-column: auto;
@@ -1167,9 +1185,7 @@ footer {
     grid-column: 1;
     grid-row: 2/5;
   }
-  .trip .to-arrow {
-    margin: 2px 0;
-  }
+
   .metric {
     grid-column: 2;
     grid-row: 1/3;
@@ -1321,4 +1337,92 @@ input[type="range"] {
   .map-shell.expanded #inspector {
     right: 60px;
   }
+}
+
+.selection-actions {
+  flex-shrink: 0;
+}
+#share-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+#share-view svg {
+  width: 15px;
+  height: 15px;
+}
+.share-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.share-result label {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.share-result input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
+}
+.share-result button {
+  min-height: 36px;
+  padding: 4px 10px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.rotation-buttons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+@media (max-width: 420px) {
+  .selection-bar {
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .selection-bar > div {
+    flex-wrap: wrap;
+  }
+  .selection-actions {
+    justify-content: flex-end;
+    max-width: 58%;
+  }
+  .selection-actions button {
+    white-space: nowrap;
+  }
+  .share-result {
+    flex-wrap: wrap;
+  }
+  .share-result label {
+    width: 100%;
+  }
+  .share-result input {
+    font-size: 16px;
+  }
+}
+
+.trip-end {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.trip-end b {
+  font-size: 9px;
+  color: var(--accent);
+  flex: none;
 }

@@ -67,3 +67,26 @@ Base: 06021cdb41e8574755c135221d4fe1b78defac79. Rimane un prototipo locale nello
 - PASS: city asset separati, hash/budget verificati, cache dati di due città, due buffer grafici. Nessuna nuova dipendenza, API o richiesta remota durante l'esplorazione.
 - Artifact: gtfs-20261031-v3, con output a directory, HTML offline, analysis.json, screenshot e prove JSON. Verifiche confrontate con i dati sorgente dell'analisi.
 - NOT RUN: gesti su telefono fisico, integrazione corpus, gate Next/CI/deploy del prodotto. Licenze Roma/Bari/Venezia da verificare; GTT solo non commerciale. Nessun push, PR, merge o deploy.
+
+## Iterazione 4: selettori, nuove reti e prove di carico UI
+
+Base: 50ab833a. Richiesta: rifinire frecce/selettori, ampliare città e dati,
+migliorare mappa/UX e stressare i flussi nel Browser. Resta ricerca locale.
+
+- [x] Preservare checkout principale; branch isolato pulito e istruzioni rilette.
+- [x] Riprodurre selettori a 573 px e stato iniziale, distinguendo l'HTML in cache.
+- [x] Verificare fonti ufficiali per nuove città, calendario/geometrie/licenze e byte.
+- [x] Definire prima del codice rischi di filtri/direzioni, tooltip, fit, controlli e caricamento.
+- [x] Rifinire selettori nativi e icone, vista iniziale e selezione sulla mappa.
+- [x] Ampliare dati utilizzabili senza cambiare le metriche precedenti.
+- [x] Verificare flussi completi, errori, tastiera, rapidi cambi/zoom/rotazione e viewport reali.
+- [x] Aggiornare documentazione, artifact e commit locale; nessun push/PR/merge/deploy.
+
+### Esito della quarta iterazione
+
+- PASS: nove città utilizzabili, aggiunte Palermo tram (74 tratti di TRAM1/2/3) e Padova SIR1 (73 tratti, data esplicita 31/10). Limiti e condizioni nelle fonti; Bari resta indisponibile.
+- PASS: chevron SVG e spazio riservato nei selettori nativi, testi dei filtri compatti, copia/ripristino dei link con fallback clipboard, punti A/B e inquadratura del tratto, fit centrato nella proiezione.
+- PASS: 45 test offline, 40 città/fascia, 36 filtri velocità, 36 viewport reali, 18 fit di reti complete, 120 azioni ai limiti e 45 cambi rapidi. Mouse, ricerca/tastiera, clipboard e file assenti/corrotti con recupero verificati nel Browser.
+- PASS: dati e mappe delle otto voci precedenti identici; asset statici verificati per hash e byte, nessuna dipendenza o API remota aggiunta.
+- Artifact: gtfs-20261031-v4 nella cartella visualizzazioni della chat, con screenshot, output a directory e offline, analisi, matrici e ricevute. Main ricontrollato; solo ricerca locale modificata.
+- NOT RUN: telefono fisico, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Nessun push, PR, merge o deploy. Licenze non dichiarate restano da verificare prima di pubblicare.

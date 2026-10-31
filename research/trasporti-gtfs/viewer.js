@@ -14,6 +14,7 @@ import {
   selectionCSV,
   stopLabel,
 } from "./explorer.mjs";
+import { readView, viewURL } from "./view-state.mjs";
 import { prepareScene, createRenderer } from "./renderer.mjs";
 const $ = (id) => document.getElementById(id),
   manifest = JSON.parse($("data").textContent),
@@ -79,6 +80,7 @@ const cache = new Map(),
     "band",
     "route",
     "stop-search",
+    "share-view",
     "mode3d",
     "mode2d",
     "center",
@@ -209,7 +211,8 @@ async function decodeCity(id) {
     pending.delete(id);
   }
 }
-async function selectCity(id) {
+async function selectCity(id, restored = null) {
+  $("share-result").hidden = true;
   const token = ++requestId;
   controls.forEach((id) => ($(id).disabled = true));
   $("export").disabled = true;
@@ -232,11 +235,11 @@ async function selectCity(id) {
     speedClass = null;
     tablePage = 0;
     $("stop-search").value = "";
-    $("route").replaceChildren(option("", "Tutte le linee"));
+    $("route").replaceChildren(option("", "Tutte"));
     for (const name of [...new Set(scene.segments.map((s) => s.route))].sort(
       (a, b) => a.localeCompare(b, "it", { numeric: true }),
     ))
-      $("route").append(option(name, "Linea " + name));
+      $("route").append(option(name, name));
     $("reference").textContent = new Date(
       city.serviceDate + "T12:00:00",
     ).toLocaleDateString("it-IT", {
@@ -258,6 +261,8 @@ async function selectCity(id) {
     renderInspector();
     home();
     updateData();
+    if (restored) restoreView(restored);
+    if (city.initialView === "network" && !restored?.camera) fit();
     notice(city.basemap ? null : "Cartografia locale non acquisita.");
     shell.dataset.loading = "false";
   } catch (error) {
@@ -363,6 +368,7 @@ function sourceInfo() {
       "p",
       "Sono presenti orari marcati come stimati (timepoint=0). Gli altri non sono per questo osservazioni reali.",
     );
+  for (const note of city.sourceNotes ?? []) add(q, "p", note);
   const receipt = $("receipt");
   receipt.replaceChildren();
   add(
@@ -510,9 +516,12 @@ function renderInspector() {
   }
   add(panel, "span", "Linea " + s.route, "route-badge");
   const trip = add(panel, "div", undefined, "trip");
-  add(trip, "span", stopLabel(s.from));
-  add(trip, "span", "↓", "to-arrow");
-  add(trip, "span", stopLabel(s.to));
+  const from = add(trip, "span", undefined, "trip-end");
+  add(from, "b", "A");
+  add(from, "span", stopLabel(s.from));
+  const to = add(trip, "span", undefined, "trip-end");
+  add(to, "b", "B");
+  add(to, "span", stopLabel(s.to));
   const value = add(panel, "div", fmt(s.bands[band].kmh), "metric");
   add(value, "span", " km/h");
   add(panel, "p", "Velocità programmata", "metric-label");
@@ -692,10 +701,14 @@ function focusPoint(point, scale) {
   updateCamera(next);
 }
 function focusSegment(s) {
-  focusPoint(
-    s.points[Math.floor(s.points.length / 2)],
-    Math.max(cam.scale, cam.base),
-  );
+  const height = mode3d
+    ? Math.min(60 / s.bands[band].kmh, 12) * 30 * relief
+    : 0;
+  const fitted = fitCamera(cam, view(), s.points, {
+    padding: Math.min(90, canvas.clientWidth * 0.22),
+    maxHeight: height,
+  });
+  focusPoint(s.points[Math.floor(s.points.length / 2)], fitted.scale);
 }
 
 function zoomBy(
@@ -800,6 +813,11 @@ function toggleExpanded() {
   schedule();
 }
 function escape() {
+  if (!$("share-result").hidden) {
+    $("share-result").hidden = true;
+    $("share-view").focus();
+    return;
+  }
   if (!$("stop-menu").hidden) {
     hideSearch();
     return;
@@ -1048,6 +1066,83 @@ document.addEventListener("pointerdown", (event) => {
     $("camera-panel").open = false;
 });
 window.addEventListener("scroll", hideSearch, { passive: true });
+function restoreView(state) {
+  band = state.band;
+  $("band").value = band;
+  route = scene.segments.some((s) => s.route === state.route)
+    ? state.route
+    : "";
+  $("route").value = route;
+  speedClass = state.speed;
+  if (state.camera) {
+    pitchDegrees = state.camera[4];
+    relief = state.camera[5];
+  }
+  setMode(state.mode === "3d");
+  updateData();
+  selected = shown.some((s) => s.id === state.segment) ? state.segment : null;
+  selectedStop = selected
+    ? null
+    : (scene.stops.find(
+        (s) => s.id === state.stop && (!route || s.routes.includes(route)),
+      ) ?? null);
+  if (selectedStop) $("stop-search").value = selectedStop.label;
+  if (state.camera) {
+    const [x, y, zoom, bearing] = state.camera;
+    updateCamera({
+      ...cam,
+      x,
+      y,
+      scale: Math.min(1.2, (cam.base * zoom) / 100),
+      bearing: (bearing * Math.PI) / 180,
+    });
+  }
+  renderInspector();
+  renderTable();
+  schedule();
+}
+let copyTimer;
+$("share-view").onclick = async () => {
+  if (!city) return;
+  const url = viewURL(location.href, {
+    city: city.id,
+    band,
+    route,
+    speed: speedClass,
+    mode: mode3d ? "3d" : "2d",
+    stop: selectedStop?.id ?? null,
+    segment: selected,
+    camera: [
+      cam.x,
+      cam.y,
+      (cam.scale / cam.base) * 100,
+      (cam.bearing * 180) / Math.PI,
+      pitchDegrees,
+      relief,
+    ].map((n) => Number(n.toFixed(4))),
+  });
+  $("view-link").value = url;
+  clearTimeout(copyTimer);
+  try {
+    await navigator.clipboard.writeText(url);
+    $("share-result").hidden = true;
+    $("share-view").querySelector("span").textContent = "Link copiato";
+    $("share-status").textContent = "Link alla vista copiato.";
+    copyTimer = setTimeout(() => {
+      $("share-view").querySelector("span").textContent = "Copia link";
+    }, 2000);
+  } catch {
+    $("share-result").hidden = false;
+    $("view-link").focus();
+    $("view-link").select();
+    $("share-status").textContent =
+      "Copia il link alla vista dal campo selezionato.";
+  }
+};
+$("close-share").onclick = () => {
+  $("share-result").hidden = true;
+  $("share-view").focus();
+};
 $("city").onchange = () => selectCity($("city").value);
 $("band").onchange = () => {
   band = $("band").value;
@@ -1144,7 +1239,6 @@ for (const c of [...manifest.cities].sort((a, b) =>
     ),
   );
 $("city").disabled = false;
-$("city").value = manifest.cities.some((c) => c.id === "torino")
-  ? "torino"
-  : manifest.cities[0].id;
-selectCity($("city").value);
+const initialView = readView(location.search, manifest.cities);
+$("city").value = initialView.city;
+selectCity(initialView.city, initialView);

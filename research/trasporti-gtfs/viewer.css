@@ -637,15 +637,55 @@ main {
 }
 #map-tip {
   position: absolute;
+  left: 0;
+  top: 0;
   z-index: 3;
-  max-width: 260px;
-  padding: 7px 10px;
-  background: #263e32f2;
-  color: white;
-  border-radius: 5px;
+  max-width: min(300px, calc(100% - 16px));
+  padding: 11px 13px;
+  border: 1px solid #dce3d9;
+  background: #fffffff5;
+  color: var(--ink);
+  border-radius: 10px;
   font-size: 11px;
   pointer-events: none;
-  box-shadow: 0 2px 8px #203d2015;
+  box-shadow: 0 4px 18px #203c321a;
+}
+.tip-heading {
+  display: flex;
+  align-items: start;
+  gap: 16px;
+}
+.tip-route {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.tip-speed {
+  flex: none;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.tip-speed small {
+  font-size: 10px;
+  font-weight: 450;
+  letter-spacing: normal;
+}
+.tip-stops {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.tip-route,
+.tip-stops {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 #inspector {
   position: absolute;
@@ -1245,10 +1285,6 @@ footer {
     scroll-behavior: auto !important;
     transition: none !important;
   }
-}
-#map-tip {
-  left: 0;
-  top: 0;
 }
 .stop-detail h3 {
   font-size: 15px;

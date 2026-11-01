@@ -187,3 +187,18 @@ Filtro e contrasto cambiano subito, senza animazioni su azioni ripetute. La rice
 Nessuna animazione aggiunta a filtri o zoom frequenti. Altezza della toolbar
 invariata quando compare la X, contrasto e hit area coerenti con i controlli
 esistenti. Verifica Browser a 320, 390, 573 e 1280 px; telefono fisico non testato.
+
+
+## Iterazione 11: leggere un tratto senza aprire il dettaglio
+
+| Before | After | Why |
+| --- | --- | --- |
+| Tooltip scuro con una riga di testo | Scheda chiara con linea, velocità allineata e due fermate | Rendere leggibile il tratto senza aggiungere azioni o testo superfluo |
+| Posizione calcolata con larghezza fissa di 235 px | Misura reale della scheda e margine di 8 px su tutti i bordi | Una linea lunga usciva di 25 px dalla mappa |
+| Tooltip ancora visibile dopo lo zoom | Chiusura su cambi di vista o contesto | Evitare informazioni agganciate a un punto ormai spostato |
+| Nuove reti interamente inquadrate anche su mobile | Apertura sul centro; Inquadra per tutta la rete | Evitare una rete minuscola al primo accesso, mantenendo la vista completa |
+
+Nessuna animazione su hover o tastiera. Dimensioni misurate solo al cambio del
+tratto, poi solo transform; nessun loop inattivo o nuova richiesta remota.
+Nomi lunghi limitati a due righe nella scheda transitoria, completi in tabella
+e nel dettaglio. La navigazione resta un mezzo distinto nel selettore di Venezia.

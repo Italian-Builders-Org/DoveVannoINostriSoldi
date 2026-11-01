@@ -1,7 +1,7 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 24 reti utilizzabili in 17 città, con tram, autobus, metro e
-treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
+Prototipo locale: 26 reti utilizzabili in 18 città, con tram, autobus, metro,
+treni regionali e navigazione. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
 I rilievi indicano minuti programmati per chilometro, non ritardi osservati,
@@ -21,6 +21,7 @@ python3 research/trasporti-gtfs/basemap.py --cache research/trasporti-gtfs/cache
 python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
   --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
+  --city-date venezia-nav=2026-11-02 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -317,3 +318,41 @@ filtro linea e 36 stati zoom su quattro viewport, più caricamento con resize.
 Artifact `gtfs-20261101-v10`, con dati congelati, osservazioni, screenshot e
 `verify.py`. La verifica touch su telefono fisico e i gate del prodotto non
 sono eseguiti. Solo branch locale, nessun push o deploy.
+
+
+### Iterazione 11
+
+[Sassari, catalogo regionale](https://www.sardegnamobilita.it/open-data/quadri-orari-atp-sassari):
+1.134 tratti autobus ATP, 891 corse con tratti utilizzabili e 43 linee nel centro.
+[ACTV, catalogo ufficiale](https://actv.avmspa.it/en/node/3969): aggiunta la
+navigazione di Venezia, distinta dagli autobus, con 434 tratti e 22 linee nel
+perimetro delle isole centrali. Non comprende tutta la laguna né altri operatori.
+Le precedenti 25 voci sono identiche all’artifact v10.
+
+Il GTFS ACTV acquisito, datato 27 ottobre, copre il 2–20 novembre: la data di
+servizio della navigazione è esplicitamente il 2 novembre. Non è applicato al
+30 ottobre. Sassari mantiene il 30 ottobre; fermate fuori perimetro, tempi non
+positivi, geometrie assenti/non affidabili e velocità implausibili sono esclusi
+e conteggiati. Le licenze di questi due feed non sono dichiarate nelle pagine
+consultate: nessuna autorizzazione di pubblicazione viene dedotta.
+
+La mappa apre sul centro delle due nuove reti; Inquadra conserva la vista
+completa. La scheda al passaggio del mouse mostra linea, velocità e fermate.
+Usa le dimensioni reali per restare dentro la mappa, anche con nomi lunghi; si
+chiude su camera, filtri, caricamento, selezione, Escape, scroll e perdita del
+focus. Nessuna animazione su hover o tastiera. Il contenuto è aggiornato solo
+quando cambia il tratto; il movimento nella stessa curva riposiziona la scheda.
+Gli stessi dati restano accessibili da tastiera nella tabella e nel dettaglio.
+
+Cartografia con ricevute: Venezia da Private.coffee POST, base OSM 15 luglio;
+Sassari dal principale GET, base OSM 1 novembre. Per Sassari sono conservati i
+fallimenti precedenti su area maggiore (timeout/502); il perimetro finale è il
+centro, non l’intera rete suburbana. ANM Napoli non integrata: redirect seguito
+da HTTP 403, senza bypass.
+
+Prove: 61 test offline, 108 reti/fasce nel Browser, 12 casi responsive a
+320/390/573/1280 px, quattro tooltip ai bordi, ricerca vuota/recupero da tastiera,
+CSV 434 righe confrontato con i dati e PNG ispezionato. HTML unico offline con
+nuove reti e commutazione dell’esplorazione mobile verificati. Artifact
+`gtfs-20261101-v11`, con `verify.py`, dati, ricevute e screenshot. Nessun push,
+PR, deploy, build Vercel o test su telefono fisico.

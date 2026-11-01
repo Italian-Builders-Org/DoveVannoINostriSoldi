@@ -42,3 +42,20 @@ test("dataset identity cannot be reused by another mode or area", () => {
     ]),
   );
 });
+
+test("navigation remains a distinct usable network within the existing Venezia area", () => {
+  const grouped = groupAreas([
+    { id: "venezia", name: "Venezia", mode: "bus", status: "ready" },
+    {
+      id: "venezia-nav",
+      name: "Venezia",
+      areaId: "venezia",
+      mode: "ferry",
+      status: "ready",
+    },
+  ]);
+  assert.equal(grouped.length, 1);
+  assert.equal(sourceForArea(grouped, "venezia", "ferry").id, "venezia-nav");
+  assert.equal(sourceForArea(grouped, "venezia", "bus").id, "venezia");
+  assert.equal(modeLabel("ferry"), "Navigazione");
+});

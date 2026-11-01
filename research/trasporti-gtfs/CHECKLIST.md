@@ -222,3 +222,25 @@ Base: b706acee. Ricerca locale; nessuna pubblicazione.
 - PASS: anteprima dell’utente aggiornata dopo le verifiche, preservando sorgente e stato della vista. Main remoto ancora 41a953e5; checkout principale preservato.
 - Artifact: gtfs-20261101-v10 con dati gzip, HTML directory/offline, ricevute, osservazioni Browser, verificatore, screenshot e ricevuta del commit locale.
 - NOT RUN: telefono fisico/touch/pinch, screen reader reale, integrazione corpus, gate Next/CI/deploy. Nessun push, PR, merge o build Vercel.
+
+## Iterazione 11: navigazione e lettura della mappa
+
+Base: c3fdcb9d. Solo ricerca locale, nessun push o deploy.
+
+- [x] Branch pulito, preview v10 verificata e skill Emil letta.
+- [x] Cercare reti ufficiali: navigazione ACTV e Sassari; conservare byte, ricevute, date e fallimenti. Nessun percorso inventato o cambio data silenzioso.
+- [x] Prima del codice: riprodurre tooltip troppo vicino ai bordi o obsoleto dopo un cambio vista; definire criteri per scheda compatta, posizione e annullamento su camera/filtri/touch.
+- [x] Integrare soltanto reti con geometrie e cartografia verificate. Contratto del nuovo mezzo prima dell’implementazione.
+- [x] Migliorare tooltip e gerarchia visiva senza animazioni frequenti, richieste remote, nuove dipendenze o duplicazione dei dati.
+- [x] Test Browser desktop/mobile: menu e tastiera, caricamenti/cambi rapidi, camera, tooltip ai bordi, filtri, dati, export e offline. Test pertinenti e confronto dei dataset precedenti.
+- [x] Documentare Before/After e limiti, salvare prove/screenshot, commit locale e anteprima aggiornata preservando la vista dell’utente.
+
+
+### Esito dell’iterazione 11
+
+- PASS locale: navigazione ACTV separata dagli autobus e Sassari centro, 26 reti in 18 città; 42.986 geometrie. Precedenti 25 voci identiche.
+- PASS: tooltip ricco ma compatto, senza overflow o informazioni obsolete dopo zoom; apertura sul centro delle nuove reti e Inquadra conservato.
+- PASS: 61 test offline, 108 reti/fasce, 12 casi responsive e quattro tooltip ai bordi; CSV 434 righe e PNG reali, versione offline verificata.
+- PASS: metadati, esclusioni, date diverse e riuso non dichiarato espliciti. Main remoto verificato a 41a953e5; checkout principale preservato.
+- Artifact: gtfs-20261101-v11 con analisi gzip, HTML directory/offline, ricevute, screenshot, verificatore e commit locale.
+- NOT RUN: dispositivo touch e screen reader reali, gate del prodotto, push/PR/merge/deploy. Nessuna build Vercel.

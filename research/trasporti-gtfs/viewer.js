@@ -242,7 +242,7 @@ async function selectCity(id, restored = null) {
   $("rows").inert = true;
   canvas.inert = true;
   $("inspector").hidden = true;
-  $("map-tip").hidden = true;
+  hideMapTip();
   for (const id of ["map-shell", "data-section", "source-panel"])
     $(id).setAttribute("aria-busy", "true");
   $("source-panel").inert = true;
@@ -493,6 +493,7 @@ function filtered() {
   return Boolean(route) || speedClass !== null;
 }
 function updateData() {
+  hideMapTip();
   if (!scene) return;
   shown = selectSegments(scene.segments, { band, route, speedClass, sort });
   tablePage = 0;
@@ -604,6 +605,7 @@ function renderTable() {
   }
 }
 function inspect(segment) {
+  hideMapTip();
   selected = segment?.id ?? null;
   selectedStop = null;
   renderInspector();
@@ -833,6 +835,7 @@ function syncControls() {
   $("relief").disabled = busy || !mode3d;
 }
 function updateCamera(next) {
+  hideMapTip();
   cam = next;
   constrain();
   syncControls();
@@ -950,6 +953,7 @@ function drawFrame() {
     nextView.width !== lastView.width ||
     nextView.height !== lastView.height
   ) {
+    hideMapTip();
     cam = resizeCamera(cam, lastView, nextView);
     lastView = nextView;
     const segment = shown.find((s) => s.id === selected);
@@ -1027,6 +1031,7 @@ function toggleExpanded() {
   schedule();
 }
 function escape() {
+  hideMapTip();
   if (!$("share-result").hidden) {
     $("share-result").hidden = true;
     $("share-view").focus();
@@ -1070,7 +1075,7 @@ canvas.addEventListener("pointerdown", (event) => {
   moved = pointers.size > 1;
   dragStart = point;
   canvas.classList.add("dragging");
-  $("map-tip").hidden = true;
+  hideMapTip();
 });
 canvas.addEventListener("pointermove", (event) => {
   const point = pointerPoint(event);
@@ -1135,19 +1140,60 @@ canvas.addEventListener("pointermove", (event) => {
     hovered = s?.id ?? null;
     schedule();
   }
-  const tip = $("map-tip");
-  tip.hidden = !s;
-  if (s) {
-    tip.textContent =
-      "Linea " + s.route + " · " + fmt(s.bands[band].kmh) + " km/h";
-    tip.style.transform =
-      "translate3d(" +
-      Math.max(8, Math.min(canvas.clientWidth - 235, point[0] + 12)) +
-      "px," +
-      Math.max(8, point[1] - 36) +
-      "px,0)";
-  }
+  showMapTip(s, point);
 });
+let tipWidth = 0,
+  tipHeight = 0;
+function hideMapTip() {
+  const tip = $("map-tip");
+  if (tip.hidden && hovered === null) return;
+  tip.hidden = true;
+  tip.dataset.segment = "";
+  hovered = null;
+  schedule();
+}
+function showMapTip(segment, point) {
+  if (!segment) {
+    hideMapTip();
+    return;
+  }
+  const tip = $("map-tip");
+  if (tip.dataset.segment !== segment.id) {
+    tip.replaceChildren();
+    const heading = add(tip, "div", undefined, "tip-heading");
+    add(heading, "span", "Linea " + segment.route, "tip-route");
+    const speed = add(
+      heading,
+      "strong",
+      fmt(segment.bands[band].kmh),
+      "tip-speed",
+    );
+    add(speed, "small", " km/h");
+    add(
+      tip,
+      "span",
+      stopLabel(segment.from) + " → " + stopLabel(segment.to),
+      "tip-stops",
+    );
+    tip.dataset.segment = segment.id;
+    tip.hidden = false;
+    tipWidth = tip.offsetWidth;
+    tipHeight = tip.offsetHeight;
+  }
+  const x = Math.max(
+    8,
+    Math.min(canvas.clientWidth - tipWidth - 8, point[0] + 12),
+  );
+  const above = point[1] - tipHeight - 12;
+  const y = Math.max(
+    8,
+    Math.min(
+      canvas.clientHeight - tipHeight - 8,
+      above >= 8 ? above : point[1] + 16,
+    ),
+  );
+  tip.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+}
 function endPointer(event, cancelled = false) {
   if (tapOnly?.id === event.pointerId) {
     if (!cancelled) inspect(renderer.nearest(...pointerPoint(event)));
@@ -1169,11 +1215,7 @@ canvas.addEventListener("lostpointercapture", (event) =>
   endPointer(event, true),
 );
 canvas.addEventListener("pointerleave", () => {
-  if (!pointers.size) {
-    hovered = null;
-    $("map-tip").hidden = true;
-    schedule();
-  }
+  if (!pointers.size) hideMapTip();
 });
 canvas.addEventListener(
   "wheel",
@@ -1279,7 +1321,15 @@ document.addEventListener("pointerdown", (event) => {
   if ($("camera-panel").open && !event.target.closest("#camera-panel"))
     $("camera-panel").open = false;
 });
-window.addEventListener("scroll", hideSearch, { passive: true });
+window.addEventListener(
+  "scroll",
+  () => {
+    hideSearch();
+    hideMapTip();
+  },
+  { passive: true },
+);
+window.addEventListener("blur", hideMapTip);
 function restoreView(state) {
   band = state.band;
   $("band").value = band;

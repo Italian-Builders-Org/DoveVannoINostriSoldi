@@ -246,3 +246,51 @@ file invariati e sostituzione fallita o collegata a una versione precedente.
 
 Telefono fisico, screen reader e gate Next/ETL/CI/deploy: NOT RUN. Nessun push,
 PR, merge, servizio remoto aggiunto all’esplorazione o build Vercel.
+
+
+## Iterazione 11, 1 novembre 2026
+
+PASS locale: 61 test (34 Python, 27 Node). Il nuovo caso di raggruppamento
+navigazione è fallito prima dell’implementazione: `Mezzo non riconosciuto: ferry`.
+Il Browser ha riprodotto una scheda di 260 px posizionata usando un limite fisso
+di 235 px, con 25 px fuori bordo, e una scheda rimasta visibile dopo la rotella.
+Le osservazioni prima/dopo sono conservate.
+
+Artifact `gtfs-20261101-v11`: `browser-source-bands.json` (108 casi),
+`browser-responsive.json` (12), `browser-hover-responsive.json` (4),
+`browser-keyboard.json`, `browser-initial-view.json`, `browser-offline.json`,
+CSV/PNG, screenshot e analisi completa gzip. `python3 verify.py` ricontrolla le
+osservazioni salvate contro i dati, le 42.986 geometrie, i 27 asset del manifest
+e i payload offline; non rilancia il Browser. I nomi campionati dalla tabella
+sono confrontati con lo stesso trim esterno usato nella cattura DOM, senza
+modificare i dati originali. Le precedenti 25 voci sono identiche a v10.
+
+Ripetizione: in Prato filtrare Firenze–Pistoia–Lucca–Viareggio, premere Inquadra,
+passare sulla curva vicino al bordo destro. Attesi scheda entro i bordi, linea,
+velocità e fermate corrette. Rotella: scheda chiusa; Escape: chiusa e mappa
+utilizzabile. Ripetere a 320, 390, 573 e 1280 px, scegliendo punti non coperti
+dai comandi sovrapposti. Mobile qui significa viewport con puntatore mouse,
+non verifica fisica touch. La modalità Esplora con le dita è attivata/disattivata,
+ma pinch/rotazione su dispositivo rimangono NOT RUN.
+
+Menu: nuove reti e Prato, quattro larghezze, popup interamente nella viewport,
+nomi lunghi, Escape dal controllo effettivamente a fuoco, rimozione linea da
+44 px, focus restituito e zero overflow. Ricerca città senza risultati, poi
+Sassari e Enter: recupero e selezione corretta. Nessuna animazione nuova.
+
+Dati: Sassari 1.134 tratti/43 linee/891 corse con tratti, servizio 30 ottobre.
+ACTV navigazione 434/22/1.308, servizio esplicito 2 novembre, prima data di
+validità del file; autobus Venezia restano separati. Ricevute GTFS e OSM con
+byte/hash, esclusioni e perimetri in observed-results.json. La curva tra due
+fermate può uscire dal rettangolo: il filtro del perimetro riguarda entrambe le
+fermate, non una riscrittura del percorso. Il controllo dei 100 m si applica
+agli estremi della geometria e alle rispettive fermate.
+
+CSV navigazione: 434 righe, identità e ordine, velocità/campioni, data e hash
+riconciliati. PNG reale scaricato e ispezionato, con Navigazione, scala/nord,
+legenda, data e attribuzioni. Offline con CSP connect-src none: navigazione,
+cambio Sassari e modalità di esplorazione verificati. Attese anomale del
+Browser non utilizzate come benchmark di velocità.
+
+NOT RUN: telefono fisico, screen reader reale, gate Next/ETL/CI del prodotto,
+integrazione nel corpus e pubblicazione. Nessun costo di build Vercel introdotto.

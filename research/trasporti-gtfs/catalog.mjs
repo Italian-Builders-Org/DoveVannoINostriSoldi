@@ -3,6 +3,7 @@ const transportLabels = {
   bus: "Bus",
   metro: "Metro",
   train: "Treni",
+  ferry: "Navigazione",
 };
 export function modeLabel(mode) {
   if (!transportLabels[mode]) throw Error("Mezzo non riconosciuto: " + mode);

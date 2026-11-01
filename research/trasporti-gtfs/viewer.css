@@ -1839,3 +1839,48 @@ th:nth-child(4) {
     background: #e8f0e0;
   }
 }
+
+.line-action {
+  min-height: 44px;
+  min-width: 44px;
+  max-width: calc(100% - 36px);
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border: 1px solid #cbd8c3;
+  border-radius: 8px;
+  text-align: left;
+  line-height: 1.35;
+}
+.line-action span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.line-action svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.line-action[aria-pressed="true"] {
+  background: #2d4f40;
+  border-color: #2d4f40;
+  color: white;
+}
+@media (max-width: 640px) {
+  #inspector .line-action {
+    max-width: 100%;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .line-action:hover:not(:disabled) {
+    background: #dce7d4;
+  }
+  .line-action[aria-pressed="true"]:hover:not(:disabled) {
+    background: #244435;
+  }
+}

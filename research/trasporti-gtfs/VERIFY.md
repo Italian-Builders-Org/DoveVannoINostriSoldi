@@ -193,3 +193,17 @@ Per ripetere la UI: servire index.html e cities/ in loopback; visitare Lucca, ma
 Lucca: ricevute GTFS e OSM in observed-results.json, 16.026 feature/19 etichette OSM, perimetro OSM uguale a studyBounds. La prima acquisizione ristretta è conservata in cache, non usata nell’output finale. Livorno non esposto: principale GET 502, alternativo GET timeout di 100 secondi senza byte.
 
 Limiti: i dati sono orari programmati e lo snapshot Toscana è datato gennaio; niente ritardi osservati. Clipboard del Browser non dimostrata, telefono fisico e lettore schermo reale non eseguiti. Gate del prodotto e pubblicazione non eseguiti.
+
+## Iterazione 9, 1 novembre 2026
+
+Stato: PASS locale. Test offline 54, sintassi JS e diff puliti. Artifact `gtfs-20261101-v9`: `analysis.json.gz`, `geometry-audit.json`, `oracle.json`, `browser-source-bands.json` (92), `browser-context-filter.json` (12), `browser-stateful-filter.json`, `browser-selection-contrast.json`, `browser-rapid-changes.json`, `verification-result.json`, CSV/PNG e screenshot.
+
+`python3 verify.py` nella directory artifact ricontrolla le osservazioni salvate contro l’analisi congelata; non rilancia il Browser. Verifica 41.253 tratti, distanza degli estremi dalle fermate entro 100 m più 20 cm per l’arrotondamento a sei decimali, velocità/durate/campioni, righe/conteggi/ordine, focus, filtri, CSV, contrasto e hash fonte. Il caso GTT e9231a3374a9e12c deve essere assente.
+
+Ripetizione Browser: Torino o Roma Bus, mattino, scegliere un tratto e attivare il badge filtro da tastiera. Attesi linea scelta, dettaglio chiuso, focus sul canvas e rete inquadrata. Selezionare un altro tratto sulla stessa linea e attivare il badge già premuto: tutte le linee tornano. Ripetere 320/390/573/1280 px e Firenze Treni per il nome lungo. Con Torino tram, giorno, velocità <10 e corse decrescenti: filtro rapido sulla linea 4 mantiene lo stato, CSV di 11 righe nello stesso ordine.
+
+Contrasto: Lucca mattino, primo tratto Pescia–Montecarlo, poi Centro e Inquadra. Attesi rispettivamente selezione visibile/contesto 0,2, fuori vista/contesto 1, visibile/0,2. Osservazioni diagnostiche nei data attribute del canvas.
+
+L’audit distingue risultati cambiati da byte originali invariati. Counters di fermate distanti sono occorrenze nei percorsi unici del feed, non numero di fermate urbane distinte.
+
+Limiti: Prato/Livorno esclusi dopo errori 502/timeout e 406 nel Browser; nessun bypass. Snapshot Toscana gennaio 2026, solo servizio programmato. HTML singolo nuovo non generato per ENOSPC; anteprima a directory completa. Touch fisico, screen reader e gate del prodotto non eseguiti. Pending/cancellazione sotto rete rallentata non riprovati: nei sette cambi rapidi le richieste campionate erano già concluse.

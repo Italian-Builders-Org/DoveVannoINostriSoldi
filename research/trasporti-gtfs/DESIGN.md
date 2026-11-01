@@ -163,3 +163,13 @@ senza spostare i contenuti. La chiusura del dettaglio usa un SVG coerente.
 | Mappa Lucca limitata al centro | Estratto che copre l’intero perimetro studiato | Dare contesto anche ai tratti periferici selezionati |
 
 Nessuna animazione aggiunta all’ordinamento frequente: cambio immediato, focus sull’intestazione e prima pagina ripristinata. La selezione rimane attiva se ancora presente. Valori, geometrie e metodo non cambiano. Hit area delle intestazioni almeno 44×44 px nei viewport verificati.
+
+## Iterazione 9: dettaglio utilizzabile e contrasto contestuale
+
+| Before | After | Why |
+| --- | --- | --- |
+| Badge linea statico, alto circa 22 px | Pulsante con filtro, almeno 44×44 px, stato e nome accessibili | Esplorare una linea dal tratto senza risalire alla toolbar |
+| Altri tratti al 38% anche quando la selezione è fuori vista | Contesto al 20% con selezione visibile, al 100% fuori vista | Leggere il tratto scelto nelle reti dense e recuperare contesto dopo uno spostamento |
+| Proiezioni accettate fino a 250 m dalle fermate | Massimo 100 m, esclusioni e metodo visibili nelle fonti | Evitare falsi tratti lentissimi dovuti all’allineamento GTFS |
+
+Filtro e contrasto cambiano subito, senza animazioni su azioni ripetute. La ricerca del tratto selezionato viene riutilizzata nel renderer; non è aggiunta una seconda scansione. Nessuna dipendenza o richiesta remota durante l’uso. Nomi lunghi e chiusura verificati separati a 320/390/573/1280 px.

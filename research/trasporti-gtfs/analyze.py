@@ -22,6 +22,7 @@ BANDS = {
     "evening": (16 * 3600, 20 * 3600),
     "all": (0, 48 * 3600),
 }
+MAX_STOP_OFFSET_METRES = 100
 TRAM_TYPES = {"0", "900", "901", "902", "903", "904", "905", "906"}
 REQUIRED = {"agency.txt", "routes.txt", "trips.txt", "stops.txt", "stop_times.txt"}
 
@@ -180,7 +181,7 @@ def project(points, stop, minimum):
         distance = metres(stop, point)
         if distance < best[0]:
             best = (distance, pos)
-    return best[1] if best[0] <= 250 else None
+    return best[1]
 
 
 def geometries(shape, rows, stops, excluded):
@@ -207,13 +208,17 @@ def geometries(shape, rows, stops, excluded):
                     len(points) - 2,
                 )
                 pos = i + (distance - distances[i]) / (distances[i + 1] - distances[i])
-                if (
-                    pos < cursor
-                    or metres(interpolate(points, pos), stop["point"]) > 250
-                ):
+                if pos < cursor:
                     pos = None
         else:
             pos = project(points, stop["point"], cursor)
+        # GTFS recommends shapes within 100 m of served stops; a distant projection can create fake slow segments.
+        if (
+            pos is not None
+            and metres(interpolate(points, pos), stop["point"]) > MAX_STOP_OFFSET_METRES
+        ):
+            excluded["stop_shape_offset_above_100_m"] += 1
+            pos = None
         positions.append(pos)
         if pos is not None:
             cursor = pos
@@ -283,6 +288,7 @@ def analyze_feed(path, service_date, receipt, source):
         **source,
         "serviceDate": service_date.isoformat(),
         "receipt": receipt,
+        "maxStopOffsetMetres": MAX_STOP_OFFSET_METRES,
         "status": "no-service",
         "segments": [],
         "stops": [],

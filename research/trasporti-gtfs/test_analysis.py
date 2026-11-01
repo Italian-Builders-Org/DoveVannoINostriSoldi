@@ -210,6 +210,38 @@ class AnalysisTests(unittest.TestCase):
             data["stops"][0]["point"], data["segments"][0]["coordinates"][0]
         )
 
+    def test_distant_stop_is_not_a_short_slow_segment_with_or_without_shape_distances(
+        self,
+    ):
+        for with_distances in [True, False]:
+            changes = {
+                "stops.txt": [
+                    ["stop_id", "stop_name", "stop_lat", "stop_lon"],
+                    ["a", "A", "45.00135", "9"],
+                    ["b", "B", "45", "9.001"],
+                    ["c", "C", "45", "9.002"],
+                ]
+            }
+            if not with_distances:
+                changes["stop_times.txt"] = [
+                    [
+                        "trip_id",
+                        "arrival_time",
+                        "departure_time",
+                        "stop_id",
+                        "stop_sequence",
+                    ],
+                    ["t", "07:00:00", "07:00:00", "a", "1"],
+                    ["t", "07:01:00", "07:01:00", "b", "2"],
+                    ["t", "07:02:00", "07:02:00", "c", "3"],
+                ]
+            with self.subTest(with_distances=with_distances):
+                data = self.run_feed(changes)
+                self.assertEqual(
+                    [(s["fromId"], s["toId"]) for s in data["segments"]], [("b", "c")]
+                )
+                self.assertEqual(data["exclusions"]["stop_shape_offset_above_100_m"], 1)
+
     def test_bad_hash_blocks_analysis(self):
         with tempfile.TemporaryDirectory() as root:
             path, receipt = archive(Path(root))

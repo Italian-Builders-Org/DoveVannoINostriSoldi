@@ -396,15 +396,18 @@ export function createRenderer(canvas) {
     ctx.fillStyle = "#edf0ea";
     ctx.fillRect(0, 0, view.width, view.height);
     ctx.drawImage(back, 0, 0, view.width, view.height);
+    const selectedItem =
+      selected && drawn.find((item) => item.segment.id === selected);
     ctx.save();
-    ctx.globalAlpha = selected ? 0.38 : 1;
+    ctx.globalAlpha = selectedItem ? 0.2 : 1;
     ctx.drawImage(front, 0, 0, view.width, view.height);
     ctx.restore();
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     for (const id of new Set([hovered, selected])) {
       if (!id) continue;
-      const item = drawn.find((s) => s.segment.id === id);
+      const item =
+        id === selected ? selectedItem : drawn.find((s) => s.segment.id === id);
       if (!item) continue;
       path(ctx, item.points);
       ctx.strokeStyle = "#fff";
@@ -477,6 +480,8 @@ export function createRenderer(canvas) {
       renderMs: stats.renderMs,
       backgroundCacheHit: String(backgroundHit),
       foregroundCacheHit: String(foregroundHit),
+      selectionVisible: String(Boolean(selectedItem)),
+      contextOpacity: String(selectedItem ? 0.2 : 1),
       camera: [
         camera.x,
         camera.y,

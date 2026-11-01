@@ -178,3 +178,24 @@ Base: be8a8605. Solo ricerca locale; checkout principale e file del prodotto pre
 - PASS: precedenti 20 voci identiche all’artifact v7; main remoto ricontrollato tramite connettore, ancora 41a953e5. Checkout principale preservato.
 - Artifact: gtfs-20261101-v8, prove JSON, verificatore delle osservazioni salvate, CSV/PNG, HTML offline e screenshot.
 - NOT RUN: telefono fisico/touch/pinch, screen reader reale, gate Next/CI/deploy. Clipboard nativa non asserita: IAB restituisce stringa vuota; URL osservato nel campo di condivisione e ripristinato nel Browser. Nessun push, PR, merge o deploy.
+
+## Iterazione 9: copertura ferroviaria e filtro contestuale
+
+Base: 941ea9f5. Prototipo locale; nessuna pubblicazione. Prima degli interventi:
+
+- [x] Branch pulito e anteprima corrente riletti; spazio disco limitato, evitare duplicazioni di dati/archivi.
+- [x] Verificare Livorno e Prato: calendario, geometrie, perimetro, cartografia e ricevute; includere solo output validi.
+- [x] Migliorare il badge di linea nel dettaglio: filtro rapido riconoscibile e hit area 44 px.
+- [x] Browser: badge non filtrato isola linea e inquadra rete, badge già filtrato ripristina linee, selezione rimossa, focus al canvas; fascia/velocità/ordine restano invariati.
+- [x] Browser: tastiera, menu, nuove città e tutte le fasce, responsive 320/390/573/1280, filtri vuoti, cambi rapidi, zoom e dettagli senza sovrapposizioni.
+- [x] Dati delle precedenti 21 voci ricontrollati, con audit delle variazioni dovute alla soglia geometrica, test offline pertinenti, PNG/CSV, screenshot e diff puliti; commit locale e anteprima aggiornata.
+
+### Esito dell’iterazione 9
+
+- PASS locale: 22 reti in 15 città. Nuovi autobus Torino/Roma; candidati Prato/Livorno esclusi dal selettore per cartografia indisponibile.
+- PASS: difetto geometrico riprodotto prima del codice con test RED, sia con shape_dist_traveled sia con proiezione; soglia 100 m applicata a tutte le 23 voci. Audit delle differenze, fonti originali immutate.
+- PASS: 54 test offline (28 Python, 26 Node), 92 reti/fasce, 12 casi filtro contestuale su quattro viewport, filtro con stato preesistente, CSV 11 righe e PNG ispezionato; 41.253 geometrie derivate validate. Zero overflow o sovrapposizioni badge/chiusura nei casi osservati.
+- PASS: contrasto selezione visibile/fuori vista/ripristinata; sette cambi rapidi conclusi sull’ultima rete, console vuota. Stato pending non osservato con questa rete locale, nessuna nuova prova di cancellazione throttled dichiarata.
+- PASS: main verificato tramite connettore, ancora 41a953e5; checkout principale preservato. Nessuna modifica al prodotto o a Vercel.
+- Artifact: gtfs-20261101-v9 con analysis.json.gz, snapshot directory, ricevute, oracle, audit, osservazioni Browser, verificatore, PNG/CSV e screenshot. Evitate copie complete con hard link; solo il JSON temporaneo rigenerabile di questa iterazione è stato convertito in gzip.
+- NOT RUN: HTML singolo della nuova versione (disco locale pieno), telefono fisico/touch/pinch, screen reader reale, gate Next/CI/deploy. Nessun push, PR o merge.

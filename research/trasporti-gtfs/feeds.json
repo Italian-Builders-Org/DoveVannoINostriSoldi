@@ -425,5 +425,45 @@
     "sourceNotes": [
       "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
     ]
+  },
+  {
+    "id": "torino-bus",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [7.685, 45.069],
+    "mapBounds": [7.61, 45.01, 7.76, 45.13],
+    "mode": "bus",
+    "areaId": "torino",
+    "archiveId": "torino",
+    "mapId": "torino",
+    "routeTypes": ["3"],
+    "studyBounds": [7.61, 45.01, 7.76, 45.13],
+    "scopeLabel": "Autobus · area urbana"
+  },
+  {
+    "id": "roma-bus",
+    "name": "Roma",
+    "holder": "Roma Servizi per la Mobilità",
+    "landingUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "cadence": "quasi quotidiana, secondo il titolare",
+    "focus": [12.476, 41.887],
+    "mapBounds": [12.43, 41.855, 12.53, 41.93],
+    "mode": "bus",
+    "areaId": "roma",
+    "archiveId": "roma",
+    "mapId": "roma",
+    "routeTypes": ["3"],
+    "studyBounds": [12.43, 41.855, 12.53, 41.93],
+    "scopeLabel": "Autobus · area urbana"
   }
 ]

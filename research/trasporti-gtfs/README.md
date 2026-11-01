@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 20 reti utilizzabili in 15 città, con tram, autobus, metro e
+Prototipo locale: 22 reti utilizzabili in 15 città, con tram, autobus, metro e
 treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -82,29 +82,31 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 
 ## Copertura e date di servizio
 
-| Città    | Mezzo           | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
-| -------- | --------------- | -------------: | -----------: | --------------------: | ----------------------------: | --------------: |
-| Torino   | tram            |              9 |            8 |                 1.854 |                         1.854 |             591 |
-| Milano   | tram            |             17 |           17 |                 4.333 |                         4.333 |           1.024 |
-| Roma     | tram            |              5 |            1 |                   750 |                           750 |              59 |
-| Firenze  | tram            |              2 |            2 |                   874 |                           874 |             157 |
-| Bologna  | bus/filobus     |            240 |          224 |                 8.499 |                         7.030 |           6.354 |
-| Cagliari | bus/filobus     |             45 |           45 |                 3.155 |                         3.116 |           2.268 |
-| Venezia  | bus             |             94 |           92 |                 4.212 |                         4.030 |           4.884 |
-| Palermo  | tram            |              4 |            4 |                   518 |                           468 |              74 |
-| Padova   | tram SIR1       |              1 |            1 |                 1.153 |                         1.144 |              73 |
-| Catania  | bus             |             53 |           50 |                 2.868 |                         2.868 |           2.713 |
-| Milano   | metro           |              5 |            5 |                 2.770 |                         2.770 |             266 |
-| Milano   | bus             |            148 |          140 |                18.026 |                        17.651 |           5.177 |
-| Roma     | metro           |              4 |            4 |                 1.379 |                         1.379 |             172 |
-| Firenze  | treni regionali |             14 |           14 |                   780 |                           392 |             408 |
-| Pisa     | treni regionali |             14 |           14 |                   780 |                           178 |             129 |
-| Trento   | bus urbano      |             43 |           42 |                 2.474 |                         1.913 |           1.704 |
-| Rovereto | bus urbano      |             43 |           42 |                 2.474 |                           500 |           1.373 |
-| Ferrara  | bus             |             80 |           74 |                 1.659 |                         1.048 |           2.213 |
-| Torino   | metro           |              1 |            1 |                   574 |                           574 |              44 |
-| Lucca    | treni regionali |             14 |           14 |                   780 |                           130 |             130 |
-| Bari     | bus             |             68 |            0 |                     0 |                             0 |               0 |
+| Città | Mezzo | Linee elencate | Linee attive | Corse attive nel feed | Corse con tratti utilizzabili | Tratti distinti |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Milano | tram | 17 | 17 | 4.333 | 4.333 | 1.024 |
+| Roma | tram | 5 | 1 | 750 | 750 | 59 |
+| Torino | tram | 9 | 8 | 1.854 | 1.854 | 591 |
+| Firenze | tram | 2 | 2 | 874 | 874 | 157 |
+| Bologna | bus/filobus | 240 | 224 | 8.499 | 7.030 | 6.354 |
+| Bari | bus | 68 | 0 | 0 | 0 | 0 |
+| Cagliari | bus/filobus | 45 | 45 | 3.155 | 3.116 | 2.268 |
+| Venezia | bus | 94 | 92 | 4.212 | 4.030 | 4.884 |
+| Palermo | tram | 4 | 4 | 518 | 468 | 74 |
+| Padova | tram SIR1 | 1 | 1 | 1.153 | 1.144 | 73 |
+| Catania | bus | 53 | 50 | 2.868 | 2.868 | 2.713 |
+| Milano | metro | 5 | 5 | 2.770 | 2.770 | 266 |
+| Milano | bus | 148 | 140 | 18.026 | 17.651 | 5.174 |
+| Roma | metro | 4 | 4 | 1.379 | 1.379 | 172 |
+| Firenze | treni regionali | 14 | 14 | 780 | 392 | 408 |
+| Pisa | treni regionali | 14 | 14 | 780 | 178 | 129 |
+| Trento | bus urbano | 43 | 42 | 2.474 | 1.913 | 1.687 |
+| Rovereto | bus urbano | 43 | 42 | 2.474 | 500 | 1.349 |
+| Ferrara | bus | 80 | 74 | 1.659 | 1.048 | 2.210 |
+| Torino | metro | 1 | 1 | 574 | 574 | 44 |
+| Lucca | treni regionali | 14 | 14 | 780 | 130 | 130 |
+| Torino | bus | 206 | 200 | 11.388 | 9.060 | 6.429 |
+| Roma | bus | 427 | 409 | 36.917 | 17.944 | 5.058 |
 
 Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
 La data diversa è una scelta esplicita: gli archivi CTM e Padova acquisiti non contengono
@@ -270,3 +272,15 @@ Lucca: due linee regionali utilizzabili, 130 corse con tratti nell’area, 130 t
 Le intestazioni km/h e Corse ordinano la selezione in entrambi i versi. Il CSV mantiene l’ordine scelto; Copia link conserva anche l’ordinamento. I link precedenti partono ancora dalle velocità crescenti. I filtri non cambiano i valori né il numero dei tratti quando cambia soltanto l’ordine.
 
 Livorno resta candidato: 89 tratti GTFS utilizzabili, ma cartografia non acquisita dopo HTTP 502 e timeout di due provider. Non è mostrato come città disponibile. Le fonti precedenti restano identiche.
+
+### Iterazione 9
+
+Aggiunti autobus di Torino (6.429 tratti, 131 linee utilizzabili nell’area) e Roma (5.058 tratti, 170 linee). Sono derivati dagli stessi archivi ufficiali già acquisiti, con entrambe le fermate entro il perimetro cartografico dichiarato. Nessun nuovo download GTFS, fonte runtime o servizio esterno per esplorarli. Roma resta con licenza da verificare prima di pubblicare; GTT resta non commerciale.
+
+Il badge linea nel dettaglio filtra e inquadra la linea; se già filtrata ripristina tutte le linee. Mantiene fascia, filtro di velocità e ordine, chiude il dettaglio e riporta il focus alla mappa. La selezione visibile attenua maggiormente gli altri tratti; se esce dalla vista il contesto torna al contrasto normale.
+
+**Controllo geometrico aggiornato per tutte le reti.** La soglia fermata/tracciato passa da 250 a 100 metri, secondo [GTFS Best Practices](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt). Riprodotto un caso in cui una fermata distante dal tracciato trasformava 263 m fra fermate in 31 m di geometria e una velocità ingannevolmente bassa. Non sono ridisegnate strade né modificati gli archivi: le coppie non affidabili vengono escluse e conteggiate.
+
+Il confronto completo è nell’artifact `geometry-audit.json`. Tra le reti precedenti cambiano Milano bus, Trento, Rovereto e Ferrara: 64 geometrie rimosse e 17 aggiunte dopo la proiezione corretta; quattro tratti comuni di Rovereto cambiano campioni/tempi. Non sono dichiarati tutti i risultati precedenti identici. I byte e le ricevute delle fonti restano invariati.
+
+Prato e Livorno restano candidati non esposti: dati ferroviari preliminari disponibili, cartografia rifiutata/non acquisita. Il dataset preliminare è conservato separatamente e richiede il controllo geometrico aggiornato prima di essere integrato.

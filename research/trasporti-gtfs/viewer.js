@@ -407,6 +407,14 @@ function sourceInfo() {
         city.studyBounds.join(", ") +
         " (ovest, sud, est, nord). Sono incluse solo coppie con entrambe le fermate al suo interno.",
     );
+  if (city.maxStopOffsetMetres)
+    add(
+      q,
+      "p",
+      "Escluse le coppie con fermate oltre " +
+        city.maxStopOffsetMetres +
+        " m dal tracciato GTFS.",
+    );
   const labels = {
     candidate_pairs: "Coppie esaminate",
     accepted_pairs: "Coppie incluse",
@@ -421,6 +429,8 @@ function sourceInfo() {
     unlocated_or_nonprogressing_pair:
       "Coppie non collocabili nei percorsi unici",
     short_geometry_pair: "Tratti sotto 25 m nei percorsi unici",
+    stop_shape_offset_above_100_m:
+      "Fermate oltre 100 m dal tracciato nei percorsi unici",
   };
   const ul = add(q, "ul");
   for (const [key, value] of Object.entries(city.exclusions))
@@ -632,7 +642,35 @@ function renderInspector() {
     }
     return;
   }
-  add(panel, "span", "Linea " + s.route, "route-badge");
+  const line = add(panel, "button", undefined, "route-badge line-action");
+  add(line, "span", "Linea " + s.route);
+  const filterIcon = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg",
+  );
+  filterIcon.setAttribute("viewBox", "0 0 24 24");
+  filterIcon.setAttribute("aria-hidden", "true");
+  const filterPath = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path",
+  );
+  filterPath.setAttribute("d", "M4 5h16l-6 7v6l-4 2v-8Z");
+  filterIcon.append(filterPath);
+  line.append(filterIcon);
+  line.type = "button";
+  const isolated = route === s.route;
+  line.setAttribute("aria-pressed", String(isolated));
+  line.setAttribute(
+    "aria-label",
+    isolated ? "Mostra tutte le linee" : "Mostra solo la linea " + s.route,
+  );
+  line.title = line.getAttribute("aria-label");
+  line.onclick = () => {
+    inspect(null);
+    setRoute(isolated ? "" : s.route);
+    if (isolated) fit();
+    canvas.focus({ preventScroll: true });
+  };
   const trip = add(panel, "div", undefined, "trip");
   const from = add(trip, "span", undefined, "trip-end");
   add(from, "b", "A");

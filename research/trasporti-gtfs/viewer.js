@@ -10,6 +10,7 @@ import {
   normalizeBearing,
   projection,
   zoomCamera,
+  zoomLimits,
   panCamera,
   fitCamera,
   resizeCamera,
@@ -90,6 +91,7 @@ const cache = new Map(),
     "band",
     "export-map",
     "route",
+    "clear-route",
     "stop-search",
     "share-view",
     "mode3d",
@@ -326,6 +328,8 @@ async function selectCity(id, restored = null) {
       $(id).closest("details").hidden = true;
     $("empty-state").hidden = true;
     $("clear-filters").hidden = true;
+    $("clear-route").hidden = true;
+    $("route").parentElement.dataset.clearable = "false";
     $("stop-search").value = "";
     $("route").replaceChildren();
     shell.dataset.loading = "false";
@@ -339,6 +343,7 @@ async function selectCity(id, restored = null) {
       for (const id of ["map-shell", "data-section", "source-panel"])
         $(id).setAttribute("aria-busy", "false");
       syncSelectMenus();
+      syncControls();
     }
   }
 }
@@ -498,6 +503,8 @@ function updateData() {
   $("selection-count").textContent =
     fmt(shown.length, 0) + " tratti" + (route ? " · linea " + route : "");
   $("clear-filters").hidden = !filtered();
+  $("clear-route").hidden = !route;
+  $("route").parentElement.dataset.clearable = String(Boolean(route));
   $("export").disabled = !shown.length;
   $("export-map").disabled = !shown.length;
   for (const button of document.querySelectorAll("[data-speed]"))
@@ -805,8 +812,13 @@ function syncControls() {
   $("bearing").value = (cam.bearing * 180) / Math.PI;
   $("bearing-value").textContent = fmt((cam.bearing * 180) / Math.PI, 0) + "°";
   $("compass").style.transform = "rotate(" + -cam.bearing + "rad)";
-  $("zoom").max = Math.min(800, (1.2 / cam.base) * 100);
-  $("zoom").step = ".1";
+  const limits = zoomLimits(cam);
+  const busy = !scene || shell.dataset.loading === "true";
+  $("zoom").min = (limits.min / cam.base) * 100;
+  $("zoom").max = (limits.max / cam.base) * 100;
+  $("zoom-in").disabled = busy || cam.scale >= limits.max - 1e-10;
+  $("zoom-out").disabled = busy || cam.scale <= limits.min + 1e-10;
+  $("zoom").step = "any";
   $("zoom").value = (cam.scale / cam.base) * 100;
   $("zoom-value").textContent = fmt((cam.scale / cam.base) * 100, 0) + "%";
   $("zoom").setAttribute(
@@ -817,8 +829,8 @@ function syncControls() {
   $("pitch-value").textContent = mode3d ? fmt(pitchDegrees, 0) + "°" : "2D";
   $("relief").value = relief * 100;
   $("relief-value").textContent = fmt(relief * 100, 0) + "%";
-  $("pitch").disabled = !mode3d;
-  $("relief").disabled = !mode3d;
+  $("pitch").disabled = busy || !mode3d;
+  $("relief").disabled = busy || !mode3d;
 }
 function updateCamera(next) {
   cam = next;
@@ -1375,6 +1387,11 @@ $("band").onchange = () => {
   updateData();
 };
 $("route").onchange = () => setRoute($("route").value);
+$("clear-route").onclick = () => {
+  closeSelectMenu();
+  setRoute("");
+  $("route-trigger").focus({ preventScroll: true });
+};
 $("stop-search").oninput = showSearch;
 $("stop-search").onfocus = () => {
   if ($("stop-search").value) showSearch();

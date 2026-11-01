@@ -107,7 +107,7 @@ export function enhanceSelect(select, beforeOpen = () => {}) {
   trigger.append(text, arrow);
   select.after(trigger);
   select.hidden = true;
-  select.closest("label")?.setAttribute("for", trigger.id);
+  select.labels?.[0]?.setAttribute("for", trigger.id);
   select.parentElement.classList.add("select-enhanced");
   let signature = "";
   const menu = {

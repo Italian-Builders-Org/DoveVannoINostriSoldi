@@ -15,6 +15,7 @@ import zipfile
 from collections import Counter, defaultdict
 from datetime import date
 from pathlib import Path
+from artifact_io import write_artifact
 
 BANDS = {
     "morning": (7 * 3600, 10 * 3600),
@@ -506,7 +507,7 @@ def write_viewer(payload, output, standalone=False):
             digest = hashlib.sha256(compressed).hexdigest()
             relative = "cities/" + city["id"] + "-" + digest + ".json.gz"
             (output / "cities").mkdir(parents=True, exist_ok=True)
-            (output / relative).write_bytes(compressed)
+            write_artifact(output / relative, compressed)
             entry["asset"] = {
                 "path": relative,
                 "sha256": digest,
@@ -538,7 +539,7 @@ def write_viewer(payload, output, standalone=False):
     html = html.replace(
         "/*__GTFS_STYLE__*/", (here / "viewer.css").read_text()
     ).replace("/*__GTFS_VIEWER__*/", "\n".join(modules))
-    (output / "index.html").write_text(html)
+    write_artifact(output / "index.html", html.encode())
 
 
 def parse_city_dates(values, known):

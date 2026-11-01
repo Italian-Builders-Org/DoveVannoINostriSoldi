@@ -47,12 +47,28 @@
             ><svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="m7 10 5 5 5-5" /></svg></span
         ></label>
-        <label
-          >Linea<span class="select-field"
-            ><select id="route" aria-label="Linea" disabled></select
-            ><svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="m7 10 5 5 5-5" /></svg></span
-        ></label>
+        <div class="route-field">
+          <label for="route">Linea</label>
+          <span class="select-field">
+            <select id="route" aria-label="Linea" disabled></select>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" />
+            </svg>
+            <button
+              id="clear-route"
+              class="select-clear"
+              type="button"
+              aria-label="Rimuovi filtro linea"
+              title="Rimuovi filtro linea"
+              hidden
+              disabled
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </span>
+        </div>
         <div class="stop-search">
           <label for="stop-search">Cerca fermata</label>
           <div class="search-field">

@@ -199,3 +199,26 @@ Base: 941ea9f5. Prototipo locale; nessuna pubblicazione. Prima degli interventi:
 - PASS: main verificato tramite connettore, ancora 41a953e5; checkout principale preservato. Nessuna modifica al prodotto o a Vercel.
 - Artifact: gtfs-20261101-v9 con analysis.json.gz, snapshot directory, ricevute, oracle, audit, osservazioni Browser, verificatore, PNG/CSV e screenshot. Evitate copie complete con hard link; solo il JSON temporaneo rigenerabile di questa iterazione è stato convertito in gzip.
 - NOT RUN: HTML singolo della nuova versione (disco locale pieno), telefono fisico/touch/pinch, screen reader reale, gate Next/CI/deploy. Nessun push, PR o merge.
+
+## Iterazione 10: controlli precisi e anteprima aggiornata
+
+Base: b706acee. Ricerca locale; nessuna pubblicazione.
+
+- [x] Branch pulito e skill rilette; disco quasi pieno, preservare versioni e raw.
+- [x] Cercare altre fonti ufficiali; integrare estratti verificati di Prato e Livorno, senza nascondere errori o inventare geometrie.
+- [x] Prima del codice: limiti zoom uguali a slider/camera; controlli disabilitati durante il caricamento, senza riattivarli da un frame.
+- [x] Ripristino del solo filtro linea senza perdere velocità/fascia/ordine; tastiera e hit area coerenti.
+- [x] Supportare gli artifact gzip nel renderer locale: file equivalenti, corrotti e troppo grandi verificati prima del codice.
+- [x] Browser responsive, estremi zoom/resize, filtri e menu, dati precedenti invariati; artifact, screenshot e commit locale.
+- [x] Aggiornare la scheda dell’anteprima aperta sulla vecchia versione solo dopo la verifica della nuova.
+
+
+### Esito dell’iterazione 10
+
+- PASS locale: 24 reti utilizzabili in 17 città; aggiunti treni Prato (76 tratti) e Livorno (89). Precedenti 23 voci identiche; 41.418 geometrie validate.
+- PASS: X del solo filtro linea, etichetta e menu associati, chevron non compresso; hit area almeno 44 px senza salto di altezza. Zoom preciso fino al massimo frazionario e controlli inattivi durante il caricamento/resize.
+- PASS: 60 test offline (34 Python, 26 Node); 100 reti/fasce, 12 rimozioni filtro e 36 stati zoom nel Browser, quattro viewport. Versione offline con entrambe le nuove città verificata; nessuna connessione consentita dalla CSP.
+- PASS: gzip con budget espanso, scritture atomiche e riuso degli asset identici. Recupero locale da ENOSPC senza eliminare raw o versioni: due copie identiche dell’analisi v8 consolidate come hard link, percorsi e SHA invariati.
+- PASS: anteprima dell’utente aggiornata dopo le verifiche, preservando sorgente e stato della vista. Main remoto ancora 41a953e5; checkout principale preservato.
+- Artifact: gtfs-20261101-v10 con dati gzip, HTML directory/offline, ricevute, osservazioni Browser, verificatore, screenshot e ricevuta del commit locale.
+- NOT RUN: telefono fisico/touch/pinch, screen reader reale, integrazione corpus, gate Next/CI/deploy. Nessun push, PR, merge o build Vercel.

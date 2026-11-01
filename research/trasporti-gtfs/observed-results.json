@@ -1,6 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "iterationBaseSha": "941ea9f5",
+  "iterationBaseSha": "b706acee",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -1282,38 +1282,158 @@
         "labels": 15,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "prato",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 76,
+        "analyzedScheduledTrips": 117,
+        "analyzedRoutes": 3
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 7936,
+        "accepted_pairs": 284,
+        "stop_shape_offset_above_100_m": 25,
+        "missing_geometry_pair": 5
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.99, 43.83, 11.15, 43.94],
+      "segmentsSha256": "f5337890385d7860ff488edb834111685bd52d5103d1a5ae62d13e46f5d2ffdb",
+      "stops": 5,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [10.99, 43.83, 11.15, 43.94],
+          "acquiredAt": "2026-11-01T16:48:17.793034+00:00",
+          "osmBaseAt": "2026-05-31T22:37:44Z",
+          "sha256": "12d3af564fb13b37f2132473285d2686faa6fb05ca667da141b38b71f002c121",
+          "bytes": 9548135,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.83,10.99,43.94,11.15);\nway[\"natural\"=\"water\"](43.83,10.99,43.94,11.15);way[\"waterway\"~\"^(river|canal)$\"](43.83,10.99,43.94,11.15);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.83,10.99,43.94,11.15);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.83,10.99,43.94,11.15);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.83,10.99,43.94,11.15);\n);out body geom;"
+        },
+        "features": 9979,
+        "labels": 54,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "livorno",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 89,
+        "analyzedScheduledTrips": 45,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 8092,
+        "accepted_pairs": 131,
+        "missing_geometry_pair": 2,
+        "stop_shape_offset_above_100_m": 25
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.25, 43.35, 10.5, 43.68],
+      "segmentsSha256": "fafff4fee9907ee3aebe3dae2baf2721618cf54124fb94af4dfa1e780f02fd09",
+      "stops": 6,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [10.25, 43.35, 10.5, 43.68],
+          "acquiredAt": "2026-11-01T16:56:27.447139+00:00",
+          "osmBaseAt": "2026-06-01T08:52:28Z",
+          "sha256": "7013332c101be4ee13ce41bfb53dc0f9e85d82a5edebd833d0bdee8bffc7b527",
+          "bytes": 12969502,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.35,10.25,43.68,10.5);\nway[\"natural\"=\"water\"](43.35,10.25,43.68,10.5);way[\"waterway\"~\"^(river|canal)$\"](43.35,10.25,43.68,10.5);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.35,10.25,43.68,10.5);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.35,10.25,43.68,10.5);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.35,10.25,43.68,10.5);\n);out body geom;"
+        },
+        "features": 12996,
+        "labels": 4,
+        "license": "ODbL 1.0"
+      }
     }
   ],
   "delivery": {
     "mode": "static-city-assets",
-    "bootstrapBytes": 149325,
+    "bootstrapBytes": 151802,
     "cityAssets": {
-      "rovereto-5755083efa520999a2fe059474fb08bc99ac29bf11216dfc4205c0d67fa5af40.json.gz": 352980,
-      "roma-182e2bac1c76d8e1efc1f9b89bdf7c828082014f83c2086555d56023335bc87a.json.gz": 635568,
-      "venezia-b8c3bc97774053d7fb987929c0648b6233609dd2615d759f187d1174a7a2ca35.json.gz": 1614031,
-      "pisa-0620c3e24af523dc3df96f96e45100b84c4abcf480bdf3738cb3b9c1449d8a53.json.gz": 254304,
-      "catania-5fef717ec883e8f0b44bc58d40baa87806a60dddbd163b8d1dad5a2534879b30.json.gz": 647970,
-      "lucca-85720bb96ef5476003e33018b15c3b327cd4109532040419d413c066cd636313.json.gz": 981136,
-      "milano-e42108afc0fd7c74e1353b7f95a38c7908c0fd901f766979160a370c94932baf.json.gz": 1149534,
-      "cagliari-a9018229e4571818942641b0b7c1bfdf3db846c3492fac8b0544dd27fb9024ac.json.gz": 686923,
-      "roma-metro-8791f2efa2e443c0bbe34c937759d6a3a53ab335dee94947d2843d0671dbc32d.json.gz": 646863,
-      "bologna-92ec13e9122a189338062ad089780e758993469d14b1f7ba64a6164d5e6ca304.json.gz": 1623403,
-      "torino-bus-d207d9e383c7f40936735edeb1f4c3abd86415c384db31a8011157ff48eaefb1.json.gz": 1644512,
-      "padova-7be6071ca1864d8f7c79d2ad942e35eb088771d09b62bb74a5383f58a24e4198.json.gz": 261839,
-      "firenze-b62f9ab35503b6ec7f5b42c9c1c2f671bcb8b472e7edf281ad1dcbbf555c9e86.json.gz": 485899,
-      "palermo-72823b8c8a4bfa77128d64758fcedcccd800389c8313417531562e876606fae9.json.gz": 254410,
-      "torino-metro-338d87a6f1c1bee98d466df71f7ce6f4e798899f2e501ca6f620ea495e5d12a5.json.gz": 882648,
-      "roma-bus-49cdf1834353ca77df9aa328fa0d856f09813cbed1f40da42bf18c8d925087b1.json.gz": 1540136,
       "bari-141786f74be1584019f0e6f4d4c531719c7567eadbdab73c9fbde175d0b8914f.json.gz": 235213,
+      "bologna-92ec13e9122a189338062ad089780e758993469d14b1f7ba64a6164d5e6ca304.json.gz": 1623403,
+      "cagliari-a9018229e4571818942641b0b7c1bfdf3db846c3492fac8b0544dd27fb9024ac.json.gz": 686923,
+      "catania-5fef717ec883e8f0b44bc58d40baa87806a60dddbd163b8d1dad5a2534879b30.json.gz": 647970,
       "ferrara-35d268e9c2028c5fcd8272770fcae21d1c67569d48869f7630723c3aadb3ce17.json.gz": 626365,
+      "firenze-b62f9ab35503b6ec7f5b42c9c1c2f671bcb8b472e7edf281ad1dcbbf555c9e86.json.gz": 485899,
       "firenze-treni-392577e2ee4148b213466395fa382f503e9ddcee2ab74cfd9bf08d1252870266.json.gz": 520189,
-      "trento-87b0f006f3cedfdb7a6302036ac6af3fc377752ad5057cbb3f6ca084e7d67078.json.gz": 559740,
-      "torino-c649d78448ceeaaf00b925a2cc5d277ba2c7ca37e4593af92fb37e336a7d4a0e.json.gz": 939073,
+      "livorno-df0c678990845fefd0ff911fdb026f2b01cbbce780c74118c76f3cdb4d49a6c6.json.gz": 612965,
+      "lucca-85720bb96ef5476003e33018b15c3b327cd4109532040419d413c066cd636313.json.gz": 981136,
+      "milano-bus-385a1948bf77e4c360f2aee7e1f9b30ee35f36ca0222665ceb9afb665b09e8b9.json.gz": 2236947,
+      "milano-e42108afc0fd7c74e1353b7f95a38c7908c0fd901f766979160a370c94932baf.json.gz": 1149534,
       "milano-metro-c4c80b2afd48514ea5d6851c6c11a10300cb61ab807cd73a5f01239d8ee3220c.json.gz": 978709,
-      "milano-bus-385a1948bf77e4c360f2aee7e1f9b30ee35f36ca0222665ceb9afb665b09e8b9.json.gz": 2236947
+      "padova-7be6071ca1864d8f7c79d2ad942e35eb088771d09b62bb74a5383f58a24e4198.json.gz": 261839,
+      "palermo-72823b8c8a4bfa77128d64758fcedcccd800389c8313417531562e876606fae9.json.gz": 254410,
+      "pisa-0620c3e24af523dc3df96f96e45100b84c4abcf480bdf3738cb3b9c1449d8a53.json.gz": 254304,
+      "prato-82c999affa0914575ed745969d15c6f3445aaa00d020a1235c400bbd3a67921b.json.gz": 418830,
+      "roma-182e2bac1c76d8e1efc1f9b89bdf7c828082014f83c2086555d56023335bc87a.json.gz": 635568,
+      "roma-bus-49cdf1834353ca77df9aa328fa0d856f09813cbed1f40da42bf18c8d925087b1.json.gz": 1540136,
+      "roma-metro-8791f2efa2e443c0bbe34c937759d6a3a53ab335dee94947d2843d0671dbc32d.json.gz": 646863,
+      "rovereto-5755083efa520999a2fe059474fb08bc99ac29bf11216dfc4205c0d67fa5af40.json.gz": 352980,
+      "torino-bus-d207d9e383c7f40936735edeb1f4c3abd86415c384db31a8011157ff48eaefb1.json.gz": 1644512,
+      "torino-c649d78448ceeaaf00b925a2cc5d277ba2c7ca37e4593af92fb37e336a7d4a0e.json.gz": 939073,
+      "torino-metro-338d87a6f1c1bee98d466df71f7ce6f4e798899f2e501ca6f620ea495e5d12a5.json.gz": 882648,
+      "trento-87b0f006f3cedfdb7a6302036ac6af3fc377752ad5057cbb3f6ca084e7d67078.json.gz": 559740,
+      "venezia-b8c3bc97774053d7fb987929c0648b6233609dd2615d759f187d1174a7a2ca35.json.gz": 1614031
     },
-    "analysisCompression": "gzip, local disk budget",
-    "standalone": "NOT GENERATED in iteration 9: local ENOSPC; directory viewer complete"
+    "analysisCompression": "gzip; expanded input budget 256 MiB",
+    "standalone": {
+      "status": "PASS local Browser",
+      "bytes": 27868829,
+      "csp": "connect-src 'none'"
+    }
   },
   "excludedCandidates": [
     {
@@ -1359,58 +1479,6 @@
         "missing_shape": 48
       },
       "reason": "Le 48 corse attive della R35 non hanno una shape utilizzabile. Il file contiene geometrie bus, non riciclate come tracciato ferroviario."
-    },
-    {
-      "id": "livorno",
-      "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
-      "receipt": {
-        "city": "toscana-treni",
-        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
-        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
-        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
-        "bytes": 6127610,
-        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
-        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
-        "contentType": "application/octet-stream"
-      },
-      "studyBounds": [10.25, 43.35, 10.5, 43.68],
-      "coverageBeforeStrictGeometryGate": {
-        "routesInFeed": 14,
-        "activeRoutes": 14,
-        "activeScheduledTrips": 780,
-        "activeServices": 124,
-        "geometryPatterns": 372,
-        "segments": 89,
-        "analyzedScheduledTrips": 45,
-        "analyzedRoutes": 2
-      },
-      "reason": "Cartografia non acquisita: principale HTTP 502 (anche POST Livorno), alternativa GET timeout Prato, Browser principale 406. Non esposto nel selettore; rianalizzare con la soglia 100 m prima di aggiungere la rete."
-    },
-    {
-      "id": "prato",
-      "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
-      "receipt": {
-        "city": "toscana-treni",
-        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
-        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
-        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
-        "bytes": 6127610,
-        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
-        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
-        "contentType": "application/octet-stream"
-      },
-      "studyBounds": [10.97, 43.79, 11.21, 43.99],
-      "coverageBeforeStrictGeometryGate": {
-        "routesInFeed": 14,
-        "activeRoutes": 14,
-        "activeScheduledTrips": 780,
-        "activeServices": 124,
-        "geometryPatterns": 372,
-        "segments": 190,
-        "analyzedScheduledTrips": 142,
-        "analyzedRoutes": 3
-      },
-      "reason": "Cartografia non acquisita: principale HTTP 502 (anche POST Livorno), alternativa GET timeout Prato, Browser principale 406. Non esposto nel selettore; rianalizzare con la soglia 100 m prima di aggiungere la rete."
     }
   ],
   "geometryPolicy": {
@@ -1648,6 +1716,34 @@
         "distantStopOccurrences": 93,
         "sourceUnchanged": true
       }
+    ]
+  },
+  "iteration10": {
+    "usableNetworks": 24,
+    "cities": 17,
+    "sourceEntries": 25,
+    "previousSourceObjectsIdentical": 23,
+    "validatedSegments": 41418,
+    "offlineTests": {
+      "python": 34,
+      "node": 26
+    },
+    "browser": {
+      "sourceBandCases": 100,
+      "clearRouteCases": 12,
+      "zoomStates": 36,
+      "viewports": [320, 390, 573, 1280],
+      "pendingResizeGuard": true,
+      "standalone": true
+    },
+    "newSources": ["prato", "livorno"],
+    "sourceLimitation": "Toscana feed lastModified January 2026; scheduled service October 30, not a live timetable. New OSM base May/June 2026.",
+    "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI gates",
+      "deployment"
     ]
   }
 }

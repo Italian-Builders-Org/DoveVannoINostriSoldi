@@ -173,3 +173,17 @@ Nessuna animazione aggiunta all’ordinamento frequente: cambio immediato, focus
 | Proiezioni accettate fino a 250 m dalle fermate | Massimo 100 m, esclusioni e metodo visibili nelle fonti | Evitare falsi tratti lentissimi dovuti all’allineamento GTFS |
 
 Filtro e contrasto cambiano subito, senza animazioni su azioni ripetute. La ricerca del tratto selezionato viene riutilizzata nel renderer; non è aggiunta una seconda scansione. Nessuna dipendenza o richiesta remota durante l’uso. Nomi lunghi e chiusura verificati separati a 320/390/573/1280 px.
+
+
+## Iterazione 10: precisione dei controlli
+
+| Before | After | Why |
+| --- | --- | --- |
+| Per togliere una linea serviva riaprire il menu o azzerare tutti i filtri | X da 44 px accanto al selettore, focus restituito alla linea | Conservare velocità, fascia e ordine con una sola azione |
+| La freccia poteva restringersi con un nome lungo | Chevron a larghezza fissa, X in uno spazio separato | Rendere riconoscibili apertura e rimozione anche a 320 px |
+| Massimo zoom frazionario arrotondato dallo step, “+” ancora attivo | Limiti condivisi con la camera e slider continuo; pulsanti disabilitati agli estremi | Evitare comandi senza effetto e stati incoerenti dopo un resize |
+| Un aggiornamento della camera poteva riattivare controlli durante l’attesa | Zoom, inclinazione e rilievi rispettano lo stato di caricamento | Evitare modifiche della rete precedente mentre arriva quella nuova |
+
+Nessuna animazione aggiunta a filtri o zoom frequenti. Altezza della toolbar
+invariata quando compare la X, contrasto e hit area coerenti con i controlli
+esistenti. Verifica Browser a 320, 390, 573 e 1280 px; telefono fisico non testato.

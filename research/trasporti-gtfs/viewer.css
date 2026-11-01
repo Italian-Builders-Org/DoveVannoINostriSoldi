@@ -1586,6 +1586,7 @@ details.disclosure {
   white-space: nowrap;
 }
 .select-trigger > svg {
+  flex-shrink: 0;
   width: 18px;
   height: 18px;
   color: #536b5e;
@@ -1883,4 +1884,39 @@ th:nth-child(4) {
   .line-action[aria-pressed="true"]:hover:not(:disabled) {
     background: #244435;
   }
+}
+
+.route-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  align-content: start;
+}
+.route-field > .select-field {
+  display: flex;
+}
+.route-field .select-trigger {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.route-field .select-field[data-clearable="true"] .select-trigger {
+  border-radius: 8px 0 0 8px;
+}
+.select-clear {
+  flex: 0 0 44px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 0 8px 8px 0;
+  border-left: 0;
+  color: #52695c;
+}
+.select-clear[hidden] {
+  display: none;
+}
+.select-clear svg {
+  width: 16px;
+  height: 16px;
 }

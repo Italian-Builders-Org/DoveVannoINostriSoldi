@@ -8,8 +8,12 @@ export function normalizeBearing(angle) {
     Math.PI
   );
 }
+export function zoomLimits(camera) {
+  return { min: camera.base / 10, max: Math.min(1.2, camera.base * 8) };
+}
 function limitedScale(camera, scale) {
-  return clamp(scale, camera.base / 10, Math.min(1.2, camera.base * 8));
+  const { min, max } = zoomLimits(camera);
+  return clamp(scale, min, max);
 }
 export function projection(camera, { width, height }) {
   const { x: cx, y: cy, scale, bearing, pitch } = camera,

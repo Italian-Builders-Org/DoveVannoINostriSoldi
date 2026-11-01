@@ -207,3 +207,42 @@ Contrasto: Lucca mattino, primo tratto Pescia–Montecarlo, poi Centro e Inquadr
 L’audit distingue risultati cambiati da byte originali invariati. Counters di fermate distanti sono occorrenze nei percorsi unici del feed, non numero di fermate urbane distinte.
 
 Limiti: Prato/Livorno esclusi dopo errori 502/timeout e 406 nel Browser; nessun bypass. Snapshot Toscana gennaio 2026, solo servizio programmato. HTML singolo nuovo non generato per ENOSPC; anteprima a directory completa. Touch fisico, screen reader e gate del prodotto non eseguiti. Pending/cancellazione sotto rete rallentata non riprovati: nei sette cambi rapidi le richieste campionate erano già concluse.
+
+
+## Iterazione 10, 1 novembre 2026
+
+Stato: PASS locale. Artifact `gtfs-20261101-v10`: `analysis.json.gz`, 25 asset,
+`atlas-offline.html`, `browser-source-bands.json` (100),
+`browser-clear-route.json` (12), `browser-zoom.json` (12 casi/36 stati),
+`browser-pending-controls.json`, `browser-offline.json`, screenshot e ricevute.
+
+`python3 verify.py` nella directory artifact ricontrolla le osservazioni salvate:
+righe/ordine/conteggi contro i dati, 41.418 geometrie, tutte le ricevute/asset,
+precedenti 23 voci identiche a v9 e payload dell’HTML offline identici all’analisi.
+Non rilancia il Browser. Test locali: 34 Python e 26 Node.
+
+Ripetizione UI: a 320/390/573/1280 px scegliere Torino tram, Prato e Livorno.
+Applicare filtro velocità e ordine per corse; scegliere una linea, poi premere
+la X. Attesi solo linea rimossa, focus al selettore, ordine/fascia/velocità
+preservati, nessuna sovrapposizione o variazione dell’altezza del campo. Cliccare
+l’etichetta Linea apre il menu. Da Vista portare lo slider zoom a Home/End e
+ridurre di un passo: pulsanti −/+ disabilitati solo all’estremo corrispondente,
+valore camera finito. Il caso 1280 px include un massimo frazionario.
+
+Durante un cambio Cagliari rallentato e un resize: righe/canvas inert,
+zoom/inclinazione/rilievo/rimozione linea disabilitati; al termine tornano
+utilizzabili. Condizioni di rete e cache del Browser ripristinate dopo la prova.
+La prova ha avuto una latenza anomala del Browser e non è una misura di performance.
+
+Prato e Livorno: cartografia con POST Private.coffee, SHA/byte verificati dal
+renderer. OSM base maggio/giugno; GTFS Toscana gennaio, servizio 30 ottobre.
+Perimetri e limiti visibili nelle fonti. Bari resta indisponibile per la data.
+Le altre fonti, numeri e mappe restano identici a v9.
+
+Output directory e HTML unico verificati nel Browser. `render.py` accetta JSON
+plain o gzip, non il manifest riassuntivo separato. Sei test di fallimento scritti
+prima delle modifiche coprono input corrotti/troppo grandi, equivalenza gzip,
+file invariati e sostituzione fallita o collegata a una versione precedente.
+
+Telefono fisico, screen reader e gate Next/ETL/CI/deploy: NOT RUN. Nessun push,
+PR, merge, servizio remoto aggiunto all’esplorazione o build Vercel.

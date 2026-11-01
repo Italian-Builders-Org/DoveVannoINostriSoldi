@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 22 reti utilizzabili in 15 città, con tram, autobus, metro e
+Prototipo locale: 24 reti utilizzabili in 17 città, con tram, autobus, metro e
 treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -27,7 +27,8 @@ python3 -m http.server 3274 --bind 127.0.0.1 \
   --directory research/trasporti-gtfs/output
 ```
 
-Per modificare soltanto l'interfaccia senza rianalizzare gli archivi:
+Per modificare soltanto l'interfaccia senza rianalizzare gli archivi (input JSON
+o `analysis.json.gz`, con limite espanso di 256 MiB):
 
 ```bash
 python3 research/trasporti-gtfs/render.py \
@@ -284,3 +285,35 @@ Il badge linea nel dettaglio filtra e inquadra la linea; se già filtrata ripris
 Il confronto completo è nell’artifact `geometry-audit.json`. Tra le reti precedenti cambiano Milano bus, Trento, Rovereto e Ferrara: 64 geometrie rimosse e 17 aggiunte dopo la proiezione corretta; quattro tratti comuni di Rovereto cambiano campioni/tempi. Non sono dichiarati tutti i risultati precedenti identici. I byte e le ricevute delle fonti restano invariati.
 
 Prato e Livorno restano candidati non esposti: dati ferroviari preliminari disponibili, cartografia rifiutata/non acquisita. Il dataset preliminare è conservato separatamente e richiede il controllo geometrico aggiornato prima di essere integrato.
+
+
+### Iterazione 10
+
+Prato e Livorno sono ora integrate: rispettivamente 76 e 89 tratti ferroviari,
+117 e 45 corse con tratti utilizzabili, tre e due linee. Sono estratti parziali
+regionali, non reti urbane complete. Il perimetro di Prato è limitato all’area
+urbana e alla cintura immediata; Livorno include la costa fino a Rosignano.
+Entrambi rispettano la soglia geometrica di 100 m. Le precedenti 23 voci,
+cartografia inclusa, sono identiche all’artifact v9.
+
+La cartografia è stata acquisita con POST dall’istanza pubblica Private.coffee
+elencata da OSM, dopo i fallimenti precedenti. Ricevute e hash sono conservati;
+il database OSM dichiara maggio/giugno 2026. Il feed Toscana resta il file del
+15 gennaio 2026 con calendario valido per il 30 ottobre: non viene presentato
+come verifica dell’orario corrente o dei ritardi.
+
+La X accanto alla linea rimuove solo quel filtro, conservando fascia, velocità
+e ordine. Freccia e X hanno spazi distinti; il focus torna al selettore senza
+spostare la pagina. Slider e pulsanti zoom condividono i limiti della camera,
+anche quando il massimo non è intero; durante il caricamento restano inattivi.
+
+Il renderer legge anche l’analisi gzip. Gli output identici non sono riscritti;
+quelli cambiati vengono sostituiti atomicamente, preservando versioni precedenti
+collegate e il file valido in caso di errore. Nessuna modifica a metriche o
+budget del client. HTML singolo offline nuovamente generato e verificato.
+
+Prove: 60 test offline, tutte le 100 reti/fasce nel Browser, 12 rimozioni del
+filtro linea e 36 stati zoom su quattro viewport, più caricamento con resize.
+Artifact `gtfs-20261101-v10`, con dati congelati, osservazioni, screenshot e
+`verify.py`. La verifica touch su telefono fisico e i gate del prodotto non
+sono eseguiti. Solo branch locale, nessun push o deploy.

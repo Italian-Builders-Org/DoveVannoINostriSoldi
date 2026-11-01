@@ -327,5 +327,79 @@
     "sourceNotes": [
       "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
     ]
+  },
+  {
+    "id": "trento",
+    "name": "Trento",
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [11.121, 46.069],
+    "mapBounds": [11.075, 46.01, 11.165, 46.11],
+    "studyBounds": [11.03, 45.99, 11.23, 46.16],
+    "scopeLabel": "Rete urbana · area di Trento",
+    "sourceNotes": [
+      "Solo autobus urbani nel perimetro dichiarato; funivia e servizi extraurbani esclusi."
+    ]
+  },
+  {
+    "id": "rovereto",
+    "name": "Rovereto",
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [11.04, 45.891],
+    "mapBounds": [11.0, 45.86, 11.075, 45.925],
+    "studyBounds": [10.97, 45.83, 11.11, 45.95],
+    "scopeLabel": "Rete urbana · area di Rovereto",
+    "sourceNotes": [
+      "Solo autobus urbani nel perimetro dichiarato; funivia e servizi extraurbani esclusi."
+    ],
+    "archiveId": "trento"
+  },
+  {
+    "id": "ferrara",
+    "name": "Ferrara",
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "holder": "TPER S.p.A.",
+    "landingUrl": "https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsfe&source=",
+    "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsfe&format=zip&source=solweb.tper.it&version=20260904",
+    "license": "CC BY 3.0 Italia",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "cadence": null,
+    "focus": [11.619, 44.836],
+    "mapBounds": [11.56, 44.79, 11.68, 44.88],
+    "studyBounds": [11.49, 44.74, 11.76, 44.93],
+    "scopeLabel": "Rete bus · area di Ferrara"
+  },
+  {
+    "id": "torino-metro",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [7.685, 45.069],
+    "mapBounds": [7.61, 45.01, 7.76, 45.13],
+    "mode": "metro",
+    "areaId": "torino",
+    "archiveId": "torino",
+    "mapId": "torino",
+    "routeTypes": ["1"]
   }
 ]

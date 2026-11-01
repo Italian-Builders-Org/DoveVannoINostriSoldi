@@ -164,3 +164,41 @@ test("fit balances the projected network and raised ridges around the viewport c
     );
   }
 });
+
+test("a selected raised segment fits the free viewport above a mobile detail card", () => {
+  const viewport = { width: 390, height: 550 },
+    box = [
+      [-200, -300],
+      [-200, 600],
+      [500, -300],
+      [500, 600],
+    ];
+  const insets = { top: 70, right: 54, bottom: 265, left: 12 },
+    padding = 16;
+  const fitted = fitCamera(
+    { ...cam, base: baseScale(viewport), bearing: 1.1, pitch: 1 },
+    viewport,
+    box,
+    { padding, maxHeight: 280, insets },
+  );
+  const p = projection(fitted, viewport),
+    screen = box.flatMap((point) => [p.project(point), p.project(point, 280)]);
+  assert.ok(screen.every(Boolean));
+  for (const [x, y] of screen) {
+    assert.ok(
+      x >= insets.left + padding - 0.1 &&
+        x <= viewport.width - insets.right - padding + 0.1,
+    );
+    assert.ok(
+      y >= insets.top + padding - 0.1 &&
+        y <= viewport.height - insets.bottom - padding + 0.1,
+    );
+  }
+  const ys = screen.map((point) => point[1]);
+  assert.ok(
+    Math.abs(
+      (Math.min(...ys) + Math.max(...ys)) / 2 -
+        (insets.top + viewport.height - insets.bottom) / 2,
+    ) < 1,
+  );
+});

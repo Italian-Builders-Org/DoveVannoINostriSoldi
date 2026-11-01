@@ -134,3 +134,26 @@ Base: 77512c48; main osservato 41a953e5. Solo ricerca locale, nessun deploy.
 - PASS: dati e mappe delle 11 voci precedenti identici. Hash/byte di tutti i 16 asset verificati; console normale vuota. Main remoto ricontrollato a 41a953e5; solo ricerca locale modificata.
 - Artifact: gtfs-20261031-v6 nella cartella visualizzazioni della chat, con screenshot, statico/offline, dati, matrici e verify-final.py. Il verificatore conferma le osservazioni Browser salvate contro l'analisi.
 - NOT RUN: telefono fisico, VoiceOver, integrazione corpus, gate Next/ETL/CI e deploy del prodotto. Nessun push, PR, merge o build Vercel.
+
+## Iterazione 7: qualità visiva e altre reti ufficiali
+
+Base: d061ccfb. Obiettivo: maggiore leggibilità e cura di mappa/dettaglio,
+nuovi dati verificati e stress test nel Browser. Solo prototipo locale.
+
+- [x] Preservare checkout principale, confermare worktree/branch e leggere Emil Design Skills.
+- [x] Verificare nuovi feed ufficiali, licenze, calendario del 30/10 e geometrie senza cambiare le date precedenti.
+- [x] Riprodurre criticità visive e definire prima del codice rischi: dati assenti, caricamenti rapidi, selezione, contrasti, touch/keyboard, export e camera.
+- [x] Migliorare gerarchia, dettaglio della selezione e leggibilità cartografica senza animazioni continue o nuove richieste remote.
+- [x] Integrare reti con ricevute; conservare identici i dataset precedenti.
+- [x] Stress test Browser desktop/mobile, focus, filtri, errori, cambio città e controlli mappa; test offline pertinenti.
+- [x] Salvare screenshot/prove, aggiornare documenti e commit locale; nessun push/PR/deploy.
+
+### Esito della settima iterazione
+
+- PASS: bus Trento/Rovereto/Ferrara e metro Torino verificati: 19 reti utilizzabili in 14 città. R35 esclusa per 48 corse senza shape utile; nessun tracciato inventato.
+- PASS: gerarchia e tipografia più leggibili, controlli 2D/3D da 44 px su mobile, nomi di luogo prioritari. Il dettaglio non copre comandi o selezione; inquadratura adattata agli ingombri reali e al resize.
+- PASS: caricamenti superati annullati; vecchie righe/mappa/fonti non interattive durante l'attesa. PNG locale con scala/nord/fonti, CSV precedente conservato; niente dipendenze o servizi remoti aggiunti.
+- PASS: 51 test offline, 76 reti/fasce più Bari, 20 pannelli fonti, 35 viste responsive e 3 casi ai limiti, 16 menu. Hash errato/recupero, PNG 3D/2D, errore export simulato, CSV reale e offline verificati.
+- PASS: proiezione indipendente dei dati/camera osservati, nessun punto A/B o rilievo sotto pannello/comandi. Tutti i 16 dataset precedenti identici, console normale vuota. Main remoto invariato a 41a953e5; checkout principale preservato.
+- Artifact: gtfs-20261101-v7 nella cartella visualizzazioni della chat; screenshot, PNG/CSV scaricati, ricevute, matrici ed eventi, verificatore riutilizzabile.
+- NOT RUN: telefono fisico/VoiceOver, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Commit solo locale; nessun push, PR, merge o build Vercel.

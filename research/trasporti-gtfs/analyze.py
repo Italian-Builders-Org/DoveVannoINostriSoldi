@@ -517,6 +517,7 @@ def write_viewer(payload, output, standalone=False):
     for name in [
         "catalog.mjs",
         "select-menu.mjs",
+        "map-export.mjs",
         "camera.mjs",
         "explorer.mjs",
         "view-state.mjs",

@@ -75,9 +75,22 @@ export function fitCamera(
   camera,
   view,
   points,
-  { padding = 42, maxHeight = 0 } = {},
+  { padding = 42, maxHeight = 0, insets = {} } = {},
 ) {
   if (!points.length) return { ...camera };
+  const left = insets.left || 0,
+    right = insets.right || 0,
+    top = insets.top || 0,
+    bottom = insets.bottom || 0;
+  const target = [
+    (left + view.width - right) / 2,
+    (top + view.height - bottom) / 2,
+  ];
+  if (
+    view.width - left - right <= padding * 2 ||
+    view.height - top - bottom <= padding * 2
+  )
+    return { ...camera };
   let west = Infinity,
     south = Infinity,
     east = -Infinity,
@@ -115,15 +128,9 @@ export function fitCamera(
         (Math.min(...xs) + Math.max(...xs)) / 2,
         (Math.min(...ys) + Math.max(...ys)) / 2,
       ];
-      if (
-        Math.hypot(centre[0] - view.width / 2, centre[1] - view.height / 2) <
-        0.01
-      )
+      if (Math.hypot(centre[0] - target[0], centre[1] - target[1]) < 0.01)
         break;
-      candidate = panCamera(candidate, view, centre, [
-        view.width / 2,
-        view.height / 2,
-      ]);
+      candidate = panCamera(candidate, view, centre, target);
     }
     return candidate;
   };
@@ -136,10 +143,10 @@ export function fitCamera(
         const screen = p.project(point, z);
         return (
           screen &&
-          screen[0] >= padding &&
-          screen[0] <= view.width - padding &&
-          screen[1] >= padding &&
-          screen[1] <= view.height - padding
+          screen[0] >= left + padding &&
+          screen[0] <= view.width - right - padding &&
+          screen[1] >= top + padding &&
+          screen[1] <= view.height - bottom - padding
         );
       }),
     );

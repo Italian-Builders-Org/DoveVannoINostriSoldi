@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 15 reti utilizzabili in 11 città, con tram, autobus, metro e
+Prototipo locale: 19 reti utilizzabili in 14 città, con tram, autobus, metro e
 treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -99,6 +99,10 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Roma     | metro           |              4 |            4 |                 1.379 |                         1.379 |             172 |
 | Firenze  | treni regionali |             14 |           14 |                   780 |                           392 |             408 |
 | Pisa     | treni regionali |             14 |           14 |                   780 |                           178 |             129 |
+| Trento   | bus urbano      |             43 |           42 |                 2.474 |                         1.913 |           1.704 |
+| Rovereto | bus urbano      |             43 |           42 |                 2.474 |                           500 |           1.373 |
+| Ferrara  | bus             |             80 |           74 |                 1.659 |                         1.048 |           2.213 |
+| Torino   | metro           |              1 |            1 |                   574 |                           574 |              44 |
 | Bari     | bus             |             68 |            0 |                     0 |                             0 |               0 |
 
 Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
@@ -109,7 +113,7 @@ Mestre, non i vaporetti né l'intero sistema di trasporto lagunare. Le aree di
 studio di Cagliari e Venezia sono dichiarate in `feeds.json`.
 
 Questa è la copertura dei feed acquisiti, non una certificazione dell'intera
-rete cittadina. Roma contiene corse utilizzabili solo della linea 8. Bologna
+rete cittadina. Il feed tram di Roma contiene corse utilizzabili solo della linea 8. Bologna
 include coppie con entrambe le fermate nel rettangolo `[11.2,44.4,11.48,44.58]`
 (ovest, sud, est, nord): le corse/linee del feed oltre quel perimetro non diventano
 copertura della mappa urbana. Nel perimetro sono utilizzabili 135 linee e
@@ -180,6 +184,8 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Catania, AMTS](https://www.amts.ct.it/open-data): IODL 2.0; rete autobus entro il perimetro urbano dichiarato.
 - [Firenze e Pisa, Regione Toscana/Trenitalia](https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f): regionali toscani, CC-BY nel catalogo, versione non specificata. Il file è datato 15/01/2026 e contiene calendario per il 30/10: non certifica l’orario oggi in esercizio. Entrambe le fermate devono rientrare nei perimetri dichiarati. Le 14 linee e 780 corse iniziali sono regionali; le colonne successive misurano i tratti utilizzabili nelle singole aree.
 - [Lombardia/Trenord](https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9): archivio verificato ma senza `shapes.txt`, escluso dalla mappa. Nessun tracciato è ricostruito a partire da sole stazioni.
+- [Trento e Rovereto, Trentino Trasporti](https://www.trentinotrasporti.it/en/opendata): CC BY 4.0. Stesso archivio urbano, perimetri distinti; i conteggi iniziali di 43 linee/2.474 corse riguardano tutto il feed. Con tratti utilizzabili: 25 linee per Trento e 13 per Rovereto. Funivia esclusa. Il file extraurbano include 48 corse attive della ferrovia R35 prive di shape utilizzabile: non vengono disegnate.
+- [Ferrara, TPER](https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsfe&source=): CC BY 3.0 Italia. Area urbana dichiarata, con 45 linee utilizzabili; i collegamenti fuori perimetro non diventano copertura cittadina.
 - [Genova, AMT](https://www.amt.genova.it/amt/societa_trasparente/altri-contenuti/open-data/): nessuna geometria nel feed acquisito, non inclusa nel visualizzatore.
 - [OpenStreetMap, ODbL 1.0](https://www.openstreetmap.org/copyright): attribuzione sempre visibile e ricevuta separata. Per redistribuire gli estratti rispettare ODbL e disponibilità della banca dati derivata.
 - [Specifica GTFS Schedule](https://gtfs.org/documentation/schedule/reference/).
@@ -192,7 +198,7 @@ node --test research/trasporti-gtfs/test_camera.mjs research/trasporti-gtfs/test
 node --check research/trasporti-gtfs/viewer.js
 ```
 
-Cinquanta test offline: 27 Python e 23 Node. Fixture sintetiche per calendario,
+Cinquantuno test offline: 27 Python e 24 Node. Fixture sintetiche per calendario,
 geometrie, budget, date esplicite, coordinate fermate, asset statici e integrità;
 proiezione/inversa, zoom ancorato, fit, rotazione e trasformazione pinch;
 ricerca, confini dei filtri, CSV e link alla vista. I nuovi contratti sono stati provati in RED
@@ -232,3 +238,26 @@ opzioni, valore e disabilitazione nei punti che cambiano dati. Non intercetta i
 setter nativi e non installa observer per ogni opzione. Animazione di apertura
 130 ms solo da puntatore; tastiera e movimento ridotto sono immediati. Le
 ricevute distinguono file aggiornato, acquisizione e giorno di servizio.
+
+## Vista, caricamenti ed export PNG
+
+Il pannello del tratto lascia libero lo spazio dei comandi. L’inquadratura usa
+l’ingombro reale del dettaglio e dei controlli, include i punti A/B ufficiali e
+si riadatta al resize. «Inquadra» segue prima il tratto o la fermata attivi;
+senza dettaglio mostra l’intera selezione filtrata. Città e quartieri hanno
+priorità sulle etichette stradali; l’ordine è preparato una volta per rete.
+
+Durante un cambio città, mappa, righe e fonti precedenti diventano non
+interattive e dichiarano aria-busy. I download superati vengono annullati;
+un ritorno rapido alla stessa città avvia un nuovo task se quello precedente
+è già annullato. La cancellazione non marca l’asset come corrotto e il cleanup
+di un vecchio task non rimuove il suo sostituto. Byte, hash e budget di
+espansione restano verificati. Nessun polling o aggiornamento per visita.
+
+«PNG» esporta la vista corrente in locale, con città, mezzo, fascia, eventuale
+linea/tratto, data, legenda, nord, scala, fonte e condizioni di riuso. Non è una
+cattura dell’interfaccia: il pannello e i pulsanti non entrano nell’immagine.
+La risoluzione è limitata a 2.048 px di larghezza; non ci sono API o upload.
+Gli stati ordinari sono annunciati senza muovere il layout; l’errore resta
+visibile e il pulsante torna disponibile. La versione offline supporta anche
+questo export. Le immagini GTT conservano il vincolo non commerciale.

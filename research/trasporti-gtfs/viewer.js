@@ -1,3 +1,4 @@
+import { mapImage } from "./map-export.mjs";
 import { groupAreas, sourceForArea, modeLabel } from "./catalog.mjs";
 import {
   enhanceSelect,
@@ -86,6 +87,7 @@ const cache = new Map(),
   pending = new Map(),
   controls = [
     "band",
+    "export-map",
     "route",
     "stop-search",
     "share-view",
@@ -142,11 +144,14 @@ async function decodeCity(id) {
     cache.set(id, s);
     return s;
   }
-  if (pending.has(id)) return pending.get(id);
+  if (pending.has(id) && !pending.get(id).controller.signal.aborted)
+    return pending.get(id).promise;
   if (typeof DecompressionStream !== "function")
     throw Error(
       "Questo browser non supporta gli archivi compressi del prototipo.",
     );
+  const controller = new AbortController(),
+    { signal } = controller;
   const task = (async () => {
     const entry = manifest.cities.find((c) => c.id === id);
     let bytes;
@@ -169,6 +174,7 @@ async function decodeCity(id) {
       try {
         const response = await fetch(asset.path, {
           cache: failedAssets.has(asset.path) ? "reload" : "force-cache",
+          signal,
         });
         if (!response.ok)
           throw Error(
@@ -188,7 +194,7 @@ async function decodeCity(id) {
           );
         failedAssets.delete(asset.path);
       } catch (error) {
-        failedAssets.add(asset.path);
+        if (!signal.aborted) failedAssets.add(asset.path);
         throw error;
       }
     } else {
@@ -200,10 +206,13 @@ async function decodeCity(id) {
     }
     const expanded = await boundedBytes(
       new Response(
-        new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip")),
+        new Blob([bytes])
+          .stream()
+          .pipeThrough(new DecompressionStream("gzip"), { signal }),
       ),
       64 * 1024 ** 2,
     );
+    signal.throwIfAborted();
     const text = new TextDecoder("utf-8", { fatal: true }).decode(expanded);
     const source = JSON.parse(text);
     if (source.id !== id) throw Error("Il file appartiene a un’altra città.");
@@ -212,11 +221,12 @@ async function decodeCity(id) {
     while (cache.size > 2) cache.delete(cache.keys().next().value);
     return result;
   })();
-  pending.set(id, task);
+  const entry = { promise: task, controller };
+  pending.set(id, entry);
   try {
     return await task;
   } finally {
-    pending.delete(id);
+    if (pending.get(id) === entry) pending.delete(id);
   }
 }
 async function selectCity(id, restored = null) {
@@ -224,6 +234,16 @@ async function selectCity(id, restored = null) {
   syncArea(id);
   $("share-result").hidden = true;
   const token = ++requestId;
+  for (const [otherId, task] of pending)
+    if (otherId !== id) task.controller.abort();
+  $("rows").inert = true;
+  canvas.inert = true;
+  $("inspector").hidden = true;
+  $("map-tip").hidden = true;
+  for (const id of ["map-shell", "data-section", "source-panel"])
+    $(id).setAttribute("aria-busy", "true");
+  $("source-panel").inert = true;
+  $("export-map-status").textContent = "";
   controls.forEach((id) => ($(id).disabled = true));
   syncSelectMenus();
   $("export").disabled = true;
@@ -232,6 +252,9 @@ async function selectCity(id, restored = null) {
   for (const button of document.querySelectorAll("[data-speed]"))
     button.disabled = true;
   shell.dataset.loading = "true";
+  $("map-title").textContent = manifest.cities.find((c) => c.id === id).name;
+  $("area-label").textContent = "Caricamento…";
+  $("reference").textContent = "…";
   notice("Preparazione della mappa…");
   hideSearch();
   try {
@@ -308,7 +331,14 @@ async function selectCity(id, restored = null) {
     notice(error.message);
     schedule();
   } finally {
-    if (token === requestId) syncSelectMenus();
+    if (token === requestId) {
+      $("rows").inert = false;
+      canvas.inert = false;
+      $("source-panel").inert = false;
+      for (const id of ["map-shell", "data-section", "source-panel"])
+        $(id).setAttribute("aria-busy", "false");
+      syncSelectMenus();
+    }
   }
 }
 function sourceInfo() {
@@ -458,6 +488,7 @@ function updateData() {
     fmt(shown.length, 0) + " tratti" + (route ? " · linea " + route : "");
   $("clear-filters").hidden = !filtered();
   $("export").disabled = !shown.length;
+  $("export-map").disabled = !shown.length;
   for (const button of document.querySelectorAll("[data-speed]"))
     button.setAttribute(
       "aria-pressed",
@@ -539,7 +570,20 @@ function renderInspector() {
   panel.hidden = !s && !selectedStop;
   panel.classList.toggle("stop-detail", Boolean(selectedStop));
   if (panel.hidden) return;
-  const close = add(panel, "button", "×", "close-detail");
+  const close = add(panel, "button", undefined, "close-detail");
+  const closeIcon = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg",
+  );
+  closeIcon.setAttribute("viewBox", "0 0 24 24");
+  closeIcon.setAttribute("aria-hidden", "true");
+  const closePath = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path",
+  );
+  closePath.setAttribute("d", "m6 6 12 12M18 6 6 18");
+  closeIcon.append(closePath);
+  close.append(closeIcon);
   close.type = "button";
   close.setAttribute("aria-label", "Chiudi dettaglio");
   close.onclick = () => {
@@ -720,6 +764,15 @@ function home() {
 }
 function fit() {
   if (!shown.length) return;
+  const selection = shown.find((s) => s.id === selected);
+  if (selection) {
+    focusSegment(selection);
+    return;
+  }
+  if (selectedStop) {
+    focusPoint(selectedStop.world, Math.max(cam.base, cam.scale));
+    return;
+  }
   const maxHeight = mode3d
     ? shown.reduce(
         (m, s) =>
@@ -747,15 +800,46 @@ function focusPoint(point, scale) {
     );
   updateCamera(next);
 }
-function focusSegment(s) {
+function selectionInsets() {
+  const panel = $("inspector"),
+    rect = canvas.getBoundingClientRect();
+  const topTools = document.querySelector(".top-tools").getBoundingClientRect();
+  const bottomTools = document
+    .querySelector(".camera-tools")
+    .getBoundingClientRect();
+  const zoomTools = document
+    .querySelector(".zoom-tools")
+    .getBoundingClientRect();
+  const top = topTools.bottom - rect.top + 12,
+    bottom = rect.bottom - bottomTools.top + 12;
+  const right = rect.right - zoomTools.left + 12;
+  if (panel.hidden) return { top, right, bottom, left: 12 };
+  const detail = panel.getBoundingClientRect();
+  return canvas.clientWidth < 600
+    ? {
+        top,
+        right: zoomTools.top < detail.top ? right : 12,
+        bottom: Math.max(bottom, rect.bottom - detail.top + 12),
+        left: 12,
+      }
+    : { top, right, bottom, left: detail.right - rect.left + 16 };
+}
+
+function segmentCamera(s) {
   const height = mode3d
     ? Math.min(60 / s.bands[band].kmh, 12) * 30 * relief
     : 0;
-  const fitted = fitCamera(cam, view(), s.points, {
-    padding: Math.min(90, canvas.clientWidth * 0.22),
+  const endpoints = [s.fromId, s.toId]
+    .map((id) => scene.stops.find((stop) => stop.id === id)?.world)
+    .filter(Boolean);
+  return fitCamera(cam, view(), [...s.points, ...endpoints], {
+    padding: 18,
     maxHeight: height,
+    insets: selectionInsets(),
   });
-  focusPoint(s.points[Math.floor(s.points.length / 2)], fitted.scale);
+}
+function focusSegment(s) {
+  updateCamera(segmentCamera(s));
 }
 
 function zoomBy(
@@ -787,6 +871,8 @@ function drawFrame() {
   ) {
     cam = resizeCamera(cam, lastView, nextView);
     lastView = nextView;
+    const segment = shown.find((s) => s.id === selected);
+    if (segment) cam = segmentCamera(segment);
     constrain();
     syncControls();
   }
@@ -1296,6 +1382,48 @@ $("export").onclick = () => {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+$("export-map").onclick = async () => {
+  if (!city || !shown.length || $("export-map").disabled) return;
+  const token = requestId,
+    snapshot = city;
+  $("export-map").disabled = true;
+  $("export-map-status").classList.add("sr-only");
+  $("export-map-status").textContent = "Preparazione immagine…";
+  try {
+    if (frame) cancelAnimationFrame(frame);
+    drawFrame();
+    const segment = shown.find((s) => s.id === selected);
+    const blob = await mapImage({
+      canvas,
+      city: snapshot,
+      bandLabel: $("band").selectedOptions[0].textContent,
+      route,
+      count: shown.length,
+      mode3d,
+      camera: { ...cam },
+      selection: segment
+        ? stopLabel(segment.from) + " → " + stopLabel(segment.to)
+        : null,
+    });
+    const url = URL.createObjectURL(blob),
+      a = make("a");
+    a.href = url;
+    a.download = "dvns-" + snapshot.id + "-" + snapshot.serviceDate + ".png";
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (token === requestId)
+      $("export-map-status").textContent = "Immagine scaricata.";
+  } catch (error) {
+    if (token === requestId) {
+      $("export-map-status").classList.remove("sr-only");
+      $("export-map-status").textContent = error.message;
+    }
+  } finally {
+    if (token === requestId) $("export-map").disabled = !shown.length;
+  }
 };
 new ResizeObserver(schedule).observe(canvas);
 window.addEventListener("resize", () => finishDisclosures());

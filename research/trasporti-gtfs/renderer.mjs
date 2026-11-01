@@ -37,10 +37,15 @@ export function prepareScene(source) {
       ...f,
       points: f.coordinates.map(world),
     })),
-    labels = (source.basemap?.labels ?? []).map((l) => ({
-      ...l,
-      point: world(l.point),
-    }));
+    labels = (source.basemap?.labels ?? [])
+      .map((l) => ({
+        ...l,
+        point: world(l.point),
+      }))
+      .sort(
+        (a, b) =>
+          Number(/city|town/.test(b.class)) - Number(/city|town/.test(a.class)),
+      );
   let west = Infinity,
     south = Infinity,
     east = -Infinity,
@@ -174,6 +179,19 @@ function drawBackground(ctx, scene, p, view) {
     };
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
+  for (const label of scene.labels) {
+    const xy = p.project(label.point);
+    if (!xy) continue;
+    const major = /city|town/.test(label.class),
+      text = label.name.slice(0, 50);
+    ctx.font = (major ? "600 13px" : "500 11px") + " system-ui";
+    if (!fits(...xy, ctx.measureText(text).width)) continue;
+    ctx.strokeStyle = "#f8faf4";
+    ctx.lineWidth = 4;
+    ctx.strokeText(text, ...xy);
+    ctx.fillStyle = major ? "#5c6c59" : "#788672";
+    ctx.fillText(text, ...xy);
+  }
   for (const f of visible) {
     if (
       f.kind !== "road" ||
@@ -197,19 +215,6 @@ function drawBackground(ctx, scene, p, view) {
     ctx.fillText(text, ...mid);
     names.add(f.name);
     if (names.size >= 22) break;
-  }
-  for (const label of scene.labels) {
-    const xy = p.project(label.point);
-    if (!xy) continue;
-    const major = /city|town/.test(label.class),
-      text = label.name.slice(0, 50);
-    ctx.font = (major ? "600 13px" : "500 11px") + " system-ui";
-    if (!fits(...xy, ctx.measureText(text).width)) continue;
-    ctx.strokeStyle = "#f8faf4";
-    ctx.lineWidth = 4;
-    ctx.strokeText(text, ...xy);
-    ctx.fillStyle = major ? "#5c6c59" : "#788672";
-    ctx.fillText(text, ...xy);
   }
   return visible.filter((f) => f.kind === "road").length;
 }

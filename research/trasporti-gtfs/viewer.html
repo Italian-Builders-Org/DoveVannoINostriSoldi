@@ -274,10 +274,28 @@
             <i style="--swatch: #528b78"></i>≥ 25
           </button>
         </div>
-        <span class="height-note"
-          >Più alto = più minuti/km · massimo grafico 12</span
-        >
+        <div class="map-meta">
+          <span class="height-note"
+            >Più alto = più minuti/km · massimo grafico 12</span
+          >
+          <button
+            id="export-map"
+            class="image-export"
+            disabled
+            aria-label="Scarica la mappa in PNG"
+            title="Scarica mappa"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 3v11m-4-4 4 4 4-4M4 17v4h16v-4" /></svg
+            ><span>PNG</span>
+          </button>
+        </div>
       </div>
+      <p
+        id="export-map-status"
+        class="export-map-status sr-only"
+        role="status"
+      ></p>
       <details class="map-help">
         <summary>Comandi mappa</summary>
         <p id="map-help">
@@ -288,7 +306,7 @@
         </p>
       </details>
       <div class="below">
-        <section class="data-section">
+        <section id="data-section" class="data-section">
           <div class="section-heading">
             <div>
               <h2>Tratti selezionati</h2>
@@ -332,7 +350,7 @@
             </button>
           </nav>
         </section>
-        <section class="source">
+        <section id="source-panel" class="source">
           <h2>Fonte e metodo</h2>
           <div id="source"></div>
           <details>

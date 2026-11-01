@@ -136,3 +136,19 @@ Il test Browser ha riprodotto due popup contemporanei aprendo Linea da tastiera
 dopo una ricerca fermate. L’apertura del selettore ora chiude la ricerca prima di
 spostare il focus. I menu scorrono internamente e non usano scrollIntoView per
 spostare accidentalmente la pagina. Nessuna dipendenza o loop grafico aggiunto.
+
+## Iterazione 7: gerarchia, mappa ed esportazione
+
+| Before                                                           | After                                                                                                        | Why                                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Campi mobile 12 px, valori secondari del dettaglio 9 px          | Campi 16 px, valori 11 px e pulsanti 2D/3D 44×44                                                             | Migliorare lettura e precisione del tocco                                       |
+| Dettaglio che può coprire comandi o punti del tratto dopo resize | Inquadratura nell’area libera calcolata dagli ingombri reali; test geometrico scritto prima della correzione | Tenere visibili A/B, rilievi e comandi senza correggere a mano le singole città |
+| Nomi di strada che occupano prima lo spazio delle città          | Priorità a città/quartieri, collisioni conservate e ordine preparato una volta                               | Rendere leggibile la geografia mantenendo lo stesso dato                        |
+| Righe precedenti ancora cliccabili durante un cambio lento       | Inert e aria-busy, dettaglio chiuso e download superati annullati                                            | Evitare selezioni e letture appartenenti alla città precedente                  |
+| Esportazione dei soli dati CSV                                   | Anche PNG della vista, con scala, nord, legenda e fonti                                                      | Condividere una figura leggibile e attribuita senza ritagliare uno screenshot   |
+
+La resa resta sobria: tipografia di sistema, contrasto controllato, bordi
+morbidi e ombre leggere. Nessun font remoto, blur, animazione decorativa o
+nuova dipendenza. Il Canvas continua a disegnare solo su interazione/resize.
+L’errore di esportazione è visibile; preparazione e successo sono annunciati
+senza spostare i contenuti. La chiusura del dettaglio usa un SVG coerente.

@@ -146,3 +146,36 @@ merge, deploy o build Vercel per questa iterazione locale.
 
 Telefono fisico, VoiceOver sul dispositivo, integrazione corpus e gate
 Next/ETL/CI/deploy restano NOT RUN. Nessun push, PR, merge o build Vercel.
+
+## Prove della settima iterazione
+
+- Base d061ccfb, solo ricerca locale; main remoto verificato a 41a953e5.
+  I 16 dataset precedenti, comprese le mappe, sono identici. Nuove ricevute per
+  Trento/Rovereto/Ferrara; Torino metro riusa archivio e OSM di GTT.
+- 51 test offline. Il nuovo test RED riguarda il fit del rilievo entro una
+  viewport parzialmente occupata: la vecchia funzione ignorava gli inset.
+- Browser: 76 reti/fasce più Bari indisponibile; conteggi, prima velocità e righe
+  confrontati con analysis.json. Fonti e ricevute verificate per tutti i 20 file.
+- 35 viste reali a 320/390/573/768/1440 px su sette reti. Il verificatore proietta
+  geometrie e punti A/B con la camera osservata e controlla la mancata
+  sovrapposizione a pannello/comandi. Nessun overflow orizzontale. 16 menu aperti
+  restano nello schermo; ricerca senza risultati e selezione da tastiera provate.
+- Tre casi aggiuntivi con inclinazione 65°, rilievi 160% e rotazione a 180°:
+  proiezioni e ingombri verificati a 390/768/1440 px.
+- Rete locale rallentata: prima restavano 20 pulsanti attivi della città vecchia;
+  dopo, righe/canvas/fonti sono inert e busy. Sequenza Bologna → Trento → Bologna
+  → Ferrara: tre cancellazioni osservate dal Browser; solo l’ultima città pronta.
+  La limitazione di rete e il bypass della cache sono stati poi rimossi.
+- PNG reali scaricati dal Browser: 3D desktop e 2D ruotato mobile dalla versione
+  offline, entrambi ispezionati. Scala/nord/fonti inclusi, dimensioni e SHA salvati.
+  CSV Ferrara verificato contro i 1.566 segmenti mattutini e la ricevuta originale.
+- Fixture dichiarate: hash errato a byte invariati, recupero dopo ripristino senza
+  reload; toBlob che restituisce null, errore visibile e pulsante nuovamente attivo.
+- HTML offline con CSP connect-src none, cambi città e metro verificati. Console
+  normale senza warning/errori. Nuovi treni R35 esclusi: 48 corse senza shape utile.
+- Artifact gtfs-20261101-v7: screenshot, PNG/CSV scaricati, matrici, eventi di
+  cancellazione, dati, statico/offline e verificatore ripetibile. Il verificatore
+  verifica le osservazioni salvate, non sostituisce una nuova esecuzione Browser.
+
+Telefono fisico e VoiceOver, integrazione corpus e gate Next/ETL/CI/deploy del
+prodotto: NOT RUN. Nessun push, PR, merge o build Vercel.

@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --ink: #233a31;
-  --muted: #6a796e;
+  --ink: #203c32;
+  --muted: #64746a;
   --border: #dce3d9;
   --paper: #f8f9f5;
   --accent: #315c47;
@@ -31,7 +31,7 @@ select,
 input[type="search"] {
   border: 1px solid #d5ded2;
   background: #fff;
-  border-radius: 7px;
+  border-radius: 9px;
   min-height: 42px;
   padding: 8px 12px;
 }
@@ -101,7 +101,7 @@ svg {
 main {
   max-width: 1628px;
   margin: auto;
-  padding: 23px 24px 34px;
+  padding: 28px 24px 40px;
 }
 .heading {
   display: flex;
@@ -110,7 +110,7 @@ main {
   gap: 20px;
 }
 .heading h1 {
-  font-size: clamp(23px, 2.7vw, 31px);
+  font-size: clamp(25px, 2.7vw, 36px);
   line-height: 1.15;
   letter-spacing: -0.045em;
   margin: 0 0 6px;
@@ -140,7 +140,7 @@ main {
     minmax(150px, 0.85fr) minmax(175px, 1fr) minmax(145px, 0.85fr)
     minmax(210px, 1.3fr);
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 22px;
 }
 .toolbar label {
   display: grid;
@@ -550,9 +550,9 @@ main {
   margin-right: 3px;
 }
 .legend button {
-  min-height: 33px;
-  padding: 5px 9px;
-  font-size: 10px;
+  min-height: 40px;
+  padding: 6px 9px;
+  font-size: 11px;
   border-color: transparent;
   background: transparent;
   display: flex;
@@ -571,7 +571,7 @@ main {
   border-radius: 2px;
 }
 .height-note {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
   text-align: right;
 }
@@ -654,11 +654,13 @@ main {
   z-index: 4;
   width: 264px;
   padding: 19px;
-  background: var(--white);
+  background: #fffffff7;
   border: 1px solid #d6dfd0;
-  border-radius: 11px;
-  box-shadow: 0 4px 22px #233a311c;
-  max-height: calc(100% - 150px);
+  border-radius: 15px;
+  box-shadow:
+    0 3px 8px #233a3108,
+    0 12px 32px #233a311a;
+  max-height: calc(100% - 190px);
   overflow: auto;
 }
 .close-detail {
@@ -667,9 +669,11 @@ main {
   right: 6px;
   border: 0;
   background: transparent;
-  min-height: 32px;
-  min-width: 32px;
-  padding: 3px;
+  min-height: 40px;
+  min-width: 40px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
   font-size: 20px;
   color: #6d7d68;
 }
@@ -683,14 +687,14 @@ main {
   padding: 3px 8px;
 }
 .trip {
-  font-size: 14px;
-  line-height: 1.4;
-  margin: 12px 0 16px;
+  font-size: 15px;
+  line-height: 1.45;
+  margin: 14px 0 20px;
   overflow-wrap: anywhere;
 }
 
 .metric {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 650;
   letter-spacing: -0.05em;
   line-height: 1.1;
@@ -1028,23 +1032,26 @@ footer {
     padding: 2px;
   }
   .views button {
-    min-width: 33px;
-    min-height: 36px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 5px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .camera-panel > summary {
-    height: 42px;
-    font-size: 10px;
-    padding: 7px;
+    height: 46px;
+    min-width: 44px;
+    justify-content: center;
+    font-size: 0;
+    padding: 10px;
     gap: 4px;
   }
   .camera-panel > summary svg {
     width: 15px;
   }
   .icon-button {
-    min-width: 37px;
-    padding: 7px;
+    min-width: 44px;
+    min-height: 46px;
+    padding: 10px;
   }
   .camera-options {
     right: -42px;
@@ -1115,19 +1122,19 @@ footer {
     gap: 2px;
   }
   .legend button {
-    font-size: 10px;
-    min-height: 36px;
+    font-size: 11px;
+    min-height: 40px;
     padding: 5px 7px;
   }
   .legend i {
     width: 11px;
   }
   .legend-title {
-    font-size: 9px;
+    font-size: 11px;
   }
   .height-note {
     text-align: left;
-    font-size: 9px;
+    font-size: 10px;
   }
   .map-help {
     margin-top: 8px !important;
@@ -1141,12 +1148,12 @@ footer {
   th,
   td {
     padding: 8px 9px;
-    font-size: 10px;
+    font-size: 12px;
   }
   td button {
-    min-width: 32px;
-    min-height: 36px;
-    font-size: 10px;
+    min-width: 36px;
+    min-height: 40px;
+    font-size: 12px;
   }
   #inspector {
     left: 10px;
@@ -1154,7 +1161,7 @@ footer {
     top: auto;
     bottom: 93px;
     width: auto;
-    max-height: 240px;
+    max-height: min(265px, calc(100% - 245px));
     padding: 14px 15px;
     display: grid;
     grid-template-columns: 1.25fr 1fr;
@@ -1172,8 +1179,8 @@ footer {
     grid-column: 1;
   }
   .trip {
-    font-size: 12px;
-    line-height: 1.3;
+    font-size: 13px;
+    line-height: 1.35;
     margin: 9px 0;
     grid-column: 1;
     grid-row: 2/5;
@@ -1182,8 +1189,8 @@ footer {
   .metric {
     grid-column: 2;
     grid-row: 1/3;
-    font-size: 29px;
-    margin: 2px 15px 0 0;
+    font-size: 31px;
+    margin: 2px 18px 0 0;
   }
   .metric-label {
     display: none;
@@ -1194,7 +1201,7 @@ footer {
     margin-top: 8px;
   }
   #inspector dl > div {
-    font-size: 9px;
+    font-size: 11px;
     padding: 4px 0;
     gap: 6px;
   }
@@ -1708,6 +1715,7 @@ details.disclosure {
 }
 @media (max-width: 600px) {
   .select-trigger {
+    font-size: 16px;
     padding: 8px 10px;
   }
   .selection-bar {
@@ -1726,5 +1734,65 @@ details.disclosure {
   }
   .select-option {
     min-height: 44px;
+  }
+}
+
+.map-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.image-export {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 6px 10px;
+  font-size: 11px;
+  background: transparent;
+}
+.export-map-status {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+.export-map-status:empty {
+  display: none;
+}
+.export-map-status:not(:empty) {
+  padding: 4px 0;
+}
+[data-loading="true"] #inspector,
+[data-loading="true"] #map-tip {
+  display: none;
+}
+.data-section[aria-busy="true"] .table-scroll,
+.source[aria-busy="true"] {
+  opacity: 0.5;
+}
+button,
+.select-trigger,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  .close-detail:hover,
+  .image-export:hover {
+    background: #edf2e7;
+  }
+}
+@media (max-width: 600px) {
+  .map-meta {
+    width: 100%;
+    gap: 10px;
+  }
+  .image-export {
+    min-height: 44px;
+  }
+  .route-badge {
+    max-width: calc(100% - 10px);
+    overflow-wrap: anywhere;
   }
 }

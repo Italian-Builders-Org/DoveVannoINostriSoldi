@@ -3,6 +3,7 @@ const fields = [
   "band",
   "route",
   "speed",
+  "sort",
   "mode",
   "stop",
   "segment",
@@ -41,6 +42,11 @@ export function readView(search, cities) {
       : "morning",
     route: identity(q.get("route"), 100) ?? "",
     speed: /^[0-3]$/.test(q.get("speed") ?? "") ? Number(q.get("speed")) : null,
+    sort: ["speed-asc", "speed-desc", "trips-asc", "trips-desc"].includes(
+      q.get("sort"),
+    )
+      ? q.get("sort")
+      : "speed-asc",
     mode: q.get("mode") === "2d" ? "2d" : "3d",
     stop: identity(q.get("stop")),
     segment: /^[a-f0-9]{16}$/.test(q.get("segment") ?? "")

@@ -68,8 +68,11 @@ export function searchStops(index, query, route = "", limit = 8) {
 }
 export function selectSegments(
   segments,
-  { band, route = "", speedClass = null },
+  { band, route = "", speedClass = null, sort = "speed-asc" },
 ) {
+  const field =
+    sort === "trips-asc" || sort === "trips-desc" ? "samples" : "kmh";
+  const direction = sort === "speed-desc" || sort === "trips-desc" ? -1 : 1;
   return segments
     .filter(
       (s) =>
@@ -84,10 +87,12 @@ export function selectSegments(
                 ? 2
                 : 3) === speedClass),
     )
-    .sort(
-      (a, b) =>
-        a.bands[band].kmh - b.bands[band].kmh || a.id.localeCompare(b.id),
-    );
+    .sort((a, b) => {
+      return (
+        direction * (a.bands[band][field] - b.bands[band][field]) ||
+        a.id.localeCompare(b.id)
+      );
+    });
 }
 function csvCell(value) {
   let text = String(value ?? "");

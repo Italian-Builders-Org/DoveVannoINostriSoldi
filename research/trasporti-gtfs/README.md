@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 19 reti utilizzabili in 14 città, con tram, autobus, metro e
+Prototipo locale: 20 reti utilizzabili in 15 città, con tram, autobus, metro e
 treni regionali. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -103,6 +103,7 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Rovereto | bus urbano      |             43 |           42 |                 2.474 |                           500 |           1.373 |
 | Ferrara  | bus             |             80 |           74 |                 1.659 |                         1.048 |           2.213 |
 | Torino   | metro           |              1 |            1 |                   574 |                           574 |              44 |
+| Lucca    | treni regionali |             14 |           14 |                   780 |                           130 |             130 |
 | Bari     | bus             |             68 |            0 |                     0 |                             0 |               0 |
 
 Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
@@ -182,7 +183,7 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [Palermo, Comune/AMAT](https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783): condizioni specifiche tram CC BY-SA 4.0; geometrie basate su OSM sotto ODbL.
 - [Padova, Busitalia Veneto](https://gtfs-biv.fsbusitalia.com/): risorsa ufficiale TRAM SIR1, licenza non dichiarata nella pagina.
 - [Catania, AMTS](https://www.amts.ct.it/open-data): IODL 2.0; rete autobus entro il perimetro urbano dichiarato.
-- [Firenze e Pisa, Regione Toscana/Trenitalia](https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f): regionali toscani, CC-BY nel catalogo, versione non specificata. Il file è datato 15/01/2026 e contiene calendario per il 30/10: non certifica l’orario oggi in esercizio. Entrambe le fermate devono rientrare nei perimetri dichiarati. Le 14 linee e 780 corse iniziali sono regionali; le colonne successive misurano i tratti utilizzabili nelle singole aree.
+- [Firenze, Pisa e Lucca, Regione Toscana/Trenitalia](https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f): regionali toscani, CC-BY nel catalogo, versione non specificata. Il file è datato 15/01/2026 e contiene calendario per il 30/10: non certifica l’orario oggi in esercizio. Entrambe le fermate devono rientrare nei perimetri dichiarati. Le 14 linee e 780 corse iniziali sono regionali; le colonne successive misurano i tratti utilizzabili nelle singole aree.
 - [Lombardia/Trenord](https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9): archivio verificato ma senza `shapes.txt`, escluso dalla mappa. Nessun tracciato è ricostruito a partire da sole stazioni.
 - [Trento e Rovereto, Trentino Trasporti](https://www.trentinotrasporti.it/en/opendata): CC BY 4.0. Stesso archivio urbano, perimetri distinti; i conteggi iniziali di 43 linee/2.474 corse riguardano tutto il feed. Con tratti utilizzabili: 25 linee per Trento e 13 per Rovereto. Funivia esclusa. Il file extraurbano include 48 corse attive della ferrovia R35 prive di shape utilizzabile: non vengono disegnate.
 - [Ferrara, TPER](https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsfe&source=): CC BY 3.0 Italia. Area urbana dichiarata, con 45 linee utilizzabili; i collegamenti fuori perimetro non diventano copertura cittadina.
@@ -261,3 +262,11 @@ La risoluzione è limitata a 2.048 px di larghezza; non ci sono API o upload.
 Gli stati ordinari sono annunciati senza muovere il layout; l’errore resta
 visibile e il pulsante torna disponibile. La versione offline supporta anche
 questo export. Le immagini GTT conservano il vincolo non commerciale.
+
+### Iterazione 8
+
+Lucca: due linee regionali utilizzabili, 130 corse con tratti nell’area, 130 tratti distinti (62 al mattino). Il feed Toscana è lo stesso archivio verificato di Firenze/Pisa, datato 15/01/2026. Perimetro dichiarato 10,3–10,7 E / 43,75–43,99 N; la cartografia copre lo stesso rettangolo. Non è la rete ferroviaria completa della provincia né una verifica dell’orario corrente.
+
+Le intestazioni km/h e Corse ordinano la selezione in entrambi i versi. Il CSV mantiene l’ordine scelto; Copia link conserva anche l’ordinamento. I link precedenti partono ancora dalle velocità crescenti. I filtri non cambiano i valori né il numero dei tratti quando cambia soltanto l’ordine.
+
+Livorno resta candidato: 89 tratti GTFS utilizzabili, ma cartografia non acquisita dopo HTTP 502 e timeout di due provider. Non è mostrato come città disponibile. Le fonti precedenti restano identiche.

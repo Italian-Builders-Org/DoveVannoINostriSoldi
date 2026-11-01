@@ -1796,3 +1796,46 @@ summary {
     overflow-wrap: anywhere;
   }
 }
+
+/* Sorting stays in the column header so it needs no extra toolbar. */
+.sort-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 3px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+}
+.sort-button span {
+  opacity: 0.45;
+}
+th[aria-sort="ascending"] .sort-button span,
+th[aria-sort="descending"] .sort-button span {
+  opacity: 1;
+}
+th:has(.sort-button) {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+td:nth-child(4),
+th:nth-child(4) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+@media (hover: hover) {
+  .sort-button:hover {
+    background: #dde7d8;
+  }
+  tbody tr:hover {
+    background: #f5f8f1;
+  }
+  tbody tr[data-selected="true"]:hover {
+    background: #e8f0e0;
+  }
+}

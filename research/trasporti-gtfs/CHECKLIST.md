@@ -157,3 +157,24 @@ nuovi dati verificati e stress test nel Browser. Solo prototipo locale.
 - PASS: proiezione indipendente dei dati/camera osservati, nessun punto A/B o rilievo sotto pannello/comandi. Tutti i 16 dataset precedenti identici, console normale vuota. Main remoto invariato a 41a953e5; checkout principale preservato.
 - Artifact: gtfs-20261101-v7 nella cartella visualizzazioni della chat; screenshot, PNG/CSV scaricati, ricevute, matrici ed eventi, verificatore riutilizzabile.
 - NOT RUN: telefono fisico/VoiceOver, integrazione corpus, gate Next/ETL/CI/deploy del prodotto. Commit solo locale; nessun push, PR, merge o build Vercel.
+
+## Iterazione 8: treni regionali e risultati ordinabili
+
+Base: be8a8605. Solo ricerca locale; checkout principale e file del prodotto preservati.
+
+- [x] Riprodurre tabella a ordinamento fisso e rileggere contratti dati/UI.
+- [x] Aggiungere Lucca e Livorno solo con geometrie/calendario verificati e cartografia con ricevuta.
+- [x] Prima del codice: coprire ordinamento stabile, filtri, immutabilità e link vecchi/malformati.
+- [x] Implementare intestazioni ordinabili accessibili, CSV coerente, paginazione resettata e link ripristinabili.
+- [x] Test offline e Browser desktop/mobile, cambi rapidi, zero risultati, tastiera, selezione e mappe.
+- [x] Conservare dati precedenti identici, screenshot, risultati e commit locale. Nessun push/PR/merge/deploy.
+
+### Esito dell’ottava iterazione
+
+- PASS: Lucca aggiunta, 130 tratti complessivi / 62 mattino; 20 reti utilizzabili in 15 città. Livorno candidato escluso dal selettore dopo due acquisizioni OSM fallite, non assenza di servizio.
+- PASS: ordinamento velocità/corse in entrambi i versi, CSV coerente, link vecchi e nuovi, focus da tastiera e selezione mantenuti, ritorno alla prima pagina. Nessuna nuova dipendenza/API.
+- PASS: 53 test offline (27 Python, 26 Node); 84 reti/fasce e 36 ordinamenti responsive confrontati con i dati dell’analisi. Zero overflow globale; hit area almeno 44×44 px. CSV 62 righe con hash fonte; PNG ispezionato; console warning/error vuota.
+- PASS: 60 azioni consecutive sulla camera a 320 px, zero risultati e recupero. Cartografia Lucca ampliata al perimetro dei dati dopo aver riprodotto un tratto periferico senza contesto.
+- PASS: precedenti 20 voci identiche all’artifact v7; main remoto ricontrollato tramite connettore, ancora 41a953e5. Checkout principale preservato.
+- Artifact: gtfs-20261101-v8, prove JSON, verificatore delle osservazioni salvate, CSV/PNG, HTML offline e screenshot.
+- NOT RUN: telefono fisico/touch/pinch, screen reader reale, gate Next/CI/deploy. Clipboard nativa non asserita: IAB restituisce stringa vuota; URL osservato nel campo di condivisione e ripristinato nel Browser. Nessun push, PR, merge o deploy.

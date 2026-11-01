@@ -179,3 +179,17 @@ Next/ETL/CI/deploy restano NOT RUN. Nessun push, PR, merge o build Vercel.
 
 Telefono fisico e VoiceOver, integrazione corpus e gate Next/ETL/CI/deploy del
 prodotto: NOT RUN. Nessun push, PR, merge o build Vercel.
+
+## Iterazione 8, 1 novembre 2026
+
+Stato: PASS locale. 53 test offline, sintassi viewer, formato e diff puliti.
+
+Artifact `gtfs-20261101-v8`: `browser-source-bands.json` (84 casi), `browser-sorting.json` (36 casi, 320/573/1280 px), `browser-contract-check.json`, `interaction.json`, `edge-cases.json`, `keyboard-focus.json`, `csv-check.json`, `lucca-map-check.json`, screenshot e file scaricati.
+
+`node verify-browser.mjs` dalla directory artifact rilegge le osservazioni salvate e confronta righe/ordine/conteggi con analysis.json. Controlla l’identità delle precedenti 20 fonti con l’artifact v7. Non rilancia il Browser.
+
+Per ripetere la UI: servire index.html e cities/ in loopback; visitare Lucca, mattino. Cliccare km/h per decrescente, Corse per frequenza decrescente, poi ancora Corse per crescente. Dalla seconda pagina cambiare ordine: torna a 1–20; selezionare un tratto e cambiare ordine da tastiera: dettaglio e focus sull’intestazione restano. Copia link e riapertura ripristinano trips-desc e selezione. CSV mattino di Lucca: 62 righe, campione e hash invariati, corse in ordine scelto. Filtro <10: nessuna riga, due intestazioni disabilitate; Ripristina torna ai dati. Ripetere a 320, 573, 1280 px.
+
+Lucca: ricevute GTFS e OSM in observed-results.json, 16.026 feature/19 etichette OSM, perimetro OSM uguale a studyBounds. La prima acquisizione ristretta è conservata in cache, non usata nell’output finale. Livorno non esposto: principale GET 502, alternativo GET timeout di 100 secondi senza byte.
+
+Limiti: i dati sono orari programmati e lo snapshot Toscana è datato gennaio; niente ritardi osservati. Clipboard del Browser non dimostrata, telefono fisico e lettore schermo reale non eseguiti. Gate del prodotto e pubblicazione non eseguiti.

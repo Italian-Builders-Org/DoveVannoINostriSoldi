@@ -152,3 +152,14 @@ morbidi e ombre leggere. Nessun font remoto, blur, animazione decorativa o
 nuova dipendenza. Il Canvas continua a disegnare solo su interazione/resize.
 L’errore di esportazione è visibile; preparazione e successo sono annunciati
 senza spostare i contenuti. La chiusura del dettaglio usa un SVG coerente.
+
+## Iterazione 8: ordinamento senza altri pannelli
+
+| Before | After | Why |
+| --- | --- | --- |
+| Tabella sempre dal tratto più lento | Intestazioni km/h e Corse attivabili in entrambi i versi | Esaminare anche tratti veloci o con più corse, senza nuova toolbar |
+| Indicazione di ordine fissa | Una sola colonna con aria-sort attivo, freccia coerente, nome accessibile dell’azione successiva | Tastiera e lettore schermo ricevono lo stesso stato della UI |
+| Righe senza riscontro al passaggio del mouse | Hover tenue, distinto dalla selezione | Rendere evidente che l’intera riga porta al tratto sulla mappa |
+| Mappa Lucca limitata al centro | Estratto che copre l’intero perimetro studiato | Dare contesto anche ai tratti periferici selezionati |
+
+Nessuna animazione aggiunta all’ordinamento frequente: cambio immediato, focus sull’intestazione e prima pagina ripristinata. La selezione rimane attiva se ancora presente. Valori, geometrie e metodo non cambiano. Hit area delle intestazioni almeno 44×44 px nei viewport verificati.

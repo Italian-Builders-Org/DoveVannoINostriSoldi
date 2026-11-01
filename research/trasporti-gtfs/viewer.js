@@ -69,6 +69,7 @@ let scene = null,
   band = "morning",
   route = "",
   speedClass = null,
+  sort = "speed-asc",
   shown = [],
   selected = null,
   hovered = null,
@@ -478,7 +479,7 @@ function filtered() {
 }
 function updateData() {
   if (!scene) return;
-  shown = selectSegments(scene.segments, { band, route, speedClass });
+  shown = selectSegments(scene.segments, { band, route, speedClass, sort });
   tablePage = 0;
   if (selected && !shown.some((s) => s.id === selected)) selected = null;
   if (selectedStop && route && !selectedStop.routes.includes(route))
@@ -515,6 +516,36 @@ function updateData() {
   schedule();
 }
 function renderTable() {
+  for (const [key, label] of [
+    ["speed", "Velocità"],
+    ["trips", "Corse"],
+  ]) {
+    const active = sort.startsWith(key + "-");
+    const ascending = sort.endsWith("asc");
+    const button = $("sort-" + key);
+    $(key + "-heading").setAttribute(
+      "aria-sort",
+      active ? (ascending ? "ascending" : "descending") : "none",
+    );
+    button.querySelector("span").textContent = active
+      ? ascending
+        ? "↑"
+        : "↓"
+      : "↕";
+    button.setAttribute(
+      "aria-label",
+      label +
+        ": mostra prima " +
+        (key === "speed"
+          ? active && ascending
+            ? "i più veloci"
+            : "i più lenti"
+          : active && !ascending
+            ? "i meno frequenti"
+            : "i più frequenti"),
+    );
+    button.disabled = !shown.length;
+  }
   tablePage = Math.max(
     0,
     Math.min(tablePage, Math.ceil(shown.length / 20) - 1),
@@ -1208,6 +1239,7 @@ function restoreView(state) {
   $("route").value = route;
   syncSelectMenus();
   speedClass = state.speed;
+  sort = state.sort;
   if (state.camera) {
     pitchDegrees = state.camera[4];
     relief = state.camera[5];
@@ -1243,6 +1275,7 @@ $("share-view").onclick = async () => {
     band,
     route,
     speed: speedClass,
+    sort,
     mode: mode3d ? "3d" : "2d",
     stop: selectedStop?.id ?? null,
     segment: selected,
@@ -1330,6 +1363,18 @@ for (const button of document.querySelectorAll("[data-speed]"))
   };
 $("clear-filters").onclick = clearFilters;
 $("empty-reset").onclick = clearFilters;
+for (const key of ["speed", "trips"])
+  $("sort-" + key).onclick = () => {
+    sort =
+      sort === key + "-asc"
+        ? key + "-desc"
+        : sort === key + "-desc"
+          ? key + "-asc"
+          : key === "speed"
+            ? "speed-asc"
+            : "trips-desc";
+    updateData();
+  };
 $("page-previous").onclick = () => {
   tablePage--;
   renderTable();

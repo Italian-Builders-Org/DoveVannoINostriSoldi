@@ -329,10 +329,24 @@
                 <tr>
                   <th>Linea</th>
                   <th>Tra fermate</th>
-                  <th aria-label="Velocità prevista, ordine crescente">
-                    km/h ↑
+                  <th id="speed-heading" scope="col" aria-sort="ascending">
+                    <button
+                      id="sort-speed"
+                      class="sort-button"
+                      aria-label="Velocità: mostra prima i più veloci"
+                    >
+                      km/h <span aria-hidden="true">↑</span>
+                    </button>
                   </th>
-                  <th>Corse</th>
+                  <th id="trips-heading" scope="col" aria-sort="none">
+                    <button
+                      id="sort-trips"
+                      class="sort-button"
+                      aria-label="Corse: mostra prima i più frequenti"
+                    >
+                      Corse <span aria-hidden="true">↕</span>
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody id="rows"></tbody>

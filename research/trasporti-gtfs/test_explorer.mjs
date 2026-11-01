@@ -94,3 +94,40 @@ test("CSV escapes source text, prevents formula injection, retains precise value
   assert.ok(csv.includes("https://example.invalid/gtfs.zip"));
   assert.ok(csv.includes("fixture"));
 });
+
+test("sorting preserves filtering, stable ties, source order and precise CSV order", () => {
+  const values = [
+    s("z", 20),
+    s("b", 10),
+    s("a", 10),
+    { ...s("other", 1), route: "9" },
+  ];
+  values[0].bands.morning.samples = 2;
+  const before = structuredClone(values);
+  const ids = (sort) =>
+    selectSegments(values, { band: "morning", route: "8", sort }).map(
+      (s) => s.id,
+    );
+  assert.deepEqual(ids("speed-asc"), ["a", "b", "z"]);
+  assert.deepEqual(ids("speed-desc"), ["z", "a", "b"]);
+  assert.deepEqual(ids("trips-desc"), ["a", "b", "z"]);
+  assert.deepEqual(ids("trips-asc"), ["z", "a", "b"]);
+  assert.deepEqual(ids("unexpected"), ids("speed-asc"));
+  assert.deepEqual(values, before);
+  const selected = selectSegments(values, {
+    band: "morning",
+    route: "8",
+    speedClass: 1,
+    sort: "speed-desc",
+  });
+  assert.deepEqual(
+    selected.map((s) => s.id),
+    ["a", "b"],
+  );
+  const csv = selectionCSV(
+    city,
+    selectSegments(values, { band: "morning", route: "8", sort: "speed-desc" }),
+    "morning",
+  );
+  assert.ok(csv.indexOf("\r\nz,") < csv.indexOf("\r\na,"));
+});

@@ -8,6 +8,7 @@ test("shared view round-trips filters, stop identity and camera without losing p
     band: "evening",
     route: "SIR 1 / A",
     speed: 0,
+    sort: "trips-desc",
     mode: "2d",
     stop: "id/42",
     segment: null,
@@ -50,6 +51,7 @@ test("a shared link removes stale selection and filters instead of reusing its p
     band: "morning",
     route: "",
     speed: null,
+    sort: "speed-asc",
     mode: "3d",
     stop: null,
     segment: null,
@@ -76,4 +78,19 @@ test("stop and segment identities are bounded; malformed camera never partially 
     "0123456789abcdef",
   );
   assert.equal(readView("?stop=" + "x".repeat(121), cities).stop, null);
+});
+
+test("sorting links accept only bounded known orders and keep old URLs compatible", () => {
+  assert.equal(readView("?sort=trips-asc", cities).sort, "trips-asc");
+  assert.equal(readView("?sort=bad", cities).sort, "speed-asc");
+  assert.equal(readView("", cities).sort, "speed-asc");
+  assert.equal(
+    readView(
+      new URL(
+        viewURL("https://example.test/?sort=trips-desc", { sort: "speed-asc" }),
+      ).search,
+      cities,
+    ).sort,
+    "speed-asc",
+  );
 });

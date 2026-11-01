@@ -401,5 +401,29 @@
     "archiveId": "torino",
     "mapId": "torino",
     "routeTypes": ["1"]
+  },
+  {
+    "id": "lucca",
+    "name": "Lucca",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [10.503, 43.842],
+    "mapBounds": [10.3, 43.75, 10.7, 43.99],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "lucca",
+    "archiveId": "toscana-treni",
+    "mapId": "lucca-area",
+    "routeTypes": ["2"],
+    "routeLabel": "long",
+    "studyBounds": [10.3, 43.75, 10.7, 43.99],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area lucchese",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
   }
 ]

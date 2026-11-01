@@ -1,6 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "iterationBaseSha": "c3fdcb9d",
+  "iterationBaseSha": "01122c622a770504a5345102f65b5e4d7f23adc6",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -1457,7 +1457,7 @@
       "status": "ready",
       "serviceDate": "2026-10-30",
       "holder": "ATP Sassari",
-      "license": "not-declared",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
       "receipt": {
         "city": "sassari",
         "url": "https://atpsassari.it/media/files/atpss-gtfs.zip",
@@ -1508,12 +1508,132 @@
         "features": 4229,
         "labels": 18,
         "license": "ODbL 1.0"
+      },
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "sourceNotes": [
+        "Solo autobus ATP con entrambe le fermate nel perimetro dichiarato. Non comprende i tram ARST né tutti i servizi suburbani."
+      ]
+    },
+    {
+      "id": "cagliari-tram",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 3,
+        "activeRoutes": 3,
+        "activeScheduledTrips": 324,
+        "activeServices": 30,
+        "geometryPatterns": 11,
+        "segments": 28,
+        "analyzedScheduledTrips": 240,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 1632,
+        "accepted_pairs": 1568,
+        "outside_study_area": 64,
+        "missing_shape": 84
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.08, 39.19, 9.17, 39.27],
+      "segmentsSha256": "10960bf7b15dad6b759e464b0af8a2a3ffe160c0fbabf41a23101035016d703d",
+      "stops": 22,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [9.08, 39.19, 9.17, 39.27],
+          "acquiredAt": "2026-10-31T13:38:02.786775+00:00",
+          "osmBaseAt": "2026-10-31T13:36:34Z",
+          "sha256": "6f76cd33148e304cacbe2cf36321a2ddc2ee6cbec005ae3501b6faaab043f2f5",
+          "bytes": 6603878,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](39.19,9.08,39.27,9.17);\nway[\"natural\"=\"water\"](39.19,9.08,39.27,9.17);way[\"waterway\"~\"^(river|canal)$\"](39.19,9.08,39.27,9.17);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](39.19,9.08,39.27,9.17);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](39.19,9.08,39.27,9.17);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](39.19,9.08,39.27,9.17);\n);out body geom;"
+        },
+        "features": 7470,
+        "labels": 46,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "olbia",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ASPO S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "olbia",
+        "url": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+        "finalUrl": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+        "acquiredAt": "2026-11-01T19:47:02.313760+00:00",
+        "bytes": 695178,
+        "sha256": "003278f32ac43d90a69bc4e603f124d261b80345c300fefa658ad8f0195cb382",
+        "lastModified": "Tue, 27 Oct 2026 11:04:10 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 15,
+        "activeRoutes": 15,
+        "activeScheduledTrips": 319,
+        "activeServices": 10,
+        "geometryPatterns": 61,
+        "segments": 853,
+        "analyzedScheduledTrips": 319,
+        "analyzedRoutes": 15
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 11334,
+        "outside_study_area": 1505,
+        "accepted_pairs": 9529,
+        "implausible_speed_above_150_kmh": 294,
+        "nonpositive_time": 1,
+        "unlocated_or_nonprogressing_pair": 5,
+        "missing_geometry_pair": 5,
+        "stop_shape_offset_above_100_m": 1
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.46, 40.88, 9.56, 40.96],
+      "segmentsSha256": "bbcd532c25d7e6bd0caa1eb3b8d357115774a7a6b9275f7707c85ce7874cd233",
+      "stops": 251,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.46, 40.88, 9.56, 40.96],
+          "acquiredAt": "2026-11-01T19:52:10.548888+00:00",
+          "osmBaseAt": "2026-11-01T19:51:04Z",
+          "sha256": "7fe778b0b288ac0e42a4aca64007eacc20e47857e295c232cb16ad37c8a67712",
+          "bytes": 3121005,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.88,9.46,40.96,9.56);\nway[\"natural\"=\"water\"](40.88,9.46,40.96,9.56);way[\"waterway\"~\"^(river|canal)$\"](40.88,9.46,40.96,9.56);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.88,9.46,40.96,9.56);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.88,9.46,40.96,9.56);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.88,9.46,40.96,9.56);\n);out body geom;"
+        },
+        "features": 3565,
+        "labels": 20,
+        "license": "ODbL 1.0"
       }
     }
   ],
   "delivery": {
     "mode": "static-city-assets",
-    "bootstrapBytes": 154186,
+    "bootstrapBytes": 153385,
     "cityAssets": {
       "milano-e42108afc0fd7c74e1353b7f95a38c7908c0fd901f766979160a370c94932baf.json.gz": 1149534,
       "roma-182e2bac1c76d8e1efc1f9b89bdf7c828082014f83c2086555d56023335bc87a.json.gz": 635568,
@@ -1541,12 +1661,14 @@
       "prato-82c999affa0914575ed745969d15c6f3445aaa00d020a1235c400bbd3a67921b.json.gz": 418830,
       "livorno-df0c678990845fefd0ff911fdb026f2b01cbbce780c74118c76f3cdb4d49a6c6.json.gz": 612965,
       "venezia-nav-5c27a84f21f734260252b27c1d0953e4cba3f1463569ad84499b10bf6f8024c8.json.gz": 480725,
-      "sassari-0036b531d7578e93219d04e960f2f68f73fd59c7071fc9a5ad896bd1e9d09269.json.gz": 344829
+      "sassari-d050254b0f0ffbfdb42cb3f9dcedca48b03bfdd0642e4c15ab8d89d861c2f9d4.json.gz": 344795,
+      "cagliari-tram-765a77d5fbf78e82a345d082650ba21ee9c1180b11f53670877286578f62725f.json.gz": 302145,
+      "olbia-0a77de4ff50bf2db5a8abe28ed8e8b607e0f7dc0c24b8f986bbf599aec05f745.json.gz": 266221
     },
     "analysisCompression": "gzip; expanded input budget 256 MiB",
     "standalone": {
       "status": "PASS local Browser",
-      "bytes": 28971693,
+      "bytes": 29728412,
       "csp": "connect-src 'none'"
     }
   },
@@ -1599,6 +1721,37 @@
       "id": "napoli",
       "url": "https://www.anm.it/google/google-transit.zip",
       "reason": "Redirect from the referenced URL, then HTTP 403 on official host; not integrated, no bypass or proxy."
+    },
+    {
+      "id": "sassari-tram",
+      "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 3,
+        "activeRoutes": 3,
+        "activeScheduledTrips": 324,
+        "activeServices": 31,
+        "geometryPatterns": 11,
+        "segments": 0,
+        "analyzedScheduledTrips": 0,
+        "analyzedRoutes": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 1632,
+        "outside_study_area": 1632,
+        "missing_shape": 84
+      },
+      "reason": "No usable segments in Sassari bounds; all 84 MSS trips in archive lack shapes. No invented or borrowed geometry."
     }
   ],
   "geometryPolicy": {
@@ -1902,6 +2055,43 @@
         "Main POST HTTP 502"
       ],
       "sassari-final": "Smaller explicit city-centre area, main GET succeeded; no automatic runtime retry."
+    },
+    "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI gates",
+      "deployment"
+    ]
+  },
+  "iteration12": {
+    "usableNetworks": 28,
+    "cities": 19,
+    "sourceEntries": 29,
+    "previousSourceObjectsIdentical": 26,
+    "previousSourcesWithUnchangedMeasurements": 27,
+    "metadataCorrections": {
+      "sassari": ["license", "licenseUrl", "sourceNotes"]
+    },
+    "licenseSource": "https://www.sardegnamobilita.it/open-data",
+    "validatedSegments": 43867,
+    "offlineTests": {
+      "python": 34,
+      "node": 27
+    },
+    "newSources": ["olbia", "cagliari-tram"],
+    "explicitServiceDateOverride": {
+      "cagliari-tram": "2026-10-31"
+    },
+    "browser": {
+      "sourceBandCases": 116,
+      "responsiveCases": 16,
+      "viewports": [320, 390, 573, 1280],
+      "integrityErrorAndRecovery": true,
+      "csvRows": 28,
+      "pngInspected": true,
+      "standalone": true,
+      "stablePreviewPort": 3274
     },
     "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
     "notRun": [

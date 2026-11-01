@@ -202,3 +202,18 @@ Nessuna animazione su hover o tastiera. Dimensioni misurate solo al cambio del
 tratto, poi solo transform; nessun loop inattivo o nuova richiesta remota.
 Nomi lunghi limitati a due righe nella scheda transitoria, completi in tabella
 e nel dettaglio. La navigazione resta un mezzo distinto nel selettore di Venezia.
+
+
+## Iterazione 12: dare spazio alla mappa
+
+| Prima | Dopo | Perché |
+| --- | --- | --- |
+| Data nell'intestazione e testo tecnico nel masthead | Marchio e titolo; data nelle fonti e negli export | Eliminare duplicazioni conservando la provenienza |
+| Titolo mobile vincolato a 240 px | Larghezza disponibile del contenitore | Evitare righe aggiuntive senza utilità |
+| Contatore che ripete il nome della linea | Solo numero di tratti | Il filtro e il titolo della mappa identificano già la linea |
+| Condivisione 32 px, mezzo 38 px e chiusura 40 px | Target di almeno 44 px | Migliorare la selezione mobile senza sovrapporre controlli |
+| Vecchio documento ancora sulla porta stabile | Promozione atomica della preview verificata | Evitare valutazioni di una versione superata e conservare gli artifact |
+
+Nessuna animazione aggiunta alle operazioni frequenti. I cambiamenti non
+alterano camera, misure, ordinamento, navigazione da tastiera o accesso alle
+fonti. I dati nuovi seguono gli stessi budget e controlli delle reti esistenti.

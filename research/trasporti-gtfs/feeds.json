@@ -544,8 +544,8 @@
     "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-atp-sassari",
     "url": "https://atpsassari.it/media/files/atpss-gtfs.zip",
     "mode": "bus",
-    "license": "not-declared",
-    "licenseUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-atp-sassari",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
     "cadence": "irregolare, secondo il catalogo",
     "focus": [8.559, 40.727],
     "mapBounds": [8.52, 40.7, 8.59, 40.75],
@@ -553,8 +553,49 @@
     "routeTypes": ["3"],
     "scopeLabel": "Autobus ATP · Sassari centro",
     "sourceNotes": [
-      "Solo autobus ATP con entrambe le fermate nel perimetro dichiarato. Non comprende i tram ARST né tutti i servizi suburbani. Licenza di riuso non dichiarata nella pagina del dataset: da chiarire prima della pubblicazione."
+      "Solo autobus ATP con entrambe le fermate nel perimetro dichiarato. Non comprende i tram ARST né tutti i servizi suburbani."
     ],
     "mapId": "sassari-centro"
+  },
+  {
+    "mode": "tram",
+    "routeTypes": ["0"],
+    "cadence": null,
+    "id": "cagliari-tram",
+    "name": "Cagliari",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [9.12, 39.227],
+    "mapBounds": [9.08, 39.19, 9.17, 39.27],
+    "studyBounds": [9.08, 39.19, 9.17, 39.27],
+    "areaId": "cagliari",
+    "archiveId": "arst",
+    "mapId": "cagliari",
+    "scopeLabel": "Tram ARST · Cagliari centro",
+    "sourceNotes": [
+      "Solo linee tram ARST (route_type 0) con entrambe le fermate nel perimetro dichiarato. Non comprende tutta la rete regionale né i treni ARST."
+    ]
+  },
+  {
+    "id": "olbia",
+    "name": "Olbia",
+    "holder": "ASPO S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-aspo",
+    "url": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "cadence": "irregolare, secondo il catalogo",
+    "focus": [9.5, 40.923],
+    "mapBounds": [9.46, 40.88, 9.56, 40.96],
+    "studyBounds": [9.46, 40.88, 9.56, 40.96],
+    "scopeLabel": "Autobus ASPO · area urbana di Olbia",
+    "sourceNotes": [
+      "Solo autobus ASPO con entrambe le fermate nel perimetro dichiarato; copertura parziale delle linee periferiche."
+    ]
   }
 ]

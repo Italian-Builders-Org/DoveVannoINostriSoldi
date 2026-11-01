@@ -90,25 +90,17 @@ svg {
   font-weight: 800;
   letter-spacing: 0.08em;
 }
-.brand span,
-.badge {
+.brand span {
   color: var(--muted);
   font-weight: 450;
 }
-.badge {
-  font-size: 10px;
-}
+
 main {
   max-width: 1628px;
   margin: auto;
   padding: 28px 24px 40px;
 }
-.heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-}
+
 .heading h1 {
   font-size: clamp(25px, 2.7vw, 36px);
   line-height: 1.15;
@@ -120,20 +112,7 @@ main {
   color: var(--muted);
   font-size: 12px;
 }
-.reference {
-  display: grid;
-  text-align: right;
-  gap: 2px;
-  font-size: 11px;
-  white-space: nowrap;
-}
-.reference span {
-  font-size: 9px;
-  color: var(--muted);
-}
-.reference strong {
-  font-weight: 500;
-}
+
 .toolbar {
   display: grid;
   grid-template-columns:
@@ -261,7 +240,7 @@ main {
 .text-button {
   border: 0;
   background: transparent;
-  min-height: 32px;
+  min-height: 44px;
   padding: 3px 0;
   color: var(--accent);
   font-size: 11px;
@@ -709,8 +688,8 @@ main {
   right: 6px;
   border: 0;
   background: transparent;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 44px;
+  min-width: 44px;
   display: grid;
   place-items: center;
   padding: 8px;
@@ -907,13 +886,6 @@ details ul {
     monospace;
   overflow-wrap: anywhere;
 }
-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 25px;
-  padding-top: 14px;
-  font-size: 10px;
-  color: var(--muted);
-}
 .map-shell.expanded {
   position: fixed;
   inset: 12px;
@@ -983,30 +955,18 @@ footer {
     padding: 0 14px;
     height: 43px;
   }
-  .badge {
-    font-size: 9px;
-  }
+
   main {
     padding: 18px 12px 26px;
   }
-  .heading {
-    gap: 13px;
-    align-items: start;
-  }
+
   .heading h1 {
     font-size: 24px;
-    max-width: 240px;
   }
   .heading p {
     font-size: 11px;
   }
-  .reference {
-    font-size: 10px;
-    padding-top: 2px;
-  }
-  .reference > span {
-    display: none;
-  }
+
   .toolbar {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
@@ -1314,11 +1274,7 @@ input[type="range"] {
     padding-left: 29px;
     padding-right: 6px;
   }
-  .reference {
-    white-space: normal;
-    max-width: 105px;
-    flex: none;
-  }
+
   .heading h1 {
     font-size: 23px;
   }
@@ -1764,7 +1720,8 @@ details.disclosure {
     gap: 6px;
   }
   .vehicle-field .select-trigger {
-    min-height: 38px;
+    min-height: 44px;
+    margin-block: 0;
     font-size: 11px;
     min-width: 88px;
     gap: 6px;

@@ -5,9 +5,9 @@
 1. Acquisire/verificare GTFS e OSM con i comandi del README. Le ricevute in
    `observed-results.json` identificano i byte usati; un download successivo
    dallo stesso URL non riproduce necessariamente questi numeri.
-2. Generare schema 3 con `--date 2026-10-30 --city-date cagliari=2026-10-31 --city-date padova=2026-10-31`.
+2. Generare schema 3 con `--date 2026-10-30 --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31`.
    Non scegliere automaticamente un giorno diverso quando il calendario manca.
-3. Eseguire 25 test Python e 20 Node con i comandi del README. Le fixture sono
+3. Eseguire 34 test Python e 27 Node con i comandi del README. Le fixture sono
    sintetiche e non entrano nel visualizzatore. I nuovi casi di errore sono
    stati definiti e verificati in RED prima delle implementazioni.
 4. Confrontare i segmenti delle città preesistenti con l’artifact dell’iterazione precedente: geometrie,
@@ -26,7 +26,7 @@ Servire l'output in loopback. Usare azioni reali senza modificare DOM o stato
 interno per simulare risultati. I dataset del Canvas descrivono l'ultimo disegno,
 non prestazioni certificate del dispositivo né costi hosted.
 
-- Undici città × quattro fasce: dieci città utilizzabili; Bari deve mostrare
+- 29 reti × quattro fasce: 28 reti utilizzabili; Bari deve mostrare
   indisponibilità e zero righe, conservando la data scelta. Confrontare conteggi
   e prima velocità con `analysis.json`. Fonti e data devono seguire la città.
 - Dieci città × quattro classi di velocità: conteggi equivalenti al JSON,
@@ -46,7 +46,7 @@ non prestazioni certificate del dispositivo né costi hosted.
   Fixture con asset assente e corrotto: mostrare errore e svuotare fonte,
   tabella/dettaglio. Ripristinare il file e verificare recupero da una nuova
   selezione senza ricaricare la pagina o svuotare manualmente la cache.
-- Dieci città a 320, 390, 573 e 1280 px: misurare la larghezza effettiva del documento,
+- Reti campione a 320, 390, 573 e 1280 px: misurare la larghezza effettiva del documento,
   non soltanto l'override richiesto al Browser. Nessun overflow globale o
   sovrapposizione fra controlli visibili. Escludere dalla misura i discendenti
   di `<details>` chiusi. Provare il dettaglio aperto a 320/390 px e lasciare
@@ -294,3 +294,44 @@ Browser non utilizzate come benchmark di velocità.
 
 NOT RUN: telefono fisico, screen reader reale, gate Next/ETL/CI del prodotto,
 integrazione nel corpus e pubblicazione. Nessun costo di build Vercel introdotto.
+
+
+## Iterazione 12, 1 novembre 2026
+
+Esito: PASS locale. 29 voci, 28 reti utilizzabili in 19 città; Bari rimane
+indisponibile. 43.867 geometrie controllate. Le precedenti 27 reti conservano
+misure, fermate, geometrie, ricevute, basemap, esclusioni e copertura; Sassari
+riceve soltanto la correzione documentata della licenza.
+
+Artifact `gtfs-20261101-v12` nella cartella delle visualizzazioni del task:
+
+- `verify.py` rilegge il dataset congelato e le osservazioni salvate. Eseguirlo
+  con `python3 PERCORSO_ARTIFACT/verify.py`; non rilancia Browser e non misura
+  prestazioni del dispositivo. Richiede anche l'analisi v11 per il confronto.
+- `browser-source-bands.json`: 116 combinazioni, tutte le righe visibili
+  confrontate con l'oracolo estratto dall'analisi, date ISO e conteggi coerenti.
+- `browser-responsive.json`: 16 casi, quattro reti e quattro larghezze. Menu
+  nei limiti del viewport, nessun overflow, altezza della barra e posizione
+  globale della mappa stabili al cambio filtro. Dettaglio selezionabile, focus
+  sulla mappa, badge e chiusura separati, target mobile almeno 44 px.
+- `browser-integrity-error.json`, `fixture.json`, `browser-recovery.json`:
+  modifica controllata del solo asset nel candidato locale, senza cambiare la
+  lunghezza. L'integrità SHA fallisce, la UI mostra errore e rimuove i dati
+  precedenti. File ripristinato, hash originale verificato, selezione recuperata
+  e cache di rete tornata normale. Artifact immutabile non alterato.
+- CSV Cagliari tram: 28 righe confrontate con l'analisi; data di servizio e hash
+  preservati. PNG 1230×871 ispezionato. `atlas-offline.html` provato con Olbia,
+  cambio a Cagliari tram e 2D; CSP `connect-src 'none'`.
+- Preview stabile 3274 aggiornata solo dopo PASS del candidato, con copia del
+  precedente indice; `stable-preview.json`, `browser-stable-preview.json` e
+  screenshot finali attestano la promozione. Console senza warning/errori.
+
+61 test offline pertinenti (34 Python, 27 Node), sintassi JS, formattazione e
+`git diff --check`. Una precedente chiamata Browser con 16 scenari in un batch
+ha raggiunto il timeout del tool: ripetuta in quattro batch completati. Non è
+usata come misura di velocità dell'applicazione.
+
+NOT RUN: gesti su dispositivo fisico, screen reader reale, gate Next/ETL/CI del
+prodotto, build Vercel e deployment. Nessuna dipendenza, richiesta periodica o
+servizio a pagamento aggiunto. Nessuna regressione rilevata nel perimetro dei
+controlli eseguiti; non è una certificazione di ogni dispositivo.

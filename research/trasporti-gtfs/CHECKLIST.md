@@ -244,3 +244,25 @@ Base: c3fdcb9d. Solo ricerca locale, nessun push o deploy.
 - PASS: metadati, esclusioni, date diverse e riuso non dichiarato espliciti. Main remoto verificato a 41a953e5; checkout principale preservato.
 - Artifact: gtfs-20261101-v11 con analisi gzip, HTML directory/offline, ricevute, screenshot, verificatore e commit locale.
 - NOT RUN: dispositivo touch e screen reader reali, gate del prodotto, push/PR/merge/deploy. Nessuna build Vercel.
+
+## Iterazione 12: meno testo, nuove reti e anteprima coerente
+
+Base: 01122c62. Solo prototipo locale; nessun push o deploy.
+
+- [x] Branch e main preservati; riletti skill Emil, contratti e feedback. Browser Ferrara corrente già centrato; la scheda annotata punta a una preview precedente.
+- [x] Rimuovere data e badge dall’intestazione, testo tecnico del footer e CSS/codice divenuti inutili. Conservare data di servizio nelle fonti e negli export.
+- [x] Verificare GTFS ufficiali ARST/ASPO: calendari, geometrie, licenze, perimetri e ricevute. Nuove città e nuove reti solo se utilizzabili.
+- [x] Ridurre gli ingombri dell’intestazione mobile senza cambiare camera o significato dei dati.
+- [x] Browser: date nelle fonti al cambio rete e su errore, tutte le fasce, mobile/desktop, menu, tastiera, filtri, zoom, selezione, export e offline; misure dei dataset precedenti identiche, correzione della sola licenza Sassari documentata.
+- [x] Salvare Before/After, verificatore e screenshot; aggiornare in modo atomico anche la preview stabile 3274, mantenendo gli artifact storici e tutti i percorsi necessari.
+- [x] Test offline pertinenti, main ricontrollato, commit solo locale e consegna della preview verificata.
+
+
+### Esito dell’iterazione 12
+
+- PASS locale: 28 reti in 19 città, 29 voci; aggiunti bus Olbia (853 tratti) e tram Cagliari (28). Sassari tram escluso perché le 84 corse MSS non hanno shape.
+- PASS: 27 reti precedenti con misure e ricevute invariate; sola correzione della licenza Sassari autobus da catalogo ufficiale. 43.867 geometrie validate.
+- PASS: data e badge rimossi dall'intestazione; data nelle fonti/export. Contatore senza ripetizione della linea, titolo mobile a tutta larghezza e target di almeno 44 px.
+- PASS: 61 test offline, 116 combinazioni reti/fasce, 16 scenari responsive, errore d'integrità e recupero, CSV/PNG e HTML offline; screenshot finali e verificatore salvati.
+- PASS: preview stabile 3274 promossa atomicamente e controllata nel Browser. Vecchio indice e asset storici preservati. Main remoto ancora 41a953e5 e checkout principale preservato.
+- NOT RUN: telefono fisico, screen reader reale e gate del prodotto. Nessun push, PR, merge, deploy o build Vercel.

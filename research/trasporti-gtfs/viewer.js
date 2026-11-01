@@ -257,7 +257,6 @@ async function selectCity(id, restored = null) {
   shell.dataset.loading = "true";
   $("map-title").textContent = manifest.cities.find((c) => c.id === id).name;
   $("area-label").textContent = "Caricamento…";
-  $("reference").textContent = "…";
   notice("Preparazione della mappa…");
   hideSearch();
   try {
@@ -277,14 +276,6 @@ async function selectCity(id, restored = null) {
       (a, b) => a.localeCompare(b, "it", { numeric: true }),
     ))
       $("route").append(option(name, name));
-    $("reference").textContent = new Date(
-      city.serviceDate + "T12:00:00",
-    ).toLocaleDateString("it-IT", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      weekday: "short",
-    });
 
     sourceInfo();
     if (city.scopeLabel) $("area-label").textContent = city.scopeLabel;
@@ -316,13 +307,7 @@ async function selectCity(id, restored = null) {
     $("selection-count").textContent = "";
     route = "";
     speedClass = null;
-    for (const id of [
-      "source",
-      "quality",
-      "receipt",
-      "reference",
-      "area-label",
-    ])
+    for (const id of ["source", "quality", "receipt", "area-label"])
       $(id).replaceChildren();
     for (const id of ["quality", "receipt"])
       $(id).closest("details").hidden = true;
@@ -362,12 +347,13 @@ function sourceInfo() {
     city.landingUrl,
   );
   const dates = add(p, "div", undefined, "source-dates");
-  add(
-    dates,
-    "p",
-    "Servizio: " +
-      new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT"),
+  const service = add(dates, "p", "Servizio: ");
+  const serviceDate = add(
+    service,
+    "time",
+    new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT"),
   );
+  serviceDate.dateTime = city.serviceDate;
   add(
     dates,
     "p",
@@ -501,8 +487,7 @@ function updateData() {
   if (selectedStop && route && !selectedStop.routes.includes(route))
     selectedStop = null;
   $("map-title").textContent = city.name + (route ? " · " + route : "");
-  $("selection-count").textContent =
-    fmt(shown.length, 0) + " tratti" + (route ? " · linea " + route : "");
+  $("selection-count").textContent = fmt(shown.length, 0) + " tratti";
   $("clear-filters").hidden = !filtered();
   $("clear-route").hidden = !route;
   $("route").parentElement.dataset.clearable = String(Boolean(route));

@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 26 reti utilizzabili in 18 città, con tram, autobus, metro,
+Prototipo locale: 28 reti utilizzabili in 19 città, con tram, autobus, metro,
 treni regionali e navigazione. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -21,7 +21,7 @@ python3 research/trasporti-gtfs/basemap.py --cache research/trasporti-gtfs/cache
 python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
   --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
-  --city-date venezia-nav=2026-11-02 \
+  --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -90,32 +90,39 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Roma | tram | 5 | 1 | 750 | 750 | 59 |
 | Torino | tram | 9 | 8 | 1.854 | 1.854 | 591 |
 | Firenze | tram | 2 | 2 | 874 | 874 | 157 |
-| Bologna | bus/filobus | 240 | 224 | 8.499 | 7.030 | 6.354 |
+| Bologna | bus | 240 | 224 | 8.499 | 7.030 | 6.354 |
 | Bari | bus | 68 | 0 | 0 | 0 | 0 |
-| Cagliari | bus/filobus | 45 | 45 | 3.155 | 3.116 | 2.268 |
+| Cagliari | bus | 45 | 45 | 3.155 | 3.116 | 2.268 |
 | Venezia | bus | 94 | 92 | 4.212 | 4.030 | 4.884 |
 | Palermo | tram | 4 | 4 | 518 | 468 | 74 |
-| Padova | tram SIR1 | 1 | 1 | 1.153 | 1.144 | 73 |
+| Padova | tram | 1 | 1 | 1.153 | 1.144 | 73 |
 | Catania | bus | 53 | 50 | 2.868 | 2.868 | 2.713 |
 | Milano | metro | 5 | 5 | 2.770 | 2.770 | 266 |
 | Milano | bus | 148 | 140 | 18.026 | 17.651 | 5.174 |
 | Roma | metro | 4 | 4 | 1.379 | 1.379 | 172 |
-| Firenze | treni regionali | 14 | 14 | 780 | 392 | 408 |
-| Pisa | treni regionali | 14 | 14 | 780 | 178 | 129 |
-| Trento | bus urbano | 43 | 42 | 2.474 | 1.913 | 1.687 |
-| Rovereto | bus urbano | 43 | 42 | 2.474 | 500 | 1.349 |
+| Firenze | treni | 14 | 14 | 780 | 392 | 408 |
+| Pisa | treni | 14 | 14 | 780 | 178 | 129 |
+| Trento | bus | 43 | 42 | 2.474 | 1.913 | 1.687 |
+| Rovereto | bus | 43 | 42 | 2.474 | 500 | 1.349 |
 | Ferrara | bus | 80 | 74 | 1.659 | 1.048 | 2.210 |
 | Torino | metro | 1 | 1 | 574 | 574 | 44 |
-| Lucca | treni regionali | 14 | 14 | 780 | 130 | 130 |
+| Lucca | treni | 14 | 14 | 780 | 130 | 130 |
 | Torino | bus | 206 | 200 | 11.388 | 9.060 | 6.429 |
 | Roma | bus | 427 | 409 | 36.917 | 17.944 | 5.058 |
+| Prato | treni | 14 | 14 | 780 | 117 | 76 |
+| Livorno | treni | 14 | 14 | 780 | 45 | 89 |
+| Venezia | navigazione | 23 | 23 | 1.445 | 1.308 | 434 |
+| Sassari | bus | 50 | 46 | 1.023 | 891 | 1.134 |
+| Cagliari | tram | 3 | 3 | 324 | 240 | 28 |
+| Olbia | bus | 15 | 15 | 319 | 319 | 853 |
 
-Cagliari e Padova usano il **31 ottobre 2026**, gli altri feed il **30 ottobre 2026**.
-La data diversa è una scelta esplicita: gli archivi CTM e Padova acquisiti non contengono
-servizio per il 30 ottobre. Ogni città mostra la propria data; nessun confronto
-fra città come classifica. Venezia copre il feed automobilistico ACTV, soprattutto
-Mestre, non i vaporetti né l'intero sistema di trasporto lagunare. Le aree di
-studio di Cagliari e Venezia sono dichiarate in `feeds.json`.
+Cagliari (bus e tram) e Padova usano il **31 ottobre 2026**, la navigazione
+veneziana il **2 novembre 2026**, gli altri feed il **30 ottobre 2026**.
+Sono scelte esplicite basate sui calendari degli archivi acquisiti, senza ripiego
+automatico. Le date restano nelle fonti e negli export; nessuna classifica tra
+città. A Venezia autobus ACTV e navigazione sono reti separate: il perimetro
+navale copre le isole centrali, non tutta la laguna né altri operatori. Le aree
+di studio sono dichiarate in `feeds.json`.
 
 Questa è la copertura dei feed acquisiti, non una certificazione dell'intera
 rete cittadina. Il feed tram di Roma contiene corse utilizzabili solo della linea 8. Bologna
@@ -155,7 +162,7 @@ quattro informazioni distinte. Non sono dati monetari.
    24:00 nel giorno di servizio, con limite esplicito 48 ore.
 5. Ricavare il percorso dalla shape GTFS. `shape_dist_traveled` è una coordinata
    lungo il percorso, non necessariamente metri. In alternativa proiettare le
-   fermate in ordine sulla shape, entro 250 m. Calcolare la lunghezza geodetica
+   fermate in ordine sulla shape, entro 100 m. Calcolare la lunghezza geodetica
    dalle coordinate. Nessuna shape mancante diventa una retta inventata.
 6. Raggruppare linea, direzione, fermate e geometria. Dividere la distanza per
    la **mediana dei tempi**, non fare la mediana delle velocità.
@@ -356,3 +363,47 @@ CSV 434 righe confrontato con i dati e PNG ispezionato. HTML unico offline con
 nuove reti e commutazione dell’esplorazione mobile verificati. Artifact
 `gtfs-20261101-v11`, con `verify.py`, dati, ricevute e screenshot. Nessun push,
 PR, deploy, build Vercel o test su telefono fisico.
+
+
+### Iterazione 12
+
+[Olbia, catalogo ASPO](https://www.sardegnamobilita.it/open-data/quadri-orari-aspo):
+853 tratti autobus, 319 corse e 15 linee con tratti utilizzabili nel perimetro
+urbano dichiarato. [Cagliari, catalogo ARST](https://www.sardegnamobilita.it/open-data/quadri-orari-arst):
+28 tratti tram, 240 corse e due linee con tratti utilizzabili; servizio del
+31 ottobre, come il feed autobus già integrato. Le fasce possono contenerne
+meno: mattina 658 tratti a Olbia e 22 nel tram di Cagliari.
+
+Il [catalogo generale Sardegna Mobilità](https://www.sardegnamobilita.it/open-data)
+indica CC BY 4.0 per i dataset: la licenza è registrata per entrambe le nuove
+reti e corretta anche per Sassari autobus. Delle precedenti 27 voci, 26 sono
+interamente identiche; Sassari cambia soltanto license, licenseUrl e sourceNotes.
+Misure, geometrie, fermate, ricevute, cartografia ed esclusioni di tutte le
+27 reti precedenti restano identiche. Totale: 43.867 tratti geometrici; non sono
+fermate, chilometri o una classifica tra città.
+
+Il GTFS ARST comprende anche il tram di Sassari, ma tutte le 84 corse MSS nel
+file hanno geometria mancante. Non viene integrato né ricostruito con percorsi
+autobus. Cagliari riusa il basemap verificato; Olbia ha un estratto OSM dedicato
+con ricevuta e hash. Raw e analisi del candidato escluso sono conservati.
+
+Intestazione ridotta a marchio, titolo e limite della metrica. Data di servizio
+solo nelle fonti e negli export, senza badge tecnico o footer ripetitivo. Il
+contatore non ripete la linea già selezionata. Titolo mobile a tutta larghezza;
+condivisione, scelta del mezzo e chiusura del dettaglio hanno target di almeno
+44 px. Nessuna modifica alle proiezioni o alla camera per correggere screenshot
+provenienti da anteprime precedenti.
+
+La preview stabile è `http://127.0.0.1:3274/?v=iteration12-final&city=olbia`.
+È stata aggiornata dopo il controllo del candidato, con sostituzione atomica
+dell'HTML e conservazione del precedente indice e degli asset storici. Un tab
+che mostra ancora la versione precedente deve ricaricare la pagina; il solo
+parametro della versione non aggiorna un documento già aperto.
+
+Prove: 61 test offline; 116 reti/fasce confrontate riga per riga con l'analisi;
+16 casi responsive a 320/390/573/1280 px, selezioni e menu senza sovrapposizioni,
+CSV di 28 righe e PNG reali. Asset corrotto a parità di dimensione: errore
+esplicito, nessuna fonte/data/riga residua e recupero dopo il ripristino. HTML
+unico offline verificato con le nuove reti e CSP senza connessioni. Artifact
+`gtfs-20261101-v12`, verificatore e screenshot. Solo locale: nessuna build
+Vercel, modifica al prodotto, pubblicazione o prova su telefono fisico.

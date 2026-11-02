@@ -3112,7 +3112,7 @@
       },
       "sourceSpec": "scripts/etl/specs/camera-trattamento-economico.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Pagina ufficiale del trattamento economico dei deputati pinnata per byte/SHA-256. Pubblica solo aliquote istituzionali estratte da frasi letterali (indennità, diaria, rimborso): non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
+      "trustModel": "Pagina ufficiale del trattamento economico dei deputati: SHA-256 dei byte registrato, lock sul testo della sezione (i byte cambiano con il token di cache CSS di Drupal). Pubblica solo aliquote istituzionali e gradini storici estratti da frasi letterali (indennità, diaria, rimborsi, trattenute), con la catena da/a verificata: non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
     },
     {
       "id": "parlamento-giudiziario-xix",

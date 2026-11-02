@@ -11,17 +11,30 @@ const componentSchema = z.object({
   amountEuro: euroIt,
   amountCents: z.number().int().positive(),
   currency: z.literal("EUR"),
-  frequency: z.literal("monthly"),
-  grossNet: z.enum(["gross", "net-before-local-surtaxes", "allowance"]),
+  frequency: z.enum(["monthly", "quarterly", "annual"]),
+  grossNet: z.enum(["gross", "net-before-local-surtaxes", "allowance", "withholding"]),
   appliesTo: z.literal("deputato"),
 });
+
+const historyStepSchema = z.object({
+  componentId: z.string().min(1),
+  fromYear: z.number().int().min(1948).nullable(),
+  fromDate: isoDate.nullable(),
+  amountEuro: euroIt,
+  amountCents: z.number().int().positive(),
+  basis: z.enum(["literal", "derived"]),
+  evidence: z.string().min(1),
+});
+
+export type CameraTrattamentoHistoryStep = z.infer<typeof historyStepSchema>;
 
 export type CameraTrattamentoComponent = z.infer<typeof componentSchema>;
 
 export const cameraTrattamentoEconomicoSnapshotSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     chamber: z.literal("camera"),
+    referencePeriod: z.string().regex(/^\d{4}-\d{4}$/u),
     period: z.object({
       label: z.string().min(1),
       observedDate: isoDate,
@@ -42,11 +55,14 @@ export const cameraTrattamentoEconomicoSnapshotSchema = z
       landingUrl: z.string().url(),
       license: z.string().min(1),
       licenseUrl: z.string().url(),
+      publicationDate: isoDate,
       observedDate: isoDate,
       acquiredAt: isoDateTime,
       responses: z.object({
         page: z.object({ bytes: z.number().int().positive(), sha256 }),
       }),
+      // Locked hash: the section text. Raw bytes vary with Drupal CSS cache tokens.
+      content: z.object({ chars: z.number().int().positive(), sha256 }),
       cadence: z.string().min(1),
     }),
     provenance: z.object({
@@ -59,8 +75,16 @@ export const cameraTrattamentoEconomicoSnapshotSchema = z
       indemnityNetBeforeLocalSurtaxesMonthlyCents: z.number().int().positive(),
       diariaMonthlyCents: z.number().int().positive(),
       constituentAllowanceMonthlyCents: z.number().int().positive(),
+      indemnityGrossWithoutCutsMonthlyCents: z.number().int().positive(),
+      pensionContributionBasisPoints: z.number().int().positive(),
     }),
-    components: z.array(componentSchema).min(4),
+    components: z.array(componentSchema).min(10),
+    history: z.array(historyStepSchema).min(1),
+    freeze: z.object({
+      adjustmentsSuspendedFromYear: z.number().int(),
+      confirmedThroughYear: z.number().int(),
+      evidence: z.string().min(1),
+    }),
     caveats: z.array(z.string().min(1)).min(3),
   })
   .superRefine((value, ctx) => {
@@ -72,6 +96,30 @@ export const cameraTrattamentoEconomicoSnapshotSchema = z
       });
     }
     const byId = new Map(value.components.map((item) => [item.id, item]));
+    for (const item of value.components) {
+      if (item.id.startsWith("trattenuta-") !== (item.grossNet === "withholding")) {
+        ctx.addIssue({ code: "custom", message: `trattenuta tipizzata male: ${item.id}`, path: ["components"] });
+      }
+    }
+    const series = new Map<string, CameraTrattamentoHistoryStep[]>();
+    for (const step of value.history) {
+      if (!byId.has(step.componentId)) {
+        ctx.addIssue({ code: "custom", message: `history su componente ignoto: ${step.componentId}`, path: ["history"] });
+        continue;
+      }
+      series.set(step.componentId, [...(series.get(step.componentId) ?? []), step]);
+    }
+    for (const [componentId, steps] of series) {
+      const keys = steps.map((step) => `${String(step.fromYear ?? 0).padStart(4, "0")}|${step.fromDate ?? ""}`);
+      const ordered = keys.every((key, index) => index === 0 || key > keys[index - 1]!);
+      const startsKnown = steps.slice(1).every((step) => step.fromYear !== null);
+      if (!ordered || !startsKnown) {
+        ctx.addIssue({ code: "custom", message: `history fuori ordine: ${componentId}`, path: ["history"] });
+      }
+      if (steps.at(-1)!.amountCents !== byId.get(componentId)!.amountCents) {
+        ctx.addIssue({ code: "custom", message: `history non arriva all'importo in vigore: ${componentId}`, path: ["history"] });
+      }
+    }
     const expected = [
       ["indennita-parlamentare-lordo", value.summary.indemnityGrossMonthlyCents],
       ["indennita-parlamentare-netto-prima-addizionali", value.summary.indemnityNetBeforeLocalSurtaxesMonthlyCents],

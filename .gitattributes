@@ -18,6 +18,8 @@
 /tests/fixtures/inps-cig-fondi-solidarieta/*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 # AdE open-data portal i18n snapshot: byte-pinned license evidence (sha256 in ETL spec).
 /tests/fixtures/ade-immobili-italia-2026/i18n-it.json -text whitespace=false
+# Camera page as served (Drupal markup with trailing blanks): the ETL tests read these exact bytes.
+/tests/fixtures/camera-trattamento-economico/*.html -text -whitespace
 
 *.gz binary
 *.ico binary

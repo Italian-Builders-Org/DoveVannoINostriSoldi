@@ -4,7 +4,7 @@
   "landingUrl": "https://www.camera.it/deputati/trattamento-economico",
   "period": {
     "label": "Misure in vigore pubblicate dalla Camera (indennità ferma dal 2012; diaria e rimborsi prorogati)",
-    "observedDate": "2026-09-18"
+    "observedDate": "2026-11-02"
   },
   "source": {
     "owner": "Camera dei deputati",
@@ -12,15 +12,13 @@
     "landingUrl": "https://www.camera.it/deputati/trattamento-economico",
     "license": "Riuso con citazione della fonte (Camera dei deputati)",
     "licenseUrl": "https://www.camera.it/",
-    "committedResponses": {
-      "page": {
-        "bytes": 31254,
-        "sha256": "f2e29d117e0bfc2edc7bf5218127a98a36e4dfdeddf14d68a13697f4152e3801"
-      }
+    "committedContent": {
+      "chars": 11407,
+      "sha256": "f8651b9ff1e21a6fe0e1f7cad4e9dbeefe8134c56fa141d8d189a03c4006648b"
     }
   },
   "coverageFloor": {
-    "components": 4
+    "components": 10
   },
   "semantics": {
     "soldi": {
@@ -30,8 +28,8 @@
       "note": "Aliquote istituzionali dell'Ufficio di Presidenza, non cedolini individuali."
     },
     "periodo": {
-      "kind": "point-in-time-published-rates",
-      "observedDate": "2026-09-18"
+      "kind": "published-rates-with-step-history",
+      "observedDate": "2026-11-02"
     },
     "provenance": {
       "kind": "official-html-page",
@@ -40,6 +38,8 @@
   },
   "caveats": [
     "Sono tassi istituzionali uguali per tutti i deputati (salvo le riduzioni per chi ha un'altra attività lavorativa): non è la busta paga della singola persona.",
+    "Lo storico riporta solo i gradini descritti dalla Camera (dal 2005 per l'indennità): per diaria, rimborso per il mandato e spese telefoniche l'inizio del primo importo non è indicato. La diaria prima del 27 luglio 2010 è derivata dalla riduzione di 500 euro dichiarata, non citata come importo.",
+    "Le trattenute per assistenza sanitaria integrativa e assegno di fine mandato si sottraggono dall'indennità lorda: non sono somme aggiuntive. Le tessere di libera circolazione sono un beneficio in natura senza importo per deputato.",
     "Il netto dichiarato dalla Camera (5.290,71 €) è prima delle addizionali regionali e comunali, che variano per domicilio fiscale.",
     "Il Senato pubblica una pagina di trattamento economico ma le richieste programmatiche ricevono una challenge WAF: finché non si può fissare hash e testo, non si pubblica l'importo senatorio.",
     "Non si inventano stipendi di ministri, sottosegretari o del Presidente della Repubblica da fonti non acquisite."

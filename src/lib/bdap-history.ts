@@ -2,6 +2,7 @@ import {
   discoverLatestStatePaymentDataset,
   getStatePaymentDatasetForPeriod,
   getStatePaymentDatasetTotal,
+  STATE_SPENDING_HISTORY_MAX_CONCURRENCY,
   type MonthlyBdapDataset,
 } from "@/lib/bdap-payments";
 import { deriveStateSpendingHistoryPoints } from "@/lib/data/bdap-history-points";
@@ -59,7 +60,6 @@ export type StateSpendingHistory = {
 type DatasetWithTotal = { dataset: MonthlyBdapDataset; cumulativePaid: number };
 
 export const STATE_SPENDING_HISTORY_DEADLINE_MS = 8_000;
-export const STATE_SPENDING_HISTORY_MAX_CONCURRENCY = 3;
 
 type StateSpendingHistoryOptions = {
   signal?: AbortSignal;

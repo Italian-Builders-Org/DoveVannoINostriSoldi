@@ -105,17 +105,21 @@ class CachedReceiptTests(unittest.TestCase):
         from basemap import load_map
 
         source = {"id": "fixture", "mapBounds": [9.28, 40.29, 9.37, 40.36]}
-        raw = json.dumps({
-            "elements": [{
-                "type": "way",
-                "id": 1,
-                "tags": {"highway": "primary"},
-                "geometry": [
-                    {"lon": 9.32, "lat": 40.32},
-                    {"lon": 9.33, "lat": 40.33},
+        raw = json.dumps(
+            {
+                "elements": [
+                    {
+                        "type": "way",
+                        "id": 1,
+                        "tags": {"highway": "primary"},
+                        "geometry": [
+                            {"lon": 9.32, "lat": 40.32},
+                            {"lon": 9.33, "lat": 40.33},
+                        ],
+                    }
                 ],
-            }],
-        }).encode()
+            }
+        ).encode()
         receipt = {
             "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
             "bounds": source["mapBounds"],
@@ -137,6 +141,62 @@ class CachedReceiptTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         load_map(source, root)
             path.write_text(json.dumps(receipt))
+            self.assertEqual(len(load_map(source, root)["features"]), 1)
+
+
+class OverviewMapTests(unittest.TestCase):
+    def test_overview_query_omits_dense_local_layers(self):
+        from basemap import query_for
+
+        bounds = [9, 39.3, 16.7, 46.8]
+        overview = query_for(bounds, "overview")
+        self.assertIn("motorway", overview)
+        self.assertNotIn("residential", overview)
+        self.assertNotIn("neighbourhood", overview)
+        self.assertNotIn('"landuse"', overview)
+        self.assertIn("residential", query_for(bounds))
+        with self.assertRaises(ValueError):
+            query_for(bounds, "unknown")
+
+    def test_a_coarse_map_cannot_reuse_an_urban_receipt(self):
+        import hashlib, json, tempfile
+        from pathlib import Path
+        from basemap import load_map
+
+        source = {
+            "id": "fixture",
+            "mapBounds": [9, 39.3, 16.7, 46.8],
+            "mapDetail": "overview",
+        }
+        raw = json.dumps(
+            {
+                "elements": [
+                    {
+                        "type": "way",
+                        "id": 1,
+                        "tags": {"highway": "motorway"},
+                        "geometry": [
+                            {"lon": 11, "lat": 45},
+                            {"lon": 11.01, "lat": 45.01},
+                        ],
+                    }
+                ]
+            }
+        ).encode()
+        receipt = {
+            "endpoint": "https://overpass-api.de/api/interpreter",
+            "bounds": source["mapBounds"],
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "bytes": len(raw),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "fixture.osm.json").write_bytes(raw)
+            path = root / "fixture.osm.receipt.json"
+            path.write_text(json.dumps(receipt))
+            with self.assertRaises(ValueError):
+                load_map(source, root)
+            path.write_text(json.dumps({**receipt, "profile": "overview"}))
             self.assertEqual(len(load_map(source, root)["features"]), 1)
 
 

@@ -1,6 +1,8 @@
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-export function baseScale({ width, height }) {
-  return Math.min(width / 6500, height / 4300) * 1.4;
+export function baseScale({ width, height }, spanMetres = 6500) {
+  if (!Number.isFinite(spanMetres) || spanMetres < 1000 || spanMetres > 2000000)
+    throw Error("Invalid map context span");
+  return (Math.min(width / 6500, height / 4300) * 1.4 * 6500) / spanMetres;
 }
 export function normalizeBearing(angle) {
   return (
@@ -165,7 +167,7 @@ export function fitCamera(
   return centered(lo) ?? { ...next, scale: lo };
 }
 export function resizeCamera(camera, before, after) {
-  const base = baseScale(after),
+  const base = baseScale(after, camera.viewWidthMetres),
     next = { ...camera, base };
   next.scale = limitedScale(next, (camera.scale / camera.base) * base);
   return next;

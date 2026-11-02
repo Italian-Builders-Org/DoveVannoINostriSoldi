@@ -37,7 +37,14 @@ export function prepareScene(source) {
       ...f,
       points: f.coordinates.map(world),
     })),
-    labels = (source.basemap?.labels ?? [])
+    labels = (
+      source.basemap?.labels ??
+      source.stops.map((s) => ({
+        name: s.name,
+        point: s.point,
+        class: "station",
+      }))
+    )
       .map((l) => ({
         ...l,
         point: world(l.point),
@@ -182,7 +189,7 @@ function drawBackground(ctx, scene, p, view) {
   for (const label of scene.labels) {
     const xy = p.project(label.point);
     if (!xy) continue;
-    const major = /city|town/.test(label.class),
+    const major = /city|town|station/.test(label.class),
       text = label.name.slice(0, 50);
     ctx.font = (major ? "600 13px" : "500 11px") + " system-ui";
     if (!fits(...xy, ctx.measureText(text).width)) continue;

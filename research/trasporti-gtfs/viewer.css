@@ -1927,3 +1927,38 @@ th:nth-child(4) {
   width: 16px;
   height: 16px;
 }
+
+.mast nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mast nav a,
+.mast nav [aria-current] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-decoration: none;
+}
+.mast nav [aria-current] {
+  background: var(--surface, #edf1e7);
+  font-weight: 600;
+}
+@media (hover: hover) {
+  .mast nav a:hover {
+    background: #edf1e7;
+  }
+}
+
+.map-notice[data-context="true"] {
+  top: 76px;
+  left: 16px;
+  transform: none;
+  padding: 5px 8px;
+  font-size: 11px;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
+}

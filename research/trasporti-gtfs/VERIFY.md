@@ -381,3 +381,36 @@ Main remoto ricontrollato e fetch eseguito prima della consegna: c3fa7372.
 L'unico commit successivo alla verifica precedente cambia immersive-chrome.tsx
 e bdap-history.ts, fuori da research/trasporti-gtfs. Nessun rebase, merge,
 overwrite o modifica del checkout principale.
+
+## Iterazione 14, 2 novembre 2026
+
+Base locale fb3e8c0c, main remoto ricontrollato c3fa7372. Tutto il diff resta
+in research/trasporti-gtfs; nessuna integrazione Next o modifica Vercel.
+
+- PASS: 48 Python e 28 Node. Casi di errore definiti prima del codice per
+  numero treno, fusione geometrie, profilo cartografico, fonte/data, previsioni,
+  mancanti, mezzanotte e scala della tratta. Le fixture restano sintetiche.
+- PASS Browser: 34 fonti × 4 fasce = 136 viste a 573 px; valori, campioni,
+  prime 20 righe e data confrontati con l'oracolo congelato. Overflow zero.
+- PASS Browser: due corse a 320/390/573/1280 px; 14/14 e 8/13 rilevazioni,
+  grafico, controlli almeno 44 px, etichette contenute, zero overflow.
+- PASS: menu da tastiera e focus ripristinato; tre deep link non disponibili
+  producono errore esplicito e disabilitano export, senza cambiare corsa/data.
+- PASS: CSV della 8519, 13 righe, ultimi cinque eventi mancanti e valori
+  negativi conservati; hash della fonte coerente.
+- PASS: camera della tratta, URL esplicito, resize e ritorno alla città;
+  default urbano invariato. Senza OSM: nomi delle stazioni dal GTFS e avviso,
+  attribuzione OSM nascosta. Nessun tracciato inventato.
+- PASS: HTML autonomi testati via server locale, CSP connect-src none;
+  rail senza link a un file mappa esterno; accordion da tastiera istantaneo.
+- PASS: i 32 oggetti precedenti del modello sono identici; ricevute, byte e
+  hash degli asset congelati verificati. 44.798 tratti, 32 reti utilizzabili,
+  20 città utilizzabili e una tratta. Trento ferrovia registrata senza geometria.
+- NOT RUN: telefono fisico, vero screen reader, clipboard virtuale Browser
+  (lettura/incolla non disponibile), gate Next/ETL/CI, pubblicazione.
+
+Artefatti: directory locale gtfs-20261102-v14 nell'area visualizations della
+sessione. `python3 verify.py` ripete i confronti dati/Browser senza rete e
+richiede il precedente modello v13 nella directory adiacente. Le capsule
+pubbliche e rail-journeys.json riproducono la vista ferroviaria. I digest delle
+capsule riguardano il DOM serializzato, non la risposta HTTP originaria.

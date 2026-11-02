@@ -445,3 +445,75 @@ mappa espansa e uscita con Escape. CSV di 919 righe e PNG verificati; nuove
 reti e ricerca provate anche nell'HTML offline. Artifact `gtfs-20261102-v13`
 con verificatore e screenshot. Preview stabile: porta 3274, versione
 `iteration13-final`. Solo commit locale; nessun push, PR, deploy o build Vercel.
+
+## Iterazione 14: corse ferroviarie e rilevazioni
+
+La vista `treni.html` usa acquisizioni manuali della scheda pubblica
+[ViaggiaTreno](http://www.viaggiatreno.it/vt_pax_internet/mobile/). È separata
+dalla velocità programmata GTFS. Nessuna richiesta remota durante la visita,
+nessuno storico automatico o API a pagamento. Non è un servizio in tempo reale.
+
+Per riprodurla, conservare capsule JSON pubbliche con sole chiavi `url`,
+`acquiredAt` (ISO con fuso) e `html` (DOM reso della pagina). Acquisirle tramite
+la normale ricerca ufficiale; non aggirare risposte 403. L'URL deve contenere
+numero, origine e data restituiti dalla fonte. Non usare biglietti o email.
+Il digest identifica il DOM UTF-8 salvato, non i byte HTTP originari.
+
+```bash
+python3 research/trasporti-gtfs/render.py \
+  --analysis PERCORSO/analysis.json.gz \
+  --output PERCORSO/result \
+  --rail-capture PERCORSO/8509-dom-capture.json \
+  --rail-capture PERCORSO/8519-dom-capture.json
+```
+
+`--standalone` produce anche un `treni.html` autonomo; non contiene un link
+alla mappa che richiederebbe altri file. Senza capsule il vecchio renderer
+resta utilizzabile. Per l'analisi GTFS del nuovo corridoio aggiungere
+`--city-date verona-bolzano-av=2026-11-02`; le date precedenti restano invariate.
+
+### Dati verificati il 2 novembre 2026
+
+- **FR 8509, Sibari–Bolzano**: 14/14 passaggi disponibili, arrivo +22 minuti,
+  massimo +38 a Napoli Afragola. Aumento maggiore fra Paola e Scalea: +21.
+- **FR 8519, Bolzano–Sibari**: 8/13 passaggi rilevati al momento del salvataggio;
+  gli ultimi cinque sono previsioni e restano mancanti nell'analisi. L'arrivo
+  non è ancora osservato. Massimo osservato +9 a Napoli Afragola.
+
+La variazione confronta ritardi di passaggi consecutivi e può includere la
+sosta precedente. Non separa corsa e sosta, non spiega le cause e due corse
+non dimostrano un andamento storico. Negativi, zero e mancanti sono distinti.
+I tempi disponibili senza data del singolo evento sono accettati soltanto
+per corse nello stesso giorno: attraversamenti della mezzanotte vengono rifiutati.
+
+### Nuove fonti e limiti di copertura
+
+[STA / Open Data Hub](https://gtfs.api.opendatahub.com/v1/dataset), CC0,
+include gli orari dei due Frecciarossa lungo la corsa completa. Solo **sei
+tratti Verona–Bolzano** superano i controlli geometrici entro 100 metri dalle
+fermate; gli altri 21 su 27 sono esclusi. La mappa dichiara questo perimetro,
+non una copertura nazionale completa. Il profilo OSM `overview` acquisisce
+solo viabilità principale e centri abitati, con ricevuta distinta dal profilo
+urbano. Nessuna estensione dei budget o allentamento del controllo geometrico.
+
+L'orario GTFS può differire da ViaggiaTreno (Napoli Afragola, FR 8509: 09:39
+contro 09:38). Non viene usato per calcolare il ritardo dei passaggi rilevati.
+Le coppie sono adiacenti nel GTFS, che può contenere punti orari non commerciali.
+
+[Trentino Trasporti](https://www.trentinotrasporti.it/en/opendata), CC BY 4.0:
+48 corse ferroviarie attive del 30 ottobre, ma tutte senza `shape_id` utilizzabile.
+Fonte registrata come non confrontabile, zero tratti disegnati. Nuove metro
+non aggiunte: i candidati ancora da convertire/verificare non diventano dati
+presenti. Le 32 fonti precedenti conservano integralmente i propri oggetti.
+
+L'accessibilità pubblica di ViaggiaTreno non equivale a una licenza aperta:
+questa raccolta resta locale. Una futura pubblicazione/storicizzazione richiede
+verifica delle condizioni e una fonte con date complete per gli eventi notturni.
+
+L'estratto OSM del nuovo corridoio non è stato acquisito: i tre endpoint
+consentiti hanno restituito 504, 502 e timeout. Il pacchetto conserva `basemap:
+null`, mostra un avviso e non attribuisce a OSM un fondo assente. I sei tratti
+GTFS restano esplorabili; le mappe precedenti sono identiche. `render.py` senza
+`--basemap-cache` conserva la cartografia già congelata; specificando la cache
+rilegge e verifica tutti gli estratti, fallendo se ne manca uno. Non c'è un
+ripiego automatico su un servizio remoto o su una geometria inventata.

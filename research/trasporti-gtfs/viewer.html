@@ -15,6 +15,7 @@
   <body>
     <header class="mast">
       <span class="brand">DVNS <span>/ MOBILITÀ</span></span>
+      <!--__GTFS_NAV__-->
     </header>
     <main>
       <div class="heading">
@@ -23,8 +24,8 @@
       </div>
       <div class="toolbar">
         <label
-          >Città<span class="select-field"
-            ><select id="city" aria-label="Città" disabled></select
+          >Città o tratta<span class="select-field"
+            ><select id="city" aria-label="Città o tratta" disabled></select
             ><svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="m7 10 5 5 5-5" /></svg></span
         ></label>
@@ -256,6 +257,7 @@
         <div class="map-foot">
           <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
           <a
+            id="map-attribution"
             href="https://www.openstreetmap.org/copyright"
             target="_blank"
             rel="noopener noreferrer"

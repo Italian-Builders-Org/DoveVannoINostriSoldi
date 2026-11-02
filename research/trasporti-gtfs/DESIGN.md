@@ -229,3 +229,22 @@ fonti. I dati nuovi seguono gli stessi budget e controlli delle reti esistenti.
 
 Nessuna nuova animazione, opzione o testo permanente. Tastiera e ricerca
 restano immediate; nessuna modifica a camera, rilievi, calcoli o ordinamenti.
+
+## Iterazione 14: leggere i treni senza confondere due misure
+
+| Prima | Dopo | Perché |
+| --- | --- | --- |
+| Solo velocità programmate per area | Navigazione Mappa / Treni; rilevazioni salvate in pagina distinta | Distinguere orario e ritardo osservato |
+| Nessuna lettura nazionale della corsa | Grafico, arrivo, picco, aumento e tabella delle fermate | Individuare dove cambia il ritardo, senza attribuire cause |
+| Previsioni mescolabili ai passaggi | Vuoti espliciti, linea interrotta, copertura e data della corsa | Non inventare arrivi o serie complete |
+| Catalogo solo città | “Città o tratta” e corridoio ferroviario con perimetro dichiarato | Non chiamare città un collegamento |
+| Possibile fusione di corse sulla stessa geometria | Filtro manuale per numero e chiave distinta per corsa | Conservare identità e numero di campioni |
+
+Grafico senza animazione all'aggiornamento, valori precisi nella tabella e
+nel CSV. Menu riusato, controlli da almeno 44 px, nessun polling. Su mobile
+la tabella scorre nel proprio contenitore e conserva visibile la fermata.
+
+La tratta dichiara viewWidthMetres=160000: il contesto geografico determina
+la scala iniziale e il resize, mentre il default urbano resta 6500 metri.
+L'assenza del fondo OSM non diventa una mappa presunta: stazioni GTFS
+etichettate, avviso laterale e attribuzione del fondo nascosta.

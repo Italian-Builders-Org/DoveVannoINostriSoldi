@@ -271,6 +271,20 @@ def analyze_feed(path, service_date, receipt, source):
     max_speed = source.get("maxSpeedKmh", 150)
     if not isinstance(max_speed, int) or not 50 <= max_speed <= 350:
         raise ValueError("Invalid speed plausibility threshold")
+    trip_numbers = source.get("tripNumbers")
+    if trip_numbers is not None and (
+        not isinstance(trip_numbers, list)
+        or not 1 <= len(trip_numbers) <= 100
+        or any(
+            not isinstance(n, str) or not re.fullmatch(r"[0-9]{1,6}", n)
+            for n in trip_numbers
+        )
+        or len(set(trip_numbers)) != len(trip_numbers)
+    ):
+        raise ValueError("Invalid train number selection")
+    route_label = source.get("routeLabel", "short")
+    if route_label not in ("short", "long", "trip"):
+        raise ValueError("Invalid route label policy")
     excluded = Counter()
     segments = {}
     geometry_cache = {}
@@ -314,10 +328,15 @@ def analyze_feed(path, service_date, receipt, source):
             key: r
             for key, r in trips.items()
             if routes[r["route_id"]]["route_type"] in route_types
+            and (trip_numbers is None or r.get("trip_short_name") in trip_numbers)
         }
         selected = {
             key: r for key, r in eligible_trips.items() if r["service_id"] in services
         }
+        if route_label == "trip" and any(
+            not r.get("trip_short_name") for r in selected.values()
+        ):
+            raise ValueError("Missing train identity for label")
         had_active_trips = bool(selected)
         frequency = {r["trip_id"] for r in a.rows("frequencies.txt", ("trip_id",))}
         excluded["frequency_trip"] = len(frequency & selected.keys())
@@ -418,14 +437,20 @@ def analyze_feed(path, service_date, receipt, source):
                     right["stop_id"],
                     geometry_id,
                 )
+                if route_label == "trip":
+                    key += (trip["trip_short_name"],)
                 if key not in segments:
                     route = routes[trip["route_id"]]
                     segments[key] = {
                         "id": hashlib.sha256(safe_json(key).encode()).hexdigest()[:16],
                         "route": (
-                            route.get("route_long_name")
-                            if source.get("routeLabel") == "long"
-                            else route.get("route_short_name")
+                            trip["trip_short_name"]
+                            if route_label == "trip"
+                            else (
+                                route.get("route_long_name")
+                                if route_label == "long"
+                                else route.get("route_short_name")
+                            )
                         )
                         or trip["route_id"],
                         "routeName": route.get("route_long_name", ""),
@@ -476,7 +501,7 @@ def analyze_feed(path, service_date, receipt, source):
     return result
 
 
-def write_viewer(payload, output, standalone=False):
+def write_viewer(payload, output, standalone=False, rail_journeys=None):
     here = Path(__file__).parent
     manifest = {k: v for k, v in payload.items() if k != "cities"}
     manifest["cities"] = []
@@ -514,7 +539,14 @@ def write_viewer(payload, output, standalone=False):
                 "bytes": len(compressed),
             }
         manifest["cities"].append(entry)
-    html = (here / "viewer.html").read_text()
+    navigation = ""
+    if rail_journeys:
+        from rail import write_rail_viewer
+
+        write_rail_viewer(rail_journeys, output, standalone=standalone)
+        if not standalone:
+            navigation = '<nav aria-label="Esplora mobilità"><span aria-current="page">Mappa</span><a href="treni.html">Treni</a></nav>'
+    html = (here / "viewer.html").read_text().replace("<!--__GTFS_NAV__-->", navigation)
     if not standalone:
         html = html.replace("connect-src 'none'", "connect-src 'self'")
     html = html.replace("/*__GTFS_MANIFEST__*/", safe_json(manifest)).replace(

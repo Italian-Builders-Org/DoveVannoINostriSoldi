@@ -180,9 +180,16 @@ def parse_map(data):
     return {"features": features, "labels": labels}
 
 
-def query_for(bounds):
+def query_for(bounds, profile="urban"):
     west, south, east, north = bounds
     bbox = f"{south},{west},{north},{east}"
+    if profile not in ("urban", "overview"):
+        raise ValueError("Invalid basemap profile")
+    if profile == "overview":
+        return f"""[out:json][timeout:35][maxsize:134217728];(
+way["highway"~"^(motorway|trunk)(_link)?$"]({bbox});
+node["place"~"^(city|town)$"]["name"]({bbox});
+);out body geom;"""
     return f"""[out:json][timeout:35][maxsize:134217728];(
 way["highway"~"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$"]({bbox});
 way["natural"="water"]({bbox});way["waterway"~"^(river|canal)$"]({bbox});
@@ -204,6 +211,12 @@ def load_map(source, cache):
         raise ValueError("Basemap SHA-256/bytes mismatch")
     if receipt["bounds"] != source["mapBounds"] or receipt["endpoint"] not in ENDPOINTS:
         raise ValueError("Basemap perimeter/source mismatch")
+    profile = source.get("mapDetail", "urban")
+    if (
+        profile not in ("urban", "overview")
+        or receipt.get("profile", "urban") != profile
+    ):
+        raise ValueError("Basemap profile mismatch")
     data = parse_map(json.loads(raw))
     if not any(f["kind"] == "road" for f in data["features"]):
         raise ValueError("No streets in basemap extract")
@@ -222,7 +235,7 @@ def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib", method="PO
     if path.exists() and receipt_path.exists():
         data = load_map(source, cache)
         return {"city": source["id"], "cached": True, "features": len(data["features"])}
-    query = query_for(source["mapBounds"])
+    query = query_for(source["mapBounds"], source.get("mapDetail", "urban"))
     request = urllib.request.Request(
         endpoint
         + ("?" + urllib.parse.urlencode({"data": query}) if method == "GET" else ""),
@@ -252,6 +265,7 @@ def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib", method="PO
         "sha256": hashlib.sha256(raw).hexdigest(),
         "bytes": len(raw),
         "query": query,
+        "profile": source.get("mapDetail", "urban"),
     }
     with tempfile.NamedTemporaryFile(
         dir=cache, delete=False, suffix=".partial"

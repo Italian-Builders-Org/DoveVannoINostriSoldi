@@ -1,6 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "iterationBaseSha": "23c240f61774987ffac5695363e7ad9f84ad68ad",
+  "iterationBaseSha": "fb3e8c0ca82e47539c5b6b76502b259d5fe810f2",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -1802,6 +1802,74 @@
         "labels": 10,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "verona-bolzano-av",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-11-02",
+      "holder": "STA / Open Data Hub Alto Adige",
+      "license": "CC0 1.0",
+      "receipt": {
+        "city": "sta",
+        "url": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+        "finalUrl": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+        "acquiredAt": "2026-11-02T18:44:08.568823+00:00",
+        "bytes": 153031053,
+        "sha256": "4f8d2784fad5b985a383c659468e5d69e392b9ec7108d6cbfc89ea2f79bf9257",
+        "lastModified": null,
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 175,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 2,
+        "activeServices": 346,
+        "geometryPatterns": 2,
+        "segments": 6,
+        "analyzedScheduledTrips": 2,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "stop_shape_offset_above_100_m": 21,
+        "unlocated_or_nonprogressing_pair": 21,
+        "candidate_pairs": 27,
+        "missing_geometry_pair": 21,
+        "accepted_pairs": 6
+      }
+    },
+    {
+      "id": "trento-treni",
+      "mode": "train",
+      "status": "no-comparable-segments",
+      "serviceDate": "2026-10-30",
+      "holder": "Trentino Trasporti S.p.A.",
+      "license": "CC BY 4.0",
+      "receipt": {
+        "city": "trento-extra",
+        "url": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "finalUrl": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "acquiredAt": "2026-11-02T18:44:14.390671+00:00",
+        "bytes": 11108124,
+        "sha256": "2978d677a5e314a5bff589c54b3319c54fa9a933cd14cb01fc26048419d7a23d",
+        "lastModified": "Mon, 19 Oct 2026 14:13:00 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 48,
+        "activeServices": 37,
+        "geometryPatterns": 0,
+        "segments": 0,
+        "analyzedScheduledTrips": 0,
+        "analyzedRoutes": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "missing_shape": 48
+      }
     }
   ],
   "delivery": {
@@ -2354,6 +2422,323 @@
     "concurrentMainChanges": [
       "src/components/immersive-chrome.tsx",
       "src/lib/bdap-history.ts"
+    ]
+  },
+  "railJourneys": [
+    {
+      "id": "2026-11-02-8509",
+      "number": "8509",
+      "category": "FR",
+      "serviceDate": "2026-11-02",
+      "origin": "SIBARI",
+      "destination": "BOLZANO",
+      "observations": [
+        {
+          "station": "SIBARI",
+          "kind": "departure",
+          "scheduled": "06:24",
+          "observed": "06:24",
+          "delayMinutes": 0,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TORANO LATTARICO",
+          "kind": "arrival",
+          "scheduled": "06:49",
+          "observed": "06:47",
+          "delayMinutes": -2,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "PAOLA",
+          "kind": "arrival",
+          "scheduled": "07:12",
+          "observed": "07:16",
+          "delayMinutes": 4,
+          "deltaMinutes": 6
+        },
+        {
+          "station": "SCALEA S.DOMENICA TALAO",
+          "kind": "arrival",
+          "scheduled": "07:42",
+          "observed": "08:07",
+          "delayMinutes": 25,
+          "deltaMinutes": 21
+        },
+        {
+          "station": "SALERNO",
+          "kind": "arrival",
+          "scheduled": "09:09",
+          "observed": "09:41",
+          "delayMinutes": 32,
+          "deltaMinutes": 7
+        },
+        {
+          "station": "NAPOLI AFRAGOLA",
+          "kind": "arrival",
+          "scheduled": "09:38",
+          "observed": "10:16",
+          "delayMinutes": 38,
+          "deltaMinutes": 6
+        },
+        {
+          "station": "ROMA TERMINI",
+          "kind": "arrival",
+          "scheduled": "10:40",
+          "observed": "11:17",
+          "delayMinutes": 37,
+          "deltaMinutes": -1
+        },
+        {
+          "station": "ROMA TIBURTINA",
+          "kind": "arrival",
+          "scheduled": "10:57",
+          "observed": "11:32",
+          "delayMinutes": 35,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "FIRENZE SANTA MARIA NOVELLA",
+          "kind": "arrival",
+          "scheduled": "12:27",
+          "observed": "12:53",
+          "delayMinutes": 26,
+          "deltaMinutes": -9
+        },
+        {
+          "station": "BOLOGNA C.LE/AV",
+          "kind": "arrival",
+          "scheduled": "13:13",
+          "observed": "13:31",
+          "delayMinutes": 18,
+          "deltaMinutes": -8
+        },
+        {
+          "station": "VERONA PORTA NUOVA",
+          "kind": "arrival",
+          "scheduled": "14:08",
+          "observed": "14:30",
+          "delayMinutes": 22,
+          "deltaMinutes": 4
+        },
+        {
+          "station": "ROVERETO",
+          "kind": "arrival",
+          "scheduled": "15:01",
+          "observed": "15:21",
+          "delayMinutes": 20,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "TRENTO",
+          "kind": "arrival",
+          "scheduled": "15:15",
+          "observed": "15:37",
+          "delayMinutes": 22,
+          "deltaMinutes": 2
+        },
+        {
+          "station": "BOLZANO",
+          "kind": "arrival",
+          "scheduled": "15:48",
+          "observed": "16:10",
+          "delayMinutes": 22,
+          "deltaMinutes": 0
+        }
+      ],
+      "coverage": {
+        "stops": 14,
+        "observedStops": 14,
+        "complete": true
+      },
+      "arrivalDelayMinutes": 22,
+      "peakDelayMinutes": 38,
+      "largestIncrease": {
+        "fromIndex": 2,
+        "toIndex": 3,
+        "minutes": 21
+      },
+      "source": {
+        "url": "http://www.viaggiatreno.it/vt_pax_internet/mobile/scheda?dettaglio=visualizza&numeroTreno=8509&codLocOrig=S11811&dataPartenza=1793574000000&tipoRicerca=numero&lang=IT",
+        "acquiredAt": "2026-11-02T18:42:14.470Z",
+        "kind": "public-browser-dom",
+        "sha256": "f979a56c7b8f45a18c7baca1b48415bc80b9e7c44cdb06965a6ecb1a50edce27",
+        "bytes": 27245
+      }
+    },
+    {
+      "id": "2026-11-02-8519",
+      "number": "8519",
+      "category": "FR",
+      "serviceDate": "2026-11-02",
+      "origin": "BOLZANO",
+      "destination": "SIBARI",
+      "observations": [
+        {
+          "station": "BOLZANO",
+          "kind": "departure",
+          "scheduled": "13:12",
+          "observed": "13:13",
+          "delayMinutes": 1,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TRENTO",
+          "kind": "arrival",
+          "scheduled": "13:41",
+          "observed": "13:41",
+          "delayMinutes": 0,
+          "deltaMinutes": -1
+        },
+        {
+          "station": "ROVERETO",
+          "kind": "arrival",
+          "scheduled": "13:55",
+          "observed": "13:57",
+          "delayMinutes": 2,
+          "deltaMinutes": 2
+        },
+        {
+          "station": "VERONA PORTA NUOVA",
+          "kind": "arrival",
+          "scheduled": "14:40",
+          "observed": "14:36",
+          "delayMinutes": -4,
+          "deltaMinutes": -6
+        },
+        {
+          "station": "BOLOGNA C.LE/AV",
+          "kind": "arrival",
+          "scheduled": "15:44",
+          "observed": "15:49",
+          "delayMinutes": 5,
+          "deltaMinutes": 9
+        },
+        {
+          "station": "FIRENZE SANTA MARIA NOVELLA",
+          "kind": "arrival",
+          "scheduled": "16:24",
+          "observed": "16:22",
+          "delayMinutes": -2,
+          "deltaMinutes": -7
+        },
+        {
+          "station": "ROMA TERMINI",
+          "kind": "arrival",
+          "scheduled": "18:10",
+          "observed": "18:08",
+          "delayMinutes": -2,
+          "deltaMinutes": 0
+        },
+        {
+          "station": "NAPOLI AFRAGOLA",
+          "kind": "arrival",
+          "scheduled": "19:20",
+          "observed": "19:29",
+          "delayMinutes": 9,
+          "deltaMinutes": 11
+        },
+        {
+          "station": "SALERNO",
+          "kind": "arrival",
+          "scheduled": "19:48",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "SCALEA S.DOMENICA TALAO",
+          "kind": "arrival",
+          "scheduled": "21:14",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "PAOLA",
+          "kind": "arrival",
+          "scheduled": "21:43",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TORANO LATTARICO",
+          "kind": "arrival",
+          "scheduled": "22:05",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "SIBARI",
+          "kind": "arrival",
+          "scheduled": "22:33",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        }
+      ],
+      "coverage": {
+        "stops": 13,
+        "observedStops": 8,
+        "complete": false
+      },
+      "arrivalDelayMinutes": null,
+      "peakDelayMinutes": 9,
+      "largestIncrease": {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "minutes": 11
+      },
+      "source": {
+        "url": "http://www.viaggiatreno.it/vt_pax_internet/mobile/scheda?dettaglio=visualizza&numeroTreno=8519&codLocOrig=S02026&dataPartenza=1793574000000&tipoRicerca=numero&lang=IT",
+        "acquiredAt": "2026-11-02T18:49:38.459Z",
+        "kind": "public-browser-dom",
+        "sha256": "700f97b54383228b2892f9f9e0af5a3391d4e2d4e0dd9409bf11ef5d42cbd2cc",
+        "bytes": 21807
+      }
+    }
+  ],
+  "iteration14": {
+    "baseSha": "fb3e8c0ca82e47539c5b6b76502b259d5fe810f2",
+    "mainVerifiedSha": "c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53",
+    "status": "PASS local; not published",
+    "previousSourceObjectsIdentical": 32,
+    "sourceEntries": 34,
+    "usableNetworks": 32,
+    "usableCities": 20,
+    "corridors": 1,
+    "segments": 44798,
+    "offlineTests": 76,
+    "sourceBandCases": 136,
+    "railResponsiveCases": 8,
+    "publicStationObservations": 22,
+    "newBasemap": "Not acquired: VK 504, primary 502, private.coffee timeout100s; explicit warning and GTFS station labels",
+    "newTrainGeometry": "Six usable segments; 21/27 rejected by unchanged100m guard",
+    "trentoRail": "48 active trips; no usable shapes; zero segments",
+    "privacy": "Only public train numbers used from Gmail; no email, PNR, ticket or personal data stored",
+    "bootstrapBytes": 156842,
+    "railPageBytes": 53641,
+    "standaloneMapBytes": 30391962,
+    "newCityAssets": {
+      "verona-bolzano-av": {
+        "path": "cities/verona-bolzano-av-c9789b5665aaab08e7c4236d77e7dbbb73d1165e931324efd340553ba744f979.json.gz",
+        "sha256": "c9789b5665aaab08e7c4236d77e7dbbb73d1165e931324efd340553ba744f979",
+        "bytes": 20241
+      },
+      "trento-treni": {
+        "path": "cities/trento-treni-87649cfc9f1b6de8d7bfb0392dc31ec70a43b50d35cbf369b517f3804c1559cf.json.gz",
+        "sha256": "87649cfc9f1b6de8d7bfb0392dc31ec70a43b50d35cbf369b517f3804c1559cf",
+        "bytes": 808
+      }
+    },
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "virtual Browser clipboard read/paste unavailable; copy toast only",
+      "Next/ETL/CI product gates",
+      "push, PR, merge, deployment"
     ]
   }
 }

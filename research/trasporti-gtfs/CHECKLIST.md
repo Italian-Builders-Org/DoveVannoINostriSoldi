@@ -288,3 +288,24 @@ Base: 23c240f61774987ffac5695363e7ad9f84ad68ad. Solo ricerca locale, senza pubbl
 - PASS: origin/main aggiornato a c3fa7372; il commit concorrente modifica soltanto immersive-chrome.tsx e bdap-history.ts. Nessuna sovrapposizione o modifica a questi file. Checkout principale preservato.
 - Artifact: gtfs-20261102-v13 con verificatori, dati congelati, ricevute, esiti Browser, export e screenshot. Preview stabile 3274 aggiornata dopo i controlli, indice precedente conservato.
 - NOT RUN: telefono fisico, screen reader reale, gate Next/ETL/CI del prodotto e deploy. Nessun push, PR, merge o build Vercel; commit locale del solo prototipo.
+
+## Iterazione 14: treni nazionali e lettura del ritardo
+
+Base: fb3e8c0ca82e47539c5b6b76502b259d5fe810f2. Ricerca locale, nessuna pubblicazione.
+
+- [x] Branch pulito, main e preview preservati; skill Emil rilette. Consultazione Gmail limitata ai numeri delle corse: nessun PNR, biglietto o dato personale da salvare nel progetto.
+- [x] Fonte pubblica ViaggiaTreno: FR 8509 del 2 novembre, origine/data restituite dalla ricerca ufficiale. Dettaglio fermate disponibile; richieste API/HTTPS dirette 403, usare soltanto l'interfaccia pubblica accessibile.
+- [x] Conservare rilevazioni pubbliche verificabili; distinguere ritardo cumulato, sua variazione, orario programmato, istante di acquisizione e cause non osservate. Una corsa non diventa una tendenza.
+- [x] Prima del codice: definire rifiuti per data/numero incoerenti, tempi mancanti, corsa incompleta, mezzanotte ambigua e fonte alterata. Nessun valore mancante diventa zero o previsione effettiva.
+- [x] Aggiungere una vista locale delle corse ferroviarie con percorso schematico, tempi e variazioni; nessun tracciato geografico inventato, polling o nuove spese. Mappa GTFS e offline precedenti restano funzionanti.
+- [x] Verificare nuove fonti ufficiali GTFS ferroviarie/metro, date, geometrie, licenze e perimetri prima dell'integrazione. Documentare anche i candidati esclusi.
+- [x] Migliorare UI/UX con Emil; Browser su mobile/desktop, tastiera, filtri, fonti, export, stati vuoti/errori, deep link e offline. Confrontare le 32 fonti precedenti.
+- [x] Documentare Before/After, fonti, limiti e prove; main ricontrollato, promozione atomica della preview e commit locale. Nessun push/build Vercel.
+
+Esito locale: 48 test Python + 28 Node; 136 combinazioni fonte/fascia,
+8 viste ferroviarie responsive, CSV con assenze conservate, deep link,
+camera/resize e due HTML autonomi con CSP senza connessioni. Nessuna nuova
+città completa: la nuova copertura è ferroviaria e parziale, dichiarata.
+L'estratto OSM nuovo non è stato acquisito; il limite non è mascherato.
+Telefono fisico, screen reader, clipboard virtuale e gate/deploy del prodotto
+non verificati. Main remoto c3fa7372 invariato dal controllo precedente.

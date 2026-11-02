@@ -318,5 +318,82 @@ class ExtendedCoverageTests(unittest.TestCase):
             self.assertEqual(data["status"], "no-comparable-segments")
 
 
+class TrainNumberSelectionTests(unittest.TestCase):
+    def test_named_trains_are_filtered_and_never_merged_by_route_geometry(self):
+        changes = {
+            "trips.txt": [
+                [
+                    "route_id",
+                    "service_id",
+                    "trip_id",
+                    "direction_id",
+                    "shape_id",
+                    "trip_short_name",
+                ],
+                ["r", "s", "t1", "0", "sh", "8509"],
+                ["r", "s", "t2", "0", "sh", "8519"],
+            ],
+            "stop_times.txt": [
+                [
+                    "trip_id",
+                    "arrival_time",
+                    "departure_time",
+                    "stop_id",
+                    "stop_sequence",
+                    "shape_dist_traveled",
+                ]
+            ]
+            + [
+                [t, clock, clock, stop, seq, dist]
+                for t in ["t1", "t2"]
+                for clock, stop, seq, dist in [
+                    ("07:00:00", "a", "1", "0"),
+                    ("07:01:00", "b", "2", "1"),
+                    ("07:02:00", "c", "3", "2"),
+                ]
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path, receipt = archive(Path(tmp), changes)
+            source = {**SOURCE, "tripNumbers": ["8509", "8519"], "routeLabel": "trip"}
+            both = analyze_feed(path, date(2026, 10, 30), receipt, source)
+            self.assertEqual(len(both["segments"]), 4)
+            self.assertEqual({s["route"] for s in both["segments"]}, {"8509", "8519"})
+            self.assertTrue(
+                all(s["bands"]["morning"]["samples"] == 1 for s in both["segments"])
+            )
+            one = analyze_feed(
+                path, date(2026, 10, 30), receipt, {**source, "tripNumbers": ["8509"]}
+            )
+            self.assertEqual(len(one["segments"]), 2)
+            self.assertEqual({s["route"] for s in one["segments"]}, {"8509"})
+            missing = analyze_feed(
+                path, date(2026, 10, 30), receipt, {**source, "tripNumbers": ["9999"]}
+            )
+            self.assertEqual(missing["segments"], [])
+            legacy = analyze_feed(path, date(2026, 10, 30), receipt, SOURCE)
+            self.assertEqual(len(legacy["segments"]), 2)
+            self.assertTrue(
+                all(s["bands"]["morning"]["samples"] == 2 for s in legacy["segments"])
+            )
+
+    def test_invalid_or_absent_train_identity_has_no_silent_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path, receipt = archive(Path(tmp))
+            for policy in [
+                {"tripNumbers": []},
+                {"tripNumbers": ["8509", "8509"]},
+                {"tripNumbers": [1]},
+                {"tripNumbers": ["../8509"]},
+                {"routeLabel": "trip"},
+                {"routeLabel": "unknown"},
+            ]:
+                with self.subTest(policy=policy):
+                    with self.assertRaises(ValueError):
+                        analyze_feed(
+                            path, date(2026, 10, 30), receipt, {**SOURCE, **policy}
+                        )
+
+
 if __name__ == "__main__":
     unittest.main()

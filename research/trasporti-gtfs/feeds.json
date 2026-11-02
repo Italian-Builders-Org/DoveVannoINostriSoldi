@@ -660,5 +660,85 @@
     "sourceNotes": [
       "Solo coppie di fermate ferroviarie ARST con entrambe le fermate nel perimetro dichiarato. Non comprende tutta la linea Macomer–Nuoro."
     ]
+  },
+  {
+    "id": "verona-bolzano-av",
+    "viewWidthMetres": 160000,
+    "name": "Verona–Bolzano",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "areaType": "corridor",
+    "holder": "STA / Open Data Hub Alto Adige",
+    "landingUrl": "https://gtfs.api.opendatahub.com/v1/dataset",
+    "url": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "cadence": null,
+    "archiveId": "sta",
+    "focus": [
+      11.12,
+      46.0
+    ],
+    "mapBounds": [
+      10.7,
+      45.35,
+      11.6,
+      46.6
+    ],
+    "mapId": "verona-bolzano-overview",
+    "mapDetail": "overview",
+    "initialView": "network",
+    "tripNumbers": [
+      "8509",
+      "8519"
+    ],
+    "routeLabel": "trip",
+    "maxSpeedKmh": 350,
+    "scopeLabel": "FR 8509 e 8519 · Verona–Bolzano",
+    "sourceNotes": [
+      "Solo i sei tratti Verona–Bolzano con geometria utilizzabile dei FR 8509 e 8519 del 2 novembre 2026. Le corse complete collegano Sibari e Bolzano; qui i tratti mancanti non sono disegnati.",
+      "Cartografia di contesto semplificata: autostrade, strade principali e centri abitati. Il percorso ferroviario proviene dal GTFS.",
+      "Gli orari GTFS possono differire da quelli ViaggiaTreno: questa mappa non calcola ritardi. La vista Treni mostra rilevazioni lungo la corsa completa e usa il programma della stessa fonte."
+    ]
+  },
+  {
+    "name": "Trento",
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      11.121,
+      46.069
+    ],
+    "mapBounds": [
+      11.075,
+      46.01,
+      11.165,
+      46.11
+    ],
+    "studyBounds": [
+      11.03,
+      45.99,
+      11.23,
+      46.16
+    ],
+    "id": "trento-treni",
+    "areaId": "trento",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "mapId": "trento",
+    "archiveId": "trento-extra",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+    "scopeLabel": "Trento–Malè–Mezzana · area di Trento",
+    "sourceNotes": [
+      "Solo coppie di fermate ferroviarie nel perimetro dichiarato dell’area di Trento. Non rappresenta l’intera linea fino a Mezzana."
+    ]
   }
 ]

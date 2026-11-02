@@ -109,7 +109,8 @@ const cache = new Map(),
     "relief",
     "zoom",
   ];
-function notice(message) {
+function notice(message, context = false) {
+  $("notice").dataset.context = String(context);
   $("notice").hidden = !message;
   $("notice").textContent = message || "";
 }
@@ -278,6 +279,13 @@ async function selectCity(id, restored = null) {
       $("route").append(option(name, name));
 
     sourceInfo();
+    $("map-attribution").hidden = !city.basemap;
+    $("center").setAttribute(
+      "aria-label",
+      city.areaType === "corridor" ? "Centra tratta" : "Torna al centro città",
+    );
+    $("center").title =
+      city.areaType === "corridor" ? "Centra tratta" : "Centro città";
     if (city.scopeLabel) $("area-label").textContent = city.scopeLabel;
     controls.forEach((id) => ($(id).disabled = false));
     for (const button of document.querySelectorAll("[data-speed]"))
@@ -291,7 +299,7 @@ async function selectCity(id, restored = null) {
     updateData();
     if (restored) restoreView(restored);
     if (city.initialView === "network" && !restored?.camera) fit();
-    notice(city.basemap ? null : "Cartografia locale non acquisita.");
+    notice(city.basemap ? null : "Cartografia locale non acquisita.", true);
     shell.dataset.loading = "false";
   } catch (error) {
     if (token !== requestId) return;
@@ -830,8 +838,9 @@ function updateCamera(next) {
 }
 function home() {
   lastView = view();
-  const base = baseScale(lastView);
-  updateCamera({ ...cam, x: 0, y: 0, base, scale: base });
+  const viewWidthMetres = city?.viewWidthMetres ?? 6500;
+  const base = baseScale(lastView, viewWidthMetres);
+  updateCamera({ ...cam, x: 0, y: 0, base, scale: base, viewWidthMetres });
 }
 function fit() {
   if (!shown.length) return;

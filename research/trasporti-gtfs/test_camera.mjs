@@ -202,3 +202,32 @@ test("a selected raised segment fits the free viewport above a mobile detail car
     ) < 1,
   );
 });
+
+test("long distance context fits without changing urban defaults or resize ratios", () => {
+  const span = 160000;
+  near(baseScale(view), Math.min(view.width / 6500, view.height / 4300) * 1.4);
+  near(baseScale(view, span), (baseScale(view) * 6500) / span);
+  const wide = {
+    ...cam,
+    base: baseScale(view, span),
+    scale: baseScale(view, span),
+    viewWidthMetres: span,
+  };
+  const points = [
+    [0, -80000],
+    [0, 80000],
+    [20000, 0],
+  ];
+  const fitted = fitCamera(wide, view, points, { padding: 42 });
+  for (const point of points) {
+    const [x, y] = projection(fitted, view).project(point);
+    assert.ok(
+      x >= 40 && x <= view.width - 40 && y >= 40 && y <= view.height - 40,
+    );
+  }
+  const small = resizeCamera(fitted, view, { width: 390, height: 600 });
+  near(small.scale / small.base, fitted.scale / fitted.base);
+  near(small.base, baseScale({ width: 390, height: 600 }, span));
+  for (const bad of [0, NaN, Infinity, -1, 3000000])
+    assert.throws(() => baseScale(view, bad));
+});

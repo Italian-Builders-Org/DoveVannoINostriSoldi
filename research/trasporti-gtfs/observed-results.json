@@ -1,6 +1,6 @@
 {
   "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
-  "iterationBaseSha": "01122c622a770504a5345102f65b5e4d7f23adc6",
+  "iterationBaseSha": "23c240f61774987ffac5695363e7ad9f84ad68ad",
   "schemaVersion": 3,
   "metric": "scheduled-segment-travel-time",
   "cities": [
@@ -1629,11 +1629,184 @@
         "labels": 20,
         "license": "ODbL 1.0"
       }
+    },
+    {
+      "id": "sassari-treni",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 98,
+        "activeServices": 31,
+        "geometryPatterns": 16,
+        "segments": 4,
+        "analyzedScheduledTrips": 54,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 593,
+        "outside_study_area": 539,
+        "stop_shape_offset_above_100_m": 1,
+        "unlocated_or_nonprogressing_pair": 1,
+        "accepted_pairs": 54
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [8.52, 40.7, 8.59, 40.75],
+      "segmentsSha256": "cc953812b1e6f2979de7d44ae89a8f82ff32739724111a9f6436f2634b11319b",
+      "stops": 3,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [8.52, 40.7, 8.59, 40.75],
+          "acquiredAt": "2026-11-01T18:25:37.288258+00:00",
+          "osmBaseAt": "2026-11-01T18:24:21Z",
+          "sha256": "36417d5973caa1f1f9d0d251ec8b900ba2203e1cab5ec215f67f755099535089",
+          "bytes": 3960481,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.7,8.52,40.75,8.59);\nway[\"natural\"=\"water\"](40.7,8.52,40.75,8.59);way[\"waterway\"~\"^(river|canal)$\"](40.7,8.52,40.75,8.59);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.7,8.52,40.75,8.59);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.7,8.52,40.75,8.59);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.7,8.52,40.75,8.59);\n);out body geom;"
+        },
+        "features": 4229,
+        "labels": 18,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "nuoro",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ATP Nuoro / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "nuoro",
+        "url": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+        "finalUrl": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+        "acquiredAt": "2026-11-02T17:26:59.665943+00:00",
+        "bytes": 698377,
+        "sha256": "a1c1ac1743997b978dd519163dadf5dfb30dd63c6a016df3eb5ab5b979fe1491",
+        "lastModified": "Wed, 14 Oct 2026 23:18:13 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 21,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 241,
+        "activeServices": 241,
+        "geometryPatterns": 23,
+        "segments": 919,
+        "analyzedScheduledTrips": 241,
+        "analyzedRoutes": 14
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 12121,
+        "accepted_pairs": 11539,
+        "implausible_speed_above_150_kmh": 67,
+        "unlocated_or_nonprogressing_pair": 1,
+        "missing_geometry_pair": 33,
+        "outside_study_area": 480,
+        "nonpositive_time": 2
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.28, 40.29, 9.37, 40.36],
+      "segmentsSha256": "34e007652b13d716a1d54e9f516bea54d844bf63005637a87a128272aba0f9e6",
+      "stops": 252,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.28, 40.29, 9.37, 40.36],
+          "acquiredAt": "2026-11-02T17:34:36.753238+00:00",
+          "osmBaseAt": "2026-11-02T17:33:03Z",
+          "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d",
+          "bytes": 1627934,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.29,9.28,40.36,9.37);\nway[\"natural\"=\"water\"](40.29,9.28,40.36,9.37);way[\"waterway\"~\"^(river|canal)$\"](40.29,9.28,40.36,9.37);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.29,9.28,40.36,9.37);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.29,9.28,40.36,9.37);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.29,9.28,40.36,9.37);\n);out body geom;"
+        },
+        "features": 1699,
+        "labels": 10,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "nuoro-treni",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 98,
+        "activeServices": 31,
+        "geometryPatterns": 16,
+        "segments": 2,
+        "analyzedScheduledTrips": 13,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 593,
+        "outside_study_area": 580,
+        "accepted_pairs": 13,
+        "stop_shape_offset_above_100_m": 1,
+        "unlocated_or_nonprogressing_pair": 1
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.28, 40.29, 9.37, 40.36],
+      "segmentsSha256": "e672819d2d7cc9231cc48119f5d21cef8dc467f95bef6b099ee67ce9b0ef0633",
+      "stops": 2,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.28, 40.29, 9.37, 40.36],
+          "acquiredAt": "2026-11-02T17:34:36.753238+00:00",
+          "osmBaseAt": "2026-11-02T17:33:03Z",
+          "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d",
+          "bytes": 1627934,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.29,9.28,40.36,9.37);\nway[\"natural\"=\"water\"](40.29,9.28,40.36,9.37);way[\"waterway\"~\"^(river|canal)$\"](40.29,9.28,40.36,9.37);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.29,9.28,40.36,9.37);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.29,9.28,40.36,9.37);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.29,9.28,40.36,9.37);\n);out body geom;"
+        },
+        "features": 1699,
+        "labels": 10,
+        "license": "ODbL 1.0"
+      }
     }
   ],
   "delivery": {
     "mode": "static-city-assets",
-    "bootstrapBytes": 153385,
+    "bootstrapBytes": 154634,
     "cityAssets": {
       "milano-e42108afc0fd7c74e1353b7f95a38c7908c0fd901f766979160a370c94932baf.json.gz": 1149534,
       "roma-182e2bac1c76d8e1efc1f9b89bdf7c828082014f83c2086555d56023335bc87a.json.gz": 635568,
@@ -1663,12 +1836,15 @@
       "venezia-nav-5c27a84f21f734260252b27c1d0953e4cba3f1463569ad84499b10bf6f8024c8.json.gz": 480725,
       "sassari-d050254b0f0ffbfdb42cb3f9dcedca48b03bfdd0642e4c15ab8d89d861c2f9d4.json.gz": 344795,
       "cagliari-tram-765a77d5fbf78e82a345d082650ba21ee9c1180b11f53670877286578f62725f.json.gz": 302145,
-      "olbia-0a77de4ff50bf2db5a8abe28ed8e8b607e0f7dc0c24b8f986bbf599aec05f745.json.gz": 266221
+      "olbia-0a77de4ff50bf2db5a8abe28ed8e8b607e0f7dc0c24b8f986bbf599aec05f745.json.gz": 266221,
+      "sassari-treni-ad4ef222bb553c5a15d406ed42fd65a9fdbaa19f54d7f24399d6317ce63102d4.json.gz": 173123,
+      "nuoro-77b1be89ce94953e7e8935eb1d20ab4996aa8c78c0e5ee59f4a760601e2b39a4.json.gz": 222313,
+      "nuoro-treni-911ad025b35e294b09dfc14b47f92e34f432b306af785e25dc2e46636cdfc747.json.gz": 79145
     },
     "analysisCompression": "gzip; expanded input budget 256 MiB",
     "standalone": {
       "status": "PASS local Browser",
-      "bytes": 29728412,
+      "bytes": 30362052,
       "csp": "connect-src 'none'"
     }
   },
@@ -2099,6 +2275,85 @@
       "real screen reader",
       "Next/ETL/CI gates",
       "deployment"
+    ]
+  },
+  "iteration13": {
+    "usableNetworks": 31,
+    "cities": 20,
+    "sourceEntries": 32,
+    "previousSourceObjectsIdentical": 29,
+    "validatedSegments": 44792,
+    "offlineTests": {
+      "python": 35,
+      "node": 27
+    },
+    "newSources": ["sassari-treni", "nuoro", "nuoro-treni"],
+    "browser": {
+      "sourceBandCases": 128,
+      "responsiveCases": 16,
+      "viewports": [320, 390, 573, 1280],
+      "cameraCases": 4,
+      "focusTrapCases": 2,
+      "searchCases": 5,
+      "csvRows": 919,
+      "pngInspected": true,
+      "standalone": true,
+      "stablePreviewPort": 3274
+    },
+    "sourceLimitations": [
+      "Published schedules for October 30, not measured delays or a live timetable.",
+      "Urban bounds exclude most regional railway segments."
+    ],
+    "basemapAttempts": [
+      {
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "HTTP 502",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass.private.coffee/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "timeout 100 s, zero bytes",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "method": "POST",
+        "transport": "curl",
+        "status": "HTTP 502",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass.private.coffee/api/interpreter",
+        "method": "POST",
+        "transport": "curl",
+        "status": "timeout 100 s, zero bytes",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "success",
+        "bounds": [9.28, 40.29, 9.37, 40.36],
+        "bytes": 1627934,
+        "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d"
+      }
+    ],
+    "mirrorDocumentation": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+    "mainVerifiedSha": "c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI product gates",
+      "deployment"
+    ],
+    "concurrentMainChanges": [
+      "src/components/immersive-chrome.tsx",
+      "src/lib/bdap-history.ts"
     ]
   }
 }

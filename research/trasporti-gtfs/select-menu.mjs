@@ -1,11 +1,7 @@
+import { normalizeText } from "./explorer.mjs";
 // Native selects remain the data boundary and the fallback without enhancement.
 const selectMenus = new Map();
 let openSelectMenu = null;
-const normalizeOption = (text) =>
-  text
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("it");
 export function closeSelectMenu(restore = false) {
   const menu = openSelectMenu;
   if (!menu) return;
@@ -174,16 +170,13 @@ export function enhanceSelect(select, beforeOpen = () => {}) {
       if (focus) visible[current].focus({ preventScroll: true });
     };
     const render = (query) => {
+      const tokens = normalizeText(query).split(" ").filter(Boolean);
       list.replaceChildren();
       visible = [];
       for (const [i, option] of options.entries()) {
         const subtitle = option.dataset.subtitle || "";
-        if (
-          !normalizeOption(option.textContent + " " + subtitle).includes(
-            normalizeOption(query),
-          )
-        )
-          continue;
+        const search = normalizeText(option.textContent + " " + subtitle);
+        if (!tokens.every((token) => search.includes(token))) continue;
         const button = document.createElement("button");
         button.type = "button";
         button.className = "select-option";

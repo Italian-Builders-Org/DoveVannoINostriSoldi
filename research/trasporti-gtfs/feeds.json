@@ -597,5 +597,68 @@
     "sourceNotes": [
       "Solo autobus ASPO con entrambe le fermate nel perimetro dichiarato; copertura parziale delle linee periferiche."
     ]
+  },
+  {
+    "mode": "train",
+    "routeTypes": ["2"],
+    "cadence": null,
+    "id": "sassari-treni",
+    "name": "Sassari",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [8.559, 40.727],
+    "mapBounds": [8.52, 40.7, 8.59, 40.75],
+    "studyBounds": [8.52, 40.7, 8.59, 40.75],
+    "areaId": "sassari",
+    "archiveId": "arst",
+    "mapId": "sassari-centro",
+    "scopeLabel": "Treni ARST · Sassari centro",
+    "sourceNotes": [
+      "Solo tratte ferroviarie ARST con entrambe le fermate nel perimetro di Sassari centro. Le linee per Alghero e Sorso proseguono oltre il perimetro: questa non è la rete regionale completa."
+    ]
+  },
+  {
+    "id": "nuoro",
+    "name": "Nuoro",
+    "holder": "ATP Nuoro / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-atp-nuoro",
+    "url": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+    "mode": "bus",
+    "routeTypes": ["3"],
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "cadence": "irregolare, secondo il catalogo",
+    "focus": [9.329, 40.321],
+    "mapBounds": [9.28, 40.29, 9.37, 40.36],
+    "studyBounds": [9.28, 40.29, 9.37, 40.36],
+    "scopeLabel": "Autobus ATP · area urbana di Nuoro",
+    "sourceNotes": [
+      "Solo coppie di fermate adiacenti nel perimetro dichiarato. Non comprende tutta la rete provinciale né misure di ritardo reale."
+    ]
+  },
+  {
+    "mode": "train",
+    "routeTypes": ["2"],
+    "cadence": null,
+    "id": "nuoro-treni",
+    "name": "Nuoro",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [9.329, 40.321],
+    "mapBounds": [9.28, 40.29, 9.37, 40.36],
+    "studyBounds": [9.28, 40.29, 9.37, 40.36],
+    "areaId": "nuoro",
+    "archiveId": "arst",
+    "mapId": "nuoro",
+    "scopeLabel": "Treni ARST · Nuoro–Pratosardo",
+    "sourceNotes": [
+      "Solo coppie di fermate ferroviarie ARST con entrambe le fermate nel perimetro dichiarato. Non comprende tutta la linea Macomer–Nuoro."
+    ]
   }
 ]

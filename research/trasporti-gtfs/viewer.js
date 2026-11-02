@@ -24,7 +24,7 @@ import {
 } from "./explorer.mjs";
 import { enhanceDisclosure, finishDisclosures } from "./disclosure.mjs";
 import { readView, viewURL } from "./view-state.mjs";
-import { prepareScene, createRenderer } from "./renderer.mjs";
+import { prepareScene, createRenderer, speedColor } from "./renderer.mjs";
 const $ = (id) => document.getElementById(id),
   manifest = JSON.parse($("data").textContent),
   canvas = $("map"),
@@ -585,7 +585,9 @@ function renderTable() {
       canvas.focus({ preventScroll: true });
     };
     add(row, "td", stopLabel(s.from) + " → " + stopLabel(s.to));
-    add(row, "td", fmt(s.bands[band].kmh));
+    const speedCell = add(row, "td");
+    speedCell.style.setProperty("--speed-color", speedColor(s.bands[band].kmh));
+    add(speedCell, "span", fmt(s.bands[band].kmh), "speed-value");
     add(row, "td", fmt(s.bands[band].samples, 0));
   }
 }

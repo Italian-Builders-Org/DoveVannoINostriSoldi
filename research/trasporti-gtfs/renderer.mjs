@@ -1,7 +1,7 @@
 import { projection, scaleBar } from "./camera.mjs";
 import { buildStopIndex } from "./explorer.mjs";
 const palette = ["#9e3530", "#c18a30", "#8d9c5e", "#528b78"];
-const speedColor = (kmh) =>
+export const speedColor = (kmh) =>
   palette[kmh < 10 ? 0 : kmh < 15 ? 1 : kmh < 25 ? 2 : 3];
 function worldFactory(focus) {
   const r = 6371008.8,
@@ -155,10 +155,10 @@ function drawBackground(ctx, scene, p, view) {
   for (const f of visible) {
     if (f.kind !== "road") continue;
     path(ctx, f.screen);
-    ctx.strokeStyle = "#dce1da";
+    ctx.strokeStyle = "#e1e6de";
     ctx.lineWidth = roadWidth(f.class) + 1;
     ctx.stroke();
-    ctx.strokeStyle = "#fbfcf9";
+    ctx.strokeStyle = "#f5f7f2";
     ctx.lineWidth = roadWidth(f.class);
     ctx.stroke();
   }

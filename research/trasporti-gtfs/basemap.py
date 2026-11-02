@@ -19,6 +19,7 @@ ENDPOINT = "https://overpass-api.de/api/interpreter"
 ENDPOINTS = (
     ENDPOINT,
     "https://overpass.private.coffee/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
 )
 MAX_BYTES = 64 * 1024 * 1024
 

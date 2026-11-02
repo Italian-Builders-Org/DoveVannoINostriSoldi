@@ -830,6 +830,20 @@ th:nth-child(3) {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+.speed-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-variant-numeric: tabular-nums;
+}
+.speed-value::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--speed-color);
+}
 td button {
   border: 0;
   background: #edf2e8;

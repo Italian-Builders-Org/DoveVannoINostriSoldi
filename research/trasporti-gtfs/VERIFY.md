@@ -7,7 +7,7 @@
    dallo stesso URL non riproduce necessariamente questi numeri.
 2. Generare schema 3 con `--date 2026-10-30 --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31`.
    Non scegliere automaticamente un giorno diverso quando il calendario manca.
-3. Eseguire 34 test Python e 27 Node con i comandi del README. Le fixture sono
+3. Eseguire 35 test Python e 27 Node con i comandi del README. Le fixture sono
    sintetiche e non entrano nel visualizzatore. I nuovi casi di errore sono
    stati definiti e verificati in RED prima delle implementazioni.
 4. Confrontare i segmenti delle città preesistenti con l’artifact dell’iterazione precedente: geometrie,
@@ -26,7 +26,7 @@ Servire l'output in loopback. Usare azioni reali senza modificare DOM o stato
 interno per simulare risultati. I dataset del Canvas descrivono l'ultimo disegno,
 non prestazioni certificate del dispositivo né costi hosted.
 
-- 29 reti × quattro fasce: 28 reti utilizzabili; Bari deve mostrare
+- 32 reti × quattro fasce: 31 reti utilizzabili; Bari deve mostrare
   indisponibilità e zero righe, conservando la data scelta. Confrontare conteggi
   e prima velocità con `analysis.json`. Fonti e data devono seguire la città.
 - Dieci città × quattro classi di velocità: conteggi equivalenti al JSON,
@@ -335,3 +335,49 @@ NOT RUN: gesti su dispositivo fisico, screen reader reale, gate Next/ETL/CI del
 prodotto, build Vercel e deployment. Nessuna dipendenza, richiesta periodica o
 servizio a pagamento aggiunto. Nessuna regressione rilevata nel perimetro dei
 controlli eseguiti; non è una certificazione di ogni dispositivo.
+
+
+## Iterazione 13, 2 novembre 2026
+
+PASS locale, base 23c240f6. Tutte le 29 fonti precedenti sono identiche,
+compresi metadati, misure e basemap. Aggiunti Nuoro bus/treni e Sassari treni:
+31 reti utilizzabili in 20 città, 44.792 geometrie. Nuoro ha un basemap con
+ricevuta propria; Sassari treni riusa soltanto il basemap con identico perimetro.
+
+Comandi pertinenti: quelli offline nel README (35 Python e 27 Node), sintassi
+JS, Prettier e `git diff --check`. Il nuovo test della ricevuta cartografica è
+stato eseguito prima dell'implementazione: il mirror ammesso falliva; host non
+ammesso, byte/hash e perimetro alterati devono continuare a fallire. Test di
+fixture senza rete; non è una misura della disponibilità dei provider.
+
+Artifact `gtfs-20261102-v13`:
+
+- `verify.py` richiama `verify-data.py` e verifica dati e osservazioni salvate;
+  eseguire `python3 PERCORSO_ARTIFACT/verify.py`. Non rilancia Browser né rete;
+  richiede anche l'analisi v12 per il confronto. Manifest, gzip, standalone,
+  endpoint delle geometrie e dati precedenti sono controllati.
+- 128 combinazioni rete/fascia: conteggi e prime 20 righe, ordini, velocità,
+  campioni, date e colori confrontati con l'analisi congelata. Tutte a 320 px,
+  nessun overflow del documento. Bari resta uno stato senza servizio.
+- 16 casi responsive: Milano bus e le tre nuove reti a 320/390/573/1280 px.
+  Menu nei limiti del viewport, barra e posizione della mappa stabili al filtro,
+  dettaglio visibile, focus e target mobili verificati; nessuna sovrapposizione.
+- Ricerca: parole invertite, accenti, spazi e zero risultati; Enter seleziona
+  Roma bus e riporta il focus sul trigger. Riprova offline con «Nuoro treni».
+- Camera: quattro scenari su bus e treni, 30 aumenti e 40 riduzioni da tastiera
+  fino ai limiti, anche massimi frazionari; nord, pan, 2D/3D e fit. Due scenari
+  di mappa espansa con 18 Tab ciascuno: focus interno e ripristino di inert
+  all'uscita. Filtro senza risultati, export disabilitato e recupero verificati.
+- Cambi rapidi Milano/Roma/Nuoro: restano soltanto titolo e dati dell'ultima
+  scelta. CSV 919 righe confrontato integralmente; PNG ispezionato. HTML offline
+  con i treni Nuoro/Sassari e CSP senza connessioni. Console normale pulita.
+
+Le misure renderMs del Canvas sono diagnostica locale, non un benchmark o una
+prova di risparmio hosted. NOT RUN: telefono fisico/touch/pinch, screen reader
+reale, gate Next/ETL/CI del prodotto e deployment. Nessuna modifica al prodotto
+Next.js, nessuna build Vercel; le modifiche restano nel prototipo isolato.
+
+Main remoto ricontrollato e fetch eseguito prima della consegna: c3fa7372.
+L'unico commit successivo alla verifica precedente cambia immersive-chrome.tsx
+e bdap-history.ts, fuori da research/trasporti-gtfs. Nessun rebase, merge,
+overwrite o modifica del checkout principale.

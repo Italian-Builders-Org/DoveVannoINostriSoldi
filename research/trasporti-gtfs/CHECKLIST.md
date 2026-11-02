@@ -266,3 +266,25 @@ Base: 01122c62. Solo prototipo locale; nessun push o deploy.
 - PASS: 61 test offline, 116 combinazioni reti/fasce, 16 scenari responsive, errore d'integrità e recupero, CSV/PNG e HTML offline; screenshot finali e verificatore salvati.
 - PASS: preview stabile 3274 promossa atomicamente e controllata nel Browser. Vecchio indice e asset storici preservati. Main remoto ancora 41a953e5 e checkout principale preservato.
 - NOT RUN: telefono fisico, screen reader reale e gate del prodotto. Nessun push, PR, merge, deploy o build Vercel.
+
+## Iterazione 13: ricerca dei mezzi e contesto leggibile
+
+Base: 23c240f61774987ffac5695363e7ad9f84ad68ad. Solo ricerca locale, senza pubblicazione.
+
+- [x] Branch pulito, main preservato e skill Emil rilette. Riprodotto nel Browser: cercare «Roma bus» nel menu città produce zero risultati benché Roma abbia bus.
+- [x] Verificare GTFS Nuoro e ferrovie ARST: data esplicita, geometrie, licenza, perimetri e ricevute; riusare mappe solo con bounds identici.
+- [x] Correggere ricerca a più parole e accenti, senza cambiare valori o fallback nativi. Definire casi negativi prima del codice; provare tastiera, vuoto, ritorno e cambi rapidi nel Browser.
+- [x] Raffinare gerarchia della cartografia e lettura dei valori in tabella; i colori non sostituiscono i numeri. Nessuna modifica alle metriche o alla camera.
+- [x] Verificare tutte le reti/fasce e i dati precedenti; Browser mobile/desktop, overflow, selezione, filtri, zoom, rotazione, menu, errori e offline. Screenshot e verificatore ripetibile.
+- [x] Documentare Before/After, fonti, esclusioni e limiti. Promuovere la preview solo dopo i controlli; commit locale, nessun push/build Vercel.
+
+
+### Esito dell’iterazione 13
+
+- PASS locale: Nuoro bus (919 tratti), Nuoro treni (2) e Sassari treni (4), tutti con geometrie GTFS e perimetri dichiarati. 31 reti in 20 città, 44.792 geometrie; le 29 fonti precedenti sono interamente identiche.
+- PASS: ricerca «Roma bus» corretta, parole invertite e accenti verificati. Indicatore velocità dalla palette condivisa e cartografia meno marcata, senza cambiare numeri o camera.
+- PASS: 62 test offline, 128 reti/fasce con valori/colori, 16 scenari responsive, quattro scenari camera e due verifiche focus espanso. CSV/PNG reali e versione offline verificati.
+- PASS: nuovo mirror OSM scelto esplicitamente dopo errori documentati; ricevute, hash, byte, perimetri e rifiuto dei provider estranei verificati prima dell'implementazione. Nessuna acquisizione nelle visite.
+- PASS: origin/main aggiornato a c3fa7372; il commit concorrente modifica soltanto immersive-chrome.tsx e bdap-history.ts. Nessuna sovrapposizione o modifica a questi file. Checkout principale preservato.
+- Artifact: gtfs-20261102-v13 con verificatori, dati congelati, ricevute, esiti Browser, export e screenshot. Preview stabile 3274 aggiornata dopo i controlli, indice precedente conservato.
+- NOT RUN: telefono fisico, screen reader reale, gate Next/ETL/CI del prodotto e deploy. Nessun push, PR, merge o build Vercel; commit locale del solo prototipo.

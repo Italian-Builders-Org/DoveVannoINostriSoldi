@@ -1,6 +1,6 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 28 reti utilizzabili in 19 città, con tram, autobus, metro,
+Prototipo locale: 31 reti utilizzabili in 20 città, con tram, autobus, metro,
 treni regionali e navigazione. Bari resta senza servizio nella data scelta. Il menu mostra i
 mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
@@ -115,6 +115,9 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Sassari | bus | 50 | 46 | 1.023 | 891 | 1.134 |
 | Cagliari | tram | 3 | 3 | 324 | 240 | 28 |
 | Olbia | bus | 15 | 15 | 319 | 319 | 853 |
+| Sassari | treni | 4 | 4 | 98 | 54 | 4 |
+| Nuoro | bus | 21 | 14 | 241 | 241 | 919 |
+| Nuoro | treni | 4 | 4 | 98 | 13 | 2 |
 
 Cagliari (bus e tram) e Padova usano il **31 ottobre 2026**, la navigazione
 veneziana il **2 novembre 2026**, gli altri feed il **30 ottobre 2026**.
@@ -407,3 +410,38 @@ esplicito, nessuna fonte/data/riga residua e recupero dopo il ripristino. HTML
 unico offline verificato con le nuove reti e CSP senza connessioni. Artifact
 `gtfs-20261101-v12`, verificatore e screenshot. Solo locale: nessuna build
 Vercel, modifica al prodotto, pubblicazione o prova su telefono fisico.
+
+
+### Iterazione 13, 2 novembre 2026
+
+[ATP Nuoro](https://www.sardegnamobilita.it/open-data/quadri-orari-atp-nuoro):
+919 tratti autobus, 14 linee e 241 corse con tratti utilizzabili nell'area
+urbana dichiarata. Il file acquisito il 2 novembre ha Last-Modified 14 ottobre, 23:18 UTC
+(15 ottobre in Italia); il giorno analizzato resta il 30 ottobre. [ARST](https://www.sardegnamobilita.it/open-data/quadri-orari-arst):
+aggiunti i treni nel centro di Sassari (4 tratti, 2 linee, 54 corse) e tra
+Nuoro e Pratosardo (2 tratti, 1 linea, 13 corse). Non rappresentano le intere
+linee regionali. Nessuna modifica alle 29 fonti precedenti. Totale: 44.792
+geometrie, 31 reti utilizzabili in 20 città; Bari resta non disponibile.
+
+La ricerca nei menu combina parole indipendenti dall'ordine e ignora accenti,
+spazi multipli e punteggiatura: «Roma bus» trova Roma, «bus roma» dà lo stesso
+risultato. Restano invariati i valori delle opzioni e la scelta separata del
+mezzo. Il piccolo indicatore accanto alla velocità in tabella usa la palette
+del renderer; il numero resta l'informazione accessibile. Le strade di sfondo
+hanno contrasto più basso, senza perdere geometrie, etichette o interazioni.
+
+Il basemap di Nuoro contiene 1.699 elementi e 10 etichette, base OSM del
+2 novembre. I provider già configurati hanno restituito due HTTP 502 e due
+timeout; errori conservati. È stato ammesso un terzo mirror mondiale elencato
+nella [documentazione OSM](https://wiki.openstreetmap.org/wiki/Overpass_API),
+`https://maps.mail.ru/osm/tools/overpass/api/interpreter`. La scelta è esplicita
+nel CLI `--endpoint`, senza tentativi automatici nelle visite. Hash, byte,
+perimetro e host della ricevuta restano obbligatori. Nessuna chiave, dipendenza
+o servizio a pagamento aggiunto; i client leggono solo gli asset locali.
+
+Verifiche: 62 test offline; 128 reti/fasce, valori e colori confrontati con
+l'analisi; 16 scenari responsive; zoom ai limiti, rotazione e 2D/3D; focus nella
+mappa espansa e uscita con Escape. CSV di 919 righe e PNG verificati; nuove
+reti e ricerca provate anche nell'HTML offline. Artifact `gtfs-20261102-v13`
+con verificatore e screenshot. Preview stabile: porta 3274, versione
+`iteration13-final`. Solo commit locale; nessun push, PR, deploy o build Vercel.

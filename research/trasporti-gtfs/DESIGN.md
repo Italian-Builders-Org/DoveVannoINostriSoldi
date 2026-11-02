@@ -217,3 +217,15 @@ e nel dettaglio. La navigazione resta un mezzo distinto nel selettore di Venezia
 Nessuna animazione aggiunta alle operazioni frequenti. I cambiamenti non
 alterano camera, misure, ordinamento, navigazione da tastiera o accesso alle
 fonti. I dati nuovi seguono gli stessi budget e controlli delle reti esistenti.
+
+
+## Iterazione 13: ricerca e gerarchia cartografica
+
+| Before | After | Why |
+| --- | --- | --- |
+| «Roma bus» restituisce zero risultati perché le parole non sono contigue | Tutte le parole cercate possono comparire nel nome o nel sottotitolo, in qualsiasi ordine | Trovare una città usando nome e mezzo senza cambiare i valori del selettore |
+| Strade quasi bianche e contorni marcati sotto le curve | Strade leggermente più tenui, stesse geometrie e stesse etichette | Rendere la rete dei mezzi il livello visivo principale |
+| Velocità in tabella prive di richiamo alla mappa | Piccolo indicatore decorativo con la stessa funzione colore del renderer | Collegare tabella e mappa conservando il numero, anche senza percezione dei colori |
+
+Nessuna nuova animazione, opzione o testo permanente. Tastiera e ricerca
+restano immediate; nessuna modifica a camera, rilievi, calcoli o ordinamenti.

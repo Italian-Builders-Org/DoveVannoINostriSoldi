@@ -98,5 +98,47 @@ class CompressedResponseTests(unittest.TestCase):
             self.assertEqual(read_response(response, 100), expected)
 
 
+class CachedReceiptTests(unittest.TestCase):
+    def test_public_mirror_is_accepted_only_with_matching_receipt_and_perimeter(self):
+        import hashlib, json, tempfile
+        from pathlib import Path
+        from basemap import load_map
+
+        source = {"id": "fixture", "mapBounds": [9.28, 40.29, 9.37, 40.36]}
+        raw = json.dumps({
+            "elements": [{
+                "type": "way",
+                "id": 1,
+                "tags": {"highway": "primary"},
+                "geometry": [
+                    {"lon": 9.32, "lat": 40.32},
+                    {"lon": 9.33, "lat": 40.33},
+                ],
+            }],
+        }).encode()
+        receipt = {
+            "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+            "bounds": source["mapBounds"],
+            "sha256": hashlib.sha256(raw).hexdigest(),
+            "bytes": len(raw),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "fixture.osm.json").write_bytes(raw)
+            path = root / "fixture.osm.receipt.json"
+            for changed in [
+                {"endpoint": "https://untrusted.invalid/api/interpreter"},
+                {"bounds": [9.0, 40.0, 9.1, 40.1]},
+                {"bytes": len(raw) + 1},
+                {"sha256": "0" * 64},
+            ]:
+                with self.subTest(changed=changed):
+                    path.write_text(json.dumps({**receipt, **changed}))
+                    with self.assertRaises(ValueError):
+                        load_map(source, root)
+            path.write_text(json.dumps(receipt))
+            self.assertEqual(len(load_map(source, root)["features"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

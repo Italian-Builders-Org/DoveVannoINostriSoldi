@@ -1,12 +1,11 @@
 import "server-only";
 
-import { open } from "node:fs/promises";
-import { constants } from "node:fs";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import metadata from "@/data/generated/pnrr-projects-index/meta.json";
 import { sha256Hex } from "@/lib/integrated-source-contract";
+import { openRegularFile } from "@/lib/data/safe-open";
 
 export const pnrrProjectMetadata = metadata;
 export const PNRR_PROJECT_DATASET = "pnrr-progetti";
@@ -36,7 +35,7 @@ async function readIndex(field: IndexField): Promise<Index> {
   if (!expected || expected.bytes > MAX_INDEX_BYTES || expected.rawBytes > MAX_INDEX_BYTES) {
     throw new Error("Contratto indice PNRR non valido.");
   }
-  const handle = await open(join(process.cwd(), "src/data/generated/pnrr-projects-index", `${field}.json.gz`), constants.O_RDONLY | constants.O_NOFOLLOW);
+  const handle = await openRegularFile(join(process.cwd(), "src/data/generated/pnrr-projects-index", `${field}.json.gz`));
   let payload: Buffer;
   try {
     const stat = await handle.stat();

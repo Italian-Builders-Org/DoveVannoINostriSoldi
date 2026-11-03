@@ -1,15 +1,16 @@
 import "server-only";
-import { closeSync, constants, fstatSync, openSync, readSync } from "node:fs";
+import { closeSync, fstatSync, readSync } from "node:fs";
 import { join } from "node:path";
 import metadataArtifact from "@/data/generated/istat-bes-lavoro-2008-2024.meta.json";
 import { validateIstatBesLavoroBundle } from "@/lib/data/istat-bes-lavoro-contract";
+import { openRegularFileSync } from "@/lib/data/safe-open";
 
 export const ISTAT_BES_LAVORO_DATA_PATH = "src/data/generated/istat-bes-lavoro-2008-2024.data.json";
 
 function readDataArtifact(): unknown {
   // Keep the 19,120 rows out of TypeScript's JSON type inference while
   // retaining the same fail-closed validation at the server boundary.
-  const fd = openSync(join(process.cwd(), ISTAT_BES_LAVORO_DATA_PATH), constants.O_RDONLY | constants.O_NOFOLLOW);
+  const fd = openRegularFileSync(join(process.cwd(), ISTAT_BES_LAVORO_DATA_PATH));
   try {
     const before = fstatSync(fd);
     if (!before.isFile() || before.size <= 0 || before.size > 3 * 1024 * 1024) {

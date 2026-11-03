@@ -1,8 +1,6 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
@@ -10,6 +8,7 @@ import { z } from "zod";
 import { ArtifactCache, artifactFingerprint } from "@/lib/data/artifact-cache";
 import sourceSpec from "../../../scripts/etl/specs/anac-procurement-cpv.source.json";
 import { selectAnacEntityProcurementCigs, type AnacEntityProcurementPageView } from "@/lib/data/anac-entity-procurement-page";
+import { openRegularFile } from "@/lib/data/safe-open";
 
 const ROOT = "src/data/generated/anac-procurement-cpv";
 const SPEC = "scripts/etl/specs/anac-procurement-cpv.source.json";
@@ -46,7 +45,7 @@ export function parseAnacCpvFilter(value: unknown): string {
 }
 
 async function readBounded(path: string, maximum: number): Promise<Buffer> {
-  const file = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  const file = await openRegularFile(path);
   try {
     const stat = await file.stat();
     if (!stat.isFile() || stat.size > maximum) throw new Error("Indice CPV oltre il limite.");

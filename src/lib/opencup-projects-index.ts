@@ -1,9 +1,8 @@
 import "server-only";
 
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { dirname } from "node:path";
 import { z } from "zod";
+import { openRegularFile } from "@/lib/data/safe-open";
 import {
   canonicalJson,
   containsUnsafePublicUrl,
@@ -269,7 +268,7 @@ async function readManifest(path: string, signal?: AbortSignal): Promise<{ manif
   throwIfAborted(signal);
   let handle;
   try {
-    handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    handle = await openRegularFile(path);
     const stat = await handle.stat();
     if (!stat.isFile() || stat.size <= 0 || stat.size > MAX_MANIFEST_BYTES) {
       throw new Error("dimensione manifest fuori contratto");

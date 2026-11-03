@@ -1,13 +1,12 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { z } from "zod";
 import spec from "../../../scripts/etl/specs/anac-procurement-peers.source.json";
+import { openRegularFile } from "@/lib/data/safe-open";
 
 const integer = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const digits = z.string().regex(/^(0|[1-9][0-9]{0,199})$/);
@@ -135,7 +134,7 @@ export function validateAnacPeerSnapshot(value: unknown) {
 }
 
 async function readBounded(path: string, maximum: number): Promise<Buffer> {
-  const file = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  const file = await openRegularFile(path);
   try {
     const stat = await file.stat();
     if (!stat.isFile() || stat.size > maximum) throw new Error("Indice confronti oltre il limite.");

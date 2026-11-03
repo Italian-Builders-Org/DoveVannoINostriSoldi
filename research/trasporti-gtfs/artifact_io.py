@@ -16,7 +16,8 @@ def write_artifact(path, data):
         ) as stream:
             temporary = Path(stream.name)
             stream.write(data)
-        os.chmod(temporary, path.stat().st_mode & 0o777 if path.exists() else 0o644)
+        # Owner-only: public research outputs are served via explicit publish, not umask-world files.
+        os.chmod(temporary, 0o600)
         os.replace(temporary, path)
         return True
     finally:

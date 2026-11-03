@@ -16,8 +16,9 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from analyze import archive_id, metres
+from analyze import metres
 from basemap import ENDPOINT, ENDPOINTS, MAX_BYTES, coordinate, curl_response, simplify
+from source_ids import archive_id
 
 SNAP_METRES = 300
 SIDING_WEIGHT = 3

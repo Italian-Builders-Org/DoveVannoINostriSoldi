@@ -13,7 +13,7 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-from analyze import archive_id
+from source_ids import archive_id
 
 ENDPOINT = "https://overpass-api.de/api/interpreter"
 ENDPOINTS = (

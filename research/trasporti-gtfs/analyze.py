@@ -16,6 +16,7 @@ from collections import Counter, defaultdict
 from datetime import date
 from pathlib import Path
 from artifact_io import write_artifact
+from source_ids import archive_id
 
 BANDS = {
     "morning": (7 * 3600, 10 * 3600),
@@ -250,15 +251,6 @@ def unique(rows, key):
             raise ValueError("Missing/duplicate " + key)
         result[row[key]] = row
     return result
-
-
-def archive_id(source, key="archiveId"):
-    identifier = source.get(key, source["id"])
-    if not isinstance(identifier, str) or not re.fullmatch(
-        r"[a-z][a-z0-9-]{0,31}", identifier
-    ):
-        raise ValueError("Invalid archive identifier")
-    return identifier
 
 
 def analyze_feed(path, service_date, receipt, source, rail_router=None):

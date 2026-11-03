@@ -7,5 +7,7 @@ export default defineConfig([
   ...nextTs,
   globalIgnores([
     ".next/**", "out/**", "build/**", ".scratch/**", "artifacts/**", ".venv/**", "next-env.d.ts",
+    // Offline research prototypes (own Node/Python tests; not App Router product code).
+    "research/**",
   ]),
 ]);

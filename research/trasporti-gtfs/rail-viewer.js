@@ -28,24 +28,22 @@ function node(tag, value, parent) {
   parent.append(e);
   return e;
 }
-/**
- * Rebuild link targets from an allowlist so DOM-sourced JSON cannot become an open redirect.
- * ViaggiaTreno still publishes http:// scheme URLs; they are upgraded to https on the same host.
- */
-function safeExternalHref(raw) {
-  const parsed = new URL(String(raw));
-  const host = parsed.hostname.toLowerCase();
-  const path = parsed.pathname + parsed.search + parsed.hash;
-  if (
-    host === "www.viaggiatreno.it" &&
-    (parsed.protocol === "http:" || parsed.protocol === "https:")
-  ) {
-    return "https://www.viaggiatreno.it" + path;
+// Href targets are constants / digit-only interpolations — never raw strings from #rail-data.
+const ART_DATASET_LANDING =
+  "https://bdt.autorita-trasporti.it/catalogo-opendata/dataset/?id=18";
+const VIAGGIATRENO_SCHEDA =
+  "https://www.viaggiatreno.it/vt_pax_internet/mobile/scheda";
+
+function viaggiatrenoHref(trainNumber) {
+  if (typeof trainNumber !== "string" || !/^[0-9]{1,6}$/.test(trainNumber)) {
+    throw new Error("numero treno non valido");
   }
-  if (parsed.protocol === "https:" && /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(host)) {
-    return "https://" + host + path;
-  }
-  throw new Error("URL fonte non ammesso");
+  return (
+    VIAGGIATRENO_SCHEDA +
+    "?dettaglio=visualizza&numeroTreno=" +
+    trainNumber +
+    "&tipoRicerca=numero&lang=IT"
+  );
 }
 const empty = document.createElement("option");
 empty.value = "";
@@ -293,7 +291,7 @@ function renderContext() {
   const source = document.getElementById("rail-context-source");
   source.replaceChildren(c.publisher + ", ");
   const a = node("a", c.dataset, source);
-  a.href = safeExternalHref(c.landingUrl);
+  a.href = ART_DATASET_LANDING;
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   source.append(" · " + c.license);
@@ -357,7 +355,7 @@ function render() {
     }
   }
   const source = document.getElementById("rail-source");
-  source.href = safeExternalHref(j.source.url);
+  source.href = viaggiatrenoHref(j.number);
   text(
     "rail-acquired",
     "Rilevazione salvata: " +

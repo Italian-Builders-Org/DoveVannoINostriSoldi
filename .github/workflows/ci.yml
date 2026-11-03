@@ -24,7 +24,8 @@ jobs:
   static:
     name: static
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    # Research trees and cold npm ci can push past 10m on shared runners.
+    timeout-minutes: 15
     env:
       PUPPETEER_SKIP_DOWNLOAD: "true"
     steps:

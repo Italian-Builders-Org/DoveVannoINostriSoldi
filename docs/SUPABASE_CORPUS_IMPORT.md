@@ -1,0 +1,182 @@
+# Corpus DVNS su Supabase
+
+Il progetto scelto è `zvqhikeylxynsljwgosc` (`fps26-preferiresti`, eu-west-1).
+Ospita anche servizi estranei a DVNS: gli import scrivono esclusivamente negli
+schemi privati `dvns_metadata` e `dvns_corpus`. Nessuna modifica al reader del sito,
+alla Data API pubblica o alle tabelle degli altri servizi.
+
+## Cosa viene trasferito
+
+- `dvns_metadata.snapshots`: proof completa del rilascio, SHA del codice e hash del catalogo.
+- `dvns_metadata.datasets`: tutti i dataset del catalogo, metadata originali e ricevute.
+- `dvns_corpus.rows`: proiezioni pubbliche complete, ordinali relativi al dataset e payload JSONB originali. Le celle rimangono stringhe: vuoto, zero, assenza e oscuramento non vengono normalizzati.
+- `dvns_metadata.chunks`: checkpoint atomici con hash del chunk compresso e righe.
+- `dvns_metadata.imports`: ricevute finali, inserite soltanto dopo rilettura completa e digest riconciliato.
+
+I conteggi sorgente dei dataset `catalog-only` non attestano la presenza dei loro
+raw nel repository. Questi dataset sono catalogati ma non diventano righe pubbliche.
+Gli snapshot tipizzati esterni al corpus, gli indici derivati ANAC e i file raw
+restano fuori da questo importer. Non sommare le loro righe a quelle del corpus:
+spesso sono rappresentazioni diverse degli stessi fatti.
+
+## Setup isolato
+
+Usare Python 3.12 e un virtualenv proprio del checkout:
+
+```sh
+uv venv --python 3.12 .venv
+uv pip sync --python .venv/bin/python --require-hashes supabase/requirements-import.txt
+```
+
+La credenziale server è `DVNS_DATABASE_URL` nel file locale passato con
+`--env-file`. Il file deve essere escluso da Git; non copiarlo tra worktree.
+L'importer legge il valore letteralmente, senza shell expansion. Sono ammessi
+soltanto il database `postgres`, l'host del progetto scelto o il suo Session
+pooler di eu-west-1 con username del progetto, e TLS `require`/`verify-full`.
+La password nella URI deve essere percent-encoded. Nessuna chiave pubblica o
+variabile `NEXT_PUBLIC_` è usata.
+
+Per il corpus, applicare soltanto le migrazioni `dvns_corpus_private` e `dvns_import_chunks`
+al progetto scelto. **Non eseguire `supabase db push` sull'intera directory**:
+le altre migrazioni assistant/boards hanno destinazioni diverse.
+
+## Preflight offline e import
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_supabase_corpus_*.py'
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/supabase_corpus_bulk.py > artifacts/supabase/preflight.jsonl
+.venv/bin/python -u scripts/etl/supabase_corpus_import.py --env-file /percorso/privato/.env.local > artifacts/supabase/import-all.jsonl 2>&1
+```
+
+Per un dataset usare `--dataset ID`; ripetere il comando riprende dai checkpoint.
+`--batch-chunks` accetta 1–25 chunk. Il lock di sessione impedisce due importer
+DVNS contemporanei. Ogni batch usa COPY FROM STDIN in una tabella temporanea,
+poi inserisce righe, confronta i payload e salva i checkpoint nella stessa
+transazione. I dati divergenti non vengono sovrascritti. Gli errori interrompono
+l'esecuzione e non generano una ricevuta di successo; il comando può essere
+rilanciato dopo la diagnosi. Nessun refresh delle fonti è avviato.
+
+La verifica finale rilegge tutte le righe ordinate tramite cursore server con
+memoria limitata, ricostruisce il JSON canonico e confronta SHA-256 e cardinalità
+con la ricevuta sorgente. Si esegue anche sui dataset già importati: un checkpoint
+non sostituisce la prova dei contenuti persistiti.
+
+## Prova di ripresa ed errori
+
+Per verificare un'interruzione controllata su una prima importazione:
+
+```sh
+.venv/bin/python scripts/etl/supabase_corpus_import.py --env-file /percorso/privato/.env.local --dataset affitti-immobili --batch-chunks 1 --max-batches 1
+.venv/bin/python scripts/etl/supabase_corpus_import.py --env-file /percorso/privato/.env.local --dataset affitti-immobili
+```
+
+La prima esecuzione termina con codice 3 dopo il commit del blocco; la seconda
+non duplica le righe e completa la ricevuta dopo il confronto del digest.
+Su un dataset già completo la prima esecuzione può terminare normalmente senza
+nuovi blocchi: il caso va riprodotto su una destinazione di test fresca.
+
+La prova live del 3 novembre 2026 ha anche alterato una cella soltanto dentro una
+transazione di test: la rilettura ha rifiutato il digest e il rollback ha
+ripristinato il payload originale. Comando e log sono negli artifact locali
+`artifacts/supabase/negative-readback.py` e `.log`, senza credenziali.
+
+## Consultazione e confini
+
+```sql
+select id, title, domain, publication, expected_public_rows
+from dvns_metadata.datasets order by domain, id;
+select dataset_id, verified_rows, rows_sha256, verified_at
+from dvns_metadata.imports order by dataset_id;
+select ordinal, payload->'cells' as cells
+from dvns_corpus.rows
+where snapshot_id = '<snapshot_id>' and dataset_id = '<dataset_id>'
+order by ordinal limit 50;
+```
+
+Specificare sempre snapshot e dataset nelle query sulle righe. La chiave primaria
+supporta questo accesso; non sono creati indici GIN indiscriminati sui payload.
+Non ci sono grant anon/authenticated o policy pubbliche. Il reader applicativo,
+le tabelle di dominio, il backup indipendente e la prova di restore costituiscono
+fasi successive: questo import non ne dimostra il completamento.
+
+## Documenti degli altri snapshot
+
+`supabase_snapshot_documents.py` censisce tutti i file delle radici generate e
+trasferisce i documenti `.json` in `dvns_snapshots.documents`, con path, gruppi,
+SHA codice e hash dei byte in `dvns_snapshots.files`. I numeri passano come testo
+JSON originale e la rilettura usa Decimal: nessun passaggio da float. Le righe
+del corpus e i documenti sono rappresentazioni separate e non vanno sommati.
+
+Applicare anche la sola migrazione `dvns_snapshot_documents`. Preflight offline:
+
+```sh
+DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python scripts/etl/supabase_snapshot_documents.py --code-sha SHA_DEL_CODICE
+.venv/bin/python scripts/etl/supabase_snapshot_documents.py --code-sha SHA_DEL_CODICE --env-file /percorso/privato/.env.local
+```
+
+I file con disposition `manifest-only` sono solo inventariati: pack e archivi
+compressi derivati non sono copiati nel database da questo comando. La presenza
+nell'inventario non equivale alla disponibilità dei relativi byte su Supabase.
+Prima di un nuovo import verificare capacità e stato dei servizi condivisi.
+Il batch corpus predefinito è 5 chunk; 25 resta il massimo esplicito. Dopo un
+DiskFull durante un batch da 25, il pannello riportava solo 23% di disco usato;
+la ripresa con 5 ha consentito di proseguire senza cambiare risorse.
+
+## Archivio dei byte originali su Storage
+
+Il bucket `dvns-snapshots` è privato. La sola chiave server per Storage è nel file
+locale separato passato con `--storage-env-file`; non è una chiave client.
+Applicare anche la migrazione `dvns_storage_blobs`.
+
+Il comando raccomandato raggruppa i file non ancora archiviati in oggetti di
+massimo 4 MiB, evitando una richiesta per ciascun piccolo file:
+
+```sh
+.venv/bin/python -u scripts/etl/supabase_pack_archive.py --env-file /percorso/privato/.env.local --storage-env-file /percorso/privato/.env.storage.local
+```
+
+`dvns_snapshots.blobs` collega l'hash del file originale a parti ordinate con
+chiave, offset, byte e hash del segmento. Le ricevute precedenti, senza offset,
+indicano oggetti singoli con offset zero. Ogni oggetto è caricato senza upsert,
+poi scaricato e verificato prima di registrare i file che contiene. Dopo l'upload
+il comando ricostruisce TUTTI i file da Storage, con cache di un solo oggetto
+(4 MiB), confrontando hash e dimensione con l'inventario locale. La modalità
+`--verify-only` ripete soltanto questa prova di recupero.
+
+Il client riusa una connessione TLS per worker, rifiuta redirect e limita i retry.
+Il caricamento per singolo file rimane disponibile in
+`supabase_snapshot_storage.py --path PERCORSO --workers 1` per prove mirate.
+Non usare molti worker sul progetto Nano: l'API ha restituito 429 per limite
+connessioni. Non si modificano le policy per aggirare il limite.
+
+L'archivio dei byte e la materializzazione delle righe SQL sono stati distinti:
+una riga in files è un inventario, una riga in blobs attesta l'archiviazione
+verificata, una riga in imports attesta la rilettura completa del dataset SQL.
+Dopo la pulizia per spazio esaurito, imports è vuota: i conteggi dichiarati nel
+catalogo NON significano che le righe siano attualmente materializzate.
+
+## Budget e ripresa del corpus
+
+Il limite predefinito del corpus è ora 2 GiB di pg_database_size e il codice
+rifiuta progetti in sola lettura. Questo limite non misura il WAL: prima di
+alzarlo controllare disco allocato, WAL, temporanei e carichi condivisi. Su 8 GB
+il bulk ha fatto intervenire la protezione della piattaforma e le righe sono
+state ripulite, mantenendo catalogo e artifact. Non ripetere il bulk completo
+sulla stessa capacità e non forzare globalmente la modalità scrivibile.
+
+L'utente ha autorizzato soltanto il target di 24 GB gp3, circa 2 USD/mese di
+solo disco aggiuntivo oltre agli 8 GB inclusi. Nessun cambio compute/piano.
+Al 3 novembre, dopo l'autoscaling della piattaforma il disco risultava 12 GB
+con nuovo cooldown; attendere che la configurazione consenta il resize a 24 GB.
+Dopo verifica effettiva di 24 GB e modalità scrivibile, un budget conservativo
+iniziale per la sola dimensione DB è 12 GiB:
+
+```sh
+.venv/bin/python -u scripts/etl/supabase_corpus_import.py --env-file /percorso/privato/.env.local --batch-chunks 5 --max-database-bytes 12884901888
+```
+
+Questo comando completo resta da eseguire dopo l'espansione; non equivale a un
+import già riuscito. Non modificare reader o pubblicare nuove API durante la
+ripresa. Disattivare il seguito programmato soltanto dopo aver verificato
+113 ricevute e 8.047.880 righe rilette, oppure chiedere una decisione se emerge
+un nuovo limite non coperto dall'autorizzazione.

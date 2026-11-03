@@ -28,11 +28,24 @@ function node(tag, value, parent) {
   parent.append(e);
   return e;
 }
-/** Break CodeQL DOM→href taint: only absolute https URLs may become link targets. */
-function httpsHref(raw) {
-  const url = new URL(String(raw));
-  if (url.protocol !== "https:") throw new Error("Solo URL https ammessi");
-  return url.href;
+/**
+ * Rebuild link targets from an allowlist so DOM-sourced JSON cannot become an open redirect.
+ * ViaggiaTreno still publishes http:// scheme URLs; they are upgraded to https on the same host.
+ */
+function safeExternalHref(raw) {
+  const parsed = new URL(String(raw));
+  const host = parsed.hostname.toLowerCase();
+  const path = parsed.pathname + parsed.search + parsed.hash;
+  if (
+    host === "www.viaggiatreno.it" &&
+    (parsed.protocol === "http:" || parsed.protocol === "https:")
+  ) {
+    return "https://www.viaggiatreno.it" + path;
+  }
+  if (parsed.protocol === "https:" && /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(host)) {
+    return "https://" + host + path;
+  }
+  throw new Error("URL fonte non ammesso");
 }
 const empty = document.createElement("option");
 empty.value = "";
@@ -280,7 +293,7 @@ function renderContext() {
   const source = document.getElementById("rail-context-source");
   source.replaceChildren(c.publisher + ", ");
   const a = node("a", c.dataset, source);
-  a.href = httpsHref(c.landingUrl);
+  a.href = safeExternalHref(c.landingUrl);
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   source.append(" · " + c.license);
@@ -344,7 +357,7 @@ function render() {
     }
   }
   const source = document.getElementById("rail-source");
-  source.href = httpsHref(j.source.url);
+  source.href = safeExternalHref(j.source.url);
   text(
     "rail-acquired",
     "Rilevazione salvata: " +

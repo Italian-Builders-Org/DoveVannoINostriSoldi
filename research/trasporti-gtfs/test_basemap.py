@@ -155,6 +155,11 @@ class OverviewMapTests(unittest.TestCase):
         self.assertNotIn("neighbourhood", overview)
         self.assertNotIn('"landuse"', overview)
         self.assertIn("residential", query_for(bounds))
+        national = query_for(bounds, "national")
+        self.assertIn('"motorway"', national)
+        self.assertNotIn("trunk", national)
+        self.assertNotIn("town", national)
+        self.assertIn("timeout:180", national)
         with self.assertRaises(ValueError):
             query_for(bounds, "unknown")
 

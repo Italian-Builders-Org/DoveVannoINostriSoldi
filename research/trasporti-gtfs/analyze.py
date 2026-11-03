@@ -261,7 +261,7 @@ def archive_id(source, key="archiveId"):
     return identifier
 
 
-def analyze_feed(path, service_date, receipt, source):
+def analyze_feed(path, service_date, receipt, source, rail_router=None):
     with open(path, "rb") as f:
         digest = hashlib.file_digest(f, "sha256").hexdigest()
     if digest != receipt["sha256"] or Path(path).stat().st_size != receipt["bytes"]:
@@ -288,6 +288,30 @@ def analyze_feed(path, service_date, receipt, source):
     excluded = Counter()
     segments = {}
     geometry_cache = {}
+    # Only feeds that opt in may borrow OSM track geometry; others keep the
+    # missing shape as an explicit exclusion.
+    router = rail_router if source.get("derivedGeometry") == "osm-rail" else None
+    routed = {}
+
+    def derived(rows, known):
+        result = []
+        for left, right, geometry in zip(rows, rows[1:], known):
+            if geometry:
+                result.append(geometry)
+                continue
+            pair = (left["stop_id"], right["stop_id"])
+            if pair not in routed:
+                found = router.route(
+                    list(stops[pair[0]]["point"]), list(stops[pair[1]]["point"]), excluded
+                )
+                routed[pair] = (
+                    (found[0], found[1], "osm-rail")
+                    if found and found[1] >= 25
+                    else None
+                )
+            result.append(routed[pair])
+        return result
+
     accepted_trips = set()
     accepted_routes = set()
     bounds = source.get("studyBounds")
@@ -394,15 +418,20 @@ def analyze_feed(path, service_date, receipt, source):
                 excluded["trip_without_stop_pairs"] += 1
                 continue
             shape = shapes.get(trip.get("shape_id"))
-            if not shape:
+            if not shape and not router:
                 excluded["missing_shape"] += 1
                 continue
             key = (
-                trip.get("shape_id"),
+                trip.get("shape_id") if shape else None,
                 tuple((r["stop_id"], r.get("shape_dist_traveled")) for r in rows),
             )
             if key not in geometry_cache:
-                geometry_cache[key] = geometries(shape, rows, stops, excluded)
+                found = (
+                    geometries(shape, rows, stops, excluded)
+                    if shape
+                    else [None] * (len(rows) - 1)
+                )
+                geometry_cache[key] = derived(rows, found) if router else found
             for left, right, geometry in zip(rows, rows[1:], geometry_cache[key]):
                 excluded["candidate_pairs"] += 1
                 if not in_area(stops[left["stop_id"]]["point"]) or not in_area(
@@ -423,7 +452,8 @@ def analyze_feed(path, service_date, receipt, source):
                 if duration <= 0:
                     excluded["nonpositive_time"] += 1
                     continue
-                coords, length = geometry
+                coords, length = geometry[:2]
+                geometry_source = geometry[2] if len(geometry) > 2 else "gtfs-shape"
                 if length / duration * 3.6 > max_speed:
                     excluded[f"implausible_speed_above_{max_speed}_kmh"] += 1
                     continue
@@ -464,6 +494,8 @@ def analyze_feed(path, service_date, receipt, source):
                         "bands": defaultdict(list),
                         "estimated": 0,
                     }
+                    if geometry_source != "gtfs-shape":
+                        segments[key]["geometrySource"] = geometry_source
                 segment = segments[key]
                 for band, (lo, hi) in BANDS.items():
                     if lo <= start < hi:
@@ -607,7 +639,16 @@ def main():
     sources = json.loads((here / "feeds.json").read_text())
     city_dates = parse_city_dates(args.city_date, {s["id"] for s in sources})
     cities = []
+    routers = {}
     for source in sources:
+        router = None
+        if source.get("derivedGeometry") == "osm-rail":
+            from railgraph import RailRouter, load_tracks
+
+            rail_key = archive_id(source, "railId")
+            if rail_key not in routers:
+                routers[rail_key] = RailRouter(load_tracks(source, args.cache))
+            router = routers[rail_key]
         archive = args.cache / (archive_id(source) + ".zip")
         receipt = args.cache / (archive_id(source) + ".receipt.json")
         if not archive.exists() or not receipt.exists():
@@ -617,6 +658,7 @@ def main():
             city_dates.get(source["id"], args.date),
             json.loads(receipt.read_text()),
             source,
+            router,
         )
         if args.basemap_cache:
             from basemap import load_map

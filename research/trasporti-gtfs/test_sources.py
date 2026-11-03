@@ -2,7 +2,7 @@
 
 import unittest
 from analyze import archive_id
-from acquire import unique_archives
+from acquire import redirect_allowed, unique_archives
 
 
 class SourceTests(unittest.TestCase):
@@ -26,3 +26,27 @@ class SourceTests(unittest.TestCase):
                     dict(id="y", archiveId="x", url="https://example.invalid/b"),
                 ]
             )
+
+
+class RedirectTests(unittest.TestCase):
+    def test_redirect_stays_on_https_and_declared_hosts(self):
+        source = dict(
+            id="napoli",
+            url="https://www.anm.it/google/google-transit.zip",
+            allowedRedirectHosts=["anmspa.file.force.com"],
+        )
+        self.assertTrue(redirect_allowed(source, source["url"]))
+        self.assertTrue(
+            redirect_allowed(source, "https://anmspa.file.force.com/sfc/x?y=1")
+        )
+        # Declared hosts are exact: no suffix tricks, no downgrade, no others.
+        for url in (
+            "http://anmspa.file.force.com/x",
+            "https://evil.anmspa.file.force.com.example/x",
+            "https://file.force.com/x",
+            "https://example.org/x",
+        ):
+            self.assertFalse(redirect_allowed(source, url), url)
+        self.assertFalse(
+            redirect_allowed(dict(url="https://a.example/x"), "https://b.example/x")
+        )

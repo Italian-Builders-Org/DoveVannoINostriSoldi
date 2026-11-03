@@ -15,6 +15,14 @@ from analyze import Archive, archive_id
 MAX_BYTES = 256 * 1024 * 1024
 
 
+def redirect_allowed(source, final_url):
+    """HTTPS only, on the official host or a host declared in the registry."""
+    final = urllib.parse.urlparse(final_url)
+    hosts = {urllib.parse.urlparse(source["url"]).hostname}
+    hosts.update(source.get("allowedRedirectHosts", []))
+    return final.scheme == "https" and final.hostname in hosts
+
+
 def acquire(source, cache, refresh=False):
     destination = cache / (archive_id(source) + ".zip")
     receipt_path = cache / (archive_id(source) + ".receipt.json")
@@ -36,9 +44,7 @@ def acquire(source, cache, refresh=False):
     temporary = None
     try:
         with urllib.request.urlopen(request, timeout=90) as response:
-            final = urllib.parse.urlparse(response.url)
-            original = urllib.parse.urlparse(source["url"])
-            if final.scheme != "https" or final.hostname != original.hostname:
+            if not redirect_allowed(source, response.url):
                 raise ValueError("Unexpected redirect outside official HTTPS host")
             with tempfile.NamedTemporaryFile(
                 dir=cache, suffix=".partial", delete=False
@@ -89,9 +95,20 @@ def main():
         action="store_true",
         help="Explicitly replace the cached feed with a new version",
     )
+    parser.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        help="Limit to these dataset IDs (repeatable); others are not touched",
+    )
     args = parser.parse_args()
     args.cache.mkdir(parents=True, exist_ok=True)
     sources = json.loads((Path(__file__).parent / "feeds.json").read_text())
+    if args.only:
+        unknown = set(args.only) - {s["id"] for s in sources}
+        if unknown:
+            raise ValueError("Unknown dataset: " + ", ".join(sorted(unknown)))
+        sources = [s for s in sources if s["id"] in args.only]
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
         for result in pool.map(
             lambda source: acquire(source, args.cache, args.refresh),

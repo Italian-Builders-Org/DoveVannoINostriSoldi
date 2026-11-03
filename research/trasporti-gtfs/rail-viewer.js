@@ -92,7 +92,7 @@ function drawChart() {
       y1: y(tick),
       x2: right,
       y2: y(tick),
-      stroke: tick === 0 ? "#b5c3b5" : "#e7ece4",
+      stroke: tick === 0 ? "#b9c0c3" : "#e8eaeb",
       "stroke-dasharray": tick === 0 ? "3 3" : "none",
     });
     add("text", { x: left - 8, y: y(tick) + 3, "text-anchor": "end" }, tick);
@@ -111,7 +111,7 @@ function drawChart() {
   add("path", {
     d: path,
     fill: "none",
-    stroke: "#315c47",
+    stroke: "#1d2427",
     "stroke-width": 2.3,
     "stroke-linejoin": "round",
     "stroke-linecap": "round",
@@ -123,7 +123,7 @@ function drawChart() {
         cy: y(r.delayMinutes),
         r: 3.5,
         fill:
-          r.delayMinutes === journey.peakDelayMinutes ? "#9e3530" : "#315c47",
+          r.delayMinutes === journey.peakDelayMinutes ? "#c54028" : "#1d2427",
         stroke: "white",
         "stroke-width": 1.5,
       });
@@ -165,6 +165,119 @@ function drawChart() {
       "x",
       Number(peakLabel.getAttribute("x")) - (box.x + box.width - width + 4),
     );
+}
+function delayColor(m) {
+  if (m === null) return null;
+  if (m < 0) return "#a6c9b6";
+  if (m <= 2) return "#e6e9ea";
+  if (m <= 5) return "#efcd78";
+  if (m <= 10) return "#e98f3a";
+  if (m <= 20) return "#c54028";
+  return "#7a1626";
+}
+const dateLabel = (d) =>
+  new Date(d + "T12:00:00").toLocaleDateString("it-IT", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+function renderHistory(j) {
+  const train = rail.history?.trains.find((t) => t.number === j.number),
+    panel = document.getElementById("rail-history");
+  panel.hidden = !train;
+  if (!train) return;
+  const days = train.days.length;
+  text(
+    "rail-history-note",
+    days === 1
+      ? "Una sola giornata salvata per questo treno: servono più rilevazioni per vedere se i ritardi si ripetono."
+      : days +
+          " giornate salvate. Ogni cella è il ritardo rilevato in quella stazione; le celle vuote sono passaggi non rilevati o solo previsti. Poche giornate non dimostrano una tendenza.",
+  );
+  const table = document.getElementById("rail-heatmap");
+  table.replaceChildren();
+  const head = node("thead", undefined, table),
+    top = node("tr", undefined, head);
+  node("th", "Stazione", top).scope = "col";
+  for (const d of train.days) {
+    const th = node("th", dateLabel(d.serviceDate), top);
+    th.scope = "col";
+    if (d.id === j.id) th.className = "current";
+  }
+  if (days > 1) node("th", "Media", top).scope = "col";
+  const body = node("tbody", undefined, table);
+  for (const s of train.stations) {
+    const row = node("tr", undefined, body),
+      name = node("th", label(s.station), row);
+    name.scope = "row";
+    s.delays.forEach((m, i) => {
+      const cell = node("td", m === null ? "" : minutes(m).replace(" min", ""), row),
+        color = delayColor(m);
+      if (color) cell.style.setProperty("--c", color);
+      else cell.className = "none";
+      if (m !== null && m > 10) cell.classList.add("dark");
+      if (train.days[i].id === j.id) cell.classList.add("current");
+      cell.title =
+        label(s.station) +
+        ", " +
+        dateLabel(train.days[i].serviceDate) +
+        ": " +
+        (m === null ? "non rilevato" : minutes(m));
+    });
+    if (days > 1)
+      node(
+        "td",
+        s.meanDelayMinutes === null
+          ? "—"
+          : (s.meanDelayMinutes > 0 ? "+" : "") +
+              s.meanDelayMinutes.toLocaleString("it-IT"),
+        row,
+      ).className = "mean";
+  }
+  const foot = node("tfoot", undefined, table),
+    arrival = node("tr", undefined, foot);
+  node("th", "Arrivo", arrival).scope = "row";
+  for (const d of train.days)
+    node(
+      "td",
+      d.arrivalDelayMinutes === null ? "—" : minutes(d.arrivalDelayMinutes),
+      arrival,
+    );
+  if (days > 1) node("td", "", arrival);
+}
+function renderContext() {
+  const c = rail.context;
+  if (!c) {
+    document.getElementById("rail-context").hidden = true;
+    return;
+  }
+  text("rail-context-note", c.note);
+  const bars = document.getElementById("rail-context-bars"),
+    top = Math.max(...c.rows.map((r) => r.lateShare));
+  bars.replaceChildren();
+  for (const r of c.rows) {
+    const row = node("div", undefined, bars);
+    row.className = "context-row";
+    node("span", String(r.year), row);
+    const track = node("span", undefined, row);
+    track.className = "context-track";
+    const fill = node("i", undefined, track);
+    fill.style.width = (r.lateShare / top) * 100 + "%";
+    node(
+      "strong",
+      (r.lateShare * 100).toLocaleString("it-IT", {
+        maximumFractionDigits: 1,
+      }) + "% in ritardo",
+      row,
+    );
+  }
+  const source = document.getElementById("rail-context-source");
+  source.replaceChildren(c.publisher + ", ");
+  const a = node("a", c.dataset, source);
+  a.href = c.landingUrl;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  source.append(" · " + c.license);
 }
 function render() {
   journey = rail.journeys.find((j) => j.id === field.value) || null;
@@ -233,7 +346,15 @@ function render() {
         timeZone: "Europe/Rome",
       }),
   );
-  text("rail-digest", "SHA-256 della pagina rilevata: " + j.source.sha256);
+  text(
+    "rail-digest",
+    (j.source.kind === "public-browser-dom-extract"
+      ? "Estratto salvato (titolo, stazioni e orari della pagina). "
+      : "Pagina salvata. ") +
+      "SHA-256: " +
+      j.source.sha256,
+  );
+  renderHistory(j);
   drawChart();
 }
 field.addEventListener("change", () => {
@@ -269,6 +390,7 @@ const query = new URL(location.href).searchParams,
     : rail.journeys[0];
 field.value = initial?.id || "";
 enhanceSelect(field);
+renderContext();
 render();
 new ResizeObserver(drawChart).observe(chart);
 

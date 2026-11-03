@@ -287,6 +287,7 @@ async function selectCity(id, restored = null) {
       $("route").append(option(name, name));
 
     sourceInfo();
+    syncLegend();
     $("map-attribution").hidden = !city.basemap;
     $("center").setAttribute(
       "aria-label",
@@ -499,7 +500,13 @@ function filtered() {
 function updateData() {
   hideMapTip();
   if (!scene) return;
-  shown = selectSegments(scene.segments, { band, route, speedClass, sort });
+  shown = selectSegments(scene.segments, {
+    band,
+    route,
+    speedClass,
+    sort,
+    classes: scene.scale.classes,
+  });
   tablePage = 0;
   if (selected && !shown.some((s) => s.id === selected)) selected = null;
   if (selectedStop && route && !selectedStop.routes.includes(route))
@@ -559,7 +566,7 @@ function renderInsights() {
     profile.kmh === null ? "–" : fmt(profile.kmh, 1);
   $("network-speed").style.setProperty(
     "--speed-color",
-    profile.kmh === null ? "currentColor" : kmhColor(profile.kmh),
+    profile.kmh === null ? "currentColor" : kmhColor(profile.kmh, scene.scale),
   );
   $("network-speed-note").textContent =
     profile.kmh === null
@@ -572,7 +579,7 @@ function renderInsights() {
   $("network-segments").textContent = fmt(profile.segments, 0);
   $("network-median").textContent =
     profile.medianKmh === null ? "–" : fmt(profile.medianKmh, 1) + " km/h";
-  const bins = speedHistogram(base, band),
+  const bins = speedHistogram(base, band, scene.scale),
     peak = Math.max(...bins.map((b) => b.km), 0.001),
     bars = $("histogram");
   bars.replaceChildren();
@@ -597,7 +604,10 @@ function renderInsights() {
     bar.style.setProperty("--h", (b.km / peak) * 100 + "%");
     bar.style.setProperty(
       "--c",
-      kmhColor(b.to === Infinity ? b.from + 10 : (b.from + b.to) / 2),
+      kmhColor(
+        b.to === Infinity ? b.from * 1.25 : (b.from + b.to) / 2,
+        scene.scale,
+      ),
     );
     bar.title =
       (b.to === Infinity ? "oltre " + b.from : b.from + "–" + b.to) +
@@ -609,7 +619,7 @@ function renderInsights() {
   }
   $("histogram-axis").replaceChildren(
     ...bins.map((b) =>
-      make("span", [0, 10, 20, 30, 40, 60].includes(b.from) ? String(b.from) : ""),
+      make("span", String(b.from)),
     ),
   );
   const compare = $("band-compare");
@@ -626,7 +636,7 @@ function renderInsights() {
     const track = add(button, "span", undefined, "band-track"),
       fill = add(track, "i");
     fill.style.width = ((r.kmh ?? 0) / top) * 100 + "%";
-    fill.style.background = r.kmh === null ? "none" : kmhColor(r.kmh);
+    fill.style.background = r.kmh === null ? "none" : kmhColor(r.kmh, scene.scale);
     add(button, "span", r.kmh === null ? "–" : fmt(r.kmh, 1), "band-value");
     button.setAttribute(
       "aria-label",
@@ -645,7 +655,7 @@ function renderInsights() {
     button.type = "button";
     button.setAttribute("aria-pressed", String(s.id === selected));
     const badge = add(button, "span", s.route, "route-chip");
-    badge.style.setProperty("--chip", kmhColor(s.bands[band].kmh));
+    badge.style.setProperty("--chip", kmhColor(s.bands[band].kmh, scene.scale));
     const text = add(button, "span", undefined, "slow-stops");
     add(text, "span", stopLabel(s.from));
     add(text, "span", "→ " + stopLabel(s.to));
@@ -749,7 +759,7 @@ function renderTable() {
     };
     add(row, "td", stopLabel(s.from) + " → " + stopLabel(s.to));
     const speedCell = add(row, "td");
-    speedCell.style.setProperty("--speed-color", speedColor(s.bands[band].kmh));
+    speedCell.style.setProperty("--speed-color", speedColor(s.bands[band].kmh, scene.scale));
     add(speedCell, "span", fmt(s.bands[band].kmh), "speed-value");
     add(row, "td", fmt(s.bands[band].samples, 0));
   }
@@ -1561,6 +1571,23 @@ $("close-share").onclick = () => {
   $("share-result").hidden = true;
   $("share-view").focus();
 };
+function syncLegend() {
+  const [a, b, c] = scene.scale.classes,
+    labels = ["< " + a, a + "–" + b, b + "–" + c, "≥ " + c],
+    samples = [a * 0.7, (a + b) / 2, (b + c) / 2, c * 1.3];
+  for (const button of document.querySelectorAll("[data-speed]")) {
+    if (button.dataset.speed === "") continue;
+    const i = Number(button.dataset.speed),
+      swatch = button.querySelector("i");
+    swatch.style.setProperty("--swatch", kmhColor(samples[i], scene.scale));
+    button.replaceChildren(swatch, labels[i]);
+    button.setAttribute("aria-label", labels[i] + " km/h");
+  }
+  $("ramp-note").textContent =
+    scene.scale.id === "rail"
+      ? "Scala ferroviaria: scuro sotto i 40 km/h"
+      : "Scala urbana: scuro sotto i 10 km/h";
+}
 function syncArea(sourceId) {
   const entry = manifest.cities.find((c) => c.id === sourceId);
   const area = areas.find((a) => a.id === (entry.areaId || entry.id));
@@ -1574,6 +1601,24 @@ function syncArea(sourceId) {
     }),
   );
   $("vehicle").value = sourceId;
+  const tabs = $("mode-tabs");
+  tabs.replaceChildren();
+  for (const source of area.sources) {
+    const button = add(tabs, "button", modeLabel(source.mode));
+    button.type = "button";
+    button.dataset.source = source.id;
+    button.setAttribute("aria-pressed", String(source.id === sourceId));
+    if (source.status !== "ready") {
+      button.classList.add("unavailable");
+      button.title = "Dati non disponibili per il giorno scelto";
+    }
+    button.onclick = () => {
+      if (source.id === $("vehicle").value && city?.id === source.id) return;
+      $("vehicle").value = source.id;
+      selectCity(source.id);
+    };
+  }
+  tabs.hidden = area.sources.length < 2;
   syncSelectMenus();
 }
 $("city").onchange = () => {
@@ -1743,7 +1788,7 @@ for (const area of areas) {
     .join(" · ");
   $("city").append(node);
 }
-for (const id of ["city", "route", "vehicle"])
+for (const id of ["city", "route"])
   enhanceSelect($(id), hideSearch);
 for (const disclosure of document.querySelectorAll(
   ".source > details, .map-help",

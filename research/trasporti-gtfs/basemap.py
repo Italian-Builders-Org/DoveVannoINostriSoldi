@@ -49,7 +49,7 @@ def curl_response(url, data=None):
         "--connect-timeout",
         "15",
         "--max-time",
-        "100",
+        "200",
         "--header",
         "User-Agent: DVNS-GTFS-research/1.0",
         url,
@@ -180,11 +180,20 @@ def parse_map(data):
     return {"features": features, "labels": labels}
 
 
+PROFILES = ("urban", "overview", "national")
+
+
 def query_for(bounds, profile="urban"):
     west, south, east, north = bounds
     bbox = f"{south},{west},{north},{east}"
-    if profile not in ("urban", "overview"):
+    if profile not in PROFILES:
         raise ValueError("Invalid basemap profile")
+    if profile == "national":
+        # Country-wide context: motorways and cities only, or Overpass times out.
+        return f"""[out:json][timeout:180][maxsize:134217728];(
+way["highway"="motorway"]({bbox});
+node["place"="city"]["name"]({bbox});
+);out body geom;"""
     if profile == "overview":
         return f"""[out:json][timeout:35][maxsize:134217728];(
 way["highway"~"^(motorway|trunk)(_link)?$"]({bbox});
@@ -213,7 +222,7 @@ def load_map(source, cache):
         raise ValueError("Basemap perimeter/source mismatch")
     profile = source.get("mapDetail", "urban")
     if (
-        profile not in ("urban", "overview")
+        profile not in PROFILES
         or receipt.get("profile", "urban") != profile
     ):
         raise ValueError("Basemap profile mismatch")
@@ -249,7 +258,7 @@ def acquire_map(source, cache, endpoint=ENDPOINT, transport="urllib", method="PO
     if transport == "curl":
         raw = curl_response(request.full_url, query if method == "POST" else None)
     else:
-        with urllib.request.urlopen(request, timeout=100) as response:
+        with urllib.request.urlopen(request, timeout=200) as response:
             raw = read_response(response)
     parsed = json.loads(raw)
     data = parse_map(parsed)

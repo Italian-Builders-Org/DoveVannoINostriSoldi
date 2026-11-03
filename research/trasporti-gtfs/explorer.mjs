@@ -68,7 +68,13 @@ export function searchStops(index, query, route = "", limit = 8) {
 }
 export function selectSegments(
   segments,
-  { band, route = "", speedClass = null, sort = "speed-asc" },
+  {
+    band,
+    route = "",
+    speedClass = null,
+    sort = "speed-asc",
+    classes = [10, 15, 25],
+  },
 ) {
   const field =
     sort === "trips-asc" || sort === "trips-desc" ? "samples" : "kmh";
@@ -79,11 +85,11 @@ export function selectSegments(
         s.bands[band] &&
         (!route || s.route === route) &&
         (speedClass === null ||
-          (s.bands[band].kmh < 10
+          (s.bands[band].kmh < classes[0]
             ? 0
-            : s.bands[band].kmh < 15
+            : s.bands[band].kmh < classes[1]
               ? 1
-              : s.bands[band].kmh < 25
+              : s.bands[band].kmh < classes[2]
                 ? 2
                 : 3) === speedClass),
     )

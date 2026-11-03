@@ -131,3 +131,15 @@ test("sorting preserves filtering, stable ties, source order and precise CSV ord
   );
   assert.ok(csv.indexOf("\r\nz,") < csv.indexOf("\r\na,"));
 });
+
+test("speed classes follow the network scale thresholds", () => {
+  const segments = [s("a", 35), s("b", 80), s("c", 130)];
+  const ids = (speedClass, classes) =>
+    selectSegments(segments, { band: "morning", speedClass, classes }).map(
+      (x) => x.id,
+    );
+  assert.deepEqual(ids(3), ["a", "b", "c"]);
+  assert.deepEqual(ids(0, [40, 70, 100]), ["a"]);
+  assert.deepEqual(ids(2, [40, 70, 100]), ["b"]);
+  assert.deepEqual(ids(3, [40, 70, 100]), ["c"]);
+});

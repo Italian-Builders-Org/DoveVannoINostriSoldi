@@ -11,8 +11,24 @@ const rampStops = [
   [12, [72, 10, 26]],
 ];
 const hex = (n) => Math.round(n).toString(16).padStart(2, "0");
-export function rampColor(minPerKm) {
-  const m = Number.isFinite(minPerKm) ? Math.max(0, Math.min(12, minPerKm)) : 0;
+// A bus at 30 km/h is quick, a train at 30 km/h is crawling: each network
+// type maps its own min/km range onto the same ramp, and the legend says so.
+const urbanScale = {
+  id: "urban",
+  maxMinPerKm: 12,
+  classes: [10, 15, 25],
+  edges: [0, 5, 10, 15, 20, 25, 30, 40, 60, Infinity],
+};
+const railScale = {
+  id: "rail",
+  maxMinPerKm: 3,
+  classes: [40, 70, 100],
+  edges: [0, 20, 40, 60, 80, 100, 120, 160, 200, Infinity],
+};
+export const scaleFor = (mode) => (mode === "train" ? railScale : urbanScale);
+export function rampColor(minPerKm, scale = urbanScale) {
+  const value = (minPerKm * 12) / scale.maxMinPerKm,
+    m = Number.isNaN(value) ? 0 : Math.max(0, Math.min(12, value));
   let i = 1;
   while (i < rampStops.length - 1 && rampStops[i][0] < m) i++;
   const [a, ca] = rampStops[i - 1],
@@ -20,7 +36,8 @@ export function rampColor(minPerKm) {
     t = Math.max(0, Math.min(1, (m - a) / (b - a)));
   return "#" + ca.map((v, k) => hex(v + (cb[k] - v) * t)).join("");
 }
-export const kmhColor = (kmh) => rampColor(kmh > 0 ? 60 / kmh : 12);
+export const kmhColor = (kmh, scale = urbanScale) =>
+  rampColor(kmh > 0 ? 60 / kmh : Infinity, scale);
 
 function median(values) {
   if (!values.length) return null;
@@ -54,11 +71,11 @@ export function networkProfile(segments, band) {
   };
 }
 
-export const histogramEdges = [0, 5, 10, 15, 20, 25, 30, 40, 60, Infinity];
-export function speedHistogram(segments, band) {
-  const bins = histogramEdges.slice(0, -1).map((from, i) => ({
+export function speedHistogram(segments, band, scale = urbanScale) {
+  const edges = scale.edges,
+    bins = edges.slice(0, -1).map((from, i) => ({
     from,
-    to: histogramEdges[i + 1],
+    to: edges[i + 1],
     km: 0,
     segments: 0,
   }));

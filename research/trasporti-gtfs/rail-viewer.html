@@ -52,6 +52,24 @@
             <span id="rail-increase-leg"></span>
           </section>
         </div>
+        <section class="history-panel" id="rail-history" hidden>
+          <div class="events-heading">
+            <h2 id="rail-history-title">Lo stesso treno, giorno per giorno</h2>
+          </div>
+          <p class="method-note" id="rail-history-note"></p>
+          <div class="table-scroll">
+            <table class="heatmap" id="rail-heatmap"></table>
+          </div>
+          <div class="heat-legend" aria-hidden="true">
+            <span><i style="--c: #a6c9b6"></i>in anticipo</span
+            ><span><i style="--c: #e6e9ea"></i>0–2 min</span
+            ><span><i style="--c: #efcd78"></i>3–5</span
+            ><span><i style="--c: #e98f3a"></i>6–10</span
+            ><span><i style="--c: #c54028"></i>11–20</span
+            ><span><i style="--c: #7a1626"></i>oltre 20</span
+            ><span><i class="none"></i>non rilevato</span>
+          </div>
+        </section>
         <section class="chart-panel">
           <h2>Ritardo lungo il percorso</h2>
           <div id="rail-chart"></div>
@@ -75,6 +93,12 @@
               <tbody id="rail-rows"></tbody>
             </table>
           </div>
+        </section>
+        <section class="context-panel" id="rail-context">
+          <h2>Il quadro nazionale</h2>
+          <p class="method-note" id="rail-context-note"></p>
+          <div id="rail-context-bars" class="context-bars"></div>
+          <p class="context-source" id="rail-context-source"></p>
         </section>
         <section class="source">
           <h2>Fonte e metodo</h2>

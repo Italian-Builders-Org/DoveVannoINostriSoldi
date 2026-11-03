@@ -5,7 +5,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from rail import analyse_capture, csv_for, read_capture, write_rail_viewer
+from rail import (
+    analyse_capture,
+    csv_for,
+    rail_history,
+    read_capture,
+    write_rail_viewer,
+)
 
 
 def capture(rows, number="8509"):
@@ -146,3 +152,44 @@ class RailCaptureTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RailHistoryTests(unittest.TestCase):
+    def day(self, stamp, acquired, rows, number="8509"):
+        c = capture(rows, number)
+        c["url"] = c["url"].replace("1793574000000", stamp).replace(
+            "numeroTreno=8509", "numeroTreno=" + number
+        )
+        c["acquiredAt"] = acquired
+        return analyse_capture(c)
+
+    def test_days_and_stations_aggregate_only_observed_passes(self):
+        first = self.day("1793574000000", "2026-11-02T10:00:00Z", ROWS)
+        second = self.day(
+            "1793660400000",
+            "2026-11-03T10:00:00Z",
+            [
+                ("A", "06:00", "06:02", False),
+                ("B", "07:00", "08:00", True),  # forecast: not observed
+                ("C", "08:00", "08:20", False),
+            ],
+        )
+        other = self.day("1793574000000", "2026-11-02T10:00:00Z", ROWS, "8519")
+        history = rail_history([second, other, first])
+        self.assertEqual([t["number"] for t in history["trains"]], ["8509", "8519"])
+        train = history["trains"][0]
+        self.assertEqual(
+            [d["serviceDate"] for d in train["days"]], ["2026-11-02", "2026-11-03"]
+        )
+        self.assertEqual([d["arrivalDelayMinutes"] for d in train["days"]], [5, 20])
+        stations = {s["station"]: s for s in train["stations"]}
+        self.assertEqual(stations["B"]["observedDays"], 1)
+        self.assertEqual(stations["B"]["meanDelayMinutes"], 10)
+        self.assertEqual(stations["C"]["meanDelayMinutes"], 12.5)
+        self.assertEqual(stations["C"]["delays"], [5, 20])
+        self.assertEqual(stations["B"]["delays"], [10, None])
+
+    def test_same_train_and_day_twice_is_rejected(self):
+        first = self.day("1793574000000", "2026-11-02T10:00:00Z", ROWS)
+        with self.assertRaises(ValueError):
+            rail_history([first, dict(first)])

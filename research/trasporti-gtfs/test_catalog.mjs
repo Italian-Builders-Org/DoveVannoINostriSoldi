@@ -58,4 +58,5 @@ test("navigation remains a distinct usable network within the existing Venezia a
   assert.equal(sourceForArea(grouped, "venezia", "ferry").id, "venezia-nav");
   assert.equal(sourceForArea(grouped, "venezia", "bus").id, "venezia");
   assert.equal(modeLabel("ferry"), "Navigazione");
+  assert.equal(modeLabel("funicular"), "Funicolari");
 });

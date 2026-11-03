@@ -192,6 +192,39 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(data["segments"], [])
         self.assertEqual(data["exclusions"]["missing_shape"], 1)
 
+    def test_missing_shape_uses_declared_osm_rail_router_and_marks_it(self):
+        empty = {
+            "shapes.txt": [
+                ["shape_id", "shape_pt_lat", "shape_pt_lon", "shape_pt_sequence"]
+            ]
+        }
+        calls = []
+
+        class Router:
+            def route(self, a, b, excluded):
+                calls.append((tuple(a), tuple(b)))
+                if b[0] > 9.0015:  # second pair: tracks not found
+                    excluded["osm_rail_no_path"] += 1
+                    return None
+                excluded["osm_rail_routed"] += 1
+                return [list(a), [a[0] + 0.0005, 45.0001], list(b)], 90.0
+
+        source = {**SOURCE, "derivedGeometry": "osm-rail"}
+        with tempfile.TemporaryDirectory() as root:
+            p, receipt = archive(Path(root), empty)
+            data = analyze_feed(p, date(2026, 10, 30), receipt, source, Router())
+            # Without the registry opt-in the router is never consulted.
+            plain = analyze_feed(p, date(2026, 10, 30), receipt, SOURCE, Router())
+        self.assertEqual(len(data["segments"]), 1)
+        segment = data["segments"][0]
+        self.assertEqual(segment["geometrySource"], "osm-rail")
+        self.assertEqual(segment["metres"], 90.0)
+        self.assertEqual(data["exclusions"]["osm_rail_no_path"], 1)
+        self.assertEqual(data["exclusions"]["missing_geometry_pair"], 1)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(plain["segments"], [])
+        self.assertEqual(plain["exclusions"]["missing_shape"], 1)
+
     def test_search_stops_preserve_source_coordinates_not_projected_shape_points(self):
         data = self.run_feed(
             {

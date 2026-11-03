@@ -110,3 +110,22 @@ test("band comparison uses only segments present in every compared band", () => 
   );
   assert.equal(rows[0].segments, 1);
 });
+
+test("rail networks use their own scale so slow trains stand out", async () => {
+  const { scaleFor, rampColor: ramp, kmhColor: color, speedHistogram: hist } =
+    await import("./insights.mjs");
+  const urban = scaleFor("bus"),
+    rail = scaleFor("train");
+  assert.deepEqual(urban.classes, [10, 15, 25]);
+  assert.equal(urban.maxMinPerKm, 12);
+  assert.ok(rail.classes.every((c, i) => c > urban.classes[i]));
+  // 30 km/h is fast in a city but slow for a train.
+  assert.notEqual(color(30, urban), color(30, rail));
+  assert.equal(color(30, rail), ramp(2, rail));
+  assert.equal(ramp(rail.maxMinPerKm, rail), ramp(12));
+  assert.equal(scaleFor("tram"), urban);
+  assert.equal(scaleFor("unknown-mode"), urban);
+  const bins = hist([], "morning", rail);
+  assert.equal(bins.at(-1).to, Infinity);
+  assert.ok(bins.at(-2).to > 100);
+});

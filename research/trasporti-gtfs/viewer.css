@@ -2151,12 +2151,7 @@ main {
 .histogram-axis span {
   transform: translateX(-2px);
 }
-.histogram-axis::after {
-  content: "km/h";
-  grid-column: 9;
-  grid-row: 1;
-  justify-self: end;
-}
+
 .band-row {
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr) 42px;
@@ -2437,4 +2432,37 @@ main {
   .panel .toolbar {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+.mode-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.mode-tabs button {
+  min-height: 34px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #d3d8da;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 560;
+}
+.mode-tabs button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.mode-tabs button.unavailable {
+  color: var(--muted);
+  border-style: dashed;
+}
+.panel .selection-bar {
+  display: grid;
+  gap: 8px;
+  margin-top: -4px;
+}
+#selection-count {
+  font-size: 12px;
+  color: var(--muted);
 }

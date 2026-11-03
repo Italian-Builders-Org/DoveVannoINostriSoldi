@@ -1,6 +1,6 @@
 import { projection, scaleBar } from "./camera.mjs";
 import { buildStopIndex } from "./explorer.mjs";
-import { rampColor, kmhColor } from "./insights.mjs";
+import { rampColor, kmhColor, scaleFor } from "./insights.mjs";
 export const speedColor = kmhColor;
 // 0–12 min/km quantised in half-minute steps: one stroke per colour run keeps
 // the gradient smooth without one canvas call per interpolated point.
@@ -97,6 +97,10 @@ export function prepareScene(source) {
   }
   return {
     source,
+    scale: scaleFor(source.mode),
+    // Ridges are drawn in world metres: wide corridors need taller ones to
+    // stay visible at the zoom that shows them whole.
+    heightScale: Math.max(1, ((source.viewWidthMetres ?? 6500) / 6500) ** 0.9),
     features,
     segments,
     labels,
@@ -240,13 +244,16 @@ function drawBackground(ctx, scene, p, view) {
   }
   return visible.filter((f) => f.kind === "road").length;
 }
-function ridgePoints(s, band, p, relief) {
+function ridgePoints(s, band, p, relief, scene) {
   const points = [],
     base = [],
     levels = [],
     total = s.lengths.at(-1) || 1,
-    value = Math.min(60 / s.bands[band].kmh, 12),
-    height = value * 24 * relief;
+    value = Math.min(
+      (60 / s.bands[band].kmh) * (12 / scene.scale.maxMinPerKm),
+      12,
+    ),
+    height = value * 24 * relief * scene.heightScale;
   // Graphic interpolation encodes segment min/km, never observed speed within
   // a segment. Colour follows the drawn height, so feet stay pale and the
   // peak carries the segment's value (in 2D the whole line does).
@@ -429,7 +436,7 @@ export function createRenderer(canvas) {
         ridges = [];
       for (const s of ordered) {
         const ground = s.points.map((point) => p.project(point)),
-          ridge = ridgePoints(s, band, p, lifted);
+          ridge = ridgePoints(s, band, p, lifted, scene);
         if (
           !onScreen(ground, view.width, view.height) &&
           !onScreen(ridge.points, view.width, view.height)
@@ -460,7 +467,8 @@ export function createRenderer(canvas) {
       }
       const usedStops = new Set(segments.flatMap((s) => [s.fromId, s.toId])),
         keys = new Set(),
-        dot = camera.scale / camera.base > 1.6 ? 2.6 : 1.9;
+        dot =
+          scene.heightScale > 5 ? 1.4 : camera.scale / camera.base > 1.6 ? 2.6 : 1.9;
       fc.beginPath();
       for (const s of scene?.stops ?? []) {
         if (!usedStops.has(s.id)) continue;

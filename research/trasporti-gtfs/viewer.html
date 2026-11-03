@@ -35,11 +35,9 @@
               <path d="m7 10 5 5 5-5" /></svg></span
         ></label>
         <div class="selection-bar">
-          <label class="vehicle-field"
-            ><span class="sr-only">Mezzo</span
-            ><span class="select-field"
-              ><select id="vehicle" aria-label="Mezzo"></select></span></label
-          ><span id="selection-count" aria-live="polite"></span>
+          <div id="mode-tabs" class="mode-tabs" role="group" aria-label="Mezzo"></div>
+          <select id="vehicle" class="sr-only" aria-hidden="true" tabindex="-1"></select>
+          <span id="selection-count" aria-live="polite"></span>
         </div>
         <div class="band-field">
           <span class="field-label" id="band-label">Orario di partenza</span>
@@ -120,7 +118,7 @@
           <div><dt>Mediana</dt><dd id="network-median">–</dd></div>
         </dl>
         <figure class="histogram">
-          <figcaption>Chilometri di tratti per velocità</figcaption>
+          <figcaption>Chilometri di tratti per velocità prevista, in km/h</figcaption>
           <div id="histogram" class="histogram-bars"></div>
           <div class="histogram-axis" aria-hidden="true" id="histogram-axis"></div>
         </figure>
@@ -138,7 +136,7 @@
       <div class="legend-block">
         <div class="ramp" aria-hidden="true">
           <span class="ramp-bar"></span>
-          <span class="ramp-labels"><span>più veloce</span><span>km/h previsti</span><span>più lento</span></span>
+          <span class="ramp-labels"><span>più veloce</span><span id="ramp-note"></span><span>più lento</span></span>
         </div>
         <div
           class="legend"

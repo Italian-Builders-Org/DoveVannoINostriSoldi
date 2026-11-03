@@ -196,7 +196,13 @@ def analyse_capture(capture):
         "source": {
             "url": capture["url"],
             "acquiredAt": capture["acquiredAt"],
-            "kind": "public-browser-dom",
+            # A full page vs. only the h1/h2/p blocks the parser reads, saved
+            # when the browser could not hand over the whole document.
+            "kind": (
+                "public-browser-dom"
+                if re.search(r"<html[\s>]", capture["html"], re.I)
+                else "public-browser-dom-extract"
+            ),
             "sha256": hashlib.sha256(raw).hexdigest(),
             "bytes": len(raw),
         },
@@ -256,6 +262,68 @@ def csv_for(journey):
     return stream.getvalue()
 
 
+def rail_history(journeys):
+    """Group saved journeys by train number: one row per day, one column per station.
+
+    Only observed passes enter the means; forecasts and gaps stay None. A
+    handful of days shows what was recorded, not how often delays recur.
+    """
+    if len({j["id"] for j in journeys}) != len(journeys):
+        raise ValueError("Duplicate train/day capture")
+    by_number = {}
+    for j in sorted(journeys, key=lambda j: (j["serviceDate"], j["number"])):
+        by_number.setdefault(j["number"], []).append(j)
+    trains = []
+    for number, days in sorted(by_number.items(), key=lambda x: int(x[0])):
+        order = []
+        for j in days:
+            for row in j["observations"]:
+                if row["station"] not in order:
+                    order.append(row["station"])
+        stations = []
+        for name in order:
+            delays = [
+                next(
+                    (r["delayMinutes"] for r in j["observations"] if r["station"] == name),
+                    None,
+                )
+                for j in days
+            ]
+            seen = [d for d in delays if d is not None]
+            stations.append(
+                {
+                    "station": name,
+                    "delays": delays,
+                    "observedDays": len(seen),
+                    "meanDelayMinutes": (
+                        round(sum(seen) / len(seen), 1) if seen else None
+                    ),
+                    "maxDelayMinutes": max(seen) if seen else None,
+                }
+            )
+        trains.append(
+            {
+                "number": number,
+                "category": days[-1]["category"],
+                "origin": days[-1]["origin"],
+                "destination": days[-1]["destination"],
+                "days": [
+                    {
+                        "id": j["id"],
+                        "serviceDate": j["serviceDate"],
+                        "arrivalDelayMinutes": j["arrivalDelayMinutes"],
+                        "peakDelayMinutes": j["peakDelayMinutes"],
+                        "observedStops": j["coverage"]["observedStops"],
+                        "stops": j["coverage"]["stops"],
+                    }
+                    for j in days
+                ],
+                "stations": stations,
+            }
+        )
+    return {"trains": trains}
+
+
 def write_rail_viewer(journeys, output, standalone=False):
     if (
         not journeys
@@ -268,6 +336,8 @@ def write_rail_viewer(journeys, output, standalone=False):
         "schemaVersion": 1,
         "metric": "observed-station-delay",
         "journeys": [{**j, "csv": csv_for(j)} for j in journeys],
+        "history": rail_history(journeys),
+        "context": json.loads((here / "rail-context.json").read_text()),
     }
     embedded = (
         json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False)

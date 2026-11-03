@@ -244,6 +244,15 @@ function drawBackground(ctx, scene, p, view) {
   }
   return visible.filter((f) => f.kind === "road").length;
 }
+// World-metre crest height for a segment; the camera framing uses it too.
+export function ridgeHeight(s, band, scene, relief) {
+  return (
+    Math.min((60 / s.bands[band].kmh) * (12 / scene.scale.maxMinPerKm), 12) *
+    24 *
+    relief *
+    scene.heightScale
+  );
+}
 function ridgePoints(s, band, p, relief, scene) {
   const points = [],
     base = [],
@@ -253,7 +262,7 @@ function ridgePoints(s, band, p, relief, scene) {
       (60 / s.bands[band].kmh) * (12 / scene.scale.maxMinPerKm),
       12,
     ),
-    height = value * 24 * relief * scene.heightScale;
+    height = ridgeHeight(s, band, scene, relief);
   // Graphic interpolation encodes segment min/km, never observed speed within
   // a segment. Colour follows the drawn height, so feet stay pale and the
   // peak carries the segment's value (in 2D the whole line does).

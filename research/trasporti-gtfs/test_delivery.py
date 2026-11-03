@@ -54,6 +54,37 @@ class DeliveryTests(unittest.TestCase):
             self.assertIn("connect-src 'none'", html)
             self.assertFalse((target / "cities").exists())
 
+    def test_inlined_modules_share_one_scope_without_collisions(self):
+        # Modules are concatenated after stripping import/export: aliases
+        # vanish and two top-level declarations with one name break the page.
+        here = Path(__file__).parent
+        with tempfile.TemporaryDirectory() as root:
+            target = Path(root)
+            write_viewer({"schemaVersion": 3, "cities": []}, target)
+            html = (target / "index.html").read_text()
+        script = html[html.rindex('<script type="module">') :]
+        names = re.findall(
+            r"^(?:async\s+)?function\s+(\w+)|^(?:const|let|class)\s+(\w+)",
+            script,
+            re.M,
+        )
+        flat = [a or b for a, b in names]
+        self.assertEqual(
+            sorted({n for n in flat if flat.count(n) > 1}), [], "duplicate names"
+        )
+        for module in here.glob("*.mjs"):
+            if module.name.startswith("test_"):
+                continue
+            imports = re.findall(
+                r"^import\s*\{([^}]*)\}", module.read_text(), re.M
+            )
+            self.assertFalse(
+                any(" as " in block for block in imports), module.name + " aliases"
+            )
+        self.assertFalse(
+            re.search(r"^import\s*\{[^}]*\sas\s", (here / "viewer.js").read_text(), re.M)
+        )
+
     def test_city_identifier_cannot_escape_the_asset_directory(self):
         with tempfile.TemporaryDirectory() as root:
             with self.assertRaisesRegex(ValueError, "identifier"):

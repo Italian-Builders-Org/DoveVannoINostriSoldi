@@ -526,3 +526,50 @@ GTFS restano esplorabili; le mappe precedenti sono identiche. `render.py` senza
 `--basemap-cache` conserva la cartografia già congelata; specificando la cache
 rilegge e verifica tutti gli estratti, fallendo se ne manca uno. Non c'è un
 ripiego automatico su un servizio remoto o su una geometria inventata.
+
+## Iterazione 15, 3 novembre 2026: reti, geometrie OSM, storico
+
+Stato sintetico e copertura completa: [STATO](STATO.md).
+
+Nuove reti nel registro: Napoli (ANM metro, tram, funicolari, bus/filobus; EAV
+treni), Genova (archivio AMT della Regione Liguria con shape; treni Trenitalia),
+Perugia (Minimetrò, bus Busitalia Umbria), Messina (ATM), Trenord (area milanese e
+tutta la Lombardia), viste ferroviarie Italia (corse Trenitalia via Liguria),
+Toscana e Sardegna. Bari torna utilizzabile con data esplicita 4 novembre.
+
+```bash
+python3 research/trasporti-gtfs/acquire.py --cache CACHE --only napoli-metro --only messina
+python3 research/trasporti-gtfs/basemap.py --cache CACHE --city italia-treni --transport curl
+python3 research/trasporti-gtfs/railgraph.py --cache CACHE --city milano-treni
+python3 research/trasporti-gtfs/analyze.py --cache CACHE --date 2026-10-30 \
+  --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
+  --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31 \
+  --city-date verona-bolzano-av=2026-11-02 --city-date bari=2026-11-04 \
+  --city-date genova-metro=2026-07-15 --city-date genova-funicolari=2026-07-15 \
+  --city-date genova-bus=2026-07-15 --basemap-cache CACHE --output OUT
+```
+
+`--only` limita l'acquisizione agli ID indicati. `allowedRedirectHosts` nel
+registro ammette un reindirizzamento HTTPS verso un host preciso (ANM →
+`anmspa.file.force.com`); ogni altro host resta rifiutato. Il profilo cartografico
+`national` (autostrade e città) serve la vista Italia: il profilo `overview`
+scade su Overpass a quella scala.
+
+**Geometrie ferroviarie da OSM.** Con `derivedGeometry: "osm-rail"`, `railId` e
+`railBounds`, `railgraph.py` acquisisce una volta i binari OSM (rail, narrow_gauge,
+light_rail) con ricevuta SHA-256. Per ogni coppia di stazioni senza geometria GTFS
+l'analisi cerca il cammino più breve sui binari: entrambe le stazioni entro 300 m,
+lunghezza ≤ 1,6 × distanza in linea d'aria + 300 m, binari di servizio penalizzati.
+Il tratto porta `geometrySource: "osm-rail"` e il dettaglio lo dichiara; le coppie
+rifiutate sono contate (`osm_rail_station_off_track`, `osm_rail_no_path`,
+`osm_rail_detour`). La distanza è quella del percorso sui binari.
+
+**Scale.** Reti urbane: rilievo e colore su 0–12 min/km, classi 10/15/25 km/h.
+Treni: 0–3 min/km, classi 40/70/100 km/h. Lo stesso colore non significa la stessa
+velocità fra le due scale; la legenda lo dice.
+
+**Storico ritardi.** `render.py --rail-capture` accetta più giornate dello stesso
+treno; `rail_history` le raggruppa per numero (stazione × giorno, media solo sui
+passaggi rilevati). Una rilevazione salvata come estratto dei soli blocchi h1/h2/p
+è marcata `public-browser-dom-extract`. Contesto nazionale: `rail-context.json`
+(ART, CC BY 4.0).

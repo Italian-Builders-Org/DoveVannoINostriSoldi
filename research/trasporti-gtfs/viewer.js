@@ -24,7 +24,12 @@ import {
 } from "./explorer.mjs";
 import { enhanceDisclosure, finishDisclosures } from "./disclosure.mjs";
 import { readView, viewURL } from "./view-state.mjs";
-import { prepareScene, createRenderer, speedColor } from "./renderer.mjs";
+import {
+  prepareScene,
+  createRenderer,
+  speedColor,
+  ridgeHeight,
+} from "./renderer.mjs";
 import {
   networkProfile,
   speedHistogram,
@@ -529,13 +534,35 @@ function updateData() {
   const empty = !shown.length;
   $("empty-state").hidden = !empty;
   $("empty-reset").hidden = !filtered();
+  // A band without service is common on corridors (one train a day): offer
+  // the band that has it instead of leaving an empty map.
+  const otherBand =
+    empty && city.status === "ready" && !filtered()
+      ? ["all", "morning", "day", "evening"].find(
+          (b) => b !== band && scene.segments.some((s) => s.bands[b]),
+        )
+      : null;
+  $("empty-band").hidden = !otherBand;
+  if (otherBand) {
+    $("empty-band").textContent =
+      "Mostra " + (otherBand === "all" ? "il giorno intero" : "la fascia " + bandNames[otherBand]);
+    $("empty-band").onclick = () => {
+      setBand(otherBand);
+      // The button hides itself: keep keyboard focus on the map.
+      canvas.focus({ preventScroll: true });
+    };
+  }
   $("empty-title").textContent =
     city.status === "ready"
-      ? "Nessun tratto con questi filtri"
+      ? filtered()
+        ? "Nessun tratto con questi filtri"
+        : "Nessuna corsa in questa fascia"
       : "Orari non disponibili";
   $("empty-copy").textContent =
     city.status === "ready"
-      ? "Prova un’altra fascia, linea o velocità."
+      ? filtered()
+        ? "Prova un’altra fascia, linea o velocità."
+        : "Il feed non prevede corse fra queste fermate nella fascia scelta."
       : "Il feed acquisito non contiene corse utilizzabili per il " +
         new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT") +
         ".";
@@ -566,7 +593,7 @@ function renderInsights() {
     profile.kmh === null ? "–" : fmt(profile.kmh, 1);
   $("network-speed").style.setProperty(
     "--speed-color",
-    profile.kmh === null ? "currentColor" : kmhColor(profile.kmh, scene.scale),
+    profile.kmh === null ? "transparent" : kmhColor(profile.kmh, scene.scale),
   );
   $("network-speed-note").textContent =
     profile.kmh === null
@@ -653,6 +680,7 @@ function renderInsights() {
     const item = add(list, "li"),
       button = add(item, "button");
     button.type = "button";
+    button.dataset.segment = s.id;
     button.setAttribute("aria-pressed", String(s.id === selected));
     const badge = add(button, "span", s.route, "route-chip");
     badge.style.setProperty("--chip", kmhColor(s.bands[band].kmh, scene.scale));
@@ -773,6 +801,8 @@ function inspect(segment) {
   schedule();
 }
 function renderInspector() {
+  for (const button of $("slowest").querySelectorAll("[data-segment]"))
+    button.setAttribute("aria-pressed", String(button.dataset.segment === selected));
   const panel = $("inspector");
   finishDisclosures(panel);
   panel.replaceChildren();
@@ -848,8 +878,35 @@ function renderInspector() {
   add(to, "b", "B");
   add(to, "span", stopLabel(s.to));
   const value = add(panel, "div", fmt(s.bands[band].kmh), "metric");
+  value.style.setProperty("--speed-color", kmhColor(s.bands[band].kmh, scene.scale));
   add(value, "span", " km/h");
-  add(panel, "p", "Velocità programmata", "metric-label");
+  const peers = selectSegments(scene.segments, { band, route: "" }),
+    faster = peers.filter((x) => x.bands[band].kmh > s.bands[band].kmh).length,
+    // Clamp to 1–99: "100%" would also count the segment against itself.
+    share =
+      peers.length > 1
+        ? Math.min(99, Math.max(1, Math.round((faster / (peers.length - 1)) * 100)))
+        : null;
+  add(
+    panel,
+    "p",
+    "Velocità programmata" +
+      (share === null
+        ? ""
+        : share >= 50
+          ? " · più lento del " + share + "% dei tratti della rete"
+          : " · più veloce del " + (100 - share) + "% dei tratti della rete"),
+    "metric-label",
+  );
+  const bandsRow = add(panel, "div", undefined, "segment-bands");
+  for (const key of ["morning", "day", "evening"]) {
+    const b = s.bands[key],
+      cell = add(bandsRow, "span");
+    cell.dataset.current = String(key === band);
+    add(cell, "small", bandNames[key]);
+    add(cell, "b", b ? fmt(b.kmh) : "–");
+    if (b) cell.style.setProperty("--c", kmhColor(b.kmh, scene.scale));
+  }
   const dl = add(panel, "dl");
   for (const [label, value] of [
     ["Tempo", fmt(s.bands[band].seconds / 60) + " min"],
@@ -860,6 +917,13 @@ function renderInspector() {
     add(row, "dt", label);
     add(row, "dd", value);
   }
+  if (s.geometrySource === "osm-rail")
+    add(
+      panel,
+      "p",
+      "Percorso ricostruito sui binari OpenStreetMap: il feed non ha la forma del tracciato. Tempi e fermate restano quelli del GTFS.",
+      "detail-note derived-note",
+    );
   if (s.from.toLocaleLowerCase() === s.to.toLocaleLowerCase())
     add(
       panel,
@@ -1018,13 +1082,7 @@ function fit() {
     focusPoint(selectedStop.world, Math.max(cam.base, cam.scale));
     return;
   }
-  const maxHeight = mode3d
-    ? shown.reduce(
-        (m, s) =>
-          Math.max(m, Math.min(60 / s.bands[band].kmh, 12) * 30 * relief),
-        0,
-      )
-    : 0;
+  const maxHeight = shown.reduce((m, s) => Math.max(m, crestFor(s)), 0);
   updateCamera(
     fitCamera(
       cam,
@@ -1070,10 +1128,12 @@ function selectionInsets() {
     : { top, right, bottom, left: detail.right - rect.left + 16 };
 }
 
+function crestFor(s) {
+  // Same height the renderer draws, so framing includes the crest.
+  return mode3d ? ridgeHeight(s, band, scene, relief) : 0;
+}
 function segmentCamera(s) {
-  const height = mode3d
-    ? Math.min(60 / s.bands[band].kmh, 12) * 30 * relief
-    : 0;
+  const height = crestFor(s);
   const endpoints = [s.fromId, s.toId]
     .map((id) => scene.stops.find((stop) => stop.id === id)?.world)
     .filter(Boolean);
@@ -1583,6 +1643,8 @@ function syncLegend() {
     button.replaceChildren(swatch, labels[i]);
     button.setAttribute("aria-label", labels[i] + " km/h");
   }
+  $("map-key-fast").textContent = "≥ " + c;
+  $("map-key-slow").textContent = "< " + a;
   $("ramp-note").textContent =
     scene.scale.id === "rail"
       ? "Scala ferroviaria: scuro sotto i 40 km/h"
@@ -1747,6 +1809,7 @@ $("export-map").onclick = async () => {
       count: shown.length,
       mode3d,
       camera: { ...cam },
+      scale: scene.scale,
       selection: segment
         ? stopLabel(segment.from) + " → " + stopLabel(segment.to)
         : null,

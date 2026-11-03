@@ -300,6 +300,7 @@
           <strong id="empty-title"></strong>
           <p id="empty-copy"></p>
           <button id="empty-reset" hidden>Azzera filtri</button>
+          <button id="empty-band" hidden></button>
         </div>
         <div id="map-tip" role="tooltip" hidden></div>
         <aside id="inspector" hidden aria-live="polite"></aside>
@@ -336,6 +337,12 @@
 
         <div class="map-foot">
           <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
+          <div class="map-key" aria-hidden="true">
+            <span id="map-key-fast">≥ 25</span>
+            <span class="map-key-ramp"></span>
+            <span><span id="map-key-slow">&lt; 10</span> km/h</span>
+            <span class="map-key-note">più alto = più lento</span>
+          </div>
           <a
             id="map-attribution"
             href="https://www.openstreetmap.org/copyright"

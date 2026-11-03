@@ -127,6 +127,16 @@ riconcilia ogni coefficiente con l'indice medio dell'anno base pubblicato nella
 base precedente. Controllo offline:
 `python3 scripts/etl/istat_foi_annual_snapshot.py --check`.
 
+## Retribuzioni contrattuali · ISTAT
+
+`istat-retribuzioni-contrattuali` è l'indice delle retribuzioni contrattuali per
+dipendente (totale economia, dirigenti esclusi), media annua 2005-2025, base
+dicembre 2021=100, dal dataflow `155_318_DF_DCSC_RETRCONTR1C_4`. Gli anni prima
+del 2021 sono la serie ricostruita da ISTAT nella nuova base. Misura la tariffa
+fissata dai contratti, quindi si confronta con un'indennità istituzionale meglio
+della retribuzione media BES, che risente della composizione dell'occupazione.
+Controllo offline: `python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check`.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

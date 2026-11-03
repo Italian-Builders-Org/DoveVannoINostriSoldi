@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-retribuzioni-contrattuali",
+  "referencePeriod": "2005-2025",
+  "observedAt": "2026-11-03",
+  "caveats": [
+    "Indice delle retribuzioni contrattuali per dipendente, totale economia, dirigenti esclusi, media annua, base dicembre 2021=100: misura quanto stabiliscono i contratti collettivi, non quanto viene effettivamente pagato.",
+    "Gli anni 2005-2020 sono la serie ricostruita da ISTAT nella base dicembre 2021, non un raccordo calcolato da questo progetto.",
+    "Straordinari, premi aziendali, cambi di qualifica e composizione dell'occupazione restano fuori: per le retribuzioni effettive usare le serie BES o di contabilità nazionale.",
+    "È un indice nominale: per un confronto reale va deflazionato con un indice dei prezzi (FOI o IPCA)."
+  ],
+  "units": {
+    "indexTenths": "decimi di indice, base dicembre 2021=100, media annua"
+  },
+  "series": {
+    "dataTypeLabel": "indice della retribuzione contrattuale per dipendente - base dicembre 2021=100",
+    "profStatusLabel": "totale dipendenti al netto dei dirigenti",
+    "agreementGroupLabel": "totale economia"
+  },
+  "observations": [
+    {
+      "year": 2005,
+      "indexTenths": 771
+    },
+    {
+      "year": 2006,
+      "indexTenths": 796
+    },
+    {
+      "year": 2007,
+      "indexTenths": 812
+    },
+    {
+      "year": 2008,
+      "indexTenths": 841
+    },
+    {
+      "year": 2009,
+      "indexTenths": 867
+    },
+    {
+      "year": 2010,
+      "indexTenths": 886
+    },
+    {
+      "year": 2011,
+      "indexTenths": 901
+    },
+    {
+      "year": 2012,
+      "indexTenths": 914
+    },
+    {
+      "year": 2013,
+      "indexTenths": 928
+    },
+    {
+      "year": 2014,
+      "indexTenths": 938
+    },
+    {
+      "year": 2015,
+      "indexTenths": 949
+    },
+    {
+      "year": 2016,
+      "indexTenths": 955
+    },
+    {
+      "year": 2017,
+      "indexTenths": 961
+    },
+    {
+      "year": 2018,
+      "indexTenths": 975
+    },
+    {
+      "year": 2019,
+      "indexTenths": 986
+    },
+    {
+      "year": 2020,
+      "indexTenths": 990
+    },
+    {
+      "year": 2021,
+      "indexTenths": 997
+    },
+    {
+      "year": 2022,
+      "indexTenths": 1008
+    },
+    {
+      "year": 2023,
+      "indexTenths": 1037
+    },
+    {
+      "year": 2024,
+      "indexTenths": 1068
+    },
+    {
+      "year": 2025,
+      "indexTenths": 1101
+    }
+  ],
+  "semantics": {
+    "soldi": {
+      "applicable": false,
+      "unit": "non applicabile",
+      "nature": "indice delle retribuzioni contrattuali, non importo pagato né spesa pubblica"
+    },
+    "periodo": {
+      "referencePeriod": "2005-2025",
+      "granularity": "anno solare, media annua pubblicata da ISTAT"
+    },
+    "provenance": {
+      "holder": "ISTAT — Istituto nazionale di statistica",
+      "landingUrl": "https://esploradati.istat.it/databrowser/",
+      "dataflowId": "155_318_DF_DCSC_RETRCONTR1C_4",
+      "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,155_318_DF_DCSC_RETRCONTR1C_4,1.0/A.IT.WAGE_E_2021.N.10.Z3620",
+      "format": "SDMX-CSV 1.0.0",
+      "bytes": 2132,
+      "sha256": "a136a29f8d2ca24a94bd7200011bafa26f2bc42c41d90af7c81d8665c127de63",
+      "license": "not-declared",
+      "licenseNote": "La risposta SDMX-CSV non espone una licenza: come per gli altri snapshot ISTAT non ne viene inferita alcuna.",
+      "acquisitionDate": "2026-11-03"
+    }
+  }
+}

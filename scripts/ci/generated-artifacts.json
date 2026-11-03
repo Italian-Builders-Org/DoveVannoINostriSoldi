@@ -1734,6 +1734,29 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "eurostat-hicp-annuale",
+      "owner": "Eurostat HICP Italia, medie annue 1996-2025",
+      "files": [
+        "src/data/generated/eurostat-hicp-annuale.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_hicp_annual_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_hicp_annual_snapshot.py --input <risposta JSON-stat dall'URL del lock> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-hicp-annuale.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: una risposta JSON-stat ufficiale Eurostat (prc_hicp_ainr, CC BY 4.0) fissata per URL, struttura SDMX, timestamp upstream, byte e SHA-256. Pretende 30 indici annui e 29 tassi, indice 100 nell'anno base 2025, e ogni tasso coerente con quello ricalcolato dagli indici entro il solo arrotondamento."
+    },
+    {
       "id": "eurostat-hicp-2022-2026",
       "owner": "Eurostat HICP prezzi al consumo armonizzati 2022-2026",
       "files": [

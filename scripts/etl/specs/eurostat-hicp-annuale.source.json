@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-hicp-annuale",
+  "period": {
+    "from": 1996,
+    "to": 2025
+  },
+  "source": {
+    "owner": "Eurostat (Commissione europea)",
+    "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_ainr/default/table?lang=en",
+    "informationUrl": "https://ec.europa.eu/eurostat/web/hicp/information-data",
+    "licenseId": "CC-BY-4.0",
+    "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche.",
+    "termsUrl": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
+    "assets": {
+      "annual": {
+        "filename": "prc_hicp_ainr-it.json",
+        "datasetCode": "prc_hicp_ainr",
+        "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_ainr?format=JSON&lang=EN&freq=A&unit=INX_A_AVG&unit=RCH_A_AVG&coicop18=TOTAL&geo=IT&sinceTimePeriod=1996&untilTimePeriod=2025",
+        "bytes": 5301,
+        "sha256": "c6a2123f74e62d9f2c4a0f653b344fd1964ba3ee1468dc28139d4df3facb6bc2",
+        "sourceUpdated": "2026-09-17T11:00:00+0200",
+        "structure": {
+          "id": "PRC_HICP_AINR",
+          "agencyId": "ESTAT",
+          "version": "10.0"
+        }
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-11-03",
+      "checkedAt": "2026-11-03",
+      "note": "Due download consecutivi hanno dato byte identici. prc_hicp_aind (ECOICOP v1, base 2015) non è più aggiornato dal febbraio 2026: si usa la serie ECOICOP v2 coerente con prc_hicp_minr."
+    }
+  },
+  "expected": {
+    "knownFlags": {
+      "e": "stima Eurostat"
+    },
+    "baseYear": 2025,
+    "cells": 59,
+    "rateToleranceTenths": 3
+  }
+}

@@ -110,6 +110,11 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
 
+Per deflazionare importi su periodi lunghi c'è anche la serie annua
+`eurostat-hicp-annuale` (prc_hicp_ainr, Italia, 1996-2025, base 2025=100),
+con lo stesso source lock e controllo offline
+`python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check`.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

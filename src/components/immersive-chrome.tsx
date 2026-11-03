@@ -2,13 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
-import {
-  immersiveKind,
-  isImmersiveSurface,
-  isPoliticiImmersive,
-} from "@/lib/politici-immersive";
-
-export { isPoliticiImmersive, isImmersiveSurface, immersiveKind };
+import { immersiveKind, isImmersiveSurface } from "@/lib/politici-immersive";
 
 /** Marks <html> so CSS can drop sidebar offset and fill the viewport. */
 export function ImmersiveDocumentFlag() {

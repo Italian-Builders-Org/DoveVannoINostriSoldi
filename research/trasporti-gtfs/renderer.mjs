@@ -150,8 +150,9 @@ function roadWidth(kind) {
   if (/tertiary/.test(kind)) return 2.8;
   return 1.6;
 }
-function drawBackground(ctx, scene, p, view) {
+function drawBackground(ctx, scene, p, view, camera, labelExclusions) {
   const { width, height } = view,
+    zoom = camera ? camera.scale / camera.base : 1,
     visible = [];
   ctx.fillStyle = basemap.paper;
   ctx.fillRect(0, 0, width, height);
@@ -188,19 +189,40 @@ function drawBackground(ctx, scene, p, view) {
     ctx.lineWidth = roadWidth(f.class);
     ctx.stroke();
   }
-  const labels = [],
+  const boxes = [],
     names = new Set(),
-    fits = (x, y, w) => {
-      if (x < w / 2 + 8 || x > width - w / 2 - 8 || y < 46 || y > height - 50)
+    labelGap = 8,
+    labelPad = (zoom >= 1.4 ? 14 : zoom >= 1 ? 18 : 24) + labelGap,
+    stopLabels = !scene.source.basemap?.labels,
+    maxPlaceLabels =
+      zoom >= 1.5 ? 22 : zoom >= 1.1 ? 12 : zoom >= 0.85 ? 6 : stopLabels ? 0 : 4,
+    maxRoadLabels = zoom >= 1.3 ? 12 : zoom >= 1 ? 8 : 3;
+  let placedPlaces = 0;
+  const overlapsUi = (left, top, right, bottom) =>
+    labelExclusions.some(
+      (ex) => left < ex.right && right > ex.left && top < ex.bottom && bottom > ex.top,
+    );
+  const fits = (x, y, w, h = 12) => {
+      const left = x - w / 2 - labelPad,
+        right = x + w / 2 + labelPad,
+        top = y - h / 2 - labelPad,
+        bottom = y + h / 2 + labelPad;
+      if (left < 8 || right > width - 8 || top < 8 || bottom > height - 50)
         return false;
+      if (overlapsUi(left, top, right, bottom)) return false;
       if (
-        labels.some(
+        boxes.some(
           (b) =>
-            Math.abs(x - b.x) < (w + b.w) / 2 + 12 && Math.abs(y - b.y) < 19,
+            !(
+              right + labelGap < b.left ||
+              left > b.right + labelGap ||
+              bottom + labelGap < b.top ||
+              top > b.bottom + labelGap
+            ),
         )
       )
         return false;
-      labels.push({ x, y, w });
+      boxes.push({ left, top, right, bottom });
       return true;
     };
   ctx.textAlign = "center";
@@ -208,10 +230,15 @@ function drawBackground(ctx, scene, p, view) {
   for (const label of scene.labels) {
     const xy = p.project(label.point);
     if (!xy) continue;
-    const major = /city|town|station/.test(label.class),
-      text = label.name.slice(0, 50);
+    const major = /city|town|station/.test(label.class);
+    if (stopLabels && !major && zoom < 1.6) continue;
+    if (stopLabels && major && zoom < 0.95) continue;
+    if (placedPlaces >= maxPlaceLabels) break;
+    const text = label.name.slice(0, 50);
     ctx.font = (major ? "600 13px" : "500 11px") + " system-ui";
-    if (!fits(...xy, ctx.measureText(text).width)) continue;
+    const textW = ctx.measureText(text).width;
+    if (!fits(xy[0], xy[1], textW, major ? 16 : 14)) continue;
+    placedPlaces++;
     ctx.strokeStyle = basemap.halo;
     ctx.lineWidth = 4;
     ctx.strokeText(text, ...xy);
@@ -229,18 +256,20 @@ function drawBackground(ctx, scene, p, view) {
     const a = f.screen.find(Boolean),
       b = f.screen.findLast(Boolean),
       mid = f.screen[Math.floor(f.screen.length / 2)];
-    if (!a || !b || !mid || Math.hypot(b[0] - a[0], b[1] - a[1]) < 130)
+    const span = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (!a || !b || !mid || span < (zoom >= 1.2 ? 160 : 200))
       continue;
     const text = f.name.slice(0, 60);
     ctx.font = "10px system-ui";
-    if (!fits(...mid, ctx.measureText(text).width)) continue;
+    const textW = ctx.measureText(text).width;
+    if (!fits(mid[0], mid[1], textW, 12)) continue;
     ctx.strokeStyle = basemap.halo;
     ctx.lineWidth = 3;
     ctx.strokeText(text, ...mid);
     ctx.fillStyle = basemap.minorLabel;
     ctx.fillText(text, ...mid);
     names.add(f.name);
-    if (names.size >= 22) break;
+    if (names.size >= maxRoadLabels) break;
   }
   return visible.filter((f) => f.kind === "road").length;
 }
@@ -347,7 +376,12 @@ export function createRenderer(canvas) {
     foregroundSegments = null,
     drawn = [],
     grid = new Map(),
-    streets = 0;
+    streets = 0,
+    labelExclusions = [];
+  function setLabelExclusions(rects) {
+    labelExclusions = rects;
+    backgroundKey = "";
+  }
   function sizeLayer(layer, context, width, height, ratio) {
     if (
       layer.width !== Math.round(width * ratio) ||
@@ -422,7 +456,9 @@ export function createRenderer(canvas) {
     const backgroundHit = backgroundScene === scene && backgroundKey === key;
     if (!backgroundHit) {
       bc.clearRect(0, 0, view.width, view.height);
-      streets = scene ? drawBackground(bc, scene, p, view) : 0;
+      streets = scene
+        ? drawBackground(bc, scene, p, view, camera, labelExclusions)
+        : 0;
       backgroundScene = scene;
       backgroundKey = key;
     }
@@ -477,7 +513,11 @@ export function createRenderer(canvas) {
       const usedStops = new Set(segments.flatMap((s) => [s.fromId, s.toId])),
         keys = new Set(),
         dot =
-          scene.heightScale > 5 ? 1.4 : camera.scale / camera.base > 1.6 ? 2.6 : 1.9;
+          (scene?.heightScale ?? 1) > 5
+            ? 1.4
+            : camera.scale / camera.base > 1.6
+              ? 2.6
+              : 1.9;
       fc.beginPath();
       for (const s of scene?.stops ?? []) {
         if (!usedStops.has(s.id)) continue;
@@ -638,5 +678,5 @@ export function createRenderer(canvas) {
     }
     return best;
   }
-  return { draw, nearest };
+  return { draw, nearest, setLabelExclusions };
 }

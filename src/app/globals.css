@@ -441,6 +441,38 @@ html:is([data-immersive="comuni"], :has([data-immersive-page="comuni"])) #conten
   max-width: none;
 }
 
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) .site-content {
+  margin-left: 0;
+  padding: 0;
+}
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) .desktop-sidebar,
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) .mobile-menu-trigger,
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) .header,
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) .site-header,
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) header.site-header {
+  display: none !important;
+}
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) body {
+  overflow: hidden;
+  background: var(--color-bg);
+}
+html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) #contenuto-principale {
+  min-height: 100dvh;
+  height: 100dvh;
+  padding: 0;
+  max-width: none;
+}
+@media (max-width: 719px) {
+  html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  html:is([data-immersive="mobilita"], :has([data-immersive-page="mobilita"])) #contenuto-principale {
+    height: auto;
+    min-height: 100dvh;
+  }
+}
+
 html:is([data-immersive="boards"], :has([data-immersive-page="boards"])) .site-content {
   margin-left: 0;
   padding: 0;

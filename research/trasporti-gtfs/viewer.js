@@ -43,6 +43,25 @@ const $ = (id) => document.getElementById(id),
   renderer = createRenderer(canvas);
 const fmt = (n, d = 1) =>
     new Intl.NumberFormat("it-IT", { maximumFractionDigits: d }).format(n),
+  licenseReceiptLine = (city) => {
+    const lines = [];
+    if (city.publicationVerdict === "RESTRICTED")
+      lines.push(
+        "Audit licenza: riuso pubblico del feed segnalato come limitato dal titolare (RESTRICTED). Le misure restano attribuite al GTFS ufficiale; verificare condizioni prima di redistribuire dati derivati.",
+      );
+    else if (city.publicationVerdict === "UNKNOWN")
+      lines.push(
+        "Audit licenza: condizioni di riuso non verificate in catalogo (UNKNOWN). Controllare titolare e pagina ufficiale prima di redistribuire dati derivati.",
+      );
+    if (city.license === "not-declared")
+      lines.push(
+        "Licenza non dichiarata nel campo dataset; verificare condizioni di riuso sulla pagina ufficiale.",
+      );
+    else if (/non commerciale/i.test(String(city.license)))
+      lines.push(city.license + " — rispettare attribuzione e limiti del titolare.");
+    else lines.push("Dati: " + city.license);
+    return lines.join(" ");
+  },
   make = (tag, text, cls) => {
     const n = document.createElement(tag);
     if (text !== undefined) n.textContent = text;
@@ -55,8 +74,19 @@ const fmt = (n, d = 1) =>
     return n;
   };
 const link = (parent, label, url) => {
+    let href = null;
+    if (typeof url === "string") {
+      try {
+        const parsed = new URL(url);
+        if (parsed.protocol === "http:" || parsed.protocol === "https:")
+          href = parsed.href;
+      } catch {
+        href = null;
+      }
+    }
+    if (!href) return add(parent, "span", label);
     const n = add(parent, "a", label);
-    n.href = url;
+    n.href = href;
     n.target = "_blank";
     n.rel = "noopener noreferrer";
     return n;
@@ -121,9 +151,50 @@ const cache = new Map(),
     "zoom",
   ];
 function notice(message, context = false) {
-  $("notice").dataset.context = String(context);
-  $("notice").hidden = !message;
-  $("notice").textContent = message || "";
+  const box = $("notice"),
+    text = $("notice-text");
+  box.dataset.context = String(context);
+  box.hidden = !message;
+  if (text) text.textContent = message || "";
+  else box.textContent = message || "";
+  if (renderer.setLabelExclusions) renderer.setLabelExclusions(mapLabelExclusions());
+  schedule();
+}
+function mapLabelExclusions() {
+  const shell = $("map-shell"),
+    canvas = $("map");
+  if (!shell || !canvas) return [];
+  const bounds = canvas.getBoundingClientRect(),
+    pad = 4,
+    pick = (el) => {
+      if (!el || el.hidden) return null;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return null;
+      return {
+        left: r.left - bounds.left - pad,
+        top: r.top - bounds.top - pad,
+        right: r.right - bounds.left + pad,
+        bottom: r.bottom - bounds.top + pad,
+      };
+    },
+    rects = [];
+  for (const el of [
+    $("notice"),
+    $("map-tip"),
+    shell.querySelector(".map-context"),
+    shell.querySelector(".top-tools"),
+    shell.querySelector(".camera-tools"),
+    shell.querySelector(".zoom-tools"),
+    shell.querySelector(".map-foot"),
+    shell.querySelector(".legend"),
+    shell.querySelector(".touch-mode"),
+  ]) {
+    const rect = pick(el);
+    if (rect) rects.push(rect);
+  }
+  return rects.filter(
+    (r) => r.right > 0 && r.bottom > 0 && r.left < bounds.width && r.top < bounds.height,
+  );
 }
 async function boundedBytes(response, limit) {
   if (!response.body) throw Error("File della città vuoto.");
@@ -312,7 +383,12 @@ async function selectCity(id, restored = null) {
     updateData();
     if (restored) restoreView(restored);
     if (city.initialView === "network" && !restored?.camera) fit();
-    notice(city.basemap ? null : "Cartografia locale non acquisita.", true);
+    notice(
+      city.basemap
+        ? null
+        : "Sfondo OSM non incluso: misure sui tracciati GTFS; toponimi solo dove l’estratto locale esiste.",
+      true,
+    );
     shell.dataset.loading = "false";
   } catch (error) {
     if (token !== requestId) return;
@@ -468,14 +544,9 @@ function sourceInfo() {
   for (const note of city.sourceNotes ?? []) add(q, "p", note);
   const receipt = $("receipt");
   receipt.replaceChildren();
-  add(
-    receipt,
-    "p",
-    city.license === "not-declared"
-      ? "Licenza del feed da verificare prima della pubblicazione."
-      : city.license,
-  );
-  if (city.licenseUrl) link(receipt, "Condizioni del feed ↗", city.licenseUrl);
+  add(receipt, "p", licenseReceiptLine(city));
+  if (city.licenseUrl)
+    link(receipt, "Condizioni e fonte ufficiale ↗", city.licenseUrl);
   add(receipt, "p", "GTFS SHA-256 " + city.receipt.sha256, "hash");
   if (city.basemap) {
     add(
@@ -1181,6 +1252,8 @@ function drawFrame() {
     constrain();
     syncControls();
   }
+  if (renderer.setLabelExclusions)
+    renderer.setLabelExclusions(mapLabelExclusions());
   const stats = renderer.draw({
     scene,
     segments: shown,
@@ -1856,6 +1929,7 @@ for (const disclosure of document.querySelectorAll(
   ".source > details, .map-help",
 ))
   enhanceDisclosure(disclosure);
+$("notice-dismiss")?.addEventListener("click", () => notice(null));
 $("city").disabled = false;
 const initialView = readView(location.search, manifest.cities);
 selectCity(initialView.city, initialView);

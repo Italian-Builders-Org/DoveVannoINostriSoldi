@@ -295,7 +295,6 @@
             </svg>
           </button>
         </div>
-        <p id="notice" class="map-notice" role="status" hidden></p>
         <div id="empty-state" class="empty-state" hidden>
           <strong id="empty-title"></strong>
           <p id="empty-copy"></p>
@@ -336,7 +335,15 @@
         </div>
 
         <div class="map-foot">
-          <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
+          <div class="map-foot-start">
+            <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
+            <div id="notice" class="map-notice" role="status" hidden>
+              <span id="notice-text"></span>
+              <button id="notice-dismiss" type="button" aria-label="Chiudi avviso">
+                ×
+              </button>
+            </div>
+          </div>
           <div class="map-key" aria-hidden="true">
             <span id="map-key-fast">≥ 25</span>
             <span class="map-key-ramp"></span>

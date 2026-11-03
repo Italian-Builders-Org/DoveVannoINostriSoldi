@@ -563,6 +563,17 @@ def write_viewer(payload, output, standalone=False, rail_journeys=None):
                 "bytes": len(compressed),
             }
         manifest["cities"].append(entry)
+    if not standalone:
+        kept = {
+            entry["asset"]["path"].rsplit("/", 1)[-1]
+            for entry in manifest["cities"]
+            if entry.get("asset")
+        }
+        cities_dir = output / "cities"
+        if cities_dir.is_dir():
+            for orphan in cities_dir.glob("*.json.gz"):
+                if orphan.name not in kept:
+                    orphan.unlink()
     navigation = ""
     if rail_journeys:
         from rail import write_rail_viewer
@@ -626,9 +637,20 @@ def main():
         default=[],
         help="Explicit reference date override, CITY=YYYY-MM-DD; never inferred",
     )
+    p.add_argument(
+        "--only",
+        action="append",
+        default=[],
+        help="Limit to these dataset IDs (repeatable); others are skipped",
+    )
     args = p.parse_args()
     here = Path(__file__).parent
     sources = json.loads((here / "feeds.json").read_text())
+    if args.only:
+        unknown = set(args.only) - {s["id"] for s in sources}
+        if unknown:
+            raise ValueError("Unknown dataset: " + ", ".join(sorted(unknown)))
+        sources = [s for s in sources if s["id"] in args.only]
     city_dates = parse_city_dates(args.city_date, {s["id"] for s in sources})
     cities = []
     routers = {}
@@ -655,7 +677,11 @@ def main():
         if args.basemap_cache:
             from basemap import load_map
 
-            city["basemap"] = load_map(source, args.basemap_cache)
+            map_path = args.basemap_cache / (
+                archive_id(source, "mapId") + ".osm.json"
+            )
+            if map_path.is_file():
+                city["basemap"] = load_map(source, args.basemap_cache)
         cities.append(city)
         print(
             source["id"],

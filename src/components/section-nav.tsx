@@ -32,6 +32,7 @@ function SectionNavContent({
   // Immersive map pages: no section chrome · the graph needs the viewport.
   if (pathname === "/politici" || pathname.startsWith("/politici/")) return null;
   if (pathname === "/comuni" || pathname.startsWith("/comuni/")) return null;
+  if (pathname === "/mappe/mobilita" || pathname.startsWith("/mappe/mobilita/")) return null;
 
   return (
     <nav

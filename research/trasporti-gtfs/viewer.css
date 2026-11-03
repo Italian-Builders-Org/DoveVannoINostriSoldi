@@ -479,7 +479,7 @@ main {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 35px;
+  min-height: 35px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -488,6 +488,15 @@ main {
   background: #f5f5f5eb;
   font-size: 9px;
   color: #646667;
+  z-index: 3;
+}
+.map-foot-start {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: min(62%, 28rem);
 }
 .map-foot a {
   color: inherit;
@@ -1097,10 +1106,20 @@ details ul {
     width: 39px;
     min-height: 40px;
   }
+  .map-foot-start {
+    max-width: min(72%, 16rem);
+    gap: 6px;
+  }
+  .map-foot .map-notice[data-context="true"] {
+    font-size: 8px;
+    line-height: 1.25;
+    padding: 2px 4px 2px 6px;
+  }
   .map-foot {
-    height: 31px;
+    min-height: 31px;
     padding: 3px 10px;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
   .map-foot a {
     font-size: 8px;
@@ -1956,14 +1975,49 @@ th:nth-child(4) {
   }
 }
 
-.map-notice[data-context="true"] {
-  top: 76px;
-  left: 16px;
+.map-foot .map-notice[data-context="true"] {
+  position: static;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
   transform: none;
-  padding: 5px 8px;
-  font-size: 11px;
-  max-width: calc(100% - 32px);
-  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 6px 2px 8px;
+  font-size: 9px;
+  line-height: 1.3;
+  max-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  pointer-events: auto;
+  border: 1px solid var(--border);
+  box-shadow: none;
+  margin: 0;
+}
+.map-shell > .map-notice:not([data-context="true"]) {
+  z-index: 4;
+}
+.map-notice[data-context="true"] #notice-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+#notice-dismiss {
+  flex: 0 0 auto;
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+#notice-dismiss:hover {
+  background: #f0f1f1;
 }
 
 /* ——— Layout: full-height map with a reading panel ——— */

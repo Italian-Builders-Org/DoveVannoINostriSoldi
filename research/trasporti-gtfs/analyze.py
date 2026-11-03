@@ -607,6 +607,7 @@ def write_viewer(payload, output, standalone=False, rail_journeys=None):
     html = html.replace(
         "/*__GTFS_STYLE__*/", (here / "viewer.css").read_text()
     ).replace("/*__GTFS_VIEWER__*/", "\n".join(modules))
+    html = "\n".join(line.rstrip() for line in html.splitlines()) + "\n"
     write_artifact(output / "index.html", html.encode())
 
 

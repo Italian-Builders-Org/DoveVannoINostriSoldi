@@ -29,6 +29,7 @@ class DeliveryTests(unittest.TestCase):
             target = Path(root)
             write_viewer(payload, target)
             html = (target / "index.html").read_text()
+            self.assertNotRegex(html, r"(?m)[ \t]+$", "trailing whitespace in viewer HTML")
             manifest = json.loads(
                 re.search(
                     r'<script id="data" type="application/json">([\s\S]*?)</script>',

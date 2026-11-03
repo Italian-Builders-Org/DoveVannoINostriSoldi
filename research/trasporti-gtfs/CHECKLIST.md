@@ -309,3 +309,18 @@ città completa: la nuova copertura è ferroviaria e parziale, dichiarata.
 L'estratto OSM nuovo non è stato acquisito; il limite non è mascherato.
 Telefono fisico, screen reader, clipboard virtuale e gate/deploy del prodotto
 non verificati. Main remoto c3fa7372 invariato dal controllo precedente.
+
+## Pubblicazione del branch, 3 novembre 2026
+
+Obiettivo: portare tutte le iterazioni sul branch GitHub dedicato, mantenendo
+main invariato e riepilogando quanto resta. Base funzionale 9081fd07;
+main verificato c3fa7372. Nessuna PR o deploy richiesta.
+
+- [x] Albero pulito; destinazione remota e modifiche concorrenti controllate.
+- [x] Merge di origin/main nel solo branch del prototipo, due file estranei preservati.
+- [x] Test mirati ripetuti; risultati Browser precedenti distinti da nuove prove.
+- [x] README aggiornato e STATO.md con funzionalità, copertura, limiti e prossimi passi.
+- [x] Preparato un solo push senza force; verifica dello SHA remoto prevista dopo il trasferimento.
+- [x] Vercel Preview → Branch Tracking verificato disabilitato nel Browser; nessuna impostazione cambiata.
+
+Il commit pubblicato e il confronto remoto sono riportati nella consegna.

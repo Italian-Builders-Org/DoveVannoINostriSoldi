@@ -1,13 +1,18 @@
 # Velocità programmate dei mezzi pubblici
 
-Prototipo locale: 31 reti utilizzabili in 20 città, con tram, autobus, metro,
-treni regionali e navigazione. Bari resta senza servizio nella data scelta. Il menu mostra i
-mezzi integrati per ciascuna città, non un censimento completo dei trasporti.
+Prototipo di ricerca: 32 reti utilizzabili in 20 città e una tratta ferroviaria,
+44.798 tratti validati. Include tram, autobus, metro, treni e navigazione;
+la copertura varia per fonte. Bari non ha servizio nella data scelta e la
+ferrovia di Trento non ha geometrie utilizzabili. La vista Treni contiene due
+rilevazioni salvate, distinte dalla velocità programmata GTFS.
+
+[Stato completo, funzionalità e lavoro restante](STATO.md).
 Strade, acqua, parchi e quartieri OpenStreetMap forniscono il contesto geografico.
 I rilievi indicano minuti programmati per chilometro, non ritardi osservati,
 traffico, inefficienze o sprechi.
 
-Branch `codex/gtfs-grandi-citta`, base `41a953e5`. Nessuna modifica a pagine,
+Branch `codex/gtfs-grandi-citta`, base iniziale `41a953e5`, allineato a
+`main` `c3fa7372` prima della pubblicazione del branch. Nessuna modifica a pagine,
 API, dipendenze, cron o configurazione Vercel del prodotto.
 
 ## Riprodurre
@@ -22,6 +27,7 @@ python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
   --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
   --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31 \
+  --city-date verona-bolzano-av=2026-11-02 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -69,7 +75,7 @@ artifact generati sono ignorati da Git.
 
 La cartografia è acquisita una volta offline, serialmente, rispettando i
 [limiti Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API).
-`--endpoint` permette di scegliere fra le due istanze dichiarate nel codice;
+`--endpoint` permette di scegliere fra le tre istanze dichiarate nel codice;
 non ci sono retry o cambi automatici di provider. Risposte parziali, timeout,
 coordinate non valide e hash diversi bloccano la generazione con basemap.
 Un servizio in errore non diventa una mappa vuota. Budget OSM: 64 MiB espansi
@@ -118,9 +124,12 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Sassari | treni | 4 | 4 | 98 | 54 | 4 |
 | Nuoro | bus | 21 | 14 | 241 | 241 | 919 |
 | Nuoro | treni | 4 | 4 | 98 | 13 | 2 |
+| Verona–Bolzano | treni (FR 8509/8519) | 175 | 1 | 2 | 2 | 6 |
+| Trento | treni | 1 | 1 | 48 | 0 | 0 |
 
 Cagliari (bus e tram) e Padova usano il **31 ottobre 2026**, la navigazione
-veneziana il **2 novembre 2026**, gli altri feed il **30 ottobre 2026**.
+veneziana e la tratta Verona–Bolzano il **2 novembre 2026**, gli altri feed il
+**30 ottobre 2026**.
 Sono scelte esplicite basate sui calendari degli archivi acquisiti, senza ripiego
 automatico. Le date restano nelle fonti e negli export; nessuna classifica tra
 città. A Venezia autobus ACTV e navigazione sono reti separate: il perimetro

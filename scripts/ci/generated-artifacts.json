@@ -1734,6 +1734,29 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "istat-retribuzioni-contrattuali",
+      "owner": "ISTAT indice delle retribuzioni contrattuali per dipendente 2005-2025",
+      "files": [
+        "src/data/generated/istat-retribuzioni-contrattuali.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_retribuzioni_contrattuali_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --input <risposta SDMX-CSV dall'URL del lock> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-retribuzioni-contrattuali.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: una risposta SDMX-CSV ISTAT (155_318_DF_DCSC_RETRCONTR1C_4) fissata per URL, byte e SHA-256, con la chiave della serie ricavata dallo spec. Pretende 21 anni senza buchi, solo indice per dipendente, totale economia e dipendenti esclusi i dirigenti, e nessun flag."
+    },
+    {
       "id": "eurostat-hicp-2022-2026",
       "owner": "Eurostat HICP prezzi al consumo armonizzati 2022-2026",
       "files": [

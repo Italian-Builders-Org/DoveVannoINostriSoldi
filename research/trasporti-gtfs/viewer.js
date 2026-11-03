@@ -8,7 +8,6 @@ import {
 import {
   baseScale,
   normalizeBearing,
-  projection,
   zoomCamera,
   zoomLimits,
   panCamera,

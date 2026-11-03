@@ -28,6 +28,12 @@ function node(tag, value, parent) {
   parent.append(e);
   return e;
 }
+/** Break CodeQL DOM→href taint: only absolute https URLs may become link targets. */
+function httpsHref(raw) {
+  const url = new URL(String(raw));
+  if (url.protocol !== "https:") throw new Error("Solo URL https ammessi");
+  return url.href;
+}
 const empty = document.createElement("option");
 empty.value = "";
 empty.textContent = "Scegli una corsa";
@@ -274,7 +280,7 @@ function renderContext() {
   const source = document.getElementById("rail-context-source");
   source.replaceChildren(c.publisher + ", ");
   const a = node("a", c.dataset, source);
-  a.href = c.landingUrl;
+  a.href = httpsHref(c.landingUrl);
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   source.append(" · " + c.license);
@@ -338,7 +344,7 @@ function render() {
     }
   }
   const source = document.getElementById("rail-source");
-  source.href = j.source.url;
+  source.href = httpsHref(j.source.url);
   text(
     "rail-acquired",
     "Rilevazione salvata: " +

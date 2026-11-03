@@ -116,6 +116,17 @@ Per deflazionare importi su periodi lunghi c'è anche la serie annua
 con lo stesso source lock e controllo offline
 `python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check`.
 
+## Inflazione FOI · ISTAT
+
+`istat-foi-annuale` raccoglie le medie annue FOI 1996-2025 (indice generale e
+senza tabacchi) dai tre dataflow annuali per base (1995, 2010, 2015) e i
+coefficienti di raccordo ufficiali dal file allegato a
+`DF_BULK_DCSP_FOI1B2025_TB1`. Ogni anno conserva il valore pubblicato nella sua
+base; la serie in base 2025 è derivata con quei coefficienti. Il controllo
+riconcilia ogni coefficiente con l'indice medio dell'anno base pubblicato nella
+base precedente. Controllo offline:
+`python3 scripts/etl/istat_foi_annual_snapshot.py --check`.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

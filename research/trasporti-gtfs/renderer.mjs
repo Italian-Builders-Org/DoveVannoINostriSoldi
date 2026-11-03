@@ -1,8 +1,23 @@
 import { projection, scaleBar } from "./camera.mjs";
 import { buildStopIndex } from "./explorer.mjs";
-const palette = ["#9e3530", "#c18a30", "#8d9c5e", "#528b78"];
-export const speedColor = (kmh) =>
-  palette[kmh < 10 ? 0 : kmh < 15 ? 1 : kmh < 25 ? 2 : 3];
+import { rampColor, kmhColor } from "./insights.mjs";
+export const speedColor = kmhColor;
+// 0–12 min/km quantised in half-minute steps: one stroke per colour run keeps
+// the gradient smooth without one canvas call per interpolated point.
+const rampBuckets = Array.from({ length: 25 }, (_, i) => rampColor(i / 2));
+const basemap = {
+  paper: "#eceeee",
+  block: "#e3e6e6",
+  green: "#dfe6dc",
+  water: "#cfdbe1",
+  river: "#c9d7de",
+  casing: "#d7dbdc",
+  road: "#fbfbfa",
+  label: "#59656b",
+  minorLabel: "#848e93",
+  halo: "#f2f3f3",
+};
+export const mapPaper = basemap.paper;
 function worldFactory(focus) {
   const r = 6371008.8,
     cos = Math.cos((focus[1] * Math.PI) / 180),
@@ -134,7 +149,7 @@ function roadWidth(kind) {
 function drawBackground(ctx, scene, p, view) {
   const { width, height } = view,
     visible = [];
-  ctx.fillStyle = "#edf0ea";
+  ctx.fillStyle = basemap.paper;
   ctx.fillRect(0, 0, width, height);
   for (const f of scene.features) {
     const screen = f.points.map((point) => p.project(point));
@@ -146,13 +161,13 @@ function drawBackground(ctx, scene, p, view) {
     if (f.closed) {
       ctx.fillStyle =
         f.kind === "water"
-          ? "#dbe7e7"
+          ? basemap.water
           : f.kind === "green"
-            ? "#e1e7dc"
-            : "#e8ebe5";
+            ? basemap.green
+            : basemap.block;
       ctx.fill();
     } else if (f.kind === "water") {
-      ctx.strokeStyle = "#d4e2e3";
+      ctx.strokeStyle = basemap.river;
       ctx.lineWidth = f.class === "river" ? 15 : 6;
       ctx.stroke();
     }
@@ -162,10 +177,10 @@ function drawBackground(ctx, scene, p, view) {
   for (const f of visible) {
     if (f.kind !== "road") continue;
     path(ctx, f.screen);
-    ctx.strokeStyle = "#e1e6de";
-    ctx.lineWidth = roadWidth(f.class) + 1;
+    ctx.strokeStyle = basemap.casing;
+    ctx.lineWidth = roadWidth(f.class) + 1.2;
     ctx.stroke();
-    ctx.strokeStyle = "#f5f7f2";
+    ctx.strokeStyle = basemap.road;
     ctx.lineWidth = roadWidth(f.class);
     ctx.stroke();
   }
@@ -193,10 +208,10 @@ function drawBackground(ctx, scene, p, view) {
       text = label.name.slice(0, 50);
     ctx.font = (major ? "600 13px" : "500 11px") + " system-ui";
     if (!fits(...xy, ctx.measureText(text).width)) continue;
-    ctx.strokeStyle = "#f8faf4";
+    ctx.strokeStyle = basemap.halo;
     ctx.lineWidth = 4;
     ctx.strokeText(text, ...xy);
-    ctx.fillStyle = major ? "#5c6c59" : "#788672";
+    ctx.fillStyle = major ? basemap.label : basemap.minorLabel;
     ctx.fillText(text, ...xy);
   }
   for (const f of visible) {
@@ -215,10 +230,10 @@ function drawBackground(ctx, scene, p, view) {
     const text = f.name.slice(0, 60);
     ctx.font = "10px system-ui";
     if (!fits(...mid, ctx.measureText(text).width)) continue;
-    ctx.strokeStyle = "#f7f9f3";
+    ctx.strokeStyle = basemap.halo;
     ctx.lineWidth = 3;
     ctx.strokeText(text, ...mid);
-    ctx.fillStyle = "#7b8679";
+    ctx.fillStyle = basemap.minorLabel;
     ctx.fillText(text, ...mid);
     names.add(f.name);
     if (names.size >= 22) break;
@@ -227,9 +242,20 @@ function drawBackground(ctx, scene, p, view) {
 }
 function ridgePoints(s, band, p, relief) {
   const points = [],
+    base = [],
+    levels = [],
     total = s.lengths.at(-1) || 1,
-    height = Math.min(60 / s.bands[band].kmh, 12) * 30 * relief;
-  // Graphic interpolation encodes segment min/km, never observed speed within a segment.
+    value = Math.min(60 / s.bands[band].kmh, 12),
+    height = value * 24 * relief;
+  // Graphic interpolation encodes segment min/km, never observed speed within
+  // a segment. Colour follows the drawn height, so feet stay pale and the
+  // peak carries the segment's value (in 2D the whole line does).
+  const push = (point, progress) => {
+    const lift = relief ? Math.sin(progress * Math.PI) ** 2 : 1;
+    points.push(p.project(point, height * lift));
+    base.push(relief ? p.project(point) : null);
+    levels.push(Math.round(value * lift * 2));
+  };
   for (let i = 1; i < s.points.length; i++) {
     const a = s.points[i - 1],
       b = s.points[i],
@@ -238,19 +264,59 @@ function ridgePoints(s, band, p, relief) {
         Math.ceil(((s.lengths[i] - s.lengths[i - 1]) / total) * 18),
       );
     for (let j = 0; j < steps; j++) {
-      const t = j / steps,
-        progress =
-          (s.lengths[i - 1] + (s.lengths[i] - s.lengths[i - 1]) * t) / total;
-      points.push(
-        p.project(
-          [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t],
-          height * Math.sin(progress * Math.PI) ** 2,
-        ),
+      const t = j / steps;
+      push(
+        [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t],
+        (s.lengths[i - 1] + (s.lengths[i] - s.lengths[i - 1]) * t) / total,
       );
     }
   }
-  points.push(p.project(s.points.at(-1)));
-  return points;
+  push(s.points.at(-1), 1);
+  return { points, base, levels, value };
+}
+function strokeRuns(ctx, points, levels, width) {
+  ctx.lineWidth = width;
+  let start = 0;
+  for (let i = 1; i <= points.length; i++) {
+    if (i < points.length && levels[i] === levels[start] && points[i]) continue;
+    const run = points.slice(start, Math.min(i + 1, points.length));
+    if (run.length > 1) {
+      path(ctx, run);
+      // Colour each run by its higher end so peaks never look paler.
+      ctx.strokeStyle =
+        rampBuckets[Math.max(levels[start], levels[Math.min(i, points.length - 1)])];
+      ctx.stroke();
+    }
+    start = i;
+  }
+}
+function curtain(ctx, ridge, dense) {
+  const { points, base, value } = ridge;
+  if (!base[0] || value <= 0) return;
+  ctx.beginPath();
+  let open = false;
+  for (const xy of points)
+    if (xy) {
+      if (open) ctx.lineTo(...xy);
+      else ctx.moveTo(...xy);
+      open = true;
+    }
+  for (let i = base.length - 1; i >= 0; i--) if (base[i]) ctx.lineTo(...base[i]);
+  ctx.closePath();
+  ctx.fillStyle = rampBuckets[Math.round(value * 2)] + "14";
+  ctx.fill();
+  if (!dense) return;
+  // Hairline "posts" from ground to crest, as in a ribbon chart.
+  ctx.beginPath();
+  for (let i = 1; i < points.length - 1; i += 3) {
+    if (!points[i] || !base[i] || Math.abs(points[i][1] - base[i][1]) < 3)
+      continue;
+    ctx.moveTo(...base[i]);
+    ctx.lineTo(...points[i]);
+  }
+  ctx.strokeStyle = "rgba(70, 80, 86, 0.16)";
+  ctx.lineWidth = 0.6;
+  ctx.stroke();
 }
 export function createRenderer(canvas) {
   const ctx = canvas.getContext("2d");
@@ -331,6 +397,9 @@ export function createRenderer(canvas) {
         camera.bearing,
         camera.pitch,
       ].join(",");
+    // A hidden or collapsed canvas has no pixels to draw: drawImage would throw.
+    if (!view.width || !view.height)
+      return { streets, segments: 0, renderMs: "0", scale: null };
     sizeLayer(canvas, ctx, view.width, view.height, ratio);
     sizeLayer(back, bc, view.width, view.height, ratio);
     sizeLayer(front, fc, view.width, view.height, ratio);
@@ -356,26 +425,43 @@ export function createRenderer(canvas) {
           (p.project(a.points[0]) ?? [0, 0])[1] -
           (p.project(b.points[0]) ?? [0, 0])[1],
       );
+      const lifted = camera.pitch ? relief : 0,
+        ridges = [];
       for (const s of ordered) {
         const ground = s.points.map((point) => p.project(point)),
-          points = ridgePoints(s, band, p, camera.pitch ? relief : 0);
+          ridge = ridgePoints(s, band, p, lifted);
         if (
           !onScreen(ground, view.width, view.height) &&
-          !onScreen(points, view.width, view.height)
+          !onScreen(ridge.points, view.width, view.height)
         )
           continue;
+        ridges.push({ s, ground, ridge });
+      }
+      // Detail scales with how much is on screen: posts and halos only when
+      // they stay readable and cheap.
+      const dense = ridges.length < 1400,
+        sparse = ridges.length < 600;
+      fc.strokeStyle = lifted ? "rgba(96, 108, 114, 0.45)" : "rgba(96, 108, 114, 0.25)";
+      fc.lineWidth = 1;
+      for (const { ground } of ridges) {
         path(fc, ground);
-        fc.strokeStyle = "#b5c2ad";
-        fc.lineWidth = 1.4;
         fc.stroke();
-        path(fc, points);
-        fc.strokeStyle = speedColor(s.bands[band].kmh);
-        fc.lineWidth = 1.65;
-        fc.stroke();
-        drawn.push({ segment: s, points });
+      }
+      for (const { s, ridge } of ridges) {
+        if (lifted) curtain(fc, ridge, dense);
+        if (sparse) {
+          path(fc, ridge.points);
+          fc.strokeStyle = "rgba(255, 255, 255, 0.75)";
+          fc.lineWidth = lifted ? 3.6 : 4.4;
+          fc.stroke();
+        }
+        strokeRuns(fc, ridge.points, ridge.levels, lifted ? 2 : 2.6);
+        drawn.push({ segment: s, points: ridge.points, ridge });
       }
       const usedStops = new Set(segments.flatMap((s) => [s.fromId, s.toId])),
-        keys = new Set();
+        keys = new Set(),
+        dot = camera.scale / camera.base > 1.6 ? 2.6 : 1.9;
+      fc.beginPath();
       for (const s of scene?.stops ?? []) {
         if (!usedStops.has(s.id)) continue;
         const xy = p.project(s.world);
@@ -387,20 +473,24 @@ export function createRenderer(canvas) {
           xy[1] > view.height
         )
           continue;
-        const k = xy.map((v) => Math.round(v / 3)).join(",");
+        const k = xy.map((v) => Math.round(v / 4)).join(",");
         if (keys.has(k)) continue;
         keys.add(k);
-        fc.beginPath();
-        fc.arc(...xy, 1.25, 0, Math.PI * 2);
-        fc.fillStyle = "#46594b";
-        fc.fill();
+        fc.moveTo(xy[0] + dot, xy[1]);
+        fc.arc(...xy, dot, 0, Math.PI * 2);
       }
+      fc.fillStyle = "#fff";
+      fc.lineWidth = 1.6;
+      fc.strokeStyle = "rgba(255, 255, 255, 0.85)";
+      fc.stroke();
+      fc.fillStyle = "#20272b";
+      fc.fill();
       foregroundKey = fgKey;
       foregroundSegments = segments;
       indexPaths(view);
     }
     ctx.clearRect(0, 0, view.width, view.height);
-    ctx.fillStyle = "#edf0ea";
+    ctx.fillStyle = basemap.paper;
     ctx.fillRect(0, 0, view.width, view.height);
     ctx.drawImage(back, 0, 0, view.width, view.height);
     const selectedItem =
@@ -420,9 +510,12 @@ export function createRenderer(canvas) {
       ctx.strokeStyle = "#fff";
       ctx.lineWidth = 6;
       ctx.stroke();
-      ctx.strokeStyle = speedColor(item.segment.bands[band].kmh);
-      ctx.lineWidth = id === selected ? 3.3 : 2.6;
-      ctx.stroke();
+      strokeRuns(
+        ctx,
+        item.points,
+        item.ridge.levels,
+        id === selected ? 3.4 : 2.8,
+      );
     }
     if (selected) {
       const segment = segments.find((s) => s.id === selected);
@@ -439,7 +532,7 @@ export function createRenderer(canvas) {
           screen.forEach((xy, i) => {
             ctx.beginPath();
             ctx.arc(...xy, 8, 0, Math.PI * 2);
-            ctx.fillStyle = "#264b3e";
+            ctx.fillStyle = "#1d2427";
             ctx.fill();
             ctx.strokeStyle = "#fff";
             ctx.lineWidth = 2;
@@ -459,7 +552,7 @@ export function createRenderer(canvas) {
       if (xy) {
         ctx.beginPath();
         ctx.arc(...xy, 7, 0, Math.PI * 2);
-        ctx.fillStyle = "#264b3e";
+        ctx.fillStyle = "#1d2427";
         ctx.fill();
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 3;
@@ -469,7 +562,7 @@ export function createRenderer(canvas) {
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 4;
         ctx.strokeText(stop.label.slice(0, 36), xy[0], xy[1] - 17);
-        ctx.fillStyle = "#223b30";
+        ctx.fillStyle = "#1d2427";
         ctx.fillText(stop.label.slice(0, 36), xy[0], xy[1] - 17);
       }
     }

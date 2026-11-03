@@ -561,6 +561,7 @@ def write_viewer(payload, output, standalone=False, rail_journeys=None):
         "explorer.mjs",
         "view-state.mjs",
         "disclosure.mjs",
+        "insights.mjs",
         "renderer.mjs",
         "viewer.js",
     ]:

@@ -25,6 +25,13 @@ import {
 import { enhanceDisclosure, finishDisclosures } from "./disclosure.mjs";
 import { readView, viewURL } from "./view-state.mjs";
 import { prepareScene, createRenderer, speedColor } from "./renderer.mjs";
+import {
+  networkProfile,
+  speedHistogram,
+  slowestSegments,
+  bandComparison,
+  kmhColor,
+} from "./insights.mjs";
 const $ = (id) => document.getElementById(id),
   manifest = JSON.parse($("data").textContent),
   canvas = $("map"),
@@ -249,6 +256,7 @@ async function selectCity(id, restored = null) {
   $("source-panel").inert = true;
   $("export-map-status").textContent = "";
   controls.forEach((id) => ($(id).disabled = true));
+  syncBand();
   syncSelectMenus();
   $("export").disabled = true;
   $("page-previous").disabled = true;
@@ -311,6 +319,7 @@ async function selectCity(id, restored = null) {
     selectedStop = null;
     renderInspector();
     renderTable();
+    $("insights").hidden = true;
     $("map-title").textContent = "Mappa non disponibile";
     $("selection-count").textContent = "";
     route = "";
@@ -337,6 +346,7 @@ async function selectCity(id, restored = null) {
         $(id).setAttribute("aria-busy", "false");
       syncSelectMenus();
       syncControls();
+      syncBand();
     }
   }
 }
@@ -523,8 +533,153 @@ function updateData() {
         new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT") +
         ".";
   renderTable();
+  renderInsights();
   renderInspector();
   schedule();
+}
+const bandNames = {
+  morning: "7–10",
+  day: "10–16",
+  evening: "16–20",
+  all: "giorno intero",
+};
+function syncBand() {
+  for (const button of document.querySelectorAll("[data-band]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.band === band));
+    button.disabled = $("band").disabled;
+  }
+}
+function renderInsights() {
+  syncBand();
+  const base = scene ? selectSegments(scene.segments, { band, route }) : [],
+    profile = networkProfile(shown, band);
+  $("insights").hidden = !scene || !scene.segments.length;
+  if ($("insights").hidden) return;
+  $("network-speed").textContent =
+    profile.kmh === null ? "–" : fmt(profile.kmh, 1);
+  $("network-speed").style.setProperty(
+    "--speed-color",
+    profile.kmh === null ? "currentColor" : kmhColor(profile.kmh),
+  );
+  $("network-speed-note").textContent =
+    profile.kmh === null
+      ? "nessun tratto nella selezione"
+      : "km/h medi previsti" +
+        (route ? " sulla linea " + route : "") +
+        ", " +
+        bandNames[band];
+  $("network-routes").textContent = fmt(profile.routes, 0);
+  $("network-segments").textContent = fmt(profile.segments, 0);
+  $("network-median").textContent =
+    profile.medianKmh === null ? "–" : fmt(profile.medianKmh, 1) + " km/h";
+  const bins = speedHistogram(base, band),
+    peak = Math.max(...bins.map((b) => b.km), 0.001),
+    bars = $("histogram");
+  bars.replaceChildren();
+  bars.setAttribute(
+    "aria-label",
+    bins
+      .filter((b) => b.km)
+      .map(
+        (b) =>
+          (b.to === Infinity
+            ? "oltre " + b.from
+            : b.from + "–" + b.to) +
+          " km/h: " +
+          fmt(b.km, 1) +
+          " km",
+      )
+      .join("; "),
+  );
+  bars.setAttribute("role", "img");
+  for (const b of bins) {
+    const bar = add(bars, "span");
+    bar.style.setProperty("--h", (b.km / peak) * 100 + "%");
+    bar.style.setProperty(
+      "--c",
+      kmhColor(b.to === Infinity ? b.from + 10 : (b.from + b.to) / 2),
+    );
+    bar.title =
+      (b.to === Infinity ? "oltre " + b.from : b.from + "–" + b.to) +
+      " km/h · " +
+      fmt(b.km, 1) +
+      " km in " +
+      fmt(b.segments, 0) +
+      " tratti";
+  }
+  $("histogram-axis").replaceChildren(
+    ...bins.map((b) =>
+      make("span", [0, 10, 20, 30, 40, 60].includes(b.from) ? String(b.from) : ""),
+    ),
+  );
+  const compare = $("band-compare");
+  compare.replaceChildren();
+  const rows = bandComparison(base, ["morning", "day", "evening"]),
+    top = Math.max(...rows.map((r) => r.kmh ?? 0), 1);
+  $("band-compare-block").hidden = !rows.some((r) => r.segments);
+  for (const r of rows) {
+    const button = add(compare, "button", undefined, "band-row");
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(r.band === band));
+    button.disabled = !r.segments;
+    add(button, "span", bandNames[r.band], "band-name");
+    const track = add(button, "span", undefined, "band-track"),
+      fill = add(track, "i");
+    fill.style.width = ((r.kmh ?? 0) / top) * 100 + "%";
+    fill.style.background = r.kmh === null ? "none" : kmhColor(r.kmh);
+    add(button, "span", r.kmh === null ? "–" : fmt(r.kmh, 1), "band-value");
+    button.setAttribute(
+      "aria-label",
+      "Fascia " +
+        bandNames[r.band] +
+        ": " +
+        (r.kmh === null ? "nessun dato" : fmt(r.kmh, 1) + " km/h"),
+    );
+    button.onclick = () => setBand(r.band);
+  }
+  const list = $("slowest");
+  list.replaceChildren();
+  for (const s of slowestSegments(base, band)) {
+    const item = add(list, "li"),
+      button = add(item, "button");
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(s.id === selected));
+    const badge = add(button, "span", s.route, "route-chip");
+    badge.style.setProperty("--chip", kmhColor(s.bands[band].kmh));
+    const text = add(button, "span", undefined, "slow-stops");
+    add(text, "span", stopLabel(s.from));
+    add(text, "span", "→ " + stopLabel(s.to));
+    add(button, "strong", fmt(s.bands[band].kmh, 1), "slow-speed");
+    button.setAttribute(
+      "aria-label",
+      "Linea " +
+        s.route +
+        ", " +
+        stopLabel(s.from) +
+        " verso " +
+        stopLabel(s.to) +
+        ", " +
+        fmt(s.bands[band].kmh, 1) +
+        " km/h. Mostra sulla mappa",
+    );
+    button.onclick = () => {
+      if (speedClass !== null && !shown.some((x) => x.id === s.id)) {
+        speedClass = null;
+        updateData();
+      }
+      inspect(s);
+      focusSegment(s);
+    };
+  }
+  if (!list.children.length)
+    add(list, "li", "Nessun tratto abbastanza lungo e frequente.", "hint");
+}
+function setBand(value) {
+  if (value === band || !$("band").querySelector('[value="' + value + '"]'))
+    return;
+  $("band").value = value;
+  band = value;
+  updateData();
 }
 function renderTable() {
   for (const [key, label] of [
@@ -1428,10 +1583,9 @@ $("city").onchange = () => {
   selectCity(sourceForArea(areas, $("city").value, preferred).id);
 };
 $("vehicle").onchange = () => selectCity($("vehicle").value);
-$("band").onchange = () => {
-  band = $("band").value;
-  updateData();
-};
+$("band").onchange = () => setBand($("band").value);
+for (const button of document.querySelectorAll("[data-band]"))
+  button.onclick = () => setBand(button.dataset.band);
 $("route").onchange = () => setRoute($("route").value);
 $("clear-route").onclick = () => {
   closeSelectMenu();
@@ -1589,7 +1743,7 @@ for (const area of areas) {
     .join(" · ");
   $("city").append(node);
 }
-for (const id of ["city", "band", "route", "vehicle"])
+for (const id of ["city", "route", "vehicle"])
   enhanceSelect($(id), hideSearch);
 for (const disclosure of document.querySelectorAll(
   ".source > details, .map-help",

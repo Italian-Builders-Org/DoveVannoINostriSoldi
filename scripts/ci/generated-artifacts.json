@@ -1734,6 +1734,29 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "istat-foi-annuale",
+      "owner": "ISTAT FOI, medie annue 1996-2025 con raccordo alla base 2025",
+      "files": [
+        "src/data/generated/istat-foi-annuale.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_foi_annual_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_foi_annual_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/istat_foi_annual_snapshot.py --input-dir <cartella con le tre risposte SDMX-CSV e il file dei coefficienti> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-foi-annuale.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: tre risposte SDMX-CSV ISTAT (una per base: 1995, 2010, 2015) e il file ufficiale dei coefficienti di raccordo, fissati per URL, byte e SHA-256. Pretende 30 anni senza buchi per FOI generale e senza tabacchi, nessun flag, ogni coefficiente uguale all'indice medio dell'anno base nella base precedente e la serie derivata in base 2025 ricalcolabile esattamente, con il 2025 a 100."
+    },
+    {
       "id": "eurostat-hicp-2022-2026",
       "owner": "Eurostat HICP prezzi al consumo armonizzati 2022-2026",
       "files": [

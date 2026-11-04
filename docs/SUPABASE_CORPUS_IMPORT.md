@@ -2,7 +2,7 @@
 
 Il progetto scelto è `zvqhikeylxynsljwgosc` (`fps26-preferiresti`, eu-west-1).
 Ospita anche servizi estranei a DVNS: gli import scrivono esclusivamente negli
-schemi privati `dvns_metadata` e `dvns_corpus`. Nessuna modifica al reader del sito,
+schemi privati `dvns_metadata`, `dvns_corpus` e `dvns_snapshots`. Nessuna modifica al reader del sito,
 alla Data API pubblica o alle tabelle degli altri servizi.
 
 ## Cosa viene trasferito
@@ -196,8 +196,8 @@ I reader del sito e le API pubbliche restano quelli precedenti.
 
 Le righe del corpus (113 dataset, `/dati`, `/api/dati` e tutti i selector che
 passano da `integrated-sources`) arrivano da `dvns_corpus.rows`. Catalogo e prove
-di rilascio rimangono fissati alla revisione locale. Gli snapshot tematici
-importati direttamente come JSON hanno lettori separati e restano locali.
+di rilascio sono fissati al pin verificato. Gli snapshot tematici hanno lettori
+separati che usano la cache di release Supabase descritta sotto.
 
 Il reader usa due connessioni al massimo, transazioni READ ONLY, timeout SQL
 10 s e deadline 15 s; nessun grant pubblico e nessuna scrittura. Ogni chunk
@@ -214,3 +214,44 @@ La modalità locale usa la credenziale server già configurata, con transazioni
 esplicitamente read-only: il Session pooler non applica necessariamente le
 opzioni di sessione inviate nello startup packet. Un eventuale deploy richiede
 un riesame separato di ruolo SQL dedicato, capacità e budget di richieste.
+
+### Snapshot tematici e cache locale di release
+
+`dev:supabase` ora prepara anche tutti gli artifact registrati prima di avviare
+Next. Richiede il virtualenv Python 3.12 con `supabase/requirements-import.txt`
+e il file Storage originale `.env.storage.local` accanto alla env SQL; per un
+percorso diverso usare `DVNS_STORAGE_ENV_FILE`. Le credenziali non sono copiate
+nella directory runtime; la chiave Storage viene letta solo dal restore Python.
+
+La revisione dati è fissata in `supabase/runtime-release.json`: SHA del registro
+e dell'inventario completo. Il nuovo codice di main può usare quel rilascio se
+il registro dei dati è invariato; un nuovo rilascio richiede import e pin
+verificati, non la selezione automatica dell'ultimo record nel DB.
+
+- Corpus: query SQL dirette, come sopra. Gli 8.119 chunk Git non sono copiati
+  nella cache runtime.
+- Snapshot/indici: manifest e 595 documenti da PostgreSQL, byte originali dal
+  bucket privato Supabase. Sono ricostruiti 1.903 file (595 JSON e 1.308 archivi/
+  indici), confrontando hash e byte dell'inventario fissato e valori JSON con
+  Decimal. La copia byte-esatta conserva gli hash attesi dagli adapter.
+- Cache su disco in `artifacts/supabase-runtime/release-<inventory_sha256>`:
+  ogni avvio rilegge il DB e verifica i file, riparando byte locali divergenti
+  solo da oggetti cloud verificati. Manifest, documento, segmento o oggetto
+  mancante/divergente bloccano l'avvio. Nessun fallback ai generated del repo.
+- Next parte in una vista runtime separata `site-<run>`, con copie del codice
+  aggiornato e collegamenti alle due radici ripristinate (`src/data/generated`,
+  `data/source-ledger`). Ha una `.next` propria; il lock impedisce due avvii
+  di questa modalità nello stesso checkout. Riavviare `dev:supabase` dopo
+  modifiche al codice per ricreare la vista aggiornata.
+
+È una lettura da cache di snapshot immutabili, non una SELECT per ogni grafico:
+non trasforma in query di rete i lettori sincroni o gli import JSON. La cache
+viene validata prima di aprire il server. SQL resta read-only e viene chiuso
+prima dei download; i trasferimenti sono seriali, con una cache oggetto di
+4 MiB. JSONB è confrontato con i byte ripristinati senza conversioni float.
+
+Fonti live (IPA/OpenBDAP), specifiche e configurazione editoriale, stemmi e
+asset statici pubblicati (compresa la nuova mappa GTFS di main) conservano il
+loro percorso: non sono artifact tabellari del registro da convertire in query
+SQL. Non sono state cambiate route pubbliche, policy, tabelle o dati cloud.
+La modalità normale `npm run dev` continua a funzionare offline con Git.

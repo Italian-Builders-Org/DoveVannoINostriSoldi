@@ -286,6 +286,11 @@ const contentSecurityPolicyReportOnly = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // The local Supabase runtime has its own .next and restored generated tree.
+  // Keep its module resolution inside this checkout, including node_modules.
+  ...(process.env.DVNS_RUNTIME_PROJECT_ROOT
+    ? { turbopack: { root: process.env.DVNS_RUNTIME_PROJECT_ROOT } }
+    : {}),
   poweredByHeader: false,
   reactStrictMode: true,
   allowedDevOrigins: ["localhost", "127.0.0.1"],

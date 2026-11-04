@@ -59,7 +59,7 @@ test("the report-only policy covers current Next and Analytics resources without
     "font-src 'self'",
     "worker-src 'none'",
     "media-src 'none'",
-    "frame-src 'none'",
+    "frame-src 'self'",
   ]) {
     assert.ok(policy.includes(directive), `Direttiva CSP mancante: ${directive}`);
   }

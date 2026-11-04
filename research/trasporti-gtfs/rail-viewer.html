@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Il ritardo dei treni · DVNS</title>
+    <style>
+      /*__RAIL_STYLE__*/
+    </style>
+  </head>
+  <body>
+    <header class="mast">
+      <span class="brand">DVNS <span>/ MOBILITÀ</span></span>
+      <nav aria-label="Esplora mobilità">
+        <!--__MAP_LINK__--><span aria-current="page">Treni</span>
+      </nav>
+    </header>
+    <main>
+      <div class="heading">
+        <h1>Il ritardo, fermata per fermata.</h1>
+        <p>Rilevazioni salvate, non dati in diretta.</p>
+      </div>
+      <div class="toolbar">
+        <label for="rail-train"
+          >Corsa<select id="rail-train" aria-label="Corsa ferroviaria"></select
+        ></label>
+        <div id="rail-date" class="rail-date"></div>
+        <button id="rail-export" disabled>↓ CSV</button>
+      </div>
+      <p id="rail-status" role="status" hidden></p>
+      <div id="rail-content" hidden>
+        <div class="route-heading">
+          <h2 id="rail-route"></h2>
+          <span id="rail-coverage"></span>
+        </div>
+        <div class="metrics">
+          <section>
+            <h3>Arrivo</h3>
+            <p id="rail-arrival"></p>
+          </section>
+          <section>
+            <h3>Ritardo massimo</h3>
+            <p id="rail-peak"></p>
+          </section>
+          <section>
+            <h3>Maggiore aumento</h3>
+            <p id="rail-increase"></p>
+            <span id="rail-increase-leg"></span>
+          </section>
+        </div>
+        <section class="history-panel" id="rail-history" hidden>
+          <div class="events-heading">
+            <h2 id="rail-history-title">Lo stesso treno, giorno per giorno</h2>
+          </div>
+          <p class="method-note" id="rail-history-note"></p>
+          <div class="table-scroll">
+            <table class="heatmap" id="rail-heatmap"></table>
+          </div>
+          <div class="heat-legend" aria-hidden="true">
+            <span><i style="--c: #a6c9b6"></i>in anticipo</span
+            ><span><i style="--c: #e6e9ea"></i>0–2 min</span
+            ><span><i style="--c: #efcd78"></i>3–5</span
+            ><span><i style="--c: #e98f3a"></i>6–10</span
+            ><span><i style="--c: #c54028"></i>11–20</span
+            ><span><i style="--c: #7a1626"></i>oltre 20</span
+            ><span><i class="none"></i>non rilevato</span>
+          </div>
+        </section>
+        <section class="chart-panel">
+          <h2>Ritardo lungo il percorso</h2>
+          <div id="rail-chart"></div>
+        </section>
+        <section class="events-panel">
+          <div class="events-heading"><h2>Passaggi alle fermate</h2></div>
+          <p class="method-note">
+            Variazioni fra passaggi, soste comprese. Non indicano le cause.
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fermata</th>
+                  <th>Programmato</th>
+                  <th>Rilevato</th>
+                  <th>Ritardo</th>
+                  <th>Variazione</th>
+                </tr>
+              </thead>
+              <tbody id="rail-rows"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="context-panel" id="rail-context">
+          <h2>Il quadro nazionale</h2>
+          <p class="method-note" id="rail-context-note"></p>
+          <div id="rail-context-bars" class="context-bars"></div>
+          <p class="context-source" id="rail-context-source"></p>
+        </section>
+        <section class="source">
+          <h2>Fonte e metodo</h2>
+          <p>
+            <a id="rail-source" target="_blank" rel="noopener noreferrer"
+              >ViaggiaTreno · scheda della corsa ↗</a
+            >
+          </p>
+          <p id="rail-acquired"></p>
+          <details>
+            <summary>Come leggere questi dati</summary>
+            <div>
+              <p>
+                Il ritardo confronta il passaggio rilevato con quello
+                programmato. La variazione confronta due passaggi consecutivi:
+                può includere la sosta nella fermata precedente.
+              </p>
+              <p>
+                Le previsioni non sono passaggi osservati. Un dato assente resta
+                vuoto e interrompe il confronto. Una corsa non dimostra una
+                tendenza; le cause non sono disponibili in questi dati.
+              </p>
+              <p id="rail-digest"></p>
+            </div>
+          </details>
+        </section>
+      </div>
+    </main>
+    <script id="rail-data" type="application/json">
+      /*__RAIL_DATA__*/
+    </script>
+    <script>
+      /*__RAIL_SCRIPT__*/
+    </script>
+  </body>
+</html>

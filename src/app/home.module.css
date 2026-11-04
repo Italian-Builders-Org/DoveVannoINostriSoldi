@@ -97,11 +97,12 @@
 
 .mapGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
+  align-items: stretch;
 }
 
 .mapCard {
@@ -109,6 +110,7 @@
   grid-template-rows: auto auto 1fr auto;
   gap: var(--space-3);
   height: 100%;
+  align-content: start;
   min-height: 14rem;
   min-width: 0;
   padding: var(--space-5) var(--space-5) var(--space-4);
@@ -922,6 +924,10 @@
 @media (min-width: 720px) and (max-width: 1099px) {
   .mapGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mapGrid > li:last-child {
+    grid-column: 1 / -1;
   }
 
   .primaryGrid,

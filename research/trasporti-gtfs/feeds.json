@@ -1,0 +1,1878 @@
+[
+  {
+    "id": "milano",
+    "name": "Milano",
+    "holder": "Comune di Milano / AMAT, servizio ATM",
+    "landingUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "url": "https://dati.comune.milano.it/gtfs.zip",
+    "license": "CC-BY (versione non specificata nel campo dataset)",
+    "licenseUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "cadence": "quindicinale, secondo il catalogo",
+    "focus": [
+      9.19,
+      45.465
+    ],
+    "mapBounds": [
+      9.12,
+      45.425,
+      9.26,
+      45.51
+    ],
+    "mode": "tram"
+  },
+  {
+    "id": "roma",
+    "name": "Roma",
+    "holder": "Roma Servizi per la Mobilità",
+    "landingUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "cadence": "quasi quotidiana, secondo il titolare",
+    "focus": [
+      12.476,
+      41.887
+    ],
+    "mapBounds": [
+      12.43,
+      41.855,
+      12.53,
+      41.93
+    ],
+    "mode": "tram",
+    "publicationVerdict": "RESTRICTED"
+  },
+  {
+    "id": "torino",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [
+      7.685,
+      45.069
+    ],
+    "mapBounds": [
+      7.61,
+      45.01,
+      7.76,
+      45.13
+    ],
+    "mode": "tram"
+  },
+  {
+    "id": "firenze",
+    "name": "Firenze",
+    "holder": "Regione Toscana / GEST",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/1f62d551-65f4-49f8-9a99-e19b02077be3",
+    "mode": "tram",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      11.25,
+      43.773
+    ],
+    "mapBounds": [
+      11.17,
+      43.735,
+      11.31,
+      43.81
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/1f62d551-65f4-49f8-9a99-e19b02077be3/download/gest.gtfs"
+  },
+  {
+    "id": "bologna",
+    "name": "Bologna",
+    "holder": "TPER S.p.A.",
+    "landingUrl": "https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsbo&source=",
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11",
+      "700",
+      "701",
+      "702",
+      "703",
+      "704",
+      "705",
+      "706",
+      "707",
+      "708",
+      "709",
+      "710",
+      "711",
+      "712",
+      "713",
+      "714",
+      "715",
+      "716",
+      "800"
+    ],
+    "license": "CC-BY 3.0 Italia",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "cadence": null,
+    "focus": [
+      11.343,
+      44.495
+    ],
+    "mapBounds": [
+      11.28,
+      44.45,
+      11.41,
+      44.54
+    ],
+    "studyBounds": [
+      11.2,
+      44.4,
+      11.48,
+      44.58
+    ],
+    "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsbo&format=zip&source=solweb.tper.it&version=20261027"
+  },
+  {
+    "id": "bari",
+    "name": "Bari",
+    "holder": "AMTAB S.p.A.",
+    "landingUrl": "https://www.amtab.it/it/openmobilitydata",
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11",
+      "700",
+      "800"
+    ],
+    "license": "not-declared",
+    "licenseUrl": "https://www.amtab.it/it/openmobilitydata",
+    "cadence": null,
+    "focus": [
+      16.869,
+      41.12
+    ],
+    "mapBounds": [
+      16.81,
+      41.08,
+      16.94,
+      41.15
+    ],
+    "studyBounds": [
+      16.73,
+      41.03,
+      16.99,
+      41.19
+    ],
+    "url": "https://www.amtabservizio.it/gtfs/google_transit.zip",
+    "publicationVerdict": "RESTRICTED"
+  },
+  {
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11",
+      "700",
+      "701",
+      "702",
+      "703",
+      "704",
+      "705",
+      "706",
+      "707",
+      "708",
+      "709",
+      "710",
+      "711",
+      "712",
+      "713",
+      "714",
+      "715",
+      "716",
+      "800"
+    ],
+    "cadence": null,
+    "id": "cagliari",
+    "name": "Cagliari",
+    "holder": "CTM S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-ctm",
+    "url": "https://flashnetctm.miz.it/download/gtfs/estrazione_gtfs.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [
+      9.12,
+      39.227
+    ],
+    "mapBounds": [
+      9.08,
+      39.19,
+      9.17,
+      39.27
+    ],
+    "studyBounds": [
+      9.03,
+      39.17,
+      9.26,
+      39.31
+    ]
+  },
+  {
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11",
+      "700",
+      "701",
+      "702",
+      "703",
+      "704",
+      "705",
+      "706",
+      "707",
+      "708",
+      "709",
+      "710",
+      "711",
+      "712",
+      "713",
+      "714",
+      "715",
+      "716",
+      "800"
+    ],
+    "cadence": null,
+    "id": "venezia",
+    "name": "Venezia",
+    "holder": "ACTV S.p.A. / AVM",
+    "landingUrl": "https://actv.avmspa.it/en/node/3969",
+    "url": "https://actv.avmspa.it/sites/default/files/attachments/opendata/automobilistico/actv_aut.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://actv.avmspa.it/en/node/3969",
+    "focus": [
+      12.245,
+      45.49
+    ],
+    "mapBounds": [
+      12.18,
+      45.44,
+      12.32,
+      45.55
+    ],
+    "studyBounds": [
+      12.05,
+      45.35,
+      12.43,
+      45.65
+    ],
+    "scopeLabel": "Rete automobilistica · Mestre e Venezia",
+    "publicationVerdict": "UNKNOWN"
+  },
+  {
+    "id": "palermo",
+    "name": "Palermo",
+    "holder": "AMAT Palermo S.p.A. / Comune di Palermo",
+    "landingUrl": "https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783",
+    "url": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+    "license": "CC BY-SA 4.0 (tram); geometrie OSM sotto ODbL",
+    "licenseUrl": "https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783",
+    "cadence": "bimestrale, secondo il catalogo",
+    "mode": "tram",
+    "focus": [
+      13.339,
+      38.115
+    ],
+    "mapBounds": [
+      13.29,
+      38.075,
+      13.385,
+      38.155
+    ],
+    "sourceNotes": [
+      "Nel file indicato dal portale come ultima versione sono utilizzabili TRAM1, TRAM2 e TRAM3. TRAM4 è esclusa per geometrie non utilizzabili. Il catalogo descrive un periodo precedente; la data mostrata segue il calendario del file. Autobus esclusi."
+    ],
+    "initialView": "network"
+  },
+  {
+    "id": "padova",
+    "name": "Padova",
+    "holder": "Busitalia Veneto S.p.A.",
+    "landingUrl": "https://gtfs-biv.fsbusitalia.com/",
+    "url": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://gtfs-biv.fsbusitalia.com/",
+    "cadence": "periodico, secondo il titolare",
+    "mode": "tram",
+    "routeTypes": [
+      "3"
+    ],
+    "scopeLabel": "Tram SIR1",
+    "focus": [
+      11.879,
+      45.407
+    ],
+    "mapBounds": [
+      11.85,
+      45.365,
+      11.91,
+      45.445
+    ],
+    "sourceNotes": [
+      "Il file ufficiale TRAM contiene la linea SIR1 “Metro Tram 1”, codificata dal titolare come route_type 3. L’originale è conservato; la rete autobus non è inclusa."
+    ],
+    "initialView": "network",
+    "publicationVerdict": "UNKNOWN"
+  },
+  {
+    "id": "catania",
+    "name": "Catania",
+    "holder": "AMTS Catania S.p.A.",
+    "landingUrl": "https://www.amts.ct.it/open-data",
+    "url": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+    "license": "IODL 2.0",
+    "licenseUrl": "https://www.amts.ct.it/open-data",
+    "cadence": null,
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "focus": [
+      15.079,
+      37.507
+    ],
+    "mapBounds": [
+      15.04,
+      37.47,
+      15.11,
+      37.55
+    ],
+    "studyBounds": [
+      15.0,
+      37.43,
+      15.16,
+      37.6
+    ]
+  },
+  {
+    "id": "milano-metro",
+    "name": "Milano",
+    "holder": "Comune di Milano / AMAT, servizio ATM",
+    "landingUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "url": "https://dati.comune.milano.it/gtfs.zip",
+    "license": "CC-BY (versione non specificata nel campo dataset)",
+    "licenseUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "cadence": "quindicinale, secondo il catalogo",
+    "focus": [
+      9.19,
+      45.465
+    ],
+    "mapBounds": [
+      9.12,
+      45.425,
+      9.26,
+      45.51
+    ],
+    "mode": "metro",
+    "areaId": "milano",
+    "archiveId": "milano",
+    "mapId": "milano",
+    "routeTypes": [
+      "1"
+    ]
+  },
+  {
+    "id": "milano-bus",
+    "name": "Milano",
+    "holder": "Comune di Milano / AMAT, servizio ATM",
+    "landingUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "url": "https://dati.comune.milano.it/gtfs.zip",
+    "license": "CC-BY (versione non specificata nel campo dataset)",
+    "licenseUrl": "https://dati.comune.milano.it/dataset/ds929-orari-del-trasporto-pubblico-locale-nel-comune-di-milano-in-formato-gtfs",
+    "cadence": "quindicinale, secondo il catalogo",
+    "focus": [
+      9.19,
+      45.465
+    ],
+    "mapBounds": [
+      9.12,
+      45.425,
+      9.26,
+      45.51
+    ],
+    "mode": "bus",
+    "areaId": "milano",
+    "archiveId": "milano",
+    "mapId": "milano",
+    "routeTypes": [
+      "3"
+    ],
+    "studyBounds": [
+      9.08,
+      45.39,
+      9.3,
+      45.55
+    ]
+  },
+  {
+    "id": "roma-metro",
+    "name": "Roma",
+    "holder": "Roma Servizi per la Mobilità",
+    "landingUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "cadence": "quasi quotidiana, secondo il titolare",
+    "focus": [
+      12.476,
+      41.887
+    ],
+    "mapBounds": [
+      12.43,
+      41.855,
+      12.53,
+      41.93
+    ],
+    "mode": "metro",
+    "areaId": "roma",
+    "archiveId": "roma",
+    "mapId": "roma",
+    "routeTypes": [
+      "1"
+    ],
+    "publicationVerdict": "RESTRICTED"
+  },
+  {
+    "id": "firenze-treni",
+    "name": "Firenze",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      11.25,
+      43.773
+    ],
+    "mapBounds": [
+      11.17,
+      43.735,
+      11.31,
+      43.81
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "firenze",
+    "archiveId": "toscana-treni",
+    "mapId": "firenze",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "studyBounds": [
+      11.05,
+      43.65,
+      11.4,
+      43.88
+    ],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area fiorentina",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "pisa",
+    "name": "Pisa",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      10.401,
+      43.711
+    ],
+    "mapBounds": [
+      10.33,
+      43.66,
+      10.46,
+      43.77
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "pisa",
+    "archiveId": "toscana-treni",
+    "mapId": "pisa",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "studyBounds": [
+      10.28,
+      43.6,
+      10.56,
+      43.86
+    ],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area pisana",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "trento",
+    "name": "Trento",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      11.121,
+      46.069
+    ],
+    "mapBounds": [
+      11.075,
+      46.01,
+      11.165,
+      46.11
+    ],
+    "studyBounds": [
+      11.03,
+      45.99,
+      11.23,
+      46.16
+    ],
+    "scopeLabel": "Rete urbana · area di Trento",
+    "sourceNotes": [
+      "Solo autobus urbani nel perimetro dichiarato; funivia e servizi extraurbani esclusi."
+    ]
+  },
+  {
+    "id": "rovereto",
+    "name": "Rovereto",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      11.04,
+      45.891
+    ],
+    "mapBounds": [
+      11.0,
+      45.86,
+      11.075,
+      45.925
+    ],
+    "studyBounds": [
+      10.97,
+      45.83,
+      11.11,
+      45.95
+    ],
+    "scopeLabel": "Rete urbana · area di Rovereto",
+    "sourceNotes": [
+      "Solo autobus urbani nel perimetro dichiarato; funivia e servizi extraurbani esclusi."
+    ],
+    "archiveId": "trento"
+  },
+  {
+    "id": "ferrara",
+    "name": "Ferrara",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "holder": "TPER S.p.A.",
+    "landingUrl": "https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsfe&source=",
+    "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsfe&format=zip&source=solweb.tper.it&version=20260904",
+    "license": "CC BY 3.0 Italia",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/it/",
+    "cadence": null,
+    "focus": [
+      11.619,
+      44.836
+    ],
+    "mapBounds": [
+      11.56,
+      44.79,
+      11.68,
+      44.88
+    ],
+    "studyBounds": [
+      11.49,
+      44.74,
+      11.76,
+      44.93
+    ],
+    "scopeLabel": "Rete bus · area di Ferrara"
+  },
+  {
+    "id": "torino-metro",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [
+      7.685,
+      45.069
+    ],
+    "mapBounds": [
+      7.61,
+      45.01,
+      7.76,
+      45.13
+    ],
+    "mode": "metro",
+    "areaId": "torino",
+    "archiveId": "torino",
+    "mapId": "torino",
+    "routeTypes": [
+      "1"
+    ]
+  },
+  {
+    "id": "lucca",
+    "name": "Lucca",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      10.503,
+      43.842
+    ],
+    "mapBounds": [
+      10.3,
+      43.75,
+      10.7,
+      43.99
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "lucca",
+    "archiveId": "toscana-treni",
+    "mapId": "lucca-area",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "studyBounds": [
+      10.3,
+      43.75,
+      10.7,
+      43.99
+    ],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area lucchese",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "torino-bus",
+    "name": "Torino",
+    "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+    "landingUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+    "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+    "licenseUrl": "https://www.gtt.to.it/gtt_gtfs_license.html",
+    "cadence": null,
+    "attribution": "Data source: GTT S.p.A. – Gruppo Torinese Trasporti",
+    "attributionUrl": "https://www.gtt.to.it",
+    "focus": [
+      7.685,
+      45.069
+    ],
+    "mapBounds": [
+      7.61,
+      45.01,
+      7.76,
+      45.13
+    ],
+    "mode": "bus",
+    "areaId": "torino",
+    "archiveId": "torino",
+    "mapId": "torino",
+    "routeTypes": [
+      "3"
+    ],
+    "studyBounds": [
+      7.61,
+      45.01,
+      7.76,
+      45.13
+    ],
+    "scopeLabel": "Autobus · area urbana"
+  },
+  {
+    "id": "roma-bus",
+    "name": "Roma",
+    "holder": "Roma Servizi per la Mobilità",
+    "landingUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+    "cadence": "quasi quotidiana, secondo il titolare",
+    "focus": [
+      12.476,
+      41.887
+    ],
+    "mapBounds": [
+      12.43,
+      41.855,
+      12.53,
+      41.93
+    ],
+    "mode": "bus",
+    "areaId": "roma",
+    "archiveId": "roma",
+    "mapId": "roma",
+    "routeTypes": [
+      "3"
+    ],
+    "studyBounds": [
+      12.43,
+      41.855,
+      12.53,
+      41.93
+    ],
+    "scopeLabel": "Autobus · area urbana",
+    "publicationVerdict": "RESTRICTED"
+  },
+  {
+    "id": "prato",
+    "name": "Prato",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      11.097,
+      43.88
+    ],
+    "mapBounds": [
+      10.99,
+      43.83,
+      11.15,
+      43.94
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "prato",
+    "archiveId": "toscana-treni",
+    "mapId": "prato-urbano",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "studyBounds": [
+      10.99,
+      43.83,
+      11.15,
+      43.94
+    ],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area urbana pratese",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "livorno",
+    "name": "Livorno",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "focus": [
+      10.321,
+      43.55
+    ],
+    "mapBounds": [
+      10.25,
+      43.35,
+      10.5,
+      43.68
+    ],
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "areaId": "livorno",
+    "archiveId": "toscana-treni",
+    "mapId": "livorno-area",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "studyBounds": [
+      10.25,
+      43.35,
+      10.5,
+      43.68
+    ],
+    "maxSpeedKmh": 300,
+    "scopeLabel": "Treni regionali · area livornese",
+    "sourceNotes": [
+      "Solo collegamenti regionali del feed Toscana, non tutti i treni. Entrambe le fermate devono rientrare nel perimetro dichiarato. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario; non è una verifica dell’orario oggi in esercizio. Coppie oltre 300 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "venezia-nav",
+    "name": "Venezia",
+    "areaId": "venezia",
+    "archiveId": "venezia-nav",
+    "mapId": "venezia-laguna",
+    "holder": "ACTV S.p.A. / AVM",
+    "landingUrl": "https://actv.avmspa.it/en/node/3969",
+    "url": "https://actv.avmspa.it/sites/default/files/attachments/opendata/navigazione/actv_nav.zip",
+    "mode": "ferry",
+    "license": "not-declared",
+    "licenseUrl": "https://actv.avmspa.it/en/node/3969",
+    "cadence": null,
+    "focus": [
+      12.335,
+      45.438
+    ],
+    "mapBounds": [
+      12.24,
+      45.39,
+      12.44,
+      45.5
+    ],
+    "studyBounds": [
+      12.24,
+      45.39,
+      12.44,
+      45.5
+    ],
+    "routeTypes": [
+      "4"
+    ],
+    "scopeLabel": "Navigazione ACTV · Venezia e isole centrali",
+    "sourceNotes": [
+      "Solo servizio di navigazione ACTV nel perimetro dichiarato. Non include Alilaguna o tutti i collegamenti lagunari. Velocità dagli orari, non velocità misurate sull’acqua.",
+      "Giorno di servizio esplicito: 2 novembre 2026, inizio di validità dell’archivio acquisito. Il file non copre il 30 ottobre delle altre reti."
+    ],
+    "publicationVerdict": "UNKNOWN"
+  },
+  {
+    "id": "sassari",
+    "name": "Sassari",
+    "holder": "ATP Sassari",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-atp-sassari",
+    "url": "https://atpsassari.it/media/files/atpss-gtfs.zip",
+    "mode": "bus",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "cadence": "irregolare, secondo il catalogo",
+    "focus": [
+      8.559,
+      40.727
+    ],
+    "mapBounds": [
+      8.52,
+      40.7,
+      8.59,
+      40.75
+    ],
+    "studyBounds": [
+      8.52,
+      40.7,
+      8.59,
+      40.75
+    ],
+    "routeTypes": [
+      "3"
+    ],
+    "scopeLabel": "Autobus ATP · Sassari centro",
+    "sourceNotes": [
+      "Solo autobus ATP con entrambe le fermate nel perimetro dichiarato. Non comprende i tram ARST né tutti i servizi suburbani."
+    ],
+    "mapId": "sassari-centro"
+  },
+  {
+    "mode": "tram",
+    "routeTypes": [
+      "0"
+    ],
+    "cadence": null,
+    "id": "cagliari-tram",
+    "name": "Cagliari",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [
+      9.12,
+      39.227
+    ],
+    "mapBounds": [
+      9.08,
+      39.19,
+      9.17,
+      39.27
+    ],
+    "studyBounds": [
+      9.08,
+      39.19,
+      9.17,
+      39.27
+    ],
+    "areaId": "cagliari",
+    "archiveId": "arst",
+    "mapId": "cagliari",
+    "scopeLabel": "Tram ARST · Cagliari centro",
+    "sourceNotes": [
+      "Solo linee tram ARST (route_type 0) con entrambe le fermate nel perimetro dichiarato. Non comprende tutta la rete regionale né i treni ARST."
+    ]
+  },
+  {
+    "id": "olbia",
+    "name": "Olbia",
+    "holder": "ASPO S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-aspo",
+    "url": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "cadence": "irregolare, secondo il catalogo",
+    "focus": [
+      9.5,
+      40.923
+    ],
+    "mapBounds": [
+      9.46,
+      40.88,
+      9.56,
+      40.96
+    ],
+    "studyBounds": [
+      9.46,
+      40.88,
+      9.56,
+      40.96
+    ],
+    "scopeLabel": "Autobus ASPO · area urbana di Olbia",
+    "sourceNotes": [
+      "Solo autobus ASPO con entrambe le fermate nel perimetro dichiarato; copertura parziale delle linee periferiche."
+    ]
+  },
+  {
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "cadence": null,
+    "id": "sassari-treni",
+    "name": "Sassari",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [
+      8.559,
+      40.727
+    ],
+    "mapBounds": [
+      8.52,
+      40.7,
+      8.59,
+      40.75
+    ],
+    "studyBounds": [
+      8.52,
+      40.7,
+      8.59,
+      40.75
+    ],
+    "areaId": "sassari",
+    "archiveId": "arst",
+    "mapId": "sassari-centro",
+    "scopeLabel": "Treni ARST · Sassari centro",
+    "sourceNotes": [
+      "Solo tratte ferroviarie ARST con entrambe le fermate nel perimetro di Sassari centro. Le linee per Alghero e Sorso proseguono oltre il perimetro: questa non è la rete regionale completa."
+    ]
+  },
+  {
+    "id": "nuoro",
+    "name": "Nuoro",
+    "holder": "ATP Nuoro / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-atp-nuoro",
+    "url": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "cadence": "irregolare, secondo il catalogo",
+    "focus": [
+      9.329,
+      40.321
+    ],
+    "mapBounds": [
+      9.28,
+      40.29,
+      9.37,
+      40.36
+    ],
+    "studyBounds": [
+      9.28,
+      40.29,
+      9.37,
+      40.36
+    ],
+    "scopeLabel": "Autobus ATP · area urbana di Nuoro",
+    "sourceNotes": [
+      "Solo coppie di fermate adiacenti nel perimetro dichiarato. Non comprende tutta la rete provinciale né misure di ritardo reale."
+    ]
+  },
+  {
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "cadence": null,
+    "id": "nuoro-treni",
+    "name": "Nuoro",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "focus": [
+      9.329,
+      40.321
+    ],
+    "mapBounds": [
+      9.28,
+      40.29,
+      9.37,
+      40.36
+    ],
+    "studyBounds": [
+      9.28,
+      40.29,
+      9.37,
+      40.36
+    ],
+    "areaId": "nuoro",
+    "archiveId": "arst",
+    "mapId": "nuoro",
+    "scopeLabel": "Treni ARST · Nuoro–Pratosardo",
+    "sourceNotes": [
+      "Solo coppie di fermate ferroviarie ARST con entrambe le fermate nel perimetro dichiarato. Non comprende tutta la linea Macomer–Nuoro."
+    ]
+  },
+  {
+    "id": "verona-bolzano-av",
+    "viewWidthMetres": 160000,
+    "name": "Verona–Bolzano",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "areaType": "corridor",
+    "holder": "STA / Open Data Hub Alto Adige",
+    "landingUrl": "https://gtfs.api.opendatahub.com/v1/dataset",
+    "url": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+    "license": "CC0 1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "cadence": null,
+    "archiveId": "sta",
+    "focus": [
+      11.12,
+      46.0
+    ],
+    "mapBounds": [
+      10.7,
+      45.35,
+      11.6,
+      46.6
+    ],
+    "mapId": "verona-bolzano-overview",
+    "mapDetail": "overview",
+    "initialView": "network",
+    "tripNumbers": [
+      "8509",
+      "8519"
+    ],
+    "routeLabel": "trip",
+    "maxSpeedKmh": 350,
+    "scopeLabel": "FR 8509 e 8519 · Verona–Bolzano",
+    "sourceNotes": [
+      "Solo i tratti Verona–Bolzano dei FR 8509 e 8519 del 2 novembre 2026. Le corse complete collegano Sibari e Bolzano. Dove la shape GTFS non passa entro 100 m dalle stazioni, il percorso è ricostruito sui binari OpenStreetMap; i tratti senza un percorso plausibile restano esclusi.",
+      "Cartografia di contesto semplificata: autostrade, strade principali e centri abitati. Il percorso ferroviario proviene dal GTFS.",
+      "Gli orari GTFS possono differire da quelli ViaggiaTreno: questa mappa non calcola ritardi. La vista Treni mostra rilevazioni lungo la corsa completa e usa il programma della stessa fonte."
+    ],
+    "derivedGeometry": "osm-rail",
+    "railId": "verona-bolzano",
+    "railBounds": [
+      10.7,
+      45.35,
+      11.6,
+      46.6
+    ]
+  },
+  {
+    "name": "Trento",
+    "holder": "Trentino Trasporti S.p.A.",
+    "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      11.121,
+      46.069
+    ],
+    "mapBounds": [
+      11.075,
+      46.01,
+      11.165,
+      46.11
+    ],
+    "studyBounds": [
+      11.03,
+      45.99,
+      11.23,
+      46.16
+    ],
+    "id": "trento-treni",
+    "areaId": "trento",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "mapId": "trento",
+    "archiveId": "trento-extra",
+    "url": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+    "scopeLabel": "Trento–Malè–Mezzana · area di Trento",
+    "sourceNotes": [
+      "Solo coppie di fermate ferroviarie nel perimetro dichiarato dell’area di Trento. Non rappresenta l’intera linea fino a Mezzana.",
+      "Il feed non ha shape utilizzabili per la ferrovia: il percorso fra stazioni consecutive è ricostruito sui binari OpenStreetMap (anche a scartamento ridotto), entro 300 m dalle stazioni e con deviazione massima 1,6×. Nessuna retta inventata."
+    ],
+    "derivedGeometry": "osm-rail",
+    "railId": "trentino",
+    "railBounds": [
+      10.6,
+      45.95,
+      11.25,
+      46.4
+    ]
+  },
+  {
+    "id": "napoli-metro",
+    "name": "Napoli",
+    "areaId": "napoli",
+    "archiveId": "anm",
+    "mapId": "napoli",
+    "mode": "metro",
+    "routeTypes": [
+      "1"
+    ],
+    "holder": "ANM – Azienda Napoletana Mobilità S.p.A.",
+    "landingUrl": "https://mobilitydatabase.org/feeds/gtfs/mdb-893",
+    "url": "https://www.anm.it/google/google-transit.zip",
+    "allowedRedirectHosts": [
+      "anmspa.file.force.com"
+    ],
+    "license": "not-declared",
+    "licenseUrl": "https://www.anm.it/",
+    "cadence": null,
+    "focus": [
+      14.25,
+      40.848
+    ],
+    "mapBounds": [
+      14.17,
+      40.81,
+      14.33,
+      40.895
+    ],
+    "studyBounds": [
+      14.12,
+      40.79,
+      14.36,
+      40.92
+    ],
+    "scopeLabel": "Metro ANM · linee 1, 2 e 6",
+    "sourceNotes": [
+      "Il feed ANM contiene anche la Linea 2 con agenzia Trenitalia. Il sito del gestore non dichiara una licenza: condizioni di riuso da verificare prima della pubblicazione.",
+      "Il file è scaricato dall'indirizzo ANM che reindirizza al deposito file del gestore (anmspa.file.force.com), dichiarato nel registro."
+    ]
+  },
+  {
+    "id": "napoli-tram",
+    "name": "Napoli",
+    "areaId": "napoli",
+    "archiveId": "anm",
+    "mapId": "napoli",
+    "mode": "tram",
+    "routeTypes": [
+      "0"
+    ],
+    "holder": "ANM – Azienda Napoletana Mobilità S.p.A.",
+    "landingUrl": "https://mobilitydatabase.org/feeds/gtfs/mdb-893",
+    "url": "https://www.anm.it/google/google-transit.zip",
+    "allowedRedirectHosts": [
+      "anmspa.file.force.com"
+    ],
+    "license": "not-declared",
+    "licenseUrl": "https://www.anm.it/",
+    "cadence": null,
+    "focus": [
+      14.26,
+      40.848
+    ],
+    "mapBounds": [
+      14.17,
+      40.81,
+      14.33,
+      40.895
+    ],
+    "studyBounds": [
+      14.12,
+      40.79,
+      14.36,
+      40.92
+    ],
+    "scopeLabel": "Tram ANM",
+    "sourceNotes": [
+      "Condizioni di riuso del feed ANM da verificare prima della pubblicazione."
+    ]
+  },
+  {
+    "id": "napoli-funicolari",
+    "name": "Napoli",
+    "areaId": "napoli",
+    "archiveId": "anm",
+    "mapId": "napoli",
+    "mode": "funicular",
+    "routeTypes": [
+      "7"
+    ],
+    "holder": "ANM – Azienda Napoletana Mobilità S.p.A.",
+    "landingUrl": "https://mobilitydatabase.org/feeds/gtfs/mdb-893",
+    "url": "https://www.anm.it/google/google-transit.zip",
+    "allowedRedirectHosts": [
+      "anmspa.file.force.com"
+    ],
+    "license": "not-declared",
+    "licenseUrl": "https://www.anm.it/",
+    "cadence": null,
+    "focus": [
+      14.235,
+      40.84
+    ],
+    "mapBounds": [
+      14.17,
+      40.81,
+      14.33,
+      40.895
+    ],
+    "studyBounds": [
+      14.12,
+      40.79,
+      14.36,
+      40.92
+    ],
+    "maxSpeedKmh": 60,
+    "scopeLabel": "Funicolari ANM",
+    "initialView": "network",
+    "sourceNotes": [
+      "Funicolari: percorsi brevi e ripidi, la velocità per chilometro non è paragonabile a quella di un autobus.",
+      "Condizioni di riuso del feed ANM da verificare prima della pubblicazione."
+    ]
+  },
+  {
+    "id": "napoli-bus",
+    "name": "Napoli",
+    "areaId": "napoli",
+    "archiveId": "anm",
+    "mapId": "napoli",
+    "mode": "bus",
+    "routeTypes": [
+      "3",
+      "11"
+    ],
+    "holder": "ANM – Azienda Napoletana Mobilità S.p.A.",
+    "landingUrl": "https://mobilitydatabase.org/feeds/gtfs/mdb-893",
+    "url": "https://www.anm.it/google/google-transit.zip",
+    "allowedRedirectHosts": [
+      "anmspa.file.force.com"
+    ],
+    "license": "not-declared",
+    "licenseUrl": "https://www.anm.it/",
+    "cadence": null,
+    "focus": [
+      14.25,
+      40.848
+    ],
+    "mapBounds": [
+      14.17,
+      40.81,
+      14.33,
+      40.895
+    ],
+    "studyBounds": [
+      14.12,
+      40.79,
+      14.36,
+      40.92
+    ],
+    "scopeLabel": "Autobus e filobus ANM",
+    "sourceNotes": [
+      "Autobus (route_type 3) e filobus (11). Condizioni di riuso del feed ANM da verificare prima della pubblicazione."
+    ]
+  },
+  {
+    "id": "napoli-treni",
+    "name": "Napoli",
+    "areaId": "napoli",
+    "archiveId": "eav",
+    "mapId": "napoli",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "holder": "EAV S.r.l. – Divisione Ferrovia",
+    "landingUrl": "https://www.eavsrl.it/",
+    "url": "https://www.wimob.it/cfile/download.php?file=google-transit.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://www.eavsrl.it/",
+    "cadence": null,
+    "focus": [
+      14.27,
+      40.845
+    ],
+    "mapBounds": [
+      14.17,
+      40.81,
+      14.33,
+      40.895
+    ],
+    "studyBounds": [
+      14.0,
+      40.7,
+      14.55,
+      40.96
+    ],
+    "routeLabel": "long",
+    "maxSpeedKmh": 200,
+    "initialView": "network",
+    "scopeLabel": "Circumvesuviana, Cumana, Circumflegrea · area napoletana",
+    "sourceNotes": [
+      "Ferrovie EAV con entrambe le fermate nel perimetro dichiarato dell'area napoletana. La cartografia OSM copre solo il centro: fuori dall'estratto i binari sono disegnati senza strade.",
+      "Feed pubblicato su wimob.it per EAV; licenza non dichiarata, da verificare prima della pubblicazione.",
+      "Il feed EAV non ha shape per i treni: il percorso fra stazioni consecutive è ricostruito sui binari OpenStreetMap, entro 300 m dalle stazioni e con deviazione massima 1,6×. Le coppie senza percorso plausibile restano escluse e contate."
+    ],
+    "derivedGeometry": "osm-rail",
+    "railId": "campania",
+    "railBounds": [
+      13.95,
+      40.6,
+      14.6,
+      41.0
+    ]
+  },
+  {
+    "id": "genova-metro",
+    "name": "Genova",
+    "areaId": "genova",
+    "archiveId": "liguria-amt",
+    "mapId": "genova",
+    "mode": "metro",
+    "routeTypes": [
+      "1"
+    ],
+    "holder": "AMT Genova S.p.A. / Regione Liguria",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=servizio-pianificato-amt-genova-s-p-a-servizio-urbano-del-comune-di-ge",
+    "url": "https://srvcarto.regione.liguria.it/dtuff/download_statico/opendata/trasporti/GTFS/GTFS-IT-ITC3-AMT-20260618-20260807-pf.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      8.93,
+      44.412
+    ],
+    "mapBounds": [
+      8.86,
+      44.39,
+      9.0,
+      44.45
+    ],
+    "studyBounds": [
+      8.75,
+      44.38,
+      9.03,
+      44.48
+    ],
+    "scopeLabel": "Metropolitana AMT",
+    "sourceNotes": [
+      "Archivio Regione Liguria valido dal 18 giugno al 7 agosto 2026: il giorno di servizio esplicito è il 15 luglio 2026, non lo stesso delle altre città.",
+      "Il feed del Comune/AMT non contiene shapes.txt; questa versione regionale sì."
+    ]
+  },
+  {
+    "id": "genova-funicolari",
+    "name": "Genova",
+    "areaId": "genova",
+    "archiveId": "liguria-amt",
+    "mapId": "genova",
+    "mode": "funicular",
+    "routeTypes": [
+      "7",
+      "6"
+    ],
+    "holder": "AMT Genova S.p.A. / Regione Liguria",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=servizio-pianificato-amt-genova-s-p-a-servizio-urbano-del-comune-di-ge",
+    "url": "https://srvcarto.regione.liguria.it/dtuff/download_statico/opendata/trasporti/GTFS/GTFS-IT-ITC3-AMT-20260618-20260807-pf.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      8.93,
+      44.415
+    ],
+    "mapBounds": [
+      8.86,
+      44.39,
+      9.0,
+      44.45
+    ],
+    "studyBounds": [
+      8.75,
+      44.38,
+      9.03,
+      44.48
+    ],
+    "initialView": "network",
+    "maxSpeedKmh": 60,
+    "scopeLabel": "Funicolari, cremagliera e ascensori AMT",
+    "sourceNotes": [
+      "Funicolari e cremagliera (route_type 7) e ascensori pubblici (6). Percorsi brevi e ripidi: non confrontarli con gli autobus.",
+      "Giorno di servizio esplicito: 15 luglio 2026, entro la validità dell'archivio regionale."
+    ]
+  },
+  {
+    "id": "genova-bus",
+    "name": "Genova",
+    "areaId": "genova",
+    "archiveId": "liguria-amt",
+    "mapId": "genova",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "holder": "AMT Genova S.p.A. / Regione Liguria",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=servizio-pianificato-amt-genova-s-p-a-servizio-urbano-del-comune-di-ge",
+    "url": "https://srvcarto.regione.liguria.it/dtuff/download_statico/opendata/trasporti/GTFS/GTFS-IT-ITC3-AMT-20260618-20260807-pf.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      8.93,
+      44.412
+    ],
+    "mapBounds": [
+      8.86,
+      44.39,
+      9.0,
+      44.45
+    ],
+    "studyBounds": [
+      8.75,
+      44.38,
+      9.03,
+      44.48
+    ],
+    "scopeLabel": "Autobus AMT · area centrale",
+    "sourceNotes": [
+      "Giorno di servizio esplicito: 15 luglio 2026 (orario estivo), entro la validità dell'archivio regionale."
+    ]
+  },
+  {
+    "id": "genova-treni",
+    "name": "Genova",
+    "areaId": "genova",
+    "archiveId": "liguria-trenitalia",
+    "mapId": "genova",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "holder": "Trenitalia S.p.A. / Regione Liguria",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=dati-servizio-pianificato-trenitalia-s-p-a",
+    "url": "https://srvcarto.regione.liguria.it/dtuff/download_statico/opendata/trasporti/GTFS/GTFS-IT-ITC3-TRENITALIA-20260614-20261212-pf.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      8.92,
+      44.415
+    ],
+    "mapBounds": [
+      8.86,
+      44.39,
+      9.0,
+      44.45
+    ],
+    "studyBounds": [
+      8.6,
+      44.33,
+      9.25,
+      44.5
+    ],
+    "routeLabel": "long",
+    "maxSpeedKmh": 300,
+    "initialView": "network",
+    "scopeLabel": "Treni Trenitalia · nodo di Genova",
+    "sourceNotes": [
+      "Treni Trenitalia che attraversano la Liguria, con entrambe le fermate nel perimetro del nodo genovese. Coppie oltre 300 km/h escluse."
+    ]
+  },
+  {
+    "id": "italia-treni",
+    "name": "Italia",
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "areaType": "corridor",
+    "archiveId": "liguria-trenitalia",
+    "mapId": "italia-national",
+    "mapDetail": "national",
+    "viewWidthMetres": 1100000,
+    "initialView": "network",
+    "holder": "Trenitalia S.p.A. / Regione Liguria",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=dati-servizio-pianificato-trenitalia-s-p-a",
+    "url": "https://srvcarto.regione.liguria.it/dtuff/download_statico/opendata/trasporti/GTFS/GTFS-IT-ITC3-TRENITALIA-20260614-20261212-pf.zip",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      10.6,
+      43.3
+    ],
+    "mapBounds": [
+      6.6,
+      37.9,
+      16.2,
+      46.6
+    ],
+    "routeLabel": "long",
+    "maxSpeedKmh": 320,
+    "scopeLabel": "Treni Trenitalia che passano per la Liguria · percorso completo",
+    "sourceNotes": [
+      "Non è la rete ferroviaria nazionale: sono tutte le corse Trenitalia che toccano la Liguria (regionali, Intercity, Frecce, Eurocity), con il loro percorso completo fino a Torino, Milano, Roma, Napoli e oltre. Le altre linee italiane mancano.",
+      "Cartografia di contesto semplificata: autostrade e città. I percorsi vengono dal GTFS regionale.",
+      "Coppie oltre 320 km/h escluse come controllo di plausibilità."
+    ]
+  },
+  {
+    "id": "perugia",
+    "name": "Perugia",
+    "mode": "metro",
+    "routeTypes": [
+      "0"
+    ],
+    "archiveId": "busitalia-umbria",
+    "mapId": "perugia",
+    "holder": "Busitalia – Sita Nord S.r.l. (Umbria)",
+    "landingUrl": "https://gtfs.fsbusitalia.com/",
+    "url": "https://gtfs.fsbusitalia.com/google_transit.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://www.fsbusitalia.it/",
+    "cadence": null,
+    "focus": [
+      12.385,
+      43.105
+    ],
+    "mapBounds": [
+      12.34,
+      43.08,
+      12.42,
+      43.13
+    ],
+    "studyBounds": [
+      12.3,
+      43.05,
+      12.45,
+      43.15
+    ],
+    "initialView": "network",
+    "scopeLabel": "Minimetrò",
+    "sourceNotes": [
+      "Il Minimetrò è pubblicato come route_type 0 nel feed Busitalia Umbria; qui è mostrato come metro leggera. Licenza non dichiarata, da verificare prima della pubblicazione."
+    ],
+    "publicationVerdict": "UNKNOWN"
+  },
+  {
+    "id": "perugia-bus",
+    "name": "Perugia",
+    "areaId": "perugia",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "archiveId": "busitalia-umbria",
+    "mapId": "perugia",
+    "holder": "Busitalia – Sita Nord S.r.l. (Umbria)",
+    "landingUrl": "https://gtfs.fsbusitalia.com/",
+    "url": "https://gtfs.fsbusitalia.com/google_transit.zip",
+    "license": "not-declared",
+    "licenseUrl": "https://www.fsbusitalia.it/",
+    "cadence": null,
+    "focus": [
+      12.385,
+      43.105
+    ],
+    "mapBounds": [
+      12.34,
+      43.08,
+      12.42,
+      43.13
+    ],
+    "studyBounds": [
+      12.3,
+      43.05,
+      12.45,
+      43.15
+    ],
+    "scopeLabel": "Autobus urbani · area di Perugia",
+    "sourceNotes": [
+      "Solo coppie di fermate nel perimetro dichiarato; il feed copre tutta l'Umbria. Licenza non dichiarata, da verificare."
+    ],
+    "publicationVerdict": "UNKNOWN"
+  },
+  {
+    "id": "messina",
+    "name": "Messina",
+    "mode": "bus",
+    "routeTypes": [
+      "3"
+    ],
+    "archiveId": "atm-messina",
+    "mapId": "messina",
+    "holder": "ATM Messina S.p.A.",
+    "landingUrl": "https://www.dati.gov.it/view-dataset/dataset?id=dati-trasporto-pubblico-urbano-atm-gtfs",
+    "url": "https://www.atmmessinaspa.it/GTFS/GTFS_ATM_SPA.zip",
+    "license": "CC BY 4.0 (catalogo dati.gov.it, Comune di Messina)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "focus": [
+      15.555,
+      38.19
+    ],
+    "mapBounds": [
+      15.5,
+      38.13,
+      15.6,
+      38.25
+    ],
+    "studyBounds": [
+      15.45,
+      38.05,
+      15.65,
+      38.3
+    ],
+    "scopeLabel": "Autobus ATM",
+    "sourceNotes": [
+      "Il feed contiene solo autobus: il tram di Messina non è pubblicato nel GTFS acquisito."
+    ]
+  },
+  {
+    "id": "milano-treni",
+    "name": "Milano",
+    "areaId": "milano",
+    "mapId": "milano",
+    "holder": "Trenord S.r.l. / Regione Lombardia",
+    "landingUrl": "https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9",
+    "url": "https://www.dati.lombardia.it/download/3z4k-mxz9/application/zip",
+    "license": "CC BY 4.0 (catalogo dati.gov.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "archiveId": "trenord",
+    "routeLabel": "short",
+    "maxSpeedKmh": 200,
+    "derivedGeometry": "osm-rail",
+    "railId": "lombardia",
+    "railBounds": [
+      8.4,
+      44.25,
+      10.9,
+      46.25
+    ],
+    "focus": [
+      9.19,
+      45.47
+    ],
+    "mapBounds": [
+      9.12,
+      45.425,
+      9.26,
+      45.51
+    ],
+    "studyBounds": [
+      8.95,
+      45.33,
+      9.45,
+      45.65
+    ],
+    "initialView": "network",
+    "scopeLabel": "Treni Trenord · area milanese",
+    "sourceNotes": [
+      "Solo coppie di stazioni Trenord nel perimetro dell'area milanese. Il passante e le linee suburbane sono inclusi se presenti nel feed regionale.",
+      "Il feed Trenord non contiene shapes.txt. Il percorso fra due stazioni consecutive è ricostruito sui binari OpenStreetMap (ODbL) con il cammino più breve: solo se entrambe le stazioni distano meno di 300 m da un binario e il percorso non supera 1,6 volte la distanza in linea d'aria più 300 m. Le altre coppie restano escluse e contate; nessuna retta è disegnata."
+    ]
+  },
+  {
+    "id": "lombardia-treni",
+    "name": "Lombardia",
+    "areaType": "corridor",
+    "mapId": "lombardia-overview",
+    "mapDetail": "overview",
+    "viewWidthMetres": 220000,
+    "initialView": "network",
+    "holder": "Trenord S.r.l. / Regione Lombardia",
+    "landingUrl": "https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9",
+    "url": "https://www.dati.lombardia.it/download/3z4k-mxz9/application/zip",
+    "license": "CC BY 4.0 (catalogo dati.gov.it)",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "cadence": null,
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "archiveId": "trenord",
+    "routeLabel": "short",
+    "maxSpeedKmh": 200,
+    "derivedGeometry": "osm-rail",
+    "railId": "lombardia",
+    "railBounds": [
+      8.4,
+      44.25,
+      10.9,
+      46.25
+    ],
+    "focus": [
+      9.6,
+      45.55
+    ],
+    "mapBounds": [
+      8.4,
+      44.25,
+      10.9,
+      46.25
+    ],
+    "scopeLabel": "Treni regionali Trenord · tutta la rete",
+    "sourceNotes": [
+      "Tutte le corse Trenord del giorno di servizio, comprese quelle che escono dalla Lombardia.",
+      "Il feed Trenord non contiene shapes.txt. Il percorso fra due stazioni consecutive è ricostruito sui binari OpenStreetMap (ODbL) con il cammino più breve: solo se entrambe le stazioni distano meno di 300 m da un binario e il percorso non supera 1,6 volte la distanza in linea d'aria più 300 m. Le altre coppie restano escluse e contate; nessuna retta è disegnata.",
+      "Cartografia di contesto semplificata: autostrade, strade principali e centri abitati."
+    ]
+  },
+  {
+    "id": "toscana-treni",
+    "name": "Toscana",
+    "holder": "Regione Toscana / Trenitalia S.p.A.",
+    "landingUrl": "https://dati.toscana.it/dataset/rt-oraritb/resource/4f85393b-357d-443d-8378-65de4198505f",
+    "mode": "train",
+    "license": "CC-BY (versione non specificata nel catalogo)",
+    "licenseUrl": "https://dati.toscana.it/dataset/rt-oraritb",
+    "cadence": "in continuo aggiornamento, secondo il catalogo",
+    "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+    "archiveId": "toscana-treni",
+    "routeTypes": [
+      "2"
+    ],
+    "routeLabel": "long",
+    "maxSpeedKmh": 300,
+    "areaType": "corridor",
+    "mapId": "toscana-overview",
+    "mapDetail": "overview",
+    "viewWidthMetres": 240000,
+    "initialView": "network",
+    "focus": [
+      11.0,
+      43.45
+    ],
+    "mapBounds": [
+      9.6,
+      42.3,
+      12.4,
+      44.5
+    ],
+    "scopeLabel": "Treni regionali Trenitalia · tutta la Toscana",
+    "sourceNotes": [
+      "Tutte le corse regionali del feed Toscana nel giorno di servizio, comprese le tratte che escono dalla regione. Il file acquisito è datato gennaio 2026: il servizio di ottobre è previsto dal suo calendario.",
+      "Cartografia di contesto semplificata: autostrade, strade principali e centri abitati."
+    ]
+  },
+  {
+    "mode": "train",
+    "routeTypes": [
+      "2"
+    ],
+    "cadence": null,
+    "id": "sardegna-treni",
+    "name": "Sardegna",
+    "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+    "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+    "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+    "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+    "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+    "archiveId": "arst",
+    "areaType": "corridor",
+    "mapId": "sardegna-overview",
+    "mapDetail": "overview",
+    "viewWidthMetres": 200000,
+    "initialView": "network",
+    "focus": [
+      9.0,
+      40.1
+    ],
+    "mapBounds": [
+      8.1,
+      38.85,
+      9.85,
+      41.3
+    ],
+    "scopeLabel": "Ferrovie ARST · tutta la rete del feed",
+    "sourceNotes": [
+      "Tutte le corse ferroviarie ARST del giorno di servizio presenti nel feed regionale, senza perimetro urbano.",
+      "Cartografia di contesto semplificata: autostrade, strade principali e centri abitati."
+    ]
+  }
+]

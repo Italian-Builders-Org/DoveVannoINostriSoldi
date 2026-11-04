@@ -185,3 +185,32 @@ Verifica finale in `artifacts/supabase/verification-after-resize.json`, log
 DB finale circa 8,82 GB, scrivibile; Infrastructure circa 10,94 GB occupati su
 24 GB inclusi WAL e sistema. Documenti 595, file archiviati 10.022, zero mancanti.
 I reader del sito e le API pubbliche restano quelli precedenti.
+
+## Sito locale con lettura PostgreSQL
+
+`npm run dev:supabase -- --hostname 127.0.0.1 --port 43174` abilita
+`DVNS_DATA_BACKEND=supabase` soltanto per quel processo. Richiede
+`DVNS_DATABASE_URL` nel file `.env.local` ignorato da Git. Da un worktree usare
+`DVNS_ENV_FILE=/percorso/del/checkout/originale/.env.local`, senza copiare segreti.
+`npm run dev` conserva il backend filesystem; non è stato cambiato il deploy.
+
+Le righe del corpus (113 dataset, `/dati`, `/api/dati` e tutti i selector che
+passano da `integrated-sources`) arrivano da `dvns_corpus.rows`. Catalogo e prove
+di rilascio rimangono fissati alla revisione locale. Gli snapshot tematici
+importati direttamente come JSON hanno lettori separati e restano locali.
+
+Il reader usa due connessioni al massimo, transazioni READ ONLY, timeout SQL
+10 s e deadline 15 s; nessun grant pubblico e nessuna scrittura. Ogni chunk
+legge al massimo 1.000 righe tramite PK (snapshot, dataset, ordinale numerico),
+oltre a una query della ricevuta verificata. Conserva limiti di scansione,
+cursori e filtri del selector pubblico. Non aggiunge cache di risultati o
+prefetch; non legge tutti gli 8 milioni di record per una visita. Le chiavi
+rimangono server-only. I byte JSON canonici sono ricompressi con il formato gzip
+del contratto sorgente (level 9, mtime 0, OS 255) e confrontati con SHA-256 del
+chunk nella prova locale: DB divergente/incompleto o runtime di compressione
+incompatibile → errore, mai fallback silenzioso ai file o successo in cache.
+
+La modalità locale usa la credenziale server già configurata, con transazioni
+esplicitamente read-only: il Session pooler non applica necessariamente le
+opzioni di sessione inviate nello startup packet. Un eventuale deploy richiede
+un riesame separato di ruolo SQL dedicato, capacità e budget di richieste.

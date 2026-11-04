@@ -295,6 +295,16 @@ async function readDatasetChunk(
   const expectedHash = bundle.datasetProof.artifactSha256[artifactKey];
   if (!expectedHash) throw new Error(`Chunk righe non allowlisted per ${dataset.id}.`);
 
+  const backend = process.env.DVNS_DATA_BACKEND ?? "filesystem";
+  if (backend === "supabase") {
+    const { readDatabaseChunk } = await import("@/lib/integrated-supabase-reader");
+    const loaded = await readDatabaseChunk(bundle, dataset, ordinal, expectedHash, signal);
+    completedChunkLoads += 1;
+    maxObservedChunkRawBytes = Math.max(maxObservedChunkRawBytes, loaded.uncompressedBytes);
+    return loaded;
+  }
+  if (backend !== "filesystem") throw new Error("Backend dati DVNS non valido.");
+
   const compressed = await readRegular(
     artifactPath,
     `Chunk ${ordinal} del dataset ${dataset.id}`,

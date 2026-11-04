@@ -60,7 +60,8 @@
     "test:browser:mobilita": "node scripts/browser/mobilita.mjs",
     "test:browser:pensioni": "node scripts/browser/pensioni.mjs",
     "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs",
-    "test:browser:documenti": "node scripts/browser/documenti.mjs"
+    "test:browser:documenti": "node scripts/browser/documenti.mjs",
+    "dev:supabase": "node scripts/dev-supabase.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.5",
@@ -70,6 +71,7 @@
     "mammoth": "1.13.0",
     "next": "16.3.8",
     "pdfjs-dist": "6.4.299",
+    "postgres": "4.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-is": "19.3.0",

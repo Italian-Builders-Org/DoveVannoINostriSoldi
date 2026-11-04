@@ -1,13 +1,13 @@
 # Import DVNS in Supabase
 
-## Stato verificato prima della ripresa programmata
+## Stato finale verificato — 4 novembre 2026
 
 - Base dati: c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53, origine main invariata all'ultimo fetch.
 - Catalogo: 135 dataset. Snapshot JSON: 595/595 riletti con confronto esatto dei valori.
 - Inventario: 10.022 file, 2.172.701.189 byte logici; tutti associati a ricevute Storage.
 - Recupero completo da Storage: PASS, 10.022/10.022 file con byte e SHA-256 identici; bucket privato. 1.008 oggetti, 2.221.325.784 byte fisici inclusi oggetti intermedi conservati.
-- Stato corrente DB: scrivibile, 82.136.211 byte. Righe corpus materializzate: 0; ricevute dataset SQL: 0, dopo la pulizia per spazio. Non confondere gli 8.047.880 record attesi con record già presenti.
-- Da completare: resize al target autorizzato di 24 GB dopo il cooldown e import integrale 113 dataset / 8.047.880 righe. Seguito attivo in questa chat, id `completa-import-dvns-su-supabase`, senza notifiche a stato invariato.
+- Stato finale DB: scrivibile, 8.818.928.787 byte. Corpus: 113 dataset / 8.047.880 righe effettive, tutti riletti integralmente con conteggi e SHA-256 identici alle ricevute sorgente. Checkpoint: 8.119 / 8.047.880 righe. Gli import precedenti erano stati ripuliti; questi conteggi appartengono alla nuova esecuzione completa dopo resize.
+- Resize gp3 24 GB completato dopo il cooldown, compute Nano invariato. Infrastructure finale: circa 10,94 GB occupati su 24 GB (DB 8 GB, WAL 3 GB, sistema 285,5 MB; metriche arrotondate e asincrone). Import completato; seguito `completa-import-dvns-su-supabase` eliminato dopo la verifica finale.
 - Il sito e i suoi reader non sono stati cambiati. Nessuna PR aperta, nessun push, merge o deploy.
 
 - Obiettivo: catalogare il corpus e predisporre import fedele e privato nel progetto scelto `zvqhikeylxynsljwgosc` (fps26-preferiresti).
@@ -135,3 +135,17 @@ Artifact (ignorati da Git, ripetibili):
 - artifacts/supabase/security-advisors.json: soli avvisi relativi a DVNS.
 
 Le quattro migrazioni sono state create inizialmente tramite CLI e i nomi file locali sono stati allineati alle versioni realmente registrate da apply_migration: 20261103200131, 20261103201945, 20261103211714, 20261103213217. I vecchi timestamp citati nelle sezioni storiche sono quelli del bootstrap locale, non file da riapplicare.
+
+## Ripresa dopo resize — 4 novembre 2026
+
+- Checklist prima della ripresa: pipeline d95e5ec1c060df8cbd97254d309525d70f4ef643, base dati c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53. Atteso: 113 dataset / 8.047.880 righe, digest integrali ricalcolati dalla rilettura DB, nessuna modifica ad altri servizi.
+- Cooldown terminato; applicato soltanto target disco gp3 24 GB autorizzato. Infrastructure conferma 24 GB e Nano invariato. Prima dell'import: 2,74 GB occupati (WAL 2,5 GB, sistema 168,4 MB); DB SQL 82.136.211 byte, default_transaction_read_only=off, zero ricevute SQL. Nessun altro importer attivo.
+- Budget conservativo DB 12 GiB (12.884.901.888 byte), metà disco riservata a WAL, temporanei e sistema; batch 5 chunk, singola sessione e lock. Stop su protezione sola lettura o superamento budget; nessuna forzatura dei limiti.
+- Comando: `.venv/bin/python -u scripts/etl/supabase_corpus_import.py --env-file /Users/andreaalbagli/Documents/DVNS/.env.local --batch-chunks 5 --max-database-bytes 12884901888`; log `artifacts/supabase/import-after-resize.jsonl`. Controlli finali previsti: ricevute/digest di tutti i dataset, conteggi effettivi e checkpoint, archivi/documenti, privilegi e stato scrivibile.
+
+## Esito finale dopo resize
+
+- Importer terminato con exit 0, evento complete per 113 dataset. Verifica indipendente `PYTHONPATH=scripts/etl .venv/bin/python artifacts/supabase/verify-after-resize.py`: PASS, exit 0. Confrontati tutte le ricevute/digest sorgente con eventi di rilettura e ricevute SQL; GROUP BY reale delle righe riconcilia ogni dataset. Artifact: `import-after-resize.jsonl`, `verify-after-resize.py`, `verification-after-resize.json`, `disk-24gb-complete.png`.
+- Snapshot `538d9f231e74c9fd977c6fb1c828e03176a558605611e2ffe28dc048ae95ca73`; pipeline d95e5ec1c060df8cbd97254d309525d70f4ef643; base dati c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53. Nessun dataset catalog-only trasformato in righe.
+- 595 documenti e 10.022 file archiviati riconciliati: zero archivi/documenti mancanti. La precedente prova integrale di recupero Storage resta valida: i blob non sono stati modificati durante questo import. Schemi privati, RLS su 9 tabelle, bucket privato: PASS.
+- Nuovo fetch origin/main: c3fa7372 invariato; diff riesaminato, solo importer/migrazioni DVNS, documentazione e test dedicati. 26 test ETL mirati PASS con network guard, Python 3.12.8 (`test-after-resize.log`); diff-check PASS. Suite ETL completa e gate applicativi/UI/build NOT RUN: nessun cambio applicativo o PR richiesta. Nessun push, merge o deploy.

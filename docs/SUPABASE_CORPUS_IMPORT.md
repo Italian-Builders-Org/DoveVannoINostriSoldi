@@ -152,8 +152,10 @@ connessioni. Non si modificano le policy per aggirare il limite.
 L'archivio dei byte e la materializzazione delle righe SQL sono stati distinti:
 una riga in files è un inventario, una riga in blobs attesta l'archiviazione
 verificata, una riga in imports attesta la rilettura completa del dataset SQL.
-Dopo la pulizia per spazio esaurito, imports è vuota: i conteggi dichiarati nel
-catalogo NON significano che le righe siano attualmente materializzate.
+Dopo la pulizia per spazio esaurito, imports era vuota. La nuova esecuzione del
+4 novembre, successiva al resize, ha materializzato e verificato integralmente
+113 dataset / 8.047.880 righe; il catalogo contiene 135 voci, comprese quelle
+che non distribuiscono righe pubbliche.
 
 ## Budget e ripresa del corpus
 
@@ -167,7 +169,8 @@ sulla stessa capacità e non forzare globalmente la modalità scrivibile.
 L'utente ha autorizzato soltanto il target di 24 GB gp3, circa 2 USD/mese di
 solo disco aggiuntivo oltre agli 8 GB inclusi. Nessun cambio compute/piano.
 Al 3 novembre, dopo l'autoscaling della piattaforma il disco risultava 12 GB
-con nuovo cooldown; attendere che la configurazione consenta il resize a 24 GB.
+con nuovo cooldown. Il 4 novembre, terminato il cooldown, è stato applicato e
+verificato il target di 24 GB; Nano è rimasto invariato.
 Dopo verifica effettiva di 24 GB e modalità scrivibile, un budget conservativo
 iniziale per la sola dimensione DB è 12 GiB:
 
@@ -175,8 +178,10 @@ iniziale per la sola dimensione DB è 12 GiB:
 .venv/bin/python -u scripts/etl/supabase_corpus_import.py --env-file /percorso/privato/.env.local --batch-chunks 5 --max-database-bytes 12884901888
 ```
 
-Questo comando completo resta da eseguire dopo l'espansione; non equivale a un
-import già riuscito. Non modificare reader o pubblicare nuove API durante la
-ripresa. Disattivare il seguito programmato soltanto dopo aver verificato
-113 ricevute e 8.047.880 righe rilette, oppure chiedere una decisione se emerge
-un nuovo limite non coperto dall'autorizzazione.
+Il comando è terminato con successo il 4 novembre: 113 ricevute e 8.047.880
+righe rilette integralmente con digest esatti; 8.119 checkpoint riconciliati.
+Verifica finale in `artifacts/supabase/verification-after-resize.json`, log
+`import-after-resize.jsonl`, comando di verifica `verify-after-resize.py`.
+DB finale circa 8,82 GB, scrivibile; Infrastructure circa 10,94 GB occupati su
+24 GB inclusi WAL e sistema. Documenti 595, file archiviati 10.022, zero mancanti.
+I reader del sito e le API pubbliche restano quelli precedenti.

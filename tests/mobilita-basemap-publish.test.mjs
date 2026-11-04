@@ -26,7 +26,10 @@ test("published mobilità city packages embed a verified OSM basemap", () => {
     assert.ok(basemap, `${city.id}: basemap assente`);
     assert.equal(basemap.attribution, "© OpenStreetMap contributors");
     assert.equal(basemap.license, "ODbL 1.0");
-    assert.match(basemap.licenseUrl || "", /openstreetmap\.org\/copyright/);
+    assert.equal(
+      basemap.licenseUrl,
+      "https://www.openstreetmap.org/copyright",
+    );
     assert.ok(basemap.receipt?.sha256, `${city.id}: ricevuta OSM assente`);
     assert.ok(
       Array.isArray(basemap.features) && basemap.features.some((f) => f.kind === "road"),

@@ -85,7 +85,7 @@ test("runtime rejects value, flag, geography, unit and provenance tampering", ()
 test("large snapshot stays out of TypeScript inference and is traced into every server entry point", () => {
   const runtime = readFileSync(new URL("../src/lib/istat-bes-lavoro-snapshot.ts", import.meta.url), "utf8");
   assert.doesNotMatch(runtime, /import dataArtifact from/);
-  assert.match(runtime, /openSync\(join\(process\.cwd\(\), ISTAT_BES_LAVORO_DATA_PATH\)/);
+  assert.match(runtime, /openRegularFileSync\(join\(process\.cwd\(\), ISTAT_BES_LAVORO_DATA_PATH\)/);
 });
 
 test("Next traces the runtime-loaded snapshot into every server entry point", async () => {

@@ -26,3 +26,12 @@
 - Copertura: tutti gli artifact runtime del registro arrivano da Supabase (SQL + Storage), usando una cache immutabile locale verificata prima dell'avvio; le SELECT per ogni grafico non sono state introdotte. Corpus rimane SQL diretto. Dati live, fonti raw di acquisizione, configurazione editoriale e asset statici restano sul loro percorso appropriato.
 
 - Ulteriore caso di sicurezza verificato prima della chiusura: il percorso cache deve risolvere dentro artifacts del checkout, anche con symlink; un argomento errato non può sovrascrivere i generated Git. Ogni avvio usa una directory runtime unica, evitando file di codice obsoleti da run precedenti.
+
+### Follow-up QA — 2026-11-04
+
+- Base `6560acb1`; origin/main checked at `15c9bdc7`. Reproduced `/stato?anno=2025` timeout and embedded-map MutationObserver error in actual IAB.
+- Fixed a demonstrated OpenBDAP request waterfall: required mission CSV now starts immediately after mission discovery, alongside optional companion discovery. Existing page deadline/retries, period validation, monetary reconciliation and provenance unchanged. Regression test failed before fix and passes after; error copy no longer suggests the same failing 2025 release.
+- Evidence `/tmp/dvns-followup-qa/`: checklist, red/green Node logs, typecheck, DOM, console and desktop/mobile screenshots. Browser host `http://127.0.0.1:43174`, viewports1280×900 and390×844. Runtime copied current changed source files; temporary theme/HTML diagnostics removed.
+- Live annual result remains BLOCKED: direct official catalog requests returned0 bytes at20s and8s; Browser annual route still aborts at existing8s budget. No substitute year/data or invented DB snapshot supplied.
+- Map interactions PASS: Metro262 / Tram993 sections, Enter works, parent and iframe mobile390px scrollWidth390. Embedded page still logs MutationObserver error with no source URL/stack. Direct actual viewer URL has no console errors. Temporary app instrumentation proves theme observer receives element(nodeType1) and runs after the initial error; cannot establish throwing observer origin via supported Browser APIs. No speculative map patch or browser-policy workaround applied.
+- Targeted Node and typecheck PASS; full ETL/build/production NOT RUN. No cloud changes, deployment, push or merge.

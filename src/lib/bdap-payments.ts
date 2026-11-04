@@ -869,6 +869,12 @@ export async function getStateSpendingSnapshot(
   options: { year?: number; month?: number; signal?: AbortSignal } = {},
 ): Promise<StateSpendingSnapshot> {
   const missionDataset = await resolveStatePaymentDataset("mission", options);
+  // Start the required CSV immediately: optional catalog searches share the page
+  // deadline and must not consume its entire budget before this fetch begins.
+  // allSettled attaches a rejection handler while companion discovery is pending.
+  const missionRowsPending = Promise.allSettled([
+    fetchDatasetRows(missionDataset, options.signal),
+  ]);
 
   const [administrationDatasetResult, economicDatasetResult] = await Promise.allSettled([
     getCompanionDataset("missionAdministration", missionDataset, options.signal),
@@ -882,14 +888,14 @@ export async function getStateSpendingSnapshot(
   const economicDataset =
     economicDatasetResult.status === "fulfilled" ? economicDatasetResult.value : null;
 
-  const [missionRowsResult, administrationRowsResult, economicRowsResult] = await Promise.allSettled([
-    fetchDatasetRows(missionDataset, options.signal),
+  const [administrationRowsResult, economicRowsResult] = await Promise.allSettled([
     administrationDataset
       ? fetchDatasetRows(administrationDataset, options.signal)
       : Promise.resolve([]),
     economicDataset ? fetchDatasetRows(economicDataset, options.signal) : Promise.resolve([]),
   ]);
 
+  const [missionRowsResult] = await missionRowsPending;
   if (missionRowsResult.status !== "fulfilled") {
     throw missionRowsResult.reason instanceof Error
       ? missionRowsResult.reason

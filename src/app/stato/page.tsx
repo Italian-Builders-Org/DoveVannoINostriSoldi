@@ -478,7 +478,7 @@ export default async function StateSpendingPage({ searchParams }: PageProps) {
           <div className={styles.errorState}>
             <strong>Dati temporaneamente non disponibili.</strong>
             <p>
-              Non siamo riusciti a leggere OpenBDAP. Puoi riprovare più tardi oppure consultare il consuntivo 2025 dal selettore del periodo.
+              Non siamo riusciti a leggere OpenBDAP per il periodo selezionato. Puoi riprovare più tardi o scegliere un altro rilascio dal selettore del periodo.
             </p>
             <details className="data-details">
               <summary>Dettaglio tecnico</summary>

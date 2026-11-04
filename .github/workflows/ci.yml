@@ -24,7 +24,9 @@ jobs:
   static:
     name: static
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    # Checkout with fetch-depth 0 + filter blob:none can take >10m on large trees
+    # before npm ci / typecheck even start; leave room for the rest of ci:static.
+    timeout-minutes: 25
     env:
       PUPPETEER_SKIP_DOWNLOAD: "true"
     steps:
@@ -360,7 +362,9 @@ jobs:
   production-core:
     name: production-core
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    # Checkout of the full tree can exceed 20m on shared runners; #834 cancelled
+    # mid-checkout at 25m before build/gates. Align with production (35) + margin.
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

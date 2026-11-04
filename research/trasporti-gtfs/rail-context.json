@@ -1,0 +1,17 @@
+{
+  "title": "Treni regionali in Italia: ritardi e soppressioni",
+  "publisher": "Autorità di Regolazione dei Trasporti (ART)",
+  "dataset": "Monitoraggio dei ritardi e soppressioni del servizio ferroviario regionale",
+  "landingUrl": "https://bdt.autorita-trasporti.it/catalogo-opendata/dataset/?id=18",
+  "url": "https://bdt.autorita-trasporti.it/wp-content/uploads/dcat/D15-Monitoraggio-dei-ritardi-e-soppressioni-del-servizio-ferroviario-regionale-2023.csv",
+  "license": "CC BY 4.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "acquiredAt": "2026-11-03",
+  "note": "Quota nazionale annua dei treni regionali in ritardo e soppressi, come pubblicata da ART. Non distingue linee, regioni o soglia di ritardo nel file; il file 2024 non era disponibile all'acquisizione.",
+  "rows": [
+    {"year": 2020, "lateShare": 0.0919, "lateTrainKmShare": 0.0977, "cancelledShare": 0.0571, "cancelledTrainKmShare": 0.0374},
+    {"year": 2021, "lateShare": 0.0971, "lateTrainKmShare": 0.1001, "cancelledShare": 0.0375, "cancelledTrainKmShare": 0.0188},
+    {"year": 2022, "lateShare": 0.0982, "lateTrainKmShare": 0.1084, "cancelledShare": 0.0357, "cancelledTrainKmShare": 0.0246},
+    {"year": 2023, "lateShare": 0.1115, "lateTrainKmShare": 0.1207, "cancelledShare": 0.0328, "cancelledTrainKmShare": 0.0213}
+  ]
+}

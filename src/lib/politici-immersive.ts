@@ -2,7 +2,7 @@ import { publicSurfacePath } from "@/lib/snapshot-routing";
 import { COMUNI_HOST } from "@/lib/comuni-host";
 import { POLITICI_HOST } from "@/lib/politici-host";
 
-export type ImmersiveKind = "politici" | "comuni" | "boards";
+export type ImmersiveKind = "politici" | "comuni" | "mobilita" | "boards";
 
 function isBoardsPath(pathname: string): boolean {
   return (
@@ -26,6 +26,7 @@ export function immersiveKind(
   pathname = pathname === null ? null : publicSurfacePath(pathname);
   if (pathname === "/politici" || pathname === "/politici/") return "politici";
   if (pathname === "/comuni" || pathname === "/comuni/") return "comuni";
+  if (pathname === "/mappe/mobilita" || pathname === "/mappe/mobilita/") return "mobilita";
   if (pathname && isBoardsPath(pathname)) return "boards";
   // Proxy rewrites subdomain `/` but the URL bar stays `/`.
   if (hostname === POLITICI_HOST && (pathname === "/" || pathname === "")) return "politici";
@@ -72,6 +73,8 @@ export const IMMERSIVE_INIT_SCRIPT = `(() => {
   } else if (path === "/comuni" || path === "/comuni/" || /^\\/snapshot-pages\\/comuni\\/[A-Za-z0-9_]{1,100}$/.test(path)
     || (host === ${JSON.stringify(COMUNI_HOST)} && path === "/")) {
     document.documentElement.dataset.immersive = "comuni";
+  } else if (path === "/mappe/mobilita" || path === "/mappe/mobilita/") {
+    document.documentElement.dataset.immersive = "mobilita";
   } else if (path === "/dashboard" || path === "/dashboard/" || path.startsWith("/dashboard/")
     || path === "/accedi" || path === "/accedi/" || path.startsWith("/accedi/")
     || path === "/condividi" || path === "/condividi/" || path.startsWith("/condividi/")) {

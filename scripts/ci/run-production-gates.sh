@@ -8,6 +8,8 @@ cd "$(dirname "$0")/../.."
 NEXT_HOST="127.0.0.1"
 NEXT_PORT="${NEXT_PORT:-3000}"
 LOG_FILE="${NEXT_LOG_FILE:-artifacts/production/next.log}"
+# production-core CI job uses timeout-minutes: 40 (checkout alone can take >20m on
+# large trees); build + browser:core + dark core often needs ~18–22 min after that.
 READY_TIMEOUT="${READY_TIMEOUT:-90}"
 READY_PATH="/territori/irpef"
 BASE_URL="http://${NEXT_HOST}:${NEXT_PORT}"
@@ -243,6 +245,10 @@ echo "::endgroup::"
 
 echo "::group::Browser mobilita"
 node scripts/browser/mobilita.mjs
+echo "::endgroup::"
+
+echo "::group::Browser GTFS mobility map"
+node scripts/browser/mappe-mobilita.mjs
 echo "::endgroup::"
 
 echo "::group::Browser chart interactions"

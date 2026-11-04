@@ -24,6 +24,8 @@ export async function createRuntimeView(repository, site, cache) {
     ['data/source-ledger',join(cache,'data/source-ledger')],
     ['node_modules',join(repository,'node_modules')],['public',join(repository,'public')],
     ['scripts',join(repository,'scripts')],
+    // Legacy source manifests imported by application code live outside generated.
+    ['docs',join(repository,'docs')],
   ]) {
     const path=join(site,name);
     if (!await exists(path)) await symlink(target,path,'dir');

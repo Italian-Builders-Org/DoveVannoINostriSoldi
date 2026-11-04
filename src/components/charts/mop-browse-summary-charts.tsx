@@ -59,7 +59,9 @@ function logPercent(value: number, domain: [number, number]): number {
   const end = Math.log10(high);
   if (end <= start) return 100;
   const ratio = (Math.log10(safe) - start) / (end - start);
-  return Math.max(2, Math.min(100, ratio * 100));
+  // CSSOM normalizes long percentages before React hydrates the server HTML.
+  // Keep visual widths stable; the monetary values and accessible labels stay exact.
+  return Number(Math.max(2, Math.min(100, ratio * 100)).toFixed(3));
 }
 
 export function MopBrowseSummaryCharts({

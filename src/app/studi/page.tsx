@@ -42,6 +42,15 @@ export default function StudiesPage() {
         </article>;
       })}
     </section>
+    <section className={styles.section} aria-labelledby="community-drafts-title">
+      <h2 id="community-drafts-title">Bozze della comunità</h2>
+      <article className={styles.card}>
+        <h3><Link href="/studi/rendite-inefficienze">Rendite e inefficienze: casi da verificare</Link></h3>
+        <p><strong>Da verificare · Non è uno studio validato da DVNS.</strong></p>
+        <p>79 domande di indagine e sette proposte di riforma, da un contributo della comunità senza verifica istituzionale. Nessuna stima economica: temi da approfondire, non risultati accertati.</p>
+        <Link href="/studi/rendite-inefficienze">Esplora la bozza e i suoi limiti</Link>
+      </article>
+    </section>
     <aside className={styles.note}>Pubblichiamo studi con una domanda di ricerca, un metodo esplicito, fonti verificabili e materiali riproducibili. La pubblicazione sul sito non equivale a peer review esterna: lo stato della revisione è dichiarato per ciascun lavoro, insieme ai limiti e alle correzioni.</aside>
     <p><Link href="/metodologia">Come leggiamo i dati</Link></p>
   </main>;

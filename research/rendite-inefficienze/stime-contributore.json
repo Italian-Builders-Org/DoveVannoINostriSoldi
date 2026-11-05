@@ -1,0 +1,21 @@
+{
+  "status": "NON VERIFICATO — ipotesi del contributore, non dati DVNS",
+  "unit": "miliardi di euro per anno, come indicati nel contributo; anno base e metodologia mancanti",
+  "warning": "Non sommare. Non importare queste cifre nella pagina pubblica come costi accertati o risparmi recuperabili. Nessuna fonte quantitativa fornita dal contributore.",
+  "ranges": {
+    "taxi": [0.9,1.3], "balneari": [2.6,3.3], "notai": [1.6,2.2], "farmacie": [1.6,3], "tabaccai": [0.25,0.4], "edicole": [0.1,0.2], "autostrade": [1,1.5], "concessioni-gioco": [0.3,0.5], "tv-frequenze": [0.2,0.4], "porti-turistici": [0.3,0.5], "funerari": [0.5,0.8], "ordini": [0.2,0.3], "casse": [0.2,0.4], "siae": [0.2,0.3], "editoria": [0.4,0.6],
+    "aci-pra": [0.45,0.55], "camere": [0.7,0.7], "bollo": [0.2,0.2], "bonifica": [0.2,0.4], "dop-doc": [0.1,0.2], "riciclo": [0.2,0.4], "sport": [0.1,0.2], "caa": [0.1,0.15], "cnel": [0.01,0.05], "fondazioni-bancarie": [0.1,0.3],
+    "terna-snam": [0.8,1.2], "multiutility": [0.3,0.5], "aeroporti": [0.8,1.5], "telecom": [2.5,4], "energia-retail": [4,6], "poste": [3,4], "rai": [0.6,1.2],
+    "banche": [10,17], "assicurazioni": [12,20], "risparmio-gestito": [2,4], "buoni-pasto": [0.2,0.4], "polizze-obbligatorie": [1,2], "bonifici": [3,5], "informazioni-creditizie": [0.4,0.7], "broker": [0.5,1],
+    "commercialisti": [4,7], "patronati": [0.2,0.3], "caf": [0.25,0.4], "agenzie-auto": [0.2,0.3], "geometri": [2,3], "riscossione-locale": [0.3,0.5], "software": [0.3,0.5], "editori-giuridici": [0.2,0.4], "formazione": [2,4], "traduzioni": [0.05,0.1], "immobiliare": [1.5,2.5],
+    "sanita": [17,27], "tpl": [2,4], "partecipate": [3,5], "ater": [1.5,3], "cooperative": [1.5,3], "ristorazione": [0.2,0.4], "pulizie": [0.5,1], "appalti": [6,13], "tributi-locali": [9,15], "difesa": [1.5,3], "rifiuti-speciali": [0.6,1], "npl": [5,8], "catasto": [0.5,1], "agenzie-fiscali": [0.8,1.5], "banca-italia": [0.5,0.7], "vigilanza": [0.05,0.1], "universita": [0.5,1], "mercati": [0.5,1], "tari": [3,5], "cultura": [3.5,6], "rsa": [1,2], "gioco-sociale": [3,5], "editori-scolastici": [0.15,0.25], "uibm": [0.1,0.2],
+    "tempo": [4,6], "pil-mancante": [4,8], "produttivita": [20,40], "digitale": [10,20]
+  },
+  "proposalRanges": {
+    "aci-pra": [0.55,0.7], "camere": [0.7,0.7], "cnel": [0.015,0.015], "patronati-caf": [0.5,0.6], "balneari": [2.5,2.9], "ordini": [0.7,1], "bonifica": [0.2,0.4]
+  },
+  "claimedAggregatesNotValidated": {
+    "groups": [[10,16],[2,3],[13,18],[29,50],[11,19],[62,100]],
+    "direct": [127,206], "systemic": [38,74], "total": [165,280], "priorityProposals": [5,6]
+  }
+}

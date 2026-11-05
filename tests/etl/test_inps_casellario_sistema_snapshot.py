@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -15,10 +16,17 @@ class InpsCasellarioSistemaSnapshotTests(unittest.TestCase):
         check(SPEC, DATA)
 
     def test_rebuild_is_stable(self) -> None:
-        before = DATA.read_bytes()
-        write_outputs(SPEC, DATA)
-        check(SPEC, DATA)
-        self.assertEqual(DATA.read_bytes(), before)
+        spec_before, data_before = SPEC.read_bytes(), DATA.read_bytes()
+        # Rebuild into copies, recording the committed artifact path in the lock:
+        # both the data and the lock must come out byte-identical to the committed ones.
+        with tempfile.TemporaryDirectory() as tmp:
+            spec_copy = Path(tmp) / SPEC.name
+            data_copy = Path(tmp) / DATA.name
+            spec_copy.write_bytes(spec_before)
+            write_outputs(spec_copy, data_copy, artifact_path=DATA.relative_to(ROOT).as_posix())
+            self.assertEqual(data_copy.read_bytes(), data_before)
+            self.assertEqual(spec_copy.read_bytes(), spec_before)
+        self.assertEqual((SPEC.read_bytes(), DATA.read_bytes()), (spec_before, data_before))
 
     def test_tampered_pdf_hash_fails_closed(self) -> None:
         import json

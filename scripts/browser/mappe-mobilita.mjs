@@ -82,6 +82,21 @@ async function selectMilanoNetwork(frame, networkId = "milano") {
   );
 }
 
+async function assertPublishedBasemap(frame) {
+  await frame.waitForFunction(
+    () => {
+      const attribution = document.getElementById("map-attribution");
+      const notice = document.getElementById("notice");
+      if (!attribution || attribution.hidden) return false;
+      if (notice && !notice.hidden && notice.textContent?.includes("Sfondo OSM non incluso")) {
+        return false;
+      }
+      return /OpenStreetMap/i.test(attribution.textContent || "");
+    },
+    { timeout: 30_000 },
+  );
+}
+
 async function assertBasemapNoticeClearsControls(frame) {
   await frame.waitForFunction(
     () => {
@@ -177,6 +192,7 @@ try {
       await page.waitForSelector("#mobilita-viewer");
       const frame = await waitForViewerFrame(page);
       await selectMilanoNetwork(frame, "milano");
+      await assertPublishedBasemap(frame);
       const legend = await frame.$("#legend, .legend, [class*='legend']");
       assert.ok(legend || (await frame.$("canvas")), "mappa o legenda visibile");
       await page.screenshot({
@@ -194,13 +210,14 @@ try {
   for (const width of [1280, 1024, 768, 390, 320]) {
     await runScenario(browser, {
       suite: "mappe-mobilita",
-      label: `Avviso basemap vs controlli ${width}px`,
+      label: `Basemap OSM e controlli ${width}px`,
       pathname: "/mappe/mobilita",
       width,
       readySelector: "#mobilita-viewer",
       async validate(page) {
         const frame = await waitForViewerFrame(page);
         await selectMilanoNetwork(frame, "milano");
+        await assertPublishedBasemap(frame);
         await assertBasemapNoticeClearsControls(frame);
       },
     });

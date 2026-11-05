@@ -1,8 +1,8 @@
 # Stato del prototipo mobilità
 
-Aggiornato il 3 novembre 2026 (iterazione 15). Branch: `codex/gtfs-grandi-citta`.
-Il confronto con main aggiunge soltanto `research/trasporti-gtfs/`.
-Non è un rilascio del sito pubblico; le preview Vercel del branch restano disabilitate.
+Aggiornato il 4 novembre 2026. Explorer pubblico in
+`public/mappe/mobilita/explorer/` ripubblicato con basemap OSM verificati per
+tutte le reti (stessi segmenti GTFS; solo cartografia di fondo ripristinata).
 
 ## Che cosa funziona
 

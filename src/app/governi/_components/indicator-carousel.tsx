@@ -129,16 +129,10 @@ function IndicatorChart({
     }
   };
 
-  const summaries = visibleSeries.map((series) => {
-    const first = series.points[0];
-    const last = series.points.at(-1);
-    return {
-      ...series,
-      first,
-      last,
-      change: last && last.period_start > (first?.period_start ?? "") ? getGovernmentChartSelection(series.points, last.period).change : null,
-    };
-  });
+  const summaries = visibleSeries.map((series) => ({
+    ...series,
+    change: getGovernmentChartSelection(series.points, series.points.at(-1)?.period ?? null).change,
+  }));
   const selections = visibleSeries.map((series) => ({
     ...series,
     ...getGovernmentChartSelection(series.points, activePeriod),

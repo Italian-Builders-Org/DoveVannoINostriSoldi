@@ -5,7 +5,10 @@ import pageSpec from "../../scripts/etl/specs/government-scorecard-page.source.j
 
 import annualSnapshot from "@/data/generated/government-scorecard.json";
 import { GOVERNMENT_SCORECARD_V6_MANIFEST } from "@/lib/data/government-scorecard-contract";
-import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import {
+  getGovernmentScorecardV6SupplementalSnapshot,
+  type GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS,
+} from "@/lib/data/government-scorecard-page-contract";
 import {
   GOVERNMENT_SCORECARD_V6_CHRONOLOGY,
   GOVERNMENT_SCORECARD_V6_REGISTRY,
@@ -390,7 +393,9 @@ export function buildGovernmentScorecardV6Input(id: GovernmentScorecardV6Governm
   };
 }
 
-const CHART_COPY = {
+type ChartCopy = Readonly<{ question: string; unit: string; note?: string }>;
+
+const CHART_COPY: Readonly<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], ChartCopy>> = {
   inflation: {
     question: "Come si è mossa l'inflazione nei quattro paesi?",
     unit: "% annuo",
@@ -440,7 +445,7 @@ const CHART_COPY = {
     question: "Come sono cambiati gli investimenti rispetto al PIL?",
     unit: "% del PIL",
   },
-} as const;
+};
 
 const CHART_COUNTRY_LABELS = {
   IT: "Italia",
@@ -514,7 +519,7 @@ function buildTimeSeriesCharts(
           indicator.usage === "score_and_context"
             ? "Le linee uniscono soltanto periodi disponibili e non creano dati intermedi. Questa serie fa parte dei sei indicatori annuali del voto."
             : "Le linee uniscono solo i periodi disponibili. Stime, dati provvisori, interruzioni, definizioni diverse o bassa affidabilità sono indicati accanto al numero.",
-          "note" in CHART_COPY[indicator.indicator_id] ? (CHART_COPY[indicator.indicator_id] as { note: string }).note : "",
+          CHART_COPY[indicator.indicator_id].note,
         ].filter(Boolean).join(" "),
         source: {
           owner: firstPoint.source_owner,

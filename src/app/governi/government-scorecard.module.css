@@ -422,6 +422,8 @@
 }
 
 .contextHistory table {
+  /* The caption takes the table width: without it, it wraps at the width of two short columns. */
+  width: min(100%, 360px);
   margin-block-start: 0.5rem;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;

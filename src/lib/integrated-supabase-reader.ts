@@ -31,7 +31,7 @@ export function databaseConnectionUrl(value = process.env.DVNS_DATABASE_URL): st
   }
 }
 
-function database() {
+export function database() {
   // One small pool per server module, not per request. No credentials in errors/debug.
   pool ??= postgres(databaseConnectionUrl(), {
     max: 2, max_pipeline: 1, prepare: false, fetch_types: false,

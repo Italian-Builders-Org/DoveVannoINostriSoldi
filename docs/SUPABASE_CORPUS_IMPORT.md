@@ -276,3 +276,19 @@ rispettivi lettori. La build e la preview vanno verificate seguendo
 accesso in sola lettura agli schemi DVNS e aggiungerlo alla validazione
 della stringa di connessione. Il collaudo locale usa la credenziale già
 configurata.
+
+### Blocchi ANAC e dispositivi medici nell'archivio privato
+
+Il profilo sperimentale `DVNS_HEAVY_DATA_BACKEND=supabase` usa le ricevute
+di `dvns_snapshots.blobs` per leggere intervalli di byte da Supabase Storage.
+Richiede `DVNS_DATABASE_URL` e `DVNS_SUPABASE_SECRET_KEY` lato server.
+Conserva i manifest locali e verifica lo SHA-256 di ogni blocco utilizzato.
+Una richiesta per l'indice medico legge i blocchi di dettaglio o aggregazione
+necessari. Il file di ricerca da circa 26 MiB rimane locale per evitare di
+scaricarlo interamente al primo accesso di ogni processo.
+
+Per ANAC, una scheda legge ancora la partizione del riepilogo e i blocchi delle
+aggiudicazioni richieste. La ricerca per ID tramite un indice SQL è un
+intervento distinto. Il profilo riduce i pacchetti Next e aggiunge richieste
+di rete sul percorso a freddo. La preview va collaudata con credenziali
+dedicate e misure di latenza, CPU e traffico Storage prima dell'attivazione.

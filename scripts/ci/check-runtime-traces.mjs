@@ -234,18 +234,24 @@ export function checkRuntimeTraces(root = process.cwd()) {
     [...requirements.get("dati/[dataset]/page.js.nft.json")]);
   const corpusRows = "src/data/generated/integrated/rows/";
   const supabaseBuild = process.env.DVNS_DATA_BACKEND === "supabase";
-  if (supabaseBuild) {
+  const archiveBuild = process.env.DVNS_HEAVY_DATA_BACKEND === "supabase";
+  const archivePayload = (file) => archiveBuild && (
+    file.startsWith(`${history}/`) && /(?:\.jsonl\.gz|\.pack)$/.test(file)
+    || /^src\/data\/generated\/medical-device-spending-index\/(?:aggregates\.json|details\.jsonl)\.gz$/.test(file)
+  );
+  const omitted = (file) => supabaseBuild && file.startsWith(corpusRows) || archivePayload(file);
+  if (supabaseBuild || archiveBuild) {
     for (const [route, files] of requirements) {
-      const kept = files.filter((file) => !file.startsWith(corpusRows));
-      if (kept.length !== files.length) {
+      const kept = files.filter((file) => !omitted(file));
+      if (supabaseBuild && files.some((file) => file.startsWith(corpusRows))) {
         kept.push("src/data/supabase-chunk-digests.json");
-        requirements.set(route, kept);
       }
+      requirements.set(route, kept);
     }
     for (const manifest of walk(resolve(root, ".next")).filter((path) => path.endsWith(".nft.json"))) {
       const { files } = JSON.parse(readFileSync(manifest, "utf8"));
-      if (files.some((file) => relative(root, resolve(dirname(manifest), file)).replaceAll("\\", "/").startsWith(corpusRows))) {
-        throw new Error(`Supabase build traces filesystem corpus rows: ${relative(root, manifest)}`);
+      if (files.some((file) => omitted(relative(root, resolve(dirname(manifest), file)).replaceAll("\\", "/")))) {
+        throw new Error(`Supabase build traces omitted filesystem data: ${relative(root, manifest)}`);
       }
     }
   }

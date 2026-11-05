@@ -1,7 +1,5 @@
 import "server-only";
 import postgres from "postgres";
-import { gzip } from "node:zlib";
-import { promisify } from "node:util";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
@@ -11,7 +9,8 @@ import {
 } from "@/lib/integrated-source-contract";
 import type { IntegratedSourceBundle } from "@/lib/integrated-sources";
 
-const compress = promisify(gzip);
+type ChunkProofs = Record<string, readonly [rawSha256: string, compressedBytes: number]>;
+let chunkProofs: Promise<ChunkProofs> | undefined;
 type DatabaseRow = { ordinal: string; payload: unknown };
 let pool: ReturnType<typeof postgres> | undefined;
 let snapshot: Promise<string> | undefined;
@@ -53,13 +52,13 @@ export async function validateDatabaseChunk(
   const rows = assertIntegratedDatasetChunk(dataset, ordinal, records.map((row) => row.payload));
   const raw = Buffer.from(rows.map((row) => `${canonicalJson(row)}\n`).join(""));
   if (raw.length > INTEGRATED_ROW_CHUNK_MAX_RAW_BYTES) throw new Error("Chunk PostgreSQL DVNS oltre il limite byte.");
-  // The source contract fixes level=9, mtime=0 and OS=255. Reconstructing that
-  // member verifies DB cells against the existing release proof without trusting
-  // a mutable per-row checksum or reading the original chunk from disk.
-  const compressed = await compress(raw, { level: 9 });
-  compressed[9] = 255;
-  if (sha256Hex(compressed) !== expectedHash) throw new Error("Payload PostgreSQL DVNS divergente dalla prova di rilascio.");
-  return { ordinal, rows, compressedBytes: compressed.length, uncompressedBytes: raw.length };
+  // The committed proof links the published gzip hash to its decompressed bytes.
+  // Recompressing here would depend on the runtime's zlib implementation.
+  chunkProofs ??= readFile(join(process.cwd(), "src/data/supabase-chunk-digests.json"), "utf8")
+    .then((manifest): ChunkProofs => JSON.parse(manifest));
+  const proof = (await chunkProofs)[expectedHash];
+  if (!proof || sha256Hex(raw) !== proof[0]) throw new Error("Payload PostgreSQL DVNS divergente dalla prova di rilascio.");
+  return { ordinal, rows, compressedBytes: proof[1], uncompressedBytes: raw.length };
 }
 
 export async function readDatabaseChunk(

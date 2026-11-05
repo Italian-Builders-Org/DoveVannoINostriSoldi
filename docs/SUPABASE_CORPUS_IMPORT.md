@@ -205,10 +205,14 @@ legge al massimo 1.000 righe tramite PK (snapshot, dataset, ordinale numerico),
 oltre a una query della ricevuta verificata. Conserva limiti di scansione,
 cursori e filtri del selector pubblico. Non aggiunge cache di risultati o
 prefetch; non legge tutti gli 8 milioni di record per una visita. Le chiavi
-rimangono server-only. I byte JSON canonici sono ricompressi con il formato gzip
-del contratto sorgente (level 9, mtime 0, OS 255) e confrontati con SHA-256 del
-chunk nella prova locale: DB divergente/incompleto o runtime di compressione
-incompatibile → errore, mai fallback silenzioso ai file o successo in cache.
+rimangono server-only. Il reader confronta lo SHA-256 del JSON canonico
+delle righe con il digest dei byte decompressi nel manifest versionato
+`src/data/supabase-chunk-digests.json`. La chiave del manifest è l'hash
+del gzip già vincolato dalla prova di rilascio. Il generatore
+`python3 scripts/etl/supabase_chunk_digests.py` verifica la prova e gli
+hash dei gzip prima di decomprimerli. Usare `--check` per verificare il
+manifest senza riscriverlo. Una prova mancante o righe divergenti producono
+un errore di lettura.
 
 La modalità locale usa la credenziale server già configurata, con transazioni
 esplicitamente read-only: il Session pooler non applica necessariamente le

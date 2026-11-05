@@ -92,6 +92,9 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /MAP_DESTINATIONS/);
   assert.match(page, /Mappa dei Comuni/);
   assert.match(page, /Mappa della politica/);
+  assert.match(page, /Mappa della mobilità/);
+  assert.match(page, /Tre viste immersive/);
+  assert.match(page, /MOBILITA_MAP_PATH/);
   assert.match(page, /mapsSection/);
   assert.match(page, /maps-title[\s\S]*?Mappe/);
   assert.match(page, /home-boards-entry/);

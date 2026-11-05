@@ -37,7 +37,7 @@ import {
   settledNationalPerCapita,
   settledTotalPaid,
 } from "@/lib/siope-snapshot";
-import { PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
+import { MOBILITA_MAP_PATH, PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -87,6 +87,12 @@ const MAP_DESTINATIONS: readonly Destination[] = [
     href: PUBLIC_COMUNI_URL,
     title: "Mappa dei Comuni",
     description: "Impronta finanziaria SIOPE: confronta ogni Comune con i territori simili.",
+  },
+  {
+    href: MOBILITA_MAP_PATH,
+    title: "Mappa della mobilità",
+    description:
+      "Velocità programmate di bus, tram, metro e treni nelle grandi città, dai feed GTFS ufficiali.",
   },
 ];
 
@@ -243,7 +249,7 @@ export default async function HomePage({
             Mappe
           </h2>
           <p className={styles.mapsLead}>
-            Due viste immersive: istituzioni e Comuni, senza il menu del sito.
+            Tre viste immersive: istituzioni, Comuni e mobilità, senza il menu del sito.
           </p>
         </div>
         <ul className={styles.mapGrid} aria-label="Mappe immersive">

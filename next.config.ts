@@ -282,7 +282,7 @@ const contentSecurityPolicyReportOnly = [
   "manifest-src 'self'",
   "worker-src 'none'",
   "media-src 'none'",
-  "frame-src 'none'",
+  "frame-src 'self'",
 ].join("; ");
 
 const nextConfig: NextConfig = {

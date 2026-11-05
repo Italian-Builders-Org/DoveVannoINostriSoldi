@@ -285,7 +285,14 @@ const contentSecurityPolicyReportOnly = [
   "frame-src 'self'",
 ].join("; ");
 
+const supabaseBuild = process.env.DVNS_DATA_BACKEND === "supabase";
+if (supabaseBuild && !process.env.DVNS_DATABASE_URL) {
+  throw new Error("DVNS_DATABASE_URL is required for a Supabase build.");
+}
+
 const nextConfig: NextConfig = {
+  // Bind the backend to the build when the filesystem rows are omitted.
+  ...(supabaseBuild ? { env: { DVNS_BUILD_DATA_BACKEND: "supabase" } } : {}),
   // The local Supabase runtime has its own .next and restored generated tree.
   // Keep its module resolution inside this checkout, including node_modules.
   ...(process.env.DVNS_RUNTIME_PROJECT_ROOT
@@ -314,7 +321,11 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
-    "/*": ["data/source-ledger/elements/**/*", "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"],
+    "/*": [
+      "data/source-ledger/elements/**/*",
+      "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      ...(supabaseBuild ? allIntegratedRowRuntimeFiles : []),
+    ],
     // contains:true also matches descendants. !(/**) keeps each hub exact;
     // the procurement, structure and cached procurement routes do not read childcare.
     "/app/enti!(/**)": childcareRuntimeFiles,
@@ -584,5 +595,13 @@ const nextConfig: NextConfig = {
     ],
   },
 };
+
+if (supabaseBuild) {
+  for (const [route, files] of Object.entries(nextConfig.outputFileTracingIncludes ?? {})) {
+    nextConfig.outputFileTracingIncludes![route] = files.filter(
+      (file) => !file.startsWith("src/data/generated/integrated/rows/"),
+    );
+  }
+}
 
 export default nextConfig;

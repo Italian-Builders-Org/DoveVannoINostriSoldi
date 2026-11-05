@@ -259,3 +259,20 @@ asset statici pubblicati (compresa la nuova mappa GTFS di main) conservano il
 loro percorso: non sono artifact tabellari del registro da convertire in query
 SQL. Non sono state cambiate route pubbliche, policy, tabelle o dati cloud.
 La modalità normale `npm run dev` continua a funzionare offline con Git.
+
+### Build senza i chunk del corpus
+
+Impostare `DVNS_DATA_BACKEND=supabase` e `DVNS_DATABASE_URL` lato server
+nell'ambiente di build e di esecuzione. Il profilo fissa il backend SQL nella
+build ed esclude i gzip delle righe dai pacchetti tracciati. Il gate delle
+tracce richiede il manifest dei digest sulle route del corpus e rifiuta
+qualsiasi riferimento ai gzip esclusi. Per tornare al backend filesystem
+serve una nuova build con il profilo predefinito.
+
+La riduzione riguarda i pacchetti server prodotti da Next, mentre il checkout
+Git contiene ancora i dati sorgente e i JSON tematici continuano a usare i
+rispettivi lettori. La build e la preview vanno verificate seguendo
+[la procedura di approvazione](DEPLOYMENT_APPROVAL.md). Prima di attivare una preview, predisporre un ruolo SQL dedicato con
+accesso in sola lettura agli schemi DVNS e aggiungerlo alla validazione
+della stringa di connessione. Il collaudo locale usa la credenziale già
+configurata.

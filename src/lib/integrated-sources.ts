@@ -295,7 +295,7 @@ async function readDatasetChunk(
   const expectedHash = bundle.datasetProof.artifactSha256[artifactKey];
   if (!expectedHash) throw new Error(`Chunk righe non allowlisted per ${dataset.id}.`);
 
-  const backend = process.env.DVNS_DATA_BACKEND ?? "filesystem";
+  const backend = process.env.DVNS_BUILD_DATA_BACKEND ?? process.env.DVNS_DATA_BACKEND ?? "filesystem";
   if (backend === "supabase") {
     const { readDatabaseChunk } = await import("@/lib/integrated-supabase-reader");
     const loaded = await readDatabaseChunk(bundle, dataset, ordinal, expectedHash, signal);

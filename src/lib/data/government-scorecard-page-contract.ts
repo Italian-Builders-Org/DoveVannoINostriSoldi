@@ -1,11 +1,17 @@
 import { createHash } from "node:crypto";
+import { join } from "node:path";
 
 import { z } from "zod";
 
 import pageSpec from "../../../scripts/etl/specs/government-scorecard-page.source.json";
 
-import supplementalSnapshot from "@/data/generated/government-scorecard-page.json";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import { GOVERNMENT_SCORECARD_V6_CHRONOLOGY } from "@/lib/government-scorecard-chronology";
+
+// Read at runtime: a static import makes tsc infer a type for every point and exhausts
+// the CI heap. The literal path lets Next trace the file into the routes that read it.
+const SUPPLEMENTAL_SNAPSHOT_PATH = join(process.cwd(), "src/data/generated/government-scorecard-page.json");
+const MAX_SUPPLEMENTAL_SNAPSHOT_BYTES = 16 * 1024 * 1024;
 
 export const GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS = [
   "inflation",
@@ -38,7 +44,8 @@ const dataUrl = httpsUrl.refine((value) => [
   "economy-finance.ec.europa.eu",
   "commission.europa.eu",
 ].includes(new URL(value).hostname), "fonte dati ufficiale attesa");
-const contextUrl = httpsUrl.refine((value) => [
+// Exact hostnames, mirrored by CONTEXT_SOURCE_OWNERS in scripts/etl/government_scorecard_page.py.
+const CONTEXT_SOURCE_HOSTS = new Set([
   "www.normattiva.it",
   "www.quirinale.it",
   "archivio.quirinale.it",
@@ -63,7 +70,11 @@ const contextUrl = httpsUrl.refine((value) => [
   "energy.ec.europa.eu",
   "www.supremecourt.gov",
   "www.govinfo.gov",
-].includes(new URL(value).hostname), "fonte contestuale ufficiale attesa");
+]);
+const contextUrl = httpsUrl.refine(
+  (value) => CONTEXT_SOURCE_HOSTS.has(new URL(value).hostname),
+  "fonte contestuale ufficiale attesa",
+);
 const timestamp = z.string()
   .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})$/)
   .refine((value) => Number.isFinite(Date.parse(value)), "timestamp ISO atteso");
@@ -200,10 +211,10 @@ const emptyContextSlideSchema = z.object({
   title: z.string().min(1),
   label: z.string().min(1),
   summary: z.string().min(1),
-  message: z.string().min(1),
   status: z.literal("empty"),
   catalog_complete: z.literal(true),
   score_impact: z.literal("none"),
+  message: z.string().min(1),
   items: z.tuple([]),
 }).strict();
 
@@ -360,6 +371,8 @@ export function parseGovernmentScorecardV6SupplementalSnapshot(input: unknown): 
 let cachedSnapshot: GovernmentScorecardV6SupplementalSnapshot | undefined;
 
 export function getGovernmentScorecardV6SupplementalSnapshot(): GovernmentScorecardV6SupplementalSnapshot {
-  cachedSnapshot ??= parseGovernmentScorecardV6SupplementalSnapshot(supplementalSnapshot);
+  cachedSnapshot ??= parseGovernmentScorecardV6SupplementalSnapshot(
+    readJsonSnapshot(SUPPLEMENTAL_SNAPSHOT_PATH, MAX_SUPPLEMENTAL_SNAPSHOT_BYTES),
+  );
   return cachedSnapshot;
 }

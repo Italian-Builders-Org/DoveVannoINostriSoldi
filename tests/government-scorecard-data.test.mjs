@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import "./helpers/register-ts-alias.mjs";
 
@@ -55,6 +57,15 @@ test("the feature owns exactly two registered generated artifacts", () => {
     .filter((name) => name.startsWith("government-scorecard"))
     .sort();
   assert.deepEqual(generated, ["government-scorecard-page.json", "government-scorecard.json"]);
+});
+
+test("the page snapshot is read at runtime, never imported into typed modules", () => {
+  // A static JSON import makes tsc infer types for every point: at 7 MB the CI typecheck ran out of heap.
+  const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
+  const sources = readdirSync(sourceRoot, { recursive: true })
+    .filter((path) => /\.tsx?$/.test(path))
+    .filter((path) => /from\s+["'][^"']*government-scorecard-page\.json["']/.test(readFileSync(join(sourceRoot, path), "utf8")));
+  assert.deepEqual(sources, []);
 });
 
 test("the display snapshot documents the typed-snapshot exception and semantic axes", () => {

@@ -434,43 +434,45 @@ def _debt_per_capita_series(
     }
 
 
+# Exact hostnames: suffix matching would also accept look-alike domains.
+# Keep in sync with CONTEXT_SOURCE_HOSTS in src/lib/data/government-scorecard-page-contract.ts.
+CONTEXT_SOURCE_OWNERS = {
+    "www.normattiva.it": "Normattiva",
+    "www.quirinale.it": "Presidenza della Repubblica",
+    "archivio.quirinale.it": "Presidenza della Repubblica",
+    "www.ecb.europa.eu": "Banca centrale europea",
+    "www.bancaditalia.it": "Banca d'Italia",
+    "documenti.camera.it": "Camera dei deputati",
+    "temi.camera.it": "Camera dei deputati",
+    "www.upbilancio.it": "Ufficio parlamentare di bilancio",
+    "www.mimit.gov.it": "Ministero delle Imprese e del Made in Italy",
+    "www.governo.it": "Governo italiano",
+    "www.italiadomani.gov.it": "Italia Domani, Presidenza del Consiglio",
+    "www.mef.gov.it": "Ministero dell'Economia e delle Finanze",
+    "www.istat.it": "Istat",
+    "www.consilium.europa.eu": "Consiglio dell'Unione europea",
+    "data.consilium.europa.eu": "Consiglio dell'Unione europea",
+    "eur-lex.europa.eu": "EUR-Lex",
+    "commission.europa.eu": "Commissione europea",
+    "ec.europa.eu": "Commissione europea",
+    "economy-finance.ec.europa.eu": "Commissione europea",
+    "reforms-investments.ec.europa.eu": "Commissione europea",
+    "policy.trade.ec.europa.eu": "Commissione europea",
+    "energy.ec.europa.eu": "Commissione europea",
+    "www.supremecourt.gov": "Corte Suprema degli Stati Uniti",
+    "www.govinfo.gov": "Presidenza degli Stati Uniti",
+}
+
+
 def _owner(url: str) -> str:
-    hostname = urllib.parse.urlparse(url).hostname or ""
-    if hostname.endswith("normattiva.it"):
-        return "Normattiva"
-    if hostname.endswith("quirinale.it"):
-        return "Presidenza della Repubblica"
-    if hostname.endswith("ecb.europa.eu"):
-        return "Banca centrale europea"
-    if hostname.endswith("bancaditalia.it"):
-        return "Banca d'Italia"
-    if hostname.endswith("camera.it"):
-        return "Camera dei deputati"
-    if hostname.endswith("upbilancio.it"):
-        return "Ufficio parlamentare di bilancio"
-    if hostname.endswith("mimit.gov.it"):
-        return "Ministero delle Imprese e del Made in Italy"
-    if hostname.endswith("governo.it"):
-        return "Governo italiano"
-    if hostname.endswith("italiadomani.gov.it"):
-        return "Italia Domani, Presidenza del Consiglio"
-    if hostname.endswith("mef.gov.it"):
-        return "Ministero dell'Economia e delle Finanze"
-    if hostname.endswith("istat.it"):
-        return "Istat"
-    if hostname.endswith("consilium.europa.eu"):
-        return "Consiglio dell'Unione europea"
-    if hostname == "eur-lex.europa.eu":
-        return "EUR-Lex"
-    if hostname.endswith("supremecourt.gov"):
-        return "Corte Suprema degli Stati Uniti"
-    if hostname.endswith("govinfo.gov"):
-        return "Presidenza degli Stati Uniti"
-    if hostname.endswith("europa.eu") and "/eurostat/" in urllib.parse.urlparse(url).path:
+    parsed = urllib.parse.urlparse(url)
+    owner = CONTEXT_SOURCE_OWNERS.get(parsed.hostname or "")
+    if owner is None:
+        raise SupplementalSnapshotError(f"unsupported context source: {url}")
+    # Eurostat publishes under the Commission host: only the path tells them apart.
+    if parsed.hostname == "ec.europa.eu" and "/eurostat/" in parsed.path:
         return "Eurostat"
-    if hostname.endswith("europa.eu"):
-        return "Commissione europea"
-    raise SupplementalSnapshotError(f"unsupported context source: {url}")
+    return owner
 
 
 def _context_item(

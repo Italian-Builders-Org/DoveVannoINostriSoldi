@@ -264,6 +264,8 @@ const inlVigilanzaRuntimeFiles = [
 const aifaSpesaConsumiRuntimeFiles = [
   "src/data/generated/aifa-spesa-consumi-2022-2025.data.json",
 ];
+// /governi and /governi/[id] are prerendered; these routes read the page snapshot per request.
+const governmentScorecardPageRuntimeFiles = ["src/data/generated/government-scorecard-page.json"];
 
 // Keep this policy observational until browser and production checks show it
 // can be enforced safely. Next.js and Analytics currently need inline
@@ -420,6 +422,10 @@ const nextConfig: NextConfig = {
     "/api/lavoro/cig-fondi-solidarieta": cigFondiSolidarietaRuntimeFiles,
     "/api/lavoro/vigilanza-inl": inlVigilanzaRuntimeFiles,
     "/api/spese/sanita/farmaci": aifaSpesaConsumiRuntimeFiles,
+    "/governi/confronta": governmentScorecardPageRuntimeFiles,
+    "/api/governi/dati": governmentScorecardPageRuntimeFiles,
+    "/api/governi/dati/\\[download\\]": governmentScorecardPageRuntimeFiles,
+    "/esplora/serie": governmentScorecardPageRuntimeFiles,
     "/fonti": [
       ...naspiRuntimeFiles,
       ...assegnoUnicoRuntimeFiles,

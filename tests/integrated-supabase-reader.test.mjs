@@ -28,6 +28,10 @@ test('DB corruption, missing/duplicate ordinals and wrong release digest fail cl
 test('DB configuration requires the selected project, TLS and no unexpected backend',()=>{
  const valid='postgresql://postgres.zvqhikeylxynsljwgosc:placeholder@aws-0-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require';
  assert.equal(databaseConnectionUrl(valid),valid);
+ const preview = valid.replace('postgres.', 'dvns_vercel_preview.');
+ assert.equal(databaseConnectionUrl(preview), preview);
+ assert.throws(() => databaseConnectionUrl(valid.replace('postgres.', 'unexpected.')));
+
  for(const value of [undefined,'',valid.replace('zvqhikeylxynsljwgosc','another'),valid.replace('sslmode=require','sslmode=disable'),valid.replace('/postgres?','/other?'),valid+'&sslmode=disable']) assert.throws(()=>databaseConnectionUrl(value));
 });
 

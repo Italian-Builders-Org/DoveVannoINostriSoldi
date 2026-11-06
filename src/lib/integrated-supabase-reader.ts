@@ -24,7 +24,7 @@ export function databaseConnectionUrl(value = process.env.DVNS_DATABASE_URL): st
       url.searchParams.getAll("sslmode").length !== 1 ||
       !["require", "verify-full"].includes(url.searchParams.get("sslmode") ?? "") ||
       !((url.hostname === `db.${project}.supabase.co` && url.username === "postgres") ||
-        (url.hostname === "aws-0-eu-west-1.pooler.supabase.com" && url.username === `postgres.${project}`))) throw new Error();
+        (url.hostname === "aws-0-eu-west-1.pooler.supabase.com" && [`postgres.${project}`, `dvns_vercel_preview.${project}`].includes(url.username)))) throw new Error();
     return value!;
   } catch {
     throw new Error("Configurazione PostgreSQL DVNS mancante o non valida per il progetto selezionato.");

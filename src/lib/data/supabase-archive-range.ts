@@ -28,7 +28,12 @@ export async function readSupabaseArchiveRange(
   try {
     const base = "https://zvqhikeylxynsljwgosc.supabase.co";
     const key = process.env.DVNS_SUPABASE_SECRET_KEY;
-    if (!key?.startsWith("sb_secret_")) throw new Error();
+    const readToken = process.env.DVNS_ARCHIVE_READ_TOKEN;
+    const publishableKey = process.env.DVNS_ARCHIVE_PUBLISHABLE_KEY;
+    const storageHeaders = readToken && publishableKey
+      ? { apikey: publishableKey, Authorization: `Bearer ${readToken}` }
+      : key?.startsWith("sb_secret_") ? { apikey: key } : undefined;
+    if (!storageHeaders) throw new Error();
     const deadline = AbortSignal.timeout(15_000);
     const requestSignal = signal ? AbortSignal.any([signal, deadline]) : deadline;
     const [blob] = await database().begin("read only", async (tx) => {
@@ -52,7 +57,7 @@ export async function readSupabaseArchiveRange(
         // policy. ISR can cache the resulting page after the block hash is checked.
         const response = await new Promise<IncomingMessage>((resolve, reject) => {
           get(`${base}/storage/v1/object/authenticated/dvns-snapshots/${part.key}`, {
-            headers: { apikey: key, Range: `bytes=${objectStart}-${objectEnd}` },
+            headers: { ...storageHeaders, Range: `bytes=${objectStart}-${objectEnd}` },
             signal: requestSignal,
           }, resolve).on("error", reject);
         });

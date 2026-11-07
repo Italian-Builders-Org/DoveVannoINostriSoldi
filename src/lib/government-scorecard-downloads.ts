@@ -6,7 +6,6 @@ import { gzipSync } from "node:zlib";
 import { z } from "zod";
 
 import scoreData from "@/data/generated/government-scorecard.json";
-import pageData from "@/data/generated/government-scorecard-page.json";
 import chronology from "../../scripts/etl/specs/government-scorecard-chronology.json";
 import methodology from "../../scripts/etl/specs/government-scorecard-methodology.json";
 import pageProvenance from "../../scripts/etl/specs/government-scorecard-page.source.json";
@@ -23,13 +22,14 @@ const DOWNLOAD_DEFINITIONS = GOVERNMENT_SCORECARD_DOWNLOADS;
 type GovernmentScorecardDownloadId = (typeof DOWNLOAD_DEFINITIONS)[number]["id"];
 export const MAX_GOVERNMENT_SCORECARD_FUNCTION_RESPONSE_BYTES = 4_500_000;
 
-const PAYLOADS: Record<GovernmentScorecardDownloadId, unknown> = {
-  methodology,
-  chronology,
-  "score-data": scoreData,
-  "page-data": pageData,
-  "score-provenance": scoreProvenance,
-  "page-provenance": pageProvenance,
+// The validated page snapshot keeps the committed key order: the page-data test pins its bytes.
+const PAYLOADS: Record<GovernmentScorecardDownloadId, () => unknown> = {
+  methodology: () => methodology,
+  chronology: () => chronology,
+  "score-data": () => scoreData,
+  "page-data": getGovernmentScorecardV6SupplementalSnapshot,
+  "score-provenance": () => scoreProvenance,
+  "page-provenance": () => pageProvenance,
 };
 
 const sha256 = z.string().regex(/^[0-9a-f]{64}$/);
@@ -77,7 +77,7 @@ const manifestSchema = z.object({
     z.literal("editorial_context"),
   ]),
   downloads: z.array(downloadSchema).length(DOWNLOAD_DEFINITIONS.length),
-  indicators: z.array(indicatorSchema).length(15),
+  indicators: z.array(indicatorSchema).length(17),
   editorial_context: z.object({
     data_role: z.literal("editorial_context"),
     score_impact: z.literal("none"),
@@ -138,7 +138,7 @@ export function assertGovernmentScorecardFunctionResponseSize(
 }
 
 function buildDownloadArtifact(definition: (typeof DOWNLOAD_DEFINITIONS)[number]) {
-  const json = serializeGovernmentScorecardDownloadJson(PAYLOADS[definition.id]);
+  const json = serializeGovernmentScorecardDownloadJson(PAYLOADS[definition.id]());
   const compression = definition.id === "page-data" ? "gzip" as const : "none" as const;
   const body = compression === "gzip" ? deterministicGzip(json) : json;
   const bytes = bodyBytes(body);
@@ -160,9 +160,24 @@ function buildDownloadArtifact(definition: (typeof DOWNLOAD_DEFINITIONS)[number]
   };
 }
 
+type GovernmentScorecardDownloadArtifact = ReturnType<typeof buildDownloadArtifact>;
+
+// One entry per registered download: page-data alone costs a 7 MB stringify plus gzip,
+// so each instance builds it once. Failed builds throw before anything is cached.
+const builtArtifacts = new Map<GovernmentScorecardDownloadId, GovernmentScorecardDownloadArtifact>();
+
+function downloadArtifact(definition: (typeof DOWNLOAD_DEFINITIONS)[number]): GovernmentScorecardDownloadArtifact {
+  let artifact = builtArtifacts.get(definition.id);
+  if (!artifact) {
+    artifact = buildDownloadArtifact(definition);
+    builtArtifacts.set(definition.id, artifact);
+  }
+  return artifact;
+}
+
 function downloadEntries() {
   return DOWNLOAD_DEFINITIONS.map((definition) => {
-    const artifact = buildDownloadArtifact(definition);
+    const artifact = downloadArtifact(definition);
     return {
       id: artifact.id,
       filename: artifact.filename,
@@ -244,7 +259,7 @@ function buildManifest() {
   return {
     schema_version: 1 as const,
     methodology_version: "peer-relative-v6" as const,
-    as_of_date: pageData.as_of_date,
+    as_of_date: getGovernmentScorecardV6SupplementalSnapshot().as_of_date,
     data_roles: ["score_data", "page_data", "editorial_context"] as const,
     downloads: downloadEntries(),
     indicators: [...scoreIndicatorEntries(), ...pageIndicatorEntries()],
@@ -306,7 +321,7 @@ export function getGovernmentScorecardDownloadManifest(): GovernmentScorecardDow
 export function getGovernmentScorecardDownload(id: string) {
   const definition = DOWNLOAD_DEFINITIONS.find((candidate) => candidate.id === id);
   if (!definition) return null;
-  return buildDownloadArtifact(definition);
+  return downloadArtifact(definition);
 }
 
 export function reconcileGovernmentScorecardPageProvenance() {

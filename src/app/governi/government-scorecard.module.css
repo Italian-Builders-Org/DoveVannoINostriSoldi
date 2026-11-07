@@ -412,6 +412,34 @@
   border: 1px solid var(--color-neutral-300);
 }
 
+.contextHistory {
+  margin-block: 0.75rem;
+}
+
+.contextHistory summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contextHistory table {
+  /* The caption takes the table width: without it, it wraps at the width of two short columns. */
+  width: min(100%, 360px);
+  margin-block-start: 0.5rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.contextHistory caption {
+  text-align: start;
+  padding-block-end: 0.25rem;
+}
+
+.contextHistory th,
+.contextHistory td {
+  padding: 0.2rem 1rem 0.2rem 0;
+  text-align: start;
+}
+
 .contextNavigation .timelineNote {
   text-align: left;
 }

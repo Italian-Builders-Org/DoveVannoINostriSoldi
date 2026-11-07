@@ -308,7 +308,7 @@ function ContextSection({ view }: { view: GovernmentScorecardV6PageView }) {
         slides={view.context.slides}
         mandate={{
           startDate: view.institutional_period.start_date,
-          endDate: view.institutional_period.end_exclusive ?? view.institutional_period.as_of_date,
+          endDate: view.institutional_period.end_exclusive,
         }}
       />
     </section>

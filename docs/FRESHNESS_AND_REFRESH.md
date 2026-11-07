@@ -260,7 +260,7 @@ variazione semantica continua a richiedere l'intera validazione.
 ### Pagella politico-economica dei governi
 
 Il workflow `government-scorecard-refresh.yml` controlla ogni martedì AMECO e
-le nove fonti Eurostat della pagina. È discovery settimanale: non trasforma una
+le undici query Eurostat della pagina. È discovery settimanale: non trasforma una
 serie annuale o trimestrale in un dato settimanale.
 
 AMECO determina il voto soltanto fino all'ultimo anno comune osservato; le sue
@@ -379,7 +379,9 @@ le serie più spesso del minimo semestrale, conserva le ricevute immutate e
 non produce un candidato per il solo passaggio del tempo. La revisione del
 contesto scade dopo tre mesi di calendario e diventa obbligatoria al cambio di
 governo: una ricevuta lega data, catalogo e cronologia. La scadenza o un drift
-inatteso blocca la pubblicazione mantenendo l'ultimo rilascio valido.
+di identità delle fonti blocca la pubblicazione mantenendo l'ultimo rilascio
+valido; le nuove pubblicazioni Eurostat arrivano invece da sole alla PR dati,
+mentre un nuovo AMECO resta in attesa di revisione senza fermare i grafici.
 
 Il manutentore fonti segue errori di acquisizione e contratti; il manutentore
 editoriale revisiona contesto e giuramenti. Il workflow non sostituisce queste

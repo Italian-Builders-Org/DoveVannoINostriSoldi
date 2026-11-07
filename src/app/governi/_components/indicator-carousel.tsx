@@ -22,6 +22,7 @@ import {
   formatGovernmentChartPeriod,
   formatGovernmentChartPointStatus,
   formatGovernmentChartValue,
+  getGovernmentChartLatestCommonPeriod,
   getGovernmentChartSelection,
   GOVERNMENT_CHART_COLORS,
   GOVERNMENT_CHART_MARKERS,
@@ -77,7 +78,7 @@ function IndicatorChart({
     : null;
   const periodIndex = useMemo(() => new Map(periods.map((period, index) => [period, index])), [periods]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
-  const activePeriod = selectedPeriod !== null && periods.includes(selectedPeriod) ? selectedPeriod : periods.at(-1) ?? null;
+  const activePeriod = selectedPeriod !== null && periods.includes(selectedPeriod) ? selectedPeriod : getGovernmentChartLatestCommonPeriod(visibleSeries) ?? periods.at(-1) ?? null;
   const values = visibleSeries.flatMap((series) => series.points.map((point) => point.value));
   const hasTrend = hasGovernmentChartTrend(periods);
   const rawMinimum = values.length > 0 ? Math.min(...values) : 0;
@@ -128,16 +129,10 @@ function IndicatorChart({
     }
   };
 
-  const summaries = visibleSeries.map((series) => {
-    const first = series.points[0];
-    const last = series.points.at(-1);
-    return {
-      ...series,
-      first,
-      last,
-      change: first && last && last.period_start > first.period_start ? last.value - first.value : null,
-    };
-  });
+  const summaries = visibleSeries.map((series) => ({
+    ...series,
+    change: getGovernmentChartSelection(series.points, series.points.at(-1)?.period ?? null).change,
+  }));
   const selections = visibleSeries.map((series) => ({
     ...series,
     ...getGovernmentChartSelection(series.points, activePeriod),
@@ -264,7 +259,7 @@ function IndicatorChart({
             <h4><span style={{ backgroundColor: GOVERNMENT_CHART_COLORS[series.id] }} aria-hidden="true" /><b aria-hidden="true">{GOVERNMENT_CHART_MARKERS[series.id]}</b>{series.label}</h4>
             {series.first ? (
               <dl>
-                <div><dt>Inizio del periodo · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}{formatGovernmentChartPointStatus(series.first)}</dd></div>
+                <div><dt>{chart.frequency === "Trimestrale" ? "Inizio, stesso trimestre" : "Inizio del periodo"} · {formatGovernmentChartPeriod(series.first.period)}</dt><dd>{formatGovernmentChartValue(series.first.value, chart.unit)}{formatGovernmentChartPointStatus(series.first)}</dd></div>
                 <div><dt data-selected-period>Periodo selezionato · {activePeriod === null ? "Non disponibile" : formatGovernmentChartPeriod(activePeriod)}</dt><dd data-selected-value>{series.selected ? `${formatGovernmentChartValue(series.selected.value, chart.unit)}${formatGovernmentChartPointStatus(series.selected)}` : "Non disponibile"}</dd></div>
                 <div><dt>Variazione dall’inizio</dt><dd data-selected-change>{series.change === null ? "Non disponibile" : formatChange(series.change, chart.unit)}</dd></div>
               </dl>
@@ -282,7 +277,7 @@ function IndicatorChart({
               <tr>
                 <th scope="col">Paese</th>
                 {periods.map((period) => <th scope="col" key={period}>{formatGovernmentChartPeriod(period)}</th>)}
-                <th scope="col">Variazione intero periodo</th>
+                <th scope="col">{chart.frequency === "Trimestrale" ? "Variazione sullo stesso trimestre" : "Variazione intero periodo"}</th>
               </tr>
             </thead>
             <tbody>

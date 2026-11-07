@@ -34,7 +34,10 @@ dell'operatore. La protezione degli URL resta attiva.
 | Aggregati dispositivi, anno 2020, classificazione, limite 5 | 2,48 s | 0,31–0,40 s |
 | Dispositivo tipo 1, numero 1175175, limite 2 | 1,33 s | 0,25–0,40 s |
 
-Nove risposte HTTP 200. I JSON dei dispositivi hanno i digest canonici del
+Nove risposte HTTP 200. Dopo oltre un'ora dalle prime misure, un'ulteriore
+query non in cache, aggregati 2019 con limite 8, ha restituito 200 MISS
+in 6,67 s senza aggiornamento manuale dei token. La prova è registrata in
+`after-one-hour-2019.csv` e nei relativi body/header. I JSON dei dispositivi hanno i digest canonici del
 riferimento filesystem. Anche il testo visibile della scheda ANAC è identico
 al riferimento, con digest
 `30af2a7db35a9a3b04538f4399c66c2cf5533cf43892c66772d0a7fe51713793`.
@@ -79,9 +82,9 @@ ETL e snapshot. Comandi eseguiti dalla radice del worktree.
 | `npm run ci:action-pins` | PASS |
 | `npm test` | PASS, 2.554 test |
 | `DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci .venv/bin/python -m unittest discover -s tests/etl -p 'test_supabase_*.py'` | PASS, 31 test |
-| `npm run test:snapshots` con guard offline e Python 3.12.8 | 120 controlli PASS; gate finale FAIL per modifiche documentali concorrenti. Ripetizione a worktree pulito prevista |
-| `npm run build` | Verifica finale in corso |
-| `NEXT_PORT=43287 npm run test:production` | Verifica finale in corso |
+| `npm run test:snapshots` con guard offline e Python 3.12.8 | PASS, 120 controlli e worktree pulito |
+| `npm run build` | PASS |
+| `NEXT_PORT=43287 PRODUCTION_GATES=main/core npm run test:production`, due esecuzioni separate | PASS, entrambi i gruppi ufficiali, incluso Lighthouse |
 | `git diff --check` | PASS |
 | Suite ETL completa | NOT RUN |
 
@@ -92,6 +95,23 @@ Nella seconda esecuzione tutti i 120 controlli sono passati, con 1.349,94 s
 per la ricostruzione dell'indice dispositivi. Il wrapper ha rilevato le
 modifiche documentali apportate durante il giro e ha correttamente
 restituito exit 1. I log originali sono conservati.
+La ripetizione `snapshots-final.log` ha verificato tutti i 120 controlli e il
+worktree pulito, con 835,10 s per l'indice dispositivi.
+
+L'esecuzione iniziale del profilo produzione all ha superato 421 scenari
+prima di un timeout di navigazione Chromium su sanità, tema scuro, 1280 px,
+con destinazione about:blank e senza errori pagina o HTTP. La chiusura di
+Chromium ha anch'essa superato il timeout. Il caso ripetuto con browser e
+server nuovi è passato tre volte in 0,877, 0,326 e 0,337 s senza modificare
+codice o timeout. I due gruppi ufficiali main e core sono stati poi eseguiti
+separatamente, ciascuno con server nuovo, e sono entrambi passati. La loro
+unione copre lo stesso profilo completo usato dai due job CI.
+`production.log` e la directory di errore
+`artifacts/browser/core/conto-economico-ssn-1280px/` conservano il fallimento.
+`production-main.log`, `production-core.log`, `sanita-repro-final.log`
+e `sanita-dark-fresh.png` documentano la ripetizione riuscita. I report
+Lighthouse sono in `.lighthouseci/`.
+
 
 
 ## Perimetro del rilascio

@@ -292,3 +292,45 @@ aggiudicazioni richieste. La ricerca per ID tramite un indice SQL è un
 intervento distinto. Il profilo riduce i pacchetti Next e aggiunge richieste
 di rete sul percorso a freddo. La preview va collaudata con credenziali
 dedicate e misure di latenza, CPU e traffico Storage prima dell'attivazione.
+
+### Accesso runtime agli archivi privati
+
+Il profilo `DVNS_HEAVY_DATA_BACKEND=supabase` omette i payload ANAC e
+dispositivi medici dal pacchetto server. Il lettore SQL accede ai manifest dei
+blocchi con un ruolo dedicato in sola lettura. La lettura Storage usa una
+identità tecnica Auth e una chiave publishable, configurate soltanto sul server
+con `DVNS_ARCHIVE_EMAIL`, `DVNS_ARCHIVE_PASSWORD` e
+`DVNS_ARCHIVE_PUBLISHABLE_KEY`. Le variabili sono descritte in `.env.example`.
+
+La policy Storage concede SELECT per il solo UUID dell'identità tecnica, nel
+bucket privato `dvns-snapshots`, per le chiavi content-addressed della release
+e per le operazioni di download. Il lettore verifica intervalli, dimensioni e
+digest del blocco rispetto ai manifest locali. La preview ha 514 manifest e
+220 oggetti autorizzati. Una nuova release richiede la riconciliazione dei
+manifest e l'aggiornamento esplicito delle chiavi autorizzate.
+
+Ogni processo apre una propria sessione Auth tramite password grant e conserva
+il solo access token in memoria. Il login viene condiviso dalle letture
+concorrenti e ripetuto un minuto prima della scadenza. La password resta una
+credenziale server, mentre i refresh token restituiti da Auth vengono scartati.
+Questo evita di condividere token di refresh rotanti tra istanze serverless.
+Un 401 Storage invalida soltanto la sessione rifiutata e consente un retry.
+Auth ha un timeout di 10 secondi e una risposta massima di 64 KiB. Gli errori
+hanno un cooldown di 5 secondi per processo, vengono redatti e non diventano
+risposte dati valide.
+
+Le richieste dei visitatori usano le cache di pagina/CDN già previste.
+L'autenticazione nativa HTTPS preserva la politica ISR della pagina.
+L'accesso ai file avviene soltanto durante una lettura necessaria, senza timer
+o polling in background. Le API conservano i filtri, i cursori e i limiti
+esistenti. Le misure della preview distinguono MISS e HIT della CDN.
+
+Prima del rilascio servono una destinazione Supabase approvata, provisioning
+del ruolo SQL e dell'identità Storage con policy equivalenti, verifica degli
+accessi negati e della release completa, responsabilità per import/backup e
+prova di ripristino. Il progetto di preview usa ancora la destinazione
+condivisa `zvqhikeylxynsljwgosc`. Il merge del codice conserva il profilo
+filesystem predefinito. L'attivazione richiede le variabili server e un nuovo
+build. Per rollback si ripristina il deployment precedente o si ricostruisce
+con il profilo filesystem. I file sorgenti e il manifest dei digest sono
+ancora versionati.

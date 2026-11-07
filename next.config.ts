@@ -297,11 +297,9 @@ if ((supabaseBuild || archiveBuild) && !process.env.DVNS_DATABASE_URL) {
   throw new Error("DVNS_DATABASE_URL is required for a Supabase build.");
 }
 
-const archiveReadToken = process.env.DVNS_ARCHIVE_READ_TOKEN;
-const archivePublishableKey = process.env.DVNS_ARCHIVE_PUBLISHABLE_KEY;
-if (archiveBuild && !(archiveReadToken && archivePublishableKey)
-    && !process.env.DVNS_SUPABASE_SECRET_KEY?.startsWith("sb_secret_")) {
-  throw new Error("Supabase Storage credentials are required for the heavy archive build.");
+if (archiveBuild && (!process.env.DVNS_ARCHIVE_PUBLISHABLE_KEY?.startsWith("sb_publishable_") ||
+    !process.env.DVNS_ARCHIVE_EMAIL || !process.env.DVNS_ARCHIVE_PASSWORD)) {
+  throw new Error("Scoped Supabase Storage credentials are required for the heavy archive build.");
 }
 
 const nextConfig: NextConfig = {

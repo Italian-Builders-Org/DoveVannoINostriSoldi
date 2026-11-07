@@ -3,6 +3,7 @@ import { get } from "node:https";
 import type { IncomingMessage } from "node:http";
 import { z } from "zod";
 import { database } from "@/lib/integrated-supabase-reader";
+import { archiveSession, DVNS_SUPABASE_URL } from "@/lib/data/supabase-archive-session";
 
 const MAX_OBJECT_BYTES = 4 * 1024 * 1024;
 const partsSchema = z.array(z.object({
@@ -26,14 +27,6 @@ export async function readSupabaseArchiveRange(
     throw new Error("Intervallo archivio DVNS non valido.");
   }
   try {
-    const base = "https://zvqhikeylxynsljwgosc.supabase.co";
-    const key = process.env.DVNS_SUPABASE_SECRET_KEY;
-    const readToken = process.env.DVNS_ARCHIVE_READ_TOKEN;
-    const publishableKey = process.env.DVNS_ARCHIVE_PUBLISHABLE_KEY;
-    const storageHeaders = readToken && publishableKey
-      ? { apikey: publishableKey, Authorization: `Bearer ${readToken}` }
-      : key?.startsWith("sb_secret_") ? { apikey: key } : undefined;
-    if (!storageHeaders) throw new Error();
     const deadline = AbortSignal.timeout(15_000);
     const requestSignal = signal ? AbortSignal.any([signal, deadline]) : deadline;
     const [blob] = await database().begin("read only", async (tx) => {
@@ -55,12 +48,20 @@ export async function readSupabaseArchiveRange(
         const objectEnd = objectStart + end - start - 1;
         // Native HTTPS keeps immutable archive reads outside Next's fetch cache
         // policy. ISR can cache the resulting page after the block hash is checked.
-        const response = await new Promise<IncomingMessage>((resolve, reject) => {
-          get(`${base}/storage/v1/object/authenticated/dvns-snapshots/${part.key}`, {
-            headers: { ...storageHeaders, Range: `bytes=${objectStart}-${objectEnd}` },
+        let headers = await archiveSession.headers(requestSignal);
+        const download = () => new Promise<IncomingMessage>((resolve, reject) => {
+          get(`${DVNS_SUPABASE_URL}/storage/v1/object/authenticated/dvns-snapshots/${part.key}`, {
+            headers: { ...headers, Range: `bytes=${objectStart}-${objectEnd}` },
             signal: requestSignal,
           }, resolve).on("error", reject);
         });
+        let response = await download();
+        if (response.statusCode === 401) {
+          response.destroy();
+          archiveSession.invalidate(headers.Authorization);
+          headers = await archiveSession.headers(requestSignal);
+          response = await download();
+        }
         const range = response.headers["content-range"]?.match(/^bytes (\d+)-(\d+)\/(\d+)$/);
         if (response.statusCode !== 206 || !range || Number(range[1]) !== objectStart ||
             Number(range[2]) !== objectEnd || Number(range[3]) > MAX_OBJECT_BYTES) {

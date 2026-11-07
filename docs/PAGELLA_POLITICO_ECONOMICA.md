@@ -258,7 +258,12 @@ perché il publisher può scrivere soltanto i due artefatti.
 
 AMECO resta diverso, perché può cambiare ogni voto. Se cambia senza revisione,
 il refresh conserva il voto, pubblica comunque i grafici Eurostat e segnala
-`::warning::AMECO changed upstream`. Per approvare un nuovo vintage:
+`::warning::AMECO changed upstream`. Il confronto della ricevuta avviene prima
+del parsing CSV: un nuovo anno di previsione non deve bloccare Eurostat. Un
+archivio ZIP corrotto o con membri inattesi continua a bloccare il refresh;
+i byte non approvati non vengono interpretati né pubblicati. I dati AMECO
+approvati e la modalità `--observe` restano soggetti al contratto completo.
+Per approvare un nuovo vintage:
 
 1. aggiornare source spec e manifest metodologico (vintage, anni osservati e
    anni di previsione), verificando sulla fonte quali anni sono osservati;

@@ -1,9 +1,11 @@
 import copy
 import contextlib
+import csv
 import io
 import runpy
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -111,6 +113,33 @@ class RefreshTests(unittest.TestCase):
         self.assertIn('::warning::', self.output.getvalue())
         self.assertIn('AMECO', self.output.getvalue())
 
+    def test_new_ameco_forecast_year_keeps_score_and_still_publishes_eurostat(self):
+        # A new vintage extends the CSV header before its methodology is reviewed.
+        output = io.BytesIO()
+        with zipfile.ZipFile(io.BytesIO(self.payload)) as previous, zipfile.ZipFile(output, 'w') as updated:
+            for name in previous.namelist():
+                rows = list(csv.reader(io.StringIO(previous.read(name).decode('latin-1'))))
+                rows[0][-1:] = ['2028', 'Unnamed: 74']
+                for row in rows[1:]:
+                    row.insert(-1, '100')
+                text = io.StringIO(newline='')
+                csv.writer(text, lineterminator='\n').writerows(rows)
+                updated.writestr(name, text.getvalue().encode('latin-1'))
+        self.payload = output.getvalue()
+        self.publish_new_eurostat_release()
+        self.assertTrue(self.run_refresh())
+        self.assertEqual(self.files()['government-scorecard.json'], self.originals['government-scorecard.json'])
+        published = page._load(self.root / 'src/data/generated/government-scorecard-page.json')
+        self.assertEqual(published['sources'][0], self.page['sources'][0])
+        self.assertEqual(published['sources'][1]['raw_sha256'], 'a' * 64)
+        self.assertIn('::warning::AMECO changed upstream', self.output.getvalue())
+
+        # Observation still requires a reviewed schema before interpreting new years.
+        before = self.files()
+        with self.assertRaisesRegex(score.SnapshotError, 'intestazione CSV inattesa'):
+            self.run_refresh(observe=True)
+        self.assertEqual(self.files(), before)
+
     def test_reviewed_ameco_release_replaces_score(self):
         def changed(indicator, country, filename, row):
             if indicator == 'unemployment' and country == 'spain':
@@ -165,6 +194,9 @@ class RefreshTests(unittest.TestCase):
             if indicator == 'unemployment' and country == 'spain':
                 row[5 + 2024 - 1960] = ':'
         self.payload = ameco_zip(self.spec, mutate_row=missing)
+        # An approved receipt must still pass the complete observed-panel contract.
+        self.policy['scoreReceipt'] = {'raw_bytes': len(self.payload), 'raw_sha256': score.sha256(self.payload)}
+        self.save_policy()
         with self.assertRaisesRegex(ValueError, 'osservazione obbligatoria'):
             self.run_refresh()
         self.assertEqual(self.files(), self.originals)

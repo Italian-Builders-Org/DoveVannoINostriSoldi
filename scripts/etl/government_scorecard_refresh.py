@@ -220,22 +220,26 @@ def refresh(retrieved_at, *, root=ROOT, fetch_score=score.download, build_page=p
     # economic observation, but prevents publication after that observation.
     chronology.validate_registry(registry)
     spec = score.load_json(root / "scripts/etl/specs/government-scorecard.source.json")
+    score.validate_spec(spec)
     payload = fetch_score(spec["ameco"]["downloadUrl"])
     acquired_at = retrieved_at if observe else policy["scoreAcquiredAt"]
-    candidate_core = score.build_snapshot(spec, payload, acquired_at)
-    # Editorial caveats are reviewed content, not economic observations.
-    candidate_core["caveats"] = previous_core["caveats"]
-    score.validate_snapshot(candidate_core)  # requires the complete common observed panel
-    old_core = copy.deepcopy(previous_core)
-    old_core["generatedAt"] = acquired_at
-    old_core["sources"]["ameco"]["retrievedAt"] = acquired_at
-    if old_core == candidate_core:
+    incoming_receipt = {"raw_bytes": len(payload), "raw_sha256": score.sha256(payload)}
+    if not observe and incoming_receipt != policy["scoreReceipt"]:
+        # A new vintage can add forecast years that the approved parser rejects.
+        # Check archive integrity, but never interpret or publish unreviewed bytes.
+        score.safe_archive(payload)
+        print(f"::warning::AMECO changed upstream ({incoming_receipt['raw_sha256']}): score kept until reviewed, see docs/PAGELLA_POLITICO_ECONOMICA.md")
         candidate_core = previous_core
-    elif not observe and score.sha256(encoded(candidate_core)) != policy["coreArtifactSha256"]:
-        # A new AMECO release can change every score, so it needs a reviewed PR;
-        # it must not also freeze the Eurostat charts while waiting for that review.
-        print(f"::warning::AMECO changed upstream ({candidate_core['sources']['ameco']['sha256']}): score kept until reviewed, see docs/PAGELLA_POLITICO_ECONOMICA.md")
-        candidate_core = previous_core
+    else:
+        candidate_core = score.build_snapshot(spec, payload, acquired_at)
+        # Editorial caveats are reviewed content, not economic observations.
+        candidate_core["caveats"] = previous_core["caveats"]
+        score.validate_snapshot(candidate_core)  # requires the complete common observed panel
+        old_core = copy.deepcopy(previous_core)
+        old_core["generatedAt"] = acquired_at
+        old_core["sources"]["ameco"]["retrievedAt"] = acquired_at
+        if old_core == candidate_core:
+            candidate_core = previous_core
     candidate_page = build_page(retrieved_at, core=candidate_core, chronology=registry,
                                 existing=previous_page, core_hash=score.sha256(encoded(candidate_core)))
     preserve_unchanged_receipts(

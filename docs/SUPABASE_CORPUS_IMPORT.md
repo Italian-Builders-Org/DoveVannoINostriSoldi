@@ -307,7 +307,8 @@ bucket privato `dvns-snapshots`, per le chiavi content-addressed della release
 e per le operazioni di download. Il lettore verifica intervalli, dimensioni e
 digest del blocco rispetto ai manifest locali. La preview ha 514 manifest e
 220 oggetti autorizzati. Una nuova release richiede la riconciliazione dei
-manifest e l'aggiornamento esplicito delle chiavi autorizzate.
+manifest e l'aggiornamento esplicito delle chiavi autorizzate. Conservare le chiavi
+delle release ancora servite o mantenute per il rollback.
 
 Ogni processo apre una propria sessione Auth tramite password grant e conserva
 il solo access token in memoria. Il login viene condiviso dalle letture

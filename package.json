@@ -6,7 +6,7 @@
   "description": "Dati pubblici italiani spiegati in modo semplice, verificabile e open source.",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": ">=22.19.0"
+    "node": "22.x"
   },
   "scripts": {
     "brand:generate": "node scripts/brand/generate-icons.mjs",

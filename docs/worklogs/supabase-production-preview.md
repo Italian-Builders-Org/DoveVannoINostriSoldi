@@ -109,10 +109,21 @@ unione copre lo stesso profilo completo usato dai due job CI.
 `production.log` e la directory di errore
 `artifacts/browser/core/conto-economico-ssn-1280px/` conservano il fallimento.
 `production-main.log`, `production-core.log`, `sanita-repro-final.log`
-e `sanita-dark-fresh.png` documentano la ripetizione riuscita. I report
+e `sanita-dark-fresh.png` documentano la ripetizione riuscita.
+Dopo tutte le asserzioni core passate, il server Next locale aveva chiuso
+la porta su SIGTERM ma era rimasto attivo. Verificati PID e directory del
+processo di test, è stato terminato per completare la pulizia. Il runner
+ha quindi restituito exit 0. La circostanza è registrata in cleanup.log. I report
 Lighthouse sono in `.lighthouseci/`.
 
 
+
+## CI del fork
+
+GitHub ha classificato i workflow della PR come action_required. Occorre
+l'approvazione del maintainer prevista per i workflow dei fork. I gate locali
+sono stati completati. L'approvazione CI e quella del deploy seguono
+docs/DEPLOYMENT_APPROVAL.md.
 
 ## Perimetro del rilascio
 

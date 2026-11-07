@@ -285,7 +285,34 @@ const contentSecurityPolicyReportOnly = [
   "frame-src 'self'",
 ].join("; ");
 
+const supabaseBuild = process.env.DVNS_DATA_BACKEND === "supabase";
+const archiveBuild = process.env.DVNS_HEAVY_DATA_BACKEND === "supabase";
+const archivePayloadFiles = [
+  "src/data/generated/anac-operator-history/*.jsonl.gz",
+  "src/data/generated/anac-operator-history/*.pack",
+  "src/data/generated/medical-device-spending-index/aggregates.json.gz",
+  "src/data/generated/medical-device-spending-index/details.jsonl.gz",
+];
+if ((supabaseBuild || archiveBuild) && !process.env.DVNS_DATABASE_URL) {
+  throw new Error("DVNS_DATABASE_URL is required for a Supabase build.");
+}
+
+if (archiveBuild && (!process.env.DVNS_ARCHIVE_PUBLISHABLE_KEY?.startsWith("sb_publishable_") ||
+    !process.env.DVNS_ARCHIVE_EMAIL || !process.env.DVNS_ARCHIVE_PASSWORD)) {
+  throw new Error("Scoped Supabase Storage credentials are required for the heavy archive build.");
+}
+
 const nextConfig: NextConfig = {
+  // Bind the backend to the build when the filesystem rows are omitted.
+  env: {
+    ...(supabaseBuild ? { DVNS_BUILD_DATA_BACKEND: "supabase" } : {}),
+    ...(archiveBuild ? { DVNS_BUILD_HEAVY_DATA_BACKEND: "supabase" } : {}),
+  },
+  // The local Supabase runtime has its own .next and restored generated tree.
+  // Keep its module resolution inside this checkout, including node_modules.
+  ...(process.env.DVNS_RUNTIME_PROJECT_ROOT
+    ? { turbopack: { root: process.env.DVNS_RUNTIME_PROJECT_ROOT } }
+    : {}),
   poweredByHeader: false,
   reactStrictMode: true,
   allowedDevOrigins: ["localhost", "127.0.0.1"],
@@ -309,7 +336,12 @@ const nextConfig: NextConfig = {
   // Element-level intake ledgers are checked offline; public MCP reads the
   // receipt, release proofs and validated row chunks, never these CI files.
   outputFileTracingExcludes: {
-    "/*": ["data/source-ledger/elements/**/*", "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip"],
+    "/*": [
+      "data/source-ledger/elements/**/*",
+      "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
+      ...(supabaseBuild ? allIntegratedRowRuntimeFiles : []),
+      ...(archiveBuild ? archivePayloadFiles : []),
+    ],
     // contains:true also matches descendants. !(/**) keeps each hub exact;
     // the procurement, structure and cached procurement routes do not read childcare.
     "/app/enti!(/**)": childcareRuntimeFiles,
@@ -399,7 +431,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/snapshot-pages/enti/*/*": entityProcurementRuntimeFiles,
     "/snapshot-pages/operatori/*": [
-      "src/data/generated/anac-operator-history/*",
+      archiveBuild ? "src/data/generated/anac-operator-history/manifest.json" : "src/data/generated/anac-operator-history/*",
       "src/data/generated/anac-operator-awards-index/meta.json",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
@@ -444,7 +476,7 @@ const nextConfig: NextConfig = {
     // Hub reads summary/search via static imports; do not use a parent include here
     // or detail routes inherit search.json into their serverless bundle.
     "/appalti/operatori/\\[ref\\]": [
-      "src/data/generated/anac-operator-history/*",
+      archiveBuild ? "src/data/generated/anac-operator-history/manifest.json" : "src/data/generated/anac-operator-history/*",
       "src/data/generated/anac-operator-awards-index/meta.json",
       "scripts/etl/specs/anac-operator-awards-index.source.json",
       "scripts/etl/specs/anac-cig-2007-2025.source.json",
@@ -579,5 +611,13 @@ const nextConfig: NextConfig = {
     ],
   },
 };
+
+if (supabaseBuild) {
+  for (const [route, files] of Object.entries(nextConfig.outputFileTracingIncludes ?? {})) {
+    nextConfig.outputFileTracingIncludes![route] = files.filter(
+      (file) => !file.startsWith("src/data/generated/integrated/rows/"),
+    );
+  }
+}
 
 export default nextConfig;

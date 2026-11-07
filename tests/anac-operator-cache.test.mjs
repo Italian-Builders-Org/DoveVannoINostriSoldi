@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import "./helpers/register-ts-alias.mjs";
 const { getOperatorHistory } = await import("../src/lib/data/anac-operator-history.ts");
 
-test("operator cache retains validation after warm reads, file corruption and source changes", () => {
+test("operator cache retains validation after warm reads, file corruption and source changes", async () => {
   const cwd = process.cwd();
   const root = mkdtempSync(join(tmpdir(), "dvns-operator-cache-"));
   const files = [
@@ -22,18 +22,18 @@ test("operator cache retains validation after warm reads, file corruption and so
     }
     process.chdir(root);
     const ref = "op-00000250";
-    const original = getOperatorHistory(ref);
+    const original = await getOperatorHistory(ref);
     assert.ok(original);
-    assert.strictEqual(getOperatorHistory(ref), original);
+    assert.strictEqual(await getOperatorHistory(ref), original);
     const shard = join(root, files[1]);
     const bytes = readFileSync(shard);
     bytes[bytes.length - 1] ^= 1;
     writeFileSync(shard, bytes);
-    assert.throws(() => getOperatorHistory(ref), /Hash/);
+    await assert.rejects(() => getOperatorHistory(ref), /Hash/);
     copyFileSync(join(cwd, files[1]), shard);
-    assert.deepEqual(getOperatorHistory(ref), original);
+    assert.deepEqual(await getOperatorHistory(ref), original);
     writeFileSync(join(root, files[2]), "{}");
-    assert.throws(() => getOperatorHistory(ref), /non allineato/);
+    await assert.rejects(() => getOperatorHistory(ref), /non allineato/);
   } finally {
     process.chdir(cwd);
     rmSync(root, { recursive: true, force: true });

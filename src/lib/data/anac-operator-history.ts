@@ -12,6 +12,8 @@ import {
   type OperatorHistorySummary,
 } from "@/lib/data/anac-operator-history-contract";
 
+import { readSupabaseArchiveRange, usesSupabaseHeavyArchive } from "@/lib/data/supabase-archive-range";
+
 const DIRECTORY = "src/data/generated/anac-operator-history";
 let cachedManifest: z.infer<typeof historyManifestSchema> | undefined;
 const cache = new ArtifactCache<OperatorHistorySummary>(128, 16_777_216);
@@ -112,22 +114,23 @@ function bucketFor(ref: string): string {
   return createHash("sha256").update(ref).digest("hex").slice(0, 2);
 }
 
-export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
+export async function getOperatorHistory(ref: string): Promise<OperatorHistorySummary | null> {
   if (!/^op-\d{8}$/.test(ref)) return null;
   const bucket = bucketFor(ref);
   const file = manifest().shards.find((file) => file.id === bucket)!;
   const path = join(process.cwd(), DIRECTORY, `${bucket}.jsonl.gz`);
-  const fingerprint = `${file.sha256}:${artifactFingerprint([path])}`;
+  const remote = usesSupabaseHeavyArchive();
+  const fingerprint = remote ? file.sha256 : `${file.sha256}:${artifactFingerprint([path])}`;
   const recordKey = `${ref}:${fingerprint}`;
   const cached = cache.get(recordKey);
   if (cached) return cached;
   let requestedRecord: unknown;
   let lines = shardCache.get(fingerprint);
   if (!lines) {
-    const compressed = readBytes(
-      path,
-      16_777_216,
-    );
+    if (file.bytes > 16_777_216) throw new Error("Dimensioni storico operatori non valide");
+    const compressed = remote
+      ? await readSupabaseArchiveRange(file, 0, file.bytes)
+      : readBytes(path, 16_777_216);
     if (compressed.length !== file.bytes || digest(compressed) !== file.sha256)
       throw new Error("Hash dello storico operatori non valido");
     const raw = gunzipSync(compressed, { maxOutputLength: 67_108_864 }).toString(
@@ -153,7 +156,7 @@ export function getOperatorHistory(ref: string): OperatorHistorySummary | null {
       indexed = offsets;
       shardIndexes.set(`${bucket}:${file.sha256}`, indexed, Buffer.byteLength(JSON.stringify([...indexed])));
     }
-    if (`${file.sha256}:${artifactFingerprint([path])}` !== fingerprint) throw new Error("Storico operatori cambiato durante la lettura");
+    if (!remote && `${file.sha256}:${artifactFingerprint([path])}` !== fingerprint) throw new Error("Storico operatori cambiato durante la lettura");
     // Keep offsets across shard eviction; the SHA check above still runs on every read.
     lines = { raw, index: indexed };
     shardCache.set(fingerprint, lines, Buffer.byteLength(raw));
@@ -184,7 +187,7 @@ export function resetAnacOperatorHistoryCachesForTests(): void {
   shardIndexes.clear();
 }
 
-export function readOperatorHistoryAwards(
+export async function readOperatorHistoryAwards(
   history: OperatorHistorySummary,
   positions: readonly number[],
 ) {
@@ -211,11 +214,10 @@ export function readOperatorHistoryAwards(
   const blocks = new Map<number, z.infer<typeof historyBlockSchema>>();
   for (const index of wanted) {
     const block = history.detail.blocks[index];
-    const bytes = readBytes(
-      join(process.cwd(), DIRECTORY, `${bucket}.pack`),
-      1_048_576,
-      { ...block, fileBytes: pack.bytes },
-    );
+    if (block.bytes > 1_048_576) throw new Error("Dimensioni blocco storico non valide");
+    const bytes = usesSupabaseHeavyArchive()
+      ? await readSupabaseArchiveRange(pack, block.offset, block.bytes)
+      : readBytes(join(process.cwd(), DIRECTORY, `${bucket}.pack`), 1_048_576, { ...block, fileBytes: pack.bytes });
     if (digest(bytes) !== block.sha256)
       throw new Error("Hash del blocco storico non valido");
     const parsed = historyBlockSchema.parse(

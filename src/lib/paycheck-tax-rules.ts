@@ -258,11 +258,3 @@ export function parsePaycheckMonths(raw: unknown): PaycheckMonthCount {
   if (value === 13 || value === 14) return value;
   return 12;
 }
-
-/** @deprecated Use REGIONAL_SURTAX_BY_CODE — kept for callers that only need Lombardia bands. */
-export const LOMBARDIA_REGIONAL_BANDS: readonly ProgressiveBand[] = [
-  { upToEur: 15_000, rate: 0.0123 },
-  { upToEur: 28_000, rate: 0.0158 },
-  { upToEur: 50_000, rate: 0.0172 },
-  { upToEur: Number.POSITIVE_INFINITY, rate: 0.0173 },
-];

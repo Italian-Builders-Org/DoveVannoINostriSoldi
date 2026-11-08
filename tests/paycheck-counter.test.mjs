@@ -25,7 +25,6 @@ const {
   employmentDeductionEur,
   PAYCHECK_TAX_YEAR,
   REGIONAL_SURTAX_BY_CODE,
-  LOMBARDIA_REGIONAL_BANDS,
 } = await import("../src/lib/paycheck-tax-rules.ts");
 const {
   buildPaycheckShareCardInput,
@@ -70,6 +69,14 @@ const sampleMissions = [
   { mission: "Tutela della salute", label: "Salute", share: 0.25 },
   { mission: "Istruzione scolastica", label: "Istruzione", share: 0.1 },
   { mission: "Debito pubblico", label: "Debito pubblico", share: 0.08 },
+];
+
+/** MEF addizionale regionale 2026 — Lombardia (ISTAT 03); indipendente da REGIONAL_SURTAX_BY_CODE. */
+const LOMBARDIA_2026_REGIONAL_BANDS = [
+  { upToEur: 15_000, rate: 0.0123 },
+  { upToEur: 28_000, rate: 0.0158 },
+  { upToEur: 50_000, rate: 0.0172 },
+  { upToEur: Number.POSITIVE_INFINITY, rate: 0.0173 },
 ];
 
 function regionStub(code, name, municipal = 0.006) {
@@ -187,7 +194,7 @@ test("Piemonte progressive differs from Lombardia at 50k taxable", () => {
 
 test("Lombardia regional bands match progressive schedule", () => {
   const taxable = 50_000 * (1 - 0.0919);
-  const expected = applyProgressiveTax(taxable, LOMBARDIA_REGIONAL_BANDS);
+  const expected = applyProgressiveTax(taxable, LOMBARDIA_2026_REGIONAL_BANDS);
   const result = computePaycheck({
     annualGrossEur: 50_000,
     region: lombardia,

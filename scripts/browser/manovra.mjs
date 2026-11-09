@@ -19,19 +19,20 @@ try {
         );
         const main = await page.$eval("main", (el) => el.innerText);
         assert.match(main, /Bilancio in Breve/i);
-        assert.match(main, /Quanto spendiamo/i);
-        assert.match(main, /Per missione|Dove vanno i soldi/i);
+        assert.match(main, /Quanto spende e quanto incassa/i);
+        assert.match(main, /Dove vanno i soldi/i);
         assert.match(main, /Scuola|Istruzione scolastica/i);
-        assert.match(main, /Missione/i);
+        assert.match(main, /archivio open data|OpenBDAP/i);
         assert.match(main, /Tasse e imposte|tributarie/i);
         assert.match(main, /Ricorso al mercato/i);
         assert.match(main, /Confronta/i);
-        assert.match(main, /asse sx|asse dx|Debito pubblico/i);
+        assert.match(main, /Debito e deficit|Debito pubblico/i);
         assert.match(main, /2026/);
-        assert.match(main, /partono dal 2023|PDF|OpenBDAP/i);
+        assert.match(main, /PDF|Ragioneria/i);
         assert.match(main, /IRPEF|Imposta sul reddito delle persone fisiche/i);
-        assert.match(main, /Come leggerli/i);
-        assert.match(main, /Anno nel triennio/i);
+        assert.match(main, /Parole da conoscere|Come leggerli/i);
+        assert.match(main, /Scegli l’anno|Scegli l'anno|Anno nel triennio/i);
+        assert.match(main, /Stai per vedere/i);
         assert.ok(
           await page.$('a[href*="anno=2027"]'),
           "manca link anno 2027 del triennio",

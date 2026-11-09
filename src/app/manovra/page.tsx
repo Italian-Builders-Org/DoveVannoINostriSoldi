@@ -340,11 +340,12 @@ export default async function ManovraPage({
           .
         </p>
         <p className={styles.lede}>
-          Edizione {edition.label}: triennio {edition.years[0]}–
-          {edition.years[edition.years.length - 1]} (spese {triennioLine}). Il
-          confronto tra manovre resta sull’anno 1; qui puoi aprire anche 2027 e
-          2028 della stessa legge. Bilancio in Breve 2027-2029 non è ancora su
-          RGS.
+          Qui leggi il bilancio dello Stato pubblicato dalla Ragioneria (RGS),
+          in miliardi di euro. Edizione {edition.label}: anni {edition.years[0]}–
+          {edition.years[edition.years.length - 1]} (spese {triennioLine}). Con
+          i pulsanti sotto scegli quale anno guardare. Il «Bilancio in breve»
+          2027-2029 non è ancora uscito: il 2027 si legge come secondo anno di
+          questa legge.
         </p>
         <div className={styles.heroMeta}>
           <a href={edition.xlsx.url} target="_blank" rel="noreferrer">
@@ -393,7 +394,7 @@ export default async function ManovraPage({
         role="navigation"
         aria-label="Anno del triennio"
       >
-        <span className={styles.yearChipsLabel}>Anno nel triennio</span>
+        <span className={styles.yearChipsLabel}>Scegli l’anno da leggere</span>
         <div className={styles.compareChips}>
           {edition.years.map((year) => (
             <Link
@@ -511,25 +512,34 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="quanto-title">
         <div className={styles.sectionHeader}>
-          <h2 id="quanto-title">1. Quanto spendiamo</h2>
-          <p>Primo anno di ogni manovra confrontabile.</p>
+          <h2 id="quanto-title">1. Quanto spende e quanto incassa lo Stato</h2>
+          <p>
+            Stai per vedere un confronto tra le ultime manovre: per ciascuna, il
+            primo anno di entrate e di spese previste (in miliardi di euro).
+          </p>
         </div>
         <EntrateSpeseCompareChart data={yearCompare} />
       </section>
 
       <section className={styles.section} aria-labelledby="composizione-title">
         <div className={styles.sectionHeader}>
-          <h2 id="composizione-title">2. Di che sono fatte entrate e spese</h2>
-          <p>Tasse, altre entrate, vendite; spese correnti e investimenti.</p>
+          <h2 id="composizione-title">2. Da dove arrivano i soldi e come si spendono</h2>
+          <p>
+            Stai per vedere, per ogni anno del triennio, di cosa sono fatte le
+            entrate (tasse, altre entrate, vendite) e le spese (correnti,
+            interessi, investimenti).
+          </p>
         </div>
         <CompositionChart data={composition} />
       </section>
 
       <section className={styles.section} aria-labelledby="fisco-title">
         <div className={styles.sectionHeader}>
-          <h2 id="fisco-title">3. Le voci più grandi</h2>
+          <h2 id="fisco-title">3. Le singole voci più grandi nel {focusYear}</h2>
           <p>
-            Top entrate e spese del {focusYear}, in miliardi di euro.
+            Due elenchi in miliardi di euro: a sinistra le entrate più alte
+            (IRPEF, IVA…), a destra le categorie di spesa più alte (trasferimenti,
+            interessi…).
           </p>
         </div>
         <div className={styles.split}>
@@ -591,24 +601,30 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="missioni-title">
         <div className={styles.sectionHeader}>
-          <h2 id="missioni-title">4. Per missione: scuola, previdenza, debito…</h2>
+          <h2 id="missioni-title">4. Dove vanno i soldi: scuola, previdenza, debito…</h2>
           <p>
-            Dettaglio RGS (Tav. A.3) in miliardi di euro per l’anno {focusYear}.
-            Qui scuola e salute sono separate; «Salute (Stato)» è solo la quota
-            centrale.
+            Stai per vedere le voci ufficiali del bilancio dello Stato nel{" "}
+            {focusYear}, in miliardi di euro (fonte: Ragioneria dello Stato).
+            Scuola e salute sono separate. Poi, se c’è l’anno prima nel
+            triennio, vedi quanto ciascuna voce cresce o cala.
           </p>
         </div>
         <div className={styles.chartStack}>
           {rgsMissions.length > 0 ? (
             <RgsMissionSpendChart data={rgsMissions} year={focusYear} />
           ) : (
-            <p className={styles.note}>Missioni RGS non disponibili per questa edizione.</p>
+            <p className={styles.note}>
+              Per questa edizione non abbiamo ancora l’elenco delle voci di
+              spesa.
+            </p>
           )}
           {rgsDeltas.length > 0 && priorTrienniumYear != null ? (
             <MissionDeltaChart
               data={rgsDeltas}
               fromYear={priorTrienniumYear}
               toYear={focusYear}
+              title={`Cosa cambia nelle voci di spesa dal ${priorTrienniumYear} al ${focusYear}`}
+              lead={`Stai per vedere la differenza in miliardi di euro tra ${priorTrienniumYear} e ${focusYear} per le stesse voci del bilancio dello Stato. A destra cresce, a sinistra si riduce.`}
             />
           ) : null}
         </div>
@@ -616,17 +632,25 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="dove-title">
         <div className={styles.sectionHeader}>
-          <h2 id="dove-title">5. Confronto OpenBDAP</h2>
+          <h2 id="dove-title">5. Un altro archivio ufficiale, sugli anni già chiusi</h2>
           <p>
-            Stessa idea per missione, sulla serie storica OpenBDAP (anni già
-            pubblicati come legge di bilancio).
+            Stai per vedere lo stesso tipo di lettura (dove vanno i soldi per
+            capitolo), ma da un altro dataset pubblico della Ragioneria —
+            OpenBDAP, il portale open data del bilancio. Serve per confrontare
+            anni già pubblicati come legge di bilancio, non per sostituire i
+            grafici della sezione 4.
           </p>
         </div>
         <div className={styles.chartStack}>
-          <MissionSpendChart data={missionSpend} year={openBdapFocusYear} />
+          <MissionSpendChart
+            data={missionSpend}
+            year={openBdapFocusYear}
+            title={`Le 10 spese più grandi nel ${openBdapFocusYear} (archivio open data)`}
+            lead={`Questo grafico usa i dati open data della Ragioneria (OpenBDAP): le dieci voci di spesa più grandi previste dalla legge di bilancio del ${openBdapFocusYear}, in miliardi di euro.`}
+          />
           {openBdapCompareYears.length > 0 ? (
             <div className={styles.compareBar} role="navigation" aria-label="Anno di confronto">
-              <span>Confronta {openBdapFocusYear} con</span>
+              <span>Confronta il {openBdapFocusYear} con</span>
               <div className={styles.compareChips}>
                 {openBdapCompareYears.map((year) => (
                   <Link
@@ -648,27 +672,34 @@ export default async function ManovraPage({
             data={missionDeltas}
             fromYear={openBdapCompareFromYear}
             toYear={openBdapFocusYear}
+            title={`Cosa cambia tra ${openBdapCompareFromYear} e ${openBdapFocusYear} (stesso archivio open data)`}
+            lead={`Differenza in miliardi di euro tra i due anni scelti, sempre sui capitoli di spesa dell’archivio open data della Ragioneria. A destra cresce, a sinistra si riduce.`}
           />
         </div>
       </section>
 
       <section className={styles.section} aria-labelledby="storia-title">
         <div className={styles.sectionHeader}>
-          <h2 id="storia-title">6. La serie lunga</h2>
-          <p>Totale dei capitoli di spesa nel tempo, anche prima del 2023.</p>
+          <h2 id="storia-title">6. Come è cambiata la spesa totale nel tempo</h2>
+          <p>
+            Stai per vedere due linee sul totale delle spese dello Stato negli
+            anni: una dall’archivio open data (anche prima del 2023) e, se
+            disponibile, una dalla Ragioneria nella stessa edizione che stai
+            leggendo.
+          </p>
         </div>
         <div className={styles.chartStack}>
           <MissionHistoryChart
             data={openBdapTotals}
-            title="Totale missioni 2017→oggi"
-            lead="Somma di tutti i capitoli di spesa previsti dalla legge di bilancio."
+            title="Spesa totale dello Stato nel tempo (archivio open data)"
+            lead="Somma di tutti i capitoli previsti dalla legge di bilancio, anno per anno. Serve a vedere se il totale cresce o cala nel lungo periodo."
             ariaLabel="Totale stanziamenti OpenBDAP per anno"
           />
           {missionHistoryTotals.length > 0 ? (
             <MissionHistoryChart
               data={missionHistoryTotals}
-              title={`Missioni storiche RGS (${edition.label})`}
-              lead="Somma ripubblicata da RGS in Tav. A.3, anche per anni prima del 2023."
+              title={`Spesa totale ripubblicata in questa edizione (${edition.label})`}
+              lead="Stesso concetto (totale delle voci di spesa), preso dalle tavole di questa edizione della Ragioneria, anche per anni storici."
               ariaLabel="Totale missioni RGS Tavola A.3 per anno"
             />
           ) : null}
@@ -677,10 +708,11 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="manovra-title">
         <div className={styles.sectionHeader}>
-          <h2 id="manovra-title">7. Cosa sposta la manovra</h2>
+          <h2 id="manovra-title">7. Cosa sposta la nuova legge rispetto a prima</h2>
           <p>
-            Solo 9 aggregati RGS (Tav. 2.2), in % e in mld €. Non sostituiscono
-            le missioni sopra.
+            Stai per vedere solo l’effetto della manovra: quanto la nuova legge
+            sposta i soldi rispetto alle regole già in vigore, in 9 grandi
+            famiglie di spesa (non il dettaglio scuola/sanità della sezione 4).
           </p>
         </div>
         <ManovraShareChart
@@ -701,8 +733,12 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="finanza-title">
         <div className={styles.sectionHeader}>
-          <h2 id="finanza-title">8. Come si chiude</h2>
-          <p>Triennio in mld € e percorso % del PIL (saldi a sinistra, debito a destra).</p>
+          <h2 id="finanza-title">8. Come si chiude il bilancio (e rispetto al PIL)</h2>
+          <p>
+            Prima una tabella del triennio in miliardi di euro (entrate, spese,
+            saldo, prestito sui mercati). Poi, se disponibile, il peso di debito
+            e deficit sull’economia in % del PIL.
+          </p>
         </div>
         <div className={`${styles.panel} ${styles.tableWrap}`}>
           <table className={styles.table}>
@@ -752,10 +788,11 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="glossario-title">
         <div className={styles.sectionHeader}>
-          <h2 id="glossario-title">9. Come leggerli</h2>
+          <h2 id="glossario-title">9. Parole da conoscere</h2>
           <p>
-            Quattro parole del bilancio, dette in italiano. I numeri di questa
-            pagina restano in competenza.
+            Quattro termini del bilancio spiegati in italiano. I numeri di questa
+            pagina sono in «competenza» (vedi sotto), non i soldi già usciti dalla
+            cassa.
           </p>
         </div>
         <dl className={styles.glossary}>

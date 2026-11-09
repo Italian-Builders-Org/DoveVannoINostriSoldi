@@ -313,8 +313,8 @@ export function EntrateSpeseCompareChart({ data }: { data: YearComparePoint[] })
   const palette = usePalette();
   return (
     <ChartShell
-      title="Quanto spendiamo e quanto incassiamo"
-      lead="Primo anno di ogni manovra (2023→2026). Barre scure = spese; barre chiare = entrate."
+      title="Entrate e spese: le manovre a confronto"
+      lead="Per ogni manovra (dal 2023 in poi) vedi quanto lo Stato prevede di incassare e di spendere nel primo anno. Barra scura = spese; barra chiara = entrate."
       height={400}
       ariaLabel="Confronto entrate e spese finali per manovra dal 2023 al 2026"
     >
@@ -386,15 +386,22 @@ export function EntrateSpeseCompareChart({ data }: { data: YearComparePoint[] })
 export function MissionSpendChart({
   data,
   year,
+  title,
+  lead,
 }: {
   data: MissionSpendPoint[];
   year: number;
+  title?: string;
+  lead?: string;
 }) {
   const palette = usePalette();
   return (
     <ChartShell
-      title={`Dove vanno i soldi nel ${year}`}
-      lead="Le 10 voci di spesa più grandi previste dalla legge di bilancio."
+      title={title ?? `Le 10 spese più grandi dello Stato nel ${year}`}
+      lead={
+        lead ??
+        `Questo grafico mostra dove la legge di bilancio mette più soldi nel ${year}, in miliardi di euro. Non sono pagamenti già fatti: sono stanziamenti previsti.`
+      }
       height={Math.max(480, data.length * 58)}
       ariaLabel={`Missioni con maggiore stanziamento nel ${year}`}
       glossary={[
@@ -464,24 +471,31 @@ export function MissionDeltaChart({
   data,
   fromYear,
   toYear,
+  title,
+  lead,
 }: {
   data: MissionDeltaPoint[];
   fromYear: number;
   toYear: number;
+  title?: string;
+  lead?: string;
 }) {
   const palette = usePalette();
   const domain = divergingDomain(data.map((point) => point.deltaMld));
   return (
     <ChartShell
-      title={`Cosa cambia dal ${fromYear} al ${toYear}`}
-      lead="A destra cresce, a sinistra si riduce. Scegli l’anno di confronto sopra il grafico."
+      title={title ?? `Quanto cambiano le spese dal ${fromYear} al ${toYear}`}
+      lead={
+        lead ??
+        `Ogni barra è la differenza in miliardi di euro tra i due anni: a destra la spesa prevista cresce, a sinistra si riduce.`
+      }
       height={Math.max(520, data.length * 64)}
       ariaLabel={`Variazioni di stanziamento per missione dal ${fromYear} al ${toYear}`}
       glossary={[
         {
-          term: "Missione",
+          term: "Differenza",
           meaning:
-            "Capitolo di spesa dello Stato. Qui vedi quanto cambia lo stanziamento tra due anni.",
+            "Soldi in più o in meno rispetto all’anno scelto per il confronto. Non dice se la spesa è «giusta»: mostra solo il cambiamento.",
         },
       ]}
     >
@@ -562,20 +576,20 @@ export function ManovraShareChart({
   const domain = divergingDomain(data.map((row) => row.manovraPct), 0.32);
   return (
     <ChartShell
-      title={`Cosa sposta la manovra ${year}`}
-      lead="Aggregati RGS (Tav. 2.2): % sul totale e miliardi di euro ricavati dalle spese finali. «Salute e istruzione» qui sono ancora insieme; sotto le trovi separate per missione."
+      title={`Dove la manovra ${year} sposta i soldi`}
+      lead={`Questo grafico non elenca scuola o sanità una per una: raggruppa le spese in 9 grandi famiglie. La barra è l’effetto della manovra sul totale (in %; nel tooltip anche in miliardi di euro).`}
       height={Math.max(520, data.length * 64)}
       ariaLabel={`Incidenza della manovra ${year} per aggregato in percentuale e miliardi`}
       glossary={[
         {
-          term: "Aggregato",
+          term: "Famiglia di spesa",
           meaning:
-            "Raggruppamento RGS di più missioni (es. salute+istruzione). Non è il dettaglio per scuola o sanità.",
+            "Raggruppamento ufficiale (es. «salute e istruzione» insieme). Per scuola e sanità separate guarda la sezione sulle missioni.",
         },
         {
-          term: "Euro ricavati",
+          term: "Effetto manovra",
           meaning:
-            "Si ottengono applicando la % pubblicata alle spese finali di competenza dello stesso anno.",
+            "Quanto la nuova legge sposta i soldi rispetto alla legislazione già in vigore, non l’intero stanziamento della famiglia.",
         },
       ]}
     >
@@ -673,20 +687,20 @@ export function RgsMissionSpendChart({
   const palette = usePalette();
   return (
     <ChartShell
-      title={`Missioni RGS nel ${year}`}
-      lead="Stanziamenti di Tav. A.3 in miliardi di euro. Scuola, università e salute sono missioni distinte (la sanità territoriale resta soprattutto regionale)."
+      title={`Dove vanno i soldi nel ${year}: scuola, previdenza, debito…`}
+      lead={`Questo grafico elenca le voci ufficiali del bilancio dello Stato nel ${year}, in miliardi di euro. Scuola, università e salute sono separate. Attenzione: «Salute (Stato)» è solo la quota del bilancio centrale; la sanità delle Regioni sta soprattutto nei trasferimenti alle autonomie.`}
       height={Math.max(560, data.length * 52)}
       ariaLabel={`Missioni del bilancio dello Stato nel ${year} in miliardi di euro`}
       glossary={[
         {
-          term: "Missione",
+          term: "Voce di bilancio",
           meaning:
-            "Voce ufficiale del bilancio dello Stato (istruzione scolastica, previdenza, debito…). Più fine degli aggregati della manovra.",
+            "Capitolo ufficiale (istruzione scolastica, previdenza, debito…). È più dettagliato delle 9 famiglie della sezione «cosa sposta la manovra».",
         },
         {
           term: "Salute (Stato)",
           meaning:
-            "Solo la quota nel bilancio centrale. La gran parte della sanità passa dalle Regioni e dai trasferimenti alle autonomie.",
+            "Soldi della sanità nel bilancio centrale. La maggior parte della sanità pubblica passa dalle Regioni.",
         },
       ]}
     >
@@ -749,8 +763,8 @@ export function CompositionChart({ data }: { data: CompositionPoint[] }) {
   const palette = usePalette();
   return (
     <ChartShell
-      title="Di che sono fatte entrate e spese"
-      lead="Due barre per anno: a sinistra le entrate, a destra le spese."
+      title="Di cosa sono fatte entrate e spese"
+      lead="Per ogni anno del triennio: a sinistra come si compongono le entrate (tasse, altre entrate, vendite), a destra le spese (correnti, interessi, investimenti)."
       height={400}
       ariaLabel="Composizione di entrate e spese nel triennio della manovra"
       glossary={[
@@ -959,8 +973,8 @@ export function PilPathChart({ data }: { data: PilPoint[] }) {
 
   return (
     <ChartShell
-      title="Percorso % del PIL"
-      lead="Sinistra: indebitamento e saldo primario. Destra: debito pubblico. Scale separate per leggerli entrambi."
+      title="Debito e deficit rispetto al PIL"
+      lead="Tre indicatori del quadro ufficiale: indebitamento netto e saldo primario (scala a sinistra) e debito pubblico (scala a destra), tutti in % del PIL. Non sono i miliardi della tabella sopra: sono il peso sull’economia."
       height={400}
       ariaLabel="Percorso programmatico combinato: indebitamento e primario a sinistra, debito a destra, in percentuale del PIL"
       glossary={[

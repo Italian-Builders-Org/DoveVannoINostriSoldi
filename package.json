@@ -14,6 +14,7 @@
     "readme:screenshots": "node scripts/brand/capture-readme.mjs",
     "dev": "next dev",
     "build": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs && next build && node scripts/ci/prune-occupation-hub-traces.mjs && node scripts/ci/clean-next-build-cache.mjs && node scripts/ci/check-runtime-traces.mjs",
+    "editorial-summaries:generate": "node --experimental-strip-types scripts/ci/editorial-summaries.mjs --write",
     "source-health:generate": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs --write",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",

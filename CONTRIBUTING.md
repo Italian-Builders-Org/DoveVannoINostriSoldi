@@ -193,6 +193,13 @@ senza incorporare timestamp di build o stati dei probe nel riepilogo.
 Il publisher dei refresh automatici aggiorna e include il riepilogo per le
 fonti interessate, usando gli stessi validator con il network guard attivo.
 
+Dopo una modifica ai dataset Immobili AdE, ai posti letto o all’indice dei
+dispositivi medici, rigenera i riepiloghi delle pagine con
+`npm run editorial-summaries:generate`. Il test Node li riconcilia offline
+con le righe e i blocchi verificati del rilascio. I riepiloghi in
+`src/data/editorial-snapshots` viaggiano con il codice, così anche la vista
+locale Supabase li può usare con il suo inventario sorgente fissato.
+
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nei job
 `production` e `production-core` di GitHub Actions. Il download resta attivo con

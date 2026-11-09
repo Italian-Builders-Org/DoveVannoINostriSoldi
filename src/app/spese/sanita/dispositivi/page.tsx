@@ -10,6 +10,7 @@ import {
   searchMedicalDevices,
 } from "@/lib/medical-device-spending";
 import { integer } from "@/lib/format";
+import { getMedicalDeviceSpendingHistory } from "@/lib/medical-device-history";
 import styles from "./dispositivi.module.css";
 import { TerritoryFilters } from "./territory-filters";
 
@@ -55,11 +56,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   const filterYears = [...filters.years].sort((left, right) => right.year - left.year);
   const regionLabels = Object.fromEntries(filters.years.flatMap((item) =>
     item.regions.map(({ code }) => [code, medicalDeviceRegionLabel(code)])));
-  const history = await Promise.all(years.map(async (year) => {
-    const annual = await aggregateMedicalDeviceSpending({ year: String(year), limit: 1 });
-    return { year, spending: annual.coverage.spending };
-  }));
-  history.sort((left, right) => left.year - right.year);
+  const history = getMedicalDeviceSpendingHistory();
   let search: Awaited<ReturnType<typeof searchMedicalDevices>> | null = null;
   let searchError: string | null = null;
   if (q) {

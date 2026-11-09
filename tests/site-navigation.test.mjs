@@ -53,11 +53,12 @@ test("every page offers the rest of its section without the header menu", async 
   assert.match(component, /isNavChildActive/);
   // A section with a single page has nothing to offer and renders nothing.
   assert.match(component, /if \(pages\.length < 2\) return null;/);
-  // The current page is a destination already reached, not a link back to here.
-  assert.match(component, /aria-current="page"/);
+  // Sibling pages stay in a compact dropdown instead of a chip cloud.
+  assert.match(component, /<select/);
+  assert.match(component, /router\.push/);
   assert.doesNotMatch(component, /subnav-row|nav\.subnav/);
   assert.match(css, /min-height: 44px/);
-  assert.doesNotMatch(css, /border-radius\s*:/);
+  assert.match(css, /\.select \{[\s\S]*?border-radius: 0;/);
 });
 
 test("public legal pages expose only the authorized support mailbox", async () => {

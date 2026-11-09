@@ -19,7 +19,7 @@ export async function inspectNavigationPrefetch(browser, baseUrl) {
     }
     await Promise.all([
       page.waitForRequest((request) => isPrefetch(request, "/cuneo-fiscale")),
-      page.hover('nav[aria-label="Altre pagine in Economia"] a[href="/cuneo-fiscale"]'),
+      page.hover('#desktop-navigation a[href="/cuneo-fiscale"]'),
     ]);
     await Promise.all([
       page.waitForRequest((request) => isPrefetch(request, "/imprese")),

@@ -22,10 +22,17 @@ export function databaseConnectionUrl(value = process.env.DVNS_DATABASE_URL): st
     if (!["postgres:", "postgresql:"].includes(url.protocol) || !url.password ||
       url.pathname !== "/postgres" ||
       url.searchParams.getAll("sslmode").length !== 1 ||
-      !["require", "verify-full"].includes(url.searchParams.get("sslmode") ?? "") ||
-      !((url.hostname === `db.${project}.supabase.co` && url.username === "postgres") ||
-        (url.hostname === "aws-0-eu-west-1.pooler.supabase.com" && [`postgres.${project}`, `dvns_vercel_preview.${project}`].includes(url.username)))) throw new Error();
-    return value!;
+      !["require", "verify-full"].includes(url.searchParams.get("sslmode") ?? "")) throw new Error();
+    if (url.hostname === `db.${project}.supabase.co` && url.username === "postgres") return value!;
+    if (url.hostname !== "aws-0-eu-west-1.pooler.supabase.com") throw new Error();
+    if (url.username === `postgres.${project}`) return value!;
+    const canary = process.env.VERCEL_ENV === "preview" && url.username === `dvns_vercel_canary.${project}`;
+    if (!canary && url.username !== `dvns_vercel_preview.${project}`) throw new Error();
+    if (url.port && url.port !== "5432" && url.port !== "6543") throw new Error();
+    // Session pooling holds a PostgreSQL connection for each warm function.
+    // Transaction pooling releases it after each bounded read, across instances.
+    url.port = "6543";
+    return url.href;
   } catch {
     throw new Error("Configurazione PostgreSQL DVNS mancante o non valida per il progetto selezionato.");
   }

@@ -2,7 +2,6 @@ import "server-only";
 import { get } from "node:https";
 import type { IncomingMessage } from "node:http";
 import { z } from "zod";
-import { database } from "@/lib/integrated-supabase-reader";
 import { archiveSession, DVNS_SUPABASE_URL } from "@/lib/data/supabase-archive-session";
 
 const MAX_OBJECT_BYTES = 4 * 1024 * 1024;
@@ -27,6 +26,7 @@ export async function readSupabaseArchiveRange(
     throw new Error("Intervallo archivio DVNS non valido.");
   }
   try {
+    const { database } = await import("@/lib/integrated-supabase-reader");
     const deadline = AbortSignal.timeout(15_000);
     const requestSignal = signal ? AbortSignal.any([signal, deadline]) : deadline;
     const [blob] = await database().begin("read only", async (tx) => {

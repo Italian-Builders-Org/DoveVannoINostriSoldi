@@ -26,7 +26,7 @@ CHUNK_ROWS = 1000
 
 def load_database_url(env_file):
     values = {}
-    for line in env_file.read_text().splitlines():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
         if line.strip() and not line.lstrip().startswith("#") and "=" in line:
             key, value = line.split("=", 1)
             values[key.strip()] = value.strip().strip("\"'")

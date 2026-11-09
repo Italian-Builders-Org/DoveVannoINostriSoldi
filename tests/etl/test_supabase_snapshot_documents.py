@@ -29,9 +29,9 @@ class SnapshotDocumentTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "generated").mkdir()
-            (root / "generated/data.json").write_text('{"zero":"0"}')
+            (root / "generated/data.json").write_text('{"zero":"0"}', encoding="utf-8")
             (root / "generated/derived.pack").write_bytes(b"opaque")
-            (root / "outside.json").write_text('{"private":true}')
+            (root / "outside.json").write_text('{"private":true}', encoding="utf-8")
             registry = {
                 "generatedDataRoots": ["generated"],
                 "exclusions": [],

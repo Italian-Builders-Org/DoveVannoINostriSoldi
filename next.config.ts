@@ -340,6 +340,9 @@ const nextConfig: NextConfig = {
       "data/source-ledger/elements/**/*",
       "public/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip",
       ...(supabaseBuild ? allIntegratedRowRuntimeFiles : []),
+      // Dynamic imports are traced too. Only SQL corpus validation reads this
+      // manifest; Storage validates archive blocks against its own manifests.
+      ...(!supabaseBuild ? ["src/data/supabase-chunk-digests.json"] : []),
       ...(archiveBuild ? archivePayloadFiles : []),
     ],
     // contains:true also matches descendants. !(/**) keeps each hub exact;

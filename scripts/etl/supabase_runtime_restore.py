@@ -227,7 +227,7 @@ def main():
                         (
                             documents_dir
                             / (hashlib.sha256(path.encode()).hexdigest() + ".json")
-                        ).write_text(payload)
+                        ).write_text(payload, encoding="utf-8")
                 if document_paths != {
                     i["path"] for i in inventory if i["disposition"] == "json-document"
                 }:
@@ -278,7 +278,7 @@ def main():
             "bytes": sum(i["source_bytes"] for i in selected),
             "inventory_sha256": pin["inventory_sha256"],
         }
-        (args.cache / "verified.json").write_text(json.dumps(result, indent=2) + "\n")
+        (args.cache / "verified.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(result), flush=True)
 
 

@@ -62,7 +62,7 @@ class SupabaseExportTests(unittest.TestCase):
 
     def test_changed_receipt_is_rejected(self):
         path = self.root / f"data/source-ledger/datasets/{PILOT}.receipt.json"
-        path.write_text("{}")
+        path.write_text("{}", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "hash"):
             dataset_rows(self.root, PILOT)
 
@@ -71,7 +71,7 @@ class SupabaseExportTests(unittest.TestCase):
         with self.assertRaises((ValueError, FileNotFoundError)):
             dataset_rows(self.root, PILOT)
         path = self.root / "src/data/generated/integrated/catalog.json"
-        path.write_text("{}")
+        path.write_text("{}", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "hash"):
             load_catalog(self.root)
 

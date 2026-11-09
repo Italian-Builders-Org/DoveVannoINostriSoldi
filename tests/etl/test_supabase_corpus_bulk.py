@@ -76,7 +76,7 @@ class BulkBoundaryTests(unittest.TestCase):
             f"postgresql://postgres:{secret}@db.zvqhikeylxynsljwgosc.supabase.co/postgres",
             "postgresql://postgres@db.zvqhikeylxynsljwgosc.supabase.co/postgres?sslmode=require",
         ]:
-            path.write_text("DVNS_DATABASE_URL=" + uri + "\n")
+            path.write_text("DVNS_DATABASE_URL=" + uri + "\n", encoding="utf-8")
             with self.assertRaises(ValueError) as error:
                 load_database_url(path)
             self.assertNotIn(secret, str(error.exception))
@@ -84,7 +84,7 @@ class BulkBoundaryTests(unittest.TestCase):
     def test_quoted_password_uri_is_read_without_interpolating_dollar(self):
         path = self.root / ".env.local"
         uri = "postgresql://postgres.zvqhikeylxynsljwgosc:p%24x@aws-0-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require"
-        path.write_text('DVNS_DATABASE_URL="' + uri + '"\n')
+        path.write_text('DVNS_DATABASE_URL="' + uri + '"\n', encoding="utf-8")
         self.assertEqual(load_database_url(path), uri)
 
 

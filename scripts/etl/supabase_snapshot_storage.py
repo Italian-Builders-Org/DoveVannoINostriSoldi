@@ -58,7 +58,7 @@ def verified_stream(stream, expected_sha256, expected_bytes):
 def storage_credentials(path):
     values = dict(
         line.split("=", 1)
-        for line in path.read_text().splitlines()
+        for line in path.read_text(encoding="utf-8").splitlines()
         if "=" in line and not line.lstrip().startswith("#")
     )
     base = values.get("DVNS_SUPABASE_URL", "").strip().strip("\"'")

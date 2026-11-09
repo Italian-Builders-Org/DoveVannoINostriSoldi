@@ -139,8 +139,10 @@ async function openMobilitaFontiPanel(page) {
 }
 
 async function waitForViewerFrame(page) {
-  const frame = page.frames().find((candidate) => candidate.url().includes("/mappe/mobilita/explorer/"));
-  assert.ok(frame, "iframe explorer assente");
+  const frame = await page.waitForFrame(
+    (candidate) => candidate.url().includes("/mappe/mobilita/explorer/"),
+    { timeout: 45_000 },
+  );
   await frame.waitForFunction(
     () => {
       const data = document.getElementById("data");

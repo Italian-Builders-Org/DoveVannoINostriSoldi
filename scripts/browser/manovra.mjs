@@ -20,7 +20,8 @@ try {
         const main = await page.$eval("main", (el) => el.innerText);
         assert.match(main, /Bilancio in Breve/i);
         assert.match(main, /Quanto spendiamo/i);
-        assert.match(main, /Dove vanno i soldi/i);
+        assert.match(main, /Per missione|Dove vanno i soldi/i);
+        assert.match(main, /Scuola|Istruzione scolastica/i);
         assert.match(main, /Missione/i);
         assert.match(main, /Tasse e imposte|tributarie/i);
         assert.match(main, /Ricorso al mercato/i);

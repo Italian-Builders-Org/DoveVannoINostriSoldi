@@ -11,6 +11,8 @@ import {
   formatSignedPct,
   getEdition,
   manovraShareSorted,
+  rgsMissionDeltas,
+  rgsMissionsForYear,
   topDetailRows,
   type FirstYearComparison,
   type ManovraEdition,
@@ -25,6 +27,7 @@ import {
   MissionHistoryChart,
   MissionSpendChart,
   PilPathChart,
+  RgsMissionSpendChart,
 } from "./manovra-charts";
 import styles from "./manovra.module.css";
 
@@ -274,6 +277,22 @@ export default async function ManovraPage({
   const focusEntrate = metricForYear(edition, "entrateFinali", focusYear);
   const focusSaldo = metricForYear(edition, "saldoNettoDaFinanziare", focusYear);
   const focusRicorso = metricForYear(edition, "ricorsoAlMercato", focusYear);
+  const rgsMissions = rgsMissionsForYear(edition, focusYear, 16).map((row) => ({
+    mission: row.mission,
+    short: row.short,
+    amountMld: toMld(row.amountEur),
+  }));
+  const priorTrienniumYear = edition.years.includes(focusYear - 1)
+    ? focusYear - 1
+    : null;
+  const rgsDeltas =
+    priorTrienniumYear == null
+      ? []
+      : rgsMissionDeltas(edition, priorTrienniumYear, focusYear, 12).map((row) => ({
+          mission: row.mission,
+          short: row.short,
+          deltaMld: toMld(row.deltaEur, 2),
+        }));
   const triennioLine = edition.years
     .map((year) => {
       const spese = metricForYear(edition, "speseFinali", year);
@@ -570,11 +589,37 @@ export default async function ManovraPage({
         </div>
       </section>
 
+      <section className={styles.section} aria-labelledby="missioni-title">
+        <div className={styles.sectionHeader}>
+          <h2 id="missioni-title">4. Per missione: scuola, previdenza, debito…</h2>
+          <p>
+            Dettaglio RGS (Tav. A.3) in miliardi di euro per l’anno {focusYear}.
+            Qui scuola e salute sono separate; «Salute (Stato)» è solo la quota
+            centrale.
+          </p>
+        </div>
+        <div className={styles.chartStack}>
+          {rgsMissions.length > 0 ? (
+            <RgsMissionSpendChart data={rgsMissions} year={focusYear} />
+          ) : (
+            <p className={styles.note}>Missioni RGS non disponibili per questa edizione.</p>
+          )}
+          {rgsDeltas.length > 0 && priorTrienniumYear != null ? (
+            <MissionDeltaChart
+              data={rgsDeltas}
+              fromYear={priorTrienniumYear}
+              toYear={focusYear}
+            />
+          ) : null}
+        </div>
+      </section>
+
       <section className={styles.section} aria-labelledby="dove-title">
         <div className={styles.sectionHeader}>
-          <h2 id="dove-title">4. Dove vanno i soldi</h2>
+          <h2 id="dove-title">5. Confronto OpenBDAP</h2>
           <p>
-            Missione = capitolo di spesa dello Stato (scuola, sanità, debito…).
+            Stessa idea per missione, sulla serie storica OpenBDAP (anni già
+            pubblicati come legge di bilancio).
           </p>
         </div>
         <div className={styles.chartStack}>
@@ -609,7 +654,7 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="storia-title">
         <div className={styles.sectionHeader}>
-          <h2 id="storia-title">5. La serie lunga</h2>
+          <h2 id="storia-title">6. La serie lunga</h2>
           <p>Totale dei capitoli di spesa nel tempo, anche prima del 2023.</p>
         </div>
         <div className={styles.chartStack}>
@@ -632,8 +677,11 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="manovra-title">
         <div className={styles.sectionHeader}>
-          <h2 id="manovra-title">6. Cosa sposta la manovra</h2>
-          <p>Effetto della manovra sull’anno {focusYear} (aggregati RGS).</p>
+          <h2 id="manovra-title">7. Cosa sposta la manovra</h2>
+          <p>
+            Solo 9 aggregati RGS (Tav. 2.2), in % e in mld €. Non sostituiscono
+            le missioni sopra.
+          </p>
         </div>
         <ManovraShareChart
           year={focusYear}
@@ -641,13 +689,19 @@ export default async function ManovraPage({
             aggregate: row.aggregate,
             short: row.aggregate,
             manovraPct: Number(row.manovraPct.toFixed(2)),
+            manovraMld:
+              row.manovraEur == null ? null : Number((row.manovraEur / 1e9).toFixed(2)),
+            stanziamentoMld:
+              row.stanziamentoEur == null
+                ? null
+                : Number((row.stanziamentoEur / 1e9).toFixed(1)),
           }))}
         />
       </section>
 
       <section className={styles.section} aria-labelledby="finanza-title">
         <div className={styles.sectionHeader}>
-          <h2 id="finanza-title">7. Come si chiude</h2>
+          <h2 id="finanza-title">8. Come si chiude</h2>
           <p>Triennio in mld € e percorso % del PIL (saldi a sinistra, debito a destra).</p>
         </div>
         <div className={`${styles.panel} ${styles.tableWrap}`}>
@@ -698,7 +752,7 @@ export default async function ManovraPage({
 
       <section className={styles.section} aria-labelledby="glossario-title">
         <div className={styles.sectionHeader}>
-          <h2 id="glossario-title">8. Come leggerli</h2>
+          <h2 id="glossario-title">9. Come leggerli</h2>
           <p>
             Quattro parole del bilancio, dette in italiano. I numeri di questa
             pagina restano in competenza.

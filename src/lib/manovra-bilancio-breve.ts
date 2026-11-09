@@ -8,16 +8,18 @@ export type SummaryMetric = {
   byYear: Record<string, MoneyPair>;
 };
 
+export type ManovraSharePoint = {
+  legislazioneVigentePct: number | null;
+  manovraPct: number | null;
+  totalePct: number | null;
+  legislazioneVigenteEur?: number | null;
+  manovraEur?: number | null;
+  stanziamentoEur?: number | null;
+};
+
 export type ManovraShareRow = {
   aggregate: string;
-  byYear: Record<
-    string,
-    {
-      legislazioneVigentePct: number | null;
-      manovraPct: number | null;
-      totalePct: number | null;
-    }
-  >;
+  byYear: Record<string, ManovraSharePoint>;
 };
 
 export type DetailSeriesRow = {
@@ -205,7 +207,13 @@ export function formatSignedPct(value: number | null, digits = 1): string {
 export function manovraShareSorted(
   edition: ManovraEdition,
   year: number,
-): Array<{ aggregate: string; manovraPct: number; totalePct: number | null }> {
+): Array<{
+  aggregate: string;
+  manovraPct: number;
+  totalePct: number | null;
+  manovraEur: number | null;
+  stanziamentoEur: number | null;
+}> {
   const key = String(year);
   return edition.manovraShareOfAppropriationsPct
     .map((row) => {
@@ -216,10 +224,87 @@ export function manovraShareSorted(
         aggregate: row.aggregate,
         manovraPct: point.manovraPct,
         totalePct: point.totalePct,
+        manovraEur: point.manovraEur ?? null,
+        stanziamentoEur: point.stanziamentoEur ?? null,
       };
     })
     .filter((row): row is NonNullable<typeof row> => Boolean(row))
     .sort((a, b) => Math.abs(b.manovraPct) - Math.abs(a.manovraPct));
+}
+
+const MISSION_SHORT_LABELS: Record<string, string> = {
+  "Istruzione scolastica": "Scuola",
+  "Istruzione universitaria e formazione post-universitaria": "Università",
+  "Tutela della salute": "Salute (Stato)",
+  "Politiche previdenziali": "Previdenza",
+  "Diritti sociali, politiche sociali e famiglia": "Politiche sociali",
+  "Politiche per il lavoro": "Lavoro",
+  "Difesa e sicurezza del territorio": "Difesa",
+  "Ordine pubblico e sicurezza": "Sicurezza",
+  "Giustizia": "Giustizia",
+  "Debito pubblico": "Debito pubblico",
+  "Relazioni finanziarie con le autonomie territoriali": "Autonomie territoriali",
+  "Diritto alla mobilità e sviluppo dei sistemi di trasporto": "Trasporti",
+  "Tutela e valorizzazione dei beni e attività culturali e paesaggistici": "Cultura",
+  "Sviluppo sostenibile e tutela del territorio e dell'ambiente": "Ambiente",
+  "Fondi da ripartire": "Fondi da ripartire",
+  "Competitività e sviluppo delle imprese": "Imprese",
+};
+
+export function shortMissionLabel(mission: string): string {
+  return MISSION_SHORT_LABELS[mission] ?? mission;
+}
+
+/** RGS Tav. A.3 missions for one year, largest first, excluding totals. */
+export function rgsMissionsForYear(
+  edition: ManovraEdition,
+  year: number,
+  limit = 16,
+): Array<{ mission: string; short: string; amountEur: number }> {
+  if (!edition.missionHistory.available) return [];
+  const key = String(year);
+  return edition.missionHistory.missions
+    .map((row) => {
+      const million = row.byYearMillionEur[key];
+      if (million == null || !Number.isFinite(million)) return null;
+      if (row.mission.toLowerCase().startsWith("totale")) return null;
+      return {
+        mission: row.mission,
+        short: shortMissionLabel(row.mission),
+        amountEur: Math.round(million * 1_000_000),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => Boolean(row))
+    .sort((a, b) => b.amountEur - a.amountEur)
+    .slice(0, limit);
+}
+
+/** Year-over-year change inside the same LB triennium (Tav. A.3). */
+export function rgsMissionDeltas(
+  edition: ManovraEdition,
+  fromYear: number,
+  toYear: number,
+  limit = 12,
+): Array<{ mission: string; short: string; deltaEur: number }> {
+  if (!edition.missionHistory.available) return [];
+  const fromKey = String(fromYear);
+  const toKey = String(toYear);
+  return edition.missionHistory.missions
+    .map((row) => {
+      const from = row.byYearMillionEur[fromKey];
+      const to = row.byYearMillionEur[toKey];
+      if (from == null || to == null) return null;
+      if (row.mission.toLowerCase().startsWith("totale")) return null;
+      return {
+        mission: row.mission,
+        short: shortMissionLabel(row.mission),
+        deltaEur: Math.round((to - from) * 1_000_000),
+      };
+    })
+    .filter((row): row is NonNullable<typeof row> => Boolean(row))
+    .sort((a, b) => Math.abs(b.deltaEur) - Math.abs(a.deltaEur))
+    .slice(0, limit)
+    .sort((a, b) => a.deltaEur - b.deltaEur);
 }
 
 export function detailCompetenza(

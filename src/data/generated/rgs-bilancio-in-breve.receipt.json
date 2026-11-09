@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "documentPath": "src/data/generated/rgs-bilancio-in-breve.json",
-  "codeSha": "f64755ebe82336a0e2340b554877f6109ed5a697",
-  "sourceSha256": "8967d1badeec5d5bc3008d10a6601a52cebbda1f06918fe471e3aa06e429ba81",
-  "sourceBytes": 255144,
+  "codeSha": "b449e7a9361ee1df653780ebf789a479c1db0a7d",
+  "sourceSha256": "5eb355e5de22d96da170a54db7e9e49b9a7089548b69b884d078a979a30eebcd",
+  "sourceBytes": 271852,
   "latestEditionId": "lb-2026-2028",
   "editions": 4
 }

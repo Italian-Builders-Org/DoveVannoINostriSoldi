@@ -45,6 +45,8 @@ export type SharePoint = {
   aggregate: string;
   short: string;
   manovraPct: number;
+  manovraMld: number | null;
+  stanziamentoMld: number | null;
 };
 
 export type PilPoint = {
@@ -501,12 +503,12 @@ export function MissionDeltaChart({
         />
         <YAxis
           type="category"
-          dataKey="mission"
-          width={250}
+          dataKey="short"
+          width={188}
           interval={0}
           axisLine={false}
           tickLine={false}
-          tick={<WrappedCategoryTick fill={palette.label} maxChars={28} />}
+          tick={<WrappedCategoryTick fill={palette.label} maxChars={26} />}
         />
         <ReferenceLine x={0} stroke={palette.axis} />
         <Tooltip
@@ -561,15 +563,27 @@ export function ManovraShareChart({
   return (
     <ChartShell
       title={`Cosa sposta la manovra ${year}`}
-      lead="Punti percentuali rispetto alla legislazione già in vigore. Valori piccoli: le etichette ripetono la %."
+      lead="Aggregati RGS (Tav. 2.2): % sul totale e miliardi di euro ricavati dalle spese finali. «Salute e istruzione» qui sono ancora insieme; sotto le trovi separate per missione."
       height={Math.max(520, data.length * 64)}
-      ariaLabel={`Incidenza percentuale della manovra ${year} per aggregato`}
+      ariaLabel={`Incidenza della manovra ${year} per aggregato in percentuale e miliardi`}
+      glossary={[
+        {
+          term: "Aggregato",
+          meaning:
+            "Raggruppamento RGS di più missioni (es. salute+istruzione). Non è il dettaglio per scuola o sanità.",
+        },
+        {
+          term: "Euro ricavati",
+          meaning:
+            "Si ottengono applicando la % pubblicata alle spese finali di competenza dello stesso anno.",
+        },
+      ]}
     >
       <BarChart
         accessibilityLayer
         data={data}
         layout="vertical"
-        margin={{ top: 8, right: 92, bottom: 8, left: 8 }}
+        margin={{ top: 8, right: 118, bottom: 8, left: 8 }}
       >
         <CartesianGrid horizontal={false} stroke={palette.grid} strokeDasharray="3 6" />
         <XAxis
@@ -604,6 +618,24 @@ export function ManovraShareChart({
                     value: pct(point.manovraPct),
                     tone: point.manovraPct >= 0 ? "up" : "down",
                   },
+                  {
+                    label: "Effetto in mld €",
+                    value:
+                      point.manovraMld == null
+                        ? "n.d."
+                        : `${point.manovraMld > 0 ? "+" : ""}${mld(point.manovraMld, 2)}`,
+                    tone:
+                      point.manovraMld == null
+                        ? undefined
+                        : point.manovraMld >= 0
+                          ? "up"
+                          : "down",
+                  },
+                  {
+                    label: "Stanziamento aggregato",
+                    value:
+                      point.stanziamentoMld == null ? "n.d." : mld(point.stanziamentoMld, 1),
+                  },
                 ]}
               />
             );
@@ -612,13 +644,100 @@ export function ManovraShareChart({
         <Bar dataKey="manovraPct" radius={[2, 2, 2, 2]} minPointSize={6} isAnimationActive={false}>
           <LabelList
             dataKey="manovraPct"
-            content={<DivergingBarLabel fill={palette.label} format={(value) => pct(value)} />}
+            content={
+              <DivergingBarLabel
+                fill={palette.label}
+                format={(value) => pct(value)}
+              />
+            }
           />
           {data.map((point) => (
             <Cell
               key={point.aggregate}
               fill={point.manovraPct >= 0 ? palette.up : palette.down}
             />
+          ))}
+        </Bar>
+      </BarChart>
+    </ChartShell>
+  );
+}
+
+export function RgsMissionSpendChart({
+  data,
+  year,
+}: {
+  data: MissionSpendPoint[];
+  year: number;
+}) {
+  const palette = usePalette();
+  return (
+    <ChartShell
+      title={`Missioni RGS nel ${year}`}
+      lead="Stanziamenti di Tav. A.3 in miliardi di euro. Scuola, università e salute sono missioni distinte (la sanità territoriale resta soprattutto regionale)."
+      height={Math.max(560, data.length * 52)}
+      ariaLabel={`Missioni del bilancio dello Stato nel ${year} in miliardi di euro`}
+      glossary={[
+        {
+          term: "Missione",
+          meaning:
+            "Voce ufficiale del bilancio dello Stato (istruzione scolastica, previdenza, debito…). Più fine degli aggregati della manovra.",
+        },
+        {
+          term: "Salute (Stato)",
+          meaning:
+            "Solo la quota nel bilancio centrale. La gran parte della sanità passa dalle Regioni e dai trasferimenti alle autonomie.",
+        },
+      ]}
+    >
+      <BarChart
+        accessibilityLayer
+        data={data}
+        layout="vertical"
+        margin={{ top: 8, right: 84, bottom: 8, left: 12 }}
+      >
+        <CartesianGrid horizontal={false} stroke={palette.grid} strokeDasharray="3 6" />
+        <XAxis
+          type="number"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fill: palette.axis, fontSize: 11 }}
+          tickFormatter={(value: number) => `${value}`}
+          unit=" mld"
+        />
+        <YAxis
+          type="category"
+          dataKey="short"
+          width={188}
+          interval={0}
+          axisLine={false}
+          tickLine={false}
+          tick={<WrappedCategoryTick fill={palette.label} maxChars={26} />}
+        />
+        <Tooltip
+          cursor={{ fill: palette.cursor }}
+          content={({ active, payload }) => {
+            if (!active || !payload?.length) return null;
+            const point = payload[0]?.payload as MissionSpendPoint;
+            return (
+              <TooltipCard
+                title={point.mission}
+                rows={[{ label: `Stanziamento ${year}`, value: mld(point.amountMld) }]}
+              />
+            );
+          }}
+        />
+        <Bar dataKey="amountMld" radius={[0, 2, 2, 0]} minPointSize={3} isAnimationActive={false}>
+          <LabelList
+            dataKey="amountMld"
+            position="right"
+            formatter={(value) =>
+              typeof value === "number" ? `${value.toLocaleString("it-IT")} mld` : ""
+            }
+            style={{ fill: palette.label, fontSize: 11, fontWeight: 600 }}
+          />
+          {data.map((point) => (
+            <Cell key={point.mission} fill={palette.spese} />
           ))}
         </Bar>
       </BarChart>

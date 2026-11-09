@@ -443,6 +443,8 @@ def parse_mission_history(ws) -> dict:
             if amount is None:
                 continue
             by_year[str(year)] = amount
+        if label.lower().startswith("totale"):
+            continue
         if by_year:
             missions.append({"mission": label, "byYearMillionEur": by_year})
     years = sorted({year for _, year in year_cols})
@@ -451,8 +453,38 @@ def parse_mission_history(ws) -> dict:
         "unit": "millionEUR",
         "years": years,
         "missions": missions,
-        "note": "Valori di Tav. A.3 in milioni di euro come pubblicati da RGS (competenza).",
+        "note": (
+            "Valori di Tav. A.3 in milioni di euro come pubblicati da RGS (competenza). "
+            "Esclusa la riga totale. «Tutela della salute» nel bilancio dello Stato è "
+            "limitata: la sanità territoriale passa soprattutto dai trasferimenti alle autonomie."
+        ),
     }
+
+
+def enrich_manovra_share_with_euro(manovra_share: list[dict], summary: dict) -> list[dict]:
+    """Attach euro amounts implied by Tav. 2.2 percentages of spese finali."""
+    spese = summary.get("speseFinali", {}).get("byYear", {})
+    enriched = []
+    for row in manovra_share:
+        by_year = {}
+        for year, point in row.get("byYear", {}).items():
+            total = (spese.get(year) or {}).get("competenzaEur")
+            manovra_pct = point.get("manovraPct")
+            totale_pct = point.get("totalePct")
+            legislazione_pct = point.get("legislazioneVigentePct")
+            entry = dict(point)
+            if isinstance(total, int) and total != 0:
+                if manovra_pct is not None:
+                    entry["manovraEur"] = int(round(total * float(manovra_pct) / 100.0))
+                if totale_pct is not None:
+                    entry["stanziamentoEur"] = int(round(total * float(totale_pct) / 100.0))
+                if legislazione_pct is not None:
+                    entry["legislazioneVigenteEur"] = int(
+                        round(total * float(legislazione_pct) / 100.0)
+                    )
+            by_year[year] = entry
+        enriched.append({**row, "byYear": by_year})
+    return enriched
 
 
 def build_edition(cache: Path, meta: dict, acquired_at: str) -> dict:
@@ -468,7 +500,9 @@ def build_edition(cache: Path, meta: dict, acquired_at: str) -> dict:
         except KeyError:
             programmatic = {"available": False, "series": {}, "note": "Tav. 1 assente"}
         summary = parse_summary(summary_ws, meta["years"])
-        manovra_share = parse_manovra_share(manovra_ws)
+        manovra_share = enrich_manovra_share_with_euro(
+            parse_manovra_share(manovra_ws), summary
+        )
         try:
             revenue_detail = parse_detail_series(
                 sheet_by_aliases(wb, ("Tav. A.1", "Tav A.1", "TA.1")),
@@ -534,6 +568,7 @@ def build_edition(cache: Path, meta: dict, acquired_at: str) -> dict:
             "Non confrontare questi stanziamenti con pagamenti SIOPE/OpenBDAP.",
             "I totali possono non coincidere con la somma dei componenti per arrotondamenti della fonte.",
             "Le edizioni RGS 2001–2022 restano in archivio soprattutto come PDF: le tavole XLSX confrontabili del Quadro 2.1 partono dal 2023. La Tav. A.3, quando presente, riporta anche missioni storiche (milioni di euro).",
+            "Gli euro della Tav. 2.2 (effetto manovra) sono ricavati applicando le % pubblicate alle spese finali di competenza dello stesso anno; non sono una tavola distinta RGS.",
         ],
     }
 

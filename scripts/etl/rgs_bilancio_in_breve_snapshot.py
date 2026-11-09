@@ -316,16 +316,21 @@ def parse_manovra_share(ws) -> list[dict]:
     return aggregates
 
 
+def programmatic_key(label: str) -> str | None:
+    text = re.sub(r"\s+", " ", label).strip().lower()
+    if "indebitamento netto" in text and "pil" in text:
+        return "indebitamentoNettoPilPct"
+    if "saldo primario" in text and "pil" in text:
+        return "saldoPrimarioPilPct"
+    if "debito pubblico" in text and "pil" in text:
+        return "debitoPubblicoPilPct"
+    if "crescita della spesa netta" in text:
+        return "crescitaSpesaNettaPct"
+    return None
+
+
 def parse_programmatic(ws) -> dict:
     rows = read_matrix(ws)
-    # Prefer rows that look like finance ratios if present
-    labels = {
-        "indebitamento netto (% del pil)": "indebitamentoNettoPilPct",
-        "saldo primario (% del pil)": "saldoPrimarioPilPct",
-        "debito pubblico  (% del pil)": "debitoPubblicoPilPct",
-        "debito pubblico (% del pil)": "debitoPubblicoPilPct",
-        "crescita della spesa netta finanziata a livello nazionale (%)": "crescitaSpesaNettaPct",
-    }
     # Find year headers
     year_cols = {}
     for row in rows[:8]:
@@ -338,7 +343,7 @@ def parse_programmatic(ws) -> dict:
     series = {}
     for row in rows:
         label = cell_text(row[1] if len(row) > 1 else None) or cell_text(row[0])
-        key = labels.get(label.lower())
+        key = programmatic_key(label)
         if not key:
             continue
         points = {}
@@ -580,21 +585,25 @@ def main() -> None:
         "moneyNature": "stanziamento-previsione",
         "unit": "EUR",
         "referenceNote": (
-            "Ogni edizione pubblica un triennio. Il confronto principale usa l'anno 1 "
-            "(prima annualità della legge di bilancio pubblicata). L'edizione 2026-2028 "
-            "è l'ultima disponibile: il 2027 compare come seconda annualità, non come "
-            "manovra autonoma ancora pubblicata in «Bilancio in Breve». "
+            "Ogni edizione pubblica un triennio. Il confronto principale tra manovre usa "
+            "l'anno 1 (prima annualità della legge di bilancio pubblicata). Nell'edizione "
+            "2026-2028 i valori 2027 e 2028 sono la seconda e terza annualità dello stesso "
+            "atto, già nelle tavole XLSX. Il Disegno di legge di bilancio 2027-2029 è online "
+            "su «Bilancio finanziario» RGS, ma il «Bilancio in Breve» 2027-2029 con XLSX "
+            "confrontabile non risulta ancora pubblicato: non inventiamo valori da soli PDF. "
             "Le pagine RGS 2018–2022 espongono solo PDF; le tavole XLSX machine-readable "
-            "del Quadro generale (Tav. 2.1/2.2) partono dal 2023. L'archivio storico più "
-            "antico resta consultabile via PDF; non inventiamo valori da scansioni."
+            "del Quadro generale (Tav. 2.1/2.2) partono dal 2023."
         ),
         "coverage": {
             "comparableXlsxFirstYears": [edition["firstYear"] for edition in editions],
             "pdfOnlyLandingYears": [2018, 2019, 2020, 2021, 2022],
+            "pendingBilancioInBreveFirstYears": [2027],
             "archiveCatalogUrl": ARCHIVE_URL,
             "note": (
                 "Verificato sulle landing ufficiali RGS: 2018–2022 hanno PDF «Bilancio in Breve»; "
-                "XLSX confrontabili Tavole e grafici risultano pubblicati dal 2023 in poi."
+                "XLSX confrontabili Tavole e grafici risultano pubblicati dal 2023 al 2026. "
+                "Il DLB 2027-2029 è già sul Bilancio finanziario; manca ancora il Bilancio in Breve "
+                "2027-2029 con tavole XLSX. Fino ad allora il 2027 si legge come anno 2 della LB 2026-2028."
             ),
         },
         "acquiredAt": acquired_at,

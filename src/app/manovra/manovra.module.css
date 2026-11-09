@@ -93,6 +93,19 @@
   margin-top: 1.25rem;
 }
 
+.yearChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.yearChipsLabel {
+  font-size: 0.85rem;
+  color: var(--color-neutral-600);
+}
+
 .chip {
   display: inline-flex;
   flex-direction: column;
@@ -140,6 +153,15 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-neutral-600);
+}
+
+.pulseCard span a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 650;
 }
 
 .pulseCard strong {
@@ -282,6 +304,35 @@
   text-align: right;
 }
 
+.glossary {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.glossary > div {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+  scroll-margin-top: 5rem;
+}
+
+.glossary dt {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.glossary dd {
+  margin: 0;
+  max-width: 46rem;
+  color: var(--color-neutral-700);
+  line-height: 1.55;
+}
+
 .sources {
   display: grid;
   gap: 0.55rem;
@@ -295,6 +346,13 @@
 
 .sources a {
   color: var(--color-text);
+}
+
+.caveats {
+  margin: 0.25rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.25rem;
 }
 
 @media (max-width: 960px) {

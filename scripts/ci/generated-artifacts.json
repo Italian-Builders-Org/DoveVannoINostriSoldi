@@ -8,6 +8,10 @@
     {
       "path": "src/data/generated/italy-regions.ts",
       "reason": "Static TypeScript reference table, not generated data. Validated by tests/italy-regions.test.mjs."
+    },
+    {
+      "path": "src/data/generated/rgs-bilancio-in-breve.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -760,15 +764,15 @@
       "id": "rgs-bilancio-in-breve",
       "owner": "RGS Bilancio in Breve — manovre a confronto (XLSX ufficiali)",
       "files": [
-        "src/data/generated/rgs-bilancio-in-breve.json"
+        "src/data/generated/rgs-bilancio-in-breve.receipt.json"
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest tests.etl.test_rgs_bilancio_in_breve",
+        "command": "DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest tests.etl.test_rgs_bilancio_in_breve_receipt",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [
-        "tests/etl/test_rgs_bilancio_in_breve.py"
+        "tests/etl/test_rgs_bilancio_in_breve_receipt.py"
       ],
       "nodeTests": [
         "tests/manovra-bilancio-breve.test.mjs"
@@ -779,7 +783,7 @@
       },
       "refreshWorkflow": null,
       "sourceSpec": null,
-      "trustModel": "Snapshot tipizzato da XLSX ufficiali RGS Bilancio in Breve. Fail-closed su schema, hash e centesimi; previsioni non inventate da PDF. Destinazione runtime: dvns_snapshots, non fonte Git permanente.",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Reader fail-closed su receipt/hash/schema.",
       "publication": null
     },
     {

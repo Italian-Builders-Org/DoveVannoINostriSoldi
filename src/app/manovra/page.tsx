@@ -10,12 +10,12 @@ import {
   formatSignedBillions,
   formatSignedPct,
   getEdition,
-  getManovraSnapshot,
   manovraShareSorted,
   topDetailRows,
   type FirstYearComparison,
   type ManovraEdition,
 } from "@/lib/manovra-bilancio-breve";
+import { loadManovraSnapshot } from "@/lib/manovra-bilancio-breve-store";
 
 import {
   CompositionChart,
@@ -64,6 +64,28 @@ function pickCompareYear(
   return available.includes(fallback) ? fallback : (available.at(-1) ?? fallback);
 }
 
+function pickFocusYear(
+  raw: string | string[] | undefined,
+  years: number[],
+  fallback: number,
+): number {
+  const value = Number(pickParam(raw));
+  if (Number.isInteger(value) && years.includes(value)) {
+    return value;
+  }
+  return years.includes(fallback) ? fallback : (years[0] ?? fallback);
+}
+
+function hrefForEdition(
+  editionId: string,
+  options: { confronta?: number; anno?: number } = {},
+): string {
+  const params = new URLSearchParams({ edizione: editionId });
+  if (options.confronta != null) params.set("confronta", String(options.confronta));
+  if (options.anno != null) params.set("anno", String(options.anno));
+  return `/manovra?${params.toString()}`;
+}
+
 function comparisonFor(
   comparisons: FirstYearComparison[],
   editionId: string,
@@ -94,11 +116,6 @@ function cleanDetailLabel(label: string): string {
   return label.replace(/\d+$/u, "").trim();
 }
 
-function hrefFor(editionId: string, confronta?: number): string {
-  const params = new URLSearchParams({ edizione: editionId });
-  if (confronta != null) params.set("confronta", String(confronta));
-  return `/manovra?${params.toString()}`;
-}
 
 export default async function ManovraPage({
   searchParams,
@@ -106,7 +123,7 @@ export default async function ManovraPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const snapshot = getManovraSnapshot();
+  const snapshot = await loadManovraSnapshot();
   const editions = snapshot.editions;
   if (editions.length === 0) {
     notFound();
@@ -117,18 +134,17 @@ export default async function ManovraPage({
     editions,
     snapshot.latestEditionId,
   );
-  const edition = getEdition(editionId);
+  const edition = getEdition(snapshot, editionId);
   const comparison = comparisonFor(snapshot.firstYearComparisons, edition.id);
-  const share = manovraShareSorted(edition, edition.firstYear);
+  const focusYear = pickFocusYear(params.anno, edition.years, edition.firstYear);
+  const share = manovraShareSorted(edition, focusYear);
 
   const missionSeries = getCommittedBudgetLawMissionSeries(12);
-  const compareYears = missionSeries.years.filter(
-    (year) => year < edition.firstYear,
-  );
+  const compareYears = missionSeries.years.filter((year) => year < focusYear);
   const compareFromYear = pickCompareYear(
     params.confronta,
     compareYears,
-    edition.firstYear - 1,
+    focusYear - 1,
   );
 
   const amountByYearMission = new Map(
@@ -138,8 +154,21 @@ export default async function ManovraPage({
     ]),
   );
 
+  // OpenBDAP covers committed budget-law years; future LB years may be absent.
+  const openBdapFocusYear = missionSeries.years.includes(focusYear)
+    ? focusYear
+    : edition.firstYear;
+  const openBdapCompareYears = missionSeries.years.filter(
+    (year) => year < openBdapFocusYear,
+  );
+  const openBdapCompareFromYear = pickCompareYear(
+    params.confronta,
+    openBdapCompareYears,
+    openBdapFocusYear - 1,
+  );
+
   const missionSpend = missionSeries.allocations
-    .filter((row) => row.year === edition.firstYear)
+    .filter((row) => row.year === openBdapFocusYear)
     .sort((a, b) => b.amountEur - a.amountEur)
     .slice(0, 10)
     .map((row) => ({
@@ -150,8 +179,10 @@ export default async function ManovraPage({
 
   const missionDeltas = missionSeries.missions
     .map((mission) => {
-      const fromEur = amountByYearMission.get(`${compareFromYear}::${mission}`);
-      const toEur = amountByYearMission.get(`${edition.firstYear}::${mission}`);
+      const fromEur = amountByYearMission.get(
+        `${openBdapCompareFromYear}::${mission}`,
+      );
+      const toEur = amountByYearMission.get(`${openBdapFocusYear}::${mission}`);
       if (fromEur == null || toEur == null) return null;
       return {
         mission,
@@ -212,33 +243,44 @@ export default async function ManovraPage({
     ),
   }));
 
-  const revenueTop = topDetailRows(edition.revenueDetail, edition.firstYear, 8).map(
+  const revenueTop = topDetailRows(edition.revenueDetail, focusYear, 8).map(
     (row) => ({ ...row, label: cleanDetailLabel(row.label) }),
   );
-  const spendTop = topDetailRows(edition.spendDetail, edition.firstYear, 8).map(
+  const spendTop = topDetailRows(edition.spendDetail, focusYear, 8).map(
     (row) => ({ ...row, label: cleanDetailLabel(row.label) }),
   );
   const irpef = detailCompetenza(
     edition.revenueDetail,
     "Imposta sul reddito delle persone fisiche",
-    edition.firstYear,
+    focusYear,
   );
   const iva =
     detailCompetenza(
       edition.revenueDetail,
       "Imposta sul valore aggiunto2",
-      edition.firstYear,
+      focusYear,
     ) ??
     detailCompetenza(
       edition.revenueDetail,
       "Imposta sul valore aggiunto",
-      edition.firstYear,
+      focusYear,
     );
   const interessi = detailCompetenza(
     edition.spendDetail,
     "Interessi passivi e altri oneri finanziari",
-    edition.firstYear,
+    focusYear,
   );
+  const focusSpese = metricForYear(edition, "speseFinali", focusYear);
+  const focusEntrate = metricForYear(edition, "entrateFinali", focusYear);
+  const focusSaldo = metricForYear(edition, "saldoNettoDaFinanziare", focusYear);
+  const focusRicorso = metricForYear(edition, "ricorsoAlMercato", focusYear);
+  const triennioLine = edition.years
+    .map((year) => {
+      const spese = metricForYear(edition, "speseFinali", year);
+      return spese == null ? null : `${year}: ${formatBillions(spese)}`;
+    })
+    .filter((row): row is string => Boolean(row))
+    .join(" · ");
 
   const missionHistoryTotals = edition.missionHistory.available
     ? edition.missionHistory.years.map((year) => ({
@@ -270,17 +312,30 @@ export default async function ManovraPage({
         </span>
         <h1>Manovra a confronto</h1>
         <p className={styles.answer}>
-          Nel {edition.firstYear} lo Stato prevede di spendere{" "}
-          {formatBillions(edition.headline.speseFinaliCompetenzaEur)} e di
-          incassare {formatBillions(edition.headline.entrateFinaliCompetenzaEur)}.
+          Nel {focusYear} lo Stato prevede di spendere{" "}
+          {formatBillions(focusSpese ?? edition.headline.speseFinaliCompetenzaEur)}{" "}
+          e di incassare{" "}
+          {formatBillions(
+            focusEntrate ?? edition.headline.entrateFinaliCompetenzaEur,
+          )}
+          .
         </p>
         <p className={styles.lede}>
-          Dati ufficiali RGS. Le tavole confrontabili partono dal 2023; la storia
-          più lunga arriva da OpenBDAP e dalle missioni ripubblicate in Tav. A.3.
+          Edizione {edition.label}: triennio {edition.years[0]}–
+          {edition.years[edition.years.length - 1]} (spese {triennioLine}). Il
+          confronto tra manovre resta sull’anno 1; qui puoi aprire anche 2027 e
+          2028 della stessa legge. Bilancio in Breve 2027-2029 non è ancora su
+          RGS.
         </p>
         <div className={styles.heroMeta}>
           <a href={edition.xlsx.url} target="_blank" rel="noreferrer">
-            Fonte XLSX {edition.label}
+            XLSX {edition.label}
+          </a>
+          <a href={edition.pdf.url} target="_blank" rel="noreferrer">
+            PDF {edition.label}
+          </a>
+          <a href={edition.landingUrl} target="_blank" rel="noreferrer">
+            Pagina ufficiale
           </a>
           <a href={snapshot.coverage.archiveCatalogUrl} target="_blank" rel="noreferrer">
             Archivio RGS
@@ -297,7 +352,11 @@ export default async function ManovraPage({
         {editions.map((row) => (
           <Link
             key={row.id}
-            href={hrefFor(row.id, compareFromYear < row.firstYear ? compareFromYear : undefined)}
+            href={hrefForEdition(row.id, {
+              confronta:
+                compareFromYear < row.firstYear ? compareFromYear : undefined,
+              anno: row.years.includes(focusYear) ? focusYear : row.firstYear,
+            })}
             className={styles.chip}
             aria-current={row.id === edition.id ? "page" : undefined}
           >
@@ -310,45 +369,123 @@ export default async function ManovraPage({
         ))}
       </div>
 
-      <section className={styles.pulse} aria-label="Sintesi primo anno">
+      <div
+        className={styles.yearChips}
+        role="navigation"
+        aria-label="Anno del triennio"
+      >
+        <span className={styles.yearChipsLabel}>Anno nel triennio</span>
+        <div className={styles.compareChips}>
+          {edition.years.map((year) => (
+            <Link
+              key={year}
+              href={hrefForEdition(edition.id, {
+                confronta:
+                  compareFromYear < year ? compareFromYear : undefined,
+                anno: year,
+              })}
+              className={styles.compareChip}
+              aria-current={year === focusYear ? "page" : undefined}
+            >
+              {year}
+              {year === edition.firstYear ? " · anno 1" : ""}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <section className={styles.pulse} aria-label={`Sintesi ${focusYear}`}>
         <article className={styles.pulseCard}>
-          <span>Spese {edition.firstYear}</span>
-          <strong>{formatBillions(edition.headline.speseFinaliCompetenzaEur)}</strong>
-          <em className={deltaClass(comparison?.speseFinali.deltaPct)}>
-            {comparison
-              ? `${formatSignedPct(comparison.speseFinali.deltaPct)} vs ${comparison.fromYear}`
-              : "Prima edizione"}
-          </em>
-        </article>
-        <article className={styles.pulseCard}>
-          <span>Entrate {edition.firstYear}</span>
-          <strong>{formatBillions(edition.headline.entrateFinaliCompetenzaEur)}</strong>
-          <em className={deltaClass(comparison?.entrateFinali.deltaPct)}>
-            {comparison
-              ? `${formatSignedPct(comparison.entrateFinali.deltaPct)} vs ${comparison.fromYear}`
-              : "Prima edizione"}
-          </em>
-        </article>
-        <article className={styles.pulseCard}>
-          <span>Saldo da finanziare</span>
+          <span>
+            Spese {focusYear} ·{" "}
+            <a href="#glossario-competenza">competenza</a>
+          </span>
           <strong>
-            {formatBillions(edition.headline.saldoNettoDaFinanziareCompetenzaEur)}
+            {formatBillions(focusSpese ?? edition.headline.speseFinaliCompetenzaEur)}
           </strong>
-          <em className={deltaClass(comparison?.saldoNettoDaFinanziare.deltaEur)}>
-            {comparison
-              ? formatSignedBillions(comparison.saldoNettoDaFinanziare.deltaEur)
-              : "Base della serie"}
+          <em
+            className={deltaClass(
+              focusYear === edition.firstYear
+                ? comparison?.speseFinali.deltaPct
+                : null,
+            )}
+          >
+            {focusYear === edition.firstYear
+              ? comparison
+                ? `${formatSignedPct(comparison.speseFinali.deltaPct)} vs ${comparison.fromYear}`
+                : "Prima edizione"
+              : `Anno ${edition.years.indexOf(focusYear) + 1} del triennio`}
           </em>
         </article>
         <article className={styles.pulseCard}>
-          <span>Ricorso al mercato</span>
+          <span>
+            Entrate {focusYear} ·{" "}
+            <a href="#glossario-competenza">competenza</a>
+          </span>
           <strong>
-            {formatBillions(edition.headline.ricorsoAlMercatoCompetenzaEur)}
+            {formatBillions(
+              focusEntrate ?? edition.headline.entrateFinaliCompetenzaEur,
+            )}
           </strong>
-          <em className={deltaClass(comparison?.ricorsoAlMercato.deltaEur)}>
-            {comparison
-              ? formatSignedBillions(comparison.ricorsoAlMercato.deltaEur)
-              : "Base della serie"}
+          <em
+            className={deltaClass(
+              focusYear === edition.firstYear
+                ? comparison?.entrateFinali.deltaPct
+                : null,
+            )}
+          >
+            {focusYear === edition.firstYear
+              ? comparison
+                ? `${formatSignedPct(comparison.entrateFinali.deltaPct)} vs ${comparison.fromYear}`
+                : "Prima edizione"
+              : `Anno ${edition.years.indexOf(focusYear) + 1} del triennio`}
+          </em>
+        </article>
+        <article className={styles.pulseCard}>
+          <span>
+            <a href="#glossario-saldo">Saldo da finanziare</a>
+          </span>
+          <strong>
+            {formatBillions(
+              focusSaldo ??
+                edition.headline.saldoNettoDaFinanziareCompetenzaEur,
+            )}
+          </strong>
+          <em
+            className={deltaClass(
+              focusYear === edition.firstYear
+                ? comparison?.saldoNettoDaFinanziare.deltaEur
+                : null,
+            )}
+          >
+            {focusYear === edition.firstYear
+              ? comparison
+                ? formatSignedBillions(comparison.saldoNettoDaFinanziare.deltaEur)
+                : "Base della serie"
+              : "Previsione nel triennio"}
+          </em>
+        </article>
+        <article className={styles.pulseCard}>
+          <span>
+            <a href="#glossario-ricorso">Ricorso al mercato</a>
+          </span>
+          <strong>
+            {formatBillions(
+              focusRicorso ?? edition.headline.ricorsoAlMercatoCompetenzaEur,
+            )}
+          </strong>
+          <em
+            className={deltaClass(
+              focusYear === edition.firstYear
+                ? comparison?.ricorsoAlMercato.deltaEur
+                : null,
+            )}
+          >
+            {focusYear === edition.firstYear
+              ? comparison
+                ? formatSignedBillions(comparison.ricorsoAlMercato.deltaEur)
+                : "Base della serie"
+              : "Previsione nel triennio"}
           </em>
         </article>
       </section>
@@ -373,7 +510,7 @@ export default async function ManovraPage({
         <div className={styles.sectionHeader}>
           <h2 id="fisco-title">3. Le voci più grandi</h2>
           <p>
-            Top entrate e spese del {edition.firstYear}, in miliardi di euro.
+            Top entrate e spese del {focusYear}, in miliardi di euro.
           </p>
         </div>
         <div className={styles.split}>
@@ -441,17 +578,20 @@ export default async function ManovraPage({
           </p>
         </div>
         <div className={styles.chartStack}>
-          <MissionSpendChart data={missionSpend} year={edition.firstYear} />
-          {compareYears.length > 0 ? (
+          <MissionSpendChart data={missionSpend} year={openBdapFocusYear} />
+          {openBdapCompareYears.length > 0 ? (
             <div className={styles.compareBar} role="navigation" aria-label="Anno di confronto">
-              <span>Confronta {edition.firstYear} con</span>
+              <span>Confronta {openBdapFocusYear} con</span>
               <div className={styles.compareChips}>
-                {compareYears.map((year) => (
+                {openBdapCompareYears.map((year) => (
                   <Link
                     key={year}
-                    href={hrefFor(edition.id, year)}
+                    href={hrefForEdition(edition.id, {
+                      confronta: year,
+                      anno: focusYear,
+                    })}
                     className={styles.compareChip}
-                    aria-current={year === compareFromYear ? "page" : undefined}
+                    aria-current={year === openBdapCompareFromYear ? "page" : undefined}
                   >
                     {year}
                   </Link>
@@ -461,8 +601,8 @@ export default async function ManovraPage({
           ) : null}
           <MissionDeltaChart
             data={missionDeltas}
-            fromYear={compareFromYear}
-            toYear={edition.firstYear}
+            fromYear={openBdapCompareFromYear}
+            toYear={openBdapFocusYear}
           />
         </div>
       </section>
@@ -493,10 +633,10 @@ export default async function ManovraPage({
       <section className={styles.section} aria-labelledby="manovra-title">
         <div className={styles.sectionHeader}>
           <h2 id="manovra-title">6. Cosa sposta la manovra</h2>
-          <p>Effetto della manovra {edition.firstYear} sugli aggregati RGS.</p>
+          <p>Effetto della manovra sull’anno {focusYear} (aggregati RGS).</p>
         </div>
         <ManovraShareChart
-          year={edition.firstYear}
+          year={focusYear}
           data={share.map((row) => ({
             aggregate: row.aggregate,
             short: row.aggregate,
@@ -556,19 +696,83 @@ export default async function ManovraPage({
         {pilPoints.length > 0 ? <PilPathChart data={pilPoints} /> : null}
       </section>
 
-      <aside className={styles.sources}>
+      <section className={styles.section} aria-labelledby="glossario-title">
+        <div className={styles.sectionHeader}>
+          <h2 id="glossario-title">8. Come leggerli</h2>
+          <p>
+            Quattro parole del bilancio, dette in italiano. I numeri di questa
+            pagina restano in competenza.
+          </p>
+        </div>
+        <dl className={styles.glossary}>
+          <div id="glossario-competenza">
+            <dt>Competenza</dt>
+            <dd>
+              L’importo che lo Stato prevede di accertare o impegnare nell’anno,
+              anche se i soldi entrano o escono dopo. È la base del confronto
+              tra manovre.
+            </dd>
+          </div>
+          <div id="glossario-cassa">
+            <dt>Cassa</dt>
+            <dd>
+              I soldi che entrano o escono davvero nell’anno. Utile per la
+              liquidità; non va sommata alla competenza né confrontata con i
+              pagamenti SIOPE come se fossero la stessa cosa.
+            </dd>
+          </div>
+          <div id="glossario-saldo">
+            <dt>Saldo netto da finanziare</dt>
+            <dd>
+              Entrate finali meno spese finali. Se è negativo, quella parte del
+              bilancio va coperta con altro finanziamento.
+            </dd>
+          </div>
+          <div id="glossario-ricorso">
+            <dt>Ricorso al mercato</dt>
+            <dd>
+              Quanto il bilancio prevede di prendere a prestito sui mercati per
+              chiudere i conti, al netto dei rimborsi già previsti.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <aside className={styles.sources} aria-label="Fonti ufficiali">
         <strong>Fonti</strong>
         <span>
-          {snapshot.holder} ·{" "}
+          {snapshot.holder} · edizione {edition.label} · natura {edition.nature} ·
+          unità {edition.unit}
+        </span>
+        <span>
           <a href={edition.xlsx.url} target="_blank" rel="noreferrer">
             {edition.xlsx.fileName}
+          </a>
+          {" · "}
+          <a href={edition.pdf.url} target="_blank" rel="noreferrer">
+            {edition.pdf.fileName}
+          </a>
+          {" · "}
+          <a href={edition.landingUrl} target="_blank" rel="noreferrer">
+            landing RGS
           </a>
           {" · "}
           <a href={missionSeries.dataset.apiUrl} target="_blank" rel="noreferrer">
             OpenBDAP
           </a>
         </span>
+        <span>
+          SHA-256 XLSX {edition.xlsx.sha256.slice(0, 12)}… · PDF{" "}
+          {edition.pdf.sha256.slice(0, 12)}… · acquisito {edition.acquiredAt.slice(0, 10)}
+        </span>
         <span>{snapshot.coverage.note}</span>
+        {edition.caveats.length > 0 ? (
+          <ul className={styles.caveats}>
+            {edition.caveats.map((caveat) => (
+              <li key={caveat}>{caveat}</li>
+            ))}
+          </ul>
+        ) : null}
       </aside>
     </main>
   );

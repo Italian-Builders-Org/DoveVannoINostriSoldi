@@ -1,5 +1,3 @@
-import snapshotJson from "@/data/generated/rgs-bilancio-in-breve.json";
-
 export type MoneyPair = {
   competenzaEur: number | null;
   cassaEur: number | null;
@@ -110,6 +108,7 @@ export type ManovraSnapshot = {
   coverage: {
     comparableXlsxFirstYears: number[];
     pdfOnlyLandingYears: number[];
+    pendingBilancioInBreveFirstYears?: number[];
     archiveCatalogUrl: string;
     note: string;
   };
@@ -120,27 +119,36 @@ export type ManovraSnapshot = {
   firstYearComparisons: FirstYearComparison[];
 };
 
-const snapshot = snapshotJson as ManovraSnapshot;
-
-export function getManovraSnapshot(): ManovraSnapshot {
-  if (snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.editions)) {
+/** Fail-closed parse of the Bilancio in Breve reading model (from dvns_snapshots). */
+export function assertManovraSnapshot(value: unknown): ManovraSnapshot {
+  if (!value || typeof value !== "object") {
+    throw new Error("Snapshot Bilancio in Breve fuori contratto");
+  }
+  const snapshot = value as ManovraSnapshot;
+  if (snapshot.schemaVersion !== 1 || !Array.isArray(snapshot.editions) || snapshot.editions.length === 0) {
+    throw new Error("Snapshot Bilancio in Breve fuori contratto");
+  }
+  if (typeof snapshot.latestEditionId !== "string" || !snapshot.latestEditionId) {
+    throw new Error("Snapshot Bilancio in Breve fuori contratto");
+  }
+  if (!snapshot.editions.some((edition) => edition.id === snapshot.latestEditionId)) {
     throw new Error("Snapshot Bilancio in Breve fuori contratto");
   }
   return snapshot;
 }
 
-export function getEdition(id: string): ManovraEdition {
-  const edition = getManovraSnapshot().editions.find((item) => item.id === id);
+export function getEdition(snapshot: ManovraSnapshot, id: string): ManovraEdition {
+  const edition = snapshot.editions.find((item) => item.id === id);
   if (!edition) throw new Error(`Edizione manovra sconosciuta: ${id}`);
   return edition;
 }
 
-export function getLatestEdition(): ManovraEdition {
-  return getEdition(getManovraSnapshot().latestEditionId);
+export function getLatestEdition(snapshot: ManovraSnapshot): ManovraEdition {
+  return getEdition(snapshot, snapshot.latestEditionId);
 }
 
-export function getLatestComparison(): FirstYearComparison | null {
-  const rows = getManovraSnapshot().firstYearComparisons;
+export function getLatestComparison(snapshot: ManovraSnapshot): FirstYearComparison | null {
+  const rows = snapshot.firstYearComparisons;
   return rows.length ? rows[rows.length - 1] : null;
 }
 

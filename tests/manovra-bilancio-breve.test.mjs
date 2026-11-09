@@ -3,95 +3,121 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
+  assertManovraSnapshot,
   formatBillions,
   formatSignedPct,
   getLatestComparison,
   getLatestEdition,
-  getManovraSnapshot,
   manovraShareSorted,
 } = await import("../src/lib/manovra-bilancio-breve.ts");
 
-test("snapshot pins four official Bilancio in Breve editions", () => {
-  const snapshot = getManovraSnapshot();
-  assert.equal(snapshot.schemaVersion, 1);
-  assert.equal(snapshot.latestEditionId, "lb-2026-2028");
-  assert.deepEqual(
-    snapshot.editions.map((edition) => edition.id),
-    ["lb-2023-2025", "lb-2024-2026", "lb-2025-2027", "lb-2026-2028"],
+test("assertManovraSnapshot rejects empty or incoherent payloads", () => {
+  assert.throws(() => assertManovraSnapshot(null));
+  assert.throws(() => assertManovraSnapshot({ schemaVersion: 2, editions: [] }));
+  assert.throws(() =>
+    assertManovraSnapshot({
+      schemaVersion: 1,
+      latestEditionId: "missing",
+      editions: [{ id: "lb-2026-2028" }],
+      firstYearComparisons: [],
+    }),
   );
-  assert.deepEqual(snapshot.coverage.comparableXlsxFirstYears, [2023, 2024, 2025, 2026]);
-  assert.deepEqual(snapshot.coverage.pdfOnlyLandingYears, [2018, 2019, 2020, 2021, 2022]);
-  for (const edition of snapshot.editions) {
-    assert.match(edition.xlsx.url, /^https:\/\/www\.rgs\.mef\.gov\.it\//);
-    assert.equal(edition.xlsx.sha256.length, 64);
-    assert.ok(edition.headline.speseFinaliCompetenzaEur > 0);
-    assert.ok(edition.headline.entrateFinaliCompetenzaEur > 0);
-    assert.equal(edition.years.length, 3);
-    assert.equal(edition.years[0], edition.firstYear);
-    assert.ok(edition.revenueDetail.length > 10);
-    assert.ok(edition.spendDetail.length > 10);
-    assert.equal(edition.missionHistory.available, true);
-  }
 });
 
-test("every edition headline euros are exact to the cent against pinned XLSX values", () => {
-  const snapshot = getManovraSnapshot();
-  const expectedById = {
-    "lb-2023-2025": {
-      entrateFinaliCompetenzaEur: 672_250_788_315,
-      speseFinaliCompetenzaEur: 872_903_962_855,
-      saldoNettoDaFinanziareCompetenzaEur: -200_653_174_540,
-      ricorsoAlMercatoCompetenzaEur: -511_473_175_779,
-    },
-    "lb-2024-2026": {
-      entrateFinaliCompetenzaEur: 687_566_976_520,
-      speseFinaliCompetenzaEur: 886_418_531_849,
-      saldoNettoDaFinanziareCompetenzaEur: -198_851_555_329,
-      ricorsoAlMercatoCompetenzaEur: -527_519_115_761,
-    },
-    "lb-2025-2027": {
-      entrateFinaliCompetenzaEur: 728_832_687_509,
-      speseFinaliCompetenzaEur: 915_769_270_589,
-      saldoNettoDaFinanziareCompetenzaEur: -186_936_583_080,
-      ricorsoAlMercatoCompetenzaEur: -470_712_034_296,
-    },
-    "lb-2026-2028": {
-      entrateFinaliCompetenzaEur: 768_778_531_304,
-      speseFinaliCompetenzaEur: 923_116_684_581,
-      saldoNettoDaFinanziareCompetenzaEur: -154_338_153_277,
-      ricorsoAlMercatoCompetenzaEur: -484_382_932_385,
-    },
-  };
-  for (const edition of snapshot.editions) {
-    assert.deepEqual(edition.headline, expectedById[edition.id], edition.id);
-  }
-  const latest = getLatestEdition();
-  const irpef = latest.revenueDetail.find(
-    (row) => row.label === "Imposta sul reddito delle persone fisiche",
-  );
-  assert.equal(irpef?.byYear["2026"]?.competenzaEur, 248_100_506_045);
-});
-
-test("latest comparison is first-year over first-year without inventing values", () => {
-  const comparison = getLatestComparison();
-  assert.ok(comparison);
-  assert.equal(comparison.fromEditionId, "lb-2025-2027");
-  assert.equal(comparison.toEditionId, "lb-2026-2028");
-  assert.equal(comparison.fromYear, 2025);
-  assert.equal(comparison.toYear, 2026);
-  assert.ok(Number.isFinite(comparison.speseFinali.deltaPct));
-  assert.ok(Math.abs(comparison.speseFinali.deltaPct - 0.8023215266083701) < 1e-9);
-  assert.ok(Math.abs(comparison.entrateFinali.deltaPct - 5.480797510815091) < 1e-9);
+test("formatters stay readable in mld without inventing cents on the page", () => {
+  assert.match(formatBillions(923_116_684_581), /mld €$/);
+  assert.match(formatSignedPct(1.5), /^\+1,5%$/);
+  assert.equal(formatSignedPct(null), "n.d.");
 });
 
 test("manovra share excludes totals and sorts by absolute first-year impact", () => {
-  const edition = getLatestEdition();
+  const edition = {
+    firstYear: 2026,
+    manovraShareOfAppropriationsPct: [
+      {
+        aggregate: "Totale",
+        byYear: { 2026: { legislazioneVigentePct: 100, manovraPct: 1, totalePct: 100 } },
+      },
+      {
+        aggregate: "Missione A",
+        byYear: { 2026: { legislazioneVigentePct: 10, manovraPct: -3, totalePct: 7 } },
+      },
+      {
+        aggregate: "Missione B",
+        byYear: { 2026: { legislazioneVigentePct: 20, manovraPct: 5, totalePct: 25 } },
+      },
+      {
+        aggregate: "Missione C",
+        byYear: { 2026: { legislazioneVigentePct: 5, manovraPct: null, totalePct: 5 } },
+      },
+    ],
+  };
   const share = manovraShareSorted(edition, edition.firstYear);
-  assert.ok(share.length >= 5);
+  assert.deepEqual(
+    share.map((row) => row.aggregate),
+    ["Missione B", "Missione A"],
+  );
   assert.ok(share.every((row) => !row.aggregate.toLowerCase().startsWith("totale")));
-  for (let index = 1; index < share.length; index += 1) {
-    assert.ok(Math.abs(share[index - 1].manovraPct) >= Math.abs(share[index].manovraPct));
-  }
-  assert.match(formatBillions(edition.headline.speseFinaliCompetenzaEur), /mld €$/);
-  assert.match(formatSignedPct(1.5), /^\+1,5%$/);
+});
+
+test("latest helpers read from a validated snapshot object", () => {
+  const snapshot = assertManovraSnapshot({
+    schemaVersion: 1,
+    title: "t",
+    holder: "h",
+    archiveUrl: "https://example.test",
+    moneyNature: "n",
+    unit: "euro",
+    referenceNote: "n",
+    coverage: {
+      comparableXlsxFirstYears: [2026],
+      pdfOnlyLandingYears: [],
+      archiveCatalogUrl: "https://example.test",
+      note: "n",
+    },
+    acquiredAt: "2026-01-01T00:00:00Z",
+    checkedAt: "2026-01-01T00:00:00Z",
+    latestEditionId: "lb-2026-2028",
+    editions: [
+      {
+        id: "lb-2026-2028",
+        label: "LB 2026-2028",
+        firstYear: 2026,
+        years: [2026, 2027, 2028],
+        nature: "previsione",
+        unit: "euro",
+        landingUrl: "https://example.test",
+        xlsx: { url: "https://www.rgs.mef.gov.it/x", fileName: "x.xlsx", bytes: 1, sha256: "a".repeat(64) },
+        pdf: { url: "https://www.rgs.mef.gov.it/p", fileName: "p.pdf", bytes: 1, sha256: "b".repeat(64) },
+        acquiredAt: "2026-01-01T00:00:00Z",
+        headline: {
+          entrateFinaliCompetenzaEur: 1,
+          speseFinaliCompetenzaEur: 2,
+          saldoNettoDaFinanziareCompetenzaEur: -1,
+          ricorsoAlMercatoCompetenzaEur: -3,
+        },
+        summary: {},
+        manovraShareOfAppropriationsPct: [],
+        programmatic: { available: false, series: {} },
+        revenueDetail: [],
+        spendDetail: [],
+        missionHistory: { available: false, unit: "euro", years: [], missions: [] },
+        caveats: [],
+      },
+    ],
+    firstYearComparisons: [
+      {
+        fromEditionId: "lb-2025-2027",
+        toEditionId: "lb-2026-2028",
+        fromYear: 2025,
+        toYear: 2026,
+        entrateFinali: { fromEur: 1, toEur: 2, deltaEur: 1, deltaPct: 100 },
+        speseFinali: { fromEur: 1, toEur: 2, deltaEur: 1, deltaPct: 100 },
+        saldoNettoDaFinanziare: { fromEur: -1, toEur: -2, deltaEur: -1, deltaPct: 100 },
+        ricorsoAlMercato: { fromEur: -1, toEur: -2, deltaEur: -1, deltaPct: 100 },
+      },
+    ],
+  });
+  assert.equal(getLatestEdition(snapshot).id, "lb-2026-2028");
+  assert.equal(getLatestComparison(snapshot)?.toEditionId, "lb-2026-2028");
 });

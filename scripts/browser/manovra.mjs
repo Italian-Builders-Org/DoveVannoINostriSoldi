@@ -29,6 +29,36 @@ try {
         assert.match(main, /2026/);
         assert.match(main, /partono dal 2023|PDF|OpenBDAP/i);
         assert.match(main, /IRPEF|Imposta sul reddito delle persone fisiche/i);
+        assert.match(main, /Come leggerli/i);
+        assert.match(main, /Anno nel triennio/i);
+        assert.ok(
+          await page.$('a[href*="anno=2027"]'),
+          "manca link anno 2027 del triennio",
+        );
+        await page.click('a[href*="anno=2027"]');
+        await page.waitForFunction(
+          () => location.search.includes("anno=2027"),
+          { timeout: 10_000 },
+        );
+        assert.match(
+          await page.$eval("main", (el) => el.innerText),
+          /912|Nel 2027/,
+        );
+        assert.match(main, /Competenza/i);
+        assert.match(main, /Cassa/i);
+        assert.match(main, /Saldo netto da finanziare/i);
+        assert.ok(
+          await page.$('a[href*="rgs.mef.gov.it"][href$=".pdf"], a[href*="rgs.mef.gov.it"][href*=".pdf"]'),
+          "manca link PDF ufficiale RGS",
+        );
+        assert.ok(
+          await page.$('a[href*="rgs.mef.gov.it"][href$=".xlsx"], a[href*="rgs.mef.gov.it"][href*=".xlsx"]'),
+          "manca link XLSX ufficiale RGS",
+        );
+        assert.ok(
+          await page.$('#glossario-competenza, [id="glossario-competenza"]'),
+          "manca ancoraggio glossario competenza",
+        );
         assert.doesNotMatch(main, /\d{1,3}(?:\.\d{3}){3,} €/);
         assert.ok(
           (await page.$$("main .recharts-responsive-container, main [role='img']")).length >= 4,

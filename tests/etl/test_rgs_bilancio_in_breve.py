@@ -16,6 +16,11 @@ CACHE = ROOT / ".cache" / "manovra-rgs"
 class RgsBilancioInBreveTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        if not SNAPSHOT.is_file():
+            raise unittest.SkipTest(
+                "Payload locale assente: generare con rgs_bilancio_in_breve_snapshot.py "
+                "prima della riconciliazione XLSX (runtime = dvns_snapshots)."
+            )
         cls.snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
 
     def test_coverage_documents_pdf_only_pre_2023(self) -> None:

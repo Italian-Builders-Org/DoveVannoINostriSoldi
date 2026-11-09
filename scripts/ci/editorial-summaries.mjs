@@ -38,7 +38,10 @@ const outputs = {
     dataset: beds.dataset,
     regions: aggregateHospitalBeds(beds.dataset.headers, beds.rows),
   },
-  "dispositivi-storico.json": history,
+  "dispositivi.json": {
+    history,
+    defaultAggregate: await aggregateMedicalDeviceSpending({ year: String(years.at(-1)), limit: 25 }),
+  },
 };
 const write = process.argv.includes("--write");
 if (write) mkdirSync(directory, { recursive: true });

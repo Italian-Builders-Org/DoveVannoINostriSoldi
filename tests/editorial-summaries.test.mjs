@@ -33,7 +33,7 @@ test("the medical-device chart has all four totals even with the archive unreach
   const previous = process.env.DVNS_HEAVY_DATA_BACKEND;
   process.env.DVNS_HEAVY_DATA_BACKEND = "supabase";
   try {
-    const { getMedicalDeviceSpendingHistory } = await import("../src/lib/medical-device-history.ts");
+    const { getMedicalDeviceSpendingHistory } = await import("../src/lib/medical-device-editorial.ts");
     const history = getMedicalDeviceSpendingHistory();
     assert.deepEqual(history.map(({ year }) => year), [2018, 2019, 2020, 2021]);
     assert.equal(history.find(({ year }) => year === 2020)?.spending, "5054732845.13");
@@ -41,4 +41,15 @@ test("the medical-device chart has all four totals even with the archive unreach
     if (previous === undefined) delete process.env.DVNS_HEAVY_DATA_BACKEND;
     else process.env.DVNS_HEAVY_DATA_BACKEND = previous;
   }
+});
+
+test("the initial medical-device table is available without reading the archive", async () => {
+  const { getDefaultMedicalDeviceAggregate } = await import("../src/lib/medical-device-editorial.ts");
+  const initial = getDefaultMedicalDeviceAggregate();
+  assert.equal(initial.scope.year, 2021);
+  assert.equal(initial.scope.region, null);
+  assert.equal(initial.scope.company, null);
+  assert.equal(initial.dimension, "territory");
+  assert.equal(initial.coverage.spending, "5785471036.54");
+  assert.ok(initial.rows.length > 0);
 });

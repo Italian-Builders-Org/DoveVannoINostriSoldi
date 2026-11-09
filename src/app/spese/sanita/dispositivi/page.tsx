@@ -10,7 +10,7 @@ import {
   searchMedicalDevices,
 } from "@/lib/medical-device-spending";
 import { integer } from "@/lib/format";
-import { getMedicalDeviceSpendingHistory } from "@/lib/medical-device-history";
+import { getDefaultMedicalDeviceAggregate, getMedicalDeviceSpendingHistory } from "@/lib/medical-device-editorial";
 import styles from "./dispositivi.module.css";
 import { TerritoryFilters } from "./territory-filters";
 
@@ -70,14 +70,19 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   let aggregate: Awaited<ReturnType<typeof aggregateMedicalDeviceSpending>> | null = null;
   let aggregateError: string | null = null;
   try {
-    aggregate = await aggregateMedicalDeviceSpending({
-      year: aggregateYear,
-      region: aggregateRegion,
-      company: aggregateCompany,
-      dimension,
-      cursor: one(params.cursoreAggregati),
-      limit: 25,
-    });
+    const cursor = one(params.cursoreAggregati);
+    if (aggregateYear === String(years[0]) && !aggregateRegion && !aggregateCompany && dimension === "territory" && !cursor) {
+      aggregate = getDefaultMedicalDeviceAggregate();
+    } else {
+      aggregate = await aggregateMedicalDeviceSpending({
+        year: aggregateYear,
+        region: aggregateRegion,
+        company: aggregateCompany,
+        dimension,
+        cursor,
+        limit: 25,
+      });
+    }
   } catch (error) {
     if (!(error instanceof MedicalDeviceQueryError)) throw error;
     aggregateError = error.message;

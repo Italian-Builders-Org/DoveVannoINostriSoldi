@@ -1,9 +1,13 @@
 import "server-only";
 
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { database } from "@/lib/integrated-supabase-reader";
+import {
+  database,
+  databaseConnectionUrl,
+} from "@/lib/integrated-supabase-reader";
 import {
   assertManovraSnapshot,
   type ManovraSnapshot,
@@ -18,6 +22,14 @@ type ManovraReceipt = {
 };
 
 const RECEIPT_PATH = "src/data/generated/rgs-bilancio-in-breve.receipt.json";
+const COMMITTED_PAYLOAD_PATH = "src/data/generated/rgs-bilancio-in-breve.json";
+
+export class ManovraSnapshotUnavailableError extends Error {
+  constructor(message = "Lettura manovra non disponibile in questo ambiente.") {
+    super(message);
+    this.name = "ManovraSnapshotUnavailableError";
+  }
+}
 
 function assertReceipt(value: unknown): ManovraReceipt {
   if (!value || typeof value !== "object") {
@@ -48,42 +60,68 @@ function assertReceipt(value: unknown): ManovraReceipt {
   };
 }
 
-let cached: Promise<ManovraSnapshot> | undefined;
+function databaseConfigured(): boolean {
+  try {
+    databaseConnectionUrl();
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-/** Load the pinned Bilancio in Breve snapshot from dvns_snapshots. Fail-closed. */
-export function loadManovraSnapshot(): Promise<ManovraSnapshot> {
-  cached ??= (async () => {
-    const receipt = assertReceipt(
-      JSON.parse(await readFile(join(process.cwd(), RECEIPT_PATH), "utf8")),
-    );
+async function readCommittedPayload(receipt: ManovraReceipt): Promise<ManovraSnapshot> {
+  if (receipt.documentPath !== COMMITTED_PAYLOAD_PATH) {
+    throw new Error("Receipt manovra: documentPath non valido.");
+  }
+  const payloadPath = join(process.cwd(), COMMITTED_PAYLOAD_PATH);
+  const bytes = await readFile(payloadPath);
+  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  if (sha256 !== receipt.sourceSha256 || bytes.length !== receipt.sourceBytes) {
+    throw new Error("Snapshot manovra locale assente o divergente dal receipt.");
+  }
+  return assertManovraSnapshot(JSON.parse(bytes.toString("utf8")));
+}
+
+async function readDatabasePayload(receipt: ManovraReceipt): Promise<ManovraSnapshot> {
+  const sql = database();
+  const rows = await sql.begin("read only", async (tx) => {
+    await tx`set local statement_timeout = '10s'`;
+    await tx`set local lock_timeout = '2s'`;
+    return tx<{
+      payload: unknown;
+      source_sha256: string;
+      source_bytes: number | string;
+    }[]>`
+      select d.payload, f.source_sha256, f.source_bytes
+      from dvns_snapshots.documents d
+      join dvns_snapshots.files f using (code_sha, path)
+      where d.code_sha = ${receipt.codeSha}
+        and d.path = ${receipt.documentPath}
+      limit 1`;
+  });
+  const row = rows[0];
+  const sourceBytes = Number(row?.source_bytes);
+  if (
+    !row ||
+    row.source_sha256 !== receipt.sourceSha256 ||
+    !Number.isInteger(sourceBytes) ||
+    sourceBytes !== receipt.sourceBytes
+  ) {
+    throw new Error("Snapshot manovra assente o divergente dal receipt.");
+  }
+  return assertManovraSnapshot(row.payload);
+}
+
+let cached: ManovraSnapshot | undefined;
+let inflight: Promise<ManovraSnapshot> | undefined;
+
+async function resolveSnapshot(): Promise<ManovraSnapshot> {
+  const receipt = assertReceipt(
+    JSON.parse(await readFile(join(process.cwd(), RECEIPT_PATH), "utf8")),
+  );
+  if (databaseConfigured()) {
     try {
-      const sql = database();
-      const rows = await sql.begin("read only", async (tx) => {
-        await tx`set local statement_timeout = '10s'`;
-        await tx`set local lock_timeout = '2s'`;
-        return tx<{
-          payload: unknown;
-          source_sha256: string;
-          source_bytes: number | string;
-        }[]>`
-          select d.payload, f.source_sha256, f.source_bytes
-          from dvns_snapshots.documents d
-          join dvns_snapshots.files f using (code_sha, path)
-          where d.code_sha = ${receipt.codeSha}
-            and d.path = ${receipt.documentPath}
-          limit 1`;
-      });
-      const row = rows[0];
-      const sourceBytes = Number(row?.source_bytes);
-      if (
-        !row ||
-        row.source_sha256 !== receipt.sourceSha256 ||
-        !Number.isInteger(sourceBytes) ||
-        sourceBytes !== receipt.sourceBytes
-      ) {
-        throw new Error("Snapshot manovra assente o divergente dal receipt.");
-      }
-      return assertManovraSnapshot(row.payload);
+      return await readDatabasePayload(receipt);
     } catch (error) {
       if (
         error instanceof Error &&
@@ -92,8 +130,36 @@ export function loadManovraSnapshot(): Promise<ManovraSnapshot> {
       ) {
         throw error;
       }
-      throw new Error("Lettura manovra da Supabase non disponibile o non verificata.");
     }
-  })();
-  return cached;
+  }
+  try {
+    return await readCommittedPayload(receipt);
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      (error.message.startsWith("Snapshot Bilancio") ||
+        error.message.startsWith("Snapshot manovra"))
+    ) {
+      throw error;
+    }
+    const errno = (error as NodeJS.ErrnoException | undefined)?.code;
+    if (errno === "ENOENT") {
+      throw new ManovraSnapshotUnavailableError();
+    }
+    throw new ManovraSnapshotUnavailableError();
+  }
+}
+
+/** Load the pinned Bilancio in Breve snapshot (Supabase first, then receipt-pinned local JSON). */
+export function loadManovraSnapshot(): Promise<ManovraSnapshot> {
+  if (cached) return Promise.resolve(cached);
+  inflight ??= resolveSnapshot()
+    .then((snapshot) => {
+      cached = snapshot;
+      return snapshot;
+    })
+    .finally(() => {
+      inflight = undefined;
+    });
+  return inflight;
 }

@@ -16,8 +16,12 @@ import {
   topDetailRows,
   type FirstYearComparison,
   type ManovraEdition,
+  type ManovraSnapshot,
 } from "@/lib/manovra-bilancio-breve";
-import { loadManovraSnapshot } from "@/lib/manovra-bilancio-breve-store";
+import {
+  loadManovraSnapshot,
+  ManovraSnapshotUnavailableError,
+} from "@/lib/manovra-bilancio-breve-store";
 
 import {
   CompositionChart,
@@ -32,7 +36,7 @@ import {
 import styles from "./manovra.module.css";
 
 export const metadata: Metadata = {
-  title: "Manovra — confronto tra edizioni | Dove vanno i nostri soldi",
+  title: "Manovra: confronto tra edizioni",
   description:
     "Quanto spende e incassa lo Stato, dove vanno i soldi e come cambia la manovra. Dati ufficiali RGS, in mld €.",
 };
@@ -126,7 +130,35 @@ export default async function ManovraPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const snapshot = await loadManovraSnapshot();
+  let snapshot: ManovraSnapshot;
+  try {
+    snapshot = await loadManovraSnapshot();
+  } catch (error) {
+    if (error instanceof ManovraSnapshotUnavailableError) {
+      return (
+        <main className={`shell page ${styles.page}`}>
+          <nav className={styles.breadcrumb} aria-label="Percorso">
+            <Link href="/">Home</Link>
+            <span aria-hidden="true">/</span>
+            <span>Manovra a confronto</span>
+          </nav>
+          <header className={styles.hero}>
+            <h1>Manovra a confronto</h1>
+            <p className={styles.lede}>
+              Dati temporaneamente non disponibili. In produzione leggiamo lo
+              snapshot verificato collegato al receipt pubblicato; in assenza di
+              database o file locale il confronto RGS non può essere caricato.
+            </p>
+            <div className={styles.heroMeta}>
+              <Link href="/spese/legge-di-bilancio">Simulatore Legge di Bilancio</Link>
+              <Link href="/stato">Spese dello Stato</Link>
+            </div>
+          </header>
+        </main>
+      );
+    }
+    throw error;
+  }
   const editions = snapshot.editions;
   if (editions.length === 0) {
     notFound();
@@ -341,7 +373,7 @@ export default async function ManovraPage({
         </p>
         <p className={styles.lede}>
           Qui leggi il bilancio dello Stato pubblicato dalla Ragioneria (RGS),
-          in miliardi di euro. Edizione {edition.label}: anni {edition.years[0]}–
+          in miliardi di euro. Edizione {edition.label}: anni {edition.years[0]}-
           {edition.years[edition.years.length - 1]} (spese {triennioLine}). Con
           i pulsanti sotto scegli quale anno guardare. Il «Bilancio in breve»
           2027-2029 non è ancora uscito: il 2027 si legge come secondo anno di
@@ -383,7 +415,7 @@ export default async function ManovraPage({
             {row.firstYear}
             <span>
               {row.id === snapshot.latestEditionId ? "ultima · " : ""}
-              {row.years[0]}–{row.years[row.years.length - 1]}
+              {row.years[0]}-{row.years[row.years.length - 1]}
             </span>
           </Link>
         ))}
@@ -558,8 +590,8 @@ export default async function ManovraPage({
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Voce</th>
-                  <th className={styles.num}>Importo</th>
+                  <th scope="col">Voce</th>
+                  <th scope="col" className={styles.num}>Importo</th>
                 </tr>
               </thead>
               <tbody>
@@ -582,8 +614,8 @@ export default async function ManovraPage({
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Categoria</th>
-                  <th className={styles.num}>Importo</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col" className={styles.num}>Importo</th>
                 </tr>
               </thead>
               <tbody>
@@ -635,8 +667,8 @@ export default async function ManovraPage({
           <h2 id="dove-title">5. Un altro archivio ufficiale, sugli anni già chiusi</h2>
           <p>
             Stai per vedere lo stesso tipo di lettura (dove vanno i soldi per
-            capitolo), ma da un altro dataset pubblico della Ragioneria —
-            OpenBDAP, il portale open data del bilancio. Serve per confrontare
+            capitolo), ma da un altro dataset pubblico della Ragioneria
+            (OpenBDAP, il portale open data del bilancio). Serve per confrontare
             anni già pubblicati come legge di bilancio, non per sostituire i
             grafici della sezione 4.
           </p>
@@ -744,11 +776,11 @@ export default async function ManovraPage({
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Anno</th>
-                <th className={styles.num}>Entrate</th>
-                <th className={styles.num}>Spese</th>
-                <th className={styles.num}>Saldo</th>
-                <th className={styles.num}>Ricorso al mercato</th>
+                <th scope="col">Anno</th>
+                <th scope="col" className={styles.num}>Entrate</th>
+                <th scope="col" className={styles.num}>Spese</th>
+                <th scope="col" className={styles.num}>Saldo</th>
+                <th scope="col" className={styles.num}>Ricorso al mercato</th>
               </tr>
             </thead>
             <tbody>

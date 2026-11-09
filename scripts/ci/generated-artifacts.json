@@ -757,6 +757,32 @@
       }
     },
     {
+      "id": "rgs-bilancio-in-breve",
+      "owner": "RGS Bilancio in Breve — manovre a confronto (XLSX ufficiali)",
+      "files": [
+        "src/data/generated/rgs-bilancio-in-breve.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest tests.etl.test_rgs_bilancio_in_breve",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_rgs_bilancio_in_breve.py"
+      ],
+      "nodeTests": [
+        "tests/manovra-bilancio-breve.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/rgs_bilancio_in_breve_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": null,
+      "trustModel": "Snapshot tipizzato da XLSX ufficiali RGS Bilancio in Breve. Fail-closed su schema, hash e centesimi; previsioni non inventate da PDF. Destinazione runtime: dvns_snapshots, non fonte Git permanente.",
+      "publication": null
+    },
+    {
       "id": "openbdap-defence-budget-macroaggregates",
       "owner": "OpenBDAP Difesa mission × macroaggregate CP A1 series",
       "files": [

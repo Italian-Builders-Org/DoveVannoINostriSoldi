@@ -28,11 +28,29 @@ test('DB corruption, missing/duplicate ordinals and wrong release digest fail cl
 test('DB configuration requires the selected project, TLS and no unexpected backend',()=>{
  const valid='postgresql://postgres.zvqhikeylxynsljwgosc:placeholder@aws-0-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require';
  assert.equal(databaseConnectionUrl(valid),valid);
- const preview = valid.replace('postgres.', 'dvns_vercel_preview.');
- assert.equal(databaseConnectionUrl(preview), preview);
+ const scoped = valid.replace('postgres.', 'dvns_vercel_preview.');
+ const transaction = scoped.replace(':5432/', ':6543/');
+ assert.equal(databaseConnectionUrl(scoped), transaction);
+ assert.equal(databaseConnectionUrl(transaction), transaction);
+ assert.equal(databaseConnectionUrl(scoped.replace(':5432/', '/')), transaction);
+ assert.throws(() => databaseConnectionUrl(scoped.replace(':5432/', ':5440/')));
  assert.throws(() => databaseConnectionUrl(valid.replace('postgres.', 'unexpected.')));
 
  for(const value of [undefined,'',valid.replace('zvqhikeylxynsljwgosc','another'),valid.replace('sslmode=require','sslmode=disable'),valid.replace('/postgres?','/other?'),valid+'&sslmode=disable']) assert.throws(()=>databaseConnectionUrl(value));
+});
+
+test('the isolated canary role can only connect from Vercel Preview', () => {
+ const canary = 'postgresql://dvns_vercel_canary.zvqhikeylxynsljwgosc:placeholder@aws-0-eu-west-1.pooler.supabase.com:6543/postgres?sslmode=require';
+ const previous = process.env.VERCEL_ENV;
+ try {
+  process.env.VERCEL_ENV = 'preview';
+  assert.equal(databaseConnectionUrl(canary), canary);
+  process.env.VERCEL_ENV = 'production';
+  assert.throws(() => databaseConnectionUrl(canary));
+ } finally {
+  if (previous === undefined) delete process.env.VERCEL_ENV;
+  else process.env.VERCEL_ENV = previous;
+ }
 });
 
 test('Supabase enabled without credentials fails instead of returning local rows', async()=>{

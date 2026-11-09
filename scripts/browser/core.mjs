@@ -2016,7 +2016,6 @@ try {
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-actions a[href='/termini']", "Termini"],
           [".footer-backer a[href='/supporter']", "Chi ci sostiene"],
-          [".footer-backer a[href='https://mantoventure.com']", "Manto Venture"],
           [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram"],
           [".footer-social a[href='https://x.com/DVNSoldi']", "X"],
         ];

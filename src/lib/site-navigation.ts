@@ -58,7 +58,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/spese",
     label: "Soldi",
     icon: "money",
-    aliases: ["/stato", "/entrate"],
+    aliases: ["/stato", "/entrate", "/manovra"],
     children: [
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
@@ -86,6 +86,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         href: "/stato",
         label: "Amministrazioni centrali",
         children: [
+          { href: "/manovra", label: "Manovra a confronto" },
           { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
           { href: "/stato/legislature", label: "Spesa per legislatura" },
         ],
@@ -277,6 +278,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/operative", label: "Spese operative" },
       { href: "/stato", label: "Amministrazioni centrali" },
       { href: "/debito", label: "Debito pubblico" },
+      { href: "/manovra", label: "Manovra a confronto" },
       { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],

@@ -1,0 +1,122 @@
+.figure {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 1.1rem 1.15rem 1.2rem;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+}
+
+.figure figcaption h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.figure figcaption p {
+  margin: 0.35rem 0 0;
+  max-width: 62ch;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.canvas {
+  width: 100%;
+  min-height: 280px;
+}
+
+.tooltip {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 12rem;
+  max-width: 22rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  font-size: 0.88rem;
+}
+
+.tooltip strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.92rem;
+}
+
+.tooltip div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tooltip span {
+  color: var(--color-neutral-700);
+}
+
+.tooltip b {
+  font-variant-numeric: tabular-nums;
+}
+
+.up b {
+  color: var(--color-positive);
+}
+
+.down b {
+  color: var(--color-accent-700);
+}
+
+.flat b {
+  color: var(--color-neutral-700);
+}
+
+.glossary {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.glossary > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.glossary dt {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.glossary dd {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--color-neutral-700);
+}
+
+.footnotes {
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: 0.75rem;
+}
+
+.footnotes ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-neutral-700);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.footnotes strong {
+  color: var(--color-text);
+  font-weight: 650;
+}

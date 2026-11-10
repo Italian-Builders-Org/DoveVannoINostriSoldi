@@ -1052,7 +1052,7 @@ export function PilPathChart({ data }: { data: PilPoint[] }) {
                   label: String(entry.name),
                   value:
                     entry.value == null
-                      ? "—"
+                      ? "-"
                       : `${Number(entry.value).toLocaleString("it-IT", {
                           maximumFractionDigits: 1,
                         })}%`,

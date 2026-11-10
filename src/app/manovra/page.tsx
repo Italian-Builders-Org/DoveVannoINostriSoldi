@@ -36,7 +36,7 @@ import {
 import styles from "./manovra.module.css";
 
 export const metadata: Metadata = {
-  title: "Manovra — confronto tra edizioni | Dove vanno i nostri soldi",
+  title: "Manovra - confronto tra edizioni | Dove vanno i nostri soldi",
   description:
     "Quanto spende e incassa lo Stato, dove vanno i soldi e come cambia la manovra. Dati ufficiali RGS, in mld €.",
 };
@@ -375,16 +375,16 @@ export default async function ManovraPage({
           Qui confronti le leggi di bilancio pubblicate dalla Ragioneria (RGS),
           in miliardi di euro. Ogni legge copre tre anni: prima scegli quale
           legge leggere, poi quale anno di quella legge. Spese nel triennio{" "}
-          {edition.years[0]}–{edition.years[edition.years.length - 1]}:{" "}
+          {edition.years[0]}-{edition.years[edition.years.length - 1]}:{" "}
           {triennioLine}.
         </p>
         <p className={styles.note}>
           La manovra discussa a fine ottobre (disegno di legge di bilancio{" "}
-          2027–2029) è già sul sito RGS come «Bilancio finanziario», ma non
-          esiste ancora il «Bilancio in Breve» 2027–2029 con le tavole XLSX
+          2027-2029) è già sul sito RGS come «Bilancio finanziario», ma non
+          esiste ancora il «Bilancio in Breve» 2027-2029 con le tavole XLSX
           confrontabili. Finché non esce, qui non compare come «Legge 2027»:
           il 2027 che vedi sotto è il 2° anno della legge già approvata
-          2026–2028, non la nuova manovra.
+          2026-2028, non la nuova manovra.
         </p>
         <div className={styles.heroMeta}>
           <a href={edition.xlsx.url} target="_blank" rel="noreferrer">
@@ -430,7 +430,7 @@ export default async function ManovraPage({
                 Legge {row.firstYear}
                 <span>
                   {row.id === snapshot.latestEditionId ? "ultima · " : ""}
-                  triennio {row.years[0]}–{row.years[row.years.length - 1]}
+                  triennio {row.years[0]}-{row.years[row.years.length - 1]}
                 </span>
               </Link>
             ))}
@@ -484,7 +484,7 @@ export default async function ManovraPage({
         ) : (
           <>
             Stai leggendo il <strong>{edition.years.indexOf(focusYear) + 1}° anno</strong>{" "}
-            della stessa legge {edition.firstYear}–{edition.years[edition.years.length - 1]}{" "}
+            della stessa legge {edition.firstYear}-{edition.years[edition.years.length - 1]}{" "}
             (anno {focusYear}). Qui non confronti due manovre: vedi la previsione
             interna al documento. Per il confronto tra manovre torna al{" "}
             <Link href={hrefForEdition(edition.id, { anno: edition.firstYear })}>
@@ -717,7 +717,7 @@ export default async function ManovraPage({
           <h2 id="dove-title">5. Un altro archivio ufficiale, sugli anni già chiusi</h2>
           <p>
             Stai per vedere lo stesso tipo di lettura (dove vanno i soldi per
-            capitolo), ma da un altro dataset pubblico della Ragioneria —
+            capitolo), ma da un altro dataset pubblico della Ragioneria -
             OpenBDAP, il portale open data del bilancio. Serve per confrontare
             anni già pubblicati come legge di bilancio, non per sostituire i
             grafici della sezione 4.

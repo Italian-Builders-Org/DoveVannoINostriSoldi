@@ -1,11 +1,16 @@
 .sectionNav {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
   margin-top: 0;
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-4);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-5);
   border-bottom: 1px solid var(--color-neutral-300);
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  max-width: 28rem;
 }
 
 .title {
@@ -22,48 +27,62 @@
   color: var(--color-text);
 }
 
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+.label {
+  display: block;
+  flex: 1 1 16rem;
+  min-width: min(100%, 16rem);
   margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.link,
-.current {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+.select {
+  display: block;
+  width: 100%;
   min-height: 44px;
-  padding-inline: var(--space-3);
+  padding: 0.55rem 2.4rem 0.55rem 0.85rem;
   border: 1px solid var(--color-neutral-400);
-  font-size: 13px;
+  border-radius: 0;
+  background-color: var(--color-raised);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23555' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 16px;
+  color: var(--color-text);
+  font-size: 14px;
   font-weight: 600;
+  appearance: none;
+  cursor: pointer;
 }
 
-.link {
-  color: var(--color-text);
-  background: var(--color-raised);
-  transition: background-color 140ms var(--ease-out), border-color 140ms var(--ease-out);
-}
-
-.link:hover {
-  color: var(--color-text);
-  background: var(--color-neutral-200);
+.select:hover {
   border-color: var(--color-neutral-500);
+  background-color: var(--color-neutral-100);
 }
 
-.current {
-  color: var(--color-neutral-700);
-  background: var(--color-neutral-100);
-  border-color: var(--color-neutral-300);
-  cursor: default;
+.select:focus-visible {
+  outline: 2px solid var(--color-accent-600, #176575);
+  outline-offset: 2px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (max-width: 620px) {
-  .links { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-  .links li { flex: none; }
-  .link, .current { white-space: nowrap; }
+  .picker {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .label {
+    flex-basis: auto;
+  }
 }

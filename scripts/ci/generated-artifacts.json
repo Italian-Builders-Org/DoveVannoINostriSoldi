@@ -8,6 +8,10 @@
     {
       "path": "src/data/generated/italy-regions.ts",
       "reason": "Static TypeScript reference table, not generated data. Validated by tests/italy-regions.test.mjs."
+    },
+    {
+      "path": "src/data/generated/rgs-bilancio-in-breve.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -755,6 +759,32 @@
         "prTitle": "data: refresh Legge di Bilancio snapshot",
         "upstreamUrl": "https://bdap-opendata.rgs.mef.gov.it/SpodCkanApi/api/3/action/package_search?q=LBF_SPE_CRU_AMPMA_001&rows=20"
       }
+    },
+    {
+      "id": "rgs-bilancio-in-breve",
+      "owner": "RGS Bilancio in Breve — manovre a confronto (XLSX ufficiali)",
+      "files": [
+        "src/data/generated/rgs-bilancio-in-breve.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_rgs_bilancio_in_breve_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_rgs_bilancio_in_breve_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/manovra-bilancio-breve.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/rgs_bilancio_in_breve_snapshot.py",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": null,
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Reader fail-closed su receipt/hash/schema.",
+      "publication": null
     },
     {
       "id": "openbdap-defence-budget-macroaggregates",

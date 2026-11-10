@@ -59,6 +59,7 @@
     "test:browser:procurement-peers": "node scripts/browser/procurement-peers.mjs",
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs",
     "test:browser:mobilita": "node scripts/browser/mobilita.mjs",
+    "test:browser:manovra": "node scripts/browser/manovra.mjs",
     "test:browser:pensioni": "node scripts/browser/pensioni.mjs",
     "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs",
     "test:browser:documenti": "node scripts/browser/documenti.mjs",

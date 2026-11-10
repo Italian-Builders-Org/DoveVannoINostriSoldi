@@ -66,3 +66,33 @@ test("public sorted lookups preserve provenance and reject unproven ordering", a
   await assert.rejects(selectIntegratedSortedDatasetRows("mim-scuole-statali-comuni", "Comune", "Roma"), /ordinamento/);
   await assert.rejects(selectIntegratedSortedDatasetRows("vincitori", "Codice ISTAT comune", "058091"), /ordinamento/);
 });
+
+test("Aielli's exact school and property lookups open at most the matching chunk boundaries", async () => {
+  const { getSiopeMunicipalityDetailByIpaCode } = await import("../src/lib/siope-municipality-detail.ts");
+  const aielli = getSiopeMunicipalityDetailByIpaCode("c_a100");
+  const istat = aielli.years.find((year) => year.geography).geography.istatCode;
+  const queries = SORTED.slice(0, 4);
+  for (const [datasetId, column] of queries) {
+    const key = datasetId === "mim-scuole-statali-comuni" ? istat : aielli.taxCode;
+    const result = await selectSortedRows(datasetId, column, key);
+    assert.ok(result.chunksRead <= 2, `${datasetId}: ${result.chunksRead} chunk letti per Aielli`);
+  }
+});
+
+test("a stale chunk index cannot make a municipality disappear", async () => {
+  const datasetId = "mim-scuole-statali-comuni";
+  const code = "058091";
+  const { default: bounds } = await import("../src/data/generated/municipality-chunk-bounds.json", { with: { type: "json" } });
+  const chunks = bounds[datasetId].chunks;
+  const ordinal = chunks.findIndex(({ first, last }) => first <= code && code <= last);
+  assert.ok(ordinal >= 0);
+  const current = chunks[ordinal];
+  chunks[ordinal] = { first: "999999", last: "999999", sha256: "0".repeat(64) };
+  try {
+    const result = await selectSortedRows(datasetId, "Codice ISTAT comune", code);
+    assert.equal(result.rows.length, 1);
+    assert.equal(result.rows[0].cells["Sedi scolastiche statali"], "944");
+  } finally {
+    chunks[ordinal] = current;
+  }
+});

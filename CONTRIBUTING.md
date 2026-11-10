@@ -193,6 +193,11 @@ senza incorporare timestamp di build o stati dei probe nel riepilogo.
 Il publisher dei refresh automatici aggiorna e include il riepilogo per le
 fonti interessate, usando gli stessi validator con il network guard attivo.
 
+Dopo una modifica ai dataset MIM delle scuole statali o MEF del patrimonio
+comunale, rigenera l’indice dei blocchi con
+`npm run municipality-chunk-bounds:generate`. Il controllo snapshot riconcilia
+i confini e gli hash con i blocchi pubblici del rilascio.
+
 Dopo una modifica ai dataset Immobili AdE, ai posti letto o all’indice dei
 dispositivi medici, rigenera i riepiloghi delle pagine con
 `npm run editorial-summaries:generate`. Il test Node li riconcilia offline

@@ -4,11 +4,13 @@ import "./helpers/register-ts-alias.mjs";
 
 const {
   assertManovraSnapshot,
+  buildProgrammaticPilPoints,
   formatBillions,
   formatSignedPct,
   getLatestComparison,
   getLatestEdition,
   manovraShareSorted,
+  shouldShowProgrammaticPilChart,
 } = await import("../src/lib/manovra-bilancio-breve.ts");
 
 test("assertManovraSnapshot rejects empty or incoherent payloads", () => {
@@ -58,6 +60,41 @@ test("manovra share excludes totals and sorts by absolute first-year impact", ()
     ["Missione B", "Missione A"],
   );
   assert.ok(share.every((row) => !row.aggregate.toLowerCase().startsWith("totale")));
+});
+
+test("programmatic pil chart uses tav 1 debt series, not page year or crescita", () => {
+  const edition = {
+    firstYear: 2026,
+    years: [2026, 2027, 2028],
+    programmatic: {
+      available: true,
+      series: {
+        indebitamentoNettoPilPct: {
+          label: "Indebitamento netto (% Pil)",
+          byYear: { 2024: -4.2, 2026: -3.1, 2027: -2.8, 2028: -2.5 },
+        },
+        saldoPrimarioPilPct: {
+          label: "Saldo primario (% Pil)",
+          byYear: { 2024: 1.5, 2026: 1.2, 2027: 1.0, 2028: 0.8 },
+        },
+        debitoPubblicoPilPct: {
+          label: "Debito pubblico (% Pil)",
+          byYear: { 2024: 134.9, 2026: 137.4, 2027: 137.3, 2028: 136.4 },
+        },
+        crescitaSpesaNettaPct: {
+          label: "Crescita spesa",
+          byYear: { 2029: 1.6 },
+        },
+      },
+    },
+  };
+  const points = buildProgrammaticPilPoints(edition);
+  assert.deepEqual(
+    points.map((row) => row.year),
+    [2024, 2026, 2027, 2028],
+  );
+  assert.ok(shouldShowProgrammaticPilChart(edition, points));
+  assert.equal(points.find((row) => row.year === 2027)?.debito, 137.3);
 });
 
 test("latest helpers read from a validated snapshot object", () => {

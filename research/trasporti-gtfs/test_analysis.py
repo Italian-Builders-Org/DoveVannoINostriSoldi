@@ -342,6 +342,44 @@ class ExplicitDateTests(unittest.TestCase):
                 date(2026, 10, 30),
             )
 
+    def test_calendar_dates_only_feed_runs_on_configured_service_date(self):
+        """AMTAB Bari: solo calendar_dates, senza righe in calendar.txt."""
+        ready = AnalysisTests().run_feed(
+            {
+                "calendar.txt": [
+                    [
+                        "service_id",
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday",
+                        "start_date",
+                        "end_date",
+                    ]
+                ],
+                "calendar_dates.txt": [
+                    ["service_id", "date", "exception_type"],
+                    ["s", "20261109", "1"],
+                    ["s", "20261110", "1"],
+                    ["s", "20261130", "1"],
+                ],
+            },
+            day=date(2026, 11, 9),
+        )
+        self.assertEqual(ready["status"], "ready")
+        self.assertGreater(ready["coverage"]["activeScheduledTrips"], 0)
+        self.assertEqual(
+            resolve_service_date(
+                {"id": "bari", "serviceDate": "2026-11-09"},
+                {},
+                date(2026, 10, 30),
+            ),
+            date(2026, 11, 9),
+        )
+
     def test_same_feed_is_ready_on_an_explicit_later_day_not_the_default(self):
         calendar = [
             [

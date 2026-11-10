@@ -99,6 +99,57 @@ export type FirstYearComparison = {
   };
 };
 
+export type ProgrammaticPilPoint = {
+  year: number;
+  indebitamento: number | null;
+  primario: number | null;
+  debito: number | null;
+};
+
+const PROGRAMMATIC_PIL_SERIES = [
+  "indebitamentoNettoPilPct",
+  "saldoPrimarioPilPct",
+  "debitoPubblicoPilPct",
+] as const;
+
+/** PIL/deficit series for Tav. 1 — independent of the page year selector. */
+export function buildProgrammaticPilPoints(
+  edition: ManovraEdition,
+): ProgrammaticPilPoint[] {
+  if (!edition.programmatic.available) return [];
+  const { series } = edition.programmatic;
+  const years = new Set<number>(edition.years);
+  for (const key of PROGRAMMATIC_PIL_SERIES) {
+    const byYear = series[key]?.byYear;
+    if (!byYear) continue;
+    for (const year of Object.keys(byYear)) {
+      const parsed = Number(year);
+      if (Number.isInteger(parsed)) years.add(parsed);
+    }
+  }
+  return [...years]
+    .sort((a, b) => a - b)
+    .map((year) => ({
+      year,
+      indebitamento: series.indebitamentoNettoPilPct?.byYear[String(year)] ?? null,
+      primario: series.saldoPrimarioPilPct?.byYear[String(year)] ?? null,
+      debito: series.debitoPubblicoPilPct?.byYear[String(year)] ?? null,
+    }));
+}
+
+export function shouldShowProgrammaticPilChart(
+  edition: ManovraEdition,
+  points: ProgrammaticPilPoint[],
+): boolean {
+  if (!edition.programmatic.available || points.length === 0) return false;
+  return points.some(
+    (point) =>
+      (point.indebitamento != null && Number.isFinite(point.indebitamento)) ||
+      (point.primario != null && Number.isFinite(point.primario)) ||
+      (point.debito != null && Number.isFinite(point.debito)),
+  );
+}
+
 export type ManovraSnapshot = {
   schemaVersion: number;
   title: string;

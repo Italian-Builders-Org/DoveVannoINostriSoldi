@@ -13,11 +13,27 @@ function readNoFollowFlags(): number {
   return constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0);
 }
 
-function assertSameRegularFile(before: Stats, opened: Stats, path: string): void {
+function assertOpenedMatchesPath(path: string, opened: Stats): void {
+  const link = lstatSync(path);
   if (
+    link.isSymbolicLink() ||
+    !link.isFile() ||
     !opened.isFile() ||
-    opened.dev !== before.dev ||
-    opened.ino !== before.ino
+    link.dev !== opened.dev ||
+    link.ino !== opened.ino
+  ) {
+    throw new Error(`Percorso non regolare o cambiato prima della lettura: ${path}`);
+  }
+}
+
+async function assertOpenedMatchesPathAsync(path: string, opened: Stats): Promise<void> {
+  const link = await lstat(path);
+  if (
+    link.isSymbolicLink() ||
+    !link.isFile() ||
+    !opened.isFile() ||
+    link.dev !== opened.dev ||
+    link.ino !== opened.ino
   ) {
     throw new Error(`Percorso non regolare o cambiato prima della lettura: ${path}`);
   }
@@ -25,17 +41,14 @@ function assertSameRegularFile(before: Stats, opened: Stats, path: string): void
 
 /**
  * Open a regular file without following symlinks when the platform supports it.
- * Always lstat first and re-check identity via fstat so Windows cannot silently
- * follow a link when `O_NOFOLLOW` is undefined.
+ * Open first (with O_NOFOLLOW when available), then confirm the path is still the
+ * same regular file via lstat identity — so Windows cannot keep a silently followed
+ * symlink after the open.
  */
 export function openRegularFileSync(path: string): number {
-  const before = lstatSync(path);
-  if (!before.isFile() || before.isSymbolicLink()) {
-    throw new Error(`Percorso non regolare: ${path}`);
-  }
   const fd = openSync(path, readNoFollowFlags());
   try {
-    assertSameRegularFile(before, fstatSync(fd), path);
+    assertOpenedMatchesPath(path, fstatSync(fd));
     return fd;
   } catch (error) {
     closeSync(fd);
@@ -45,13 +58,9 @@ export function openRegularFileSync(path: string): number {
 
 /** Async counterpart of {@link openRegularFileSync}. Caller must close the handle. */
 export async function openRegularFile(path: string): Promise<FileHandle> {
-  const before = await lstat(path);
-  if (!before.isFile() || before.isSymbolicLink()) {
-    throw new Error(`Percorso non regolare: ${path}`);
-  }
   const handle = await open(path, readNoFollowFlags());
   try {
-    assertSameRegularFile(before, await handle.stat(), path);
+    await assertOpenedMatchesPathAsync(path, await handle.stat());
     return handle;
   } catch (error) {
     await handle.close().catch(() => undefined);

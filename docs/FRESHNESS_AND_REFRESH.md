@@ -282,19 +282,25 @@ di governo. La procedura completa è in
 | --- | --- | ---: | ---: |
 | IPA Enti | giornaliera | 1 h | 1 h |
 | OpenBDAP · Pagamenti Stato e opere MOP | mensile + consuntivo annuale per i pagamenti; data propria per MOP | 1 h · invalidazione, metadati entro 2 h | 6 h |
-| ANAC open dataset | mensile | 3 h | 12 h |
+| ANAC open dataset | mensile | 6 h | 24 h |
 | OpenCoesione | bimestrale prevista | 6 h · workflow snapshot | 6 h · cache API |
 | OpenCivitas | irregolare | 24 h · workflow snapshot | 24 h · cache API |
 | MEF IRPEF comunale | annuale | 24 h · discovery snapshot | snapshot versionato |
 | MIM · Atlante Istruzione | annuale; URL fissati per 2022/23–2024/25 | lunedì 06:17 UTC · verifica dei file registrati | snapshot versionato solo se cambiano i file |
-| ReGiS | periodica | 6 h | 12 h |
-| Art. 4-bis | dipende dall'ente | 3 h | 6 h |
+| ReGiS | periodica | — | — |
+| Art. 4-bis | dipende dall'ente | — | — |
 | Consulenti Pubblici | dipende dall'ente | 6 h | 6 h |
 | Camera dei deputati | su pubblicazione | 6 h | 12 h |
 | Senato della Repubblica | su pubblicazione | 6 h | 12 h |
 | Banca d'Italia · debito pubblico | mensile, circa 45 giorni di ritardo | controllo giornaliero 06:17 UTC | snapshot versionato; stale oltre 75 giorni |
 | Eurostat · interessi e spesa totale | annuale | controllo giornaliero 06:17 UTC | snapshot versionato; warning oltre 540 giorni |
 | AMECO + Eurostat · pagella governi | da mensile ad annuale, secondo la serie | controllo settimanale martedì 07:37 UTC | snapshot versionato; pubblicazione tramite PR |
+
+
+I tempi di ANAC (6 h / 24 h) coincidono con `discoveryRevalidateSeconds` e
+`dataRevalidateSeconds` in `src/lib/data/source-policy.ts`. ReGiS e Art. 4-bis
+non hanno una voce in quel registro: i trattini indicano che non esiste una
+policy di revalidazione runtime, non un intervallo operativo da seguire.
 
 Camera ha un riepilogo strutturato con data del documento. Senato resta documentale: i nuovi atti vengono collegati, ma i valori non sono pubblicati finché non superano una normalizzazione verificabile.
 

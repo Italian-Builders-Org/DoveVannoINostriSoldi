@@ -1,8 +1,8 @@
 # Stato del prototipo mobilità
 
-Aggiornato il 4 novembre 2026. Explorer pubblico in
-`public/mappe/mobilita/explorer/` ripubblicato con basemap OSM verificati per
-tutte le reti (stessi segmenti GTFS; solo cartografia di fondo ripristinata).
+Aggiornato il 10 novembre 2026. Explorer pubblico in
+`public/mappe/mobilita/explorer/`: Bari ripubblicata con data di servizio esplicita
+9 novembre 2026 (5.581 tratti). Basemap OSM verificati per tutte le reti.
 
 ## Che cosa funziona
 
@@ -31,7 +31,7 @@ tratti). 2.563 tratti hanno percorso ricostruito su binari OSM. Giorno di serviz
 
 | Area | Mezzi e tratti |
 | --- | --- |
-| Bari | bus 2.662 (4 novembre: il feed non ha servizio dal 27 al 31 ottobre) |
+| Bari | bus 5.581 (9 novembre: il feed aggiornato il 6 novembre non ha servizio fino all'8 novembre; il 30 ottobre resta senza corse) |
 | Bologna | bus 6.354 |
 | Cagliari | bus 2.268, tram 28 (31 ottobre) |
 | Catania | bus 2.713 |

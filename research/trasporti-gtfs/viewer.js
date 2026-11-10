@@ -633,13 +633,27 @@ function updateData() {
       ? filtered()
         ? "Prova un’altra fascia, linea o velocità."
         : "Il feed non prevede corse fra queste fermate nella fascia scelta."
-      : "Il feed acquisito non contiene corse utilizzabili per il " +
-        new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT") +
-        ".";
+      : emptyServiceCopy(city);
   renderTable();
   renderInsights();
   renderInspector();
   schedule();
+}
+function emptyServiceCopy(city) {
+  const day = new Date(city.serviceDate + "T12:00:00").toLocaleDateString("it-IT");
+  const routes = city.coverage && city.coverage.routesInFeed;
+  const prefix =
+    Number.isFinite(routes) && routes > 0
+      ? "Il feed acquisito contiene " +
+        routes.toLocaleString("it-IT") +
+        " linee, ma nessuna corsa attiva per il " +
+        day +
+        "."
+      : "Il feed acquisito non contiene corse utilizzabili per il " + day + ".";
+  return (
+    prefix +
+    " La data di servizio non viene sostituita automaticamente con un altro giorno."
+  );
 }
 const bandNames = {
   morning: "7–10",

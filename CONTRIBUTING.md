@@ -209,8 +209,9 @@ dipendenze e tutti i gate restano attivi.
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
 attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
 Salta soltanto modifiche a documentazione Markdown, test, template di issue/PR,
-al workflow `.github/workflows/ci.yml`, al registro `scripts/ci/action-pins.json`
-e ai producer offline esplicitamente verificati nello script. L'elenco include
+al workflow `.github/workflows/ci.yml`, al registro `scripts/ci/action-pins.json`,
+ai producer offline esplicitamente verificati nello script, e anche a
+`scripts/browser/`, `scripts/bench/`, `.agents/`, `.claude/`, `.cursor/` e ai file `*.mdc`. L'elenco include
 `scripts/etl/medical_device_spending_index.py`: il sito legge i suoi artifact
 versionati, senza eseguire il producer durante installazione, build o richieste.
 Una modifica ai dati generati richiede comunque il deployment, anche quando

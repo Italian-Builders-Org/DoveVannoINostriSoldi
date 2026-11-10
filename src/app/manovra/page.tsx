@@ -9,8 +9,10 @@ import {
   formatReadableMoney,
   formatSignedBillions,
   formatSignedPct,
+  buildProgrammaticPilPoints,
   getEdition,
   manovraShareSorted,
+  shouldShowProgrammaticPilChart,
   rgsMissionDeltas,
   rgsMissionsForYear,
   topDetailRows,
@@ -248,26 +250,8 @@ export default async function ManovraPage({
     capitaleMld: toMld(metricForYear(edition, "speseContoCapitale", year) ?? 0),
   }));
 
-  const programmaticRows = edition.programmatic.available
-    ? edition.programmatic.series
-    : null;
-  const pilPoints = programmaticRows
-    ? [
-        ...new Set(
-          Object.values(programmaticRows).flatMap((series) =>
-            Object.keys(series.byYear).map(Number),
-          ),
-        ),
-      ]
-        .sort((a, b) => a - b)
-        .map((year) => ({
-          year,
-          indebitamento:
-            programmaticRows.indebitamentoNettoPilPct?.byYear[String(year)] ?? null,
-          primario: programmaticRows.saldoPrimarioPilPct?.byYear[String(year)] ?? null,
-          debito: programmaticRows.debitoPubblicoPilPct?.byYear[String(year)] ?? null,
-        }))
-    : [];
+  const pilPoints = buildProgrammaticPilPoints(edition);
+  const showPilChart = shouldShowProgrammaticPilChart(edition, pilPoints);
 
   const openBdapTotals = missionSeries.years.map((year) => ({
     year,
@@ -867,7 +851,7 @@ export default async function ManovraPage({
             </tbody>
           </table>
         </div>
-        {pilPoints.length > 0 ? <PilPathChart data={pilPoints} /> : null}
+        {showPilChart ? <PilPathChart data={pilPoints} /> : null}
       </section>
 
       <section className={styles.section} aria-labelledby="glossario-title">

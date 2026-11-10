@@ -2,7 +2,8 @@
 
 Prototipo di ricerca: 32 reti utilizzabili in 20 città e una tratta ferroviaria,
 44.798 tratti validati. Include tram, autobus, metro, treni e navigazione;
-la copertura varia per fonte. Bari non ha servizio nella data scelta e la
+la copertura varia per fonte. Bari usa la data di servizio esplicita
+9 novembre 2026 (il feed non ha corse il 30 ottobre). La
 ferrovia di Trento non ha geometrie utilizzabili. La vista Treni contiene due
 rilevazioni salvate, distinte dalla velocità programmata GTFS.
 
@@ -27,7 +28,7 @@ python3 research/trasporti-gtfs/analyze.py \
   --cache research/trasporti-gtfs/cache --date 2026-10-30 \
   --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
   --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31 \
-  --city-date verona-bolzano-av=2026-11-02 \
+  --city-date verona-bolzano-av=2026-11-02 --city-date bari=2026-11-09 \
   --basemap-cache research/trasporti-gtfs/cache \
   --output research/trasporti-gtfs/output
 python3 -m http.server 3274 --bind 127.0.0.1 \
@@ -97,7 +98,7 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Torino | tram | 9 | 8 | 1.854 | 1.854 | 591 |
 | Firenze | tram | 2 | 2 | 874 | 874 | 157 |
 | Bologna | bus | 240 | 224 | 8.499 | 7.030 | 6.354 |
-| Bari | bus | 68 | 0 | 0 | 0 | 0 |
+| Bari | bus | 67 | 67 | 2.550 | 2.548 | 5.581 |
 | Cagliari | bus | 45 | 45 | 3.155 | 3.116 | 2.268 |
 | Venezia | bus | 94 | 92 | 4.212 | 4.030 | 4.884 |
 | Palermo | tram | 4 | 4 | 518 | 468 | 74 |
@@ -128,10 +129,10 @@ essere più piccolo della rete: fuori dall'estratto non sono inventate strade.
 | Trento | treni | 1 | 1 | 48 | 0 | 0 |
 
 Cagliari (bus e tram) e Padova usano il **31 ottobre 2026**, la navigazione
-veneziana e la tratta Verona–Bolzano il **2 novembre 2026**, gli altri feed il
-**30 ottobre 2026**.
+veneziana e la tratta Verona–Bolzano il **2 novembre 2026**, Bari il
+**9 novembre 2026**, gli altri feed il **30 ottobre 2026**.
 Sono scelte esplicite basate sui calendari degli archivi acquisiti, senza ripiego
-automatico. Le date restano nelle fonti e negli export; nessuna classifica tra
+automatico. Per Bari la data è anche dichiarata come `serviceDate` in `feeds.json`. Le date restano nelle fonti e negli export; nessuna classifica tra
 città. A Venezia autobus ACTV e navigazione sono reti separate: il perimetro
 navale copre le isole centrali, non tutta la laguna né altri operatori. Le aree
 di studio sono dichiarate in `feeds.json`.
@@ -144,10 +145,13 @@ copertura della mappa urbana. Nel perimetro sono utilizzabili 135 linee e
 7.030 corse programmate. I sensi opposti e le varianti geometriche restano
 separati; non sommare i tratti come fermate o chilometri.
 
-**Bari non è una città analizzata:** il calendario acquisito omette il
-30 ottobre. È visibile come stato non disponibile, senza ripiegare su un altro
-giorno. Il GTFS ufficiale di Genova acquisito non contiene `shapes.txt`: non
-viene trasformato in percorsi stradali inventati.
+**Bari è analizzata con data esplicita 9 novembre 2026.** Il feed AMTAB
+aggiornato il 6 novembre 2026 non ha corse dal 26 ottobre all'8 novembre
+(solo `calendar_dates`, dal 9 al 30 novembre): il 30 ottobre resta senza
+servizio, e la data non viene sostituita automaticamente. Il verdetto
+`RESTRICTED` (licenza non dichiarata) è un avviso di audit, non il motivo
+dell'assenza di corse. Il GTFS ufficiale di Genova acquisito non contiene
+`shapes.txt`: non viene trasformato in percorsi stradali inventati.
 
 Palermo include TRAM1, TRAM2 e TRAM3: TRAM4 ha corse attive ma nessun tratto
 con geometria utilizzabile. Il catalogo descrive un periodo precedente al file
@@ -200,7 +204,7 @@ distanze GTFS; la quota non rappresenta altitudine.
 - [GTT, condizioni GTFS](https://www.gtt.to.it/gtt_gtfs_license.html): solo uso non commerciale, attribuzione e collegamento GTT obbligatori, conservati nel visualizzatore. Il codice non cambia la licenza dei dati.
 - [Firenze, Regione Toscana/GEST](https://dati.toscana.it/dataset/rt-oraritb/resource/1f62d551-65f4-49f8-9a99-e19b02077be3): CC-BY nel catalogo, versione non specificata.
 - [Bologna, TPER](https://solweb.tper.it/web/tools/open-data/open-data-detail.aspx?filename=gommagtfsbo&source=): CC-BY 3.0 Italia.
-- [Bari, AMTAB](https://www.amtab.it/it/openmobilitydata): condizioni da verificare; calendario del giorno assente.
+- [Bari, AMTAB](https://www.amtab.it/it/openmobilitydata): condizioni da verificare (licenza non dichiarata, verdetto RESTRICTED); data di servizio esplicita 9 novembre 2026.
 - [Cagliari, CTM / Sardegna Mobilità](https://www.sardegnamobilita.it/open-data/quadri-orari-ctm): CC-BY 4.0 secondo il portale Sardegna Mobilità.
 - [Venezia, ACTV](https://actv.avmspa.it/en/node/3969): feed automobilistico; licenza della risorsa da verificare prima della pubblicazione.
 - [Palermo, Comune/AMAT](https://opendata.comune.palermo.it/opendata-dataset.php?dataset=1783): condizioni specifiche tram CC BY-SA 4.0; geometrie basate su OSM sotto ODbL.
@@ -535,7 +539,7 @@ Nuove reti nel registro: Napoli (ANM metro, tram, funicolari, bus/filobus; EAV
 treni), Genova (archivio AMT della Regione Liguria con shape; treni Trenitalia),
 Perugia (Minimetrò, bus Busitalia Umbria), Messina (ATM), Trenord (area milanese e
 tutta la Lombardia), viste ferroviarie Italia (corse Trenitalia via Liguria),
-Toscana e Sardegna. Bari torna utilizzabile con data esplicita 4 novembre.
+Toscana e Sardegna. Bari torna utilizzabile con data esplicita 9 novembre.
 
 ```bash
 python3 research/trasporti-gtfs/acquire.py --cache CACHE --only napoli-metro --only messina
@@ -544,7 +548,7 @@ python3 research/trasporti-gtfs/railgraph.py --cache CACHE --city milano-treni
 python3 research/trasporti-gtfs/analyze.py --cache CACHE --date 2026-10-30 \
   --city-date cagliari=2026-10-31 --city-date padova=2026-10-31 \
   --city-date venezia-nav=2026-11-02 --city-date cagliari-tram=2026-10-31 \
-  --city-date verona-bolzano-av=2026-11-02 --city-date bari=2026-11-04 \
+  --city-date verona-bolzano-av=2026-11-02 --city-date bari=2026-11-09 \
   --city-date genova-metro=2026-07-15 --city-date genova-funicolari=2026-07-15 \
   --city-date genova-bus=2026-07-15 --basemap-cache CACHE --output OUT
 ```

@@ -111,7 +111,7 @@ Limiti importanti:
 - PNRR: perimetro asili e prima infanzia; non include i pagamenti ReGiS né tutto il Piano.
 - OpenCivitas 2022: Comuni a statuto ordinario (6.557 enti, 15 Regioni).
 - [Pagella dei governi](docs/PAGELLA_POLITICO_ECONOMICA.md): descrive il periodo osservato e il confronto con Francia, Germania e Spagna; non stima quanto sia attribuibile all’esecutivo.
-- Assistente: intenti predefiniti, una domanda per volta; non risponde su un singolo Comune e non accetta richieste su frode o corruzione.
+- Assistente: chat multi-turno su `/api/assistant/chat`, con contesto della conversazione e allegati; non risponde su un singolo Comune e non accetta richieste su frode o corruzione. Dettagli in [docs/ASSISTENTE.md](docs/ASSISTENTE.md).
 - Contabilità diverse non si sommano (SIOPE, IRPEF, CPT, costi previsti, debiti).
 
 Registro integrato, copertura e caveat: [docs/INTEGRATED_SOURCE_LEDGER.md](docs/INTEGRATED_SOURCE_LEDGER.md).
@@ -196,7 +196,8 @@ Gli script in `scripts/etl/` scaricano le fonti ufficiali e producono gli snapsh
 
 ```bash
 python3 scripts/etl/siope_municipal_snapshot.py --year 2025 \
-  --output src/data/generated/siope-municipal-2025.json
+  --output src/data/generated/siope-municipal-2025.json \
+  --detail-output src/data/generated/siope-municipal-detail-2025.json
 python3 scripts/etl/opencoesione_snapshot.py --check
 python3 scripts/etl/public_debt_snapshot.py --check
 ```

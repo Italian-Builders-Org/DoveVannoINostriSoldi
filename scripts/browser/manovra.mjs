@@ -43,9 +43,12 @@ try {
           () => location.search.includes("anno=2027"),
           { timeout: 10_000 },
         );
+        const afterYear = await page.$eval("main", (el) => el.innerText);
+        assert.match(afterYear, /912|Nel 2027|2° anno/);
         assert.match(
-          await page.$eval("main", (el) => el.innerText),
-          /912|Nel 2027|2° anno/,
+          afterYear,
+          /Debito e deficit rispetto al PIL/,
+          "grafico PIL assente dopo cambio anno nel triennio",
         );
         assert.match(main, /Competenza/i);
         assert.match(main, /Cassa/i);

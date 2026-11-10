@@ -200,8 +200,8 @@ export function checkRuntimeTraces(root = process.cwd()) {
     ["istat-poverta-regioni-2014-2024.data.json", ["api/territori/poverta-regioni/route", "api/assistant/chat/route", "api/mcp/route"]],
     ["eurostat-arope-2015-2025.data.json", ["api/spese/arope/route", "api/assistant/chat/route", "api/mcp/route", "poverta/page"]],
     ["integrated/rows/eurostat-disuguaglianza-redditi.part-00000.jsonl.gz", ["disuguaglianza/page", "dati/[dataset]/page", "api/dati/[dataset]/route"]],
-    ["integrated/rows/ade-immobili-utilizzo-provincia-2023.part-00000.jsonl.gz", ["analisi/immobili-italia-2026/page", "dati/[dataset]/page", "api/dati/[dataset]/route"]],
-    ["integrated/rows/ade-immobili-tabelle-2026.part-00000.jsonl.gz", ["analisi/immobili-italia-2026/page", "dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/ade-immobili-utilizzo-provincia-2023.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
+    ["integrated/rows/ade-immobili-tabelle-2026.part-00000.jsonl.gz", ["dati/[dataset]/page", "api/dati/[dataset]/route"]],
     ["ade-immobili-italia-2026.data.json", ["analisi/immobili-italia-2026/page"]],
     ["ade-immobili-italia-2026.meta.json", ["analisi/immobili-italia-2026/page"]],
     ["pnrr-childcare.data.json", ["opere/page", "coesione/page", "coesione/asili/page", "progetti/[cup]/page", "enti/[codice]/page", "api/enti/[codice]/route", "api/pnrr/asili/route", "api/assistant/chat/route", "api/mcp/route"]],
@@ -282,6 +282,10 @@ export function checkRuntimeTraces(root = process.cwd()) {
       forbidden.push("data/source-ledger", "src/data/generated/integrated", OPERATOR, ENTITY, CPV);
     }
     if (SOURCE_METADATA_ROUTES.has(route)) forbidden.push("src/data/generated/integrated/rows");
+    // The editorial summaries ship with the code; the raw datasets belong to the public data routes.
+    if (route === "spese/sanita/page.js.nft.json" || route === "analisi/immobili-italia-2026/page.js.nft.json") {
+      forbidden.push("src/data/generated/integrated/rows");
+    }
     // Medical row shards are forbidden on every route, including corpus homes.
     const forbiddenFilePrefixes = [...MEDICAL_DEVICE_ROW_PREFIXES];
     if (["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) {

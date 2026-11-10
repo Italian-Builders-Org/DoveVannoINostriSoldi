@@ -10,6 +10,7 @@ import {
   searchMedicalDevices,
 } from "@/lib/medical-device-spending";
 import { integer } from "@/lib/format";
+import { getDefaultMedicalDeviceAggregate, getMedicalDeviceSpendingHistory } from "@/lib/medical-device-editorial";
 import styles from "./dispositivi.module.css";
 import { TerritoryFilters } from "./territory-filters";
 
@@ -55,11 +56,7 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   const filterYears = [...filters.years].sort((left, right) => right.year - left.year);
   const regionLabels = Object.fromEntries(filters.years.flatMap((item) =>
     item.regions.map(({ code }) => [code, medicalDeviceRegionLabel(code)])));
-  const history = await Promise.all(years.map(async (year) => {
-    const annual = await aggregateMedicalDeviceSpending({ year: String(year), limit: 1 });
-    return { year, spending: annual.coverage.spending };
-  }));
-  history.sort((left, right) => left.year - right.year);
+  const history = getMedicalDeviceSpendingHistory();
   let search: Awaited<ReturnType<typeof searchMedicalDevices>> | null = null;
   let searchError: string | null = null;
   if (q) {
@@ -73,14 +70,19 @@ export default async function MedicalDevicesPage({ searchParams }: { searchParam
   let aggregate: Awaited<ReturnType<typeof aggregateMedicalDeviceSpending>> | null = null;
   let aggregateError: string | null = null;
   try {
-    aggregate = await aggregateMedicalDeviceSpending({
-      year: aggregateYear,
-      region: aggregateRegion,
-      company: aggregateCompany,
-      dimension,
-      cursor: one(params.cursoreAggregati),
-      limit: 25,
-    });
+    const cursor = one(params.cursoreAggregati);
+    if (aggregateYear === String(years[0]) && !aggregateRegion && !aggregateCompany && dimension === "territory" && !cursor) {
+      aggregate = getDefaultMedicalDeviceAggregate();
+    } else {
+      aggregate = await aggregateMedicalDeviceSpending({
+        year: aggregateYear,
+        region: aggregateRegion,
+        company: aggregateCompany,
+        dimension,
+        cursor,
+        limit: 25,
+      });
+    }
   } catch (error) {
     if (!(error instanceof MedicalDeviceQueryError)) throw error;
     aggregateError = error.message;

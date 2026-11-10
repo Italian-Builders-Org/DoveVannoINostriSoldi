@@ -28,7 +28,6 @@ test("la pagina dispositivi espone ricerca, aggregati, righe e limiti", () => {
 
 test("la pagina dispositivi confronta i totali nazionali disponibili", () => {
   assert.match(index, /MedicalDeviceSpendingHistoryChart/);
-  assert.match(index, /Promise\.all\(years\.map/);
   assert.match(index, /Spesa rilevata per anno/);
   assert.match(historyChart, /LineChart/);
   assert.match(historyChart, /ChartDataTable/);

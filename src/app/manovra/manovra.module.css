@@ -86,24 +86,62 @@
   text-underline-offset: 0.15em;
 }
 
+.controls {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 1.35rem;
+}
+
+.controlBlock {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.controlLabel {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  max-width: 46rem;
+}
+
+.controlLabel strong {
+  font-size: 0.95rem;
+}
+
+.controlLabel span {
+  color: var(--color-neutral-700);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 1.25rem;
 }
 
-.yearChips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem 0.85rem;
-  margin-top: 0.85rem;
-}
-
-.yearChipsLabel {
-  font-size: 0.85rem;
+.yearChipHint {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--color-neutral-600);
+}
+
+.contextBanner {
+  margin: 1rem 0 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-neutral-300);
+  background: color-mix(in srgb, var(--color-text) 5%, var(--color-raised));
+  max-width: 52rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.contextBanner a {
+  color: var(--color-text);
+  font-weight: 650;
+  text-underline-offset: 0.15em;
 }
 
 .chip {
@@ -256,16 +294,21 @@
 
 .compareChip {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.05rem;
   min-width: 3rem;
-  padding: 0.3rem 0.65rem;
+  min-height: 2.6rem;
+  padding: 0.35rem 0.7rem;
   border: 1px solid var(--color-neutral-400);
   background: var(--color-surface);
   color: var(--color-text);
   text-decoration: none;
   font-weight: 650;
   font-size: 0.9rem;
+  line-height: 1.15;
+  text-align: center;
 }
 
 .compareChip[aria-current="page"] {

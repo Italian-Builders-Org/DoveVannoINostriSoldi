@@ -314,7 +314,7 @@ export function EntrateSpeseCompareChart({ data }: { data: YearComparePoint[] })
   return (
     <ChartShell
       title="Entrate e spese: le manovre a confronto"
-      lead="Per ogni manovra (dal 2023 in poi) vedi quanto lo Stato prevede di incassare e di spendere nel primo anno. Barra scura = spese; barra chiara = entrate."
+      lead="Ogni colonna è una legge di bilancio diversa (non un anno della stessa legge). Per ciascuna vedi entrate e spese del primo anno. Barra scura = spese; barra chiara = entrate."
       height={400}
       ariaLabel="Confronto entrate e spese finali per manovra dal 2023 al 2026"
     >
@@ -1052,7 +1052,7 @@ export function PilPathChart({ data }: { data: PilPoint[] }) {
                   label: String(entry.name),
                   value:
                     entry.value == null
-                      ? "n.d."
+                      ? "-"
                       : `${Number(entry.value).toLocaleString("it-IT", {
                           maximumFractionDigits: 1,
                         })}%`,

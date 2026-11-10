@@ -31,8 +31,9 @@ try {
         assert.match(main, /PDF|Ragioneria/i);
         assert.match(main, /IRPEF|Imposta sul reddito delle persone fisiche/i);
         assert.match(main, /Parole da conoscere|Come leggerli/i);
-        assert.match(main, /Scegli l’anno|Scegli l'anno|Anno nel triennio/i);
-        assert.match(main, /Stai per vedere/i);
+        assert.match(main, /Quale legge di bilancio/i);
+        assert.match(main, /Anno dentro questa legge/i);
+        assert.match(main, /Stai confrontando la|Stai per vedere|Stai leggendo/i);
         assert.ok(
           await page.$('a[href*="anno=2027"]'),
           "manca link anno 2027 del triennio",
@@ -44,7 +45,7 @@ try {
         );
         assert.match(
           await page.$eval("main", (el) => el.innerText),
-          /912|Nel 2027/,
+          /912|Nel 2027|2° anno/,
         );
         assert.match(main, /Competenza/i);
         assert.match(main, /Cassa/i);
@@ -73,15 +74,18 @@ try {
         );
         assert.ok(chips.length >= 4, "attese almeno 4 edizioni");
 
-        const editionNav = '[role="navigation"][aria-label="Edizione della manovra"]';
+        const editionNav = '[role="navigation"][aria-label="Quale legge di bilancio"]';
         const targetHref = await page.$eval(
           `${editionNav} a[href*="edizione=lb-2024-2026"]`,
           (el) => el.getAttribute("href"),
         );
         assert.ok(targetHref, "manca link edizione 2024");
+        assert.match(targetHref, /anno=2024/, "cambio legge deve resettare al 1° anno");
         await page.click(`${editionNav} a[href*="edizione=lb-2024-2026"]`);
         await page.waitForFunction(
-          () => location.search.includes("edizione=lb-2024-2026"),
+          () =>
+            location.search.includes("edizione=lb-2024-2026") &&
+            location.search.includes("anno=2024"),
           { timeout: 10_000 },
         );
         assert.equal(
@@ -91,13 +95,12 @@ try {
           ),
           "page",
         );
+        const afterEdition = await page.$eval("main", (el) => el.innerText);
+        assert.match(afterEdition, /Legge 2024|legge 2024/i);
+        assert.match(afterEdition, /vs legge 2023|Prima manovra|Stai confrontando/i);
         assert.ok(
           await page.$('[aria-label="Anno di confronto"]'),
           "manca selettore confronto anni",
-        );
-        assert.match(
-          await page.$eval("main", (el) => el.innerText),
-          /2024/,
         );
 
         assert.equal(

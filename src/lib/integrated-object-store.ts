@@ -1,12 +1,11 @@
 import "server-only";
 
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { sha256Hex } from "@/lib/integrated-source-contract";
 import { withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
+import { openRegularFile } from "@/lib/safe-fs";
 
 const unzip = promisify(gunzip);
 const MAX_CACHE_RAW_BYTES = 64 * 1024 * 1024;
@@ -50,7 +49,7 @@ async function waitForCaller<T>(promise: Promise<T>, signal?: AbortSignal): Prom
 async function readExact(path: string, expectedBytes: number): Promise<Buffer> {
   let handle;
   try {
-    handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    handle = await openRegularFile(path);
     const stat = await handle.stat();
     if (!stat.isFile() || stat.size !== expectedBytes) {
       throw new Error("Dimensione oggetto immutabile divergente.");

@@ -340,12 +340,19 @@ export default async function ManovraPage({
           .
         </p>
         <p className={styles.lede}>
-          Qui leggi il bilancio dello Stato pubblicato dalla Ragioneria (RGS),
-          in miliardi di euro. Edizione {edition.label}: anni {edition.years[0]}–
-          {edition.years[edition.years.length - 1]} (spese {triennioLine}). Con
-          i pulsanti sotto scegli quale anno guardare. Il «Bilancio in breve»
-          2027-2029 non è ancora uscito: il 2027 si legge come secondo anno di
-          questa legge.
+          Qui confronti le leggi di bilancio pubblicate dalla Ragioneria (RGS),
+          in miliardi di euro. Ogni legge copre tre anni: prima scegli quale
+          legge leggere, poi quale anno di quella legge. Spese nel triennio{" "}
+          {edition.years[0]}–{edition.years[edition.years.length - 1]}:{" "}
+          {triennioLine}.
+        </p>
+        <p className={styles.note}>
+          La manovra discussa a fine ottobre (disegno di legge di bilancio{" "}
+          2027–2029) è già sul sito RGS come «Bilancio finanziario», ma non
+          esiste ancora il «Bilancio in Breve» 2027–2029 con le tavole XLSX
+          confrontabili. Finché non esce, qui non compare come «Legge 2027»:
+          il 2027 che vedi sotto è il 2° anno della legge già approvata
+          2026–2028, non la nuova manovra.
         </p>
         <div className={styles.heroMeta}>
           <a href={edition.xlsx.url} target="_blank" rel="noreferrer">
@@ -364,55 +371,97 @@ export default async function ManovraPage({
         </div>
       </header>
 
-      <div
-        className={styles.chips}
-        role="navigation"
-        aria-label="Edizione della manovra"
-      >
-        {editions.map((row) => (
-          <Link
-            key={row.id}
-            href={hrefForEdition(row.id, {
-              confronta:
-                compareFromYear < row.firstYear ? compareFromYear : undefined,
-              anno: row.years.includes(focusYear) ? focusYear : row.firstYear,
-            })}
-            className={styles.chip}
-            aria-current={row.id === edition.id ? "page" : undefined}
-          >
-            {row.firstYear}
+      <div className={styles.controls}>
+        <div
+          className={styles.controlBlock}
+          role="navigation"
+          aria-label="Quale legge di bilancio"
+        >
+          <p className={styles.controlLabel}>
+            <strong>1. Quale legge di bilancio</strong>
             <span>
-              {row.id === snapshot.latestEditionId ? "ultima · " : ""}
-              {row.years[0]}–{row.years[row.years.length - 1]}
+              Ogni riquadro è un documento ufficiale diverso (una manovra). Al
+              cambio torni sempre al primo anno di quella legge.
             </span>
-          </Link>
-        ))}
-      </div>
+          </p>
+          <div className={styles.chips}>
+            {editions.map((row) => (
+              <Link
+                key={row.id}
+                href={hrefForEdition(row.id, {
+                  // Reset to year 1 so switching manovra always changes the headline numbers.
+                  anno: row.firstYear,
+                })}
+                className={styles.chip}
+                aria-current={row.id === edition.id ? "page" : undefined}
+              >
+                Legge {row.firstYear}
+                <span>
+                  {row.id === snapshot.latestEditionId ? "ultima · " : ""}
+                  triennio {row.years[0]}–{row.years[row.years.length - 1]}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
 
-      <div
-        className={styles.yearChips}
-        role="navigation"
-        aria-label="Anno del triennio"
-      >
-        <span className={styles.yearChipsLabel}>Scegli l’anno da leggere</span>
-        <div className={styles.compareChips}>
-          {edition.years.map((year) => (
-            <Link
-              key={year}
-              href={hrefForEdition(edition.id, {
-                confronta:
-                  compareFromYear < year ? compareFromYear : undefined,
-                anno: year,
-              })}
-              className={styles.compareChip}
-              aria-current={year === focusYear ? "page" : undefined}
-            >
-              {year}
-              {year === edition.firstYear ? " · anno 1" : ""}
-            </Link>
-          ))}
+        <div
+          className={styles.controlBlock}
+          role="navigation"
+          aria-label="Anno dentro la legge scelta"
+        >
+          <p className={styles.controlLabel}>
+            <strong>2. Anno dentro questa legge</strong>
+            <span>
+              Non è un’altra manovra: sono il 1°, 2° o 3° anno previsti dallo
+              stesso documento ({edition.label}).
+            </span>
+          </p>
+          <div className={styles.compareChips}>
+            {edition.years.map((year, index) => (
+              <Link
+                key={year}
+                href={hrefForEdition(edition.id, {
+                  confronta:
+                    compareFromYear < year ? compareFromYear : undefined,
+                  anno: year,
+                })}
+                className={styles.compareChip}
+                aria-current={year === focusYear ? "page" : undefined}
+              >
+                {year}
+                <span className={styles.yearChipHint}>
+                  {index === 0 ? "1° anno" : `${index + 1}° anno`}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
+
+      <p className={styles.contextBanner} role="status">
+        {focusYear === edition.firstYear ? (
+          <>
+            Stai confrontando la <strong>legge {edition.firstYear}</strong> con
+            le altre manovre sul <strong>primo anno</strong> ({focusYear}
+            ).
+            {comparison
+              ? ` Rispetto alla legge ${comparison.fromYear}: spese ${formatSignedPct(comparison.speseFinali.deltaPct)}, entrate ${formatSignedPct(comparison.entrateFinali.deltaPct)}.`
+              : " È la prima edizione della serie confrontabile."}
+          </>
+        ) : (
+          <>
+            Stai leggendo il <strong>{edition.years.indexOf(focusYear) + 1}° anno</strong>{" "}
+            della stessa legge {edition.firstYear}–{edition.years[edition.years.length - 1]}{" "}
+            (anno {focusYear}). Qui non confronti due manovre: vedi la previsione
+            interna al documento. Per il confronto tra manovre torna al{" "}
+            <Link href={hrefForEdition(edition.id, { anno: edition.firstYear })}>
+              1° anno
+            </Link>
+            .
+          </>
+        )}
+      </p>
 
       <section className={styles.pulse} aria-label={`Sintesi ${focusYear}`}>
         <article className={styles.pulseCard}>
@@ -432,9 +481,9 @@ export default async function ManovraPage({
           >
             {focusYear === edition.firstYear
               ? comparison
-                ? `${formatSignedPct(comparison.speseFinali.deltaPct)} vs ${comparison.fromYear}`
-                : "Prima edizione"
-              : `Anno ${edition.years.indexOf(focusYear) + 1} del triennio`}
+                ? `${formatSignedPct(comparison.speseFinali.deltaPct)} vs legge ${comparison.fromYear}`
+                : "Prima manovra della serie"
+              : `Stessa legge · ${edition.years.indexOf(focusYear) + 1}° anno`}
           </em>
         </article>
         <article className={styles.pulseCard}>
@@ -456,9 +505,9 @@ export default async function ManovraPage({
           >
             {focusYear === edition.firstYear
               ? comparison
-                ? `${formatSignedPct(comparison.entrateFinali.deltaPct)} vs ${comparison.fromYear}`
-                : "Prima edizione"
-              : `Anno ${edition.years.indexOf(focusYear) + 1} del triennio`}
+                ? `${formatSignedPct(comparison.entrateFinali.deltaPct)} vs legge ${comparison.fromYear}`
+                : "Prima manovra della serie"
+              : `Stessa legge · ${edition.years.indexOf(focusYear) + 1}° anno`}
           </em>
         </article>
         <article className={styles.pulseCard}>
@@ -480,9 +529,9 @@ export default async function ManovraPage({
           >
             {focusYear === edition.firstYear
               ? comparison
-                ? formatSignedBillions(comparison.saldoNettoDaFinanziare.deltaEur)
+                ? `${formatSignedBillions(comparison.saldoNettoDaFinanziare.deltaEur)} vs legge ${comparison.fromYear}`
                 : "Base della serie"
-              : "Previsione nel triennio"}
+              : "Previsione nella stessa legge"}
           </em>
         </article>
         <article className={styles.pulseCard}>
@@ -503,9 +552,9 @@ export default async function ManovraPage({
           >
             {focusYear === edition.firstYear
               ? comparison
-                ? formatSignedBillions(comparison.ricorsoAlMercato.deltaEur)
+                ? `${formatSignedBillions(comparison.ricorsoAlMercato.deltaEur)} vs legge ${comparison.fromYear}`
                 : "Base della serie"
-              : "Previsione nel triennio"}
+              : "Previsione nella stessa legge"}
           </em>
         </article>
       </section>
@@ -514,8 +563,9 @@ export default async function ManovraPage({
         <div className={styles.sectionHeader}>
           <h2 id="quanto-title">1. Quanto spende e quanto incassa lo Stato</h2>
           <p>
-            Stai per vedere un confronto tra le ultime manovre: per ciascuna, il
-            primo anno di entrate e di spese previste (in miliardi di euro).
+            Stai per vedere un confronto tra le diverse leggi (non tra gli anni
+            della stessa legge): per ciascuna manovra, entrate e spese del{" "}
+            <strong>primo anno</strong>, in miliardi di euro.
           </p>
         </div>
         <EntrateSpeseCompareChart data={yearCompare} />
@@ -650,7 +700,9 @@ export default async function ManovraPage({
           />
           {openBdapCompareYears.length > 0 ? (
             <div className={styles.compareBar} role="navigation" aria-label="Anno di confronto">
-              <span>Confronta il {openBdapFocusYear} con</span>
+              <span>
+                Solo per questo grafico: confronta il {openBdapFocusYear} con
+              </span>
               <div className={styles.compareChips}>
                 {openBdapCompareYears.map((year) => (
                   <Link

@@ -2,12 +2,11 @@ import "server-only";
 import { getIntegratedLoadState, IntegratedLoadOverloadedError, withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
 export { IntegratedLoadOverloadedError, withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
 
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { ArtifactCache } from "@/lib/data/artifact-cache";
+import { openRegularFile } from "@/lib/safe-fs";
 import {
   assertArchiveReceipt,
   assertIntegratedDatasetChunk,
@@ -108,7 +107,7 @@ async function readRegular(
   let handle;
   try {
     throwIfAborted(signal);
-    handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    handle = await openRegularFile(path);
     const metadata = await handle.stat();
     if (
       !metadata.isFile() ||

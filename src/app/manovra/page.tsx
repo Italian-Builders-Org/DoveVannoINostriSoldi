@@ -36,7 +36,7 @@ import {
 import styles from "./manovra.module.css";
 
 export const metadata: Metadata = {
-  title: "Manovra - confronto tra edizioni | Dove vanno i nostri soldi",
+  title: "Manovra: confronto tra edizioni",
   description:
     "Quanto spende e incassa lo Stato, dove vanno i soldi e come cambia la manovra. Dati ufficiali RGS, in mld €.",
 };
@@ -640,8 +640,8 @@ export default async function ManovraPage({
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Voce</th>
-                  <th className={styles.num}>Importo</th>
+                  <th scope="col">Voce</th>
+                  <th scope="col" className={styles.num}>Importo</th>
                 </tr>
               </thead>
               <tbody>
@@ -664,8 +664,8 @@ export default async function ManovraPage({
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Categoria</th>
-                  <th className={styles.num}>Importo</th>
+                  <th scope="col">Categoria</th>
+                  <th scope="col" className={styles.num}>Importo</th>
                 </tr>
               </thead>
               <tbody>
@@ -828,11 +828,11 @@ export default async function ManovraPage({
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Anno</th>
-                <th className={styles.num}>Entrate</th>
-                <th className={styles.num}>Spese</th>
-                <th className={styles.num}>Saldo</th>
-                <th className={styles.num}>Ricorso al mercato</th>
+                <th scope="col">Anno</th>
+                <th scope="col" className={styles.num}>Entrate</th>
+                <th scope="col" className={styles.num}>Spese</th>
+                <th scope="col" className={styles.num}>Saldo</th>
+                <th scope="col" className={styles.num}>Ricorso al mercato</th>
               </tr>
             </thead>
             <tbody>

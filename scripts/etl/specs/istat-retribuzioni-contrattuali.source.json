@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-retribuzioni-contrattuali",
+  "period": {
+    "from": 2005,
+    "to": 2025
+  },
+  "series": {
+    "dataflowId": "155_318_DF_DCSC_RETRCONTR1C_4",
+    "dataType": "WAGE_E_2021",
+    "dataTypeLabel": "indice della retribuzione contrattuale per dipendente - base dicembre 2021=100",
+    "adjustment": "N",
+    "profStatus": "10",
+    "profStatusLabel": "totale dipendenti al netto dei dirigenti",
+    "agreementGroup": "Z3620",
+    "agreementGroupLabel": "totale economia"
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseId": "not-declared",
+    "licenseNote": "La risposta SDMX-CSV non espone una licenza: come per gli altri snapshot ISTAT non ne viene inferita alcuna.",
+    "asset": {
+      "filename": "retribuzioni-contrattuali-base-2021.csv",
+      "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,155_318_DF_DCSC_RETRCONTR1C_4,1.0/A.IT.WAGE_E_2021.N.10.Z3620",
+      "format": "SDMX-CSV 1.0.0",
+      "bytes": 2132,
+      "sha256": "a136a29f8d2ca24a94bd7200011bafa26f2bc42c41d90af7c81d8665c127de63"
+    },
+    "acquisition": {
+      "acquiredAt": "2026-11-03",
+      "checkedAt": "2026-11-03",
+      "note": "Il dataflow in base dicembre 2021 contiene già la serie ricostruita da ISTAT dal 2005: non serve raccordare le basi 2005, 2010 e 2015. Due download consecutivi hanno dato byte identici."
+    }
+  }
+}

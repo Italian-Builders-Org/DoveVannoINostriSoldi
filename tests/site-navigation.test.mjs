@@ -100,9 +100,9 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(footer, /href="\/supporter"/);
   assert.match(footer, /BUY_ME_A_COFFEE_URL/);
   assert.match(footer, /Sostieni DVNS/);
-  assert.match(footer, /SITE_SUPPORTERS/);
-  assert.match(footer, /Con il supporto di/);
-  assert.match(footer, /MANTO_VENTURE\.href/);
+  assert.doesNotMatch(footer, /SITE_SUPPORTERS/);
+  assert.doesNotMatch(footer, /Con il supporto di/);
+  assert.doesNotMatch(footer, /MANTO_VENTURE\.href/);
   assert.match(footer, /footer-disclaimer/);
   assert.match(footer, /Usiamo anche l’AI/);
   assert.match(footer, /possibili errori/);

@@ -64,7 +64,9 @@ class RgsBilancioInBreveTests(unittest.TestCase):
                 for row in rows:
                     if row and any(str(cell).strip() == label for cell in row[:3] if cell):
                         return int(round(row[cp_col]))
-                self.fail(f"missing row {label} in {edition['id']}")
+                message = f"missing row {label} in {edition['id']}"
+                self.fail(message)
+                raise AssertionError(message)
 
             got = (
                 metric("Entrate finali"),

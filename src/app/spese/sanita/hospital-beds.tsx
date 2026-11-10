@@ -4,8 +4,8 @@ import { getHospitalBeds } from "@/lib/salute-hospital-beds";
 import { getEditorialSurfacePreview } from "@/lib/integrated-editorial";
 import styles from "./sanita.module.css";
 
-export default async function HospitalBeds() {
-  const { dataset, regions } = await getHospitalBeds();
+export default function HospitalBeds() {
+  const { dataset, regions } = getHospitalBeds();
   const total = regions.reduce((sum, region) => sum + region.total, 0);
   const landing = dataset.sourceMetadata.canonicalUrls.find((url) => url.includes("/it/dataset/"));
   return (

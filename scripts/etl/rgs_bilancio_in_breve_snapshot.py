@@ -412,6 +412,7 @@ def parse_mission_history(ws) -> dict:
     """Parse Tav. A.3 mission history (values published in milioni di euro)."""
     rows = read_matrix(ws)
     year_row = None
+    header_idx = 0
     for index, row in enumerate(rows[:8]):
         hits = [
             (col, int(number))
@@ -648,7 +649,10 @@ def main() -> None:
         "firstYearComparisons": compare_first_years(editions),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+    args.output.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(f"Wrote {args.output} editions={len(editions)} latest={latest['id']}")
 
 

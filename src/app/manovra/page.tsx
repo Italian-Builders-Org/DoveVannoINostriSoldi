@@ -16,8 +16,12 @@ import {
   topDetailRows,
   type FirstYearComparison,
   type ManovraEdition,
+  type ManovraSnapshot,
 } from "@/lib/manovra-bilancio-breve";
-import { loadManovraSnapshot } from "@/lib/manovra-bilancio-breve-store";
+import {
+  loadManovraSnapshot,
+  ManovraSnapshotUnavailableError,
+} from "@/lib/manovra-bilancio-breve-store";
 
 import {
   CompositionChart,
@@ -126,7 +130,35 @@ export default async function ManovraPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const snapshot = await loadManovraSnapshot();
+  let snapshot: ManovraSnapshot;
+  try {
+    snapshot = await loadManovraSnapshot();
+  } catch (error) {
+    if (error instanceof ManovraSnapshotUnavailableError) {
+      return (
+        <main className={`shell page ${styles.page}`}>
+          <nav className={styles.breadcrumb} aria-label="Percorso">
+            <Link href="/">Home</Link>
+            <span aria-hidden="true">/</span>
+            <span>Manovra a confronto</span>
+          </nav>
+          <header className={styles.hero}>
+            <h1>Manovra a confronto</h1>
+            <p className={styles.lede}>
+              Dati temporaneamente non disponibili. In produzione leggiamo lo
+              snapshot verificato collegato al receipt pubblicato; in assenza di
+              database o file locale il confronto RGS non può essere caricato.
+            </p>
+            <div className={styles.heroMeta}>
+              <Link href="/spese/legge-di-bilancio">Simulatore Legge di Bilancio</Link>
+              <Link href="/stato">Spese dello Stato</Link>
+            </div>
+          </header>
+        </main>
+      );
+    }
+    throw error;
+  }
   const editions = snapshot.editions;
   if (editions.length === 0) {
     notFound();

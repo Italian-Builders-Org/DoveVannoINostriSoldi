@@ -768,7 +768,7 @@
       ],
       "verificationMode": "online-refresh",
       "offlineCheck": {
-        "command": "DVNS_OFFLINE_GUARD=1 PYTHONPATH=scripts/etl:scripts/ci python -m unittest tests.etl.test_rgs_bilancio_in_breve_receipt",
+        "command": "python3 -m unittest tests.etl.test_rgs_bilancio_in_breve_receipt",
         "coveredBy": "standalone"
       },
       "reconciliationTests": [

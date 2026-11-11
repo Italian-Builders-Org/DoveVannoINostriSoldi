@@ -182,7 +182,10 @@ try {
         assert.ok(await page.$(`#analisi a[href="${href}"]`), `Accesso diretto assente: ${href}`);
       }
       assert.equal(await page.$('#quadro-dei-conti'), null, 'Nessun riquadro dei conti nella home');
-      assert.equal(await page.$$eval('.site-footer a', (links) => links.some((link) => link.href.includes('buymeacoffee.com'))), false);
+      assert.equal(await page.$$eval('.site-footer a', (links) => links.some((link) => {
+        try { return new URL(link.href).hostname === 'buymeacoffee.com' || new URL(link.href).hostname.endsWith('.buymeacoffee.com'); }
+        catch { return false; }
+      })), false);
       assert.ok(await page.$('#esplora form[action="/cerca"]'), 'Ricerca disponibile dopo le analisi');
       const directoryHrefs = await page.$$eval('#esplora a', (links) => links.map((link) => link.getAttribute('href')));
       for (const group of FOOTER_SITEMAP_GROUPS) for (const link of group.links) {

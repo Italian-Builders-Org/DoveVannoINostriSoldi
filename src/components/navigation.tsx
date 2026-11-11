@@ -218,7 +218,16 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   function closeDrawer() { dialogRef.current?.close(); }
   function openDrawer() {
     const dialog = dialogRef.current;
-    if (!dialog || dialog.open) return;
+    if (!dialog) return;
+    // Keep React state aligned with the native dialog: an outside/Escape close can
+    // leave open=true for a tick, or reopen while drawerOpen is still false.
+    if (dialog.open) {
+      if (!drawerOpen) {
+        setDrawerOpen(true);
+        closeRef.current?.focus();
+      }
+      return;
+    }
     openedLocationRef.current = window.location.pathname + window.location.search;
     dialog.showModal();
     setDrawerOpen(true);

@@ -25,7 +25,10 @@ for (const href of destinations) {
     continue;
   }
   try {
-    const response = await fetch(new URL(href, baseUrl), {
+    const bypass = process.env.DVNS_VERCEL_PROTECTION_BYPASS?.trim();
+    const target = new URL(href, baseUrl);
+    if (bypass) target.searchParams.set("x-vercel-protection-bypass", bypass);
+    const response = await fetch(target, {
       signal: AbortSignal.timeout(historyDestinations.has(href) ? 60_000 : 30_000),
     });
     assert.equal(response.status, 200, `Destinazione non disponibile: ${href}`);
@@ -51,6 +54,9 @@ async function tap(page, selector) {
 async function openMenu(page) {
   await tap(page, '.mobile-menu-trigger');
   await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true });
+  await page.waitForFunction(
+    () => document.querySelector('.mobile-menu-trigger')?.getAttribute('aria-expanded') === 'true',
+  );
   assert.equal(await page.$eval('.mobile-menu-trigger', (button) => button.getAttribute('aria-expanded')), 'true');
 }
 

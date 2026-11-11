@@ -57,7 +57,7 @@ if (process.argv.includes("--inventory")) {
     for (const route of queue) {
       const template = templates.find(entry => matches(entry, new URL(route, base).pathname));
       if (!template || template.scope !== "public") continue;
-      for (const width of [390, 1280, 1920]) {
+      for (const width of (process.env.DVNS_SITE_DESIGN_WIDTHS ?? "390,1280,1920").split(",").map(Number).filter(Boolean)) {
         const id = String(++sequence).padStart(4, "0");
         try {
           await runScenario(browser, {

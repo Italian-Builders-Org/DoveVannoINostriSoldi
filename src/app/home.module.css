@@ -178,7 +178,7 @@
 }
 .hub { max-width: 1320px; gap: 0; padding-block: 0; }
 .intro { max-width: none; padding-block: 64px 40px; gap: 24px; }
-.pageTitle { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.045em; font-weight: 500; }
+.pageTitle { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.02em; font-weight: 500; }
 .pageTitle span { color: var(--color-neutral-600); }
 .introBottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
 .lead { max-width: 56ch; font-size: 16px; line-height: 1.7; }

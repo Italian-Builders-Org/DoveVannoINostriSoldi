@@ -32,7 +32,7 @@ export function SiteFooter() {
         <div className="footer-directory">
           <nav className="footer-social" aria-label="Canali social">
             <ul>{SOCIAL_LINKS.map((channel) => <li key={channel.id}>
-              <a className="footer-link" href={channel.href} target="_blank" rel="noreferrer" aria-label={channel.label} title={channel.label}>
+              <a className="footer-link" href={channel.href} target="_blank" rel="noopener noreferrer" aria-label={`${channel.label} (nuova scheda)`} title={`${channel.label} (nuova scheda)`}>
                 <HugeiconsIcon icon={SOCIAL_ICONS[channel.id]} size={19} strokeWidth={1.8} aria-hidden="true" />
               </a>
             </li>)}</ul>
@@ -43,7 +43,7 @@ export function SiteFooter() {
             <Link prefetch={false} href="/privacy">Privacy</Link>
             <Link prefetch={false} href="/termini">Termini</Link>
             <Link prefetch={false} href="/supporto">Supporto</Link>
-            <a href={REPO_URL} target="_blank" rel="noreferrer"><HugeiconsIcon icon={GithubIcon} size={16} aria-hidden="true" /> GitHub</a>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)"><HugeiconsIcon icon={GithubIcon} size={16} aria-hidden="true" /> GitHub</a>
           </nav>
         </div>
       </div>

@@ -69,6 +69,22 @@ non modifica l'applicazione e non richiede una seconda build.
 
 ## Note di revisione
 
+### Ultima modifica richiesta: social e GitHub
+
+Base `937f765feab2f857e1fc1c8e10e905231d8482c6`. Obiettivo: ogni icona social/GitHub
+apre una nuova scheda senza sostituire la pagina corrente, con `noopener noreferrer`.
+Il difetto dell'header è riprodotto nell'HTML della build: `target` è assente.
+Il footer contiene già `_blank`; viene uniformata la protezione del collegamento.
+Regressione E2E prevista: clic reali su tutte e sette le icone in home e supporto,
+390/1280 px, nuova pagina creata, pagina originale conservata, `window.opener` nullo;
+un link interno continua invece nella stessa scheda. La suite navigazione include
+questo controllo, con report e screenshot. Il browser cloud riceve 403 dal dominio
+pubblico e il relay locale è ancora indisponibile: esecuzione demandata alla CI
+della PR, senza modificare protezioni o avviare un server locale alternativo.
+
+L'utente ha chiesto di pushare l'aggiornamento dopo questa correzione. La PR prepara
+il rilascio; gli esiti E2E devono essere osservati prima di dichiararlo completato.
+
 I link alle mappe usano `/comuni` e `/politici`, anche dalla home e dalla
 directory: una preview non deve portare alla produzione. I domini canonici,
 le API e i link alle fonti rimangono invariati. Il link alla Presidenza usa

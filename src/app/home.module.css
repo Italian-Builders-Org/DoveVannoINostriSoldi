@@ -1,217 +1,35 @@
-.hub {
-  display: grid;
-  gap: var(--space-6);
-  padding-block: var(--gutter) 0;
-}
-
-.intro {
-  display: grid;
-  gap: var(--space-3);
-  max-width: 40rem;
-  padding-block: var(--space-2) 0;
-}
-
-.pageTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: clamp(1.75rem, 2.4vw + 1rem, 2.5rem);
-  font-weight: var(--font-heading-weight);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-
-.lead {
-  margin: 0;
-  color: var(--color-neutral-700);
-  font-size: 1.05rem;
-  line-height: 1.5;
-}
-
-.searchForm {
-  display: grid;
-  gap: var(--space-2);
-  margin-top: var(--space-1);
-}
-
-.searchLabel {
-  color: var(--color-neutral-700);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.searchRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: var(--space-2);
-  align-items: stretch;
-}
-
-.searchInput {
-  min-width: 0;
-}
-
-.headingWithTooltip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.anomaliesLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--color-accent-700);
-  font-size: 0.875rem;
-  font-weight: 650;
-  text-decoration: none;
-}
-
-.anomaliesLink:hover,
-.anomaliesLink:focus-visible {
-  text-decoration: underline;
-}
-
-.anomaliesPanel {
-  grid-column: 1 / -1;
-  display: grid;
-  gap: var(--space-3);
-}
-
-.anomalyGallery {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
-}
-
-.anomalyItem {
-  display: grid;
-  gap: var(--space-2);
-  min-width: 0;
-  padding: var(--space-3);
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-300);
-}
-
-.anomalyItemHead {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.anomalyArea {
-  color: var(--color-neutral-600);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.anomalyItem h3 {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 650;
-  line-height: 1.3;
-}
-
-.anomalyValue {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1.35rem;
-  font-weight: 650;
-  line-height: 1.15;
-}
-
-.anomalyMeta {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-2) var(--space-3);
-  margin: 0;
-  color: var(--color-neutral-600);
-  font-size: 0.8rem;
-  line-height: 1.4;
-}
-
-.anomalyMeta a {
-  color: var(--color-accent-700);
-  font-weight: 650;
-  text-decoration: none;
-}
-
-.anomalyMeta a:hover,
-.anomalyMeta a:focus-visible {
-  text-decoration: underline;
-}
-
-.anomalyCaveat,
-.anomalyFallback {
-  margin: 0;
-  color: var(--color-neutral-600);
-  font-size: 0.85rem;
-  line-height: 1.45;
-}
-
-@media (max-width: 1099px) {
-  .anomalyGallery {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 719px) {
-  .hub {
-    gap: var(--space-5);
-  }
-
-  .searchRow {
-    grid-template-columns: 1fr;
-  }
-
-  .anomalyItem {
-    padding: var(--space-3);
-    min-height: 0;
-  }
-}
-.hub { max-width: 1320px; gap: 0; padding-block: 0; }
-.intro { max-width: none; padding-block: 64px 40px; gap: 24px; }
-.pageTitle { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.02em; font-weight: 500; }
+.hub { display: grid; max-width: 1320px; gap: 0; padding-block: 0; }
+.intro { display: grid; gap: 16px; padding-block: 36px 30px; }
+.pageTitle { margin: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(30px, 3.5vw, 42px); line-height: 1.15; letter-spacing: -.025em; font-weight: 500; text-wrap: balance; }
 .pageTitle span { color: var(--color-neutral-600); }
-.introBottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
-.lead { max-width: 56ch; font-size: 16px; line-height: 1.7; }
-.exploreJump { flex: none; display: grid; gap: 8px; padding-block: 8px; font-size: 12px; color: var(--color-neutral-600); }
-.exploreJump span { font-weight: 600; color: var(--color-accent); }
-.exploration { display: grid; gap: 28px; padding: 40px; margin-bottom: 32px; background: var(--color-surface); scroll-margin-top: calc(var(--site-header-height) + 16px); }
-.explorationHeading { display: grid; gap: 16px; }
-.explorationHeading h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 500; line-height: 1.15; letter-spacing: -.03em; margin: 0; }
-.explorationHeading > p:last-child { margin: 0; color: var(--color-neutral-700); }
-.exploration .searchForm { max-width: 44rem; margin: 0; }
-.anomaliesPanel { border: 1px solid var(--color-neutral-300); background: var(--color-raised); padding: 24px; min-width: 0; gap: 0; }
-.anomalyGallery { grid-template-columns: 1fr; gap: 0; }
-.anomalyItem { align-items: baseline; padding: 18px 0; border: 0; border-bottom: 1px solid var(--color-neutral-200); background: none; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; }
+.introBottom { display: flex; justify-content: space-between; align-items: center; gap: 16px 32px; }
+.lead { margin: 0; max-width: 62ch; color: var(--color-neutral-700); font-size: 16px; line-height: 1.65; }
+.exploreJump { flex: none; display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--color-accent); font-weight: 600; text-underline-offset: 4px; }
+.exploration { display: grid; gap: 24px; padding: 32px; margin-block: 32px; background: var(--color-surface); scroll-margin-top: calc(var(--site-header-height) + 16px); }
+.explorationHeading { display: grid; gap: 12px; }
+.explorationHeading h2 { font-size: clamp(26px, 3vw, 34px); font-weight: 500; line-height: 1.15; letter-spacing: -.025em; margin: 0; }
+.explorationHeading p { margin: 0; color: var(--color-neutral-700); }
+.anomaliesPanel { display: grid; gap: 0; min-width: 0; padding: 24px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
+.anomaliesHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-neutral-300); }
+.headingWithTooltip { flex: 1 1 200px; min-width: 0; }
+.anomaliesHeader h3 { margin: 0; font-size: 15px; letter-spacing: 0; text-transform: none; }
+.anomaliesLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--color-accent-700); font-size: 14px; font-weight: 600; text-decoration: none; }
+.anomaliesLink:hover { text-decoration: underline; }
+.anomalyGallery { display: grid; grid-template-columns: 1fr; gap: 0; }
+.anomalyItem { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; min-width: 0; padding: 20px 0; border-bottom: 1px solid var(--color-neutral-200); }
 .anomalyItemHead, .anomalyMeta { grid-column: 1 / -1; }
-.anomalyItem h3 { font-size: 14px; font-weight: 500; }
-.anomalyValue { font-size: clamp(20px, 1.9vw, 24px); text-align: right; }
-.anomalyCaveat { padding-top: 16px; }
-@media (max-width: 900px) {
-  .introBottom { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .exploration { padding: 24px; }
-}
+.anomalyArea { color: var(--color-neutral-600); font-size: 12px; font-weight: 500; }
+.anomalyItem h3 { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.4; }
+.anomalyValue { font-size: clamp(20px, 2vw, 26px); font-weight: 600; text-align: right; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.anomalyMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
+.anomalyMeta a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.anomalyCaveat, .anomalyFallback { margin: 0; padding-top: 16px; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
+@media (max-width: 900px) { .introBottom { flex-direction: column; align-items: flex-start; gap: 8px; } }
 @media (max-width: 620px) {
-  .intro { padding-block: 36px 28px; gap: 20px; }
-  .pageTitle { font-size: 39px; }
+  .intro { padding-block: 28px 24px; }
   .lead { font-size: 15px; }
-  .exploration { padding: 24px 16px; margin-inline: -4px; gap: 24px; }
-  .anomaliesPanel { padding: 22px; }
+  .exploration { padding: 24px 16px; margin-inline: -4px; }
+  .anomaliesPanel { padding: 20px; }
   .anomalyItem { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .anomalyValue { font-size: 24px; text-align: left; }
 }
-
-.anomaliesHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-neutral-300); }
-.anomaliesHeader .headingWithTooltip { flex: 1 1 230px; }
-.anomaliesHeader h3 { margin: 0; }
-.anomaliesHeader .anomaliesLink { min-height: 44px; }
-.anomalyArea { font-size: 10px; }

@@ -17,14 +17,14 @@
 .controlGrid label { display: grid; gap: 5px; min-width: 0; }
 .controlGrid label > span {
   color: var(--color-neutral-700);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
 }
 .controlGrid select {
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 8px 30px 8px 10px;
   color: var(--color-text);
   background: var(--color-bg);
@@ -41,3 +41,6 @@
 @media (max-width: 540px) {
   .controlGrid { grid-template-columns: 1fr; }
 }
+
+.controlGrid select:disabled, .controlGrid button:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 620px) { .controlGrid select { font-size: 16px; } }

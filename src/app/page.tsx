@@ -2,21 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight01Icon,
-  Search01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { HomePathways } from "@/components/home-pathways";
-import { InfoTooltip } from "@/components/info-tooltip";
 import { getHomeAnomalySignals, type AuditSignal } from "@/lib/audit-data";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
 import {
   integer,
   percent,
 } from "@/lib/format";
-import {
-  GLOBAL_SEARCH_MAX_QUERY_LENGTH,
-  GLOBAL_SEARCH_MIN_QUERY_LENGTH,
-} from "@/lib/global-search-contract";
 import { buildHomeItalyFunnel } from "@/lib/home-italy-funnel";
 import {
   availableSiopeYears,
@@ -36,15 +30,18 @@ export const metadata: Metadata = {
 const HOME_ANOMALY_PRESENTATION = {
   "procurement-direct-awards-2025": {
     title: "Affidamenti diretti",
+    kind: "Dato osservato",
     period: "2025 · procedure da 40.000 € in su",
   },
   "gdf-public-spending-fraud": {
     title: "Frodi accertate nei controlli",
+    kind: "Esito dei controlli",
     period: "dal 1 gen 2025 al 31 mag 2026",
   },
   "pnrr-beyond-2026": {
     title: "Risorse PNRR oltre il 2026",
-    period: "Previsione · febbraio 2026",
+    kind: "Previsione",
+    period: "febbraio 2026",
   },
 } as const;
 
@@ -95,9 +92,9 @@ export default async function HomePage({
   return (
     <main className={`shell ${styles.hub}`} data-home-editorial="true">
       <header className={styles.intro}>
-        <h1 className={styles.pageTitle}>Dove vanno<br /><span>i nostri soldi?</span></h1>
+        <h1 className={styles.pageTitle}>Dove vanno <span>i nostri soldi?</span></h1>
         <div className={styles.introBottom}>
-          <p className={styles.lead}>Dati sulla spesa pubblica italiana, sui territori e sulle istituzioni. Ogni analisi riporta le fonti, il periodo di riferimento e i limiti dei confronti.</p>
+          <p className={styles.lead}>Spesa pubblica, territori e istituzioni. Esplora i dati italiani, con fonti e periodi di riferimento.</p>
           <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
       </header>
@@ -106,12 +103,9 @@ export default async function HomePage({
         <div className={styles.anomaliesHeader}>
           <div className={styles.headingWithTooltip}>
             <h3 id="anomalies-title" className="panel-title">
-              Anomalie da approfondire
+              Controlli sulla spesa
             </h3>
-            <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
-              Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
-              con le fonti: non dimostra sprechi o illeciti.
-            </InfoTooltip>
+
           </div>
           <Link prefetch={false} className={styles.anomaliesLink} href="/controlli">
             Tutti i controlli
@@ -131,7 +125,7 @@ export default async function HomePage({
                 key={signal.id}
               >
                 <div className={styles.anomalyItemHead}>
-                  <span className={styles.anomalyArea}>{signal.area}</span>
+                  <span className={styles.anomalyArea}>{presentation.kind} · {signal.area}</span>
                 </div>
                 <h3>{presentation.title}</h3>
                 <strong className={styles.anomalyValue}>{anomalyValue(signal)}</strong>
@@ -150,7 +144,7 @@ export default async function HomePage({
             );
           })}
         </div>
-        <p className={styles.anomalyCaveat}>Gli indicatori richiedono una verifica sulle fonti originali.</p>
+        <p className={styles.anomalyCaveat}>I tre valori descrivono fenomeni diversi e non sono sommabili. Un affidamento diretto non indica, da solo, un’irregolarità.</p>
         {anomalySignals.length < 3 ? (
           <p className={styles.anomalyFallback}>
             Mostriamo solo i segnali con fonte verificata.{" "}
@@ -166,27 +160,6 @@ export default async function HomePage({
           <h2 id="exploration-title">Esplora i dati</h2>
           <p>Tutte le pagine, organizzate per argomento.</p>
         </div>
-        <form className={styles.searchForm} action="/cerca" method="get" role="search">
-          <label className={styles.searchLabel} htmlFor="home-search-query">
-            Cerca nel sito
-          </label>
-          <div className={styles.searchRow}>
-            <input
-              className={`input ${styles.searchInput}`}
-              id="home-search-query"
-              name="q"
-              type="search"
-              minLength={GLOBAL_SEARCH_MIN_QUERY_LENGTH}
-              maxLength={GLOBAL_SEARCH_MAX_QUERY_LENGTH}
-              placeholder="es. pagamenti comuni, PNRR o Ministero dell’Interno"
-              autoComplete="off"
-            />
-            <button className="btn btn-primary" type="submit">
-              <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.7} aria-hidden="true" />
-              Cerca
-            </button>
-          </div>
-        </form>
         <SiteDirectory showMaps />
       </section>
     </main>

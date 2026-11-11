@@ -25,13 +25,14 @@ test("home anomaly gallery uses three distinct verified phenomena", () => {
 });
 
 test("home anomaly gallery keeps the compact presentation and one caveat", () => {
-  assert.match(homePage, /Anomalie da approfondire/);
+  assert.match(homePage, /Controlli sulla spesa/);
+  for (const label of ["Dato osservato", "Esito dei controlli", "Previsione"]) assert.ok(homePage.includes(label));
   assert.match(homePage, /anomalyGallery/);
   assert.doesNotMatch(homePage, /anomalyMarker/);
   assert.doesNotMatch(homePage, /ContractsIcon|ShieldCheck|CalendarClockIcon/);
   assert.match(homePage, /signal\.source\.url/);
   assert.match(homePage, /signal\.source\.institution/);
-  assert.match(homePage, /Gli indicatori richiedono una verifica sulle fonti originali/);
+  assert.match(homePage, /I tre valori descrivono fenomeni diversi e non sono sommabili/);
   assert.match(homePage, /href="\/controlli"/);
   assert.doesNotMatch(homePage, /procurement\.byValue/);
   assert.doesNotMatch(homePage, /procurement\.procedureCount/);

@@ -88,7 +88,7 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
         map={map}
         initialState={parsed.state}
         invalidSelection={parsed.invalidSelection}
-        initialDetailsOpen={!parsed.invalidSelection && ["person", "group", "deputy"].some((key) => query.has(key))}
+        initialDetailsOpen={!parsed.invalidSelection && ["person", "group", "deputy", "istituzione"].some((key) => query.has(key))}
         judicialPersonIds={judicialPersonIds}
         convictions={convictions}
         convictionsNote={convictionsNote} />

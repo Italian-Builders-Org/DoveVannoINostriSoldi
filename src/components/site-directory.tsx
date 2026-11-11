@@ -1,31 +1,64 @@
+"use client";
+
 import Link from "next/link";
+import { useId, useState, useSyncExternalStore } from "react";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
-import { MOBILITA_MAP_PATH, PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
+import { MOBILITA_MAP_PATH } from "@/lib/site";
+import { filterDirectory } from "@/lib/frontend-exploration";
 import styles from "./site-directory.module.css";
 
-export function SiteDirectory({ showMaps = false }: Readonly<{
-  showMaps?: boolean;
+const maps = { title: "Mappe", links: [
+  { href: "/comuni", label: "Mappa dei Comuni" },
+  { href: "/politici", label: "Mappa della politica" },
+  { href: MOBILITA_MAP_PATH, label: "Mappa della mobilità" },
+] };
+const wideQuery = "(min-width: 761px)";
+function subscribeWidth(callback: () => void) {
+  const media = window.matchMedia(wideQuery);
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+const getWide = () => window.matchMedia(wideQuery).matches;
+const getServerWide = () => true;
+
+function DirectoryGroup({ group, initiallyOpen }: Readonly<{
+  group: (typeof FOOTER_SITEMAP_GROUPS)[number]; initiallyOpen: boolean;
 }>) {
-  return (
-    <nav className={styles.directory} aria-label="Mappa dei dati">
-      {showMaps ? <section className={styles.maps} aria-labelledby="maps-title">
-        <h3 id="maps-title">Mappe</h3>
-        <ul>
-          <li><Link prefetch={false} href={PUBLIC_COMUNI_URL}>Mappa dei Comuni</Link></li>
-          <li><Link prefetch={false} href={PUBLIC_POLITICI_URL}>Mappa della politica</Link></li>
-          <li><Link prefetch={false} href={MOBILITA_MAP_PATH}>Mappa della mobilità</Link></li>
-        </ul>
-      </section> : null}
-      <div className={styles.columns}>
-        {FOOTER_SITEMAP_GROUPS.map((group) => (
-          <section key={group.title} className={styles.group}>
-            <h3>{group.title}</h3>
-            <ul>{group.links.map((link) => (
-              <li key={link.href}><Link prefetch={false} href={link.href}>{link.label}</Link></li>
-            ))}</ul>
-          </section>
-        ))}
+  const [expanded, setExpanded] = useState<boolean | null>(null);
+  const open = expanded ?? initiallyOpen;
+  return <details className={styles.group} open={open}>
+    <summary onClick={(event) => { event.preventDefault(); setExpanded(!open); }}>
+      <h3>{group.title}</h3><span className={styles.count}>{group.links.length}</span>
+    </summary>
+    <ul>{group.links.map((link) => <li key={link.href}>
+      <Link prefetch={false} href={link.href}>{link.label}</Link>
+    </li>)}</ul>
+  </details>;
+}
+
+export function SiteDirectory({ showMaps = false }: Readonly<{ showMaps?: boolean }>) {
+  const [query, setQuery] = useState("");
+  const inputId = useId();
+  const isWide = useSyncExternalStore(subscribeWidth, getWide, getServerWide);
+  const groups = filterDirectory(showMaps ? [maps, ...FOOTER_SITEMAP_GROUPS] : FOOTER_SITEMAP_GROUPS, query);
+  const count = groups.reduce((total, group) => total + group.links.length, 0);
+  const filtering = query.trim().length > 0;
+
+  return <nav className={styles.directory} aria-label="Mappa dei dati">
+    <div className={styles.filter} role="search" aria-label="Filtra la mappa dei dati">
+      <label htmlFor={inputId}>Filtra le pagine per argomento</label>
+      <div className={styles.filterRow}>
+        <input id={inputId} type="search" value={query} maxLength={120} autoComplete="off"
+          placeholder="es. sanità, pensioni, comuni" onChange={(event) => setQuery(event.target.value)} />
+        {query ? <button type="button" onClick={() => setQuery("")}>Cancella filtro</button> : null}
       </div>
-    </nav>
-  );
+      <p className={styles.resultCount} role="status">{filtering ? `${count} ${count === 1 ? "pagina trovata" : "pagine trovate"}` : `${count} pagine disponibili`}</p>
+    </div>
+    {count ? <div className={styles.columns}>
+      {groups.map((group) => <DirectoryGroup key={`${group.title}:${filtering}`} group={group} initiallyOpen={isWide || filtering} />)}
+    </div> : <div className={styles.empty}>
+      <p>Nessuna pagina corrisponde a «{query.trim()}».</p>
+      <Link prefetch={false} href={`/cerca?q=${encodeURIComponent(query.trim())}`}>Cerca anche nei dati e nei documenti →</Link>
+    </div>}
+  </nav>;
 }

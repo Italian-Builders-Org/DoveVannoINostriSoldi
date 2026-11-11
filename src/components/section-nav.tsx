@@ -1,6 +1,8 @@
 "use client";
 
 import { publicSurfacePath } from "@/lib/snapshot-routing";
+import Link from "next/link";
+import { ShareViewButton } from "./share-view-button";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useId } from "react";
@@ -29,7 +31,7 @@ function SectionNavContent({
   const selectId = useId();
   const section = activeNavSection(pathname);
   const pages = flattenNavLinks(section?.children ?? []);
-  if (pages.length < 2) return null;
+  if (pathname === "/") return null;
   // Immersive map pages: no section chrome · the graph needs the viewport.
   if (pathname === "/politici" || pathname.startsWith("/politici/")) return null;
   if (pathname === "/comuni" || pathname.startsWith("/comuni/")) return null;
@@ -47,14 +49,17 @@ function SectionNavContent({
     ?? "";
 
   return (
-    <nav
+    <div
       className={`shell ${styles.sectionNav}`}
-      aria-label={`Pagine in ${section!.label}`}
     >
+      <nav className={styles.breadcrumb} aria-label="Percorso della pagina">
+        <Link prefetch={false} href="/">Home</Link>
+        <span aria-hidden="true">/</span>
+        {section ? <Link prefetch={false} href={section.href}>{section.label}</Link> : <Link prefetch={false} href="/#esplora">Esplora i dati</Link>}
+      </nav>
+      <div className={styles.controls}>
+      {pages.length > 1 ? <nav aria-label={`Pagine in ${section!.label}`}>
       <div className={styles.picker}>
-        <p className={styles.title}>
-          <strong>{section!.label}</strong>
-        </p>
         <label className={styles.label} htmlFor={selectId}>
           <span className={styles.visuallyHidden}>Vai a una pagina della sezione</span>
           <select
@@ -74,6 +79,9 @@ function SectionNavContent({
           </select>
         </label>
       </div>
-    </nav>
+      </nav> : null}
+      <ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} />
+      </div>
+    </div>
   );
 }

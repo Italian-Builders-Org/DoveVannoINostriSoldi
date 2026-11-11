@@ -1,0 +1,6 @@
+.guide { border-block: 1px solid var(--color-neutral-300); color: var(--color-neutral-700); }
+.guide summary { padding-block: 12px; min-height: 44px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.guide dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 4px 0 20px; }
+.guide dt { margin-bottom: 8px; font-size: 14px; font-weight: 600; color: var(--color-text); }
+.guide dd { margin: 0; font-size: 14px; line-height: 1.6; }
+@media (max-width: 760px) { .guide dl { grid-template-columns: 1fr; gap: 16px; } }

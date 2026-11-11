@@ -268,15 +268,15 @@ try {
       await page.waitForSelector('a[href="/#maps-title"]');
       await page.click('a[href="/#maps-title"]');
       await page.waitForFunction(() => location.pathname === "/" || location.pathname === "");
-      assert.match(page.url(), /\/(#maps-title)?$/);
+      assert.match(page.url(), /\/#maps-title$/);
       await ensureMapsOpen(page);
-      const inView = await page.evaluate(() => {
+      // Next soft-nav keeps the hash but may not scroll; SiteDirectory scrolls on #maps-title.
+      await page.waitForFunction(() => {
         const heading = document.getElementById("maps-title");
         if (!heading) return false;
         const rect = heading.getBoundingClientRect();
         return rect.top >= 0 && rect.top < innerHeight * 0.6;
-      });
-      assert.ok(inView, "sezione Mappe visibile dopo il link Mappe");
+      }, { timeout: 5_000 });
     },
   });
 

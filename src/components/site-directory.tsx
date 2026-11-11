@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { MOBILITA_MAP_PATH } from "@/lib/site";
 import { filterDirectory } from "@/lib/frontend-exploration";
@@ -20,13 +20,25 @@ function subscribeWidth(callback: () => void) {
 }
 const getWide = () => window.matchMedia(wideQuery).matches;
 const getServerWide = () => true;
+function subscribeHash(callback: () => void) {
+  window.addEventListener("hashchange", callback);
+  return () => window.removeEventListener("hashchange", callback);
+}
+const getHash = () => window.location.hash;
+const getServerHash = () => "";
 
 function DirectoryGroup({ group, initiallyOpen }: Readonly<{
   group: (typeof FOOTER_SITEMAP_GROUPS)[number]; initiallyOpen: boolean;
 }>) {
   const [expanded, setExpanded] = useState<boolean | null>(null);
-  const open = expanded ?? initiallyOpen;
+  const hash = useSyncExternalStore(subscribeHash, getHash, getServerHash);
   const mapsId = group.title === "Mappe" ? "maps-title" : undefined;
+  const hashTargetsMaps = mapsId != null && hash === `#${mapsId}`;
+  const open = expanded ?? (initiallyOpen || hashTargetsMaps);
+  useEffect(() => {
+    if (!mapsId || !hashTargetsMaps) return;
+    document.getElementById(mapsId)?.scrollIntoView({ block: "start" });
+  }, [mapsId, hashTargetsMaps]);
   return <details className={styles.group} open={open} aria-labelledby={mapsId}>
     <summary onClick={(event) => { event.preventDefault(); setExpanded(!open); }}>
       <h3 id={mapsId}>{group.title}</h3>

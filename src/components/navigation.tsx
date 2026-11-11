@@ -305,7 +305,9 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
               <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
-          {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
+          {/* Keep the nav mounted while the dialog is closed so section-active
+              markers stay queryable and showModal does not wait on a re-render. */}
+          <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} />
           <nav className="navigation-tools" aria-label="Strumenti del progetto">
             <IntentLink href="/mcp" onNavigate={closeDrawer}>Accesso MCP</IntentLink>
           </nav>

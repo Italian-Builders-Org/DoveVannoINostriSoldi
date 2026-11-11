@@ -127,13 +127,13 @@ La gerarchia si costruisce con il fondo e una linea da 1px, non con l'ombra:
 
 ### Navigation
 
-Header su una riga con marchio, ricerca e azioni. Da 1100px la navigazione è una sidebar con sottomenu a fisarmonica: la sezione corrente si apre automaticamente. L'altezza delle righe si adatta agli schermi bassi; i sottomenu lunghi scorrono dentro la sidebar. Sotto 1100px la ricerca si apre da un pulsante e la navigazione usa il menu mobile. Escape chiude la ricerca e restituisce il focus.
+Header su una riga con marchio, ricerca e azioni. La navigazione completa si apre dal pulsante nell’header, su desktop e mobile, in un dialogo con sottomenu a fisarmonica e sezione corrente aperta. Il contenuto occupa tutta la larghezza disponibile, senza sidebar fissa. Le pagine interne conservano il selettore delle pagine della sezione. Sotto 1100px la ricerca si apre da un pulsante. Escape chiude la ricerca e restituisce il focus.
 
 Una banda di pubblicazione presenta una frase e il collegamento al report o allo studio. La rotazione ogni sette secondi si ferma con hover, focus, pausa, pagina nascosta e movimento ridotto. I controlli testuali si mostrano al focus da tastiera.
 
 ### Dashboard
 
-La home introduce cinque percorsi editoriali: spesa pubblica, Comuni e territori, politica e istituzioni, economia e società, controlli e analisi. Un indice iniziale porta alle sezioni con domanda, anteprima, fonte e collegamento alla dashboard. Il quadro dei conti completo è espandibile; si apre già quando l’URL contiene un anno selezionato. Ricerca, mappe, Boards e catalogo vengono dopo i percorsi. Sulla sola home il menu completo si apre dal pulsante nell’header anche su desktop; nelle pagine interne resta la sidebar. Titoli e spaziature più ampi sono un’eccezione editoriale locale, mentre i token e i contratti dei dati restano condivisi.
+La home introduce cinque percorsi editoriali: spesa pubblica, Comuni e territori, politica e istituzioni, economia e società, controlli e analisi. Un indice iniziale porta alle sezioni con titolo descrittivo, anteprima, fonte e collegamento alla dashboard. Il quadro dei conti completo è espandibile; si apre già quando l’URL contiene un anno selezionato. La ricerca e la mappa completa del sito vengono dopo le analisi. La directory riusa i gruppi del footer; mappe e Boards restano raggiungibili da collegamenti testuali. Nessuna numerazione decorativa o slogan nei titoli. La navigazione è condivisa con le pagine interne. Titoli e spaziature più ampi sono un’eccezione editoriale locale, mentre i token e i contratti dei dati restano condivisi.
 
 Le pagine tematiche mostrano prima domanda, dato, periodo e filtri. Fonti, definizioni e limiti estesi rimangono disponibili in dettagli espandibili sotto i risultati; le qualifiche indispensabili per interpretare il valore restano vicine al dato. Usare “Non disponibile” al posto di sigle ambigue, senza confondere celle vuote, oscurate e zero.
 

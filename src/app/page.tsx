@@ -38,7 +38,7 @@ import {
   settledNationalPerCapita,
   settledTotalPaid,
 } from "@/lib/siope-snapshot";
-import { MOBILITA_MAP_PATH, PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
+import { SiteDirectory } from "@/components/site-directory";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -71,77 +71,6 @@ const HOME_ANOMALY_PRESENTATION = {
     period: "Previsione · febbraio 2026",
   },
 } as const;
-
-type Destination = Readonly<{
-  href: string;
-  title: string;
-  description: string;
-}>;
-
-const MAP_DESTINATIONS: readonly Destination[] = [
-  {
-    href: PUBLIC_POLITICI_URL,
-    title: "Mappa della politica",
-    description: "Presidenza, Governo, Camera e Senato: chi c’è e come si collega.",
-  },
-  {
-    href: PUBLIC_COMUNI_URL,
-    title: "Mappa dei Comuni",
-    description: "Impronta finanziaria SIOPE: confronta ogni Comune con i territori simili.",
-  },
-  {
-    href: MOBILITA_MAP_PATH,
-    title: "Mappa della mobilità",
-    description:
-      "Velocità programmate di bus, tram, metro e treni nelle grandi città, dai feed GTFS ufficiali.",
-  },
-];
-
-const PRIMARY_DESTINATIONS: readonly Destination[] = [
-  {
-    href: "/imprese",
-    title: "Atlante Imprese Italia",
-    description: "Imprese attive, addetti e valore della produzione per regione.",
-  },
-  {
-    href: "/territori",
-    title: "Territori",
-    description: "Pagamenti dei Comuni per abitante, per km² e confronti.",
-  },
-  {
-    href: "/spese",
-    title: "Soldi",
-    description: "Pagamenti comunali, sanità, pensioni e bilancio dello Stato.",
-  },
-];
-
-const SECONDARY_DESTINATIONS: readonly Destination[] = [
-  {
-    href: "/istruzione",
-    title: "Atlante Istruzione",
-    description: "Scuola, università e ricerca sul territorio.",
-  },
-  {
-    href: "/territori/irpef",
-    title: "Redditi e IRPEF",
-    description: "Reddito e imposta netta dichiarata per territorio.",
-  },
-  {
-    href: "/coesione",
-    title: "Fondi e progetti",
-    description: "Coesione, PNRR e progetti con fondi pubblici.",
-  },
-  {
-    href: "/mcp",
-    title: "MCP per i dati pubblici",
-    description: "Catalogo per interrogare i dataset ufficiali.",
-  },
-  {
-    href: "/cerca",
-    title: "Cerca nel sito",
-    description: "Pagine, dataset, enti e strumenti.",
-  },
-];
 
 function anomalyValue(signal: AuditSignal): string {
   let formatted: string;
@@ -216,11 +145,10 @@ export default async function HomePage({
   return (
     <main className={`shell ${styles.hub}`} data-home-editorial="true">
       <header className={styles.intro}>
-        <p className={styles.introEyebrow}>DATI PUBBLICI. DOMANDE DI TUTTI.</p>
-        <h1 className={styles.pageTitle}>I soldi pubblici,<br /><span>una domanda alla volta.</span></h1>
+        <h1 className={styles.pageTitle}>Dove vanno<br /><span>i nostri soldi?</span></h1>
         <div className={styles.introBottom}>
-          <p className={styles.lead}>Capire come vengono usate le risorse del Paese è il primo passo per partecipare. Parti da un tema, leggi i dati, verifica le fonti.</p>
-          <a href="#esplora" className={styles.exploreJump}>Sai già cosa cercare? <span>Esplora tutti i dati ↓</span></a>
+          <p className={styles.lead}>Dati sulla spesa pubblica italiana, sui territori e sulle istituzioni. Ogni analisi riporta le fonti, il periodo di riferimento e i limiti dei confronti.</p>
+          <a href="#esplora" className={styles.exploreJump}><span>Mappa del sito ↓</span></a>
         </div>
       </header>
       <HomePathwayIndex />
@@ -559,9 +487,8 @@ export default async function HomePage({
 
       <section id="esplora" className={styles.exploration} aria-labelledby="exploration-title">
         <div className={styles.explorationHeading}>
-          <p className={styles.introEyebrow}>ORA SEGUI LA TUA DOMANDA</p>
-          <h2 id="exploration-title">Esplora, confronta, approfondisci.</h2>
-          <p>Tutti gli strumenti del sito, a partire da ciò che vuoi sapere.</p>
+          <h2 id="exploration-title">Esplora i dati</h2>
+          <p>Tutte le pagine, organizzate per argomento.</p>
         </div>
         <form className={styles.searchForm} action="/cerca" method="get" role="search">
           <label className={styles.searchLabel} htmlFor="home-search-query">
@@ -584,91 +511,7 @@ export default async function HomePage({
             </button>
           </div>
         </form>
-      <section className={styles.mapsSection} aria-labelledby="maps-title">
-        <div className={styles.mapsIntro}>
-          <h2 id="maps-title" className={styles.mapsTitle}>
-            Mappe
-          </h2>
-          <p className={styles.mapsLead}>
-            Tre viste immersive: istituzioni, Comuni e mobilità, senza il menu del sito.
-          </p>
-        </div>
-        <ul className={styles.mapGrid} aria-label="Mappe immersive">
-          {MAP_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link prefetch={false} className={styles.mapCard} href={destination.href}>
-                <span className={styles.mapEyebrow}>Mappa</span>
-                <span className={styles.mapTitle}>{destination.title}</span>
-                <span className={styles.mapCopy}>{destination.description}</span>
-                <span className={styles.mapCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className={styles.boardsSection} aria-labelledby="boards-home-title">
-        <Link
-          className={styles.boardsCard}
-          href="/accedi"
-          data-testid="home-boards-entry"
-        >
-          <span className={styles.boardsCardMedia} aria-hidden="true" />
-          <span className={styles.boardsCardBody}>
-            <span className={styles.boardsEyebrow}>Strumento · web</span>
-            <span className={styles.boardsTitle} id="boards-home-title">
-              DVNS Boards
-            </span>
-            <span className={styles.boardsCopy}>
-              Componi viste private sui dataset pubblici già sul sito: grafici, filtri e
-              note sulla stessa lavagna. Accesso con email, senza password. Pensato per
-              desktop e laptop.
-            </span>
-            <span className={styles.boardsCta}>
-              Apri Boards
-              <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
-            </span>
-          </span>
-        </Link>
-      </section>
-
-      <section className={styles.exploreSection} aria-labelledby="explore-title">
-        <h2 id="explore-title" className={styles.sectionTitle}>
-          Sezioni
-        </h2>
-        <ul className={styles.primaryGrid}>
-          {PRIMARY_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link prefetch={false} className={styles.primaryCard} href={destination.href}>
-                <span className={styles.cardTitle}>{destination.title}</span>
-                <span className={styles.cardCopy}>{destination.description}</span>
-                <span className={styles.cardCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <ul className={styles.secondaryGrid}>
-          {SECONDARY_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link prefetch={false} className={styles.secondaryCard} href={destination.href}>
-                <span className={styles.cardTitle}>{destination.title}</span>
-                <span className={styles.cardCopy}>{destination.description}</span>
-                <span className={styles.cardCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
+        <SiteDirectory showMaps />
       </section>
     </main>
   );

@@ -99,7 +99,7 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(page, /supporter\.href \?/);
   assert.match(footer, /href="\/supporter"/);
   assert.doesNotMatch(footer, /BUY_ME_A_COFFEE_URL|buymeacoffee\.com/);
-  assert.match(footer, /Dati pubblici, accessibili a tutti/);
+  assert.match(footer, /Dati ufficiali sulla spesa pubblica italiana/);
   assert.doesNotMatch(footer, /SITE_SUPPORTERS/);
   assert.doesNotMatch(footer, /Con il supporto di/);
   assert.doesNotMatch(footer, /MANTO_VENTURE\.href/);
@@ -241,7 +241,7 @@ test("studies and their alias select a single dedicated primary section", () => 
 
 test("mappa della politica nav keeps same-origin /politici; homepage uses the subdomain", async () => {
   const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
-  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
   const mapLinks = flattenNavLinks(institutions?.children ?? []).filter((link) =>
     link.label === "Mappa della politica",
@@ -255,7 +255,7 @@ test("mappa della politica nav keeps same-origin /politici; homepage uses the su
 
 test("mappa dei comuni nav keeps same-origin /comuni; homepage uses the subdomain", async () => {
   const { PUBLIC_COMUNI_URL } = await import("../src/lib/site.ts");
-  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const entities = PRIMARY_NAV.find((item) => item.href === "/enti");
   const mapLinks = flattenNavLinks(entities?.children ?? []).filter((link) =>
     link.label === "Mappa dei Comuni",

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { inspectNavigationPrefetch } from "./navigation-prefetch.mjs";
-import { PRIMARY_NAV, flattenNavLinks } from "../../src/lib/site-navigation.ts";
+import { PRIMARY_NAV, FOOTER_SITEMAP_GROUPS, flattenNavLinks } from "../../src/lib/site-navigation.ts";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario, waitForServer } from "./harness.mjs";
 
 const baseUrl = defaultBaseUrl();
@@ -44,10 +44,11 @@ async function tap(page, selector) {
   await element.scrollIntoView();
   const box = await element.boundingBox();
   assert.ok(box && box.width >= 44 && box.height >= 44, `Target touch troppo piccolo: ${selector}`);
-  await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+  if (page.viewport()?.hasTouch) await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+  else await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
 }
 
-async function openMobile(page) {
+async function openMenu(page) {
   await tap(page, '.mobile-menu-trigger');
   await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true });
   assert.equal(await page.$eval('.mobile-menu-trigger', (button) => button.getAttribute('aria-expanded')), 'true');
@@ -66,43 +67,18 @@ async function assertFits(page) {
   assert.ok(geometry.search.width > 0 && geometry.search.left >= 0 && geometry.search.right <= geometry.width + 1, 'Ricerca sempre visibile');
 }
 
-async function leaveDesktopSidebar(page) {
-  await page.mouse.move(420, 240);
-  await page.evaluate(() => {
-    const active = document.activeElement;
-    if (active instanceof HTMLElement) active.blur();
-  });
-}
-
-async function expandDesktopSidebar(page) {
-  const box = await page.$eval('.desktop-sidebar', (node) => {
-    const rect = node.getBoundingClientRect();
-    return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
-  });
-  await page.mouse.move(box.x + Math.min(24, box.width / 2), box.y + Math.min(40, box.height / 2));
-  await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-}
-
-async function collapseDesktopSidebar(page) {
-  await leaveDesktopSidebar(page);
-  if (await page.$eval('.desktop-sidebar', (node) => node.dataset.collapsed === 'true')) return;
-  await page.click('.sidebar-collapse');
-  await leaveDesktopSidebar(page);
-  await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
-}
-
 const browser = await launchBrowser();
 try {
   await inspectNavigationPrefetch(browser, baseUrl);
   for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600]) {
     await runScenario(browser, {
-      label: `Sidebar ${width}px`, pathname: '/imprese?metric=employees', width, touch: width < 1100, suite: 'navigation',
+      label: `Menu ${width}px`, pathname: '/imprese?metric=employees', width, touch: width < 1100, suite: 'navigation',
       validate: async (page) => {
         await assertFits(page);
-        const mobile = width < 1100;
-        if (mobile) await openMobile(page);
-        else await expandDesktopSidebar(page);
-        const root = mobile ? '#mobile-navigation-links' : '#desktop-navigation';
+        assert.equal(await page.$('.desktop-sidebar'), null);
+        assert.equal(await page.$eval('.site-content', (node) => node.getBoundingClientRect().left), 0);
+        await openMenu(page);
+        const root = '#mobile-navigation-links';
         const hrefs = await page.$$eval(`${root} a`, (links) => [...new Set(links.map((link) => link.getAttribute('href')))]);
         assert.deepEqual(hrefs, destinations, 'Tutte le destinazioni restano nel menu');
         const names = await page.$$eval(`${root} .nav-item > a`, (links) => links.map((link) => link.textContent.trim()));
@@ -129,9 +105,9 @@ try {
           await page.keyboard.press('Enter');
           assert.equal(await page.$$eval(`${root} .nav-submenu:not([hidden])`, (menus) => menus.length), 0);
         }
-        if (mobile) {
+        {
           await page.focus('[aria-label="Chiudi menu di navigazione"]');
-          await page.screenshot({path:`artifacts/browser/sidebar-open-${width}.png`});
+          await page.screenshot({path:`artifacts/browser/menu-open-${width}.png`});
           assert.equal(await page.evaluate(() => getComputedStyle(document.body).overflowY), 'hidden');
           await page.keyboard.down('Shift');
           await page.keyboard.press('Tab');
@@ -143,90 +119,16 @@ try {
           await page.waitForSelector('#mobile-navigation', { hidden: true });
           assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('mobile-menu-trigger')), true, 'Escape restituisce il focus');
           assert.notEqual(await page.evaluate(() => getComputedStyle(document.body).overflowY), 'hidden');
-          await openMobile(page);
-          await page.touchscreen.tap(width - 15, 200);
+          await openMenu(page);
+          if (page.viewport()?.hasTouch) await page.touchscreen.tap(width - 15, 200);
+          else await page.mouse.click(width - 15, 200);
           await page.waitForSelector('#mobile-navigation', { hidden: true });
-          await openMobile(page);
+          await openMenu(page);
           await tap(page, '[aria-label="Chiudi menu di navigazione"]');
           await page.waitForSelector('#mobile-navigation', { hidden: true });
-        } else {
-          await collapseDesktopSidebar(page);
-          const pinLeftAtRest = await page.$eval('.sidebar-collapse', (node) => node.getBoundingClientRect().left);
-          const contentLeftAtRest = await page.$eval('.site-content', (node) => node.getBoundingClientRect().left);
-          await expandDesktopSidebar(page);
-          assert.equal(await page.$eval('.site-content', (node) => node.getBoundingClientRect().left), contentLeftAtRest,
-            'L\'anteprima al passaggio del puntatore non sposta il contenuto');
-
-          assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getBoundingClientRect().left), pinLeftAtRest,
-            'Il pulsante non si sposta sotto il puntatore durante l’anteprima');
-          await collapseDesktopSidebar(page);
-          // Clicking must pin even though moving the pointer opens the preview first.
-          await page.click('.sidebar-collapse');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-          assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-pressed')), 'true',
-            'Il bottone ancora il menu invece di chiuderlo');
-          await leaveDesktopSidebar(page);
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-          const before = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
-          assert.ok(await page.$eval('.site-content', (node) => node.getBoundingClientRect().left) > contentLeftAtRest,
-            'Ancorata, la sidebar riserva spazio invece di coprire il contenuto');
-
-          await collapseDesktopSidebar(page);
-          const after = await page.$eval('.site-content', (node) => node.getBoundingClientRect().width);
-          assert.ok(after - before >= 160, 'La riduzione libera spazio per mappe e tabelle');
-          assert.equal(await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-pressed')), 'false',
-            'Sbloccando, il menu torna alle sole icone');
-
-          // La preferenza sopravvive al ricaricamento, scritta prima del paint.
-          await expandDesktopSidebar(page);
-          await page.click('.sidebar-collapse');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-          await page.reload({ waitUntil: 'networkidle0' });
-          assert.equal(await page.evaluate(() => document.documentElement.dataset.sidebar), 'pinned',
-            'L\'ancoraggio sopravvive al ricaricamento');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-          await collapseDesktopSidebar(page);
-          if (width === 1280) {
-            const other = await page.browserContext().newPage();
-            try {
-              await other.setViewport({ width, height: 900 });
-              await other.goto(new URL('/imprese', baseUrl).toString(), { waitUntil: 'networkidle2' });
-              await other.click('.sidebar-collapse');
-              await leaveDesktopSidebar(page);
-              await page.waitForFunction(() => document.documentElement.dataset.sidebar === 'pinned'
-                && document.querySelector('.sidebar-collapse')?.getAttribute('aria-pressed') === 'true'
-                && document.querySelector('.site-content').getBoundingClientRect().left === 232);
-              await other.click('.sidebar-collapse');
-              await page.waitForFunction(() => document.documentElement.dataset.sidebar === 'rail'
-                && document.querySelector('.sidebar-collapse')?.getAttribute('aria-pressed') === 'false'
-                && document.querySelector('.site-content').getBoundingClientRect().left === 68);
-            } finally {
-              await other.close();
-            }
-          }
-          for (const item of PRIMARY_NAV) {
-            const link = await page.$(`${root} .nav-item > a[href="${item.href}"]`);
-            await link.focus();
-            const icon = await link.evaluate((node) => {
-              const box = node.getBoundingClientRect();
-              return {
-                title: node.title,
-                label: node.textContent.trim(),
-                width: box.width,
-                height: box.height,
-                left: box.left,
-                right: box.right,
-              };
-            });
-            assert.equal(icon.title, icon.label, JSON.stringify(icon));
-            assert.ok(icon.width >= 44 && icon.height >= 44 && icon.left >= 0 && icon.right <= 69, JSON.stringify(icon));
-          }
-          await assertFits(page);
-          await page.screenshot({path:`artifacts/browser/sidebar-compact-${width}.png`});
-          await expandDesktopSidebar(page);
         }
         await assertFits(page);
-        await page.screenshot({path:`artifacts/browser/sidebar-${width}.png`});
+        await page.screenshot({path:`artifacts/browser/menu-${width}.png`});
       },
     });
   }
@@ -235,11 +137,11 @@ try {
     label: `Home editoriale ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
       await assertFits(page);
-      assert.equal(await page.$eval('.desktop-sidebar', (node) => getComputedStyle(node).display), 'none');
-      const paths = await page.$$eval('nav[aria-label="Cinque percorsi di lettura"] a', (links) => links.map((link) => link.getAttribute('href')));
+      assert.equal(await page.$('.desktop-sidebar'), null);
+      const paths = await page.$$eval('nav[aria-label="Argomenti della home"] a', (links) => links.map((link) => link.getAttribute('href')));
       assert.equal(paths.length, 5, 'Cinque percorsi raggiungibili dall’indice');
       for (const href of paths) {
-        await page.click(`nav[aria-label="Cinque percorsi di lettura"] a[href="${href}"]`);
+        await page.click(`nav[aria-label="Argomenti della home"] a[href="${href}"]`);
         await page.waitForFunction((hash) => location.hash === hash, {}, href);
         assert.ok(await page.$(`${href} h2`), `Destinazione senza titolo: ${href}`);
       }
@@ -254,6 +156,13 @@ try {
       await page.waitForSelector('#quadro-dei-conti:not([open])');
       assert.equal(await page.$$eval('.site-footer a', (links) => links.some((link) => link.href.includes('buymeacoffee.com'))), false);
       assert.ok(await page.$('#esplora form[action="/cerca"]'), 'Ricerca disponibile dopo le analisi');
+      const directoryHrefs = await page.$$eval('#esplora a', (links) => links.map((link) => link.getAttribute('href')));
+      for (const group of FOOTER_SITEMAP_GROUPS) for (const link of group.links) {
+        assert.ok(directoryHrefs.includes(link.href), `Mappa del sito incompleta: ${link.href}`);
+      }
+      const headings = await page.$$eval('#analisi h2', (nodes) => nodes.map((node) => node.textContent.trim()));
+      assert.equal(headings.length, 5);
+      assert.ok(headings.every((title) => !/^0?\d[ /]/.test(title)), 'Titoli senza numerazione decorativa');
       assert.equal(await page.$eval('#esplora', (node) => Boolean(document.querySelector('#controlli-analisi').compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
       await page.click('.mobile-menu-trigger');
       await page.waitForSelector('#mobile-navigation:modal .primary-nav', {visible: true});
@@ -264,58 +173,71 @@ try {
     },
   });
 
+  for (const width of [390, 1280]) await runScenario(browser, {
+    label: `Home verso spesa ${width}px`, pathname: '/', width, suite: 'navigation',
+    validate: async (page) => {
+      await page.click('#spesa-pubblica a[href="/spese"]');
+      await page.waitForFunction(() => location.pathname === '/spese');
+      await page.waitForSelector('main h1', { visible: true });
+      assert.equal(await page.$('.desktop-sidebar'), null);
+      await assertFits(page);
+      await page.select('nav[aria-label="Pagine in Soldi"] select', '/entrate');
+      await page.waitForFunction(() => location.pathname === '/entrate');
+      await page.goBack();
+      await page.waitForFunction(() => location.pathname === '/spese');
+      await openMenu(page);
+      await page.keyboard.press('Escape');
+      assert.equal(await page.$eval('.mobile-menu-trigger', (button) => button === document.activeElement), true);
+    },
+  });
+
   // Route aliases, nested pages and query-backed children keep their identity.
   for (const [pathname, label] of [['/controlli','Cosa controllare'], ['/territori/irpef','Territori'], ['/appalti','Cosa controllare'], ['/parlamento','Istituzioni'], ['/debito','Soldi'], ['/paper','Studi'], ['/report/2026-08','Report']]) {
     for (const width of [390, 1280]) await runScenario(browser, {
-      label:`Sidebar attiva ${pathname} ${width}px`, pathname, width, suite:'navigation',
+      label:`Sezione attiva ${pathname} ${width}px`, pathname, width, suite:'navigation',
       validate: async(page) => {
         // Child aria-current is added by NavigationSearchSync after hydration.
         const child = `.nav-submenu a[href="${pathname}"]`;
+        await openMenu(page);
         if (await page.$(child)) await page.waitForSelector(`${child}[aria-current="page"]`);
-        if (width < 1100) await openMobile(page);
-        const root = width < 1100 ? '#mobile-navigation-links' : '#desktop-navigation';
+        const root = '#mobile-navigation-links';
         assert.deepEqual(await page.$$eval(`${root} .nav-item > a[data-section-active="true"]`, (links) => links.map((link) => link.textContent.trim())), [label]);
-        if (width < 1100) await page.keyboard.press('Escape');
+        await page.keyboard.press('Escape');
         await assertFits(page);
       },
     });
   }
 
   for (const width of [390, 1280]) await runScenario(browser, {
-    label:`Sidebar navigazione query ${width}px`, pathname:'/imprese?metric=employees', width, suite:'navigation',
+    label:`Menu navigazione query ${width}px`, pathname:'/imprese?metric=employees', width, suite:'navigation',
     validate:async(page) => {
-      if (width < 1100) await openMobile(page);
-      else await expandDesktopSidebar(page);
-      const root = width < 1100 ? '#mobile-navigation-links' : '#desktop-navigation';
+      await openMenu(page);
+      const root = '#mobile-navigation-links';
       await page.click(`${root} .nav-submenu a[href="/imprese?metric=active_local_units"]`);
       await page.waitForFunction(() => new URL(location.href).searchParams.get('metric') === 'active_local_units');
-      if (width < 1100) {
-        await page.waitForSelector('#mobile-navigation', {hidden:true});
-        await openMobile(page);
-      }
+      await page.waitForSelector('#mobile-navigation', {hidden:true});
+      await openMenu(page);
       await page.waitForFunction((selector) => document.querySelector(`${selector} .nav-submenu a[aria-current="page"]`)?.textContent.trim() === 'Localizzazioni attive', {}, root);
-        if (width < 1100) await page.keyboard.press('Escape');
-        else await collapseDesktopSidebar(page);
+        await page.keyboard.press('Escape');
         await page.goBack();
         await page.waitForFunction(() => new URL(location.href).searchParams.get('metric') === 'employees');
-        if (width >= 1100) assert.equal(await page.$eval('.desktop-sidebar', (node) => node.dataset.collapsed), 'true', 'La preferenza sopravvive alla navigazione');
+        await openMenu(page);
+        await page.waitForSelector(`${root} a[href="/imprese?metric=employees"][aria-current="page"]`);
+        await page.keyboard.press('Escape');
       await assertFits(page);
     },
   });
 
   await runScenario(browser, {
-    label:'Sidebar rotazione e focus', pathname:'/imprese', width:390, suite:'navigation',
+    label:'Menu rotazione e focus', pathname:'/imprese', width:390, suite:'navigation',
     validate:async(page) => {
-      await openMobile(page);
+      await openMenu(page);
       // Preserve device emulation: changing isMobile would reload the page.
       await page.setViewport({...page.viewport(),width:1280,height:900});
-      await page.waitForSelector('#mobile-navigation',{hidden:true});
-      await page.waitForFunction(() => document.activeElement?.classList.contains('sidebar-collapse'), {timeout: 3_000});
-      assert.notEqual(await page.evaluate(()=>getComputedStyle(document.body).overflowY),'hidden');
+      await page.waitForSelector('#mobile-navigation:modal');
+      assert.equal(await page.evaluate(() => !!document.activeElement?.closest('#mobile-navigation')), true);
       await page.setViewport({...page.viewport(),width:768,height:900});
-      await page.waitForSelector('.mobile-menu-trigger',{visible:true});
-      await page.waitForFunction(() => document.activeElement?.classList.contains('mobile-menu-trigger'), {timeout: 3_000});
-      await openMobile(page);
+      await page.waitForSelector('#mobile-navigation:modal');
       await page.keyboard.press('Escape');
     },
   });

@@ -88,9 +88,7 @@ async function assertResponsiveShell(page, label, width) {
   );
 
   const navigation = await page.evaluate(() => {
-    const target = matchMedia('(min-width: 1100px)').matches
-      ? document.querySelector('.desktop-sidebar')
-      : document.querySelector('.mobile-menu-trigger');
+    const target = document.querySelector('.mobile-menu-trigger');
     const box = target?.getBoundingClientRect();
     return box ? { left: box.left, right: box.right, width: box.width } : null;
   });

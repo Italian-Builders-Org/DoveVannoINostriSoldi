@@ -1,6 +1,5 @@
 /*
- * Home hub: destinations first, then a reduced national data band with
- * trend/composition charts and the municipal map.
+ * Home: analysis sections, optional financial detail, then the site directory.
  */
 
 .hub {
@@ -57,318 +56,10 @@
 }
 
 /* Featured immersive maps sit above the compact section shortcuts. */
-.mapsSection {
-  display: grid;
-  gap: var(--space-4);
-  min-width: 0;
-  padding: var(--space-5);
-  background:
-    linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--graph-canvas) 88%, var(--color-accent-100)) 0%,
-      var(--graph-canvas) 48%,
-      var(--color-neutral-100) 100%
-    );
-  border: 1px solid var(--color-neutral-300);
-}
-
-.mapsIntro {
-  display: grid;
-  gap: var(--space-2);
-  max-width: 36rem;
-}
-
-.mapsTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: clamp(1.35rem, 1.2vw + 1.1rem, 1.7rem);
-  font-weight: var(--font-heading-weight);
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-}
-
-.mapsLead {
-  margin: 0;
-  color: var(--color-neutral-700);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.mapGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  align-items: stretch;
-}
-
-.mapCard {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--space-3);
-  height: 100%;
-  align-content: start;
-  min-height: 14rem;
-  min-width: 0;
-  padding: var(--space-5) var(--space-5) var(--space-4);
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-300);
-  border-top: 3px solid var(--color-accent-700);
-  color: inherit;
-  text-decoration: none;
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-neutral-900) 4%, transparent);
-  transition:
-    border-color 140ms ease,
-    background-color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
-}
-
-.mapCard:hover,
-.mapCard:focus-visible {
-  border-color: color-mix(in srgb, var(--color-accent-700) 40%, var(--color-neutral-300));
-  border-top-color: var(--color-accent-700);
-  background: var(--color-raised);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-900) 8%, transparent);
-  transform: translateY(-2px);
-}
-
-.mapEyebrow {
-  color: var(--color-accent-800);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.mapTitle {
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: clamp(1.2rem, 0.8vw + 1.05rem, 1.45rem);
-  font-weight: var(--font-heading-weight);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-}
-
-.mapCopy {
-  color: var(--color-neutral-700);
-  font-size: 0.98rem;
-  line-height: 1.5;
-}
-
-.mapCta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-top: var(--space-1);
-  color: var(--color-accent-700);
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.boardsSection {
-  display: grid;
-  min-width: 0;
-}
-
-.boardsCard {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  min-height: 15.5rem;
-  overflow: hidden;
-  border: 1px solid var(--color-neutral-300);
-  color: inherit;
-  text-decoration: none;
-  background: var(--color-raised);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-neutral-900) 4%, transparent);
-  transition:
-    border-color 140ms ease,
-    box-shadow 140ms ease,
-    transform 140ms ease;
-}
-
-.boardsCard:hover,
-.boardsCard:focus-visible {
-  border-color: color-mix(in srgb, var(--color-accent-700) 40%, var(--color-neutral-300));
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-neutral-900) 8%, transparent);
-  transform: translateY(-2px);
-}
-
-.boardsCardMedia {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    url("/boards/accedi-hero.png") center / cover no-repeat;
-}
-
-.boardsCardMedia::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      100deg,
-      var(--color-bg) 0%,
-      color-mix(in srgb, var(--color-bg) 94%, transparent) 34%,
-      color-mix(in srgb, var(--color-bg) 55%, transparent) 58%,
-      color-mix(in srgb, var(--color-bg) 18%, transparent) 78%,
-      transparent 100%
-    ),
-    linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-bg) 55%, transparent) 0%,
-      transparent 48%
-    );
-}
-
-.boardsCardBody {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: var(--space-3);
-  align-content: start;
-  min-width: 0;
-  padding: var(--space-5) var(--space-5) var(--space-4);
-  max-width: 34rem;
-}
-
-.boardsEyebrow {
-  color: var(--color-accent-800);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.boardsTitle {
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: clamp(1.35rem, 1vw + 1.1rem, 1.7rem);
-  font-weight: var(--font-heading-weight);
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-}
-
-.boardsCopy {
-  color: var(--color-neutral-700);
-  font-size: 0.98rem;
-  line-height: 1.5;
-}
-
-.boardsCta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-top: var(--space-1);
-  color: var(--color-accent-700);
-  font-size: 0.95rem;
-  font-weight: 700;
-}
-
-.exploreSection {
-  display: grid;
-  gap: var(--space-3);
-  min-width: 0;
-}
-
-.sectionTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: var(--font-heading-weight);
-  line-height: 1.3;
-}
-
-.primaryGrid,
-.secondaryGrid {
-  display: grid;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 
 /* Three primary destinations in one row on desktop. */
-.primaryGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
 
 /* Secondary destinations fill the remaining width. */
-.secondaryGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.primaryCard,
-.secondaryCard {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: var(--space-2);
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-raised);
-  border: 1px solid var(--color-neutral-300);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 120ms ease, background-color 120ms ease;
-}
-
-.primaryCard {
-  min-height: 7.5rem;
-}
-
-.secondaryCard {
-  min-height: 6.5rem;
-  padding: var(--space-3);
-}
-
-.primaryCard:hover,
-.primaryCard:focus-visible,
-.secondaryCard:hover,
-.secondaryCard:focus-visible {
-  border-color: var(--color-neutral-500);
-  background: var(--color-neutral-100);
-}
-
-.cardTitle {
-  color: var(--color-text);
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 650;
-  line-height: 1.3;
-}
-
-.secondaryCard .cardTitle {
-  font-size: 0.95rem;
-}
-
-.cardCopy {
-  color: var(--color-neutral-700);
-  font-size: 0.88rem;
-  line-height: 1.45;
-}
-
-.secondaryCard .cardCopy {
-  font-size: 0.84rem;
-}
-
-.cardCta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-top: var(--space-1);
-  color: var(--color-accent-700);
-  font-size: 0.8125rem;
-  font-weight: 650;
-}
 
 .italyBand {
   display: grid;
@@ -811,8 +502,6 @@
 }
 
 @media (max-width: 1099px) {
-  .primaryGrid,
-  .secondaryGrid,
   .italySummaryBody,
   .italySplit,
   .anomalyGallery,
@@ -838,82 +527,11 @@
     grid-template-columns: 1fr;
   }
 
-  .mapsSection {
-    padding: var(--space-4) var(--space-3);
-  }
-
-  .primaryGrid,
-  .secondaryGrid,
-  .mapGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .boardsCard {
-    grid-template-columns: 1fr;
-    min-height: 0;
-    transform: none;
-  }
-
-  .boardsCard:hover,
-  .boardsCard:focus-visible {
-    transform: none;
-  }
-
-  .boardsCardMedia {
-    /* Atmosphere only on narrow screens; text stays readable via stronger wash. */
-    opacity: 0.88;
-    background-position: 58% center;
-  }
-
-  .boardsCardMedia::after {
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-bg) 92%, transparent) 0%,
-        color-mix(in srgb, var(--color-bg) 84%, transparent) 48%,
-        color-mix(in srgb, var(--color-bg) 94%, transparent) 100%
-      );
-  }
-
-  .boardsCardBody {
-    max-width: none;
-    padding: var(--space-4) var(--space-3);
-    gap: var(--space-2);
-  }
-
-  .boardsCopy {
-    font-size: 0.92rem;
-  }
-
-  .boardsCta {
-    min-height: 2.75rem;
-    align-items: center;
-  }
-
-  .mapCard {
-    min-height: 0;
-    padding: var(--space-4) var(--space-3);
-    transform: none;
-  }
-
-  .mapCard:hover,
-  .mapCard:focus-visible {
-    transform: none;
-  }
-
-  .primaryCard,
-  .secondaryCard,
   .italySummaryFacts,
   .anomalyItem,
   .readingPanel {
     padding: var(--space-3);
     min-height: 0;
-  }
-
-  .mapCta,
-  .cardCta {
-    min-height: 2.75rem;
-    align-items: center;
   }
 
   .headline {
@@ -922,18 +540,6 @@
 }
 
 @media (min-width: 720px) and (max-width: 1099px) {
-  .mapGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .mapGrid > li:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .primaryGrid,
-  .secondaryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 
   .readingRules {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -943,7 +549,6 @@
 /* Editorial home: a deliberate reading order, then optional depth and discovery. */
 .hub { max-width: 1320px; gap: 0; padding-block: 0; }
 .intro { max-width: none; padding-block: 64px 40px; gap: 24px; }
-.introEyebrow { margin: 0; color: var(--color-accent); font-size: 11px; font-weight: 600; letter-spacing: .12em; }
 .pageTitle { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.045em; font-weight: 500; }
 .pageTitle span { color: var(--color-neutral-600); }
 .introBottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
@@ -962,9 +567,6 @@
 .explorationHeading h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 500; line-height: 1.15; letter-spacing: -.03em; margin: 0; }
 .explorationHeading > p:last-child { margin: 0; color: var(--color-neutral-700); }
 .exploration .searchForm { max-width: 44rem; margin: 0; }
-.exploration .mapsSection { border: 0; padding: 0; background: none; }
-.exploration .mapCard { min-height: 0; border-top: 1px solid var(--color-neutral-300); box-shadow: none; }
-.exploration .mapCard:hover, .exploration .mapCard:focus-visible { transform: none; box-shadow: none; }
 .anomaliesPanel { border: 0; background: var(--color-raised); padding: 28px; }
 .anomalyGallery { grid-template-columns: 1fr; gap: 0; }
 .anomalyItem { padding: 20px 0; border: 0; border-bottom: 1px solid var(--color-neutral-200); background: none; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; }

@@ -10,11 +10,11 @@ import { PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./home-pathways.module.css";
 
 const PATHWAYS = [
-  { id: "spesa-pubblica", title: "Spesa pubblica", question: "Come vengono usati?" },
-  { id: "comuni-territori", title: "Comuni e territori", question: "Cosa succede vicino a te?" },
-  { id: "politica-istituzioni", title: "Politica e istituzioni", question: "Chi prende le decisioni?" },
-  { id: "economia-societa", title: "Economia e società", question: "Come cambia il Paese?" },
-  { id: "controlli-analisi", title: "Controlli e analisi", question: "Cosa va approfondito?" },
+  { id: "spesa-pubblica", title: "Spesa pubblica", description: "Bilanci, servizi e pagamenti" },
+  { id: "comuni-territori", title: "Comuni e territori", description: "Dati comunali e confronti" },
+  { id: "politica-istituzioni", title: "Politica e istituzioni", description: "Incarichi e attività parlamentari" },
+  { id: "economia-societa", title: "Economia e società", description: "Imprese, lavoro e istruzione" },
+  { id: "controlli-analisi", title: "Controlli e analisi", description: "Appalti, verifiche e ricerca" },
 ] as const;
 
 function Arrow() {
@@ -23,12 +23,11 @@ function Arrow() {
 
 export function HomePathwayIndex() {
   return (
-    <nav className={styles.index} aria-label="Cinque percorsi di lettura">
-      {PATHWAYS.map((pathway, index) => (
+    <nav className={styles.index} aria-label="Argomenti della home">
+      {PATHWAYS.map((pathway) => (
         <a key={pathway.id} href={`#${pathway.id}`}>
-          <span className={styles.indexNumber}>0{index + 1}<Arrow /></span>
-          <strong>{pathway.title}</strong>
-          <span>{pathway.question}</span>
+          <strong>{pathway.title}<Arrow /></strong>
+          <span>{pathway.description}</span>
         </a>
       ))}
     </nav>
@@ -42,16 +41,10 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
 }>) {
   return (
     <div id="analisi" className={styles.pathways}>
-      <div className={styles.sectionHeading}>
-        <p>LEGGERE IL PAESE ATTRAVERSO I DATI</p>
-        <span>Cinque percorsi, un punto di partenza.</span>
-      </div>
-
       <section id="spesa-pubblica" className={styles.feature} aria-labelledby="spesa-pubblica-title">
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>01 / SPESA PUBBLICA</p>
-          <h2 id="spesa-pubblica-title">Dai grandi numeri<br />alle scelte concrete.</h2>
-          <p>Sanità, scuola, pensioni, servizi. Capisci come si compone la spesa pubblica e segui ogni voce fino alla fonte.</p>
+          <h2 id="spesa-pubblica-title">Spesa pubblica</h2>
+          <p>La spesa delle amministrazioni pubbliche per sanità, istruzione, pensioni e altri servizi. Bilancio dello Stato e pagamenti comunali hanno viste dedicate.</p>
           <Link prefetch={false} href="/spese" className={styles.primaryLink}>Esplora la spesa <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/spese/legge-di-bilancio">Bilancio dello Stato</Link>
@@ -78,9 +71,8 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
 
       <section id="comuni-territori" className={styles.feature} aria-labelledby="comuni-territori-title">
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>02 / COMUNI E TERRITORI</p>
-          <h2 id="comuni-territori-title">Il Paese, visto<br />da dove vivi.</h2>
-          <p>Parti dal tuo Comune. Esplora i pagamenti, confronta territori simili e leggi i numeri in rapporto agli abitanti e ai servizi.</p>
+          <h2 id="comuni-territori-title">Comuni e territori</h2>
+          <p>Pagamenti e redditi dei Comuni italiani. La mappa permette di confrontare territori simili, con importi totali e valori per abitante.</p>
           <Link prefetch={false} href={PUBLIC_COMUNI_URL} className={styles.primaryLink}>Apri la mappa dei Comuni <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href={`/territori?anno=${siope.year}`}>Confronta i territori</Link>
@@ -108,18 +100,17 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
 
       <section id="politica-istituzioni" className={styles.feature} aria-labelledby="politica-istituzioni-title">
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>03 / POLITICA E ISTITUZIONI</p>
-          <h2 id="politica-istituzioni-title">Le persone.<br />Le istituzioni.<br />Le decisioni.</h2>
-          <p>Una mappa per orientarti nella Repubblica: ruoli, incarichi e collegamenti. Dal quadro d’insieme alle attività parlamentari.</p>
-          <Link prefetch={false} href={PUBLIC_POLITICI_URL} className={styles.primaryLink}>Esplora la mappa della politica <Arrow /></Link>
+          <h2 id="politica-istituzioni-title">Politica e istituzioni</h2>
+          <p>Composizione delle istituzioni, incarichi e attività parlamentari. La mappa mostra le relazioni tra persone e organi della Repubblica.</p>
+          <Link prefetch={false} href={PUBLIC_POLITICI_URL} className={styles.primaryLink}>Apri la mappa della politica <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/governi">Governi a confronto</Link>
             <Link prefetch={false} href="/parlamento">Parlamento</Link>
           </div>
         </div>
         <div className={`${styles.preview} ${styles.institutions}`}>
-          <div className={styles.previewHeader}><span>ORIENTARSI NELLA REPUBBLICA</span><HugeiconsIcon icon={Building04Icon} size={24} aria-hidden="true" /></div>
-          <p className={styles.institutionsTitle}>Chi rappresenta.<br />Chi governa.<br />Chi decide.</p>
+          <div className={styles.previewHeader}><span>ISTITUZIONI</span><HugeiconsIcon icon={Building04Icon} size={24} aria-hidden="true" /></div>
+          <p className={styles.institutionsTitle}>Gli organi della Repubblica</p>
           <div className={styles.institutionLinks}>
             <Link prefetch={false} href={PUBLIC_POLITICI_URL}>Presidenza della Repubblica <Arrow /></Link>
             <Link prefetch={false} href="/governi">Governo <Arrow /></Link>
@@ -131,10 +122,9 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
 
       <section id="economia-societa" className={styles.feature} aria-labelledby="economia-societa-title">
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>04 / ECONOMIA E SOCIETÀ</p>
-          <h2 id="economia-societa-title">Oltre la spesa,<br />la vita del Paese.</h2>
-          <p>Imprese, lavoro e istruzione: leggi le differenze tra i territori e scopri il contesto in cui vengono impiegate le risorse pubbliche.</p>
-          <Link prefetch={false} href="/imprese" className={styles.primaryLink}>Scopri l’atlante delle imprese <Arrow /></Link>
+          <h2 id="economia-societa-title">Economia e società</h2>
+          <p>Imprese attive, occupazione, scuole e università. Gli atlanti raccolgono gli indicatori disponibili per confrontare le regioni e seguire i cambiamenti nel tempo.</p>
+          <Link prefetch={false} href="/imprese" className={styles.primaryLink}>Apri l’atlante delle imprese <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/istruzione">Istruzione</Link>
             <Link prefetch={false} href="/poverta">Povertà e condizioni di vita</Link>
@@ -143,24 +133,23 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
         <div className={styles.atlasPreview}>
           <Link prefetch={false} href="/imprese" className={styles.atlas}>
             <HugeiconsIcon icon={Building03Icon} size={34} strokeWidth={1.2} aria-hidden="true" />
-            <span className={styles.smallLabel}>ATLANTE / ECONOMIA</span>
+            <span className={styles.smallLabel}>ECONOMIA</span>
             <strong>Imprese</strong><span>Attività, addetti e territori.</span><span className={styles.atlasAction}>Apri l’atlante <Arrow /></span>
           </Link>
           <Link prefetch={false} href="/istruzione" className={styles.atlas}>
             <HugeiconsIcon icon={School01Icon} size={34} strokeWidth={1.2} aria-hidden="true" />
-            <span className={styles.smallLabel}>ATLANTE / ISTRUZIONE</span>
+            <span className={styles.smallLabel}>ISTRUZIONE</span>
             <strong>Istruzione</strong><span>Scuola, università e ricerca.</span><span className={styles.atlasAction}>Apri l’atlante <Arrow /></span>
           </Link>
-          <p className={styles.atlasNote}>Scegli un tema, poi un territorio. Ogni atlante esplicita fonti, periodi e limiti dei confronti.</p>
+          <p className={styles.atlasNote}>Fonti, anni di riferimento e copertura territoriale sono indicati in ciascun atlante.</p>
         </div>
       </section>
 
       <section id="controlli-analisi" className={`${styles.feature} ${styles.analysisFeature}`} aria-labelledby="controlli-analisi-title">
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>05 / CONTROLLI E ANALISI</p>
-          <h2 id="controlli-analisi-title">Le domande giuste,<br />prima delle conclusioni.</h2>
-          <p>Segnali da approfondire, analisi e paper di ricerca. Parti da un’evidenza e verifica che cosa i dati permettono davvero di dire.</p>
-          <Link prefetch={false} href="/controlli" className={styles.primaryLink}>Esamina i controlli <Arrow /></Link>
+          <h2 id="controlli-analisi-title">Controlli e analisi</h2>
+          <p>Appalti, affidamenti e risultati dei controlli, insieme a studi sulla spesa pubblica. I valori anomali richiedono verifiche e non dimostrano, da soli, sprechi o illeciti.</p>
+          <Link prefetch={false} href="/controlli" className={styles.primaryLink}>Apri i controlli <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/studi">Paper di ricerca</Link>
             <Link prefetch={false} href="/report">Articoli e approfondimenti</Link>

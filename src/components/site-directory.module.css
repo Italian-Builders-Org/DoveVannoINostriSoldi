@@ -11,6 +11,8 @@
 .group summary::-webkit-details-marker { display: none; }
 .group summary::after { content: "+"; margin-left: auto; font-size: 20px; color: var(--color-neutral-600); }
 .group[open] summary::after { content: "−"; }
+.maps { margin-bottom: 12px; max-width: 40rem; }
+.maps .group ul { display: grid; gap: 0; }
 .group h3 { margin: 0; color: var(--color-text); font-size: 16px; font-weight: 600; }
 .group h3#maps-title { scroll-margin-top: 6rem; }
 .count { color: var(--color-neutral-600); font-size: 12px; font-variant-numeric: tabular-nums; }

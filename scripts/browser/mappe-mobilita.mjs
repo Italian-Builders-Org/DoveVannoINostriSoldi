@@ -276,7 +276,7 @@ try {
         const heading = document.getElementById("maps-title");
         if (!heading) return false;
         const rect = heading.getBoundingClientRect();
-        return rect.top >= 0 && rect.top < innerHeight * 0.6;
+        return rect.bottom > 0 && rect.top < innerHeight * 0.75;
       }, { timeout: 5_000 });
     },
   });

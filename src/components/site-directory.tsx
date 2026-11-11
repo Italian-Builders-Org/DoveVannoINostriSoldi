@@ -33,7 +33,7 @@ const getHash = () => window.location.hash;
 const getServerHash = () => "";
 
 function DirectoryGroup({ group, initiallyOpen }: Readonly<{
-  group: (typeof FOOTER_SITEMAP_GROUPS)[number]; initiallyOpen: boolean;
+  group: (typeof FOOTER_SITEMAP_GROUPS)[number] | typeof maps; initiallyOpen: boolean;
 }>) {
   const pathname = usePathname();
   const [expanded, setExpanded] = useState<boolean | null>(null);
@@ -61,9 +61,15 @@ export function SiteDirectory({ showMaps = false }: Readonly<{ showMaps?: boolea
   const [query, setQuery] = useState("");
   const inputId = useId();
   const isWide = useSyncExternalStore(subscribeWidth, getWide, getServerWide);
-  const groups = filterDirectory(showMaps ? [maps, ...FOOTER_SITEMAP_GROUPS] : FOOTER_SITEMAP_GROUPS, query);
-  const count = groups.reduce((total, group) => total + group.links.length, 0);
+  const pathname = usePathname();
+  const hash = useSyncExternalStore(subscribeHash, getHash, getServerHash);
+  const hashTargetsMaps = pathname === "/" && hash === "#maps-title";
+  const filteredMaps = showMaps ? filterDirectory([maps], query) : [];
+  const groups = filterDirectory(FOOTER_SITEMAP_GROUPS, query);
+  const count = filteredMaps.reduce((total, group) => total + group.links.length, 0)
+    + groups.reduce((total, group) => total + group.links.length, 0);
   const filtering = query.trim().length > 0;
+  const mapsOpen = isWide || filtering || hashTargetsMaps;
 
   return <nav className={styles.directory} aria-label="Mappa dei dati">
     <div className={styles.filter} role="search" aria-label="Filtra la mappa dei dati">
@@ -75,9 +81,12 @@ export function SiteDirectory({ showMaps = false }: Readonly<{ showMaps?: boolea
       </div>
       <p className={styles.resultCount} role="status">{filtering ? `${count} ${count === 1 ? "pagina trovata" : "pagine trovate"}` : `${count} pagine disponibili`}</p>
     </div>
+    {filteredMaps.length ? <div className={styles.maps}>
+      {filteredMaps.map((group) => <DirectoryGroup key={`${group.title}:${filtering}`} group={group} initiallyOpen={mapsOpen} />)}
+    </div> : null}
     {count ? <div className={styles.columns}>
       {groups.map((group) => <DirectoryGroup key={`${group.title}:${filtering}`} group={group} initiallyOpen={isWide || filtering} />)}
-    </div> : <div className={styles.empty}>
+    </div> : filteredMaps.length ? null : <div className={styles.empty}>
       <p>Nessuna pagina corrisponde a «{query.trim()}».</p>
       <Link prefetch={false} href={`/cerca?q=${encodeURIComponent(query.trim())}`}>Cerca anche nei dati e nei documenti →</Link>
     </div>}

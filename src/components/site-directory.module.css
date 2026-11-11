@@ -12,6 +12,7 @@
 .group summary::after { content: "+"; margin-left: auto; font-size: 20px; color: var(--color-neutral-600); }
 .group[open] summary::after { content: "−"; }
 .group h3 { margin: 0; color: var(--color-text); font-size: 16px; font-weight: 600; }
+.group h3#maps-title { scroll-margin-top: 6rem; }
 .count { color: var(--color-neutral-600); font-size: 12px; font-variant-numeric: tabular-nums; }
 .group ul { list-style: none; margin: 0; padding: 4px 0 0; }
 .group a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 8px; color: var(--color-neutral-700); font-size: 14px; line-height: 1.5; text-decoration: none; }

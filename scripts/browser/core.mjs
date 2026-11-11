@@ -1986,11 +1986,10 @@ try {
         assert.equal(await page.$('.footer-sitemap'), null, 'Directory presente solo nella home');
         const directory = await page.$('nav[aria-label="Mappa dei dati"]');
         assert.ok(directory, `${label}: mappa dei dati assente`);
-        const groupCount = await page.$$eval('nav[aria-label="Mappa dei dati"] section:not([aria-labelledby])', (groups) => groups.length);
-        assert.equal(groupCount, 14, `${label}: tutti i gruppi restano nella directory`);
-        const headings = await page.$$eval('nav[aria-label="Mappa dei dati"] section:not([aria-labelledby]) h3', (items) =>
-          items.map((item) => item.textContent?.trim() ?? ""),
+        const headings = await page.$$eval('nav[aria-label="Mappa dei dati"] details > summary h3', (items) =>
+          items.map((item) => item.textContent?.trim() ?? "").filter((title) => title !== "Mappe"),
         );
+        assert.equal(headings.length, 14, `${label}: tutti i gruppi restano nella directory`);
         assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
         assert.ok(headings.includes("Report"), `${label}: sezione Report assente`);
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
@@ -2011,8 +2010,8 @@ try {
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-actions a[href='/termini']", "Termini"],
           [".footer-backer a[href='/supporter']", "Chi ci sostiene"],
-          [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram"],
-          [".footer-social a[href='https://x.com/DVNSoldi']", "X"],
+          [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram (nuova scheda)"],
+          [".footer-social a[href='https://x.com/DVNSoldi']", "X (nuova scheda)"],
         ];
         for (const [selector, expectedLabel] of requiredFooterLinks) {
           await page.waitForSelector(selector, { visible: true });

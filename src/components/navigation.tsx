@@ -271,7 +271,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <div className="header-actions">
             <ThemeToggle />
             {pathname !== "/" ? <BoardsAccountMenu /> : null}
-            <a href={REPO_URL} className="header-action header-action-icon" aria-label="Codice su GitHub" title="Codice su GitHub">
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="header-action header-action-icon" aria-label="Codice su GitHub (nuova scheda)" title="Codice su GitHub (nuova scheda)">
               <HugeiconsIcon icon={GithubIcon} size={22} strokeWidth={1.7} aria-hidden="true" />
             </a>
           </div>

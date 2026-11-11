@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { inspectNavigationPrefetch } from "./navigation-prefetch.mjs";
+import { verifyExternalIconLinks } from "./external-icon-links.mjs";
 import { PRIMARY_NAV, FOOTER_SITEMAP_GROUPS, flattenNavLinks } from "../../src/lib/site-navigation.ts";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario, waitForServer } from "./harness.mjs";
 
@@ -52,9 +53,20 @@ async function tap(page, selector) {
 }
 
 async function openMenu(page) {
-  await tap(page, '.mobile-menu-trigger');
-  // Opening is deferred one macrotask so the trigger click cannot dismiss the dialog.
-  await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 15_000 });
+  // Heavy client pages (charts) can still be hydrating when the scenario starts;
+  // a pre-hydration tap is a no-op. Retry like report.mjs already does.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await tap(page, '.mobile-menu-trigger');
+    // Opening is deferred one macrotask so the trigger click cannot dismiss the dialog.
+    const opened = await page
+      .waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 3_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (opened) break;
+    if (attempt === 4) {
+      await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 15_000 });
+    }
+  }
   await page.waitForFunction(
     () => document.querySelector('.mobile-menu-trigger')?.getAttribute('aria-expanded') === 'true',
   );
@@ -106,6 +118,7 @@ function assertSameHeader(expected, actual, route) {
 
 const browser = await launchBrowser();
 try {
+  await verifyExternalIconLinks(browser, baseUrl);
   await inspectNavigationPrefetch(browser, baseUrl);
   for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600, 1920]) {
     await runScenario(browser, {
@@ -187,7 +200,7 @@ try {
         try { return new URL(link.href).hostname === 'buymeacoffee.com' || new URL(link.href).hostname.endsWith('.buymeacoffee.com'); }
         catch { return false; }
       })), false);
-      assert.ok(await page.$('#esplora form[action="/cerca"]'), 'Ricerca disponibile dopo le analisi');
+      assert.ok(await page.$('#esplora input[type="search"]'), 'Filtro della directory disponibile dopo le analisi');
       const directoryHrefs = await page.$$eval('#esplora a', (links) => links.map((link) => link.getAttribute('href')));
       for (const group of FOOTER_SITEMAP_GROUPS) for (const link of group.links) {
         assert.ok(directoryHrefs.includes(link.href), `Mappa del sito incompleta: ${link.href}`);

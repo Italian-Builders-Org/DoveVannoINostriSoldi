@@ -1,3 +1,4 @@
+import { SpendingReadingGuide } from "@/components/spending-reading-guide";
 import Link from "next/link";
 import type { Metadata } from "next";
 import IntegratedSectionPreview from "@/components/integrated-section-preview";
@@ -93,6 +94,8 @@ export default async function MoneyPage({
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/spese" />
       </div>
+
+      <SpendingReadingGuide />
 
       <div className="stat-strip">
         <div>

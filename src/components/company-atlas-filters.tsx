@@ -1,5 +1,7 @@
 "use client";
 
+import { useTransition } from "react";
+import { ActiveFilters } from "./active-filters";
 import { usePathname, useRouter } from "next/navigation";
 import type { CompanyAtlasFilters as AtlasFilters } from "@/lib/company-atlas";
 import { longDate } from "@/lib/format";
@@ -45,6 +47,7 @@ export function CompanyAtlasFilters({
 }: CompanyAtlasFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const [pending, startTransition] = useTransition();
 
   function updateFilter(key: string, value: string) {
     const params = new URLSearchParams(window.location.search);
@@ -61,15 +64,23 @@ export function CompanyAtlasFilters({
     }
 
     const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    startTransition(() => router.push(query ? `${pathname}?${query}` : pathname, { scroll: false }));
+  }
+
+  function resetFilters() {
+    const params = new URLSearchParams(window.location.search);
+    for (const key of ["region", "sector", "band"]) params.delete(key);
+    const query = params.toString();
+    startTransition(() => router.push(query ? `${pathname}?${query}` : pathname, { scroll: false }));
   }
 
   return (
-    <section className={styles.filters} aria-label="Filtra i dati delle imprese">
+    <section aria-busy={pending} className={styles.filters} aria-label="Filtra i dati delle imprese">
       <div className={styles.controlGrid}>
         <label>
           <span>Dato da confrontare</span>
           <select
+            disabled={pending}
             value={filters.metric}
             onChange={(event) => updateFilter("metric", event.target.value)}
             data-atlas-filter="metric"
@@ -80,6 +91,7 @@ export function CompanyAtlasFilters({
         <label>
           <span>Periodo</span>
           <select
+            disabled={pending}
             value={filters.period}
             onChange={(event) => updateFilter("period", event.target.value)}
             data-atlas-filter="period"
@@ -90,6 +102,7 @@ export function CompanyAtlasFilters({
         <label>
           <span>Regione</span>
           <select
+            disabled={pending}
             value={filters.region}
             onChange={(event) => updateFilter("region", event.target.value)}
             data-atlas-filter="region"
@@ -101,6 +114,7 @@ export function CompanyAtlasFilters({
         <label>
           <span>{sectorLabel}</span>
           <select
+            disabled={pending}
             value={filters.sector}
             onChange={(event) => updateFilter("sector", event.target.value)}
             data-atlas-filter="sector"
@@ -117,6 +131,7 @@ export function CompanyAtlasFilters({
           <label>
             <span>Fascia valore produzione</span>
             <select
+            disabled={pending}
               value={filters.band}
               onChange={(event) => updateFilter("band", event.target.value)}
               data-atlas-filter="band"
@@ -127,6 +142,14 @@ export function CompanyAtlasFilters({
           </label>
         ) : null}
       </div>
+      <ActiveFilters pending={pending} onRemove={(key) => updateFilter(key, "all")} onReset={resetFilters}
+        filters={[
+          { key: "region", value: filters.region, options: regions },
+          { key: "sector", value: filters.sector, options: sectors },
+          { key: "band", value: filters.band, options: bands }
+        ].filter((item) => item.value !== "all" && (item.key !== "band" || showBand)).map((item) => ({
+          key: item.key, label: item.options.find((option) => option.id === item.value)?.label ?? item.value,
+        }))} />
     </section>
   );
 }

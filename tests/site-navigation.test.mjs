@@ -51,8 +51,11 @@ test("every page offers the rest of its section without the header menu", async 
   assert.match(layout, /<SectionNav \/>/);
   assert.match(component, /activeNavSection/);
   assert.match(component, /isNavChildActive/);
-  // A section with a single page has nothing to offer and renders nothing.
-  assert.match(component, /if \(pages\.length < 2\) return null;/);
+  // The home and the assistant keep the viewport free of section chrome.
+  assert.match(component, /if \(pathname === "\/"\) return null;/);
+  assert.match(component, /pathname === "\/assistente"/);
+  assert.match(component, /aria-label="Percorso della pagina"/);
+  assert.match(component, /ShareViewButton/);
   // Sibling pages stay in a compact dropdown instead of a chip cloud.
   assert.match(component, /<select/);
   assert.match(component, /router\.push/);
@@ -239,7 +242,7 @@ test("studies and their alias select a single dedicated primary section", () => 
   }
 });
 
-test("mappa della politica nav keeps same-origin /politici; homepage uses the subdomain", async () => {
+test("mappa della politica nav keeps same-origin /politici; homepage stays on the current preview", async () => {
   const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
   const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
@@ -249,11 +252,12 @@ test("mappa della politica nav keeps same-origin /politici; homepage uses the su
   assert.equal(mapLinks.length, 1);
   assert.equal(mapLinks[0]?.href, "/politici");
   assert.match(navigationSource, /href: "\/politici", label: "Mappa della politica"/);
-  assert.ok(home.includes("PUBLIC_POLITICI_URL"));
+  assert.ok(home.includes('href="/politici"'));
+  assert.ok(!home.includes("PUBLIC_POLITICI_URL"));
   assert.equal(PUBLIC_POLITICI_URL, "https://politici.dovevannoinostrisoldi.com");
 });
 
-test("mappa dei comuni nav keeps same-origin /comuni; homepage uses the subdomain", async () => {
+test("mappa dei comuni nav keeps same-origin /comuni; homepage stays on the current preview", async () => {
   const { PUBLIC_COMUNI_URL } = await import("../src/lib/site.ts");
   const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const entities = PRIMARY_NAV.find((item) => item.href === "/enti");
@@ -263,6 +267,7 @@ test("mappa dei comuni nav keeps same-origin /comuni; homepage uses the subdomai
   assert.equal(mapLinks.length, 1);
   assert.equal(mapLinks[0]?.href, "/comuni");
   assert.match(navigationSource, /href: "\/comuni", label: "Mappa dei Comuni"/);
-  assert.ok(home.includes("PUBLIC_COMUNI_URL"));
+  assert.ok(home.includes('href="/comuni"'));
+  assert.ok(!home.includes("PUBLIC_COMUNI_URL"));
   assert.equal(PUBLIC_COMUNI_URL, "https://comuni.dovevannoinostrisoldi.com");
 });

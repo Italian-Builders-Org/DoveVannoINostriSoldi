@@ -1,3 +1,4 @@
+import { SpendingReadingGuide } from "@/components/spending-reading-guide";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
@@ -97,6 +98,7 @@ export default async function SpendingOverviewPage({
         <h1 className={styles.pageTitle}>Spesa pubblica</h1>
         <p className={styles.lead}>La spesa della pubblica amministrazione e i pagamenti dei Comuni, con i rispettivi periodi e criteri di misura.</p>
       </header>
+      <SpendingReadingGuide />
       <section className={styles.italyBand} aria-labelledby="italy-band-title">
         <div className={styles.sectionHeading}>
           <div>

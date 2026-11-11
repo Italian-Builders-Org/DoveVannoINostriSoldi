@@ -46,7 +46,7 @@ export default function MobilitaMapPage() {
             </div>
           </details>
           <ThemeToggle />
-          <Link className={styles.immersiveHomeLink} href="/#maps-title">
+          <Link className={styles.immersiveHomeLink} href="/#maps-title" scroll>
             Mappe
           </Link>
           <Link

@@ -89,7 +89,7 @@ test("la home resta hub verso Comuni e territori; le tabelle regionali restano c
   const pathways = await readFile(join(projectRoot, "src/components/home-pathways.tsx"), "utf8");
   assert.match(home, /HomePathways/);
   assert.match(home, /buildHomeItalyFunnel/);
-  assert.match(pathways, /PUBLIC_COMUNI_URL/);
+  assert.ok(pathways.includes('href="/comuni"'));
   assert.match(pathways, /href=\{`\/territori\?anno=\$\{siope\.year\}`\}/);
   for (const cssPath of ["src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {
     const css = await readFile(join(projectRoot, cssPath), "utf8");

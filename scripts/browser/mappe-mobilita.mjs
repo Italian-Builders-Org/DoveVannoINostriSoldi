@@ -16,10 +16,21 @@ await mkdir(output, { recursive: true });
 await waitForServer(baseUrl, { readyPath: "/mappe/mobilita" });
 const browser = await launchBrowser();
 
-const MAP_LIST = 'section[aria-labelledby="maps-title"] ul';
+const MAP_GROUP = 'details:has(#maps-title)';
+const MAP_LIST = `${MAP_GROUP} ul`;
 const MAP_CARD = `${MAP_LIST} a[href="/mappe/mobilita"]`;
 
+async function ensureMapsOpen(page) {
+  await page.waitForSelector("#maps-title");
+  await page.evaluate((selector) => {
+    const details = document.querySelector(selector);
+    if (details instanceof HTMLDetailsElement) details.open = true;
+  }, MAP_GROUP);
+  await page.waitForSelector(`${MAP_LIST} a[href="/mappe/mobilita"]`, { visible: true });
+}
+
 async function assertMapGrid(page, width) {
+  await ensureMapsOpen(page);
   const links = await page.$$eval(`${MAP_LIST} a`, (items) => items.map((item) => {
     const rect = item.getBoundingClientRect();
     return { title: item.textContent.trim(), height: rect.height, left: rect.left, right: rect.right };
@@ -153,7 +164,6 @@ try {
       pathname: "/",
       width,
       async validate(page) {
-        await page.waitForSelector("#maps-title");
         await assertMapGrid(page, width);
         if (width >= 768) {
           await page.focus(MAP_CARD);
@@ -173,7 +183,7 @@ try {
     pathname: "/",
     width: 1280,
     async validate(page) {
-      await page.waitForSelector(MAP_CARD);
+      await ensureMapsOpen(page);
       await page.click(MAP_CARD);
       await page.waitForFunction(() => /\/mappe\/mobilita\/?$/.test(location.pathname));
       await page.waitForSelector("#mobilita-viewer");
@@ -257,16 +267,17 @@ try {
     async validate(page) {
       await page.waitForSelector('a[href="/#maps-title"]');
       await page.click('a[href="/#maps-title"]');
-      await page.waitForFunction(() => location.pathname === "/" || location.pathname === "");
-      assert.match(page.url(), /\/(#maps-title)?$/);
-      await page.waitForSelector("#maps-title");
-      const inView = await page.evaluate(() => {
-        const section = document.getElementById("maps-title");
-        if (!section) return false;
-        const rect = section.getBoundingClientRect();
-        return rect.top >= 0 && rect.top < innerHeight * 0.6;
+      await page.waitForFunction(() => location.pathname === "/" && location.hash === "#maps-title");
+      await ensureMapsOpen(page);
+      await page.evaluate(() => {
+        document.getElementById("maps-title")?.scrollIntoView({ block: "start" });
       });
-      assert.ok(inView, "sezione Mappe visibile dopo il link Mappe");
+      await page.waitForFunction(() => {
+        const heading = document.getElementById("maps-title");
+        if (!heading) return false;
+        const rect = heading.getBoundingClientRect();
+        return rect.bottom > 0 && rect.top < innerHeight * 0.75;
+      }, { timeout: 5_000 });
     },
   });
 

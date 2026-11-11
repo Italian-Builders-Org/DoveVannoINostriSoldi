@@ -42,9 +42,9 @@ test("home anomaly panels keep their content inside the available width", async 
     source("../src/app/page.tsx"),
     source("../src/app/home.module.css"),
   ]);
-  const anomalyRule = css.match(/\.anomalyItem \{([\s\S]*?)\n\}/)?.[1] ?? "";
+  const anomalyRule = css.match(/\.anomalyItem \{([^}]*)\}/)?.[1] ?? "";
   assert.match(anomalyRule, /min-width: 0/);
-  assert.match(css, /\.anomaliesPanel \{[\s\S]*?grid-column: 1 \/ -1;/);
+  assert.match(css, /\.anomaliesPanel \{[^}]*?min-width: 0;/);
   assert.doesNotMatch(page, /ContractsIcon|ShieldCheck|CalendarClockIcon/);
 });
 

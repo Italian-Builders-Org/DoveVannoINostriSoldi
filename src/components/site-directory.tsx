@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { MOBILITA_MAP_PATH } from "@/lib/site";
@@ -20,25 +21,26 @@ function subscribeWidth(callback: () => void) {
 }
 const getWide = () => window.matchMedia(wideQuery).matches;
 const getServerWide = () => true;
-function subscribeHash(callback: () => void) {
-  window.addEventListener("hashchange", callback);
-  return () => window.removeEventListener("hashchange", callback);
-}
-const getHash = () => window.location.hash;
-const getServerHash = () => "";
 
 function DirectoryGroup({ group, initiallyOpen }: Readonly<{
   group: (typeof FOOTER_SITEMAP_GROUPS)[number]; initiallyOpen: boolean;
 }>) {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState<boolean | null>(null);
-  const hash = useSyncExternalStore(subscribeHash, getHash, getServerHash);
   const mapsId = group.title === "Mappe" ? "maps-title" : undefined;
-  const hashTargetsMaps = mapsId != null && hash === `#${mapsId}`;
-  const open = expanded ?? (initiallyOpen || hashTargetsMaps);
+  const [hashOpen, setHashOpen] = useState(false);
+  const open = expanded ?? (initiallyOpen || hashOpen);
+  // Next soft-nav keeps #maps-title without firing hashchange; re-check on route.
   useEffect(() => {
-    if (!mapsId || !hashTargetsMaps) return;
-    document.getElementById(mapsId)?.scrollIntoView({ block: "start" });
-  }, [mapsId, hashTargetsMaps]);
+    if (!mapsId) return;
+    const targeted = window.location.hash === `#${mapsId}`;
+    setHashOpen(targeted);
+    if (!targeted) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(mapsId)?.scrollIntoView({ block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, mapsId]);
   return <details className={styles.group} open={open} aria-labelledby={mapsId}>
     <summary onClick={(event) => { event.preventDefault(); setExpanded(!open); }}>
       <h3 id={mapsId}>{group.title}</h3>

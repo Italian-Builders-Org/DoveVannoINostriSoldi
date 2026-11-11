@@ -1,7 +1,7 @@
 /*
  * Base layer and application chrome.
  *
- * The shell is fluid: it fills the viewport and only stops growing at --max,
+ * The shell is fluid: it fills the viewport and stops at --site-chrome-width,
  * so there is never dead space on one side. Page-level composition lives in
  * the CSS modules next to each route.
  */
@@ -76,7 +76,7 @@ nav li a { text-decoration: none; }
    share one measure so their rules line up vertically. */
 .shell {
   width: 100%;
-  max-width: var(--max);
+  max-width: var(--site-chrome-width);
   margin: 0 auto;
   padding-inline: var(--gutter);
 }
@@ -874,8 +874,6 @@ body { --announcement-height: 44px; }
 body:has([data-home-editorial]) { background: var(--color-raised); }
 .site-content { margin-left: 0; padding-left: 0; }
 .mobile-menu-trigger { display: inline-flex; }
-body:has([data-home-editorial]) .site-footer { max-width: var(--site-chrome-width); }
-main[data-spending-page] { max-width: var(--site-chrome-width); }
 .home-header-links { display: flex; align-items: center; flex: none; gap: 20px; }
 .home-header-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text); font-size: 13px; }
 @media (max-width: 1099px) { .home-header-links { display: none; } }

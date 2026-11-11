@@ -3,7 +3,7 @@ import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { footprintStatusLabel, type ComuniFootprint } from "@/lib/comuni-footprint";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import { schoolServicesSource } from "@/lib/mim-school-services-source";
-import { PUBLIC_SITE_URL } from "@/lib/site";
+import { SitePageLink } from "@/components/site-page-link";
 import { ChangeComuneButton } from "./change-comune-button";
 import { ComuniRadar } from "./comuni-radar";
 import styles from "./comuni.module.css";
@@ -178,9 +178,9 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           </ul>
         </div>
         <div className={styles.headActions}>
-          <a className={styles.textLink} href={`${PUBLIC_SITE_URL}${footprint.entityHref}`}>
+          <SitePageLink className={styles.textLink} href={footprint.entityHref}>
             Scheda ente
-          </a>
+          </SitePageLink>
           <ChangeComuneButton />
         </div>
       </header>
@@ -659,7 +659,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                     MIM · anagrafe scuole statali ↗
                   </a>
                   {" · "}
-                  <a href={`${PUBLIC_SITE_URL}${schoolsDatasetHref}`}>Tabella ↗</a>
+                  <SitePageLink href={schoolsDatasetHref}>Tabella</SitePageLink>
                   . Fuori perimetro: paritarie, nidi e altre strutture.
                 </p>
               </>
@@ -704,9 +704,9 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                 <ul className={styles.projectList} aria-label="Operatori più frequenti">
                   {anac.topOperators.map((operator) => (
                     <li key={operator.ref}>
-                      <a href={`${PUBLIC_SITE_URL}/appalti/operatori/${encodeURIComponent(operator.ref)}`}>
+                      <SitePageLink href={`/appalti/operatori/${encodeURIComponent(operator.ref)}`}>
                         {operator.name}
-                      </a>
+                      </SitePageLink>
                       <span>
                         {integer(operator.awardCount)}{" "}
                         {operator.awardCount === 1 ? "aggiudicazione" : "aggiudicazioni"}
@@ -719,7 +719,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                 </ul>
               ) : null}
               <p className={styles.sourceInline}>
-                <a href={`${PUBLIC_SITE_URL}${anac.appaltiHref}`}>Apri il dettaglio appalti dell’ente ↗</a>
+                <SitePageLink href={anac.appaltiHref}>Apri il dettaglio appalti dell’ente</SitePageLink>
               </p>
             </>
           ) : (
@@ -762,9 +762,9 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           </dl>
           {(pnrr.localizedRegistrations ?? 0) > 0 || (pnrr.implementerRegistrations ?? 0) > 0 ? (
             <p className={styles.sourceInline}>
-              <a href={`${PUBLIC_SITE_URL}${pnrr.projectsHref}`}>
-                Apri l&apos;elenco progetti PNRR filtrato ↗
-              </a>
+              <SitePageLink href={pnrr.projectsHref}>
+                Apri l&apos;elenco progetti PNRR filtrato
+              </SitePageLink>
             </p>
           ) : (
             <p className={styles.emptyNote}>
@@ -777,9 +777,9 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
               <ul className={styles.projectList}>
                 {pnrrChildcare.projects.map((project) => (
                   <li key={project.cup}>
-                    <a href={`${PUBLIC_SITE_URL}/progetti/${encodeURIComponent(project.cup)}`}>
+                    <SitePageLink href={`/progetti/${encodeURIComponent(project.cup)}`}>
                       {project.title}
-                    </a>
+                    </SitePageLink>
                     <span>
                       CUP {project.cup}
                       {project.phase ? ` · ${project.phase}` : ""}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MOBILITA_MAP_EXPLORER_PATH, PUBLIC_SITE_URL } from "@/lib/site";
+import { MOBILITA_MAP_EXPLORER_PATH } from "@/lib/site";
 import styles from "./mobilita.module.css";
 
 export const metadata: Metadata = {
@@ -18,13 +18,13 @@ export default function MobilitaMapPage() {
       </a>
       <header className={styles.immersiveChrome}>
         <div className={styles.brandLockup}>
-          <a
+          <Link
             className={styles.immersiveBrand}
-            href={PUBLIC_SITE_URL}
+            href="/"
             aria-label="DoveVannoINostriSoldi, pagina iniziale"
           >
             DVNS
-          </a>
+          </Link>
           <span className={styles.brandSeparator} aria-hidden="true" />
           <p className={styles.brandTitle}>Mobilità</p>
         </div>
@@ -46,17 +46,16 @@ export default function MobilitaMapPage() {
             </div>
           </details>
           <ThemeToggle />
-          <Link className={styles.immersiveHomeLink} href="/#maps-title">
+          <Link className={styles.immersiveHomeLink} href="/#comuni-territori">
             Mappe
           </Link>
-          <a
+          <Link
             className={styles.immersiveHomeLink}
-            href={PUBLIC_SITE_URL}
+            href="/"
             aria-label="Torna al sito DoveVannoINostriSoldi"
           >
             <span className={styles.homeLinkLabel}>Torna al sito</span>
-            <span aria-hidden="true">↗</span>
-          </a>
+          </Link>
         </div>
       </header>
       <iframe

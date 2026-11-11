@@ -32,10 +32,11 @@ function SectionNavContent({
   const section = activeNavSection(pathname);
   const pages = flattenNavLinks(section?.children ?? []);
   if (pathname === "/") return null;
-  // Immersive map pages: no section chrome · the graph needs the viewport.
+  // Immersive / tool surfaces: no section chrome · the viewport is the product.
   if (pathname === "/politici" || pathname.startsWith("/politici/")) return null;
   if (pathname === "/comuni" || pathname.startsWith("/comuni/")) return null;
   if (pathname === "/mappe/mobilita" || pathname.startsWith("/mappe/mobilita/")) return null;
+  if (pathname === "/assistente" || pathname.startsWith("/assistente/")) return null;
 
   const currentHref =
     pages.find((page) =>

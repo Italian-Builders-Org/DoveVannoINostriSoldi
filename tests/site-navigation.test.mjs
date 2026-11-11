@@ -51,8 +51,9 @@ test("every page offers the rest of its section without the header menu", async 
   assert.match(layout, /<SectionNav \/>/);
   assert.match(component, /activeNavSection/);
   assert.match(component, /isNavChildActive/);
-  // The home needs no page context; individual pages retain a route back and sharing.
+  // The home and the assistant keep the viewport free of section chrome.
   assert.match(component, /if \(pathname === "\/"\) return null;/);
+  assert.match(component, /pathname === "\/assistente"/);
   assert.match(component, /aria-label="Percorso della pagina"/);
   assert.match(component, /ShareViewButton/);
   // Sibling pages stay in a compact dropdown instead of a chip cloud.

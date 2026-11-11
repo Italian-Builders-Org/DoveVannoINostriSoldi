@@ -2010,8 +2010,8 @@ try {
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-actions a[href='/termini']", "Termini"],
           [".footer-backer a[href='/supporter']", "Chi ci sostiene"],
-          [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram"],
-          [".footer-social a[href='https://x.com/DVNSoldi']", "X"],
+          [".footer-social a[href='https://www.instagram.com/dovevannoinostrisoldi/']", "Instagram (nuova scheda)"],
+          [".footer-social a[href='https://x.com/DVNSoldi']", "X (nuova scheda)"],
         ];
         for (const [selector, expectedLabel] of requiredFooterLinks) {
           await page.waitForSelector(selector, { visible: true });

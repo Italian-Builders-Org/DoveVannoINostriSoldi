@@ -26,20 +26,46 @@ autenticazione, dipendenze e configurazione di produzione restano invariati.
 
 ## Esito
 
-Implementazione completata, verifica finale in corso.
+Codice verificato: `8ef8a42abd0b2ad2b6a3a8f1f86ca3887c1c87eb`.
+Anteprima Vercel READY: `dpl_8ukVz4N4gy7RAXLqFnp5Ld1tbapG`, ambiente Preview
+(`target: null`), stesso commit e branch.
 
-- PASS: 78 test mirati (directory e condivisione, navigazione, imprese,
-  istruzione, indicatori dei controlli, UI responsive, mappe e palette).
-- PASS: `npm run lint`, `npm run design:check`, `git diff --check`.
-- PASS: compilazione Next/Turbopack del frontend (57 secondi).
-- Il typecheck completo locale ha esaurito la memoria: primo tentativo al
-  limite predefinito di 2 GiB, secondo terminato dall'ambiente con exit 137.
-  La build completa e la preview Vercel restano da verificare.
-- Il runner locale non ha `/tmp`: i test mirati sono stati eseguiti con
-  `TMPDIR` in scratch; nessun file dell'applicazione modificato per aggirarlo.
-- Browser locale NON VERIFICATO: `sites-preview start` e `status` riportano
-  `preview relay unavailable`. Nessun server alternativo avviato.
-- ETL: NOT RUN. Backend e test live non rientrano nell'intervento.
+https://dove-vanno-i-nostri-soldi-jxpusvr1y-future-proof-society.vercel.app
+
+- PASS: 119 test mirati/correlati (78 frontend + 41 formattazione, palette,
+  composizione della spesa, bilanci e selezione istituzionale).
+- PASS: `npm run lint`, `npm run design:check`, `git diff --check`, report,
+  brand, contesto/documentazione agenti e SHA pin delle azioni.
+- PASS: `NODE_OPTIONS=--max-old-space-size=6144 npm run build`: compilazione,
+  TypeScript, 253 pagine statiche e controlli dei runtime trace. I precedenti
+  tentativi standalone di typecheck erano terminati per memoria; il typecheck
+  della build completa è poi passato, senza modificare la configurazione.
+- PASS: build Vercel su Node 22, TypeScript incluso e 278 trace controllate.
+- Suite Node completa: primo passaggio 2.498 PASS e 69 FAIL su 2.567 test;
+  tutti i fallimenti dipendevano dall'assenza di `/tmp`. Rieseguiti i 29 file
+  coinvolti con `TMPDIR` scrivibile: 218 PASS, 0 FAIL. Nessun gate disattivato
+  e nessun file applicativo cambiato per compensare l'ambiente.
+- HTML generato verificato su supporto, metodo, privacy, termini, sostenitori,
+  Parlamento e università: header/footer comuni, un solo collegamento GitHub
+  nell'header, nessuna sidebar vecchia o apertura interna in nuova scheda.
+- Inventario design: 132 template, 124 pubblici, 6 rewrite interne e 2 viste
+  che richiedono fixture autenticate/condivise. L'inventario NON è un test E2E.
+- E2E VISIVO NON VERIFICATO: il relay locale non è disponibile; la preview
+  Vercel nel browser richiede autenticazione. Non è stato modificato l'accesso
+  al progetto e non sono stati creati link di bypass. Non si dichiara “zero bug”.
+- ETL completo, test live e `test:production`: NOT RUN. Nessun merge/deploy
+  di produzione. `origin/main` riverificato alla consegna, ancora alla base.
+
+Comandi ripetibili dei test mirati (con una directory TMPDIR scrivibile):
+
+```sh
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test --test-concurrency=2 tests/frontend-exploration.test.mjs tests/site-navigation.test.mjs tests/company-atlas.test.mjs tests/education-atlas.test.mjs tests/home-anomalies.test.mjs tests/ui-craft-regressions.test.mjs tests/region-crests.test.mjs tests/politici-ui.test.mjs tests/accessibility-palette.test.mjs
+node --experimental-strip-types --import ./scripts/ci/node-test-setup.mjs --test --test-concurrency=2 tests/home-italy-funnel.test.mjs tests/parliament-contract.test.mjs tests/politici-atlas-model.test.mjs tests/institutional-ui-palette.test.mjs tests/copy-quality.test.mjs
+node --experimental-strip-types scripts/browser/site-design.mjs --inventory
+```
+
+La preview contiene il codice del commit sopra; questa revisione del resoconto
+non modifica l'applicazione e non richiede una seconda build.
 
 ## Note di revisione
 

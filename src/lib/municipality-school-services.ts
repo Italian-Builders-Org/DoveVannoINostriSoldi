@@ -43,6 +43,7 @@ function count(value: string | null | undefined): number {
 /** Join only the municipality identity already reconciled between IPA and MEF. */
 export async function getMunicipalitySchoolServices(
   identity: MunicipalIdentity | null,
+  signal?: AbortSignal,
 ): Promise<MunicipalitySchoolServices> {
   if (!identity || !/^[0-9]{6}$/.test(identity.code) || !/^[A-Z][0-9]{3}$/.test(identity.cadastralCode)) {
     return {
@@ -58,7 +59,7 @@ export async function getMunicipalitySchoolServices(
       message: "Il file MIM delle scuole statali esclude Aosta, Trento e Bolzano. Per questo territorio il conteggio non è disponibile.",
     };
   }
-  const result = await selectIntegratedSortedDatasetRows(spec.datasetId, "Codice ISTAT comune", identity.code);
+  const result = await selectIntegratedSortedDatasetRows(spec.datasetId, "Codice ISTAT comune", identity.code, signal);
   if (
     result.dataset.publicRows !== spec.expected.municipalities ||
     result.dataset.headers.join("\n") !== spec.publicHeaders.join("\n")

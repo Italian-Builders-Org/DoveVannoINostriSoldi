@@ -568,6 +568,33 @@
       "trustModel": "Derived offline from committed mim-scuole-statali-comuni integrated row shards. Counts must match the corpus municipality projection; no network and no invented geography."
     },
     {
+      "id": "municipality-chunk-bounds",
+      "owner": "Schede comunali e API enti",
+      "files": [
+        "src/data/generated/municipality-chunk-bounds.json"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/ci/municipality-chunk-bounds.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/integrated-sorted-lookup.test.mjs"
+      ],
+      "generator": {
+        "command": "npm run municipality-chunk-bounds:generate",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/mim-school-services.source.json",
+      "sourceSpecs": [
+        "scripts/etl/specs/mim-school-services.source.json",
+        "scripts/etl/specs/mef-patrimonio-immobiliare.source.json"
+      ],
+      "trustModel": "Indice dei primi e ultimi identificativi di ogni blocco. Il generatore legge le righe pubbliche con verifica dei byte e controlla l'ordinamento. Il lettore usa l'indice soltanto se gli hash corrispondono al rilascio e verifica i confini dei blocchi aperti."
+    },
+    {
       "id": "rgs-conto-annuale-occupazione-ente-index",
       "owner": "Search index and aggregates for /personale-pa/conto-annuale",
       "files": [

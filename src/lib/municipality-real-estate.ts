@@ -218,16 +218,16 @@ export function summarizeRealEstate(
   };
 }
 
-// The three datasets are published sorted by fiscal code, so an entity is a binary search away.
-async function entityRows(datasetId: string, taxCode: string, columns: readonly string[]) {
-  const { rows, headers } = await selectSortedRows(datasetId, "Codice fiscale ente", taxCode);
+// All three releases are sorted by fiscal code, including the communication file.
+async function entityRows(datasetId: string, taxCode: string, columns: readonly string[], signal?: AbortSignal) {
+  const { rows, headers } = await selectSortedRows(datasetId, "Codice fiscale ente", taxCode, signal);
   if (columns.some((column) => !headers.includes(column))) {
     throw new Error(`Schema divergente nel dataset ${datasetId}.`);
   }
   return { rows };
 }
 
-export async function getMunicipalityRealEstate(taxCode: string): Promise<MunicipalityRealEstate> {
+export async function getMunicipalityRealEstate(taxCode: string, signal?: AbortSignal): Promise<MunicipalityRealEstate> {
   if (!/^[0-9]{11}$/.test(taxCode)) {
     return {
       status: "not_found",
@@ -237,9 +237,9 @@ export async function getMunicipalityRealEstate(taxCode: string): Promise<Munici
     };
   }
   const [beni, contratti, adempimento] = await Promise.all([
-    entityRows(realEstateSource.beniDatasetId, taxCode, BENI_COLUMNS),
-    entityRows(realEstateSource.contrattiDatasetId, taxCode, CONTRATTI_COLUMNS),
-    entityRows(realEstateSource.adempimentoDatasetId, taxCode, COMMUNICATION_COLUMNS),
+    entityRows(realEstateSource.beniDatasetId, taxCode, BENI_COLUMNS, signal),
+    entityRows(realEstateSource.contrattiDatasetId, taxCode, CONTRATTI_COLUMNS, signal),
+    entityRows(realEstateSource.adempimentoDatasetId, taxCode, COMMUNICATION_COLUMNS, signal),
   ]);
   if (adempimento.rows.length > 1) throw new Error("Ente ripetuto nel file di adempimento MEF.");
   const communication = adempimento.rows[0] ? readCommunication(adempimento.rows[0].cells) : null;

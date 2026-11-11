@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 132
+- Artefatti nel registro: 133
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 115 (PR umana dopo revisione)
+- manuale: 116 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -64,6 +64,7 @@ La revisione e il merge restano umani.
 | `integrated-catalog` | non dichiarato nello snapshot | 2026-09-07T21:45:00Z | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `integrated-rows` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | solo workflow_dispatch | `.github/workflows/source-refresh.yml` | invalidazione cache | suite ETL |
 | `mim-school-services-municipal` | non dichiarato nello snapshot | non dichiarato | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT | nessuno | nessuno | manuale | `node scripts/etl/mim_school_services_municipal_index.mjs` |
+| `municipality-chunk-bounds` | non dichiarato nello snapshot | non dichiarato | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/ci/municipality-chunk-bounds.mjs` |
 | `rgs-conto-annuale-occupazione-ente-index` | 2024 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node scripts/etl/rgs_conto_annuale_occupazione_ente_index.mjs` |
 | `istat-municipality-geography` | 31/12/2022 | 2026-08-25T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_municipality_geography.py --validate-committed` |
 | `istat-population-grid-2021` | non dichiarato nello snapshot | 2026-09-26T07:15:00.000Z | https://www.istat.it/notizia/statistiche-sulla-popolazione-per-griglia-regolare/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_population_grid_2021.py --check` |

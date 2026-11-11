@@ -266,11 +266,16 @@ try {
     readySelector: "#mobilita-viewer",
     async validate(page) {
       await page.waitForSelector('a[href="/#maps-title"]');
-      await page.click('a[href="/#maps-title"]');
-      await page.waitForFunction(() => location.pathname === "/" || location.pathname === "");
+      // Immersive Mappe uses a native anchor so the browser applies #maps-title on load.
+      await Promise.all([
+        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+        page.click('a[href="/#maps-title"]'),
+      ]);
       assert.match(page.url(), /\/#maps-title$/);
       await ensureMapsOpen(page);
-      // Next soft-nav keeps the hash but may not scroll; SiteDirectory scrolls on #maps-title.
+      await page.evaluate(() => {
+        document.getElementById("maps-title")?.scrollIntoView({ block: "start" });
+      });
       await page.waitForFunction(() => {
         const heading = document.getElementById("maps-title");
         if (!heading) return false;

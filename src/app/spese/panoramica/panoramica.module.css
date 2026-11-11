@@ -1,6 +1,6 @@
 .hub {
   display: grid;
-  gap: var(--space-6);
+  gap: 32px;
   padding-block: var(--gutter) 0;
 }
 
@@ -30,7 +30,9 @@
 
 .italyBand {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-6);
+  border-top: 1px solid var(--color-neutral-300);
+  padding-top: var(--space-6);
   min-width: 0;
 }
 
@@ -85,7 +87,7 @@
 
 .italySummaryBody {
   display: grid;
-  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
   align-items: stretch;
   min-width: 0;
@@ -96,15 +98,7 @@
   flex-direction: column;
   gap: var(--space-2);
   min-width: 0;
-  padding: var(--space-4);
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-300);
-}
-
-.italySummaryPeriod {
-  display: flex;
-  justify-content: flex-end;
-  min-width: 0;
+  padding: 0;
 }
 
 .italySplit {
@@ -134,8 +128,24 @@
 }
 
 .periodSelector {
-  width: min(100%, 28rem);
+  width: min(100%, 24rem);
 }
+
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4) var(--space-6);
+}
+
+.sectionHeading > div { min-width: 0; }
+.sectionHeading h2 { margin: 0; font-size: clamp(20px, 2vw, 26px); letter-spacing: -.02em; text-transform: none; }
+.sectionNote { margin: 8px 0 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.5; }
+.sectionHeading .periodSelector { flex: 0 1 24rem; min-width: 0; }
+.stateSummary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--space-6); align-items: center; padding: var(--space-4); background: var(--color-neutral-100); border: 1px solid var(--color-neutral-300); }
+.stateSummary h3 { margin: 0 0 6px; font-size: 15px; }
+.stateSummary .factRows { margin: 0; }
+.stateSummary .factRows > div:first-child { border-top: 0; }
 
 .freshness {
   display: inline-flex;
@@ -386,13 +396,15 @@
     grid-template-columns: 1fr;
   }
 
-  .italySummaryPeriod {
-    justify-content: stretch;
-  }
-
   .periodSelector {
     width: 100%;
   }
+}
+
+@media (max-width: 900px) {
+  .sectionHeading { align-items: stretch; flex-direction: column; }
+  .sectionHeading .periodSelector { flex: none; width: 100%; }
+  .stateSummary { grid-template-columns: 1fr; gap: var(--space-3); }
 }
 
 @media (max-width: 719px) {

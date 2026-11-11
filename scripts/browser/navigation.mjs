@@ -81,6 +81,22 @@ async function assertFits(page) {
 
 }
 
+async function headerAnchors(page) {
+  return page.evaluate(() => Object.fromEntries(
+    ['.mobile-menu-trigger', '.brand-mark'].map(selector => {
+      const box = document.querySelector(selector).getBoundingClientRect();
+      return [selector, {left: box.left, top: box.top, width: box.width, height: box.height}];
+    }),
+  ));
+}
+
+function assertSameHeader(expected, actual, route) {
+  for (const selector of Object.keys(expected)) for (const key of ['left', 'top', 'width', 'height']) {
+    assert.ok(Math.abs(expected[selector][key] - actual[selector][key]) < 2,
+      `${route}: ${selector} ${key} cambia tra home e sezione`);
+  }
+}
+
 const browser = await launchBrowser();
 try {
   await inspectNavigationPrefetch(browser, baseUrl);
@@ -179,17 +195,21 @@ try {
     },
   });
 
-  for (const width of [390, 1280]) await runScenario(browser, {
+  for (const width of [320, 390, 768, 1100, 1280, 1440, 1920]) await runScenario(browser, {
     label: `Home verso spesa ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
       const tabsBefore = (await browser.pages()).length;
+      const anchors = await headerAnchors(page);
+      assert.equal(await page.$('.site-header a[href="/mcp"]'), null);
       await page.click('#spesa-pubblica a[href="/spese/panoramica"]');
       await page.waitForFunction(() => location.pathname === '/spese/panoramica');
       await page.waitForSelector('[data-region-map="true"]');
+      assertSameHeader(anchors, await headerAnchors(page), "/spese/panoramica");
       await assertFits(page);
       await page.select('nav[aria-label="Pagine in Soldi"] select', '/spese');
       await page.waitForFunction(() => location.pathname === '/spese');
       await page.waitForSelector('main h1', { visible: true });
+      assertSameHeader(anchors, await headerAnchors(page), "/spese");
       assert.equal(await page.$('.desktop-sidebar'), null);
       await assertFits(page);
       await page.select('nav[aria-label="Pagine in Soldi"] select', '/entrate');
@@ -198,6 +218,7 @@ try {
       await page.goBack();
       await page.waitForFunction(() => location.pathname === '/spese');
       await openMenu(page);
+      assert.ok(await page.$('.navigation-tools a[href="/mcp"]'));
       await page.keyboard.press('Escape');
       assert.equal(await page.$eval('.mobile-menu-trigger', (button) => button === document.activeElement), true);
     },

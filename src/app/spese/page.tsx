@@ -82,7 +82,7 @@ export default async function MoneyPage({
     .map((row) => row.year);
 
   return (
-    <main className="shell page">
+    <main className="shell page" data-spending-page="true">
       <div className={styles.intro}>
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>

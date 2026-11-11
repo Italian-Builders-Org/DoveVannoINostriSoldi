@@ -200,3 +200,5 @@ Transizioni brevi (140ms, `--ease-out`) su colore e sfondo. Nessuna animazione d
 - Nessun numero senza fonte e senza data.
 - Nessuna parola che trasformi un segnale in un'accusa.
 - Nessuna etichetta di comodo su un aggregato: se una fetta somma due voci diverse, si chiama con un nome che le contiene entrambe, non con quello della più grande.
+
+L’header mantiene la stessa griglia di 1320px su tutte le route: menu, logo, navigazione, ricerca, tema e account. MCP e GitHub restano nel menu. Panoramica e pagamenti usano la stessa larghezza, mentre le superfici specialistiche possono mantenere una superficie dati più ampia. I filtri della panoramica precedono i dati del rispettivo perimetro: PA, bilancio dello Stato e cassa comunale sono distinguibili anche senza colore.

@@ -255,11 +255,6 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <div className="header-actions">
             <ThemeToggle />
             <BoardsAccountMenu />
-            <IntentLink className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</IntentLink>
-            <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
-              aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
-              <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />
-            </a>
           </div>
         </div>
       </header>
@@ -292,6 +287,13 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             </button>
           </div>
           {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
+          <nav className="navigation-tools" aria-label="Strumenti del progetto">
+            <IntentLink href="/mcp" onNavigate={closeDrawer}>Accesso MCP</IntentLink>
+            <a href={REPO_URL}>
+              <HugeiconsIcon icon={GithubIcon} size={18} strokeWidth={1.7} aria-hidden="true" />
+              Codice su GitHub
+            </a>
+          </nav>
           <div className="sidebar-callout"><ReportProblemButton variant="sidebar" onOpen={closeDrawer} restoreFocusRef={mobileTriggerRef} /></div>
         </div>
       </dialog>

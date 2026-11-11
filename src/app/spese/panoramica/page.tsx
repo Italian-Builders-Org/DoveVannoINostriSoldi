@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/home-italy-charts";
 import { InfoTooltip } from "@/components/info-tooltip";
@@ -94,14 +92,14 @@ export default async function SpendingOverviewPage({
   });
 
   return (
-    <main className={`shell ${styles.hub}`}>
+    <main className={`shell ${styles.hub}`} data-spending-page="true">
       <header className={styles.intro}>
         <h1 className={styles.pageTitle}>Spesa pubblica</h1>
         <p className={styles.lead}>La spesa della pubblica amministrazione e i pagamenti dei Comuni, con i rispettivi periodi e criteri di misura.</p>
       </header>
       <section className={styles.italyBand} aria-labelledby="italy-band-title">
-        <section className={`panel ${styles.italySummary}`}>
-          <div className={styles.panelHead}>
+        <div className={styles.sectionHeading}>
+          <div>
             <div className={styles.headingWithTooltip}>
               <h2 id="italy-band-title" className="panel-title">
                 Spesa pubblica totale
@@ -111,41 +109,8 @@ export default async function SpendingOverviewPage({
                 Comuni, enti). Non è un pagamento di cassa e non è solo il bilancio dello Stato.
               </InfoTooltip>
             </div>
-            <Link prefetch={false} className={styles.inlineLink} href="/spese">
-              Pagamenti comunali
-              <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={16} aria-hidden="true" />
-            </Link>
+            <p className={styles.sectionNote}>Competenza economica · tutte le amministrazioni pubbliche</p>
           </div>
-
-          <div className={styles.italySummaryBody}>
-            <div className={styles.italySummaryFacts}>
-              <p className={styles.freshness}>
-                <i aria-hidden="true" />
-                Eurostat COFOG Italia: snapshot fino al {eurostatCofogData.period.to}
-              </p>
-              <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
-              <p className={styles.headlineNote}>
-                Italia {funnel.pa.year}, tutta la pubblica amministrazione
-              </p>
-              <dl className={styles.factRows}>
-                <div>
-                  <dt>Quota del PIL</dt>
-                  <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
-                </div>
-                <div>
-                  <dt>Bilancio dello Stato</dt>
-                  <dd>{billions(funnel.state.totalWithoutDebtEuro)} mld €</dd>
-                </div>
-                <div>
-                  <dt>Debito escluso dalle barre</dt>
-                  <dd>{billions(funnel.state.debtEuro)} mld €</dd>
-                </div>
-              </dl>
-            </div>
-            <HomeItalyTrendChart points={funnel.pa.trend} selectedYear={funnel.pa.year} />
-          </div>
-
-          <div className={styles.italySummaryPeriod}>
             <PeriodSelector
               activeYear={funnel.pa.year}
               years={[...funnel.pa.availableYears]}
@@ -156,10 +121,30 @@ export default async function SpendingOverviewPage({
               label="Anno della spesa pubblica (Eurostat COFOG)"
               className={styles.periodSelector}
             />
-          </div>
-        </section>
-
+        </div>
         <div className={styles.italySplit}>
+        <section className={`panel ${styles.italySummary}`}>
+          <div className={styles.italySummaryBody}>
+            <div className={styles.italySummaryFacts}>
+              <p className={styles.freshness}>
+                <i aria-hidden="true" />
+                Eurostat COFOG · {funnel.pa.year}
+              </p>
+              <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
+              <p className={styles.headlineNote}>
+                Italia {funnel.pa.year}, tutta la pubblica amministrazione
+              </p>
+              <dl className={styles.factRows}>
+                <div>
+                  <dt>Quota del PIL</dt>
+                  <dd>{percent(funnel.pa.gdpSharePercent)}</dd>
+                </div>
+              </dl>
+            </div>
+            <HomeItalyTrendChart points={funnel.pa.trend} selectedYear={funnel.pa.year} />
+          </div>
+
+        </section>
           <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="pa-split-title">
             <div className={styles.panelHead}>
               <h3 id="pa-split-title" className="panel-title">
@@ -181,18 +166,55 @@ export default async function SpendingOverviewPage({
             </p>
           </section>
 
-          <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="cash-title">
-            <div className={styles.panelHead}>
+        </div>
+        <aside className={styles.stateSummary} aria-labelledby="state-budget-title">
+          <div>
+            <h3 id="state-budget-title">Bilancio dello Stato · {funnel.state.year}</h3>
+            <p className={styles.note}>Stanziamenti della Legge di Bilancio.</p>
+          </div>
+          <dl className={styles.factRows}>
+                <div>
+                  <dt>Stanziamenti senza debito</dt>
+                  <dd>{billions(funnel.state.totalWithoutDebtEuro)} mld €</dd>
+                </div>
+                <div>
+                  <dt>Stanziamenti per il debito</dt>
+                  <dd>{billions(funnel.state.debtEuro)} mld €</dd>
+                </div>
+          </dl>
+          <Link prefetch={false} className={styles.inlineLink} href="/spese/legge-di-bilancio">
+            Legge di Bilancio
+            <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={16} aria-hidden="true" />
+          </Link>
+        </aside>
+      </section>
+
+      <section className={styles.italyBand} aria-labelledby="cash-title">
+        <div className={styles.sectionHeading}>
+          <div>
               <div className={styles.headingWithTooltip}>
-                <h3 id="cash-title" className="panel-title">
+                <h2 id="cash-title" className="panel-title">
                   Pagamenti effettuati dai Comuni
-                </h3>
+                </h2>
                 <InfoTooltip id="cash-payments-tip" label="Che cosa sono i pagamenti di cassa?">
                   Uscite di cassa registrate dai Comuni, mese per mese. Il totale riguarda i Comuni;
                   restano fuori Stato centrale, Regioni e sanità.
                 </InfoTooltip>
               </div>
-            </div>
+            <p className={styles.sectionNote}>Cassa · uscite registrate dai Comuni</p>
+          </div>
+              <PeriodSelector
+                activeYear={year}
+                years={availableSiopeYears}
+                pathname="/spese/panoramica"
+                query={yearQuery}
+                yearParam="comuni"
+                label="Anno dei pagamenti SIOPE dei Comuni"
+                className={styles.periodSelector}
+              />
+        </div>
+        <div className={styles.italySplit}>
+          <section className={`panel ${styles.italyChartPanel}`}>
             <p className={styles.freshness}>
               <i aria-hidden="true" />
               Aggiornati al {longDate(siope.source.siopeMovementsLastModified)}
@@ -256,8 +278,6 @@ export default async function SpendingOverviewPage({
               Dettaglio delle spese
             </Link>
           </section>
-        </div>
-
         <section className={`panel ${styles.monthsPanel}`}>
           <div className={styles.panelHead}>
             <h3 className="panel-title">Mese per mese</h3>
@@ -292,24 +312,13 @@ export default async function SpendingOverviewPage({
             </p>
           )}
         </section>
-      </section>
-
+        </div>
       <section className={`panel ${styles.mapPanel}`} aria-labelledby="regional-map-panel-title">
         <div className={styles.mapStage}>
           <ItalyRegionsMap
             heading="Pagamenti dei Comuni per regione"
             headingId="regional-map-panel-title"
-            periodSelector={
-              <PeriodSelector
-                activeYear={year}
-                years={availableSiopeYears}
-                pathname="/spese/panoramica"
-                query={yearQuery}
-                yearParam="comuni"
-                label="Anno dei pagamenti SIOPE dei Comuni"
-                className={styles.periodSelector}
-              />
-            }
+            periodSelector={null}
             regions={siope.regions}
             period={period}
             aside={
@@ -339,6 +348,8 @@ export default async function SpendingOverviewPage({
         </div>
       </section>
 
+      </section>
+
       <aside className={styles.readingPanel} aria-labelledby="reading-title">
         <div className={styles.readingIntro}>
           <h2 id="reading-title" className="panel-title">
@@ -357,7 +368,7 @@ export default async function SpendingOverviewPage({
           </div>
           <div>
             <dt>Stato</dt>
-            <dd>Stanziamenti Legge di Bilancio, missione Debito esclusa dalle barre</dd>
+            <dd>Stanziamenti Legge di Bilancio, missione Debito indicata separatamente</dd>
           </div>
           <div>
             <dt>Comuni</dt>

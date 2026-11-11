@@ -87,7 +87,7 @@ test("spending overview preserves national charts, map and source boundaries", a
   assert.match(page, /Dove va, in grandi voci/);
   assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /Mese per mese/);
-  assert.match(page, /snapshot fino al/);
+  assert.match(page, /Eurostat COFOG · \{funnel.pa.year\}/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Perimetri diversi/);
   assert.doesNotMatch(page, /Parti da qui/);

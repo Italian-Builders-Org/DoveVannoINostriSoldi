@@ -1,7 +1,7 @@
 .sectionNav {
+  max-width: var(--site-chrome-width);
   margin-top: 0;
-  padding-top: var(--space-6);
-  padding-bottom: var(--space-5);
+  padding-block: var(--space-4);
   border-bottom: 1px solid var(--color-neutral-300);
 }
 
@@ -10,14 +10,12 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3) var(--space-4);
-  max-width: 28rem;
+  max-width: 30rem;
 }
 
 .title {
   margin: 0;
-  font-size: 11px;
-  letter-spacing: .09em;
-  text-transform: uppercase;
+  font-size: 13px;
   color: var(--color-neutral-600);
 }
 
@@ -28,6 +26,8 @@
 }
 
 .label {
+  position: relative;
+  color: var(--color-text);
   display: block;
   flex: 1 1 16rem;
   min-width: min(100%, 16rem);
@@ -42,15 +42,24 @@
   border: 1px solid var(--color-neutral-400);
   border-radius: 0;
   background-color: var(--color-raised);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23555' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.85rem center;
-  background-size: 16px;
   color: var(--color-text);
   font-size: 14px;
   font-weight: 600;
   appearance: none;
   cursor: pointer;
+}
+
+.label::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: calc(50% - 5px);
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  pointer-events: none;
 }
 
 .select:hover {

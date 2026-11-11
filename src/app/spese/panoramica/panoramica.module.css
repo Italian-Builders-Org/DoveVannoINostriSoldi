@@ -1,0 +1,423 @@
+.hub {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--gutter) 0;
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 40rem;
+  padding-block: var(--space-2) 0;
+}
+
+.pageTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.75rem, 2.4vw + 1rem, 2.5rem);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.italyBand {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.italySummary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.panelHead > h2 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.panelHead > h3 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.headingWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-accent-700);
+  font-size: 0.875rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.inlineLink:hover,
+.inlineLink:focus-visible {
+  text-decoration: underline;
+}
+
+.italySummaryBody {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  min-width: 0;
+}
+
+.italySummaryFacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.italySummaryPeriod {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.italySplit {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.italyChartPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.italyChartPanel :global(.panel-title) {
+  margin-bottom: 0;
+}
+
+.headNote {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.periodSelector {
+  width: min(100%, 28rem);
+}
+
+.freshness {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.freshness i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-positive);
+}
+
+.headline {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 1.1vw + 1.3rem, 2.2rem);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.headlineNote {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.factRows {
+  margin: var(--space-2) 0 0;
+}
+
+.factRows > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--color-neutral-200);
+  font-size: 12.5px;
+}
+
+.factRows dt {
+  color: var(--color-neutral-700);
+}
+
+.factRows dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.attribution {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.detailLink {
+  margin-top: auto;
+}
+
+.monthsPanel {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.monthList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.monthList li {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 3.5rem;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  font-size: 12.5px;
+}
+
+.monthList li > span {
+  color: var(--color-neutral-700);
+}
+
+.monthList li > i {
+  display: block;
+  height: 10px;
+  background: var(--chart-data-track);
+}
+
+.monthList li > i > b {
+  display: block;
+  height: 100%;
+  background: var(--chart-data-primary);
+}
+
+.monthList li > b {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthList .running {
+  background: var(--color-neutral-500);
+}
+
+.note {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.mapPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.mapStage {
+  container: regional-map / inline-size;
+  display: block;
+  min-width: 0;
+}
+
+.mapStage > div {
+  width: 100%;
+}
+
+.mapStats {
+  display: grid;
+  gap: 8px;
+}
+
+.mapStats > div {
+  padding: 8px 12px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.mapStats span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.mapStats strong {
+  display: block;
+  margin: 4px 0 2px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: var(--font-heading-weight);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.mapStats small {
+  display: block;
+  color: var(--color-neutral-600);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.mapStats a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.readingPanel {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.readingIntro {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.readingNote {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.readingRules {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.readingRules div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.readingRules dt {
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.readingRules dd {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.readingMore {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.readingMore a {
+  color: var(--color-accent-700);
+  font-weight: 650;
+}
+
+@media (max-width: 1099px) {
+  .italySummaryBody,
+  .italySplit,
+  .readingRules {
+    grid-template-columns: 1fr;
+  }
+
+  .italySummaryPeriod {
+    justify-content: stretch;
+  }
+
+  .periodSelector {
+    width: 100%;
+  }
+}
+
+@media (max-width: 719px) {
+  .hub {
+    gap: var(--space-5);
+  }
+
+  .italySummaryFacts,
+  .readingPanel {
+    padding: var(--space-3);
+    min-height: 0;
+  }
+
+  .headline {
+    font-size: clamp(1.45rem, 4vw + 0.8rem, 1.9rem);
+  }
+}
+
+@media (min-width: 720px) and (max-width: 1099px) {
+
+  .readingRules {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.hub [id] {
+  scroll-margin-top: calc(var(--site-header-height) + 16px);
+}

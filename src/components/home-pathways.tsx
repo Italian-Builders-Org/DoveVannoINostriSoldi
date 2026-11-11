@@ -24,8 +24,9 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
         <div className={styles.copy}>
           <h2 id="spesa-pubblica-title">Spesa pubblica</h2>
           <p>La spesa delle amministrazioni pubbliche per sanità, istruzione, pensioni e altri servizi. Bilancio dello Stato e pagamenti comunali hanno viste dedicate.</p>
-          <Link prefetch={false} href="/spese" className={styles.primaryLink}>Esplora la spesa <Arrow /></Link>
+          <Link prefetch={false} href="/spese/panoramica" className={styles.primaryLink}>Esplora la spesa <Arrow /></Link>
           <div className={styles.related}>
+            <Link prefetch={false} href="/spese">Pagamenti comunali</Link>
             <Link prefetch={false} href="/spese/legge-di-bilancio">Bilancio dello Stato</Link>
             <Link prefetch={false} href="/busta-paga">La tua busta paga</Link>
           </div>

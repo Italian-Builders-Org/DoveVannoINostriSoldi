@@ -61,7 +61,7 @@ test("information tooltips clamp to the viewport and keep their heading trigger 
   const [tooltip, tooltipCss, home, globals] = await Promise.all([
     source("../src/components/info-tooltip.tsx"),
     source("../src/components/info-tooltip.module.css"),
-    source("../src/app/home.module.css"),
+    source("../src/app/spese/panoramica/panoramica.module.css"),
     source("../src/app/globals.css"),
   ]);
 

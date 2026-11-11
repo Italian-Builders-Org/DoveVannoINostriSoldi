@@ -637,15 +637,6 @@ async function stubSuccessfulHeaderSearch(page) {
   });
 }
 
-async function openHomeData(page) {
-  const summary = "#quadro-dei-conti > summary";
-  if (!(await page.$eval("#quadro-dei-conti", (details) => details.open))) {
-    await page.focus(summary);
-    await page.keyboard.press("Enter");
-    await page.waitForSelector("#quadro-dei-conti[open]");
-  }
-}
-
 async function runScenario(browser, {
   expectedFailure = () => false,
   label,
@@ -747,12 +738,11 @@ try {
     const label = `Palette istituzionale ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/",
+      pathname: "/spese/panoramica",
       width,
       themeValidation: true,
       touch: width === 390,
       validate: async (page) => {
-        await openHomeData(page);
         await inspectInstitutionalPalette(page, { label, width });
         await inspectHomeCompositionSpacing(page, { width });
       },
@@ -987,7 +977,7 @@ try {
   for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
     const label = `Spesa per la difesa ${width}px`;
     await runScenario(browser, {
-      label, pathname: "/", width, validate: inspectDefence,
+      label, pathname: "/spese/panoramica", width, validate: inspectDefence,
     });
     completed.push(label);
   }
@@ -1006,7 +996,7 @@ try {
   for (const width of [320, 375, 390, 768, 1024, 1280, 1600]) {
     const label = `Andamento sanità ${width}px`;
     await runScenario(browser, {
-      label, pathname: "/?anno=2014", width, validate: inspectHealthHistory,
+      label, pathname: "/spese/panoramica?anno=2014", width, validate: inspectHealthHistory,
     });
     completed.push(label);
   }
@@ -2303,13 +2293,12 @@ try {
   }
 
   for (const width of [320, 390, 768, 901, 1024, 1280]) {
-    const label = `Tooltip home ${width}px`;
+    const label = `Tooltip spesa ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/",
+      pathname: "/spese/panoramica",
       width,
       validate: async (page) => {
-        await openHomeData(page);
         await assertInfoTooltips(page, label);
       },
     });
@@ -2317,10 +2306,10 @@ try {
   }
 
   for (const width of [390, 768, 1280]) {
-    const label = `Anni storici homepage ${width}px`;
+    const label = `Anni storici spesa ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/?anno=2024&comuni=2025",
+      pathname: "/spese/panoramica?anno=2024&comuni=2025",
       width,
       validate: async (page) => {
         const selector = 'nav[aria-label="Anno della spesa pubblica (Eurostat COFOG)"]';
@@ -2353,13 +2342,12 @@ try {
   }
 
   for (const width of [390, 768, 1280]) {
-    const label = `Composizione spesa home ${width}px`;
+    const label = `Composizione spesa ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/",
+      pathname: "/spese/panoramica",
       width,
       validate: async (page) => {
-        await openHomeData(page);
         await assertSpendingComposition(page, label, width);
       },
     });
@@ -2370,10 +2358,9 @@ try {
     const label = `Mappa regioni hover/selezione ${width}px`;
     await runScenario(browser, {
       label,
-      pathname: "/",
+      pathname: "/spese/panoramica",
       width,
       validate: async (page) => {
-        await openHomeData(page);
         await assertRegionalMapSelection(page, label);
       },
     });
@@ -2585,9 +2572,9 @@ try {
   }
 
   for (const width of [390, 1280]) {
-    const label = `Home cultura sport ${width}px`;
+    const label = `Panoramica cultura sport ${width}px`;
     await runScenario(browser, {
-      label, pathname: "/?anno=2014", width, validate: inspectCultureJourney,
+      label, pathname: "/spese/panoramica?anno=2014", width, validate: inspectCultureJourney,
     });
     completed.push(label);
   }

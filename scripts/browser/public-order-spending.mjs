@@ -64,12 +64,12 @@ export async function inspectPublicOrderSpending(page) {
   await Promise.all([page.waitForNavigation({ waitUntil: "networkidle0" }), page.keyboard.press("Enter")]);
   assert.equal(new URL(page.url()).searchParams.get("anno"), "2014");
   assert.match(await page.$eval('[data-testid="sicurezza-total"]', (element) => element.innerText), /30,32 mld €/);
-  assert.ok(await page.$('main a[href="/?anno=2014#pa-split-title"]'));
+  assert.ok(await page.$('main a[href="/spese/panoramica?anno=2014#pa-split-title"]'));
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
   await page.screenshot({ path: path.join(artifactDirectory, "sicurezza-2014.png"), fullPage: true });
 
   if (page.viewport().width === 390 || page.viewport().width === 1280) {
-    await page.goto(new URL("/?anno=2014", page.url()).href, { waitUntil: "networkidle0" });
+    await page.goto(new URL("/spese/panoramica?anno=2014", page.url()).href, { waitUntil: "networkidle0" });
     const entry = await page.$('main a[href="/spese/sicurezza?anno=2014"]');
     assert.ok(entry, "La composizione PA deve collegare la funzione GF03 conservando l’anno");
     await entry.focus();

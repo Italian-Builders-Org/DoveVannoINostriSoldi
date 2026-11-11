@@ -70,10 +70,10 @@ test("period selector can compress long year series behind Altri", async () => {
   assert.match(css, /\.years \{[\s\S]*?overflow: visible;/);
 });
 
-test("home page is a navigation hub with reduced national charts and map", async () => {
+test("spending overview preserves national charts, map and source boundaries", async () => {
   const [page, css, charts, chartCss] = await Promise.all([
-    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/spese/panoramica/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/spese/panoramica/panoramica.module.css", import.meta.url), "utf8"),
     readFile(new URL("../src/components/home-italy-charts.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/components/home-italy-charts.module.css", import.meta.url), "utf8"),
   ]);
@@ -88,7 +88,6 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /Mese per mese/);
   assert.match(page, /snapshot fino al/);
-  assert.match(page, /action="\/cerca"/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Perimetri diversi/);
   assert.doesNotMatch(page, /Parti da qui/);

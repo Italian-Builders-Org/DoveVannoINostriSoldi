@@ -74,7 +74,7 @@ async function assertFits(page) {
     });
     return { pathname: location.pathname, left: shell.left, right: shell.right, mainLeft: main.left, mainRight: main.right, controls };
   });
-  if (header.pathname === '/' || header.pathname === '/spese') {
+  if (['/', '/spese', '/spese/panoramica'].includes(header.pathname)) {
     assert.ok(Math.abs(header.left - header.mainLeft) < 2 && Math.abs(header.right - header.mainRight) < 2, 'Header e pagina condividono la stessa larghezza');
   }
   assert.ok(header.controls.every((box) => box.left >= header.left && box.right <= header.right + 1), 'Tutte le azioni dell’header rientrano nel contenitore');
@@ -156,18 +156,10 @@ try {
       assert.equal(await page.$('.footer-sitemap'), null, 'Nessuna directory duplicata nel footer');
       assert.equal(await page.$eval('[data-home-editorial] > header', (header) => header.nextElementSibling?.id), 'analisi');
       assert.equal(await page.$$eval('#analisi > section', (sections) => sections.length), 5);
-      for (const href of ['/spese', '/imprese', '/controlli']) {
+      for (const href of ['/spese/panoramica', '/imprese', '/controlli']) {
         assert.ok(await page.$(`#analisi a[href="${href}"]`), `Accesso diretto assente: ${href}`);
       }
-      assert.equal(await page.$eval('#quadro-dei-conti', (node) => node.open), false);
-      await page.focus('#quadro-dei-conti > summary');
-      await page.keyboard.press('Enter');
-      await page.waitForSelector('#quadro-dei-conti[open]');
-      await page.waitForSelector('[data-region-map="true"]', {visible: true});
-      await assertFits(page);
-      await page.focus('#quadro-dei-conti > summary');
-      await page.keyboard.press('Enter');
-      await page.waitForSelector('#quadro-dei-conti:not([open])');
+      assert.equal(await page.$('#quadro-dei-conti'), null, 'Nessun riquadro dei conti nella home');
       assert.equal(await page.$$eval('.site-footer a', (links) => links.some((link) => link.href.includes('buymeacoffee.com'))), false);
       assert.ok(await page.$('#esplora form[action="/cerca"]'), 'Ricerca disponibile dopo le analisi');
       const directoryHrefs = await page.$$eval('#esplora a', (links) => links.map((link) => link.getAttribute('href')));
@@ -190,13 +182,19 @@ try {
   for (const width of [390, 1280]) await runScenario(browser, {
     label: `Home verso spesa ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
-      await page.click('#spesa-pubblica a[href="/spese"]');
+      const tabsBefore = (await browser.pages()).length;
+      await page.click('#spesa-pubblica a[href="/spese/panoramica"]');
+      await page.waitForFunction(() => location.pathname === '/spese/panoramica');
+      await page.waitForSelector('[data-region-map="true"]');
+      await assertFits(page);
+      await page.select('nav[aria-label="Pagine in Soldi"] select', '/spese');
       await page.waitForFunction(() => location.pathname === '/spese');
       await page.waitForSelector('main h1', { visible: true });
       assert.equal(await page.$('.desktop-sidebar'), null);
       await assertFits(page);
       await page.select('nav[aria-label="Pagine in Soldi"] select', '/entrate');
       await page.waitForFunction(() => location.pathname === '/entrate');
+      assert.equal((await browser.pages()).length, tabsBefore, 'La navigazione non apre nuove schede');
       await page.goBack();
       await page.waitForFunction(() => location.pathname === '/spese');
       await openMenu(page);

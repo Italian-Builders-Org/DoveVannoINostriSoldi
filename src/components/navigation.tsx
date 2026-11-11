@@ -264,7 +264,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
   useEffect(() => {
     const media = window.matchMedia("(min-width: 1100px)");
     function resize() {
-      if (media.matches && dialogRef.current?.open) {
+      if (media.matches && pathname !== "/" && dialogRef.current?.open) {
         dialogRef.current.close();
         collapseRef.current?.focus();
       } else if (!media.matches && document.activeElement?.closest(".desktop-sidebar")) {
@@ -273,7 +273,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
     }
     media.addEventListener("change", resize);
     return () => media.removeEventListener("change", resize);
-  }, []);
+  }, [pathname]);
 
   return (
     <>
@@ -290,6 +290,10 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
           </IntentLink>
           <span className="header-spacer" />
+          {pathname === "/" ? <nav className="home-header-links" aria-label="Navigazione della home">
+            <a href="#analisi">Analisi</a>
+            <a href="#esplora">Esplora i dati</a>
+          </nav> : null}
           <HeaderSearch />
           <div className="header-actions">
             <ThemeToggle />

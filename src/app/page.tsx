@@ -6,6 +6,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/home-italy-charts";
+import { HomePathwayIndex, HomePathways } from "@/components/home-pathways";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
@@ -213,121 +214,77 @@ export default async function HomePage({
   const anomalySignals = getHomeAnomalySignals();
 
   return (
-    <main className={`shell ${styles.hub}`}>
+    <main className={`shell ${styles.hub}`} data-home-editorial="true">
       <header className={styles.intro}>
-        <h1 className={styles.pageTitle}>Dove vanno i nostri soldi pubblici</h1>
-        <p className={styles.lead}>
-          Spesa pubblica, imprese e territori dai dati ufficiali.
-        </p>
-
-        <form className={styles.searchForm} action="/cerca" method="get" role="search">
-          <label className={styles.searchLabel} htmlFor="home-search-query">
-            Cerca nel sito
-          </label>
-          <div className={styles.searchRow}>
-            <input
-              className={`input ${styles.searchInput}`}
-              id="home-search-query"
-              name="q"
-              type="search"
-              minLength={GLOBAL_SEARCH_MIN_QUERY_LENGTH}
-              maxLength={GLOBAL_SEARCH_MAX_QUERY_LENGTH}
-              placeholder="es. pagamenti comuni, PNRR o Ministero dell’Interno"
-              autoComplete="off"
-            />
-            <button className="btn btn-primary" type="submit">
-              <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.7} aria-hidden="true" />
-              Cerca
-            </button>
-          </div>
-        </form>
-      </header>
-
-      <section className={styles.mapsSection} aria-labelledby="maps-title">
-        <div className={styles.mapsIntro}>
-          <h2 id="maps-title" className={styles.mapsTitle}>
-            Mappe
-          </h2>
-          <p className={styles.mapsLead}>
-            Tre viste immersive: istituzioni, Comuni e mobilità, senza il menu del sito.
-          </p>
+        <p className={styles.introEyebrow}>DATI PUBBLICI. DOMANDE DI TUTTI.</p>
+        <h1 className={styles.pageTitle}>I soldi pubblici,<br /><span>una domanda alla volta.</span></h1>
+        <div className={styles.introBottom}>
+          <p className={styles.lead}>Capire come vengono usate le risorse del Paese è il primo passo per partecipare. Parti da un tema, leggi i dati, verifica le fonti.</p>
+          <a href="#esplora" className={styles.exploreJump}>Sai già cosa cercare? <span>Esplora tutti i dati ↓</span></a>
         </div>
-        <ul className={styles.mapGrid} aria-label="Mappe immersive">
-          {MAP_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link className={styles.mapCard} href={destination.href}>
-                <span className={styles.mapEyebrow}>Mappa</span>
-                <span className={styles.mapTitle}>{destination.title}</span>
-                <span className={styles.mapCopy}>{destination.description}</span>
-                <span className={styles.mapCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+      </header>
+      <HomePathwayIndex />
+      <HomePathways funnel={funnel} siope={siope}>
+      <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
+        <div className={`${styles.panelHead} ${styles.compactHeader}`}>
+          <h3 id="anomalies-title" className="panel-title">
+            Anomalie da approfondire
+          </h3>
+          <Link prefetch={false} className={styles.anomaliesLink} href="/controlli">
+            Tutti i controlli
+            <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
+          </Link>
+          <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
+            Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
+            con le fonti: non dimostra sprechi o illeciti.
+          </InfoTooltip>
+        </div>
+        <div className={styles.anomalyGallery}>
+          {anomalySignals.map((signal) => {
+            const presentation =
+              HOME_ANOMALY_PRESENTATION[signal.id as keyof typeof HOME_ANOMALY_PRESENTATION];
+            if (!presentation) return null;
+
+            return (
+              <article
+                className={styles.anomalyItem}
+                data-signal={signal.id}
+                key={signal.id}
+              >
+                <div className={styles.anomalyItemHead}>
+                  <span className={styles.anomalyArea}>{signal.area}</span>
+                </div>
+                <h3>{presentation.title}</h3>
+                <strong className={styles.anomalyValue}>{anomalyValue(signal)}</strong>
+                <p className={styles.anomalyMeta}>
+                  <span>{presentation.period}</span>
+                  <a
+                    href={signal.source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Fonte ${signal.source.institution}: ${signal.source.title}`}
+                  >
+                    {signal.source.institution} ↗
+                  </a>
+                </p>
+              </article>
+            );
+          })}
+        </div>
+        <p className={styles.anomalyCaveat}>Segnale da verificare, non prova.</p>
+        {anomalySignals.length < 3 ? (
+          <p className={styles.anomalyFallback}>
+            Mostriamo solo i segnali con fonte verificata.{" "}
+            <Link prefetch={false} href="/controlli">Esplora gli altri controlli</Link>.
+          </p>
+        ) : null}
       </section>
 
-      <section className={styles.boardsSection} aria-labelledby="boards-home-title">
-        <Link
-          className={styles.boardsCard}
-          href="/accedi"
-          data-testid="home-boards-entry"
-        >
-          <span className={styles.boardsCardMedia} aria-hidden="true" />
-          <span className={styles.boardsCardBody}>
-            <span className={styles.boardsEyebrow}>Strumento · web</span>
-            <span className={styles.boardsTitle} id="boards-home-title">
-              DVNS Boards
-            </span>
-            <span className={styles.boardsCopy}>
-              Componi viste private sui dataset pubblici già sul sito: grafici, filtri e
-              note sulla stessa lavagna. Accesso con email, senza password. Pensato per
-              desktop e laptop.
-            </span>
-            <span className={styles.boardsCta}>
-              Apri Boards
-              <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
-            </span>
-          </span>
-        </Link>
-      </section>
+      </HomePathways>
 
-      <section className={styles.exploreSection} aria-labelledby="explore-title">
-        <h2 id="explore-title" className={styles.sectionTitle}>
-          Sezioni
-        </h2>
-        <ul className={styles.primaryGrid}>
-          {PRIMARY_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link className={styles.primaryCard} href={destination.href}>
-                <span className={styles.cardTitle}>{destination.title}</span>
-                <span className={styles.cardCopy}>{destination.description}</span>
-                <span className={styles.cardCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <ul className={styles.secondaryGrid}>
-          {SECONDARY_DESTINATIONS.map((destination) => (
-            <li key={destination.href}>
-              <Link className={styles.secondaryCard} href={destination.href}>
-                <span className={styles.cardTitle}>{destination.title}</span>
-                <span className={styles.cardCopy}>{destination.description}</span>
-                <span className={styles.cardCta}>
-                  Apri
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
+      <details className={styles.dataDetails} id="quadro-dei-conti" open={params.anno !== undefined || params.comuni !== undefined}>
+        <summary><span>Il quadro dei conti, nel dettaglio<small>Spesa PA, pagamenti comunali, andamento e mappa regionale</small></span><span aria-hidden="true">+</span></summary>
+        <div className={styles.dataDetailsBody}>
       <section className={styles.italyBand} aria-labelledby="italy-band-title">
         <section className={`panel ${styles.italySummary}`}>
           <div className={styles.panelHead}>
@@ -340,7 +297,7 @@ export default async function HomePage({
                 Comuni, enti). Non è un pagamento di cassa e non è solo il bilancio dello Stato.
               </InfoTooltip>
             </div>
-            <Link className={styles.inlineLink} href="/spese">
+            <Link prefetch={false} className={styles.inlineLink} href="/spese">
               Soldi
               <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
             </Link>
@@ -481,7 +438,7 @@ export default async function HomePage({
                 observedAt: longDate(siope.source.observedAt),
               }}
             />
-            <Link className={`btn btn-block ${styles.detailLink}`} href={`/spese?anno=${year}`}>
+            <Link prefetch={false} className={`btn btn-block ${styles.detailLink}`} href={`/spese?anno=${year}`}>
               Dettaglio delle spese
             </Link>
           </section>
@@ -559,68 +516,13 @@ export default async function HomePage({
                       : exactEuro(siope.nationalPerCapita)}
                   </strong>
                   <small>
-                    <Link href={`/territori?anno=${year}`}>Apri Territori</Link>
+                    <Link prefetch={false} href={`/territori?anno=${year}`}>Apri Territori</Link>
                   </small>
                 </div>
               </div>
             }
           />
         </div>
-      </section>
-
-      <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
-        <div className={`${styles.panelHead} ${styles.compactHeader}`}>
-          <h2 id="anomalies-title" className="panel-title">
-            Anomalie da approfondire
-          </h2>
-          <Link className={styles.anomaliesLink} href="/controlli">
-            Tutti i controlli
-            <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
-          </Link>
-          <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
-            Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
-            con le fonti: non dimostra sprechi o illeciti.
-          </InfoTooltip>
-        </div>
-        <div className={styles.anomalyGallery}>
-          {anomalySignals.map((signal) => {
-            const presentation =
-              HOME_ANOMALY_PRESENTATION[signal.id as keyof typeof HOME_ANOMALY_PRESENTATION];
-            if (!presentation) return null;
-
-            return (
-              <article
-                className={styles.anomalyItem}
-                data-signal={signal.id}
-                key={signal.id}
-              >
-                <div className={styles.anomalyItemHead}>
-                  <span className={styles.anomalyArea}>{signal.area}</span>
-                </div>
-                <h3>{presentation.title}</h3>
-                <strong className={styles.anomalyValue}>{anomalyValue(signal)}</strong>
-                <p className={styles.anomalyMeta}>
-                  <span>{presentation.period}</span>
-                  <a
-                    href={signal.source.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Fonte ${signal.source.institution}: ${signal.source.title}`}
-                  >
-                    {signal.source.institution} ↗
-                  </a>
-                </p>
-              </article>
-            );
-          })}
-        </div>
-        <p className={styles.anomalyCaveat}>Segnale da verificare, non prova.</p>
-        {anomalySignals.length < 3 ? (
-          <p className={styles.anomalyFallback}>
-            Mostriamo solo i segnali con fonte verificata.{" "}
-            <Link href="/controlli">Esplora gli altri controlli</Link>.
-          </p>
-        ) : null}
       </section>
 
       <aside className={styles.readingPanel} aria-labelledby="reading-title">
@@ -649,9 +551,125 @@ export default async function HomePage({
           </div>
         </dl>
         <p className={styles.readingMore}>
-          <Link href="/metodologia">Come leggiamo i dati</Link>
+          <Link prefetch={false} href="/metodologia">Come leggiamo i dati</Link>
         </p>
       </aside>
+        </div>
+      </details>
+
+      <section id="esplora" className={styles.exploration} aria-labelledby="exploration-title">
+        <div className={styles.explorationHeading}>
+          <p className={styles.introEyebrow}>ORA SEGUI LA TUA DOMANDA</p>
+          <h2 id="exploration-title">Esplora, confronta, approfondisci.</h2>
+          <p>Tutti gli strumenti del sito, a partire da ciò che vuoi sapere.</p>
+        </div>
+        <form className={styles.searchForm} action="/cerca" method="get" role="search">
+          <label className={styles.searchLabel} htmlFor="home-search-query">
+            Cerca nel sito
+          </label>
+          <div className={styles.searchRow}>
+            <input
+              className={`input ${styles.searchInput}`}
+              id="home-search-query"
+              name="q"
+              type="search"
+              minLength={GLOBAL_SEARCH_MIN_QUERY_LENGTH}
+              maxLength={GLOBAL_SEARCH_MAX_QUERY_LENGTH}
+              placeholder="es. pagamenti comuni, PNRR o Ministero dell’Interno"
+              autoComplete="off"
+            />
+            <button className="btn btn-primary" type="submit">
+              <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.7} aria-hidden="true" />
+              Cerca
+            </button>
+          </div>
+        </form>
+      <section className={styles.mapsSection} aria-labelledby="maps-title">
+        <div className={styles.mapsIntro}>
+          <h2 id="maps-title" className={styles.mapsTitle}>
+            Mappe
+          </h2>
+          <p className={styles.mapsLead}>
+            Tre viste immersive: istituzioni, Comuni e mobilità, senza il menu del sito.
+          </p>
+        </div>
+        <ul className={styles.mapGrid} aria-label="Mappe immersive">
+          {MAP_DESTINATIONS.map((destination) => (
+            <li key={destination.href}>
+              <Link prefetch={false} className={styles.mapCard} href={destination.href}>
+                <span className={styles.mapEyebrow}>Mappa</span>
+                <span className={styles.mapTitle}>{destination.title}</span>
+                <span className={styles.mapCopy}>{destination.description}</span>
+                <span className={styles.mapCta}>
+                  Apri
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className={styles.boardsSection} aria-labelledby="boards-home-title">
+        <Link
+          className={styles.boardsCard}
+          href="/accedi"
+          data-testid="home-boards-entry"
+        >
+          <span className={styles.boardsCardMedia} aria-hidden="true" />
+          <span className={styles.boardsCardBody}>
+            <span className={styles.boardsEyebrow}>Strumento · web</span>
+            <span className={styles.boardsTitle} id="boards-home-title">
+              DVNS Boards
+            </span>
+            <span className={styles.boardsCopy}>
+              Componi viste private sui dataset pubblici già sul sito: grafici, filtri e
+              note sulla stessa lavagna. Accesso con email, senza password. Pensato per
+              desktop e laptop.
+            </span>
+            <span className={styles.boardsCta}>
+              Apri Boards
+              <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+            </span>
+          </span>
+        </Link>
+      </section>
+
+      <section className={styles.exploreSection} aria-labelledby="explore-title">
+        <h2 id="explore-title" className={styles.sectionTitle}>
+          Sezioni
+        </h2>
+        <ul className={styles.primaryGrid}>
+          {PRIMARY_DESTINATIONS.map((destination) => (
+            <li key={destination.href}>
+              <Link prefetch={false} className={styles.primaryCard} href={destination.href}>
+                <span className={styles.cardTitle}>{destination.title}</span>
+                <span className={styles.cardCopy}>{destination.description}</span>
+                <span className={styles.cardCta}>
+                  Apri
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <ul className={styles.secondaryGrid}>
+          {SECONDARY_DESTINATIONS.map((destination) => (
+            <li key={destination.href}>
+              <Link prefetch={false} className={styles.secondaryCard} href={destination.href}>
+                <span className={styles.cardTitle}>{destination.title}</span>
+                <span className={styles.cardCopy}>{destination.description}</span>
+                <span className={styles.cardCta}>
+                  Apri
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      </section>
     </main>
   );
 }

@@ -133,7 +133,7 @@ Una banda di pubblicazione presenta una frase e il collegamento al report o allo
 
 ### Dashboard
 
-La home ha due colonne: totale e composizione accanto alla mappa, andamento mensile accanto alla classifica regionale. I pannelli della stessa riga condividono i bordi superiore e inferiore. Sotto 900px l'ordine è totale, mappa, mesi, regioni. Non aggiungere moduli per riempire spazi vuoti.
+La home introduce cinque percorsi editoriali: spesa pubblica, Comuni e territori, politica e istituzioni, economia e società, controlli e analisi. Un indice iniziale porta alle sezioni con domanda, anteprima, fonte e collegamento alla dashboard. Il quadro dei conti completo è espandibile; si apre già quando l’URL contiene un anno selezionato. Ricerca, mappe, Boards e catalogo vengono dopo i percorsi. Sulla sola home il menu completo si apre dal pulsante nell’header anche su desktop; nelle pagine interne resta la sidebar. Titoli e spaziature più ampi sono un’eccezione editoriale locale, mentre i token e i contratti dei dati restano condivisi.
 
 Le pagine tematiche mostrano prima domanda, dato, periodo e filtri. Fonti, definizioni e limiti estesi rimangono disponibili in dettagli espandibili sotto i risultati; le qualifiche indispensabili per interpretare il valore restano vicine al dato. Usare “Non disponibile” al posto di sigle ambigue, senza confondere celle vuote, oscurate e zero.
 

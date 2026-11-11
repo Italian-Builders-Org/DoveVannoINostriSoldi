@@ -24,14 +24,14 @@ test("narrow responsive grids cannot exceed their container", async () => {
   }
 });
 
-test("the home has one visible semantic title and stays a compact hub", async () => {
+test("the home has one visible semantic title and keeps data exploration accessible", async () => {
   const [page, css] = await Promise.all([
     source("../src/app/page.tsx"),
     source("../src/app/home.module.css"),
   ]);
 
   assert.equal(page.match(/<h1\b/g)?.length, 1);
-  assert.match(page, /<h1 className=\{styles\.pageTitle\}>Dove vanno i nostri soldi pubblici<\/h1>/);
+  assert.match(page, /<h1 className=\{styles\.pageTitle\}>I soldi pubblici,[\s\S]*?una domanda alla volta\.[\s\S]*?<\/h1>/);
   assert.match(css, /\.pageTitle \{[\s\S]*?font-family: var\(--font-heading\);/);
   assert.doesNotMatch(css, /\.pageTitle \{[\s\S]*?clip-path: inset\(50%\);/);
   assert.match(css, /\.hub \{/);

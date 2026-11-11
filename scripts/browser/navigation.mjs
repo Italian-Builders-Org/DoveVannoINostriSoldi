@@ -231,22 +231,36 @@ try {
     });
   }
 
-  for (const width of [1100, 1180, 1280, 1440, 1600]) await runScenario(browser, {
-    label: `Sidebar e mappa home ${width}px`, pathname: '/', width, suite: 'navigation',
+  for (const width of [390, 768, 1100, 1280, 1600]) await runScenario(browser, {
+    label: `Home editoriale ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
-      for (const compact of [false, true]) {
-        if (compact) await collapseDesktopSidebar(page);
-        else await expandDesktopSidebar(page);
-        await assertFits(page);
-        const map = await page.$('[data-region-map="true"]');
-        const geometry = await map.evaluate((node) => {
-          const panel = node.closest('.panel');
-          const box = panel.getBoundingClientRect();
-          return { right: box.right, viewport: innerWidth, scroll: panel.scrollWidth, client: panel.clientWidth };
-        });
-        assert.ok(geometry.right <= geometry.viewport + 1 && geometry.scroll <= geometry.client + 1, JSON.stringify(geometry));
-        await page.screenshot({path:`artifacts/browser/sidebar-home-${width}-${compact ? 'compact' : 'expanded'}.png`});
+      await assertFits(page);
+      assert.equal(await page.$eval('.desktop-sidebar', (node) => getComputedStyle(node).display), 'none');
+      const paths = await page.$$eval('nav[aria-label="Cinque percorsi di lettura"] a', (links) => links.map((link) => link.getAttribute('href')));
+      assert.equal(paths.length, 5, 'Cinque percorsi raggiungibili dall’indice');
+      for (const href of paths) {
+        await page.click(`nav[aria-label="Cinque percorsi di lettura"] a[href="${href}"]`);
+        await page.waitForFunction((hash) => location.hash === hash, {}, href);
+        assert.ok(await page.$(`${href} h2`), `Destinazione senza titolo: ${href}`);
       }
+      assert.equal(await page.$eval('#quadro-dei-conti', (node) => node.open), false);
+      await page.focus('#quadro-dei-conti > summary');
+      await page.keyboard.press('Enter');
+      await page.waitForSelector('#quadro-dei-conti[open]');
+      await page.waitForSelector('[data-region-map="true"]', {visible: true});
+      await assertFits(page);
+      await page.focus('#quadro-dei-conti > summary');
+      await page.keyboard.press('Enter');
+      await page.waitForSelector('#quadro-dei-conti:not([open])');
+      assert.equal(await page.$$eval('.site-footer a', (links) => links.some((link) => link.href.includes('buymeacoffee.com'))), false);
+      assert.ok(await page.$('#esplora form[action="/cerca"]'), 'Ricerca disponibile dopo le analisi');
+      assert.equal(await page.$eval('#esplora', (node) => Boolean(document.querySelector('#controlli-analisi').compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
+      await page.click('.mobile-menu-trigger');
+      await page.waitForSelector('#mobile-navigation:modal .primary-nav', {visible: true});
+      await page.keyboard.press('Escape');
+      await page.waitForSelector('#mobile-navigation', {hidden: true});
+      assert.equal(await page.$eval('.mobile-menu-trigger', (button) => document.activeElement === button), true);
+      await page.screenshot({path:`artifacts/browser/home-editoriale-${width}.png`, fullPage:true});
     },
   });
 
@@ -290,7 +304,7 @@ try {
   });
 
   await runScenario(browser, {
-    label:'Sidebar rotazione e focus', pathname:'/', width:390, suite:'navigation',
+    label:'Sidebar rotazione e focus', pathname:'/imprese', width:390, suite:'navigation',
     validate:async(page) => {
       await openMobile(page);
       // Preserve device emulation: changing isMobile would reload the page.

@@ -98,8 +98,8 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(page, /BUY_ME_A_COFFEE_URL/);
   assert.match(page, /supporter\.href \?/);
   assert.match(footer, /href="\/supporter"/);
-  assert.match(footer, /BUY_ME_A_COFFEE_URL/);
-  assert.match(footer, /Sostieni DVNS/);
+  assert.doesNotMatch(footer, /BUY_ME_A_COFFEE_URL|buymeacoffee\.com/);
+  assert.match(footer, /Dati pubblici, accessibili a tutti/);
   assert.doesNotMatch(footer, /SITE_SUPPORTERS/);
   assert.doesNotMatch(footer, /Con il supporto di/);
   assert.doesNotMatch(footer, /MANTO_VENTURE\.href/);

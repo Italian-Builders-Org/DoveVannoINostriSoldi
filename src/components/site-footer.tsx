@@ -1,7 +1,5 @@
 import Link from "next/link";
 import {
-  Coffee02Icon,
-  ArrowUpRight01Icon,
   Facebook01Icon,
   GithubIcon,
   InstagramIcon,
@@ -11,7 +9,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
-import { BUY_ME_A_COFFEE_URL, REPO_URL, SOCIAL_LINKS } from "@/lib/site";
+import { REPO_URL, SOCIAL_LINKS } from "@/lib/site";
 
 const SOCIAL_ICONS = {
   threads: ThreadsIcon,
@@ -26,14 +24,11 @@ export function SiteFooter() {
     <footer className="shell site-footer">
       <div className="footer-top">
         <aside className="footer-support" aria-labelledby="footer-support-title">
-          <a className="footer-support-action" href={BUY_ME_A_COFFEE_URL} target="_blank" rel="noreferrer">
-            <HugeiconsIcon icon={Coffee02Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
-            <span className="footer-support-copy">
-              <strong id="footer-support-title">Sostieni DVNS</strong>
-              <span>Dati accessibili, progetto indipendente.</span>
-              <span className="footer-support-label">Contribuisci <HugeiconsIcon icon={ArrowUpRight01Icon} size={15} aria-hidden="true" /></span>
-            </span>
-          </a>
+          <div className="footer-support-copy">
+            <strong id="footer-support-title">Dati pubblici, accessibili a tutti.</strong>
+            <span>Un progetto indipendente per capire e verificare.</span>
+            <Link prefetch={false} href="/metodologia" className="footer-support-label">Scopri il metodo →</Link>
+          </div>
         </aside>
         <div className="footer-directory">
           <nav className="footer-social" aria-label="Canali social">

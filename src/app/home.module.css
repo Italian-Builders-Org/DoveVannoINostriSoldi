@@ -939,3 +939,51 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Editorial home: a deliberate reading order, then optional depth and discovery. */
+.hub { max-width: 1320px; gap: 0; padding-block: 0; }
+.intro { max-width: none; padding-block: 64px 40px; gap: 24px; }
+.introEyebrow { margin: 0; color: var(--color-accent); font-size: 11px; font-weight: 600; letter-spacing: .12em; }
+.pageTitle { font-size: clamp(40px, 4.5vw, 66px); line-height: 1.07; letter-spacing: -.045em; font-weight: 500; }
+.pageTitle span { color: var(--color-neutral-600); }
+.introBottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+.lead { max-width: 56ch; font-size: 16px; line-height: 1.7; }
+.exploreJump { flex: none; display: grid; gap: 8px; padding-block: 8px; font-size: 12px; color: var(--color-neutral-600); }
+.exploreJump span { font-weight: 600; color: var(--color-accent); }
+.dataDetails { margin-block: 32px 64px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); scroll-margin-top: 110px; }
+.dataDetails > summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 24px; cursor: pointer; font-size: 18px; font-weight: 500; list-style: none; }
+.dataDetails > summary::-webkit-details-marker { display: none; }
+.dataDetails > summary small { display: block; margin-top: 8px; font-size: 12px; font-weight: 400; color: var(--color-neutral-600); }
+.dataDetails > summary > span:last-child { font-size: 28px; transition: transform 140ms ease; }
+.dataDetails[open] > summary > span:last-child { transform: rotate(45deg); }
+.dataDetailsBody { display: grid; gap: 20px; padding: 0 20px 20px; }
+.exploration { display: grid; gap: 28px; padding: 40px; margin-bottom: 32px; background: var(--color-surface); scroll-margin-top: 110px; }
+.explorationHeading { display: grid; gap: 16px; }
+.explorationHeading h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 500; line-height: 1.15; letter-spacing: -.03em; margin: 0; }
+.explorationHeading > p:last-child { margin: 0; color: var(--color-neutral-700); }
+.exploration .searchForm { max-width: 44rem; margin: 0; }
+.exploration .mapsSection { border: 0; padding: 0; background: none; }
+.exploration .mapCard { min-height: 0; border-top: 1px solid var(--color-neutral-300); box-shadow: none; }
+.exploration .mapCard:hover, .exploration .mapCard:focus-visible { transform: none; box-shadow: none; }
+.anomaliesPanel { border: 0; background: var(--color-raised); padding: 28px; }
+.anomalyGallery { grid-template-columns: 1fr; gap: 0; }
+.anomalyItem { padding: 20px 0; border: 0; border-bottom: 1px solid var(--color-neutral-200); background: none; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; }
+.anomalyItemHead, .anomalyMeta { grid-column: 1 / -1; }
+.anomalyItem h3 { font-size: 14px; font-weight: 500; }
+.anomalyValue { font-size: 24px; text-align: right; }
+.anomalyCaveat { padding-top: 12px; }
+@media (max-width: 900px) {
+  .introBottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .exploration { padding: 24px; }
+}
+@media (max-width: 620px) {
+  .intro { padding-block: 36px 28px; gap: 20px; }
+  .pageTitle { font-size: 39px; }
+  .lead { font-size: 15px; }
+  .exploration { padding: 24px 16px; margin-inline: -4px; gap: 24px; }
+  .dataDetails { margin-block: 24px 36px; }
+  .dataDetails > summary { padding: 20px 16px; font-size: 16px; }
+  .dataDetailsBody { padding-inline: 12px; }
+  .anomaliesPanel { padding: 22px; }
+  .anomalyValue { font-size: 20px; }
+}

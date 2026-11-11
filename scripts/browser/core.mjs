@@ -639,6 +639,15 @@ async function stubSuccessfulHeaderSearch(page) {
   });
 }
 
+async function openHomeData(page) {
+  const summary = "#quadro-dei-conti > summary";
+  if (!(await page.$eval("#quadro-dei-conti", (details) => details.open))) {
+    await page.focus(summary);
+    await page.keyboard.press("Enter");
+    await page.waitForSelector("#quadro-dei-conti[open]");
+  }
+}
+
 async function runScenario(browser, {
   expectedFailure = () => false,
   label,
@@ -745,6 +754,7 @@ try {
       themeValidation: true,
       touch: width === 390,
       validate: async (page) => {
+        await openHomeData(page);
         await inspectInstitutionalPalette(page, { label, width });
         await inspectHomeCompositionSpacing(page, { width });
       },
@@ -2304,6 +2314,7 @@ try {
       pathname: "/",
       width,
       validate: async (page) => {
+        await openHomeData(page);
         await assertInfoTooltips(page, label);
       },
     });
@@ -2352,7 +2363,10 @@ try {
       label,
       pathname: "/",
       width,
-      validate: async (page) => assertSpendingComposition(page, label, width),
+      validate: async (page) => {
+        await openHomeData(page);
+        await assertSpendingComposition(page, label, width);
+      },
     });
     completed.push(label);
   }
@@ -2364,6 +2378,7 @@ try {
       pathname: "/",
       width,
       validate: async (page) => {
+        await openHomeData(page);
         await assertRegionalMapSelection(page, label);
       },
     });

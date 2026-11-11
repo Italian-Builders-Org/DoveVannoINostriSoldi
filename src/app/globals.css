@@ -919,3 +919,13 @@ body { --announcement-height: 44px; }
   font-weight: 400;
   list-style-position: inside;
 }
+
+/* The homepage introduces the paths; the full navigation remains in its menu. */
+body:has([data-home-editorial]) { background: var(--color-raised); }
+body:has([data-home-editorial]) .site-content { margin-left: 0; }
+body:has([data-home-editorial]) .desktop-sidebar { display: none; }
+body:has([data-home-editorial]) .mobile-menu-trigger { display: inline-flex; }
+body:has([data-home-editorial]) .site-footer { max-width: 1320px; }
+.home-header-links { display: flex; align-items: center; gap: 24px; margin-right: 16px; }
+.home-header-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text); font-size: 13px; }
+@media (max-width: 900px) { .home-header-links { display: none; } }

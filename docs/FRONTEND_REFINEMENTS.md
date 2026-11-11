@@ -98,4 +98,3 @@ la copertura del dataset; i pagamenti della Camera sono espressi in milioni.
 Il reset degli atlanti conserva indicatore e periodo e rimuove solo i filtri
 territoriali/categoriali. La cronologia conserva ogni selezione; i controlli
 mostrano lo stato di aggiornamento durante la navigazione.
-

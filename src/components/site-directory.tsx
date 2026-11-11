@@ -28,7 +28,8 @@ function DirectoryGroup({ group, initiallyOpen }: Readonly<{
   const open = expanded ?? initiallyOpen;
   return <details className={styles.group} open={open}>
     <summary onClick={(event) => { event.preventDefault(); setExpanded(!open); }}>
-      <h3>{group.title}</h3><span className={styles.count}>{group.links.length}</span>
+      <h3 id={group.title === "Mappe" ? "maps-title" : undefined}>{group.title}</h3>
+      <span className={styles.count}>{group.links.length}</span>
     </summary>
     <ul>{group.links.map((link) => <li key={link.href}>
       <Link prefetch={false} href={link.href}>{link.label}</Link>

@@ -266,12 +266,8 @@ try {
     readySelector: "#mobilita-viewer",
     async validate(page) {
       await page.waitForSelector('a[href="/#maps-title"]');
-      // Immersive Mappe uses a native anchor so the browser applies #maps-title on load.
-      await Promise.all([
-        page.waitForNavigation({ waitUntil: "domcontentloaded" }),
-        page.click('a[href="/#maps-title"]'),
-      ]);
-      assert.match(page.url(), /\/#maps-title$/);
+      await page.click('a[href="/#maps-title"]');
+      await page.waitForFunction(() => location.pathname === "/" && location.hash === "#maps-title");
       await ensureMapsOpen(page);
       await page.evaluate(() => {
         document.getElementById("maps-title")?.scrollIntoView({ block: "start" });

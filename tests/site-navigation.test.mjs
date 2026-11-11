@@ -10,11 +10,12 @@ const navigationSource = fs.readFileSync(
 );
 const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs", import.meta.url), "utf8");
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+const directoryCss = fs.readFileSync(new URL("../src/components/site-directory.module.css", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 
-test("site navigation exposes coesione asili in primary and footer maps", () => {
+test("site navigation exposes coesione asili in primary navigation and home directory", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
   assert.match(
     navigationSource,
@@ -28,9 +29,8 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.match(layoutSource, /GoogleAnalytics/);
   assert.match(globalsCss, /\.nav-submenu \{/);
   assert.doesNotMatch(globalsCss, /\.subnav-row \{/);
-  assert.match(globalsCss, /\.footer-sitemap-columns \{/);
-  assert.match(globalsCss, /column-count: 4/);
-  assert.match(globalsCss, /break-inside: avoid/);
+  assert.match(directoryCss, /column-count: 4/);
+  assert.match(directoryCss, /break-inside: avoid/);
   assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });

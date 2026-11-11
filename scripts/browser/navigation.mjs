@@ -65,12 +65,26 @@ async function assertFits(page) {
   assert.ok(geometry.root <= geometry.width + 1 && geometry.body <= geometry.width + 1, JSON.stringify(geometry));
   assert.ok(geometry.main.left >= 0 && geometry.main.right <= geometry.width + 1, JSON.stringify(geometry));
   assert.ok(geometry.search.width > 0 && geometry.search.left >= 0 && geometry.search.right <= geometry.width + 1, 'Ricerca sempre visibile');
+  const header = await page.evaluate(() => {
+    const shell = document.querySelector('.header-inner').getBoundingClientRect();
+    const main = document.querySelector('main').getBoundingClientRect();
+    const controls = [...document.querySelectorAll('.header-inner > *')].filter((node) => node.getClientRects().length).map((node) => {
+      const box = node.getBoundingClientRect();
+      return { left: box.left, right: box.right };
+    });
+    return { pathname: location.pathname, left: shell.left, right: shell.right, mainLeft: main.left, mainRight: main.right, controls };
+  });
+  if (header.pathname === '/' || header.pathname === '/spese') {
+    assert.ok(Math.abs(header.left - header.mainLeft) < 2 && Math.abs(header.right - header.mainRight) < 2, 'Header e pagina condividono la stessa larghezza');
+  }
+  assert.ok(header.controls.every((box) => box.left >= header.left && box.right <= header.right + 1), 'Tutte le azioni dell’header rientrano nel contenitore');
+
 }
 
 const browser = await launchBrowser();
 try {
   await inspectNavigationPrefetch(browser, baseUrl);
-  for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600]) {
+  for (const width of [320, 390, 768, 1024, 1099, 1100, 1280, 1440, 1600, 1920]) {
     await runScenario(browser, {
       label: `Menu ${width}px`, pathname: '/imprese?metric=employees', width, touch: width < 1100, suite: 'navigation',
       validate: async (page) => {
@@ -133,17 +147,17 @@ try {
     });
   }
 
-  for (const width of [390, 768, 1100, 1280, 1600]) await runScenario(browser, {
+  for (const width of [390, 768, 1100, 1280, 1440, 1600, 1920]) await runScenario(browser, {
     label: `Home editoriale ${width}px`, pathname: '/', width, suite: 'navigation',
     validate: async (page) => {
       await assertFits(page);
       assert.equal(await page.$('.desktop-sidebar'), null);
-      const paths = await page.$$eval('nav[aria-label="Argomenti della home"] a', (links) => links.map((link) => link.getAttribute('href')));
-      assert.equal(paths.length, 5, 'Cinque percorsi raggiungibili dall’indice');
-      for (const href of paths) {
-        await page.click(`nav[aria-label="Argomenti della home"] a[href="${href}"]`);
-        await page.waitForFunction((hash) => location.hash === hash, {}, href);
-        assert.ok(await page.$(`${href} h2`), `Destinazione senza titolo: ${href}`);
+      assert.equal(await page.$('nav[aria-label="Argomenti della home"]'), null, 'Nessun indice intermedio');
+      assert.equal(await page.$('.footer-sitemap'), null, 'Nessuna directory duplicata nel footer');
+      assert.equal(await page.$eval('[data-home-editorial] > header', (header) => header.nextElementSibling?.id), 'analisi');
+      assert.equal(await page.$$eval('#analisi > section', (sections) => sections.length), 5);
+      for (const href of ['/spese', '/imprese', '/controlli']) {
+        assert.ok(await page.$(`#analisi a[href="${href}"]`), `Accesso diretto assente: ${href}`);
       }
       assert.equal(await page.$eval('#quadro-dei-conti', (node) => node.open), false);
       await page.focus('#quadro-dei-conti > summary');
@@ -242,4 +256,4 @@ try {
     },
   });
 } finally { await closeBrowser(browser); }
-console.log(`PASS navigation: ${destinations.length} destinations, 9 widths, disclosures, focus, touch, route/query/history and resize`);
+console.log(`PASS navigation: ${destinations.length} destinations, 10 widths, disclosures, focus, touch, route/query/history and resize`);

@@ -1986,22 +1986,19 @@ try {
   }
 
   for (const width of [320, 390]) {
-    const label = `Footer sitemap ${width}px`;
+    const label = `Directory e footer ${width}px`;
     await runScenario(browser, {
       label,
       pathname: "/",
       width,
       validate: async (page) => {
         await page.waitForSelector(".site-footer", { visible: true });
-        const sitemap = await page.$(".footer-sitemap");
-        assert.ok(sitemap, `${label}: mappa del sito assente`);
-        assert.equal(await sitemap.evaluate((node) => node.open), false, "Mappa del sito chiusa inizialmente");
-        await page.click(".footer-sitemap > summary");
-        const columns = await page.$(".footer-sitemap-columns");
-        assert.ok(columns, `${label}: contenitore dei gruppi assente`);
-        const groupCount = await page.$$eval(".footer-sitemap-group", (groups) => groups.length);
-        assert.equal(groupCount, 14, `${label}: attesi 14 gruppi nella mappa, inclusi report, studi, povertà ed economia`);
-        const headings = await page.$$eval(".footer-sitemap-group h3", (items) =>
+        assert.equal(await page.$('.footer-sitemap'), null, 'Directory presente solo nella home');
+        const directory = await page.$('nav[aria-label="Mappa dei dati"]');
+        assert.ok(directory, `${label}: mappa dei dati assente`);
+        const groupCount = await page.$$eval('nav[aria-label="Mappa dei dati"] section:not([aria-labelledby])', (groups) => groups.length);
+        assert.equal(groupCount, 14, `${label}: tutti i gruppi restano nella directory`);
+        const headings = await page.$$eval('nav[aria-label="Mappa dei dati"] section:not([aria-labelledby]) h3', (items) =>
           items.map((item) => item.textContent?.trim() ?? ""),
         );
         assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
@@ -2015,12 +2012,12 @@ try {
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
         for (const href of ["/report", "/report/2026-08", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione", "/pil"]) {
           assert.ok(
-            await page.$(`.footer-sitemap-group a[href='${href}']`),
+            await page.$(`#esplora a[href='${href}']`),
             `${label}: link ${href} assente dalla mappa`,
           );
         }
         const requiredFooterLinks = [
-          [".footer-sitemap a[href='/studi']", "Paper di ricerca"],
+          ["#esplora a[href='/studi']", "Paper di ricerca"],
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-actions a[href='/termini']", "Termini"],
           [".footer-backer a[href='/supporter']", "Chi ci sostiene"],

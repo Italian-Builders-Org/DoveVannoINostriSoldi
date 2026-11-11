@@ -8,10 +8,6 @@
 .maps { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 32px; padding-block: 20px; margin-bottom: 32px; border-block: 1px solid var(--color-neutral-300); }
 .maps h3 { scroll-margin-top: 140px; }
 .maps ul { display: flex; flex-wrap: wrap; gap: 8px 32px; }
-.compact .columns { padding-top: 24px; }
-.compact .group h3 { font-size: 13px; }
-.compact .group a { font-size: 12px; min-height: 36px; }
 @media (max-width: 1000px) { .columns { column-count: 3; column-gap: 28px; } }
 @media (max-width: 760px) { .columns { column-count: 2; column-gap: 24px; } }
 @media (max-width: 420px) { .columns { column-count: 1; } .group { padding-bottom: 24px; } }
-@media (pointer: coarse) { .compact .group a { min-height: 44px; } }

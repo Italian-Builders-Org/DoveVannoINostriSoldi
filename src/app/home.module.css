@@ -416,8 +416,8 @@
 }
 
 .anomalyMeta {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  justify-items: start;
   gap: var(--space-2) var(--space-3);
   margin: 0;
   color: var(--color-neutral-600);
@@ -555,25 +555,25 @@
 .lead { max-width: 56ch; font-size: 16px; line-height: 1.7; }
 .exploreJump { flex: none; display: grid; gap: 8px; padding-block: 8px; font-size: 12px; color: var(--color-neutral-600); }
 .exploreJump span { font-weight: 600; color: var(--color-accent); }
-.dataDetails { margin-block: 32px 64px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); scroll-margin-top: 110px; }
+.dataDetails { margin-block: 32px 64px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); scroll-margin-top: calc(var(--site-header-height) + 16px); }
 .dataDetails > summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 24px; cursor: pointer; font-size: 18px; font-weight: 500; list-style: none; }
 .dataDetails > summary::-webkit-details-marker { display: none; }
 .dataDetails > summary small { display: block; margin-top: 8px; font-size: 12px; font-weight: 400; color: var(--color-neutral-600); }
 .dataDetails > summary > span:last-child { font-size: 28px; transition: transform 140ms ease; }
 .dataDetails[open] > summary > span:last-child { transform: rotate(45deg); }
 .dataDetailsBody { display: grid; gap: 20px; padding: 0 20px 20px; }
-.exploration { display: grid; gap: 28px; padding: 40px; margin-bottom: 32px; background: var(--color-surface); scroll-margin-top: 110px; }
+.exploration { display: grid; gap: 28px; padding: 40px; margin-bottom: 32px; background: var(--color-surface); scroll-margin-top: calc(var(--site-header-height) + 16px); }
 .explorationHeading { display: grid; gap: 16px; }
 .explorationHeading h2 { font-size: clamp(26px, 3vw, 38px); font-weight: 500; line-height: 1.15; letter-spacing: -.03em; margin: 0; }
 .explorationHeading > p:last-child { margin: 0; color: var(--color-neutral-700); }
 .exploration .searchForm { max-width: 44rem; margin: 0; }
-.anomaliesPanel { border: 0; background: var(--color-raised); padding: 28px; }
+.anomaliesPanel { border: 1px solid var(--color-neutral-300); background: var(--color-raised); padding: 24px; min-width: 0; gap: 0; }
 .anomalyGallery { grid-template-columns: 1fr; gap: 0; }
-.anomalyItem { padding: 20px 0; border: 0; border-bottom: 1px solid var(--color-neutral-200); background: none; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; }
+.anomalyItem { align-items: baseline; padding: 18px 0; border: 0; border-bottom: 1px solid var(--color-neutral-200); background: none; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; }
 .anomalyItemHead, .anomalyMeta { grid-column: 1 / -1; }
 .anomalyItem h3 { font-size: 14px; font-weight: 500; }
-.anomalyValue { font-size: 24px; text-align: right; }
-.anomalyCaveat { padding-top: 12px; }
+.anomalyValue { font-size: clamp(20px, 1.9vw, 24px); text-align: right; }
+.anomalyCaveat { padding-top: 16px; }
 @media (max-width: 900px) {
   .introBottom { flex-direction: column; align-items: flex-start; gap: 12px; }
   .exploration { padding: 24px; }
@@ -587,5 +587,12 @@
   .dataDetails > summary { padding: 20px 16px; font-size: 16px; }
   .dataDetailsBody { padding-inline: 12px; }
   .anomaliesPanel { padding: 22px; }
-  .anomalyValue { font-size: 20px; }
+  .anomalyItem { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .anomalyValue { font-size: 24px; text-align: left; }
 }
+
+.anomaliesHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-neutral-300); }
+.anomaliesHeader .headingWithTooltip { flex: 1 1 230px; }
+.anomaliesHeader h3 { margin: 0; }
+.anomaliesHeader .anomaliesLink { min-height: 44px; }
+.anomalyArea { font-size: 10px; }

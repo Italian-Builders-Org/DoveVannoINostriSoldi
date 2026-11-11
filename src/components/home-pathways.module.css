@@ -1,12 +1,5 @@
-.index { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-block: 1px solid var(--color-neutral-300); }
-.index a { display: flex; flex-direction: column; gap: 12px; padding: 24px 20px; color: var(--color-text); text-decoration: none; border-right: 1px solid var(--color-neutral-300); transition: background 140ms ease; }
-.index a:first-child { padding-left: 0; }
-.index a:last-child { border-right: 0; }
-.index a:hover { background: var(--color-surface); }
-.index strong { display: flex; justify-content: space-between; gap: 12px;  font-size: 17px; line-height: 1.25; font-weight: 600; }
-.index a > span { color: var(--color-neutral-600); font-size: 12px; line-height: 1.5; }
-.pathways { min-width: 0; }
-.feature { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; gap: clamp(32px, 6vw, 96px); padding-block: 64px; border-bottom: 1px solid var(--color-neutral-300); scroll-margin-top: 120px; }
+.pathways { scroll-margin-top: calc(var(--site-header-height) + 16px); min-width: 0; border-top: 1px solid var(--color-neutral-300); }
+.feature { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: center; gap: clamp(32px, 6vw, 96px); padding-block: 64px; border-bottom: 1px solid var(--color-neutral-300); scroll-margin-top: calc(var(--site-header-height) + 16px); }
 .copy { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; min-width: 0; }
 .copy h2 { margin: 0; font-size: clamp(29px, 3vw, 44px); line-height: 1.1; font-weight: 500; letter-spacing: -.035em; text-wrap: balance; }
 .copy p { margin: 0; max-width: 43ch; font-size: 16px; line-height: 1.7; color: var(--color-neutral-700); }
@@ -37,38 +30,30 @@
 .institutions .source { border-color: color-mix(in srgb, var(--color-on-strong) 25%, transparent); }
 .institutionsTitle { margin: 10px 0 28px; font-size: clamp(28px, 3vw, 40px); font-weight: 400; line-height: 1.2; letter-spacing: -.03em; }
 .institutionLinks { display: grid; }
-.institutionLinks a { display: flex; justify-content: space-between; gap: 12px; padding-block: 13px; border-top: 1px solid color-mix(in srgb, var(--color-on-strong) 25%, transparent); color: inherit; text-decoration: none; font-size: 13px; }
+.institutionLinks a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-height: 44px; gap: 12px; padding-block: 13px; border-top: 1px solid color-mix(in srgb, var(--color-on-strong) 25%, transparent); color: inherit; text-decoration: none; font-size: 13px; }
 .institutionLinks a:hover { text-decoration: underline; }
 .atlasPreview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .atlas { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 28px 22px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); color: var(--color-text); text-decoration: none; min-width: 0; }
 .atlas:hover { border-color: var(--color-accent); }
-.atlas > svg { margin-bottom: 32px; color: var(--chart-data-primary); }
+.atlas > svg { margin-bottom: 16px; color: var(--chart-data-primary); }
 .atlas strong { font-size: 26px; font-weight: 500; letter-spacing: -.025em; }
-.atlas > span:not(.smallLabel) { font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); }
-.atlas .atlasAction { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; margin-top: 24px; color: var(--color-accent); }
+.atlas > span:not(.smallLabel):not(.atlasAction) { font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); }
+.atlas .atlasAction { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 8px; font-size: 12px; line-height: 1.6; margin-top: auto; padding-top: 24px; color: var(--color-accent); }
 .atlasNote { grid-column: 1 / -1; margin: 0; font-size: 11px; color: var(--color-neutral-600); line-height: 1.7; }
 .analysisFeature > section { grid-column: auto; }
 @media (max-width: 900px) {
-  .index { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .index a { border-bottom: 1px solid var(--color-neutral-300); padding: 18px; }
-  .index a:first-child { padding-left: 18px; }
-  .index a:nth-child(3) { border-right: 0; }
-  .feature { gap: 30px; }
+  .feature { grid-template-columns: 1fr; gap: 30px; padding-block: 44px; }
   .copy h2 { font-size: 32px; }
   .preview { padding: 20px; }
-  .atlasPreview { grid-template-columns: 1fr; }
+  .atlasPreview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .atlas { gap: 10px; padding: 20px; }
   .atlas > svg { margin-bottom: 4px; }
-  .atlas .atlasAction { margin-top: 8px; }
+  .atlas .atlasAction { padding-top: 12px; }
   .territoryBody { gap: 10px; }
   .territoryFacts strong { font-size: 23px; }
 }
 @media (max-width: 620px) {
-  .index { grid-template-columns: 1fr; }
-  .index a, .index a:first-child { display: grid; grid-template-columns: 1fr; gap: 5px 12px; padding: 16px 0; border-right: 0; }
-  .index strong { display: flex; justify-content: space-between; gap: 12px;  font-size: 16px; }
-  .index a > span { grid-column: 1; }
-  .feature { grid-template-columns: 1fr; padding-block: 40px; gap: 28px; scroll-margin-top: 104px; }
+  .feature { grid-template-columns: 1fr; padding-block: 40px; gap: 28px; }
   .copy { gap: 18px; }
   .copy h2 { font-size: 34px; }
   .copy p { font-size: 15px; }
@@ -82,4 +67,8 @@
   .atlas .atlasAction { font-size: 11px; }
 }
 
-.index strong svg { flex: none; color: var(--color-accent); }
+.primaryLink [data-link-arrow], .institutionLinks [data-link-arrow], .atlasAction [data-link-arrow] { flex: none; width: 18px; height: 18px; }
+@media (max-width: 420px) {
+  .atlasPreview { grid-template-columns: 1fr; }
+  .atlas { padding: 22px; }
+}

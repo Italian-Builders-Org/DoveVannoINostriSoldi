@@ -9,29 +9,8 @@ import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format
 import { PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./home-pathways.module.css";
 
-const PATHWAYS = [
-  { id: "spesa-pubblica", title: "Spesa pubblica", description: "Bilanci, servizi e pagamenti" },
-  { id: "comuni-territori", title: "Comuni e territori", description: "Dati comunali e confronti" },
-  { id: "politica-istituzioni", title: "Politica e istituzioni", description: "Incarichi e attività parlamentari" },
-  { id: "economia-societa", title: "Economia e società", description: "Imprese, lavoro e istruzione" },
-  { id: "controlli-analisi", title: "Controlli e analisi", description: "Appalti, verifiche e ricerca" },
-] as const;
-
 function Arrow() {
-  return <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />;
-}
-
-export function HomePathwayIndex() {
-  return (
-    <nav className={styles.index} aria-label="Argomenti della home">
-      {PATHWAYS.map((pathway) => (
-        <a key={pathway.id} href={`#${pathway.id}`}>
-          <strong>{pathway.title}<Arrow /></strong>
-          <span>{pathway.description}</span>
-        </a>
-      ))}
-    </nav>
-  );
+  return <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={18} aria-hidden="true" />;
 }
 
 export function HomePathways({ funnel, siope, children }: Readonly<{

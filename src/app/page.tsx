@@ -6,7 +6,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/home-italy-charts";
-import { HomePathwayIndex, HomePathways } from "@/components/home-pathways";
+import { HomePathways } from "@/components/home-pathways";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
 import { PeriodSelector } from "@/components/period-selector";
@@ -148,24 +148,25 @@ export default async function HomePage({
         <h1 className={styles.pageTitle}>Dove vanno<br /><span>i nostri soldi?</span></h1>
         <div className={styles.introBottom}>
           <p className={styles.lead}>Dati sulla spesa pubblica italiana, sui territori e sulle istituzioni. Ogni analisi riporta le fonti, il periodo di riferimento e i limiti dei confronti.</p>
-          <a href="#esplora" className={styles.exploreJump}><span>Mappa del sito ↓</span></a>
+          <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
       </header>
-      <HomePathwayIndex />
       <HomePathways funnel={funnel} siope={siope}>
       <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
-        <div className={`${styles.panelHead} ${styles.compactHeader}`}>
-          <h3 id="anomalies-title" className="panel-title">
-            Anomalie da approfondire
-          </h3>
+        <div className={styles.anomaliesHeader}>
+          <div className={styles.headingWithTooltip}>
+            <h3 id="anomalies-title" className="panel-title">
+              Anomalie da approfondire
+            </h3>
+            <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
+              Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
+              con le fonti: non dimostra sprechi o illeciti.
+            </InfoTooltip>
+          </div>
           <Link prefetch={false} className={styles.anomaliesLink} href="/controlli">
             Tutti i controlli
-            <HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" />
+            <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={16} aria-hidden="true" />
           </Link>
-          <InfoTooltip id="anomalies-tip" label="Che cosa chiamiamo anomalia?">
-            Un valore insolito rispetto a enti simili o a una soglia statistica. Da verificare
-            con le fonti: non dimostra sprechi o illeciti.
-          </InfoTooltip>
         </div>
         <div className={styles.anomalyGallery}>
           {anomalySignals.map((signal) => {

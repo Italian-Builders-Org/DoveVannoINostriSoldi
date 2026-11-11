@@ -8,7 +8,6 @@ import {
   TiktokIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { SiteDirectory } from "@/components/site-directory";
 import { REPO_URL, SOCIAL_LINKS } from "@/lib/site";
 
 const SOCIAL_ICONS = {
@@ -27,7 +26,7 @@ export function SiteFooter() {
           <div className="footer-support-copy">
             <strong id="footer-support-title">Dove vanno i nostri soldi?</strong>
             <span>Dati ufficiali sulla spesa pubblica italiana.</span>
-            <Link prefetch={false} href="/metodologia" className="footer-support-label">Fonti e metodo →</Link>
+            <Link prefetch={false} href="/metodologia" className="footer-support-label">Fonti e metodo</Link>
           </div>
         </aside>
         <div className="footer-directory">
@@ -48,10 +47,6 @@ export function SiteFooter() {
           </nav>
         </div>
       </div>
-      <details className="footer-sitemap">
-        <summary>Mappa del sito</summary>
-        <SiteDirectory compact />
-      </details>
       <p className="footer-disclaimer">
         Usiamo anche l’AI per organizzare e presentare i dati. Sono possibili errori:
         verifica le fonti originali prima di decidere. Il sito non fornisce consulenza.{" "}

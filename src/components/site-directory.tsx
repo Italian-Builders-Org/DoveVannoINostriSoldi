@@ -3,12 +3,11 @@ import { FOOTER_SITEMAP_GROUPS } from "@/lib/site-navigation";
 import { MOBILITA_MAP_PATH, PUBLIC_COMUNI_URL, PUBLIC_POLITICI_URL } from "@/lib/site";
 import styles from "./site-directory.module.css";
 
-export function SiteDirectory({ compact = false, showMaps = false }: Readonly<{
-  compact?: boolean;
+export function SiteDirectory({ showMaps = false }: Readonly<{
   showMaps?: boolean;
 }>) {
   return (
-    <div className={compact ? styles.compact : styles.directory}>
+    <nav className={styles.directory} aria-label="Mappa dei dati">
       {showMaps ? <section className={styles.maps} aria-labelledby="maps-title">
         <h3 id="maps-title">Mappe</h3>
         <ul>
@@ -27,6 +26,6 @@ export function SiteDirectory({ compact = false, showMaps = false }: Readonly<{
           </section>
         ))}
       </div>
-    </div>
+    </nav>
   );
 }

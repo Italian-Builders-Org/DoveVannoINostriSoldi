@@ -46,7 +46,7 @@ export default function MobilitaMapPage() {
             </div>
           </details>
           <ThemeToggle />
-          <Link className={styles.immersiveHomeLink} href="/#comuni-territori">
+          <Link className={styles.immersiveHomeLink} href="/#maps-title">
             Mappe
           </Link>
           <Link

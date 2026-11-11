@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./politici.module.css";
+import { SitePageLink } from "@/components/site-page-link";
 
 export default function PoliticiError({ reset }: { error: Error & { digest?: string; }; reset: () => void; }) {
   return <div className={styles.immersivePage}>
@@ -9,7 +10,7 @@ export default function PoliticiError({ reset }: { error: Error & { digest?: str
       <h1>La mappa non è disponibile.</h1>
       <p>Non siamo riusciti a caricare i dati. Non mostriamo valori vuoti al posto di quelli mancanti.</p>
       <button type="button" className={styles.primaryButton} onClick={reset}>Riprova</button>
-      <a className={styles.textButton} href="https://www.dovevannoinostrisoldi.com/">Torna al sito</a>
+      <SitePageLink className={styles.textButton} href="/">Torna al sito</SitePageLink>
     </div>
   </div>;
 }

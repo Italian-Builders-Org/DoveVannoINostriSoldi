@@ -1,6 +1,5 @@
 /**
- * Primary navigation and footer sitemap. One source so header submenus and the
- * footer map stay aligned.
+ * Primary navigation and home directory. One source keeps all section links aligned.
  *
  * The immersive map also lives on politici.dovevannoinostrisoldi.com and the
  * municipal footprint on comuni.dovevannoinostrisoldi.com (see PUBLIC_POLITICI_URL /
@@ -60,6 +59,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     icon: "money",
     aliases: ["/stato", "/entrate", "/manovra"],
     children: [
+      { href: "/spese/panoramica", label: "Spesa pubblica" },
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
@@ -259,6 +259,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   {
     title: "Soldi",
     links: [
+      { href: "/spese/panoramica", label: "Spesa pubblica" },
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },

@@ -1,0 +1,13 @@
+.directory { margin-top: 40px; }
+.columns { column-count: 4; column-gap: 36px; }
+.group { break-inside: avoid; padding-bottom: 28px; }
+.group h3, .maps h3 { margin: 0 0 10px; color: var(--color-text); font-size: 16px; font-weight: 600; }
+.group ul, .maps ul { list-style: none; margin: 0; padding: 0; }
+.group a, .maps a { display: inline-flex; align-items: center; min-height: 44px; padding-block: 8px; color: var(--color-neutral-700); font-size: 14px; line-height: 1.5; text-decoration: none; }
+.group a:hover, .maps a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 4px; }
+.maps { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 32px; padding-block: 20px; margin-bottom: 32px; border-block: 1px solid var(--color-neutral-300); }
+.maps h3 { scroll-margin-top: 140px; }
+.maps ul { display: flex; flex-wrap: wrap; gap: 8px 32px; }
+@media (max-width: 1000px) { .columns { column-count: 3; column-gap: 28px; } }
+@media (max-width: 760px) { .columns { column-count: 2; column-gap: 24px; } }
+@media (max-width: 420px) { .columns { column-count: 1; } .group { padding-bottom: 24px; } }

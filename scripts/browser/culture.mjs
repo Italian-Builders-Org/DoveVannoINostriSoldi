@@ -95,7 +95,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       console.log(`PASS Cultura ${width}px`);
     }
     for (const width of [390, 1280]) {
-      await runScenario(browser, { label: `Home cultura sport ${width}px`, pathname: "/?anno=2014", width, validate: inspectCultureJourney, suite: "culture" });
+      await runScenario(browser, { label: `Home cultura sport ${width}px`, pathname: "/spese/panoramica?anno=2014", width, validate: inspectCultureJourney, suite: "culture" });
       console.log(`PASS Home cultura sport ${width}px`);
     }
     await inspectInvalidCultureYears(baseUrl);

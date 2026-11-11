@@ -16,6 +16,8 @@ try {
       label: `Archivio Studi ${width}px`, pathname: "/paper", width, suite: "papers",
       validate: async (page) => {
         await page.waitForNetworkIdle({ idleTime: 250, timeout: 10_000 });
+        await page.click('.mobile-menu-trigger');
+        await page.waitForSelector('#mobile-navigation:modal .primary-nav', {visible: true});
         const state = await page.evaluate(() => ({
           headings: [...document.querySelectorAll("main h1")].map((node) => node.textContent),
           overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
@@ -37,10 +39,11 @@ try {
         assert.equal(state.pdf, "/studi/tre-interventi-sprechi/v1/tre-interventi-sprechi.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
-        const navLabels = await page.$$eval('#desktop-navigation .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
+        const navLabels = await page.$$eval('#mobile-navigation-links .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
         assert.deepEqual(navLabels.slice(0, 7), ['Home', 'Imprese', 'Istruzione', 'Povertà', 'Soldi', 'Economia', 'Territori']);
         assert.deepEqual(navLabels.slice(-2), ['Report', 'Studi']);
-        assert.equal(await page.$$eval('#desktop-navigation .nav-item > a > svg', (icons) => icons.length), navLabels.length);
+        assert.equal(await page.$$eval('#mobile-navigation-links .nav-item > a > svg', (icons) => icons.length), navLabels.length);
+        await page.keyboard.press('Escape');
         const details = await page.$("main details summary");
         await details.focus();
         await page.keyboard.press("Enter");

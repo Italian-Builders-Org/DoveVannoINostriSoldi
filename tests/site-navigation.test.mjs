@@ -10,11 +10,12 @@ const navigationSource = fs.readFileSync(
 );
 const browserCoreSource = fs.readFileSync(new URL("../scripts/browser/core.mjs", import.meta.url), "utf8");
 const layoutSource = fs.readFileSync(new URL("../src/app/layout.tsx", import.meta.url), "utf8");
+const directoryCss = fs.readFileSync(new URL("../src/components/site-directory.module.css", import.meta.url), "utf8");
 const globalsCss = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
 
 const { activeNavSection, flattenNavLinks, isNavChildActive, isNavSectionActive, PRIMARY_NAV } = await import("../src/lib/site-navigation.ts");
 
-test("site navigation exposes coesione asili in primary and footer maps", () => {
+test("site navigation exposes coesione asili in primary navigation and home directory", () => {
   assert.match(navigationSource, /href: "\/coesione\/asili", label: "Asili e prima infanzia"/);
   assert.match(
     navigationSource,
@@ -28,9 +29,8 @@ test("site navigation exposes coesione asili in primary and footer maps", () => 
   assert.match(layoutSource, /GoogleAnalytics/);
   assert.match(globalsCss, /\.nav-submenu \{/);
   assert.doesNotMatch(globalsCss, /\.subnav-row \{/);
-  assert.match(globalsCss, /\.footer-sitemap-columns \{/);
-  assert.match(globalsCss, /column-count: 4/);
-  assert.match(globalsCss, /break-inside: avoid/);
+  assert.match(directoryCss, /column-count: 4/);
+  assert.match(directoryCss, /break-inside: avoid/);
   assert.doesNotMatch(globalsCss, /\.footer-sitemap-rows \{/);
   assert.doesNotMatch(globalsCss, /var\(--space-5\)/);
 });
@@ -98,8 +98,8 @@ test("supporters page lists the current acknowledgements", async () => {
   assert.match(page, /BUY_ME_A_COFFEE_URL/);
   assert.match(page, /supporter\.href \?/);
   assert.match(footer, /href="\/supporter"/);
-  assert.match(footer, /BUY_ME_A_COFFEE_URL/);
-  assert.match(footer, /Sostieni DVNS/);
+  assert.doesNotMatch(footer, /BUY_ME_A_COFFEE_URL|buymeacoffee\.com/);
+  assert.match(footer, /Dati ufficiali sulla spesa pubblica italiana/);
   assert.doesNotMatch(footer, /SITE_SUPPORTERS/);
   assert.doesNotMatch(footer, /Con il supporto di/);
   assert.doesNotMatch(footer, /MANTO_VENTURE\.href/);
@@ -241,7 +241,7 @@ test("studies and their alias select a single dedicated primary section", () => 
 
 test("mappa della politica nav keeps same-origin /politici; homepage uses the subdomain", async () => {
   const { PUBLIC_POLITICI_URL } = await import("../src/lib/site.ts");
-  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const institutions = PRIMARY_NAV.find((item) => item.href === "/istituzioni");
   const mapLinks = flattenNavLinks(institutions?.children ?? []).filter((link) =>
     link.label === "Mappa della politica",
@@ -255,7 +255,7 @@ test("mappa della politica nav keeps same-origin /politici; homepage uses the su
 
 test("mappa dei comuni nav keeps same-origin /comuni; homepage uses the subdomain", async () => {
   const { PUBLIC_COMUNI_URL } = await import("../src/lib/site.ts");
-  const home = await readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+  const home = await readFile(new URL("../src/components/home-pathways.tsx", import.meta.url), "utf8");
   const entities = PRIMARY_NAV.find((item) => item.href === "/enti");
   const mapLinks = flattenNavLinks(entities?.children ?? []).filter((link) =>
     link.label === "Mappa dei Comuni",

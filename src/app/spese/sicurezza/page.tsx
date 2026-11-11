@@ -34,7 +34,7 @@ export default async function PublicOrderPage({ searchParams }: PageProps<"/spes
         <h1>Ordine pubblico e sicurezza</h1>
         <p>Quanto spendono le amministrazioni pubbliche per questa funzione? La serie Eurostat copre gli anni {view.period.from}-{view.period.to}.</p>
         <p className={styles.links}>
-          <Link href={`/?anno=${year}#pa-split-title`}>Composizione della spesa italiana →</Link>
+          <Link href={`/spese/panoramica?anno=${year}#pa-split-title`}>Composizione della spesa italiana →</Link>
           <a href="#sicurezza-fonti">Dati e fonti ↓</a>
         </p>
       </header>

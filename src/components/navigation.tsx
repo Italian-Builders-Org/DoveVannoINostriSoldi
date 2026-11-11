@@ -11,7 +11,6 @@ import { HeaderSearch } from "@/components/header-search";
 import { BoardsAccountMenu } from "@/components/boards-account-menu";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
-import { readStoredSidebarState, setSidebarState } from "@/lib/sidebar";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon, Menu01Icon, Cancel01Icon,
@@ -132,9 +131,9 @@ function NavSubtree({
   );
 }
 
-/** One link map and disclosure implementation for both responsive surfaces. */
-function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNavigate }:
-  NavigationLocation & Readonly<{ id: string; collapsed?: boolean; onNavigate?: () => void }>) {
+/** The same menu is available on desktop and mobile. */
+function NavigationLinks({ pathname, currentSearch, id, onNavigate }:
+  NavigationLocation & Readonly<{ id: string; onNavigate?: () => void }>) {
   const [selection, setSelection] = useState<{ pathname: string; href: string | null } | null>(null);
   const activeSection = PRIMARY_NAV.find((item) => item.children?.length && isNavSectionActive(pathname, item));
   const openHref = selection?.pathname === pathname ? selection.href : activeSection?.href;
@@ -150,7 +149,7 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
         {PRIMARY_NAV.map((item) => {
           const active = isNavSectionActive(pathname, item);
           const hasChildren = Boolean(item.children?.length);
-          const open = !collapsed && openHref === item.href;
+          const open = openHref === item.href;
           // Key off the section href, not the icon: icons can repeat (or collide).
           const menuKey = item.href.replace(/^\//, "").replace(/\//g, "-") || "home";
           const menuId = `${id}-${menuKey}`;
@@ -160,7 +159,7 @@ function NavigationLinks({ pathname, currentSearch, id, collapsed = false, onNav
               {item.href === "/imprese" || item.href === "/report" ? (
                 <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Dati"}</span>
               ) : null}
-              <IntentLink href={item.href} title={collapsed ? item.label : undefined}
+              <IntentLink href={item.href}
                 aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
                 data-section-active={active ? "true" : undefined} onNavigate={onNavigate}>
                 <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={19} strokeWidth={1.8} aria-hidden="true" />
@@ -210,48 +209,36 @@ function NavigationSearchSync({ onChange }: Readonly<{ onChange: (search: string
 }
 
 function NavigationContent({ pathname, currentSearch, announcements }: NavigationLocation & Readonly<{ announcements: readonly PublicationAnnouncementItem[] }>) {
-  // The prepaint script reserves the saved width before React hydrates.
-  const [collapsed, setCollapsed] = useState(true);
-  const [pointerInside, setPointerInside] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
-  const collapseRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const openedLocationRef = useRef("");
   const backdropPointerRef = useRef(false);
-  const compact = collapsed && !pointerInside;
-
-  useEffect(() => {
-    const sync = () => {
-      const state = readStoredSidebarState();
-      document.documentElement.dataset.sidebar = state;
-      setCollapsed(state !== "pinned");
-    };
-    const onStorage = (event: StorageEvent) => {
-      if (event.key === "sidebar" || event.key === null) sync();
-    };
-    sync();
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  function togglePinned() {
-    // Hover expands the preview before a mouse click; toggle the saved preference.
-    const next = !collapsed;
-    setCollapsed(next);
-    setSidebarState(next ? "rail" : "pinned");
-    setPointerInside(false);
-  }
-
   function closeDrawer() { dialogRef.current?.close(); }
   function openDrawer() {
     const dialog = dialogRef.current;
-    if (!dialog || dialog.open) return;
+    if (!dialog) return;
+    // Keep React state aligned with the native dialog: an outside/Escape close can
+    // leave open=true for a tick, or reopen while drawerOpen is still false.
+    if (dialog.open) {
+      if (!drawerOpen) {
+        setDrawerOpen(true);
+        closeRef.current?.focus();
+      }
+      return;
+    }
     openedLocationRef.current = window.location.pathname + window.location.search;
-    dialog.showModal();
-    setDrawerOpen(true);
-    closeRef.current?.focus();
+    // Defer showModal until after the opening click/tap finishes. The drawer is
+    // fullscreen and its close control sits under the menu trigger; a same-tick
+    // showModal lets the mouse click land on Chiudi and dismiss immediately
+    // (touch paths often avoid that retarget).
+    window.setTimeout(() => {
+      if (!dialog.isConnected || dialog.open) return;
+      dialog.showModal();
+      setDrawerOpen(true);
+      closeRef.current?.focus();
+    }, 0);
   }
 
   useEffect(() => {
@@ -260,20 +247,6 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
       dialogRef.current.close();
     }
   }, [pathname, currentSearch]);
-
-  useEffect(() => {
-    const media = window.matchMedia("(min-width: 1100px)");
-    function resize() {
-      if (media.matches && dialogRef.current?.open) {
-        dialogRef.current.close();
-        collapseRef.current?.focus();
-      } else if (!media.matches && document.activeElement?.closest(".desktop-sidebar")) {
-        mobileTriggerRef.current?.focus();
-      }
-    }
-    media.addEventListener("change", resize);
-    return () => media.removeEventListener("change", resize);
-  }, []);
 
   return (
     <>
@@ -290,38 +263,20 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
           </IntentLink>
           <span className="header-spacer" />
+          <nav className="home-header-links" aria-label="Sezioni del sito">
+            <IntentLink href="/#analisi">Analisi</IntentLink>
+            <IntentLink href="/#esplora">Esplora i dati</IntentLink>
+          </nav>
           <HeaderSearch />
           <div className="header-actions">
             <ThemeToggle />
-            <BoardsAccountMenu />
-            <IntentLink className="header-action header-action-accent" href="/mcp" aria-label="Istruzioni MCP">MCP</IntentLink>
-            <a className="header-action header-action-icon" href={REPO_URL} target="_blank" rel="noreferrer"
-              aria-label="Codice su GitHub, si apre in una nuova scheda" title="Codice su GitHub">
-              <HugeiconsIcon icon={GithubIcon} size={19} strokeWidth={1.7} aria-hidden="true" />
+            {pathname !== "/" ? <BoardsAccountMenu /> : null}
+            <a href={REPO_URL} className="header-action header-action-icon" aria-label="Codice su GitHub" title="Codice su GitHub">
+              <HugeiconsIcon icon={GithubIcon} size={22} strokeWidth={1.7} aria-hidden="true" />
             </a>
           </div>
         </div>
       </header>
-      <aside className="desktop-sidebar" data-collapsed={compact} aria-label="Menu del sito"
-        onPointerEnter={() => setPointerInside(true)}
-        onPointerLeave={() => setPointerInside(false)}
-        onBlurCapture={(event) => {
-          // CSS can hide the focused control before the media change callback.
-          if (!event.relatedTarget && !window.matchMedia("(min-width: 1100px)").matches) {
-            mobileTriggerRef.current?.focus();
-          }
-        }}>
-        <div className="sidebar-toolbar">
-          <button type="button" className="navigation-button sidebar-collapse" ref={collapseRef}
-            aria-label={collapsed ? "Espandi menu laterale" : "Riduci menu laterale"}
-            title={collapsed ? "Espandi menu laterale" : "Riduci menu laterale"}
-            aria-pressed={!collapsed} aria-controls="desktop-navigation" onClick={togglePinned}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" strokeWidth="1.8" /><path d="M9 4v16" stroke="currentColor" strokeWidth="1.8" /></svg>
-          </button>
-        </div>
-        <NavigationLinks id="desktop-navigation" pathname={pathname} currentSearch={currentSearch} collapsed={compact} />
-        <div className="sidebar-callout"><ReportProblemButton variant="sidebar" compact={compact} /></div>
-      </aside>
       <dialog id="mobile-navigation" className="mobile-navigation" ref={dialogRef} aria-labelledby="mobile-navigation-title"
         onClose={() => setDrawerOpen(false)}
         onKeyDown={(event) => {
@@ -350,7 +305,12 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
               <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
-          {drawerOpen ? <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} /> : null}
+          {/* Keep the nav mounted while the dialog is closed so section-active
+              markers stay queryable and showModal does not wait on a re-render. */}
+          <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} />
+          <nav className="navigation-tools" aria-label="Strumenti del progetto">
+            <IntentLink href="/mcp" onNavigate={closeDrawer}>Accesso MCP</IntentLink>
+          </nav>
           <div className="sidebar-callout"><ReportProblemButton variant="sidebar" onOpen={closeDrawer} restoreFocusRef={mobileTriggerRef} /></div>
         </div>
       </dialog>

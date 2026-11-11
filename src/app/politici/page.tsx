@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getParlamentoGiudiziario, documentedConvictions, graphPeopleWithDocumentedCases, judicialCoverageNote } from "@/lib/parlamento-giudiziario";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
-import { PUBLIC_SITE_URL } from "@/lib/site";
+import { SitePageLink } from "@/components/site-page-link";
 import { readAtlasState, longDate } from "./atlas-model";
 import { RepubblicaGraph } from "./repubblica-graph";
 import styles from "./politici.module.css";
@@ -34,9 +34,9 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
     <header className={styles.immersiveChrome}>
       <div className={styles.brandLockup}>
         {/* Hard navigation: soft-nav from the immersive SSR shell used to leave `/` without menu. */}
-        <a className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
+        <SitePageLink className={styles.immersiveBrand} href="/" aria-label="DoveVannoINostriSoldi, pagina iniziale">
           DVNS
-        </a>
+        </SitePageLink>
         <h1 className={styles.srOnly}>Atlante della politica italiana</h1>
       </div>
       <div className={styles.immersiveActions}>
@@ -71,15 +71,15 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
             <p>Gli emicicli sono rappresentazioni stilizzate: i gruppi sono disposti in ordine alfabetico, non secondo i posti reali o una misura di orientamento politico. Le co-citazioni nelle notizie non dimostrano relazioni personali.</p>
             <nav aria-label="Altri approfondimenti">
               <Link href="/politici/europa">Eurodeputati</Link>
-              <Link href={`${PUBLIC_SITE_URL}/parlamento`}>Parlamento</Link>
-              <Link href={`${PUBLIC_SITE_URL}/governi`}>Governi</Link>
+              <SitePageLink href="/parlamento">Parlamento</SitePageLink>
+              <SitePageLink href="/governi">Governi</SitePageLink>
             </nav>
           </div>
         </details>
         <Link className={styles.immersiveHomeLink} href="/politici/europa" data-europa-entry="">
           Eurodeputati
         </Link>
-        <a className={styles.immersiveHomeLink} href={PUBLIC_SITE_URL}>Torna al sito <span aria-hidden="true">↗</span></a>
+        <SitePageLink className={styles.immersiveHomeLink} href="/">Torna al sito</SitePageLink>
         <ThemeToggle />
       </div>
     </header>

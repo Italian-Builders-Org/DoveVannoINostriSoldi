@@ -31,7 +31,7 @@ test("home anomaly gallery keeps the compact presentation and one caveat", () =>
   assert.doesNotMatch(homePage, /ContractsIcon|ShieldCheck|CalendarClockIcon/);
   assert.match(homePage, /signal\.source\.url/);
   assert.match(homePage, /signal\.source\.institution/);
-  assert.match(homePage, /Segnale da verificare, non prova/);
+  assert.match(homePage, /Gli indicatori richiedono una verifica sulle fonti originali/);
   assert.match(homePage, /href="\/controlli"/);
   assert.doesNotMatch(homePage, /procurement\.byValue/);
   assert.doesNotMatch(homePage, /procurement\.procedureCount/);

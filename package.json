@@ -41,6 +41,7 @@
     "bench:runtime": "node --experimental-strip-types scripts/bench/runtime.mjs",
     "test:browser:theme": "node scripts/browser/theme.mjs",
     "test:browser:navigation": "node --experimental-strip-types scripts/browser/navigation.mjs",
+    "test:browser:site-design": "node --experimental-strip-types scripts/browser/site-design.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:assistant-free": "node scripts/browser/assistant-free.mjs",
     "test:browser:assistant": "node scripts/browser/assistant-chat.mjs",

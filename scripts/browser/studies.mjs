@@ -17,11 +17,10 @@ try {
       label: `Studi: archivio, dettaglio e download a ${width}px`,
       suite: "studies", pathname: "/fonti", width, waitUntil: "networkidle2",
       validate: async (page) => {
-        assert.equal(await page.$eval(".footer-sitemap", (element) => element.open), false);
-        await page.focus(".footer-sitemap > summary");
-        await page.keyboard.press("Enter");
-        await page.waitForFunction(() => document.querySelector(".footer-sitemap")?.open);
-        await page.click('footer a[href="/studi"]');
+        assert.equal(await page.$('.footer-sitemap'), null);
+        await page.click('.mobile-menu-trigger');
+        await page.waitForSelector('#mobile-navigation:modal .primary-nav', {visible: true});
+        await page.click('#mobile-navigation-links a[href="/studi"]');
         await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Paper di ricerca");
         await page.waitForFunction(() => {
           const title = document.querySelector("main h1")?.getBoundingClientRect();

@@ -16,31 +16,16 @@ await mkdir(output, { recursive: true });
 await waitForServer(baseUrl, { readyPath: "/mappe/mobilita" });
 const browser = await launchBrowser();
 
-const MAP_LIST = '[aria-label="Mappe immersive"]';
+const MAP_LIST = 'section[aria-labelledby="maps-title"] ul';
 const MAP_CARD = `${MAP_LIST} a[href="/mappe/mobilita"]`;
 
 async function assertMapGrid(page, width) {
-  const metrics = await page.$$eval(`${MAP_LIST} > li`, (items) =>
-    items.map((item) => {
-      const rect = item.getBoundingClientRect();
-      return {
-        title: item.querySelector("a")?.innerText?.split("\n")[1]?.trim() ?? "",
-        height: rect.height,
-        top: rect.top,
-      };
-    }),
-  );
-  assert.equal(metrics.length, 3, "Mappe: tre schede attese");
-  const sameRow =
-    width >= 1100 ? metrics : width >= 720 ? metrics.slice(0, 2) : [];
-  if (sameRow.length > 1) {
-    const maxHeight = Math.max(...sameRow.map((row) => row.height));
-    const minHeight = Math.min(...sameRow.map((row) => row.height));
-    assert.ok(
-      maxHeight - minHeight <= 2,
-      `Altezze schede disallineate (${minHeight}–${maxHeight}px)`,
-    );
-  }
+  const links = await page.$$eval(`${MAP_LIST} a`, (items) => items.map((item) => {
+    const rect = item.getBoundingClientRect();
+    return { title: item.textContent.trim(), height: rect.height, left: rect.left, right: rect.right };
+  }));
+  assert.deepEqual(links.map((link) => link.title), ['Mappa dei Comuni', 'Mappa della politica', 'Mappa della mobilità']);
+  assert.ok(links.every((link) => link.height >= 44 && link.left >= 0 && link.right <= width + 1), 'Mappe: collegamenti accessibili senza overflow');
   assert.equal(
     await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
     true,

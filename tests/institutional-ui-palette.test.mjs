@@ -63,8 +63,8 @@ for (const [theme, tokens] of Object.entries({ light, dark })) {
   });
 }
 
-test("home bars, map and additive composition retain dedicated data roles and text equivalents", () => {
-  for (const file of ["../src/app/home.module.css", "../src/components/home-italy-charts.module.css"]) {
+test("spending bars, map and additive composition retain dedicated data roles and text equivalents", () => {
+  for (const file of ["../src/app/spese/panoramica/panoramica.module.css", "../src/components/home-italy-charts.module.css"]) {
     const source = fs.readFileSync(new URL(file, import.meta.url), "utf8");
     assert.match(source, /background: var\(--chart-data-primary\)/);
     assert.match(source, /background: var\(--chart-data-track\)/);

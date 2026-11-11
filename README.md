@@ -20,45 +20,46 @@ Bilanci, pagamenti, appalti, debito, partecipazioni e fonti istituzionali esisto
 
 Oggi il portale copre spesa pubblica (Eurostat COFOG), pagamenti comunali, imprese, istruzione, sanità, pensioni, debito, fondi e progetti, **opere pubbliche (previsto vs effettivo)**, enti, appalti ANAC, povertà, segnali da fonti ufficiali e una pagella politico-economica dei governi. Il [registro fonti](https://www.dovevannoinostrisoldi.com/fonti) elenca 60 collegamenti ufficiali. Il [catalogo MCP](https://www.dovevannoinostrisoldi.com/mcp) espone 103 dataset interrogabili in sola lettura. L’[assistente](https://www.dovevannoinostrisoldi.com/assistente) collega la tua AI personale per conversare sui dati verificati del sito e sui documenti che alleghi.
 
-![Home: spesa pubblica Eurostat COFOG, bilancio dello Stato e pagamenti dei Comuni](docs/readme/home.jpg)
+![Home: percorsi di analisi su spesa pubblica, Comuni, politica, economia e controlli](docs/readme/home.jpg)
 
-| Territori | Pagella dei governi |
+| Spesa pubblica | Territori |
 | --- | --- |
-| ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) | ![Pagella politico-economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) |
+| ![Spesa pubblica: Eurostat COFOG, bilancio dello Stato e pagamenti dei Comuni](docs/readme/panoramica.jpg) | ![Territori: pagamenti comunali per regione, con filtro anno e metrica](docs/readme/territori.jpg) |
 
-| Atlante Istruzione | Atlante Imprese |
+| Pagella dei governi | Atlante Imprese |
 | --- | --- |
-| ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Atlante Imprese: imprese attive per Regione, settore ATECO e periodo](docs/readme/imprese.jpg) |
+| ![Pagella politico-economica del governo in carica, con confronto europeo](docs/readme/governi.jpg) | ![Atlante Imprese: imprese attive per Regione, settore ATECO e periodo](docs/readme/imprese.jpg) |
 
-| Opere pubbliche | Operatori ANAC |
+| Atlante Istruzione | Opere pubbliche |
 | --- | --- |
-| ![Opere pubbliche: confronto costo previsto e costo effettivo OpenBDAP MOP](docs/readme/opere.jpg) | ![Appalti: indice nazionale operatori ANAC](docs/readme/appalti-operatori.jpg) |
+| ![Atlante Istruzione: studenti osservati per Regione, anno e percorso](docs/readme/istruzione.jpg) | ![Opere pubbliche: confronto costo previsto e costo effettivo OpenBDAP MOP](docs/readme/opere.jpg) |
 
-| Cosa controllare | Catalogo dati |
+| Operatori ANAC | Cosa controllare |
 | --- | --- |
-| ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) | ![Catalogo dati: dataset integrati, filtri per evidenza e pubblicazione](docs/readme/dati.jpg) |
+| ![Appalti: indice nazionale operatori ANAC](docs/readme/appalti-operatori.jpg) | ![Cosa controllare: segnali da fonti ufficiali, con limiti visibili](docs/readme/controlli.jpg) |
 
-| Confronto Comuni | Debito pubblico |
+| Catalogo dati | Confronto Comuni |
 | --- | --- |
-| ![Confronto Comuni: quattro profili OpenCivitas e perimetro 2022](docs/readme/confronto-territori.jpg) | ![Debito pubblico: stock, detentori e interessi da Banca d'Italia ed Eurostat](docs/readme/debito.jpg) |
+| ![Catalogo dati: dataset integrati, filtri per evidenza e pubblicazione](docs/readme/dati.jpg) | ![Confronto Comuni: quattro profili OpenCivitas e perimetro 2022](docs/readme/confronto-territori.jpg) |
 
-| Sanità | Spese dello Stato |
+| Debito pubblico | Sanità |
 | --- | --- |
-| ![Sanità: voci del Conto economico SSN, personale e servizi](docs/readme/sanita.jpg) | ![Spese dello Stato: pagamenti OpenBDAP per funzione e amministrazione](docs/readme/stato.jpg) |
+| ![Debito pubblico: stock, detentori e interessi da Banca d'Italia ed Eurostat](docs/readme/debito.jpg) | ![Sanità: voci del Conto economico SSN, personale e servizi](docs/readme/sanita.jpg) |
 
-| Povertà | Assistente |
+| Spese dello Stato | Povertà |
 | --- | --- |
-| ![Povertà: indicatori ISTAT assoluta e relativa](docs/readme/poverta.jpg) | ![Assistente: chat sui dati verificati del sito](docs/readme/assistente.jpg) |
+| ![Spese dello Stato: pagamenti OpenBDAP per funzione e amministrazione](docs/readme/stato.jpg) | ![Povertà: indicatori ISTAT assoluta e relativa](docs/readme/poverta.jpg) |
 
-| MCP |
-| --- |
-| ![Pagina MCP: endpoint pubblico, strumenti list_datasets e query_dataset](docs/readme/mcp.jpg) |
+| Assistente | MCP |
+| --- | --- |
+| ![Assistente: chat sui dati verificati del sito](docs/readme/assistente.jpg) | ![Pagina MCP: endpoint pubblico, strumenti list_datasets e query_dataset](docs/readme/mcp.jpg) |
 
 ## Cosa trovi sul sito
 
 | Sezione | In sintesi |
 | --- | --- |
-| [Home](https://www.dovevannoinostrisoldi.com/) | Spesa PA (Eurostat COFOG), bilancio dello Stato e pagamenti dei Comuni |
+| [Home](https://www.dovevannoinostrisoldi.com/) | Percorsi di analisi su spesa, territori, istituzioni, economia e controlli |
+| [Spesa pubblica](https://www.dovevannoinostrisoldi.com/spese/panoramica) | Spesa PA (Eurostat COFOG), bilancio dello Stato e pagamenti dei Comuni |
 | [Imprese](https://www.dovevannoinostrisoldi.com/imprese) | Imprese attive, addetti, localizzazioni e fatturato aggregato (ISTAT) |
 | [Istruzione](https://www.dovevannoinostrisoldi.com/istruzione) | Scuola secondaria di II grado per Regione (MIM) e università/ricerca |
 | [Povertà](https://www.dovevannoinostrisoldi.com/poverta) | Povertà assoluta e relativa (ISTAT) |
@@ -103,7 +104,7 @@ Dettaglio: [docs/LEGAL_AND_ETHICS.md](docs/LEGAL_AND_ETHICS.md) e [docs/ARCHITEC
 
 ## Anno e limiti
 
-Su Home, Soldi e Territori puoi scegliere `2024`, `2025` o `2026` (resta nell’URL, es. `/?anno=2025`).
+Su Spesa pubblica, Soldi e Territori puoi scegliere `2024`, `2025` o `2026` (resta nell’URL, es. `/spese/panoramica?anno=2025`).
 
 Limiti importanti:
 

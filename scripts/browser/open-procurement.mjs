@@ -14,7 +14,7 @@ export async function inspectOpenProcurement(page) {
     page.waitForNavigation({ waitUntil: "networkidle0" }),
     page.click("#bandi-applica-filtri"),
   ]);
-  assert.match(await page.$eval('[role="status"]', (node) => node.textContent), /con i filtri applicati/);
+  assert.match(await page.$eval('main p[role="status"]', (node) => node.textContent), /con i filtri applicati/);
   assert.ok(await page.$$eval(bandiSelector, (rows) => rows.length > 0));
   assert.ok(await page.$$eval(`${bandiSelector} strong`, (labels) => labels.every((node) => node.textContent === "Forniture")));
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));

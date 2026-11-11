@@ -53,9 +53,20 @@ async function tap(page, selector) {
 }
 
 async function openMenu(page) {
-  await tap(page, '.mobile-menu-trigger');
-  // Opening is deferred one macrotask so the trigger click cannot dismiss the dialog.
-  await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 15_000 });
+  // Heavy client pages (charts) can still be hydrating when the scenario starts;
+  // a pre-hydration tap is a no-op. Retry like report.mjs already does.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await tap(page, '.mobile-menu-trigger');
+    // Opening is deferred one macrotask so the trigger click cannot dismiss the dialog.
+    const opened = await page
+      .waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 3_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (opened) break;
+    if (attempt === 4) {
+      await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 15_000 });
+    }
+  }
   await page.waitForFunction(
     () => document.querySelector('.mobile-menu-trigger')?.getAttribute('aria-expanded') === 'true',
   );

@@ -26,9 +26,10 @@ function DirectoryGroup({ group, initiallyOpen }: Readonly<{
 }>) {
   const [expanded, setExpanded] = useState<boolean | null>(null);
   const open = expanded ?? initiallyOpen;
-  return <details className={styles.group} open={open}>
+  const mapsId = group.title === "Mappe" ? "maps-title" : undefined;
+  return <details className={styles.group} open={open} aria-labelledby={mapsId}>
     <summary onClick={(event) => { event.preventDefault(); setExpanded(!open); }}>
-      <h3 id={group.title === "Mappe" ? "maps-title" : undefined}>{group.title}</h3>
+      <h3 id={mapsId}>{group.title}</h3>
       <span className={styles.count}>{group.links.length}</span>
     </summary>
     <ul>{group.links.map((link) => <li key={link.href}>

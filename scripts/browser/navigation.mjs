@@ -53,7 +53,8 @@ async function tap(page, selector) {
 
 async function openMenu(page) {
   await tap(page, '.mobile-menu-trigger');
-  await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true });
+  // Opening is deferred one macrotask so the trigger click cannot dismiss the dialog.
+  await page.waitForSelector('#mobile-navigation:modal .primary-nav', { visible: true, timeout: 15_000 });
   await page.waitForFunction(
     () => document.querySelector('.mobile-menu-trigger')?.getAttribute('aria-expanded') === 'true',
   );

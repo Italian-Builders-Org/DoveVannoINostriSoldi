@@ -84,14 +84,13 @@ test("RegionCrest usa asset locali, label semantiche e fallback accessibile", as
   }
 });
 
-test("la home tiene la mappa comunale e resta hub; le tabelle regionali restano contenute", async () => {
+test("la home resta hub verso Comuni e territori; le tabelle regionali restano contenute", async () => {
   const home = await readFile(join(projectRoot, "src/app/page.tsx"), "utf8");
-  const homeCss = await readFile(join(projectRoot, "src/app/home.module.css"), "utf8");
-  assert.match(home, /ItalyRegionsMap/);
-  assert.match(home, /className=\{styles\.mapStage\}/);
-  assert.match(homeCss, /\.mapStage/);
+  const pathways = await readFile(join(projectRoot, "src/components/home-pathways.tsx"), "utf8");
+  assert.match(home, /HomePathways/);
   assert.match(home, /buildHomeItalyFunnel/);
-  assert.match(home, /href: "\/territori"/);
+  assert.match(pathways, /PUBLIC_COMUNI_URL/);
+  assert.match(pathways, /href=\{`\/territori\?anno=\$\{siope\.year\}`\}/);
   for (const cssPath of ["src/app/regioni/regioni.module.css", "src/app/territori/territori.module.css"]) {
     const css = await readFile(join(projectRoot, cssPath), "utf8");
     assert.doesNotMatch(css, /overflow-x:[[:space:]]*visible/i);

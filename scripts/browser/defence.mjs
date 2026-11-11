@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import budgetSnapshot from "../../src/data/generated/openbdap-budget-law-missions.json" with { type: "json" };
 
-/** Start on the home page, then drive the public link and keyboard disclosures. */
+/** Start on /spese/panoramica, then drive the public link and keyboard disclosures. */
 export async function inspectDefence(page) {
   const link = 'main a[href^="/spese/difesa?anno="]';
   await page.waitForSelector(link);
@@ -116,7 +116,7 @@ export async function inspectDefence(page) {
   const backLink = `main a[href="/spese/panoramica?anno=${earliest.year}#pa-split-title"]`;
   await page.focus(backLink);
   await page.keyboard.press("Enter");
-  await page.waitForFunction(() => location.pathname === "/");
+  await page.waitForFunction(() => location.pathname === "/spese/panoramica");
   const historicalEntry = `main a[href="/spese/difesa?anno=${earliest.year}"]`;
   await page.waitForSelector(historicalEntry);
   await page.focus(historicalEntry);

@@ -229,9 +229,16 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
       return;
     }
     openedLocationRef.current = window.location.pathname + window.location.search;
-    dialog.showModal();
-    setDrawerOpen(true);
-    closeRef.current?.focus();
+    // Defer showModal until after the opening click/tap finishes. The drawer is
+    // fullscreen and its close control sits under the menu trigger; a same-tick
+    // showModal lets the mouse click land on Chiudi and dismiss immediately
+    // (touch paths often avoid that retarget).
+    window.setTimeout(() => {
+      if (!dialog.isConnected || dialog.open) return;
+      dialog.showModal();
+      setDrawerOpen(true);
+      closeRef.current?.focus();
+    }, 0);
   }
 
   useEffect(() => {

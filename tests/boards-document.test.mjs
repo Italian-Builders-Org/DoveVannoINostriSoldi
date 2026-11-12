@@ -3,7 +3,7 @@ import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
 
 const {
-  BOARD_TILE_V1_DATASET_IDS,
+  BOARD_TILE_FEATURED_IDS,
   assertBoardDocument,
 } = await import("../src/lib/data/boards-document.ts");
 const { buildBoardTileCatalog } = await import("../src/lib/boards/build-tile-catalog.ts");
@@ -86,7 +86,7 @@ test("assertBoardDocument rejects duplicate tile ids and bad schema", () => {
 
 test("featured shortcuts stay twelve while composer sees full MCP catalog", () => {
   const catalog = buildBoardTileCatalog();
-  assert.equal(BOARD_TILE_V1_DATASET_IDS.length, 12);
+  assert.equal(BOARD_TILE_FEATURED_IDS.length, 12);
   assert.equal(catalog.length, ACTIVE_DATASET_IDS.length);
   assert.ok(catalog.length >= 90);
   assert.ok(catalog.some((entry) => entry.id === "pnrr_progetti"));

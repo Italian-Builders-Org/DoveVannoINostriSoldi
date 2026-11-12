@@ -98,9 +98,7 @@ export type AgentPublicDoc = Readonly<{
   methodologyUrl: string;
 }>;
 
-export type AgentPublicDocViolation = Readonly<{ id: string; reason: string }>;
-
-export function escapeMarkdownText(value: string): string {
+function escapeMarkdownText(value: string): string {
   return value.replace(/\r\n|\r|\n/g, " ").replace(MARKDOWN_METACHARACTERS, "\\$1");
 }
 
@@ -126,7 +124,7 @@ function isBlockedHostname(hostname: string): boolean {
   );
 }
 
-export function agentDatasetPath(datasetId: string): string {
+function agentDatasetPath(datasetId: string): string {
   return `${LOCAL_DATASET_PATH_PREFIX}${datasetId}`;
 }
 
@@ -283,13 +281,6 @@ function buildAgentPublicDoc(dataset: DatasetDescriptor): AgentPublicDoc {
 const servedDocs = datasetCatalog.map(buildAgentPublicDoc);
 const servedDocById = new Map<string, AgentPublicDoc>(servedDocs.map((doc) => [doc.id, doc]));
 
-export function validateAgentPublicDocs(): readonly AgentPublicDocViolation[] {
-  return datasetCatalog.flatMap((dataset) => {
-    const reason = exampleQueryViolation(dataset);
-    return reason ? [{ id: dataset.id, reason }] : [];
-  });
-}
-
 export function listAgentPublicDocs(): readonly AgentPublicDoc[] {
   return servedDocs;
 }
@@ -311,7 +302,7 @@ function longestBacktickRun(value: string): number {
   return longest;
 }
 
-export function renderAgentIndexEntry(doc: AgentPublicDoc): string {
+function renderAgentIndexEntry(doc: AgentPublicDoc): string {
   const id = safeInlineCode(doc.id);
   const path = sanitizePublicUrl(agentDatasetPath(doc.id));
   const title = escapeMarkdownText(doc.title);

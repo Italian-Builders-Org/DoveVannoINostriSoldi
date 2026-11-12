@@ -147,7 +147,7 @@ export class BudgetLawInvalidWindowError extends Error {
   }
 }
 
-export class BudgetLawSourceTemporarilyUnavailableError extends Error {
+class BudgetLawSourceTemporarilyUnavailableError extends Error {
   readonly cause?: unknown;
 
   constructor(message: string, cause?: unknown) {

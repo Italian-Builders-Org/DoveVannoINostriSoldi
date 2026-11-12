@@ -115,7 +115,7 @@ export function plainTextFromHtml(html: string): string {
   return text.slice(0, 120) || "Testo";
 }
 
-export function escapeHtml(text: string): string {
+function escapeHtml(text: string): string {
   return text
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")

@@ -10,7 +10,7 @@ import {
   type AnacOperatorSummaryHit,
 } from "@/lib/data/anac-operator-awards-index";
 
-export const ANAC_OPERATOR_QUERY_LIMIT = 10;
+const ANAC_OPERATOR_QUERY_LIMIT = 10;
 
 function publicHit(hit: AnacOperatorSummaryHit) {
   return {

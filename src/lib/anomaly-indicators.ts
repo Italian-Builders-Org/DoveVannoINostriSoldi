@@ -10,7 +10,7 @@ export const METHODOLOGY_WARNING =
   "Screening derivato dai dati OpenCivitas: confronta la differenza per abitante tra spesa storica e spesa standard con una soglia regionale. " +
   "Un valore oltre la soglia indica dove approfondire con contesto locale, servizi e qualità del dato.";
 
-export const POPULATION_METHOD_WARNING =
+const POPULATION_METHOD_WARNING =
   "La popolazione mostrata per gli outlier è una stima implicita: la media arrotondata dei valori ottenuti dividendo spesa totale e spesa per abitante per le due misure disponibili. " +
   "Resta una ricostruzione contabile, distinta da un denominatore demografico ISTAT.";
 

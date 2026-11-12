@@ -118,7 +118,7 @@ export type CompanyAtlasDatasetQuery = Readonly<{
   offset?: number;
 }>;
 
-export const companyAtlasSnapshot = validateCompanyAtlasSnapshot(rawSnapshot);
+const companyAtlasSnapshot = validateCompanyAtlasSnapshot(rawSnapshot);
 
 const metricById = new Map(COMPANY_ATLAS_METRICS.map((metric) => [metric.id, metric]));
 const regionByCode = new Map(companyAtlasSnapshot.regions.map((region) => [region.code, region]));

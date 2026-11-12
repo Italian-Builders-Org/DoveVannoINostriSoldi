@@ -79,7 +79,7 @@ export const KNOWN_THEME_IDS = [
 ] as const;
 export const DEFAULT_THEME_ID = "lavoro";
 
-export function resolveThemeId(value: string | null | undefined): string | null {
+function resolveThemeId(value: string | null | undefined): string | null {
   if (!value) return null;
   return (KNOWN_THEME_IDS as readonly string[]).includes(value) ? value : null;
 }
@@ -273,7 +273,7 @@ function isCalendarDay(value: string | null): value is string {
 }
 
 /** The hemicycles and the Grafo draw groups by day, so only they read a date (#556). */
-export function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" | "grafo" {
+function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" | "grafo" {
   return scope === "camera" || scope === "senato" || scope === "grafo";
 }
 
@@ -283,7 +283,7 @@ export function supportsTermFilter(scope: AtlasScope): boolean {
 }
 
 /** Government members outside Parliament have no chamber terms: any term filter excludes them. */
-export function matchesTerm(person: RepublicMapPerson, term: TermFilter): boolean {
+function matchesTerm(person: RepublicMapPerson, term: TermFilter): boolean {
   if (term === "tutti") return true;
   if (person.firstTerm === null) return false;
   if (term === "primo-ramo") return person.firstTerm.chamber;
@@ -292,7 +292,7 @@ export function matchesTerm(person: RepublicMapPerson, term: TermFilter): boolea
 }
 
 /** Government members outside Parliament have no group history: any group-change filter excludes them. */
-export function matchesGroupChange(person: RepublicMapPerson, filter: GroupChangeFilter): boolean {
+function matchesGroupChange(person: RepublicMapPerson, filter: GroupChangeFilter): boolean {
   if (filter === "tutti") return true;
   if (person.groupChanges === null) return false;
   return filter === "cambio" ? person.groupChanges > 0 : person.groupChanges === 0;

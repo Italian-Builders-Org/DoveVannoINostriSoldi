@@ -59,7 +59,7 @@ export type StateSpendingHistory = {
 
 type DatasetWithTotal = { dataset: MonthlyBdapDataset; cumulativePaid: number };
 
-export const STATE_SPENDING_HISTORY_DEADLINE_MS = 8_000;
+const STATE_SPENDING_HISTORY_DEADLINE_MS = 8_000;
 
 type StateSpendingHistoryOptions = {
   signal?: AbortSignal;

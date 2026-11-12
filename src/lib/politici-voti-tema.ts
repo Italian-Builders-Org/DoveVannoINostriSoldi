@@ -860,12 +860,5 @@ export function getThemeVoteHistory(options: {
   };
 }
 
-/** Exposed for tests: person rows without re-scanning acts when indexed. */
-export function __testOnly_indexSize(themeId: string, chamber: "camera" | "senato"): number {
-  const theme = VOTE_THEMES.find((item) => item.id === themeId);
-  if (!theme) return 0;
-  return indexChamberVotes(chamber, theme.needles).length;
-}
-
 export const __testOnly_cameraGroupAt = cameraGroupAt;
 export const __testOnly_senatoGroupAt = senatoGroupAt;

@@ -5,6 +5,10 @@ Official source: the public page that states the Ufficio di Presidenza rates for
 deputies. These are institutional amounts, not individual payslips. Senato rates
 are intentionally omitted while programmatic fetches hit a WAF challenge and
 cannot be hashed.
+
+The lock is on the visible text of the section, not on the raw bytes: Drupal
+appends a cache token to every CSS link (``?tmfoic``) that changes between
+cache nodes while the published text stays identical.
 """
 
 from __future__ import annotations
@@ -31,6 +35,13 @@ USER_AGENT = (
     "(+https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi; trattamento economico)"
 )
 SHA_RE = re.compile(r"^[0-9a-f]{64}$")
+AMOUNT = r"(\d{1,3}(?:\.\d{3})*(?:,\d{2})?)"
+CONTENT_START = "INDENNITA' PARLAMENTARE"
+CONTENT_END = re.compile(r"Ultimo aggiornamento: (\d{1,2}) (\w+) (\d{4})")
+MONTHS = {
+    "gennaio": 1, "febbraio": 2, "marzo": 3, "aprile": 4, "maggio": 5, "giugno": 6,
+    "luglio": 7, "agosto": 8, "settembre": 9, "ottobre": 10, "novembre": 11, "dicembre": 12,
+}
 
 # Exact phrases pinned to the official page text (fail-closed on wording drift).
 COMPONENTS = (
@@ -62,7 +73,50 @@ COMPONENTS = (
         "frequency": "monthly",
         "grossNet": "allowance",
     },
+    {
+        "id": "indennita-parlamentare-lordo-altra-attivita",
+        "label": "Indennità parlamentare per chi ha un'altra attività lavorativa (lordo mensile)",
+        "pattern": r"l'importo netto dell'indennità ammonta a circa 4\.750 euro, corrispondenti a (9\.975,00) euro lordi",
+        "frequency": "monthly",
+        "grossNet": "gross",
+    },
+    {
+        "id": "rimborso-spese-accessorie-viaggio-fino-100km",
+        "label": "Rimborso spese accessorie di viaggio, distanza fino a 100 km (trimestrale)",
+        "pattern": r"pari o inferiore a 100 km, il rimborso ammonta a (3\.323,70) euro trimestrali",
+        "frequency": "quarterly",
+        "grossNet": "allowance",
+    },
+    {
+        "id": "rimborso-spese-accessorie-viaggio-oltre-100km",
+        "label": "Rimborso spese accessorie di viaggio, distanza oltre 100 km (trimestrale)",
+        "pattern": r"nel caso sia superiore, l'importo è pari a (3\.995,10) euro a trimestre",
+        "frequency": "quarterly",
+        "grossNet": "allowance",
+    },
+    {
+        "id": "rimborso-spese-telefoniche",
+        "label": "Rimborso forfetario delle spese telefoniche (annuo)",
+        "pattern": r"ridotto il rimborso forfetario delle spese telefoniche da 3\.098,74 a (1\.200) euro annui",
+        "frequency": "annual",
+        "grossNet": "allowance",
+    },
+    {
+        "id": "trattenuta-assistenza-sanitaria",
+        "label": "Trattenuta sull'indennità lorda per l'assistenza sanitaria integrativa (mensile)",
+        "pattern": r"pari a (526,66) euro mensili, destinata al sistema di assistenza sanitaria integrativa",
+        "frequency": "monthly",
+        "grossNet": "withholding",
+    },
+    {
+        "id": "trattenuta-assegno-fine-mandato",
+        "label": "Trattenuta sull'indennità lorda per l'assegno di fine mandato (mensile)",
+        "pattern": r"una quota della propria indennità lorda, pari a (784,14) euro\. Al termine del mandato",
+        "frequency": "monthly",
+        "grossNet": "withholding",
+    },
 )
+
 
 
 class SnapshotError(ValueError):
@@ -79,11 +133,11 @@ def load_spec(path: Path = SPEC) -> dict[str, Any]:
     require(spec.get("datasetId") == DATASET, "dataset identity differs")
     source = spec.get("source") or {}
     require(source.get("pageUrl") == "https://www.camera.it/deputati/trattamento-economico", "pageUrl")
-    locks = (source.get("committedResponses") or {}).get("page") or {}
-    require(isinstance(locks.get("bytes"), int) and locks["bytes"] > 5_000, "lock bytes")
+    locks = source.get("committedContent") or {}
+    require(isinstance(locks.get("chars"), int) and locks["chars"] > 5_000, "lock chars")
     require(bool(SHA_RE.match(str(locks.get("sha256") or ""))), "lock sha")
     floor = (spec.get("coverageFloor") or {}).get("components")
-    require(isinstance(floor, int) and floor >= 4, "coverageFloor.components")
+    require(isinstance(floor, int) and floor >= len(COMPONENTS), "coverageFloor.components")
     return spec
 
 
@@ -169,25 +223,127 @@ def extract_components(text: str) -> list[dict[str, Any]]:
     return components
 
 
+def cents_to_euro(cents: int) -> str:
+    whole, frac = divmod(cents, 100)
+    return f"{whole:,}".replace(",", ".") + f",{frac:02d}"
+
+
+def iso_date(day: str, month: str, year: str) -> str:
+    require(month.lower() in MONTHS, f"mese non riconosciuto: {month!r}")
+    return f"{int(year):04d}-{MONTHS[month.lower()]:02d}-{int(day):02d}"
+
+
+def content_text(text: str) -> tuple[str, str]:
+    """Section text from the first heading through the page's own update date."""
+    start = text.find(CONTENT_START)
+    require(start >= 0, "inizio sezione trattamento economico assente")
+    end = CONTENT_END.search(text, start)
+    require(end is not None, "data di ultimo aggiornamento assente")
+    return text[start : end.end()].strip(), iso_date(*end.groups())
+
+
+def _sentence(pattern: str, text: str, what: str) -> re.Match[str]:
+    match = re.search(pattern.replace("AMOUNT", AMOUNT), text)
+    require(match is not None, f"frase dello storico assente o cambiata: {what}")
+    return match
+
+
+def extract_history(text: str) -> list[dict[str, Any]]:
+    """Step series of the published rates; every "da X a Y" must start from the previous step."""
+    history: list[dict[str, Any]] = []
+    last: dict[str, int] = {}
+
+    def add(component_id: str, cents: int, evidence: str, *, from_year: int | None = None,
+            from_date: str | None = None, chain_from: str | None = None, basis: str = "literal") -> None:
+        if chain_from is not None:
+            require(last.get(component_id) == euro_to_cents(chain_from), f"catena importi incoerente: {component_id}")
+        history.append({
+            "componentId": component_id,
+            "fromYear": from_year,
+            "fromDate": from_date,
+            "amountEuro": cents_to_euro(cents),
+            "amountCents": cents,
+            "basis": basis,
+            "evidence": evidence,
+        })
+        last[component_id] = cents
+
+    ind, other = "indennita-parlamentare-lordo", "indennita-parlamentare-lordo-altra-attivita"
+    m = _sentence(r"A partire dal (\d{4}), anno in cui l'importo dell'indennità parlamentare era pari a AMOUNT euro mensili lordi", text, "indennità 2005")
+    add(ind, euro_to_cents(m[2]), m[0], from_year=int(m[1]))
+    m = _sentence(r"nel (\d{4}), l'importo mensile dell'indennità parlamentare è stato ridotto da AMOUNT euro lordi a AMOUNT euro lordi", text, "indennità 2006")
+    add(ind, euro_to_cents(m[3]), m[0], from_year=int(m[1]), chain_from=m[2])
+    m = _sentence(
+        r"per il triennio (\d{4})-\d{4}, l'indennità mensile è stata nuovamente e ulteriormente ridotta [^;]*?"
+        r"da AMOUNT euro lordi a AMOUNT euro lordi; tale riduzione è stata raddoppiata [^:]*: da AMOUNT euro lordi a AMOUNT euro lordi",
+        text, "indennità 2011",
+    )
+    # Before 2011 the reduced rate did not exist: its first "da" is the ordinary rate.
+    require(euro_to_cents(m[4]) == last[ind], "catena importi incoerente: altra attività 2011")
+    add(ind, euro_to_cents(m[3]), m[0], from_year=int(m[1]), chain_from=m[2])
+    add(other, euro_to_cents(m[5]), m[0], from_year=int(m[1]))
+    m = _sentence(
+        r"nel (\d{4}), l'importo dell'indennità parlamentare mensile è stato nuovamente ridotto: da AMOUNT euro lordi a AMOUNT euro lordi; "
+        r"per i deputati che svolgono [^:]*: da AMOUNT euro lordi a AMOUNT euro lordi",
+        text, "indennità 2012",
+    )
+    add(ind, euro_to_cents(m[3]), m[0], from_year=int(m[1]), chain_from=m[2])
+    add(other, euro_to_cents(m[5]), m[0], from_year=int(m[1]), chain_from=m[4])
+
+    m = _sentence(r"Nella riunione del (\d{1,2}) (\w+) (\d{4}) l'Ufficio di Presidenza ha ridotto di (\d+) euro la misura mensile della diaria, fissandone l'ammontare in AMOUNT euro", text, "diaria")
+    diaria = euro_to_cents(m[5])
+    add("diaria", diaria + int(m[4]) * 100, m[0], basis="derived")
+    add("diaria", diaria, m[0], from_year=int(m[3]), from_date=iso_date(m[1], m[2], m[3]))
+
+    m = _sentence(r"originariamente pari a AMOUNT euro \(la medesima misura del contributo previgente\), è stato ridotto nel (\w+) (\d{4}) a AMOUNT euro", text, "rimborso mandato")
+    require(m[2].lower() in MONTHS, f"mese non riconosciuto: {m[2]!r}")
+    add("rimborso-eletti-elettori", euro_to_cents(m[1]), m[0])
+    add("rimborso-eletti-elettori", euro_to_cents(m[4]), m[0], from_year=int(m[3]))
+
+    m = _sentence(r"a decorrere dal (\d{1,2})° (\w+) (\d{4}) l'Ufficio di Presidenza ha ridotto il rimborso forfetario delle spese telefoniche da AMOUNT a AMOUNT euro annui", text, "spese telefoniche")
+    add("rimborso-spese-telefoniche", euro_to_cents(m[4]), m[0])
+    add("rimborso-spese-telefoniche", euro_to_cents(m[5]), m[0], from_year=int(m[3]), from_date=iso_date(m[1], m[2], m[3]))
+    return history
+
+
+def extract_freeze(text: str) -> dict[str, Any]:
+    m = _sentence(
+        r"dal (\d{4}) è stata disposta, per 5 anni, la sospensione degli adeguamenti retributivi\. "
+        r"Tale misura è stata successivamente prorogata senza soluzione di continuità, da ultimo, fino a tutto il (\d{4})",
+        text, "sospensione adeguamenti",
+    )
+    through = int(m[2])
+    allowances = re.findall(r"confermata, senza soluzione di continuità, fino al 31 dicembre (\d{4})", text)
+    require(len(allowances) == 2, "proroghe di diaria e rimborso non trovate")
+    require(all(int(year) == through for year in allowances), "proroghe con anni diversi")
+    return {"adjustmentsSuspendedFromYear": int(m[1]), "confirmedThroughYear": through, "evidence": m[0]}
+
+
 def build_snapshot(spec: dict[str, Any], page: bytes, acquired_at: str) -> dict[str, Any]:
     html = page.decode("utf-8", errors="replace")
     require("Il trattamento economico" in html, "titolo trattamento economico assente")
-    text = plain_text(html)
-    require("Indennità parlamentare" in text or "indennità parlamentare" in text, "sezione indennità assente")
-    components = extract_components(text)
+    content, publication_date = content_text(plain_text(html))
+    components = extract_components(content)
     floor = spec["coverageFloor"]["components"]
     require(len(components) >= floor, f"componenti sotto soglia: {len(components)}")
 
     source = spec["source"]
-    locks = source["committedResponses"]["page"]
-    digest = hashlib.sha256(page).hexdigest()
-    require(len(page) == locks["bytes"], f"bytes drift: {len(page)} != {locks['bytes']}")
-    require(digest == locks["sha256"], "sha256 drift")
+    locks = source["committedContent"]
+    content_sha = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    require(len(content) == locks["chars"], f"testo della sezione cambiato: {len(content)} != {locks['chars']} caratteri")
+    require(content_sha == locks["sha256"], "sha256 del testo della sezione cambiato")
 
+    counterfactual = _sentence(r"sarebbe attualmente pari a AMOUNT euro lordi", content, "indennità senza riduzioni")
+    pension = _sentence(r"contributo pari all'(\d{1,2}),(\d{2}) per cento dell'indennità parlamentare lorda", content, "contributo pensione")
+
+    history = extract_history(content)
+    freeze = extract_freeze(content)
+    first_year = min(step["fromYear"] for step in history if step["fromYear"] is not None)
     by_id = {item["id"]: item for item in components}
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "chamber": "camera",
+        "referencePeriod": f"{first_year}-{freeze['confirmedThroughYear']}",
         "period": {
             "label": spec["period"]["label"],
             "observedDate": spec["period"]["observedDate"],
@@ -206,9 +362,11 @@ def build_snapshot(spec: dict[str, Any], page: bytes, acquired_at: str) -> dict[
             "landingUrl": source["landingUrl"],
             "license": source["license"],
             "licenseUrl": source["licenseUrl"],
+            "publicationDate": publication_date,
             "observedDate": spec["period"]["observedDate"],
             "acquiredAt": acquired_at,
-            "responses": {"page": {"bytes": len(page), "sha256": digest}},
+            "responses": {"page": {"bytes": len(page), "sha256": hashlib.sha256(page).hexdigest()}},
+            "content": {"chars": len(content), "sha256": content_sha},
             "cadence": "pagina istituzionale (indennità ferma dal 2012 salvo delibere)",
         },
         "provenance": {
@@ -226,28 +384,52 @@ def build_snapshot(spec: dict[str, Any], page: bytes, acquired_at: str) -> dict[
             ]["amountCents"],
             "diariaMonthlyCents": by_id["diaria"]["amountCents"],
             "constituentAllowanceMonthlyCents": by_id["rimborso-eletti-elettori"]["amountCents"],
+            "indemnityGrossWithoutCutsMonthlyCents": euro_to_cents(counterfactual[1]),
+            "pensionContributionBasisPoints": int(pension[1]) * 100 + int(pension[2]),
         },
         "components": components,
+        "history": history,
+        "freeze": freeze,
         "caveats": list(spec["caveats"]),
     }
 
 
+def validate_history(history: Any, components: list[dict[str, Any]]) -> None:
+    require(isinstance(history, list) and history, "history")
+    current = {item["id"]: item["amountCents"] for item in components}
+    series: dict[str, list[dict[str, Any]]] = {}
+    for step in history:
+        require(step.get("componentId") in current, f"history su componente ignoto: {step.get('componentId')}")
+        require(step.get("basis") in {"literal", "derived"}, "history.basis")
+        require(bool(step.get("evidence")), "history.evidence")
+        require(step["amountCents"] == euro_to_cents(step["amountEuro"]) and step["amountCents"] > 0, "history cents/euro")
+        series.setdefault(step["componentId"], []).append(step)
+    for component_id, steps in series.items():
+        # Only the first step may have an unknown start; later ones must move strictly forward.
+        require(all(step["fromYear"] is not None for step in steps[1:]), f"history senza anno: {component_id}")
+        keys = [(step["fromYear"] or 0, step["fromDate"] or "") for step in steps]
+        require(keys == sorted(keys) and len(set(keys)) == len(keys), f"history fuori ordine: {component_id}")
+        require(steps[-1]["amountCents"] == current[component_id], f"history non arriva all'importo in vigore: {component_id}")
+
+
 def validate_snapshot(payload: dict[str, Any], *, floor: int, locks: dict[str, Any]) -> None:
-    require(payload.get("schemaVersion") == 1, "schemaVersion")
+    require(payload.get("schemaVersion") == 2, "schemaVersion")
     require(payload.get("chamber") == "camera", "chamber")
     require(payload.get("soldi", {}).get("present") is True, "soldi.present")
     require(payload.get("soldi", {}).get("unit") == "EUR-cent", "soldi.unit")
     components = payload.get("components")
     require(isinstance(components, list) and len(components) >= floor, "components")
     require(payload["coverage"]["components"] == len(components), "coverage")
-    response = payload["source"]["responses"]["page"]
-    require(response["bytes"] == locks["bytes"], "bytes lock")
-    require(response["sha256"] == locks["sha256"], "sha lock")
+    require(re.fullmatch(r"\d{4}-\d{4}", payload.get("referencePeriod") or ""), "period.referencePeriod")
+    content = payload["source"]["content"]
+    require(content["chars"] == locks["chars"], "chars lock")
+    require(content["sha256"] == locks["sha256"], "sha lock")
     ids = [item["id"] for item in components]
     require(len(ids) == len(set(ids)), "component id duplicati")
     for item in components:
         require(item["amountCents"] == euro_to_cents(item["amountEuro"]), "cents/euro drift")
         require(item["amountCents"] > 0, "importo non positivo")
+    validate_history(payload.get("history"), components)
 
 
 def check_committed(spec: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -257,7 +439,7 @@ def check_committed(spec: dict[str, Any] | None = None) -> dict[str, Any]:
     validate_snapshot(
         payload,
         floor=spec["coverageFloor"]["components"],
-        locks=spec["source"]["committedResponses"]["page"],
+        locks=spec["source"]["committedContent"],
     )
     return payload
 
@@ -270,7 +452,7 @@ def write_snapshot(spec: dict[str, Any] | None = None) -> dict[str, Any]:
     validate_snapshot(
         payload,
         floor=spec["coverageFloor"]["components"],
-        locks=spec["source"]["committedResponses"]["page"],
+        locks=spec["source"]["committedContent"],
     )
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return payload

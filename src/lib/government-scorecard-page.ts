@@ -225,6 +225,7 @@ export type GovernmentScorecardV6ContextSlide = GovernmentScorecardV6ContextSour
       type: "official";
       url: string;
     }[];
+    history?: { label: string; rows: readonly { date: string; value: string }[] };
     retrieved_at: string;
     evidence_sha256: string;
   }[];

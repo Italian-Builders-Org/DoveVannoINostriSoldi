@@ -50,6 +50,10 @@ def receipt(source):
     return {key: value for key, value in source.items() if key != "retrieved_at"}
 
 
+def source_identity(source):
+    return {key: source[key] for key in ("id", "owner", "title", "dataset_code", "query_url", "landing_url", "terms_url")}
+
+
 def review_deadline(reviewed_at):
     chronology._iso_date(reviewed_at, "contextReview.reviewedAt")
     reviewed = dt.date.fromisoformat(reviewed_at)
@@ -64,7 +68,7 @@ def validate_release(core, supplemental, registry, policy, checked_at=None):
     score.validate_snapshot(core)
     chronology.validate_registry(registry)
     page.validate(supplemental, core_hash=score.sha256(encoded(core)), chronology=registry)
-    if set(policy) != {"contextReview", "approvedSources", "approvedPeriods", "coreArtifactSha256", "scoreAcquiredAt"}:
+    if set(policy) != {"contextReview", "approvedSourceIdentities", "scoreReceipt", "coreArtifactSha256", "scoreAcquiredAt"}:
         score.fail("refresh policy: unexpected schema")
     if score.sha256(encoded(core)) != policy["coreArtifactSha256"] or core["sources"]["ameco"]["retrievedAt"] != policy["scoreAcquiredAt"]:
         score.fail("unreviewed score revision or core artifact hash")
@@ -89,14 +93,14 @@ def validate_release(core, supplemental, registry, policy, checked_at=None):
                 or oath[0]["end_date_or_null"] != end
                 or oath[0]["sources"] != [{"owner": government["sourceOwner"], "type": "official", "url": government["sourceUrl"]}]):
             score.fail("government transition: context chronology does not reconcile")
-    expected = policy["approvedSources"]
-    actual = [receipt(item) for item in supplemental["sources"]]
-    if actual != expected:
-        score.fail("source/schema/license/period/hash drift: review the acquired receipts before publication")
+    # Eurostat hashes change at every release and the publisher can only write the
+    # artifacts: identity is pinned here, values are reviewed in the data PR.
+    if [source_identity(item) for item in supplemental["sources"]] != policy["approvedSourceIdentities"]:
+        score.fail("source/schema/license/identity drift: review the acquired receipts before publication")
     if supplemental["sources"][0] != page._ameco_source(core):
         score.fail("AMECO receipt does not reconcile with score data")
-    if supplemental["coverage"]["latest_published_periods"] != policy["approvedPeriods"]:
-        score.fail("unexpected published period: review required")
+    if {"raw_bytes": core["sources"]["ameco"]["bytes"], "raw_sha256": core["sources"]["ameco"]["sha256"]} != policy["scoreReceipt"]:
+        score.fail("unreviewed AMECO receipt")
     sources = {item["id"]: item for item in supplemental["sources"]}
     by_dataset = {item["dataset_code"]: item for item in supplemental["sources"]}
     for series in supplemental["series"]:
@@ -104,6 +108,8 @@ def validate_release(core, supplemental, registry, policy, checked_at=None):
             for point in geography["points"]:
                 if point["period_start"] != page._period_start(point["period"]):
                     score.fail("point period does not reconcile")
+                if point["period_start"] > checked_at.isoformat():
+                    score.fail("published period is in the future")
                 if page._publication_status(point["upstream_status_or_null"]) != point["status"]:
                     score.fail("observed/forecast publication status mismatch")
                 components = point.get("component_sources")
@@ -214,17 +220,26 @@ def refresh(retrieved_at, *, root=ROOT, fetch_score=score.download, build_page=p
     # economic observation, but prevents publication after that observation.
     chronology.validate_registry(registry)
     spec = score.load_json(root / "scripts/etl/specs/government-scorecard.source.json")
+    score.validate_spec(spec)
     payload = fetch_score(spec["ameco"]["downloadUrl"])
     acquired_at = retrieved_at if observe else policy["scoreAcquiredAt"]
-    candidate_core = score.build_snapshot(spec, payload, acquired_at)
-    # Editorial caveats are reviewed content, not economic observations.
-    candidate_core["caveats"] = previous_core["caveats"]
-    score.validate_snapshot(candidate_core)  # requires the complete common observed panel
-    old_core = copy.deepcopy(previous_core)
-    old_core["generatedAt"] = acquired_at
-    old_core["sources"]["ameco"]["retrievedAt"] = acquired_at
-    if old_core == candidate_core:
+    incoming_receipt = {"raw_bytes": len(payload), "raw_sha256": score.sha256(payload)}
+    if not observe and incoming_receipt != policy["scoreReceipt"]:
+        # A new vintage can add forecast years that the approved parser rejects.
+        # Check archive integrity, but never interpret or publish unreviewed bytes.
+        score.safe_archive(payload)
+        print(f"::warning::AMECO changed upstream ({incoming_receipt['raw_sha256']}): score kept until reviewed, see docs/PAGELLA_POLITICO_ECONOMICA.md")
         candidate_core = previous_core
+    else:
+        candidate_core = score.build_snapshot(spec, payload, acquired_at)
+        # Editorial caveats are reviewed content, not economic observations.
+        candidate_core["caveats"] = previous_core["caveats"]
+        score.validate_snapshot(candidate_core)  # requires the complete common observed panel
+        old_core = copy.deepcopy(previous_core)
+        old_core["generatedAt"] = acquired_at
+        old_core["sources"]["ameco"]["retrievedAt"] = acquired_at
+        if old_core == candidate_core:
+            candidate_core = previous_core
     candidate_page = build_page(retrieved_at, core=candidate_core, chronology=registry,
                                 existing=previous_page, core_hash=score.sha256(encoded(candidate_core)))
     preserve_unchanged_receipts(
@@ -234,8 +249,9 @@ def refresh(retrieved_at, *, root=ROOT, fetch_score=score.download, build_page=p
     )
     require_complete_update(candidate_page, previous_page)
     if observe:
-        print(json.dumps({"approvedSources": [receipt(item) for item in candidate_page["sources"]],
-                          "approvedPeriods": candidate_page["coverage"]["latest_published_periods"],
+        print(json.dumps({"approvedSourceIdentities": [source_identity(item) for item in candidate_page["sources"]],
+                          "latestPublishedPeriods": candidate_page["coverage"]["latest_published_periods"],
+                          "scoreReceipt": {"raw_bytes": candidate_core["sources"]["ameco"]["bytes"], "raw_sha256": candidate_core["sources"]["ameco"]["sha256"]},
                           "scoreAcquiredAt": candidate_core["sources"]["ameco"]["retrievedAt"],
                           "coreArtifactSha256": score.sha256(encoded(candidate_core))}, ensure_ascii=False, indent=2))
         return False

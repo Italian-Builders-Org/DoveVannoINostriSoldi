@@ -1,0 +1,458 @@
+{
+  "retrievedAt": "2026-10-31T12:00:00Z",
+  "governments": {
+    "draghi-i": {
+      "eurozone_ecb": [
+        {
+          "keep": "draghi-i:ecb-ecb-purchase-programmes"
+        },
+        {
+          "id": "draghi-i:ecb-rate-cycle",
+          "title": "Inizio dei rialzi dei tassi BCE",
+          "summary": "Dal luglio 2022 la BCE inizia ad alzare i tassi: il tasso sui depositi passa da -0,50% a 0,75% prima della fine del mandato. Il ciclo prosegue durante il governo successivo.",
+          "start_date": "2022-07-21",
+          "channel": "common_monetary_policy",
+          "sources": [
+            "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
+          ],
+          "rule": "Decisione comune dell'area euro sovrapposta al mandato e documentata dalla BCE.",
+          "history": {
+            "label": "Tasso sui depositi BCE, in vigore dalla data indicata",
+            "rows": [
+              {
+                "date": "2022-07-27",
+                "value": "0,00%"
+              },
+              {
+                "date": "2022-09-14",
+                "value": "0,75%"
+              }
+            ]
+          }
+        },
+        {
+          "id": "draghi-i:ecb-tpi",
+          "title": "Scudo anti-spread della BCE (TPI)",
+          "summary": "Il 21 luglio 2022 la BCE approva lo strumento TPI, per contrastare dinamiche di mercato ingiustificate che minacciano la trasmissione della politica monetaria nell'area euro.",
+          "start_date": "2022-07-21",
+          "channel": "common_monetary_policy",
+          "sources": [
+            "https://www.ecb.europa.eu/press/pr/date/2022/html/ecb.pr220721~973e6e7273.en.html"
+          ],
+          "rule": "Decisione comune dell'area euro sovrapposta al mandato e documentata dalla BCE."
+        }
+      ]
+    },
+    "meloni-i": {
+      "overview": [
+        {
+          "keep": "meloni-i:overview-1-inheritance"
+        },
+        {
+          "id": "meloni-i:overview-2-external",
+          "title": "Contesto esterno ed eurozona",
+          "summary": "Il mandato inizia nel mese del picco dell'inflazione energetica italiana e attraversa la guerra in Ucraina, i rialzi e i tagli dei tassi BCE, i dazi USA e, dal 2026, lo shock energetico della guerra in Medio Oriente e i nuovi rialzi dei tassi.",
+          "start_date": "2022-10-22",
+          "channel": "shock_geopolitica_e_condizioni_finanziarie",
+          "sources": [
+            "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=NRG&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
+            "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html"
+          ],
+          "rule": "Sintesi degli eventi essenziali documentati nelle categorie successive."
+        },
+        {
+          "id": "meloni-i:overview-3-actions",
+          "title": "Azioni economiche del governo",
+          "summary": "Quattro leggi di bilancio approvate (2023-2026) e una in esame in Parlamento per il 2027; stretta sui crediti edilizi; riduzione del cuneo contributivo e riforma IRPEF; imposta straordinaria sulle banche; interventi su accise e caro energia; attuazione e revisione del PNRR. Dal 2024 l'Italia è nella procedura UE per deficit eccessivo. Gli esiti economici restano distinti.",
+          "start_date": "2022-10-22",
+          "channel": "politica_fiscale_riforme_e_investimenti",
+          "relation": "during",
+          "sources": [
+            "https://www.mef.gov.it/focus/Le-principali-misure-della-manovra-2023/",
+            "https://www.mef.gov.it/focus/Le-principali-misure-della-legge-di-bilancio-2024/",
+            "https://temi.camera.it/leg19/provvedimento/disposizioni-urgenti-a-tutela-degli-utenti-in-materia-di-attivita-economiche-e-finanziarie-e-investimenti-strategici.html",
+            "https://temi.camera.it/leg19/temi/19_tl18_accise.html",
+            "https://economy-finance.ec.europa.eu/economic-governance-framework/stability-and-growth-pact/corrective-arm-excessive-deficit-procedure/excessive-deficit-procedures-overview/italy_en"
+          ],
+          "rule": "Sintesi degli atti documentati nella slide delle misure."
+        }
+      ],
+      "geopolitics_crises": [
+        {
+          "keep": "meloni-i:ukraine-war"
+        },
+        {
+          "id": "meloni-i:energy-shock-2022",
+          "title": "Shock energetico 2022: picco e rientro",
+          "summary": "L'inflazione dei beni energetici in Italia tocca il massimo proprio nel mese del giuramento, +71,7% annuo a ottobre 2022, poi scende fino a -24,9% a dicembre 2023. A dicembre 2022 l'UE adotta un meccanismo temporaneo contro i prezzi eccessivi del gas, con soglia di attivazione a 180 euro/MWh; una successiva proposta della Commissione riferisce che non si è mai attivato. Questi dati non permettono di attribuire il rientro al governo.",
+          "start_date": "2022-10-01",
+          "end_date": "2023-12-31",
+          "precision": "month",
+          "channel": "energy_trade_fiscal_support_and_geopolitics",
+          "sources": [
+            "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=NRG&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
+            "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2578",
+            "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023PC0761"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        },
+        {
+          "id": "meloni-i:red-sea",
+          "title": "Attacchi alle navi nel Mar Rosso",
+          "summary": "Nel marzo 2024 gli esperti della BCE giudicano limitato l'impatto delle interruzioni dei traffici nel Mar Rosso sull'area euro. Avvertono però che un'escalation ridurrebbe l'export e aggiungerebbe circa 0,25 punti all'inflazione: è uno scenario di rischio, non un dato osservato.",
+          "start_date": "2024-01-01",
+          "end_date": "2024-12-31",
+          "precision": "year",
+          "channel": "trade_exports_investment_and_uncertainty",
+          "sources": [
+            "https://www.ecb.europa.eu/pub/pdf/other/ecb.projections202403_ecbstaff~f2f2d34d5a.en.pdf"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        },
+        {
+          "id": "meloni-i:trade-tensions",
+          "title": "Dazi USA e tensioni commerciali",
+          "summary": "Nel 2025 il surplus di conto corrente dell'area euro scende dal 2,7% all'1,7% del PIL, soprattutto per servizi e redditi: il surplus dei beni sale dal 2,2% al 2,3%. La BCE indica i dazi USA fra i fattori del calo. La dichiarazione UE-USA del 21 agosto 2025 prevede per gran parte dell'export UE il maggiore tra il dazio ordinario e il 15%. Il 20 febbraio 2026 la Corte Suprema USA stabilisce che la legge IEEPA non autorizza il presidente a imporre dazi; il presidente annuncia poi un dazio globale del 10% su un'altra base legale. Il regime in vigore oggi non è verificato qui.",
+          "start_date": "2025-01-01",
+          "end_date": null,
+          "precision": "year",
+          "channel": "trade_exports_investment_and_uncertainty",
+          "sources": [
+            "https://www.ecb.europa.eu/press/economic-bulletin/focus/2026/html/ecb.ebbox202604_08~de66a3786d.en.html",
+            "https://policy.trade.ec.europa.eu/news/joint-statement-united-states-european-union-framework-agreement-reciprocal-fair-and-balanced-trade-2025-08-21_en",
+            "https://www.supremecourt.gov/opinions/25pdf/24-1287_4gcj.pdf",
+            "https://www.govinfo.gov/content/pkg/DCPD-202600128/pdf/DCPD-202600128.pdf"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        },
+        {
+          "id": "meloni-i:iran-war-energy-shock",
+          "title": "Guerra in Medio Oriente e shock energetico 2026",
+          "summary": "Dalla fine di febbraio 2026 la guerra in Medio Oriente e le interruzioni nello Stretto di Hormuz fanno salire petrolio e gas: secondo l'UPB +66% e +180% da fine febbraio, con un'esposizione italiana maggiore per il mix energetico fossile. La voce energia dell'indice armonizzato IPCA passa da -6,6% a febbraio a +22,6% a settembre (Eurostat); la stima preliminare Istat per ottobre è +31,4%. Al 31 ottobre il MIMIT indica benzina a 2,011 e gasolio a 2,242 euro al litro (self, rete stradale). Nel Bollettino 4/2026 la BCE stima, con le ipotesi di allora sui prezzi futuri, circa -0,4 punti di crescita dell'area euro nel primo anno. È contesto esterno, non un effetto attribuito al governo.",
+          "start_date": "2026-02-28",
+          "channel": "oil_supply_fuel_prices_inflation_and_growth",
+          "sources": [
+            "https://www.upbilancio.it/it/lupb-pubblica-la-nota-sulla-congiuntura-di-ottobre-2026/",
+            "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=NRG&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
+            "https://www.istat.it/wp-content/uploads/2026/10/CS_Prezzi-al-consumo_Prov_Ottobre2026.pdf",
+            "https://www.mimit.gov.it/it/prezzi-carburanti-media-nazionale",
+            "https://www.ecb.europa.eu/press/economic-bulletin/focus/2026/html/ecb.ebbox202604_04~9b6a4036fc.en.html"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        },
+        {
+          "id": "meloni-i:banking-stress-2023",
+          "title": "Tensioni bancarie del 2023",
+          "summary": "Il fallimento di Silicon Valley Bank del 10 marzo 2023 provoca uno stress bancario che la BCE, nel Bollettino di maggio, definisce intenso ma breve: i rischi sulla domanda USA pesano anche sul petrolio, mentre le banche dell'area euro si dimostrano solide.",
+          "start_date": "2023-03-10",
+          "end_date": "2023-05-03",
+          "precision": "month",
+          "channel": "documented_external_or_financial_shock",
+          "sources": [
+            "https://www.ecb.europa.eu/pub/pdf/ecbu/eb202303.en.pdf"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        },
+        {
+          "id": "meloni-i:russian-gas-phase-out",
+          "title": "Stop UE al gas russo",
+          "summary": "Il regolamento UE 2026/261, in vigore dal 3 febbraio 2026, elimina per gradi le importazioni di gas russo: secondo la Commissione il GNL entro la fine del 2026 e il gas via tubo entro il 30 novembre 2027. La misura è europea e riguarda tutti gli Stati membri.",
+          "start_date": "2026-02-03",
+          "channel": "energy_trade_fiscal_support_and_geopolitics",
+          "sources": [
+            "https://energy.ec.europa.eu/news/eu-takes-next-step-towards-energy-independence-russia-2026-02-02_en",
+            "https://energy.ec.europa.eu/strategy/repowereu-phase-out-russian-energy-imports/repowereu-4-years_en"
+          ],
+          "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
+        }
+      ],
+      "eurozone_ecb": [
+        {
+          "keep": "meloni-i:ecb-ecb-purchase-programmes"
+        },
+        {
+          "id": "meloni-i:ecb-rate-cycle",
+          "title": "Tassi BCE: rialzi, tagli e nuovi rialzi",
+          "summary": "Il tasso sui depositi sale da -0,50% a 4,00% con dieci rialzi fra luglio 2022 e settembre 2023, scende a 2,00% con otto tagli fra giugno 2024 e giugno 2025 e torna a salire a 2,50% con due rialzi nel 2026. Il 29 ottobre 2026 la BCE lo lascia invariato, segnalando rischi al rialzo per l'inflazione dovuti all'energia.",
+          "start_date": "2022-07-21",
+          "channel": "common_monetary_policy",
+          "sources": [
+            "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html",
+            "https://www.ecb.europa.eu/press/press_conference/monetary-policy-statement/shared/pdf/ecb.ds261029~3abd26884e.en.pdf"
+          ],
+          "rule": "Decisione comune dell'area euro sovrapposta al mandato e documentata dalla BCE.",
+          "history": {
+            "label": "Tasso sui depositi BCE, in vigore dalla data indicata",
+            "rows": [
+              {
+                "date": "2022-07-27",
+                "value": "0,00%"
+              },
+              {
+                "date": "2022-09-14",
+                "value": "0,75%"
+              },
+              {
+                "date": "2022-11-02",
+                "value": "1,50%"
+              },
+              {
+                "date": "2022-12-21",
+                "value": "2,00%"
+              },
+              {
+                "date": "2023-02-08",
+                "value": "2,50%"
+              },
+              {
+                "date": "2023-03-22",
+                "value": "3,00%"
+              },
+              {
+                "date": "2023-05-10",
+                "value": "3,25%"
+              },
+              {
+                "date": "2023-06-21",
+                "value": "3,50%"
+              },
+              {
+                "date": "2023-08-02",
+                "value": "3,75%"
+              },
+              {
+                "date": "2023-09-20",
+                "value": "4,00%"
+              },
+              {
+                "date": "2024-06-12",
+                "value": "3,75%"
+              },
+              {
+                "date": "2024-09-18",
+                "value": "3,50%"
+              },
+              {
+                "date": "2024-10-23",
+                "value": "3,25%"
+              },
+              {
+                "date": "2024-12-18",
+                "value": "3,00%"
+              },
+              {
+                "date": "2025-02-05",
+                "value": "2,75%"
+              },
+              {
+                "date": "2025-03-12",
+                "value": "2,50%"
+              },
+              {
+                "date": "2025-04-23",
+                "value": "2,25%"
+              },
+              {
+                "date": "2025-06-11",
+                "value": "2,00%"
+              },
+              {
+                "date": "2026-06-17",
+                "value": "2,25%"
+              },
+              {
+                "date": "2026-09-16",
+                "value": "2,50%"
+              }
+            ]
+          }
+        },
+        {
+          "id": "meloni-i:eu-fiscal-rules",
+          "title": "Nuove regole di bilancio europee",
+          "summary": "Dal 30 aprile 2024 è in vigore la riforma della governance economica UE: i vincoli si basano sulla spesa netta in piani pluriennali. Vale per tutti gli Stati membri, non solo per l'Italia.",
+          "start_date": "2024-04-30",
+          "channel": "eu_fiscal_rules",
+          "sources": [
+            "https://www.consilium.europa.eu/en/policies/excessive-deficit-procedure/"
+          ],
+          "rule": "Regola o decisione europea sovrapposta al mandato, distinta dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:excessive-deficit-procedure",
+          "title": "Procedura UE per deficit eccessivo",
+          "summary": "Il 26 luglio 2024 il Consiglio apre la procedura sull'Italia, partendo dal deficit 2023 allora notificato al 7,4% del PIL. Il 21 gennaio 2025 raccomanda di correggerlo entro il 2026. Istat indica per il 2025 un deficit al 3,1%, sopra la soglia del 3%; l'ultimo stato pubblicato dalla Commissione è procedura aperta. Il governo prevede un deficit sotto il 3% nel 2026: secondo il DPFP, se la Commissione lo confermerà, al netto delle spese coperte dalla clausola nazionale, la chiusura potrebbe arrivare nel 2027.",
+          "start_date": "2024-07-26",
+          "channel": "eu_fiscal_rules",
+          "relation": "during",
+          "sources": [
+            "https://economy-finance.ec.europa.eu/economic-governance-framework/stability-and-growth-pact/corrective-arm-excessive-deficit-procedure/excessive-deficit-procedures-overview/italy_en",
+            "https://www.consilium.europa.eu/en/press/press-releases/2024/07/26/stability-and-growth-pact-council-launches-excessive-deficit-procedures-against-seven-member-states/",
+            "https://www.istat.it/en/press-release/notification-of-general-government-deficit-and-debt-according-to-the-excessive-deficit-procedure-years-2022-2025/",
+            "https://www.upbilancio.it/wp-content/uploads/2026/10/UPB-Audizione-DPFP-2026.pdf"
+          ],
+          "rule": "Regola o decisione europea sovrapposta al mandato, distinta dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:national-escape-clause",
+          "title": "Clausola nazionale per difesa ed energia",
+          "summary": "L'8 ottobre 2026 la Commissione raccomanda al Consiglio di consentire all'Italia uno scostamento dai limiti di spesa netta per difesa e sicurezza energetica. Secondo l'UPB le misure valgono circa 29 miliardi nel 2027-2028 e riporterebbero il deficit sopra il 3%; il Consiglio dovrebbe decidere entro novembre. Al 31 ottobre 2026 non risulta documentata l'adozione: è una raccomandazione, non ancora una decisione.",
+          "start_date": "2026-10-08",
+          "channel": "eu_fiscal_rules",
+          "relation": "during",
+          "sources": [
+            "https://data.consilium.europa.eu/doc/document/ST-14247-2026-INIT/en/pdf",
+            "https://www.upbilancio.it/wp-content/uploads/2026/10/UPB-Audizione-DPFP-2026.pdf"
+          ],
+          "rule": "Regola o decisione europea sovrapposta al mandato, distinta dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:ecb-tpi",
+          "title": "Scudo anti-spread della BCE (TPI)",
+          "summary": "Il 21 luglio 2022 la BCE approva lo strumento TPI, per contrastare dinamiche di mercato ingiustificate che minacciano la trasmissione della politica monetaria nell'area euro.",
+          "start_date": "2022-07-21",
+          "channel": "common_monetary_policy",
+          "sources": [
+            "https://www.ecb.europa.eu/press/pr/date/2022/html/ecb.pr220721~973e6e7273.en.html"
+          ],
+          "rule": "Decisione comune dell'area euro sovrapposta al mandato e documentata dalla BCE."
+        }
+      ],
+      "laws_measures": [
+        {
+          "id": "meloni-i:recovery-plan",
+          "title": "PNRR: attuazione, revisioni e ultima rata",
+          "summary": "Piano approvato nel luglio 2021 e aggiornato più volte: oggi vale 194,4 miliardi, comprese risorse nazionali. La Commissione elenca aggiornamenti fino a marzo e agosto 2026. A giugno 2026 il governo indica 166 miliardi ricevuti con la nona rata. Il 29 settembre 2026 ha chiesto la decima e ultima rata da 28,4 miliardi: la valutazione europea è in corso. Risorse e riforme attraversano Draghi e Meloni: avanzamento e impatto non sono merito esclusivo di un solo governo.",
+          "start_date": "2021-01-01",
+          "precision": "year",
+          "channel": "documented_government_measure",
+          "sources": [
+            "https://reforms-investments.ec.europa.eu/recovery-and-resilience-facility-1/country-pages/italys-recovery-and-resilience-plan_en",
+            "https://www.governo.it/it/articolo/pnrr-l-italia-riceve-il-pagamento-della-nona-e-penultima-rata-pari-12.8-miliardi-di-euro",
+            "https://www.italiadomani.gov.it/content/sogei-ng/it/it/news/presentata-alla-commissione-eu-richiesta-pagamento-10a-e-ultima-.html"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2023-budget",
+          "title": "Manovra 2023 (legge 197/2022)",
+          "summary": "Il MEF quantifica le misure in quasi 35 miliardi nel disegno di legge, di cui oltre 21 contro il caro energia. Esonero contributivo del 3% fino a 25.000 euro e del 2% fino a 35.000; flat tax al 15% per le partite IVA fino a 85.000 euro; reddito di cittadinanza limitato a 7 mesi per chi può lavorare e abrogato dal 2024.",
+          "start_date": "2022-12-29",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-12-29;197",
+            "https://www.mef.gov.it/focus/Le-principali-misure-della-manovra-2023/",
+            "https://www.mef.gov.it/inevidenza/DDL-Bilancio-approvato-dal-Cdm-manovra-da-35-miliardi/"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "keep": "meloni-i:measure-2023-credits"
+        },
+        {
+          "id": "meloni-i:measure-2023-labour",
+          "title": "Decreto lavoro (DL 48/2023)",
+          "summary": "Da luglio a dicembre 2023 l'esonero contributivo sale al 7% fino a 1.923 euro mensili e al 6% fino a 2.692. Dal 2024 l'Assegno di inclusione sostituisce il reddito di cittadinanza per i nuclei vulnerabili.",
+          "start_date": "2023-05-04",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://temi.camera.it/leg19/provvedimento/d-l-48-2023-decreto-lavoro.html"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2024-budget",
+          "title": "Manovra 2024 (legge 213/2023)",
+          "summary": "Il MEF indica circa 28 miliardi fra legge di bilancio e decreto sulla riforma fiscale. Circa 10 miliardi rinnovano per il 2024 il taglio contributivo del 7% fino a 25.000 euro e del 6% fino a 35.000; gli scaglioni IRPEF passano da quattro a tre, con il 23% fino a 28.000 euro.",
+          "start_date": "2023-12-30",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2023-12-30;213",
+            "https://www.mef.gov.it/focus/Le-principali-misure-della-legge-di-bilancio-2024/"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2024-superbonus",
+          "title": "Stretta sul Superbonus (DL 39/2024)",
+          "summary": "Restringe le eccezioni al divieto di cessione del credito e sconto in fattura introdotto nel 2023 ed esclude la remissione in bonis per le comunicazioni tardive.",
+          "start_date": "2024-03-29",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://temi.camera.it/leg19/provvedimento/d-l-212-2023-modifiche-alla-disciplina-del-superbonus_d.html"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2024-tax-wedge",
+          "title": "Manovra 2025 (legge 207/2024)",
+          "summary": "Bonus e detrazioni fiscali sostituiscono l'esonero contributivo temporaneo e stabilizzano tre aliquote IRPEF. Il dossier parlamentare quantifica le minori entrate.",
+          "start_date": "2024-12-30",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://documenti.camera.it/leg19/dossier/pdf/ID0011fvol4.pdf"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2026-budget",
+          "title": "Manovra 2026 (legge 199/2025)",
+          "summary": "La seconda aliquota IRPEF scende dal 35% al 33%. Secondo l'UPB la manovra aumenta il deficit di 0,8 miliardi nel 2026, 5,7 nel 2027 e 6,8 nel 2028; le misure temporanee valgono 7,6 miliardi nel 2026 e, se confermate, peggiorerebbero i conti senza nuove coperture.",
+          "start_date": "2025-12-30",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://www.upbilancio.it/wp-content/uploads/2026/02/Focus-1_2026-LB.pdf",
+            "https://www.upbilancio.it/en/focus-no-1-2026-the-2026-budget-law-an-analysis-of-the-final-texts/"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2026-fuel-excise",
+          "title": "Accise: fine dei tagli 2022 e nuove riduzioni dal 2026",
+          "summary": "Le riduzioni generali delle accise introdotte nel 2022 cessano il 31 dicembre 2022. Con lo shock del 2026 tornano tagli temporanei: DL 33/2026 su benzina, gasolio e GPL dal 19 marzo al 7 aprile, DL 42/2026 dall'8 aprile al 1° maggio, poi altri decreti e atti ministeriali fino a settembre, fra cui i DL 133, 139, 153 e 157 sul gasolio. Il DL 162/2026 taglia il gasolio di 10 centesimi al litro dal 18 al 25 settembre e di 5 fino al 5 ottobre, con oneri stimati in 111,8 milioni per il 2026.",
+          "start_date": "2022-12-31",
+          "end_date": "2026-10-05",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://temi.camera.it/leg19/temi/19_tl18_accise.html",
+            "https://temi.camera.it/leg19/provvedimento/disposizioni-urgenti-in-materia-di-prezzi-petroliferi-connessi-alle-crisi-dei-mercati-internazionali.html",
+            "https://www.normattiva.it/eli/id/2026/04/03/26G00061/ORIGINAL",
+            "https://documenti.camera.it/leg19/dossier/testi/D26162.htm"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        },
+        {
+          "id": "meloni-i:measure-2027-budget-bill",
+          "title": "Manovra 2027 (disegno di legge, in esame)",
+          "summary": "Il 28 ottobre 2026 il Consiglio dei ministri approva il disegno di legge: non è ancora legge e il Parlamento può modificarlo. Il governo la quantifica in circa 26 miliardi nel 2027 e 27 nel 2028; tra le misure proposte c'è l'aliquota IRPEF del 33% estesa ai redditi fino a 55.000 euro.",
+          "start_date": "2026-10-28",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://www.governo.it/it/articolo/comunicato-stampa-del-consiglio-dei-ministri-n-195/32973"
+          ],
+          "rule": "Proposta approvata dal governo e in esame in Parlamento; non è un atto in vigore."
+        },
+        {
+          "id": "meloni-i:measure-2023-bank-tax",
+          "title": "Imposta straordinaria sulle banche (DL 104/2023)",
+          "summary": "Istituisce per il 2023 un'imposta del 40% sui margini di interesse delle banche, i cosiddetti extraprofitti, modificata durante la conversione in legge. L'esito sul gettito non è indicato qui.",
+          "start_date": "2023-08-10",
+          "channel": "documented_government_measure",
+          "relation": "during",
+          "sources": [
+            "https://temi.camera.it/leg19/provvedimento/disposizioni-urgenti-a-tutela-degli-utenti-in-materia-di-attivita-economiche-e-finanziarie-e-investimenti-strategici.html"
+          ],
+          "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
+        }
+      ]
+    }
+  }
+}

@@ -1,8 +1,9 @@
-import pageSpec from "../scripts/etl/specs/government-scorecard-page.source.json" with { type: "json" };
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import "./helpers/register-ts-alias.mjs";
 
@@ -28,6 +29,7 @@ const {
 
 const EXPECTED_INDICATORS = [
   "inflation",
+  "energy_inflation",
   "real_compensation",
   "unemployment",
   "employment_rate",
@@ -35,6 +37,7 @@ const EXPECTED_INDICATORS = [
   "debt_ratio",
   "debt_per_capita",
   "primary_balance",
+  "long_term_rate",
   "investment_share",
 ];
 
@@ -54,6 +57,15 @@ test("the feature owns exactly two registered generated artifacts", () => {
     .filter((name) => name.startsWith("government-scorecard"))
     .sort();
   assert.deepEqual(generated, ["government-scorecard-page.json", "government-scorecard.json"]);
+});
+
+test("the page snapshot is read at runtime, never imported into typed modules", () => {
+  // A static JSON import makes tsc infer types for every point: at 7 MB the CI typecheck ran out of heap.
+  const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
+  const sources = readdirSync(sourceRoot, { recursive: true })
+    .filter((path) => /\.tsx?$/.test(path))
+    .filter((path) => /from\s+["'][^"']*government-scorecard-page\.json["']/.test(readFileSync(join(sourceRoot, path), "utf8")));
+  assert.deepEqual(sources, []);
 });
 
 test("the display snapshot documents the typed-snapshot exception and semantic axes", () => {
@@ -120,7 +132,7 @@ test("the score artifact contains only the AMECO panel required by the current m
 test("page data preserve publication status, sources and the score-artifact link", () => {
   const snapshot = getGovernmentScorecardV6SupplementalSnapshot();
   const coreHash = createHash("sha256").update(readFileSync(corePath)).digest("hex");
-  const expectedLatestPeriods = new Map(pageSpec.refreshPolicy.approvedPeriods.map((item) => [item.indicator_id, item.period]));
+  const expectedLatestPeriods = new Map(snapshot.coverage.latest_published_periods.map((item) => [item.indicator_id, item.period]));
   assert.deepEqual(GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS, EXPECTED_INDICATORS);
   assert.equal(snapshot.score_contract.supplemental_score_impact, "none");
   assert.equal(snapshot.score_contract.core_artifact_sha256, coreHash);

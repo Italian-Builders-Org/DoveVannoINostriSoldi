@@ -1,9 +1,11 @@
 import copy
 import contextlib
+import csv
 import io
 import runpy
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
@@ -26,13 +28,14 @@ class RefreshTests(unittest.TestCase):
         self.payload = ameco_zip(self.spec)
         self.core = score.build_snapshot(self.spec, self.payload, '2026-09-03T08:00:00Z')
         self.page = page._load(page.OUTPUT)
-        self.page['as_of_date'] = '2026-09-03'
+        self.page['as_of_date'] = '2026-10-31'
         self.registry = page._load(page.CHRONOLOGY_PATH)
         self.page['sources'][0] = page._ameco_source(self.core)
-        self.page['series'][1] = page._ameco_series(self.core, self.page['sources'][0])[0]
+        index = next(i for i, item in enumerate(self.page['series']) if item['indicator_id'] == 'real_compensation')
+        self.page['series'][index] = page._ameco_series(self.core, self.page['sources'][0])[0]
         self.page['score_contract']['core_artifact_sha256'] = score.sha256(refresh.encoded(self.core))
         self.policy = page._load(refresh.POLICY_PATH)['refreshPolicy']
-        self.policy['approvedSources'] = [refresh.receipt(item) for item in self.page['sources']]
+        self.policy['scoreReceipt'] = {key: self.page['sources'][0][key] for key in ('raw_bytes', 'raw_sha256')}
         self.policy['coreArtifactSha256'] = score.sha256(refresh.encoded(self.core))
         self.policy['scoreAcquiredAt'] = self.core['sources']['ameco']['retrievedAt']
         self.write('scripts/etl/specs/government-scorecard.source.json', self.spec)
@@ -69,33 +72,94 @@ class RefreshTests(unittest.TestCase):
         return result
 
     def run_refresh(self, builder=None, **kwargs):
-        timestamp = kwargs.pop('timestamp', '2026-09-05T08:00:00Z')
+        timestamp = kwargs.pop('timestamp', '2026-11-02T08:00:00Z')
         return refresh.refresh(timestamp, root=self.root,
                                fetch_score=lambda _: self.payload, build_page=builder or self.build, **kwargs)
 
-    def approve_inflation_change(self):
+    def publish_new_eurostat_release(self):
         source = self.page['sources'][1]
         source['raw_sha256'] = 'a' * 64
-        source['upstream_updated_at'] = '2026-09-04T08:00:00Z'
+        source['upstream_updated_at'] = '2026-11-01T08:00:00Z'
         for geo in self.page['series'][0]['geographies']:
             for point in geo['points']:
                 point['raw_sha256'] = source['raw_sha256']
                 point['value'] += 0.1
-        self.policy['approvedSources'] = [refresh.receipt(item) for item in self.page['sources']]
-        self.save_policy()
 
     def test_no_change_retains_exact_bytes_and_does_not_verify_or_publish(self):
         self.assertFalse(self.run_refresh(verify=lambda: self.fail('no candidate expected')))
         self.assertEqual(self.files(), self.originals)
 
-    def test_approved_update_then_repeated_poll_is_idempotent(self):
-        self.approve_inflation_change()
+    def test_new_eurostat_release_needs_no_spec_edit_and_repeated_poll_is_idempotent(self):
+        # The publisher can only write the two artifacts: a hash pinned in the
+        # spec blocked every new Eurostat release before the review PR existed.
+        spec_before = (self.root / 'scripts/etl/specs/government-scorecard-page.source.json').read_bytes()
+        self.publish_new_eurostat_release()
         self.assertTrue(self.run_refresh())
         first = self.files()
         self.page = page._load(self.root / 'src/data/generated/government-scorecard-page.json')
         self.assertFalse(self.run_refresh())
         self.assertEqual(self.files(), first)
         self.assertEqual(first['government-scorecard.json'], self.originals['government-scorecard.json'])
+        self.assertEqual((self.root / 'scripts/etl/specs/government-scorecard-page.source.json').read_bytes(), spec_before)
+
+    def test_unreviewed_ameco_release_keeps_score_and_still_publishes_eurostat(self):
+        def changed(indicator, country, filename, row):
+            if indicator == 'unemployment' and country == 'spain':
+                row[5 + 2024 - 1960] = '12.5'
+        self.payload = ameco_zip(self.spec, mutate_row=changed)
+        self.publish_new_eurostat_release()
+        self.assertTrue(self.run_refresh())
+        self.assertEqual(self.files()['government-scorecard.json'], self.originals['government-scorecard.json'])
+        self.assertIn('::warning::', self.output.getvalue())
+        self.assertIn('AMECO', self.output.getvalue())
+
+    def test_new_ameco_forecast_year_keeps_score_and_still_publishes_eurostat(self):
+        # A new vintage extends the CSV header before its methodology is reviewed.
+        output = io.BytesIO()
+        with zipfile.ZipFile(io.BytesIO(self.payload)) as previous, zipfile.ZipFile(output, 'w') as updated:
+            for name in previous.namelist():
+                rows = list(csv.reader(io.StringIO(previous.read(name).decode('latin-1'))))
+                rows[0][-1:] = ['2028', 'Unnamed: 74']
+                for row in rows[1:]:
+                    row.insert(-1, '100')
+                text = io.StringIO(newline='')
+                csv.writer(text, lineterminator='\n').writerows(rows)
+                updated.writestr(name, text.getvalue().encode('latin-1'))
+        self.payload = output.getvalue()
+        self.publish_new_eurostat_release()
+        self.assertTrue(self.run_refresh())
+        self.assertEqual(self.files()['government-scorecard.json'], self.originals['government-scorecard.json'])
+        published = page._load(self.root / 'src/data/generated/government-scorecard-page.json')
+        self.assertEqual(published['sources'][0], self.page['sources'][0])
+        self.assertEqual(published['sources'][1]['raw_sha256'], 'a' * 64)
+        self.assertIn('::warning::AMECO changed upstream', self.output.getvalue())
+
+        # Observation still requires a reviewed schema before interpreting new years.
+        before = self.files()
+        with self.assertRaisesRegex(score.SnapshotError, 'intestazione CSV inattesa'):
+            self.run_refresh(observe=True)
+        self.assertEqual(self.files(), before)
+
+    def test_reviewed_ameco_release_replaces_score(self):
+        def changed(indicator, country, filename, row):
+            if indicator == 'unemployment' and country == 'spain':
+                row[5 + 2024 - 1960] = '12.5'
+        self.payload = ameco_zip(self.spec, mutate_row=changed)
+        candidate = score.build_snapshot(self.spec, self.payload, self.policy['scoreAcquiredAt'])
+        candidate['caveats'] = self.core['caveats']
+        self.policy['coreArtifactSha256'] = score.sha256(refresh.encoded(candidate))
+        self.policy['scoreReceipt'] = {'raw_bytes': candidate['sources']['ameco']['bytes'], 'raw_sha256': candidate['sources']['ameco']['sha256']}
+        self.save_policy()
+        def builder(timestamp, **kwargs):
+            result = self.build(timestamp, **kwargs)
+            result['sources'][0] = page._ameco_source(kwargs['core'])
+            for series in page._ameco_series(kwargs['core'], result['sources'][0]):
+                index = next(i for i, item in enumerate(result['series']) if item['indicator_id'] == series['indicator_id'])
+                if result['series'][index]['usage'] == 'score_and_context':
+                    result['series'][index] = series
+            return result
+        self.assertTrue(self.run_refresh(builder))
+        self.assertNotEqual(self.files()['government-scorecard.json'], self.originals['government-scorecard.json'])
 
     def test_incomplete_or_malformed_raw_score_never_writes(self):
         for payload in (b'not zip', ameco_zip(self.spec, omit_member='AMECO18.CSV')):
@@ -110,7 +174,9 @@ class RefreshTests(unittest.TestCase):
             lambda value: value['sources'][1].__setitem__('owner', 'other'),
             lambda value: value['sources'][1].__setitem__('terms_url', 'https://example.test/license'),
             lambda value: value['sources'][1].__setitem__('dataset_code', 'other'),
+            lambda value: value['sources'][1].__setitem__('query_url', 'https://ec.europa.eu/eurostat/other'),
             lambda value: value['sources'][1].__setitem__('raw_sha256', '0' * 64),
+            lambda value: value['series'][0]['geographies'][0]['points'].append({**value['series'][0]['geographies'][0]['points'][-1], 'period': '2099-01', 'period_start': '2099-01-01', 'year': 2099}),
             lambda value: value['series'][0]['geographies'][0]['points'][0].__setitem__('period', '2050-01'),
             lambda value: value['contexts'][0].__setitem__('government_id', 'other'),
         ]
@@ -128,6 +194,9 @@ class RefreshTests(unittest.TestCase):
             if indicator == 'unemployment' and country == 'spain':
                 row[5 + 2024 - 1960] = ':'
         self.payload = ameco_zip(self.spec, mutate_row=missing)
+        # An approved receipt must still pass the complete observed-panel contract.
+        self.policy['scoreReceipt'] = {'raw_bytes': len(self.payload), 'raw_sha256': score.sha256(self.payload)}
+        self.save_policy()
         with self.assertRaisesRegex(ValueError, 'osservazione obbligatoria'):
             self.run_refresh()
         self.assertEqual(self.files(), self.originals)
@@ -157,26 +226,26 @@ class RefreshTests(unittest.TestCase):
 
     def test_context_review_expiry_does_not_modify_the_snapshot(self):
         with self.assertRaisesRegex(ValueError, 'quarterly context review overdue'):
-            self.run_refresh(timestamp='2026-12-03T08:00:00Z')
+            self.run_refresh(timestamp='2027-01-31T08:00:00Z')
         self.assertEqual(self.files(), self.originals)
         self.assertEqual(str(refresh.review_deadline('2026-01-31')), '2026-04-30')
 
     def test_unchanged_context_review_advances_snapshot_date_once(self):
-        self.policy['contextReview']['reviewedAt'] = '2026-09-04'
+        self.policy['contextReview']['reviewedAt'] = '2026-11-01'
         self.save_policy()
 
-        self.assertTrue(self.run_refresh(timestamp='2026-09-04T08:00:00Z'))
+        self.assertTrue(self.run_refresh(timestamp='2026-11-01T08:00:00Z'))
         first = self.files()
         result = page._load(self.root / 'src/data/generated/government-scorecard-page.json')
-        self.assertEqual(result['as_of_date'], '2026-09-04')
+        self.assertEqual(result['as_of_date'], '2026-11-01')
         self.assertEqual(first['government-scorecard.json'], self.originals['government-scorecard.json'])
 
         self.page = result
-        self.assertFalse(self.run_refresh(timestamp='2026-09-05T08:00:00Z'))
+        self.assertFalse(self.run_refresh(timestamp='2026-11-02T08:00:00Z'))
         self.assertEqual(self.files(), first)
 
     def test_failed_final_validation_restores_both_exact_original_files(self):
-        self.approve_inflation_change()
+        self.publish_new_eurostat_release()
         def fail():
             raise RuntimeError('runtime contract failure')
         with self.assertRaisesRegex(RuntimeError, 'runtime contract'):
@@ -223,12 +292,12 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(self.files(), before)
 
     def test_government_change_requires_complete_reviewed_context(self):
-        self.registry['verifiedAt'] = self.registry['asOfDate'] = '2026-09-04'
+        self.registry['verifiedAt'] = self.registry['asOfDate'] = '2026-11-01'
         self.registry['governments'].append({
-            'id': 'fixture-i', 'name': 'Fixture I', 'startDate': '2026-09-04',
+            'id': 'fixture-i', 'name': 'Fixture I', 'startDate': '2026-11-01',
             'sourceOwner': 'Presidenza della Repubblica',
             'sourceUrl': 'https://www.quirinale.it/it/notizie/fixture-giuramento',
-            'sourceLocator': 'Fixture del giuramento verificato del 4 settembre 2026.',
+            'sourceLocator': 'Fixture del giuramento verificato del 1 novembre 2026.',
         })
         refresh.chronology.validate_registry(self.registry)
         self.write('scripts/etl/specs/government-scorecard-chronology.json', self.registry)
@@ -237,12 +306,12 @@ class RefreshTests(unittest.TestCase):
         self.assertEqual(self.files(), self.originals)
 
     def test_reviewed_government_transition_preserves_score_and_closes_previous_mandate(self):
-        self.registry['verifiedAt'] = self.registry['asOfDate'] = '2026-09-04'
+        self.registry['verifiedAt'] = self.registry['asOfDate'] = '2026-11-01'
         government = {
-            'id': 'fixture-i', 'name': 'Fixture I', 'startDate': '2026-09-04',
+            'id': 'fixture-i', 'name': 'Fixture I', 'startDate': '2026-11-01',
             'sourceOwner': 'Presidenza della Repubblica',
             'sourceUrl': 'https://www.quirinale.it/it/notizie/fixture-giuramento',
-            'sourceLocator': 'Fixture del giuramento verificato del 4 settembre 2026.',
+            'sourceLocator': 'Fixture del giuramento verificato del 1 novembre 2026.',
         }
         self.registry['governments'].append(government)
         old_oath = self.page['contexts'][-1]['slides'][-1]['items'][0]
@@ -253,10 +322,10 @@ class RefreshTests(unittest.TestCase):
         for category in page.CONTEXT_CATEGORIES:
             item = page._context_item('fixture-i:' + category.replace('_', '-'), 'Fixture',
                 government['sourceLocator'], government['startDate'], None, 'institutional_timeline',
-                government['sourceUrl'], '2026-09-04T08:00:00Z')
+                government['sourceUrl'], '2026-11-01T08:00:00Z')
             context['slides'].append(page._ready_slide(category, 'Fixture', 'Fixture', 'Fixture', [item]))
         self.page['contexts'].append(context)
-        self.policy['contextReview'] = {'reviewedAt': '2026-09-04',
+        self.policy['contextReview'] = {'reviewedAt': '2026-11-01',
             'contextsSha256': page._canonical_hash(self.page['contexts']),
             'chronologySha256': page._canonical_hash(self.registry)}
         self.write('scripts/etl/specs/government-scorecard-chronology.json', self.registry)
@@ -264,13 +333,14 @@ class RefreshTests(unittest.TestCase):
         self.assertTrue(self.run_refresh())
         result = page._load(self.root / 'src/data/generated/government-scorecard-page.json')
         self.assertEqual(len(result['contexts']), 18)
-        self.assertEqual(result['contexts'][-2]['slides'][-1]['items'][0]['end_date_or_null'], '2026-09-04')
+        self.assertEqual(result['contexts'][-2]['slides'][-1]['items'][0]['end_date_or_null'], '2026-11-01')
         self.assertEqual(self.files()['government-scorecard.json'], self.originals['government-scorecard.json'])
 
     def test_observation_mode_emits_receipts_without_writing_unapproved_changes(self):
         self.page['sources'][1]['raw_sha256'] = 'a' * 64
         self.assertFalse(self.run_refresh(observe=True))
         self.assertEqual(self.files(), self.originals)
+        self.assertIn('scoreReceipt', self.output.getvalue())
 
 
 class OfflineContextReviewDateTests(unittest.TestCase):

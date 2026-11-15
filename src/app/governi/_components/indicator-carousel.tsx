@@ -14,6 +14,7 @@ import type {
   GovernmentScorecardV6ChartSlide,
 } from "@/lib/government-scorecard-page";
 
+import { formatChartTabLabel } from "./chart-tab-label";
 import {
   getClosestGovernmentChartPointIndex,
   GOVERNMENT_SCORECARD_V6_CHART_VIEWBOX as VIEWBOX,
@@ -395,7 +396,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
               aria-current={index === activeIndex ? "step" : undefined}
               onClick={() => setActiveIndex(index)}
             >
-              <span>{chart.tab_label}</span>
+              <span>{formatChartTabLabel(chart.tab_label)}</span>
             </button>
           ))}
         </div>

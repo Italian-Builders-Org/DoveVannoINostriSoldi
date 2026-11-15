@@ -124,4 +124,5 @@ test("countries use stable design tokens and accessible chart interactions", () 
   assert.match(component, /ArrowRight/);
   assert.match(component, /aria-live="polite"/);
   assert.doesNotMatch(component, /#[0-9a-f]{3,8}/i);
+  assert.match(component, /chart\.tab_label/);
 });

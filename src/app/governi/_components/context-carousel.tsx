@@ -4,6 +4,7 @@ import { useId, useRef, useState, type KeyboardEvent } from "react";
 
 import type { GovernmentScorecardV6ContextSlide } from "@/lib/government-scorecard-page";
 
+import { dedupeContextSources } from "./context-sources";
 import styles from "../government-scorecard.module.css";
 
 type MandatePeriod = { startDate: string; endDate: string | null };
@@ -99,7 +100,7 @@ function ContextCard({
                   <div><dt>Rapporto col mandato</dt><dd>{MANDATE_RELATION_LABELS[item.mandate_relation]}</dd></div>
                 </dl>
                 <div className={styles.contextSources}>
-                  {item.sources.map((source) => (
+                  {dedupeContextSources(item.sources).map((source) => (
                     <a
                       href={source.url}
                       key={source.url}

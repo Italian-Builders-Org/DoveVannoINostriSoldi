@@ -156,12 +156,12 @@
         {
           "id": "meloni-i:russian-gas-phase-out",
           "title": "Stop UE al gas russo",
-          "summary": "Il regolamento UE 2026/261, in vigore dal 3 febbraio 2026, elimina per gradi le importazioni di gas russo: secondo la Commissione il GNL entro la fine del 2026 e il gas via tubo entro il 30 novembre 2027. La misura è europea e riguarda tutti gli Stati membri.",
+          "summary": "Il regolamento UE 2026/261, in vigore dal 3 febbraio 2026, elimina per gradi le importazioni di gas russo: il GNL a lungo termine entro il 1° gennaio 2027 e il gas via tubo, per i contratti preesistenti, entro il 30 settembre 2027, con possibile proroga al 1° novembre 2027 al massimo se la Commissione accerta rischi sul riempimento degli stoccaggi. La misura è europea e riguarda tutti gli Stati membri.",
           "start_date": "2026-02-03",
           "channel": "energy_trade_fiscal_support_and_geopolitics",
           "sources": [
-            "https://energy.ec.europa.eu/news/eu-takes-next-step-towards-energy-independence-russia-2026-02-02_en",
-            "https://energy.ec.europa.eu/strategy/repowereu-phase-out-russian-energy-imports/repowereu-4-years_en"
+            "https://eur-lex.europa.eu/eli/reg/2026/261/oj/ita",
+            "https://energy.ec.europa.eu/news/eu-takes-next-step-towards-energy-independence-russia-2026-02-02_en"
           ],
           "rule": "Evento esterno sovrapposto al mandato, con canale economico documentato da una fonte istituzionale."
         }
@@ -383,7 +383,7 @@
           "channel": "documented_government_measure",
           "relation": "during",
           "sources": [
-            "https://temi.camera.it/leg19/provvedimento/d-l-212-2023-modifiche-alla-disciplina-del-superbonus_d.html"
+            "https://temi.camera.it/leg19/dossier/OCD18-20053/dl-39-2024-misure-urgenti-materia-fiscale-e-connesse-eventi-eccezionali-nonche-relative-all-amministrazione-finanziaria.html"
           ],
           "rule": "Atto approvato o attuato nel mandato, distinto dai risultati economici osservati."
         },
@@ -443,7 +443,7 @@
         {
           "id": "meloni-i:measure-2023-bank-tax",
           "title": "Imposta straordinaria sulle banche (DL 104/2023)",
-          "summary": "Istituisce per il 2023 un'imposta del 40% sui margini di interesse delle banche, i cosiddetti extraprofitti, modificata durante la conversione in legge. L'esito sul gettito non è indicato qui.",
+          "summary": "Istituisce per il 2023 un'imposta straordinaria del 40% sulla parte del margine di interesse che eccede di almeno il 10% il margine del 2021 (voce 30 del conto economico), con tetto allo 0,26% dell'esposizione al rischio; la conversione in legge ha modificato alcuni dettagli. L'esito sul gettito non è indicato qui.",
           "start_date": "2023-08-10",
           "channel": "documented_government_measure",
           "relation": "during",

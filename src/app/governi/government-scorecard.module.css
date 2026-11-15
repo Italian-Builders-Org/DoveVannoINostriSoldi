@@ -741,6 +741,18 @@
   padding-inline: 5px;
   border-width: 1px;
   font-size: 11px;
+  hyphens: none;
+}
+
+.carouselIndicators button span {
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
+  line-height: 1.25;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: normal;
 }
 
 .indicatorCarousel {
@@ -1509,14 +1521,6 @@
 
 .comparisonDetailLink {
   color: var(--color-text);
-}
-
-@media (min-width: 981px) {
-  .carouselIndicators button span {
-    display: block;
-    overflow-wrap: normal;
-    white-space: nowrap;
-  }
 }
 
 @media (max-width: 980px) {

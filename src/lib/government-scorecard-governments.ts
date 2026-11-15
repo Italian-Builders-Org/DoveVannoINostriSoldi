@@ -395,9 +395,18 @@ export function buildGovernmentScorecardV6Input(id: GovernmentScorecardV6Governm
 
 type ChartCopy = Readonly<{ question: string; unit: string; note?: string }>;
 
-const CHART_TAB_LABELS: Readonly<Partial<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], string>>> = {
+const CHART_TAB_LABELS: Readonly<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], string>> = {
+  inflation: "Inflazione",
+  energy_inflation: "Energia",
+  real_compensation: "Salari reali",
   unemployment: "Disoccupazione",
+  employment_rate: "Occupazione",
+  real_gdp_per_capita: "PIL pro capite",
+  debt_ratio: "Debito/PIL",
+  debt_per_capita: "Debito pro capite",
+  primary_balance: "Saldo primario",
   long_term_rate: "BTP 10 anni",
+  investment_share: "Investimenti",
 };
 
 const CHART_COPY: Readonly<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], ChartCopy>> = {
@@ -503,7 +512,7 @@ function buildTimeSeriesCharts(
         status: "ready" as const,
         indicator_id: indicator.indicator_id,
         title: indicator.label,
-        tab_label: CHART_TAB_LABELS[indicator.indicator_id] ?? indicator.label,
+        tab_label: CHART_TAB_LABELS[indicator.indicator_id],
         question: CHART_COPY[indicator.indicator_id].question,
         unit: CHART_COPY[indicator.indicator_id].unit,
         frequency: CHART_FREQUENCY_LABELS[indicator.frequency],

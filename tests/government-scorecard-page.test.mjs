@@ -97,12 +97,31 @@ test("chart windows include the latest available point without including a succe
 test("chart tabs use short labels without changing chart titles", () => {
   const current = getGovernmentScorecardV6View("meloni-i");
   assert.ok(current.charts.status === "ready");
-  const unemployment = current.charts.slides.find((slide) => slide.indicator_id === "unemployment");
-  const longRate = current.charts.slides.find((slide) => slide.indicator_id === "long_term_rate");
-  assert.equal(unemployment?.title, "Tasso di disoccupazione");
-  assert.equal(unemployment?.tab_label, "Disoccupazione");
-  assert.equal(longRate?.title, "Rendimenti dei titoli di Stato a lungo termine");
-  assert.equal(longRate?.tab_label, "BTP 10 anni");
+  const expectedTabLabels = new Map([
+    ["inflation", "Inflazione"],
+    ["energy_inflation", "Energia"],
+    ["real_compensation", "Salari reali"],
+    ["unemployment", "Disoccupazione"],
+    ["employment_rate", "Occupazione"],
+    ["real_gdp_per_capita", "PIL pro capite"],
+    ["debt_ratio", "Debito/PIL"],
+    ["debt_per_capita", "Debito pro capite"],
+    ["primary_balance", "Saldo primario"],
+    ["long_term_rate", "BTP 10 anni"],
+    ["investment_share", "Investimenti"],
+  ]);
+  for (const slide of current.charts.slides) {
+    assert.equal(slide.tab_label, expectedTabLabels.get(slide.indicator_id));
+    assert.notEqual(slide.tab_label, slide.title);
+  }
+  assert.equal(
+    current.charts.slides.find((slide) => slide.indicator_id === "debt_ratio")?.tab_label,
+    "Debito/PIL",
+  );
+  assert.equal(
+    current.charts.slides.find((slide) => slide.indicator_id === "debt_per_capita")?.tab_label,
+    "Debito pro capite",
+  );
 });
 
 test("the current-government charts expose the latest reliable display data without flat one-point plots", () => {

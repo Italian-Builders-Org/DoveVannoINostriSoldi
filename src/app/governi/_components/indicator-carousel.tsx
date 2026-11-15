@@ -395,7 +395,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
               aria-current={index === activeIndex ? "step" : undefined}
               onClick={() => setActiveIndex(index)}
             >
-              <span>{chart.title}</span>
+              <span>{chart.tab_label}</span>
             </button>
           ))}
         </div>

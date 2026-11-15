@@ -395,6 +395,11 @@ export function buildGovernmentScorecardV6Input(id: GovernmentScorecardV6Governm
 
 type ChartCopy = Readonly<{ question: string; unit: string; note?: string }>;
 
+const CHART_TAB_LABELS: Readonly<Partial<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], string>>> = {
+  unemployment: "Disoccupazione",
+  long_term_rate: "BTP 10 anni",
+};
+
 const CHART_COPY: Readonly<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], ChartCopy>> = {
   inflation: {
     question: "Come si è mossa l'inflazione nei quattro paesi?",
@@ -498,6 +503,7 @@ function buildTimeSeriesCharts(
         status: "ready" as const,
         indicator_id: indicator.indicator_id,
         title: indicator.label,
+        tab_label: CHART_TAB_LABELS[indicator.indicator_id] ?? indicator.label,
         question: CHART_COPY[indicator.indicator_id].question,
         unit: CHART_COPY[indicator.indicator_id].unit,
         frequency: CHART_FREQUENCY_LABELS[indicator.frequency],

@@ -138897,7 +138897,7 @@
             {
               "id": "meloni-i:russian-gas-phase-out",
               "title": "Stop UE al gas russo",
-              "summary": "Il regolamento UE 2026/261, in vigore dal 3 febbraio 2026, elimina per gradi le importazioni di gas russo: secondo la Commissione il GNL entro la fine del 2026 e il gas via tubo entro il 30 novembre 2027. La misura è europea e riguarda tutti gli Stati membri.",
+              "summary": "Il regolamento UE 2026/261, in vigore dal 3 febbraio 2026, elimina per gradi le importazioni di gas russo: il GNL a lungo termine entro il 1° gennaio 2027 e il gas via tubo, per i contratti preesistenti, entro il 30 settembre 2027, con possibile proroga al 1° novembre 2027 al massimo se la Commissione accerta rischi sul riempimento degli stoccaggi. La misura è europea e riguarda tutti gli Stati membri.",
               "period": "2026-02-03–in corso",
               "start_date": "2026-02-03",
               "end_date_or_null": null,
@@ -138908,18 +138908,18 @@
               "score_impact": "none",
               "sources": [
                 {
-                  "owner": "Commissione europea",
+                  "owner": "EUR-Lex",
                   "type": "official",
-                  "url": "https://energy.ec.europa.eu/news/eu-takes-next-step-towards-energy-independence-russia-2026-02-02_en"
+                  "url": "https://eur-lex.europa.eu/eli/reg/2026/261/oj/ita"
                 },
                 {
                   "owner": "Commissione europea",
                   "type": "official",
-                  "url": "https://energy.ec.europa.eu/strategy/repowereu-phase-out-russian-energy-imports/repowereu-4-years_en"
+                  "url": "https://energy.ec.europa.eu/news/eu-takes-next-step-towards-energy-independence-russia-2026-02-02_en"
                 }
               ],
               "retrieved_at": "2026-10-31T12:00:00Z",
-              "evidence_sha256": "3306f4c5760c8d216dd78e727ae5d84f619f7914dee7a47ddcbad83b4079f833"
+              "evidence_sha256": "6fdda728b6f9ab1be965c1a9ab8a038bb8d5974376ddb7b18d7f20d2f8627d09"
             },
             {
               "id": "meloni-i:iran-war-energy-shock",
@@ -139375,7 +139375,7 @@
             {
               "id": "meloni-i:measure-2023-bank-tax",
               "title": "Imposta straordinaria sulle banche (DL 104/2023)",
-              "summary": "Istituisce per il 2023 un'imposta del 40% sui margini di interesse delle banche, i cosiddetti extraprofitti, modificata durante la conversione in legge. L'esito sul gettito non è indicato qui.",
+              "summary": "Istituisce per il 2023 un'imposta straordinaria del 40% sulla parte del margine di interesse che eccede di almeno il 10% il margine del 2021 (voce 30 del conto economico), con tetto allo 0,26% dell'esposizione al rischio; la conversione in legge ha modificato alcuni dettagli. L'esito sul gettito non è indicato qui.",
               "period": "2023-08-10–in corso",
               "start_date": "2023-08-10",
               "end_date_or_null": null,
@@ -139392,7 +139392,7 @@
                 }
               ],
               "retrieved_at": "2026-10-31T12:00:00Z",
-              "evidence_sha256": "729f1efe873df977a3332db529f97edf9cd5fbe286d53f17a0258facfd93326c"
+              "evidence_sha256": "5929e1e27533cd8baffb42301b0c6792a7f55bdbd54b4fb51477504ece6ae09e"
             },
             {
               "id": "meloni-i:measure-2024-budget",
@@ -139437,11 +139437,11 @@
                 {
                   "owner": "Camera dei deputati",
                   "type": "official",
-                  "url": "https://temi.camera.it/leg19/provvedimento/d-l-212-2023-modifiche-alla-disciplina-del-superbonus_d.html"
+                  "url": "https://temi.camera.it/leg19/dossier/OCD18-20053/dl-39-2024-misure-urgenti-materia-fiscale-e-connesse-eventi-eccezionali-nonche-relative-all-amministrazione-finanziaria.html"
                 }
               ],
               "retrieved_at": "2026-10-31T12:00:00Z",
-              "evidence_sha256": "34395363b9924e1ed80dbe5d6c3abade1b419f15dc61480ace0366e353491f84"
+              "evidence_sha256": "38b30fdd7187b9f7d756ca2f32f566776eea14f51b9093f1f788353200b76881"
             },
             {
               "id": "meloni-i:measure-2024-tax-wedge",

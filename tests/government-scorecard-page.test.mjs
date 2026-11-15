@@ -94,6 +94,17 @@ test("chart windows include the latest available point without including a succe
   ))));
 });
 
+test("chart tabs use short labels without changing chart titles", () => {
+  const current = getGovernmentScorecardV6View("meloni-i");
+  assert.ok(current.charts.status === "ready");
+  const unemployment = current.charts.slides.find((slide) => slide.indicator_id === "unemployment");
+  const longRate = current.charts.slides.find((slide) => slide.indicator_id === "long_term_rate");
+  assert.equal(unemployment?.title, "Tasso di disoccupazione");
+  assert.equal(unemployment?.tab_label, "Disoccupazione");
+  assert.equal(longRate?.title, "Rendimenti dei titoli di Stato a lungo termine");
+  assert.equal(longRate?.tab_label, "BTP 10 anni");
+});
+
 test("the current-government charts expose the latest reliable display data without flat one-point plots", () => {
   const current = getGovernmentScorecardV6View("meloni-i");
   assert.ok(current.charts.status === "ready");

@@ -14,6 +14,21 @@ const MANDATE_RELATION_LABELS = {
   cross_government: "attraversa più governi",
 } as const;
 
+type ContextSource = GovernmentScorecardV6ContextSlide["items"][number]["sources"][number];
+
+function dedupeContextSources(sources: readonly ContextSource[]): ContextSource[] {
+  const uniqueByUrl = new Map<string, ContextSource>();
+  for (const source of sources) {
+    if (!uniqueByUrl.has(source.url)) uniqueByUrl.set(source.url, source);
+  }
+  const uniqueByOwner = new Map<string, ContextSource>();
+  for (const source of uniqueByUrl.values()) {
+    const ownerKey = source.owner.toLowerCase();
+    if (!uniqueByOwner.has(ownerKey)) uniqueByOwner.set(ownerKey, source);
+  }
+  return [...uniqueByOwner.values()];
+}
+
 function channelLabel(value: string | null): string {
   if (!value) return "non disponibile";
   const labels: Record<string, string> = {
@@ -99,7 +114,7 @@ function ContextCard({
                   <div><dt>Rapporto col mandato</dt><dd>{MANDATE_RELATION_LABELS[item.mandate_relation]}</dd></div>
                 </dl>
                 <div className={styles.contextSources}>
-                  {item.sources.map((source) => (
+                  {dedupeContextSources(item.sources).map((source) => (
                     <a
                       href={source.url}
                       key={source.url}

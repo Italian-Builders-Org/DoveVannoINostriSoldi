@@ -743,6 +743,12 @@
   font-size: 11px;
 }
 
+.carouselIndicators button span {
+  display: block;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+
 .indicatorCarousel {
   min-width: 0;
 }

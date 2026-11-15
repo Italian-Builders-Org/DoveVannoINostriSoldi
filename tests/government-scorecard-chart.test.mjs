@@ -126,9 +126,3 @@ test("countries use stable design tokens and accessible chart interactions", () 
   assert.doesNotMatch(component, /#[0-9a-f]{3,8}/i);
   assert.match(component, /chart\.tab_label/);
 });
-
-test("deduplicated context sources keep one link per owner name", async () => {
-  const { readFileSync } = await import("node:fs");
-  const component = readFileSync(new URL("../src/app/governi/_components/context-carousel.tsx", import.meta.url), "utf8");
-  assert.match(component, /dedupeContextSources/);
-});

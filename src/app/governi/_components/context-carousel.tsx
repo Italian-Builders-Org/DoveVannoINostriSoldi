@@ -4,6 +4,7 @@ import { useId, useRef, useState, type KeyboardEvent } from "react";
 
 import type { GovernmentScorecardV6ContextSlide } from "@/lib/government-scorecard-page";
 
+import { dedupeContextSources } from "./context-sources";
 import styles from "../government-scorecard.module.css";
 
 type MandatePeriod = { startDate: string; endDate: string | null };
@@ -13,21 +14,6 @@ const MANDATE_RELATION_LABELS = {
   during: "durante il mandato",
   cross_government: "attraversa più governi",
 } as const;
-
-type ContextSource = GovernmentScorecardV6ContextSlide["items"][number]["sources"][number];
-
-function dedupeContextSources(sources: readonly ContextSource[]): ContextSource[] {
-  const uniqueByUrl = new Map<string, ContextSource>();
-  for (const source of sources) {
-    if (!uniqueByUrl.has(source.url)) uniqueByUrl.set(source.url, source);
-  }
-  const uniqueByOwner = new Map<string, ContextSource>();
-  for (const source of uniqueByUrl.values()) {
-    const ownerKey = source.owner.toLowerCase();
-    if (!uniqueByOwner.has(ownerKey)) uniqueByOwner.set(ownerKey, source);
-  }
-  return [...uniqueByOwner.values()];
-}
 
 function channelLabel(value: string | null): string {
   if (!value) return "non disponibile";

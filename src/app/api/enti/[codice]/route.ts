@@ -15,12 +15,15 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 10;
 
 const IPA_ENTITY_REQUEST_TIMEOUT_MS = 6_000;
+// Leave time to send a retryable JSON response before the platform deadline.
+const ENTITY_REQUEST_BUDGET_MS = 8_000;
 
 type RouteContext = {
   params: Promise<{ codice: string }>;
 };
 
 export async function GET(request: Request, context: RouteContext) {
+  const startedAt = performance.now();
   const { codice } = await context.params;
   const normalized = decodeEntityProcurementRouteCode(codice);
 
@@ -63,9 +66,18 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
     const snapshotOnly = snapshotEntity !== null;
-    const municipalityProfile = await getMunicipalityProfile(entity, {
-      allowCommittedIstatIdentity: snapshotOnly,
-    });
+    const profile = await runWithRequestBudget(
+      request.signal,
+      Math.max(1, Math.floor(ENTITY_REQUEST_BUDGET_MS - (performance.now() - startedAt))),
+      (signal) => getMunicipalityProfile(entity, { allowCommittedIstatIdentity: snapshotOnly, signal }),
+    );
+    if (profile.timedOut) {
+      return NextResponse.json(
+        { ok: false, error: "Il profilo comunale ha superato il tempo massimo." },
+        { status: 503, headers: { "Cache-Control": "private, no-store", "Retry-After": "10" } },
+      );
+    }
+    const municipalityProfile = profile.value;
     const snapshotObservedAt = municipalitySnapshot?.years[0]?.observedAt ?? null;
 
     return NextResponse.json(

@@ -33,6 +33,32 @@ function explicitRuntimeFile(route, file) {
     && !matchingRuntimeFile(nextConfig.outputFileTracingExcludes, route, file);
 }
 
+test("chunk digest ships only with the SQL corpus build, including mixed backend profiles", async () => {
+  const keys = ["DVNS_DATA_BACKEND", "DVNS_HEAVY_DATA_BACKEND", "DVNS_DATABASE_URL", "DVNS_ARCHIVE_PUBLISHABLE_KEY", "DVNS_ARCHIVE_EMAIL", "DVNS_ARCHIVE_PASSWORD"];
+  const previous = keys.map((key) => process.env[key]);
+  try {
+    for (const corpus of ["filesystem", "supabase"]) {
+      for (const archive of ["filesystem", "supabase"]) {
+        Object.assign(process.env, {
+          DVNS_DATA_BACKEND: corpus, DVNS_HEAVY_DATA_BACKEND: archive,
+          DVNS_DATABASE_URL: "postgresql://placeholder",
+          DVNS_ARCHIVE_PUBLISHABLE_KEY: "sb_publishable_placeholder",
+          DVNS_ARCHIVE_EMAIL: "fixture@example.invalid", DVNS_ARCHIVE_PASSWORD: "placeholder",
+        });
+        const { default: config } = await import(`../next.config.ts?digest-${corpus}-${archive}`);
+        for (const route of ["api/mcp", "appalti/operatori/[ref]", "enti/[codice]", "api/dispositivi", "api/dati/[dataset]"]) {
+          assert.equal(matchingRuntimeFile(config.outputFileTracingExcludes, route, "src/data/supabase-chunk-digests.json"), corpus === "filesystem", `${corpus}/${archive}: ${route}`);
+        }
+      }
+    }
+  } finally {
+    keys.forEach((key, index) => {
+      if (previous[index] === undefined) delete process.env[key];
+      else process.env[key] = previous[index];
+    });
+  }
+});
+
 function fixture(t, files, route = "enti/page.js.nft.json") {
   const root = mkdtempSync(join(tmpdir(), "dvns-runtime-trace-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));

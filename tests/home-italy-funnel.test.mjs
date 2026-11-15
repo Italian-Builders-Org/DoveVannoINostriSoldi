@@ -70,10 +70,10 @@ test("period selector can compress long year series behind Altri", async () => {
   assert.match(css, /\.years \{[\s\S]*?overflow: visible;/);
 });
 
-test("home page is a navigation hub with reduced national charts and map", async () => {
+test("spending overview preserves national charts, map and source boundaries", async () => {
   const [page, css, charts, chartCss] = await Promise.all([
-    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/spese/panoramica/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/spese/panoramica/panoramica.module.css", import.meta.url), "utf8"),
     readFile(new URL("../src/components/home-italy-charts.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/components/home-italy-charts.module.css", import.meta.url), "utf8"),
   ]);
@@ -87,25 +87,7 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.match(page, /Dove va, in grandi voci/);
   assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /Mese per mese/);
-  assert.match(page, /snapshot fino al/);
-  assert.match(page, /PRIMARY_DESTINATIONS/);
-  assert.match(page, /MAP_DESTINATIONS/);
-  assert.match(page, /Mappa dei Comuni/);
-  assert.match(page, /Mappa della politica/);
-  assert.match(page, /Mappa della mobilità/);
-  assert.match(page, /Tre viste immersive/);
-  assert.match(page, /MOBILITA_MAP_PATH/);
-  assert.match(page, /mapsSection/);
-  assert.match(page, /maps-title[\s\S]*?Mappe/);
-  assert.match(page, /home-boards-entry/);
-  assert.match(page, /href="\/accedi"/);
-  assert.match(page, /DVNS Boards/);
-  assert.match(css, /\.boardsCard \{/);
-  assert.match(css, /accedi-hero\.png/);
-  assert.match(page, /href: "\/imprese"/);
-  assert.match(page, /href: "\/territori"/);
-  assert.match(page, /href: "\/spese"/);
-  assert.match(page, /action="\/cerca"/);
+  assert.match(page, /Eurostat COFOG · \{funnel.pa.year\}/);
   assert.match(page, /<aside className=\{styles\.readingPanel\} aria-labelledby="reading-title">/);
   assert.match(page, /Perimetri diversi/);
   assert.doesNotMatch(page, /Parti da qui/);
@@ -113,8 +95,6 @@ test("home page is a navigation hub with reduced national charts and map", async
   assert.doesNotMatch(page, /Dove andare subito/);
   assert.doesNotMatch(page, /Altre porte frequenti/);
   assert.match(css, /\.hub \{/);
-  assert.match(css, /\.mapsSection \{/);
-  assert.match(css, /\.primaryGrid \{/);
   assert.match(css, /\.italyBand \{/);
   assert.match(css, /\.mapStage/);
   assert.match(css, /\.monthList/);

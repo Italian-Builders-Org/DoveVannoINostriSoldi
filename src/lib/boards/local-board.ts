@@ -26,7 +26,7 @@ function snap(value: number, grid = 20): number {
   return Math.round(value / grid) * grid;
 }
 
-export function nextTileFrame(existing: readonly BoardTile[]): BoardTileFrame {
+function nextTileFrame(existing: readonly BoardTile[]): BoardTileFrame {
   const index = existing.length;
   const col = index % 3;
   const row = Math.floor(index / 3);
@@ -70,9 +70,6 @@ export function createDataTile(
     color: "#2f5d73",
   };
 }
-
-/** @deprecated */
-export const createTile = createDataTile;
 
 export function createLocalTile(
   table: BoardLocalTable,
@@ -123,7 +120,7 @@ export const BOARD_TOOL_PRESETS = [
 
 export type BoardToolId = (typeof BOARD_TOOL_PRESETS)[number]["id"];
 
-export function createContentTile(
+function createContentTile(
   kind: Exclude<BoardItemKind, "data" | "local">,
   existing: readonly BoardTile[],
 ): BoardTile {

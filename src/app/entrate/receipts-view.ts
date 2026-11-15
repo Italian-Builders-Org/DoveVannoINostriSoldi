@@ -1,4 +1,4 @@
-export const RECEIPTS_PAGE_SIZE = 25;
+const RECEIPTS_PAGE_SIZE = 25;
 
 type SearchParams = Record<string, string | string[] | undefined>;
 

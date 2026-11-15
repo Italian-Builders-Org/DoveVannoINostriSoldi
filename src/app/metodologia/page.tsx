@@ -27,9 +27,8 @@ export default function MethodPage() {
       </div>
 
       <div className={styles.rules}>
-        {rules.map(([title, text], index) => (
+        {rules.map(([title, text]) => (
           <section className="panel" key={title}>
-            <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
             <h2>{title}</h2>
             <p>{text}</p>
           </section>

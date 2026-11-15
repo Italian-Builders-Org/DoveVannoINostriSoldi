@@ -29,7 +29,7 @@ export async function inspectInstitutionalPalette(page, { label, width }) {
       }
       return root.getPropertyValue("--color-bg");
     }
-    const texts = [...document.querySelectorAll('main h1, .panel-title, footer a, header .brand, main .notice a')]
+    const texts = [...document.querySelectorAll('main h1, main h2, .panel-title, footer a, header .brand, .header-inner a, .header-inner button, nav select, main .notice a')]
       .filter((element) => element.getClientRects().length && getComputedStyle(element).visibility !== "hidden")
       .map((element) => ({ text: element.textContent.trim().slice(0, 60), ratio: contrast(getComputedStyle(element).color, background(element)) }));
     const bars = [...document.querySelectorAll('main li > i > b')]

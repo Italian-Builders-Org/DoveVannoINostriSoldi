@@ -62,3 +62,6 @@ __pycache__/
 
 # Local ETL caches (ANAC ZIPs, etc.)
 .cache/
+
+# Manovra payload lives in dvns_snapshots; local ETL output only.
+/src/data/generated/rgs-bilancio-in-breve.json

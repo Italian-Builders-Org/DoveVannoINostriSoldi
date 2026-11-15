@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import budgetSnapshot from "../../src/data/generated/openbdap-budget-law-missions.json" with { type: "json" };
 
-/** Start on the home page, then drive the public link and keyboard disclosures. */
+/** Start on /spese/panoramica, then drive the public link and keyboard disclosures. */
 export async function inspectDefence(page) {
   const link = 'main a[href^="/spese/difesa?anno="]';
   await page.waitForSelector(link);
@@ -113,10 +113,10 @@ export async function inspectDefence(page) {
   assert.ok((await page.$eval('section[aria-labelledby="defence-total-title"]', (element) => element.textContent)).includes(exactEuro(earliest.amountCents / 100)));
   assert.equal(await page.$eval('[data-testid="defence-total"]', (element) => element.textContent), compactEuro(earliest.amountCents / 100));
   assert.match(await page.$eval('[data-testid="defence-comparison"]', (element) => element.textContent), /Non disponibile/);
-  const backLink = `main a[href="/?anno=${earliest.year}#pa-split-title"]`;
+  const backLink = `main a[href="/spese/panoramica?anno=${earliest.year}#pa-split-title"]`;
   await page.focus(backLink);
   await page.keyboard.press("Enter");
-  await page.waitForFunction(() => location.pathname === "/");
+  await page.waitForFunction(() => location.pathname === "/spese/panoramica");
   const historicalEntry = `main a[href="/spese/difesa?anno=${earliest.year}"]`;
   await page.waitForSelector(historicalEntry);
   await page.focus(historicalEntry);

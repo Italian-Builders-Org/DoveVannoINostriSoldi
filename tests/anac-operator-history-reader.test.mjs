@@ -16,7 +16,7 @@ const {
 const fixture = operatorHistoryFixture();
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
-test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alterati", () => {
+test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alterati", async () => {
   const previous = process.cwd();
   const root = mkdtempSync(join(tmpdir(), "dvns-history-reader-"));
   try {
@@ -71,19 +71,19 @@ test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alter
       }),
     );
     process.chdir(root);
-    assert.equal(getOperatorHistory("../not-an-operator"), null);
-    const history = getOperatorHistory(fixture.summary.ref);
+    assert.equal(await getOperatorHistory("../not-an-operator"), null);
+    const history = await getOperatorHistory(fixture.summary.ref);
     assert.equal(history.awardCount, 205);
     const positions = [0, 99, 100, 199, 204];
-    const awards = readOperatorHistoryAwards(history, positions);
+    const awards = await readOperatorHistoryAwards(history, positions);
     assert.equal(awards.length, positions.length);
     assert.equal(new Set(awards.map((row) => row.awardId)).size, 5);
     assert.ok(
       awards.every((row) => row.amount === "0" && row.procedure === null),
     );
-    assert.throws(() => readOperatorHistoryAwards(history, [205]));
-    assert.throws(() => readOperatorHistoryAwards(history, [0, 0]));
-    assert.throws(() =>
+    await assert.rejects(() => readOperatorHistoryAwards(history, [205]));
+    await assert.rejects(() => readOperatorHistoryAwards(history, [0, 0]));
+    await assert.rejects(() =>
       readOperatorHistoryAwards(
         history,
         Array.from({ length: 26 }, (_, i) => i),
@@ -92,13 +92,13 @@ test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alter
     const tampered = Buffer.from(pack);
     tampered[history.detail.blocks[1].offset + 12] ^= 1;
     writeFileSync(join(directory, bucket + ".pack"), tampered);
-    assert.throws(() => readOperatorHistoryAwards(history, [100]), /Hash/);
-    assert.equal(readOperatorHistoryAwards(history, [0]).length, 1);
+    await assert.rejects(() => readOperatorHistoryAwards(history, [100]), /Hash/);
+    assert.equal((await readOperatorHistoryAwards(history, [0])).length, 1);
     writeFileSync(
       join(directory, bucket + ".pack"),
       pack.subarray(0, pack.length - 1),
     );
-    assert.throws(() => readOperatorHistoryAwards(history, [0]), /Dimensioni/);
+    await assert.rejects(() => readOperatorHistoryAwards(history, [0]), /Dimensioni/);
 
     // A locally reused requested record must still wait for every sibling's
     // syntax and identity check, and pass its complete summary contract.
@@ -118,24 +118,24 @@ test("il lettore legge pagine arbitrarie, applica limiti e rifiuta blocchi alter
       resetAnacOperatorHistoryCachesForTests();
     }
     replaceShard(summaryLine + '\n{"ref":\n');
-    assert.throws(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
-    assert.throws(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref), SyntaxError);
     replaceShard(summaryLine + "\n" + summaryLine + "\n");
-    assert.throws(() => getOperatorHistory(fixture.summary.ref), /Identità/);
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref), /Identità/);
     let neighbour = 2;
     const operatorRef = (value) => `op-${String(value).padStart(8, "0")}`;
     while (digest(operatorRef(neighbour)).slice(0, 2) === bucket) neighbour++;
     replaceShard(summaryLine + "\n" + JSON.stringify({ ...fixture.summary, ref: operatorRef(neighbour) }) + "\n");
-    assert.throws(() => getOperatorHistory(fixture.summary.ref), /Identità/);
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref), /Identità/);
     replaceShard(JSON.stringify({ ...fixture.summary, awardCount: 0 }) + "\n");
-    assert.throws(() => getOperatorHistory(fixture.summary.ref));
-    assert.throws(() => getOperatorHistory(fixture.summary.ref));
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref));
+    await assert.rejects(() => getOperatorHistory(fixture.summary.ref));
     writeFileSync(join(directory, bucket + ".jsonl.gz"), originalShard);
     writeFileSync(manifestPath, JSON.stringify(originalManifest));
-    assert.deepEqual(getOperatorHistory(fixture.summary.ref), history);
+    assert.deepEqual(await getOperatorHistory(fixture.summary.ref), history);
     let missing = 2;
     while (digest(operatorRef(missing)).slice(0, 2) !== bucket) missing++;
-    assert.equal(getOperatorHistory(operatorRef(missing)), null);
+    assert.equal(await getOperatorHistory(operatorRef(missing)), null);
   } finally {
     process.chdir(previous);
     rmSync(root, { recursive: true, force: true });

@@ -2,12 +2,11 @@ import "server-only";
 import { getIntegratedLoadState, IntegratedLoadOverloadedError, withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
 export { IntegratedLoadOverloadedError, withIntegratedDatasetLoadSlot } from "@/lib/integrated-load-limiter";
 
-import { constants } from "node:fs";
-import { open } from "node:fs/promises";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import { ArtifactCache } from "@/lib/data/artifact-cache";
+import { openRegularFile } from "@/lib/safe-fs";
 import {
   assertArchiveReceipt,
   assertIntegratedDatasetChunk,
@@ -108,7 +107,7 @@ async function readRegular(
   let handle;
   try {
     throwIfAborted(signal);
-    handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    handle = await openRegularFile(path);
     const metadata = await handle.stat();
     if (
       !metadata.isFile() ||
@@ -294,6 +293,16 @@ async function readDatasetChunk(
   const artifactKey = `src/data/generated/integrated/rows/${artifactName}`;
   const expectedHash = bundle.datasetProof.artifactSha256[artifactKey];
   if (!expectedHash) throw new Error(`Chunk righe non allowlisted per ${dataset.id}.`);
+
+  const backend = process.env.DVNS_BUILD_DATA_BACKEND ?? process.env.DVNS_DATA_BACKEND ?? "filesystem";
+  if (backend === "supabase") {
+    const { readDatabaseChunk } = await import("@/lib/integrated-supabase-reader");
+    const loaded = await readDatabaseChunk(bundle, dataset, ordinal, expectedHash, signal);
+    completedChunkLoads += 1;
+    maxObservedChunkRawBytes = Math.max(maxObservedChunkRawBytes, loaded.uncompressedBytes);
+    return loaded;
+  }
+  if (backend !== "filesystem") throw new Error("Backend dati DVNS non valido.");
 
   const compressed = await readRegular(
     artifactPath,

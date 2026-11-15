@@ -85,7 +85,7 @@ export default async function HealthSpendingPage({ searchParams }: PageProps<"/s
           <Link href="/spese/sanita/storico">Serie storica dei costi SSN · 2012-2024 →</Link>
           <Link href="/spese/sanita/dispositivi">Spesa per dispositivi medici · 2018-2021 →</Link>
           <a href="#ssn-accounting-title">Dettaglio SSN · 2024 ↓</a>
-          <Link href={`/?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
+          <Link href={`/spese/panoramica?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
         </p>
       </header>
 

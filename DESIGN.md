@@ -127,13 +127,13 @@ La gerarchia si costruisce con il fondo e una linea da 1px, non con l'ombra:
 
 ### Navigation
 
-Header su una riga con marchio, ricerca e azioni. Da 1100px la navigazione è una sidebar con sottomenu a fisarmonica: la sezione corrente si apre automaticamente. L'altezza delle righe si adatta agli schermi bassi; i sottomenu lunghi scorrono dentro la sidebar. Sotto 1100px la ricerca si apre da un pulsante e la navigazione usa il menu mobile. Escape chiude la ricerca e restituisce il focus.
+Header su una riga con marchio, ricerca e azioni. La navigazione completa si apre dal pulsante nell’header, su desktop e mobile, in un dialogo con sottomenu a fisarmonica e sezione corrente aperta. Il contenuto occupa tutta la larghezza disponibile, senza sidebar fissa. Le pagine interne conservano il selettore delle pagine della sezione. Sotto 1100px la ricerca si apre da un pulsante. Escape chiude la ricerca e restituisce il focus.
 
 Una banda di pubblicazione presenta una frase e il collegamento al report o allo studio. La rotazione ogni sette secondi si ferma con hover, focus, pausa, pagina nascosta e movimento ridotto. I controlli testuali si mostrano al focus da tastiera.
 
 ### Dashboard
 
-La home ha due colonne: totale e composizione accanto alla mappa, andamento mensile accanto alla classifica regionale. I pannelli della stessa riga condividono i bordi superiore e inferiore. Sotto 900px l'ordine è totale, mappa, mesi, regioni. Non aggiungere moduli per riempire spazi vuoti.
+La home introduce cinque percorsi editoriali: spesa pubblica, Comuni e territori, politica e istituzioni, economia e società, controlli e analisi. Dopo l’introduzione compaiono direttamente le sezioni con titolo descrittivo, anteprima, fonte e collegamento alla dashboard. Non c’è un indice intermedio da cliccare. Il quadro dei conti completo è nella pagina Spesa pubblica (`/spese/panoramica`), raggiungibile direttamente dalle analisi e dalla directory. La ricerca e la mappa completa del sito vengono dopo le analisi. La directory riusa il catalogo di navigazione ed è presente solo nella home, senza duplicati nel footer; mappe e Boards restano raggiungibili da collegamenti testuali. Nessuna numerazione decorativa o slogan nei titoli. La navigazione è condivisa con le pagine interne. Titoli e spaziature più ampi sono un’eccezione editoriale locale, mentre i token e i contratti dei dati restano condivisi.
 
 Le pagine tematiche mostrano prima domanda, dato, periodo e filtri. Fonti, definizioni e limiti estesi rimangono disponibili in dettagli espandibili sotto i risultati; le qualifiche indispensabili per interpretare il valore restano vicine al dato. Usare “Non disponibile” al posto di sigle ambigue, senza confondere celle vuote, oscurate e zero.
 
@@ -200,3 +200,5 @@ Transizioni brevi (140ms, `--ease-out`) su colore e sfondo. Nessuna animazione d
 - Nessun numero senza fonte e senza data.
 - Nessuna parola che trasformi un segnale in un'accusa.
 - Nessuna etichetta di comodo su un aggregato: se una fetta somma due voci diverse, si chiama con un nome che le contiene entrambe, non con quello della più grande.
+
+L’header mantiene la stessa griglia di 1320px su tutte le route: menu, logo, navigazione, ricerca, tema e account. MCP e GitHub restano nel menu. Panoramica e pagamenti usano la stessa larghezza, mentre le superfici specialistiche possono mantenere una superficie dati più ampia. I filtri della panoramica precedono i dati del rispettivo perimetro: PA, bilancio dello Stato e cassa comunale sono distinguibili anche senza colore.

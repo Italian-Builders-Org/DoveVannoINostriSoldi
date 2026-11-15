@@ -283,7 +283,12 @@ def build_snapshot(spec: dict[str, Any], pdf_path: Path, pdf_payload: bytes) -> 
     return snapshot
 
 
-def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
+def write_outputs(
+    spec_path: Path,
+    data_path: Path,
+    *,
+    published_data_path: Path | None = None,
+) -> dict[str, Any]:
     spec = _load_json(spec_path, "source lock")
     asset = _dict(_dict(_dict(spec.get("source"), "source").get("assets"), "assets").get("comunicatoStampa"), "comunicato")
     pdf_path = ROOT / _text(asset.get("path"), "path")
@@ -307,9 +312,10 @@ def write_outputs(spec_path: Path, data_path: Path) -> dict[str, Any]:
     finally:
         temporary.unlink(missing_ok=True)
 
+    lock_data_path = published_data_path or data_path
     spec = copy.deepcopy(spec)
     spec["integrity"]["dataArtifact"] = {
-        "path": data_path.relative_to(ROOT).as_posix(),
+        "path": lock_data_path.relative_to(ROOT).as_posix(),
         "bytes": data_path.stat().st_size,
         "sha256": sha256_bytes(data_path.read_bytes()),
     }

@@ -3,7 +3,9 @@ import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import test from "node:test";
-import { readJsonSnapshot } from "../src/lib/data/read-json-snapshot.ts";
+import "./helpers/register-ts-alias.mjs";
+
+const { readJsonSnapshot } = await import("../src/lib/data/read-json-snapshot.ts");
 
 test("snapshot reads preserve values and reject missing, malformed, oversized and linked artifacts", (t) => {
   const directory = mkdtempSync(join(tmpdir(), "dvns-json-snapshot-"));

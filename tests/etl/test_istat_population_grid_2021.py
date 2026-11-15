@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -22,15 +24,17 @@ class IstatPopulationGrid2021Test(unittest.TestCase):
     def test_check_rejects_pin_drift(self) -> None:
         data_path = ROOT / "src/data/generated/istat-population-grid-2021.data.json"
         meta_path = ROOT / "src/data/generated/istat-population-grid-2021.meta.json"
-        original = data_path.read_text(encoding="utf-8")
-        try:
-            payload = json.loads(original)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            data_copy = tmp_root / data_path.name
+            meta_copy = tmp_root / meta_path.name
+            shutil.copyfile(data_path, data_copy)
+            shutil.copyfile(meta_path, meta_copy)
+            payload = json.loads(data_copy.read_text(encoding="utf-8"))
             payload["totals"]["residentPopulation"] += 1
-            data_path.write_text(json.dumps(payload), encoding="utf-8")
+            data_copy.write_text(json.dumps(payload), encoding="utf-8")
             with self.assertRaises(SnapshotError):
-                validate_committed(load_spec(), data_path, meta_path)
-        finally:
-            data_path.write_text(original, encoding="utf-8")
+                validate_committed(load_spec(), data_copy, meta_copy)
 
 
 if __name__ == "__main__":

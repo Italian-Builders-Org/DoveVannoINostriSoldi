@@ -44,7 +44,10 @@ test("existing shell: europa stays reachable, scrollable and outside immersive c
   assert.match(graph, /data-europa-entry/);
   assert.match(graph, /europaScopeLink/);
   // Brand uses a hard <a> so leaving the atlas remounts site chrome.
-  assert.match(atlasPage, /<a className=\{styles\.immersiveBrand\} href=\{PUBLIC_SITE_URL\}/);
+  assert.match(atlasPage, /<SitePageLink className=\{styles\.immersiveBrand\} href="\/"/);
+  const siteLink = await read("src/components/site-page-link.tsx");
+  assert.match(siteLink, /return <a /);
+  assert.doesNotMatch(siteLink, /next\/link/);
 });
 
 test("existing shell: navigation and discovery retain both entry points", async () => {
@@ -52,7 +55,9 @@ test("existing shell: navigation and discovery retain both entry points", async 
   assert.match(nav, /href: "\/politici"/);
   assert.match(nav, /Mappa della politica/);
   assert.match(discovery, /"\/politici"/);
-  assert.match(page, /PUBLIC_SITE_URL/);
+  // Host routing is verified behaviorally in site-page-href.test.mjs: the
+  // same link must return home from subdomains without escaping a preview.
+  assert.match(page, /SitePageLink/);
 });
 
 test("existing shell: document scrolling remains unlocked only on mobile", async () => {

@@ -98,12 +98,22 @@ export async function launchBrowser({
   });
 }
 
+function protectionBypassSecret() {
+  return process.env.DVNS_VERCEL_PROTECTION_BYPASS?.trim() || "";
+}
+
 function pageUrl(pathname, baseUrl) {
   return new URL(pathname, baseUrl).toString();
 }
 
-// HTTP readiness: polls a stable route instead of sleeping a fixed amount.
-// Fails if the server returns non-2xx within the bounded timeout.
+/** Fetch-only URL: query bypass works without cookies; do not use in the browser address bar. */
+function protectionBypassFetchUrl(pathname, baseUrl) {
+  const url = new URL(pathname, baseUrl);
+  const bypass = protectionBypassSecret();
+  if (bypass) url.searchParams.set("x-vercel-protection-bypass", bypass);
+  return url.toString();
+}
+
 export async function waitForServer(
   baseUrl = defaultBaseUrl(),
   {
@@ -116,8 +126,8 @@ export async function waitForServer(
   let lastError;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(pageUrl(readyPath, baseUrl), {
-        redirect: "manual",
+      const response = await fetch(protectionBypassFetchUrl(readyPath, baseUrl), {
+        redirect: "follow",
         signal: AbortSignal.timeout(requestTimeoutMs),
       });
       if (response.ok) return;
@@ -158,10 +168,12 @@ function relevantRequestFailure(request, baseOrigin) {
     failure.errorText === "net::ERR_ABORTED" &&
     (resourceType === "fetch" || resourceType === "other") &&
     new URL(requestUrl).searchParams.has("_rsc");
+  const locationPath = new URL(requestUrl).pathname === "/api/location";
   const cancelledLocationLookup =
-    failure.errorText === "net::ERR_ABORTED" &&
     resourceType === "fetch" &&
-    new URL(requestUrl).pathname === "/api/location";
+    locationPath &&
+    (failure.errorText === "net::ERR_ABORTED" ||
+      failure.errorText === "net::ERR_TOO_MANY_REDIRECTS");
   const cancelledSearchLookup = isExpectedAbortedSearchRequest({
     errorText: failure.errorText,
     resourceType,
@@ -329,9 +341,44 @@ export async function createPage(browser, { width }) {
     width,
     height: width <= 460 ? 844 : 900,
     deviceScaleFactor: 1,
-    hasTouch: width <= 390,
+    // Match the navigation suite: hamburger targets stay touch-sized below the desktop breakpoint.
+    hasTouch: width < 1100,
     isMobile: width <= 390,
   });
+  const bypass = protectionBypassSecret();
+  if (bypass) {
+    // Persist the SSO bypass cookie once, then keep clean path/search for app logic
+    // (menu close-on-navigation compares pathname+search).
+    await page.setExtraHTTPHeaders({ "x-vercel-set-bypass-cookie": "true" });
+    await page.setRequestInterception(true);
+    page.on("request", (request) => {
+      try {
+        const url = new URL(request.url());
+        if (url.pathname === "/api/location") {
+          request.respond({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ ok: true, region: null }),
+          });
+          return;
+        }
+      } catch {
+        // Fall through to continue.
+      }
+      request.continue().catch(() => {});
+    });
+    const seed = new URL("/", defaultBaseUrl());
+    seed.searchParams.set("x-vercel-protection-bypass", bypass);
+    await page.goto(seed.href, {
+      waitUntil: "domcontentloaded",
+      timeout: NAVIGATION_TIMEOUT_MS,
+    });
+    const cookies = await page.cookies();
+    assert.ok(
+      cookies.some((cookie) => cookie.name === "_vercel_jwt"),
+      "Bypass SSO preview: cookie _vercel_jwt non impostato",
+    );
+  }
   return page;
 }
 

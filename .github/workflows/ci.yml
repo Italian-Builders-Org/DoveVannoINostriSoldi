@@ -14,7 +14,9 @@ permissions:
 # - main: every commit completes its own verification (unique SHA → unique group,
 #   so a newer push can never cancel an older one).
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  # Prefix `pr-` keeps cancel-in-progress semantics while isolating this group from
+  # any ghost Actions run still holding the legacy `ci-CI-<number>` key.
+  group: ci-${{ github.workflow }}-pr-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 env:

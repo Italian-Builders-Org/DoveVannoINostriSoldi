@@ -32,7 +32,7 @@ export default async function DefenceSpendingPage({ searchParams }: PageProps<"/
           secondo i conti di competenza economica SEC 2010. Gli stanziamenti dello Stato
           sono una lettura distinta: autorizzano spesa e non sono pagamenti effettuati.</p>
         <p className={styles.links}>
-          <Link href={`/?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
+          <Link href={`/spese/panoramica?anno=${year}#pa-split-title`}>Quadro della spesa italiana →</Link>
           <Link href="/spese/legge-di-bilancio">Missioni di bilancio →</Link>
           <a href="#fonti-difesa">Fonti e perimetro ↓</a>
         </p>

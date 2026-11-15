@@ -1,10 +1,11 @@
 "use client";
 
 import { publicSurfacePath } from "@/lib/snapshot-routing";
+import Link from "next/link";
+import { ShareViewButton } from "./share-view-button";
 
-import { IntentLink } from "@/components/intent-link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useId } from "react";
 import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
 
@@ -26,41 +27,62 @@ function SectionNavContent({
   pathname,
   currentSearch,
 }: Readonly<{ pathname: string; currentSearch: string | null }>) {
+  const router = useRouter();
+  const selectId = useId();
   const section = activeNavSection(pathname);
   const pages = flattenNavLinks(section?.children ?? []);
-  if (pages.length < 2) return null;
-  // Immersive map pages: no section chrome · the graph needs the viewport.
+  if (pathname === "/") return null;
+  // Immersive / tool surfaces: no section chrome · the viewport is the product.
   if (pathname === "/politici" || pathname.startsWith("/politici/")) return null;
   if (pathname === "/comuni" || pathname.startsWith("/comuni/")) return null;
   if (pathname === "/mappe/mobilita" || pathname.startsWith("/mappe/mobilita/")) return null;
+  if (pathname === "/assistente" || pathname.startsWith("/assistente/")) return null;
+
+  const currentHref =
+    pages.find((page) =>
+      isNavChildActive(pathname, page.href, pages, currentSearch ?? ""),
+    )?.href
+    ?? pages.find((page) => {
+      const pathOnly = page.href.split("?")[0] ?? page.href;
+      return pathname === pathOnly || pathname.startsWith(`${pathOnly}/`);
+    })?.href
+    ?? pages[0]?.href
+    ?? "";
 
   return (
-    <nav
+    <div
       className={`shell ${styles.sectionNav}`}
-      aria-label={`Altre pagine in ${section!.label}`}
     >
-      <p className={styles.title}>
-        <strong>{section!.label}</strong>
-      </p>
-      <ul className={styles.links}>
-        {pages.map((page) => {
-          const current = currentSearch !== null
-            && isNavChildActive(pathname, page.href, pages, currentSearch);
-          return (
-            <li key={`${page.href}:${page.label}`}>
-              {current ? (
-                <span className={styles.current} aria-current="page">
-                  {page.label}
-                </span>
-              ) : (
-                <IntentLink className={styles.link} href={page.href}>
-                  {page.label}
-                </IntentLink>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+      <nav className={styles.breadcrumb} aria-label="Percorso della pagina">
+        <Link prefetch={false} href="/">Home</Link>
+        <span aria-hidden="true">/</span>
+        {section ? <Link prefetch={false} href={section.href}>{section.label}</Link> : <Link prefetch={false} href="/#esplora">Esplora i dati</Link>}
+      </nav>
+      <div className={styles.controls}>
+      {pages.length > 1 ? <nav aria-label={`Pagine in ${section!.label}`}>
+      <div className={styles.picker}>
+        <label className={styles.label} htmlFor={selectId}>
+          <span className={styles.visuallyHidden}>Vai a una pagina della sezione</span>
+          <select
+            id={selectId}
+            className={styles.select}
+            value={currentHref}
+            onChange={(event) => {
+              const next = event.target.value;
+              if (next && next !== currentHref) router.push(next);
+            }}
+          >
+            {pages.map((page) => (
+              <option key={`${page.href}:${page.label}`} value={page.href}>
+                {page.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+      </nav> : null}
+      <ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} />
+      </div>
+    </div>
   );
 }

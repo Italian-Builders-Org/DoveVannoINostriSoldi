@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import { integer, longDate } from "@/lib/format";
 import { anacCigDetailUrl } from "@/lib/anac-operator-award-insights";
@@ -62,6 +63,8 @@ function amountStatusLabel(status: string): string {
   }
 }
 
+const getOperatorHistoryForRequest = cache(getOperatorHistory);
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -75,7 +78,7 @@ export async function generateMetadata({
   }
   try { parseOperatorHistorySearch(await searchParams); }
   catch { return { title: "Filtri non validi", robots: { index: false, follow: false } }; }
-  const operator = getOperatorHistory(ref);
+  const operator = await getOperatorHistoryForRequest(ref);
   if (!operator) {
     return {
       title: "Operatore non trovato",
@@ -106,7 +109,7 @@ export default async function OperatoreDetailPage({
       </main>
     );
   }
-  const operator = getOperatorHistory(ref);
+  const operator = await getOperatorHistoryForRequest(ref);
   if (!operator) notFound();
   const meta = loadAnacOperatorIndexMeta();
   const screening = operator.screening2025;
@@ -116,7 +119,7 @@ export default async function OperatoreDetailPage({
       operatorHistoryHref(ref, { ...query, page: Math.max(1, page.pageCount) }),
     );
   }
-  const awards = readOperatorHistoryAwards(operator, page.positions);
+  const awards = await readOperatorHistoryAwards(operator, page.positions);
   const href = (number: number) =>
     operatorHistoryHref(ref, { ...query, page: number });
   const procedures = [

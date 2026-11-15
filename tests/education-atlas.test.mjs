@@ -189,7 +189,7 @@ test("education period choices stay visible and keyboard-operable", async () => 
   assert.match(component, /aria-pressed=\{filters\.period === option\.id\}/);
   assert.match(component, /data-value=\{option\.id\}/);
   assert.doesNotMatch(component, /<select[\s\S]*?data-education-filter="period"/);
-  assert.match(css, /\.periodOptions button \{[\s\S]*?min-height: 42px;/);
+  assert.match(css, /\.periodOptions button \{[\s\S]*?min-height: 44px;/);
   assert.match(css, /\.periodOptions button:focus-visible/);
 });
 

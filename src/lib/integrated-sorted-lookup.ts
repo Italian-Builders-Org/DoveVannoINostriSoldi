@@ -1,19 +1,22 @@
 import "server-only";
 
-import { INTEGRATED_ROW_CHUNK_ROWS, integratedRowChunkCount, type IntegratedPublicRow } from "@/lib/integrated-source-contract";
+import bounds from "@/data/generated/municipality-chunk-bounds.json";
+import { INTEGRATED_ROW_CHUNK_ROWS, integratedRowChunkCount, integratedRowChunkName, type IntegratedPublicRow } from "@/lib/integrated-source-contract";
 import { loadIntegratedDatasetChunk, loadIntegratedSourceBundle } from "@/lib/integrated-sources";
 
 export type SortedLookup = Readonly<{ rows: readonly IntegratedPublicRow[]; headers: readonly string[]; chunksRead: number }>;
 
 /**
  * Rows whose `column` equals `key` in a dataset the ETL publishes sorted by that column:
- * a binary search on the chunks instead of a full scan. Every chunk read is checked for order;
- * the whole-dataset order is covered by tests/integrated-sorted-lookup.test.mjs.
+ * use verified chunk boundaries when available, or a binary search over the chunks.
+ * Every chunk read is checked for order.
  */
-export async function selectSortedRows(datasetId: string, column: string, key: string): Promise<SortedLookup> {
+export async function selectSortedRows(datasetId: string, column: string, key: string, signal?: AbortSignal): Promise<SortedLookup> {
+  signal?.throwIfAborted();
   const bundle = await loadIntegratedSourceBundle();
   const dataset = bundle.datasetsById.get(datasetId);
   if (!dataset) throw new Error(`Dataset ${datasetId} assente dal corpus.`);
+  signal?.throwIfAborted();
   if (!dataset.headers.includes(column)) throw new Error(`Il dataset ${datasetId} non ha la colonna ${column}.`);
 
   const value = (row: IntegratedPublicRow) => {
@@ -25,7 +28,7 @@ export async function selectSortedRows(datasetId: string, column: string, key: s
   const read = async (ordinal: number) => {
     const cached = chunks.get(ordinal);
     if (cached) return cached;
-    const { rows } = await loadIntegratedDatasetChunk(bundle, dataset, ordinal);
+    const { rows } = await loadIntegratedDatasetChunk(bundle, dataset, ordinal, signal);
     rows.forEach((row, index) => {
       if (row.sourceRow !== ordinal * INTEGRATED_ROW_CHUNK_ROWS + index + 1) throw new Error(`Ordine dei chunk divergente in ${datasetId}.`);
       if (index > 0 && value(rows[index - 1]) > value(row)) throw new Error(`Dataset ${datasetId} non ordinato per ${column}.`);
@@ -35,7 +38,25 @@ export async function selectSortedRows(datasetId: string, column: string, key: s
   };
 
   const count = integratedRowChunkCount(dataset.publicRows);
-  // First chunk whose last row is not below the key.
+  const index = Object.hasOwn(bounds, datasetId) ? bounds[datasetId as keyof typeof bounds] : undefined;
+  // An absent key is safe to skip only when every indexed chunk belongs to this release.
+  if (index?.column === column && index.chunks.length === count &&
+    index.chunks.every(({ sha256 }, ordinal) =>
+      sha256 === bundle.datasetProof.artifactSha256[`src/data/generated/integrated/rows/${integratedRowChunkName(datasetId, ordinal)}`]
+    )) {
+    const found: IntegratedPublicRow[] = [];
+    for (const [ordinal, { first, last }] of index.chunks.entries()) {
+      if (key < first || key > last) continue;
+      const rows = await read(ordinal);
+      if (value(rows[0]) !== first || value(rows[rows.length - 1]) !== last) {
+        throw new Error(`Confini del chunk divergenti in ${datasetId}.`);
+      }
+      for (const row of rows) if (value(row) === key) found.push(row);
+    }
+    return { rows: found, headers: dataset.headers, chunksRead: chunks.size };
+  }
+
+  // For other datasets or a changed release, find the first chunk whose last row is not below the key.
   let low = 0, high = count;
   while (low < high) {
     const middle = (low + high) >> 1;

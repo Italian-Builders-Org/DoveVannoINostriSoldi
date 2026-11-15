@@ -16,6 +16,7 @@ from analyze import (
     seconds,
     safe_json,
     parse_city_dates,
+    resolve_service_date,
 )
 
 SOURCE = {"id": "fixture", "name": "Fixture", "url": "https://example.invalid/gtfs.zip"}
@@ -317,6 +318,95 @@ class ExplicitDateTests(unittest.TestCase):
         ]:
             with self.assertRaises(ValueError):
                 parse_city_dates(values, {"cagliari"})
+
+    def test_declared_service_date_is_used_unless_cli_overrides_it(self):
+        source = {"id": "bari", "serviceDate": "2026-11-09"}
+        self.assertEqual(
+            resolve_service_date(source, {}, date(2026, 10, 30)),
+            date(2026, 11, 9),
+        )
+        self.assertEqual(
+            resolve_service_date(
+                source, {"bari": date(2026, 11, 10)}, date(2026, 10, 30)
+            ),
+            date(2026, 11, 10),
+        )
+        self.assertEqual(
+            resolve_service_date({"id": "roma"}, {}, date(2026, 10, 30)),
+            date(2026, 10, 30),
+        )
+        with self.assertRaises(ValueError):
+            resolve_service_date(
+                {"id": "bari", "serviceDate": "not-a-date"},
+                {},
+                date(2026, 10, 30),
+            )
+
+    def test_calendar_dates_only_feed_runs_on_configured_service_date(self):
+        """AMTAB Bari: solo calendar_dates, senza righe in calendar.txt."""
+        ready = AnalysisTests().run_feed(
+            {
+                "calendar.txt": [
+                    [
+                        "service_id",
+                        "monday",
+                        "tuesday",
+                        "wednesday",
+                        "thursday",
+                        "friday",
+                        "saturday",
+                        "sunday",
+                        "start_date",
+                        "end_date",
+                    ]
+                ],
+                "calendar_dates.txt": [
+                    ["service_id", "date", "exception_type"],
+                    ["s", "20261109", "1"],
+                    ["s", "20261110", "1"],
+                    ["s", "20261130", "1"],
+                ],
+            },
+            day=date(2026, 11, 9),
+        )
+        self.assertEqual(ready["status"], "ready")
+        self.assertGreater(ready["coverage"]["activeScheduledTrips"], 0)
+        self.assertEqual(
+            resolve_service_date(
+                {"id": "bari", "serviceDate": "2026-11-09"},
+                {},
+                date(2026, 10, 30),
+            ),
+            date(2026, 11, 9),
+        )
+
+    def test_same_feed_is_ready_on_an_explicit_later_day_not_the_default(self):
+        calendar = [
+            [
+                "service_id",
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday",
+                "start_date",
+                "end_date",
+            ],
+            ["s", "1", "1", "1", "1", "1", "1", "1", "20261109", "20261130"],
+        ]
+        empty = AnalysisTests().run_feed(
+            {"calendar.txt": calendar}, day=date(2026, 10, 30)
+        )
+        self.assertEqual(empty["status"], "no-service")
+        self.assertEqual(empty["coverage"]["routesInFeed"], 1)
+        self.assertEqual(empty["coverage"]["activeScheduledTrips"], 0)
+        ready = AnalysisTests().run_feed(
+            {"calendar.txt": calendar}, day=date(2026, 11, 9)
+        )
+        self.assertEqual(ready["status"], "ready")
+        self.assertGreater(ready["coverage"]["activeScheduledTrips"], 0)
 
 
 class ExtendedCoverageTests(unittest.TestCase):

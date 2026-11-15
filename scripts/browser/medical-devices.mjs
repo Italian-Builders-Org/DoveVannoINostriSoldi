@@ -58,6 +58,11 @@ async function inspectMedicalDevices(page) {
 async function inspectEmptyMedicalDevices(page) {
   assert.equal(await page.$eval("h1", (heading) => heading.textContent), "Spesa per dispositivi medici");
   const mainText = await page.$eval("main", (main) => main.innerText);
+  const annualRows = await page.$$eval('section[aria-labelledby="andamento-title"] tbody tr', (rows) =>
+    rows.map((row) => [...row.querySelectorAll("th, td")].map((cell) => cell.textContent.trim()))
+  );
+  assert.deepEqual(annualRows.map(([year]) => year), ["2018", "2019", "2020", "2021"]);
+  assert.match(annualRows[2][1], /^5\.054\.732\.845,13\s*€$/);
   assert.doesNotMatch(mainText, /La ricerca parte solo dopo aver inserito un termine/i);
   assert.equal(await page.$eval('section[aria-labelledby="ricerca-title"] button[type="submit"]', (button) => button.classList.contains("btn-primary")), true);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);

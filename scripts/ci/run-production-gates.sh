@@ -243,6 +243,14 @@ echo "::group::Browser patrimonio"
 node scripts/browser/patrimonio.mjs
 echo "::endgroup::"
 
+echo "::group::Browser dispositivi medici"
+node scripts/browser/medical-devices.mjs
+echo "::endgroup::"
+
+echo "::group::Browser pensioni"
+node scripts/browser/pensioni.mjs
+echo "::endgroup::"
+
 echo "::group::Browser mobilita"
 node scripts/browser/mobilita.mjs
 echo "::endgroup::"

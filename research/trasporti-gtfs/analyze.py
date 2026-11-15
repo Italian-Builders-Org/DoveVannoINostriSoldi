@@ -621,6 +621,21 @@ def parse_city_dates(values, known):
     return result
 
 
+def resolve_service_date(source, city_dates, default_date):
+    """CLI --city-date wins; otherwise a declared source serviceDate; never inferred."""
+    if source["id"] in city_dates:
+        return city_dates[source["id"]]
+    declared = source.get("serviceDate")
+    if declared in (None, ""):
+        return default_date
+    try:
+        return date.fromisoformat(declared)
+    except ValueError as exc:
+        raise ValueError(
+            "Invalid serviceDate for " + source["id"] + ": " + str(declared)
+        ) from exc
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--cache", type=Path, required=True)
@@ -670,7 +685,7 @@ def main():
             raise ValueError("Missing acquired feed/receipt: " + source["id"])
         city = analyze_feed(
             archive,
-            city_dates.get(source["id"], args.date),
+            resolve_service_date(source, city_dates, args.date),
             json.loads(receipt.read_text()),
             source,
             router,

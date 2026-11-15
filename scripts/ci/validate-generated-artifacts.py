@@ -26,6 +26,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -510,6 +511,15 @@ def run_offline_checks(registry: dict) -> tuple[list[str], list[str], list[str],
             if parts and parts[0] in {"python", "python3"}:
                 parts[0] = sys.executable
             print(f"  [start] {art_id}: {cmd}", flush=True)
+            # Windows CreateProcess searches System32 before PATH: a bare "bash"
+            # would start WSL's launcher instead of the shell on PATH.
+            resolved = shutil.which(parts[0])
+            if resolved is None:
+                timings.append((art_id, 0.0))
+                print(f"  [fail] {art_id}: {parts[0]} non trovato", flush=True)
+                failed.append(f"{art_id}: {cmd}\n  {parts[0]}: eseguibile non trovato nel PATH")
+                continue
+            parts[0] = resolved
             started = time.perf_counter()
             result = subprocess.run(parts, cwd=ROOT, env=env, capture_output=True, text=True)
             duration = time.perf_counter() - started

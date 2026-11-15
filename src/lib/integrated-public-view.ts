@@ -434,7 +434,7 @@ const SORTED_PUBLIC_COLUMNS: Readonly<Record<string, string>> = {
 };
 
 /** Only ETL-proven orderings may bypass a scan; rows still pass the release proof. */
-export async function selectIntegratedSortedDatasetRows(datasetId: string, column: string, key: string) {
+export async function selectIntegratedSortedDatasetRows(datasetId: string, column: string, key: string, signal?: AbortSignal) {
   if (SORTED_PUBLIC_COLUMNS[datasetId] !== column) {
     throw new IntegratedQueryError("Il dataset non ha un ordinamento verificato per questa colonna.");
   }
@@ -444,7 +444,7 @@ export async function selectIntegratedSortedDatasetRows(datasetId: string, colum
   const metadata = publicMetadata(dataset);
   if (!metadata.queryable) throw new IntegratedQueryError("Il dataset non espone righe pubbliche.");
   const { selectSortedRows } = await import("@/lib/integrated-sorted-lookup");
-  const result = await selectSortedRows(datasetId, column, key);
+  const result = await selectSortedRows(datasetId, column, key, signal);
   return { ...result, dataset: metadata };
 }
 

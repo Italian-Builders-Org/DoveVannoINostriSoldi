@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Atlante mobilità · DVNS</title>
+    <style>
+      /*__GTFS_STYLE__*/
+    </style>
+  </head>
+  <body>
+    <header class="mast">
+      <span class="brand">DVNS <span>/ MOBILITÀ</span></span>
+      <!--__GTFS_NAV__-->
+    </header>
+    <main>
+      <div class="workspace">
+      <aside class="panel" aria-label="Scelta della rete e lettura">
+      <div class="heading">
+        <h1>Dove i mezzi rallentano</h1>
+        <p>
+          Velocità previste dagli orari ufficiali, fermata per fermata. Più alto
+          è il rilievo, più minuti servono per fare un chilometro.
+        </p>
+      </div>
+      <div class="toolbar">
+        <label class="city-field"
+          >Città o tratta<span class="select-field"
+            ><select id="city" aria-label="Città o tratta" disabled></select
+            ><svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" /></svg></span
+        ></label>
+        <div class="selection-bar">
+          <div id="mode-tabs" class="mode-tabs" role="group" aria-label="Mezzo"></div>
+          <select id="vehicle" class="sr-only" aria-hidden="true" tabindex="-1"></select>
+          <span id="selection-count" aria-live="polite"></span>
+        </div>
+        <div class="band-field">
+          <span class="field-label" id="band-label">Orario di partenza</span>
+          <div class="segmented" role="group" aria-labelledby="band-label">
+            <button type="button" data-band="morning" aria-pressed="true">
+              7–10
+            </button>
+            <button type="button" data-band="day" aria-pressed="false">
+              10–16
+            </button>
+            <button type="button" data-band="evening" aria-pressed="false">
+              16–20
+            </button>
+            <button type="button" data-band="all" aria-pressed="false">
+              Giorno
+            </button>
+          </div>
+          <select id="band" class="sr-only" aria-label="Fascia oraria" tabindex="-1" disabled>
+            <option value="morning">07–10</option>
+            <option value="day">10–16</option>
+            <option value="evening">16–20</option>
+            <option value="all">Giorno intero</option>
+          </select>
+        </div>
+        <div class="route-field">
+          <label for="route">Linea</label>
+          <span class="select-field">
+            <select id="route" aria-label="Linea" disabled></select>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m7 10 5 5 5-5" />
+            </svg>
+            <button
+              id="clear-route"
+              class="select-clear"
+              type="button"
+              aria-label="Rimuovi filtro linea"
+              title="Rimuovi filtro linea"
+              hidden
+              disabled
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </span>
+        </div>
+        <div class="stop-search">
+          <label for="stop-search">Fermata</label>
+          <div class="search-field">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="10" cy="10" r="6.5" />
+              <path d="m15 15 5 5" /></svg
+            ><input
+              id="stop-search"
+              type="search"
+              placeholder="Cerca per nome o codice"
+              maxlength="80"
+              autocomplete="off"
+              aria-controls="stop-results"
+              disabled
+            />
+          </div>
+          <div class="stop-menu" id="stop-menu" hidden>
+            <ul id="stop-results"></ul>
+            <p id="search-status" role="status"></p>
+          </div>
+        </div>
+      </div>
+      <section class="insights" id="insights" aria-labelledby="insights-title">
+        <h2 id="insights-title" class="sr-only">Lettura della rete</h2>
+        <div class="headline-stat">
+          <strong id="network-speed">–</strong>
+          <span id="network-speed-note">velocità media prevista</span>
+        </div>
+        <dl class="mini-stats">
+          <div><dt>Linee</dt><dd id="network-routes">–</dd></div>
+          <div><dt>Tratti</dt><dd id="network-segments">–</dd></div>
+          <div><dt>Mediana</dt><dd id="network-median">–</dd></div>
+        </dl>
+        <figure class="histogram">
+          <figcaption>Chilometri di tratti per velocità prevista, in km/h</figcaption>
+          <div id="histogram" class="histogram-bars"></div>
+          <div class="histogram-axis" aria-hidden="true" id="histogram-axis"></div>
+        </figure>
+        <div class="band-compare" id="band-compare-block">
+          <h3>Nelle diverse ore</h3>
+          <p class="hint">Stessi tratti, confrontati fra fasce.</p>
+          <div id="band-compare"></div>
+        </div>
+        <div class="slowest">
+          <h3>Dove si va più piano</h3>
+          <p class="hint">Un tratto per linea, almeno 150 m e due corse.</p>
+          <ol id="slowest"></ol>
+        </div>
+      </section>
+      <div class="legend-block">
+        <div class="ramp" aria-hidden="true">
+          <span class="ramp-bar"></span>
+          <span class="ramp-labels"><span>più veloce</span><span id="ramp-note"></span><span>più lento</span></span>
+        </div>
+        <div
+          class="legend"
+          role="group"
+          aria-label="Filtra per velocità prevista"
+        >
+          <button data-speed="" aria-pressed="true">Tutte</button
+          ><button data-speed="3" aria-pressed="false">
+            <i style="--swatch: #7fb59a"></i>≥ 25</button
+          ><button data-speed="2" aria-pressed="false">
+            <i style="--swatch: #e4b44f"></i>15–25</button
+          ><button data-speed="1" aria-pressed="false">
+            <i style="--swatch: #d65a32"></i>10–15</button
+          ><button data-speed="0" aria-pressed="false">
+            <i style="--swatch: #7a1626"></i>&lt; 10
+          </button>
+          <span class="legend-unit">km/h</span>
+        </div>
+      </div>
+      <div class="panel-actions">
+          <button id="share-view" class="text-button" disabled>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path
+                d="m10 13 4-4M8 16l-1 1a4 4 0 0 1-5-5l4-4a4 4 0 0 1 5 0m2 0 1-1a4 4 0 0 1 5 5l-4 4a4 4 0 0 1-5 0"
+              /></svg
+            ><span>Copia link</span></button
+          ><button
+            id="export-map"
+            class="text-button"
+            disabled
+            aria-label="Scarica la mappa in PNG"
+            title="Scarica mappa"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 3v11m-4-4 4 4 4-4M4 17v4h16v-4" /></svg
+            ><span>Immagine</span></button
+          ><button id="clear-filters" class="text-button" hidden>
+            Azzera filtri
+          </button>
+      </div>
+      <div id="share-result" class="share-result" hidden>
+        <label for="view-link">Link alla vista</label
+        ><input id="view-link" readonly type="url" /><button
+          id="close-share"
+          aria-label="Chiudi link"
+        >
+          ×
+        </button>
+      </div>
+      <p id="share-status" class="sr-only" role="status"></p>
+      <p
+        id="export-map-status"
+        class="export-map-status sr-only"
+        role="status"
+      ></p>
+      </aside>
+      <section id="map-shell" class="map-shell" aria-label="Mappa interattiva">
+        <canvas
+          id="map"
+          tabindex="0"
+          role="img"
+          aria-label="Mappa delle velocità programmate. Frecce: sposta; più e meno: zoom; Maiusc e frecce: ruota. Tutti i tratti sono disponibili in tabella."
+          aria-describedby="map-help"
+          >Consulta la tabella sotto la mappa.</canvas
+        >
+        <div class="map-context">
+          <strong id="map-title">Preparazione…</strong
+          ><span id="area-label"></span>
+        </div>
+        <div class="top-tools">
+          <div class="views" role="group" aria-label="Vista mappa">
+            <button id="mode3d" aria-pressed="true" disabled>3D</button
+            ><button id="mode2d" aria-pressed="false" disabled>2D</button>
+          </div>
+          <details class="camera-panel" id="camera-panel">
+            <summary aria-label="Impostazioni vista">
+              Vista
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M4 7h16M4 17h16" />
+                <circle cx="9" cy="7" r="3" />
+                <circle cx="15" cy="17" r="3" />
+              </svg>
+            </summary>
+            <div class="camera-options">
+              <label
+                >Rotazione <output id="bearing-value">−20°</output
+                ><input
+                  id="bearing"
+                  aria-label="Rotazione mappa"
+                  type="range"
+                  min="-180"
+                  max="180"
+                  value="-20"
+              /></label>
+              <div class="rotation-buttons">
+                <button
+                  id="rotate-left"
+                  aria-label="Ruota a sinistra di 15 gradi"
+                >
+                  <svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M4 10V4m0 0h6M4 4l4 4a7 7 0 1 1-2 8" /></svg
+                  >15°</button
+                ><button
+                  id="rotate-right"
+                  aria-label="Ruota a destra di 15 gradi"
+                >
+                  15°<svg aria-hidden="true" viewBox="0 0 24 24">
+                    <path d="M20 10V4m0 0h-6M20 4l-4 4a7 7 0 1 0 2 8" />
+                  </svg>
+                </button>
+              </div>
+              <label
+                >Inclinazione <output id="pitch-value">55°</output
+                ><input
+                  id="pitch"
+                  aria-label="Inclinazione mappa"
+                  type="range"
+                  min="15"
+                  max="65"
+                  value="55"
+              /></label>
+              <label
+                >Rilievo <output id="relief-value">100%</output
+                ><input
+                  id="relief"
+                  aria-label="Ampiezza rilievi"
+                  type="range"
+                  min="40"
+                  max="160"
+                  step="10"
+                  value="100"
+              /></label>
+              <label
+                >Zoom <output id="zoom-value">100%</output
+                ><input
+                  id="zoom"
+                  aria-label="Zoom mappa"
+                  type="range"
+                  min="10"
+                  max="800"
+                  value="100"
+              /></label>
+              <button id="reset" class="wide-button" disabled>
+                Ripristina vista
+              </button>
+            </div>
+          </details>
+          <button
+            id="expand"
+            class="icon-button"
+            aria-label="Espandi mappa"
+            aria-expanded="false"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" />
+            </svg>
+          </button>
+        </div>
+        <div id="empty-state" class="empty-state" hidden>
+          <strong id="empty-title"></strong>
+          <p id="empty-copy"></p>
+          <button id="empty-reset" hidden>Azzera filtri</button>
+          <button id="empty-band" hidden></button>
+        </div>
+        <div id="map-tip" role="tooltip" hidden></div>
+        <aside id="inspector" hidden aria-live="polite"></aside>
+        <div class="camera-tools">
+          <button
+            id="center"
+            aria-label="Torna al centro città"
+            title="Centro città"
+            disabled
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="6" />
+              <path d="M12 2v4m0 12v4M2 12h4m12 0h4" /></svg
+            ><span>Centro</span>
+          </button>
+          <button id="fit" aria-label="Inquadra selezione" disabled>
+            Inquadra
+          </button>
+          <button id="touch-mode" class="touch-mode" aria-pressed="false">
+            Esplora con le dita
+          </button>
+        </div>
+        <div class="zoom-tools">
+          <button id="north" aria-label="Orienta a nord" title="Nord">
+            <svg id="compass" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m12 3 5 16-5-3-5 3Z" /></svg
+            ><span>N</span>
+          </button>
+          <div>
+            <button id="zoom-in" aria-label="Aumenta zoom" disabled>+</button
+            ><button id="zoom-out" aria-label="Riduci zoom" disabled>−</button>
+          </div>
+        </div>
+
+        <div class="map-foot">
+          <div class="map-foot-start">
+            <div id="scale-bar" class="scale-bar"><span></span><i></i></div>
+            <div id="notice" class="map-notice" role="status" hidden>
+              <span id="notice-text"></span>
+              <button id="notice-dismiss" type="button" aria-label="Chiudi avviso">
+                ×
+              </button>
+            </div>
+          </div>
+          <div class="map-key" aria-hidden="true">
+            <span id="map-key-fast">≥ 25</span>
+            <span class="map-key-ramp"></span>
+            <span><span id="map-key-slow">&lt; 10</span> km/h</span>
+            <span class="map-key-note">più alto = più lento</span>
+          </div>
+          <a
+            id="map-attribution"
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            >© OpenStreetMap contributors · ODbL</a
+          >
+        </div>
+      </section>
+      </div>
+      <details class="map-help">
+        <summary>Comandi mappa</summary>
+        <p id="map-help">
+          Trascina per spostare; rotella o +/− per zoom; Maiusc e trascinamento
+          per ruotare. Da tastiera: frecce, +/−, Maiusc e frecce; Home per il
+          centro, Esc per chiudere. Su telefono attiva «Esplora con le dita»;
+          termina per scorrere la pagina.
+        </p>
+      </details>
+      <div class="below">
+        <section id="data-section" class="data-section">
+          <div class="section-heading">
+            <div>
+              <h2>Tratti selezionati</h2>
+              <span id="coverage"></span>
+            </div>
+            <button
+              id="export"
+              class="export-button"
+              disabled
+              aria-label="Scarica i tratti selezionati in CSV"
+            >
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M12 3v12m-4-4 4 4 4-4M5 17v4h14v-4" /></svg
+              >CSV
+            </button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Linea</th>
+                  <th>Tra fermate</th>
+                  <th id="speed-heading" scope="col" aria-sort="ascending">
+                    <button
+                      id="sort-speed"
+                      class="sort-button"
+                      aria-label="Velocità: mostra prima i più veloci"
+                    >
+                      km/h <span aria-hidden="true">↑</span>
+                    </button>
+                  </th>
+                  <th id="trips-heading" scope="col" aria-sort="none">
+                    <button
+                      id="sort-trips"
+                      class="sort-button"
+                      aria-label="Corse: mostra prima i più frequenti"
+                    >
+                      Corse <span aria-hidden="true">↕</span>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <nav id="pages" class="pagination" aria-label="Paginazione tratti">
+            <button id="page-previous" disabled>
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m14 6-6 6 6 6" /></svg
+              >Precedenti</button
+            ><button id="page-next" disabled>
+              Successivi<svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m10 6 6 6-6 6" />
+              </svg>
+            </button>
+          </nav>
+        </section>
+        <section id="source-panel" class="source">
+          <h2>Fonte e metodo</h2>
+          <div id="source"></div>
+          <details>
+            <summary>Come leggere i dati</summary>
+            <p>
+              <strong>Velocità prevista.</strong> Distanza GTFS divisa per il
+              tempo mediano tra fermate; soste escluse. Gli orari possono essere
+              stimati o arrotondati. Le corse sono programmate, non osservate.
+            </p>
+            <p>
+              <strong>Rilievi.</strong> Minuti/km fino a 12. Quota e curva sono
+              grafiche, non altimetria o variazioni dentro il tratto. Dettaglio
+              e CSV conservano i valori completi.
+            </p>
+            <p>
+              <strong>Copertura.</strong> Date e reti differiscono: nessuna
+              classifica delle città. I punti sono fermate GTFS; la cartografia
+              OSM è un estratto e non modifica tempi o distanze.
+            </p>
+            <p>
+              <strong>Limiti.</strong> Non misura ritardi, traffico, passeggeri
+              o qualità del servizio. Fuori dall’estratto cartografico le strade
+              possono mancare.
+            </p>
+          </details>
+          <details>
+            <summary>Copertura e dati esclusi</summary>
+            <div id="quality"></div>
+          </details>
+          <details>
+            <summary>Ricevute e condizioni di riuso</summary>
+            <div id="receipt"></div>
+          </details>
+        </section>
+      </div>
+    </main>
+    <script id="data" type="application/json">
+      /*__GTFS_MANIFEST__*/
+    </script>
+    <!--__GTFS_CITIES__-->
+    <script type="module">
+      /*__GTFS_VIEWER__*/
+    </script>
+  </body>
+</html>

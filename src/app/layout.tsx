@@ -4,7 +4,6 @@ import { GoogleAnalytics } from "@/components/google-analytics";
 import { ChromeUnlessImmersive, ImmersiveDocumentFlag } from "@/components/immersive-chrome";
 import { IMMERSIVE_INIT_SCRIPT } from "@/lib/politici-immersive";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
-import { SIDEBAR_INIT_SCRIPT } from "@/lib/sidebar";
 import { Navigation } from "@/components/navigation";
 import { SectionNav } from "@/components/section-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -69,7 +68,6 @@ export default function RootLayout({
         {/* Inline in <head>: devono girare anche se i bundle esterni sono bloccati. */}
         <script dangerouslySetInnerHTML={{ __html: IMMERSIVE_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_INIT_SCRIPT }} />
       </head>
       <body>
         <GoogleAnalytics />

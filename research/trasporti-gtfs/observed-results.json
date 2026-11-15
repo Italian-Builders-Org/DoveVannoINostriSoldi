@@ -1,0 +1,2744 @@
+{
+  "baseSha": "41a953e548fd607fb35253a9962333cc2a724067",
+  "iterationBaseSha": "fb3e8c0ca82e47539c5b6b76502b259d5fe810f2",
+  "schemaVersion": 3,
+  "metric": "scheduled-segment-travel-time",
+  "cities": [
+    {
+      "id": "milano",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Comune di Milano / AMAT, servizio ATM",
+      "license": "CC-BY (versione non specificata nel campo dataset)",
+      "receipt": {
+        "city": "milano",
+        "url": "https://dati.comune.milano.it/gtfs.zip",
+        "finalUrl": "https://dati.comune.milano.it/gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:17Z",
+        "bytes": 25482440,
+        "sha256": "c35982cc7a71a5f97fb87c818eaf42df4c41031a1947122dbfba2529b537ddaf",
+        "lastModified": "Thu, 29 Oct 2026 16:31:38 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 17,
+        "activeRoutes": 17,
+        "activeScheduledTrips": 4333,
+        "activeServices": 122,
+        "geometryPatterns": 101,
+        "segments": 1024,
+        "analyzedScheduledTrips": 4333,
+        "analyzedRoutes": 17
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 116218,
+        "accepted_pairs": 116218
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "aee06d21678ec133ca9ffec8ff9b7002ad7d25af281cb848d930ac55d2660df3",
+      "stops": 724,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [9.12, 45.425, 9.26, 45.51],
+          "acquiredAt": "2026-10-30T20:54:54.835668+00:00",
+          "osmBaseAt": "2026-10-30T20:53:21Z",
+          "sha256": "8391e35b3de1a1950f783ffad9a7822264abedc17f371a6b8a38fa5f86b6be50",
+          "bytes": 25702173,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.425,9.12,45.51,9.26);\nway[\"natural\"=\"water\"](45.425,9.12,45.51,9.26);way[\"waterway\"~\"^(river|canal)$\"](45.425,9.12,45.51,9.26);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.425,9.12,45.51,9.26);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.425,9.12,45.51,9.26);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.425,9.12,45.51,9.26);\n);out body geom;"
+        },
+        "features": 29315,
+        "labels": 153,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "roma",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Roma Servizi per la Mobilità",
+      "license": "not-declared",
+      "receipt": {
+        "city": "roma",
+        "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+        "finalUrl": "https://romamobilita.it/wp-content/uploads/shared/rome_static_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:07:22Z",
+        "bytes": 46440045,
+        "sha256": "88f28a3085ec59c9b2f742198286e549b39314ac8591b3ba0b432cd290d1d267",
+        "lastModified": "Fri, 30 Oct 2026 19:34:24 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 5,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 750,
+        "activeServices": 477,
+        "geometryPatterns": 5,
+        "segments": 59,
+        "analyzedScheduledTrips": 750,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 11750,
+        "accepted_pairs": 11750
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "ca52ce755c9ceebf51dd51c0095ad514ab6355e83899cc225928b1881b8035d7",
+      "stops": 59,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [12.43, 41.855, 12.53, 41.93],
+          "acquiredAt": "2026-10-30T20:53:43.173406+00:00",
+          "osmBaseAt": "2026-10-30T20:52:18Z",
+          "sha256": "2c2272d64140a95a71f33e29676b5543bec0ceaf3567ff08586dc3c0a80f5c90",
+          "bytes": 16701991,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](41.855,12.43,41.93,12.53);\nway[\"natural\"=\"water\"](41.855,12.43,41.93,12.53);way[\"waterway\"~\"^(river|canal)$\"](41.855,12.43,41.93,12.53);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](41.855,12.43,41.93,12.53);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](41.855,12.43,41.93,12.53);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](41.855,12.43,41.93,12.53);\n);out body geom;"
+        },
+        "features": 16578,
+        "labels": 15,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "torino",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+      "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+      "receipt": {
+        "city": "torino",
+        "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "finalUrl": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:53Z",
+        "bytes": 20892205,
+        "sha256": "b7e74f077ca8501689e137f8fd0ca31780b87a84fc0557e84ba73fa5ca266e48",
+        "lastModified": "Fri, 30 Oct 2026 02:27:12 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 9,
+        "activeRoutes": 8,
+        "activeScheduledTrips": 1854,
+        "activeServices": 126,
+        "geometryPatterns": 45,
+        "segments": 591,
+        "analyzedScheduledTrips": 1854,
+        "analyzedRoutes": 8
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 50863,
+        "accepted_pairs": 50863
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "55c1c149fdc2c630321e8258218406890a9d6d785baf8c5143eca12c1a3bce14",
+      "stops": 356,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [7.61, 45.01, 7.76, 45.13],
+          "acquiredAt": "2026-10-30T20:34:21.706131+00:00",
+          "osmBaseAt": "2026-10-30T20:31:54Z",
+          "sha256": "9daad35cc5b5e801dfdb5c583185621c743a8eacf76f1c3b4ccf754e03998e94",
+          "bytes": 21724417,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.01,7.61,45.13,7.76);\nway[\"natural\"=\"water\"](45.01,7.61,45.13,7.76);way[\"waterway\"~\"^(river|canal)$\"](45.01,7.61,45.13,7.76);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.01,7.61,45.13,7.76);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.01,7.61,45.13,7.76);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.01,7.61,45.13,7.76);\n);out body geom;"
+        },
+        "features": 23266,
+        "labels": 84,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "firenze",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / GEST",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "firenze",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/1f62d551-65f4-49f8-9a99-e19b02077be3/download/gest.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/1f62d551-65f4-49f8-9a99-e19b02077be3/download/gest.gtfs",
+        "acquiredAt": "2026-10-30T20:28:44.740145+00:00",
+        "bytes": 1191740,
+        "sha256": "97d18a9d9eae546fd21526244106b56891bef6dbb7db0846b20c0f9f6bd5ad13",
+        "lastModified": "Tue, 11 Aug 2026 19:00:05 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 2,
+        "activeRoutes": 2,
+        "activeScheduledTrips": 874,
+        "activeServices": 2,
+        "geometryPatterns": 11,
+        "segments": 157,
+        "analyzedScheduledTrips": 874,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 11,
+        "candidate_pairs": 17861,
+        "accepted_pairs": 16938,
+        "missing_geometry_pair": 874,
+        "nonpositive_time": 49
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "70e1fe73c1a696c6ad971f7e40a35843ae6e0170d9a7447a3a5fe1fc748973b5",
+      "stops": 60,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [11.17, 43.735, 11.31, 43.81],
+          "acquiredAt": "2026-10-30T20:47:52.318334+00:00",
+          "osmBaseAt": "2026-10-30T20:46:06Z",
+          "sha256": "2bda6097f3a5fc89d72eab6b91d8c140fd6786312a4ebf3b42fa6b933d43a7b3",
+          "bytes": 11510998,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.735,11.17,43.81,11.31);\nway[\"natural\"=\"water\"](43.735,11.17,43.81,11.31);way[\"waterway\"~\"^(river|canal)$\"](43.735,11.17,43.81,11.31);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.735,11.17,43.81,11.31);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.735,11.17,43.81,11.31);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.735,11.17,43.81,11.31);\n);out body geom;"
+        },
+        "features": 11766,
+        "labels": 38,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "bologna",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "TPER S.p.A.",
+      "license": "CC-BY 3.0 Italia",
+      "receipt": {
+        "city": "bologna",
+        "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsbo&format=zip&source=solweb.tper.it&version=20261027",
+        "finalUrl": "https://solweb.tper.it/resources/files/opendata/gommagtfsbo_20261027.zip",
+        "acquiredAt": "2026-10-30T20:29:26.879878+00:00",
+        "bytes": 11141456,
+        "sha256": "eb063d35f17d4c3c84ad5e83c2df694f0443803777877cc116bfabf8581b5b7e",
+        "lastModified": "Tue, 27 Oct 2026 20:20:02 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 240,
+        "activeRoutes": 224,
+        "activeScheduledTrips": 8499,
+        "activeServices": 164,
+        "geometryPatterns": 1348,
+        "segments": 6354,
+        "analyzedScheduledTrips": 7030,
+        "analyzedRoutes": 135
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 231584,
+        "outside_study_area": 55864,
+        "accepted_pairs": 175334,
+        "short_geometry_pair": 14,
+        "missing_geometry_pair": 364,
+        "stop_shape_offset_above_100_m": 92,
+        "unlocated_or_nonprogressing_pair": 123,
+        "implausible_speed_above_150_kmh": 7,
+        "nonpositive_time": 15
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [11.2, 44.4, 11.48, 44.58],
+      "segmentsSha256": "8915f4a99a3f746c45941790c154382b6375cca0b2d28a3546ebd60d085c873e",
+      "stops": 1874,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [11.28, 44.45, 11.41, 44.54],
+          "acquiredAt": "2026-10-30T20:52:13.940992+00:00",
+          "osmBaseAt": "2026-10-30T20:50:15Z",
+          "sha256": "effeda76b1e6089fccc8a58d73454c95105b7a4921d18ffa011a9fe890d0efb7",
+          "bytes": 17068764,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](44.45,11.28,44.54,11.41);\nway[\"natural\"=\"water\"](44.45,11.28,44.54,11.41);way[\"waterway\"~\"^(river|canal)$\"](44.45,11.28,44.54,11.41);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](44.45,11.28,44.54,11.41);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](44.45,11.28,44.54,11.41);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](44.45,11.28,44.54,11.41);\n);out body geom;"
+        },
+        "features": 14446,
+        "labels": 62,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "bari",
+      "mode": "bus",
+      "status": "no-service",
+      "serviceDate": "2026-10-30",
+      "holder": "AMTAB S.p.A.",
+      "license": "not-declared",
+      "receipt": {
+        "city": "bari",
+        "url": "https://www.amtabservizio.it/gtfs/google_transit.zip",
+        "finalUrl": "https://www.amtabservizio.it/gtfs/google_transit.zip",
+        "acquiredAt": "2026-10-30T20:30:40.471692+00:00",
+        "bytes": 3423392,
+        "sha256": "207f1c54da1f40c2931c1cae37e56909846b41de06e5d7b0d8f3861e4e5ae654",
+        "lastModified": "Mon, 26 Oct 2026 07:57:47 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 68,
+        "activeRoutes": 0,
+        "activeScheduledTrips": 0,
+        "activeServices": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [16.73, 41.03, 16.99, 41.19],
+      "segmentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "stops": 0,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [16.81, 41.08, 16.94, 41.15],
+          "acquiredAt": "2026-10-30T20:51:24.797654+00:00",
+          "osmBaseAt": "2026-10-30T20:50:15Z",
+          "sha256": "1b912674fbbe7084bc5e021b2b98ccf8c999dc006436fa9a62bae962bf3730ce",
+          "bytes": 5234242,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](41.08,16.81,41.15,16.94);\nway[\"natural\"=\"water\"](41.08,16.81,41.15,16.94);way[\"waterway\"~\"^(river|canal)$\"](41.08,16.81,41.15,16.94);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](41.08,16.81,41.15,16.94);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](41.08,16.81,41.15,16.94);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](41.08,16.81,41.15,16.94);\n);out body geom;"
+        },
+        "features": 5850,
+        "labels": 3,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "cagliari",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "CTM S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "receipt": {
+        "city": "cagliari",
+        "url": "https://flashnetctm.miz.it/download/gtfs/estrazione_gtfs.zip",
+        "finalUrl": "https://flashnetctm.miz.it/download/gtfs/estrazione_gtfs.zip",
+        "acquiredAt": "2026-10-31T13:24:41.881662+00:00",
+        "bytes": 1228569,
+        "sha256": "38be95b8bbd5df119af9de1ce20ac354fba00f6f5370f9fccc3bdbdf7929c467",
+        "lastModified": "Sat, 31 Oct 2026 02:27:04 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 45,
+        "activeRoutes": 45,
+        "activeScheduledTrips": 3155,
+        "activeServices": 1,
+        "geometryPatterns": 156,
+        "segments": 2268,
+        "analyzedScheduledTrips": 3116,
+        "analyzedRoutes": 43
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 102190,
+        "accepted_pairs": 94195,
+        "unlocated_or_nonprogressing_pair": 168,
+        "missing_geometry_pair": 1127,
+        "nonpositive_time": 400,
+        "outside_study_area": 6468,
+        "stop_shape_offset_above_100_m": 161,
+        "short_geometry_pair": 2
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.03, 39.17, 9.26, 39.31],
+      "segmentsSha256": "2038fc664db3ff43736a85f99614feccff089ab81df30c380d2b8ed3ae7f2448",
+      "stops": 846,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [9.08, 39.19, 9.17, 39.27],
+          "acquiredAt": "2026-10-31T13:38:02.786775+00:00",
+          "osmBaseAt": "2026-10-31T13:36:34Z",
+          "sha256": "6f76cd33148e304cacbe2cf36321a2ddc2ee6cbec005ae3501b6faaab043f2f5",
+          "bytes": 6603878,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](39.19,9.08,39.27,9.17);\nway[\"natural\"=\"water\"](39.19,9.08,39.27,9.17);way[\"waterway\"~\"^(river|canal)$\"](39.19,9.08,39.27,9.17);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](39.19,9.08,39.27,9.17);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](39.19,9.08,39.27,9.17);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](39.19,9.08,39.27,9.17);\n);out body geom;"
+        },
+        "features": 7470,
+        "labels": 46,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "venezia",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ACTV S.p.A. / AVM",
+      "license": "not-declared",
+      "receipt": {
+        "city": "venezia",
+        "url": "https://actv.avmspa.it/sites/default/files/attachments/opendata/automobilistico/actv_aut.zip",
+        "finalUrl": "https://actv.avmspa.it/sites/default/files/attachments/opendata/automobilistico/actv_aut.zip",
+        "acquiredAt": "2026-10-31T13:28:15.048538+00:00",
+        "bytes": 15954512,
+        "sha256": "53e6f79542be24f309d545d1e2f409a94b40af8b57a9cf5194a790e2e67a222e",
+        "lastModified": "Tue, 27 Oct 2026 14:00:16 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 94,
+        "activeRoutes": 92,
+        "activeScheduledTrips": 4212,
+        "activeServices": 1,
+        "geometryPatterns": 686,
+        "segments": 4884,
+        "analyzedScheduledTrips": 4030,
+        "analyzedRoutes": 88
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 93871,
+        "accepted_pairs": 66170,
+        "outside_study_area": 10586,
+        "nonpositive_time": 17080,
+        "implausible_speed_above_150_kmh": 35
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [12.05, 45.35, 12.43, 45.65],
+      "segmentsSha256": "522f8ebcc64c78e38c8dbbd3f2f059afdb6dfd13c6c572b29b12e8269ba1b6f7",
+      "stops": 1606,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [12.18, 45.44, 12.32, 45.55],
+          "acquiredAt": "2026-10-31T13:30:56.982027+00:00",
+          "osmBaseAt": "2026-10-31T13:29:21Z",
+          "sha256": "cef16f09cb04332c9958739502dca22fe872a7ba80f632493f70d45bf378de52",
+          "bytes": 9143321,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.44,12.18,45.55,12.32);\nway[\"natural\"=\"water\"](45.44,12.18,45.55,12.32);way[\"waterway\"~\"^(river|canal)$\"](45.44,12.18,45.55,12.32);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.44,12.18,45.55,12.32);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.44,12.18,45.55,12.32);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.44,12.18,45.55,12.32);\n);out body geom;"
+        },
+        "features": 9129,
+        "labels": 20,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "palermo",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "AMAT Palermo S.p.A. / Comune di Palermo",
+      "license": "CC BY-SA 4.0 (tram); geometrie OSM sotto ODbL",
+      "receipt": {
+        "city": "palermo",
+        "url": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+        "finalUrl": "https://opendata.comune.palermo.it/js/server/uploads/dataset/gtfs/amat_gtfs.zip",
+        "acquiredAt": "2026-10-31T14:12:09.447975+00:00",
+        "bytes": 3995859,
+        "sha256": "d78ed09a46c10cd7ec5d05e7ba3a4de6ed7c4f18c2f51a2a37536d1517e2a42a",
+        "lastModified": "Mon, 31 Aug 2026 07:56:36 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 518,
+        "activeServices": 24,
+        "geometryPatterns": 7,
+        "segments": 74,
+        "analyzedScheduledTrips": 468,
+        "analyzedRoutes": 3
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 7062,
+        "accepted_pairs": 6012,
+        "stop_shape_offset_above_100_m": 20,
+        "unlocated_or_nonprogressing_pair": 21,
+        "missing_geometry_pair": 1050
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "7541c10d2f312986bd7176d37e50acdbba051994869287f1275c9147ab9509e3",
+      "stops": 60,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [13.29, 38.075, 13.385, 38.155],
+          "acquiredAt": "2026-10-31T14:15:32.535765+00:00",
+          "osmBaseAt": "2026-10-31T14:14:03Z",
+          "sha256": "d2ba4fac7732b67c9a734eebf9d1124720e26d141a7d55acf7d383e1edb1aaf7",
+          "bytes": 5433834,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](38.075,13.29,38.155,13.385);\nway[\"natural\"=\"water\"](38.075,13.29,38.155,13.385);way[\"waterway\"~\"^(river|canal)$\"](38.075,13.29,38.155,13.385);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](38.075,13.29,38.155,13.385);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](38.075,13.29,38.155,13.385);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](38.075,13.29,38.155,13.385);\n);out body geom;"
+        },
+        "features": 6978,
+        "labels": 27,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "padova",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "Busitalia Veneto S.p.A.",
+      "license": "not-declared",
+      "receipt": {
+        "city": "padova",
+        "url": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+        "finalUrl": "https://gtfs-biv.fsbusitalia.com/GTFS-BIV-TRAM/gtfs-biv-tram.zip",
+        "acquiredAt": "2026-10-31T14:12:48.772999+00:00",
+        "bytes": 199545,
+        "sha256": "de81aeaf10fcf01ecbbcbccf90be0b60818d25819eb6a86d3abb4e61a09ca405",
+        "lastModified": "Sat, 31 Oct 2026 03:01:03 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 1153,
+        "activeServices": 1,
+        "geometryPatterns": 10,
+        "segments": 73,
+        "analyzedScheduledTrips": 1144,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 16058,
+        "accepted_pairs": 15911,
+        "stop_shape_offset_above_100_m": 1,
+        "unlocated_or_nonprogressing_pair": 1,
+        "missing_geometry_pair": 147,
+        "trip_without_stop_pairs": 9
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "2b734b3cb843ef9afd15d3f48ba72bc22beda198c92b3d342ca550a9824fe07e",
+      "stops": 48,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [11.85, 45.365, 11.91, 45.445],
+          "acquiredAt": "2026-10-31T14:15:01.746400+00:00",
+          "osmBaseAt": "2026-10-31T14:14:03Z",
+          "sha256": "82452c68453e9936d294e2d8ebe915c94deed7c202b20de1ea81feb1b5addc18",
+          "bytes": 5853144,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.365,11.85,45.445,11.91);\nway[\"natural\"=\"water\"](45.365,11.85,45.445,11.91);way[\"waterway\"~\"^(river|canal)$\"](45.365,11.85,45.445,11.91);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.365,11.85,45.445,11.91);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.365,11.85,45.445,11.91);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.365,11.85,45.445,11.91);\n);out body geom;"
+        },
+        "features": 6739,
+        "labels": 20,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "catania",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "AMTS Catania S.p.A.",
+      "license": "IODL 2.0",
+      "receipt": {
+        "city": "catania",
+        "url": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+        "finalUrl": "https://www.amts.ct.it/GTFS/AMTCT.zip",
+        "acquiredAt": "2026-10-31T15:23:26.732507+00:00",
+        "bytes": 3173161,
+        "sha256": "58e0849f1287955a818621d572df65ac76da63ac142941e2543a2024a43db3a2",
+        "lastModified": "Tue, 20 Oct 2026 07:07:51 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 53,
+        "activeRoutes": 50,
+        "activeScheduledTrips": 2868,
+        "activeServices": 1,
+        "geometryPatterns": 102,
+        "segments": 2713,
+        "analyzedScheduledTrips": 2868,
+        "analyzedRoutes": 50
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 67746,
+        "accepted_pairs": 66403,
+        "stop_shape_offset_above_100_m": 17,
+        "unlocated_or_nonprogressing_pair": 25,
+        "short_geometry_pair": 3,
+        "missing_geometry_pair": 766,
+        "outside_study_area": 562,
+        "implausible_speed_above_150_kmh": 15
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [15.0, 37.43, 15.16, 37.6],
+      "segmentsSha256": "6964dca4de6401faabf1225f2b23222da2133891a05008a42f1b7fc9b1bad602",
+      "stops": 1363,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [15.04, 37.47, 15.11, 37.55],
+          "acquiredAt": "2026-10-31T15:25:59.553003+00:00",
+          "osmBaseAt": "2026-10-31T15:24:36Z",
+          "sha256": "72ad7d00cfba01a6bce26c644c3b15d72de7f4e99ee69b45072ccc4f0ecb8ba6",
+          "bytes": 6101679,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](37.47,15.04,37.55,15.11);\nway[\"natural\"=\"water\"](37.47,15.04,37.55,15.11);way[\"waterway\"~\"^(river|canal)$\"](37.47,15.04,37.55,15.11);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](37.47,15.04,37.55,15.11);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](37.47,15.04,37.55,15.11);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](37.47,15.04,37.55,15.11);\n);out body geom;"
+        },
+        "features": 7767,
+        "labels": 45,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "milano-metro",
+      "mode": "metro",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Comune di Milano / AMAT, servizio ATM",
+      "license": "CC-BY (versione non specificata nel campo dataset)",
+      "receipt": {
+        "city": "milano",
+        "url": "https://dati.comune.milano.it/gtfs.zip",
+        "finalUrl": "https://dati.comune.milano.it/gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:17Z",
+        "bytes": 25482440,
+        "sha256": "c35982cc7a71a5f97fb87c818eaf42df4c41031a1947122dbfba2529b537ddaf",
+        "lastModified": "Thu, 29 Oct 2026 16:31:38 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 5,
+        "activeRoutes": 5,
+        "activeScheduledTrips": 2770,
+        "activeServices": 122,
+        "geometryPatterns": 30,
+        "segments": 266,
+        "analyzedScheduledTrips": 2770,
+        "analyzedRoutes": 5
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 61672,
+        "accepted_pairs": 61672
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "7fcec24ec493b72a008a0020e4c0f255ace03a40ad397583e0695667f1529f35",
+      "stops": 130,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [9.12, 45.425, 9.26, 45.51],
+          "acquiredAt": "2026-10-30T20:54:54.835668+00:00",
+          "osmBaseAt": "2026-10-30T20:53:21Z",
+          "sha256": "8391e35b3de1a1950f783ffad9a7822264abedc17f371a6b8a38fa5f86b6be50",
+          "bytes": 25702173,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.425,9.12,45.51,9.26);\nway[\"natural\"=\"water\"](45.425,9.12,45.51,9.26);way[\"waterway\"~\"^(river|canal)$\"](45.425,9.12,45.51,9.26);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.425,9.12,45.51,9.26);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.425,9.12,45.51,9.26);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.425,9.12,45.51,9.26);\n);out body geom;"
+        },
+        "features": 29315,
+        "labels": 153,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "milano-bus",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Comune di Milano / AMAT, servizio ATM",
+      "license": "CC-BY (versione non specificata nel campo dataset)",
+      "receipt": {
+        "city": "milano",
+        "url": "https://dati.comune.milano.it/gtfs.zip",
+        "finalUrl": "https://dati.comune.milano.it/gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:17Z",
+        "bytes": 25482440,
+        "sha256": "c35982cc7a71a5f97fb87c818eaf42df4c41031a1947122dbfba2529b537ddaf",
+        "lastModified": "Thu, 29 Oct 2026 16:31:38 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 148,
+        "activeRoutes": 140,
+        "activeScheduledTrips": 18026,
+        "activeServices": 122,
+        "geometryPatterns": 589,
+        "segments": 5174,
+        "analyzedScheduledTrips": 17651,
+        "analyzedRoutes": 137
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 383681,
+        "outside_study_area": 40491,
+        "accepted_pairs": 341432,
+        "stop_shape_offset_above_100_m": 80,
+        "unlocated_or_nonprogressing_pair": 116,
+        "short_geometry_pair": 6,
+        "missing_geometry_pair": 1758
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.08, 45.39, 9.3, 45.55],
+      "segmentsSha256": "dbf824c494264ccde9150c48bb77d56261b241228e6ceea87dc49b6724fabd0a",
+      "stops": 3454,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [9.12, 45.425, 9.26, 45.51],
+          "acquiredAt": "2026-10-30T20:54:54.835668+00:00",
+          "osmBaseAt": "2026-10-30T20:53:21Z",
+          "sha256": "8391e35b3de1a1950f783ffad9a7822264abedc17f371a6b8a38fa5f86b6be50",
+          "bytes": 25702173,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.425,9.12,45.51,9.26);\nway[\"natural\"=\"water\"](45.425,9.12,45.51,9.26);way[\"waterway\"~\"^(river|canal)$\"](45.425,9.12,45.51,9.26);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.425,9.12,45.51,9.26);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.425,9.12,45.51,9.26);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.425,9.12,45.51,9.26);\n);out body geom;"
+        },
+        "features": 29315,
+        "labels": 153,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "roma-metro",
+      "mode": "metro",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Roma Servizi per la Mobilità",
+      "license": "not-declared",
+      "receipt": {
+        "city": "roma",
+        "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+        "finalUrl": "https://romamobilita.it/wp-content/uploads/shared/rome_static_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:07:22Z",
+        "bytes": 46440045,
+        "sha256": "88f28a3085ec59c9b2f742198286e549b39314ac8591b3ba0b432cd290d1d267",
+        "lastModified": "Fri, 30 Oct 2026 19:34:24 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 1379,
+        "activeServices": 477,
+        "geometryPatterns": 8,
+        "segments": 172,
+        "analyzedScheduledTrips": 1379,
+        "analyzedRoutes": 4
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 31605,
+        "accepted_pairs": 31069,
+        "unlocated_or_nonprogressing_pair": 4,
+        "missing_geometry_pair": 536
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "715d3c65bc5f986800c197b74d4aeb66f63c8198ec06b11d24db13cf76d2e773",
+      "stops": 151,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [12.43, 41.855, 12.53, 41.93],
+          "acquiredAt": "2026-10-30T20:53:43.173406+00:00",
+          "osmBaseAt": "2026-10-30T20:52:18Z",
+          "sha256": "2c2272d64140a95a71f33e29676b5543bec0ceaf3567ff08586dc3c0a80f5c90",
+          "bytes": 16701991,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](41.855,12.43,41.93,12.53);\nway[\"natural\"=\"water\"](41.855,12.43,41.93,12.53);way[\"waterway\"~\"^(river|canal)$\"](41.855,12.43,41.93,12.53);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](41.855,12.43,41.93,12.53);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](41.855,12.43,41.93,12.53);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](41.855,12.43,41.93,12.53);\n);out body geom;"
+        },
+        "features": 16578,
+        "labels": 15,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "firenze-treni",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 408,
+        "analyzedScheduledTrips": 392,
+        "analyzedRoutes": 7
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 6754,
+        "accepted_pairs": 1264,
+        "missing_geometry_pair": 207,
+        "stop_shape_offset_above_100_m": 25
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [11.05, 43.65, 11.4, 43.88],
+      "segmentsSha256": "26fd365ddb44cdb17c5cb1a78beabd4550f9e3db1f188fd018516e801e815dad",
+      "stops": 23,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [11.17, 43.735, 11.31, 43.81],
+          "acquiredAt": "2026-10-30T20:47:52.318334+00:00",
+          "osmBaseAt": "2026-10-30T20:46:06Z",
+          "sha256": "2bda6097f3a5fc89d72eab6b91d8c140fd6786312a4ebf3b42fa6b933d43a7b3",
+          "bytes": 11510998,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.735,11.17,43.81,11.31);\nway[\"natural\"=\"water\"](43.735,11.17,43.81,11.31);way[\"waterway\"~\"^(river|canal)$\"](43.735,11.17,43.81,11.31);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.735,11.17,43.81,11.31);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.735,11.17,43.81,11.31);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.735,11.17,43.81,11.31);\n);out body geom;"
+        },
+        "features": 11766,
+        "labels": 38,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "pisa",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 129,
+        "analyzedScheduledTrips": 178,
+        "analyzedRoutes": 5
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 7731,
+        "accepted_pairs": 407,
+        "missing_geometry_pair": 87,
+        "stop_shape_offset_above_100_m": 25
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.28, 43.6, 10.56, 43.86],
+      "segmentsSha256": "1ab59acf04e4c3588fb3d9cc4988bf57fded3a40b42430f6bfd6df9dedc73844",
+      "stops": 12,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [10.33, 43.66, 10.46, 43.77],
+          "acquiredAt": "2026-10-31T16:12:03.860316+00:00",
+          "osmBaseAt": "2026-10-31T16:10:21Z",
+          "sha256": "cf8f764a326a10af0ce4ebc78c5a81eb793e2e53416a8a57eff367206b837e51",
+          "bytes": 5624058,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.66,10.33,43.77,10.46);\nway[\"natural\"=\"water\"](43.66,10.33,43.77,10.46);way[\"waterway\"~\"^(river|canal)$\"](43.66,10.33,43.77,10.46);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.66,10.33,43.77,10.46);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.66,10.33,43.77,10.46);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.66,10.33,43.77,10.46);\n);out body geom;"
+        },
+        "features": 5892,
+        "labels": 23,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "trento",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Trentino Trasporti S.p.A.",
+      "license": "CC BY 4.0",
+      "receipt": {
+        "city": "trento",
+        "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+        "finalUrl": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+        "acquiredAt": "2026-11-01T13:59:39.062102+00:00",
+        "bytes": 1177147,
+        "sha256": "e949513b7eb42ddf4af4294cfa420a3ec5a110853c42fbe408a516bc24ebff9b",
+        "lastModified": "Wed, 30 Sep 2026 15:18:00 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 43,
+        "activeRoutes": 42,
+        "activeScheduledTrips": 2474,
+        "activeServices": 22,
+        "geometryPatterns": 401,
+        "segments": 1687,
+        "analyzedScheduledTrips": 1913,
+        "analyzedRoutes": 25
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "missing_shape": 37,
+        "candidate_pairs": 56262,
+        "accepted_pairs": 34158,
+        "nonpositive_time": 5885,
+        "stop_shape_offset_above_100_m": 368,
+        "unlocated_or_nonprogressing_pair": 534,
+        "missing_geometry_pair": 2800,
+        "implausible_speed_above_150_kmh": 48,
+        "outside_study_area": 13371,
+        "short_geometry_pair": 6
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [11.03, 45.99, 11.23, 46.16],
+      "segmentsSha256": "ad02c715c335fed296f17ce1f49cdb9360404960d240bcd1c75dff702517be02",
+      "stops": 583,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [11.075, 46.01, 11.165, 46.11],
+          "acquiredAt": "2026-11-01T14:09:06.091379+00:00",
+          "osmBaseAt": "2026-11-01T14:07:21Z",
+          "sha256": "4d6c227e21ad9b788664e072c4a2b2bd68deb7d83ab41d00cea6314ffde375f0",
+          "bytes": 9314089,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](46.01,11.075,46.11,11.165);\nway[\"natural\"=\"water\"](46.01,11.075,46.11,11.165);way[\"waterway\"~\"^(river|canal)$\"](46.01,11.075,46.11,11.165);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](46.01,11.075,46.11,11.165);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](46.01,11.075,46.11,11.165);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](46.01,11.075,46.11,11.165);\n);out body geom;"
+        },
+        "features": 8381,
+        "labels": 41,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "rovereto",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Trentino Trasporti S.p.A.",
+      "license": "CC BY 4.0",
+      "receipt": {
+        "city": "trento",
+        "url": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+        "finalUrl": "https://www.trentinotrasporti.it/opendata/google_transit_urbano_tte.zip",
+        "acquiredAt": "2026-11-01T13:59:39.062102+00:00",
+        "bytes": 1177147,
+        "sha256": "e949513b7eb42ddf4af4294cfa420a3ec5a110853c42fbe408a516bc24ebff9b",
+        "lastModified": "Wed, 30 Sep 2026 15:18:00 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 43,
+        "activeRoutes": 42,
+        "activeScheduledTrips": 2474,
+        "activeServices": 22,
+        "geometryPatterns": 401,
+        "segments": 1349,
+        "analyzedScheduledTrips": 500,
+        "analyzedRoutes": 13
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "missing_shape": 37,
+        "candidate_pairs": 56262,
+        "outside_study_area": 42934,
+        "stop_shape_offset_above_100_m": 368,
+        "unlocated_or_nonprogressing_pair": 534,
+        "accepted_pairs": 10277,
+        "nonpositive_time": 1273,
+        "missing_geometry_pair": 1769,
+        "implausible_speed_above_150_kmh": 9,
+        "short_geometry_pair": 6
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.97, 45.83, 11.11, 45.95],
+      "segmentsSha256": "d631397d15e03f65b6aec886c3a033f040c2f8eb8feed50a0792bb18fd15885b",
+      "stops": 417,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [11.0, 45.86, 11.075, 45.925],
+          "acquiredAt": "2026-11-01T14:14:05.912657+00:00",
+          "osmBaseAt": "2026-07-28T02:16:18Z",
+          "sha256": "553b5b45332f2610dbf841cacd9626f34f1ce9ebcb5fea9d02947632318bdf98",
+          "bytes": 3944794,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.86,11.0,45.925,11.075);\nway[\"natural\"=\"water\"](45.86,11.0,45.925,11.075);way[\"waterway\"~\"^(river|canal)$\"](45.86,11.0,45.925,11.075);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.86,11.0,45.925,11.075);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.86,11.0,45.925,11.075);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.86,11.0,45.925,11.075);\n);out body geom;"
+        },
+        "features": 3739,
+        "labels": 8,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "ferrara",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "TPER S.p.A.",
+      "license": "CC BY 3.0 Italia",
+      "receipt": {
+        "city": "ferrara",
+        "url": "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?filename=gommagtfsfe&format=zip&source=solweb.tper.it&version=20260904",
+        "finalUrl": "https://solweb.tper.it/resources/files/opendata/gommagtfsfe_20260904.zip",
+        "acquiredAt": "2026-11-01T13:59:41.042980+00:00",
+        "bytes": 3003482,
+        "sha256": "3e97bd4a90b375852ec8382be2d034ccf5e622e15014bcecec5059b4077371c4",
+        "lastModified": "Fri, 04 Sep 2026 19:20:05 GMT",
+        "contentType": "application/x-zip-compressed"
+      },
+      "coverage": {
+        "routesInFeed": 80,
+        "activeRoutes": 74,
+        "activeScheduledTrips": 1659,
+        "activeServices": 20,
+        "geometryPatterns": 612,
+        "segments": 2210,
+        "analyzedScheduledTrips": 1048,
+        "analyzedRoutes": 45
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 43178,
+        "accepted_pairs": 24249,
+        "stop_shape_offset_above_100_m": 68,
+        "unlocated_or_nonprogressing_pair": 101,
+        "implausible_speed_above_150_kmh": 1,
+        "missing_geometry_pair": 163,
+        "nonpositive_time": 47,
+        "outside_study_area": 18718,
+        "short_geometry_pair": 12
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [11.49, 44.74, 11.76, 44.93],
+      "segmentsSha256": "3987d3da15568bfa4e3cbcb414976da105aca9aece1348b73611fa6a8a5c952f",
+      "stops": 819,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [11.56, 44.79, 11.68, 44.88],
+          "acquiredAt": "2026-11-01T14:09:40.945035+00:00",
+          "osmBaseAt": "2026-11-01T14:08:21Z",
+          "sha256": "39c28c655838c6cf45d47e0ce0dfa1d1158fb08272c620de901bdcdb16866c08",
+          "bytes": 6456743,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](44.79,11.56,44.88,11.68);\nway[\"natural\"=\"water\"](44.79,11.56,44.88,11.68);way[\"waterway\"~\"^(river|canal)$\"](44.79,11.56,44.88,11.68);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](44.79,11.56,44.88,11.68);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](44.79,11.56,44.88,11.68);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](44.79,11.56,44.88,11.68);\n);out body geom;"
+        },
+        "features": 7466,
+        "labels": 9,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "torino-metro",
+      "mode": "metro",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+      "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+      "receipt": {
+        "city": "torino",
+        "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "finalUrl": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:53Z",
+        "bytes": 20892205,
+        "sha256": "b7e74f077ca8501689e137f8fd0ca31780b87a84fc0557e84ba73fa5ca266e48",
+        "lastModified": "Fri, 30 Oct 2026 02:27:12 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 574,
+        "activeServices": 126,
+        "geometryPatterns": 2,
+        "segments": 44,
+        "analyzedScheduledTrips": 574,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 12628,
+        "accepted_pairs": 12628
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": null,
+      "segmentsSha256": "5857c73cbc6c9e88a90ad384cad13adaa169f199df5fc57b9a8445a76f85e665",
+      "stops": 23,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [7.61, 45.01, 7.76, 45.13],
+          "acquiredAt": "2026-10-30T20:34:21.706131+00:00",
+          "osmBaseAt": "2026-10-30T20:31:54Z",
+          "sha256": "9daad35cc5b5e801dfdb5c583185621c743a8eacf76f1c3b4ccf754e03998e94",
+          "bytes": 21724417,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.01,7.61,45.13,7.76);\nway[\"natural\"=\"water\"](45.01,7.61,45.13,7.76);way[\"waterway\"~\"^(river|canal)$\"](45.01,7.61,45.13,7.76);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.01,7.61,45.13,7.76);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.01,7.61,45.13,7.76);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.01,7.61,45.13,7.76);\n);out body geom;"
+        },
+        "features": 23266,
+        "labels": 84,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "lucca",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 130,
+        "analyzedScheduledTrips": 130,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 7808,
+        "stop_shape_offset_above_100_m": 25,
+        "accepted_pairs": 379,
+        "missing_geometry_pair": 38
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.3, 43.75, 10.7, 43.99],
+      "segmentsSha256": "b86a75054818657693c8f706aadc1fe8a8989d542f63b856d9eb34b1e3f6c541",
+      "stops": 15,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [10.3, 43.75, 10.7, 43.99],
+          "acquiredAt": "2026-11-01T15:29:31.755113+00:00",
+          "osmBaseAt": "2026-11-01T15:28:24Z",
+          "sha256": "cd8418a4dcfb39e50e36c2348a16d1aca3a332ba29ac09cb011a031a6f43d57b",
+          "bytes": 19401409,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.75,10.3,43.99,10.7);\nway[\"natural\"=\"water\"](43.75,10.3,43.99,10.7);way[\"waterway\"~\"^(river|canal)$\"](43.75,10.3,43.99,10.7);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.75,10.3,43.99,10.7);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.75,10.3,43.99,10.7);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.75,10.3,43.99,10.7);\n);out body geom;"
+        },
+        "features": 16026,
+        "labels": 19,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "torino-bus",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "GTT S.p.A. – Gruppo Torinese Trasporti",
+      "license": "GTT: uso non commerciale, attribuzione obbligatoria",
+      "receipt": {
+        "city": "torino",
+        "url": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "finalUrl": "https://www.gtt.to.it/open_data/gtt_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:06:53Z",
+        "bytes": 20892205,
+        "sha256": "b7e74f077ca8501689e137f8fd0ca31780b87a84fc0557e84ba73fa5ca266e48",
+        "lastModified": "Fri, 30 Oct 2026 02:27:12 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 206,
+        "activeRoutes": 200,
+        "activeScheduledTrips": 11388,
+        "activeServices": 126,
+        "geometryPatterns": 1188,
+        "segments": 6429,
+        "analyzedScheduledTrips": 9060,
+        "analyzedRoutes": 131
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 335477,
+        "accepted_pairs": 209489,
+        "stop_shape_offset_above_100_m": 358,
+        "unlocated_or_nonprogressing_pair": 468,
+        "missing_geometry_pair": 827,
+        "outside_study_area": 125076,
+        "nonpositive_time": 9,
+        "short_geometry_pair": 7,
+        "implausible_speed_above_150_kmh": 76
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [7.61, 45.01, 7.76, 45.13],
+      "segmentsSha256": "01777f96ac4b1f0e642e4a4fb9aa8dd4939801d21e3c396c87e2daa636281bd5",
+      "stops": 2281,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "bounds": [7.61, 45.01, 7.76, 45.13],
+          "acquiredAt": "2026-10-30T20:34:21.706131+00:00",
+          "osmBaseAt": "2026-10-30T20:31:54Z",
+          "sha256": "9daad35cc5b5e801dfdb5c583185621c743a8eacf76f1c3b4ccf754e03998e94",
+          "bytes": 21724417,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.01,7.61,45.13,7.76);\nway[\"natural\"=\"water\"](45.01,7.61,45.13,7.76);way[\"waterway\"~\"^(river|canal)$\"](45.01,7.61,45.13,7.76);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.01,7.61,45.13,7.76);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.01,7.61,45.13,7.76);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.01,7.61,45.13,7.76);\n);out body geom;"
+        },
+        "features": 23266,
+        "labels": 84,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "roma-bus",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Roma Servizi per la Mobilità",
+      "license": "not-declared",
+      "receipt": {
+        "city": "roma",
+        "url": "https://romamobilita.it/sites/default/files/rome_static_gtfs.zip",
+        "finalUrl": "https://romamobilita.it/wp-content/uploads/shared/rome_static_gtfs.zip",
+        "acquiredAt": "2026-10-30T20:07:22Z",
+        "bytes": 46440045,
+        "sha256": "88f28a3085ec59c9b2f742198286e549b39314ac8591b3ba0b432cd290d1d267",
+        "lastModified": "Fri, 30 Oct 2026 19:34:24 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 427,
+        "activeRoutes": 409,
+        "activeScheduledTrips": 36917,
+        "activeServices": 477,
+        "geometryPatterns": 996,
+        "segments": 5058,
+        "analyzedScheduledTrips": 17944,
+        "analyzedRoutes": 170
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 1081054,
+        "outside_study_area": 766198,
+        "accepted_pairs": 314795,
+        "unlocated_or_nonprogressing_pair": 138,
+        "stop_shape_offset_above_100_m": 93,
+        "missing_geometry_pair": 42,
+        "nonpositive_time": 19
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [12.43, 41.855, 12.53, 41.93],
+      "segmentsSha256": "17e5ab4da4af50127a93377fe16af7640c350ed4a852762b718d0a8cac73825b",
+      "stops": 1674,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "bounds": [12.43, 41.855, 12.53, 41.93],
+          "acquiredAt": "2026-10-30T20:53:43.173406+00:00",
+          "osmBaseAt": "2026-10-30T20:52:18Z",
+          "sha256": "2c2272d64140a95a71f33e29676b5543bec0ceaf3567ff08586dc3c0a80f5c90",
+          "bytes": 16701991,
+          "query": "[out:json][timeout:60][maxsize:268435456];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](41.855,12.43,41.93,12.53);\nway[\"natural\"=\"water\"](41.855,12.43,41.93,12.53);way[\"waterway\"~\"^(river|canal)$\"](41.855,12.43,41.93,12.53);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](41.855,12.43,41.93,12.53);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](41.855,12.43,41.93,12.53);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](41.855,12.43,41.93,12.53);\n);out body geom;"
+        },
+        "features": 16578,
+        "labels": 15,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "prato",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 76,
+        "analyzedScheduledTrips": 117,
+        "analyzedRoutes": 3
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 7936,
+        "accepted_pairs": 284,
+        "stop_shape_offset_above_100_m": 25,
+        "missing_geometry_pair": 5
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.99, 43.83, 11.15, 43.94],
+      "segmentsSha256": "f5337890385d7860ff488edb834111685bd52d5103d1a5ae62d13e46f5d2ffdb",
+      "stops": 5,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [10.99, 43.83, 11.15, 43.94],
+          "acquiredAt": "2026-11-01T16:48:17.793034+00:00",
+          "osmBaseAt": "2026-05-31T22:37:44Z",
+          "sha256": "12d3af564fb13b37f2132473285d2686faa6fb05ca667da141b38b71f002c121",
+          "bytes": 9548135,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.83,10.99,43.94,11.15);\nway[\"natural\"=\"water\"](43.83,10.99,43.94,11.15);way[\"waterway\"~\"^(river|canal)$\"](43.83,10.99,43.94,11.15);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.83,10.99,43.94,11.15);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.83,10.99,43.94,11.15);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.83,10.99,43.94,11.15);\n);out body geom;"
+        },
+        "features": 9979,
+        "labels": 54,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "livorno",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "Regione Toscana / Trenitalia S.p.A.",
+      "license": "CC-BY (versione non specificata nel catalogo)",
+      "receipt": {
+        "city": "toscana-treni",
+        "url": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "finalUrl": "https://dati.toscana.it/dataset/8bb8f8fe-fe7d-41d0-90dc-49f2456180d1/resource/4f85393b-357d-443d-8378-65de4198505f/download/trenitalia.gtfs",
+        "acquiredAt": "2026-10-31T16:06:51.071528+00:00",
+        "bytes": 6127610,
+        "sha256": "a262c5bdfccd98a5c7e7ae08eea8eecb3189222f34c1015f5d4608faf3efc152",
+        "lastModified": "Thu, 15 Jan 2026 20:00:20 GMT",
+        "contentType": "application/octet-stream"
+      },
+      "coverage": {
+        "routesInFeed": 14,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 780,
+        "activeServices": 124,
+        "geometryPatterns": 372,
+        "segments": 89,
+        "analyzedScheduledTrips": 45,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "unlocated_or_nonprogressing_pair": 414,
+        "candidate_pairs": 8225,
+        "outside_study_area": 8092,
+        "accepted_pairs": 131,
+        "missing_geometry_pair": 2,
+        "stop_shape_offset_above_100_m": 25
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [10.25, 43.35, 10.5, 43.68],
+      "segmentsSha256": "fafff4fee9907ee3aebe3dae2baf2721618cf54124fb94af4dfa1e780f02fd09",
+      "stops": 6,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [10.25, 43.35, 10.5, 43.68],
+          "acquiredAt": "2026-11-01T16:56:27.447139+00:00",
+          "osmBaseAt": "2026-06-01T08:52:28Z",
+          "sha256": "7013332c101be4ee13ce41bfb53dc0f9e85d82a5edebd833d0bdee8bffc7b527",
+          "bytes": 12969502,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](43.35,10.25,43.68,10.5);\nway[\"natural\"=\"water\"](43.35,10.25,43.68,10.5);way[\"waterway\"~\"^(river|canal)$\"](43.35,10.25,43.68,10.5);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](43.35,10.25,43.68,10.5);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](43.35,10.25,43.68,10.5);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](43.35,10.25,43.68,10.5);\n);out body geom;"
+        },
+        "features": 12996,
+        "labels": 4,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "venezia-nav",
+      "mode": "ferry",
+      "status": "ready",
+      "serviceDate": "2026-11-02",
+      "holder": "ACTV S.p.A. / AVM",
+      "license": "not-declared",
+      "receipt": {
+        "city": "venezia-nav",
+        "url": "https://actv.avmspa.it/sites/default/files/attachments/opendata/navigazione/actv_nav.zip",
+        "finalUrl": "https://actv.avmspa.it/sites/default/files/attachments/opendata/navigazione/actv_nav.zip",
+        "acquiredAt": "2026-11-01T18:13:38.330674+00:00",
+        "bytes": 1473788,
+        "sha256": "982e2eef904b6f80aeaa53c53445df3b82a0031c47c461e3e73aab3c3baa7b1b",
+        "lastModified": "Tue, 27 Oct 2026 10:00:23 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 23,
+        "activeRoutes": 23,
+        "activeScheduledTrips": 1445,
+        "activeServices": 1,
+        "geometryPatterns": 179,
+        "segments": 434,
+        "analyzedScheduledTrips": 1308,
+        "analyzedRoutes": 22
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 13975,
+        "accepted_pairs": 13652,
+        "outside_study_area": 323
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [12.24, 45.39, 12.44, 45.5],
+      "segmentsSha256": "d3a7b2e7322eab0f1cb813aa77e07ba158813295261c5716bcc3d3c123785010",
+      "stops": 133,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass.private.coffee/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [12.24, 45.39, 12.44, 45.5],
+          "acquiredAt": "2026-11-01T18:18:53.607438+00:00",
+          "osmBaseAt": "2026-07-15T15:22:01Z",
+          "sha256": "aee0dcdc4b28c9a1764163d441f0e0d8c6e23c60f7b590ccfc0735bb53ec959c",
+          "bytes": 9876069,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](45.39,12.24,45.5,12.44);\nway[\"natural\"=\"water\"](45.39,12.24,45.5,12.44);way[\"waterway\"~\"^(river|canal)$\"](45.39,12.24,45.5,12.44);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](45.39,12.24,45.5,12.44);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](45.39,12.24,45.5,12.44);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](45.39,12.24,45.5,12.44);\n);out body geom;"
+        },
+        "features": 10631,
+        "labels": 8,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "sassari",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ATP Sassari",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "receipt": {
+        "city": "sassari",
+        "url": "https://atpsassari.it/media/files/atpss-gtfs.zip",
+        "finalUrl": "https://atpsassari.it/media/files/atpss-gtfs.zip",
+        "acquiredAt": "2026-11-01T18:20:01.763029+00:00",
+        "bytes": 1592843,
+        "sha256": "5398fc76c8ce5ae0cea85e8d2e3f2f72ea88c050bcb5720469e5280c18dbe3e5",
+        "lastModified": "Mon, 26 Oct 2026 06:54:46 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 50,
+        "activeRoutes": 46,
+        "activeScheduledTrips": 1023,
+        "activeServices": 1,
+        "geometryPatterns": 95,
+        "segments": 1134,
+        "analyzedScheduledTrips": 891,
+        "analyzedRoutes": 43
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 40534,
+        "accepted_pairs": 19381,
+        "nonpositive_time": 5256,
+        "outside_study_area": 10106,
+        "stop_shape_offset_above_100_m": 257,
+        "unlocated_or_nonprogressing_pair": 270,
+        "missing_geometry_pair": 5699,
+        "implausible_speed_above_150_kmh": 92
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [8.52, 40.7, 8.59, 40.75],
+      "segmentsSha256": "05049f1968cb304942bc50c773331256185b388abf4bb0cfb5e05c8ded9dc999",
+      "stops": 393,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [8.52, 40.7, 8.59, 40.75],
+          "acquiredAt": "2026-11-01T18:25:37.288258+00:00",
+          "osmBaseAt": "2026-11-01T18:24:21Z",
+          "sha256": "36417d5973caa1f1f9d0d251ec8b900ba2203e1cab5ec215f67f755099535089",
+          "bytes": 3960481,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.7,8.52,40.75,8.59);\nway[\"natural\"=\"water\"](40.7,8.52,40.75,8.59);way[\"waterway\"~\"^(river|canal)$\"](40.7,8.52,40.75,8.59);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.7,8.52,40.75,8.59);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.7,8.52,40.75,8.59);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.7,8.52,40.75,8.59);\n);out body geom;"
+        },
+        "features": 4229,
+        "labels": 18,
+        "license": "ODbL 1.0"
+      },
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "sourceNotes": [
+        "Solo autobus ATP con entrambe le fermate nel perimetro dichiarato. Non comprende i tram ARST né tutti i servizi suburbani."
+      ]
+    },
+    {
+      "id": "cagliari-tram",
+      "mode": "tram",
+      "status": "ready",
+      "serviceDate": "2026-10-31",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 3,
+        "activeRoutes": 3,
+        "activeScheduledTrips": 324,
+        "activeServices": 30,
+        "geometryPatterns": 11,
+        "segments": 28,
+        "analyzedScheduledTrips": 240,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 1632,
+        "accepted_pairs": 1568,
+        "outside_study_area": 64,
+        "missing_shape": 84
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.08, 39.19, 9.17, 39.27],
+      "segmentsSha256": "10960bf7b15dad6b759e464b0af8a2a3ffe160c0fbabf41a23101035016d703d",
+      "stops": 22,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "POST",
+          "bounds": [9.08, 39.19, 9.17, 39.27],
+          "acquiredAt": "2026-10-31T13:38:02.786775+00:00",
+          "osmBaseAt": "2026-10-31T13:36:34Z",
+          "sha256": "6f76cd33148e304cacbe2cf36321a2ddc2ee6cbec005ae3501b6faaab043f2f5",
+          "bytes": 6603878,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](39.19,9.08,39.27,9.17);\nway[\"natural\"=\"water\"](39.19,9.08,39.27,9.17);way[\"waterway\"~\"^(river|canal)$\"](39.19,9.08,39.27,9.17);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](39.19,9.08,39.27,9.17);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](39.19,9.08,39.27,9.17);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](39.19,9.08,39.27,9.17);\n);out body geom;"
+        },
+        "features": 7470,
+        "labels": 46,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "olbia",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ASPO S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "olbia",
+        "url": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+        "finalUrl": "https://www.aspo.it/wp-content/uploads/open_data.zip",
+        "acquiredAt": "2026-11-01T19:47:02.313760+00:00",
+        "bytes": 695178,
+        "sha256": "003278f32ac43d90a69bc4e603f124d261b80345c300fefa658ad8f0195cb382",
+        "lastModified": "Tue, 27 Oct 2026 11:04:10 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 15,
+        "activeRoutes": 15,
+        "activeScheduledTrips": 319,
+        "activeServices": 10,
+        "geometryPatterns": 61,
+        "segments": 853,
+        "analyzedScheduledTrips": 319,
+        "analyzedRoutes": 15
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 11334,
+        "outside_study_area": 1505,
+        "accepted_pairs": 9529,
+        "implausible_speed_above_150_kmh": 294,
+        "nonpositive_time": 1,
+        "unlocated_or_nonprogressing_pair": 5,
+        "missing_geometry_pair": 5,
+        "stop_shape_offset_above_100_m": 1
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.46, 40.88, 9.56, 40.96],
+      "segmentsSha256": "bbcd532c25d7e6bd0caa1eb3b8d357115774a7a6b9275f7707c85ce7874cd233",
+      "stops": 251,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.46, 40.88, 9.56, 40.96],
+          "acquiredAt": "2026-11-01T19:52:10.548888+00:00",
+          "osmBaseAt": "2026-11-01T19:51:04Z",
+          "sha256": "7fe778b0b288ac0e42a4aca64007eacc20e47857e295c232cb16ad37c8a67712",
+          "bytes": 3121005,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.88,9.46,40.96,9.56);\nway[\"natural\"=\"water\"](40.88,9.46,40.96,9.56);way[\"waterway\"~\"^(river|canal)$\"](40.88,9.46,40.96,9.56);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.88,9.46,40.96,9.56);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.88,9.46,40.96,9.56);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.88,9.46,40.96,9.56);\n);out body geom;"
+        },
+        "features": 3565,
+        "labels": 20,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "sassari-treni",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 98,
+        "activeServices": 31,
+        "geometryPatterns": 16,
+        "segments": 4,
+        "analyzedScheduledTrips": 54,
+        "analyzedRoutes": 2
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 593,
+        "outside_study_area": 539,
+        "stop_shape_offset_above_100_m": 1,
+        "unlocated_or_nonprogressing_pair": 1,
+        "accepted_pairs": 54
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [8.52, 40.7, 8.59, 40.75],
+      "segmentsSha256": "cc953812b1e6f2979de7d44ae89a8f82ff32739724111a9f6436f2634b11319b",
+      "stops": 3,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://overpass-api.de/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [8.52, 40.7, 8.59, 40.75],
+          "acquiredAt": "2026-11-01T18:25:37.288258+00:00",
+          "osmBaseAt": "2026-11-01T18:24:21Z",
+          "sha256": "36417d5973caa1f1f9d0d251ec8b900ba2203e1cab5ec215f67f755099535089",
+          "bytes": 3960481,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.7,8.52,40.75,8.59);\nway[\"natural\"=\"water\"](40.7,8.52,40.75,8.59);way[\"waterway\"~\"^(river|canal)$\"](40.7,8.52,40.75,8.59);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.7,8.52,40.75,8.59);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.7,8.52,40.75,8.59);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.7,8.52,40.75,8.59);\n);out body geom;"
+        },
+        "features": 4229,
+        "labels": 18,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "nuoro",
+      "mode": "bus",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ATP Nuoro / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "nuoro",
+        "url": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+        "finalUrl": "https://www.atpnuoro.it/media/files/dati_atpnu.zip",
+        "acquiredAt": "2026-11-02T17:26:59.665943+00:00",
+        "bytes": 698377,
+        "sha256": "a1c1ac1743997b978dd519163dadf5dfb30dd63c6a016df3eb5ab5b979fe1491",
+        "lastModified": "Wed, 14 Oct 2026 23:18:13 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 21,
+        "activeRoutes": 14,
+        "activeScheduledTrips": 241,
+        "activeServices": 241,
+        "geometryPatterns": 23,
+        "segments": 919,
+        "analyzedScheduledTrips": 241,
+        "analyzedRoutes": 14
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 12121,
+        "accepted_pairs": 11539,
+        "implausible_speed_above_150_kmh": 67,
+        "unlocated_or_nonprogressing_pair": 1,
+        "missing_geometry_pair": 33,
+        "outside_study_area": 480,
+        "nonpositive_time": 2
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.28, 40.29, 9.37, 40.36],
+      "segmentsSha256": "34e007652b13d716a1d54e9f516bea54d844bf63005637a87a128272aba0f9e6",
+      "stops": 252,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.28, 40.29, 9.37, 40.36],
+          "acquiredAt": "2026-11-02T17:34:36.753238+00:00",
+          "osmBaseAt": "2026-11-02T17:33:03Z",
+          "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d",
+          "bytes": 1627934,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.29,9.28,40.36,9.37);\nway[\"natural\"=\"water\"](40.29,9.28,40.36,9.37);way[\"waterway\"~\"^(river|canal)$\"](40.29,9.28,40.36,9.37);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.29,9.28,40.36,9.37);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.29,9.28,40.36,9.37);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.29,9.28,40.36,9.37);\n);out body geom;"
+        },
+        "features": 1699,
+        "labels": 10,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "nuoro-treni",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-10-30",
+      "holder": "ARST S.p.A. / Regione Autonoma della Sardegna",
+      "license": "CC-BY 4.0 (portale Sardegna Mobilità)",
+      "licenseUrl": "https://www.sardegnamobilita.it/open-data",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 4,
+        "activeRoutes": 4,
+        "activeScheduledTrips": 98,
+        "activeServices": 31,
+        "geometryPatterns": 16,
+        "segments": 2,
+        "analyzedScheduledTrips": 13,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 593,
+        "outside_study_area": 580,
+        "accepted_pairs": 13,
+        "stop_shape_offset_above_100_m": 1,
+        "unlocated_or_nonprogressing_pair": 1
+      },
+      "maxStopOffsetMetres": 100,
+      "studyBounds": [9.28, 40.29, 9.37, 40.36],
+      "segmentsSha256": "e672819d2d7cc9231cc48119f5d21cef8dc467f95bef6b099ee67ce9b0ef0633",
+      "stops": 2,
+      "basemap": {
+        "receipt": {
+          "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+          "transport": "curl",
+          "method": "GET",
+          "bounds": [9.28, 40.29, 9.37, 40.36],
+          "acquiredAt": "2026-11-02T17:34:36.753238+00:00",
+          "osmBaseAt": "2026-11-02T17:33:03Z",
+          "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d",
+          "bytes": 1627934,
+          "query": "[out:json][timeout:35][maxsize:134217728];(\nway[\"highway\"~\"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|pedestrian)(_link)?$\"](40.29,9.28,40.36,9.37);\nway[\"natural\"=\"water\"](40.29,9.28,40.36,9.37);way[\"waterway\"~\"^(river|canal)$\"](40.29,9.28,40.36,9.37);\nway[\"leisure\"~\"^(park|garden|pitch|nature_reserve)$\"](40.29,9.28,40.36,9.37);\nway[\"landuse\"~\"^(residential|industrial|commercial|retail|railway|forest|grass|meadow|recreation_ground)$\"](40.29,9.28,40.36,9.37);\nnode[\"place\"~\"^(city|town|suburb|quarter|neighbourhood)$\"][\"name\"](40.29,9.28,40.36,9.37);\n);out body geom;"
+        },
+        "features": 1699,
+        "labels": 10,
+        "license": "ODbL 1.0"
+      }
+    },
+    {
+      "id": "verona-bolzano-av",
+      "mode": "train",
+      "status": "ready",
+      "serviceDate": "2026-11-02",
+      "holder": "STA / Open Data Hub Alto Adige",
+      "license": "CC0 1.0",
+      "receipt": {
+        "city": "sta",
+        "url": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+        "finalUrl": "https://gtfs.api.opendatahub.com/v1/dataset/sta-time-tables/raw",
+        "acquiredAt": "2026-11-02T18:44:08.568823+00:00",
+        "bytes": 153031053,
+        "sha256": "4f8d2784fad5b985a383c659468e5d69e392b9ec7108d6cbfc89ea2f79bf9257",
+        "lastModified": null,
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 175,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 2,
+        "activeServices": 346,
+        "geometryPatterns": 2,
+        "segments": 6,
+        "analyzedScheduledTrips": 2,
+        "analyzedRoutes": 1
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "stop_shape_offset_above_100_m": 21,
+        "unlocated_or_nonprogressing_pair": 21,
+        "candidate_pairs": 27,
+        "missing_geometry_pair": 21,
+        "accepted_pairs": 6
+      }
+    },
+    {
+      "id": "trento-treni",
+      "mode": "train",
+      "status": "no-comparable-segments",
+      "serviceDate": "2026-10-30",
+      "holder": "Trentino Trasporti S.p.A.",
+      "license": "CC BY 4.0",
+      "receipt": {
+        "city": "trento-extra",
+        "url": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "finalUrl": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "acquiredAt": "2026-11-02T18:44:14.390671+00:00",
+        "bytes": 11108124,
+        "sha256": "2978d677a5e314a5bff589c54b3319c54fa9a933cd14cb01fc26048419d7a23d",
+        "lastModified": "Mon, 19 Oct 2026 14:13:00 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 48,
+        "activeServices": 37,
+        "geometryPatterns": 0,
+        "segments": 0,
+        "analyzedScheduledTrips": 0,
+        "analyzedRoutes": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "missing_shape": 48
+      }
+    }
+  ],
+  "delivery": {
+    "mode": "static-city-assets",
+    "bootstrapBytes": 154634,
+    "cityAssets": {
+      "milano-e42108afc0fd7c74e1353b7f95a38c7908c0fd901f766979160a370c94932baf.json.gz": 1149534,
+      "roma-182e2bac1c76d8e1efc1f9b89bdf7c828082014f83c2086555d56023335bc87a.json.gz": 635568,
+      "torino-c649d78448ceeaaf00b925a2cc5d277ba2c7ca37e4593af92fb37e336a7d4a0e.json.gz": 939073,
+      "firenze-b62f9ab35503b6ec7f5b42c9c1c2f671bcb8b472e7edf281ad1dcbbf555c9e86.json.gz": 485899,
+      "bologna-92ec13e9122a189338062ad089780e758993469d14b1f7ba64a6164d5e6ca304.json.gz": 1623403,
+      "bari-141786f74be1584019f0e6f4d4c531719c7567eadbdab73c9fbde175d0b8914f.json.gz": 235213,
+      "cagliari-a9018229e4571818942641b0b7c1bfdf3db846c3492fac8b0544dd27fb9024ac.json.gz": 686923,
+      "venezia-b8c3bc97774053d7fb987929c0648b6233609dd2615d759f187d1174a7a2ca35.json.gz": 1614031,
+      "palermo-72823b8c8a4bfa77128d64758fcedcccd800389c8313417531562e876606fae9.json.gz": 254410,
+      "padova-7be6071ca1864d8f7c79d2ad942e35eb088771d09b62bb74a5383f58a24e4198.json.gz": 261839,
+      "catania-5fef717ec883e8f0b44bc58d40baa87806a60dddbd163b8d1dad5a2534879b30.json.gz": 647970,
+      "milano-metro-c4c80b2afd48514ea5d6851c6c11a10300cb61ab807cd73a5f01239d8ee3220c.json.gz": 978709,
+      "milano-bus-385a1948bf77e4c360f2aee7e1f9b30ee35f36ca0222665ceb9afb665b09e8b9.json.gz": 2236947,
+      "roma-metro-8791f2efa2e443c0bbe34c937759d6a3a53ab335dee94947d2843d0671dbc32d.json.gz": 646863,
+      "firenze-treni-392577e2ee4148b213466395fa382f503e9ddcee2ab74cfd9bf08d1252870266.json.gz": 520189,
+      "pisa-0620c3e24af523dc3df96f96e45100b84c4abcf480bdf3738cb3b9c1449d8a53.json.gz": 254304,
+      "trento-87b0f006f3cedfdb7a6302036ac6af3fc377752ad5057cbb3f6ca084e7d67078.json.gz": 559740,
+      "rovereto-5755083efa520999a2fe059474fb08bc99ac29bf11216dfc4205c0d67fa5af40.json.gz": 352980,
+      "ferrara-35d268e9c2028c5fcd8272770fcae21d1c67569d48869f7630723c3aadb3ce17.json.gz": 626365,
+      "torino-metro-338d87a6f1c1bee98d466df71f7ce6f4e798899f2e501ca6f620ea495e5d12a5.json.gz": 882648,
+      "lucca-85720bb96ef5476003e33018b15c3b327cd4109532040419d413c066cd636313.json.gz": 981136,
+      "torino-bus-d207d9e383c7f40936735edeb1f4c3abd86415c384db31a8011157ff48eaefb1.json.gz": 1644512,
+      "roma-bus-49cdf1834353ca77df9aa328fa0d856f09813cbed1f40da42bf18c8d925087b1.json.gz": 1540136,
+      "prato-82c999affa0914575ed745969d15c6f3445aaa00d020a1235c400bbd3a67921b.json.gz": 418830,
+      "livorno-df0c678990845fefd0ff911fdb026f2b01cbbce780c74118c76f3cdb4d49a6c6.json.gz": 612965,
+      "venezia-nav-5c27a84f21f734260252b27c1d0953e4cba3f1463569ad84499b10bf6f8024c8.json.gz": 480725,
+      "sassari-d050254b0f0ffbfdb42cb3f9dcedca48b03bfdd0642e4c15ab8d89d861c2f9d4.json.gz": 344795,
+      "cagliari-tram-765a77d5fbf78e82a345d082650ba21ee9c1180b11f53670877286578f62725f.json.gz": 302145,
+      "olbia-0a77de4ff50bf2db5a8abe28ed8e8b607e0f7dc0c24b8f986bbf599aec05f745.json.gz": 266221,
+      "sassari-treni-ad4ef222bb553c5a15d406ed42fd65a9fdbaa19f54d7f24399d6317ce63102d4.json.gz": 173123,
+      "nuoro-77b1be89ce94953e7e8935eb1d20ab4996aa8c78c0e5ee59f4a760601e2b39a4.json.gz": 222313,
+      "nuoro-treni-911ad025b35e294b09dfc14b47f92e34f432b306af785e25dc2e46636cdfc747.json.gz": 79145
+    },
+    "analysisCompression": "gzip; expanded input budget 256 MiB",
+    "standalone": {
+      "status": "PASS local Browser",
+      "bytes": 30362052,
+      "csp": "connect-src 'none'"
+    }
+  },
+  "excludedCandidates": [
+    {
+      "id": "lombardia-treni",
+      "landingUrl": "https://www.dati.lombardia.it/Mobilit-e-trasporti/Orario-Ferroviario-Regionale-Gtfs/3z4k-mxz9",
+      "receipt": {
+        "city": "lombardia-treni",
+        "url": "https://www.dati.lombardia.it/download/3z4k-mxz9/application%2Fzip",
+        "finalUrl": "https://www.dati.lombardia.it/api/views/3z4k-mxz9/files/b09f6a1b-a18b-4794-a36f-dac9d2328d3e?filename=trenord_gtfs.zip",
+        "acquiredAt": "2026-10-31T16:06:54.461941+00:00",
+        "bytes": 1660043,
+        "sha256": "b4296f145b42ccb35c26085470ff4b3fd5dffe533251c0aab312312a73820ad6",
+        "lastModified": null,
+        "contentType": "application/octet-stream"
+      },
+      "reason": "No shapes.txt in official archive; no invented straight-line train paths."
+    },
+    {
+      "id": "trento-treni",
+      "landingUrl": "https://www.trentinotrasporti.it/en/opendata",
+      "receipt": {
+        "city": "trentino-extraurbano",
+        "url": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "finalUrl": "https://www.trentinotrasporti.it/opendata/google_transit_extraurbano_tte.zip",
+        "acquiredAt": "2026-11-01T14:03:47.237541+00:00",
+        "bytes": 11108124,
+        "sha256": "2978d677a5e314a5bff589c54b3319c54fa9a933cd14cb01fc26048419d7a23d",
+        "lastModified": "Mon, 19 Oct 2026 14:13:00 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 1,
+        "activeRoutes": 1,
+        "activeScheduledTrips": 48,
+        "activeServices": 37,
+        "geometryPatterns": 0,
+        "segments": 0,
+        "analyzedScheduledTrips": 0,
+        "analyzedRoutes": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "missing_shape": 48
+      },
+      "reason": "Le 48 corse attive della R35 non hanno una shape utilizzabile. Il file contiene geometrie bus, non riciclate come tracciato ferroviario."
+    },
+    {
+      "id": "napoli",
+      "url": "https://www.anm.it/google/google-transit.zip",
+      "reason": "Redirect from the referenced URL, then HTTP 403 on official host; not integrated, no bypass or proxy."
+    },
+    {
+      "id": "sassari-tram",
+      "landingUrl": "https://www.sardegnamobilita.it/open-data/quadri-orari-arst",
+      "receipt": {
+        "city": "arst",
+        "url": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "finalUrl": "https://www.arstspa.info/arst-cagliari-it.zip",
+        "acquiredAt": "2026-11-01T19:47:01.334089+00:00",
+        "bytes": 18563585,
+        "sha256": "2a10d17cca9cbace8205e00740b3c55300ea0fdf7245ab55a4a61bb34ae1bde8",
+        "lastModified": "Sat, 31 Oct 2026 18:03:01 GMT",
+        "contentType": "application/zip"
+      },
+      "coverage": {
+        "routesInFeed": 3,
+        "activeRoutes": 3,
+        "activeScheduledTrips": 324,
+        "activeServices": 31,
+        "geometryPatterns": 11,
+        "segments": 0,
+        "analyzedScheduledTrips": 0,
+        "analyzedRoutes": 0
+      },
+      "exclusions": {
+        "frequency_trip": 0,
+        "candidate_pairs": 1632,
+        "outside_study_area": 1632,
+        "missing_shape": 84
+      },
+      "reason": "No usable segments in Sassari bounds; all 84 MSS trips in archive lack shapes. No invented or borrowed geometry."
+    }
+  ],
+  "geometryPolicy": {
+    "maxStopOffsetMetres": 100,
+    "previousMaxStopOffsetMetres": 250,
+    "reference": "https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt",
+    "changes": [
+      {
+        "id": "milano",
+        "before": 1024,
+        "after": 1024,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "roma",
+        "before": 59,
+        "after": 59,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "torino",
+        "before": 591,
+        "after": 591,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "firenze",
+        "before": 157,
+        "after": 157,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "bologna",
+        "before": 6354,
+        "after": 6354,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 92,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "bari",
+        "before": 0,
+        "after": 0,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "cagliari",
+        "before": 2268,
+        "after": 2268,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 161,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "venezia",
+        "before": 4884,
+        "after": 4884,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "palermo",
+        "before": 74,
+        "after": 74,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 20,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "padova",
+        "before": 73,
+        "after": 73,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 1,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "catania",
+        "before": 2713,
+        "after": 2713,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 17,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "milano-metro",
+        "before": 266,
+        "after": 266,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "milano-bus",
+        "before": 5177,
+        "after": 5174,
+        "removed": 4,
+        "added": 1,
+        "commonChanged": 0,
+        "distantStopOccurrences": 80,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "roma-metro",
+        "before": 172,
+        "after": 172,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "firenze-treni",
+        "before": 408,
+        "after": 408,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 25,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "pisa",
+        "before": 129,
+        "after": 129,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 25,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "trento",
+        "before": 1704,
+        "after": 1687,
+        "removed": 22,
+        "added": 5,
+        "commonChanged": 0,
+        "distantStopOccurrences": 368,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "rovereto",
+        "before": 1373,
+        "after": 1349,
+        "removed": 35,
+        "added": 11,
+        "commonChanged": 4,
+        "distantStopOccurrences": 368,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "ferrara",
+        "before": 2213,
+        "after": 2210,
+        "removed": 3,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 68,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "torino-metro",
+        "before": 44,
+        "after": 44,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 0,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "lucca",
+        "before": 130,
+        "after": 130,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 25,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "torino-bus",
+        "before": 6430,
+        "after": 6429,
+        "removed": 1,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 358,
+        "sourceUnchanged": true
+      },
+      {
+        "id": "roma-bus",
+        "before": 5058,
+        "after": 5058,
+        "removed": 0,
+        "added": 0,
+        "commonChanged": 0,
+        "distantStopOccurrences": 93,
+        "sourceUnchanged": true
+      }
+    ]
+  },
+  "iteration10": {
+    "usableNetworks": 24,
+    "cities": 17,
+    "sourceEntries": 25,
+    "previousSourceObjectsIdentical": 23,
+    "validatedSegments": 41418,
+    "offlineTests": {
+      "python": 34,
+      "node": 26
+    },
+    "browser": {
+      "sourceBandCases": 100,
+      "clearRouteCases": 12,
+      "zoomStates": 36,
+      "viewports": [320, 390, 573, 1280],
+      "pendingResizeGuard": true,
+      "standalone": true
+    },
+    "newSources": ["prato", "livorno"],
+    "sourceLimitation": "Toscana feed lastModified January 2026; scheduled service October 30, not a live timetable. New OSM base May/June 2026.",
+    "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI gates",
+      "deployment"
+    ]
+  },
+  "iteration11": {
+    "usableNetworks": 26,
+    "cities": 18,
+    "sourceEntries": 27,
+    "previousSourceObjectsIdentical": 25,
+    "validatedSegments": 42986,
+    "offlineTests": {
+      "python": 34,
+      "node": 27
+    },
+    "browser": {
+      "sourceBandCases": 108,
+      "responsiveCases": 12,
+      "hoverCases": 4,
+      "viewports": [320, 390, 573, 1280],
+      "keyboardRecovery": true,
+      "csvRows": 434,
+      "pngInspected": true,
+      "standalone": true
+    },
+    "newSources": ["venezia-nav", "sassari"],
+    "explicitServiceDateOverride": {
+      "venezia-nav": "2026-11-02"
+    },
+    "sourceLimitations": [
+      "Only published schedules, no measured delays.",
+      "Venezia: GTFS validity starts November 2; OSM base July 15.",
+      "Sassari: only declared city-centre bounds, incomplete or invalid pairs excluded.",
+      "Reuse licenses of the two new feeds not declared on inspected catalog pages."
+    ],
+    "acquisitionFailures": {
+      "sassari-wide": [
+        "Private.coffee POST timeout 100 seconds, no bytes",
+        "Main POST HTTP 502"
+      ],
+      "sassari-final": "Smaller explicit city-centre area, main GET succeeded; no automatic runtime retry."
+    },
+    "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI gates",
+      "deployment"
+    ]
+  },
+  "iteration12": {
+    "usableNetworks": 28,
+    "cities": 19,
+    "sourceEntries": 29,
+    "previousSourceObjectsIdentical": 26,
+    "previousSourcesWithUnchangedMeasurements": 27,
+    "metadataCorrections": {
+      "sassari": ["license", "licenseUrl", "sourceNotes"]
+    },
+    "licenseSource": "https://www.sardegnamobilita.it/open-data",
+    "validatedSegments": 43867,
+    "offlineTests": {
+      "python": 34,
+      "node": 27
+    },
+    "newSources": ["olbia", "cagliari-tram"],
+    "explicitServiceDateOverride": {
+      "cagliari-tram": "2026-10-31"
+    },
+    "browser": {
+      "sourceBandCases": 116,
+      "responsiveCases": 16,
+      "viewports": [320, 390, 573, 1280],
+      "integrityErrorAndRecovery": true,
+      "csvRows": 28,
+      "pngInspected": true,
+      "standalone": true,
+      "stablePreviewPort": 3274
+    },
+    "mainVerifiedSha": "41a953e548fd607fb35253a9962333cc2a724067",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI gates",
+      "deployment"
+    ]
+  },
+  "iteration13": {
+    "usableNetworks": 31,
+    "cities": 20,
+    "sourceEntries": 32,
+    "previousSourceObjectsIdentical": 29,
+    "validatedSegments": 44792,
+    "offlineTests": {
+      "python": 35,
+      "node": 27
+    },
+    "newSources": ["sassari-treni", "nuoro", "nuoro-treni"],
+    "browser": {
+      "sourceBandCases": 128,
+      "responsiveCases": 16,
+      "viewports": [320, 390, 573, 1280],
+      "cameraCases": 4,
+      "focusTrapCases": 2,
+      "searchCases": 5,
+      "csvRows": 919,
+      "pngInspected": true,
+      "standalone": true,
+      "stablePreviewPort": 3274
+    },
+    "sourceLimitations": [
+      "Published schedules for October 30, not measured delays or a live timetable.",
+      "Urban bounds exclude most regional railway segments."
+    ],
+    "basemapAttempts": [
+      {
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "HTTP 502",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass.private.coffee/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "timeout 100 s, zero bytes",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass-api.de/api/interpreter",
+        "method": "POST",
+        "transport": "curl",
+        "status": "HTTP 502",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://overpass.private.coffee/api/interpreter",
+        "method": "POST",
+        "transport": "curl",
+        "status": "timeout 100 s, zero bytes",
+        "bounds": [9.28, 40.29, 9.37, 40.36]
+      },
+      {
+        "endpoint": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "method": "GET",
+        "transport": "curl",
+        "status": "success",
+        "bounds": [9.28, 40.29, 9.37, 40.36],
+        "bytes": 1627934,
+        "sha256": "c6591c35b141ca8edef30530ab1125b674d1801b4e31f6a3a41c966116b0e93d"
+      }
+    ],
+    "mirrorDocumentation": "https://wiki.openstreetmap.org/wiki/Overpass_API",
+    "mainVerifiedSha": "c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53",
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "Next/ETL/CI product gates",
+      "deployment"
+    ],
+    "concurrentMainChanges": [
+      "src/components/immersive-chrome.tsx",
+      "src/lib/bdap-history.ts"
+    ]
+  },
+  "railJourneys": [
+    {
+      "id": "2026-11-02-8509",
+      "number": "8509",
+      "category": "FR",
+      "serviceDate": "2026-11-02",
+      "origin": "SIBARI",
+      "destination": "BOLZANO",
+      "observations": [
+        {
+          "station": "SIBARI",
+          "kind": "departure",
+          "scheduled": "06:24",
+          "observed": "06:24",
+          "delayMinutes": 0,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TORANO LATTARICO",
+          "kind": "arrival",
+          "scheduled": "06:49",
+          "observed": "06:47",
+          "delayMinutes": -2,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "PAOLA",
+          "kind": "arrival",
+          "scheduled": "07:12",
+          "observed": "07:16",
+          "delayMinutes": 4,
+          "deltaMinutes": 6
+        },
+        {
+          "station": "SCALEA S.DOMENICA TALAO",
+          "kind": "arrival",
+          "scheduled": "07:42",
+          "observed": "08:07",
+          "delayMinutes": 25,
+          "deltaMinutes": 21
+        },
+        {
+          "station": "SALERNO",
+          "kind": "arrival",
+          "scheduled": "09:09",
+          "observed": "09:41",
+          "delayMinutes": 32,
+          "deltaMinutes": 7
+        },
+        {
+          "station": "NAPOLI AFRAGOLA",
+          "kind": "arrival",
+          "scheduled": "09:38",
+          "observed": "10:16",
+          "delayMinutes": 38,
+          "deltaMinutes": 6
+        },
+        {
+          "station": "ROMA TERMINI",
+          "kind": "arrival",
+          "scheduled": "10:40",
+          "observed": "11:17",
+          "delayMinutes": 37,
+          "deltaMinutes": -1
+        },
+        {
+          "station": "ROMA TIBURTINA",
+          "kind": "arrival",
+          "scheduled": "10:57",
+          "observed": "11:32",
+          "delayMinutes": 35,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "FIRENZE SANTA MARIA NOVELLA",
+          "kind": "arrival",
+          "scheduled": "12:27",
+          "observed": "12:53",
+          "delayMinutes": 26,
+          "deltaMinutes": -9
+        },
+        {
+          "station": "BOLOGNA C.LE/AV",
+          "kind": "arrival",
+          "scheduled": "13:13",
+          "observed": "13:31",
+          "delayMinutes": 18,
+          "deltaMinutes": -8
+        },
+        {
+          "station": "VERONA PORTA NUOVA",
+          "kind": "arrival",
+          "scheduled": "14:08",
+          "observed": "14:30",
+          "delayMinutes": 22,
+          "deltaMinutes": 4
+        },
+        {
+          "station": "ROVERETO",
+          "kind": "arrival",
+          "scheduled": "15:01",
+          "observed": "15:21",
+          "delayMinutes": 20,
+          "deltaMinutes": -2
+        },
+        {
+          "station": "TRENTO",
+          "kind": "arrival",
+          "scheduled": "15:15",
+          "observed": "15:37",
+          "delayMinutes": 22,
+          "deltaMinutes": 2
+        },
+        {
+          "station": "BOLZANO",
+          "kind": "arrival",
+          "scheduled": "15:48",
+          "observed": "16:10",
+          "delayMinutes": 22,
+          "deltaMinutes": 0
+        }
+      ],
+      "coverage": {
+        "stops": 14,
+        "observedStops": 14,
+        "complete": true
+      },
+      "arrivalDelayMinutes": 22,
+      "peakDelayMinutes": 38,
+      "largestIncrease": {
+        "fromIndex": 2,
+        "toIndex": 3,
+        "minutes": 21
+      },
+      "source": {
+        "url": "http://www.viaggiatreno.it/vt_pax_internet/mobile/scheda?dettaglio=visualizza&numeroTreno=8509&codLocOrig=S11811&dataPartenza=1793574000000&tipoRicerca=numero&lang=IT",
+        "acquiredAt": "2026-11-02T18:42:14.470Z",
+        "kind": "public-browser-dom",
+        "sha256": "f979a56c7b8f45a18c7baca1b48415bc80b9e7c44cdb06965a6ecb1a50edce27",
+        "bytes": 27245
+      }
+    },
+    {
+      "id": "2026-11-02-8519",
+      "number": "8519",
+      "category": "FR",
+      "serviceDate": "2026-11-02",
+      "origin": "BOLZANO",
+      "destination": "SIBARI",
+      "observations": [
+        {
+          "station": "BOLZANO",
+          "kind": "departure",
+          "scheduled": "13:12",
+          "observed": "13:13",
+          "delayMinutes": 1,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TRENTO",
+          "kind": "arrival",
+          "scheduled": "13:41",
+          "observed": "13:41",
+          "delayMinutes": 0,
+          "deltaMinutes": -1
+        },
+        {
+          "station": "ROVERETO",
+          "kind": "arrival",
+          "scheduled": "13:55",
+          "observed": "13:57",
+          "delayMinutes": 2,
+          "deltaMinutes": 2
+        },
+        {
+          "station": "VERONA PORTA NUOVA",
+          "kind": "arrival",
+          "scheduled": "14:40",
+          "observed": "14:36",
+          "delayMinutes": -4,
+          "deltaMinutes": -6
+        },
+        {
+          "station": "BOLOGNA C.LE/AV",
+          "kind": "arrival",
+          "scheduled": "15:44",
+          "observed": "15:49",
+          "delayMinutes": 5,
+          "deltaMinutes": 9
+        },
+        {
+          "station": "FIRENZE SANTA MARIA NOVELLA",
+          "kind": "arrival",
+          "scheduled": "16:24",
+          "observed": "16:22",
+          "delayMinutes": -2,
+          "deltaMinutes": -7
+        },
+        {
+          "station": "ROMA TERMINI",
+          "kind": "arrival",
+          "scheduled": "18:10",
+          "observed": "18:08",
+          "delayMinutes": -2,
+          "deltaMinutes": 0
+        },
+        {
+          "station": "NAPOLI AFRAGOLA",
+          "kind": "arrival",
+          "scheduled": "19:20",
+          "observed": "19:29",
+          "delayMinutes": 9,
+          "deltaMinutes": 11
+        },
+        {
+          "station": "SALERNO",
+          "kind": "arrival",
+          "scheduled": "19:48",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "SCALEA S.DOMENICA TALAO",
+          "kind": "arrival",
+          "scheduled": "21:14",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "PAOLA",
+          "kind": "arrival",
+          "scheduled": "21:43",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "TORANO LATTARICO",
+          "kind": "arrival",
+          "scheduled": "22:05",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        },
+        {
+          "station": "SIBARI",
+          "kind": "arrival",
+          "scheduled": "22:33",
+          "observed": null,
+          "delayMinutes": null,
+          "deltaMinutes": null
+        }
+      ],
+      "coverage": {
+        "stops": 13,
+        "observedStops": 8,
+        "complete": false
+      },
+      "arrivalDelayMinutes": null,
+      "peakDelayMinutes": 9,
+      "largestIncrease": {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "minutes": 11
+      },
+      "source": {
+        "url": "http://www.viaggiatreno.it/vt_pax_internet/mobile/scheda?dettaglio=visualizza&numeroTreno=8519&codLocOrig=S02026&dataPartenza=1793574000000&tipoRicerca=numero&lang=IT",
+        "acquiredAt": "2026-11-02T18:49:38.459Z",
+        "kind": "public-browser-dom",
+        "sha256": "700f97b54383228b2892f9f9e0af5a3391d4e2d4e0dd9409bf11ef5d42cbd2cc",
+        "bytes": 21807
+      }
+    }
+  ],
+  "iteration14": {
+    "baseSha": "fb3e8c0ca82e47539c5b6b76502b259d5fe810f2",
+    "mainVerifiedSha": "c3fa7372b1d3883a95f89d1ef4d3d0d4bc4bfd53",
+    "status": "PASS local; not published",
+    "previousSourceObjectsIdentical": 32,
+    "sourceEntries": 34,
+    "usableNetworks": 32,
+    "usableCities": 20,
+    "corridors": 1,
+    "segments": 44798,
+    "offlineTests": 76,
+    "sourceBandCases": 136,
+    "railResponsiveCases": 8,
+    "publicStationObservations": 22,
+    "newBasemap": "Not acquired: VK 504, primary 502, private.coffee timeout100s; explicit warning and GTFS station labels",
+    "newTrainGeometry": "Six usable segments; 21/27 rejected by unchanged100m guard",
+    "trentoRail": "48 active trips; no usable shapes; zero segments",
+    "privacy": "Only public train numbers used from Gmail; no email, PNR, ticket or personal data stored",
+    "bootstrapBytes": 156842,
+    "railPageBytes": 53641,
+    "standaloneMapBytes": 30391962,
+    "newCityAssets": {
+      "verona-bolzano-av": {
+        "path": "cities/verona-bolzano-av-c9789b5665aaab08e7c4236d77e7dbbb73d1165e931324efd340553ba744f979.json.gz",
+        "sha256": "c9789b5665aaab08e7c4236d77e7dbbb73d1165e931324efd340553ba744f979",
+        "bytes": 20241
+      },
+      "trento-treni": {
+        "path": "cities/trento-treni-87649cfc9f1b6de8d7bfb0392dc31ec70a43b50d35cbf369b517f3804c1559cf.json.gz",
+        "sha256": "87649cfc9f1b6de8d7bfb0392dc31ec70a43b50d35cbf369b517f3804c1559cf",
+        "bytes": 808
+      }
+    },
+    "notRun": [
+      "physical phone gestures",
+      "real screen reader",
+      "virtual Browser clipboard read/paste unavailable; copy toast only",
+      "Next/ETL/CI product gates",
+      "push, PR, merge, deployment"
+    ]
+  }
+}

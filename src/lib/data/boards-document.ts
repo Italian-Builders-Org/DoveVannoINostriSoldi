@@ -52,8 +52,6 @@ export const BOARD_TILE_FEATURED_IDS = [
   "cpt_finanza_regionale",
 ] as const;
 
-/** @deprecated Usa BOARD_TILE_FEATURED_IDS; restano i 12 storici per i test. */
-export const BOARD_TILE_V1_DATASET_IDS = BOARD_TILE_FEATURED_IDS;
 export type BoardTileV1DatasetId = (typeof BOARD_TILE_FEATURED_IDS)[number];
 
 export type BoardTileFilters = Record<string, string | number | boolean | null>;

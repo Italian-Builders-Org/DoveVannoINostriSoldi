@@ -37,7 +37,7 @@ export default async function GeneralPublicServicesPage({
           non è sinonimo di debito e non misura soltanto la burocrazia.
         </p>
         <p className={styles.links}>
-          <Link href={`/?anno=${year}#pa-split-title`}>Composizione della spesa italiana →</Link>
+          <Link href={`/spese/panoramica?anno=${year}#pa-split-title`}>Composizione della spesa italiana →</Link>
           <Link href="/debito">Debito pubblico →</Link>
           <a href="#gf01-fonti">Dati e fonti ↓</a>
         </p>

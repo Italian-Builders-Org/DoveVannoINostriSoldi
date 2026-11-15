@@ -1,6 +1,5 @@
 /**
- * Primary navigation and footer sitemap. One source so header submenus and the
- * footer map stay aligned.
+ * Primary navigation and home directory. One source keeps all section links aligned.
  *
  * The immersive map also lives on politici.dovevannoinostrisoldi.com and the
  * municipal footprint on comuni.dovevannoinostrisoldi.com (see PUBLIC_POLITICI_URL /
@@ -58,8 +57,9 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     href: "/spese",
     label: "Soldi",
     icon: "money",
-    aliases: ["/stato", "/entrate"],
+    aliases: ["/stato", "/entrate", "/manovra"],
     children: [
+      { href: "/spese/panoramica", label: "Spesa pubblica" },
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
@@ -86,6 +86,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
         href: "/stato",
         label: "Amministrazioni centrali",
         children: [
+          { href: "/manovra", label: "Manovra a confronto" },
           { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
           { href: "/stato/legislature", label: "Spesa per legislatura" },
         ],
@@ -258,6 +259,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
   {
     title: "Soldi",
     links: [
+      { href: "/spese/panoramica", label: "Spesa pubblica" },
       { href: "/spese", label: "Pagamenti comunali" },
       { href: "/entrate", label: "Incassi comunali" },
       { href: "/spese/servizi-generali", label: "Servizi generali PA" },
@@ -277,6 +279,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/operative", label: "Spese operative" },
       { href: "/stato", label: "Amministrazioni centrali" },
       { href: "/debito", label: "Debito pubblico" },
+      { href: "/manovra", label: "Manovra a confronto" },
       { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],

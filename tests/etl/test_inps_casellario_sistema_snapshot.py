@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -15,15 +17,17 @@ class InpsCasellarioSistemaSnapshotTests(unittest.TestCase):
         check(SPEC, DATA)
 
     def test_rebuild_is_stable(self) -> None:
-        before = DATA.read_bytes()
-        write_outputs(SPEC, DATA)
-        check(SPEC, DATA)
-        self.assertEqual(DATA.read_bytes(), before)
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            data_copy = tmp_root / DATA.name
+            spec_copy = tmp_root / SPEC.name
+            data_copy.write_bytes(DATA.read_bytes())
+            spec_copy.write_bytes(SPEC.read_bytes())
+            write_outputs(spec_copy, data_copy, published_data_path=DATA)
+            self.assertEqual(data_copy.read_bytes(), DATA.read_bytes())
+            self.assertEqual(spec_copy.read_bytes(), SPEC.read_bytes())
 
     def test_tampered_pdf_hash_fails_closed(self) -> None:
-        import json
-        import tempfile
-
         spec = json.loads(SPEC.read_text(encoding="utf-8"))
         spec["source"]["assets"]["comunicatoStampa"]["sha256"] = "0" * 64
         with tempfile.TemporaryDirectory() as tmp:

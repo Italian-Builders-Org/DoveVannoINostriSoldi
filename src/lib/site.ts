@@ -10,6 +10,9 @@ export const PUBLIC_SITE_URL = "https://www.dovevannoinostrisoldi.com";
 export const PUBLIC_POLITICI_URL = "https://politici.dovevannoinostrisoldi.com";
 /** Immersive municipal footprint; also reachable as `/comuni` on the main host. */
 export const PUBLIC_COMUNI_URL = "https://comuni.dovevannoinostrisoldi.com";
+/** GTFS scheduled-speed explorer on the main host (static bundle under public/). */
+export const MOBILITA_MAP_PATH = "/mappe/mobilita";
+export const MOBILITA_MAP_EXPLORER_PATH = "/mappe/mobilita/explorer/index.html";
 export const PUBLIC_MCP_ENDPOINT = `${PUBLIC_SITE_URL}/api/mcp`;
 export const BUY_ME_A_COFFEE_URL = "https://www.buymeacoffee.com/dovevannoinostrisoldi";
 export const GOOGLE_ANALYTICS_MEASUREMENT_ID = "G-6NKJM5HWR4";

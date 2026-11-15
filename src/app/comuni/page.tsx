@@ -8,7 +8,7 @@ import {
   getComuniFootprintByIpaCode,
   searchComuni,
 } from "@/lib/comuni-footprint";
-import { PUBLIC_SITE_URL } from "@/lib/site";
+import { SitePageLink } from "@/components/site-page-link";
 import { ComuniDossier } from "./comuni-dossier";
 import { ComuniSearch } from "./comuni-search";
 import styles from "./comuni.module.css";
@@ -47,9 +47,9 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
       <a className={styles.skipLink} href="#comuni-contenuto">Vai al contenuto</a>
       <header className={styles.immersiveChrome}>
         <div className={styles.brandLockup}>
-          <a className={styles.immersiveBrand} href={PUBLIC_SITE_URL} aria-label="DoveVannoINostriSoldi, pagina iniziale">
+          <SitePageLink className={styles.immersiveBrand} href="/" aria-label="DoveVannoINostriSoldi, pagina iniziale">
             DVNS
-          </a>
+          </SitePageLink>
           <span className={styles.brandSeparator} aria-hidden="true" />
           <p className={styles.brandTitle}>Comuni</p>
         </div>
@@ -75,18 +75,17 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
               </ul>
               <p>
                 Zero, dato mancante e fuori perimetro restano distinti. La scheda completa dell’ente
-                resta su {PUBLIC_SITE_URL.replace(/^https:\/\//, "")}/enti.
+                è disponibile nella sezione Enti e società.
               </p>
             </div>
           </details>
-          <a
+          <SitePageLink
             className={styles.immersiveHomeLink}
-            href={PUBLIC_SITE_URL}
+            href="/"
             aria-label="Torna al sito DoveVannoINostriSoldi"
           >
             <span className={styles.homeLinkLabel}>Torna al sito</span>
-            <span aria-hidden="true">↗</span>
-          </a>
+          </SitePageLink>
           <ThemeToggle />
         </div>
       </header>

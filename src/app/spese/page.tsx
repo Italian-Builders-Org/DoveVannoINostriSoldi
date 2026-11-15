@@ -1,3 +1,4 @@
+import { SpendingReadingGuide } from "@/components/spending-reading-guide";
 import Link from "next/link";
 import type { Metadata } from "next";
 import IntegratedSectionPreview from "@/components/integrated-section-preview";
@@ -82,7 +83,7 @@ export default async function MoneyPage({
     .map((row) => row.year);
 
   return (
-    <main className="shell page">
+    <main className="shell page" data-spending-page="true">
       <div className={styles.intro}>
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>
@@ -93,6 +94,8 @@ export default async function MoneyPage({
         </div>
         <PeriodSelector activeYear={year} years={availableSiopeYears} pathname="/spese" />
       </div>
+
+      <SpendingReadingGuide />
 
       <div className="stat-strip">
         <div>

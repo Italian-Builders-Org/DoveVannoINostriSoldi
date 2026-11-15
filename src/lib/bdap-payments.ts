@@ -445,7 +445,7 @@ export async function getStatePaymentDatasetForPeriod(
   return matches[0] ?? null;
 }
 
-export async function getStatePaymentDatasetForYear(
+async function getStatePaymentDatasetForYear(
   dimension: StatePaymentDimension,
   year: number,
   options: { signal?: AbortSignal } = {},

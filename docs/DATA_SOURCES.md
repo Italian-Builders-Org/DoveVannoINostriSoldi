@@ -5,20 +5,21 @@ Questa è la mappa iniziale delle fonti. Il criterio è semplice: prima fonti is
 ## Registro integrato row-level
 
 Oltre alle pipeline istituzionali descritte sotto, il repository contiene un
-rilascio integrato di 79 dataset curati. Prima delle viste applicative sono
-stati chiusi tre registri: 51.303 elementi inventariati, 34.071 identità di fonte e
-13.321.128 righe sorgente. Le equazioni, tutti i dataset, gli stati di licenza
-e i comandi di verifica sono documentati in
-[INTEGRATED_SOURCE_LEDGER.md](INTEGRATED_SOURCE_LEDGER.md).
+rilascio integrato di dataset curati. I conteggi aggiornati (oggi 135 dataset,
+21.030.226 righe sorgente, 8.047.880 righe pubbliche, 51.303 elementi
+inventariati e 34.071 identità di fonte) e le equazioni di chiusura sono nel
+[registro integrato](INTEGRATED_SOURCE_LEDGER.md), che resta la fonte da
+consultare quando i numeri cambiano. Anche gli stati di licenza e i comandi di
+verifica sono documentati lì.
 
 Il catalogo non promuove una nota secondaria a fonte ufficiale: conserva i
 collegamenti pubblicabili e mette in quarantena valori locali, malformed,
 sensibili o di processo senza eliminare l'identità. La proiezione row-level
-mantiene 338.782 righe interrogabili; `not-declared` resta una cautela di riuso,
+mantiene 8.047.880 righe interrogabili; `not-declared` resta una cautela di riuso,
 non un gate che nasconde la riga.
 
 La UI non usa il catalogo come esperienza primaria: 21 percorsi editoriali
-e un'anteprima nella pagina Partecipazioni coprono tutti i 79 insiemi,
+e un'anteprima nella pagina Partecipazioni coprono tutti i 135 insiemi,
 partendo da anteprime nelle pagine esistenti e arrivando a risultati, limiti,
 prime righe, fonte e drill-down completo. Il registro tecnico resta espandibile
 per chi deve controllare schema e stato di
@@ -201,7 +202,7 @@ spesa pubblica e non costruisce classifiche. Controllo offline:
 `python3 scripts/etl/eurostat_inequality_corpus.py check`; source lock:
 `scripts/etl/specs/eurostat-inequality.source.json`.
 
-Il periodo è valorizzato per 32 dataset su 79 soltanto quando il confine è
+Il periodo è valorizzato per 88 dataset su 135 soltanto quando il confine è
 ricavabile da una colonna temporale dedicata (`anno`, `data`, `esercizio`,
 `dal`/`al`, `periodo_*`, `source_year`, `data_aggiornamento`) o dal contratto
 esplicito di un aggregato derivato. Gli anni presenti solo in testo libero o
@@ -1279,6 +1280,23 @@ territori (111 province), con periodi e denominatori propri. Percentuali e
 tasso specifico di coorte, non spesa o efficienza; 76 celle ignote `g`, nessuna
 imputazione comunale. Fonte `istat-bes-istruzione`, API/MCP paginati.
 [Lock, definizioni e limiti](research/ISTAT_BES_ISTRUZIONE.md).
+
+### ISTAT BES dei territori — Lavoro e conciliazione dei tempi di vita
+
+Dominio BES_03, edizione 2025: sei indicatori, 19.120 osservazioni e 135
+territori, di cui 107 province. Periodi e denominatori propri per indicatore
+(occupazione, mancata partecipazione, giornate retribuite, infortuni). Tassi e
+percentuali, non spesa pubblica. Fonte `istat-bes-lavoro`, API/MCP paginati.
+[Lock, denominatori, geografia e riproduzione](research/ISTAT_BES_LAVORO.md).
+
+### ISTAT BES dei territori — Benessere economico
+
+Dominio BES_04, edizione 2025: cinque indicatori, 19.592 osservazioni e 139
+territori. Il periodo complessivo 2004–2024 non vale per ogni indicatore:
+ciascuno ha il proprio intervallo. Redditi, retribuzioni e pensioni delle
+famiglie, non spesa pubblica; medie e percentuali non si sommano tra territori.
+Fonte `istat-bes-economico`, API/MCP paginati. Source lock:
+`scripts/etl/specs/istat-bes-economico-2004-2024.source.json`.
 
 ### ISTAT BES dei territori — Relazioni sociali
 

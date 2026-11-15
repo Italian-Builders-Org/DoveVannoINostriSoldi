@@ -6,7 +6,7 @@
   "description": "Dati pubblici italiani spiegati in modo semplice, verificabile e open source.",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": ">=22.19.0"
+    "node": "22.x"
   },
   "scripts": {
     "brand:generate": "node scripts/brand/generate-icons.mjs",
@@ -14,6 +14,8 @@
     "readme:screenshots": "node scripts/brand/capture-readme.mjs",
     "dev": "next dev",
     "build": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs && next build && node scripts/ci/prune-occupation-hub-traces.mjs && node scripts/ci/clean-next-build-cache.mjs && node scripts/ci/check-runtime-traces.mjs",
+    "municipality-chunk-bounds:generate": "node --experimental-strip-types scripts/ci/municipality-chunk-bounds.mjs --write",
+    "editorial-summaries:generate": "node --experimental-strip-types scripts/ci/editorial-summaries.mjs --write",
     "source-health:generate": "node --experimental-strip-types scripts/ci/source-health-snapshots.mjs --write",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
@@ -39,6 +41,7 @@
     "bench:runtime": "node --experimental-strip-types scripts/bench/runtime.mjs",
     "test:browser:theme": "node scripts/browser/theme.mjs",
     "test:browser:navigation": "node --experimental-strip-types scripts/browser/navigation.mjs",
+    "test:browser:site-design": "node --experimental-strip-types scripts/browser/site-design.mjs",
     "test:browser:core": "node scripts/browser/core.mjs",
     "test:browser:assistant-free": "node scripts/browser/assistant-free.mjs",
     "test:browser:assistant": "node scripts/browser/assistant-chat.mjs",
@@ -58,9 +61,11 @@
     "test:browser:procurement-peers": "node scripts/browser/procurement-peers.mjs",
     "test:browser:medical-devices": "node scripts/browser/medical-devices.mjs",
     "test:browser:mobilita": "node scripts/browser/mobilita.mjs",
+    "test:browser:manovra": "node scripts/browser/manovra.mjs",
     "test:browser:pensioni": "node scripts/browser/pensioni.mjs",
     "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs",
-    "test:browser:documenti": "node scripts/browser/documenti.mjs"
+    "test:browser:documenti": "node scripts/browser/documenti.mjs",
+    "dev:supabase": "node scripts/dev-supabase.mjs"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.3.5",
@@ -70,6 +75,7 @@
     "mammoth": "1.13.0",
     "next": "16.3.8",
     "pdfjs-dist": "6.4.299",
+    "postgres": "4.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-is": "19.3.0",
@@ -87,6 +93,7 @@
     "impeccable": "4.1.0",
     "lighthouse": "^13.5.0",
     "puppeteer": "^25.12.0",
+    "sharp": "0.35.5",
     "typescript": "^5.9.0",
     "yaml": "2.9.1"
   }

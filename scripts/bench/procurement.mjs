@@ -30,7 +30,11 @@ for (const [name, run] of Object.entries({
     }
     return result;
   },
-  operators: () => operators.map(getOperatorHistory),
+  operators: async () => {
+    const result = [];
+    for (const ref of operators) result.push(await getOperatorHistory(ref));
+    return result;
+  },
 })) {
   for (let round = 0; round < 4; round++) {
     const cpu = process.cpuUsage();

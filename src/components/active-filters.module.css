@@ -1,0 +1,6 @@
+.summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-top: 12px; border-top: 1px solid var(--color-neutral-200); }
+.status { color: var(--color-neutral-600); font-size: 13px; }
+.summary button { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--color-neutral-300); background: var(--color-surface); color: var(--color-text); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.summary button span { margin-left: auto; font-size: 18px; }
+.summary .reset { color: var(--color-accent); background: transparent; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.summary button:disabled { opacity: .6; cursor: wait; }

@@ -5,7 +5,7 @@
  * read as one accented series against supporting context, not as a rainbow
  * competing with the tricolour in the header.
  */
-export const CHART_COLORS = [
+const CHART_COLORS = [
   "#ec3013",
   "#444141",
   "#9b9797",

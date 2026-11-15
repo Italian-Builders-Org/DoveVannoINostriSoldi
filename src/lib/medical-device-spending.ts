@@ -7,6 +7,8 @@ import { setImmediate } from "node:timers/promises";
 import { gunzipSync } from "node:zlib";
 import { canonicalJson, sha256Hex } from "@/lib/integrated-source-contract";
 
+import { readSupabaseArchiveRange, usesSupabaseHeavyArchive } from "@/lib/data/supabase-archive-range";
+
 const ROOT = "src/data/generated/medical-device-spending-index";
 const META_PATH = join(ROOT, "meta.json");
 const CATALOG_PATH = "src/data/generated/integrated/catalog.json";
@@ -346,7 +348,7 @@ function loadSearchBytes(): Buffer {
   return raw;
 }
 
-function readBlock(path: string, totalBytes: number, block: Block): Buffer {
+function readLocalBlock(path: string, totalBytes: number, block: Block): Buffer {
   if (block.rawBytes > MAX_BLOCK_OUTPUT || block.bytes <= 0 || block.offset + block.bytes > totalBytes) {
     throw new Error("Budget blocco indice non valido");
   }
@@ -363,13 +365,20 @@ function readBlock(path: string, totalBytes: number, block: Block): Buffer {
     }
     const after = fstatSync(descriptor);
     if (before.size !== after.size || before.mtimeMs !== after.mtimeMs || before.ino !== after.ino) throw new Error("Indice cambiato durante la lettura");
-    if (createHash("sha256").update(bytes).digest("hex") !== block.sha256) throw new Error("SHA-256 blocco divergente");
-    const raw = gunzipSync(bytes, { maxOutputLength: MAX_BLOCK_OUTPUT });
-    if (raw.length !== block.rawBytes) throw new Error("Dimensione blocco divergente");
-    return raw;
+    return bytes;
   } finally {
     closeSync(descriptor);
   }
+}
+
+async function readBlock(file: { path: string; bytes: number; sha256: string }, block: Block, signal?: AbortSignal) {
+  const bytes = usesSupabaseHeavyArchive()
+    ? await readSupabaseArchiveRange(file, block.offset, block.bytes, signal)
+    : readLocalBlock(file.path, file.bytes, block);
+  if (sha256Hex(bytes) !== block.sha256) throw new Error("SHA-256 blocco divergente");
+  const raw = gunzipSync(bytes, { maxOutputLength: MAX_BLOCK_OUTPUT });
+  if (raw.length !== block.rawBytes) throw new Error("Dimensione blocco divergente");
+  return raw;
 }
 
 function normalized(value: string): string {
@@ -504,7 +513,7 @@ export async function searchMedicalDevices(input: Readonly<{
   const candidates = matches.slice(start, start + size);
   const detailsByRef = new Map<string, Detail>();
   for (const prefix of new Set(candidates.map((candidate) => candidate.ref.slice(3, 5)))) {
-    for (const detail of loadDetails(meta, prefix)) detailsByRef.set(detail.ref, detail);
+    for (const detail of await loadDetails(meta, prefix, input.signal)) detailsByRef.set(detail.ref, detail);
   }
   const hits = candidates.map((candidate) => {
     const detail = detailsByRef.get(candidate.ref);
@@ -552,7 +561,7 @@ export async function getMedicalDeviceProfile(input: Readonly<{
   if (type === null || number === null) throw new MedicalDeviceQueryError("tipo e numero sono obbligatori.");
   const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
   assertSignal(input.signal);
-  const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
+  const device = (await loadDetails(meta, ref.slice(3, 5), input.signal)).find((candidate) => candidate.ref === ref);
   if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nei dati di spesa pubblicati.");
   const years = new Map<number, {
     rows: number;
@@ -627,10 +636,10 @@ function validateCoverage(value: unknown): MedicalDeviceCoverage {
   return result;
 }
 
-function loadAggregate(meta: Meta, selected: Scope): ScopePayload {
+async function loadAggregate(meta: Meta, selected: Scope, signal?: AbortSignal): Promise<ScopePayload> {
   const cached = aggregateCache.get(selected.key);
   if (cached) return cached;
-  const raw = readBlock(meta.aggregates.path, meta.aggregates.bytes, selected);
+  const raw = await readBlock(meta.aggregates, selected, signal);
   const value = record(JSON.parse(raw.toString("utf8")), "aggregate block");
   if (value.schemaVersion !== 1 || record(value.scope, "aggregate scope").key !== selected.key) throw new Error("Perimetro aggregato non valido");
   if (!Array.isArray(value.territories) || !Array.isArray(value.classifications) || !Array.isArray(value.manufacturers)) {
@@ -662,7 +671,7 @@ export async function aggregateMedicalDeviceSpending(input: Readonly<{
   if (!["territory", "classification", "manufacturer"].includes(dimension)) throw new MedicalDeviceQueryError("dimensione non valida.");
   const selected = scope(meta, Number(yearText), region, company);
   assertSignal(input.signal);
-  const payload = loadAggregate(meta, selected);
+  const payload = await loadAggregate(meta, selected, input.signal);
   assertSignal(input.signal);
   const rows = dimension === "territory" ? payload.territories : dimension === "classification" ? payload.classifications : payload.manufacturers;
   const filter = { dimension, scope: selected.key };
@@ -698,7 +707,7 @@ export async function listMedicalDeviceAggregateFacts(input: Readonly<{
   const role = input.role === null || input.role === undefined ? null : optionalString(input.role, "ruolo", /^(fabbricante|assemblatore)$/);
   const selected = scope(meta, Number(yearText), region, company);
   assertSignal(input.signal);
-  const aggregate = loadAggregate(meta, selected);
+  const aggregate = await loadAggregate(meta, selected, input.signal);
   const groups = dimension === "territory" ? aggregate.territories
     : dimension === "classification" ? aggregate.classifications : aggregate.manufacturers;
   const group = groups.find((row) => (dimension === "manufacturer" ? row.label : row.code) === value
@@ -721,7 +730,7 @@ export async function listMedicalDeviceAggregateFacts(input: Readonly<{
       ordinal += block.facts;
       continue;
     }
-    for (const device of loadDetails(meta, block.key)) {
+    for (const device of await loadDetails(meta, block.key, input.signal)) {
       for (const fact of device.facts) {
         if (ordinal++ < start) continue;
         if ((scanned++ & 4095) === 0) {
@@ -765,11 +774,11 @@ function validateFact(value: unknown): MedicalDeviceFact {
     spending: money(row.spending, "fact.spending"), joinStatus: row.joinStatus as "matched" | "not_found" };
 }
 
-function loadDetails(meta: Meta, prefix: string): readonly Detail[] {
+async function loadDetails(meta: Meta, prefix: string, signal?: AbortSignal): Promise<readonly Detail[]> {
   const cached = detailCache.get(prefix);
   if (cached) return cached;
   const block = meta.details.blocks[Number.parseInt(prefix, 16)];
-  const raw = readBlock(meta.details.path, meta.details.bytes, block);
+  const raw = await readBlock(meta.details, block, signal);
   const rows = raw.toString("utf8").trimEnd().split("\n").filter(Boolean).map((line) => {
     const value = record(JSON.parse(line), "detail");
     const base = validateSearchCandidate({ ...value, searchKey: "", scopes: [], years: {} });
@@ -804,7 +813,7 @@ export async function listMedicalDeviceFacts(input: Readonly<{
   if (company !== null && region === null) throw new MedicalDeviceQueryError("azienda richiede regione.");
   const ref = "dm-" + createHash("sha256").update(`${type}\0${number}`).digest("hex").slice(0, 20);
   assertSignal(input.signal);
-  const device = loadDetails(meta, ref.slice(3, 5)).find((candidate) => candidate.ref === ref);
+  const device = (await loadDetails(meta, ref.slice(3, 5), input.signal)).find((candidate) => candidate.ref === ref);
   if (!device) throw new MedicalDeviceQueryError("Dispositivo non presente nei dati di spesa pubblicati.");
   const facts = device.facts.filter((fact) => (year === null || fact.year === year)
     && (region === null || fact.region === region) && (company === null || fact.company === company));

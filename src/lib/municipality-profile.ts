@@ -12,14 +12,19 @@ export type MunicipalityProfile = MunicipalityFinancialProfile & Readonly<{
 
 export async function getMunicipalityProfile(
   entity: IpaEntity,
-  options: Readonly<{ allowCommittedIstatIdentity?: boolean }> = {},
+  options: Readonly<{ allowCommittedIstatIdentity?: boolean; signal?: AbortSignal }> = {},
 ): Promise<MunicipalityProfile | null> {
+  options.signal?.throwIfAborted();
   const financial = await getMunicipalityFinancialProfile(entity, options);
   if (!financial) return null;
-  const schoolServices = await getMunicipalitySchoolServices(
-    financial.irpef.status === "available" && financial.irpef.data.record.territory.level === "municipality"
-      ? financial.irpef.data.record.territory : null,
-  );
-  const realEstate = await getMunicipalityRealEstate(financial.identifiers.taxCode);
+  options.signal?.throwIfAborted();
+  const [schoolServices, realEstate] = await Promise.all([
+    getMunicipalitySchoolServices(
+      financial.irpef.status === "available" && financial.irpef.data.record.territory.level === "municipality"
+        ? financial.irpef.data.record.territory : null,
+      options.signal,
+    ),
+    getMunicipalityRealEstate(financial.identifiers.taxCode, options.signal),
+  ]);
   return { ...financial, schoolServices, realEstate };
 }

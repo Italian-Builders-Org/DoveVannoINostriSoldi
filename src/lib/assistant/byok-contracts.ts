@@ -46,7 +46,7 @@ export type AiAnswer = {
 };
 export type AiFailure = { ok: false; kind: "ai_error"; code: string; message: string };
 export type AiResponse = AiAnswer | AiFailure;
-export function isAiProvider(value: unknown): value is AiProvider {
+function isAiProvider(value: unknown): value is AiProvider {
   return typeof value === "string" && Object.hasOwn(AI_PROVIDERS, value);
 }
 export function isAiResponse(value: unknown): value is AiResponse {

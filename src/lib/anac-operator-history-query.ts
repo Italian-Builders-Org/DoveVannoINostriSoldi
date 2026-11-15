@@ -46,7 +46,7 @@ function compareAmounts(left: string, right: string): number {
   return leftNegative ? -result : result;
 }
 
-export const OPERATOR_HISTORY_PAGE_SIZE = 25;
+const OPERATOR_HISTORY_PAGE_SIZE = 25;
 export type OperatorHistoryQuery = z.input<typeof querySchema>;
 
 export function parseOperatorHistorySearch(

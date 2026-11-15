@@ -1,8 +1,7 @@
 import { existsSync } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import puppeteer from "puppeteer";
-import sharp from "sharp";
 
 const root = process.cwd();
 const outputDir = path.join(root, "docs/readme");
@@ -10,6 +9,7 @@ const baseUrl = process.env.DVNS_BASE_URL ?? "https://www.dovevannoinostrisoldi.
 
 const shots = [
   { pathname: "/", file: "home.jpg", wait: "main h1" },
+  { pathname: "/spese/panoramica", file: "panoramica.jpg", wait: "main h1" },
   { pathname: "/territori", file: "territori.jpg", wait: "main h1" },
   { pathname: "/governi", file: "governi.jpg", wait: "main h1" },
   { pathname: "/istruzione", file: "istruzione.jpg", wait: "main h1" },
@@ -42,6 +42,7 @@ function chromeExecutable() {
 }
 
 await mkdir(outputDir, { recursive: true });
+console.log(`capturing ${shots.length} pages from ${baseUrl}`);
 
 const browser = await puppeteer.launch({
   headless: true,
@@ -55,6 +56,7 @@ try {
     try {
       await page.setViewport({ width: 1280, height: 820, deviceScaleFactor: 2 });
       const url = new URL(shot.pathname, baseUrl).toString();
+      console.log(`goto ${shot.pathname}`);
       const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45_000 });
       if (!response?.ok()) {
         throw new Error(`${url}: HTTP ${response?.status() ?? "nessuna risposta"}`);
@@ -66,8 +68,11 @@ try {
         document.querySelector("[data-nextjs-dev-overlay]")?.remove();
         document.querySelector('button[aria-label="Open Next.js Dev Tools"]')?.remove();
       });
-      await page.evaluate(() => document.fonts.ready);
-      await page.waitForNetworkIdle({ idleTime: 500, timeout: 20_000 }).catch(() => {});
+      await Promise.race([
+        page.evaluate(() => document.fonts.ready),
+        new Promise((resolve) => setTimeout(resolve, 3_000)),
+      ]);
+      await page.waitForNetworkIdle({ idleTime: 500, timeout: 8_000 }).catch(() => {});
       await page.evaluate(
         () =>
           new Promise((resolve) => {
@@ -96,12 +101,13 @@ try {
         throw new Error(`${url}: nota di navigazione obsoleta ancora presente`);
       }
 
-      const png = await page.screenshot({ type: "png", captureBeyondViewport: false });
-      const jpg = await sharp(png)
-        .jpeg({ quality: 78, mozjpeg: true, chromaSubsampling: "4:4:4" })
-        .toBuffer();
+      const jpg = await page.screenshot({
+        type: "jpeg",
+        quality: 78,
+        captureBeyondViewport: false,
+      });
       const outputPath = path.join(outputDir, shot.file);
-      await sharp(jpg).toFile(outputPath);
+      await writeFile(outputPath, jpg);
       console.log(`wrote ${path.relative(root, outputPath)} (${Math.round(jpg.length / 1024)} KB)`);
     } finally {
       await page.close();

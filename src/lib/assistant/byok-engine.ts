@@ -26,7 +26,7 @@ const catalogForModel = datasetCatalog.map(({ id, title, filters, exampleQuery }
 ]);
 const planContract = z.toJSONSchema(PLAN);
 
-export function rejectsInstructionOverride(prompt: string): boolean {
+function rejectsInstructionOverride(prompt: string): boolean {
   const text = prompt.normalize("NFKC").replace(/\p{Cf}/gu, "").toLocaleLowerCase("it-IT");
   return /\b(?:ignora|ignore|bypass|override)\b[\s\S]{0,80}\b(?:istruzioni|instructions|regole|rules|system)\b|\b(?:system prompt|developer message|jailbreak)\b/u.test(text);
 }

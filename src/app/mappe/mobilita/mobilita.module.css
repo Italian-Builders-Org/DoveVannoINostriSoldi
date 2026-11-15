@@ -1,0 +1,194 @@
+.immersivePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.immersivePage *,
+.immersivePage *::before,
+.immersivePage *::after {
+  box-sizing: border-box;
+}
+
+.immersivePage :where(button, input, select, summary) {
+  font: inherit;
+  color: inherit;
+}
+
+.immersivePage :where(h1, h2, h3, p, ul, ol) {
+  margin: 0;
+}
+
+.immersivePage a {
+  color: inherit;
+}
+
+.skipLink {
+  position: fixed;
+  left: var(--space-2);
+  top: -100px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--color-accent-800);
+  color: var(--color-raised) !important;
+  font-weight: 700;
+}
+
+.skipLink:focus {
+  top: var(--space-2);
+}
+
+.immersiveChrome {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding: var(--space-3) clamp(12px, 3vw, 28px);
+  border-bottom: 1px solid var(--color-neutral-300);
+  background: var(--color-raised);
+  z-index: 30;
+}
+
+.brandLockup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.immersiveBrand {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.brandSeparator {
+  height: 18px;
+  width: 1px;
+  background: var(--color-neutral-300);
+}
+
+.brandTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-neutral-600);
+  white-space: nowrap;
+}
+
+.immersiveActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
+.sourcesDisclosure {
+  position: relative;
+}
+
+.sourcesDisclosure > summary {
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 550;
+  font-size: 12px;
+}
+
+.sourcesDisclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sourcesPanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(22rem, calc(100vw - 24px));
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 10px;
+  background: var(--color-raised);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--color-neutral-900) 12%, transparent);
+  z-index: 40;
+}
+
+.sourcesPanel h2 {
+  font-size: 14px;
+  margin-bottom: var(--space-2);
+}
+
+.sourcesPanel p {
+  font-size: 13px;
+  color: var(--color-neutral-700);
+  margin-bottom: var(--space-2);
+}
+
+.immersiveHomeLink {
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 550;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.viewerFrame {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: var(--color-neutral-100);
+}
+
+@media (max-width: 719px) {
+  .immersivePage {
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .viewerFrame {
+    min-height: calc(100dvh - 64px);
+    height: calc(100dvh - 64px);
+  }
+
+}
+
+@media (max-width: 480px) {
+  .immersiveChrome {
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .brandLockup {
+    flex: 1 1 100%;
+  }
+
+  .immersiveActions {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}

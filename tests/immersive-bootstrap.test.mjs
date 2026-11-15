@@ -18,6 +18,8 @@ test("prepaint bootstrap and client navigation agree for atlas, comuni, subdomai
     "/politici/europa",
     "/comuni",
     "/comuni/",
+    "/mappe/mobilita",
+    "/mappe/mobilita/",
     "/privacy",
     "/dashboard",
     "/dashboard/settings",

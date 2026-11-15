@@ -53,13 +53,13 @@
 .breakdown span {
   display: block;
   height: 8px;
-  background: var(--color-neutral-200);
+  background: var(--chart-data-track);
 }
 
 .breakdown span i {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--chart-data-primary);
 }
 
 .coverageList > div {

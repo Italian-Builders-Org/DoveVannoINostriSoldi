@@ -85,9 +85,7 @@ async function activateUntilOpen(page, activate, label) {
   assert.fail(`${label}: il dialog non si apre dopo ripetute attivazioni`);
 }
 
-async function sidebarTrigger(page) {
-  const desktop = await page.$eval('.desktop-sidebar',el=>el.getBoundingClientRect().width>0);
-  if (desktop) return '.desktop-sidebar '+TRIGGER;
+async function menuTrigger(page) {
   for(let attempt=0;attempt<5&&!await page.$('#mobile-navigation[open]');attempt++){
     await page.click('.mobile-menu-trigger');
     await page.waitForSelector('#mobile-navigation[open]',{timeout:2000}).catch(()=>{});
@@ -97,7 +95,7 @@ async function sidebarTrigger(page) {
 }
 
 async function openDialog(page, { label, selector = TRIGGER }) {
-  if (selector === TRIGGER) selector = await sidebarTrigger(page);
+  if (selector === TRIGGER) selector = await menuTrigger(page);
   await page.waitForSelector(selector, { visible: true });
   await activateUntilOpen(page, () => page.click(selector), label);
   const state = await dialogState(page);
@@ -165,14 +163,7 @@ try {
       width,
       validate: async (page) => {
         const label = `${width}px`;
-        const selector = await sidebarTrigger(page);
-        if (width === 1280) {
-          // Desktop starts compact. Expand through the keyboard before checking
-          // the full card; the compact trigger is checked separately below.
-          await page.focus('.sidebar-collapse');
-          await page.keyboard.press('Enter');
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="false"]');
-        }
+        const selector = await menuTrigger(page);
         const trigger = await triggerGeometry(page, selector);
         assert.ok(trigger?.visible, `${label}: trigger globale assente`);
         assert.equal(trigger.name, "Segnala un problema", `${label}: nome accessibile del trigger`);
@@ -198,22 +189,6 @@ try {
         assert.equal(focusBack, true, `${label}: dopo Esc il focus deve tornare al controllo visibile`);
         assert.equal(await page.$eval(selector, node => node.getAttribute("aria-expanded")), "false");
         if (width === 1280) {
-          await page.mouse.move(420, 240);
-          await page.evaluate(() => {
-            const active = document.activeElement;
-            if (active instanceof HTMLElement) active.blur();
-          });
-          // Lo stato si legge da aria-pressed, non dall'etichetta: agganciarsi al
-          // testo rende il controllo fragile a ogni riformulazione della copy, ed
-          // e cosi che questo passo era gia rimasto indietro una volta.
-          const pinned = await page.$eval('.sidebar-collapse', (node) => node.getAttribute('aria-pressed') === 'true');
-          if (pinned) await page.click('.sidebar-collapse');
-          await page.mouse.move(420, 240);
-          await page.waitForSelector('.desktop-sidebar[data-collapsed="true"]');
-          const compact = await triggerGeometry(page, selector);
-          assert.ok(compact.width>=44 && compact.width<=56, JSON.stringify(compact));
-          await openDialog(page,{label:'sidebar compatta'});await page.keyboard.press('Escape');
-          await page.waitForSelector(DIALOG,{hidden:true});
           await openDialog(page,{label:'cambio viewport con segnalazione aperta'});
           await page.setViewport({width:390,height:844});await page.keyboard.press('Escape');
           await page.waitForSelector(DIALOG,{hidden:true});

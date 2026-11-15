@@ -193,6 +193,18 @@ senza incorporare timestamp di build o stati dei probe nel riepilogo.
 Il publisher dei refresh automatici aggiorna e include il riepilogo per le
 fonti interessate, usando gli stessi validator con il network guard attivo.
 
+Dopo una modifica ai dataset MIM delle scuole statali o MEF del patrimonio
+comunale, rigenera l’indice dei blocchi con
+`npm run municipality-chunk-bounds:generate`. Il controllo snapshot riconcilia
+i confini e gli hash con i blocchi pubblici del rilascio.
+
+Dopo una modifica ai dataset Immobili AdE, ai posti letto o all’indice dei
+dispositivi medici, rigenera i riepiloghi delle pagine con
+`npm run editorial-summaries:generate`. Il test Node li riconcilia offline
+con le righe e i blocchi verificati del rilascio. I riepiloghi in
+`src/data/editorial-snapshots` viaggiano con il codice, così anche la vista
+locale Supabase li può usare con il suo inventario sorgente fissato.
+
 `vercel.json` evita il download Chromium solo durante l'installazione Vercel:
 quel deployment esegue `next build`, mentre i test browser girano nei job
 `production` e `production-core` di GitHub Actions. Il download resta attivo con
@@ -202,8 +214,9 @@ dipendenze e tutti i gate restano attivi.
 L'Ignored Build Step (`scripts/ci/vercel-ignore-build.mjs`) confronta la SHA
 attuale con `VERCEL_GIT_PREVIOUS_SHA`, l'ultimo deployment riuscito della branch.
 Salta soltanto modifiche a documentazione Markdown, test, template di issue/PR,
-al workflow `.github/workflows/ci.yml`, al registro `scripts/ci/action-pins.json`
-e ai producer offline esplicitamente verificati nello script. L'elenco include
+al workflow `.github/workflows/ci.yml`, al registro `scripts/ci/action-pins.json`,
+ai producer offline esplicitamente verificati nello script, e anche a
+`scripts/browser/`, `scripts/bench/`, `.agents/`, `.claude/`, `.cursor/` e ai file `*.mdc`. L'elenco include
 `scripts/etl/medical_device_spending_index.py`: il sito legge i suoi artifact
 versionati, senza eseguire il producer durante installazione, build o richieste.
 Una modifica ai dati generati richiede comunque il deployment, anche quando

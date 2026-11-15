@@ -139,8 +139,8 @@ export default async function AdeImmobiliItalia2026Page({
   const search = await searchParams;
   const analysis = getAdeImmobiliAnalysis();
   const prelievoSeries = buildPrelievoChartSeries(analysis);
-  const housing = await getAdeImmobiliHousingInsights(param(search.prov));
-  const tables = await getAdeImmobiliTabelleInsights();
+  const housing = getAdeImmobiliHousingInsights(param(search.prov));
+  const tables = getAdeImmobiliTabelleInsights();
 
   const imu2024 = formatMld(analysis.hero.imuGettito2024Mld);
   const cedolare2024 = prelievoSeries

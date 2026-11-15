@@ -1,8 +1,9 @@
-import { closeSync, constants, fstatSync, openSync, readSync } from "node:fs";
+import { closeSync, fstatSync, readSync } from "node:fs";
+import { openRegularFileSync } from "@/lib/safe-fs";
 
 /** Read server snapshots without asking TypeScript to infer every JSON row. */
 export function readJsonSnapshot(filePath: string, maxBytes: number): unknown {
-  const fd = openSync(filePath, constants.O_RDONLY | constants.O_NOFOLLOW);
+  const fd = openRegularFileSync(filePath);
   try {
     const before = fstatSync(fd);
     if (!before.isFile() || before.size <= 0 || before.size > maxBytes) {

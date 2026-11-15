@@ -25,7 +25,7 @@ export function atlasTargets(primary, alias, host) {
 }
 
 // Passed to evaluateHandle: keep this function self-contained in the browser realm.
-export function findVisibleButton(text) {
+function findVisibleButton(text) {
   return [...document.querySelectorAll("button")].find((element) => {
     if (element.textContent.trim() !== text || element.disabled || !element.getClientRects().length) return false;
     if (element.checkVisibility && !element.checkVisibility({ visibilityProperty: true, opacityProperty: true, contentVisibilityAuto: true })) return false;

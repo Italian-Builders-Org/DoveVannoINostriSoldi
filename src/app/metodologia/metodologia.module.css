@@ -2,15 +2,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: var(--space-4);
-  align-items: start;
-}
-
-.index {
-  display: block;
-  margin-bottom: var(--space-3);
-  font: 600 11px var(--font-heading);
-  letter-spacing: .08em;
-  color: var(--color-accent-700);
+  align-items: stretch;
 }
 
 .rules h2 {

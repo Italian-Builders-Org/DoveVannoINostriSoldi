@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 // tests/live resta fuori perche' la rete la deve usare.
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SETUP = "node-test-setup.mjs";
-const SKIPPED_DIRS = new Set(["node_modules", ".git", ".next", "artifacts", ".lighthouseci", ".vercel", "coverage", "fixtures"]);
+const SKIPPED_DIRS = new Set(["node_modules", ".git", ".next", ".scratch", "artifacts", ".lighthouseci", ".vercel", "coverage", "fixtures"]);
 // node, eventuali flag, poi --test: la forma in cui i test Node vengono lanciati.
 const NODE_TEST_COMMAND = /\bnode(?: --[a-z-]+(?:=\S+)?)* --test\b/;
 

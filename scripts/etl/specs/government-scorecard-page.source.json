@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 4,
-  "snapshotVersion": "government-scorecard-page-2026-09-03-r3",
+  "schemaVersion": 5,
+  "snapshotVersion": "government-scorecard-page-2026-10-31-r1",
   "importDecision": {
     "path": "typed-snapshot",
     "duplicatesIntegratedDataset": false,
@@ -67,6 +67,25 @@
         "freq": "M",
         "unit": "RCH_A",
         "coicop18": "TOTAL"
+      }
+    },
+    {
+      "datasetCode": "prc_hicp_minr",
+      "role": "monthly energy inflation",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+      "filters": {
+        "freq": "M",
+        "unit": "RCH_A",
+        "coicop18": "NRG"
+      }
+    },
+    {
+      "datasetCode": "irt_lt_mcby_m",
+      "role": "monthly long-term government bond yields",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/irt_lt_mcby_m/default/table?lang=en",
+      "filters": {
+        "freq": "M",
+        "int_rt": "MCBY"
       }
     },
     {
@@ -172,23 +191,21 @@
   "scoreImpact": "none",
   "refreshPolicy": {
     "contextReview": {
-      "reviewedAt": "2026-09-03",
-      "contextsSha256": "0f26fd970ae9e586acc3485ca9135aa68c5e77912e904b46e81669309aa59105",
+      "reviewedAt": "2026-10-31",
+      "contextsSha256": "877a2d3976f31fc4e7f98c9336c67654d3677a72d42c1c0cce253f55524aeb65",
       "chronologySha256": "cd7c8b6ab9e54da4fc7a8604de2b29963a47664e245380416b9a44358966c01e"
     },
-    "approvedSources": [
+    "coreArtifactSha256": "f814dfe6f5bf7f6c93f1c52282e0f1829835a797bc14d1d81d3d684a3a7f4894",
+    "scoreAcquiredAt": "2026-08-29T23:11:43Z",
+    "approvedSourceIdentities": [
       {
         "id": "ameco:2026-spring",
         "owner": "European Commission, Directorate-General for Economic and Financial Affairs",
         "title": "AMECO annual macro-economic database",
         "dataset_code": "AMECO",
-        "source_version": "Spring 2026 Economic Forecast",
         "query_url": "https://ec.europa.eu/economy_finance/db_indicators/ameco/documents/ameco0_csv.zip",
         "landing_url": "https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en",
-        "terms_url": "https://commission.europa.eu/legal-notice_en",
-        "upstream_updated_at": "2026-06-03",
-        "raw_bytes": 6181987,
-        "raw_sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005"
+        "terms_url": "https://commission.europa.eu/legal-notice_en"
       },
       {
         "id": "eurostat:prc_hicp_minr",
@@ -197,10 +214,25 @@
         "dataset_code": "prc_hicp_minr",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=TOTAL&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-10-02T11:00:00+0200",
-        "raw_bytes": 34171,
-        "raw_sha256": "1443d75cfe99604d6eb9fb374c6b860d643633520d7e83ed2403ea1c47200235"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+      },
+      {
+        "id": "eurostat:prc_hicp_minr:energy",
+        "owner": "Eurostat",
+        "title": "HICP energy monthly annual rate of change",
+        "dataset_code": "prc_hicp_minr",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_minr?lang=en&freq=M&unit=RCH_A&coicop18=NRG&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1996-01",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
+      },
+      {
+        "id": "eurostat:irt_lt_mcby_m",
+        "owner": "Eurostat",
+        "title": "EMU convergence criterion bond yields",
+        "dataset_code": "irt_lt_mcby_m",
+        "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/irt_lt_mcby_m?lang=en&freq=M&int_rt=MCBY&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-01",
+        "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/irt_lt_mcby_m/default/table?lang=en",
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:une_rt_m",
@@ -209,10 +241,7 @@
         "dataset_code": "une_rt_m",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/une_rt_m?lang=en&freq=M&s_adj=SA&age=TOTAL&sex=T&unit=PC_ACT&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1997-01",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-10-02T23:00:00+0200",
-        "raw_bytes": 30894,
-        "raw_sha256": "3f9d551c50f165383fb806052cdd6135e2939881e407f2b4797cf9cf4e8987e4"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:lfsi_emp_q",
@@ -221,10 +250,7 @@
         "dataset_code": "lfsi_emp_q",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/lfsi_emp_q?lang=en&freq=Q&indic_em=EMP_LFS&s_adj=SA&sex=T&age=Y20-64&unit=PC_POP&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=2009-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-09-10T23:00:00+0200",
-        "raw_bytes": 9563,
-        "raw_sha256": "ee4963f69bc08909bffa206c4a6dcc5f736b75a304ec98e9b8a6cfdd90ae7855"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:namq_10_pc",
@@ -233,10 +259,7 @@
         "dataset_code": "namq_10_pc",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_pc?lang=en&freq=Q&unit=CLV_I20_HAB&s_adj=NSA&na_item=B1GQ&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-10-07T11:00:00+0200",
-        "raw_bytes": 14113,
-        "raw_sha256": "3f9cf52b484ed9decdd533de5805c6c763e5278ddce4c331fcb34acfc02cd5a4"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:gov_10dd_edpt1",
@@ -245,10 +268,7 @@
         "dataset_code": "gov_10dd_edpt1",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10dd_edpt1?lang=en&freq=A&unit=MIO_EUR&sector=S13&na_item=GD&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10dd_edpt1/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-04-22T11:00:00+0200",
-        "raw_bytes": 5348,
-        "raw_sha256": "54d543a133f589a32bcbd81e1c07e5226c5db7f9b65937d801a400a0dd45d962"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:gov_10q_ggdebt",
@@ -257,10 +277,7 @@
         "dataset_code": "gov_10q_ggdebt",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10q_ggdebt?lang=en&freq=Q&unit=PC_GDP&sector=S13&na_item=GD&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggdebt/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-07-21T11:00:00+0200",
-        "raw_bytes": 12246,
-        "raw_sha256": "6c885cdb3e49fb676364eec17a9796672f42569a7b5fa11d066e99d537394335"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:gov_10q_ggnfa",
@@ -269,10 +286,7 @@
         "dataset_code": "gov_10q_ggnfa",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/gov_10q_ggnfa?lang=en&freq=Q&unit=PC_GDP&s_adj=NSA&sector=S13&na_item=B9&na_item=D41PAY&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10q_ggnfa/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-07-21T11:00:00+0200",
-        "raw_bytes": 17310,
-        "raw_sha256": "7ccdd011fa8f9fcd2289bd35eb99602f2a01f4a32c4be5ae1bf2cfe7a5d1df4b"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:namq_10_gdp",
@@ -281,10 +295,7 @@
         "dataset_code": "namq_10_gdp",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/namq_10_gdp?lang=en&freq=Q&unit=PC_GDP&s_adj=SCA&na_item=P51G&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995-Q1",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-10-06T23:00:00+0200",
-        "raw_bytes": 13017,
-        "raw_sha256": "6dab5e2f634b03a6f12a016a4f7b40c498884c2ddab2d17c53f16a72f4f83911"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       },
       {
         "id": "eurostat:nama_10_pe",
@@ -293,51 +304,12 @@
         "dataset_code": "nama_10_pe",
         "query_url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nama_10_pe?lang=en&freq=A&unit=THS_PER&na_item=POP_NC&geo=IT&geo=FR&geo=DE&geo=ES&sinceTimePeriod=1995",
         "landing_url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_pe/default/table?lang=en",
-        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice",
-        "upstream_updated_at": "2026-10-07T11:00:00+0200",
-        "raw_bytes": 5466,
-        "raw_sha256": "0e4ed53aaf00683bb6e85fac06aea0dea233df7f668c9929c40b12564a7f9b90"
+        "terms_url": "https://ec.europa.eu/eurostat/web/main/help/copyright-notice"
       }
     ],
-    "approvedPeriods": [
-      {
-        "indicator_id": "inflation",
-        "period": "2026-09"
-      },
-      {
-        "indicator_id": "real_compensation",
-        "period": "2024"
-      },
-      {
-        "indicator_id": "unemployment",
-        "period": "2026-08"
-      },
-      {
-        "indicator_id": "employment_rate",
-        "period": "2026-Q2"
-      },
-      {
-        "indicator_id": "real_gdp_per_capita",
-        "period": "2026-Q2"
-      },
-      {
-        "indicator_id": "debt_ratio",
-        "period": "2026-Q1"
-      },
-      {
-        "indicator_id": "debt_per_capita",
-        "period": "2025"
-      },
-      {
-        "indicator_id": "primary_balance",
-        "period": "2026-Q1"
-      },
-      {
-        "indicator_id": "investment_share",
-        "period": "2026-Q2"
-      }
-    ],
-    "coreArtifactSha256": "f814dfe6f5bf7f6c93f1c52282e0f1829835a797bc14d1d81d3d684a3a7f4894",
-    "scoreAcquiredAt": "2026-08-29T23:11:43Z"
+    "scoreReceipt": {
+      "raw_bytes": 6181987,
+      "raw_sha256": "b460629037dfc994d805b3f236c80feb6c49bc86b3cde3f3cfc32027a08c3005"
+    }
   }
 }

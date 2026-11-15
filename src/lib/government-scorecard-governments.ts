@@ -5,7 +5,10 @@ import pageSpec from "../../scripts/etl/specs/government-scorecard-page.source.j
 
 import annualSnapshot from "@/data/generated/government-scorecard.json";
 import { GOVERNMENT_SCORECARD_V6_MANIFEST } from "@/lib/data/government-scorecard-contract";
-import { getGovernmentScorecardV6SupplementalSnapshot } from "@/lib/data/government-scorecard-page-contract";
+import {
+  getGovernmentScorecardV6SupplementalSnapshot,
+  type GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS,
+} from "@/lib/data/government-scorecard-page-contract";
 import {
   GOVERNMENT_SCORECARD_V6_CHRONOLOGY,
   GOVERNMENT_SCORECARD_V6_REGISTRY,
@@ -64,8 +67,8 @@ const rawAnnualDatasetSchema = z.object({
       termsUrl: z.literal("https://commission.europa.eu/legal-notice_en"),
       license: z.literal("CC BY 4.0 unless otherwise indicated"),
       retrievedAt: z.literal(pageSpec.refreshPolicy.scoreAcquiredAt),
-      bytes: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_bytes),
-      sha256: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_sha256),
+      bytes: z.literal(pageSpec.refreshPolicy.scoreReceipt.raw_bytes),
+      sha256: z.literal(pageSpec.refreshPolicy.scoreReceipt.raw_sha256),
       observedThrough: z.literal(sourceSpec.ameco.observedThrough),
       forecastFrom: z.literal(sourceSpec.ameco.forecastFrom),
       forecastThrough: z.literal(sourceSpec.ameco.forecastThrough),
@@ -390,14 +393,21 @@ export function buildGovernmentScorecardV6Input(id: GovernmentScorecardV6Governm
   };
 }
 
-const CHART_COPY = {
+type ChartCopy = Readonly<{ question: string; unit: string; note?: string }>;
+
+const CHART_COPY: Readonly<Record<(typeof GOVERNMENT_SCORECARD_V6_SUPPLEMENTAL_INDICATOR_IDS)[number], ChartCopy>> = {
   inflation: {
     question: "Come si è mossa l'inflazione nei quattro paesi?",
     unit: "% annuo",
   },
+  energy_inflation: {
+    question: "Quanto sono cambiati i prezzi dell'energia rispetto a un anno prima?",
+    unit: "Variazione % sullo stesso mese dell'anno prima",
+  },
   real_compensation: {
     question: "Come sono cambiate le retribuzioni reali nei quattro paesi?",
     unit: "Indice reale (2020 = 100)",
+    note: "L'indice parte da 100 nel 2020 in ogni paese: confronta le variazioni, non i livelli.",
   },
   unemployment: {
     question: "Come è cambiato il tasso di disoccupazione nei quattro paesi?",
@@ -409,25 +419,33 @@ const CHART_COPY = {
   },
   real_gdp_per_capita: {
     question: "Come è cambiato il PIL reale per abitante nei quattro paesi?",
-    unit: "Migliaia di valuta nazionale, prezzi 2020",
+    unit: "Indice reale per abitante (2020 = 100), non destagionalizzato",
+    note: "L'indice parte da 100 nel 2020 in ogni paese: confronta le variazioni, non i livelli.",
   },
   debt_ratio: {
     question: "Come è cambiato il debito pubblico rispetto al PIL?",
     unit: "% del PIL",
+    note: "Il rapporto oscilla durante l'anno: confronta lo stesso trimestre di anni diversi.",
   },
   debt_per_capita: {
     question: "Come è cambiato il debito pubblico per abitante?",
-    unit: "Euro per abitante",
+    unit: "Euro correnti per abitante",
+    note: "Calcolato dividendo il debito pubblico per la popolazione dello stesso anno. Sono euro correnti, non a parità di potere d'acquisto.",
   },
   primary_balance: {
     question: "Come è cambiato il saldo primario rispetto al PIL?",
-    unit: "% del PIL",
+    unit: "% del PIL del trimestre, non destagionalizzato",
+    note: "Calcolato sommando indebitamento netto e interessi. I valori oscillano molto durante l'anno per motivi stagionali: confronta lo stesso trimestre di anni diversi.",
+  },
+  long_term_rate: {
+    question: "Quanto rendono i titoli di Stato a lungo termine nei quattro paesi?",
+    unit: "% annuo, scadenza circa 10 anni",
   },
   investment_share: {
     question: "Come sono cambiati gli investimenti rispetto al PIL?",
     unit: "% del PIL",
   },
-} as const;
+};
 
 const CHART_COUNTRY_LABELS = {
   IT: "Italia",
@@ -497,9 +515,12 @@ function buildTimeSeriesCharts(
           end_date: completeEndDate,
           end_exclusive: false,
         },
-        note: indicator.usage === "score_and_context"
-          ? `Ogni punto è un dato ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} pubblicato dalla fonte: le linee uniscono soltanto periodi disponibili e non creano dati intermedi. Questa serie fa parte dei sei indicatori annuali del voto.`
-          : `Ogni punto è un dato ${CHART_FREQUENCY_LABELS[indicator.frequency].toLowerCase()} pubblicato dalla fonte; le linee uniscono solo i periodi disponibili. Stime, dati provvisori, interruzioni, definizioni diverse o bassa affidabilità sono indicati accanto al numero.`,
+        note: [
+          indicator.usage === "score_and_context"
+            ? "Le linee uniscono soltanto periodi disponibili e non creano dati intermedi. Questa serie fa parte dei sei indicatori annuali del voto."
+            : "Le linee uniscono solo i periodi disponibili. Stime, dati provvisori, interruzioni, definizioni diverse o bassa affidabilità sono indicati accanto al numero.",
+          CHART_COPY[indicator.indicator_id].note,
+        ].filter(Boolean).join(" "),
         source: {
           owner: firstPoint.source_owner,
           url: firstPoint.source_url,
@@ -598,6 +619,7 @@ function buildContextSlides(
           selection_rule: item.selection_rule,
           score_impact: item.score_impact,
           sources: item.sources,
+          ...(item.history ? { history: item.history } : {}),
           retrieved_at: item.retrieved_at,
           evidence_sha256: item.evidence_sha256,
         }))

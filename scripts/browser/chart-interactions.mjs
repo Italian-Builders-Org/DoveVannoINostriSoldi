@@ -52,8 +52,14 @@ export async function inspectGovernmentChart(page, card) {
       assert.ok(summary.period.includes(state.period), `${id}: riepilogo fermo su un altro periodo`);
       assert.equal(summary.value, state.rows[countryIndex][index], `${id}: valore diverso dalla tabella`);
       const number = (value) => Number(value.split(" · ")[0].replaceAll(".", "").replace(",", "."));
-      const first = observations[0];
-      if (summary.value !== "Non disponibile" && observations.length >= 2) {
+      // Le serie trimestrali confrontano lo stesso trimestre: gli altri trimestri non hanno base.
+      const quarter = state.period.match(/ T[1-4]$/)?.[0];
+      const baselineIndex = state.periods.findIndex((period, position) => (quarter ? period.endsWith(quarter) : true)
+        && state.rows[countryIndex][position] !== "Non disponibile");
+      const first = state.rows[countryIndex][baselineIndex];
+      const comparable = !quarter || baselineIndex < index
+        || state.rows[countryIndex].slice(0, index).every((value) => value === "Non disponibile");
+      if (summary.value !== "Non disponibile" && observations.length >= 2 && comparable) {
         const tolerance = (await card.evaluate((element) => element.textContent.includes("Valori: Euro"))) ? 1 : 0.02;
         assert.ok(Math.abs(number(summary.change) - (number(summary.value) - number(first))) <= tolerance,
           `${id}: variazione incoerente con il valore selezionato`);

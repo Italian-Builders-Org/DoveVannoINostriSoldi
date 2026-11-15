@@ -1,8 +1,9 @@
-import pageSpec from "../scripts/etl/specs/government-scorecard-page.source.json" with { type: "json" };
 import assert from "node:assert/strict";
 import test from "node:test";
 
 import "./helpers/register-ts-alias.mjs";
+
+const { getGovernmentScorecardV6SupplementalSnapshot } = await import("../src/lib/data/government-scorecard-page-contract.ts");
 
 const {
   getCurrentGovernmentScorecardV6Id,
@@ -26,7 +27,7 @@ test("every government receives the complete public page contract", () => {
     assert.deepEqual(view.section_order, ["charts", "context", "compare", "methodology"]);
     assert.equal(view.causal_disclaimer, GOVERNMENT_SCORECARD_V6_CAUSAL_DISCLAIMER);
     assert.equal(view.charts.status, "ready");
-    assert.equal(view.charts.slides.length, 9);
+    assert.equal(view.charts.slides.length, 11);
     assert.ok(view.charts.slides.every((slide) => slide.series.map((series) => series.id).join() === "IT,FR,DE,ES"));
     assert.ok(view.charts.slides.flatMap((slide) => slide.series).flatMap((series) => series.points).every((point) => point.quality_notes === undefined || Array.isArray(point.quality_notes)));
     assert.equal(view.context.status, "ready");
@@ -98,6 +99,8 @@ test("the current-government charts expose the latest reliable display data with
   assert.ok(current.charts.status === "ready");
   const firstByIndicator = new Map([
     ["inflation", "2022-10"],
+    ["energy_inflation", "2022-10"],
+    ["long_term_rate", "2022-10"],
     ["real_compensation", "2022"],
     ["unemployment", "2022-10"],
     ["employment_rate", "2022-Q4"],
@@ -107,7 +110,7 @@ test("the current-government charts expose the latest reliable display data with
     ["primary_balance", "2022-Q4"],
     ["investment_share", "2022-Q4"],
   ]);
-  const latestByIndicator = new Map(pageSpec.refreshPolicy.approvedPeriods.map((item) => [item.indicator_id, item.period]));
+  const latestByIndicator = new Map(getGovernmentScorecardV6SupplementalSnapshot().coverage.latest_published_periods.map((item) => [item.indicator_id, item.period]));
   for (const slide of current.charts.slides) {
     const window = slide.mandate_window;
     const visibleCounts = slide.series.map((series) => series.points.filter((point) => isGovernmentChartPointInWindow(
@@ -118,13 +121,14 @@ test("the current-government charts expose the latest reliable display data with
       slide.frequency,
     )).length);
     assert.ok(visibleCounts.every((count) => count >= 2), `${slide.indicator_id} should have at least two visible points`);
-    const latest = slide.series[0].points.filter((point) => isGovernmentChartPointInWindow(
+    // Countries publish at different times: the series latest comes from the first to publish.
+    const latest = slide.series.flatMap((series) => series.points.filter((point) => isGovernmentChartPointInWindow(
       point.period_start,
       window.start_date,
       window.end_date,
       window.end_exclusive,
       slide.frequency,
-    )).at(-1)?.period;
+    )).map((point) => point.period)).toSorted().at(-1);
     const first = slide.series[0].points.find((point) => isGovernmentChartPointInWindow(
       point.period_start,
       window.start_date,

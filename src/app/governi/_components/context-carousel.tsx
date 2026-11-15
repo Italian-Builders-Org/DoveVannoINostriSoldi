@@ -6,7 +6,7 @@ import type { GovernmentScorecardV6ContextSlide } from "@/lib/government-scoreca
 
 import styles from "../government-scorecard.module.css";
 
-type MandatePeriod = { startDate: string; endDate: string };
+type MandatePeriod = { startDate: string; endDate: string | null };
 
 const MANDATE_RELATION_LABELS = {
   inherited: "ereditato",
@@ -24,7 +24,13 @@ function channelLabel(value: string | null): string {
     trade_exports_investment_and_uncertainty: "commercio, export e investimenti",
     oil_supply_fuel_prices_inflation_and_growth: "carburanti, energia e inflazione",
     common_monetary_policy: "tassi, credito e costo del debito",
+    eu_fiscal_rules: "regole di bilancio europee e spazio fiscale",
     inherited_public_debt_per_capita: "debito pubblico di partenza",
+    inherited_harmonised_inflation: "inflazione di partenza",
+    inherited_unemployment_rate: "disoccupazione di partenza",
+    condizioni_economiche_iniziali: "condizioni economiche iniziali",
+    shock_geopolitica_e_condizioni_finanziarie: "shock, geopolitica e condizioni finanziarie",
+    politica_fiscale_riforme_e_investimenti: "politica fiscale, riforme e investimenti",
     institutional_timeline: "perimetro istituzionale del periodo",
     mandate_overview: "lettura del periodo istituzionale",
   };
@@ -74,6 +80,20 @@ function ContextCard({
                   </div>
                 </div>
                 <p>{item.summary}</p>
+                {item.history ? (
+                  <details className={styles.contextHistory}>
+                    <summary>Vedi tutte le {item.history.rows.length} variazioni</summary>
+                    <table>
+                      <caption>{item.history.label}</caption>
+                      <thead><tr><th scope="col">Data</th><th scope="col">Livello</th></tr></thead>
+                      <tbody>
+                        {item.history.rows.map((row) => (
+                          <tr key={row.date}><td><time dateTime={row.date}>{row.date}</time></td><td>{row.value}</td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </details>
+                ) : null}
                 <dl>
                   <div><dt>Possibile canale economico</dt><dd>{channelLabel(item.economic_channel)}</dd></div>
                   <div><dt>Rapporto col mandato</dt><dd>{MANDATE_RELATION_LABELS[item.mandate_relation]}</dd></div>
@@ -155,7 +175,7 @@ export function ContextCarousel({
       </div>
 
       <div className={styles.contextNavigation}>
-        <p className={styles.timelineNote}>Mandato: {mandate.startDate} → {mandate.endDate}</p>
+        <p className={styles.timelineNote}>Mandato: {mandate.startDate} → {mandate.endDate ?? "in corso"}</p>
         <div className={styles.contextTabList} role="tablist" aria-orientation="vertical" aria-label="Sezioni di contesto">
           {slides.map((slide, index) => {
             const selected = index === activeIndex;

@@ -13,7 +13,7 @@ La pagina pubblica `/governi` mostra il governo in carica. L'archivio permette d
 Ogni scheda contiene, nello stesso ordine:
 
 1. voto da 0 a 100, stato del voto e cinque aree riassuntive;
-2. nove grafici con Italia, Francia, Germania e Spagna;
+2. undici grafici con Italia, Francia, Germania e Spagna;
 3. contesto del mandato: sintesi, situazione ereditata, crisi e guerre, BCE, misure economiche e cronologia;
 4. archivio cronologico e confronto fra due governi;
 5. spiegazione semplice del calcolo, seguita dai dettagli tecnici apribili.
@@ -86,21 +86,24 @@ Ogni indicatore usa gli stessi quattro paesi, la stessa finestra temporale e la 
 
 ### Dati mostrati per capire il periodo
 
-La pagina mostra nove serie. La frequenza più alta serve a leggere cosa è
+La pagina mostra undici serie. La frequenza più alta serve a leggere cosa è
 successo dentro il mandato; non sostituisce le serie annuali AMECO usate nel
-voto.
+voto. L'ultimo periodo di ogni serie è in `coverage.latest_published_periods`
+dello snapshot e può differire fra paesi.
 
-| Grafico | Frequenza e fonte | Ultimo periodo nello snapshot | Entra nel voto |
-| --- | --- | --- | --- |
-| Inflazione armonizzata | mensile, Eurostat `prc_hicp_minr` | agosto 2026, stimato | no |
-| Retribuzione reale per dipendente | annuale, AMECO | 2024, osservato | sì |
-| Disoccupazione | mensile, Eurostat `une_rt_m` | luglio 2026 | no |
-| Occupazione | trimestrale, Eurostat `lfsi_emp_q` | primo trimestre 2026 | no |
-| PIL reale per abitante | trimestrale, Eurostat `namq_10_pc` | secondo trimestre 2026 | no |
-| Debito pubblico / PIL | trimestrale, Eurostat `gov_10q_ggdebt` | primo trimestre 2026 | no |
-| Debito pubblico per abitante | annuale, Eurostat `gov_10dd_edpt1` + `nama_10_pe` | 2025 | no |
-| Saldo primario / PIL | trimestrale, Eurostat `gov_10q_ggnfa` | primo trimestre 2026 | no |
-| Investimenti / PIL | trimestrale, Eurostat `namq_10_gdp` | secondo trimestre 2026 | no |
+| Grafico | Frequenza e fonte | Entra nel voto |
+| --- | --- | --- |
+| Inflazione armonizzata | mensile, Eurostat `prc_hicp_minr` (`TOTAL`) | no |
+| Inflazione dei beni energetici | mensile, Eurostat `prc_hicp_minr` (`NRG`) | no |
+| Retribuzione reale per dipendente | annuale, AMECO | sì |
+| Disoccupazione | mensile, Eurostat `une_rt_m` | no |
+| Occupazione | trimestrale, Eurostat `lfsi_emp_q` | no |
+| PIL reale per abitante | trimestrale, Eurostat `namq_10_pc` (non destagionalizzato) | no |
+| Debito pubblico / PIL | trimestrale, Eurostat `gov_10q_ggdebt` | no |
+| Debito pubblico per abitante | annuale, Eurostat `gov_10dd_edpt1` + `nama_10_pe` | no |
+| Saldo primario / PIL | trimestrale, Eurostat `gov_10q_ggnfa` (non destagionalizzato) | no |
+| Rendimenti dei titoli di Stato a lungo termine | mensile, Eurostat `irt_lt_mcby_m` | no |
+| Investimenti / PIL | trimestrale, Eurostat `namq_10_gdp` | no |
 
 “Stimato” e “provvisorio” sono stati pubblicati dalla fonte e vengono mostrati
 come tali. Questi punti aiutano a leggere il periodo, ma non entrano nel voto:
@@ -173,6 +176,8 @@ La storia serve a spiegare l'evoluzione del progetto. Solo il metodo descritto q
 ### Grafici aggiuntivi
 
 - **Eurostat `prc_hicp_minr`**: inflazione armonizzata mensile;
+- **Eurostat `prc_hicp_minr` con `NRG`**: inflazione mensile dei beni energetici;
+- **Eurostat `irt_lt_mcby_m`**: rendimenti dei titoli di Stato usati per il criterio di convergenza;
 - **Eurostat `une_rt_m`**: disoccupazione mensile destagionalizzata;
 - **Eurostat `lfsi_emp_q`**: tasso di occupazione trimestrale destagionalizzato;
 - **Eurostat `namq_10_pc`**: PIL reale trimestrale per abitante;
@@ -207,7 +212,7 @@ Nessun aggiornamento pubblica direttamente su `main`.
 
 ### Frequenze e responsabilità
 
-L'unico workflow `government-scorecard-refresh.yml` interroga AMECO e le nove
+L'unico workflow `government-scorecard-refresh.yml` interroga AMECO e le undici
 query Eurostat ogni martedì, quindi più spesso del minimo semestrale. Si può
 avviare anche manualmente. Il log registra l'ora del controllo, l'esito e la
 scadenza del contesto; `retrieved_at` resta la data di acquisizione del payload,
@@ -219,8 +224,15 @@ Il manutentore editoriale rivede contesto economico, europeo e internazionale
 entro tre mesi di calendario dalla revisione precedente e al cambio di governo.
 La ricevuta `refreshPolicy.contextReview` nel contratto di provenienza della
 pagina lega la data ai contenuti completi e al registro dei giuramenti tramite
-SHA-256. La ricevuta iniziale identifica il catalogo congelato del 3 settembre
-2026; questa modifica tecnica non aggiunge una nuova revisione editoriale.
+SHA-256.
+
+Le voci revisionate stanno in `scripts/etl/specs/government-scorecard-context-catalog.json`;
+`keep` conserva una voce già congelata senza modificarla. Per aggiornarle:
+modificare il catalogo, eseguire
+`python3 scripts/etl/government_scorecard_page.py --refresh-contexts` e registrare
+data e hash nella ricevuta. Ogni affermazione deve risultare da una fonte
+ufficiale elencata nella voce, con stime e proposte indicate come tali. Le manovre
+non ancora approvate dal Parlamento dichiarano che non sono legge.
 Alla scadenza, il workflow continua a osservare le serie ma blocca la
 pubblicazione e segnala la revisione necessaria. Non inventa contesto né aggiorna
 la data della revisione da solo. Anche una revisione senza cambiamenti richiede
@@ -236,17 +248,32 @@ python3 scripts/etl/government_scorecard_refresh.py --observe --retrieved-at <ti
 ```
 
 `--observe` controlla schema, identità, unità, flag e completezza e stampa le
-ricevute acquisite senza scrivere snapshot o candidati. Un nuovo payload non
-approvato resta bloccato: confrontare periodo, fonte, termini di riuso, hash e
-valori con il rilascio precedente prima di riportare le ricevute nel
-`refreshPolicy` di `government-scorecard-page.source.json`. Non approvare un
-hash soltanto perché è quello restituito dal download.
+ricevute acquisite senza scrivere snapshot o candidati.
 
-Per un nuovo vintage AMECO aggiornare insieme source spec e manifest metodologico
-(vintage, anni osservati e anni di previsione). `scoreAcquiredAt` e
-`coreArtifactSha256` fissano esattamente l'acquisizione approvata. Una revisione
-storica richiede un confronto esplicito dei voti e l'aggiornamento motivato dei
-test di riferimento; non viene accettata silenziosamente dal polling.
+Una nuova pubblicazione Eurostat non richiede modifiche alla specifica: il
+`refreshPolicy` fissa solo identità delle fonti (`approvedSourceIdentities`,
+con query, ente, titolo e condizioni), mentre valori e hash vengono rivisti
+nella PR dati. Un hash fissato nella specifica bloccava ogni pubblicazione,
+perché il publisher può scrivere soltanto i due artefatti.
+
+AMECO resta diverso, perché può cambiare ogni voto. Se cambia senza revisione,
+il refresh conserva il voto, pubblica comunque i grafici Eurostat e segnala
+`::warning::AMECO changed upstream`. Il confronto della ricevuta avviene prima
+del parsing CSV: un nuovo anno di previsione non deve bloccare Eurostat. Un
+archivio ZIP corrotto o con membri inattesi continua a bloccare il refresh;
+i byte non approvati non vengono interpretati né pubblicati. I dati AMECO
+approvati e la modalità `--observe` restano soggetti al contratto completo.
+Per approvare un nuovo vintage:
+
+1. aggiornare source spec e manifest metodologico (vintage, anni osservati e
+   anni di previsione), verificando sulla fonte quali anni sono osservati;
+2. eseguire `--observe` con un timestamp fissato;
+3. confrontare valori e voti con il rilascio precedente, poi riportare
+   `scoreAcquiredAt`, `coreArtifactSha256` e `scoreReceipt` nel `refreshPolicy`;
+4. eseguire il refresh e aggiornare con motivazione i test di riferimento.
+
+Non approvare un hash soltanto perché è quello restituito dal download. Una
+revisione storica non viene accettata silenziosamente dal polling.
 
 ```bash
 python3 scripts/etl/government_scorecard_refresh.py --retrieved-at <timestamp-UTC>

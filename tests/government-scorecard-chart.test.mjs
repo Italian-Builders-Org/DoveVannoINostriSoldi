@@ -12,6 +12,7 @@ const {
   formatGovernmentChartPeriod,
   formatGovernmentChartPublicationStatus,
   formatGovernmentChartPointStatus,
+  getGovernmentChartLatestCommonPeriod,
   getGovernmentChartSelection,
   GOVERNMENT_CHART_COLORS,
   hasGovernmentChartTrend,
@@ -37,6 +38,34 @@ test("selection compares the exact selected observation with the start, without 
   assert.equal(getGovernmentChartSelection([], "2009-02").change, null);
   assert.equal(getGovernmentChartSelection([points[0]], "2008-05").change, null);
   assert.equal(getGovernmentChartSelection([{ period: "2020", value: 0 }, { period: "2021", value: -2 }], "2021").change, -2);
+});
+
+test("quarterly change compares the same quarter, so seasonality cannot flip its sign", () => {
+  const points = [
+    { period: "2022-Q4", value: 138.4 },
+    { period: "2023-Q1", value: 137.1 },
+    { period: "2023-Q2", value: 137.5 },
+    { period: "2025-Q4", value: 136.7 },
+    { period: "2026-Q2", value: 139.9 },
+  ];
+  const latest = getGovernmentChartSelection(points, "2026-Q2");
+  assert.equal(latest.first.period, "2023-Q2");
+  assert.ok(Math.abs(latest.change - 2.4) < 1e-10);
+  const sameQuarter = getGovernmentChartSelection(points, "2025-Q4");
+  assert.equal(sameQuarter.first.period, "2022-Q4");
+  assert.ok(Math.abs(sameQuarter.change - (-1.7)) < 1e-10);
+  assert.equal(getGovernmentChartSelection(points, "2023-Q1").change, null);
+  assert.equal(getGovernmentChartSelection(points, "2022-Q4").change, 0);
+});
+
+test("the default period is the latest one published by every country", () => {
+  const series = [
+    { points: [{ period: "2026-Q1" }, { period: "2026-Q2" }] },
+    { points: [{ period: "2026-Q1" }, { period: "2026-Q2" }, { period: "2026-Q3" }] },
+  ];
+  assert.equal(getGovernmentChartLatestCommonPeriod(series), "2026-Q2");
+  assert.equal(getGovernmentChartLatestCommonPeriod([{ points: [{ period: "2020" }] }, { points: [{ period: "2021" }] }]), null);
+  assert.equal(getGovernmentChartLatestCommonPeriod([{ points: [] }, { points: [{ period: "2021" }] }]), "2021");
 });
 
 test("pointer positions map to the closest bounded chart period", () => {

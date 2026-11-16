@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
@@ -60,12 +61,14 @@ async function assertMapGrid(page, width) {
   });
 }
 
-async function selectMilanoNetwork(frame, networkId = "milano") {
+async function selectCityNetwork(frame, { networkId, titleIncludes }) {
   await frame.evaluate((id) => {
     const select = document.querySelector("#city, select[name='city'], select");
     if (!(select instanceof HTMLSelectElement)) return;
     const match = [...select.options].find(
-      (option) => option.value === id || option.textContent?.includes("Milano"),
+      (option) =>
+        option.value === id ||
+        option.textContent?.toLowerCase().includes(String(id).toLowerCase()),
     );
     if (match) {
       select.value = match.value;
@@ -73,8 +76,133 @@ async function selectMilanoNetwork(frame, networkId = "milano") {
     }
   }, networkId);
   await frame.waitForFunction(
-    () => document.querySelector("#map-title")?.textContent?.includes("Milano"),
+    (expected) => document.querySelector("#map-title")?.textContent?.includes(expected),
     { timeout: 30_000 },
+    titleIncludes,
+  );
+}
+
+async function selectMilanoNetwork(frame, networkId = "milano") {
+  await selectCityNetwork(frame, {
+    networkId,
+    titleIncludes: "Milano",
+  });
+}
+
+// Deterministic live feed built from the published network: a line-170 bus
+// sitting on its own path, so search, route panel and follow panel are
+// exercised without the upstream feed or map tiles.
+const ROMA_ASSET_MANIFEST = readFileSync(
+  path.join(process.cwd(), "src/lib/mobilita/roma-network-asset.ts"),
+  "utf8",
+);
+
+function romaFixture() {
+  const assetPath = ROMA_ASSET_MANIFEST.match(/"path": "(\/mappe\/mobilita\/roma\/network-[^"]+)"/)?.[1];
+  assert.ok(assetPath, "asset rete Roma non dichiarato");
+  const network = JSON.parse(readFileSync(path.join(process.cwd(), "public", assetPath), "utf8"));
+  const routeIndex = network.routes.findIndex((route) => route[0] === "170");
+  const pattern = network.patterns.find((p) => p[0] === routeIndex && p[1] === 0);
+  assert.ok(pattern, "pattern 170 assente nella rete pubblicata");
+  return { network, pattern, stop: network.stops[pattern[3][3]], next: network.stops[pattern[3][4]] };
+}
+
+// Predicted arrivals for the mock bus: 4 and 7 minutes to its next two stops,
+// 3 minutes late, so ETA, delay chip and stop board are all exercised.
+function romaArrivalsMock({ unavailable = false } = {}) {
+  const { stop, next } = romaFixture();
+  const base = Math.floor(Date.now() / 1000);
+  const body = unavailable
+    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    : {
+        status: "ok",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+        feedTimestamp: base - 10,
+        feedAgeSeconds: 10,
+        stale: false,
+        tripCount: 1,
+        cancelledCount: 0,
+        base,
+        trips: [{ t: "0#mock", r: "170", k: 0, v: "mock-1", d: 180, s: [stop[0], next[0]], a: [240, 420], y: [180, 180] }],
+      };
+  return { pathname: "/api/mobilita/roma/arrivals", status: unavailable ? 504 : 200, body };
+}
+
+// Coverage is asserted only while today is inside the published calendar.
+function coverageCoversToday() {
+  const first = ROMA_ASSET_MANIFEST.match(/"firstDate": "([0-9-]+)"/)?.[1];
+  const last = ROMA_ASSET_MANIFEST.match(/"lastDate": "([0-9-]+)"/)?.[1];
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
+  return Boolean(first && last && today >= first && today <= last);
+}
+
+function romaLiveMock({ unavailable = false } = {}) {
+  const { stop } = romaFixture();
+  const now = Math.floor(Date.now() / 1000);
+  const body = unavailable
+    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    : {
+        status: "ok",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+        feedTimestamp: now - 20,
+        feedAgeSeconds: 20,
+        stale: false,
+        vehicleCount: 1,
+        vehicles: [
+          {
+            id: "mock-1",
+            label: "9999",
+            routeId: "170",
+            tripId: "0#mock",
+            directionId: 0,
+            startTime: "15:30:00",
+            lat: stop[3],
+            lon: stop[2],
+            ts: now - 30,
+            stopId: stop[0],
+            status: "in_transit",
+          },
+        ],
+      };
+  return {
+    pathname: "/api/mobilita/roma/vehicles",
+    status: unavailable ? 504 : 200,
+    body,
+    stopName: stop[1],
+  };
+}
+
+// CI has no outbound network: the external basemap answers with an empty but
+// valid TileJSON, tiles and glyphs, so the map and the live layer still load.
+const TILE_HOST = "https://tiles.openfreemap.org/";
+const OFFLINE_TILEJSON = {
+  match: (request) => request.url() === `${TILE_HOST}planet`,
+  headers: { "Access-Control-Allow-Origin": "*" },
+  body: {
+    tilejson: "3.0.0",
+    tiles: [`${TILE_HOST}offline/{z}/{x}/{y}.pbf`],
+    minzoom: 0,
+    maxzoom: 14,
+    vector_layers: [],
+  },
+};
+const OFFLINE_TILES = {
+  match: (request) => request.url().startsWith(TILE_HOST),
+  headers: { "Access-Control-Allow-Origin": "*" },
+  contentType: "application/x-protobuf",
+  body: "",
+};
+
+// The live view aborts its own fetches on unmount (and React dev remounts it):
+// those cancellations are expected, any other failure is not.
+function expectedLiveAbort(failure) {
+  return (
+    failure.includes("net::ERR_ABORTED") &&
+    /\/mappe\/mobilita\/roma\/(network|coverage)-[0-9a-f]{12}\.json|\/mappe\/mobilita\/roma\/coverage\/[0-9a-f]{12}\.json|\/api\/mobilita\/roma\/(vehicles|arrivals)|tiles\.openfreemap\.org/.test(
+      failure,
+    )
   );
 }
 
@@ -254,6 +382,163 @@ try {
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
         true,
         "overflow orizzontale header mobilità",
+      );
+    },
+  });
+
+  for (const width of [390, 1280]) {
+    const mock = romaLiveMock();
+    await runScenario(browser, {
+      suite: "mappe-mobilita",
+      label: `Bus Roma live ${width}px`,
+      pathname: "/mappe/mobilita",
+      width,
+      readySelector: "#mobilita-viewer",
+      requestMocks: [mock, romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      expectedFailure: expectedLiveAbort,
+      async validate(page) {
+        await page.click('[aria-label="Vista della mappa"] button:nth-child(2)');
+        await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "bus-live");
+        await page.waitForFunction(
+          () => /In diretta · 1 autobus/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        assert.equal(
+          await page.$eval("#mobilita-viewer", (frame) => frame.hidden),
+          true,
+          "iframe velocità visibile nella vista live",
+        );
+        await page.type("#roma-live-search", "170");
+        // The network asset may still be loading: submit once 170 is listed.
+        await page.waitForFunction(
+          () => /1 autobus ora/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        await page.keyboard.press("Enter");
+        await page.waitForFunction(
+          () => /1 autobus in servizio/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        assert.match(page.url(), /linea=170/, "linea non condivisibile nell'URL");
+        await page.click("aside ul li button");
+        await page.waitForFunction(
+          () => /Vettura 9999/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        const panel = await page.$eval("aside", (node) => node.textContent);
+        assert.match(panel, /Prossime fermate/, "fermate successive assenti");
+        assert.match(page.url(), /vettura=9999/, "vettura non condivisibile nell'URL");
+        assert.equal(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+          true,
+          `overflow orizzontale vista live ${width}px`,
+        );
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => !new URL(location.href).searchParams.has("vettura"));
+        await page.screenshot({
+          path: path.join(output, `mobilita-bus-live-${width}.png`),
+          fullPage: false,
+        });
+        await page.goBack();
+        await page.waitForFunction(() => !new URL(location.href).searchParams.has("vista"));
+        assert.equal(
+          await page.$eval("#mobilita-viewer", (frame) => frame.hidden),
+          false,
+          "indietro non riporta alle velocità",
+        );
+      },
+    });
+  }
+
+  for (const width of [390, 1280]) {
+    const { stop } = romaFixture();
+    await runScenario(browser, {
+      suite: "mappe-mobilita",
+      label: `Bus Roma fermata e ritardi ${width}px`,
+      pathname: "/mappe/mobilita?vista=bus-live",
+      width,
+      readySelector: "aside",
+      requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      expectedFailure: expectedLiveAbort,
+      async validate(page) {
+        await page.waitForFunction(
+          () => /In diretta · 1 autobus/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        if (coverageCoversToday()) {
+          await page.waitForFunction(
+            () => /corse programmate in corso/.test(document.querySelector("aside")?.textContent ?? ""),
+            { timeout: 30_000 },
+          );
+        }
+        // Stop search by code (exact), then the board shows the mock arrival.
+        await page.type("#roma-live-search", stop[0]);
+        await page.waitForSelector('ul[aria-label="Fermate"] button', { timeout: 30_000 });
+        await page.click('ul[aria-label="Fermate"] button');
+        await page.waitForFunction(() => new URL(location.href).searchParams.has("fermata"));
+        await page.waitForFunction(
+          () => {
+            const text = document.querySelector('[aria-labelledby="stop-title"]')?.textContent ?? "";
+            return /4 min|3 min/.test(text) && /\+3 min/.test(text);
+          },
+          { timeout: 30_000 },
+        );
+        await page.click('ul[aria-label="Arrivi"] button');
+        await page.waitForFunction(
+          () => /Rispetto all’orario/.test(document.querySelector("aside")?.textContent ?? ""),
+          { timeout: 30_000 },
+        );
+        assert.match(page.url(), /vettura=9999/, "mezzo dal tabellone non condivisibile");
+        assert.match(page.url(), /fermata=/, "fermata di provenienza persa");
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(
+          () => !new URL(location.href).searchParams.has("vettura") && new URL(location.href).searchParams.has("fermata"),
+        );
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => !new URL(location.href).searchParams.has("fermata"));
+        // Delay colours: toggle is reachable and pressed state is exposed.
+        await page.click('[aria-label="Colore dei mezzi"] button:nth-child(2)');
+        assert.equal(
+          await page.$eval('[aria-label="Colore dei mezzi"] button:nth-child(2)', (b) => b.getAttribute("aria-pressed")),
+          "true",
+        );
+        assert.equal(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+          true,
+          `overflow orizzontale fermata ${width}px`,
+        );
+        await page.screenshot({ path: path.join(output, `mobilita-bus-stop-${width}.png`), fullPage: false });
+      },
+    });
+  }
+
+  await runScenario(browser, {
+    suite: "mappe-mobilita",
+    label: "Bus Roma live feed non disponibile",
+    pathname: "/mappe/mobilita?vista=bus-live",
+    width: 1280,
+    readySelector: "aside",
+    requestMocks: [
+      romaLiveMock({ unavailable: true }),
+      romaArrivalsMock({ unavailable: true }),
+      OFFLINE_TILEJSON,
+      OFFLINE_TILES,
+    ],
+    // The simulated upstream outage is the point of this scenario.
+    expectedFailure: (failure) =>
+      expectedLiveAbort(failure) ||
+      (/\b504\b/.test(failure) && /\/api\/mobilita\/roma\/(vehicles|arrivals)/.test(failure)),
+    async validate(page) {
+      await page.waitForFunction(
+        () => /non risponde/.test(document.querySelector("aside")?.textContent ?? ""),
+        { timeout: 30_000 },
+      );
+      // A stop board opened by link degrades to an explicit message, not an empty list.
+      const { stop } = romaFixture();
+      await page.goto(new URL(`/mappe/mobilita?vista=bus-live&fermata=${stop[0]}`, page.url()).href);
+      await page.waitForFunction(
+        () => /feed degli arrivi non risponde/.test(document.querySelector('[aria-labelledby="stop-title"]')?.textContent ?? ""),
+        { timeout: 60_000 },
       );
     },
   });

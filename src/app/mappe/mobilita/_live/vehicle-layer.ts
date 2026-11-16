@@ -1,3 +1,4 @@
+import { Bus02Icon } from "@hugeicons/core-free-icons";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import type { Freshness } from "@/lib/mobilita/roma-live-model";
 
@@ -18,6 +19,8 @@ export type DisplayVehicle = {
 export type LayerPalette = {
   vehicle: string;
   vehicleText: string;
+  /** Line number on the white pill next to each marker. */
+  labelText: string;
   muted: string;
   halo: string;
   stale: string;
@@ -33,6 +36,20 @@ type Animated = DisplayVehicle & {
 type Hit = { id: string; x: number; y: number; r: number };
 
 const ANIMATION_MS = 1600;
+
+type IconNode = readonly (readonly [string, Record<string, unknown>])[];
+
+/** Bus pictogram from the site's icon set, as canvas paths (24×24 viewBox). */
+let busPaths: Path2D[] | null = null;
+function busGlyph(): Path2D[] {
+  if (!busPaths) {
+    busPaths = (Bus02Icon as unknown as IconNode)
+      .map(([, attrs]) => attrs.d)
+      .filter((d): d is string => typeof d === "string")
+      .map((d) => new Path2D(d));
+  }
+  return busPaths;
+}
 const ORDER: Record<Emphasis, number> = { muted: 0, normal: 1, selected: 2, followed: 3 };
 
 /**
@@ -173,25 +190,28 @@ export class VehicleLayer {
     const occupied: [number, number, number, number][] = [];
     const free = (x0: number, y0: number, x1: number, y1: number) =>
       !occupied.some(([a, b, c, d]) => x0 < c && x1 > a && y0 < d && y1 > b);
-    // Pills only where they can be read; elsewhere a directional dot.
-    const pillZoom = { followed: 0, selected: 11.5, normal: 14, muted: 99 } as const;
-    // Draw back-to-front, but reserve label space front-to-back.
-    const pills = new Set<string>();
+    // Transit-app markers (bus pictogram + line) where they can be read and
+    // do not overlap; elsewhere a directional dot. Always screen-aligned, so
+    // they stay crisp in 2D and in the tilted 3D view.
+    const markerZoom = { followed: 0, selected: 11.5, normal: 13.5, muted: 99 } as const;
+    const markers = new Set<string>();
+    // Draw back-to-front, but reserve space front-to-back.
     for (let i = visible.length - 1; i >= 0; i -= 1) {
       const { item, x, y } = visible[i]!;
       const hovered = item.id === this.hover;
-      if (zoom < pillZoom[item.emphasis] && !hovered) continue;
-      const w = this.pillWidth(item.text);
-      const box: [number, number, number, number] = [x - w / 2 - 2, y - 11, x + w / 2 + 2, y + 11];
+      if (zoom < markerZoom[item.emphasis] && !hovered) continue;
+      const r = this.markerRadius(item, zoom, hovered);
+      const w = this.labelWidth(item.text);
+      const box: [number, number, number, number] = [x - r - 5, y - r - 5, x + r + w + 2, y + r + 5];
       if (item.emphasis === "followed" || hovered || free(...box)) {
         occupied.push(box);
-        pills.add(item.id);
+        markers.add(item.id);
       }
     }
     if (this.user) this.drawUser(this.user);
     for (const { item, x, y } of visible) {
       const hovered = item.id === this.hover;
-      if (pills.has(item.id)) this.drawPill(item, x, y, bearing, hovered);
+      if (markers.has(item.id)) this.drawMarker(item, x, y, bearing, zoom, hovered);
       else this.drawDot(item, x, y, bearing, zoom, hovered);
     }
     if (animating) {
@@ -200,9 +220,14 @@ export class VehicleLayer {
     }
   }
 
-  private pillWidth(text: string) {
+  private markerRadius(item: Animated, zoom: number, hovered: boolean) {
+    const base = 10.5 * Math.min(1.25, Math.max(1, 1 + (zoom - 15) * 0.1));
+    return item.emphasis === "followed" ? base + 2.5 : hovered ? base + 1.5 : base;
+  }
+
+  private labelWidth(text: string) {
     this.ctx.font = "700 11px system-ui, -apple-system, 'Segoe UI', sans-serif";
-    return Math.max(22, Math.ceil(this.ctx.measureText(text).width) + 12);
+    return Math.max(14, Math.ceil(this.ctx.measureText(text).width)) + 16;
   }
 
   private fillFor(item: Animated): string {
@@ -266,56 +291,89 @@ export class VehicleLayer {
     this.hits.push({ id: item.id, x, y, r: Math.max(9, r + 5) });
   }
 
-  private drawPill(item: Animated, x: number, y: number, bearing: number, hovered: boolean) {
+  /**
+   * Round marker in the status colour with the bus pictogram, a heading notch
+   * on its rim and the line number in a pill attached to the right.
+   */
+  private drawMarker(item: Animated, x: number, y: number, bearing: number, zoom: number, hovered: boolean) {
     const { ctx, palette } = this;
     const followed = item.emphasis === "followed";
-    const w = this.pillWidth(item.text) + (followed ? 6 : 0);
-    const h = followed ? 22 : 18;
+    const stale = item.freshness === "stale";
+    const r = this.markerRadius(item, zoom, hovered);
     const fill = this.fillFor(item);
+    const ink = stale ? fill : palette.vehicleText;
     ctx.globalAlpha = this.alphaFor(item);
     if (followed) {
-      // Soft halo so the tracked bus is found at a glance.
       ctx.beginPath();
-      ctx.arc(x, y, w / 2 + 12, 0, Math.PI * 2);
+      ctx.arc(x, y, r + 11, 0, Math.PI * 2);
       ctx.fillStyle = fill;
-      ctx.globalAlpha = 0.16;
+      ctx.globalAlpha = 0.18;
       ctx.fill();
       ctx.globalAlpha = 1;
     }
-    if (item.heading !== null) {
-      const reach = Math.abs(Math.sin(((item.heading - bearing) * Math.PI) / 180)) * (w / 2 - h / 2) + h / 2;
-      this.pointer(x, y, item.heading, bearing, reach - 1, followed ? 6 : 5);
-      ctx.fillStyle = fill;
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = palette.halo;
-      ctx.stroke();
-    }
+    // Line pill first, so the disc overlaps its left end.
+    const w = this.labelWidth(item.text);
+    const ph = Math.round(r * 1.45);
+    const px = x + r * 0.35;
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.22)";
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 1;
     ctx.beginPath();
-    ctx.roundRect(x - w / 2, y - h / 2, w, h, h / 2);
-    if (item.freshness === "stale") {
-      ctx.fillStyle = palette.halo;
-      ctx.fill();
-      ctx.setLineDash([3, 2]);
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = fill;
-      ctx.stroke();
-      ctx.setLineDash([]);
-    } else {
-      ctx.fillStyle = fill;
-      ctx.fill();
-      ctx.lineWidth = hovered || followed ? 2 : 1.5;
-      ctx.strokeStyle = palette.halo;
-      ctx.stroke();
-    }
-    // Repaint the pointer base over the pill outline so they read as one shape.
+    ctx.roundRect(px, y - ph / 2, w + r * 0.65, ph, ph / 2);
+    ctx.fillStyle = palette.halo;
+    ctx.fill();
+    ctx.restore();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = fill;
+    ctx.globalAlpha = Math.min(1, this.alphaFor(item) + 0.1);
+    ctx.stroke();
     ctx.font = `700 ${followed ? 12 : 11}px system-ui, -apple-system, 'Segoe UI', sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = item.freshness === "stale" ? fill : palette.vehicleText;
-    ctx.fillText(item.text, x, y + 0.5);
+    ctx.fillStyle = palette.labelText;
+    ctx.fillText(item.text, px + r * 0.65 + w / 2, y + 0.5);
+    ctx.globalAlpha = this.alphaFor(item);
+    // Heading notch on the rim.
+    if (item.heading !== null) {
+      this.pointer(x, y, item.heading, bearing, r + 0.5, Math.max(4, r * 0.42));
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = palette.halo;
+      ctx.stroke();
+    }
+    // Disc with ring and soft shadow.
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetY = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = stale ? palette.halo : fill;
+    ctx.fill();
+    ctx.restore();
+    ctx.lineWidth = 2;
+    if (stale) ctx.setLineDash([3, 2]);
+    ctx.strokeStyle = stale ? fill : palette.halo;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Bus pictogram (Hugeicons Bus02, stroked).
+    const size = r * 1.25;
+    ctx.save();
+    ctx.translate(x - size / 2, y - size / 2);
+    ctx.scale(size / 24, size / 24);
+    ctx.lineWidth = 2.1;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = ink;
+    for (const path of busGlyph()) ctx.stroke(path);
+    ctx.restore();
     ctx.globalAlpha = 1;
-    this.hits.push({ id: item.id, x, y, r: Math.max(14, w / 2 + 4) });
+    this.hits.push({ id: item.id, x, y, r: r + 5 });
+    this.hits.push({ id: item.id, x: px + (w + r * 0.65) / 2, y, r: ph / 2 + 2 });
   }
 
   private drawUser([lon, lat]: [number, number]) {

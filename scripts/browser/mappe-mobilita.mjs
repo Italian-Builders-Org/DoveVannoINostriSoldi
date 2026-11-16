@@ -129,6 +129,22 @@ function romaArrivalsMock({ unavailable = false } = {}) {
   return { pathname: "/api/mobilita/roma/arrivals", status: unavailable ? 504 : 200, body };
 }
 
+// Punctuality summary: one bus per band, so every percentage is checkable.
+function romaPunctualityMock({ unavailable = false } = {}) {
+  const body = unavailable
+    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    : {
+        status: "ok",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+        feedTimestamp: Math.floor(Date.now() / 1000) - 10,
+        stale: false,
+        total: 20,
+        buckets: { early: 2, ontime: 10, late: 4, verylate: 2, severe: 2, unknown: 0 },
+      };
+  return { pathname: "/api/mobilita/roma/punctuality", status: unavailable ? 504 : 200, body };
+}
+
 // Coverage is asserted only while today is inside the published calendar.
 function coverageCoversToday() {
   const first = ROMA_ASSET_MANIFEST.match(/"firstDate": "([0-9-]+)"/)?.[1];
@@ -237,7 +253,7 @@ const OFFLINE_TILES = {
 function expectedLiveAbort(failure) {
   return (
     failure.includes("net::ERR_ABORTED") &&
-    /\/mappe\/mobilita\/roma\/(network|coverage)-[0-9a-f]{12}\.json|\/mappe\/mobilita\/roma\/coverage\/[0-9a-f]{12}\.json|\/api\/mobilita\/roma\/(vehicles|arrivals)|tiles\.openfreemap\.org/.test(
+    /\/mappe\/mobilita\/roma\/(network|coverage)-[0-9a-f]{12}\.json|\/mappe\/mobilita\/roma\/coverage\/[0-9a-f]{12}\.json|\/api\/mobilita\/roma\/(vehicles|arrivals|punctuality)|tiles\.openfreemap\.org/.test(
       failure,
     )
   );
@@ -431,7 +447,7 @@ try {
       pathname: "/mappe/mobilita",
       width,
       readySelector: "#mobilita-viewer",
-      requestMocks: [mock, romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      requestMocks: [mock, romaArrivalsMock(), romaPunctualityMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
       expectedFailure: expectedLiveAbort,
       async validate(page) {
         await openRomaLive(page);
@@ -486,7 +502,7 @@ try {
       pathname: "/mappe/mobilita?vista=bus-live",
       width,
       readySelector: "aside",
-      requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      requestMocks: [romaLiveMock(), romaArrivalsMock(), romaPunctualityMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
       expectedFailure: expectedLiveAbort,
       async validate(page) {
         await page.waitForFunction(
@@ -499,6 +515,14 @@ try {
             { timeout: 30_000 },
           );
         }
+        // Punctuality: five bands with percentages from the summary feed.
+        await page.waitForFunction(
+          () => {
+            const text = document.querySelector('[aria-labelledby="punct-title"]')?.textContent ?? "";
+            return /in orario \(±2 min\)50%/.test(text) && /ritardo 5-10 min10%/.test(text) && /ritardo oltre 10 min10%/.test(text);
+          },
+          { timeout: 30_000 },
+        );
         // Stop search by code (exact), then the board shows the mock arrival.
         await page.type("#roma-live-search", stop[0]);
         await page.waitForSelector('ul[aria-label="Fermate"] button', { timeout: 30_000 });
@@ -530,6 +554,15 @@ try {
           await page.$eval('[aria-label="Colore dei mezzi"] button:nth-child(2)', (b) => b.getAttribute("aria-pressed")),
           "true",
         );
+        // 2D/3D: the switch is exposed and the camera tilts (compass shows pitch).
+        await page.click('[aria-label="Prospettiva della mappa"] button:nth-child(2)');
+        assert.equal(
+          await page.$eval('[aria-label="Prospettiva della mappa"] button:nth-child(2)', (b) => b.getAttribute("aria-pressed")),
+          "true",
+        );
+        await page.waitForFunction(() => (() => Number(/rotateX\(([-\d.e]+)deg\)/.exec(document.querySelector(".maplibregl-ctrl-compass .maplibregl-ctrl-icon")?.getAttribute("style") ?? "")?.[1] ?? NaN))() > 30, { timeout: 10_000 });
+        await page.click('[aria-label="Prospettiva della mappa"] button:nth-child(1)');
+        await page.waitForFunction(() => Math.abs((() => Number(/rotateX\(([-\d.e]+)deg\)/.exec(document.querySelector(".maplibregl-ctrl-compass .maplibregl-ctrl-icon")?.getAttribute("style") ?? "")?.[1] ?? NaN))()) < 0.5, { timeout: 10_000 });
         assert.equal(
           await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
           true,
@@ -547,7 +580,7 @@ try {
       pathname: "/mappe/mobilita",
       width,
       readySelector: "#mobilita-viewer",
-      requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      requestMocks: [romaLiveMock(), romaArrivalsMock(), romaPunctualityMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
       expectedFailure: expectedLiveAbort,
       async validate(page) {
         const frame = await waitForViewerFrame(page);
@@ -587,7 +620,7 @@ try {
     pathname: "/mappe/mobilita",
     width: 390,
     readySelector: "header details > summary",
-    requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+    requestMocks: [romaLiveMock(), romaArrivalsMock(), romaPunctualityMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
     expectedFailure: expectedLiveAbort,
     async validate(page) {
       await page.setJavaScriptEnabled(false);
@@ -615,13 +648,14 @@ try {
     requestMocks: [
       romaLiveMock({ unavailable: true }),
       romaArrivalsMock({ unavailable: true }),
+      romaPunctualityMock({ unavailable: true }),
       OFFLINE_TILEJSON,
       OFFLINE_TILES,
     ],
     // The simulated upstream outage is the point of this scenario.
     expectedFailure: (failure) =>
       expectedLiveAbort(failure) ||
-      (/\b504\b/.test(failure) && /\/api\/mobilita\/roma\/(vehicles|arrivals)/.test(failure)),
+      (/\b504\b/.test(failure) && /\/api\/mobilita\/roma\/(vehicles|arrivals|punctuality)/.test(failure)),
     async validate(page) {
       await page.waitForFunction(
         () => /non risponde/.test(document.querySelector("aside")?.textContent ?? ""),

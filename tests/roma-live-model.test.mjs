@@ -224,16 +224,21 @@ test("searchStops matches names without accents and codes exactly, ranked by pre
   assert.deepEqual(model.searchStops(network, "x"), [], "una lettera non basta");
 });
 
-test("delayBucket separates early, on time, late and unknown", () => {
+test("delayBucket separates early, on time and three lateness bands", () => {
   assert.equal(model.delayBucket(-180), "early");
+  assert.equal(model.delayBucket(-120), "ontime");
   assert.equal(model.delayBucket(-30), "ontime");
-  assert.equal(model.delayBucket(100), "ontime");
-  assert.equal(model.delayBucket(200), "late");
-  assert.equal(model.delayBucket(400), "verylate");
+  assert.equal(model.delayBucket(120), "ontime");
+  assert.equal(model.delayBucket(121), "late");
+  assert.equal(model.delayBucket(300), "late");
+  assert.equal(model.delayBucket(301), "verylate");
+  assert.equal(model.delayBucket(600), "verylate");
+  assert.equal(model.delayBucket(601), "severe");
   assert.equal(model.delayBucket(null), "unknown");
   assert.equal(model.formatDelay(-180), "3 min in anticipo");
   assert.equal(model.formatDelay(30), "in orario");
   assert.equal(model.formatDelay(400), "+7 min");
+  assert.equal(model.formatDelay(900), "+15 min");
   assert.equal(model.formatDelay(null), null);
 });
 

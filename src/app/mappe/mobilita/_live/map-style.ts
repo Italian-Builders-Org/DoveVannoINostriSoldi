@@ -22,6 +22,7 @@ type Palette = {
   waterLabel: string;
   building: string;
   buildingOutline: string;
+  building3d: string;
   minor: string;
   major: string;
   majorCasing: string;
@@ -43,6 +44,7 @@ const LIGHT: Palette = {
   waterLabel: "#5d7d8f",
   building: "#e4e1da",
   buildingOutline: "#d6d2c9",
+  building3d: "#dedad2",
   minor: "#ffffff",
   major: "#ffffff",
   majorCasing: "#d9d5cc",
@@ -64,6 +66,7 @@ const DARK: Palette = {
   waterLabel: "#7f9db0",
   building: "#22272d",
   buildingOutline: "#2a3037",
+  building3d: "#2b3138",
   minor: "#2a3036",
   major: "#363d45",
   majorCasing: "#1f2429",
@@ -152,6 +155,21 @@ export function basemapStyle(theme: "light" | "dark"): StyleSpecification {
           "fill-color": c.building,
           "fill-outline-color": c.buildingOutline,
           "fill-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0, 15, 1],
+        },
+      },
+      {
+        // Shown only in the 3D view (toggled with setLayoutProperty).
+        id: "building-3d",
+        type: "fill-extrusion",
+        source: "osm",
+        "source-layer": "building",
+        minzoom: 14,
+        layout: { visibility: "none" },
+        paint: {
+          "fill-extrusion-color": c.building3d,
+          "fill-extrusion-height": ["coalesce", ["get", "render_height"], 10],
+          "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
+          "fill-extrusion-opacity": 0.85,
         },
       },
       {

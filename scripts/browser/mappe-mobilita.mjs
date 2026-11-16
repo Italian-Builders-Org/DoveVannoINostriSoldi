@@ -174,6 +174,43 @@ function romaLiveMock({ unavailable = false } = {}) {
   };
 }
 
+// Real-time entry point: header disclosure "Tempo reale" → city "Roma".
+async function clickByText(page, selector, text) {
+  const handle = await page.waitForFunction(
+    (sel, needle) => [...document.querySelectorAll(sel)].find((el) => el.textContent?.includes(needle)) ?? null,
+    { timeout: 15_000 },
+    selector,
+    text,
+  );
+  await handle.asElement().click();
+}
+
+async function openRomaLive(page) {
+  await clickByText(page, '[data-immersive-page="mobilita"] header details > summary', "Tempo reale");
+  // The city panel must open inside the viewport (it overflowed left on phones).
+  const box = await page.$eval('[data-immersive-page="mobilita"] header details[open] > div', (node) => {
+    const rect = node.getBoundingClientRect();
+    return { left: rect.left, right: rect.right, width: innerWidth };
+  });
+  assert.ok(box.left >= 0 && box.right <= box.width + 1, `pannello tempo reale fuori schermo: ${JSON.stringify(box)}`);
+  await clickByText(page, '[data-immersive-page="mobilita"] header details[open] button', "Roma");
+  await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "bus-live");
+}
+
+// The explorer must stay laid out under the live view: if it is collapsed
+// (display:none) its camera becomes NaN and the map is blank on return.
+async function assertExplorerCovered(page, covered) {
+  const state = await page.$eval("#mobilita-viewer", (frame) => ({
+    visibility: getComputedStyle(frame).visibility,
+    inert: frame.inert,
+    width: frame.getBoundingClientRect().width,
+    height: frame.getBoundingClientRect().height,
+  }));
+  assert.ok(state.width > 200 && state.height > 200, `iframe velocità senza dimensioni: ${JSON.stringify(state)}`);
+  assert.equal(state.visibility === "hidden", covered, `visibilità iframe velocità: ${JSON.stringify(state)}`);
+  assert.equal(state.inert, covered, "iframe velocità raggiungibile da tastiera nella vista live");
+}
+
 // CI has no outbound network: the external basemap answers with an empty but
 // valid TileJSON, tiles and glyphs, so the map and the live layer still load.
 const TILE_HOST = "https://tiles.openfreemap.org/";
@@ -397,17 +434,12 @@ try {
       requestMocks: [mock, romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
       expectedFailure: expectedLiveAbort,
       async validate(page) {
-        await page.click('[aria-label="Vista della mappa"] button:nth-child(2)');
-        await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "bus-live");
+        await openRomaLive(page);
         await page.waitForFunction(
           () => /In diretta · 1 autobus/.test(document.querySelector("aside")?.textContent ?? ""),
           { timeout: 30_000 },
         );
-        assert.equal(
-          await page.$eval("#mobilita-viewer", (frame) => frame.hidden),
-          true,
-          "iframe velocità visibile nella vista live",
-        );
+        await assertExplorerCovered(page, true);
         await page.type("#roma-live-search", "170");
         // The network asset may still be loading: submit once 170 is listed.
         await page.waitForFunction(
@@ -441,11 +473,7 @@ try {
         });
         await page.goBack();
         await page.waitForFunction(() => !new URL(location.href).searchParams.has("vista"));
-        assert.equal(
-          await page.$eval("#mobilita-viewer", (frame) => frame.hidden),
-          false,
-          "indietro non riporta alle velocità",
-        );
+        await assertExplorerCovered(page, false);
       },
     });
   }
@@ -508,6 +536,45 @@ try {
           `overflow orizzontale fermata ${width}px`,
         );
         await page.screenshot({ path: path.join(output, `mobilita-bus-stop-${width}.png`), fullPage: false });
+      },
+    });
+  }
+
+  for (const width of [390, 1280]) {
+    await runScenario(browser, {
+      suite: "mappe-mobilita",
+      label: `Ritorno dal tempo reale alle velocità ${width}px`,
+      pathname: "/mappe/mobilita",
+      width,
+      readySelector: "#mobilita-viewer",
+      requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+      expectedFailure: expectedLiveAbort,
+      async validate(page) {
+        const frame = await waitForViewerFrame(page);
+        await selectMilanoNetwork(frame, "milano");
+        const scale = () => frame.$eval("#scale-bar", (node) => node.textContent?.trim() ?? "");
+        assert.match(await scale(), /^\d[\d.,]* (m|km)$/, "scala iniziale non valida");
+        await openRomaLive(page);
+        await page.waitForSelector("aside", { timeout: 30_000 });
+        await assertExplorerCovered(page, true);
+        // Back with the header button (the reported bug), then again via history.
+        await clickByText(page, '[data-immersive-page="mobilita"] header button', "Velocità");
+        await page.waitForFunction(() => !new URL(location.href).searchParams.has("vista"));
+        await assertExplorerCovered(page, false);
+        await frame.waitForFunction(
+          () => /^\d[\d.,]* (m|km)$/.test(document.querySelector("#scale-bar")?.textContent?.trim() ?? ""),
+          { timeout: 10_000 },
+        );
+        assert.match(await frame.$eval("#map-title", (n) => n.textContent ?? ""), /Milano/, "città persa al ritorno");
+        await openRomaLive(page);
+        await page.waitForSelector("aside", { timeout: 30_000 });
+        await page.goBack();
+        await page.waitForFunction(() => !new URL(location.href).searchParams.has("vista"));
+        await frame.waitForFunction(
+          () => /^\d[\d.,]* (m|km)$/.test(document.querySelector("#scale-bar")?.textContent?.trim() ?? ""),
+          { timeout: 10_000 },
+        );
+        await page.screenshot({ path: path.join(output, `mobilita-ritorno-velocita-${width}.png`), fullPage: false });
       },
     });
   }

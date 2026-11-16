@@ -166,53 +166,136 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, #1f8a4c 22%, transparent);
 }
 
-.viewTabs {
+.viewBody {
+  position: relative;
   display: flex;
-  flex: 0 1 auto;
-  gap: 3px;
-  padding: 3px;
-  border-radius: 12px;
-  background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-300);
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.viewTabs button {
+/* Covered by the live view but never collapsed: a 0×0 viewport would turn
+   the explorer camera into NaN and leave a blank map on return. */
+.viewerFrame[data-covered="true"] {
+  visibility: hidden;
+}
+
+.liveDisclosure > summary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 7px;
-  min-height: 38px;
-  padding: 6px 14px;
-  border: 0;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--color-neutral-700);
+}
+
+.livePanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(20rem, calc(100vw - 24px));
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 10px;
+  background: var(--color-raised);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--color-neutral-900) 12%, transparent);
+  z-index: 40;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.livePanel h2 {
+  font-size: 14px;
+}
+
+.livePanel p {
   font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
+  color: var(--color-neutral-700);
+}
+
+.liveCities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.liveCities button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 10px;
+  background: var(--color-raised);
+  text-align: left;
   cursor: pointer;
 }
 
-.viewTabs button[aria-pressed="true"] {
-  background: var(--color-raised);
-  color: var(--color-text);
-  box-shadow: var(--shadow-sm);
+.liveCities button:hover {
+  border-color: var(--color-neutral-500);
+  background: var(--color-neutral-100);
 }
 
-.viewTabs button:focus-visible {
+.liveCities button:focus-visible,
+.backToSpeeds:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
-.tabShort {
+.liveCities strong {
+  display: block;
+  font-size: 14px;
+}
+
+.liveCities small {
+  display: block;
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.livePanel .liveNote {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.backToSpeeds {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9px;
+  background: var(--color-raised);
+  font-size: 12px;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.labelShort {
   display: none;
 }
 
+.crumb {
+  margin-left: 6px;
+  color: var(--color-text);
+  font-weight: 650;
+}
+
+.crumb > span {
+  margin-right: 4px;
+  color: var(--color-neutral-500);
+}
+
 .liveView {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   display: flex;
-  flex: 1 1 auto;
-  min-height: 0;
+  background: var(--color-bg);
 }
 
 .liveLoading {
@@ -232,10 +315,6 @@
   color: var(--color-neutral-600);
 }
 
-.viewerFrame[hidden] {
-  display: none;
-}
-
 .viewerFrame {
   flex: 1 1 auto;
   width: 100%;
@@ -252,12 +331,12 @@
   overflow: hidden !important;
 }
 
-@media (max-width: 1080px) {
-  .tabLong {
+@media (max-width: 560px) {
+  .labelLong {
     display: none;
   }
 
-  .tabShort {
+  .labelShort {
     display: inline;
   }
 }
@@ -266,15 +345,6 @@
   .immersiveChrome {
     flex-wrap: wrap;
     row-gap: var(--space-2);
-  }
-
-  .viewTabs {
-    order: 3;
-    flex: 1 1 100%;
-  }
-
-  .viewTabs button {
-    flex: 1 1 0;
   }
 
   .immersivePage {
@@ -316,5 +386,14 @@
 
   .hideOnPhone {
     display: none;
+  }
+}
+
+/* On phones the real-time button is the first action at the left edge:
+   open its panel rightwards so it never leaves the viewport. */
+@media (max-width: 719px) {
+  .livePanel {
+    left: 0;
+    right: auto;
   }
 }

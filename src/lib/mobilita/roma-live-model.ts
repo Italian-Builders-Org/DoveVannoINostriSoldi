@@ -468,15 +468,22 @@ export function searchStops(network: RomaNetwork, query: string, limit = 8): Net
   return [...exact, ...prefix.sort(busier), ...contains.sort(busier)].slice(0, limit);
 }
 
-export type DelayBucket = "early" | "ontime" | "late" | "verylate" | "unknown";
+export type DelayBucket = "early" | "ontime" | "late" | "verylate" | "severe" | "unknown";
 
-/** Seconds vs timetable → bucket. Up to 2 min either way counts as on time. */
+/** Display order, from best to worst, then unknown. */
+export const DELAY_BUCKETS: readonly DelayBucket[] = ["ontime", "early", "late", "verylate", "severe", "unknown"];
+
+/**
+ * Seconds vs timetable → band. Up to 2 min either way counts as on time;
+ * lateness is split 2-5, 5-10 and over 10 minutes (bounds inclusive below).
+ */
 export function delayBucket(delay: number | null | undefined): DelayBucket {
   if (delay === null || delay === undefined || !Number.isFinite(delay)) return "unknown";
   if (delay < -120) return "early";
   if (delay <= 120) return "ontime";
   if (delay <= 300) return "late";
-  return "verylate";
+  if (delay <= 600) return "verylate";
+  return "severe";
 }
 
 export function formatDelay(delay: number | null | undefined): string | null {

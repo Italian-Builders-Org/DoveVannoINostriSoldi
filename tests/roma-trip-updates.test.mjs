@@ -137,3 +137,58 @@ test("loadRomaArrivals reports staleness and fails closed upstream", async () =>
     /upstream_500/,
   );
 });
+
+test("punctualitySummary counts each live bus once by its current delay band", () => {
+  const trip = (t, v, d, c) => ({ t, v, d, c, s: [], a: [], y: [] });
+  const summary = lib.punctualitySummary([
+    trip("a", "1", 0),
+    trip("b", "2", 200),
+    trip("c", "3", 400),
+    trip("d", "4", 900),
+    trip("e", "5", -400),
+    trip("f", "6", null),
+    // Same vehicle on a second trip (next run already predicted): counted once.
+    trip("g", "1", 700),
+    // No vehicle: a scheduled trip without a bus on the road is not a bus.
+    trip("h", undefined, 0),
+    // Cancelled trips are not service.
+    trip("i", "9", 0, true),
+  ]);
+  assert.equal(summary.total, 6);
+  assert.deepEqual(summary.buckets, { early: 1, ontime: 1, late: 1, verylate: 1, severe: 1, unknown: 1 });
+});
+
+test("a transient network or 5xx failure is retried once, then fails closed", async () => {
+  const bytes = feed([tripUpdate(TRIP_64)]);
+  let calls = 0;
+  const flaky = async () => {
+    calls += 1;
+    if (calls === 1) throw new TypeError("fetch failed");
+    return okFetch(bytes)();
+  };
+  const view = await lib.loadRomaArrivals(flaky, () => (FEED_TS + 20) * 1000);
+  assert.equal(view.status, "ok");
+  assert.equal(calls, 2);
+
+  let fiveHundreds = 0;
+  await assert.rejects(
+    () =>
+      lib.loadRomaArrivals(async () => {
+        fiveHundreds += 1;
+        return { ok: false, status: 503, headers: new Headers(), arrayBuffer: async () => new ArrayBuffer(0) };
+      }),
+    /upstream_503/,
+  );
+  assert.equal(fiveHundreds, 2, "5xx ritentato una sola volta");
+
+  let notFound = 0;
+  await assert.rejects(
+    () =>
+      lib.loadRomaArrivals(async () => {
+        notFound += 1;
+        return { ok: false, status: 404, headers: new Headers(), arrayBuffer: async () => new ArrayBuffer(0) };
+      }),
+    /upstream_404/,
+  );
+  assert.equal(notFound, 1, "4xx non va ritentato");
+});

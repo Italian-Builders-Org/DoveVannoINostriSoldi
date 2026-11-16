@@ -191,3 +191,16 @@ test("loadRomaRealtimeVehicles fails closed on upstream errors and oversize bodi
     /upstream_size/,
   );
 });
+
+test("vehicle feed retries one transient network failure", async () => {
+  const { loadRomaRealtimeVehicles } = await loadParser();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  let calls = 0;
+  const view = await loadRomaRealtimeVehicles(async (...args) => {
+    calls += 1;
+    if (calls === 1) throw new TypeError("fetch failed");
+    return okFetch(bytes)(...args);
+  }, () => 1_794_840_620_000);
+  assert.equal(view.vehicleCount, 1);
+  assert.equal(calls, 2);
+});

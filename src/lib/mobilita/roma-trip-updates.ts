@@ -9,15 +9,14 @@
  * 2 time int64}.
  */
 import {
-  FETCH_TIMEOUT_MS,
-  MAX_FEED_BYTES,
+  fetchFeedBytes,
   ROMA_FEED_STALE_SECONDS,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
-  ROMA_RT_USER_AGENT,
   type FetchLike,
 } from "@/lib/mobilita/roma-gtfs-realtime";
 import { fields, readBytes, readHeaderTimestamp, readInt32, readVarint, text } from "@/lib/mobilita/protobuf-wire";
+import { delayBucket, type DelayBucket } from "@/lib/mobilita/roma-live-model";
 
 export const ROMA_TRIP_UPDATES_URL =
   "https://romamobilita.it/sites/default/files/rome_rtgtfs_trip_updates_feed.pb";
@@ -211,17 +210,7 @@ export async function loadRomaArrivals(
   fetchImpl: FetchLike = fetch,
   now: () => number = Date.now,
 ): Promise<RomaArrivalsView> {
-  const response = await fetchImpl(ROMA_TRIP_UPDATES_URL, {
-    headers: { "User-Agent": ROMA_RT_USER_AGENT, Accept: "application/octet-stream,*/*" },
-    redirect: "follow",
-    cache: "no-store",
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-  });
-  if (!response.ok) throw new Error(`upstream_${response.status}`);
-  const declared = Number(response.headers?.get("content-length") ?? "");
-  if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
+  const bytes = await fetchFeedBytes(ROMA_TRIP_UPDATES_URL, fetchImpl);
   const parsed = parseRomaTripUpdatesFeed(bytes);
   const fetchedMs = now();
   const compact = compactArrivals(parsed, fetchedMs / 1000);
@@ -238,4 +227,24 @@ export async function loadRomaArrivals(
     cancelledCount: compact.trips.filter((t) => t.c).length,
     ...compact,
   };
+}
+
+export type PunctualitySummary = { total: number; buckets: Record<DelayBucket, number> };
+
+/**
+ * Buses on the road by current delay band: one count per vehicle (its trip
+ * with the nearest upcoming stop), cancelled trips and trips without a
+ * vehicle excluded. A missing delay is "unknown", never "on time".
+ */
+export function punctualitySummary(trips: readonly CompactTrip[]): PunctualitySummary {
+  const current = new Map<string, CompactTrip>();
+  for (const trip of trips) {
+    if (!trip.v || trip.c) continue;
+    const previous = current.get(trip.v);
+    const next = trip.a[0] ?? Infinity;
+    if (!previous || next < (previous.a[0] ?? Infinity)) current.set(trip.v, trip);
+  }
+  const buckets: Record<DelayBucket, number> = { early: 0, ontime: 0, late: 0, verylate: 0, severe: 0, unknown: 0 };
+  for (const trip of current.values()) buckets[delayBucket(trip.d)] += 1;
+  return { total: current.size, buckets };
 }

@@ -212,21 +212,51 @@ export type FetchLike = (
   init?: RequestInit,
 ) => Promise<Pick<Response, "ok" | "status" | "headers" | "arrayBuffer">>;
 
+const RETRY_DELAY_MS = 250;
+
+/**
+ * Downloads a GTFS-RT feed with size limits. A network error or 5xx is retried
+ * once after a short pause (the upstream connection occasionally drops); 4xx,
+ * timeouts and oversize bodies fail at once.
+ */
+export async function fetchFeedBytes(url: string, fetchImpl: FetchLike): Promise<Uint8Array> {
+  for (let attempt = 1; ; attempt += 1) {
+    let response: Awaited<ReturnType<FetchLike>>;
+    try {
+      response = await fetchImpl(url, {
+        headers: { "User-Agent": ROMA_RT_USER_AGENT, Accept: "application/octet-stream,*/*" },
+        redirect: "follow",
+        cache: "no-store",
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
+    } catch (error) {
+      const name = error instanceof Error ? error.name : "";
+      if (attempt === 1 && name !== "TimeoutError" && name !== "AbortError") {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+        continue;
+      }
+      throw error;
+    }
+    if (!response.ok) {
+      if (attempt === 1 && response.status >= 500) {
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+        continue;
+      }
+      throw new Error(`upstream_${response.status}`);
+    }
+    const declared = Number(response.headers?.get("content-length") ?? "");
+    if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
+    return bytes;
+  }
+}
+
 export async function loadRomaRealtimeVehicles(
   fetchImpl: FetchLike = fetch,
   now: () => number = Date.now,
 ): Promise<RomaRealtimeVehiclesView> {
-  const response = await fetchImpl(ROMA_VEHICLE_POSITIONS_URL, {
-    headers: { "User-Agent": ROMA_RT_USER_AGENT, Accept: "application/octet-stream,*/*" },
-    redirect: "follow",
-    cache: "no-store",
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-  });
-  if (!response.ok) throw new Error(`upstream_${response.status}`);
-  const declared = Number(response.headers?.get("content-length") ?? "");
-  if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
+  const bytes = await fetchFeedBytes(ROMA_VEHICLE_POSITIONS_URL, fetchImpl);
   const { feedTimestamp, vehicles } = parseRomaVehiclePositionsFeed(bytes);
   const fetchedMs = now();
   const feedAgeSeconds =

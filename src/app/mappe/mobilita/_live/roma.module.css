@@ -988,7 +988,8 @@
   background: var(--color-warning-bg);
 }
 
-.delayChip[data-bucket="verylate"] {
+.delayChip[data-bucket="verylate"],
+.delayChip[data-bucket="severe"] {
   color: var(--color-critical);
   border-color: var(--color-critical-border);
   background: var(--color-critical-bg);
@@ -1107,5 +1108,138 @@
     left: auto;
     right: 10px;
     padding: 4px;
+  }
+}
+
+.delayChip[data-bucket="severe"] {
+  font-weight: 750;
+}
+
+.linkButton {
+  min-height: 32px;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.linkButton:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.punctualityBar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-neutral-200);
+}
+
+.punctualityBar > span {
+  display: block;
+  height: 100%;
+}
+
+.punctualityBar > span + span {
+  box-shadow: inset 1px 0 0 var(--color-raised);
+}
+
+.punctualityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.punctualityList li {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.punctualityList strong {
+  font-weight: 700;
+  min-width: 3ch;
+  text-align: right;
+}
+
+.punctualityCount {
+  min-width: 4ch;
+  text-align: right;
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.legendPercent {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The legend never slides under the panel: it wraps within the map area. */
+@media (min-width: 900px) {
+  .legend {
+    left: auto;
+    width: max-content;
+    max-width: calc(100% - 430px);
+    justify-content: flex-end;
+  }
+}
+
+.mapControls {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--live-panel-bg);
+  border: 1px solid var(--color-neutral-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.legend {
+  top: 62px;
+}
+
+.legend:not(:has(> span > span)) {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .mapControls {
+    top: 10px;
+    right: 10px;
+    left: auto;
+    padding: 4px;
+  }
+
+  .legend {
+    display: none;
+  }
+}
+
+/* Solid surfaces: markers must not show through the controls or legend. */
+.mapControls,
+.legend {
+  background: var(--color-raised);
+  backdrop-filter: none;
+}
+
+@media (min-width: 900px) {
+  .legend {
+    border-radius: 12px;
+    padding: 7px 12px;
   }
 }

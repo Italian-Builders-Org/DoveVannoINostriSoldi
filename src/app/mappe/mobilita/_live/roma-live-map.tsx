@@ -19,6 +19,7 @@ import type {
 import {
   activeByRoute,
   buildNetwork,
+  DELAY_BUCKETS,
   delayBucket,
   displayName,
   formatAge,
@@ -88,22 +89,54 @@ type ArrivalsState =
 type StopArrival = { trip: CompactTrip; eta: number; delay: number | null };
 
 const DELAY_COLORS: Record<Theme, Record<DelayBucket, string>> = {
-  light: { early: "#2563eb", ontime: "#1f8a4c", late: "#c58a12", verylate: "#b42332", unknown: "#8f9ba6" },
-  dark: { early: "#60a5fa", ontime: "#5fd18f", late: "#e9bc68", verylate: "#ff7a6b", unknown: "#59636e" },
+  light: {
+    early: "#2563eb",
+    ontime: "#1f8a4c",
+    late: "#e07a00",
+    verylate: "#d62828",
+    severe: "#7a1020",
+    unknown: "#8f9ba6",
+  },
+  dark: {
+    early: "#60a5fa",
+    ontime: "#5fd18f",
+    late: "#f5a524",
+    verylate: "#ff6b5e",
+    severe: "#ff9fb0",
+    unknown: "#59636e",
+  },
 };
 
 const DELAY_LABELS: Record<DelayBucket, string> = {
   early: "in anticipo",
   ontime: "in orario (±2 min)",
-  late: "2-5 min",
-  verylate: "oltre 5 min",
+  late: "ritardo 2-5 min",
+  verylate: "ritardo 5-10 min",
+  severe: "ritardo oltre 10 min",
   unknown: "non indicato",
 };
+
+const PUNCTUALITY_URL = "/api/mobilita/roma/punctuality";
+
+type Punctuality = {
+  status: "ok";
+  total: number;
+  buckets: Record<DelayBucket, number>;
+  stale: boolean;
+  feedTimestamp: number | null;
+};
+
+function percent(part: number, total: number) {
+  if (!total) return "0%";
+  const value = (part / total) * 100;
+  return value > 0 && value < 1 ? "<1%" : `${Math.round(value)}%`;
+}
 
 const PALETTES: Record<Theme, LayerPalette & { accent: string; network: string; casing: string }> = {
   light: {
     vehicle: "#0e6b78",
     vehicleText: "#ffffff",
+    labelText: "#1d3040",
     muted: "#8f9ba6",
     halo: "#ffffff",
     stale: "#6b7785",
@@ -115,6 +148,7 @@ const PALETTES: Record<Theme, LayerPalette & { accent: string; network: string; 
   dark: {
     vehicle: "#4cb8c4",
     vehicleText: "#0b1a1e",
+    labelText: "#e6ebf0",
     muted: "#59636e",
     halo: "#16191d",
     stale: "#8a949e",
@@ -377,8 +411,10 @@ export function RomaLiveMap() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const pendingUrl = useRef<UrlSelection | null>(null);
   const [colorMode, setColorMode] = useState<"line" | "delay">("line");
+  const [perspective, setPerspective] = useState<"2d" | "3d">("2d");
   const [arrivals, setArrivals] = useState<ArrivalsState>({ kind: "idle" });
   const [coverage, setCoverage] = useState<RomaCoverage | null>(null);
+  const [punctuality, setPunctuality] = useState<Punctuality | null>(null);
   const theme = useSyncExternalStore(subscribeToTheme, getTheme, serverTheme);
   const favorites = useSyncExternalStore(subscribeFavorites, getFavorites, getServerFavorites);
   const hydrated = useSyncExternalStore(subscribeNoop, () => true, () => false);
@@ -506,6 +542,36 @@ export function RomaLiveMap() {
     };
   }, [needArrivals]);
 
+  // Punctuality percentages: a few hundred bytes every 30 s while visible.
+  useEffect(() => {
+    let timer = 0;
+    let controller: AbortController | null = null;
+    const run = async () => {
+      window.clearTimeout(timer);
+      controller?.abort();
+      controller = new AbortController();
+      try {
+        const response = await fetch(PUNCTUALITY_URL, { headers: { Accept: "application/json" }, signal: controller.signal });
+        const payload = (await response.json().catch(() => null)) as Punctuality | null;
+        if (response.ok && payload?.status === "ok" && payload.buckets) setPunctuality(payload);
+      } catch {
+        if (controller.signal.aborted) return;
+      }
+      if (document.visibilityState === "visible") timer = window.setTimeout(run, ARRIVALS_POLL_MS);
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void run();
+      else window.clearTimeout(timer);
+    };
+    void run();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearTimeout(timer);
+      controller?.abort();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
   const view = feed.kind === "ok" ? feed.view : feed.kind === "error" ? feed.last : null;
   const vehicles = useMemo(() => view?.vehicles ?? [], [view]);
 
@@ -629,6 +695,7 @@ export function RomaLiveMap() {
           zoom: 11.2,
           minZoom: 9,
           maxZoom: 18.5,
+          maxPitch: 60,
           maxBounds: [
             [11.7, 41.3],
             [13.3, 42.5],
@@ -640,13 +707,18 @@ export function RomaLiveMap() {
         });
         map = instance;
         instance.touchZoomRotate.disableRotation();
-        instance.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
+        instance.touchPitch.disable();
+        instance.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), "bottom-right");
         instance.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
         mapRef.current = instance;
         layerRef.current = new VehicleLayer(instance, canvasRef.current, PALETTES[getTheme()]);
         let loaded = false;
         instance.on("load", () => {
           loaded = true;
+          // On phones the credits start collapsed behind the (i) button.
+          if (window.matchMedia("(max-width: 560px)").matches) {
+            instance.getContainer().querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show");
+          }
           if (!cancelled) setMapReady(true);
         });
         // Single tile or glyph failures are recoverable and MapLibre retries
@@ -800,6 +872,32 @@ export function RomaLiveMap() {
     map.setPaintProperty("stops-label", "text-halo-width", 1.6);
     layerRef.current?.setPalette(palette);
   }, [mapReady, palette, theme]);
+
+  // 2D: flat, north up, no rotation. 3D: tilted, rotatable, buildings raised.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    const three = perspective === "3d";
+    if (map.getLayer("building-3d")) {
+      map.setLayoutProperty("building-3d", "visibility", three ? "visible" : "none");
+      map.setLayoutProperty("building", "visibility", three ? "none" : "visible");
+    }
+    if (three) {
+      map.dragRotate.enable();
+      map.touchZoomRotate.enableRotation();
+      map.touchPitch.enable();
+    } else {
+      map.dragRotate.disable();
+      map.touchZoomRotate.disableRotation();
+      map.touchPitch.disable();
+    }
+    map.easeTo({
+      pitch: three ? 55 : 0,
+      bearing: three ? -20 : 0,
+      zoom: three ? Math.max(map.getZoom(), 14.5) : map.getZoom(),
+      duration: 900,
+    });
+  }, [perspective, mapReady]);
 
   // Basemap theme: same layer ids, only paint changes.
   useEffect(() => {
@@ -1498,6 +1596,51 @@ export function RomaLiveMap() {
             </p>
           )}
         </section>
+        {punctuality && punctuality.total > 0 ? (
+          <section className={styles.section} aria-labelledby="punct-title">
+            <div className={styles.sectionHead}>
+              <h2 id="punct-title" className={styles.sectionTitle}>
+                Puntualità ora
+              </h2>
+              <button
+                type="button"
+                className={styles.linkButton}
+                aria-pressed={colorMode === "delay"}
+                onClick={() => setColorMode(colorMode === "delay" ? "line" : "delay")}
+              >
+                {colorMode === "delay" ? "Nascondi sulla mappa" : "Mostra sulla mappa"}
+              </button>
+            </div>
+            <div className={styles.punctualityBar} role="img" aria-label="Distribuzione degli autobus per ritardo">
+              {DELAY_BUCKETS.map((bucket) =>
+                punctuality.buckets[bucket] > 0 ? (
+                  <span
+                    key={bucket}
+                    style={{
+                      width: `${(punctuality.buckets[bucket] / punctuality.total) * 100}%`,
+                      background: DELAY_COLORS[theme][bucket],
+                    }}
+                  />
+                ) : null,
+              )}
+            </div>
+            <ul className={styles.punctualityList}>
+              {DELAY_BUCKETS.filter((bucket) => bucket !== "unknown" || punctuality.buckets.unknown > 0).map((bucket) => (
+                <li key={bucket}>
+                  <span className={styles.delayDot} style={{ background: DELAY_COLORS[theme][bucket] }} aria-hidden="true" />
+                  <span className={styles.punctualityLabel}>{DELAY_LABELS[bucket]}</span>
+                  <strong>{percent(punctuality.buckets[bucket], punctuality.total)}</strong>
+                  <span className={styles.punctualityCount}>{punctuality.buckets[bucket].toLocaleString("it-IT")}</span>
+                </li>
+              ))}
+            </ul>
+            <p className={styles.footnote}>
+              Stima dell’operatore per la prossima fermata di ciascuno dei{" "}
+              {punctuality.total.toLocaleString("it-IT")} autobus con previsione, rispetto all’orario programmato.
+              {punctuality.stale ? " Feed degli arrivi non aggiornato da oltre 5 minuti." : ""}
+            </p>
+          </section>
+        ) : null}
         {scheduled && scheduled.total > 0 ? (
           <section className={styles.section} aria-labelledby="cov-title">
             <h2 id="cov-title" className={styles.sectionTitle}>
@@ -1583,7 +1726,16 @@ export function RomaLiveMap() {
             La cartografia non si è caricata. L’elenco dei mezzi nel pannello resta disponibile.
           </div>
         ) : null}
-        <div className={styles.legend}>
+        {/* Controls stay put; the legend below may grow as data arrives. */}
+        <div className={styles.mapControls}>
+          <div className={styles.colorToggle} role="group" aria-label="Prospettiva della mappa">
+            <button type="button" aria-pressed={perspective === "2d"} onClick={() => setPerspective("2d")}>
+              2D
+            </button>
+            <button type="button" aria-pressed={perspective === "3d"} onClick={() => setPerspective("3d")}>
+              3D
+            </button>
+          </div>
           <div className={styles.colorToggle} role="group" aria-label="Colore dei mezzi">
             <button type="button" aria-pressed={colorMode === "line"} onClick={() => setColorMode("line")}>
               Aggiornamento
@@ -1592,12 +1744,21 @@ export function RomaLiveMap() {
               Ritardo
             </button>
           </div>
+        </div>
+        <div className={styles.legend}>
           {colorMode === "delay" ? (
             <span className={styles.legendItems}>
-              {(["ontime", "late", "verylate", "early", "unknown"] as const).map((bucket) => (
+              {DELAY_BUCKETS.filter(
+                (bucket) => bucket !== "unknown" || !punctuality || punctuality.buckets.unknown > 0,
+              ).map((bucket) => (
                 <span key={bucket}>
                   <span className={styles.delayDot} style={{ background: DELAY_COLORS[theme][bucket] }} aria-hidden="true" />
                   {DELAY_LABELS[bucket]}
+                  {punctuality && punctuality.total > 0 ? (
+                    <strong className={styles.legendPercent}>
+                      {percent(punctuality.buckets[bucket], punctuality.total)}
+                    </strong>
+                  ) : null}
                 </span>
               ))}
             </span>
@@ -2240,8 +2401,8 @@ function Explainer() {
           Le posizioni arrivano con 30-60 secondi di ritardo. Un mezzo tratteggiato non si aggiorna da oltre 5 minuti.
         </li>
         <li>
-          Con «Ritardo» i mezzi si colorano secondo la stima dell’operatore: verde in orario (±2 min), giallo 2-5
-          min, rosso oltre 5, blu in anticipo, grigio non indicato.
+          Con «Ritardo» i mezzi si colorano secondo la stima dell’operatore: verde in orario (±2 min), arancione
+          2-5 min, rosso 5-10 min, bordeaux oltre 10 min, blu in anticipo, grigio non indicato.
         </li>
         <li>Tram e metro non sono nel feed delle posizioni né in quello degli arrivi.</li>
       </ul>

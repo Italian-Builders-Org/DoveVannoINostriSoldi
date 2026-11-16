@@ -26,8 +26,19 @@ le città) resta invariata nell'iframe del prototipo GTFS.
   fermata (ricerca per nome o codice, fermate entro 500 m). Sono stime
   dell'operatore; tram e metro non hanno arrivi nel feed. Le fermate saltate e
   le corse cancellate non diventano arrivi.
-- Colore per ritardo: verde in orario (±2 min), giallo 2-5 min, rosso oltre 5,
-  blu in anticipo, grigio non indicato.
+- Colore per ritardo: verde in orario (±2 min), arancione 2-5 min, rosso 5-10
+  min, bordeaux oltre 10 min, blu in anticipo, grigio non indicato.
+- «Puntualità ora»: percentuale e numero di autobus per fascia, dalla stima
+  dell'operatore alla prossima fermata di ogni mezzo (un conteggio per veicolo,
+  corse cancellate e corse senza mezzo escluse; ritardo mancante = «non
+  indicato», mai «in orario»). Il ritardo pubblicato coincide con «previsto
+  meno programmato» sul GTFS statico (verificato su 300 corse il 16/11/2026);
+  la quota «in anticipo» è alta (~37%) e riguarda mezzi lungo il percorso, non
+  in attesa al capolinea: è il dato dell'operatore, non una nostra stima.
+- Segnaposto dei mezzi: cerchio nel colore di stato con il pittogramma bus del
+  set di icone del sito, tacca di direzione e numero di linea, sempre allineati
+  allo schermo; a zoom bassi o dove si sovrappongono restano punti. Vista 2D
+  (piatta, nord in alto) o 3D (inclinata, ruotabile, edifici in rilievo).
 - Servizio in questo momento: autobus nel feed contro corse programmate in
   corso dall'orario ufficiale (solo linee autobus), con le linee che hanno corse
   programmate ma nessun mezzo nel feed. Fuori dal calendario pubblicato la
@@ -40,7 +51,7 @@ le città) resta invariata nell'iframe del prototipo GTFS.
 | Parser protobuf (numerazione gtfs-realtime.proto 2.0) e fetch | [roma-gtfs-realtime.ts](../src/lib/mobilita/roma-gtfs-realtime.ts) |
 | Lettore protobuf condiviso (int32 negativi a 10 byte) | [protobuf-wire.ts](../src/lib/mobilita/protobuf-wire.ts) |
 | Arrivi previsti (TripUpdates) | [roma-trip-updates.ts](../src/lib/mobilita/roma-trip-updates.ts) |
-| Proxy pubblici | [api/mobilita/roma/vehicles](../src/app/api/mobilita/roma/vehicles/route.ts), [api/mobilita/roma/arrivals](../src/app/api/mobilita/roma/arrivals/route.ts) |
+| Proxy pubblici | [api/mobilita/roma/vehicles](../src/app/api/mobilita/roma/vehicles/route.ts), [api/mobilita/roma/arrivals](../src/app/api/mobilita/roma/arrivals/route.ts), [api/mobilita/roma/punctuality](../src/app/api/mobilita/roma/punctuality/route.ts) |
 | Modello puro (abbinamento corsa→percorso, direzione, fermate, ricerca) | [roma-live-model.ts](../src/lib/mobilita/roma-live-model.ts) |
 | Rete statica compatta e manifest | `public/mappe/mobilita/roma/network-<sha12>.json`, [roma-network-asset.ts](../src/lib/mobilita/roma-network-asset.ts) |
 | Corse programmate in corso | `public/mappe/mobilita/roma/coverage-<sha12>.json` (indice data → profilo) e `coverage/<sha12>.json` (per linea, una cifra base-62 ogni 10 minuti da 0 a 30 h del giorno di servizio) |
@@ -66,6 +77,10 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
   orari come scarti in secondi) è ~450 KB JSON, ~130 KB compressa. Il client la
   chiede ogni 30 s solo mentre segue un mezzo, apre una fermata o usa i colori
   per ritardo.
+- Puntualità: `/api/mobilita/roma/punctuality`, stessa lettura upstream e
+  stessa finestra CDN degli arrivi (`s-maxage=30`), risposta di poche centinaia
+  di byte con i soli conteggi per fascia: la vista live la chiede ogni 30 s
+  mentre è visibile.
 - Copertura: indice ~6 KB più due profili (oggi e ieri, ~13 KB compressi
   ciascuno), statici e verificati per hash. Nessun calcolo lato server.
 - Il client interroga ogni 15 s solo con la scheda visibile, con backoff

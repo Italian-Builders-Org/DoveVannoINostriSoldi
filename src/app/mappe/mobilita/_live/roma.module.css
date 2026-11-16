@@ -176,7 +176,6 @@
     max-height: 168px;
     border-radius: 18px 18px 0 0;
     border-bottom: 0;
-    transition: max-height 220ms var(--ease-out);
   }
 
   .panel[data-open="true"] {
@@ -227,12 +226,6 @@
 
   .mapArea :global(.maplibregl-ctrl-bottom-left) {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel {
-    transition: none;
   }
 }
 
@@ -723,16 +716,10 @@
   border-radius: 12px;
   border: 1px solid var(--color-neutral-200);
   background: var(--color-neutral-100);
-  border-left: 4px solid var(--live-fresh);
-}
-
-.liveCard[data-freshness="aging"],
-.liveCard[data-freshness="unknown"] {
-  border-left-color: var(--live-aging);
 }
 
 .liveCard[data-freshness="stale"] {
-  border-left-color: var(--live-stale);
+  border-style: dashed;
 }
 
 .liveMain {
@@ -1111,7 +1098,8 @@
 }
 
 @media (max-width: 560px) {
-  .legendItems {
+  /* .legend span would otherwise win: the full legend lives in the explainer. */
+  .legend .legendItems {
     display: none;
   }
 

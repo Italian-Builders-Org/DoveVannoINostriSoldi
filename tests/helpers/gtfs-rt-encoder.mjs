@@ -30,4 +30,3 @@ export const dField = (field, value) => {
   buf.setFloat64(0, value, true);
   return [...tag(field, 1), ...new Uint8Array(buf.buffer)];
 };
-

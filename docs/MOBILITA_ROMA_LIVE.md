@@ -69,7 +69,7 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
 - Copertura: indice ~6 KB più due profili (oggi e ieri, ~13 KB compressi
   ciascuno), statici e verificati per hash. Nessun calcolo lato server.
 - Il client interroga ogni 15 s solo con la scheda visibile, con backoff
-  esponenziale fino a 2 minuti sugli errori. La vista live (MapLibre, ~250 KB
+  esponenziale fino a 2 minuti sugli errori. La vista live (MapLibre, ~290 KB
   gzip) si scarica solo quando viene aperta; la pagina resta statica.
 - Cartografia: tile vettoriali OpenStreetMap di OpenFreeMap, senza chiave,
   richieste direttamente dal browser. La CSP report-only consente

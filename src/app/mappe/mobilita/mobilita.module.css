@@ -158,6 +158,84 @@
   white-space: nowrap;
 }
 
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1f8a4c;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #1f8a4c 22%, transparent);
+}
+
+.viewTabs {
+  display: flex;
+  flex: 0 1 auto;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.viewTabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.viewTabs button[aria-pressed="true"] {
+  background: var(--color-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.viewTabs button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.tabShort {
+  display: none;
+}
+
+.liveView {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.liveLoading {
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.sourcesPanel h3 {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
+.viewerFrame[hidden] {
+  display: none;
+}
+
 .viewerFrame {
   flex: 1 1 auto;
   width: 100%;
@@ -166,7 +244,39 @@
   background: var(--color-neutral-100);
 }
 
+/* The live map always fills the viewport; the page itself never scrolls. */
+.immersivePage:has([data-live-view]) {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 1080px) {
+  .tabLong {
+    display: none;
+  }
+
+  .tabShort {
+    display: inline;
+  }
+}
+
 @media (max-width: 719px) {
+  .immersiveChrome {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .viewTabs {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .viewTabs button {
+    flex: 1 1 0;
+  }
+
   .immersivePage {
     height: auto;
     min-height: 100dvh;
@@ -189,12 +299,22 @@
   }
 
   .brandLockup {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
+    gap: var(--space-2);
   }
 
   .immersiveActions {
-    flex: 1 1 100%;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .immersiveActions > a,
+  .sourcesDisclosure > summary {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .hideOnPhone {
+    display: none;
   }
 }

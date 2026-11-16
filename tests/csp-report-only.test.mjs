@@ -57,13 +57,16 @@ test("the report-only policy covers current Next and Analytics resources without
     "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self'",
-    "worker-src 'none'",
+    // Live bus map: MapLibre's same-origin module worker, booted from blob:.
+    "worker-src 'self' blob:",
     "media-src 'none'",
     "frame-src 'self'",
   ]) {
     assert.ok(policy.includes(directive), `Direttiva CSP mancante: ${directive}`);
   }
 
+  assert.match(policy, /connect-src[^;]*https:\/\/tiles\.openfreemap\.org(?:\s|;|$)/);
+  assert.doesNotMatch(policy, /worker-src[^;]*https?:/);
   assert.match(policy, /connect-src[^;]*https:\/\/\*\.google-analytics\.com/);
   assert.match(policy, /connect-src[^;]*https:\/\/\*\.analytics\.google\.com/);
   assert.match(policy, /img-src[^;]*https:\/\/\*\.google-analytics\.com/);

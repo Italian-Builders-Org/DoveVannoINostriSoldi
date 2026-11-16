@@ -126,7 +126,7 @@ export async function loadNews(personId: string, signal: AbortSignal, retryDelay
   } finally { request.dispose(); }
 }
 
-export function parseJudicial(payload: unknown): JudicialPayload {
+function parseJudicial(payload: unknown): JudicialPayload {
   if (!object(payload) || payload.ok !== true || !text(payload.coverageNote) || !object(payload.byPerson)) return invalid();
   for (const cases of Object.values(payload.byPerson)) {
     if (!Array.isArray(cases)) return invalid();

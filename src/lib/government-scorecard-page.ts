@@ -128,6 +128,7 @@ export type GovernmentScorecardV6ChartSlide = {
   status: "ready";
   indicator_id: string;
   title: string;
+  tab_label: string;
   question: string;
   unit: string;
   frequency: "Annuale" | "Trimestrale" | "Mensile";
@@ -225,6 +226,7 @@ export type GovernmentScorecardV6ContextSlide = GovernmentScorecardV6ContextSour
       type: "official";
       url: string;
     }[];
+    history?: { label: string; rows: readonly { date: string; value: string }[] };
     retrieved_at: string;
     evidence_sha256: string;
   }[];

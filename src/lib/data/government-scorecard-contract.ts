@@ -199,8 +199,8 @@ export const governmentScorecardV6InputSchema = z.object({
     landing_url: z.literal("https://economy-finance.ec.europa.eu/economic-research-and-databases/economic-databases/ameco-database/download-annual-data-set-macro-economic-database-ameco_en"),
     reuse_url: z.literal("https://commission.europa.eu/legal-notice_en"),
     license: z.literal("CC BY 4.0 unless otherwise indicated"),
-    raw_sha256: sha256.pipe(z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_sha256)),
-    raw_bytes: z.literal(pageSpec.refreshPolicy.approvedSources[0].raw_bytes),
+    raw_sha256: sha256.pipe(z.literal(pageSpec.refreshPolicy.scoreReceipt.raw_sha256)),
+    raw_bytes: z.literal(pageSpec.refreshPolicy.scoreReceipt.raw_bytes),
     limitations: z.array(z.string().min(1)).min(1),
   }).strict(),
   window: z.object({

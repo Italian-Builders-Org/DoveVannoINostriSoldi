@@ -25,7 +25,7 @@ export function allocateRows(total: number, weights: readonly number[]): number[
   return counts;
 }
 
-export function polar(radius: number, angle: number): { x: number; y: number; } {
+function polar(radius: number, angle: number): { x: number; y: number; } {
   return { x: CHAMBER.cx + radius * Math.cos(angle), y: CHAMBER.cy - radius * Math.sin(angle) };
 }
 

@@ -206,6 +206,7 @@ class PublishDataRefreshTests(TestCase):
                 "scripts/etl/specs/government-scorecard-chronology.json",
                 "scripts/etl/specs/government-scorecard-sensitivity.json",
                 "scripts/etl/specs/government-scorecard-page.source.json",
+                "scripts/etl/specs/government-scorecard-context-catalog.json",
             ],
         )
         self.assertEqual(
@@ -216,6 +217,7 @@ class PublishDataRefreshTests(TestCase):
                 "https://www.quirinale.it/it/pagine/nomine-presidente-sergio-mattarella",
                 "https://www.quirinale.it/it/notizie/cerimonia-giuramento-governo-meloni-3",
                 "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en",
+                "https://ec.europa.eu/eurostat/databrowser/view/irt_lt_mcby_m/default/table?lang=en",
                 "https://ec.europa.eu/eurostat/databrowser/view/une_rt_m/default/table?lang=en",
                 "https://ec.europa.eu/eurostat/databrowser/view/lfsi_emp_q/default/table?lang=en",
                 "https://ec.europa.eu/eurostat/databrowser/view/namq_10_pc/default/table?lang=en",

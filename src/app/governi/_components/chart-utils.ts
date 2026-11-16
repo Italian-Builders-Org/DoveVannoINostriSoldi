@@ -57,19 +57,37 @@ export function hasGovernmentChartTrend(periods: readonly string[]): boolean {
   return new Set(periods).size >= 2;
 }
 
+function quarterOf(period: string): string | null {
+  return period.match(/-Q[1-4]$/)?.[0] ?? null;
+}
+
 export function getGovernmentChartSelection(
   points: readonly GovernmentChartPoint[],
   period: string | null,
 ) {
-  const first = points[0];
   const selected = points.find((point) => point.period === period);
+  // Debt and non-seasonally-adjusted quarterly series swing within the year: comparing
+  // different quarters can flip the sign of the change, so the baseline shares the quarter.
+  const quarter = selected ? quarterOf(selected.period) : null;
+  const first = quarter ? points.find((point) => quarterOf(point.period) === quarter) : points[0];
+  const comparable = first && selected && (first !== selected || first === points[0]);
   return {
     first,
     selected,
-    change: first && selected && hasGovernmentChartTrend(points.map((point) => point.period))
+    change: comparable && hasGovernmentChartTrend(points.map((point) => point.period))
       ? selected.value - first.value
       : null,
   };
+}
+
+export function getGovernmentChartLatestCommonPeriod(
+  series: readonly { points: readonly { period: string }[] }[],
+): string | null {
+  const published = series.filter((country) => country.points.length > 0)
+    .map((country) => new Set(country.points.map((point) => point.period)));
+  const [firstCountry, ...others] = published;
+  if (!firstCountry) return null;
+  return [...firstCountry].filter((period) => others.every((country) => country.has(period))).toSorted().at(-1) ?? null;
 }
 
 function governmentChartPeriodEndExclusive(

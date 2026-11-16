@@ -123,7 +123,7 @@ test("every score and chart indicator has complete reconstruction provenance", (
   const manifest = getGovernmentScorecardDownloadManifest();
 
   assert.equal(manifest.indicators.filter((indicator) => indicator.data_role === "score_data").length, 6);
-  assert.equal(manifest.indicators.filter((indicator) => indicator.data_role === "page_data").length, 9);
+  assert.equal(manifest.indicators.filter((indicator) => indicator.data_role === "page_data").length, 11);
   for (const indicator of manifest.indicators) {
     assert.ok(indicator.indicator_id.length > 0);
     assert.ok(indicator.source_owner.length > 0);
@@ -228,10 +228,10 @@ test("offline reconciliation traces every displayed value and context item to fr
   const result = reconcileGovernmentScorecardPageProvenance();
 
   assert.equal(result.governments, 17);
-  assert.equal(result.charts, 17 * 9);
+  assert.equal(result.charts, 17 * 11);
   assert.ok(result.displayed_values > 10_000);
   assert.ok(result.context_items > 100);
-  assert.equal(result.source_receipts, 10);
+  assert.equal(result.source_receipts, 12);
 });
 
 test("the canonical guide documents one offline verification command and the online refresh limit", () => {

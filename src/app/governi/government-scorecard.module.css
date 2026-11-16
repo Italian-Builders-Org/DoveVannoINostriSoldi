@@ -412,6 +412,34 @@
   border: 1px solid var(--color-neutral-300);
 }
 
+.contextHistory {
+  margin-block: 0.75rem;
+}
+
+.contextHistory summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.contextHistory table {
+  /* The caption takes the table width: without it, it wraps at the width of two short columns. */
+  width: min(100%, 360px);
+  margin-block-start: 0.5rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.contextHistory caption {
+  text-align: start;
+  padding-block-end: 0.25rem;
+}
+
+.contextHistory th,
+.contextHistory td {
+  padding: 0.2rem 1rem 0.2rem 0;
+  text-align: start;
+}
+
 .contextNavigation .timelineNote {
   text-align: left;
 }
@@ -704,15 +732,42 @@
 
 .carouselIndicators {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  gap: 4px;
   min-width: 0;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .carouselIndicators button {
   min-width: 0;
-  padding-inline: 5px;
+  padding-inline: 6px;
+  padding-block: 6px;
   border-width: 1px;
   font-size: 11px;
+  hyphens: none;
+  overflow: visible;
+}
+
+.carouselIndicators button span {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
+  line-height: 1.25;
+  word-break: normal;
+  overflow-wrap: normal;
+  white-space: normal;
+}
+
+@media (min-width: 1400px) {
+  .carouselIndicators {
+    grid-template-columns: repeat(11, minmax(5.5rem, 1fr));
+  }
+
+  .carouselIndicators button {
+    padding-inline: 4px;
+    font-size: 10.5px;
+  }
 }
 
 .indicatorCarousel {

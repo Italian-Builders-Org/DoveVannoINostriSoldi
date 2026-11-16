@@ -125,9 +125,16 @@ export function MobilitaLiveSwitch() {
         <ul className={styles.liveCities}>
           {LIVE_CITIES.map((city) => (
             <li key={city.id}>
-              <button
-                type="button"
-                onClick={() => {
+              {/*
+                A real link: a tap before hydration (seconds on a phone) still
+                opens the live view by navigation; once hydrated, the switch is
+                in place with no reload.
+              */}
+              <a
+                href={`/mappe/mobilita?${LIVE_VIEW_PARAM}=${LIVE_VIEW_VALUE}`}
+                onClick={(event) => {
+                  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                  event.preventDefault();
                   if (details.current) details.current.open = false;
                   setView("bus-live");
                 }}
@@ -137,7 +144,7 @@ export function MobilitaLiveSwitch() {
                   <small>{city.detail}</small>
                 </span>
                 <span aria-hidden="true">→</span>
-              </button>
+              </a>
             </li>
           ))}
         </ul>

@@ -193,7 +193,7 @@ async function openRomaLive(page) {
     return { left: rect.left, right: rect.right, width: innerWidth };
   });
   assert.ok(box.left >= 0 && box.right <= box.width + 1, `pannello tempo reale fuori schermo: ${JSON.stringify(box)}`);
-  await clickByText(page, '[data-immersive-page="mobilita"] header details[open] button', "Roma");
+  await clickByText(page, '[data-immersive-page="mobilita"] header details[open] a', "Roma");
   await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "bus-live");
 }
 
@@ -578,6 +578,33 @@ try {
       },
     });
   }
+
+  // A tap on «Roma» before hydration (≈4 s on a phone) must still open the
+  // live view: the entry is a real link, not a handler-only button.
+  await runScenario(browser, {
+    suite: "mappe-mobilita",
+    label: "Tempo reale prima dell'idratazione",
+    pathname: "/mappe/mobilita",
+    width: 390,
+    readySelector: "header details > summary",
+    requestMocks: [romaLiveMock(), romaArrivalsMock(), OFFLINE_TILEJSON, OFFLINE_TILES],
+    expectedFailure: expectedLiveAbort,
+    async validate(page) {
+      await page.setJavaScriptEnabled(false);
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await clickByText(page, '[data-immersive-page="mobilita"] header details > summary', "Tempo reale");
+      await clickByText(page, '[data-immersive-page="mobilita"] header details[open] a', "Roma");
+      await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "bus-live", {
+        timeout: 15_000,
+      });
+      await page.setJavaScriptEnabled(true);
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await page.waitForFunction(
+        () => /In diretta · 1 autobus/.test(document.querySelector("aside")?.textContent ?? ""),
+        { timeout: 30_000 },
+      );
+    },
+  });
 
   await runScenario(browser, {
     suite: "mappe-mobilita",

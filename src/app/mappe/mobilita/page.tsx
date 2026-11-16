@@ -43,6 +43,14 @@ export default function MobilitaMapPage() {
                 Geometrie mancanti nel GTFS possono essere ricostruite da OpenStreetMap solo dove
                 il registro lo consente.
               </p>
+              <p>
+                Su Roma è disponibile un overlay live delle posizioni veicoli dal feed GTFS-RT
+                ufficiale di{" "}
+                <a href="https://romamobilita.it/sistemi-e-tecnologie/open-data/">
+                  Roma Mobilità / AVM
+                </a>
+                : dato a supporto del viaggio, non storico e non esaustivo.
+              </p>
             </div>
           </details>
           <ThemeToggle />

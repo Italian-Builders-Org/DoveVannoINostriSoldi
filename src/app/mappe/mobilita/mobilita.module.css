@@ -138,6 +138,12 @@
   margin-bottom: var(--space-2);
 }
 
+.sourcesPanel a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .immersiveHomeLink {
   min-height: 44px;
   padding: 10px 13px;

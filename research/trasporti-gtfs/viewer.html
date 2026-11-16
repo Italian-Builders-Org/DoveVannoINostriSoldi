@@ -205,6 +205,20 @@
         <div class="map-context">
           <strong id="map-title">Preparazione…</strong
           ><span id="area-label"></span>
+          <div id="live-controls" class="live-controls" hidden>
+            <button
+              type="button"
+              id="live-toggle"
+              aria-pressed="true"
+              aria-controls="live-status"
+            >
+              Live
+            </button>
+            <span id="live-status" role="status" aria-live="polite"></span>
+            <span id="live-legend" class="live-legend"
+              >Icona = mezzo · freccia = direzione · passa sopra per la linea</span
+            >
+          </div>
         </div>
         <div class="top-tools">
           <div class="views" role="group" aria-label="Vista mappa">
@@ -452,6 +466,11 @@
               <strong>Limiti.</strong> Non misura ritardi, traffico, passeggeri
               o qualità del servizio. Fuori dall’estratto cartografico le strade
               possono mancare.
+            </p>
+            <p>
+              <strong>Live Roma.</strong> I punti live sono posizioni AVM
+              aggiornate dal feed GTFS-RT ufficiale di Roma Mobilità: non sono
+              uno storico pinnabile e non sostituiscono gli orari programmati.
             </p>
           </details>
           <details>

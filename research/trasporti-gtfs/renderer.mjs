@@ -375,6 +375,7 @@ export function createRenderer(canvas) {
     foregroundKey = "",
     foregroundSegments = null,
     drawn = [],
+    liveHits = [],
     grid = new Map(),
     streets = 0,
     labelExclusions = [];
@@ -423,6 +424,144 @@ export function createRenderer(canvas) {
         }
     }
   }
+  function routeTokens(value) {
+    const raw = String(value ?? "")
+      .trim()
+      .toUpperCase();
+    if (!raw) return [];
+    const stripped = raw.replace(/^0+(?=\d)/, "");
+    return stripped && stripped !== raw ? [raw, stripped] : [raw];
+  }
+  function routesMatch(a, b) {
+    const left = routeTokens(a),
+      right = new Set(routeTokens(b));
+    return left.some((token) => right.has(token));
+  }
+  function liveHeading(bearing, cameraBearing) {
+    // GTFS bearing: 0=N, 90=E. Canvas 0=east, +clockwise with y down → north is -π/2.
+    return (bearing * Math.PI) / 180 - Math.PI / 2 - cameraBearing;
+  }
+  function pathLiveGlyph(ctx, x, y, angle, mode, size) {
+    const c = Math.cos(angle),
+      s = Math.sin(angle);
+    const pt = (dx, dy) => [x + dx * c - dy * s, y + dx * s + dy * c];
+    ctx.beginPath();
+    if (mode === "metro") {
+      const r = size * 0.95;
+      const a = pt(0, -r),
+        b = pt(r, 0),
+        d = pt(0, r),
+        e = pt(-r, 0);
+      ctx.moveTo(...a);
+      ctx.lineTo(...b);
+      ctx.lineTo(...d);
+      ctx.lineTo(...e);
+      ctx.closePath();
+      return;
+    }
+    if (mode === "tram") {
+      const nose = pt(size * 1.15, 0),
+        left = pt(-size * 0.85, -size * 0.45),
+        right = pt(-size * 0.85, size * 0.45);
+      ctx.moveTo(...nose);
+      ctx.lineTo(...left);
+      ctx.lineTo(...right);
+      ctx.closePath();
+      return;
+    }
+    // Bus / default: compact arrowhead with a short body.
+    const nose = pt(size * 1.2, 0),
+      shoulderL = pt(-size * 0.15, -size * 0.7),
+      shoulderR = pt(-size * 0.15, size * 0.7),
+      tailL = pt(-size * 0.95, -size * 0.4),
+      tailR = pt(-size * 0.95, size * 0.4);
+    ctx.moveTo(...nose);
+    ctx.lineTo(...shoulderL);
+    ctx.lineTo(...tailL);
+    ctx.lineTo(...tailR);
+    ctx.lineTo(...shoulderR);
+    ctx.closePath();
+  }
+  function drawLiveVehicles(
+    ctx,
+    scene,
+    p,
+    view,
+    vehicles,
+    { routeFilter = "", hoveredLive = null, mode = "bus", cameraBearing = 0 } = {},
+  ) {
+    liveHits = [];
+    if (!scene || !vehicles?.length) return;
+    const world = worldFactory(scene.source.focus);
+    const keys = new Set();
+    const filtering = Boolean(routeFilter);
+    const baseSize = (scene?.heightScale ?? 1) > 5 ? 3.2 : 3.8;
+    const layered = [];
+    for (const vehicle of vehicles) {
+      if (
+        typeof vehicle.lat !== "number" ||
+        typeof vehicle.lon !== "number" ||
+        !Number.isFinite(vehicle.lat) ||
+        !Number.isFinite(vehicle.lon)
+      )
+        continue;
+      const xy = p.project(world([vehicle.lon, vehicle.lat]));
+      if (
+        !xy ||
+        xy[0] < -8 ||
+        xy[0] > view.width + 8 ||
+        xy[1] < -8 ||
+        xy[1] > view.height + 8
+      )
+        continue;
+      const key = xy.map((v) => Math.round(v / 4)).join(",");
+      if (keys.has(key) && vehicle.id !== hoveredLive) continue;
+      keys.add(key);
+      const match = filtering && routesMatch(vehicle.routeId, routeFilter);
+      const active = !filtering || match;
+      const hovered = vehicle.id === hoveredLive;
+      layered.push({ vehicle, xy, match, active, hovered });
+      liveHits.push({
+        id: vehicle.id,
+        x: xy[0],
+        y: xy[1],
+        vehicle,
+      });
+    }
+    layered.sort(
+      (a, b) =>
+        Number(a.hovered) - Number(b.hovered) ||
+        Number(a.match) - Number(b.match),
+    );
+    for (const item of layered) {
+      const size = item.hovered ? baseSize * 1.55 : item.match ? baseSize * 1.25 : baseSize;
+      const bearing =
+        typeof item.vehicle.bearing === "number" &&
+        Number.isFinite(item.vehicle.bearing)
+          ? item.vehicle.bearing
+          : null;
+      const angle =
+        bearing == null ? -Math.PI / 2 - cameraBearing : liveHeading(bearing, cameraBearing);
+      ctx.globalAlpha = item.active ? (item.hovered || item.match ? 1 : 0.92) : 0.18;
+      pathLiveGlyph(ctx, item.xy[0], item.xy[1], angle, mode, size);
+      ctx.fillStyle = "#1d2427";
+      ctx.fill();
+      ctx.lineWidth = item.hovered ? 1.6 : 1;
+      ctx.strokeStyle = item.hovered ? "#fff" : "rgba(255, 255, 255, 0.92)";
+      ctx.stroke();
+      if (item.hovered || item.match) {
+        ctx.beginPath();
+        ctx.arc(item.xy[0], item.xy[1], size * 1.85, 0, Math.PI * 2);
+        ctx.strokeStyle = item.hovered
+          ? "rgba(29, 36, 39, 0.55)"
+          : "rgba(29, 36, 39, 0.28)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
   function draw({
     scene,
     segments,
@@ -432,6 +571,10 @@ export function createRenderer(canvas) {
     hovered,
     stop,
     relief = 1,
+    liveVehicles = null,
+    liveRoute = "",
+    hoveredLive = null,
+    liveMode = "bus",
   }) {
     const started = performance.now(),
       view = { width: canvas.clientWidth, height: canvas.clientHeight },
@@ -623,6 +766,14 @@ export function createRenderer(canvas) {
         ctx.fillText(stop.label.slice(0, 36), xy[0], xy[1] - 17);
       }
     }
+    if (liveVehicles?.length)
+      drawLiveVehicles(ctx, scene, p, view, liveVehicles, {
+        routeFilter: liveRoute,
+        hoveredLive,
+        mode: liveMode,
+        cameraBearing: camera.bearing,
+      });
+    else liveHits = [];
     const stats = {
       streets,
       segments: drawn.length,
@@ -678,5 +829,17 @@ export function createRenderer(canvas) {
     }
     return best;
   }
-  return { draw, nearest, setLabelExclusions };
+  function nearestLive(x, y) {
+    let best = null,
+      distance = 11;
+    for (const hit of liveHits) {
+      const d = Math.hypot(hit.x - x, hit.y - y);
+      if (d < distance) {
+        distance = d;
+        best = hit;
+      }
+    }
+    return best;
+  }
+  return { draw, nearest, nearestLive, setLabelExclusions };
 }

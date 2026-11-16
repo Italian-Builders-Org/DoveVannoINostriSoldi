@@ -283,6 +283,57 @@ main {
 .map-shell[data-touch="true"] canvas {
   touch-action: none;
 }
+.live-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 4px;
+  max-width: min(420px, 100%);
+  pointer-events: auto;
+}
+.live-controls[hidden] {
+  display: none;
+}
+#live-toggle {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid #cccdce;
+  border-radius: 6px;
+  background: #ffffffe6;
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+#live-toggle[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+#live-status {
+  font-size: 11px;
+  color: #5b5d5e;
+  line-height: 1.35;
+  background: #f6f6f6c9;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.live-legend {
+  font-size: 10px;
+  color: #6d6e6f;
+  line-height: 1.3;
+  max-width: 16rem;
+}
+.tip-live-mode {
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+  font-weight: 600 !important;
+}
+.tip-live-mode small {
+  display: none;
+}
 .map-context {
   position: absolute;
   left: 16px;
@@ -2806,6 +2857,20 @@ main {
         <div class="map-context">
           <strong id="map-title">Preparazione…</strong
           ><span id="area-label"></span>
+          <div id="live-controls" class="live-controls" hidden>
+            <button
+              type="button"
+              id="live-toggle"
+              aria-pressed="true"
+              aria-controls="live-status"
+            >
+              Live
+            </button>
+            <span id="live-status" role="status" aria-live="polite"></span>
+            <span id="live-legend" class="live-legend"
+              >Icona = mezzo · freccia = direzione · passa sopra per la linea</span
+            >
+          </div>
         </div>
         <div class="top-tools">
           <div class="views" role="group" aria-label="Vista mappa">
@@ -3053,6 +3118,11 @@ main {
               <strong>Limiti.</strong> Non misura ritardi, traffico, passeggeri
               o qualità del servizio. Fuori dall’estratto cartografico le strade
               possono mancare.
+            </p>
+            <p>
+              <strong>Live Roma.</strong> I punti live sono posizioni AVM
+              aggiornate dal feed GTFS-RT ufficiale di Roma Mobilità: non sono
+              uno storico pinnabile e non sostituiscono gli orari programmati.
             </p>
           </details>
           <details>
@@ -4657,6 +4727,7 @@ function createRenderer(canvas) {
     foregroundKey = "",
     foregroundSegments = null,
     drawn = [],
+    liveHits = [],
     grid = new Map(),
     streets = 0,
     labelExclusions = [];
@@ -4705,6 +4776,144 @@ function createRenderer(canvas) {
         }
     }
   }
+  function routeTokens(value) {
+    const raw = String(value ?? "")
+      .trim()
+      .toUpperCase();
+    if (!raw) return [];
+    const stripped = raw.replace(/^0+(?=\d)/, "");
+    return stripped && stripped !== raw ? [raw, stripped] : [raw];
+  }
+  function routesMatch(a, b) {
+    const left = routeTokens(a),
+      right = new Set(routeTokens(b));
+    return left.some((token) => right.has(token));
+  }
+  function liveHeading(bearing, cameraBearing) {
+    // GTFS bearing: 0=N, 90=E. Canvas 0=east, +clockwise with y down → north is -π/2.
+    return (bearing * Math.PI) / 180 - Math.PI / 2 - cameraBearing;
+  }
+  function pathLiveGlyph(ctx, x, y, angle, mode, size) {
+    const c = Math.cos(angle),
+      s = Math.sin(angle);
+    const pt = (dx, dy) => [x + dx * c - dy * s, y + dx * s + dy * c];
+    ctx.beginPath();
+    if (mode === "metro") {
+      const r = size * 0.95;
+      const a = pt(0, -r),
+        b = pt(r, 0),
+        d = pt(0, r),
+        e = pt(-r, 0);
+      ctx.moveTo(...a);
+      ctx.lineTo(...b);
+      ctx.lineTo(...d);
+      ctx.lineTo(...e);
+      ctx.closePath();
+      return;
+    }
+    if (mode === "tram") {
+      const nose = pt(size * 1.15, 0),
+        left = pt(-size * 0.85, -size * 0.45),
+        right = pt(-size * 0.85, size * 0.45);
+      ctx.moveTo(...nose);
+      ctx.lineTo(...left);
+      ctx.lineTo(...right);
+      ctx.closePath();
+      return;
+    }
+    // Bus / default: compact arrowhead with a short body.
+    const nose = pt(size * 1.2, 0),
+      shoulderL = pt(-size * 0.15, -size * 0.7),
+      shoulderR = pt(-size * 0.15, size * 0.7),
+      tailL = pt(-size * 0.95, -size * 0.4),
+      tailR = pt(-size * 0.95, size * 0.4);
+    ctx.moveTo(...nose);
+    ctx.lineTo(...shoulderL);
+    ctx.lineTo(...tailL);
+    ctx.lineTo(...tailR);
+    ctx.lineTo(...shoulderR);
+    ctx.closePath();
+  }
+  function drawLiveVehicles(
+    ctx,
+    scene,
+    p,
+    view,
+    vehicles,
+    { routeFilter = "", hoveredLive = null, mode = "bus", cameraBearing = 0 } = {},
+  ) {
+    liveHits = [];
+    if (!scene || !vehicles?.length) return;
+    const world = worldFactory(scene.source.focus);
+    const keys = new Set();
+    const filtering = Boolean(routeFilter);
+    const baseSize = (scene?.heightScale ?? 1) > 5 ? 3.2 : 3.8;
+    const layered = [];
+    for (const vehicle of vehicles) {
+      if (
+        typeof vehicle.lat !== "number" ||
+        typeof vehicle.lon !== "number" ||
+        !Number.isFinite(vehicle.lat) ||
+        !Number.isFinite(vehicle.lon)
+      )
+        continue;
+      const xy = p.project(world([vehicle.lon, vehicle.lat]));
+      if (
+        !xy ||
+        xy[0] < -8 ||
+        xy[0] > view.width + 8 ||
+        xy[1] < -8 ||
+        xy[1] > view.height + 8
+      )
+        continue;
+      const key = xy.map((v) => Math.round(v / 4)).join(",");
+      if (keys.has(key) && vehicle.id !== hoveredLive) continue;
+      keys.add(key);
+      const match = filtering && routesMatch(vehicle.routeId, routeFilter);
+      const active = !filtering || match;
+      const hovered = vehicle.id === hoveredLive;
+      layered.push({ vehicle, xy, match, active, hovered });
+      liveHits.push({
+        id: vehicle.id,
+        x: xy[0],
+        y: xy[1],
+        vehicle,
+      });
+    }
+    layered.sort(
+      (a, b) =>
+        Number(a.hovered) - Number(b.hovered) ||
+        Number(a.match) - Number(b.match),
+    );
+    for (const item of layered) {
+      const size = item.hovered ? baseSize * 1.55 : item.match ? baseSize * 1.25 : baseSize;
+      const bearing =
+        typeof item.vehicle.bearing === "number" &&
+        Number.isFinite(item.vehicle.bearing)
+          ? item.vehicle.bearing
+          : null;
+      const angle =
+        bearing == null ? -Math.PI / 2 - cameraBearing : liveHeading(bearing, cameraBearing);
+      ctx.globalAlpha = item.active ? (item.hovered || item.match ? 1 : 0.92) : 0.18;
+      pathLiveGlyph(ctx, item.xy[0], item.xy[1], angle, mode, size);
+      ctx.fillStyle = "#1d2427";
+      ctx.fill();
+      ctx.lineWidth = item.hovered ? 1.6 : 1;
+      ctx.strokeStyle = item.hovered ? "#fff" : "rgba(255, 255, 255, 0.92)";
+      ctx.stroke();
+      if (item.hovered || item.match) {
+        ctx.beginPath();
+        ctx.arc(item.xy[0], item.xy[1], size * 1.85, 0, Math.PI * 2);
+        ctx.strokeStyle = item.hovered
+          ? "rgba(29, 36, 39, 0.55)"
+          : "rgba(29, 36, 39, 0.28)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
   function draw({
     scene,
     segments,
@@ -4714,6 +4923,10 @@ function createRenderer(canvas) {
     hovered,
     stop,
     relief = 1,
+    liveVehicles = null,
+    liveRoute = "",
+    hoveredLive = null,
+    liveMode = "bus",
   }) {
     const started = performance.now(),
       view = { width: canvas.clientWidth, height: canvas.clientHeight },
@@ -4905,6 +5118,14 @@ function createRenderer(canvas) {
         ctx.fillText(stop.label.slice(0, 36), xy[0], xy[1] - 17);
       }
     }
+    if (liveVehicles?.length)
+      drawLiveVehicles(ctx, scene, p, view, liveVehicles, {
+        routeFilter: liveRoute,
+        hoveredLive,
+        mode: liveMode,
+        cameraBearing: camera.bearing,
+      });
+    else liveHits = [];
     const stats = {
       streets,
       segments: drawn.length,
@@ -4960,7 +5181,19 @@ function createRenderer(canvas) {
     }
     return best;
   }
-  return { draw, nearest, setLabelExclusions };
+  function nearestLive(x, y) {
+    let best = null,
+      distance = 11;
+    for (const hit of liveHits) {
+      const d = Math.hypot(hit.x - x, hit.y - y);
+      if (d < distance) {
+        distance = d;
+        best = hit;
+      }
+    }
+    return best;
+  }
+  return { draw, nearest, nearestLive, setLabelExclusions };
 }
 
 const $ = (id) => document.getElementById(id),
@@ -5051,6 +5284,130 @@ let scene = null,
   requestId = 0,
   expanded = false,
   touchMode = false;
+const ROMA_VEHICLES_URL = "/api/mobilita/roma/vehicles";
+const ROMA_LIVE_POLL_MS = 60_000;
+const ROMA_OPEN_DATA_URL =
+  "https://romamobilita.it/sistemi-e-tecnologie/open-data/";
+let liveEnabled = true,
+  liveVehicles = [],
+  liveStatus = "idle",
+  liveFetchedAt = null,
+  liveFeedTimestamp = null,
+  liveTimer = 0,
+  liveToken = 0,
+  hoveredLive = null;
+function isRomaNetwork(source) {
+  if (!source) return false;
+  const id = source.id || "";
+  return source.areaId === "roma" || id === "roma" || id.startsWith("roma-");
+}
+function formatLiveClock(isoOrUnix) {
+  if (isoOrUnix == null) return null;
+  const date =
+    typeof isoOrUnix === "number"
+      ? new Date(isoOrUnix * 1000)
+      : new Date(isoOrUnix);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString("it-IT", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+function stopLivePolling() {
+  if (liveTimer) {
+    clearInterval(liveTimer);
+    liveTimer = 0;
+  }
+  liveToken += 1;
+}
+function syncLiveControls() {
+  const controls = $("live-controls");
+  const toggle = $("live-toggle");
+  const status = $("live-status");
+  if (!controls || !toggle || !status) return;
+  const roma = isRomaNetwork(city);
+  controls.hidden = !roma;
+  if (!roma) {
+    status.textContent = "";
+    return;
+  }
+  toggle.setAttribute("aria-pressed", String(liveEnabled));
+  if (!liveEnabled) {
+    status.textContent = "Live disattivato · orari programmati";
+    return;
+  }
+  if (liveStatus === "ok") {
+    const clock =
+      formatLiveClock(liveFetchedAt) || formatLiveClock(liveFeedTimestamp);
+    const count =
+      liveVehicles.length > 0 ? " · " + liveVehicles.length + " mezzi" : "";
+    const focus = route ? " · linea " + route : "";
+    status.textContent = clock
+      ? "Live · aggiornato " + clock + count + focus
+      : "Live" + (count || " · in ascolto") + focus;
+    return;
+  }
+  if (liveStatus === "loading") {
+    status.textContent = "Live · aggiornamento…";
+    return;
+  }
+  status.textContent = "Live non disponibile · orari programmati";
+}
+function clearLiveOverlay() {
+  liveVehicles = [];
+  liveStatus = "idle";
+  liveFetchedAt = null;
+  liveFeedTimestamp = null;
+  hoveredLive = null;
+  syncLiveControls();
+  schedule();
+}
+async function fetchRomaLive(token) {
+  if (!isRomaNetwork(city) || !liveEnabled) return;
+  liveStatus = "loading";
+  syncLiveControls();
+  try {
+    const response = await fetch(ROMA_VEHICLES_URL, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (token !== liveToken || !isRomaNetwork(city) || !liveEnabled) return;
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload || payload.status !== "ok") {
+      liveVehicles = [];
+      liveStatus = "unavailable";
+      liveFetchedAt = payload?.fetchedAt || null;
+      liveFeedTimestamp = null;
+      syncLiveControls();
+      schedule();
+      return;
+    }
+    liveVehicles = Array.isArray(payload.vehicles) ? payload.vehicles : [];
+    liveStatus = "ok";
+    liveFetchedAt = payload.fetchedAt || null;
+    liveFeedTimestamp = payload.feedTimestamp ?? null;
+    syncLiveControls();
+    schedule();
+  } catch {
+    if (token !== liveToken || !isRomaNetwork(city) || !liveEnabled) return;
+    liveVehicles = [];
+    liveStatus = "unavailable";
+    syncLiveControls();
+    schedule();
+  }
+}
+function startLivePolling() {
+  stopLivePolling();
+  if (!isRomaNetwork(city) || !liveEnabled) {
+    clearLiveOverlay();
+    syncLiveControls();
+    return;
+  }
+  const token = liveToken;
+  fetchRomaLive(token);
+  liveTimer = setInterval(() => fetchRomaLive(token), ROMA_LIVE_POLL_MS);
+}
 const areas = groupAreas(manifest.cities);
 const failedAssets = new Set();
 const cache = new Map(),
@@ -5244,6 +5601,7 @@ async function decodeCity(id) {
 }
 async function selectCity(id, restored = null) {
   finishDisclosures();
+  stopLivePolling();
   syncArea(id);
   $("share-result").hidden = true;
   const token = ++requestId;
@@ -5289,6 +5647,7 @@ async function selectCity(id, restored = null) {
       $("route").append(option(name, name));
 
     sourceInfo();
+    startLivePolling();
     syncLegend();
     $("map-attribution").hidden = !city.basemap;
     $("center").setAttribute(
@@ -5325,6 +5684,8 @@ async function selectCity(id, restored = null) {
     shown = [];
     selected = null;
     selectedStop = null;
+    stopLivePolling();
+    clearLiveOverlay();
     renderInspector();
     renderTable();
     $("insights").hidden = true;
@@ -5393,6 +5754,32 @@ function sourceInfo() {
         "p",
         "File fonte: " + lastModified.toLocaleDateString("it-IT"),
       );
+  }
+  if (isRomaNetwork(city)) {
+    const live = add(p, "div", undefined, "source-live");
+    link(live, "Live AVM Roma Mobilità ↗", ROMA_OPEN_DATA_URL);
+    if (liveEnabled && liveStatus === "ok") {
+      const clock =
+        formatLiveClock(liveFetchedAt) || formatLiveClock(liveFeedTimestamp);
+      add(
+        live,
+        "p",
+        (clock ? "Posizioni live aggiornate alle " + clock + ". " : "") +
+          "Dato live AVM a supporto del viaggio, non storico.",
+      );
+    } else if (liveEnabled) {
+      add(
+        live,
+        "p",
+        "Live non disponibile in questo momento: restano gli orari programmati. Dato live AVM, non storico.",
+      );
+    } else {
+      add(
+        live,
+        "p",
+        "Overlay live disattivato. Il feed ufficiale resta consultabile su Roma Mobilità.",
+      );
+    }
   }
   const q = $("quality");
   q.replaceChildren();
@@ -5966,6 +6353,7 @@ function clearFilters() {
 }
 function setRoute(value) {
   route = value;
+  syncLiveControls();
   $("route").value = value;
   syncSelectMenus();
   hideSearch();
@@ -6204,6 +6592,13 @@ function drawFrame() {
     hovered,
     stop: selectedStop,
     relief,
+    liveVehicles:
+      liveEnabled && isRomaNetwork(city) && liveStatus === "ok"
+        ? liveVehicles
+        : null,
+    liveRoute: route,
+    hoveredLive,
+    liveMode: city?.mode || "bus",
   });
   const scale = $("scale-bar");
   scale.hidden = !stats.scale;
@@ -6369,6 +6764,23 @@ canvas.addEventListener("pointermove", (event) => {
     return;
   }
   if (event.pointerType === "touch") return;
+  const live =
+    liveEnabled && isRomaNetwork(city) && liveStatus === "ok"
+      ? renderer.nearestLive?.(...point)
+      : null;
+  if (live) {
+    if (hoveredLive !== live.id || hovered !== null) {
+      hoveredLive = live.id;
+      hovered = null;
+      schedule();
+    }
+    showLiveTip(live.vehicle, point);
+    return;
+  }
+  if (hoveredLive !== null) {
+    hoveredLive = null;
+    schedule();
+  }
   const s = renderer.nearest(...point);
   if (hovered !== s?.id) {
     hovered = s?.id ?? null;
@@ -6380,11 +6792,66 @@ let tipWidth = 0,
   tipHeight = 0;
 function hideMapTip() {
   const tip = $("map-tip");
-  if (tip.hidden && hovered === null) return;
+  if (tip.hidden && hovered === null && hoveredLive === null) return;
   tip.hidden = true;
   tip.dataset.segment = "";
+  tip.dataset.live = "";
   hovered = null;
+  if (hoveredLive !== null) {
+    hoveredLive = null;
+    schedule();
+    return;
+  }
   schedule();
+}
+function placeMapTip(point) {
+  const tip = $("map-tip");
+  const x = Math.max(
+    8,
+    Math.min(canvas.clientWidth - tipWidth - 8, point[0] + 12),
+  );
+  const above = point[1] - tipHeight - 12;
+  const y = Math.max(
+    8,
+    Math.min(
+      canvas.clientHeight - tipHeight - 8,
+      above >= 8 ? above : point[1] + 16,
+    ),
+  );
+  tip.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+}
+function showLiveTip(vehicle, point) {
+  if (!vehicle) {
+    hideMapTip();
+    return;
+  }
+  const tip = $("map-tip");
+  const key = vehicle.id || "";
+  if (tip.dataset.live !== key) {
+    tip.replaceChildren();
+    const heading = add(tip, "div", undefined, "tip-heading");
+    const mode = modeLabel(city?.mode || "bus");
+    add(
+      heading,
+      "span",
+      (vehicle.routeId ? "Linea " + vehicle.routeId : "Mezzo live") +
+        " · " +
+        mode,
+      "tip-route",
+    );
+    add(
+      tip,
+      "span",
+      "Posizione live AVM · non indica ritardo sull’orario programmato",
+      "tip-stops",
+    );
+    tip.dataset.live = key;
+    tip.dataset.segment = "";
+    tip.hidden = false;
+    tipWidth = tip.offsetWidth;
+    tipHeight = tip.offsetHeight;
+  }
+  placeMapTip(point);
 }
 function showMapTip(segment, point) {
   if (!segment) {
@@ -6410,23 +6877,12 @@ function showMapTip(segment, point) {
       "tip-stops",
     );
     tip.dataset.segment = segment.id;
+    tip.dataset.live = "";
     tip.hidden = false;
     tipWidth = tip.offsetWidth;
     tipHeight = tip.offsetHeight;
   }
-  const x = Math.max(
-    8,
-    Math.min(canvas.clientWidth - tipWidth - 8, point[0] + 12),
-  );
-  const above = point[1] - tipHeight - 12;
-  const y = Math.max(
-    8,
-    Math.min(
-      canvas.clientHeight - tipHeight - 8,
-      above >= 8 ? above : point[1] + 16,
-    ),
-  );
-  tip.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+  placeMapTip(point);
 }
 function endPointer(event, cancelled = false) {
   if (tapOnly?.id === event.pointerId) {
@@ -6871,6 +7327,18 @@ for (const disclosure of document.querySelectorAll(
 ))
   enhanceDisclosure(disclosure);
 $("notice-dismiss")?.addEventListener("click", () => notice(null));
+$("live-toggle")?.addEventListener("click", () => {
+  liveEnabled = !liveEnabled;
+  if (!liveEnabled) {
+    stopLivePolling();
+    clearLiveOverlay();
+    syncLiveControls();
+    if (city) sourceInfo();
+    return;
+  }
+  startLivePolling();
+  if (city) sourceInfo();
+});
 $("city").disabled = false;
 const initialView = readView(location.search, manifest.cities);
 selectCity(initialView.city, initialView);

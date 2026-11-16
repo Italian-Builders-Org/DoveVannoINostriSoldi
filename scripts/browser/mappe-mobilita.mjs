@@ -60,12 +60,14 @@ async function assertMapGrid(page, width) {
   });
 }
 
-async function selectMilanoNetwork(frame, networkId = "milano") {
+async function selectCityNetwork(frame, { networkId, titleIncludes }) {
   await frame.evaluate((id) => {
     const select = document.querySelector("#city, select[name='city'], select");
     if (!(select instanceof HTMLSelectElement)) return;
     const match = [...select.options].find(
-      (option) => option.value === id || option.textContent?.includes("Milano"),
+      (option) =>
+        option.value === id ||
+        option.textContent?.toLowerCase().includes(String(id).toLowerCase()),
     );
     if (match) {
       select.value = match.value;
@@ -73,10 +75,45 @@ async function selectMilanoNetwork(frame, networkId = "milano") {
     }
   }, networkId);
   await frame.waitForFunction(
-    () => document.querySelector("#map-title")?.textContent?.includes("Milano"),
+    (expected) => document.querySelector("#map-title")?.textContent?.includes(expected),
     { timeout: 30_000 },
+    titleIncludes,
   );
 }
+
+async function selectMilanoNetwork(frame, networkId = "milano") {
+  await selectCityNetwork(frame, {
+    networkId,
+    titleIncludes: "Milano",
+  });
+}
+
+const ROMA_LIVE_MOCK = {
+  pathname: "/api/mobilita/roma/vehicles",
+  body: {
+    status: "ok",
+    source: {
+      holder: "Roma Servizi per la Mobilità (ATAC e Roma TPL)",
+      openDataUrl: "https://romamobilita.it/sistemi-e-tecnologie/open-data/",
+      feedUrl:
+        "https://romamobilita.it/sites/default/files/rome_rtgtfs_vehicle_positions_feed.pb",
+    },
+    fetchedAt: "2026-11-16T12:00:00.000Z",
+    feedTimestamp: 1_700_000_000,
+    vehicleCount: 1,
+    vehicles: [
+      {
+        id: "mock-1",
+        tripId: "trip-1",
+        routeId: "71",
+        lat: 41.9028,
+        lon: 12.4964,
+        bearing: 90,
+        ts: 1_700_000_001,
+      },
+    ],
+  },
+};
 
 async function assertPublishedBasemap(frame) {
   await frame.waitForFunction(
@@ -255,6 +292,47 @@ try {
         true,
         "overflow orizzontale header mobilità",
       );
+    },
+  });
+
+  await runScenario(browser, {
+    suite: "mappe-mobilita",
+    label: "Roma live overlay mock",
+    pathname: "/mappe/mobilita",
+    width: 1280,
+    readySelector: "#mobilita-viewer",
+    requestMocks: [ROMA_LIVE_MOCK],
+    async validate(page) {
+      const frame = await waitForViewerFrame(page);
+      await selectCityNetwork(frame, {
+        networkId: "roma",
+        titleIncludes: "Roma",
+      });
+      await frame.waitForFunction(() => {
+        const controls = document.getElementById("live-controls");
+        const status = document.getElementById("live-status");
+        return (
+          controls &&
+          !controls.hidden &&
+          /Live/i.test(status?.textContent || "")
+        );
+      }, { timeout: 30_000 });
+      const liveText = await frame.$eval("#live-status", (node) => node.textContent.trim());
+      assert.match(liveText, /Live/i, "stato live Roma assente");
+      assert.ok(
+        /aggiornato|non disponibile|disattivato|mezzi/i.test(liveText),
+        `stato live Roma inatteso: ${liveText}`,
+      );
+      await openMobilitaFontiPanel(page);
+      const fonti = await page.$eval(
+        '[data-immersive-page="mobilita"] details[open]',
+        (node) => node.textContent,
+      );
+      assert.match(fonti, /Roma Mobilità|GTFS-RT|AVM/i, "Fonti senza provenienza live Roma");
+      await page.screenshot({
+        path: path.join(output, "mobilita-roma-live-1280.png"),
+        fullPage: false,
+      });
     },
   });
 

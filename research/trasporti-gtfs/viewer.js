@@ -124,6 +124,130 @@ let scene = null,
   requestId = 0,
   expanded = false,
   touchMode = false;
+const ROMA_VEHICLES_URL = "/api/mobilita/roma/vehicles";
+const ROMA_LIVE_POLL_MS = 60_000;
+const ROMA_OPEN_DATA_URL =
+  "https://romamobilita.it/sistemi-e-tecnologie/open-data/";
+let liveEnabled = true,
+  liveVehicles = [],
+  liveStatus = "idle",
+  liveFetchedAt = null,
+  liveFeedTimestamp = null,
+  liveTimer = 0,
+  liveToken = 0,
+  hoveredLive = null;
+function isRomaNetwork(source) {
+  if (!source) return false;
+  const id = source.id || "";
+  return source.areaId === "roma" || id === "roma" || id.startsWith("roma-");
+}
+function formatLiveClock(isoOrUnix) {
+  if (isoOrUnix == null) return null;
+  const date =
+    typeof isoOrUnix === "number"
+      ? new Date(isoOrUnix * 1000)
+      : new Date(isoOrUnix);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString("it-IT", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+function stopLivePolling() {
+  if (liveTimer) {
+    clearInterval(liveTimer);
+    liveTimer = 0;
+  }
+  liveToken += 1;
+}
+function syncLiveControls() {
+  const controls = $("live-controls");
+  const toggle = $("live-toggle");
+  const status = $("live-status");
+  if (!controls || !toggle || !status) return;
+  const roma = isRomaNetwork(city);
+  controls.hidden = !roma;
+  if (!roma) {
+    status.textContent = "";
+    return;
+  }
+  toggle.setAttribute("aria-pressed", String(liveEnabled));
+  if (!liveEnabled) {
+    status.textContent = "Live disattivato · orari programmati";
+    return;
+  }
+  if (liveStatus === "ok") {
+    const clock =
+      formatLiveClock(liveFetchedAt) || formatLiveClock(liveFeedTimestamp);
+    const count =
+      liveVehicles.length > 0 ? " · " + liveVehicles.length + " mezzi" : "";
+    const focus = route ? " · linea " + route : "";
+    status.textContent = clock
+      ? "Live · aggiornato " + clock + count + focus
+      : "Live" + (count || " · in ascolto") + focus;
+    return;
+  }
+  if (liveStatus === "loading") {
+    status.textContent = "Live · aggiornamento…";
+    return;
+  }
+  status.textContent = "Live non disponibile · orari programmati";
+}
+function clearLiveOverlay() {
+  liveVehicles = [];
+  liveStatus = "idle";
+  liveFetchedAt = null;
+  liveFeedTimestamp = null;
+  hoveredLive = null;
+  syncLiveControls();
+  schedule();
+}
+async function fetchRomaLive(token) {
+  if (!isRomaNetwork(city) || !liveEnabled) return;
+  liveStatus = "loading";
+  syncLiveControls();
+  try {
+    const response = await fetch(ROMA_VEHICLES_URL, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (token !== liveToken || !isRomaNetwork(city) || !liveEnabled) return;
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload || payload.status !== "ok") {
+      liveVehicles = [];
+      liveStatus = "unavailable";
+      liveFetchedAt = payload?.fetchedAt || null;
+      liveFeedTimestamp = null;
+      syncLiveControls();
+      schedule();
+      return;
+    }
+    liveVehicles = Array.isArray(payload.vehicles) ? payload.vehicles : [];
+    liveStatus = "ok";
+    liveFetchedAt = payload.fetchedAt || null;
+    liveFeedTimestamp = payload.feedTimestamp ?? null;
+    syncLiveControls();
+    schedule();
+  } catch {
+    if (token !== liveToken || !isRomaNetwork(city) || !liveEnabled) return;
+    liveVehicles = [];
+    liveStatus = "unavailable";
+    syncLiveControls();
+    schedule();
+  }
+}
+function startLivePolling() {
+  stopLivePolling();
+  if (!isRomaNetwork(city) || !liveEnabled) {
+    clearLiveOverlay();
+    syncLiveControls();
+    return;
+  }
+  const token = liveToken;
+  fetchRomaLive(token);
+  liveTimer = setInterval(() => fetchRomaLive(token), ROMA_LIVE_POLL_MS);
+}
 const areas = groupAreas(manifest.cities);
 const failedAssets = new Set();
 const cache = new Map(),
@@ -317,6 +441,7 @@ async function decodeCity(id) {
 }
 async function selectCity(id, restored = null) {
   finishDisclosures();
+  stopLivePolling();
   syncArea(id);
   $("share-result").hidden = true;
   const token = ++requestId;
@@ -362,6 +487,7 @@ async function selectCity(id, restored = null) {
       $("route").append(option(name, name));
 
     sourceInfo();
+    startLivePolling();
     syncLegend();
     $("map-attribution").hidden = !city.basemap;
     $("center").setAttribute(
@@ -398,6 +524,8 @@ async function selectCity(id, restored = null) {
     shown = [];
     selected = null;
     selectedStop = null;
+    stopLivePolling();
+    clearLiveOverlay();
     renderInspector();
     renderTable();
     $("insights").hidden = true;
@@ -466,6 +594,32 @@ function sourceInfo() {
         "p",
         "File fonte: " + lastModified.toLocaleDateString("it-IT"),
       );
+  }
+  if (isRomaNetwork(city)) {
+    const live = add(p, "div", undefined, "source-live");
+    link(live, "Live AVM Roma Mobilità ↗", ROMA_OPEN_DATA_URL);
+    if (liveEnabled && liveStatus === "ok") {
+      const clock =
+        formatLiveClock(liveFetchedAt) || formatLiveClock(liveFeedTimestamp);
+      add(
+        live,
+        "p",
+        (clock ? "Posizioni live aggiornate alle " + clock + ". " : "") +
+          "Dato live AVM a supporto del viaggio, non storico.",
+      );
+    } else if (liveEnabled) {
+      add(
+        live,
+        "p",
+        "Live non disponibile in questo momento: restano gli orari programmati. Dato live AVM, non storico.",
+      );
+    } else {
+      add(
+        live,
+        "p",
+        "Overlay live disattivato. Il feed ufficiale resta consultabile su Roma Mobilità.",
+      );
+    }
   }
   const q = $("quality");
   q.replaceChildren();
@@ -1039,6 +1193,7 @@ function clearFilters() {
 }
 function setRoute(value) {
   route = value;
+  syncLiveControls();
   $("route").value = value;
   syncSelectMenus();
   hideSearch();
@@ -1277,6 +1432,13 @@ function drawFrame() {
     hovered,
     stop: selectedStop,
     relief,
+    liveVehicles:
+      liveEnabled && isRomaNetwork(city) && liveStatus === "ok"
+        ? liveVehicles
+        : null,
+    liveRoute: route,
+    hoveredLive,
+    liveMode: city?.mode || "bus",
   });
   const scale = $("scale-bar");
   scale.hidden = !stats.scale;
@@ -1442,6 +1604,23 @@ canvas.addEventListener("pointermove", (event) => {
     return;
   }
   if (event.pointerType === "touch") return;
+  const live =
+    liveEnabled && isRomaNetwork(city) && liveStatus === "ok"
+      ? renderer.nearestLive?.(...point)
+      : null;
+  if (live) {
+    if (hoveredLive !== live.id || hovered !== null) {
+      hoveredLive = live.id;
+      hovered = null;
+      schedule();
+    }
+    showLiveTip(live.vehicle, point);
+    return;
+  }
+  if (hoveredLive !== null) {
+    hoveredLive = null;
+    schedule();
+  }
   const s = renderer.nearest(...point);
   if (hovered !== s?.id) {
     hovered = s?.id ?? null;
@@ -1453,11 +1632,66 @@ let tipWidth = 0,
   tipHeight = 0;
 function hideMapTip() {
   const tip = $("map-tip");
-  if (tip.hidden && hovered === null) return;
+  if (tip.hidden && hovered === null && hoveredLive === null) return;
   tip.hidden = true;
   tip.dataset.segment = "";
+  tip.dataset.live = "";
   hovered = null;
+  if (hoveredLive !== null) {
+    hoveredLive = null;
+    schedule();
+    return;
+  }
   schedule();
+}
+function placeMapTip(point) {
+  const tip = $("map-tip");
+  const x = Math.max(
+    8,
+    Math.min(canvas.clientWidth - tipWidth - 8, point[0] + 12),
+  );
+  const above = point[1] - tipHeight - 12;
+  const y = Math.max(
+    8,
+    Math.min(
+      canvas.clientHeight - tipHeight - 8,
+      above >= 8 ? above : point[1] + 16,
+    ),
+  );
+  tip.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+}
+function showLiveTip(vehicle, point) {
+  if (!vehicle) {
+    hideMapTip();
+    return;
+  }
+  const tip = $("map-tip");
+  const key = vehicle.id || "";
+  if (tip.dataset.live !== key) {
+    tip.replaceChildren();
+    const heading = add(tip, "div", undefined, "tip-heading");
+    const mode = modeLabel(city?.mode || "bus");
+    add(
+      heading,
+      "span",
+      (vehicle.routeId ? "Linea " + vehicle.routeId : "Mezzo live") +
+        " · " +
+        mode,
+      "tip-route",
+    );
+    add(
+      tip,
+      "span",
+      "Posizione live AVM · non indica ritardo sull’orario programmato",
+      "tip-stops",
+    );
+    tip.dataset.live = key;
+    tip.dataset.segment = "";
+    tip.hidden = false;
+    tipWidth = tip.offsetWidth;
+    tipHeight = tip.offsetHeight;
+  }
+  placeMapTip(point);
 }
 function showMapTip(segment, point) {
   if (!segment) {
@@ -1483,23 +1717,12 @@ function showMapTip(segment, point) {
       "tip-stops",
     );
     tip.dataset.segment = segment.id;
+    tip.dataset.live = "";
     tip.hidden = false;
     tipWidth = tip.offsetWidth;
     tipHeight = tip.offsetHeight;
   }
-  const x = Math.max(
-    8,
-    Math.min(canvas.clientWidth - tipWidth - 8, point[0] + 12),
-  );
-  const above = point[1] - tipHeight - 12;
-  const y = Math.max(
-    8,
-    Math.min(
-      canvas.clientHeight - tipHeight - 8,
-      above >= 8 ? above : point[1] + 16,
-    ),
-  );
-  tip.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+  placeMapTip(point);
 }
 function endPointer(event, cancelled = false) {
   if (tapOnly?.id === event.pointerId) {
@@ -1944,6 +2167,18 @@ for (const disclosure of document.querySelectorAll(
 ))
   enhanceDisclosure(disclosure);
 $("notice-dismiss")?.addEventListener("click", () => notice(null));
+$("live-toggle")?.addEventListener("click", () => {
+  liveEnabled = !liveEnabled;
+  if (!liveEnabled) {
+    stopLivePolling();
+    clearLiveOverlay();
+    syncLiveControls();
+    if (city) sourceInfo();
+    return;
+  }
+  startLivePolling();
+  if (city) sourceInfo();
+});
 $("city").disabled = false;
 const initialView = readView(location.search, manifest.cities);
 selectCity(initialView.city, initialView);

@@ -280,9 +280,11 @@ const contentSecurityPolicyReportOnly = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://documenti.camera.it https://www.senato.it https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "font-src 'self'",
-  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
+  // tiles.openfreemap.org: vector tiles and glyphs of the live bus map basemap.
+  "connect-src 'self' https://tiles.openfreemap.org https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://www.googletagmanager.com",
   "manifest-src 'self'",
-  "worker-src 'none'",
+  // MapLibre decodes tiles in a same-origin module worker loaded via blob:.
+  "worker-src 'self' blob:",
   "media-src 'none'",
   "frame-src 'self'",
 ].join("; ");

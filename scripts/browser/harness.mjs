@@ -330,7 +330,28 @@ export async function navigate(
 
 // Creates a page with the shared viewport policy. Uses realistic browser cache
 // (no global setCacheEnabled(false)) per PR1.9.
-export async function createPage(browser, { width }) {
+function matchRequestMock(request, mocks) {
+  const pathname = new URL(request.url()).pathname;
+  for (const mock of mocks) {
+    const match =
+      typeof mock.match === "function"
+        ? mock.match(request)
+        : pathname === mock.pathname;
+    if (!match) continue;
+    return {
+      status: mock.status ?? 200,
+      contentType: mock.contentType ?? "application/json",
+      headers: mock.headers ?? {},
+      body:
+        typeof mock.body === "string"
+          ? mock.body
+          : JSON.stringify(mock.body ?? {}),
+    };
+  }
+  return null;
+}
+
+export async function createPage(browser, { width, requestMocks = [] }) {
   const colorScheme = process.env.DVNS_COLOR_SCHEME ?? "light";
   assert.ok(["light", "dark"].includes(colorScheme), "DVNS_COLOR_SCHEME deve essere light o dark");
   const page = await browser.newPage();
@@ -346,20 +367,20 @@ export async function createPage(browser, { width }) {
     isMobile: width <= 390,
   });
   const bypass = protectionBypassSecret();
+  const mocks = [...requestMocks];
   if (bypass) {
-    // Persist the SSO bypass cookie once, then keep clean path/search for app logic
-    // (menu close-on-navigation compares pathname+search).
-    await page.setExtraHTTPHeaders({ "x-vercel-set-bypass-cookie": "true" });
+    mocks.push({
+      pathname: "/api/location",
+      body: { ok: true, region: null },
+    });
+  }
+  if (mocks.length) {
     await page.setRequestInterception(true);
     page.on("request", (request) => {
       try {
-        const url = new URL(request.url());
-        if (url.pathname === "/api/location") {
-          request.respond({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify({ ok: true, region: null }),
-          });
+        const response = matchRequestMock(request, mocks);
+        if (response) {
+          request.respond(response);
           return;
         }
       } catch {
@@ -367,6 +388,11 @@ export async function createPage(browser, { width }) {
       }
       request.continue().catch(() => {});
     });
+  }
+  if (bypass) {
+    // Persist the SSO bypass cookie once, then keep clean path/search for app logic
+    // (menu close-on-navigation compares pathname+search).
+    await page.setExtraHTTPHeaders({ "x-vercel-set-bypass-cookie": "true" });
     const seed = new URL("/", defaultBaseUrl());
     seed.searchParams.set("x-vercel-protection-bypass", bypass);
     await page.goto(seed.href, {
@@ -400,11 +426,12 @@ export async function runScenario(
     waitUntil = "domcontentloaded",
     readySelector = "main h1",
     afterNavigate,
+    requestMocks = [],
   },
 ) {
   const started = performance.now();
   const id = scenarioId ?? scenarioIdFromLabel(label);
-  const page = await createPage(browser, { width });
+  const page = await createPage(browser, { width, requestMocks });
   const { assertNoErrors, diagnostics } = installDiagnostics(page, { label, baseUrl });
   const requestedUrl = pageUrl(pathname, baseUrl);
   let thrown;

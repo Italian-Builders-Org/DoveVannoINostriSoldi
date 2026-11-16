@@ -138,6 +138,12 @@
   margin-bottom: var(--space-2);
 }
 
+.sourcesPanel a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .immersiveHomeLink {
   min-height: 44px;
   padding: 10px 13px;
@@ -152,6 +158,165 @@
   white-space: nowrap;
 }
 
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1f8a4c;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #1f8a4c 22%, transparent);
+}
+
+.viewBody {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Covered by the live view but never collapsed: a 0×0 viewport would turn
+   the explorer camera into NaN and leave a blank map on return. */
+.viewerFrame[data-covered="true"] {
+  visibility: hidden;
+}
+
+.liveDisclosure > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.livePanel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: min(20rem, calc(100vw - 24px));
+  padding: var(--space-4);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 10px;
+  background: var(--color-raised);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--color-neutral-900) 12%, transparent);
+  z-index: 40;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.livePanel h2 {
+  font-size: 14px;
+}
+
+.livePanel p {
+  font-size: 13px;
+  color: var(--color-neutral-700);
+}
+
+.liveCities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.liveCities a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 10px;
+  background: var(--color-raised);
+  text-align: left;
+  text-decoration: none;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.liveCities a:hover {
+  border-color: var(--color-neutral-500);
+  background: var(--color-neutral-100);
+}
+
+.liveCities a:focus-visible,
+.backToSpeeds:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.liveCities strong {
+  display: block;
+  font-size: 14px;
+}
+
+.liveCities small {
+  display: block;
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.livePanel .liveNote {
+  font-size: 12px;
+  color: var(--color-neutral-600);
+}
+
+.backToSpeeds {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9px;
+  background: var(--color-raised);
+  font-size: 12px;
+  font-weight: 550;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.labelShort {
+  display: none;
+}
+
+.crumb {
+  margin-left: 6px;
+  color: var(--color-text);
+  font-weight: 650;
+}
+
+.crumb > span {
+  margin-right: 4px;
+  color: var(--color-neutral-500);
+}
+
+.liveView {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  background: var(--color-bg);
+}
+
+.liveLoading {
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  color: var(--color-neutral-600);
+  font-size: 13px;
+}
+
+.sourcesPanel h3 {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+
 .viewerFrame {
   flex: 1 1 auto;
   width: 100%;
@@ -160,7 +325,30 @@
   background: var(--color-neutral-100);
 }
 
+/* The live map always fills the viewport; the page itself never scrolls. */
+.immersivePage:has([data-live-view]) {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 560px) {
+  .labelLong {
+    display: none;
+  }
+
+  .labelShort {
+    display: inline;
+  }
+}
+
 @media (max-width: 719px) {
+  .immersiveChrome {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
   .immersivePage {
     height: auto;
     min-height: 100dvh;
@@ -183,12 +371,31 @@
   }
 
   .brandLockup {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
+    gap: var(--space-2);
   }
 
   .immersiveActions {
-    flex: 1 1 100%;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .immersiveActions > a,
+  .sourcesDisclosure > summary {
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .hideOnPhone {
+    display: none;
+  }
+}
+
+/* On phones the real-time button is the first action at the left edge:
+   open its panel rightwards so it never leaves the viewport. */
+@media (max-width: 719px) {
+  .livePanel {
+    left: 0;
+    right: auto;
   }
 }

@@ -1,3 +1,4 @@
+import "./helpers/register-ts-alias.mjs";
 import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -163,4 +164,100 @@ test("displayName keeps codes and abbreviations readable", () => {
   assert.equal(model.displayName("S. PIETRO"), "S. Pietro");
   assert.equal(model.displayName("VIA DELL'AMBA ARADAM"), "Via dell'Amba Aradam");
   assert.equal(model.displayName("CINECITTA' (MA)"), "Cinecittà (MA)");
+});
+
+// Coverage: scheduled trips in progress per line, from the static timetable.
+// Profile values are base-62 chars per 10-minute bin over 0..30h of the
+// service day, so trips after midnight belong to the previous service date.
+const COVERAGE = {
+  schema: 1,
+  binMinutes: 10,
+  bins: 180,
+  timezone: "Europe/Rome",
+  dates: { "2026-11-15": 0, "2026-11-16": 1 },
+  profiles: [
+    // Sunday: line 64 still running at 24:30 (bin 147) of the 15th.
+    { "64": "0".repeat(147) + "2" + "0".repeat(32) },
+    // Monday: 9 trips of 64 at 08:00 (bin 48), 61 ("Z") of H at 08:00.
+    { "64": "0".repeat(48) + "9" + "0".repeat(131), H: "0".repeat(48) + "Z" + "0".repeat(131) },
+  ],
+};
+
+test("scheduledNow reads the bin of the Rome service day", () => {
+  // 2026-11-16 08:05 Rome (UTC+1) = 07:05Z
+  const at = Date.parse("2026-11-16T07:05:00Z") / 1000;
+  const now = model.scheduledNow(COVERAGE, at);
+  assert.equal(now.byRoute.get("64"), 9);
+  assert.equal(now.byRoute.get("H"), 61);
+  assert.equal(now.total, 70);
+});
+
+test("scheduledNow adds trips after midnight from the previous service date", () => {
+  // 2026-11-16 00:35 Rome = 2026-11-15 23:35Z → bin 147 of the 15th (24:30)
+  const at = Date.parse("2026-11-15T23:35:00Z") / 1000;
+  const now = model.scheduledNow(COVERAGE, at);
+  assert.equal(now.byRoute.get("64"), 2);
+});
+
+test("scheduledNow returns null outside the published calendar instead of zero", () => {
+  const at = Date.parse("2027-02-01T10:00:00Z") / 1000;
+  assert.equal(model.scheduledNow(COVERAGE, at), null);
+  assert.throws(() => model.scheduledNow({ ...COVERAGE, schema: 9 }, at), /schema/);
+});
+
+test("searchStops matches names without accents and codes exactly, ranked by prefix", () => {
+  const network = model.buildNetwork({
+    ...RAW,
+    stops: [
+      ...RAW.stops,
+      ["70001", "CINECITTA' (MA)", 12.57, 41.85],
+      ["70002", "VIA CINECITTÀ/TUSCOLANA", 12.57, 41.85],
+    ],
+  });
+  const byName = model.searchStops(network, "cinecitta");
+  assert.deepEqual(
+    byName.map((s) => s.id),
+    ["70001", "70002"],
+  );
+  assert.equal(model.searchStops(network, "70002")[0].id, "70002");
+  assert.deepEqual(model.searchStops(network, "termini").map((s) => s.id), ["A"]);
+  assert.deepEqual(model.searchStops(network, "x"), [], "una lettera non basta");
+});
+
+test("delayBucket separates early, on time, late and unknown", () => {
+  assert.equal(model.delayBucket(-180), "early");
+  assert.equal(model.delayBucket(-30), "ontime");
+  assert.equal(model.delayBucket(100), "ontime");
+  assert.equal(model.delayBucket(200), "late");
+  assert.equal(model.delayBucket(400), "verylate");
+  assert.equal(model.delayBucket(null), "unknown");
+  assert.equal(model.formatDelay(-180), "3 min in anticipo");
+  assert.equal(model.formatDelay(30), "in orario");
+  assert.equal(model.formatDelay(400), "+7 min");
+  assert.equal(model.formatDelay(null), null);
+});
+
+test("formatEta says 'in arrivo' under a minute and never shows negative minutes", () => {
+  assert.equal(model.formatEta(20), "in arrivo");
+  assert.equal(model.formatEta(-25), "in arrivo");
+  assert.equal(model.formatEta(61), "1 min");
+  assert.equal(model.formatEta(14 * 60 + 40), "15 min");
+});
+
+test("searchStops prefers stops served by more lines within the same match quality", () => {
+  const network = model.buildNetwork({
+    ...RAW,
+    stops: [...RAW.stops, ["MT1", "TERMINI", 12.501, 41.901], ["05000", "TERMINI (MA-MB-FS)", 12.5004, 41.9013]],
+    patterns: [
+      ...RAW.patterns,
+      [4, 0, "BATTISTINI", [4, 0], encode([[12.501, 41.901], [12.5, 41.9]]), 50],
+      [0, 0, "S. PIETRO", [5, 3], encode([[12.5, 41.9], [12.46, 41.9]]), 10],
+      [2, 0, "X", [5, 3], encode([[12.5, 41.9], [12.46, 41.9]]), 10],
+    ],
+  });
+  assert.equal(network.stopById.get("05000").routes, 2);
+  assert.deepEqual(
+    model.searchStops(network, "termini").map((s) => s.id),
+    ["05000", "MT1", "A"],
+  );
 });

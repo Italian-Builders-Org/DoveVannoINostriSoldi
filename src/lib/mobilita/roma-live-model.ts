@@ -24,7 +24,15 @@ export type RawRomaNetwork = {
 
 export type LonLat = [number, number];
 
-export type NetworkStop = { id: string; name: string; lon: number; lat: number; index: number };
+export type NetworkStop = {
+  id: string;
+  name: string;
+  lon: number;
+  lat: number;
+  index: number;
+  /** Distinct routes with a pattern through this stop. */
+  routes: number;
+};
 
 export type NetworkPattern = {
   index: number;
@@ -91,6 +99,7 @@ export function buildNetwork(raw: RawRomaNetwork): RomaNetwork {
     lon,
     lat,
     index,
+    routes: 0,
   }));
   const stopById = new Map(stops.map((stop) => [stop.id, stop]));
   const routeList: NetworkRoute[] = raw.routes.map(([id, short, type, color, agency, longName]) => ({
@@ -120,6 +129,15 @@ export function buildNetwork(raw: RawRomaNetwork): RomaNetwork {
     route.patterns.push(pattern);
     patterns.push(pattern);
   });
+  const servedBy = new Map<number, Set<string>>();
+  for (const pattern of patterns) {
+    for (const index of pattern.stops) {
+      const set = servedBy.get(index) ?? new Set<string>();
+      set.add(pattern.routeId);
+      servedBy.set(index, set);
+    }
+  }
+  for (const [index, set] of servedBy) stops[index]!.routes = set.size;
   return { source: raw.source, routes, routeList, stops, stopById, patterns };
 }
 
@@ -354,4 +372,122 @@ export function displayName(value: string): string {
     word = word.replace(/([aeiou])'$/i, (_, vowel: string) => ACCENT[vowel.toLowerCase()] ?? vowel);
     return word;
   });
+}
+
+export const ROMA_COVERAGE_SCHEMA = 1;
+
+export type RomaCoverage = {
+  schema: number;
+  binMinutes: number;
+  bins: number;
+  timezone: string;
+  /** Service date (YYYY-MM-DD) → index in `profiles`. */
+  dates: Record<string, number>;
+  /** Per profile, route_id → one base-62 char per bin (trips in progress). */
+  profiles: Record<string, string>[];
+};
+
+const BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+function romeClock(unixSeconds: number, timeZone: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(unixSeconds * 1000));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const date = `${get("year")}-${get("month")}-${get("day")}`;
+  const minutes = Number(get("hour")) * 60 + Number(get("minute"));
+  const previous = new Date(Date.parse(`${date}T12:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+  return { date, previous, minutes };
+}
+
+/**
+ * Scheduled trips in progress now, per route, from the published timetable.
+ * Null when today is outside the calendar: "no schedule" is not "zero trips".
+ */
+export function scheduledNow(
+  coverage: RomaCoverage,
+  unixSeconds: number,
+): { byRoute: Map<string, number>; total: number; date: string } | null {
+  if (!coverage || coverage.schema !== ROMA_COVERAGE_SCHEMA) throw new Error("coverage_schema");
+  const { date, previous, minutes } = romeClock(unixSeconds, coverage.timezone);
+  const today = coverage.dates[date];
+  if (today === undefined) return null;
+  const byRoute = new Map<string, number>();
+  const add = (profileIndex: number | undefined, bin: number) => {
+    const profile = profileIndex === undefined ? undefined : coverage.profiles[profileIndex];
+    if (!profile || bin < 0 || bin >= coverage.bins) return;
+    for (const [route, series] of Object.entries(profile)) {
+      const value = BASE62.indexOf(series.charAt(bin));
+      if (value > 0) byRoute.set(route, (byRoute.get(route) ?? 0) + value);
+    }
+  };
+  add(today, Math.floor(minutes / coverage.binMinutes));
+  add(coverage.dates[previous], Math.floor((minutes + 1440) / coverage.binMinutes));
+  let total = 0;
+  for (const value of byRoute.values()) total += value;
+  return { byRoute, total, date };
+}
+
+/** Lowercase, no accents or apostrophes: "CINECITTA'" and "Cinecittà" match. */
+export function normaliseName(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+let stopIndexCache: { network: RomaNetwork; names: string[] } | null = null;
+
+export function searchStops(network: RomaNetwork, query: string, limit = 8): NetworkStop[] {
+  const q = normaliseName(query);
+  if (q.length < 2 || q.length > 40) return [];
+  if (stopIndexCache?.network !== network) {
+    stopIndexCache = { network, names: network.stops.map((s) => normaliseName(s.name)) };
+  }
+  const names = stopIndexCache.names;
+  const exact: NetworkStop[] = [];
+  const prefix: NetworkStop[] = [];
+  const contains: NetworkStop[] = [];
+  network.stops.forEach((stop, i) => {
+    if (stop.id.toLowerCase() === q) exact.push(stop);
+    else if (names[i]!.startsWith(q)) prefix.push(stop);
+    else if (q.length >= 3 && names[i]!.includes(q)) contains.push(stop);
+  });
+  // Within the same match quality, busier stops first (the bus stop at
+  // Termini before the metro platform of the same name).
+  const busier = (a: NetworkStop, b: NetworkStop) => b.routes - a.routes;
+  return [...exact, ...prefix.sort(busier), ...contains.sort(busier)].slice(0, limit);
+}
+
+export type DelayBucket = "early" | "ontime" | "late" | "verylate" | "unknown";
+
+/** Seconds vs timetable → bucket. Up to 2 min either way counts as on time. */
+export function delayBucket(delay: number | null | undefined): DelayBucket {
+  if (delay === null || delay === undefined || !Number.isFinite(delay)) return "unknown";
+  if (delay < -120) return "early";
+  if (delay <= 120) return "ontime";
+  if (delay <= 300) return "late";
+  return "verylate";
+}
+
+export function formatDelay(delay: number | null | undefined): string | null {
+  const bucket = delayBucket(delay);
+  if (bucket === "unknown") return null;
+  if (bucket === "ontime") return "in orario";
+  if (bucket === "early") return `${Math.round(-delay! / 60)} min in anticipo`;
+  return `+${Math.round(delay! / 60)} min`;
+}
+
+export function formatEta(seconds: number): string {
+  if (seconds < 60) return "in arrivo";
+  return `${Math.round(seconds / 60)} min`;
 }

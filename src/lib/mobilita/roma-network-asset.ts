@@ -12,3 +12,13 @@ export const ROMA_NETWORK_ASSET = {
     "lastModified": "Mon, 16 Nov 2026 06:47:30 GMT"
   }
 } as const;
+
+export const ROMA_COVERAGE_ASSET = {
+  "path": "/mappe/mobilita/roma/coverage-e1565de477c6.json",
+  "sha256": "e1565de477c6e7f4df8e71a3c080ff2a30bdd586d3d3ef4c9d565ba10dbd78ed",
+  "bytes": 6392,
+  "schema": 1,
+  "firstDate": "2026-11-15",
+  "lastDate": "2026-12-23",
+  "gtfsSha256": "7c5c034c7dd83a2309bff091c9aefaec08a4dc8ddebbb07540a2f7762d89c111"
+} as const;

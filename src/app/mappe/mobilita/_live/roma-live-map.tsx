@@ -19,9 +19,14 @@ import type {
 import {
   activeByRoute,
   buildNetwork,
+  delayBucket,
   displayName,
   formatAge,
+  formatDelay,
+  formatEta,
   freshness,
+  scheduledNow,
+  searchStops,
   matchPattern,
   normaliseQuery,
   occupancyLabel,
@@ -29,14 +34,18 @@ import {
   upcomingStops,
   vehicleAge,
   vehicleHeading,
+  type DelayBucket,
   type Freshness,
   type NetworkPattern,
+  type NetworkStop,
+  type RomaCoverage,
   type NetworkRoute,
   type PatternMatch,
   type RawRomaNetwork,
   type RomaNetwork,
 } from "@/lib/mobilita/roma-live-model";
-import { ROMA_NETWORK_ASSET } from "@/lib/mobilita/roma-network-asset";
+import { ROMA_COVERAGE_ASSET, ROMA_NETWORK_ASSET } from "@/lib/mobilita/roma-network-asset";
+import type { CompactTrip, RomaArrivalsView } from "@/lib/mobilita/roma-trip-updates";
 import { getTheme, subscribeToTheme, type Theme } from "@/lib/theme";
 import { basemapStyle } from "./map-style";
 import { getFavorites, getServerFavorites, subscribeFavorites, toggleFavorite } from "./live-store";
@@ -44,6 +53,8 @@ import { VehicleLayer, type DisplayVehicle, type LayerPalette } from "./vehicle-
 import styles from "./roma.module.css";
 
 const VEHICLES_URL = "/api/mobilita/roma/vehicles";
+const ARRIVALS_URL = "/api/mobilita/roma/arrivals";
+const ARRIVALS_POLL_MS = 30_000;
 const POLL_MS = 15_000;
 const MAX_BACKOFF_MS = 120_000;
 const ROMA_CENTER: [number, number] = [12.4964, 41.8986];
@@ -60,9 +71,34 @@ type FeedState =
   | { kind: "ok"; view: RomaRealtimeVehiclesView; receivedAt: number }
   | { kind: "error"; error: string; last: RomaRealtimeVehiclesView | null; receivedAt: number | null };
 
-type Selection = { routeId: string | null; vehicleId: string | null; direction: 0 | 1 | null };
+type Selection = {
+  routeId: string | null;
+  vehicleId: string | null;
+  direction: 0 | 1 | null;
+  stopId: string | null;
+};
 
-const NO_SELECTION: Selection = { routeId: null, vehicleId: null, direction: null };
+const NO_SELECTION: Selection = { routeId: null, vehicleId: null, direction: null, stopId: null };
+
+type ArrivalsState =
+  | { kind: "idle" | "loading" }
+  | { kind: "ok"; view: RomaArrivalsView; receivedAt: number }
+  | { kind: "error"; last: RomaArrivalsView | null };
+
+type StopArrival = { trip: CompactTrip; eta: number; delay: number | null };
+
+const DELAY_COLORS: Record<Theme, Record<DelayBucket, string>> = {
+  light: { early: "#2563eb", ontime: "#1f8a4c", late: "#c58a12", verylate: "#b42332", unknown: "#8f9ba6" },
+  dark: { early: "#60a5fa", ontime: "#5fd18f", late: "#e9bc68", verylate: "#ff7a6b", unknown: "#59636e" },
+};
+
+const DELAY_LABELS: Record<DelayBucket, string> = {
+  early: "in anticipo",
+  ontime: "in orario (±2 min)",
+  late: "2-5 min",
+  verylate: "oltre 5 min",
+  unknown: "non indicato",
+};
 
 const PALETTES: Record<Theme, LayerPalette & { accent: string; network: string; casing: string }> = {
   light: {
@@ -188,18 +224,60 @@ async function loadNetwork(signal: AbortSignal): Promise<RomaNetwork> {
   return buildNetwork(JSON.parse(new TextDecoder().decode(bytes)) as RawRomaNetwork);
 }
 
-function readUrlSelection(): { linea: string | null; vettura: string | null } {
+type UrlSelection = { linea: string | null; vettura: string | null; fermata: string | null };
+
+function readUrlSelection(): UrlSelection {
   try {
     const params = new URLSearchParams(window.location.search);
     const linea = params.get("linea");
     const vettura = params.get("vettura");
+    const fermata = params.get("fermata");
     return {
       linea: linea && /^[0-9A-Za-z]{1,8}$/.test(linea) ? linea : null,
       vettura: vettura && /^[0-9A-Za-z]{1,12}$/.test(vettura) ? vettura : null,
+      fermata: fermata && /^[0-9A-Za-z_-]{1,16}$/.test(fermata) ? fermata : null,
     };
   } catch {
-    return { linea: null, vettura: null };
+    return { linea: null, vettura: null, fermata: null };
   }
+}
+
+async function fetchVerified(path: string, sha256: string, bytes: number, signal: AbortSignal) {
+  const response = await fetch(path, { signal });
+  if (!response.ok) throw new Error(`asset_${response.status}`);
+  const body = await response.arrayBuffer();
+  if (body.byteLength !== bytes) throw new Error("asset_size");
+  if (globalThis.crypto?.subtle) {
+    const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", body));
+    const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join("");
+    if (hex !== sha256) throw new Error("asset_hash");
+  }
+  return JSON.parse(new TextDecoder().decode(body)) as unknown;
+}
+
+type CoverageIndex = Omit<RomaCoverage, "dates" | "profiles"> & {
+  dates: Record<string, { path: string; sha256: string; bytes: number }>;
+};
+
+/** Loads only today's and yesterday's profiles (trips after midnight). */
+async function loadCoverage(signal: AbortSignal, nowSeconds: number): Promise<RomaCoverage> {
+  const index = (await fetchVerified(
+    ROMA_COVERAGE_ASSET.path,
+    ROMA_COVERAGE_ASSET.sha256,
+    ROMA_COVERAGE_ASSET.bytes,
+    signal,
+  )) as CoverageIndex;
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: index.timezone }).format(new Date(nowSeconds * 1000));
+  const yesterday = new Date(Date.parse(`${today}T12:00:00Z`) - 86_400_000).toISOString().slice(0, 10);
+  const profiles: Record<string, string>[] = [];
+  const dates: Record<string, number> = {};
+  for (const date of [yesterday, today]) {
+    const entry = index.dates[date];
+    if (!entry) continue;
+    profiles.push((await fetchVerified(entry.path, entry.sha256, entry.bytes, signal)) as Record<string, string>);
+    dates[date] = profiles.length - 1;
+  }
+  return { ...index, dates, profiles };
 }
 
 function LineBadge({ route, routeId, size = "md" }: { route: NetworkRoute | null; routeId?: string; size?: "sm" | "md" | "lg" }) {
@@ -297,7 +375,10 @@ export function RomaLiveMap() {
   const [hovered, setHovered] = useState<{ id: string; x: number; y: number } | null>(null);
   const [copied, setCopied] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
-  const pendingUrl = useRef<{ linea: string | null; vettura: string | null } | null>(null);
+  const pendingUrl = useRef<UrlSelection | null>(null);
+  const [colorMode, setColorMode] = useState<"line" | "delay">("line");
+  const [arrivals, setArrivals] = useState<ArrivalsState>({ kind: "idle" });
+  const [coverage, setCoverage] = useState<RomaCoverage | null>(null);
   const theme = useSyncExternalStore(subscribeToTheme, getTheme, serverTheme);
   const favorites = useSyncExternalStore(subscribeFavorites, getFavorites, getServerFavorites);
   const hydrated = useSyncExternalStore(subscribeNoop, () => true, () => false);
@@ -313,6 +394,11 @@ export function RomaLiveMap() {
       (error: unknown) => {
         if (!controller.signal.aborted) setNetworkError(error instanceof Error ? error.message : "network_error");
       },
+    );
+    // Coverage is an extra: on failure the page simply omits the comparison.
+    loadCoverage(controller.signal, Date.now() / 1000).then(
+      (value) => setCoverage(value),
+      () => {},
     );
     return () => controller.abort();
   }, []);
@@ -377,6 +463,49 @@ export function RomaLiveMap() {
     };
   }, []);
 
+  // Predicted arrivals (heavier feed): only while something on screen uses them.
+  const needArrivals = Boolean(selection.vehicleId || selection.stopId || colorMode === "delay");
+  useEffect(() => {
+    if (!needArrivals) return;
+    let timer = 0;
+    let failures = 0;
+    let controller: AbortController | null = null;
+    let last: RomaArrivalsView | null = null;
+    const run = async () => {
+      window.clearTimeout(timer);
+      controller?.abort();
+      controller = new AbortController();
+      try {
+        const response = await fetch(ARRIVALS_URL, { headers: { Accept: "application/json" }, signal: controller.signal });
+        const payload = (await response.json().catch(() => null)) as RomaArrivalsView | null;
+        if (!response.ok || !payload || payload.status !== "ok" || !Array.isArray(payload.trips)) {
+          throw new Error(`http_${response.status}`);
+        }
+        failures = 0;
+        last = payload;
+        setArrivals({ kind: "ok", view: payload, receivedAt: Date.now() });
+      } catch {
+        if (controller.signal.aborted) return;
+        failures += 1;
+        setArrivals({ kind: "error", last });
+      }
+      if (document.visibilityState === "visible") {
+        timer = window.setTimeout(run, failures ? Math.min(MAX_BACKOFF_MS, ARRIVALS_POLL_MS * 2 ** failures) : ARRIVALS_POLL_MS);
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void run();
+      else window.clearTimeout(timer);
+    };
+    void run();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearTimeout(timer);
+      controller?.abort();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [needArrivals]);
+
   const view = feed.kind === "ok" ? feed.view : feed.kind === "error" ? feed.last : null;
   const vehicles = useMemo(() => view?.vehicles ?? [], [view]);
 
@@ -402,9 +531,10 @@ export function RomaLiveMap() {
       ? vehicles.find((v) => v.label === pending.vettura || v.id === pending.vettura)
       : undefined;
     const routeId = found?.routeId ?? (pending.linea && network.routes.has(pending.linea) ? pending.linea : null);
-    if (found || routeId) {
+    const stopId = pending.fermata && network.stopById.has(pending.fermata) ? pending.fermata : null;
+    if (found || routeId || stopId) {
       queueMicrotask(() =>
-        setSelection({ routeId: routeId ?? null, vehicleId: found?.id ?? null, direction: null }),
+        setSelection({ routeId: routeId ?? null, vehicleId: found?.id ?? null, direction: null, stopId }),
       );
     }
   }, [network, feed.kind, vehicles]);
@@ -416,8 +546,10 @@ export function RomaLiveMap() {
     const followed = selection.vehicleId ? enriched.get(selection.vehicleId)?.vehicle : undefined;
     url.searchParams.delete("linea");
     url.searchParams.delete("vettura");
+    url.searchParams.delete("fermata");
     if (selection.routeId) url.searchParams.set("linea", selection.routeId);
     if (followed) url.searchParams.set("vettura", vehicleKey(followed));
+    if (selection.stopId) url.searchParams.set("fermata", selection.stopId);
     if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url);
   }, [selection, enriched, hydrated]);
 
@@ -425,6 +557,57 @@ export function RomaLiveMap() {
   const followed = selection.vehicleId ? (enriched.get(selection.vehicleId) ?? null) : null;
   // A followed vehicle that left the feed stays referenced but is reported as missing.
   const followedMissing = Boolean(selection.vehicleId && view && !followed);
+  const selectedStop = selection.stopId && network ? (network.stopById.get(selection.stopId) ?? null) : null;
+
+  const arrivalsView = arrivals.kind === "ok" ? arrivals.view : arrivals.kind === "error" ? arrivals.last : null;
+  const tripsByVehicle = useMemo(() => {
+    const map = new Map<string, CompactTrip>();
+    for (const trip of arrivalsView?.trips ?? []) if (trip.v && !trip.c) map.set(trip.v, trip);
+    return map;
+  }, [arrivalsView]);
+  const tripsById = useMemo(() => {
+    const map = new Map<string, CompactTrip>();
+    for (const trip of arrivalsView?.trips ?? []) map.set(trip.t, trip);
+    return map;
+  }, [arrivalsView]);
+  // Prediction for a vehicle: by trip id first (exact), else by vehicle id.
+  const tripFor = useCallback(
+    (vehicle: RomaRealtimeVehicle | undefined) =>
+      vehicle ? ((vehicle.tripId ? tripsById.get(vehicle.tripId) : undefined) ?? tripsByVehicle.get(vehicle.id)) : undefined,
+    [tripsById, tripsByVehicle],
+  );
+  // Seconds elapsed since the arrivals snapshot, so ETAs count down between polls.
+  const arrivalsElapsed = arrivalsView ? Math.max(0, Math.round(nowSeconds - arrivalsView.base)) : 0;
+
+  const stopArrivals = useMemo((): StopArrival[] => {
+    if (!selection.stopId || !arrivalsView) return [];
+    const out: StopArrival[] = [];
+    for (const trip of arrivalsView.trips) {
+      if (trip.c) continue;
+      const i = trip.s.indexOf(selection.stopId);
+      if (i < 0) continue;
+      const eta = trip.a[i]! - arrivalsElapsed;
+      if (eta < -60) continue;
+      out.push({ trip, eta, delay: trip.y[i] ?? null });
+    }
+    return out.sort((a, b) => a.eta - b.eta).slice(0, 20);
+  }, [selection.stopId, arrivalsView, arrivalsElapsed]);
+
+  // Scheduled trips in progress now (bus lines only: trams/metro have no AVM feed).
+  const minute = Math.floor(nowSeconds / 60);
+  const scheduled = useMemo(() => {
+    if (!coverage || !network) return null;
+    const now = scheduledNow(coverage, minute * 60);
+    if (!now) return null;
+    const byRoute = new Map<string, number>();
+    let total = 0;
+    for (const [routeId, count] of now.byRoute) {
+      if (network.routes.get(routeId)?.type !== 3) continue;
+      byRoute.set(routeId, count);
+      total += count;
+    }
+    return { byRoute, total };
+  }, [coverage, network, minute]);
 
   // ---- Map lifecycle ----
   useEffect(() => {
@@ -684,6 +867,12 @@ export function RomaLiveMap() {
           geometry: { type: "Point", coordinates: [stop.lon, stop.lat] },
         });
       });
+    } else if (selectedStop) {
+      stopFeatures.push({
+        type: "Feature",
+        properties: { name: displayName(selectedStop.name), next: true, terminus: true },
+        geometry: { type: "Point", coordinates: [selectedStop.lon, selectedStop.lat] },
+      });
     } else if (network && selectedRoute) {
       const patterns = selectedRoute.patterns.filter(
         (p) => selection.direction === null || p.direction === selection.direction,
@@ -716,28 +905,42 @@ export function RomaLiveMap() {
       "line-opacity",
       selectedRoute || followed ? 0.12 : theme === "dark" ? 0.3 : 0.32,
     );
-  }, [mapReady, network, selectedRoute, selection.direction, followed, theme]);
+  }, [mapReady, network, selectedRoute, selection.direction, followed, theme, selectedStop]);
 
   // Vehicles → canvas layer.
+  // Buses whose predicted trip still reaches the selected stop.
+  const approaching = useMemo(() => {
+    const ids = new Set<string>();
+    for (const { trip } of stopArrivals) if (trip.v) ids.add(trip.v);
+    return ids;
+  }, [stopArrivals]);
+
   const lastFeedAt = feed.kind === "ok" ? feed.receivedAt : feed.kind === "error" ? feed.receivedAt : null;
   useEffect(() => {
     const layer = layerRef.current;
     if (!layer || !mapReady) return;
     const display: DisplayVehicle[] = [];
     const seconds = Date.now() / 1000;
+    const delayColors = DELAY_COLORS[theme];
     for (const { vehicle, route, heading } of enriched.values()) {
       const isFollowed = vehicle.id === selection.vehicleId;
       const onRoute = selection.routeId !== null && vehicle.routeId === selection.routeId;
       const inDirection = selection.direction === null || vehicle.directionId === selection.direction;
       const emphasis: DisplayVehicle["emphasis"] = isFollowed
         ? "followed"
-        : selection.routeId
-          ? onRoute && inDirection
-            ? "selected"
-            : "muted"
-          : selection.vehicleId
-            ? "muted"
-            : "normal";
+        : selection.vehicleId
+          ? "muted"
+          : selection.stopId
+            ? approaching.has(vehicle.id)
+              ? "selected"
+              : "muted"
+            : selection.routeId
+              ? onRoute && inDirection
+                ? "selected"
+                : "muted"
+              : "normal";
+      const delayColor =
+        colorMode === "delay" && emphasis !== "muted" ? delayColors[delayBucket(tripFor(vehicle)?.d)] : null;
       display.push({
         id: vehicle.id,
         text: route?.short ?? vehicle.routeId ?? "?",
@@ -747,12 +950,13 @@ export function RomaLiveMap() {
         freshness: freshness(vehicleAge(vehicle, seconds)),
         emphasis,
         color:
-          emphasis === "followed" || emphasis === "selected" ? (route?.color ?? palette.accent) : palette.vehicle,
+          delayColor ??
+          (emphasis === "followed" || emphasis === "selected" ? (route?.color ?? palette.accent) : palette.vehicle),
       });
     }
     layer.setVehicles(display, true);
     // Freshness is recomputed with each feed; the 1 s clock only updates text.
-  }, [enriched, selection, mapReady, palette, lastFeedAt]);
+  }, [enriched, selection, mapReady, palette, lastFeedAt, colorMode, tripFor, theme, approaching]);
 
   useEffect(() => {
     layerRef.current?.setUser(userPosition);
@@ -779,11 +983,11 @@ export function RomaLiveMap() {
         : {
             top: 56,
             // Mobile sheet heights mirror roma.module.css.
-            bottom: sheetOpen ? 420 : selection.routeId || selection.vehicleId ? 300 : 190,
+            bottom: sheetOpen ? 420 : selection.routeId || selection.vehicleId || selection.stopId ? 300 : 190,
             left: 28,
             right: 28,
           },
-    [isDesktop, sheetOpen, selection.routeId, selection.vehicleId],
+    [isDesktop, sheetOpen, selection.routeId, selection.vehicleId, selection.stopId],
   );
 
   const fitRoute = useCallback(
@@ -841,7 +1045,7 @@ export function RomaLiveMap() {
       const id = layerRef.current?.hitTest(event.point.x, event.point.y);
       if (!id) return;
       const hit = enriched.get(id);
-      setSelection({ routeId: hit?.vehicle.routeId ?? null, vehicleId: id, direction: null });
+      setSelection({ routeId: hit?.vehicle.routeId ?? null, vehicleId: id, direction: null, stopId: null });
       setFollow(true);
       setSheetOpen(false);
       setHovered(null);
@@ -861,7 +1065,7 @@ export function RomaLiveMap() {
     (routeId: string) => {
       const route = network?.routes.get(routeId);
       setHovered(null);
-      setSelection({ routeId, vehicleId: null, direction: null });
+      setSelection({ routeId, vehicleId: null, direction: null, stopId: null });
       setQuery("");
       setSheetOpen(false);
       if (route) fitRoute(route, null);
@@ -869,8 +1073,9 @@ export function RomaLiveMap() {
     [network, fitRoute],
   );
 
-  const selectVehicle = useCallback((vehicle: RomaRealtimeVehicle) => {
-    setSelection({ routeId: vehicle.routeId ?? null, vehicleId: vehicle.id, direction: null });
+  // From a stop board the stop is kept, so "back" returns to the board.
+  const selectVehicle = useCallback((vehicle: RomaRealtimeVehicle, fromStop: string | null = null) => {
+    setSelection({ routeId: vehicle.routeId ?? null, vehicleId: vehicle.id, direction: null, stopId: fromStop });
     setFollow(true);
     setQuery("");
     setSheetOpen(false);
@@ -881,12 +1086,30 @@ export function RomaLiveMap() {
     setFollow(true);
   }, []);
 
+  const selectStop = useCallback(
+    (stop: NetworkStop) => {
+      setHovered(null);
+      setSelection({ routeId: null, vehicleId: null, direction: null, stopId: stop.id });
+      setQuery("");
+      setSheetOpen(false);
+      setFollow(false);
+      mapRef.current?.easeTo({ center: [stop.lon, stop.lat], zoom: 16, padding, duration: 900 });
+    },
+    [padding],
+  );
+
   const backToRoute = useCallback(() => {
+    if (selection.stopId) {
+      setSelection({ ...NO_SELECTION, stopId: selection.stopId });
+      const stop = network?.stopById.get(selection.stopId);
+      if (stop) mapRef.current?.easeTo({ center: [stop.lon, stop.lat], zoom: 16, padding, duration: 900 });
+      return;
+    }
     if (!selection.routeId) return clearSelection();
-    setSelection({ routeId: selection.routeId, vehicleId: null, direction: null });
+    setSelection({ routeId: selection.routeId, vehicleId: null, direction: null, stopId: null });
     const route = network?.routes.get(selection.routeId);
     if (route) fitRoute(route, null);
-  }, [selection.routeId, network, fitRoute, clearSelection]);
+  }, [selection.routeId, selection.stopId, network, fitRoute, clearSelection, padding]);
 
   const setDirection = useCallback(
     (direction: 0 | 1 | null) => {
@@ -931,7 +1154,7 @@ export function RomaLiveMap() {
       const target = event.target as HTMLElement | null;
       if (target?.tagName === "INPUT" && (target as HTMLInputElement).value) return;
       if (selection.vehicleId) backToRoute();
-      else if (selection.routeId) clearSelection();
+      else if (selection.routeId || selection.stopId) clearSelection();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -940,14 +1163,50 @@ export function RomaLiveMap() {
   // A new selection starts at the top of its card, not at the old scroll.
   useEffect(() => {
     bodyRef.current?.scrollTo({ top: 0 });
-  }, [selection.routeId, selection.vehicleId]);
+  }, [selection.routeId, selection.vehicleId, selection.stopId]);
 
   // ---- Derived panel data ----
   const results = useMemo(
     () => (network && query ? searchRoutes(network, vehicles, query) : []),
     [network, vehicles, query],
   );
-  const queryInvalid = query.trim() !== "" && normaliseQuery(query) === null;
+  const stopResults = useMemo(() => (network && query ? searchStops(network, query) : []), [network, query]);
+  // A line number typed directly beats a stop name; headsign matches come last.
+  const [directResults, headsignResults] = useMemo(() => {
+    const q = normaliseQuery(query);
+    const direct = results.filter(
+      (r) => r.kind === "vehicle" || (q !== null && r.route.short.toUpperCase().startsWith(q)),
+    );
+    return [direct, results.filter((r) => !direct.includes(r))];
+  }, [results, query]);
+  const queryInvalid = query.trim() !== "" && normaliseQuery(query) === null && stopResults.length === 0;
+
+  // Lines that serve a stop (any pattern), for the stop board header.
+  const linesAtStop = useMemo(() => {
+    if (!network || !selectedStop) return [];
+    const ids = new Set<string>();
+    for (const pattern of network.patterns) if (pattern.stops.includes(selectedStop.index)) ids.add(pattern.routeId);
+    return [...ids]
+      .map((id) => network.routes.get(id)!)
+      .sort((a, b) => a.short.localeCompare(b.short, "it", { numeric: true }));
+  }, [network, selectedStop]);
+
+  // Bus lines with scheduled trips running now but no vehicle in the feed.
+  const coverageGaps = useMemo(() => {
+    if (!scheduled || !network) return [];
+    return [...scheduled.byRoute]
+      .filter(([id, count]) => count >= 3 && (active.get(id) ?? 0) === 0)
+      .map(([id, count]) => ({ route: network.routes.get(id)!, count }))
+      .filter((g) => g.route)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 16);
+  }, [scheduled, network, active]);
+  const busesInFeed = useMemo(() => {
+    if (!network) return 0;
+    let n = 0;
+    for (const [id, count] of active) if (network.routes.get(id)?.type === 3) n += count;
+    return n;
+  }, [active, network]);
 
   const routeVehicles = useMemo(() => {
     if (!selection.routeId) return [];
@@ -975,6 +1234,15 @@ export function RomaLiveMap() {
       .sort((a, b) => b.count - a.count || a.route.short.localeCompare(b.route.short, "it", { numeric: true }))
       .slice(0, 12);
   }, [active, network]);
+
+  const nearbyStops = useMemo(() => {
+    if (!userPosition || !network) return [];
+    return network.stops
+      .map((stop) => ({ stop, distance: distanceMetres(userPosition, [stop.lon, stop.lat]) }))
+      .filter((e) => e.distance <= 500)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 5);
+  }, [network, userPosition]);
 
   const nearby = useMemo(() => {
     if (!userPosition) return [];
@@ -1005,45 +1273,91 @@ export function RomaLiveMap() {
     panelBody = (
       <section aria-label="Risultati della ricerca" className={styles.section}>
         {queryInvalid ? (
-          <p className={styles.muted}>Scrivi un numero di linea (es. 64, 8, H, C2) o di vettura.</p>
+          <p className={styles.muted}>Scrivi un numero di linea (es. 64, 8, H), di vettura o il nome di una fermata.</p>
         ) : !network ? (
           <p className={styles.muted}>Caricamento della rete…</p>
-        ) : results.length === 0 ? (
-          <p className={styles.muted}>Nessuna linea o vettura corrisponde a «{query.trim()}».</p>
+        ) : results.length === 0 && stopResults.length === 0 ? (
+          <p className={styles.muted}>Nessuna linea, fermata o vettura corrisponde a «{query.trim()}».</p>
         ) : (
-          <ul className={styles.resultList}>
-            {results.map((result) =>
-              result.kind === "route" ? (
-                <li key={`r-${result.route.id}`}>
-                  <button type="button" className={styles.resultRow} onClick={() => selectRoute(result.route.id)}>
-                    <LineBadge route={result.route} />
-                    <span className={styles.resultText}>
-                      <span className={styles.resultTitle}>{routeTitle(result.route)}</span>
-                      <span className={styles.resultMeta}>
-                        {result.route.type === 3
-                          ? result.active > 0
-                            ? `${result.active} autobus ora`
-                            : "Nessun autobus localizzato ora"
-                          : "Tram/metro: posizioni non pubblicate"}
-                      </span>
-                    </span>
-                    <Icon name="chevron" />
-                  </button>
-                </li>
-              ) : (
-                <li key={`v-${result.vehicle.id}`}>
-                  <button type="button" className={styles.resultRow} onClick={() => selectVehicle(result.vehicle)}>
-                    <LineBadge route={result.route} routeId={result.vehicle.routeId} />
-                    <span className={styles.resultText}>
-                      <span className={styles.resultTitle}>Vettura {vehicleKey(result.vehicle)}</span>
-                      <span className={styles.resultMeta}>Segui questo mezzo</span>
-                    </span>
-                    <Icon name="chevron" />
-                  </button>
-                </li>
-              ),
-            )}
-          </ul>
+          <>
+            {directResults.length > 0 ? (
+              <ul className={styles.resultList} aria-label="Linee e vetture">
+                {directResults.map((result) =>
+                  result.kind === "route" ? (
+                    <li key={`r-${result.route.id}`}>
+                      <button type="button" className={styles.resultRow} onClick={() => selectRoute(result.route.id)}>
+                        <LineBadge route={result.route} />
+                        <span className={styles.resultText}>
+                          <span className={styles.resultTitle}>{routeTitle(result.route)}</span>
+                          <span className={styles.resultMeta}>
+                            {result.route.type === 3
+                              ? result.active > 0
+                                ? `${result.active} autobus ora`
+                                : "Nessun autobus localizzato ora"
+                              : "Tram/metro: posizioni non pubblicate"}
+                          </span>
+                        </span>
+                        <Icon name="chevron" />
+                      </button>
+                    </li>
+                  ) : (
+                    <li key={`v-${result.vehicle.id}`}>
+                      <button type="button" className={styles.resultRow} onClick={() => selectVehicle(result.vehicle)}>
+                        <LineBadge route={result.route} routeId={result.vehicle.routeId} />
+                        <span className={styles.resultText}>
+                          <span className={styles.resultTitle}>Vettura {vehicleKey(result.vehicle)}</span>
+                          <span className={styles.resultMeta}>Segui questo mezzo</span>
+                        </span>
+                        <Icon name="chevron" />
+                      </button>
+                    </li>
+                  ),
+                )}
+              </ul>
+            ) : null}
+            {stopResults.length > 0 ? (
+              <>
+                <h2 className={styles.sectionTitle}>Fermate</h2>
+                <ul className={styles.resultList} aria-label="Fermate">
+                  {stopResults.map((stop) => (
+                    <li key={`s-${stop.id}`}>
+                      <button type="button" className={styles.resultRow} onClick={() => selectStop(stop)}>
+                        <StopGlyph />
+                        <span className={styles.resultText}>
+                          <span className={styles.resultTitle}>{displayName(stop.name)}</span>
+                          <span className={styles.resultMeta}>Fermata {stop.id} · prossimi arrivi</span>
+                        </span>
+                        <Icon name="chevron" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+            {headsignResults.length > 0 ? (
+              <>
+                <h2 className={styles.sectionTitle}>Linee con capolinea «{query.trim()}»</h2>
+                <ul className={styles.resultList} aria-label="Linee per capolinea">
+                  {headsignResults.map((result) =>
+                    result.kind === "route" ? (
+                      <li key={`h-${result.route.id}`}>
+                        <button type="button" className={styles.resultRow} onClick={() => selectRoute(result.route.id)}>
+                          <LineBadge route={result.route} />
+                          <span className={styles.resultText}>
+                            <span className={styles.resultTitle}>{routeTitle(result.route)}</span>
+                            <span className={styles.resultMeta}>
+                              {result.route.type === 3 ? `${result.active} autobus ora` : "Tram/metro"}
+                            </span>
+                          </span>
+                          <Icon name="chevron" />
+                        </button>
+                      </li>
+                    ) : null,
+                  )}
+                </ul>
+              </>
+            ) : null}
+          </>
         )}
       </section>
     );
@@ -1052,6 +1366,10 @@ export function RomaLiveMap() {
       <VehiclePanel
         network={network}
         item={followed}
+        trip={tripFor(followed?.vehicle)}
+        arrivalsElapsed={arrivalsElapsed}
+        arrivalsState={arrivals.kind}
+        fromStop={selectedStop}
         missing={followedMissing}
         nowSeconds={nowSeconds}
         follow={follow}
@@ -1066,6 +1384,22 @@ export function RomaLiveMap() {
         }}
       />
     );
+  } else if (selectedStop) {
+    panelBody = (
+      <StopPanel
+        stop={selectedStop}
+        network={network!}
+        lines={linesAtStop}
+        arrivals={stopArrivals}
+        state={arrivals.kind}
+        enriched={enriched}
+        copied={copied}
+        onClose={clearSelection}
+        onCopy={copyLink}
+        onLine={selectRoute}
+        onVehicle={(vehicle) => selectVehicle(vehicle, selectedStop.id)}
+      />
+    );
   } else if (selectedRoute) {
     panelBody = (
       <RoutePanel
@@ -1074,6 +1408,7 @@ export function RomaLiveMap() {
         vehicles={routeVehicles}
         direction={selection.direction}
         favorite={favorites.includes(selectedRoute.id)}
+        scheduledNow={scheduled ? (scheduled.byRoute.get(selectedRoute.id) ?? 0) : null}
         nowSeconds={nowSeconds}
         copied={copied}
         onDirection={setDirection}
@@ -1122,7 +1457,24 @@ export function RomaLiveMap() {
           ) : locating === "unavailable" ? (
             <p className={styles.muted}>Posizione non disponibile su questo dispositivo.</p>
           ) : userPosition ? (
-            nearby.length === 0 ? (
+            <>
+            {nearbyStops.length > 0 ? (
+              <ul className={styles.resultList} aria-label="Fermate vicine">
+                {nearbyStops.map(({ stop, distance }) => (
+                  <li key={`ns-${stop.id}`}>
+                    <button type="button" className={styles.resultRow} onClick={() => selectStop(stop)}>
+                      <StopGlyph />
+                      <span className={styles.resultText}>
+                        <span className={styles.resultTitle}>{displayName(stop.name)}</span>
+                        <span className={styles.resultMeta}>Fermata · prossimi arrivi</span>
+                      </span>
+                      <span className={styles.rowExtra}>{formatDistance(distance)}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {nearby.length === 0 ? (
               <p className={styles.muted}>Nessun autobus localizzato entro 1,5 km.</p>
             ) : (
               <ul className={styles.vehicleList}>
@@ -1138,13 +1490,50 @@ export function RomaLiveMap() {
                   </li>
                 ))}
               </ul>
-            )
+            )}
+            </>
           ) : (
             <p className={styles.muted}>
-              Mostra gli autobus entro 1,5 km. La posizione resta nel tuo browser e non viene inviata.
+              Mostra fermate e autobus vicini. La posizione resta nel tuo browser e non viene inviata.
             </p>
           )}
         </section>
+        {scheduled && scheduled.total > 0 ? (
+          <section className={styles.section} aria-labelledby="cov-title">
+            <h2 id="cov-title" className={styles.sectionTitle}>
+              Servizio in questo momento
+            </h2>
+            <p className={styles.coverageLine}>
+              <strong>{busesInFeed.toLocaleString("it-IT")}</strong> autobus trasmettono la posizione su{" "}
+              <strong>{scheduled.total.toLocaleString("it-IT")}</strong> corse programmate in corso
+            </p>
+            <div
+              className={styles.coverageBar}
+              role="img"
+              aria-label={`${Math.round((Math.min(busesInFeed, scheduled.total) / scheduled.total) * 100)} per cento`}
+            >
+              <span style={{ width: `${Math.min(100, (busesInFeed / scheduled.total) * 100)}%` }} />
+            </div>
+            {coverageGaps.length > 0 ? (
+              <>
+                <p className={styles.muted}>
+                  Linee con corse programmate ora ma nessun autobus nel feed. Possono circolare senza trasmettere la
+                  posizione: il dato non dice che sono ferme.
+                </p>
+                <ul className={styles.chipGrid} aria-label="Linee senza autobus nel feed">
+                  {coverageGaps.map(({ route, count }) => (
+                    <li key={route.id}>
+                      <button type="button" className={styles.lineChip} onClick={() => selectRoute(route.id)}>
+                        <LineBadge route={route} size="sm" />
+                        <span>0 su {count}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </section>
+        ) : null}
         {busiest.length > 0 ? (
           <section className={styles.section} aria-labelledby="busy-title">
             <h2 id="busy-title" className={styles.sectionTitle}>
@@ -1194,24 +1583,45 @@ export function RomaLiveMap() {
             La cartografia non si è caricata. L’elenco dei mezzi nel pannello resta disponibile.
           </div>
         ) : null}
-        <div className={styles.legend} aria-hidden="true">
-          <span>
-            <FreshDot value="fresh" /> &lt; 2 min
-          </span>
-          <span>
-            <FreshDot value="aging" /> 2-5 min
-          </span>
-          <span>
-            <FreshDot value="stale" /> più vecchia
-          </span>
-          <span className={styles.legendArrow}>▲ direzione</span>
+        <div className={styles.legend}>
+          <div className={styles.colorToggle} role="group" aria-label="Colore dei mezzi">
+            <button type="button" aria-pressed={colorMode === "line"} onClick={() => setColorMode("line")}>
+              Aggiornamento
+            </button>
+            <button type="button" aria-pressed={colorMode === "delay"} onClick={() => setColorMode("delay")}>
+              Ritardo
+            </button>
+          </div>
+          {colorMode === "delay" ? (
+            <span className={styles.legendItems}>
+              {(["ontime", "late", "verylate", "early", "unknown"] as const).map((bucket) => (
+                <span key={bucket}>
+                  <span className={styles.delayDot} style={{ background: DELAY_COLORS[theme][bucket] }} aria-hidden="true" />
+                  {DELAY_LABELS[bucket]}
+                </span>
+              ))}
+            </span>
+          ) : (
+            <span className={styles.legendItems} aria-hidden="true">
+              <span>
+                <FreshDot value="fresh" /> &lt; 2 min
+              </span>
+              <span>
+                <FreshDot value="aging" /> 2-5 min
+              </span>
+              <span>
+                <FreshDot value="stale" /> più vecchia
+              </span>
+              <span className={styles.legendArrow}>▲ direzione</span>
+            </span>
+          )}
         </div>
       </div>
 
       <aside
         className={styles.panel}
         data-open={sheetOpen ? "true" : "false"}
-        data-selected={selection.routeId || selection.vehicleId ? "true" : "false"}
+        data-selected={selection.routeId || selection.vehicleId || selection.stopId ? "true" : "false"}
         aria-label="Autobus di Roma in tempo reale"
         onPointerEnter={() => setHovered(null)}
       >
@@ -1252,16 +1662,18 @@ export function RomaLiveMap() {
             className={styles.searchBox}
             onSubmit={(event) => {
               event.preventDefault();
-              const first = results[0];
-              if (!first) return;
-              if (first.kind === "route") selectRoute(first.route.id);
-              else selectVehicle(first.vehicle);
+              const first = directResults[0];
+              if (first?.kind === "route") selectRoute(first.route.id);
+              else if (first) selectVehicle(first.vehicle);
+              else if (stopResults[0]) selectStop(stopResults[0]);
+              else if (headsignResults[0]?.kind === "route") selectRoute(headsignResults[0].route.id);
+              else return;
               (document.activeElement as HTMLElement | null)?.blur?.();
             }}
           >
             <Icon name="search" />
             <label className={styles.visuallyHidden} htmlFor="roma-live-search">
-              Cerca una linea o una vettura
+              Cerca una linea, una fermata o una vettura
             </label>
             <input
               id="roma-live-search"
@@ -1269,7 +1681,7 @@ export function RomaLiveMap() {
               inputMode="text"
               autoComplete="off"
               spellCheck={false}
-              placeholder="Cerca linea (64, 8, H…) o vettura"
+              placeholder="Linea (64, H…), fermata o vettura"
               value={query}
               maxLength={24}
               onChange={(event) => setQuery(event.target.value)}
@@ -1333,6 +1745,129 @@ function VehicleRow({
   );
 }
 
+function StopPanel({
+  stop,
+  network,
+  lines,
+  arrivals,
+  state,
+  enriched,
+  copied,
+  onClose,
+  onCopy,
+  onLine,
+  onVehicle,
+}: {
+  stop: NetworkStop;
+  network: RomaNetwork;
+  lines: NetworkRoute[];
+  arrivals: StopArrival[];
+  state: ArrivalsState["kind"];
+  enriched: Map<string, Enriched>;
+  copied: boolean;
+  onClose: () => void;
+  onCopy: () => void;
+  onLine: (routeId: string) => void;
+  onVehicle: (vehicle: RomaRealtimeVehicle) => void;
+}) {
+  return (
+    <section className={styles.section} aria-labelledby="stop-title">
+      <div className={styles.cardHead}>
+        <StopGlyph />
+        <div className={styles.cardTitleBlock}>
+          <h2 id="stop-title" className={styles.cardTitle}>
+            {displayName(stop.name)}
+          </h2>
+          <p className={styles.resultMeta}>Fermata {stop.id}</p>
+        </div>
+        <button type="button" className={styles.iconButton} onClick={onClose} aria-label="Chiudi la fermata">
+          <Icon name="close" />
+        </button>
+      </div>
+      <h3 className={styles.sectionTitle}>Prossimi arrivi previsti</h3>
+      {state === "idle" || (state === "loading" && arrivals.length === 0) ? (
+        <p className={styles.muted}>Caricamento degli arrivi…</p>
+      ) : state === "error" && arrivals.length === 0 ? (
+        <p className={styles.warning}>Il feed degli arrivi non risponde. Riproviamo a breve.</p>
+      ) : arrivals.length === 0 ? (
+        <p className={styles.notice}>
+          {lines.length > 0 && lines.every((route) => route.type !== 3)
+            ? "Fermata di metro o tram: il feed ufficiale pubblica arrivi previsti solo per gli autobus."
+            : "Nessun arrivo previsto nelle prossime 2 ore nel feed ufficiale per questa fermata."}
+        </p>
+      ) : (
+        <ul className={styles.vehicleList} aria-label="Arrivi">
+          {arrivals.map(({ trip, eta, delay }) => {
+            const route = trip.r ? (network.routes.get(trip.r) ?? null) : null;
+            const pattern =
+              route?.patterns.find((p) => p.direction === trip.k && p.stops.includes(stop.index)) ??
+              route?.patterns.find((p) => p.stops.includes(stop.index));
+            const live = trip.v ? enriched.get(trip.v)?.vehicle : undefined;
+            const content = (
+              <>
+                <LineBadge route={route} routeId={trip.r} size="sm" />
+                <span className={styles.resultText}>
+                  <span className={styles.resultTitle}>
+                    {pattern ? `→ ${displayName(pattern.headsign)}` : `Linea ${trip.r ?? "?"}`}
+                  </span>
+                  <span className={styles.resultMeta}>
+                    {live ? "Localizzato · seguilo" : "Senza posizione live"}
+                  </span>
+                </span>
+                <span className={styles.rowAside}>
+                  <span className={styles.eta}>{formatEta(eta)}</span>
+                  <DelayChip delay={delay} />
+                </span>
+              </>
+            );
+            return (
+              <li key={trip.t}>
+                {live ? (
+                  <button type="button" className={styles.vehicleRow} onClick={() => onVehicle(live)}>
+                    {content}
+                  </button>
+                ) : (
+                  <div className={styles.vehicleRow} data-static="true">
+                    {content}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <p className={styles.footnote}>
+        Stime dell’operatore dal feed ufficiale degli arrivi, aggiornate ogni 30 secondi. Possono cambiare o mancare.
+      </p>
+      {lines.length > 0 ? (
+        <>
+          <h3 className={styles.sectionTitle}>Linee che fermano qui</h3>
+          <ul className={styles.chipGrid} aria-label="Linee che fermano qui">
+            {lines.map((route) => (
+              <li key={route.id}>
+                <button
+                  type="button"
+                  className={styles.badgeButton}
+                  onClick={() => onLine(route.id)}
+                  aria-label={`Apri la linea ${route.short}`}
+                >
+                  <LineBadge route={route} size="sm" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+      <div className={styles.actionsRow}>
+        <button type="button" className={styles.ghostButton} onClick={onCopy}>
+          <Icon name="link" />
+          {copied ? "Link copiato" : "Copia link della fermata"}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function groupByDirection(items: Enriched[]): [string, Enriched[]][] {
   const groups = new Map<string, Enriched[]>();
   for (const item of items) {
@@ -1343,6 +1878,7 @@ function groupByDirection(items: Enriched[]): [string, Enriched[]][] {
 }
 
 function RoutePanel({
+  scheduledNow,
   route,
   network,
   vehicles,
@@ -1362,6 +1898,7 @@ function RoutePanel({
   vehicles: Enriched[];
   direction: 0 | 1 | null;
   favorite: boolean;
+  scheduledNow: number | null;
   nowSeconds: number;
   copied: boolean;
   onDirection: (d: 0 | 1 | null) => void;
@@ -1418,6 +1955,12 @@ function RoutePanel({
           {copied ? "Link copiato" : "Copia link"}
         </button>
       </div>
+      {live && scheduledNow !== null ? (
+        <p className={styles.coverageLine}>
+          Corse programmate in corso ora: <strong>{scheduledNow}</strong> · autobus nel feed:{" "}
+          <strong>{vehicles.length}</strong>
+        </p>
+      ) : null}
       {!live ? (
         <p className={styles.notice}>
           Tram e metro non pubblicano la posizione dei mezzi nel feed ufficiale: qui vedi solo il percorso.
@@ -1459,9 +2002,42 @@ function RoutePanel({
   );
 }
 
+function clock(unixSeconds: number) {
+  return new Date(unixSeconds * 1000).toLocaleTimeString("it-IT", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Rome",
+  });
+}
+
+function DelayChip({ delay }: { delay: number | null | undefined }) {
+  const text = formatDelay(delay);
+  if (!text) return null;
+  return (
+    <span className={styles.delayChip} data-bucket={delayBucket(delay)}>
+      {text}
+    </span>
+  );
+}
+
+function StopGlyph() {
+  return (
+    <span className={styles.stopGlyph} aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <rect x="6" y="3" width="12" height="11" rx="2" />
+        <path d="M12 14v7M9 7h6" />
+      </svg>
+    </span>
+  );
+}
+
 function VehiclePanel({
   network,
   item,
+  trip,
+  arrivalsElapsed,
+  arrivalsState,
+  fromStop,
   missing,
   nowSeconds,
   follow,
@@ -1474,6 +2050,10 @@ function VehiclePanel({
 }: {
   network: RomaNetwork | null;
   item: Enriched | null;
+  trip: CompactTrip | undefined;
+  arrivalsElapsed: number;
+  arrivalsState: ArrivalsState["kind"];
+  fromStop: NetworkStop | null;
   missing: boolean;
   nowSeconds: number;
   follow: boolean;
@@ -1516,7 +2096,12 @@ function VehiclePanel({
   return (
     <section className={styles.section} aria-labelledby="vehicle-title">
       <div className={styles.cardHead}>
-        <button type="button" className={styles.iconButton} onClick={onBack} aria-label="Torna alla linea">
+        <button
+          type="button"
+          className={styles.iconButton}
+          onClick={onBack}
+          aria-label={fromStop ? "Torna alla fermata" : "Torna alla linea"}
+        >
           <Icon name="back" />
         </button>
         <LineBadge route={route} routeId={vehicle.routeId} size="lg" />
@@ -1552,6 +2137,14 @@ function VehiclePanel({
           </span>
           {vehicle.startTime ? <span>Partito dal capolinea alle {vehicle.startTime.slice(0, 5)} (orario programmato)</span> : null}
           {occupancy ? <span>Affollamento dichiarato: {occupancy}</span> : null}
+          {trip ? (
+            <span className={styles.delayLine}>
+              Rispetto all’orario: <DelayChip delay={trip.d} />
+              {trip.d === null ? "non indicato" : null}
+            </span>
+          ) : arrivalsState === "loading" || arrivalsState === "idle" ? (
+            <span>Caricamento degli arrivi previsti…</span>
+          ) : null}
         </p>
         {f === "stale" ? (
           <p className={styles.warning}>
@@ -1596,15 +2189,30 @@ function VehiclePanel({
                 data-terminus={i === upcoming.stops.length - 1 ? "true" : undefined}
               >
                 <button type="button" onClick={() => onStop(stop.lon, stop.lat)}>
-                  {displayName(stop.name)}
-                  {state === "here" ? <em> · qui ora</em> : state === "next" ? <em> · prossima</em> : null}
-                  {i === upcoming.stops.length - 1 ? <em> · capolinea</em> : null}
+                  <span className={styles.timelineName}>
+                    {displayName(stop.name)}
+                    {state === "here" ? <em> · qui ora</em> : state === "next" ? <em> · prossima</em> : null}
+                    {i === upcoming.stops.length - 1 ? <em> · capolinea</em> : null}
+                  </span>
+                  {(() => {
+                    const k = trip ? trip.s.indexOf(stop.id) : -1;
+                    if (!trip || k < 0) return null;
+                    const eta = trip.a[k]! - arrivalsElapsed;
+                    return (
+                      <span className={styles.timelineEta}>
+                        {formatEta(eta)}
+                        <small>{clock(Math.round(Date.now() / 1000 + eta))}</small>
+                      </span>
+                    );
+                  })()}
                 </button>
               </li>
             ))}
           </ol>
           <p className={styles.footnote}>
-            Ordine delle fermate dal percorso programmato (GTFS). Gli orari di arrivo non sono stimati qui.
+            {trip
+              ? "Orari previsti dal feed ufficiale degli arrivi (stime dell’operatore, aggiornate ogni 30 secondi)."
+              : "Ordine delle fermate dal percorso programmato (GTFS). Arrivi previsti non disponibili per questa corsa."}
           </p>
         </>
       ) : (
@@ -1624,11 +2232,18 @@ function Explainer() {
         <li>
           Ogni segno è un autobus ATAC o Roma TPL che trasmette la sua posizione. La punta indica la direzione di marcia.
         </li>
-        <li>Avvicinandoti compare il numero di linea. Tocca un mezzo per seguirlo e vedere le prossime fermate.</li>
+        <li>
+          Avvicinandoti compare il numero di linea. Tocca un mezzo per seguirlo con gli orari previsti alle prossime
+          fermate, oppure cerca una fermata per vedere i prossimi arrivi.
+        </li>
         <li>
           Le posizioni arrivano con 30-60 secondi di ritardo. Un mezzo tratteggiato non si aggiorna da oltre 5 minuti.
         </li>
-        <li>Tram e metro non sono nel feed delle posizioni.</li>
+        <li>
+          Con «Ritardo» i mezzi si colorano secondo la stima dell’operatore: verde in orario (±2 min), giallo 2-5
+          min, rosso oltre 5, blu in anticipo, grigio non indicato.
+        </li>
+        <li>Tram e metro non sono nel feed delle posizioni né in quello degli arrivi.</li>
       </ul>
     </section>
   );

@@ -10,6 +10,8 @@
  * 5 route_id, 6 direction_id}; VehicleDescriptor{1 id, 2 label};
  * Position{1 latitude, 2 longitude, 3 bearing}.
  */
+import { fields, readBytes, readFloat32, readHeaderTimestamp, readVarint, text } from "@/lib/mobilita/protobuf-wire";
+
 export const ROMA_VEHICLE_POSITIONS_URL =
   "https://romamobilita.it/sites/default/files/rome_rtgtfs_vehicle_positions_feed.pb";
 
@@ -20,8 +22,8 @@ export const ROMA_RT_HOLDER = "Roma Servizi per la Mobilità (ATAC e Roma TPL)";
 /** A feed older than this is shown as not current instead of "live". */
 export const ROMA_FEED_STALE_SECONDS = 300;
 
-const MAX_FEED_BYTES = 5_000_000;
-const FETCH_TIMEOUT_MS = 10_000;
+export const MAX_FEED_BYTES = 5_000_000;
+export const FETCH_TIMEOUT_MS = 10_000;
 
 // Generous box around Roma Capitale and the lines that leave it; drops (0,0)
 // placeholders and corrupt coordinates without hiding suburban termini.
@@ -78,75 +80,7 @@ export const ROMA_RT_SOURCE: Source = {
   feedUrl: ROMA_VEHICLE_POSITIONS_URL,
 };
 
-const UA = "DoveVannoINostriSoldi/1.0 (+https://www.dovevannoinostrisoldi.com; mobilita-roma-rt)";
-
-type Cursor = { i: number };
-
-// Arithmetic (not bitwise) so 64-bit timestamps do not wrap at 2^31.
-function readVarint(buffer: Uint8Array, offset: Cursor): number {
-  let result = 0;
-  let multiplier = 1;
-  for (let n = 0; n < 10; n += 1) {
-    if (offset.i >= buffer.length) throw new Error("varint_truncated");
-    const byte = buffer[offset.i++]!;
-    result += (byte & 0x7f) * multiplier;
-    if ((byte & 0x80) === 0) return result;
-    multiplier *= 128;
-  }
-  throw new Error("varint_overflow");
-}
-
-function need(buffer: Uint8Array, offset: Cursor, bytes: number): void {
-  if (offset.i + bytes > buffer.length) throw new Error("bytes_truncated");
-}
-
-function readBytes(buffer: Uint8Array, offset: Cursor): Uint8Array {
-  const length = readVarint(buffer, offset);
-  need(buffer, offset, length);
-  const start = offset.i;
-  offset.i += length;
-  return buffer.subarray(start, start + length);
-}
-
-function readFloat32(buffer: Uint8Array, offset: Cursor): number {
-  need(buffer, offset, 4);
-  const value = new DataView(buffer.buffer, buffer.byteOffset + offset.i, 4).getFloat32(0, true);
-  offset.i += 4;
-  return value;
-}
-
-function readFixed64(buffer: Uint8Array, offset: Cursor): number {
-  need(buffer, offset, 8);
-  const view = new DataView(buffer.buffer, buffer.byteOffset + offset.i, 8);
-  offset.i += 8;
-  return view.getUint32(4, true) * 2 ** 32 + view.getUint32(0, true);
-}
-
-function skipField(buffer: Uint8Array, offset: Cursor, wireType: number): void {
-  if (wireType === 0) readVarint(buffer, offset);
-  else if (wireType === 1) {
-    need(buffer, offset, 8);
-    offset.i += 8;
-  } else if (wireType === 2) readBytes(buffer, offset);
-  else if (wireType === 5) {
-    need(buffer, offset, 4);
-    offset.i += 4;
-  } else throw new Error(`unsupported_wire_${wireType}`);
-}
-
-const decoder = new TextDecoder("utf-8", { fatal: false });
-const text = (bytes: Uint8Array) => decoder.decode(bytes);
-
-function* fields(buffer: Uint8Array): Generator<[number, number, Cursor]> {
-  const offset: Cursor = { i: 0 };
-  while (offset.i < buffer.length) {
-    const tag = readVarint(buffer, offset);
-    const before = offset.i;
-    yield [Math.floor(tag / 8), tag % 8, offset];
-    // The consumer did not read the value: skip it.
-    if (offset.i === before) skipField(buffer, offset, tag % 8);
-  }
-}
+export const ROMA_RT_USER_AGENT = "DoveVannoINostriSoldi/1.0 (+https://www.dovevannoinostrisoldi.com; mobilita-roma-rt)";
 
 function decodeTrip(buffer: Uint8Array) {
   const trip: Pick<RomaRealtimeVehicle, "tripId" | "routeId" | "directionId" | "startTime"> = {};
@@ -250,11 +184,7 @@ export function parseRomaVehiclePositionsFeed(buffer: Uint8Array): {
   let dropped = 0;
   for (const [field, wire, at] of fields(buffer)) {
     if (field === 1 && wire === 2) {
-      const header = readBytes(buffer, at);
-      for (const [headerField, headerWire, hAt] of fields(header)) {
-        if (headerField === 3 && headerWire === 0) feedTimestamp = readVarint(header, hAt);
-        else if (headerField === 3 && headerWire === 1) feedTimestamp = readFixed64(header, hAt);
-      }
+      feedTimestamp = readHeaderTimestamp(readBytes(buffer, at));
     } else if (field === 2 && wire === 2) {
       const entity = readBytes(buffer, at);
       let id = "";
@@ -274,11 +204,10 @@ export function parseRomaVehiclePositionsFeed(buffer: Uint8Array): {
       vehicles.push(vehicle);
     }
   }
-  if (feedTimestamp !== null && feedTimestamp < 1_000_000_000) feedTimestamp = null;
   return { feedTimestamp, vehicles, dropped };
 }
 
-type FetchLike = (
+export type FetchLike = (
   input: string,
   init?: RequestInit,
 ) => Promise<Pick<Response, "ok" | "status" | "headers" | "arrayBuffer">>;
@@ -288,7 +217,7 @@ export async function loadRomaRealtimeVehicles(
   now: () => number = Date.now,
 ): Promise<RomaRealtimeVehiclesView> {
   const response = await fetchImpl(ROMA_VEHICLE_POSITIONS_URL, {
-    headers: { "User-Agent": UA, Accept: "application/octet-stream,*/*" },
+    headers: { "User-Agent": ROMA_RT_USER_AGENT, Accept: "application/octet-stream,*/*" },
     redirect: "follow",
     cache: "no-store",
     signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),

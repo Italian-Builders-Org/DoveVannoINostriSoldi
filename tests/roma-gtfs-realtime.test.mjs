@@ -1,3 +1,4 @@
+import "./helpers/register-ts-alias.mjs";
 import assert from "node:assert/strict";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -10,37 +11,7 @@ async function loadParser() {
   return import(pathToFileURL(libPath).href);
 }
 
-// Minimal protobuf writer: the fixture mirrors the field layout observed in the
-// official Roma Mobilità VehiclePositions feed (GTFS-RT 2.0), so the parser is
-// checked against the spec numbering rather than against its own assumptions.
-function varint(value) {
-  const out = [];
-  let v = BigInt(value);
-  do {
-    let byte = Number(v & 0x7fn);
-    v >>= 7n;
-    if (v > 0n) byte |= 0x80;
-    out.push(byte);
-  } while (v > 0n);
-  return out;
-}
-const tag = (field, wire) => varint((field << 3) | wire);
-const vField = (field, value) => [...tag(field, 0), ...varint(value)];
-const sField = (field, text) => {
-  const bytes = [...new TextEncoder().encode(text)];
-  return [...tag(field, 2), ...varint(bytes.length), ...bytes];
-};
-const mField = (field, bytes) => [...tag(field, 2), ...varint(bytes.length), ...bytes];
-const fField = (field, value) => {
-  const buf = new DataView(new ArrayBuffer(4));
-  buf.setFloat32(0, value, true);
-  return [...tag(field, 5), ...new Uint8Array(buf.buffer)];
-};
-const dField = (field, value) => {
-  const buf = new DataView(new ArrayBuffer(8));
-  buf.setFloat64(0, value, true);
-  return [...tag(field, 1), ...new Uint8Array(buf.buffer)];
-};
+import { dField, fField, mField, sField, vField } from "./helpers/gtfs-rt-encoder.mjs";
 
 function vehicleEntity({
   entityId,

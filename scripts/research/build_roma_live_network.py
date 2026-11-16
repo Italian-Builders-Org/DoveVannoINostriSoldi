@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import datetime
 import hashlib
 import io
 import json
@@ -113,6 +114,69 @@ def encode_polyline(points) -> str:
     return "".join(out)
 
 
+BIN_MINUTES = 10
+BINS = 180  # 0..30h of the service day: trips after midnight stay on their date
+BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+def gtfs_seconds(value: str) -> int | None:
+    """HH:MM:SS that may exceed 24:00; never reduced modulo 24."""
+    parts = value.strip().split(":")
+    if len(parts) != 3 or not all(p.isdigit() for p in parts):
+        return None
+    hours, minutes, seconds = (int(p) for p in parts)
+    if minutes > 59 or seconds > 59:
+        return None
+    return hours * 3600 + minutes * 60 + seconds
+
+
+def build_coverage(trip_service, spans, service_dates) -> dict:
+    """Scheduled trips in progress per route, per 10-minute bin midpoint."""
+    per_pair: dict[tuple[str, str], list[int]] = {}
+    for trip_id, (route_id, service_id) in trip_service.items():
+        span = spans.get(trip_id)
+        if not span or span[1] <= span[0]:
+            continue
+        bins = per_pair.setdefault((route_id, service_id), [0] * BINS)
+        for b in range(BINS):
+            midpoint = (b * BIN_MINUTES + BIN_MINUTES / 2) * 60
+            if span[0] <= midpoint < span[1]:
+                bins[b] += 1
+    by_service: dict[str, list[tuple[str, list[int]]]] = defaultdict(list)
+    for (route_id, service_id), bins in per_pair.items():
+        by_service[service_id].append((route_id, bins))
+    profiles: list[dict[str, str]] = []
+    profile_index: dict[str, int] = {}
+    dates: dict[str, int] = {}
+    for date in sorted(service_dates):
+        totals: dict[str, list[int]] = {}
+        for service_id in service_dates[date]:
+            for route_id, bins in by_service.get(service_id, []):
+                acc = totals.setdefault(route_id, [0] * BINS)
+                for b in range(BINS):
+                    acc[b] += bins[b]
+        encoded = {}
+        for route_id in sorted(totals):
+            values = totals[route_id]
+            if max(values) >= len(BASE62):
+                fail(f"coverage overflow for route {route_id} on {date}")
+            if any(values):
+                encoded[route_id] = "".join(BASE62[v] for v in values)
+        key = json.dumps(encoded, sort_keys=True)
+        if key not in profile_index:
+            profile_index[key] = len(profiles)
+            profiles.append(encoded)
+        dates[date] = profile_index[key]
+    return {
+        "schema": 1,
+        "binMinutes": BIN_MINUTES,
+        "bins": BINS,
+        "timezone": "Europe/Rome",
+        "dates": dates,
+        "profiles": profiles,
+    }
+
+
 def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dict:
     raw = gtfs.read_bytes()
     if len(raw) > MAX_ZIP_BYTES:
@@ -142,8 +206,11 @@ def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dic
         # One representative trip per (route, direction, shape, headsign).
         patterns: dict[tuple, dict] = {}
         trip_pattern: dict[str, tuple] = {}
+        trip_service: dict[str, tuple[str, str]] = {}
         for row in rows(archive, "trips.txt"):
             route_id = row["route_id"]
+            if route_id in routes:
+                trip_service[row["trip_id"]] = (route_id, row["service_id"])
             if route_id not in routes or not row.get("shape_id"):
                 continue
             direction = row.get("direction_id", "").strip()
@@ -156,7 +223,20 @@ def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dic
                 entry["trips"] += 1
 
         sequences: dict[str, list[tuple[int, str]]] = defaultdict(list)
+        spans: dict[str, list[int]] = {}
         for row in rows(archive, "stop_times.txt"):
+            trip_id = row["trip_id"]
+            if trip_id in trip_service:
+                for column in ("arrival_time", "departure_time"):
+                    seconds = gtfs_seconds(row.get(column, ""))
+                    if seconds is None:
+                        continue
+                    span = spans.get(trip_id)
+                    if span is None:
+                        spans[trip_id] = [seconds, seconds]
+                    else:
+                        span[0] = min(span[0], seconds)
+                        span[1] = max(span[1], seconds)
             if row["trip_id"] in trip_pattern:
                 try:
                     sequences[row["trip_id"]].append((int(row["stop_sequence"]), row["stop_id"]))
@@ -170,6 +250,14 @@ def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dic
                 shape_points[row["shape_id"]].append(
                     (int(row["shape_pt_sequence"]), float(row["shape_pt_lon"]), float(row["shape_pt_lat"]))
                 )
+
+        service_dates: dict[str, set[str]] = defaultdict(set)
+        if "calendar.txt" in names:
+            fail("calendar.txt not supported: Roma publishes calendar_dates only")
+        for row in rows(archive, "calendar_dates.txt"):
+            if row["exception_type"].strip() == "1":
+                date = row["date"].strip()
+                service_dates[f"{date[:4]}-{date[4:6]}-{date[6:]}"].add(row["service_id"])
 
         stops_all = {}
         for row in rows(archive, "stops.txt"):
@@ -238,6 +326,7 @@ def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dic
         "patterns": out_patterns,
         "dropped": dict(dropped),
     }
+    payload["_coverage"] = build_coverage(trip_service, spans, service_dates)
     print(
         f"routes={len(route_ids)} patterns={len(out_patterns)} stops={len(stop_ids)} "
         f"points={point_count} dropped={dict(dropped)}",
@@ -246,47 +335,94 @@ def build(gtfs: Path, acquired_at: str | None, last_modified: str | None) -> dic
     return payload
 
 
-def write(payload: dict) -> None:
-    body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+def write_hashed(prefix: str, data: dict) -> tuple[str, str, int]:
+    body = json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     sha = hashlib.sha256(body).hexdigest()
-    name = f"network-{sha[:12]}.json"
+    name = f"{prefix}-{sha[:12]}.json"
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
-    for old in PUBLIC_DIR.glob("network-*.json"):
+    for old in PUBLIC_DIR.glob(f"{prefix}-*.json"):
         if old.name != name:
             old.unlink()
     (PUBLIC_DIR / name).write_bytes(body)
+    print(f"wrote {PUBLIC_DIR / name} ({len(body)} bytes)", file=sys.stderr)
+    return f"/mappe/mobilita/roma/{name}", sha, len(body)
+
+
+def write(payload: dict) -> None:
+    coverage = payload.pop("_coverage")
+    path, sha, size = write_hashed("network", payload)
     source = payload["source"]
-    manifest = {
-        "path": f"/mappe/mobilita/roma/{name}",
-        "sha256": sha,
-        "bytes": len(body),
-        "schema": SCHEMA,
-        "gtfs": {
-            "url": source["url"],
-            "sha256": source["sha256"],
-            "bytes": source["bytes"],
-            "acquiredAt": source["acquiredAt"],
-            "lastModified": source["lastModified"],
-        },
+    # Dates before the acquisition are never "today" for a visitor.
+    acquired = (source.get("acquiredAt") or "")[:10]
+    first_kept = (
+        (datetime.date.fromisoformat(acquired) - datetime.timedelta(days=1)).isoformat() if acquired else ""
+    )
+    profile_dir = PUBLIC_DIR / "coverage"
+    profile_dir.mkdir(parents=True, exist_ok=True)
+    written: dict[int, dict] = {}
+    dates: dict[str, dict] = {}
+    for date, index in sorted(coverage["dates"].items()):
+        if date < first_kept:
+            continue
+        if index not in written:
+            body = json.dumps(coverage["profiles"][index], separators=(",", ":"), sort_keys=True).encode("utf-8")
+            psha = hashlib.sha256(body).hexdigest()
+            (profile_dir / f"{psha[:12]}.json").write_bytes(body)
+            written[index] = {"path": f"/mappe/mobilita/roma/coverage/{psha[:12]}.json", "sha256": psha, "bytes": len(body)}
+        dates[date] = written[index]
+    keep = {Path(entry["path"]).name for entry in written.values()}
+    for old in profile_dir.glob("*.json"):
+        if old.name not in keep:
+            old.unlink()
+    index_doc = {k: v for k, v in coverage.items() if k not in ("dates", "profiles")}
+    index_doc["dates"] = dates
+    cpath, csha, csize = write_hashed("coverage", index_doc)
+    gtfs = {
+        "url": source["url"],
+        "sha256": source["sha256"],
+        "bytes": source["bytes"],
+        "acquiredAt": source["acquiredAt"],
+        "lastModified": source["lastModified"],
     }
+    manifest = {"path": path, "sha256": sha, "bytes": size, "schema": SCHEMA, "gtfs": gtfs}
+    coverage_manifest = {
+        "path": cpath,
+        "sha256": csha,
+        "bytes": csize,
+        "schema": coverage["schema"],
+        "firstDate": min(dates),
+        "lastDate": max(dates),
+        "gtfsSha256": source["sha256"],
+    }
+    print(f"coverage: {len(dates)} dates, {len(written)} profiles", file=sys.stderr)
     MANIFEST_TS.write_text(
         "// Generated by scripts/research/build_roma_live_network.py. Do not edit.\n"
-        f"export const ROMA_NETWORK_ASSET = {json.dumps(manifest, indent=2, ensure_ascii=False)} as const;\n",
+        f"export const ROMA_NETWORK_ASSET = {json.dumps(manifest, indent=2, ensure_ascii=False)} as const;\n\n"
+        f"export const ROMA_COVERAGE_ASSET = {json.dumps(coverage_manifest, indent=2, ensure_ascii=False)} as const;\n",
         encoding="utf-8",
     )
-    print(f"wrote {PUBLIC_DIR / name} ({len(body)} bytes)", file=sys.stderr)
 
 
 def check() -> None:
     text = MANIFEST_TS.read_text(encoding="utf-8")
+    for prefix in ("network", "coverage"):
+        block = text[text.index(f'"path": "/mappe/mobilita/roma/{prefix}-'):]
+        match = re.search(r'"path": "(/mappe/mobilita/roma/' + prefix + r'-[0-9a-f]{12}\.json)"', block)
+        sha = re.search(r'"sha256": "([0-9a-f]{64})"', block)
+        size = re.search(r'"bytes": (\d+)', block)
+        if not (match and sha and size):
+            fail(f"{prefix} manifest unreadable")
+        asset = (ROOT / "public" / match.group(1).lstrip("/")).read_bytes()
+        if hashlib.sha256(asset).hexdigest() != sha.group(1) or len(asset) != int(size.group(1)):
+            fail(f"{prefix} asset hash/size mismatch")
+    cmatch = re.search(r'"path": "(/mappe/mobilita/roma/coverage-[0-9a-f]{12}\.json)"', text)
+    index_doc = json.loads((ROOT / "public" / cmatch.group(1).lstrip("/")).read_bytes())
+    for date, entry in index_doc["dates"].items():
+        profile = (ROOT / "public" / entry["path"].lstrip("/")).read_bytes()
+        if hashlib.sha256(profile).hexdigest() != entry["sha256"] or len(profile) != entry["bytes"]:
+            fail(f"coverage profile mismatch for {date}")
     match = re.search(r'"path": "(/mappe/mobilita/roma/network-[0-9a-f]{12}\.json)"', text)
-    sha = re.search(r'"sha256": "([0-9a-f]{64})"', text)
-    size = re.search(r'"bytes": (\d+)', text)
-    if not (match and sha and size):
-        fail("manifest unreadable")
     body = (ROOT / "public" / match.group(1).lstrip("/")).read_bytes()
-    if hashlib.sha256(body).hexdigest() != sha.group(1) or len(body) != int(size.group(1)):
-        fail("asset hash/size mismatch")
     payload = json.loads(body)
     if payload.get("schema") != SCHEMA:
         fail("schema mismatch")

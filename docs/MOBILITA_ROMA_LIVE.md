@@ -21,15 +21,29 @@ le città) resta invariata nell'iframe del prototipo GTFS.
   tra la posizione disegnata e quella nuova.
 - Alcune linee possono mancare dal feed anche in orario di servizio: il pannello
   lo dichiara come assenza dal feed, non come linea ferma.
+- Arrivi previsti (feed «TripUpdates»): orario previsto a ogni fermata
+  successiva del mezzo seguito, ritardo rispetto all'orario, tabellone per
+  fermata (ricerca per nome o codice, fermate entro 500 m). Sono stime
+  dell'operatore; tram e metro non hanno arrivi nel feed. Le fermate saltate e
+  le corse cancellate non diventano arrivi.
+- Colore per ritardo: verde in orario (±2 min), giallo 2-5 min, rosso oltre 5,
+  blu in anticipo, grigio non indicato.
+- Servizio in questo momento: autobus nel feed contro corse programmate in
+  corso dall'orario ufficiale (solo linee autobus), con le linee che hanno corse
+  programmate ma nessun mezzo nel feed. Fuori dal calendario pubblicato la
+  sezione non compare: «nessun orario» non diventa «zero corse».
 
 ## Percorsi del dato
 
 | Pezzo | File |
 | --- | --- |
 | Parser protobuf (numerazione gtfs-realtime.proto 2.0) e fetch | [roma-gtfs-realtime.ts](../src/lib/mobilita/roma-gtfs-realtime.ts) |
-| Proxy pubblico | [api/mobilita/roma/vehicles](../src/app/api/mobilita/roma/vehicles/route.ts) |
+| Lettore protobuf condiviso (int32 negativi a 10 byte) | [protobuf-wire.ts](../src/lib/mobilita/protobuf-wire.ts) |
+| Arrivi previsti (TripUpdates) | [roma-trip-updates.ts](../src/lib/mobilita/roma-trip-updates.ts) |
+| Proxy pubblici | [api/mobilita/roma/vehicles](../src/app/api/mobilita/roma/vehicles/route.ts), [api/mobilita/roma/arrivals](../src/app/api/mobilita/roma/arrivals/route.ts) |
 | Modello puro (abbinamento corsa→percorso, direzione, fermate, ricerca) | [roma-live-model.ts](../src/lib/mobilita/roma-live-model.ts) |
 | Rete statica compatta e manifest | `public/mappe/mobilita/roma/network-<sha12>.json`, [roma-network-asset.ts](../src/lib/mobilita/roma-network-asset.ts) |
+| Corse programmate in corso | `public/mappe/mobilita/roma/coverage-<sha12>.json` (indice data → profilo) e `coverage/<sha12>.json` (per linea, una cifra base-62 ogni 10 minuti da 0 a 30 h del giorno di servizio) |
 | UI | [mobilita-views.tsx](../src/app/mappe/mobilita/mobilita-views.tsx), [_live/](../src/app/mappe/mobilita/_live/) |
 
 Il browser verifica dimensione e SHA-256 della rete prima di usarla. Le corse
@@ -46,6 +60,14 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
   per 10 s; un errore non viene mai riusato come successo.
 - Feed ~115 KB protobuf, risposta ~240 KB JSON (~45 KB compressa), parsing
   di pochi ms. Timeout 10 s, limite 5 MB.
+- Arrivi: `/api/mobilita/roma/arrivals`, una sola URL senza parametri (niente
+  URL per fermata o corsa), `s-maxage=30`. Il feed upstream pesa ~0,9 MB e si
+  analizza in ~100 ms; la risposta compatta (fermate future entro 2 ore,
+  orari come scarti in secondi) è ~450 KB JSON, ~130 KB compressa. Il client la
+  chiede ogni 30 s solo mentre segue un mezzo, apre una fermata o usa i colori
+  per ritardo.
+- Copertura: indice ~6 KB più due profili (oggi e ieri, ~13 KB compressi
+  ciascuno), statici e verificati per hash. Nessun calcolo lato server.
 - Il client interroga ogni 15 s solo con la scheda visibile, con backoff
   esponenziale fino a 2 minuti sugli errori. La vista live (MapLibre, ~250 KB
   gzip) si scarica solo quando viene aperta; la pagina resta statica.
@@ -56,7 +78,10 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
 ## Aggiornare la rete statica
 
 Il GTFS statico cambia quasi ogni giorno; linee o fermate nuove compaiono nel
-live con «percorso non disponibile» finché la rete non viene rigenerata.
+live con «percorso non disponibile» finché la rete non viene rigenerata. Lo
+stesso comando rigenera la copertura, che vale fino all'ultima data del
+calendario pubblicato (oggi 23 dicembre 2026): oltre quella data la sezione
+«Servizio in questo momento» sparisce finché non si rigenera.
 
 ```bash
 curl -sSL -o /tmp/rome_static_gtfs.zip https://romamobilita.it/sites/default/files/rome_static_gtfs.zip
@@ -72,7 +97,12 @@ python3 scripts/research/build_roma_live_network.py --check
   coordinate fuori area, protobuf troncato, feed fermo, limiti upstream.
 - `tests/roma-live-model.test.mjs`: abbinamento al percorso, direzione senza
   bearing, fermate successive, ricerca, freschezza, nomi leggibili.
-- `tests/roma-network-asset.test.mjs`: manifest e rete pubblicata coincidono.
-- `scripts/browser/mappe-mobilita.mjs`: vista live a 390 e 1280 px con feed e
-  tile simulati (offline), ricerca, segui mezzo, URL condivisibile, Esc,
-  indietro alla vista velocità, feed non disponibile.
+- `tests/roma-trip-updates.test.mjs`: ritardi negativi, fermate saltate, corse
+  cancellate, orizzonte, protobuf troncato, feed fermo.
+- `tests/roma-network-asset.test.mjs`: manifest, rete, indice e profili di
+  copertura coincidono con i rispettivi hash e con lo stesso GTFS.
+- `scripts/browser/mappe-mobilita.mjs`: vista live a 390 e 1280 px con feed,
+  arrivi e tile simulati (offline): ricerca linea e fermata, tabellone, segui
+  mezzo con orari previsti, Esc che torna alla fermata, colori per ritardo,
+  copertura, URL condivisibile, indietro alla vista velocità, feed e arrivi non
+  disponibili.

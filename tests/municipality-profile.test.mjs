@@ -177,3 +177,30 @@ test("mismatched territorial identifiers fail closed and non-municipal entities 
   }));
   assert.equal(nonMunicipal, null);
 });
+
+test("Aielli, Milano, Bari and Roma return the same municipal profile without a SQL connection", async () => {
+  const { getSiopeMunicipalityDetailByIpaCode } = await import("../src/lib/siope-municipality-detail.ts");
+  const { municipalitySnapshotEntity } = await import("../src/lib/municipality-snapshot-entity.ts");
+  const baseline = [];
+  const previous = process.env.DVNS_DATA_BACKEND;
+  try {
+    process.env.DVNS_DATA_BACKEND = "filesystem";
+    for (const code of ["c_a100", "c_f205", "c_a662", "c_h501"]) {
+      const municipality = getSiopeMunicipalityDetailByIpaCode(code);
+      assert.ok(municipality);
+      const record = municipalitySnapshotEntity(municipality);
+      assert.ok(record);
+      const profile = await getMunicipalityProfile(record, { allowCommittedIstatIdentity: true });
+      assert.equal(profile?.schoolServices.status, "available");
+      assert.equal(profile?.realEstate.status, "available");
+      baseline.push([record, profile]);
+    }
+    process.env.DVNS_DATA_BACKEND = "supabase";
+    for (const [record, profile] of baseline) {
+      assert.deepEqual(await getMunicipalityProfile(record, { allowCommittedIstatIdentity: true }), profile);
+    }
+  } finally {
+    if (previous === undefined) delete process.env.DVNS_DATA_BACKEND;
+    else process.env.DVNS_DATA_BACKEND = previous;
+  }
+});

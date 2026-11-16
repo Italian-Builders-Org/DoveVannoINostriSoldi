@@ -149,8 +149,12 @@ export function checkRuntimeTraces(root = process.cwd()) {
     "src/data/generated/mim-school-services-municipal.json",
     "src/data/generated/pnrr-childcare.data.json",
   ];
+  const municipalityProfileRoot = "src/data/generated/municipality-profile";
+  const municipalityProfileFiles = [..."0123456789abcdef"].map((bucket) => `${municipalityProfileRoot}/${bucket}.json.gz`);
+  const municipalityProfileRoutes = ["enti/[codice]/page.js.nft.json", "api/enti/[codice]/route.js.nft.json"];
   const requirements = new Map([
-    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles, ...occupationEntiFiles]],
+    ["enti/[codice]/page.js.nft.json", [...entityFiles, ...cpvFiles, ...occupationEntiFiles, ...municipalityProfileFiles]],
+    [municipalityProfileRoutes[1], municipalityProfileFiles],
     ["personale-pa/conto-annuale/page.js.nft.json", occupationHubFiles],
     ["personale-pa/conto-annuale/[codice]/page.js.nft.json", occupationDetailFiles],
     ["snapshot-pages/personale-pa/conto-annuale/page.js.nft.json", occupationHubFiles],
@@ -262,6 +266,7 @@ export function checkRuntimeTraces(root = process.cwd()) {
     const route = relative(appRoot, manifest).replaceAll("\\", "/");
     const forbidden = route.startsWith("appalti/operatori/") ? [ENTITY, CPV]
       : route.startsWith("enti/") || route.startsWith("api/enti/") ? [OPERATOR] : [];
+    if (!municipalityProfileRoutes.includes(route)) forbidden.push(municipalityProfileRoot);
     if (!["appalti/operatori/[ref]/page.js.nft.json", "snapshot-pages/operatori/[ref]/page.js.nft.json"].includes(route)) forbidden.push(history);
     if (["comuni/page.js.nft.json", "snapshot-pages/comuni/[codice]/page.js.nft.json"].includes(route)) {
       forbidden.push("src/data/generated/integrated/rows", "data/source-ledger");

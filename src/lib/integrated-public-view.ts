@@ -433,16 +433,21 @@ const SORTED_PUBLIC_COLUMNS: Readonly<Record<string, string>> = {
   "mef-patrimonio-fabbricati-fermi-2023": "Codice regione del bene",
 };
 
-/** Only ETL-proven orderings may bypass a scan; rows still pass the release proof. */
-export async function selectIntegratedSortedDatasetRows(datasetId: string, column: string, key: string, signal?: AbortSignal) {
-  if (SORTED_PUBLIC_COLUMNS[datasetId] !== column) {
-    throw new IntegratedQueryError("Il dataset non ha un ordinamento verificato per questa colonna.");
-  }
+export async function getIntegratedPublicDatasetMetadata(datasetId: string): Promise<IntegratedDatasetMetadata> {
   const bundle = await loadIntegratedSourceBundle();
   const dataset = bundle.datasetsById.get(datasetId);
   if (!dataset) throw new IntegratedDatasetNotFoundError(datasetId);
   const metadata = publicMetadata(dataset);
   if (!metadata.queryable) throw new IntegratedQueryError("Il dataset non espone righe pubbliche.");
+  return metadata;
+}
+
+/** Only ETL-proven orderings may bypass a scan; rows still pass the release proof. */
+export async function selectIntegratedSortedDatasetRows(datasetId: string, column: string, key: string, signal?: AbortSignal) {
+  if (SORTED_PUBLIC_COLUMNS[datasetId] !== column) {
+    throw new IntegratedQueryError("Il dataset non ha un ordinamento verificato per questa colonna.");
+  }
+  const metadata = await getIntegratedPublicDatasetMetadata(datasetId);
   const { selectSortedRows } = await import("@/lib/integrated-sorted-lookup");
   const result = await selectSortedRows(datasetId, column, key, signal);
   return { ...result, dataset: metadata };

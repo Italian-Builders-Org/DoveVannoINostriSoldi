@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ROMA_NETWORK_ASSET } from "@/lib/mobilita/roma-network-asset";
 import { MOBILITA_MAP_EXPLORER_PATH } from "@/lib/site";
-import { MobilitaSkipLink, MobilitaViewBody, MobilitaViewTabs } from "./mobilita-views";
+import { MobilitaCrumb, MobilitaLiveSwitch, MobilitaSkipLink, MobilitaViewBody } from "./mobilita-views";
 import styles from "./mobilita.module.css";
 
 export const metadata: Metadata = {
@@ -40,10 +40,13 @@ export default function MobilitaMapPage() {
             DVNS
           </Link>
           <span className={styles.brandSeparator} aria-hidden="true" />
-          <p className={styles.brandTitle}>Mobilità</p>
+          <p className={styles.brandTitle}>
+            Mobilità
+            <MobilitaCrumb />
+          </p>
         </div>
-        <MobilitaViewTabs />
         <div className={styles.immersiveActions}>
+          <MobilitaLiveSwitch />
           <details className={styles.sourcesDisclosure}>
             <summary>Fonti</summary>
             <div className={styles.sourcesPanel}>

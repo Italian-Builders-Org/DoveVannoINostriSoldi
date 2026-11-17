@@ -106,7 +106,11 @@ try {
   await page.setViewport({ width: 1024, height: 768 });
   let sawOpenFreeMap = false;
   page.on("request", (req) => {
-    if (req.url().includes("tiles.openfreemap.org")) sawOpenFreeMap = true;
+    try {
+      if (new URL(req.url()).hostname === "tiles.openfreemap.org") sawOpenFreeMap = true;
+    } catch {
+      // Ignore non-URL request targets in the smoke harness.
+    }
   });
   page.on("console", (msg) => {
     if (msg.type() === "error") console.error("[page]", msg.text());

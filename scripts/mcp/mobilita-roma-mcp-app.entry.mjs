@@ -26,10 +26,39 @@ function vehiclesToGeoJSON(vehicles) {
   };
 }
 
-function ensureVehicleLayers(map, geojson) {
+function fitMapToVehicles(map, geojson) {
+  const coords = geojson.features
+    .map((feature) => feature.geometry?.coordinates)
+    .filter((pair) => Array.isArray(pair) && pair.length >= 2);
+  if (coords.length === 0) return;
+  if (coords.length === 1) {
+    map.easeTo({ center: coords[0], zoom: Math.max(map.getZoom(), 13) });
+    return;
+  }
+  let minLon = coords[0][0];
+  let minLat = coords[0][1];
+  let maxLon = coords[0][0];
+  let maxLat = coords[0][1];
+  for (const [lon, lat] of coords) {
+    minLon = Math.min(minLon, lon);
+    minLat = Math.min(minLat, lat);
+    maxLon = Math.max(maxLon, lon);
+    maxLat = Math.max(maxLat, lat);
+  }
+  map.fitBounds(
+    [
+      [minLon, minLat],
+      [maxLon, maxLat],
+    ],
+    { padding: 48, maxZoom: 15, duration: 0 },
+  );
+}
+
+function ensureVehicleLayers(map, geojson, options = {}) {
   const source = map.getSource("vehicles");
   if (source) {
     source.setData(geojson);
+    if (options.fitBounds) fitMapToVehicles(map, geojson);
     return;
   }
   map.addSource("vehicles", { type: "geojson", data: geojson });
@@ -49,11 +78,17 @@ function ensureVehicleLayers(map, geojson) {
 function applyToolResult(params) {
   const structured = params?.structuredContent;
   if (!structured?.ok || !Array.isArray(structured.vehicles)) return;
+  const fitBounds = typeof structured.linea === "string" && structured.linea.length > 0;
   if (!window.__dvnsMobilitaMap || !window.__dvnsMobilitaMapReady) {
     window.__dvnsMobilitaPendingVehicles = structured.vehicles;
+    window.__dvnsMobilitaPendingFitBounds = fitBounds;
     return;
   }
-  ensureVehicleLayers(window.__dvnsMobilitaMap, vehiclesToGeoJSON(structured.vehicles));
+  ensureVehicleLayers(
+    window.__dvnsMobilitaMap,
+    vehiclesToGeoJSON(structured.vehicles),
+    { fitBounds },
+  );
 }
 
 const app = new App(
@@ -80,9 +115,11 @@ async function boot() {
   map.on("load", () => {
     window.__dvnsMobilitaMapReady = true;
     const pending = window.__dvnsMobilitaPendingVehicles;
+    const pendingFit = window.__dvnsMobilitaPendingFitBounds === true;
     if (Array.isArray(pending)) {
-      ensureVehicleLayers(map, vehiclesToGeoJSON(pending));
+      ensureVehicleLayers(map, vehiclesToGeoJSON(pending), { fitBounds: pendingFit });
       delete window.__dvnsMobilitaPendingVehicles;
+      delete window.__dvnsMobilitaPendingFitBounds;
     }
     window.__dvnsMapReady = true;
   });

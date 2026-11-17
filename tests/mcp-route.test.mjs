@@ -494,6 +494,7 @@ test("MCP mobilita_roma_bus_live tools/call returns structured positions with fe
 });
 
 test("MCP endpoint exposes the mobilita bus live map app resource", async () => {
+  const openFreeMapLibertyStyleUrl = "https://tiles.openfreemap.org/styles/liberty";
   const response = await POST(request({}, JSON.stringify({
     jsonrpc: "2.0",
     id: 20,
@@ -506,7 +507,7 @@ test("MCP endpoint exposes the mobilita bus live map app resource", async () => 
   const content = rpcEvent.result.contents[0];
   assert.equal(content.mimeType, "text/html;profile=mcp-app");
   assert.match(content.text, /maplibregl-map/);
-  assert.match(content.text, /openfreemap\.org\/styles\/liberty/);
+  assert.equal(content.text.includes(openFreeMapLibertyStyleUrl), true);
   assert.deepEqual(content._meta?.ui?.csp?.connectDomains, ["https://tiles.openfreemap.org"]);
   assert.deepEqual(content._meta?.ui?.csp?.resourceDomains, ["blob:", "https://tiles.openfreemap.org"]);
 });

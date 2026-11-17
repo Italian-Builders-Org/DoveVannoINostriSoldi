@@ -15,13 +15,21 @@ va duplicato su un secondo runtime.
 
 ## Superficie pubblica
 
-- Tool `list_datasets`: catalogo completo con identificativo stabile, filtri, freschezza e caveat.
+- Tool `list_datasets`: catalogo completo con identificativo stabile, filtri, freschezza e caveat,
+  più la sezione `mobilityLiveTools` per i feed GTFS-RT della mappa mobilità.
 - Tool `query_dataset`: query tipizzata; `limit` e `offset` sono accettati soltanto dagli adapter
   che li dichiarano nel catalogo, con limite massimo di 100 record per pagina.
+- Tool `mobilita_roma_bus_live`: posizioni live degli autobus ATAC e Roma TPL a Roma, con filtro
+  opzionale `linea` e `limit`, fonte e timestamp del feed, avviso «dato live, non storico» e link
+  alla pagina `/mappe/mobilita?vista=bus-live`. Collegato alla MCP App `ui://mobilita/roma-bus-live.html`.
 - Le risposte dei tool sono limitate a 750.000 byte UTF-8; una query che supera il budget restituisce `response_too_large` invece di produrre un payload non delimitato.
-- Resource `dvns://datasets`: copia JSON del catalogo.
+- Resource `dvns://datasets`: copia JSON dell'array catalogo dataset (stessa forma storica).
+- Resource `dvns://mobility-live-tools`: elenco JSON dei tool mobilità live e URI della MCP App associata.
 - Resource `dvns://related-mcp-services`: endpoint pubblici complementari, separati dagli adapter
   DVNS e mai inoltrati automaticamente.
+- Resource `ui://mobilita/roma-bus-live.html`: mappa MCP App (MapLibre 6 in bundle + stile Liberty
+  OpenFreeMap) per visualizzare le posizioni restituite dal tool; i metadati `_meta.ui.csp`
+  dichiarano i domini caricati dallo stile (`tiles.openfreemap.org`).
 - Capability `prompts`: i cinque starter prompt della distribuzione (`docs/MCP_DISTRIBUTION.md`)
   sono esposti anche via `prompts/list` e `prompts/get`, che resta la fonte unica dei testi.
 

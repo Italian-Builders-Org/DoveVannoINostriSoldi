@@ -4,6 +4,20 @@ import { APP_VERSION } from "@/lib/app-version";
 import { datasetCatalog } from "@/lib/mcp/catalog";
 import { datasetQuerySchema as querySchema } from "@/lib/mcp/query-schema";
 import { queryPublicDataset } from "@/lib/mcp/datasets";
+import {
+  MOBILITA_ROMA_BUS_LIVE_UI_URI,
+  MOBILITY_LIVE_TOOLS_URI,
+  mobilityLiveToolsCatalog,
+} from "@/lib/mcp/mobility-live-catalog";
+import {
+  mobilitaRomaBusLiveInputSchema,
+  mobilitaRomaBusLiveOutputSchema,
+  queryMobilitaRomaBusLive,
+} from "@/lib/mcp/mobilita-roma-bus-live";
+import {
+  MOBILITA_ROMA_MCP_APP_CSP,
+  mobilitaRomaBusLiveAppHtml,
+} from "@/lib/mcp/mobilita-roma-mcp-app";
 import { relatedMcpServices } from "@/lib/mcp/related-services";
 
 export const MAX_MCP_TOOL_RESPONSE_BYTES = 750_000;
@@ -12,6 +26,7 @@ const noAuthSecuritySchemes = [{ type: "noauth" }] as const;
 
 const listDatasetsOutputSchema = z.object({
   datasets: z.array(z.unknown()),
+  mobilityLiveTools: z.array(z.unknown()),
   relatedMcpServices: z.array(z.unknown()),
 });
 
@@ -83,7 +98,35 @@ const queryDatasetToolConfig = {
   _meta: { securitySchemes: noAuthSecuritySchemes },
 };
 
-type PublicToolConfig = typeof listDatasetsToolConfig | typeof queryDatasetToolConfig;
+const mobilitaRomaBusLiveToolConfig = {
+  title: "Bus Roma live (ATAC)",
+  description:
+    "Posizioni live degli autobus ATAC e Roma TPL a Roma. Opzionale filtro linea e limite risultati. Dato live, non storico.",
+  inputSchema: mobilitaRomaBusLiveInputSchema,
+  outputSchema: mobilitaRomaBusLiveOutputSchema,
+  annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+  _meta: {
+    securitySchemes: noAuthSecuritySchemes,
+    ui: {
+      resourceUri: MOBILITA_ROMA_BUS_LIVE_UI_URI,
+      visibility: ["model", "app"],
+    },
+  },
+};
+
+type PublicToolConfig =
+  | typeof listDatasetsToolConfig
+  | typeof queryDatasetToolConfig
+  | typeof mobilitaRomaBusLiveToolConfig;
+
+export function measureMcpToolWireBytes(value: unknown): number {
+  const text = JSON.stringify(value);
+  const result = {
+    content: [{ type: "text" as const, text }],
+    structuredContent: value as Record<string, unknown>,
+  };
+  return new TextEncoder().encode(JSON.stringify({ jsonrpc: "2.0", id: 0, result })).byteLength;
+}
 
 function publicToolDescriptor(name: string, config: PublicToolConfig) {
   return {
@@ -152,7 +195,52 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
       description: "Dataset interrogabili, filtri, fonti e avvertenze semantiche.",
       mimeType: "application/json",
     },
-    async (uri) => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(datasetCatalog) }] }),
+    async (uri) => ({
+      contents: [{
+        uri: uri.href,
+        mimeType: "application/json",
+        text: JSON.stringify(datasetCatalog),
+      }],
+    }),
+  );
+
+  server.registerResource(
+    "mobility-live-tools",
+    MOBILITY_LIVE_TOOLS_URI,
+    {
+      title: "Tool mobilità live (MCP)",
+      description: "Feed GTFS-RT esposti come tool MCP con eventuale MCP App associata.",
+      mimeType: "application/json",
+    },
+    async (uri) => ({
+      contents: [{
+        uri: uri.href,
+        mimeType: "application/json",
+        text: JSON.stringify(mobilityLiveToolsCatalog),
+      }],
+    }),
+  );
+
+  server.registerResource(
+    "mobilita-roma-bus-live-map",
+    MOBILITA_ROMA_BUS_LIVE_UI_URI,
+    {
+      title: "Mappa bus Roma live",
+      description: "Vista MCP App con MapLibre e tile OpenFreeMap per le posizioni restituite da mobilita_roma_bus_live.",
+      mimeType: "text/html;profile=mcp-app",
+    },
+    async (uri) => ({
+      contents: [{
+        uri: uri.href,
+        mimeType: "text/html;profile=mcp-app",
+        text: mobilitaRomaBusLiveAppHtml(),
+        _meta: {
+          ui: {
+            csp: MOBILITA_ROMA_MCP_APP_CSP,
+          },
+        },
+      }],
+    }),
   );
 
   server.registerResource(
@@ -192,7 +280,11 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
   server.registerTool(
     "list_datasets",
     listDatasetsToolConfig,
-    async () => toolResult({ datasets: datasetCatalog, relatedMcpServices }),
+    async () => toolResult({
+      datasets: datasetCatalog,
+      mobilityLiveTools: mobilityLiveToolsCatalog,
+      relatedMcpServices,
+    }),
   );
 
   server.registerTool(
@@ -217,6 +309,26 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
     },
   );
 
+  server.registerTool(
+    "mobilita_roma_bus_live",
+    mobilitaRomaBusLiveToolConfig,
+    async (input, context) => {
+      const requestSignal = factoryContext?.requestInfo?.signal;
+      const signal = requestSignal
+        ? AbortSignal.any([requestSignal, context.mcpReq.signal])
+        : context.mcpReq.signal;
+      const data = await queryMobilitaRomaBusLive(input, { signal });
+      if (!data.ok) {
+        return {
+          isError: true,
+          content: [{ type: "text", text: data.error ?? "Feed mobilità non disponibile." }],
+          structuredContent: data,
+        };
+      }
+      return toolResult(data);
+    },
+  );
+
   // @modelcontextprotocol/server@2 serializes only its core Tool fields. ChatGPT
   // requires the canonical per-tool securitySchemes field as well as its _meta
   // compatibility mirror, so replace only tools/list with descriptors derived
@@ -228,6 +340,7 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
       tools: [
         publicToolDescriptor("list_datasets", listDatasetsToolConfig),
         publicToolDescriptor("query_dataset", queryDatasetToolConfig),
+        publicToolDescriptor("mobilita_roma_bus_live", mobilitaRomaBusLiveToolConfig),
       ],
     }),
   );

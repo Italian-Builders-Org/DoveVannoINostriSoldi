@@ -50,8 +50,12 @@ const TOOLS = [
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     outputSchema: {
       type: "object",
-      properties: { datasets: { type: "array" }, relatedMcpServices: { type: "array" } },
-      required: ["datasets", "relatedMcpServices"],
+      properties: {
+        datasets: { type: "array" },
+        mobilityLiveTools: { type: "array" },
+        relatedMcpServices: { type: "array" },
+      },
+      required: ["datasets", "mobilityLiveTools", "relatedMcpServices"],
       additionalProperties: false,
     },
     securitySchemes: [{ type: "noauth" }],
@@ -61,6 +65,39 @@ const TOOLS = [
       destructiveHint: false,
       idempotentHint: true,
       openWorldHint: false,
+    },
+  },
+  {
+    name: "mobilita_roma_bus_live",
+    title: "Bus Roma live",
+    description: "Posizioni live degli autobus ATAC e Roma TPL a Roma.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        linea: { type: "string" },
+        limit: { type: "integer" },
+      },
+      required: [],
+      additionalProperties: false,
+    },
+    outputSchema: {
+      type: "object",
+      properties: {
+        ok: { type: "boolean" },
+        notice: { type: "string" },
+        portalUrl: { type: "string" },
+        source: { type: "object" },
+      },
+      required: ["ok", "notice", "portalUrl", "source"],
+      additionalProperties: false,
+    },
+    securitySchemes: [{ type: "noauth" }],
+    _meta: { securitySchemes: [{ type: "noauth" }] },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
     },
   },
   {
@@ -101,10 +138,11 @@ test("MCP tool annotations preserve each tool's live-source boundary", () => {
     const body = JSON.stringify({ jsonrpc: "2.0", id: 1, result: { tools } });
     return validateToolsListPayload(rpcResponse({ tools }), body);
   };
-  assert.equal(validate(TOOLS).toolCount, 2);
+  assert.equal(validate(TOOLS).toolCount, 3);
   for (const [name, openWorldHint] of [
     ["list_datasets", true],
     ["query_dataset", false],
+    ["mobilita_roma_bus_live", false],
   ]) {
     const changed = TOOLS.map((tool) => tool.name === name
       ? { ...tool, annotations: { ...tool.annotations, openWorldHint } }

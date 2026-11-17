@@ -2,12 +2,14 @@ import * as z from "zod/v4";
 import { loadRomaRealtimeVehiclesCoalesced } from "@/lib/mobilita/roma-vehicles-shared";
 import {
   classifyRomaFeedFailure,
+  getRomaVehicleLastGood,
   MCP_VEHICLES_FEED_FETCH_BUDGET_MS,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
   ROMA_VEHICLE_POSITIONS_URL,
   type FetchLike,
   type RomaRealtimeVehicle,
+  type RomaRealtimeVehiclesView,
 } from "@/lib/mobilita/roma-gtfs-realtime";
 import { normaliseQuery, vehicleAge } from "@/lib/mobilita/roma-live-model";
 
@@ -96,6 +98,67 @@ function compactVehicle(
   };
 }
 
+const SOURCE = {
+  holder: ROMA_RT_HOLDER,
+  openDataUrl: ROMA_OPEN_DATA_URL,
+  feedUrl: ROMA_VEHICLE_POSITIONS_URL,
+  license: "Licenza open data del titolare (Roma Servizi per la Mobilità)",
+};
+
+function outputFromView(
+  view: RomaRealtimeVehiclesView,
+  input: MobilitaRomaBusLiveInput,
+  nowMs: number,
+): MobilitaRomaBusLiveOutput {
+  const nowSeconds = Math.floor(nowMs / 1000);
+  let vehicles = view.vehicles;
+  if (input.linea) vehicles = vehicles.filter((vehicle) => matchesLinea(vehicle, input.linea!));
+  const limit = input.limit ?? vehicles.length;
+  const slice = vehicles.slice(0, limit);
+  return {
+    ok: true,
+    notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
+    portalUrl: portalUrl(input.linea),
+    source: SOURCE,
+    fetchedAt: view.fetchedAt,
+    feedTimestamp: view.feedTimestamp,
+    stale: view.stale,
+    ...(view.fallback ? { fallback: true } : {}),
+    feedAgeSeconds: view.feedAgeSeconds,
+    linea: input.linea,
+    vehicleCount: view.vehicleCount,
+    returned: slice.length,
+    vehicles: slice.map((vehicle) => compactVehicle(vehicle, nowSeconds)),
+  };
+}
+
+async function loadVehiclesForTool(
+  options: {
+    fetchImpl?: FetchLike;
+    now?: () => number;
+    feedFetchBudgetMs?: number;
+  },
+): Promise<RomaRealtimeVehiclesView | "tool_deadline"> {
+  const toolWaitMs = options.feedFetchBudgetMs ?? MCP_VEHICLES_FEED_FETCH_BUDGET_MS;
+  const loadPromise = loadRomaRealtimeVehiclesCoalesced(options.fetchImpl, options.now ?? Date.now, {
+    feedFetchBudgetMs: toolWaitMs,
+  });
+  void loadPromise.catch(() => undefined);
+
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const raced = await Promise.race([
+      loadPromise.then((view) => ({ kind: "ok" as const, view })),
+      new Promise<{ kind: "deadline" }>((resolve) => {
+        timeout = setTimeout(() => resolve({ kind: "deadline" }), toolWaitMs);
+      }),
+    ]);
+    return raced.kind === "ok" ? raced.view : "tool_deadline";
+  } finally {
+    if (timeout !== undefined) clearTimeout(timeout);
+  }
+}
+
 export async function queryMobilitaRomaBusLive(
   input: MobilitaRomaBusLiveInput,
   options: {
@@ -107,54 +170,42 @@ export async function queryMobilitaRomaBusLive(
   } = {},
 ): Promise<MobilitaRomaBusLiveOutput> {
   const nowMs = options.now?.() ?? Date.now();
-  const source = {
-    holder: ROMA_RT_HOLDER,
-    openDataUrl: ROMA_OPEN_DATA_URL,
-    feedUrl: ROMA_VEHICLE_POSITIONS_URL,
-    license: "Licenza open data del titolare (Roma Servizi per la Mobilità)",
-  };
 
   if (options.signal?.aborted) {
     return {
       ok: false,
       notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
       portalUrl: portalUrl(input.linea),
-      source,
+      source: SOURCE,
       error: "richiesta_annullata",
     };
   }
 
   try {
-    const view = await loadRomaRealtimeVehiclesCoalesced(options.fetchImpl, options.now ?? Date.now, {
-      feedFetchBudgetMs: options.feedFetchBudgetMs ?? MCP_VEHICLES_FEED_FETCH_BUDGET_MS,
-    });
-    const nowSeconds = Math.floor(nowMs / 1000);
-    let vehicles = view.vehicles;
-    if (input.linea) vehicles = vehicles.filter((vehicle) => matchesLinea(vehicle, input.linea!));
-    const limit = input.limit ?? vehicles.length;
-    const slice = vehicles.slice(0, limit);
-    return {
-      ok: true,
-      notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
-      portalUrl: portalUrl(input.linea),
-      source,
-      fetchedAt: view.fetchedAt,
-      feedTimestamp: view.feedTimestamp,
-      stale: view.stale,
-      ...(view.fallback ? { fallback: true } : {}),
-      feedAgeSeconds: view.feedAgeSeconds,
-      linea: input.linea,
-      vehicleCount: view.vehicleCount,
-      returned: slice.length,
-      vehicles: slice.map((vehicle) => compactVehicle(vehicle, nowSeconds)),
-    };
+    const loaded = await loadVehiclesForTool(options);
+    if (loaded === "tool_deadline") {
+      const fallback = getRomaVehicleLastGood(nowMs);
+      if (fallback) return outputFromView(fallback, input, nowMs);
+      const failure = classifyRomaFeedFailure(
+        new DOMException("The operation was aborted", "TimeoutError"),
+      );
+      return {
+        ok: false,
+        notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
+        portalUrl: portalUrl(input.linea),
+        source: SOURCE,
+        fetchedAt: new Date(nowMs).toISOString(),
+        error: `feed_mobilita_non_disponibile: ${failure.message}`,
+      };
+    }
+    return outputFromView(loaded, input, nowMs);
   } catch (error) {
     const failure = classifyRomaFeedFailure(error);
     return {
       ok: false,
       notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
       portalUrl: portalUrl(input.linea),
-      source,
+      source: SOURCE,
       fetchedAt: new Date(nowMs).toISOString(),
       error: `feed_mobilita_non_disponibile: ${failure.message}`,
     };

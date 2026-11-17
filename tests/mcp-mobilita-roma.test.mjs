@@ -7,7 +7,12 @@ const {
   mobilitaRomaBusLiveInputSchema,
   queryMobilitaRomaBusLive,
 } = await import("../src/lib/mcp/mobilita-roma-bus-live.ts");
-const { resetRomaMobilitaRealtimeForTests } = await import("../src/lib/mobilita/roma-vehicles-shared.ts");
+const { resetRomaMobilitaRealtimeForTests, loadRomaRealtimeVehiclesCoalesced } = await import(
+  "../src/lib/mobilita/roma-vehicles-shared.ts"
+);
+const { FEED_FETCH_BUDGET_MS, MCP_VEHICLES_FEED_FETCH_BUDGET_MS } = await import(
+  "../src/lib/mobilita/roma-gtfs-realtime.ts"
+);
 const { measureMcpToolWireBytes, MAX_MCP_TOOL_RESPONSE_BYTES } = await import("../src/lib/mcp/server.ts");
 const {
   mobilityLiveToolsCatalog,
@@ -130,6 +135,50 @@ test("mobilita tool serves last-good on slow body within its feed budget", async
   assert.equal(slow.ok, true);
   assert.equal(slow.fallback, true);
   assert.equal(slow.returned, 1);
+});
+
+test("mobilita tool times out on shared slow route inflight read instead of waiting 14s", async () => {
+  resetRomaMobilitaRealtimeForTests();
+  const bytes = feed([
+    vehicleEntity({ entityId: "1", routeId: "30", vehicleId: "v1", lat: 41.9012, lon: 12.5004, timestamp: 1_794_840_562 }),
+    vehicleEntity({ entityId: "2", routeId: "64", vehicleId: "v2", lat: 41.905, lon: 12.51, timestamp: 1_794_840_562 }),
+  ]);
+  const tick = { now: 1_794_840_620_000 };
+  await loadRomaRealtimeVehiclesCoalesced(okFetch(bytes), () => tick.now);
+  tick.now += 11_000;
+  const slowHeadersFastBody = async (_url, init) => ({
+    ok: true,
+    status: 200,
+    headers: new Headers(),
+    arrayBuffer: async () =>
+      new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () => {
+          reject(new DOMException("The operation was aborted", "TimeoutError"));
+        });
+      }),
+  });
+  const routeRead = loadRomaRealtimeVehiclesCoalesced(slowHeadersFastBody, () => tick.now, {
+    feedFetchBudgetMs: FEED_FETCH_BUDGET_MS,
+  });
+  void routeRead.catch(() => undefined);
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  const started = Date.now();
+  const tool = await queryMobilitaRomaBusLive(
+    { linea: "30" },
+    {
+      fetchImpl: slowHeadersFastBody,
+      now: () => tick.now + 500,
+      feedFetchBudgetMs: MCP_VEHICLES_FEED_FETCH_BUDGET_MS,
+    },
+  );
+  assert.ok(
+    Date.now() - started < MCP_VEHICLES_FEED_FETCH_BUDGET_MS + 500,
+    "tool must not wait for the route's longer inflight budget",
+  );
+  assert.equal(tool.ok, true);
+  assert.equal(tool.fallback, true);
+  assert.equal(tool.returned, 1);
+  assert.equal(tool.vehicles?.[0]?.linea, "30");
 });
 
 test("mobilita tool returns ok false on timeout without last-good", async () => {

@@ -336,6 +336,11 @@ export function lastGoodFallbackView<T extends {
   };
 }
 
+/** Returns the in-memory last-good vehicle view when still within {@link LAST_GOOD_SNAPSHOT_MS}. */
+export function getRomaVehicleLastGood(nowMs: number = Date.now()): RomaRealtimeVehiclesView | null {
+  return lastGoodFallbackView(lastGoodVehicles, nowMs);
+}
+
 /** Clears the in-memory last-good cache (unit tests only). */
 export function resetRomaVehicleLastGoodForTests(): void {
   lastGoodVehicles = null;

@@ -1,12 +1,12 @@
 import { McpServer, type McpRequestContext } from "@modelcontextprotocol/server";
 import * as z from "zod/v4";
 import { APP_VERSION } from "@/lib/app-version";
-import { dvnsMcpCatalogPayload } from "@/lib/mcp/catalog-payload";
 import { datasetCatalog } from "@/lib/mcp/catalog";
 import { datasetQuerySchema as querySchema } from "@/lib/mcp/query-schema";
 import { queryPublicDataset } from "@/lib/mcp/datasets";
 import {
   MOBILITA_ROMA_BUS_LIVE_UI_URI,
+  MOBILITY_LIVE_TOOLS_URI,
   mobilityLiveToolsCatalog,
 } from "@/lib/mcp/mobility-live-catalog";
 import {
@@ -199,7 +199,24 @@ export function createDvnsMcpServer(factoryContext?: McpRequestContext) {
       contents: [{
         uri: uri.href,
         mimeType: "application/json",
-        text: JSON.stringify(dvnsMcpCatalogPayload),
+        text: JSON.stringify(datasetCatalog),
+      }],
+    }),
+  );
+
+  server.registerResource(
+    "mobility-live-tools",
+    MOBILITY_LIVE_TOOLS_URI,
+    {
+      title: "Tool mobilità live (MCP)",
+      description: "Feed GTFS-RT esposti come tool MCP con eventuale MCP App associata.",
+      mimeType: "application/json",
+    },
+    async (uri) => ({
+      contents: [{
+        uri: uri.href,
+        mimeType: "application/json",
+        text: JSON.stringify(mobilityLiveToolsCatalog),
       }],
     }),
   );

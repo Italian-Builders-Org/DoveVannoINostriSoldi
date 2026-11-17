@@ -505,9 +505,10 @@ test("MCP endpoint exposes the mobilita bus live map app resource", async () => 
   const rpcEvent = parseRpcEvent(body);
   const content = rpcEvent.result.contents[0];
   assert.equal(content.mimeType, "text/html;profile=mcp-app");
-  assert.match(content.text, /maplibre-gl/);
+  assert.match(content.text, /maplibregl-map/);
+  assert.match(content.text, /openfreemap\.org\/styles\/liberty/);
   assert.deepEqual(content._meta?.ui?.csp?.connectDomains, ["https://tiles.openfreemap.org"]);
-  assert.ok(content._meta?.ui?.csp?.resourceDomains?.includes("https://cdn.jsdelivr.net"));
+  assert.deepEqual(content._meta?.ui?.csp?.resourceDomains, ["blob:", "https://tiles.openfreemap.org"]);
 });
 
 test("MCP endpoint exposes the machine-readable dataset catalog resource", async () => {
@@ -520,6 +521,8 @@ test("MCP endpoint exposes the machine-readable dataset catalog resource", async
   assert.equal(response.status, 200);
   assert.match(body, /dvns:\/\/datasets/);
   assert.match(body, /dataset-catalog/);
+  assert.match(body, /dvns:\/\/mobility-live-tools/);
+  assert.match(body, /mobility-live-tools/);
   assert.match(body, /dvns:\/\/related-mcp-services/);
   assert.match(body, /related-mcp-services/);
 });
@@ -885,8 +888,24 @@ test("MCP endpoint reads the catalog resource with the modern protocol", async (
   assert.equal(response.status, 200);
   assert.match(body, /"resultType":"complete"/);
   assert.match(body, /siope_comuni/);
-  assert.match(body, /mobilityLiveTools/);
-  assert.match(body, /mobilita_roma_bus_live/);
+  assert.doesNotMatch(body, /mobilityLiveTools/);
+  assert.doesNotMatch(body, /"mobilita_roma_bus_live"/);
+});
+
+test("MCP endpoint exposes mobility live tools as a separate catalog resource", async () => {
+  const response = await POST(request({}, JSON.stringify({
+    jsonrpc: "2.0",
+    id: 22,
+    method: "resources/read",
+    params: { uri: "dvns://mobility-live-tools" },
+  })));
+  const body = await response.text();
+  assert.equal(response.status, 200);
+  const rpcEvent = parseRpcEvent(body);
+  const text = rpcEvent.result.contents[0].text;
+  const parsed = JSON.parse(text);
+  assert.ok(Array.isArray(parsed));
+  assert.ok(parsed.some((entry) => entry.mcpTool === "mobilita_roma_bus_live"));
 });
 
 test("MCP endpoint rejects a malformed modern envelope", async () => {

@@ -2,6 +2,8 @@ export const MOBILITA_ROMA_BUS_LIVE_TOOL = "mobilita_roma_bus_live" as const;
 
 export const MOBILITA_ROMA_BUS_LIVE_UI_URI = "ui://mobilita/roma-bus-live.html";
 
+export const MOBILITY_LIVE_TOOLS_URI = "dvns://mobility-live-tools";
+
 export type MobilityLiveToolDescriptor = {
   id: typeof MOBILITA_ROMA_BUS_LIVE_TOOL;
   mcpTool: typeof MOBILITA_ROMA_BUS_LIVE_TOOL;

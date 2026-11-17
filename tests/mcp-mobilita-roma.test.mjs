@@ -8,8 +8,12 @@ const {
   queryMobilitaRomaBusLive,
 } = await import("../src/lib/mcp/mobilita-roma-bus-live.ts");
 const { measureMcpToolWireBytes, MAX_MCP_TOOL_RESPONSE_BYTES } = await import("../src/lib/mcp/server.ts");
-const { mobilityLiveToolsCatalog, MOBILITA_ROMA_BUS_LIVE_UI_URI } = await import("../src/lib/mcp/mobility-live-catalog.ts");
-const { dvnsMcpCatalogPayload } = await import("../src/lib/mcp/catalog-payload.ts");
+const {
+  mobilityLiveToolsCatalog,
+  MOBILITA_ROMA_BUS_LIVE_UI_URI,
+  MOBILITY_LIVE_TOOLS_URI,
+} = await import("../src/lib/mcp/mobility-live-catalog.ts");
+const { datasetCatalog } = await import("../src/lib/mcp/catalog.ts");
 const { MOBILITA_ROMA_MCP_APP_CSP } = await import("../src/lib/mcp/mobilita-roma-mcp-app.ts");
 
 function vehicleEntity({ entityId, routeId, vehicleId, lat, lon, timestamp }) {
@@ -40,9 +44,12 @@ function okFetch(bytes) {
   });
 }
 
-test("mobilita MCP catalog entry is discoverable in dvns://datasets payload", () => {
-  assert.ok(dvnsMcpCatalogPayload.mobilityLiveTools.some((entry) => entry.mcpTool === "mobilita_roma_bus_live"));
+test("mobilita MCP catalog entry is discoverable via mobility live tools resource", () => {
+  assert.equal(MOBILITY_LIVE_TOOLS_URI, "dvns://mobility-live-tools");
+  assert.ok(mobilityLiveToolsCatalog.some((entry) => entry.mcpTool === "mobilita_roma_bus_live"));
   assert.equal(mobilityLiveToolsCatalog[0].uiResource, MOBILITA_ROMA_BUS_LIVE_UI_URI);
+  assert.ok(Array.isArray(datasetCatalog));
+  assert.ok(datasetCatalog.length > 0);
 });
 
 test("mobilita tool input schema rejects unknown fields and malformed linea", () => {
@@ -112,8 +119,7 @@ test("mobilita tool wire payload stays below 750000 bytes with ~1500 vehicles", 
   );
 });
 
-test("mobilita MCP App CSP declares OpenFreeMap and MapLibre CDN domains", () => {
-  assert.ok(MOBILITA_ROMA_MCP_APP_CSP.connectDomains.includes("https://tiles.openfreemap.org"));
-  assert.ok(MOBILITA_ROMA_MCP_APP_CSP.resourceDomains.includes("https://cdn.jsdelivr.net"));
-  assert.ok(MOBILITA_ROMA_MCP_APP_CSP.resourceDomains.includes("https://tiles.openfreemap.org"));
+test("mobilita MCP App CSP declares OpenFreeMap domains for Liberty tiles", () => {
+  assert.deepEqual(MOBILITA_ROMA_MCP_APP_CSP.connectDomains, ["https://tiles.openfreemap.org"]);
+  assert.deepEqual(MOBILITA_ROMA_MCP_APP_CSP.resourceDomains, ["blob:", "https://tiles.openfreemap.org"]);
 });

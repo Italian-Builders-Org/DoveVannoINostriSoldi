@@ -108,10 +108,13 @@ python3 scripts/research/build_roma_live_network.py --check
 ## Server MCP
 
 Il tool read-only `mobilita_roma_bus_live` espone le stesse posizioni del proxy
-`/api/mobilita/roma/vehicles`, riusando il caricamento condiviso in cache di
-istanza (nessuna lettura ATAC aggiuntiva rispetto alla route pubblica). Input
-ammessi: `linea` (codice breve) e `limit` (1-2500). La voce è elencata in
-`list_datasets` / `mobilityLiveTools` e in `dvns://datasets`. La MCP App
+`/api/mobilita/roma/vehicles`, riusando la cache in memoria condivisa tra route
+API e tool MCP nella stessa istanza (TTL ~10 s: una seconda richiesta entro la
+finestra non ricarica il feed ATAC). Chiamate MCP su istanze distinte o dopo la
+scadenza della cache possono comunque colpire di nuovo l'upstream; non c'è deduplica
+via CDN. Input ammessi: `linea` (codice breve) e `limit` (1-2500). La voce è
+elencata in `list_datasets` / `mobilityLiveTools` e in `dvns://mobility-live-tools`.
+La MCP App
 `ui://mobilita/roma-bus-live.html` mostra i mezzi su una mappa MapLibre con tile
 OpenFreeMap; i client senza widget ricevono comunque JSON e link al portale.
 Arrivi per fermata e puntualità restano sulle route dedicate: il feed TripUpdates

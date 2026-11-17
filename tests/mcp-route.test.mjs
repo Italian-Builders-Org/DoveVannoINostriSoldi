@@ -425,20 +425,20 @@ test("MCP list tool declares no-auth access and a structured output contract", a
   assert.equal(listTool.outputSchema?.type, "object");
   assert.deepEqual(
     listTool.outputSchema?.required,
-    ["datasets", "relatedMcpServices"],
+    ["datasets", "mobilityLiveTools", "relatedMcpServices"],
   );
 });
 
 test("MCP tools distinguish read-only behavior from public-internet access", async () => {
   const response = await POST(request({ Origin: "https://example.test" }));
   const rpcEvent = parseRpcEvent(await response.text());
-  for (const name of ["list_datasets", "query_dataset"]) {
+  for (const name of ["list_datasets", "query_dataset", "mobilita_roma_bus_live"]) {
     const tool = rpcEvent.result.tools.find((entry) => entry.name === name);
     assert.ok(tool, `${name} tool missing`);
     assert.equal(tool.annotations?.readOnlyHint, true, `${name} must remain read-only`);
     assert.equal(
       tool.annotations?.openWorldHint,
-      name === "query_dataset",
+      name !== "list_datasets",
       `${name} must declare whether it can query live public sources`,
     );
     assert.equal(tool.annotations?.destructiveHint, false, `${name} must not be destructive`);
@@ -449,7 +449,65 @@ test("MCP tools distinguish read-only behavior from public-internet access", asy
 test("real MCP tools/list response satisfies the runtime health contract", async () => {
   const response = await POST(request({ Origin: "https://example.test" }));
   const result = validateToolsListPayload(response, await response.text(), "local MCP tools/list");
-  assert.equal(result.toolCount, 2);
+  assert.equal(result.toolCount, 3);
+});
+
+test("MCP mobilita_roma_bus_live tools/call returns structured positions with fetch mocked", async () => {
+  const { fField, mField, sField, vField } = await import("./helpers/gtfs-rt-encoder.mjs");
+  const entity = mField(2, [
+    ...sField(1, "1"),
+    ...vField(2, 0),
+    ...mField(4, [
+      ...mField(1, [...sField(5, "64"), ...vField(6, 0)]),
+      ...mField(8, [...sField(1, "52")]),
+      ...mField(2, [...fField(1, 41.9012), ...fField(2, 12.5004)]),
+      ...vField(4, 2),
+      ...vField(5, 1_794_840_562),
+    ]),
+  ]);
+  const bytes = Uint8Array.from([
+    ...mField(1, [...sField(1, "2.0"), ...vField(2, 0), ...vField(3, 1_794_840_598)]),
+    ...entity,
+  ]);
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    status: 200,
+    headers: { get: () => null },
+    arrayBuffer: async () => bytes.buffer,
+  });
+  try {
+    const response = await POST(request({}, JSON.stringify({
+      jsonrpc: "2.0",
+      id: 21,
+      method: "tools/call",
+      params: { name: "mobilita_roma_bus_live", arguments: { linea: "64" } },
+    })));
+    const rpcEvent = parseRpcEvent(await response.text());
+    assert.equal(response.status, 200);
+    assert.equal(rpcEvent.result.structuredContent.ok, true);
+    assert.equal(rpcEvent.result.structuredContent.vehicles.length, 1);
+    assert.match(rpcEvent.result.structuredContent.portalUrl, /linea=64/);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("MCP endpoint exposes the mobilita bus live map app resource", async () => {
+  const response = await POST(request({}, JSON.stringify({
+    jsonrpc: "2.0",
+    id: 20,
+    method: "resources/read",
+    params: { uri: "ui://mobilita/roma-bus-live.html" },
+  })));
+  const body = await response.text();
+  assert.equal(response.status, 200);
+  const rpcEvent = parseRpcEvent(body);
+  const content = rpcEvent.result.contents[0];
+  assert.equal(content.mimeType, "text/html;profile=mcp-app");
+  assert.match(content.text, /maplibre-gl/);
+  assert.deepEqual(content._meta?.ui?.csp?.connectDomains, ["https://tiles.openfreemap.org"]);
+  assert.ok(content._meta?.ui?.csp?.resourceDomains?.includes("https://cdn.jsdelivr.net"));
 });
 
 test("MCP endpoint exposes the machine-readable dataset catalog resource", async () => {
@@ -827,6 +885,8 @@ test("MCP endpoint reads the catalog resource with the modern protocol", async (
   assert.equal(response.status, 200);
   assert.match(body, /"resultType":"complete"/);
   assert.match(body, /siope_comuni/);
+  assert.match(body, /mobilityLiveTools/);
+  assert.match(body, /mobilita_roma_bus_live/);
 });
 
 test("MCP endpoint rejects a malformed modern envelope", async () => {

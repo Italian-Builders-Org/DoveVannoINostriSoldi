@@ -2264,13 +2264,31 @@ try {
         assert.ok(Math.abs(await neighborHeight() - initialHeight) < 1, `${label}: adjacent panel remains stable`);
         await page.keyboard.press('Home');
         assert.equal(await page.$eval('[role="tab"][aria-selected="true"]', el => el.textContent), 'Grafico');
-        if (width === 390) {
-          await page.setJavaScriptEnabled(false);
-          await page.reload({ waitUntil: 'domcontentloaded' });
-          assert.equal(await page.$$eval('noscript tbody tr', rows => rows.length), 17, 'annual data remains readable without JavaScript');
-        }
       },
     });
+    completed.push(label);
+  }
+
+  {
+    const label = "Coesione stati 390px noscript";
+    const page = await browser.newPage();
+    try {
+      await page.setJavaScriptEnabled(false);
+      await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
+      const response = await page.goto(new URL("/coesione", baseUrl).toString(), {
+        waitUntil: "domcontentloaded",
+        timeout: NAVIGATION_TIMEOUT_MS,
+      });
+      assert.equal(response?.status(), 200);
+      assertTextMatches(await bodyText(page), /A che punto sono i progetti/i, label);
+      assert.equal(
+        await page.$$eval("noscript tbody tr", (rows) => rows.length),
+        17,
+        "annual data remains readable without JavaScript",
+      );
+    } finally {
+      await page.close();
+    }
     completed.push(label);
   }
 

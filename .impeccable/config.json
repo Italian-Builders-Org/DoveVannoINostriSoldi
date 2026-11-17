@@ -1,0 +1,5 @@
+{
+  "detector": {
+    "ignoreFiles": ["src/lib/mcp/generated/**"]
+  }
+}

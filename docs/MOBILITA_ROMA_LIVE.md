@@ -105,6 +105,21 @@ python3 scripts/research/build_roma_live_network.py --gtfs /tmp/rome_static_gtfs
 python3 scripts/research/build_roma_live_network.py --check
 ```
 
+## Server MCP
+
+Il tool read-only `mobilita_roma_bus_live` espone le stesse posizioni del proxy
+`/api/mobilita/roma/vehicles`, riusando la cache in memoria condivisa tra route
+API e tool MCP nella stessa istanza (TTL ~10 s: una seconda richiesta entro la
+finestra non ricarica il feed ATAC). Chiamate MCP su istanze distinte o dopo la
+scadenza della cache possono comunque colpire di nuovo l'upstream; non c'è deduplica
+via CDN. Input ammessi: `linea` (codice breve) e `limit` (1-2500). La voce è
+elencata in `list_datasets` / `mobilityLiveTools` e in `dvns://mobility-live-tools`.
+La MCP App
+`ui://mobilita/roma-bus-live.html` mostra i mezzi su una mappa MapLibre con tile
+OpenFreeMap; i client senza widget ricevono comunque JSON e link al portale.
+Arrivi per fermata e puntualità restano sulle route dedicate: il feed TripUpdates
+è più grande e non è incluso nello stesso tool. Dettagli in [MCP.md](MCP.md).
+
 ## Verifiche
 
 - `tests/roma-gtfs-realtime.test.mjs`: numerazione dei campi (il timestamp è il
@@ -116,6 +131,8 @@ python3 scripts/research/build_roma_live_network.py --check
   cancellate, orizzonte, protobuf troncato, feed fermo.
 - `tests/roma-network-asset.test.mjs`: manifest, rete, indice e profili di
   copertura coincidono con i rispettivi hash e con lo stesso GTFS.
+- `tests/mcp-mobilita-roma.test.mjs`: schema, filtro linea, feed non disponibile,
+  tetto 750.000 byte con fixture da ~1.500 mezzi, CSP della MCP App.
 - `scripts/browser/mappe-mobilita.mjs`: vista live a 390 e 1280 px con feed,
   arrivi e tile simulati (offline): ricerca linea e fermata, tabellone, segui
   mezzo con orari previsti, Esc che torna alla fermata, colori per ritardo,

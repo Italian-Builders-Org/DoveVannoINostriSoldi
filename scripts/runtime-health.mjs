@@ -26,7 +26,7 @@ const MCP_HEADERS = {
   "Content-Type": "application/json",
 };
 
-const REQUIRED_TOOLS = ["list_datasets", "query_dataset"];
+const REQUIRED_TOOLS = ["list_datasets", "query_dataset", "mobilita_roma_bus_live"];
 const EXPECTED_SOURCE_IDS = [
   "ipa",
   "ipa-struttura",
@@ -546,20 +546,26 @@ export function validateToolsListPayload(response, body, label = "MCP tools/list
     const inputProperties = tool?.inputSchema?.properties;
     const outputProperties = tool?.outputSchema?.properties;
     // Query may read live public sources; listing stays within the local catalog.
-    const expectedOpenWorldHint = required === "query_dataset";
+    const expectedOpenWorldHint = required === "query_dataset" || required === "mobilita_roma_bus_live";
     const schemasValid = required === "list_datasets"
       ? Object.keys(inputProperties ?? {}).length === 0
         && inputRequired.length === 0
-        && ["datasets", "relatedMcpServices"].every(
+        && ["datasets", "mobilityLiveTools", "relatedMcpServices"].every(
           (field) => outputRequired.includes(field) && Object.hasOwn(outputProperties ?? {}, field),
         )
-      : inputRequired.includes("dataset")
-        && ["dataset", "year", "query", "level", "limit"].every(
-          (field) => Object.hasOwn(inputProperties ?? {}, field),
-        )
-        && ["ok", "dataset"].every(
-          (field) => outputRequired.includes(field) && Object.hasOwn(outputProperties ?? {}, field),
-        );
+      : required === "query_dataset"
+        ? inputRequired.includes("dataset")
+          && ["dataset", "year", "query", "level", "limit"].every(
+            (field) => Object.hasOwn(inputProperties ?? {}, field),
+          )
+          && ["ok", "dataset"].every(
+            (field) => outputRequired.includes(field) && Object.hasOwn(outputProperties ?? {}, field),
+          )
+        : Object.keys(inputProperties ?? {}).every((field) => field === "linea" || field === "limit")
+          && inputRequired.length === 0
+          && ["ok", "notice", "portalUrl", "source"].every(
+            (field) => outputRequired.includes(field) && Object.hasOwn(outputProperties ?? {}, field),
+          );
     if (
       typeof tool?.title !== "string"
       || tool.title.trim() === ""

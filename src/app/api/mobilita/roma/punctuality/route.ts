@@ -1,3 +1,4 @@
+import { classifyRomaFeedFailure } from "@/lib/mobilita/roma-gtfs-realtime";
 import {
   loadRomaArrivals,
   punctualitySummary,
@@ -7,6 +8,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 // Cost model: one public URL, no query parameters read. Same upstream feed and
 // CDN window as /arrivals (≤ ~2 upstream reads/min per region), but the
@@ -21,6 +23,7 @@ type PunctualityView = PunctualitySummary & {
   fetchedAt: string;
   feedTimestamp: number | null;
   stale: boolean;
+  fallback?: boolean;
 };
 
 let inflight: { at: number; promise: Promise<PunctualityView> } | null = null;
@@ -34,6 +37,7 @@ function load(): Promise<PunctualityView> {
     fetchedAt: view.fetchedAt,
     feedTimestamp: view.feedTimestamp,
     stale: view.stale,
+    ...(view.fallback ? { fallback: true as const } : {}),
     ...punctualitySummary(view.trips),
   }));
   const entry = { at: now, promise };
@@ -44,10 +48,16 @@ function load(): Promise<PunctualityView> {
   return promise;
 }
 
-function unavailable(error: string, status = 502): Response {
+function unavailable(failure: ReturnType<typeof classifyRomaFeedFailure>): Response {
   return Response.json(
-    { status: "unavailable", error, source: ROMA_TRIP_UPDATES_SOURCE, fetchedAt: new Date().toISOString() },
-    { status, headers: { "Cache-Control": "no-store" } },
+    {
+      status: "unavailable",
+      error: failure.code,
+      message: failure.message,
+      source: ROMA_TRIP_UPDATES_SOURCE,
+      fetchedAt: new Date().toISOString(),
+    },
+    { status: failure.httpStatus, headers: { "Cache-Control": "no-store" } },
   );
 }
 
@@ -55,9 +65,6 @@ export async function GET() {
   try {
     return Response.json(await load(), { headers: { "Cache-Control": CACHE_CONTROL } });
   } catch (error) {
-    const name = error instanceof Error ? error.name : "";
-    const message = error instanceof Error ? error.message : "";
-    if (name === "TimeoutError" || name === "AbortError") return unavailable("upstream_timeout", 504);
-    return unavailable(/^upstream_[a-z0-9_]+$/.test(message) ? message : "upstream_error");
+    return unavailable(classifyRomaFeedFailure(error));
   }
 }

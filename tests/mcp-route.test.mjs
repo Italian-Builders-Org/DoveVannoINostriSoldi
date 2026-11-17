@@ -13,6 +13,7 @@ const { MOBILITA_ROMA_MCP_APP_LIBERTY_STYLE_URL: openFreeMapLibertyStyleUrl } = 
   "../src/lib/mcp/mobilita-roma-mcp-app.constants.ts"
 );
 const { validateToolsListPayload } = await import("../scripts/runtime-health.mjs");
+const { resetRomaMobilitaRealtimeForTests } = await import("../src/lib/mobilita/roma-vehicles-shared.ts");
 const loader = await import("../src/lib/integrated-sources.ts");
 let requestAddressSequence = 1;
 
@@ -457,6 +458,7 @@ test("real MCP tools/list response satisfies the runtime health contract", async
 });
 
 test("MCP mobilita_roma_bus_live tools/call returns structured positions with fetch mocked", async () => {
+  resetRomaMobilitaRealtimeForTests();
   const { fField, mField, sField, vField } = await import("./helpers/gtfs-rt-encoder.mjs");
   const entity = mField(2, [
     ...sField(1, "1"),

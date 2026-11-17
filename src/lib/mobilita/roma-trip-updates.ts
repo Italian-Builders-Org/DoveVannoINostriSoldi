@@ -9,8 +9,10 @@
  * 2 time int64}.
  */
 import {
+  feedAgeSecondsAt,
+  feedIsStale,
   fetchFeedBytes,
-  ROMA_FEED_STALE_SECONDS,
+  lastGoodFallbackView,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
   type FetchLike,
@@ -19,7 +21,7 @@ import { fields, readBytes, readHeaderTimestamp, readInt32, readVarint, text } f
 import { delayBucket, type DelayBucket } from "@/lib/mobilita/roma-live-model";
 
 export const ROMA_TRIP_UPDATES_URL =
-  "https://romamobilita.it/sites/default/files/rome_rtgtfs_trip_updates_feed.pb";
+  "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_trip_updates_feed.pb";
 
 /** Arrivals further ahead than this are not useful for a live board. */
 export const ARRIVALS_HORIZON_SECONDS = 2 * 3600;
@@ -196,6 +198,7 @@ export type RomaArrivalsView = {
   feedTimestamp: number | null;
   feedAgeSeconds: number | null;
   stale: boolean;
+  fallback?: boolean;
   tripCount: number;
   cancelledCount: number;
 } & CompactArrivals;
@@ -206,27 +209,47 @@ export const ROMA_TRIP_UPDATES_SOURCE = {
   feedUrl: ROMA_TRIP_UPDATES_URL,
 };
 
-export async function loadRomaArrivals(
-  fetchImpl: FetchLike = fetch,
-  now: () => number = Date.now,
-): Promise<RomaArrivalsView> {
+type LastGoodArrivals = { savedAt: number; view: RomaArrivalsView };
+
+let lastGoodArrivals: LastGoodArrivals | null = null;
+
+/** Clears the in-memory last-good cache (unit tests only). */
+export function resetRomaArrivalsLastGoodForTests(): void {
+  lastGoodArrivals = null;
+}
+
+async function fetchRomaArrivals(fetchImpl: FetchLike, now: () => number): Promise<RomaArrivalsView> {
   const bytes = await fetchFeedBytes(ROMA_TRIP_UPDATES_URL, fetchImpl);
   const parsed = parseRomaTripUpdatesFeed(bytes);
   const fetchedMs = now();
   const compact = compactArrivals(parsed, fetchedMs / 1000);
-  const feedAgeSeconds =
-    parsed.feedTimestamp === null ? null : Math.max(0, Math.round(fetchedMs / 1000 - parsed.feedTimestamp));
+  const feedAgeSeconds = feedAgeSecondsAt(parsed.feedTimestamp, fetchedMs);
   return {
     status: "ok",
     source: ROMA_TRIP_UPDATES_SOURCE,
     fetchedAt: new Date(fetchedMs).toISOString(),
     feedTimestamp: parsed.feedTimestamp,
     feedAgeSeconds,
-    stale: feedAgeSeconds === null || feedAgeSeconds > ROMA_FEED_STALE_SECONDS,
+    stale: feedIsStale(feedAgeSeconds),
     tripCount: compact.trips.length,
     cancelledCount: compact.trips.filter((t) => t.c).length,
     ...compact,
   };
+}
+
+export async function loadRomaArrivals(
+  fetchImpl: FetchLike = fetch,
+  now: () => number = Date.now,
+): Promise<RomaArrivalsView> {
+  try {
+    const view = await fetchRomaArrivals(fetchImpl, now);
+    lastGoodArrivals = { savedAt: now(), view };
+    return view;
+  } catch (error) {
+    const fallback = lastGoodFallbackView(lastGoodArrivals, now());
+    if (fallback) return fallback;
+    throw error;
+  }
 }
 
 export type PunctualitySummary = { total: number; buckets: Record<DelayBucket, number> };

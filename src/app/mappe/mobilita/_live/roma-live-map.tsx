@@ -123,6 +123,7 @@ type Punctuality = {
   total: number;
   buckets: Record<DelayBucket, number>;
   stale: boolean;
+  fallback?: boolean;
   feedTimestamp: number | null;
 };
 
@@ -1352,8 +1353,13 @@ export function RomaLiveMap() {
   }, [enriched, userPosition]);
 
   const feedAge = view?.feedTimestamp ? Math.max(0, Math.round(nowSeconds - view.feedTimestamp)) : null;
+  const vehiclesFallback = view?.fallback === true;
   const statusFreshness: Freshness =
-    feed.kind === "error" ? "stale" : view?.stale ? "stale" : freshness(feedAge === null ? null : Math.max(0, feedAge - 60));
+    feed.kind === "error"
+      ? "stale"
+      : vehiclesFallback || view?.stale
+        ? "stale"
+        : freshness(feedAge === null ? null : Math.max(0, feedAge - 60));
 
   const hoveredInfo = hovered ? enriched.get(hovered.id) : undefined;
 
@@ -1362,7 +1368,12 @@ export function RomaLiveMap() {
     if (feed.kind === "loading") return "Collegamento al feed ufficiale…";
     if (feed.kind === "error" && !feed.last) return "Posizioni live non disponibili in questo momento";
     const count = view?.vehicleCount ?? 0;
-    const prefix = feed.kind === "error" ? "Ultimo dato ricevuto" : view?.stale ? "Feed non aggiornato" : "In diretta";
+    const prefix =
+      feed.kind === "error" || vehiclesFallback
+        ? "Ultimo dato ricevuto"
+        : view?.stale
+          ? "Feed non aggiornato"
+          : "In diretta";
     return `${prefix} · ${count.toLocaleString("it-IT")} autobus · dati di ${formatAge(feedAge)}`;
   })();
 
@@ -1637,7 +1648,11 @@ export function RomaLiveMap() {
             <p className={styles.footnote}>
               Stima dell’operatore per la prossima fermata di ciascuno dei{" "}
               {punctuality.total.toLocaleString("it-IT")} autobus con previsione, rispetto all’orario programmato.
-              {punctuality.stale ? " Feed degli arrivi non aggiornato da oltre 5 minuti." : ""}
+              {punctuality.fallback
+                ? " Il feed ATAC non risponde, mostriamo l’ultimo dato ricevuto sugli arrivi."
+                : punctuality.stale
+                  ? " Feed degli arrivi non aggiornato da oltre 5 minuti."
+                  : ""}
             </p>
           </section>
         ) : null}
@@ -1807,6 +1822,10 @@ export function RomaLiveMap() {
               {feed.last
                 ? "Il feed ufficiale non risponde: mostriamo l’ultimo dato ricevuto, riproviamo a breve."
                 : "Il feed ufficiale non risponde. Riproviamo automaticamente."}
+            </p>
+          ) : vehiclesFallback ? (
+            <p className={styles.warning} role="status">
+              Il feed ATAC non risponde, mostriamo l’ultimo dato ricevuto.
             </p>
           ) : view?.stale ? (
             <p className={styles.warning} role="status">

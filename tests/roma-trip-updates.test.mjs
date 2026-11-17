@@ -8,6 +8,13 @@ import { mField, sField, vField } from "./helpers/gtfs-rt-encoder.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lib = await import(pathToFileURL(join(root, "src/lib/mobilita/roma-trip-updates.ts")).href);
 
+test("trip updates feed URL is the canonical wp-content path", () => {
+  assert.equal(
+    lib.ROMA_TRIP_UPDATES_URL,
+    "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_trip_updates_feed.pb",
+  );
+});
+
 const FEED_TS = 1_794_844_012;
 
 // Field layout observed in the official Roma Mobilità TripUpdates feed.
@@ -156,6 +163,60 @@ test("punctualitySummary counts each live bus once by its current delay band", (
   ]);
   assert.equal(summary.total, 6);
   assert.deepEqual(summary.buckets, { early: 1, ontime: 1, late: 1, verylate: 1, severe: 1, unknown: 1 });
+});
+
+test("loadRomaArrivals serves last-good snapshot on timeout when fresh enough", async () => {
+  lib.resetRomaArrivalsLastGoodForTests();
+  const bytes = feed([tripUpdate(TRIP_64)]);
+  const tick = (FEED_TS + 20) * 1000;
+  const ok = await lib.loadRomaArrivals(okFetch(bytes), () => tick);
+  assert.equal(ok.stale, false);
+  const err = new DOMException("The operation was aborted", "TimeoutError");
+  const fallback = await lib.loadRomaArrivals(async () => {
+    throw err;
+  }, () => tick + 90_000);
+  assert.equal(fallback.status, "ok");
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 110);
+  assert.equal(fallback.tripCount, ok.tripCount);
+});
+
+test("loadRomaArrivals serves last-good snapshot on upstream 502", async () => {
+  lib.resetRomaArrivalsLastGoodForTests();
+  const bytes = feed([tripUpdate(TRIP_64)]);
+  const tick = (FEED_TS + 20) * 1000;
+  await lib.loadRomaArrivals(okFetch(bytes), () => tick);
+  const fallback = await lib.loadRomaArrivals(
+    async () => {
+      throw new Error("upstream_502");
+    },
+    () => tick + 45_000,
+  );
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 65);
+});
+
+test("loadRomaArrivals rejects timeout without snapshot or after last-good window", async () => {
+  const { LAST_GOOD_SNAPSHOT_MS } = await import(
+    pathToFileURL(join(root, "src/lib/mobilita/roma-gtfs-realtime.ts")).href
+  );
+  lib.resetRomaArrivalsLastGoodForTests();
+  const err = new DOMException("The operation was aborted", "TimeoutError");
+  await assert.rejects(
+    () => lib.loadRomaArrivals(async () => { throw err; }),
+    (e) => e.name === "TimeoutError",
+  );
+  const bytes = feed([tripUpdate(TRIP_64)]);
+  const tick = (FEED_TS + 20) * 1000;
+  await lib.loadRomaArrivals(okFetch(bytes), () => tick);
+  await assert.rejects(
+    () =>
+      lib.loadRomaArrivals(async () => {
+        throw err;
+      }, () => tick + LAST_GOOD_SNAPSHOT_MS + 1),
+    (e) => e.name === "TimeoutError",
+  );
+  lib.resetRomaArrivalsLastGoodForTests();
 });
 
 test("a transient network or 5xx failure is retried once, then fails closed", async () => {

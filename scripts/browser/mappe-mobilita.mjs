@@ -113,7 +113,13 @@ function romaArrivalsMock({ unavailable = false } = {}) {
   const { stop, next } = romaFixture();
   const base = Math.floor(Date.now() / 1000);
   const body = unavailable
-    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    ? {
+        status: "unavailable",
+        error: "upstream_timeout",
+        message: "Il feed ATAC è lento a rispondere.",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+      }
     : {
         status: "ok",
         source: {},
@@ -132,7 +138,13 @@ function romaArrivalsMock({ unavailable = false } = {}) {
 // Punctuality summary: one bus per band, so every percentage is checkable.
 function romaPunctualityMock({ unavailable = false } = {}) {
   const body = unavailable
-    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    ? {
+        status: "unavailable",
+        error: "upstream_timeout",
+        message: "Il feed ATAC è lento a rispondere.",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+      }
     : {
         status: "ok",
         source: {},
@@ -157,7 +169,13 @@ function romaLiveMock({ unavailable = false } = {}) {
   const { stop } = romaFixture();
   const now = Math.floor(Date.now() / 1000);
   const body = unavailable
-    ? { status: "unavailable", error: "upstream_timeout", source: {}, fetchedAt: new Date().toISOString() }
+    ? {
+        status: "unavailable",
+        error: "upstream_timeout",
+        message: "Il feed ATAC è lento a rispondere.",
+        source: {},
+        fetchedAt: new Date().toISOString(),
+      }
     : {
         status: "ok",
         source: {},

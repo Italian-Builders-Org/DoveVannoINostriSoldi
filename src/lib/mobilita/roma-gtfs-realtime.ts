@@ -13,7 +13,7 @@
 import { fields, readBytes, readFloat32, readHeaderTimestamp, readVarint, text } from "@/lib/mobilita/protobuf-wire";
 
 export const ROMA_VEHICLE_POSITIONS_URL =
-  "https://romamobilita.it/sites/default/files/rome_rtgtfs_vehicle_positions_feed.pb";
+  "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_vehicle_positions_feed.pb";
 
 export const ROMA_OPEN_DATA_URL = "https://romamobilita.it/sistemi-e-tecnologie/open-data/";
 
@@ -23,7 +23,16 @@ export const ROMA_RT_HOLDER = "Roma Servizi per la Mobilità (ATAC e Roma TPL)";
 export const ROMA_FEED_STALE_SECONDS = 300;
 
 export const MAX_FEED_BYTES = 5_000_000;
-export const FETCH_TIMEOUT_MS = 10_000;
+export const FETCH_TIMEOUT_MS = 14_000;
+
+/** Hard ceiling for one upstream read (timeout + at most one retry) under route maxDuration. */
+export const FEED_FETCH_BUDGET_MS = 28_000;
+
+/** Upstream read ceiling for mobilita_roma_bus_live (below the MCP handler deadline). */
+export const MCP_VEHICLES_FEED_FETCH_BUDGET_MS = 10_000;
+
+/** Reuse the last successful in-memory snapshot after upstream failure for this long. */
+export const LAST_GOOD_SNAPSHOT_MS = 5 * 60 * 1000;
 
 // Generous box around Roma Capitale and the lines that leave it; drops (0,0)
 // placeholders and corrupt coordinates without hiding suburban termini.
@@ -63,6 +72,8 @@ export type RomaRealtimeVehiclesView = {
   /** Seconds between feed header timestamp and fetch; null without header. */
   feedAgeSeconds: number | null;
   stale: boolean;
+  /** True when positions come from the in-memory snapshot after an upstream failure. */
+  fallback?: boolean;
   vehicleCount: number;
   vehicles: RomaRealtimeVehicle[];
 };
@@ -70,9 +81,39 @@ export type RomaRealtimeVehiclesView = {
 export type RomaRealtimeUnavailable = {
   status: "unavailable";
   error: string;
+  message: string;
   source: Source;
   fetchedAt: string;
 };
+
+/** Maps a loader failure to stable error codes, HTTP status and user-facing copy. */
+export function classifyRomaFeedFailure(error: unknown): {
+  code: string;
+  httpStatus: number;
+  message: string;
+} {
+  const name = error instanceof Error ? error.name : "";
+  const text = error instanceof Error ? error.message : "";
+  if (name === "TimeoutError" || name === "AbortError" || text === "upstream_timeout") {
+    return {
+      code: "upstream_timeout",
+      httpStatus: 504,
+      message: "Il feed ATAC è lento a rispondere.",
+    };
+  }
+  if (/^upstream_[a-z0-9_]+$/.test(text)) {
+    return {
+      code: text,
+      httpStatus: 502,
+      message: "Il feed ATAC non è raggiungibile in questo momento.",
+    };
+  }
+  return {
+    code: "upstream_error",
+    httpStatus: 502,
+    message: "Il feed ATAC non è raggiungibile in questo momento.",
+  };
+}
 
 export const ROMA_RT_SOURCE: Source = {
   holder: ROMA_RT_HOLDER,
@@ -214,61 +255,136 @@ export type FetchLike = (
 
 const RETRY_DELAY_MS = 250;
 
+export function feedAgeSecondsAt(feedTimestamp: number | null, nowMs: number): number | null {
+  if (feedTimestamp === null) return null;
+  return Math.max(0, Math.round(nowMs / 1000 - feedTimestamp));
+}
+
+export function feedIsStale(feedAgeSeconds: number | null): boolean {
+  return feedAgeSeconds === null || feedAgeSeconds > ROMA_FEED_STALE_SECONDS;
+}
+
 /**
  * Downloads a GTFS-RT feed with size limits. A network error or 5xx is retried
  * once after a short pause (the upstream connection occasionally drops); 4xx,
  * timeouts and oversize bodies fail at once.
  */
-export async function fetchFeedBytes(url: string, fetchImpl: FetchLike): Promise<Uint8Array> {
+export async function fetchFeedBytes(
+  url: string,
+  fetchImpl: FetchLike,
+  budgetStartedAt: number = Date.now(),
+  feedFetchBudgetMs: number = FEED_FETCH_BUDGET_MS,
+): Promise<Uint8Array> {
   for (let attempt = 1; ; attempt += 1) {
+    const remaining = feedFetchBudgetMs - (Date.now() - budgetStartedAt);
+    if (remaining <= 0) throw new DOMException("The operation was aborted", "TimeoutError");
+    const attemptTimeoutMs = Math.min(FETCH_TIMEOUT_MS, remaining);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
     let response: Awaited<ReturnType<FetchLike>>;
     try {
       response = await fetchImpl(url, {
         headers: { "User-Agent": ROMA_RT_USER_AGENT, Accept: "application/octet-stream,*/*" },
         redirect: "follow",
         cache: "no-store",
-        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+        signal: controller.signal,
       });
+      if (!response.ok) {
+        if (attempt === 1 && response.status >= 500 && remaining > RETRY_DELAY_MS + 500) {
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+          continue;
+        }
+        throw new Error(`upstream_${response.status}`);
+      }
+      const declared = Number(response.headers?.get("content-length") ?? "");
+      if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
+      return bytes;
     } catch (error) {
       const name = error instanceof Error ? error.name : "";
-      if (attempt === 1 && name !== "TimeoutError" && name !== "AbortError") {
+      const message = error instanceof Error ? error.message : "";
+      if (/^upstream_/.test(message)) throw error;
+      if (attempt === 1 && name !== "TimeoutError" && name !== "AbortError" && remaining > RETRY_DELAY_MS + 500) {
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
         continue;
       }
       throw error;
+    } finally {
+      clearTimeout(timeout);
     }
-    if (!response.ok) {
-      if (attempt === 1 && response.status >= 500) {
-        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-        continue;
-      }
-      throw new Error(`upstream_${response.status}`);
-    }
-    const declared = Number(response.headers?.get("content-length") ?? "");
-    if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
-    return bytes;
   }
 }
 
-export async function loadRomaRealtimeVehicles(
-  fetchImpl: FetchLike = fetch,
-  now: () => number = Date.now,
+type LastGood<T> = { savedAt: number; view: T };
+
+let lastGoodVehicles: LastGood<RomaRealtimeVehiclesView> | null = null;
+
+export function lastGoodFallbackView<T extends {
+  feedTimestamp: number | null;
+  feedAgeSeconds: number | null;
+  stale: boolean;
+  fallback?: boolean;
+}>(entry: LastGood<T> | null, nowMs: number): T | null {
+  if (!entry || nowMs - entry.savedAt > LAST_GOOD_SNAPSHOT_MS) return null;
+  const feedAgeSeconds = feedAgeSecondsAt(entry.view.feedTimestamp, nowMs);
+  return {
+    ...entry.view,
+    feedAgeSeconds,
+    stale: feedIsStale(feedAgeSeconds),
+    fallback: true,
+  };
+}
+
+/** Returns the in-memory last-good vehicle view when still within {@link LAST_GOOD_SNAPSHOT_MS}. */
+export function getRomaVehicleLastGood(nowMs: number = Date.now()): RomaRealtimeVehiclesView | null {
+  return lastGoodFallbackView(lastGoodVehicles, nowMs);
+}
+
+/** Clears the in-memory last-good cache (unit tests only). */
+export function resetRomaVehicleLastGoodForTests(): void {
+  lastGoodVehicles = null;
+}
+
+async function fetchRomaRealtimeVehicles(
+  fetchImpl: FetchLike,
+  now: () => number,
+  feedFetchBudgetMs: number,
 ): Promise<RomaRealtimeVehiclesView> {
-  const bytes = await fetchFeedBytes(ROMA_VEHICLE_POSITIONS_URL, fetchImpl);
+  const budgetStartedAt = Date.now();
+  const bytes = await fetchFeedBytes(
+    ROMA_VEHICLE_POSITIONS_URL,
+    fetchImpl,
+    budgetStartedAt,
+    feedFetchBudgetMs,
+  );
   const { feedTimestamp, vehicles } = parseRomaVehiclePositionsFeed(bytes);
   const fetchedMs = now();
-  const feedAgeSeconds =
-    feedTimestamp === null ? null : Math.max(0, Math.round(fetchedMs / 1000 - feedTimestamp));
+  const feedAgeSeconds = feedAgeSecondsAt(feedTimestamp, fetchedMs);
   return {
     status: "ok",
     source: ROMA_RT_SOURCE,
     fetchedAt: new Date(fetchedMs).toISOString(),
     feedTimestamp,
     feedAgeSeconds,
-    stale: feedAgeSeconds === null || feedAgeSeconds > ROMA_FEED_STALE_SECONDS,
+    stale: feedIsStale(feedAgeSeconds),
     vehicleCount: vehicles.length,
     vehicles,
   };
+}
+
+export async function loadRomaRealtimeVehicles(
+  fetchImpl: FetchLike = fetch,
+  now: () => number = Date.now,
+  feedFetchBudgetMs: number = FEED_FETCH_BUDGET_MS,
+): Promise<RomaRealtimeVehiclesView> {
+  try {
+    const view = await fetchRomaRealtimeVehicles(fetchImpl, now, feedFetchBudgetMs);
+    lastGoodVehicles = { savedAt: now(), view };
+    return view;
+  } catch (error) {
+    const fallback = lastGoodFallbackView(lastGoodVehicles, now());
+    if (fallback) return fallback;
+    throw error;
+  }
 }

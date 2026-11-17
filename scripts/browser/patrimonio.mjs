@@ -35,7 +35,9 @@ try {
         await page.focus('button[aria-label^="Roma:"]');
         await page.keyboard.press("Enter");
         await page.waitForFunction(() => new URL(location.href).searchParams.get("comuni") === "H501");
-        assert.match(await page.$eval('button[aria-label^="Roma:"]', (el) => el.getAttribute("aria-pressed")), /true/);
+        await page.waitForFunction(() =>
+          document.querySelector('button[aria-label^="Roma:"]')?.getAttribute("aria-pressed") === "true",
+        );
         assert.match(await page.$eval("main", (el) => el.innerText), /Confronto tra i Comuni selezionati/);
         await page.locator(`${ranking} summary`).click();
         await page.locator(`${ranking} input[type="checkbox"]`).click();

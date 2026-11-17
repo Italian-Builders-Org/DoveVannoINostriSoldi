@@ -196,7 +196,11 @@ fonti interessate, usando gli stessi validator con il network guard attivo.
 Dopo una modifica ai dataset MIM delle scuole statali o MEF del patrimonio
 comunale, rigenera l’indice dei blocchi con
 `npm run municipality-chunk-bounds:generate`. Il controllo snapshot riconcilia
-i confini e gli hash con i blocchi pubblici del rilascio.
+i confini e gli hash con i blocchi pubblici del rilascio. Rigenera anche
+gli snapshot letti dalle schede e dall’API con `npm run municipality-profile:generate`.
+Il profilo Supabase legge fino a due shard compressi per Comune, con limite di
+128 KiB ciascuno. Se cambiano i blocchi o le ricevute delle fonti, il lettore
+torna al corpus verificato finché il rilascio non include le nuove proiezioni.
 
 Dopo una modifica ai dataset Immobili AdE, ai posti letto o all’indice dei
 dispositivi medici, rigenera i riepiloghi delle pagine con

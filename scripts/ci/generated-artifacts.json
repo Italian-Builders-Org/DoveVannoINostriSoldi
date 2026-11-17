@@ -568,6 +568,33 @@
       "trustModel": "Derived offline from committed mim-scuole-statali-comuni integrated row shards. Counts must match the corpus municipality projection; no network and no invented geography."
     },
     {
+      "id": "municipality-profile-snapshot",
+      "owner": "Schede comunali e API enti",
+      "files": [
+        "src/data/generated/municipality-profile"
+      ],
+      "verificationMode": "curated-committed",
+      "offlineCheck": {
+        "command": "node --experimental-strip-types scripts/ci/municipality-profile-snapshot.mjs",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [],
+      "nodeTests": [
+        "tests/municipality-profile.test.mjs"
+      ],
+      "generator": {
+        "command": "npm run municipality-profile:generate",
+        "requiresNetworkInput": false
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/mim-school-services.source.json",
+      "sourceSpecs": [
+        "scripts/etl/specs/mim-school-services.source.json",
+        "scripts/etl/specs/mef-patrimonio-immobiliare.source.json"
+      ],
+      "trustModel": "I profili derivano dalle righe pubbliche validate. Il manifest lega blocchi e ricevute delle fonti agli hash delle proiezioni. Il lettore controlla dimensione e hash prima di usare la proiezione."
+    },
+    {
       "id": "municipality-chunk-bounds",
       "owner": "Schede comunali e API enti",
       "files": [

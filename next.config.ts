@@ -289,6 +289,8 @@ const contentSecurityPolicyReportOnly = [
   "frame-src 'self'",
 ].join("; ");
 
+const municipalityProfileRuntimeFiles = ["src/data/generated/municipality-profile/*.json.gz"];
+
 const supabaseBuild = process.env.DVNS_DATA_BACKEND === "supabase";
 const archiveBuild = process.env.DVNS_HEAVY_DATA_BACKEND === "supabase";
 const archivePayloadFiles = [
@@ -452,7 +454,7 @@ const nextConfig: NextConfig = {
     "/coesione/asili": childcareRuntimeFiles,
     "/progetti/*": childcareRuntimeFiles,
     "/api/pnrr/asili": childcareRuntimeFiles,
-    "/app/api/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
+    "/app/api/enti/\\[codice\\]!(/**)": [...childcareRuntimeFiles, ...municipalityProfileRuntimeFiles],
     "/api/lavoro/naspi": naspiRuntimeFiles,
     "/api/famiglia/assegno-unico": assegnoUnicoRuntimeFiles,
     "/api/lavoro/integrazioni-salariali": integrazioniSalarialiRuntimeFiles,
@@ -497,7 +499,7 @@ const nextConfig: NextConfig = {
     "/app/personale-pa/conto-annuale/\\[codice\\]": occupationDetailRuntimeFiles,
     "/app/snapshot-pages/personale-pa/conto-annuale": occupationHubRuntimeFiles,
     "/app/snapshot-pages/personale-pa/conto-annuale/\\[codice\\]": occupationDetailRuntimeFiles,
-    "/app/enti/\\[codice\\]!(/**)": childcareRuntimeFiles,
+    "/app/enti/\\[codice\\]!(/**)": [...childcareRuntimeFiles, ...municipalityProfileRuntimeFiles],
     // /comuni opens ANAC shards by IPA hash; without an include Vercel omits them
     // and the dossier surfaces "shard assente" for large cities such as Roma.
     "/comuni": [

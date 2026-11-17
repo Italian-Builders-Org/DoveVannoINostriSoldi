@@ -1,7 +1,8 @@
 import "server-only";
 
 import spec from "../../scripts/etl/specs/mim-school-services.source.json";
-import { selectIntegratedSortedDatasetRows, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
+import { readMunicipalityProfileSnapshot } from "@/lib/municipality-profile-snapshot";
+import { getIntegratedPublicDatasetMetadata, selectIntegratedSortedDatasetRows, type IntegratedDatasetMetadata } from "@/lib/integrated-public-view";
 import { schoolServicesSource } from "@/lib/mim-school-services-source";
 import type { MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
 
@@ -59,7 +60,11 @@ export async function getMunicipalitySchoolServices(
       message: "Il file MIM delle scuole statali esclude Aosta, Trento e Bolzano. Per questo territorio il conteggio non è disponibile.",
     };
   }
-  const result = await selectIntegratedSortedDatasetRows(spec.datasetId, "Codice ISTAT comune", identity.code, signal);
+  const snapshot = await readMunicipalityProfileSnapshot(identity.code, [spec.datasetId], signal);
+  const stored = snapshot?.schools[identity.code];
+  const result = snapshot
+    ? { dataset: await getIntegratedPublicDatasetMetadata(spec.datasetId), rows: stored ? [stored] : [] }
+    : await selectIntegratedSortedDatasetRows(spec.datasetId, "Codice ISTAT comune", identity.code, signal);
   if (
     result.dataset.publicRows !== spec.expected.municipalities ||
     result.dataset.headers.join("\n") !== spec.publicHeaders.join("\n")

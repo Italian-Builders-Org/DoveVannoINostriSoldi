@@ -1,5 +1,6 @@
 import "server-only";
 
+import { readMunicipalityProfileSnapshot } from "@/lib/municipality-profile-snapshot";
 import { selectSortedRows } from "@/lib/integrated-sorted-lookup";
 import type { IntegratedPublicRow } from "@/lib/integrated-source-contract";
 
@@ -219,6 +220,12 @@ export function summarizeRealEstate(
 }
 
 // All three releases are sorted by fiscal code, including the communication file.
+export const realEstateDatasetColumns = {
+  [realEstateSource.beniDatasetId]: BENI_COLUMNS,
+  [realEstateSource.contrattiDatasetId]: CONTRATTI_COLUMNS,
+  [realEstateSource.adempimentoDatasetId]: COMMUNICATION_COLUMNS,
+};
+
 async function entityRows(datasetId: string, taxCode: string, columns: readonly string[], signal?: AbortSignal) {
   const { rows, headers } = await selectSortedRows(datasetId, "Codice fiscale ente", taxCode, signal);
   if (columns.some((column) => !headers.includes(column))) {
@@ -236,19 +243,30 @@ export async function getMunicipalityRealEstate(taxCode: string, signal?: AbortS
       communication: null,
     };
   }
+  const snapshot = await readMunicipalityProfileSnapshot(taxCode, Object.keys(realEstateDatasetColumns), signal);
+  if (snapshot) return snapshot.realEstate[taxCode] ?? projectMunicipalityRealEstate(taxCode, [], [], []);
   const [beni, contratti, adempimento] = await Promise.all([
     entityRows(realEstateSource.beniDatasetId, taxCode, BENI_COLUMNS, signal),
     entityRows(realEstateSource.contrattiDatasetId, taxCode, CONTRATTI_COLUMNS, signal),
     entityRows(realEstateSource.adempimentoDatasetId, taxCode, COMMUNICATION_COLUMNS, signal),
   ]);
-  if (adempimento.rows.length > 1) throw new Error("Ente ripetuto nel file di adempimento MEF.");
-  const communication = adempimento.rows[0] ? readCommunication(adempimento.rows[0].cells) : null;
-  if (beni.rows.length === 0 && contratti.rows.length === 0) {
+  return projectMunicipalityRealEstate(taxCode, beni.rows, contratti.rows, adempimento.rows);
+}
+
+export function projectMunicipalityRealEstate(
+  taxCode: string,
+  beni: readonly IntegratedPublicRow[],
+  contratti: readonly IntegratedPublicRow[],
+  adempimento: readonly IntegratedPublicRow[],
+): MunicipalityRealEstate {
+  if (adempimento.length > 1) throw new Error("Ente ripetuto nel file di adempimento MEF.");
+  const communication = adempimento[0] ? readCommunication(adempimento[0].cells) : null;
+  if (beni.length === 0 && contratti.length === 0) {
     return { status: "not_found", reason: "no_matching_record", message: emptyStateMessage(communication), communication };
   }
   return {
     status: "available",
-    data: { taxCode, ...summarizeRealEstate(beni.rows, contratti.rows) },
+    data: { taxCode, ...summarizeRealEstate(beni, contratti) },
     communication,
   };
 }

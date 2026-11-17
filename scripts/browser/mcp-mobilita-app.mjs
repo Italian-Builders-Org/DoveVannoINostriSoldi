@@ -67,9 +67,11 @@ function hostPage(origin) {
               content: [{ type: "text", text: "fixture" }],
               structuredContent: {
                 ok: true,
+                linea: "30",
                 vehicles: [
-                  { linea: "64", lat: 41.9012, lon: 12.5004 },
-                  { linea: "492", lat: 41.905, lon: 12.51 },
+                  { linea: "30", lat: 41.821, lon: 12.472 },
+                  { linea: "30", lat: 41.826, lon: 12.478 },
+                  { linea: "30", lat: 41.817, lon: 12.465 },
                 ],
               },
             },
@@ -126,6 +128,15 @@ try {
   });
 
   await frame.waitForFunction(() => window.__dvnsMapReady === true, { timeout: 120_000 });
+
+  const mapZoomAfterLinea = await frame.waitForFunction(
+    () => {
+      const map = window.__dvnsMobilitaMap;
+      return map && typeof map.getZoom === "function" && map.getZoom() > 12;
+    },
+    { timeout: 30_000 },
+  );
+  assert.ok(mapZoomAfterLinea, "expected fitBounds after linea=30 on first tool result");
   await frame.waitForSelector(".maplibregl-canvas", { timeout: 30_000 });
 
   await frame.waitForFunction(() => {

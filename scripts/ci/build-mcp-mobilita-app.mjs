@@ -6,6 +6,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as esbuild from "esbuild";
+import { MOBILITA_ROMA_MCP_APP_TILE_ORIGIN } from "../../src/lib/mcp/mobilita-roma-mcp-app.constants.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const entry = join(root, "scripts/mcp/mobilita-roma-mcp-app.entry.mjs");
@@ -34,17 +35,16 @@ const bundle = await esbuild.build({
 
 const script = bundle.outputFiles[0].text;
 
-const openFreeMap = "https://tiles.openfreemap.org";
-const cspConnect = [openFreeMap];
+const cspConnect = [MOBILITA_ROMA_MCP_APP_TILE_ORIGIN];
 // MapLibre loads its worker from an inline blob URL (same bundle, no CDN).
-const cspResources = ["blob:", openFreeMap];
+const cspResources = ["blob:", MOBILITA_ROMA_MCP_APP_TILE_ORIGIN];
 
 const html = `<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'unsafe-inline' blob:; worker-src blob:; style-src 'unsafe-inline'; connect-src ${openFreeMap}; img-src ${openFreeMap} data: blob:;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; script-src 'unsafe-inline' blob:; worker-src blob:; style-src 'unsafe-inline'; connect-src ${MOBILITA_ROMA_MCP_APP_TILE_ORIGIN}; img-src ${MOBILITA_ROMA_MCP_APP_TILE_ORIGIN} data: blob:;" />
   <title>Bus Roma live</title>
   <style>
 ${mapCss}

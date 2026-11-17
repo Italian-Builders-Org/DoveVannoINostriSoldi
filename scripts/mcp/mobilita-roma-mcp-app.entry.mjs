@@ -4,8 +4,7 @@
  */
 import { App } from "@modelcontextprotocol/ext-apps/app-with-deps";
 import { Map, NavigationControl, setWorkerUrl } from "maplibre-gl";
-
-const OPENFREEMAP_LIBERTY = "https://tiles.openfreemap.org/styles/liberty";
+import { MOBILITA_ROMA_MCP_APP_LIBERTY_STYLE_URL } from "../../src/lib/mcp/mobilita-roma-mcp-app.constants.ts";
 
 if (typeof __MAPLIBRE_WORKER__ === "string" && __MAPLIBRE_WORKER__.length > 0) {
   setWorkerUrl(
@@ -73,6 +72,7 @@ function ensureVehicleLayers(map, geojson, options = {}) {
       "circle-stroke-color": "#ffffff",
     },
   });
+  if (options.fitBounds) fitMapToVehicles(map, geojson);
 }
 
 function applyToolResult(params) {
@@ -104,7 +104,7 @@ async function boot() {
 
   const map = new Map({
     container: "map",
-    style: OPENFREEMAP_LIBERTY,
+    style: MOBILITA_ROMA_MCP_APP_LIBERTY_STYLE_URL,
     center: [12.4964, 41.8986],
     zoom: 11,
     attributionControl: true,

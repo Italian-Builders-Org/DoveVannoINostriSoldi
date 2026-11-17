@@ -8,6 +8,7 @@ process.env.MCP_ALLOWED_HOSTS = [process.env.MCP_ALLOWED_HOSTS, "example.test"]
 
 const { GET, HEAD, OPTIONS, POST, maxDuration } = await import("../src/app/api/mcp/route.ts");
 const { dvnsStarterPrompts } = await import("../src/lib/mcp/server.ts");
+const { mobilitaRomaBusLiveAppHtml } = await import("../src/lib/mcp/mobilita-roma-mcp-app.ts");
 const { validateToolsListPayload } = await import("../scripts/runtime-health.mjs");
 const loader = await import("../src/lib/integrated-sources.ts");
 let requestAddressSequence = 1;
@@ -494,7 +495,6 @@ test("MCP mobilita_roma_bus_live tools/call returns structured positions with fe
 });
 
 test("MCP endpoint exposes the mobilita bus live map app resource", async () => {
-  const openFreeMapLibertyStyleUrl = "https://tiles.openfreemap.org/styles/liberty";
   const response = await POST(request({}, JSON.stringify({
     jsonrpc: "2.0",
     id: 20,
@@ -506,8 +506,7 @@ test("MCP endpoint exposes the mobilita bus live map app resource", async () => 
   const rpcEvent = parseRpcEvent(body);
   const content = rpcEvent.result.contents[0];
   assert.equal(content.mimeType, "text/html;profile=mcp-app");
-  assert.match(content.text, /maplibregl-map/);
-  assert.equal(content.text.includes(openFreeMapLibertyStyleUrl), true);
+  assert.equal(content.text, mobilitaRomaBusLiveAppHtml());
   assert.deepEqual(content._meta?.ui?.csp?.connectDomains, ["https://tiles.openfreemap.org"]);
   assert.deepEqual(content._meta?.ui?.csp?.resourceDomains, ["blob:", "https://tiles.openfreemap.org"]);
 });

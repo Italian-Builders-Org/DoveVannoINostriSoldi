@@ -174,11 +174,26 @@ test("loadRomaArrivals serves last-good snapshot on timeout when fresh enough", 
   const err = new DOMException("The operation was aborted", "TimeoutError");
   const fallback = await lib.loadRomaArrivals(async () => {
     throw err;
-  }, () => tick + 60_000);
+  }, () => tick + 90_000);
   assert.equal(fallback.status, "ok");
-  assert.equal(fallback.stale, true);
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 110);
   assert.equal(fallback.tripCount, ok.tripCount);
+});
+
+test("loadRomaArrivals serves last-good snapshot on upstream 502", async () => {
   lib.resetRomaArrivalsLastGoodForTests();
+  const bytes = feed([tripUpdate(TRIP_64)]);
+  const tick = (FEED_TS + 20) * 1000;
+  await lib.loadRomaArrivals(okFetch(bytes), () => tick);
+  const fallback = await lib.loadRomaArrivals(
+    async () => {
+      throw new Error("upstream_502");
+    },
+    () => tick + 45_000,
+  );
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 65);
 });
 
 test("loadRomaArrivals rejects timeout without snapshot or after last-good window", async () => {

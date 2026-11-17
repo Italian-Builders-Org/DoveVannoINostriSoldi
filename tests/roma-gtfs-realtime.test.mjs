@@ -11,6 +11,11 @@ async function loadParser() {
   return import(pathToFileURL(libPath).href);
 }
 
+test("upstream fetch timeout is 14 seconds", async () => {
+  const { FETCH_TIMEOUT_MS } = await loadParser();
+  assert.equal(FETCH_TIMEOUT_MS, 14_000);
+});
+
 test("vehicle positions feed URL is the canonical wp-content path", async () => {
   const { ROMA_VEHICLE_POSITIONS_URL } = await loadParser();
   assert.equal(
@@ -211,11 +216,28 @@ test("loadRomaRealtimeVehicles serves last-good snapshot on timeout when fresh e
   const err = new DOMException("The operation was aborted", "TimeoutError");
   const fallback = await loadRomaRealtimeVehicles(async () => {
     throw err;
-  }, () => tick.now + 60_000);
+  }, () => tick.now + 120_000);
   assert.equal(fallback.status, "ok");
-  assert.equal(fallback.stale, true);
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.stale, false);
+  assert.equal(fallback.feedAgeSeconds, 142);
   assert.equal(fallback.vehicleCount, ok.vehicleCount);
+});
+
+test("loadRomaRealtimeVehicles serves last-good snapshot on upstream 503", async () => {
+  const { loadRomaRealtimeVehicles, resetRomaVehicleLastGoodForTests } = await loadParser();
   resetRomaVehicleLastGoodForTests();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  const tick = { now: 1_794_840_620_000 };
+  await loadRomaRealtimeVehicles(okFetch(bytes), () => tick.now);
+  const fallback = await loadRomaRealtimeVehicles(
+    async () => {
+      throw new Error("upstream_503");
+    },
+    () => tick.now + 30_000,
+  );
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 52);
 });
 
 test("loadRomaRealtimeVehicles rejects timeout without snapshot or after last-good window", async () => {

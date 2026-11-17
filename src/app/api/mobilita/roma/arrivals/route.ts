@@ -1,3 +1,4 @@
+import { classifyRomaFeedFailure } from "@/lib/mobilita/roma-gtfs-realtime";
 import { loadRomaArrivals, ROMA_TRIP_UPDATES_SOURCE, type RomaArrivalsView } from "@/lib/mobilita/roma-trip-updates";
 
 export const runtime = "nodejs";
@@ -26,10 +27,16 @@ function load(): Promise<RomaArrivalsView> {
   return promise;
 }
 
-function unavailable(error: string, status = 502): Response {
+function unavailable(failure: ReturnType<typeof classifyRomaFeedFailure>): Response {
   return Response.json(
-    { status: "unavailable", error, source: ROMA_TRIP_UPDATES_SOURCE, fetchedAt: new Date().toISOString() },
-    { status, headers: { "Cache-Control": "no-store" } },
+    {
+      status: "unavailable",
+      error: failure.code,
+      message: failure.message,
+      source: ROMA_TRIP_UPDATES_SOURCE,
+      fetchedAt: new Date().toISOString(),
+    },
+    { status: failure.httpStatus, headers: { "Cache-Control": "no-store" } },
   );
 }
 
@@ -37,9 +44,6 @@ export async function GET() {
   try {
     return Response.json(await load(), { headers: { "Cache-Control": CACHE_CONTROL } });
   } catch (error) {
-    const name = error instanceof Error ? error.name : "";
-    const message = error instanceof Error ? error.message : "";
-    if (name === "TimeoutError" || name === "AbortError") return unavailable("upstream_timeout", 504);
-    return unavailable(/^upstream_[a-z0-9_]+$/.test(message) ? message : "upstream_error");
+    return unavailable(classifyRomaFeedFailure(error));
   }
 }

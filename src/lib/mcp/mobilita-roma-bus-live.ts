@@ -1,6 +1,7 @@
 import * as z from "zod/v4";
 import { loadRomaRealtimeVehiclesCoalesced } from "@/lib/mobilita/roma-vehicles-shared";
 import {
+  classifyRomaFeedFailure,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
   ROMA_VEHICLE_POSITIONS_URL,
@@ -38,6 +39,7 @@ export const mobilitaRomaBusLiveOutputSchema = z.object({
   fetchedAt: z.string().optional(),
   feedTimestamp: z.number().nullable().optional(),
   stale: z.boolean().optional(),
+  fallback: z.boolean().optional(),
   feedAgeSeconds: z.number().nullable().optional(),
   linea: z.string().optional(),
   vehicleCount: z.number().optional(),
@@ -130,6 +132,7 @@ export async function queryMobilitaRomaBusLive(
       fetchedAt: view.fetchedAt,
       feedTimestamp: view.feedTimestamp,
       stale: view.stale,
+      ...(view.fallback ? { fallback: true } : {}),
       feedAgeSeconds: view.feedAgeSeconds,
       linea: input.linea,
       vehicleCount: view.vehicleCount,
@@ -137,17 +140,14 @@ export async function queryMobilitaRomaBusLive(
       vehicles: slice.map((vehicle) => compactVehicle(vehicle, nowSeconds)),
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : "errore_sconosciuto";
+    const failure = classifyRomaFeedFailure(error);
     return {
       ok: false,
       notice: MOBILITA_ROMA_BUS_LIVE_NOTICE,
       portalUrl: portalUrl(input.linea),
       source,
       fetchedAt: new Date(nowMs).toISOString(),
-      error:
-        message === "upstream_timeout" || message.includes("Timeout") || message.includes("Abort")
-          ? "feed_mobilita_non_disponibile: timeout sul feed VehiclePositions"
-          : "feed_mobilita_non_disponibile: il feed VehiclePositions non è raggiungibile in questo momento",
+      error: `feed_mobilita_non_disponibile: ${failure.message}`,
     };
   }
 }

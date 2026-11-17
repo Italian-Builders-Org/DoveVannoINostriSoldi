@@ -9,9 +9,10 @@
  * 2 time int64}.
  */
 import {
+  feedAgeSecondsAt,
+  feedIsStale,
   fetchFeedBytes,
-  LAST_GOOD_SNAPSHOT_MS,
-  ROMA_FEED_STALE_SECONDS,
+  lastGoodFallbackView,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
   type FetchLike,
@@ -197,6 +198,7 @@ export type RomaArrivalsView = {
   feedTimestamp: number | null;
   feedAgeSeconds: number | null;
   stale: boolean;
+  fallback?: boolean;
   tripCount: number;
   cancelledCount: number;
 } & CompactArrivals;
@@ -221,15 +223,14 @@ async function fetchRomaArrivals(fetchImpl: FetchLike, now: () => number): Promi
   const parsed = parseRomaTripUpdatesFeed(bytes);
   const fetchedMs = now();
   const compact = compactArrivals(parsed, fetchedMs / 1000);
-  const feedAgeSeconds =
-    parsed.feedTimestamp === null ? null : Math.max(0, Math.round(fetchedMs / 1000 - parsed.feedTimestamp));
+  const feedAgeSeconds = feedAgeSecondsAt(parsed.feedTimestamp, fetchedMs);
   return {
     status: "ok",
     source: ROMA_TRIP_UPDATES_SOURCE,
     fetchedAt: new Date(fetchedMs).toISOString(),
     feedTimestamp: parsed.feedTimestamp,
     feedAgeSeconds,
-    stale: feedAgeSeconds === null || feedAgeSeconds > ROMA_FEED_STALE_SECONDS,
+    stale: feedIsStale(feedAgeSeconds),
     tripCount: compact.trips.length,
     cancelledCount: compact.trips.filter((t) => t.c).length,
     ...compact,
@@ -245,9 +246,8 @@ export async function loadRomaArrivals(
     lastGoodArrivals = { savedAt: now(), view };
     return view;
   } catch (error) {
-    if (lastGoodArrivals && now() - lastGoodArrivals.savedAt <= LAST_GOOD_SNAPSHOT_MS) {
-      return { ...lastGoodArrivals.view, stale: true };
-    }
+    const fallback = lastGoodFallbackView(lastGoodArrivals, now());
+    if (fallback) return fallback;
     throw error;
   }
 }

@@ -7,6 +7,7 @@ const {
   mobilitaRomaBusLiveInputSchema,
   queryMobilitaRomaBusLive,
 } = await import("../src/lib/mcp/mobilita-roma-bus-live.ts");
+const { resetRomaMobilitaRealtimeForTests } = await import("../src/lib/mobilita/roma-vehicles-shared.ts");
 const { measureMcpToolWireBytes, MAX_MCP_TOOL_RESPONSE_BYTES } = await import("../src/lib/mcp/server.ts");
 const {
   mobilityLiveToolsCatalog,
@@ -60,6 +61,7 @@ test("mobilita tool input schema rejects unknown fields and malformed linea", ()
 });
 
 test("mobilita tool filters by linea", async () => {
+  resetRomaMobilitaRealtimeForTests();
   const entities = [
     vehicleEntity({ entityId: "1", routeId: "64", vehicleId: "v1", lat: 41.9012, lon: 12.5004, timestamp: 1_794_840_562 }),
     vehicleEntity({ entityId: "2", routeId: "492", vehicleId: "v2", lat: 41.905, lon: 12.51, timestamp: 1_794_840_562 }),
@@ -76,6 +78,7 @@ test("mobilita tool filters by linea", async () => {
 });
 
 test("mobilita tool fails closed when the upstream feed is down", async () => {
+  resetRomaMobilitaRealtimeForTests();
   const result = await queryMobilitaRomaBusLive({}, {
     fetchImpl: async () => ({
       ok: false,
@@ -87,10 +90,24 @@ test("mobilita tool fails closed when the upstream feed is down", async () => {
   });
   assert.equal(result.ok, false);
   assert.match(result.error ?? "", /feed_mobilita_non_disponibile/i);
+  assert.match(result.error ?? "", /non è raggiungibile/i);
   assert.equal(result.notice.length > 0, true);
 });
 
+test("mobilita tool reports a slow upstream separately from unreachable errors", async () => {
+  resetRomaMobilitaRealtimeForTests();
+  const timeout = await queryMobilitaRomaBusLive({}, {
+    fetchImpl: async () => {
+      throw new DOMException("aborted", "TimeoutError");
+    },
+    now: () => Date.now(),
+  });
+  assert.equal(timeout.ok, false);
+  assert.match(timeout.error ?? "", /lento a rispondere/i);
+});
+
 test("mobilita tool wire payload stays below 750000 bytes with ~1500 vehicles", async () => {
+  resetRomaMobilitaRealtimeForTests();
   const entities = [];
   for (let index = 0; index < 1_500; index += 1) {
     const routeId = String((index % 120) + 1);

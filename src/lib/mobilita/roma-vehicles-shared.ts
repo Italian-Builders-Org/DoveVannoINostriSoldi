@@ -4,25 +4,61 @@
  */
 import {
   loadRomaRealtimeVehicles,
+  resetRomaVehicleLastGoodForTests,
   type FetchLike,
   type RomaRealtimeVehiclesView,
 } from "@/lib/mobilita/roma-gtfs-realtime";
+import { resetRomaArrivalsLastGoodForTests } from "@/lib/mobilita/roma-trip-updates";
 
 const INSTANCE_TTL_MS = 10_000;
 
+/** Brief negative cache when the feed fails without a last-good snapshot (route + MCP). */
+export const VEHICLE_FEED_FAILURE_CACHE_MS = 20_000;
+
+type FailureCache = { at: number; error: unknown };
+
 let inflight: { at: number; promise: Promise<RomaRealtimeVehiclesView> } | null = null;
+let recentFailure: FailureCache | null = null;
+
+/** Clears coalescing and last-good caches (unit tests only). */
+export function resetRomaMobilitaRealtimeForTests(): void {
+  inflight = null;
+  recentFailure = null;
+  resetRomaVehicleLastGoodForTests();
+  resetRomaArrivalsLastGoodForTests();
+}
 
 export function loadRomaRealtimeVehiclesCoalesced(
   fetchImpl: FetchLike = fetch,
   now: () => number = Date.now,
 ): Promise<RomaRealtimeVehiclesView> {
   const at = now();
+  if (recentFailure) {
+    if (at - recentFailure.at < VEHICLE_FEED_FAILURE_CACHE_MS) {
+      const cached = recentFailure.error;
+      const rejected = Promise.reject(cached);
+      void rejected.catch(() => undefined);
+      return rejected;
+    }
+    recentFailure = null;
+  }
   if (inflight && at - inflight.at < INSTANCE_TTL_MS) return inflight.promise;
+
   const promise = loadRomaRealtimeVehicles(fetchImpl, now);
+  void promise
+    .then(() => {
+      recentFailure = null;
+    })
+    .catch((error) => {
+      recentFailure = { at: now(), error };
+    });
+
   const entry = { at, promise };
   inflight = entry;
-  promise.catch(() => {
-    if (inflight === entry) inflight = null;
-  });
+  void promise
+    .finally(() => {
+      if (inflight === entry) inflight = null;
+    })
+    .catch(() => undefined);
   return promise;
 }

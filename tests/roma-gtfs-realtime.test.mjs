@@ -11,6 +11,14 @@ async function loadParser() {
   return import(pathToFileURL(libPath).href);
 }
 
+test("vehicle positions feed URL is the canonical wp-content path", async () => {
+  const { ROMA_VEHICLE_POSITIONS_URL } = await loadParser();
+  assert.equal(
+    ROMA_VEHICLE_POSITIONS_URL,
+    "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_vehicle_positions_feed.pb",
+  );
+});
+
 import { dField, fField, mField, sField, vField } from "./helpers/gtfs-rt-encoder.mjs";
 
 function vehicleEntity({
@@ -190,6 +198,47 @@ test("loadRomaRealtimeVehicles fails closed on upstream errors and oversize bodi
       ),
     /upstream_size/,
   );
+});
+
+test("loadRomaRealtimeVehicles serves last-good snapshot on timeout when fresh enough", async () => {
+  const { loadRomaRealtimeVehicles, resetRomaVehicleLastGoodForTests } = await loadParser();
+  resetRomaVehicleLastGoodForTests();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  const tick = { now: 1_794_840_620_000 };
+  const ok = await loadRomaRealtimeVehicles(okFetch(bytes), () => tick.now);
+  assert.equal(ok.stale, false);
+
+  const err = new DOMException("The operation was aborted", "TimeoutError");
+  const fallback = await loadRomaRealtimeVehicles(async () => {
+    throw err;
+  }, () => tick.now + 60_000);
+  assert.equal(fallback.status, "ok");
+  assert.equal(fallback.stale, true);
+  assert.equal(fallback.vehicleCount, ok.vehicleCount);
+  resetRomaVehicleLastGoodForTests();
+});
+
+test("loadRomaRealtimeVehicles rejects timeout without snapshot or after last-good window", async () => {
+  const { loadRomaRealtimeVehicles, resetRomaVehicleLastGoodForTests, LAST_GOOD_SNAPSHOT_MS } =
+    await loadParser();
+  resetRomaVehicleLastGoodForTests();
+  const err = new DOMException("The operation was aborted", "TimeoutError");
+  await assert.rejects(
+    () => loadRomaRealtimeVehicles(async () => { throw err; }),
+    (e) => e.name === "TimeoutError",
+  );
+
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  const tick = { now: 1_794_840_620_000 };
+  await loadRomaRealtimeVehicles(okFetch(bytes), () => tick.now);
+  await assert.rejects(
+    () =>
+      loadRomaRealtimeVehicles(async () => {
+        throw err;
+      }, () => tick.now + LAST_GOOD_SNAPSHOT_MS + 1),
+    (e) => e.name === "TimeoutError",
+  );
+  resetRomaVehicleLastGoodForTests();
 });
 
 test("vehicle feed retries one transient network failure", async () => {

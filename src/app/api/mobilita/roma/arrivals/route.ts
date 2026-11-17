@@ -2,6 +2,7 @@ import { loadRomaArrivals, ROMA_TRIP_UPDATES_SOURCE, type RomaArrivalsView } fro
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 // Cost model: one public URL, no query parameters read (no per-stop or
 // per-trip URLs to multiply cache entries). The upstream TripUpdates feed is

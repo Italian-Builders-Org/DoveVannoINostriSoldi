@@ -13,7 +13,7 @@
 import { fields, readBytes, readFloat32, readHeaderTimestamp, readVarint, text } from "@/lib/mobilita/protobuf-wire";
 
 export const ROMA_VEHICLE_POSITIONS_URL =
-  "https://romamobilita.it/sites/default/files/rome_rtgtfs_vehicle_positions_feed.pb";
+  "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_vehicle_positions_feed.pb";
 
 export const ROMA_OPEN_DATA_URL = "https://romamobilita.it/sistemi-e-tecnologie/open-data/";
 
@@ -23,7 +23,10 @@ export const ROMA_RT_HOLDER = "Roma Servizi per la Mobilità (ATAC e Roma TPL)";
 export const ROMA_FEED_STALE_SECONDS = 300;
 
 export const MAX_FEED_BYTES = 5_000_000;
-export const FETCH_TIMEOUT_MS = 10_000;
+export const FETCH_TIMEOUT_MS = 15_000;
+
+/** Reuse the last successful in-memory snapshot after upstream failure for this long. */
+export const LAST_GOOD_SNAPSHOT_MS = 5 * 60 * 1000;
 
 // Generous box around Roma Capitale and the lines that leave it; drops (0,0)
 // placeholders and corrupt coordinates without hiding suburban termini.
@@ -252,9 +255,26 @@ export async function fetchFeedBytes(url: string, fetchImpl: FetchLike): Promise
   }
 }
 
-export async function loadRomaRealtimeVehicles(
-  fetchImpl: FetchLike = fetch,
-  now: () => number = Date.now,
+type LastGood<T> = { savedAt: number; view: T };
+
+let lastGoodVehicles: LastGood<RomaRealtimeVehiclesView> | null = null;
+
+function staleLastGood<T extends { stale: boolean }>(
+  entry: LastGood<T> | null,
+  nowMs: number,
+): T | null {
+  if (!entry || nowMs - entry.savedAt > LAST_GOOD_SNAPSHOT_MS) return null;
+  return { ...entry.view, stale: true };
+}
+
+/** Clears the in-memory last-good cache (unit tests only). */
+export function resetRomaVehicleLastGoodForTests(): void {
+  lastGoodVehicles = null;
+}
+
+async function fetchRomaRealtimeVehicles(
+  fetchImpl: FetchLike,
+  now: () => number,
 ): Promise<RomaRealtimeVehiclesView> {
   const bytes = await fetchFeedBytes(ROMA_VEHICLE_POSITIONS_URL, fetchImpl);
   const { feedTimestamp, vehicles } = parseRomaVehiclePositionsFeed(bytes);
@@ -271,4 +291,19 @@ export async function loadRomaRealtimeVehicles(
     vehicleCount: vehicles.length,
     vehicles,
   };
+}
+
+export async function loadRomaRealtimeVehicles(
+  fetchImpl: FetchLike = fetch,
+  now: () => number = Date.now,
+): Promise<RomaRealtimeVehiclesView> {
+  try {
+    const view = await fetchRomaRealtimeVehicles(fetchImpl, now);
+    lastGoodVehicles = { savedAt: now(), view };
+    return view;
+  } catch (error) {
+    const fallback = staleLastGood(lastGoodVehicles, now());
+    if (fallback) return fallback;
+    throw error;
+  }
 }

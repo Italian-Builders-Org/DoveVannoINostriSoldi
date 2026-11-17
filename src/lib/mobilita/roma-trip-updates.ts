@@ -10,6 +10,7 @@
  */
 import {
   fetchFeedBytes,
+  LAST_GOOD_SNAPSHOT_MS,
   ROMA_FEED_STALE_SECONDS,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
@@ -19,7 +20,7 @@ import { fields, readBytes, readHeaderTimestamp, readInt32, readVarint, text } f
 import { delayBucket, type DelayBucket } from "@/lib/mobilita/roma-live-model";
 
 export const ROMA_TRIP_UPDATES_URL =
-  "https://romamobilita.it/sites/default/files/rome_rtgtfs_trip_updates_feed.pb";
+  "https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_trip_updates_feed.pb";
 
 /** Arrivals further ahead than this are not useful for a live board. */
 export const ARRIVALS_HORIZON_SECONDS = 2 * 3600;
@@ -206,10 +207,16 @@ export const ROMA_TRIP_UPDATES_SOURCE = {
   feedUrl: ROMA_TRIP_UPDATES_URL,
 };
 
-export async function loadRomaArrivals(
-  fetchImpl: FetchLike = fetch,
-  now: () => number = Date.now,
-): Promise<RomaArrivalsView> {
+type LastGoodArrivals = { savedAt: number; view: RomaArrivalsView };
+
+let lastGoodArrivals: LastGoodArrivals | null = null;
+
+/** Clears the in-memory last-good cache (unit tests only). */
+export function resetRomaArrivalsLastGoodForTests(): void {
+  lastGoodArrivals = null;
+}
+
+async function fetchRomaArrivals(fetchImpl: FetchLike, now: () => number): Promise<RomaArrivalsView> {
   const bytes = await fetchFeedBytes(ROMA_TRIP_UPDATES_URL, fetchImpl);
   const parsed = parseRomaTripUpdatesFeed(bytes);
   const fetchedMs = now();
@@ -227,6 +234,22 @@ export async function loadRomaArrivals(
     cancelledCount: compact.trips.filter((t) => t.c).length,
     ...compact,
   };
+}
+
+export async function loadRomaArrivals(
+  fetchImpl: FetchLike = fetch,
+  now: () => number = Date.now,
+): Promise<RomaArrivalsView> {
+  try {
+    const view = await fetchRomaArrivals(fetchImpl, now);
+    lastGoodArrivals = { savedAt: now(), view };
+    return view;
+  } catch (error) {
+    if (lastGoodArrivals && now() - lastGoodArrivals.savedAt <= LAST_GOOD_SNAPSHOT_MS) {
+      return { ...lastGoodArrivals.view, stale: true };
+    }
+    throw error;
+  }
 }
 
 export type PunctualitySummary = { total: number; buckets: Record<DelayBucket, number> };

@@ -68,9 +68,16 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
   gli errori sono `no-store`. A cache CDN calda il feed ufficiale viene letto al
   massimo ~4 volte al minuto per regione, indipendentemente dai visitatori.
   Nella stessa istanza le richieste concorrenti condividono una sola lettura
-  per 10 s; un errore non viene mai riusato come successo.
+  per 10 s; un errore non viene mai riusato come successo. Se l’upstream va in
+  timeout o fallisce entro 5 minuti dall’ultimo successo sulla stessa istanza,
+  la route risponde 200 con lo snapshot in memoria e `stale: true`; oltre 5
+  minuti resta il 504.
+- Feed ufficiale VehiclePositions:
+  `https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_vehicle_positions_feed.pb`
+  (URL canonica senza redirect 301 dal path `sites/default/files/…`). TripUpdates:
+  `https://romamobilita.it/wp-content/uploads/shared/rome_rtgtfs_trip_updates_feed.pb`.
 - Feed ~115 KB protobuf, risposta ~240 KB JSON (~45 KB compressa), parsing
-  di pochi ms. Timeout 10 s, limite 5 MB.
+  di pochi ms. Timeout upstream 15 s, `maxDuration` della funzione 30 s, limite 5 MB.
 - Arrivi: `/api/mobilita/roma/arrivals`, una sola URL senza parametri (niente
   URL per fermata o corsa), `s-maxage=30`. Il feed upstream pesa ~0,9 MB e si
   analizza in ~100 ms; la risposta compatta (fermate future entro 2 ore,

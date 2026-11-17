@@ -7,6 +7,8 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Headroom above FETCH_TIMEOUT_MS (15 s) and a single retry on transient errors.
+export const maxDuration = 30;
 
 // Cost model: one public URL, no query parameters read. The upstream feed is
 // regenerated about every 30 s and positions are already ~40 s old, so a 15 s

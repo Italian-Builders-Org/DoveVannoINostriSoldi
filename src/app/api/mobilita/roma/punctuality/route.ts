@@ -7,6 +7,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 // Cost model: one public URL, no query parameters read. Same upstream feed and
 // CDN window as /arrivals (≤ ~2 upstream reads/min per region), but the

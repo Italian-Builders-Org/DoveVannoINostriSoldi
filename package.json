@@ -80,7 +80,6 @@
     "postgres": "4.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "react-is": "19.3.0",
     "recharts": "3.10.1",
     "server-only": "^0.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",

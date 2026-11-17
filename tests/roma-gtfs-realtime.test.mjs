@@ -263,6 +263,71 @@ test("loadRomaRealtimeVehicles rejects timeout without snapshot or after last-go
   resetRomaVehicleLastGoodForTests();
 });
 
+test("vehicle feed retries one upstream 502", async () => {
+  const { loadRomaRealtimeVehicles } = await loadParser();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  let calls = 0;
+  const ok = okFetch(bytes);
+  const view = await loadRomaRealtimeVehicles(async (...args) => {
+    calls += 1;
+    if (calls === 1) {
+      return {
+        ok: false,
+        status: 502,
+        headers: new Headers(),
+        arrayBuffer: async () => new ArrayBuffer(0),
+      };
+    }
+    return ok(...args);
+  }, () => 1_794_840_620_000);
+  assert.equal(view.vehicleCount, 1);
+  assert.equal(calls, 2);
+});
+
+test("slow body download aborts and falls back to last-good snapshot", async () => {
+  const { loadRomaRealtimeVehicles, resetRomaVehicleLastGoodForTests } = await loadParser();
+  resetRomaVehicleLastGoodForTests();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  const tick = { now: 1_794_840_620_000 };
+  await loadRomaRealtimeVehicles(okFetch(bytes), () => tick.now);
+  const fallback = await loadRomaRealtimeVehicles(
+    async (_url, init) => ({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      arrayBuffer: async () =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            reject(new DOMException("The operation was aborted", "TimeoutError"));
+          });
+        }),
+    }),
+    () => tick.now + 5_000,
+    800,
+  );
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.vehicleCount, 1);
+});
+
+test("loadRomaRealtimeVehicles serves last-good snapshot on upstream 404", async () => {
+  const { loadRomaRealtimeVehicles, resetRomaVehicleLastGoodForTests } = await loadParser();
+  resetRomaVehicleLastGoodForTests();
+  const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);
+  const tick = { now: 1_794_840_620_000 };
+  await loadRomaRealtimeVehicles(okFetch(bytes), () => tick.now);
+  const fallback = await loadRomaRealtimeVehicles(
+    async () => ({
+      ok: false,
+      status: 404,
+      headers: new Headers(),
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }),
+    () => tick.now + 30_000,
+  );
+  assert.equal(fallback.fallback, true);
+  assert.equal(fallback.feedAgeSeconds, 52);
+});
+
 test("vehicle feed retries one transient network failure", async () => {
   const { loadRomaRealtimeVehicles } = await loadParser();
   const bytes = feed([vehicleEntity(BUS_64)], 1_794_840_598);

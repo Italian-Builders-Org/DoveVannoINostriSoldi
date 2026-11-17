@@ -94,6 +94,60 @@ test("mobilita tool fails closed when the upstream feed is down", async () => {
   assert.equal(result.notice.length > 0, true);
 });
 
+test("mobilita tool uses a feed budget below the MCP handler deadline", async () => {
+  const { MCP_VEHICLES_FEED_FETCH_BUDGET_MS } = await import("../src/lib/mobilita/roma-gtfs-realtime.ts");
+  assert.equal(MCP_VEHICLES_FEED_FETCH_BUDGET_MS, 10_000);
+});
+
+test("mobilita tool serves last-good on slow body within its feed budget", async () => {
+  resetRomaMobilitaRealtimeForTests();
+  const bytes = feed([
+    vehicleEntity({ entityId: "1", routeId: "64", vehicleId: "v1", lat: 41.9012, lon: 12.5004, timestamp: 1_794_840_562 }),
+  ]);
+  const tick = { now: 1_794_840_620_000 };
+  await queryMobilitaRomaBusLive({}, {
+    fetchImpl: okFetch(bytes),
+    now: () => tick.now,
+  });
+  const started = Date.now();
+  tick.now += 11_000;
+  const slow = await queryMobilitaRomaBusLive({}, {
+    fetchImpl: async (_url, init) => ({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      arrayBuffer: async () =>
+        new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            reject(new DOMException("The operation was aborted", "TimeoutError"));
+          });
+        }),
+    }),
+    now: () => tick.now,
+    feedFetchBudgetMs: 800,
+  });
+  assert.ok(Date.now() - started < 12_000, "tool must finish before MCP handler timeout");
+  assert.equal(slow.ok, true);
+  assert.equal(slow.fallback, true);
+  assert.equal(slow.returned, 1);
+});
+
+test("mobilita tool returns ok false on timeout without last-good", async () => {
+  resetRomaMobilitaRealtimeForTests();
+  const started = Date.now();
+  const timeout = await queryMobilitaRomaBusLive({}, {
+    fetchImpl: async () => {
+      throw new DOMException("aborted", "TimeoutError");
+    },
+    now: () => Date.now(),
+    feedFetchBudgetMs: 300,
+  });
+  assert.ok(Date.now() - started < 12_000);
+  assert.equal(timeout.ok, false);
+  assert.match(timeout.error ?? "", /lento a rispondere/i);
+  assert.ok(!timeout.error?.includes("-32000"));
+});
+
 test("mobilita tool reports a slow upstream separately from unreachable errors", async () => {
   resetRomaMobilitaRealtimeForTests();
   const timeout = await queryMobilitaRomaBusLive({}, {

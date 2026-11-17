@@ -28,6 +28,9 @@ export const FETCH_TIMEOUT_MS = 14_000;
 /** Hard ceiling for one upstream read (timeout + at most one retry) under route maxDuration. */
 export const FEED_FETCH_BUDGET_MS = 28_000;
 
+/** Upstream read ceiling for mobilita_roma_bus_live (below the MCP handler deadline). */
+export const MCP_VEHICLES_FEED_FETCH_BUDGET_MS = 10_000;
+
 /** Reuse the last successful in-memory snapshot after upstream failure for this long. */
 export const LAST_GOOD_SNAPSHOT_MS = 5 * 60 * 1000;
 
@@ -252,11 +255,6 @@ export type FetchLike = (
 
 const RETRY_DELAY_MS = 250;
 
-/**
- * Downloads a GTFS-RT feed with size limits. A network error or 5xx is retried
- * once after a short pause (the upstream connection occasionally drops); 4xx,
- * timeouts and oversize bodies fail at once.
- */
 export function feedAgeSecondsAt(feedTimestamp: number | null, nowMs: number): number | null {
   if (feedTimestamp === null) return null;
   return Math.max(0, Math.round(nowMs / 1000 - feedTimestamp));
@@ -266,17 +264,23 @@ export function feedIsStale(feedAgeSeconds: number | null): boolean {
   return feedAgeSeconds === null || feedAgeSeconds > ROMA_FEED_STALE_SECONDS;
 }
 
+/**
+ * Downloads a GTFS-RT feed with size limits. A network error or 5xx is retried
+ * once after a short pause (the upstream connection occasionally drops); 4xx,
+ * timeouts and oversize bodies fail at once.
+ */
 export async function fetchFeedBytes(
   url: string,
   fetchImpl: FetchLike,
   budgetStartedAt: number = Date.now(),
+  feedFetchBudgetMs: number = FEED_FETCH_BUDGET_MS,
 ): Promise<Uint8Array> {
   for (let attempt = 1; ; attempt += 1) {
-    const remaining = FEED_FETCH_BUDGET_MS - (Date.now() - budgetStartedAt);
+    const remaining = feedFetchBudgetMs - (Date.now() - budgetStartedAt);
     if (remaining <= 0) throw new DOMException("The operation was aborted", "TimeoutError");
     const attemptTimeoutMs = Math.min(FETCH_TIMEOUT_MS, remaining);
     const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
+    const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
     let response: Awaited<ReturnType<FetchLike>>;
     try {
       response = await fetchImpl(url, {
@@ -285,6 +289,18 @@ export async function fetchFeedBytes(
         cache: "no-store",
         signal: controller.signal,
       });
+      if (!response.ok) {
+        if (attempt === 1 && response.status >= 500 && remaining > RETRY_DELAY_MS + 500) {
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+          continue;
+        }
+        throw new Error(`upstream_${response.status}`);
+      }
+      const declared = Number(response.headers?.get("content-length") ?? "");
+      if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
+      return bytes;
     } catch (error) {
       const name = error instanceof Error ? error.name : "";
       const message = error instanceof Error ? error.message : "";
@@ -297,18 +313,6 @@ export async function fetchFeedBytes(
     } finally {
       clearTimeout(timeout);
     }
-    if (!response.ok) {
-      if (attempt === 1 && response.status >= 500 && remaining > RETRY_DELAY_MS + 500) {
-        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-        continue;
-      }
-      throw new Error(`upstream_${response.status}`);
-    }
-    const declared = Number(response.headers?.get("content-length") ?? "");
-    if (Number.isFinite(declared) && declared > MAX_FEED_BYTES) throw new Error("upstream_size");
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    if (bytes.byteLength < 16 || bytes.byteLength > MAX_FEED_BYTES) throw new Error("upstream_size");
-    return bytes;
   }
 }
 
@@ -340,8 +344,15 @@ export function resetRomaVehicleLastGoodForTests(): void {
 async function fetchRomaRealtimeVehicles(
   fetchImpl: FetchLike,
   now: () => number,
+  feedFetchBudgetMs: number,
 ): Promise<RomaRealtimeVehiclesView> {
-  const bytes = await fetchFeedBytes(ROMA_VEHICLE_POSITIONS_URL, fetchImpl);
+  const budgetStartedAt = Date.now();
+  const bytes = await fetchFeedBytes(
+    ROMA_VEHICLE_POSITIONS_URL,
+    fetchImpl,
+    budgetStartedAt,
+    feedFetchBudgetMs,
+  );
   const { feedTimestamp, vehicles } = parseRomaVehiclePositionsFeed(bytes);
   const fetchedMs = now();
   const feedAgeSeconds = feedAgeSecondsAt(feedTimestamp, fetchedMs);
@@ -360,9 +371,10 @@ async function fetchRomaRealtimeVehicles(
 export async function loadRomaRealtimeVehicles(
   fetchImpl: FetchLike = fetch,
   now: () => number = Date.now,
+  feedFetchBudgetMs: number = FEED_FETCH_BUDGET_MS,
 ): Promise<RomaRealtimeVehiclesView> {
   try {
-    const view = await fetchRomaRealtimeVehicles(fetchImpl, now);
+    const view = await fetchRomaRealtimeVehicles(fetchImpl, now, feedFetchBudgetMs);
     lastGoodVehicles = { savedAt: now(), view };
     return view;
   } catch (error) {

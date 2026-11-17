@@ -68,7 +68,9 @@ live sono abbinate al percorso per linea, direzione e fermata corrente: gli
   gli errori sono `no-store`. A cache CDN calda il feed ufficiale viene letto al
   massimo ~4 volte al minuto per regione, indipendentemente dai visitatori.
   Nella stessa istanza le richieste concorrenti condividono una sola lettura
-  per 10 s; un errore non viene mai riusato come successo. Se l’upstream va in
+  riuscita per 10 s (un errore non viene mai riusato come successo e libera
+  subito lo slot in-flight). Gli errori ripetuti senza last-good restano in
+  cache in memoria per circa 5 s sulla stessa istanza. Se l’upstream va in
   timeout o fallisce entro 5 minuti dall’ultimo successo sulla stessa istanza,
   la route risponde 200 con lo snapshot in memoria e `fallback: true` (l’età
   del feed e `stale` si ricalcolano sul timestamp dell’header); oltre 5 minuti
@@ -118,8 +120,10 @@ python3 scripts/research/build_roma_live_network.py --check
 
 Il tool read-only `mobilita_roma_bus_live` espone le stesse posizioni del proxy
 `/api/mobilita/roma/vehicles`, riusando la cache in memoria condivisa tra route
-API e tool MCP nella stessa istanza (TTL ~10 s: una seconda richiesta entro la
-finestra non ricarica il feed ATAC). Chiamate MCP su istanze distinte o dopo la
+API e tool MCP nella stessa istanza (TTL ~10 s sulle letture riuscite: una
+seconda richiesta entro la finestra non ricarica il feed ATAC). Il budget di
+lettura upstream del tool è ~10 s (sotto il timeout del handler MCP a 12 s),
+con fallback last-good o `ok: false` come sul proxy. Chiamate MCP su istanze distinte o dopo la
 scadenza della cache possono comunque colpire di nuovo l'upstream; non c'è deduplica
 via CDN. Input ammessi: `linea` (codice breve) e `limit` (1-2500). La voce è
 elencata in `list_datasets` / `mobilityLiveTools` e in `dvns://mobility-live-tools`.

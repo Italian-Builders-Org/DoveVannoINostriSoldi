@@ -1,8 +1,12 @@
 /**
  * Coalesces concurrent reads of the Roma VehiclePositions feed on one instance.
  * The public API route and MCP tool share this loader so ATAC is not contacted twice.
+ * A successful read is reused for {@link INSTANCE_TTL_MS}; only failures clear inflight
+ * early. Recent upstream failures without last-good are cached for
+ * {@link VEHICLE_FEED_FAILURE_CACHE_MS}.
  */
 import {
+  FEED_FETCH_BUDGET_MS,
   loadRomaRealtimeVehicles,
   resetRomaVehicleLastGoodForTests,
   type FetchLike,
@@ -13,7 +17,11 @@ import { resetRomaArrivalsLastGoodForTests } from "@/lib/mobilita/roma-trip-upda
 const INSTANCE_TTL_MS = 10_000;
 
 /** Brief negative cache when the feed fails without a last-good snapshot (route + MCP). */
-export const VEHICLE_FEED_FAILURE_CACHE_MS = 20_000;
+export const VEHICLE_FEED_FAILURE_CACHE_MS = 5_000;
+
+export type LoadRomaVehiclesCoalescedOptions = {
+  feedFetchBudgetMs?: number;
+};
 
 type FailureCache = { at: number; error: unknown };
 
@@ -31,7 +39,9 @@ export function resetRomaMobilitaRealtimeForTests(): void {
 export function loadRomaRealtimeVehiclesCoalesced(
   fetchImpl: FetchLike = fetch,
   now: () => number = Date.now,
+  options: LoadRomaVehiclesCoalescedOptions = {},
 ): Promise<RomaRealtimeVehiclesView> {
+  const feedFetchBudgetMs = options.feedFetchBudgetMs ?? FEED_FETCH_BUDGET_MS;
   const at = now();
   if (recentFailure) {
     if (at - recentFailure.at < VEHICLE_FEED_FAILURE_CACHE_MS) {
@@ -44,21 +54,16 @@ export function loadRomaRealtimeVehiclesCoalesced(
   }
   if (inflight && at - inflight.at < INSTANCE_TTL_MS) return inflight.promise;
 
-  const promise = loadRomaRealtimeVehicles(fetchImpl, now);
+  const promise = loadRomaRealtimeVehicles(fetchImpl, now, feedFetchBudgetMs);
+  const entry = { at, promise };
+  inflight = entry;
   void promise
     .then(() => {
       recentFailure = null;
     })
     .catch((error) => {
       recentFailure = { at: now(), error };
-    });
-
-  const entry = { at, promise };
-  inflight = entry;
-  void promise
-    .finally(() => {
       if (inflight === entry) inflight = null;
-    })
-    .catch(() => undefined);
+    });
   return promise;
 }

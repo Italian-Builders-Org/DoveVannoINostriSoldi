@@ -2,6 +2,7 @@ import * as z from "zod/v4";
 import { loadRomaRealtimeVehiclesCoalesced } from "@/lib/mobilita/roma-vehicles-shared";
 import {
   classifyRomaFeedFailure,
+  MCP_VEHICLES_FEED_FETCH_BUDGET_MS,
   ROMA_OPEN_DATA_URL,
   ROMA_RT_HOLDER,
   ROMA_VEHICLE_POSITIONS_URL,
@@ -97,7 +98,13 @@ function compactVehicle(
 
 export async function queryMobilitaRomaBusLive(
   input: MobilitaRomaBusLiveInput,
-  options: { fetchImpl?: FetchLike; now?: () => number; signal?: AbortSignal } = {},
+  options: {
+    fetchImpl?: FetchLike;
+    now?: () => number;
+    signal?: AbortSignal;
+    /** Overrides upstream budget (unit tests only). */
+    feedFetchBudgetMs?: number;
+  } = {},
 ): Promise<MobilitaRomaBusLiveOutput> {
   const nowMs = options.now?.() ?? Date.now();
   const source = {
@@ -118,7 +125,9 @@ export async function queryMobilitaRomaBusLive(
   }
 
   try {
-    const view = await loadRomaRealtimeVehiclesCoalesced(options.fetchImpl, options.now ?? Date.now);
+    const view = await loadRomaRealtimeVehiclesCoalesced(options.fetchImpl, options.now ?? Date.now, {
+      feedFetchBudgetMs: options.feedFetchBudgetMs ?? MCP_VEHICLES_FEED_FETCH_BUDGET_MS,
+    });
     const nowSeconds = Math.floor(nowMs / 1000);
     let vehicles = view.vehicles;
     if (input.linea) vehicles = vehicles.filter((vehicle) => matchesLinea(vehicle, input.linea!));

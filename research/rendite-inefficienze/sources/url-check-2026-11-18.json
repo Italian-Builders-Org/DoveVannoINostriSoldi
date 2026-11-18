@@ -1,0 +1,262 @@
+{
+  "https://innovazione.gov.it/": {
+    "status": 200,
+    "final": "https://innovazione.gov.it/"
+  },
+  "https://uibm.mise.gov.it/": {
+    "status": 200,
+    "final": "https://uibm.mise.gov.it/index.php/it/"
+  },
+  "https://www.aci.it/": {
+    "status": 200,
+    "final": "https://www.aci.it/"
+  },
+  "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html": {
+    "status": 200,
+    "final": "https://aci.gov.it/servizi/"
+  },
+  "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html": {
+    "status": 200,
+    "final": "https://aci.gov.it/attivita-e-progetti/studi-e-ricerche/"
+  },
+  "https://www.acri.it/": {
+    "status": 200,
+    "final": "https://www.acri.it/"
+  },
+  "https://www.adm.gov.it/": {
+    "status": 200,
+    "final": "https://www.adm.gov.it/portale/home"
+  },
+  "https://www.agcm.it/": {
+    "status": 200,
+    "final": "https://www.agcm.it/"
+  },
+  "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf": {
+    "status": 200,
+    "final": "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf"
+  },
+  "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778": {
+    "status": 200,
+    "final": "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778"
+  },
+  "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024": {
+    "status": 200,
+    "final": "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024"
+  },
+  "https://www.agcom.it/": {
+    "status": 200,
+    "final": "https://www.agcom.it/"
+  },
+  "https://www.agea.gov.it/": {
+    "status": 200,
+    "final": "https://www.agea.gov.it/portale-agea/"
+  },
+  "https://www.agenziademanio.it/": {
+    "status": 200,
+    "final": "https://www.agenziademanio.it/it/"
+  },
+  "https://www.agenziaentrate.gov.it/portale/": {
+    "status": 200,
+    "final": "https://www.agenziaentrate.gov.it/portale/"
+  },
+  "https://www.agid.gov.it/": {
+    "status": 200,
+    "final": "https://www.agid.gov.it/it"
+  },
+  "https://www.aifa.gov.it/": {
+    "status": 200,
+    "final": "https://www.aifa.gov.it/"
+  },
+  "https://www.anticorruzione.it/": {
+    "status": 200,
+    "final": "https://www.anticorruzione.it/"
+  },
+  "https://www.anvur.it/": {
+    "status": 200,
+    "final": "https://www.anvur.it/it"
+  },
+  "https://www.arera.it/": {
+    "status": 200,
+    "final": "https://www.arera.it/"
+  },
+  "https://www.arera.it/it/relaz_ann/24/ra24.htm": {
+    "status": 200,
+    "final": "https://www.arera.it/gallery/presentazioni-relazione-annuale"
+  },
+  "https://www.autorita-trasporti.it/": {
+    "status": 403,
+    "final": "https://www.autorita-trasporti.it/"
+  },
+  "https://www.bancaditalia.it/": {
+    "status": 200,
+    "final": "https://www.bancaditalia.it/"
+  },
+  "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/": {
+    "status": 200,
+    "final": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/"
+  },
+  "https://www.cnel.it/": {
+    "status": 200,
+    "final": "https://www.cnel.it/"
+  },
+  "https://www.conai.org/": {
+    "status": 403,
+    "final": "https://www.conai.org/"
+  },
+  "https://www.coni.it/": {
+    "status": 200,
+    "final": "https://www.coni.it/it/"
+  },
+  "https://www.consip.it/": {
+    "status": 200,
+    "final": "https://www.consip.it/"
+  },
+  "https://www.consob.it/": {
+    "status": 200,
+    "final": "https://www.consob.it/"
+  },
+  "https://www.corteconti.it/": {
+    "status": 200,
+    "final": "https://www.corteconti.it/"
+  },
+  "https://www.covip.it/": {
+    "status": 403,
+    "final": "https://www.covip.it/"
+  },
+  "https://www.cultura.gov.it/": {
+    "status": 200,
+    "final": "https://cultura.gov.it/"
+  },
+  "https://www.difesa.it/": {
+    "status": 200,
+    "final": "https://www.difesa.it/"
+  },
+  "https://www.dt.mef.gov.it/": {
+    "status": 200,
+    "final": "https://www.dt.mef.gov.it/it/index.html"
+  },
+  "https://www.enac.gov.it/": {
+    "status": 200,
+    "final": "https://www.enac.gov.it/"
+  },
+  "https://www.fondazioneifel.it/": {
+    "status": 200,
+    "final": "https://www.fondazioneifel.it/"
+  },
+  "https://www.garanteprivacy.it/": {
+    "status": 200,
+    "final": "https://www.garanteprivacy.it/"
+  },
+  "https://www.gazzettaufficiale.it/": {
+    "status": 200,
+    "final": "https://www.gazzettaufficiale.it/"
+  },
+  "https://www.giustizia.it/": {
+    "status": 200,
+    "final": "https://www.giustizia.it/giustizia/"
+  },
+  "https://www.informazioneeditoria.gov.it/": {
+    "status": 200,
+    "final": "https://www.informazioneeditoria.gov.it/it/"
+  },
+  "https://www.inps.it/": {
+    "status": 200,
+    "final": "https://www.inps.it/"
+  },
+  "https://www.isprambiente.gov.it/it/attivita/rifiuti": {
+    "status": 200,
+    "final": "https://www.isprambiente.gov.it/it/attivita/rifiuti"
+  },
+  "https://www.iss.it/": {
+    "status": 200,
+    "final": "https://www.iss.it/"
+  },
+  "https://www.istat.it/": {
+    "status": 200,
+    "final": "https://www.istat.it/"
+  },
+  "https://www.istat.it/statistiche-per-temi/conti-nazionali/": {
+    "status": 200,
+    "final": "https://www.istat.it/statistiche-per-temi/focus/congiuntura/temi-della-congiuntura/conti-nazionali/"
+  },
+  "https://www.ivass.it/": {
+    "status": 200,
+    "final": "https://www.ivass.it/"
+  },
+  "https://www.lavoro.gov.it/": {
+    "status": 200,
+    "final": "https://www.lavoro.gov.it/"
+  },
+  "https://www.masaf.gov.it/": {
+    "status": 200,
+    "final": "https://www.masaf.gov.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/202"
+  },
+  "https://www.mase.gov.it/": {
+    "status": 200,
+    "final": "https://www.mase.gov.it/portale/home"
+  },
+  "https://www.mef.gov.it/": {
+    "status": 200,
+    "final": "https://www.mef.gov.it/"
+  },
+  "https://www.mim.gov.it/": {
+    "status": 200,
+    "final": "https://www.mim.gov.it/web/guest/home"
+  },
+  "https://www.mit.gov.it/": {
+    "status": 200,
+    "final": "https://www.mit.gov.it/"
+  },
+  "https://www.mur.gov.it/": {
+    "status": 200,
+    "final": "https://www.mur.gov.it/it"
+  },
+  "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-08-10;104": {
+    "status": 200,
+    "final": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-08-10;104"
+  },
+  "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98": {
+    "status": 200,
+    "final": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98"
+  },
+  "https://www.notariato.it/": {
+    "status": 200,
+    "final": "https://www.notariato.it/it/"
+  },
+  "https://www.poste.it/": {
+    "status": 200,
+    "final": "https://www.poste.it/"
+  },
+  "https://www.rai.it/": {
+    "status": 200,
+    "final": "https://www.rai.it/"
+  },
+  "https://www.rgs.mef.gov.it/": {
+    "status": 200,
+    "final": "https://www.rgs.mef.gov.it/VERSIONE-I/home.html"
+  },
+  "https://www.salute.gov.it/": {
+    "status": 200,
+    "final": "https://www.salute.gov.it/"
+  },
+  "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99": {
+    "status": 202,
+    "final": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99"
+  },
+  "https://www.siae.it/": {
+    "status": 200,
+    "final": "https://www.siae.it/it/"
+  },
+  "https://www.snam.it/": {
+    "status": 200,
+    "final": "https://www.snam.it/it/home.html"
+  },
+  "https://www.terna.it/": {
+    "status": 200,
+    "final": "https://www.terna.it/it"
+  },
+  "https://www.unioncamere.gov.it/": {
+    "status": 200,
+    "final": "https://www.unioncamere.gov.it/"
+  }
+}

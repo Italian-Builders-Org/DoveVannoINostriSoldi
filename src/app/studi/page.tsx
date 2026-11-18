@@ -42,6 +42,15 @@ export default function StudiesPage() {
         </article>;
       })}
     </section>
+    <section className={styles.section} aria-labelledby="research-catalogues-title">
+      <h2 id="research-catalogues-title">Cataloghi di ricerca</h2>
+      <article className={styles.card}>
+        <h3><Link href="/studi/rendite-inefficienze">Rendite e inefficienze: casi da verificare</Link></h3>
+        <p><strong>Da verificare · Non è uno studio concluso di DVNS.</strong></p>
+        <p>79 domande di indagine e sette proposte di riforma, con fonti ufficiali di partenza. Nessuna stima economica non documentata: temi da approfondire, non risultati accertati.</p>
+        <Link href="/studi/rendite-inefficienze">Esplora il catalogo e i suoi limiti</Link>
+      </article>
+    </section>
     <aside className={styles.note}>Pubblichiamo studi con una domanda di ricerca, un metodo esplicito, fonti verificabili e materiali riproducibili. La pubblicazione sul sito non equivale a peer review esterna: lo stato della revisione è dichiarato per ciascun lavoro, insieme ai limiti e alle correzioni.</aside>
     <p><Link href="/metodologia">Come leggiamo i dati</Link></p>
   </main>;

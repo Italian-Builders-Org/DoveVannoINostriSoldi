@@ -1,0 +1,49 @@
+{
+  "taxi": {
+    "sourceUrl": "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778",
+    "holder": "AGCM",
+    "publishedOn": "2023-11-03",
+    "acquiredAt": "2026-11-18",
+    "facts": [
+      "Roma: 7.962 licenze attive (2,8 ogni 1.000 residenti).",
+      "Milano: 4.853 licenze attive (3,5 ogni 1.000 residenti).",
+      "Napoli: 2.364 licenze attive (2,6 ogni 1.000 abitanti).",
+      "AGCM rileva inadeguatezza strutturale dell'offerta rispetto alla domanda nelle tre città e sollecita bandi e monitoraggio."
+    ],
+    "doesNotShow": "Non stima un risparmio nazionale né un costo eliminabile di bilancio."
+  },
+  "balneari": {
+    "sourceUrl": "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf",
+    "holder": "AGCM",
+    "publishedOn": "2024-06-03",
+    "acquiredAt": "2026-11-18",
+    "facts": [
+      "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973–AS1977.",
+      "Oggetto: proroghe di concessioni demaniali marittime con finalità turistico-ricreative (Pietrasanta, Viareggio, Camaiore, Forte dei Marmi, Minori).",
+      "AGCM richiama il contrasto delle proroghe automatiche con l'art. 49 TFUE e chiede procedure a evidenza pubblica."
+    ],
+    "doesNotShow": "Non quantifica un gettito mancante nazionale né un risparmio di bilancio da attribuire a DVNS."
+  },
+  "aci-pra": {
+    "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
+    "holder": "Normattiva",
+    "publishedOn": "2017-05-29",
+    "acquiredAt": "2026-11-18",
+    "facts": [
+      "Il D.lgs. 98/2017 disciplina il Documento unico e la razionalizzazione dei dati relativi ai veicoli.",
+      "Il testo Normattiva indica entrata in vigore il 24/07/2017, con eccezioni (art. 5, commi 1 e 2) dal 1/7/2018.",
+      "ACI pubblica pagine istituzionali sul Pubblico Registro Automobilistico e su dati/statistiche."
+    ],
+    "doesNotShow": "Non dimostra da solo che PRA/ACI siano una rendita eliminabile né un importo di ineffficienza."
+  },
+  "cnel": {
+    "sourceUrl": "https://www.cnel.it/",
+    "holder": "CNEL",
+    "acquiredAt": "2026-11-18",
+    "facts": [
+      "Il CNEL si presenta come Consiglio Nazionale dell'Economia e del Lavoro, organo costituzionale con sito istituzionale attivo.",
+      "La pagina Senato sull'art. 99 della Costituzione risulta protetta da WAF in acquisizione automatica (snapshot non affidabile)."
+    ],
+    "doesNotShow": "Non fornisce un costo netto eliminabile né una stima di risparmio da pubblicare."
+  }
+}

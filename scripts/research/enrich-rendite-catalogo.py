@@ -23,13 +23,13 @@ def src(label: str, url: str, holder: str, note: str | None = None) -> dict:
 ITEM_SOURCES: dict[str, list[dict]] = {
     "taxi": [
         src(
-            "AGCM S4778 — segnalazione taxi Roma, Milano, Napoli",
+            "AGCM S4778 - segnalazione taxi Roma, Milano, Napoli",
             "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778",
             "AGCM",
             "Licenze attive dichiarate: Roma 7.962; Milano 4.853; Napoli 2.364 (comunicato 3 novembre 2023). Non è una stima nazionale di spreco.",
         ),
         src(
-            "Decreto-legge 104/2023 (Asset) — Normattiva",
+            "Decreto-legge 104/2023 (Asset) - Normattiva",
             "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-08-10;104",
             "Normattiva",
             "Contesto normativo sul tetto straordinario di aumento licenze citato da AGCM.",
@@ -37,10 +37,10 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "balneari": [
         src(
-            "AGCM Bollettino 22/2024 — concessioni demaniali marittime",
+            "AGCM Bollettino 22/2024 - concessioni demaniali marittime",
             "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024",
             "AGCM",
-            "Segnalazioni AS1973–AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative.",
+            "Segnalazioni AS1973-AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative.",
         ),
         src(
             "AGCM Bollettino 22/2024 (PDF)",
@@ -50,7 +50,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "notai": [
         src(
-            "Ministero della Giustizia — home istituzionale",
+            "Ministero della Giustizia - home istituzionale",
             "https://www.giustizia.it/",
             "Ministero della Giustizia",
             "Pista istituzionale; acquisire tabelle e regolamenti notarili specifici.",
@@ -71,9 +71,9 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "edicole": [src("AGCOM", "https://www.agcom.it/", "AGCOM", "Pista su pluralismo e distribuzione editoriale.")],
     "autostrade": [
-        src("MIT — Ministero delle Infrastrutture e dei Trasporti", "https://www.mit.gov.it/", "MIT"),
+        src("MIT - Ministero delle Infrastrutture e dei Trasporti", "https://www.mit.gov.it/", "MIT"),
         src(
-            "ART — Autorità di regolazione dei trasporti",
+            "ART - Autorità di regolazione dei trasporti",
             "https://www.autorita-trasporti.it/",
             "ART",
             "Verificare accessibilità HTTP (403 osservato su alcuni endpoint); usare delibere pubblicate.",
@@ -111,12 +111,12 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "aci-pra": [
         src(
-            "D.lgs. 98/2017 — Documento Unico e razionalizzazione dati veicolo",
+            "D.lgs. 98/2017 - Documento Unico e razionalizzazione dati veicolo",
             "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
             "Normattiva",
         ),
-        src("ACI — Pubblico Registro Automobilistico", "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html", "ACI"),
-        src("ACI — Dati e statistiche", "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html", "ACI"),
+        src("ACI - Pubblico Registro Automobilistico", "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html", "ACI"),
+        src("ACI - Dati e statistiche", "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html", "ACI"),
         src("MIT", "https://www.mit.gov.it/", "MIT"),
     ],
     "camere": [
@@ -134,19 +134,19 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     "riciclo": [
         src("CONAI", "https://www.conai.org/", "CONAI", "Alcuni endpoint possono rispondere 403; usare bilanci e rapporti pubblicati."),
         src("MASE", "https://www.mase.gov.it/", "MASE"),
-        src("ISPRA — rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
+        src("ISPRA - rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
     ],
     "sport": [src("CONI", "https://www.coni.it/", "CONI")],
     "caa": [src("AGEA", "https://www.agea.gov.it/", "AGEA")],
     "cnel": [
         src(
-            "CNEL — sito istituzionale",
+            "CNEL - sito istituzionale",
             "https://www.cnel.it/",
             "CNEL",
             "Organo costituzionale; l'abolizione non è un intervento amministrativo ordinario.",
         ),
         src(
-            "Costituzione art. 99 — pagina Senato",
+            "Costituzione art. 99 - pagina Senato",
             "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99",
             "Senato della Repubblica",
             "Snapshot HTML può essere bloccato da WAF; verificare nel browser.",
@@ -154,7 +154,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "fondazioni-bancarie": [src("ACRI", "https://www.acri.it/", "ACRI"), src("MEF", "https://www.mef.gov.it/", "MEF")],
     "terna-snam": [
-        src("ARERA — Relazione annuale 2024", "https://www.arera.it/it/relaz_ann/24/ra24.htm", "ARERA"),
+        src("ARERA - Relazione annuale 2024", "https://www.arera.it/it/relaz_ann/24/ra24.htm", "ARERA"),
         src("Terna", "https://www.terna.it/", "Terna"),
         src("Snam", "https://www.snam.it/", "Snam"),
     ],
@@ -162,14 +162,14 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     "aeroporti": [src("ENAC", "https://www.enac.gov.it/", "ENAC"), src("MIT", "https://www.mit.gov.it/", "MIT")],
     "telecom": [src("AGCOM", "https://www.agcom.it/", "AGCOM")],
     "energia-retail": [
-        src("ARERA — Relazione annuale 2024", "https://www.arera.it/it/relaz_ann/24/ra24.htm", "ARERA"),
+        src("ARERA - Relazione annuale 2024", "https://www.arera.it/it/relaz_ann/24/ra24.htm", "ARERA"),
         src("ARERA", "https://www.arera.it/", "ARERA"),
     ],
     "poste": [src("AGCOM", "https://www.agcom.it/", "AGCOM"), src("Poste Italiane", "https://www.poste.it/", "Poste Italiane")],
     "rai": [src("AGCOM", "https://www.agcom.it/", "AGCOM"), src("RAI", "https://www.rai.it/", "RAI")],
     "banche": [
         src(
-            "Banca d'Italia — Relazione annuale",
+            "Banca d'Italia - Relazione annuale",
             "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
             "Banca d'Italia",
         ),
@@ -196,7 +196,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "agenzie-auto": [src("ACI", "https://www.aci.it/", "ACI"), src("MIT", "https://www.mit.gov.it/", "MIT")],
     "geometri": [src("MIT", "https://www.mit.gov.it/", "MIT")],
-    "riscossione-locale": [src("MEF — RGS", "https://www.rgs.mef.gov.it/", "Ragioneria Generale dello Stato")],
+    "riscossione-locale": [src("MEF - RGS", "https://www.rgs.mef.gov.it/", "Ragioneria Generale dello Stato")],
     "software": [src("AgID", "https://www.agid.gov.it/", "AgID")],
     "editori-giuridici": [src("Gazzetta Ufficiale", "https://www.gazzettaufficiale.it/", "Gazzetta Ufficiale")],
     "formazione": [src("Ministero del Lavoro", "https://www.lavoro.gov.it/", "Ministero del Lavoro")],
@@ -238,7 +238,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "rifiuti-speciali": [
         src("MASE", "https://www.mase.gov.it/", "MASE"),
-        src("ISPRA — rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
+        src("ISPRA - rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
     ],
     "npl": [src("Banca d'Italia", "https://www.bancaditalia.it/", "Banca d'Italia")],
     "catasto": [src("Agenzia delle Entrate", "https://www.agenziaentrate.gov.it/portale/", "Agenzia delle Entrate")],
@@ -248,7 +248,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     ],
     "banca-italia": [
         src(
-            "Banca d'Italia — Relazione annuale",
+            "Banca d'Italia - Relazione annuale",
             "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
             "Banca d'Italia",
         ),
@@ -258,13 +258,13 @@ ITEM_SOURCES: dict[str, list[dict]] = {
     "mercati": [src("MASAF", "https://www.masaf.gov.it/", "MASAF")],
     "tari": [
         src("ARERA", "https://www.arera.it/", "ARERA"),
-        src("ISPRA — rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
+        src("ISPRA - rifiuti", "https://www.isprambiente.gov.it/it/attivita/rifiuti", "ISPRA"),
     ],
     "cultura": [src("MiC", "https://www.cultura.gov.it/", "Ministero della Cultura")],
     "rsa": [src("Ministero della Salute", "https://www.salute.gov.it/", "Ministero della Salute")],
     "gioco-sociale": [src("ADM", "https://www.adm.gov.it/", "ADM"), src("Istituto Superiore di Sanità", "https://www.iss.it/", "ISS")],
     "editori-scolastici": [src("MIM", "https://www.mim.gov.it/", "MIM")],
-    "uibm": [src("UIBM — MIMIT", "https://uibm.mise.gov.it/", "MIMIT")],
+    "uibm": [src("UIBM - MIMIT", "https://uibm.mise.gov.it/", "MIMIT")],
     "tempo": [
         src(
             "ISTAT",
@@ -274,7 +274,7 @@ ITEM_SOURCES: dict[str, list[dict]] = {
         ),
     ],
     "pil-mancante": [
-        src("ISTAT — Conti nazionali", "https://www.istat.it/statistiche-per-temi/conti-nazionali/", "ISTAT"),
+        src("ISTAT - Conti nazionali", "https://www.istat.it/statistiche-per-temi/conti-nazionali/", "ISTAT"),
     ],
     "produttivita": [
         src("ISTAT", "https://www.istat.it/", "ISTAT"),
@@ -316,7 +316,7 @@ EVIDENCE = {
         "publishedOn": "2024-06-03",
         "acquiredAt": CHECKED,
         "facts": [
-            "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973–AS1977.",
+            "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973-AS1977.",
             "Oggetto: proroghe di concessioni demaniali marittime con finalità turistico-ricreative (Pietrasanta, Viareggio, Camaiore, Forte dei Marmi, Minori).",
             "AGCM richiama il contrasto delle proroghe automatiche con l'art. 49 TFUE e chiede procedure a evidenza pubblica.",
         ],

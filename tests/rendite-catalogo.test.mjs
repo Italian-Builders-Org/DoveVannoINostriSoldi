@@ -83,7 +83,11 @@ test("research catalogue keeps 79 investigation prompts, seven proposals, and of
   assert.match(page, /Da verificare/);
   for (const field of ["item.question", "proposal.action", "proposal.limits"]) assert.ok(page.includes(field));
   for (const label of ["Spesa pubblica", "Costi privati", "Costi sistemici"]) assert.ok(page.includes(label));
-  assert.match(page, /github\.com\/Italian-Builders-Org\/DoveVannoINostriSoldi\/blob\/main\/research\/rendite-inefficienze\/README\.md/);
+  assert.ok(
+    page.includes(
+      "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/blob/main/research/rendite-inefficienze/README.md",
+    ),
+  );
   assert.doesNotMatch(page, /use client|useEffect|useState|dangerouslySetInnerHTML|\.reduce\(|formatEuro|Intl\.NumberFormat|force-dynamic|fetch\(/);
   assert.doesNotMatch(page, /\b0\s*(?:€|euro)|\b(?:totale|total)\s*[=:]/i);
 });

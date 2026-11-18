@@ -64,7 +64,7 @@ function SourcesList({ sources }: Readonly<{ sources?: SourceLink[] }>) {
             </a>
             {source.holder ? ` · ${source.holder}` : ""}
             {source.checkedAt ? ` · verificato ${source.checkedAt}` : ""}
-            {source.note ? ` — ${source.note}` : ""}
+            {source.note ? ` · ${source.note}` : ""}
           </li>
         ))}
       </ul>
@@ -103,7 +103,7 @@ export default function RenditeCataloguePage() {
         <h1>{title}</h1>
         <p>
           79 casi da approfondire, raccolti in sette gruppi, e sette proposte di riforma da
-          discutere — con fonti ufficiali di partenza per ciascun tema.
+          discutere, con fonti ufficiali di partenza per ciascun tema.
         </p>
         <p>
           <strong>Catalogo di ricerca · Da verificare.</strong> Non è uno studio economico

@@ -11,14 +11,14 @@
           "question": "Quali effetti hanno contingentamento delle licenze e regole del servizio su disponibilità, qualità e prezzi?",
           "sources": [
             {
-              "label": "AGCM S4778 — segnalazione taxi Roma, Milano, Napoli",
+              "label": "AGCM S4778 - segnalazione taxi Roma, Milano, Napoli",
               "url": "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778",
               "holder": "AGCM",
               "checkedAt": "2026-11-18",
               "note": "Licenze attive dichiarate: Roma 7.962; Milano 4.853; Napoli 2.364 (comunicato 3 novembre 2023). Non è una stima nazionale di spreco."
             },
             {
-              "label": "Decreto-legge 104/2023 (Asset) — Normattiva",
+              "label": "Decreto-legge 104/2023 (Asset) - Normattiva",
               "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-08-10;104",
               "holder": "Normattiva",
               "checkedAt": "2026-11-18",
@@ -45,11 +45,11 @@
           "question": "Come confrontare canoni, valore dei beni concessi e risultati delle gare, distinguendo maggior gettito da risparmio?",
           "sources": [
             {
-              "label": "AGCM Bollettino 22/2024 — concessioni demaniali marittime",
+              "label": "AGCM Bollettino 22/2024 - concessioni demaniali marittime",
               "url": "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024",
               "holder": "AGCM",
               "checkedAt": "2026-11-18",
-              "note": "Segnalazioni AS1973–AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
+              "note": "Segnalazioni AS1973-AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
             },
             {
               "label": "AGCM Bollettino 22/2024 (PDF)",
@@ -64,7 +64,7 @@
             "publishedOn": "2024-06-03",
             "acquiredAt": "2026-11-18",
             "facts": [
-              "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973–AS1977.",
+              "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973-AS1977.",
               "Oggetto: proroghe di concessioni demaniali marittime con finalità turistico-ricreative (Pietrasanta, Viareggio, Camaiore, Forte dei Marmi, Minori).",
               "AGCM richiama il contrasto delle proroghe automatiche con l'art. 49 TFUE e chiede procedure a evidenza pubblica."
             ],
@@ -77,7 +77,7 @@
           "question": "Quali attività garantiscono certezza giuridica e quali potrebbero essere semplificate senza ridurre le tutele?",
           "sources": [
             {
-              "label": "Ministero della Giustizia — home istituzionale",
+              "label": "Ministero della Giustizia - home istituzionale",
               "url": "https://www.giustizia.it/",
               "holder": "Ministero della Giustizia",
               "checkedAt": "2026-11-18",
@@ -145,13 +145,13 @@
           "question": "Come confrontare pedaggi, investimenti, manutenzione e remunerazione del capitale nei contratti di concessione?",
           "sources": [
             {
-              "label": "MIT — Ministero delle Infrastrutture e dei Trasporti",
+              "label": "MIT - Ministero delle Infrastrutture e dei Trasporti",
               "url": "https://www.mit.gov.it/",
               "holder": "MIT",
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ART — Autorità di regolazione dei trasporti",
+              "label": "ART - Autorità di regolazione dei trasporti",
               "url": "https://www.autorita-trasporti.it/",
               "holder": "ART",
               "checkedAt": "2026-11-18",
@@ -299,19 +299,19 @@
           "question": "Quali duplicazioni restano dopo il Documento Unico tra PRA gestito dall'ACI e funzioni della Motorizzazione?",
           "sources": [
             {
-              "label": "D.lgs. 98/2017 — Documento Unico e razionalizzazione dati veicolo",
+              "label": "D.lgs. 98/2017 - Documento Unico e razionalizzazione dati veicolo",
               "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
               "holder": "Normattiva",
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ACI — Pubblico Registro Automobilistico",
+              "label": "ACI - Pubblico Registro Automobilistico",
               "url": "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html",
               "holder": "ACI",
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ACI — Dati e statistiche",
+              "label": "ACI - Dati e statistiche",
               "url": "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html",
               "holder": "ACI",
               "checkedAt": "2026-11-18"
@@ -420,7 +420,7 @@
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ISPRA — rifiuti",
+              "label": "ISPRA - rifiuti",
               "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
               "holder": "ISPRA",
               "checkedAt": "2026-11-18"
@@ -459,14 +459,14 @@
           "question": "Quali costi netti sono evitabili e quali funzioni e vincoli costituzionali vanno considerati?",
           "sources": [
             {
-              "label": "CNEL — sito istituzionale",
+              "label": "CNEL - sito istituzionale",
               "url": "https://www.cnel.it/",
               "holder": "CNEL",
               "checkedAt": "2026-11-18",
               "note": "Organo costituzionale; l'abolizione non è un intervento amministrativo ordinario."
             },
             {
-              "label": "Costituzione art. 99 — pagina Senato",
+              "label": "Costituzione art. 99 - pagina Senato",
               "url": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99",
               "holder": "Senato della Repubblica",
               "checkedAt": "2026-11-18",
@@ -516,7 +516,7 @@
           "question": "La remunerazione regolata del capitale è coerente con rischio, investimenti e confronti europei omogenei?",
           "sources": [
             {
-              "label": "ARERA — Relazione annuale 2024",
+              "label": "ARERA - Relazione annuale 2024",
               "url": "https://www.arera.it/it/relaz_ann/24/ra24.htm",
               "holder": "ARERA",
               "checkedAt": "2026-11-18"
@@ -586,7 +586,7 @@
           "question": "Quali componenti di prezzo dipendono da intermediazione e concorrenza, anziché da energia, reti e fiscalità?",
           "sources": [
             {
-              "label": "ARERA — Relazione annuale 2024",
+              "label": "ARERA - Relazione annuale 2024",
               "url": "https://www.arera.it/it/relaz_ann/24/ra24.htm",
               "holder": "ARERA",
               "checkedAt": "2026-11-18"
@@ -650,7 +650,7 @@
           "question": "Quali commissioni superano benchmark comparabili per servizio, rischio e profilo del cliente?",
           "sources": [
             {
-              "label": "Banca d'Italia — Relazione annuale",
+              "label": "Banca d'Italia - Relazione annuale",
               "url": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
               "holder": "Banca d'Italia",
               "checkedAt": "2026-11-18"
@@ -862,7 +862,7 @@
           "question": "Come confrontare costi e recuperi netti dei diversi modelli di riscossione?",
           "sources": [
             {
-              "label": "MEF — RGS",
+              "label": "MEF - RGS",
               "url": "https://www.rgs.mef.gov.it/",
               "holder": "Ragioneria Generale dello Stato",
               "checkedAt": "2026-11-18"
@@ -1133,7 +1133,7 @@
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ISPRA — rifiuti",
+              "label": "ISPRA - rifiuti",
               "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
               "holder": "ISPRA",
               "checkedAt": "2026-11-18"
@@ -1191,7 +1191,7 @@
           "question": "Quali effetti economici della struttura proprietaria sono dimostrabili, separati dai costi delle funzioni istituzionali?",
           "sources": [
             {
-              "label": "Banca d'Italia — Relazione annuale",
+              "label": "Banca d'Italia - Relazione annuale",
               "url": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
               "holder": "Banca d'Italia",
               "checkedAt": "2026-11-18"
@@ -1261,7 +1261,7 @@
               "checkedAt": "2026-11-18"
             },
             {
-              "label": "ISPRA — rifiuti",
+              "label": "ISPRA - rifiuti",
               "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
               "holder": "ISPRA",
               "checkedAt": "2026-11-18"
@@ -1332,7 +1332,7 @@
           "question": "Quali procedure e oneri sono ridondanti, distinti dalle funzioni necessarie di tutela e verifica?",
           "sources": [
             {
-              "label": "UIBM — MIMIT",
+              "label": "UIBM - MIMIT",
               "url": "https://uibm.mise.gov.it/",
               "holder": "MIMIT",
               "checkedAt": "2026-11-18"
@@ -1366,7 +1366,7 @@
           "question": "Quale controfattuale e quale evidenza causale permettono di attribuire un effetto alle inefficienze individuate?",
           "sources": [
             {
-              "label": "ISTAT — Conti nazionali",
+              "label": "ISTAT - Conti nazionali",
               "url": "https://www.istat.it/statistiche-per-temi/conti-nazionali/",
               "holder": "ISTAT",
               "checkedAt": "2026-11-18"
@@ -1422,19 +1422,19 @@
       "limits": "Ricostruire il perimetro dopo il Documento Unico; distinguere duplicazioni residue, funzioni differenti, tariffe, imposte, costi trasferiti e costi di migrazione. Risparmio netto non quantificato.",
       "sources": [
         {
-          "label": "D.lgs. 98/2017 — Documento Unico e razionalizzazione dati veicolo",
+          "label": "D.lgs. 98/2017 - Documento Unico e razionalizzazione dati veicolo",
           "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
           "holder": "Normattiva",
           "checkedAt": "2026-11-18"
         },
         {
-          "label": "ACI — Pubblico Registro Automobilistico",
+          "label": "ACI - Pubblico Registro Automobilistico",
           "url": "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html",
           "holder": "ACI",
           "checkedAt": "2026-11-18"
         },
         {
-          "label": "ACI — Dati e statistiche",
+          "label": "ACI - Dati e statistiche",
           "url": "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html",
           "holder": "ACI",
           "checkedAt": "2026-11-18"
@@ -1474,14 +1474,14 @@
       "limits": "L'abolizione richiede revisione costituzionale; documentare costi netti e destinazione delle funzioni. Non è un intervento amministrativo immediato. Risparmio netto non quantificato.",
       "sources": [
         {
-          "label": "CNEL — sito istituzionale",
+          "label": "CNEL - sito istituzionale",
           "url": "https://www.cnel.it/",
           "holder": "CNEL",
           "checkedAt": "2026-11-18",
           "note": "Organo costituzionale; l'abolizione non è un intervento amministrativo ordinario."
         },
         {
-          "label": "Costituzione art. 99 — pagina Senato",
+          "label": "Costituzione art. 99 - pagina Senato",
           "url": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99",
           "holder": "Senato della Repubblica",
           "checkedAt": "2026-11-18",
@@ -1522,11 +1522,11 @@
       "limits": "Verificare normativa e stato delle gare, obblighi e contenzioso. L'eventuale incremento di canoni è maggior gettito, non taglio di spesa. Impatto netto non quantificato.",
       "sources": [
         {
-          "label": "AGCM Bollettino 22/2024 — concessioni demaniali marittime",
+          "label": "AGCM Bollettino 22/2024 - concessioni demaniali marittime",
           "url": "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024",
           "holder": "AGCM",
           "checkedAt": "2026-11-18",
-          "note": "Segnalazioni AS1973–AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
+          "note": "Segnalazioni AS1973-AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
         },
         {
           "label": "AGCM Bollettino 22/2024 (PDF)",

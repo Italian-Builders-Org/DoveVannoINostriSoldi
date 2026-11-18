@@ -1,0 +1,1576 @@
+{
+  "groups": [
+    {
+      "id": "accesso-concessioni",
+      "title": "Accesso alle professioni e concessioni",
+      "description": "Costi per gli utenti, condizioni di accesso e uso di beni pubblici: ambiti diversi dalla sola spesa dello Stato.",
+      "items": [
+        {
+          "id": "taxi",
+          "name": "Tassisti",
+          "question": "Quali effetti hanno contingentamento delle licenze e regole del servizio su disponibilità, qualità e prezzi?",
+          "sources": [
+            {
+              "label": "AGCM S4778 - segnalazione taxi Roma, Milano, Napoli",
+              "url": "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778",
+              "holder": "AGCM",
+              "checkedAt": "2026-11-18",
+              "note": "Licenze attive dichiarate: Roma 7.962; Milano 4.853; Napoli 2.364 (comunicato 3 novembre 2023). Non è una stima nazionale di spreco."
+            },
+            {
+              "label": "Decreto-legge 104/2023 (Asset) - Normattiva",
+              "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2023-08-10;104",
+              "holder": "Normattiva",
+              "checkedAt": "2026-11-18",
+              "note": "Contesto normativo sul tetto straordinario di aumento licenze citato da AGCM."
+            }
+          ],
+          "evidence": {
+            "sourceUrl": "https://www.agcm.it/media/comunicati-stampa/2023/11/S4778",
+            "holder": "AGCM",
+            "publishedOn": "2023-11-03",
+            "acquiredAt": "2026-11-18",
+            "facts": [
+              "Roma: 7.962 licenze attive (2,8 ogni 1.000 residenti).",
+              "Milano: 4.853 licenze attive (3,5 ogni 1.000 residenti).",
+              "Napoli: 2.364 licenze attive (2,6 ogni 1.000 abitanti).",
+              "AGCM rileva inadeguatezza strutturale dell'offerta rispetto alla domanda nelle tre città e sollecita bandi e monitoraggio."
+            ],
+            "doesNotShow": "Non stima un risparmio nazionale né un costo eliminabile di bilancio."
+          }
+        },
+        {
+          "id": "balneari",
+          "name": "Concessioni balneari",
+          "question": "Come confrontare canoni, valore dei beni concessi e risultati delle gare, distinguendo maggior gettito da risparmio?",
+          "sources": [
+            {
+              "label": "AGCM Bollettino 22/2024 - concessioni demaniali marittime",
+              "url": "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024",
+              "holder": "AGCM",
+              "checkedAt": "2026-11-18",
+              "note": "Segnalazioni AS1973-AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
+            },
+            {
+              "label": "AGCM Bollettino 22/2024 (PDF)",
+              "url": "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf",
+              "holder": "AGCM",
+              "checkedAt": "2026-11-18"
+            }
+          ],
+          "evidence": {
+            "sourceUrl": "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf",
+            "holder": "AGCM",
+            "publishedOn": "2024-06-03",
+            "acquiredAt": "2026-11-18",
+            "facts": [
+              "Bollettino settimanale n. 22/2024 (pubblicato 3 giugno 2024) include le segnalazioni AS1973-AS1977.",
+              "Oggetto: proroghe di concessioni demaniali marittime con finalità turistico-ricreative (Pietrasanta, Viareggio, Camaiore, Forte dei Marmi, Minori).",
+              "AGCM richiama il contrasto delle proroghe automatiche con l'art. 49 TFUE e chiede procedure a evidenza pubblica."
+            ],
+            "doesNotShow": "Non quantifica un gettito mancante nazionale né un risparmio di bilancio da attribuire a DVNS."
+          }
+        },
+        {
+          "id": "notai",
+          "name": "Notai",
+          "question": "Quali attività garantiscono certezza giuridica e quali potrebbero essere semplificate senza ridurre le tutele?",
+          "sources": [
+            {
+              "label": "Ministero della Giustizia - home istituzionale",
+              "url": "https://www.giustizia.it/",
+              "holder": "Ministero della Giustizia",
+              "checkedAt": "2026-11-18",
+              "note": "Pista istituzionale; acquisire tabelle e regolamenti notarili specifici."
+            },
+            {
+              "label": "Consiglio Nazionale del Notariato",
+              "url": "https://www.notariato.it/",
+              "holder": "CNN",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "farmacie",
+          "name": "Farmacie",
+          "question": "Come incidono i vincoli di accesso su prezzi, accessibilità territoriale e continuità del servizio?",
+          "sources": [
+            {
+              "label": "Ministero della Salute",
+              "url": "https://www.salute.gov.it/",
+              "holder": "Ministero della Salute",
+              "checkedAt": "2026-11-18",
+              "note": "Alcuni percorsi tematici rispondono con challenge CDN; usare atti e open data puntuali."
+            },
+            {
+              "label": "AIFA",
+              "url": "https://www.aifa.gov.it/",
+              "holder": "AIFA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "tabaccai",
+          "name": "Tabaccai",
+          "question": "Quali vincoli distributivi hanno una giustificazione sanitaria o fiscale e quali costi producono?",
+          "sources": [
+            {
+              "label": "Agenzia delle Dogane e dei Monopoli",
+              "url": "https://www.adm.gov.it/",
+              "holder": "ADM",
+              "checkedAt": "2026-11-18",
+              "note": "Pista su rete di distribuzione e vincoli fiscali/sanitari."
+            }
+          ]
+        },
+        {
+          "id": "edicole",
+          "name": "Edicolanti",
+          "question": "Quali regole di accesso e sostegni incidono sulla distribuzione, anche nelle aree poco servite?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18",
+              "note": "Pista su pluralismo e distribuzione editoriale."
+            }
+          ]
+        },
+        {
+          "id": "autostrade",
+          "name": "Concessionari autostradali",
+          "question": "Come confrontare pedaggi, investimenti, manutenzione e remunerazione del capitale nei contratti di concessione?",
+          "sources": [
+            {
+              "label": "MIT - Ministero delle Infrastrutture e dei Trasporti",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ART - Autorità di regolazione dei trasporti",
+              "url": "https://www.autorita-trasporti.it/",
+              "holder": "ART",
+              "checkedAt": "2026-11-18",
+              "note": "Verificare accessibilità HTTP (403 osservato su alcuni endpoint); usare delibere pubblicate."
+            }
+          ]
+        },
+        {
+          "id": "concessioni-gioco",
+          "name": "Concessioni gioco e slot",
+          "question": "Quali effetti hanno le concessioni su gettito, concorrenza e costi di vigilanza, separati dai danni sociali?",
+          "sources": [
+            {
+              "label": "Agenzia delle Dogane e dei Monopoli",
+              "url": "https://www.adm.gov.it/",
+              "holder": "ADM",
+              "checkedAt": "2026-11-18",
+              "note": "Distinguere gettito, vigilanza e costi sociali."
+            }
+          ]
+        },
+        {
+          "id": "tv-frequenze",
+          "name": "Concessioni TV e frequenze",
+          "question": "Come sono assegnate e valorizzate le frequenze, e quali alternative sono compatibili con il pluralismo?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "porti-turistici",
+          "name": "Concessioni porti turistici",
+          "question": "Canoni e procedure di assegnazione riflettono il valore dei beni pubblici e gli obblighi di investimento?",
+          "sources": [
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ENAC (contesto infrastrutture)",
+              "url": "https://www.enac.gov.it/",
+              "holder": "ENAC",
+              "checkedAt": "2026-11-18",
+              "note": "Perimetro aeroportuale; per porti usare atti MIT/AdSP."
+            }
+          ]
+        },
+        {
+          "id": "funerari",
+          "name": "Servizi cimiteriali e funebri",
+          "question": "Quali costi derivano da vincoli di accesso, affidamenti e possibili conflitti di interesse locali?",
+          "sources": [
+            {
+              "label": "Ministero della Salute",
+              "url": "https://www.salute.gov.it/",
+              "holder": "Ministero della Salute",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "ordini",
+          "name": "Ordini professionali",
+          "question": "Quali funzioni di tutela svolgono gli ordini e quali oneri potrebbero essere ridotti mantenendole?",
+          "sources": [
+            {
+              "label": "Gazzetta Ufficiale",
+              "url": "https://www.gazzettaufficiale.it/",
+              "holder": "Gazzetta Ufficiale",
+              "checkedAt": "2026-11-18",
+              "note": "Norme istitutive e riforme degli ordini da individuare caso per caso."
+            }
+          ]
+        },
+        {
+          "id": "casse",
+          "name": "Casse professionali",
+          "question": "Come confrontare costi di gestione e prestazioni, senza trattare contributi previdenziali come spreco?",
+          "sources": [
+            {
+              "label": "COVIP",
+              "url": "https://www.covip.it/",
+              "holder": "COVIP",
+              "checkedAt": "2026-11-18",
+              "note": "Pista su previdenza complementare/casse; alcuni percorsi rispondono 403."
+            }
+          ]
+        },
+        {
+          "id": "siae",
+          "name": "SIAE",
+          "question": "Quali costi di intermediazione e vincoli di concorrenza emergono nella gestione dei diritti d'autore?",
+          "sources": [
+            {
+              "label": "SIAE",
+              "url": "https://www.siae.it/",
+              "holder": "SIAE",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "AGCM",
+              "url": "https://www.agcm.it/",
+              "holder": "AGCM",
+              "checkedAt": "2026-11-18",
+              "note": "Cercare provvedimenti su diritti d'autore e intermediazione."
+            }
+          ]
+        },
+        {
+          "id": "editoria",
+          "name": "Editoria e aiuti pubblici",
+          "question": "Quali sostegni sono aggiuntivi rispetto al mercato e quali risultati producono per il pluralismo?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Dipartimento per l'Informazione e l'Editoria",
+              "url": "https://www.informazioneeditoria.gov.it/",
+              "holder": "Presidenza del Consiglio",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enti-intermediazioni",
+      "title": "Enti e intermediazioni obbligatorie",
+      "description": "Verificare natura giuridica, funzioni, finanziamento e duplicazioni: i soggetti elencati non sono tutti enti pubblici.",
+      "items": [
+        {
+          "id": "aci-pra",
+          "name": "ACI / PRA e Motorizzazione",
+          "question": "Quali duplicazioni restano dopo il Documento Unico tra PRA gestito dall'ACI e funzioni della Motorizzazione?",
+          "sources": [
+            {
+              "label": "D.lgs. 98/2017 - Documento Unico e razionalizzazione dati veicolo",
+              "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
+              "holder": "Normattiva",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ACI - Pubblico Registro Automobilistico",
+              "url": "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html",
+              "holder": "ACI",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ACI - Dati e statistiche",
+              "url": "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html",
+              "holder": "ACI",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            }
+          ],
+          "evidence": {
+            "sourceUrl": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
+            "holder": "Normattiva",
+            "publishedOn": "2017-05-29",
+            "acquiredAt": "2026-11-18",
+            "facts": [
+              "Il D.lgs. 98/2017 disciplina il Documento unico e la razionalizzazione dei dati relativi ai veicoli.",
+              "Il testo Normattiva indica entrata in vigore il 24/07/2017, con eccezioni (art. 5, commi 1 e 2) dal 1/7/2018.",
+              "ACI pubblica pagine istituzionali sul Pubblico Registro Automobilistico e su dati/statistiche."
+            ],
+            "doesNotShow": "Non dimostra da solo che PRA/ACI siano una rendita eliminabile né un importo di ineffficienza."
+          }
+        },
+        {
+          "id": "camere",
+          "name": "Camere di Commercio",
+          "question": "Quali costi del Registro Imprese e delle altre funzioni sarebbero eliminati, anziché trasferiti, con un accorpamento?",
+          "sources": [
+            {
+              "label": "Unioncamere",
+              "url": "https://www.unioncamere.gov.it/",
+              "holder": "Unioncamere",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "bollo",
+          "name": "Bollo auto: intermediazione e aggi",
+          "question": "Quali oneri di riscossione sono evitabili con canali diretti, preservando accessibilità e assistenza?",
+          "sources": [
+            {
+              "label": "ACI",
+              "url": "https://www.aci.it/",
+              "holder": "ACI",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "bonifica",
+          "name": "Consorzi di bonifica",
+          "question": "Quali sovrapposizioni gestionali esistono e quali costi di manutenzione e sicurezza idraulica resterebbero comunque?",
+          "sources": [
+            {
+              "label": "MASAF",
+              "url": "https://www.masaf.gov.it/",
+              "holder": "MASAF",
+              "checkedAt": "2026-11-18",
+              "note": "Consorzi e funzioni idrauliche: bilanci e leggi regionali da acquisire."
+            }
+          ]
+        },
+        {
+          "id": "dop-doc",
+          "name": "Consorzi DOP/DOC",
+          "question": "Quali funzioni di tutela e promozione sono finanziate e quali oneri risultano evitabili?",
+          "sources": [
+            {
+              "label": "MASAF",
+              "url": "https://www.masaf.gov.it/",
+              "holder": "MASAF",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "riciclo",
+          "name": "Consorzi obbligatori riciclo (CONAI, COBAT)",
+          "question": "Come confrontare contributi, costi operativi e risultati ambientali nel rispetto della responsabilità del produttore?",
+          "sources": [
+            {
+              "label": "CONAI",
+              "url": "https://www.conai.org/",
+              "holder": "CONAI",
+              "checkedAt": "2026-11-18",
+              "note": "Alcuni endpoint possono rispondere 403; usare bilanci e rapporti pubblicati."
+            },
+            {
+              "label": "MASE",
+              "url": "https://www.mase.gov.it/",
+              "holder": "MASE",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ISPRA - rifiuti",
+              "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
+              "holder": "ISPRA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "sport",
+          "name": "Federazioni sportive e CONI",
+          "question": "Quali eventuali sovrapposizioni esistono tra federazioni, CONI e altri soggetti del sistema sportivo?",
+          "sources": [
+            {
+              "label": "CONI",
+              "url": "https://www.coni.it/",
+              "holder": "CONI",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "caa",
+          "name": "CAA agricoli",
+          "question": "Quali pratiche possono essere semplificate mantenendo assistenza e controlli sui contributi?",
+          "sources": [
+            {
+              "label": "AGEA",
+              "url": "https://www.agea.gov.it/",
+              "holder": "AGEA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "cnel",
+          "name": "CNEL e organi simili",
+          "question": "Quali costi netti sono evitabili e quali funzioni e vincoli costituzionali vanno considerati?",
+          "sources": [
+            {
+              "label": "CNEL - sito istituzionale",
+              "url": "https://www.cnel.it/",
+              "holder": "CNEL",
+              "checkedAt": "2026-11-18",
+              "note": "Organo costituzionale; l'abolizione non è un intervento amministrativo ordinario."
+            },
+            {
+              "label": "Costituzione art. 99 - pagina Senato",
+              "url": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99",
+              "holder": "Senato della Repubblica",
+              "checkedAt": "2026-11-18",
+              "note": "Snapshot HTML può essere bloccato da WAF; verificare nel browser."
+            }
+          ],
+          "evidence": {
+            "sourceUrl": "https://www.cnel.it/",
+            "holder": "CNEL",
+            "acquiredAt": "2026-11-18",
+            "facts": [
+              "Il CNEL si presenta come Consiglio Nazionale dell'Economia e del Lavoro, organo costituzionale con sito istituzionale attivo.",
+              "La pagina Senato sull'art. 99 della Costituzione risulta protetta da WAF in acquisizione automatica (snapshot non affidabile)."
+            ],
+            "doesNotShow": "Non fornisce un costo netto eliminabile né una stima di risparmio da pubblicare."
+          }
+        },
+        {
+          "id": "fondazioni-bancarie",
+          "name": "Fondazioni bancarie",
+          "question": "Come misurare efficienza delle erogazioni e costi di gestione senza confondere patrimoni privati e bilancio pubblico?",
+          "sources": [
+            {
+              "label": "ACRI",
+              "url": "https://www.acri.it/",
+              "holder": "ACRI",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "MEF",
+              "url": "https://www.mef.gov.it/",
+              "holder": "MEF",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reti-servizi",
+      "title": "Reti e mercati regolati",
+      "description": "Confrontare tariffe, qualità, investimenti e costi efficienti. Il ricavo di un servizio non è una misura dello spreco.",
+      "items": [
+        {
+          "id": "terna-snam",
+          "name": "Terna e Snam",
+          "question": "La remunerazione regolata del capitale è coerente con rischio, investimenti e confronti europei omogenei?",
+          "sources": [
+            {
+              "label": "ARERA - Relazione annuale 2024",
+              "url": "https://www.arera.it/it/relaz_ann/24/ra24.htm",
+              "holder": "ARERA",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Terna",
+              "url": "https://www.terna.it/",
+              "holder": "Terna",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Snam",
+              "url": "https://www.snam.it/",
+              "holder": "Snam",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "multiutility",
+          "name": "Multiutility locali (Hera, A2A, IREN)",
+          "question": "Quali margini di efficienza emergono separando servizi regolati, attività di mercato e qualità erogata?",
+          "sources": [
+            {
+              "label": "ARERA",
+              "url": "https://www.arera.it/",
+              "holder": "ARERA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "aeroporti",
+          "name": "Aeroporti (ADR, SEA)",
+          "question": "Come confrontare tariffe aeroportuali, obblighi di investimento e condizioni delle concessioni?",
+          "sources": [
+            {
+              "label": "ENAC",
+              "url": "https://www.enac.gov.it/",
+              "holder": "ENAC",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "telecom",
+          "name": "Telecomunicazioni",
+          "question": "Quali maggiori costi risultano da confronti omogenei per copertura, velocità e qualità?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "energia-retail",
+          "name": "Energia retail",
+          "question": "Quali componenti di prezzo dipendono da intermediazione e concorrenza, anziché da energia, reti e fiscalità?",
+          "sources": [
+            {
+              "label": "ARERA - Relazione annuale 2024",
+              "url": "https://www.arera.it/it/relaz_ann/24/ra24.htm",
+              "holder": "ARERA",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ARERA",
+              "url": "https://www.arera.it/",
+              "holder": "ARERA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "poste",
+          "name": "Poste Italiane",
+          "question": "Come distinguere costo del servizio universale, compensazioni pubbliche e attività commerciali?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Poste Italiane",
+              "url": "https://www.poste.it/",
+              "holder": "Poste Italiane",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "rai",
+          "name": "RAI",
+          "question": "Quali costi evitabili emergono a parità di obblighi di servizio pubblico, copertura e produzione?",
+          "sources": [
+            {
+              "label": "AGCOM",
+              "url": "https://www.agcom.it/",
+              "holder": "AGCOM",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "RAI",
+              "url": "https://www.rai.it/",
+              "holder": "RAI",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "finanza-assicurazioni",
+      "title": "Finanza e assicurazioni",
+      "description": "Costi sostenuti soprattutto da clienti privati; un eventuale beneficio per gli utenti non coincide con risparmio del bilancio pubblico.",
+      "items": [
+        {
+          "id": "banche",
+          "name": "Banche: commissioni",
+          "question": "Quali commissioni superano benchmark comparabili per servizio, rischio e profilo del cliente?",
+          "sources": [
+            {
+              "label": "Banca d'Italia - Relazione annuale",
+              "url": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Banca d'Italia",
+              "url": "https://www.bancaditalia.it/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "assicurazioni",
+          "name": "Assicurazioni (RC Auto, Vita e altre)",
+          "question": "Quali differenze di premio restano dopo aver corretto per rischio, sinistri, frodi e coperture?",
+          "sources": [
+            {
+              "label": "IVASS",
+              "url": "https://www.ivass.it/",
+              "holder": "IVASS",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "risparmio-gestito",
+          "name": "Risparmio gestito",
+          "question": "Quali costi e conflitti di interesse risultano rispetto ad alternative equivalenti, evitando sovrapposizioni con le commissioni bancarie?",
+          "sources": [
+            {
+              "label": "CONSOB",
+              "url": "https://www.consob.it/",
+              "holder": "CONSOB",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Banca d'Italia",
+              "url": "https://www.bancaditalia.it/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "buoni-pasto",
+          "name": "Buoni pasto",
+          "question": "Quali commissioni e costi amministrativi sono evitabili mantenendo il servizio e il trattamento fiscale?",
+          "sources": [
+            {
+              "label": "MEF",
+              "url": "https://www.mef.gov.it/",
+              "holder": "MEF",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "polizze-obbligatorie",
+          "name": "Polizze obbligatorie emergenti",
+          "question": "Quali obblighi e premi trasferiscono rischi in modo efficiente e quali possibili oneri eccedenti generano?",
+          "sources": [
+            {
+              "label": "IVASS",
+              "url": "https://www.ivass.it/",
+              "holder": "IVASS",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "bonifici",
+          "name": "Bonifici e commissioni internazionali",
+          "question": "Quali commissioni e spread valutari sono evitabili, senza contarli anche nella voce banche?",
+          "sources": [
+            {
+              "label": "Banca d'Italia",
+              "url": "https://www.bancaditalia.it/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "informazioni-creditizie",
+          "name": "Informazioni creditizie e rating (CRIF, Cerved)",
+          "question": "Quali servizi sono effettivamente obbligatori e quali costi possono essere confrontati tra operatori equivalenti?",
+          "sources": [
+            {
+              "label": "AGCM",
+              "url": "https://www.agcm.it/",
+              "holder": "AGCM",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Garante Privacy",
+              "url": "https://www.garanteprivacy.it/",
+              "holder": "Garante Privacy",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "broker",
+          "name": "Broker assicurativi e finanziari",
+          "question": "Quale valore aggiunge l'intermediazione e quali commissioni sono già comprese nei costi di polizze e prodotti?",
+          "sources": [
+            {
+              "label": "IVASS",
+              "url": "https://www.ivass.it/",
+              "holder": "IVASS",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "CONSOB",
+              "url": "https://www.consob.it/",
+              "holder": "CONSOB",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "complessita",
+      "title": "Intermediazione e complessità amministrativa",
+      "description": "Identificare gli adempimenti eliminabili prima di attribuire all'intermediario l'intero costo del servizio.",
+      "items": [
+        {
+          "id": "commercialisti",
+          "name": "Commercialisti",
+          "question": "Quali oneri dipendono da adempimenti semplificabili e quali da consulenza, contabilità e controllo necessari?",
+          "sources": [
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "patronati",
+          "name": "Patronati (INAS, INCA, ITAL)",
+          "question": "Quali pratiche possono diventare dirette senza escludere utenti fragili o trasferire loro i costi?",
+          "sources": [
+            {
+              "label": "INPS",
+              "url": "https://www.inps.it/",
+              "holder": "INPS",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "caf",
+          "name": "CAF",
+          "question": "Quali adempimenti fiscali possono essere rimossi o precompilati mantenendo assistenza e tutele?",
+          "sources": [
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "INPS",
+              "url": "https://www.inps.it/",
+              "holder": "INPS",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "agenzie-auto",
+          "name": "Agenzie pratiche auto",
+          "question": "Quali passaggi e costi sono evitabili, distinti dalle tariffe ACI/PRA e della Motorizzazione?",
+          "sources": [
+            {
+              "label": "ACI",
+              "url": "https://www.aci.it/",
+              "holder": "ACI",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "geometri",
+          "name": "Geometri e pratiche edilizie",
+          "question": "Quali costi derivano da procedure ridondanti e quali da progettazione, sicurezza e responsabilità tecniche?",
+          "sources": [
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "riscossione-locale",
+          "name": "Concessionari riscossione locale",
+          "question": "Come confrontare costi e recuperi netti dei diversi modelli di riscossione?",
+          "sources": [
+            {
+              "label": "MEF - RGS",
+              "url": "https://www.rgs.mef.gov.it/",
+              "holder": "Ragioneria Generale dello Stato",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "software",
+          "name": "Software gestionali",
+          "question": "Quale quota dei costi è dovuta ad adempimenti evitabili, anziché a funzioni produttive del software?",
+          "sources": [
+            {
+              "label": "AgID",
+              "url": "https://www.agid.gov.it/",
+              "holder": "AgID",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "editori-giuridici",
+          "name": "Editori giuridici e fiscali (Wolters Kluwer, Giuffrè)",
+          "question": "Quali costi informativi derivano dalla complessità normativa e quali da servizi professionali aggiuntivi?",
+          "sources": [
+            {
+              "label": "Gazzetta Ufficiale",
+              "url": "https://www.gazzettaufficiale.it/",
+              "holder": "Gazzetta Ufficiale",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "formazione",
+          "name": "Patentini e formazione obbligatoria",
+          "question": "Quali obblighi duplicano competenze già certificate e quali prevengono rischi documentati?",
+          "sources": [
+            {
+              "label": "Ministero del Lavoro",
+              "url": "https://www.lavoro.gov.it/",
+              "holder": "Ministero del Lavoro",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "traduzioni",
+          "name": "Traduttori giurati e apostille",
+          "question": "Quali attestazioni possono essere riconosciute o digitalizzate senza ridurre affidabilità e certezza giuridica?",
+          "sources": [
+            {
+              "label": "Ministero della Giustizia",
+              "url": "https://www.giustizia.it/",
+              "holder": "Ministero della Giustizia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "immobiliare",
+          "name": "Mediazione immobiliare",
+          "question": "Quali commissioni e vincoli di mercato risultano evitabili e quale servizio è effettivamente fornito?",
+          "sources": [
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "servizi-pubblici",
+      "title": "Servizi pubblici e attività collegate",
+      "description": "Il gruppo include anche attività private. Misurare l'eventuale inefficienza a parità di servizio e impedire doppioni tra appalti e settori.",
+      "items": [
+        {
+          "id": "sanita",
+          "name": "Sanità, privato convenzionato e ticket",
+          "question": "Quali costi evitabili emergono a parità di esiti e accesso, distinguendo ticket, finanziamento e inefficienze?",
+          "sources": [
+            {
+              "label": "AIFA",
+              "url": "https://www.aifa.gov.it/",
+              "holder": "AIFA",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Ministero della Salute",
+              "url": "https://www.salute.gov.it/",
+              "holder": "Ministero della Salute",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Corte dei conti",
+              "url": "https://www.corteconti.it/",
+              "holder": "Corte dei conti",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "tpl",
+          "name": "Trasporto pubblico locale",
+          "question": "Come confrontare costo per servizio e qualità tenendo conto di domanda, territorio e obblighi di copertura?",
+          "sources": [
+            {
+              "label": "MIT",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ART",
+              "url": "https://www.autorita-trasporti.it/",
+              "holder": "ART",
+              "checkedAt": "2026-11-18",
+              "note": "Perimetro TPL; verificare accessibilità e delibere puntuali."
+            }
+          ]
+        },
+        {
+          "id": "partecipate",
+          "name": "Società partecipate locali",
+          "question": "Quali società hanno funzioni duplicative, separando le attività già considerate in rifiuti, trasporti e utility?",
+          "sources": [
+            {
+              "label": "MEF",
+              "url": "https://www.mef.gov.it/",
+              "holder": "MEF",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Dipartimento del Tesoro",
+              "url": "https://www.dt.mef.gov.it/",
+              "holder": "MEF",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Corte dei conti",
+              "url": "https://www.corteconti.it/",
+              "holder": "Corte dei conti",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "ater",
+          "name": "ATER / IACP ed edilizia popolare",
+          "question": "Quali costi gestionali e patrimoni inutilizzati sono recuperabili mantenendo manutenzione e finalità sociali?",
+          "sources": [
+            {
+              "label": "MIT / Politiche abitative",
+              "url": "https://www.mit.gov.it/",
+              "holder": "MIT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "cooperative",
+          "name": "Cooperative sociali e appalti",
+          "question": "Quali maggiori costi emergono a parità di servizio, utenza assistita e condizioni di lavoro?",
+          "sources": [
+            {
+              "label": "Ministero del Lavoro",
+              "url": "https://www.lavoro.gov.it/",
+              "holder": "Ministero del Lavoro",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "ristorazione",
+          "name": "Ristorazione collettiva pubblica",
+          "question": "Quali differenze di prezzo restano a parità di qualità, pasti, requisiti nutrizionali e logistica?",
+          "sources": [
+            {
+              "label": "Consip",
+              "url": "https://www.consip.it/",
+              "holder": "Consip",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "pulizie",
+          "name": "Pulizie e vigilanza pubbliche",
+          "question": "Quali costi evitabili risultano da confronti omogenei per ore, superfici, sicurezza e condizioni contrattuali?",
+          "sources": [
+            {
+              "label": "Consip",
+              "url": "https://www.consip.it/",
+              "holder": "Consip",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "appalti",
+          "name": "Aste pubbliche e appalti",
+          "question": "Quali inefficienze specifiche sono documentabili senza sommare nuovamente i costi dei settori affidati?",
+          "sources": [
+            {
+              "label": "ANAC",
+              "url": "https://www.anticorruzione.it/",
+              "holder": "ANAC",
+              "checkedAt": "2026-11-18",
+              "note": "Usare portale ANAC se anac.gov.it non risolve."
+            },
+            {
+              "label": "Consip",
+              "url": "https://www.consip.it/",
+              "holder": "Consip",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "tributi-locali",
+          "name": "Tassazione locale",
+          "question": "Quali costi di amministrazione e adempimento sono evitabili, distinti dal gettito dei tributi?",
+          "sources": [
+            {
+              "label": "MEF",
+              "url": "https://www.mef.gov.it/",
+              "holder": "MEF",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "IFEL",
+              "url": "https://www.fondazioneifel.it/",
+              "holder": "IFEL",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "difesa",
+          "name": "Difesa e industria militare",
+          "question": "Quali costi evitabili risultano a parità di capacità, sicurezza e obblighi operativi?",
+          "sources": [
+            {
+              "label": "Ministero della Difesa",
+              "url": "https://www.difesa.it/",
+              "holder": "Ministero della Difesa",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Corte dei conti",
+              "url": "https://www.corteconti.it/",
+              "holder": "Corte dei conti",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "rifiuti-speciali",
+          "name": "Demolizioni e smaltimento rifiuti speciali",
+          "question": "Quali maggiori costi derivano da vincoli evitabili, anziché da trattamento e sicurezza ambientale necessari?",
+          "sources": [
+            {
+              "label": "MASE",
+              "url": "https://www.mase.gov.it/",
+              "holder": "MASE",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ISPRA - rifiuti",
+              "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
+              "holder": "ISPRA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "npl",
+          "name": "Concordati, NPL e restructuring",
+          "question": "Quali costi dipendono da inefficienze procedurali e quali da perdite su crediti e servizi di ristrutturazione?",
+          "sources": [
+            {
+              "label": "Banca d'Italia",
+              "url": "https://www.bancaditalia.it/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "catasto",
+          "name": "Catasto, conservatorie e intermediazione",
+          "question": "Quali duplicazioni informative e pratiche possono essere rimosse preservando la certezza dei diritti immobiliari?",
+          "sources": [
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "agenzie-fiscali",
+          "name": "Agenzia Entrate, AdR e Demanio",
+          "question": "Quali sovrapposizioni o costi evitabili sono dimostrabili a parità di recupero fiscale e gestione patrimoniale?",
+          "sources": [
+            {
+              "label": "Agenzia delle Entrate",
+              "url": "https://www.agenziaentrate.gov.it/portale/",
+              "holder": "Agenzia delle Entrate",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Agenzia del Demanio",
+              "url": "https://www.agenziademanio.it/",
+              "holder": "Agenzia del Demanio",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "banca-italia",
+          "name": "Banca d'Italia",
+          "question": "Quali effetti economici della struttura proprietaria sono dimostrabili, separati dai costi delle funzioni istituzionali?",
+          "sources": [
+            {
+              "label": "Banca d'Italia - Relazione annuale",
+              "url": "https://www.bancaditalia.it/pubblicazioni/relazione-annuale/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "vigilanza",
+          "name": "IVASS e CONSOB",
+          "question": "Quali sovrapposizioni sono eliminabili senza ridurre indipendenza, controlli e tutela del risparmio?",
+          "sources": [
+            {
+              "label": "IVASS",
+              "url": "https://www.ivass.it/",
+              "holder": "IVASS",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "CONSOB",
+              "url": "https://www.consob.it/",
+              "holder": "CONSOB",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "universita",
+          "name": "Università e formazione parallela",
+          "question": "Quali percorsi duplicano attività finanziate e quali rispondono a bisogni formativi differenti?",
+          "sources": [
+            {
+              "label": "MUR",
+              "url": "https://www.mur.gov.it/",
+              "holder": "MUR",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ANVUR",
+              "url": "https://www.anvur.it/",
+              "holder": "ANVUR",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "mercati",
+          "name": "Mercati ortofrutticoli all'ingrosso",
+          "question": "Quali costi e vincoli distributivi sono evitabili mantenendo logistica, controlli e sicurezza alimentare?",
+          "sources": [
+            {
+              "label": "MASAF",
+              "url": "https://www.masaf.gov.it/",
+              "holder": "MASAF",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "tari",
+          "name": "TARI e rifiuti urbani",
+          "question": "Quali costi efficientabili emergono a parità di raccolta e trattamento, senza confondere tariffa e spreco?",
+          "sources": [
+            {
+              "label": "ARERA",
+              "url": "https://www.arera.it/",
+              "holder": "ARERA",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "ISPRA - rifiuti",
+              "url": "https://www.isprambiente.gov.it/it/attivita/rifiuti",
+              "holder": "ISPRA",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "cultura",
+          "name": "Fondazioni culturali e attività culturali",
+          "question": "Quali costi e sovrapposizioni risultano evitabili considerando accesso, conservazione e benefici pubblici?",
+          "sources": [
+            {
+              "label": "MiC",
+              "url": "https://www.cultura.gov.it/",
+              "holder": "Ministero della Cultura",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "rsa",
+          "name": "RSA e case di riposo",
+          "question": "Quali costi evitabili emergono a parità di assistenza, intensità di cura e condizioni degli ospiti?",
+          "sources": [
+            {
+              "label": "Ministero della Salute",
+              "url": "https://www.salute.gov.it/",
+              "holder": "Ministero della Salute",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "gioco-sociale",
+          "name": "Slot machine e gioco: costi sociali",
+          "question": "Come misurare i danni sociali netti, evitando di confonderli con spesa pubblica o concessioni già considerate?",
+          "sources": [
+            {
+              "label": "ADM",
+              "url": "https://www.adm.gov.it/",
+              "holder": "ADM",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Istituto Superiore di Sanità",
+              "url": "https://www.iss.it/",
+              "holder": "ISS",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "editori-scolastici",
+          "name": "Editori scolastici",
+          "question": "Quali costi per le famiglie sono evitabili con alternative equivalenti e compatibili con qualità e accessibilità?",
+          "sources": [
+            {
+              "label": "MIM",
+              "url": "https://www.mim.gov.it/",
+              "holder": "MIM",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "uibm",
+          "name": "UIBM, marche, brevetti e certificazioni",
+          "question": "Quali procedure e oneri sono ridondanti, distinti dalle funzioni necessarie di tutela e verifica?",
+          "sources": [
+            {
+              "label": "UIBM - MIMIT",
+              "url": "https://uibm.mise.gov.it/",
+              "holder": "MIMIT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sistemici",
+      "title": "Tempo, produttività e costi sistemici",
+      "description": "Ipotesi controfattuali, non voci direttamente tagliabili in bilancio. Possono sovrapporsi fra loro e con tutti gli altri gruppi.",
+      "items": [
+        {
+          "id": "tempo",
+          "name": "Tempo perso da cittadini e imprese in burocrazia",
+          "question": "Come misurare ore e valore del tempo senza ricontare gli oneri degli intermediari?",
+          "sources": [
+            {
+              "label": "ISTAT",
+              "url": "https://www.istat.it/",
+              "holder": "ISTAT",
+              "checkedAt": "2026-11-18",
+              "note": "Uso del tempo / carico amministrativo: serie da selezionare, non un totale di spreco."
+            }
+          ]
+        },
+        {
+          "id": "pil-mancante",
+          "name": "PIL non generato: imprese non nate e talenti emigrati",
+          "question": "Quale controfattuale e quale evidenza causale permettono di attribuire un effetto alle inefficienze individuate?",
+          "sources": [
+            {
+              "label": "ISTAT - Conti nazionali",
+              "url": "https://www.istat.it/statistiche-per-temi/conti-nazionali/",
+              "holder": "ISTAT",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "produttivita",
+          "name": "Produttività mancante delle imprese esistenti",
+          "question": "Quale parte del divario è attribuibile ai meccanismi analizzati e non ad altri fattori?",
+          "sources": [
+            {
+              "label": "ISTAT",
+              "url": "https://www.istat.it/",
+              "holder": "ISTAT",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Banca d'Italia",
+              "url": "https://www.bancaditalia.it/",
+              "holder": "Banca d'Italia",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        },
+        {
+          "id": "digitale",
+          "name": "Gap digitale strutturale",
+          "question": "Quali effetti causali della digitalizzazione sono identificabili e già compresi nelle stime di tempo e produttività?",
+          "sources": [
+            {
+              "label": "AgID",
+              "url": "https://www.agid.gov.it/",
+              "holder": "AgID",
+              "checkedAt": "2026-11-18"
+            },
+            {
+              "label": "Dipartimento Transformazione Digitale",
+              "url": "https://innovazione.gov.it/",
+              "holder": "Presidenza del Consiglio",
+              "checkedAt": "2026-11-18"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "proposals": [
+    {
+      "id": "aci-pra",
+      "title": "ACI/PRA e Motorizzazione",
+      "action": "Valutare una banca dati e una gestione unificate delle pratiche veicolo.",
+      "limits": "Ricostruire il perimetro dopo il Documento Unico; distinguere duplicazioni residue, funzioni differenti, tariffe, imposte, costi trasferiti e costi di migrazione. Risparmio netto non quantificato.",
+      "sources": [
+        {
+          "label": "D.lgs. 98/2017 - Documento Unico e razionalizzazione dati veicolo",
+          "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2017-05-29;98",
+          "holder": "Normattiva",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "ACI - Pubblico Registro Automobilistico",
+          "url": "https://www.aci.it/i-servizi/servizi-online/pubblico-registro-automobilistico.html",
+          "holder": "ACI",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "ACI - Dati e statistiche",
+          "url": "https://www.aci.it/laci/studi-e-ricerche/dati-e-statistiche.html",
+          "holder": "ACI",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "MIT",
+          "url": "https://www.mit.gov.it/",
+          "holder": "MIT",
+          "checkedAt": "2026-11-18"
+        }
+      ]
+    },
+    {
+      "id": "camere",
+      "title": "Camere di Commercio",
+      "action": "Valutare la proposta di trasferire il Registro Imprese all'Agenzia delle Entrate.",
+      "limits": "Censire anche le altre funzioni camerali; il trasferimento non elimina automaticamente personale, sistemi e servizi. Confrontare con semplificazioni interne. Risparmio netto non quantificato.",
+      "sources": [
+        {
+          "label": "Unioncamere",
+          "url": "https://www.unioncamere.gov.it/",
+          "holder": "Unioncamere",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "Agenzia delle Entrate",
+          "url": "https://www.agenziaentrate.gov.it/portale/",
+          "holder": "Agenzia delle Entrate",
+          "checkedAt": "2026-11-18"
+        }
+      ]
+    },
+    {
+      "id": "cnel",
+      "title": "CNEL",
+      "action": "Valutare abolizione o riorganizzazione delle funzioni.",
+      "limits": "L'abolizione richiede revisione costituzionale; documentare costi netti e destinazione delle funzioni. Non è un intervento amministrativo immediato. Risparmio netto non quantificato.",
+      "sources": [
+        {
+          "label": "CNEL - sito istituzionale",
+          "url": "https://www.cnel.it/",
+          "holder": "CNEL",
+          "checkedAt": "2026-11-18",
+          "note": "Organo costituzionale; l'abolizione non è un intervento amministrativo ordinario."
+        },
+        {
+          "label": "Costituzione art. 99 - pagina Senato",
+          "url": "https://www.senato.it/istituzione/la-costituzione/parte-ii/titolo-iii/sezione-iii/articolo-99",
+          "holder": "Senato della Repubblica",
+          "checkedAt": "2026-11-18",
+          "note": "Snapshot HTML può essere bloccato da WAF; verificare nel browser."
+        }
+      ]
+    },
+    {
+      "id": "patronati-caf",
+      "title": "Patronati e CAF",
+      "action": "Valutare servizi diretti INPS e Agenzia delle Entrate con meno adempimenti.",
+      "limits": "Mantenere assistenza accessibile e canali non digitali; conteggiare sistemi, supporto e oneri eventualmente trasferiti agli utenti. Risparmio netto non quantificato.",
+      "sources": [
+        {
+          "label": "INPS",
+          "url": "https://www.inps.it/",
+          "holder": "INPS",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "Agenzia delle Entrate",
+          "url": "https://www.agenziaentrate.gov.it/portale/",
+          "holder": "Agenzia delle Entrate",
+          "checkedAt": "2026-11-18"
+        },
+        {
+          "label": "INPS",
+          "url": "https://www.inps.it/",
+          "holder": "INPS",
+          "checkedAt": "2026-11-18"
+        }
+      ]
+    },
+    {
+      "id": "balneari",
+      "title": "Concessioni balneari",
+      "action": "Valutare gare trasparenti e criteri di valorizzazione dei beni pubblici.",
+      "limits": "Verificare normativa e stato delle gare, obblighi e contenzioso. L'eventuale incremento di canoni è maggior gettito, non taglio di spesa. Impatto netto non quantificato.",
+      "sources": [
+        {
+          "label": "AGCM Bollettino 22/2024 - concessioni demaniali marittime",
+          "url": "https://www.agcm.it/pubblicazioni/bollettino-settimanale/2024/22/Bollettino-22-2024",
+          "holder": "AGCM",
+          "checkedAt": "2026-11-18",
+          "note": "Segnalazioni AS1973-AS1977 (3 giugno 2024) su proroghe di concessioni turistico-ricreative."
+        },
+        {
+          "label": "AGCM Bollettino 22/2024 (PDF)",
+          "url": "https://www.agcm.it/dotcmsdoc/bollettini/2024/22-24.pdf",
+          "holder": "AGCM",
+          "checkedAt": "2026-11-18"
+        }
+      ]
+    },
+    {
+      "id": "ordini",
+      "title": "Ordini professionali",
+      "action": "Valutare albi amministrativi in alternativa all'attuale organizzazione.",
+      "limits": "Preservare controllo dei requisiti, disciplina e tutele; separare quote degli iscritti, costi dei servizi e bilancio dello Stato. Beneficio netto non quantificato.",
+      "sources": [
+        {
+          "label": "Gazzetta Ufficiale",
+          "url": "https://www.gazzettaufficiale.it/",
+          "holder": "Gazzetta Ufficiale",
+          "checkedAt": "2026-11-18",
+          "note": "Norme istitutive e riforme degli ordini da individuare caso per caso."
+        }
+      ]
+    },
+    {
+      "id": "bonifica",
+      "title": "Consorzi di bonifica",
+      "action": "Valutare il trasferimento delle funzioni alle Regioni.",
+      "limits": "Manutenzione, irrigazione e sicurezza idraulica restano necessarie; dimostrare economie di gestione al netto di transizione e costi trasferiti. Risparmio netto non quantificato.",
+      "sources": [
+        {
+          "label": "MASAF",
+          "url": "https://www.masaf.gov.it/",
+          "holder": "MASAF",
+          "checkedAt": "2026-11-18",
+          "note": "Consorzi e funzioni idrauliche: bilanci e leggi regionali da acquisire."
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "title": "Rendite e inefficienze: casi da verificare",
+    "kind": "research-catalogue",
+    "acquiredAt": "2026-11-18",
+    "disclaimer": "Catalogo di indagine con fonti ufficiali di partenza. Non pubblica stime economiche non documentate e non attribuisce validazione DVNS agli importi del contributo originario."
+  }
+}

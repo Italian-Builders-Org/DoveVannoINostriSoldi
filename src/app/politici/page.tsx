@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getParlamentoGiudiziario, documentedConvictions, graphPeopleWithDocumentedCases, judicialCoverageNote } from "@/lib/parlamento-giudiziario";
 import { getRepubblicaGraph, getRepubblicaMap } from "@/lib/politici-repubblica";
+import { getPresenceDistribution } from "@/lib/politici-presenze";
 import { SitePageLink } from "@/components/site-page-link";
 import { readAtlasState, longDate } from "./atlas-model";
 import { RepubblicaGraph } from "./repubblica-graph";
@@ -29,6 +30,8 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
     if (first !== undefined) query.set(key, first);
   }
   const parsed = readAtlasState(query, map);
+  // Only the Presenze view reads the participation table: other views do not ship its rows.
+  const presences = parsed.state.scope === "presenze" ? getPresenceDistribution() : null;
   return <main className={styles.immersivePage} data-immersive-page="politici">
     <a className={styles.skipLink} href="#atlante-politica">Vai all’atlante</a>
     <header className={styles.immersiveChrome}>
@@ -91,7 +94,8 @@ export default async function PoliticiPage({ searchParams }: PoliticiPageProps) 
         initialDetailsOpen={!parsed.invalidSelection && ["person", "group", "deputy", "istituzione"].some((key) => query.has(key))}
         judicialPersonIds={judicialPersonIds}
         convictions={convictions}
-        convictionsNote={convictionsNote} />
+        convictionsNote={convictionsNote}
+        presences={presences} />
     </div>
     <noscript>
       <p className={styles.noScript}>Per esplorare persone e gruppi serve JavaScript. Le fonti ufficiali restano disponibili in «Fonti e limiti».</p>

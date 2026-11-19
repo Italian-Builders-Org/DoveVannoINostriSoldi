@@ -7,15 +7,18 @@ import { AtlasInspector, AtlasSearch } from "./atlas-controls";
 import { AtlasRailResizer, useAtlasRail } from "./atlas-rail";
 import { Hemicycle } from "./atlas-hemicycle";
 import { ConvictionsDirectory } from "./atlas-condanne";
+import { PresenceDistributionView } from "./atlas-presenze";
 import { ThemeVoteHistoryDirectory } from "./atlas-storico-voti";
 import { InstitutionalGraph } from "./atlas-institutional-graph";
 import { InstitutionalRelations } from "./atlas-facts";
 import { Icon, PersonRow, Portrait, SourceLink, Status } from "./atlas-primitives";
-import { atlasUrl, defaultSelection, filteredPeople, GROUP_CHANGES, longDate, readAtlasState, ROLES, SCOPES, scopeForSelection, supportsTermFilter, TERMS, validSelection, type AtlasScope, type AtlasState, type GraphSelection } from "./atlas-model";
+import { atlasUrl, defaultSelection, filteredPeople, isDirectoryScope, GROUP_CHANGES, longDate, readAtlasState, ROLES, SCOPES, scopeForSelection, supportsTermFilter, TERMS, validSelection, type AtlasScope, type AtlasState, type GraphSelection } from "./atlas-model";
 import { buildChamberScene, CHAMBER } from "./graph-geometry";
 import { RepubblicaPanel } from "./repubblica-panel";
 import { useAtlasData } from "./use-atlas-data";
+import { loadPresences, type Resource } from "./atlas-data";
 import type { GiudiziarioCase } from "@/lib/data/parlamento-giudiziario-contract";
+import type { PresenceDistribution } from "@/lib/politici-presenze";
 import styles from "./politici.module.css";
 import extra from "./atlas-enhancements.module.css";
 
@@ -25,7 +28,7 @@ const subscribeReady = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
 
-export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false, judicialPersonIds = [], convictions = [], convictionsNote = "" }: {
+export function RepubblicaGraph({ map, initialState, invalidSelection = false, initialDetailsOpen = false, judicialPersonIds = [], convictions = [], convictionsNote = "", presences = null }: {
   map: RepublicMap;
   initialState: AtlasState;
   invalidSelection?: boolean;
@@ -33,6 +36,8 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   judicialPersonIds?: readonly string[];
   convictions?: readonly GiudiziarioCase[];
   convictionsNote?: string;
+  /** Camera participation table for the Presenze view (#871). */
+  presences?: PresenceDistribution | null;
 }) {
   const ready = useSyncExternalStore(subscribeReady, clientReady, serverReady);
   const rail = useAtlasRail();
@@ -47,10 +52,12 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
   const selectedId = state.selection.kind === "person" ? state.selection.id : null;
   const selectedGroupId = state.selection.kind === "group" ? state.selection.id : null;
   const data = useAtlasData(selectedId, judicialPersonIds);
+  const presenceData = usePresences(state.scope === "presenze", presences);
   const selectionKey = state.selection.kind === "overview" ? "overview" : `${state.selection.kind}:${state.selection.id}`;
   const filterCount = Number(Boolean(state.family)) + Number(state.role !== "tutti") + Number(supportsTermFilter(state.scope) && state.term !== "tutti") + Number(supportsTermFilter(state.scope) && state.groupChange !== "tutti") + Number(Boolean(state.query.trim()));
   const scopeLabel = SCOPES.find((item) => item.id === state.scope)!.label;
-  const showMapListMode = state.scope !== "condanne" && state.scope !== "storico-voti";
+  // Condanne (scope === "condanne"), Presenze and Storico voti (scope === "storico-voti") draw their own directories.
+  const showMapListMode = !isDirectoryScope(state.scope);
 
   const update = useCallback((next: AtlasState, history: "push" | "replace" = "replace") => {
     stateRef.current = next;
@@ -285,7 +292,18 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
           </span>
           <span>Apri scheda <Icon name="arrow" size={16} /></span>
         </button>
-        {!people.length && state.scope !== "condanne" && state.scope !== "storico-voti" ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica, incarico o legislature.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
+        {!people.length && !isDirectoryScope(state.scope) ? <Status title="Nessuna persona corrisponde ai filtri">Cambia ricerca, famiglia politica, incarico o legislature.<button type="button" className={styles.secondaryButton} onClick={clearFilters}>Mostra tutte le persone</button></Status>
+          : state.scope === "presenze" ? (presenceData.resource.status === "ready" ? <PresenceDistributionView
+            data={presenceData.resource.data}
+            map={map}
+            family={state.family}
+            role={state.role}
+            query={state.query}
+            selectedId={selectedId}
+            onFamily={(family) => update({ ...stateRef.current, family })}
+            onSelect={select} /> : presenceData.resource.status === "error"
+            ? <Status kind="error" title="Presenze non disponibili" onRetry={presenceData.retry}>La tabella ufficiale delle presenze non è stata caricata.</Status>
+            : <Status kind="loading" title="Carico le presenze">Tabella ufficiale della Camera.</Status>)
           : state.scope === "condanne" ? <ConvictionsDirectory
             cases={convictions}
             coverageNote={convictionsNote}
@@ -339,6 +357,26 @@ export function RepubblicaGraph({ map, initialState, invalidSelection = false, i
       </div>
     </section>
   </div>;
+}
+
+/** Loads the Presenze table only when the view opens; a deep link already carries it. */
+function usePresences(active: boolean, initial: PresenceDistribution | null) {
+  const [resource, setResource] = useState<Resource<PresenceDistribution>>(initial ? { status: "ready", data: initial } : { status: "idle" });
+  const [attempt, setAttempt] = useState(0);
+  const needsLoad = active && resource.status !== "ready";
+  useEffect(() => {
+    if (!needsLoad) return;
+    const controller = new AbortController();
+    loadPresences(controller.signal)
+      .then((data) => setResource({ status: "ready", data }))
+      .catch(() => { if (!controller.signal.aborted) setResource({ status: "error" }); });
+    return () => controller.abort();
+  }, [needsLoad, attempt]);
+  const retry = useCallback(() => {
+    setResource({ status: "loading" });
+    setAttempt((value) => value + 1);
+  }, []);
+  return { resource, retry };
 }
 
 function MemberDirectory({ people, map, selectedId, onSelect, title }: { people: RepublicMapPerson[]; map: RepublicMap; selectedId: string | null; onSelect: (selection: GraphSelection) => void; title: string; }) {

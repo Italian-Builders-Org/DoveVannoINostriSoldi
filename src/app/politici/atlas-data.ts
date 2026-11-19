@@ -1,5 +1,6 @@
 import type { GiudiziarioCase } from "@/lib/data/parlamento-giudiziario-contract";
 import type { RepublicProfile } from "@/lib/politici-repubblica";
+import type { PresenceDistribution } from "@/lib/politici-presenze";
 import { isSafeExternalUrl } from "@/app/politici/atlas-model";
 
 export type Resource<T> = { status: "idle" | "loading"; } | { status: "error"; } | { status: "ready"; data: T; };
@@ -150,5 +151,39 @@ export async function loadJudicial(signal: AbortSignal): Promise<JudicialPayload
     const response = await fetch("/api/politici/giudiziario", { signal: request.signal, headers: { Accept: "application/json" } });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return parseJudicial(await response.json());
+  } finally { request.dispose(); }
+}
+
+const finitePercent = (value: unknown): boolean => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100;
+
+/** A malformed table must surface as an error, never as an empty distribution. */
+export function parsePresences(payload: unknown): PresenceDistribution {
+  const invalid = () => { throw new Error("Risposta presenze non valida"); };
+  if (!object(payload) || payload.ok !== true || payload.chamber !== "camera") return invalid();
+  if (!["periodLabel", "observedDate", "acquiredAt", "sourceLabel", "license", "senateGap"].every((key) => text(payload[key]))) return invalid();
+  if (!isSafeExternalUrl(payload.sourceUrl) || !Array.isArray(payload.caveats) || !payload.caveats.every(text)) return invalid();
+  const coverage = payload.coverage;
+  if (!object(coverage) || !["rows", "matchedDeputies", "unmatchedRows"].every((key) => count(coverage[key]))) return invalid();
+  const rows = payload.rows;
+  if (!Array.isArray(rows) || !rows.length || rows.length !== coverage.rows) return invalid();
+  for (const row of rows) {
+    if (!object(row) || !text(row.key) || !text(row.name) || !(row.personId === null || text(row.personId))) return invalid();
+    if (!["presence", "votesPercent", "missionsPercent", "absencesPercent"].every((key) => finitePercent(row[key]))) return invalid();
+    if (!Array.isArray(row.roles) || !row.roles.every(text) || !(row.roleLabel === null || text(row.roleLabel))) return invalid();
+    const group = row.group;
+    if (!object(group) || !(group.id === null || text(group.id)) || !text(group.shortLabel) || !text(group.label)) return invalid();
+  }
+  const data: Record<string, unknown> = { ...payload };
+  delete data.ok;
+  return data as unknown as PresenceDistribution;
+}
+
+export async function loadPresences(signal: AbortSignal): Promise<PresenceDistribution> {
+  const request = requestDeadline(signal, 15_000);
+  try {
+    request.signal.throwIfAborted();
+    const response = await fetch("/api/politici/presenze", { signal: request.signal, headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return parsePresences(await response.json());
   } finally { request.dispose(); }
 }

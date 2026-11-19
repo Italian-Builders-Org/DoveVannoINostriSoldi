@@ -5,7 +5,7 @@ export type GraphSelection =
   | { kind: "person"; id: string; }
   | { kind: "group"; id: string; }
   | { kind: "institution"; id: string; };
-export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo" | "condanne" | "storico-voti";
+export type AtlasScope = "camera" | "senato" | "governo" | "repubblica" | "grafo" | "presenze" | "condanne" | "storico-voti";
 export type AtlasMode = "mappa" | "elenco";
 export type RoleFilter = "tutti" | "governo" | "presidenza" | "capigruppo";
 /** Legislatures read per chamber from the official sources (#556). */
@@ -42,6 +42,7 @@ export const SCOPES: ReadonlyArray<{ id: AtlasScope; label: string; }> = [
   { id: "governo", label: "Governo" },
   { id: "repubblica", label: "Repubblica" },
   { id: "grafo", label: "Grafo" },
+  { id: "presenze", label: "Presenze" },
   { id: "condanne", label: "Condanne" },
 ];
 export const ROLES: ReadonlyArray<{ id: RoleFilter; label: string; }> = [
@@ -139,24 +140,25 @@ export function isSafeExternalUrl(value: unknown): value is string {
   } catch { return false; }
 }
 
+/** Views that render their own directory instead of a chamber or the Government. */
+export function isDirectoryScope(scope: AtlasScope): scope is "presenze" | "condanne" | "storico-voti" {
+  return scope === "presenze" || scope === "condanne" || scope === "storico-voti";
+}
+
 export function defaultSelection(scope: AtlasScope): GraphSelection {
-  return scope === "repubblica" || scope === "grafo" || scope === "condanne" || scope === "storico-voti"
+  return scope === "repubblica" || scope === "grafo" || isDirectoryScope(scope)
     ? { kind: "overview" }
     : { kind: "institution", id: scope };
 }
 
 export function scopeForSelection(selection: GraphSelection, map: RepublicMap, current: AtlasScope = "camera"): AtlasScope {
   if (selection.kind === "overview") {
-    if (current === "grafo") return "grafo";
-    if (current === "condanne") return "condanne";
-    if (current === "storico-voti") return "storico-voti";
+    if (current === "grafo" || isDirectoryScope(current)) return current;
     return "repubblica";
   }
   if (selection.kind === "institution") {
     if (selection.id === "camera" || selection.id === "senato" || selection.id === "governo") return selection.id;
-    if (current === "grafo") return "grafo";
-    if (current === "condanne") return "condanne";
-    if (current === "storico-voti") return "storico-voti";
+    if (current === "grafo" || isDirectoryScope(current)) return current;
     return "repubblica";
   }
   if (selection.kind === "group") {
@@ -166,8 +168,7 @@ export function scopeForSelection(selection: GraphSelection, map: RepublicMap, c
   const person = map.people.find((candidate) => candidate.id === selection.id);
   if (!person) return current;
   if (current === "grafo" && (person.government || person.roleKind === "capo-stato")) return "grafo";
-  if (current === "condanne") return "condanne";
-  if (current === "storico-voti") return "storico-voti";
+  if (isDirectoryScope(current)) return current;
   if (person.government && current === "governo") return "governo";
   return person.chamberId ?? (person.government ? "governo" : current === "grafo" ? "grafo" : "repubblica");
 }
@@ -250,7 +251,7 @@ export function atlasUrl(href: string, state: AtlasState): string {
 }
 
 export function belongsToScope(person: RepublicMapPerson, scope: AtlasScope): boolean {
-  if (scope === "repubblica" || scope === "grafo" || scope === "condanne" || scope === "storico-voti") return true;
+  if (scope === "repubblica" || scope === "grafo" || isDirectoryScope(scope)) return true;
   if (scope === "governo") return person.government;
   return person.chamberId === scope;
 }
@@ -277,9 +278,9 @@ function supportsTimeline(scope: AtlasScope): scope is "camera" | "senato" | "gr
   return scope === "camera" || scope === "senato" || scope === "grafo";
 }
 
-/** Condanne and Storico voti render their own directories, which read neither the term nor the group-change filter. */
+/** Presenze, Condanne and Storico voti render their own directories, which read neither the term nor the group-change filter. */
 export function supportsTermFilter(scope: AtlasScope): boolean {
-  return scope !== "condanne" && scope !== "storico-voti";
+  return !isDirectoryScope(scope);
 }
 
 /** Government members outside Parliament have no chamber terms: any term filter excludes them. */

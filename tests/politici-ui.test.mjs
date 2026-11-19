@@ -154,8 +154,9 @@ test("atlas: institutional graph scope restores the radial overview map", async 
   assert.match(graph, /scope === "condanne"/);
   assert.match(graph, /scope === "storico-voti"/);
   assert.match(graph, /showMapListMode/);
-  assert.match(graph, /scope !== "condanne"/);
-  assert.match(graph, /scope !== "storico-voti"/);
+  // Directory views (Presenze, Condanne, Storico voti) hide the map/list switch.
+  assert.match(graph, /showMapListMode = !isDirectoryScope\(state\.scope\)/);
+  assert.match(model, /scope === "presenze" \|\| scope === "condanne" \|\| scope === "storico-voti"/);
   const storico = await read("src/app/politici/atlas-storico-voti.tsx");
   assert.match(storico, /Cosa si è votato/);
   assert.match(storico, /Chi ha votato/);

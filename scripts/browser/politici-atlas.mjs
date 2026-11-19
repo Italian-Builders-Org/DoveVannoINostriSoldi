@@ -10,6 +10,8 @@ const {
   getRepubblicaLegislativeSources,
 } = await import("../../src/lib/politici-repubblica.ts");
 const { addDays, changeDates, compositionAt, groupCountsAt, sharedTimelineRange } = await import("../../src/lib/politici-group-timeline.ts");
+const { getPresenceDistribution } = await import("../../src/lib/politici-presenze.ts");
+const { filterPresenceRows, histogram, summarize, tailRows } = await import("../../src/lib/politici-presenze-stats.ts");
 import { closeBrowser, defaultArtifactsDir, defaultBaseUrl, launchBrowser, waitForServer } from "./harness.mjs";
 
 // Run against the real Next server. Only the final failure scenario intercepts API
@@ -313,6 +315,96 @@ try {
     fail = false;
     await clickText(page, "Riprova");
     await page.waitForSelector('input[type="range"]');
+  });
+
+  // Presenze (#871): the rendered distribution reconciles with the official Camera table.
+  const presences = getPresenceDistribution();
+  const formatPct = (value) => `${new Intl.NumberFormat("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value)}%`;
+  const statsOf = (page) => page.$$eval("[data-presence-summary] [data-stat]", (items) => Object.fromEntries(items.map((item) => [item.dataset.stat, item.querySelector("dd").textContent])));
+  const expectedStats = (rows) => {
+    const summary = summarize(rows.map((row) => row.presence));
+    return { mean: formatPct(summary.mean), median: formatPct(summary.median), p10: formatPct(summary.p10), p90: formatPct(summary.p90) };
+  };
+  for (const width of [390, 1280]) {
+    await scenario(`presenze-deep-link-${width}`, `${urls[0]}?vista=presenze`, width, async (page) => {
+      await page.waitForSelector("[data-presence-view]");
+      assert.equal(await page.$eval('[data-scope-button="presenze"]', (button) => button.getAttribute("aria-current")), "page");
+      assert.deepEqual(await statsOf(page), expectedStats(presences.rows));
+      const bins = await page.$$eval("[data-bin]", (items) => items.map((item) => Number(item.dataset.count)));
+      assert.deepEqual(bins, histogram(presences.rows.map((row) => row.presence), 5).map((bin) => bin.count));
+      assert.equal(bins.reduce((total, count) => total + count, 0), presences.coverage.rows, "Ogni riga ufficiale è nell’istogramma");
+      const markers = await page.$$eval("[data-marker] text", (items) => items.map((item) => item.textContent));
+      assert.ok(markers.some((text) => text.startsWith("Media ")) && markers.some((text) => text.startsWith("Mediana ")));
+      // Marker labels stay inside the drawing at every width.
+      assert.equal(await page.$$eval("[data-marker] text", (items) => items.every((item) => {
+        const box = item.getBoundingClientRect();
+        const svg = item.ownerSVGElement.getBoundingClientRect();
+        return box.left >= svg.left - 1 && box.right <= svg.right + 1;
+      })), true, "Etichette di media e mediana fuori dal grafico");
+      const groups = new Set(presences.rows.map((row) => row.group.id));
+      assert.equal(await page.$$eval("[data-group-row]", (items) => items.length), groups.size);
+      const medians = await page.$$eval("[data-group-row]", (items) => items.map((item) => Number(item.dataset.median)));
+      assert.deepEqual(medians, [...medians].sort((a, b) => b - a), "Gruppi ordinati per mediana");
+      assert.match(await page.$eval("[role=note]", (note) => note.textContent), /Senato/u);
+
+      // Hover a bar: the readout names the band and its count.
+      const busiest = await page.$$eval("[data-bin]", (items) => items.reduce((best, item) => Number(item.dataset.count) > Number(best.dataset.count) ? item : best).dataset.bin);
+      const bar = await page.$(`[data-bin="${busiest}"] rect`);
+      await bar.scrollIntoView();
+      const box = await bar.boundingBox();
+      await page.mouse.move(box.x + box.width / 2, box.y + box.height - 4);
+      const [from, to] = busiest.split("-");
+      await page.waitForFunction((label) => document.querySelector("[data-presence-readout]").textContent.includes(label), {}, `da ${from} a ${to}%`);
+
+      // A group row filters the whole view through the shared ?famiglia= state, and toggles back.
+      const family = "movimento-5-stelle";
+      const familyRows = filterPresenceRows(presences.rows, { family, role: "tutti", query: "" });
+      await page.click(`[data-group-row="${family}"]`);
+      await page.waitForFunction((value) => new URL(location.href).searchParams.get("famiglia") === value, {}, family);
+      await page.waitForFunction((count) => document.querySelector("[data-presence-count]")?.dataset.presenceCount === String(count), {}, familyRows.length);
+      assert.deepEqual(await statsOf(page), expectedStats(familyRows));
+      assert.equal(await page.$eval(`[data-group-row="${family}"]`, (button) => button.getAttribute("aria-pressed")), "true");
+      await page.click(`[data-group-row="${family}"]`);
+      await page.waitForFunction(() => !new URL(location.href).searchParams.has("famiglia"));
+      assert.deepEqual(await statsOf(page), expectedStats(presences.rows));
+
+      // The tail lists everyone at or below the 10th percentile and opens a person card.
+      const tail = tailRows(presences.rows);
+      assert.equal(await page.$eval("#presenze-coda", (heading) => heading.parentElement.querySelector("span").textContent), String(tail.length));
+      const target = tail.find((row) => row.personId);
+      await page.click(`[data-tail-row="${target.personId}"]`);
+      await page.waitForFunction((id) => new URL(location.href).searchParams.get("person") === id, {}, target.personId);
+      assert.equal(new URL(page.url()).searchParams.get("vista"), "presenze", "La vista resta Presenze con la scheda aperta");
+      await page.waitForSelector(`[data-profile-id="${target.personId}"]`);
+    });
+  }
+  await scenario("presenze-keyboard-and-retry", `${urls[0]}?vista=camera`, 390, async (page) => {
+    let failures = 0;
+    await page.setRequestInterception(true);
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname === "/api/politici/presenze" && failures === 0) {
+        failures++;
+        void request.respond({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false }) });
+      } else void request.continue();
+    });
+    // Client-side switch: the table is not in the page, it loads with the view.
+    await page.focus('[data-scope-button="presenze"]');
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "presenze");
+    await page.waitForSelector('[data-state="error"]');
+    assert.equal(failures, 1);
+    await clickText(page, "Riprova");
+    await page.waitForSelector("[data-presence-view]");
+    assert.deepEqual(await statsOf(page), expectedStats(presences.rows));
+    // Group rows and the data table are reachable from the keyboard.
+    await page.focus('[data-group-row="lega"]');
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => new URL(location.href).searchParams.get("famiglia") === "lega");
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(() => !new URL(location.href).searchParams.has("famiglia"));
+    await page.evaluate(() => history.back());
+    await page.waitForFunction(() => new URL(location.href).searchParams.get("vista") === "camera");
+    await page.waitForSelector('[data-chamber="camera"]');
   });
 
   const person = map.people.find((item) => item.chamberId === "camera");

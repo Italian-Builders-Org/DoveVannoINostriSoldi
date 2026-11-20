@@ -1989,24 +1989,24 @@ try {
         const headings = await page.$$eval('nav[aria-label="Mappa dei dati"] details > summary h3', (items) =>
           items.map((item) => item.textContent?.trim() ?? "").filter((title) => title !== "Mappe"),
         );
-        assert.equal(headings.length, 14, `${label}: tutti i gruppi restano nella directory`);
+        assert.equal(headings.length, 13, `${label}: tutti i gruppi restano nella directory`);
         assert.ok(headings.includes("Imprese"), `${label}: sezione Imprese assente`);
-        assert.ok(headings.includes("Report"), `${label}: sezione Report assente`);
         assert.ok(headings.includes("Istruzione"), `${label}: sezione Istruzione assente`);
         assert.ok(headings.includes("Povertà"), `${label}: sezione Povertà assente`);
         assert.ok(headings.includes("Economia"), `${label}: sezione Economia assente`);
         assert.ok(headings.includes("Istituzioni"), `${label}: sezione Istituzioni assente`);
         assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
         assert.ok(headings.includes("Studi"), `${label}: sezione Studi assente`);
+        assert.ok(!headings.includes("Report"), `${label}: sezione Report non attesa, unificata in Studi`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
-        for (const href of ["/report", "/report/2026-08", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione", "/pil"]) {
+        for (const href of ["/studi", "/studi/2026-08", "/studi/presenze-camera", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione", "/pil"]) {
           assert.ok(
             await page.$(`#esplora a[href='${href}']`),
             `${label}: link ${href} assente dalla mappa`,
           );
         }
         const requiredFooterLinks = [
-          ["#esplora a[href='/studi']", "Paper di ricerca"],
+          ["#esplora a[href='/studi']", "Archivio degli studi"],
           [".footer-actions a[href='/privacy']", "Privacy"],
           [".footer-actions a[href='/termini']", "Termini"],
           [".footer-backer a[href='/supporter']", "Chi ci sostiene"],

@@ -1,0 +1,290 @@
+{
+  "version": "1",
+  "revisedAt": "2026-11-20",
+  "series": "Quaderni parlamentari",
+  "publishedOn": "2026-11-20",
+  "title": "Presenze al voto alla Camera",
+  "subtitle": "Distribuzione ufficiale della partecipazione alle votazioni elettroniche",
+  "description": "Mediana, fasce e gruppi parlamentari sulla tabella ufficiale della Camera per la XIX legislatura, fino a febbraio 2026.",
+  "limitations": "Presenza = voti espressi + missioni sulle votazioni elettroniche in Aula. Le missioni non sono presenza fisica. Il lavoro in commissione non è incluso. Il Senato non pubblica una tabella equivalente. Solo deputati con match anagrafico entrano nella distribuzione. Non equivale a peer review esterna.",
+  "sourcesConsultedOn": "2026-02-28",
+  "headline": {
+    "matchedDeputies": 394,
+    "mean": 83.4,
+    "median": 87,
+    "p10": 66.7,
+    "p90": 96.8,
+    "min": 0.1,
+    "max": 100,
+    "tailBelowP10": 40
+  },
+  "period": {
+    "label": "Dall'inizio della XIX legislatura al mese di febbraio 2026",
+    "observedDate": "2026-02-28",
+    "monthLabel": "Febbraio 2026",
+    "legislature": "XIX legislatura"
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "title": "Camera dei deputati  ·  partecipazione al voto (presenze/assenze per deputato, XIX legislatura)",
+    "pageUrl": "https://www.camera.it/deputati/statistiche_voto/vista?leg=19&type=deputati&riepil_mese_end=2026-02-28",
+    "landingUrl": "https://www.camera.it/deputati/statistiche_voto"
+  },
+  "bins": [
+    {
+      "from": 0,
+      "to": 5,
+      "label": "0-5%",
+      "count": 1
+    },
+    {
+      "from": 5,
+      "to": 10,
+      "label": "5-10%",
+      "count": 0
+    },
+    {
+      "from": 10,
+      "to": 15,
+      "label": "10-15%",
+      "count": 1
+    },
+    {
+      "from": 15,
+      "to": 20,
+      "label": "15-20%",
+      "count": 2
+    },
+    {
+      "from": 20,
+      "to": 25,
+      "label": "20-25%",
+      "count": 1
+    },
+    {
+      "from": 25,
+      "to": 30,
+      "label": "25-30%",
+      "count": 0
+    },
+    {
+      "from": 30,
+      "to": 35,
+      "label": "30-35%",
+      "count": 0
+    },
+    {
+      "from": 35,
+      "to": 40,
+      "label": "35-40%",
+      "count": 0
+    },
+    {
+      "from": 40,
+      "to": 45,
+      "label": "40-45%",
+      "count": 3
+    },
+    {
+      "from": 45,
+      "to": 50,
+      "label": "45-50%",
+      "count": 5
+    },
+    {
+      "from": 50,
+      "to": 55,
+      "label": "50-55%",
+      "count": 4
+    },
+    {
+      "from": 55,
+      "to": 60,
+      "label": "55-60%",
+      "count": 4
+    },
+    {
+      "from": 60,
+      "to": 65,
+      "label": "60-65%",
+      "count": 13
+    },
+    {
+      "from": 65,
+      "to": 70,
+      "label": "65-70%",
+      "count": 21
+    },
+    {
+      "from": 70,
+      "to": 75,
+      "label": "70-75%",
+      "count": 27
+    },
+    {
+      "from": 75,
+      "to": 80,
+      "label": "75-80%",
+      "count": 45
+    },
+    {
+      "from": 80,
+      "to": 85,
+      "label": "80-85%",
+      "count": 47
+    },
+    {
+      "from": 85,
+      "to": 90,
+      "label": "85-90%",
+      "count": 63
+    },
+    {
+      "from": 90,
+      "to": 95,
+      "label": "90-95%",
+      "count": 80
+    },
+    {
+      "from": 95,
+      "to": 100,
+      "label": "95-100%",
+      "count": 77
+    }
+  ],
+  "groups": [
+    {
+      "groupLabel": "Fratelli d'Italia",
+      "count": 116,
+      "mean": 90.2,
+      "median": 92.7,
+      "p25": 87.6,
+      "p75": 95.6,
+      "min": 57.4,
+      "max": 99.8
+    },
+    {
+      "groupLabel": "Partito Democratico - Italia Democratica e Progressista",
+      "count": 70,
+      "mean": 81,
+      "median": 83,
+      "p25": 74.9,
+      "p75": 89.7,
+      "min": 20,
+      "max": 99.6
+    },
+    {
+      "groupLabel": "Lega - Salvini Premier",
+      "count": 56,
+      "mean": 83,
+      "median": 89.5,
+      "p25": 76.3,
+      "p75": 93.9,
+      "min": 0.1,
+      "max": 99.5
+    },
+    {
+      "groupLabel": "Forza Italia - Berlusconi Presidente - PPE",
+      "count": 53,
+      "mean": 79.7,
+      "median": 83.5,
+      "p25": 73.4,
+      "p75": 91,
+      "min": 10.7,
+      "max": 100
+    },
+    {
+      "groupLabel": "MoVimento 5 Stelle",
+      "count": 49,
+      "mean": 78.9,
+      "median": 81.8,
+      "p25": 72.6,
+      "p75": 86,
+      "min": 17.5,
+      "max": 97
+    },
+    {
+      "groupLabel": "Alleanza Verdi e Sinistra",
+      "count": 10,
+      "mean": 87.8,
+      "median": 93.4,
+      "p25": 85.1,
+      "p75": 96.1,
+      "min": 60.5,
+      "max": 99.9
+    },
+    {
+      "groupLabel": "Azione-Popolari europeisti riformatori-Renew Europe",
+      "count": 10,
+      "mean": 80.9,
+      "median": 77.5,
+      "p25": 75.2,
+      "p75": 85.2,
+      "min": 67.6,
+      "max": 96.1
+    },
+    {
+      "groupLabel": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+      "count": 9,
+      "mean": 74.1,
+      "median": 75,
+      "p25": 56.8,
+      "p75": 92.3,
+      "min": 45.1,
+      "max": 97.2
+    },
+    {
+      "groupLabel": "MISTO",
+      "count": 8,
+      "mean": 70.8,
+      "median": 75.2,
+      "p25": 54.1,
+      "p75": 86.6,
+      "min": 42.6,
+      "max": 92.2
+    },
+    {
+      "groupLabel": "Italia Viva-Il Centro-Renew Europe",
+      "count": 6,
+      "mean": 74.1,
+      "median": 77.4,
+      "p25": 74.5,
+      "p75": 83.6,
+      "min": 42,
+      "max": 89
+    },
+    {
+      "groupLabel": "MISTO-Minoranze Linguistiche",
+      "count": 4,
+      "mean": 90.7,
+      "median": 93.2,
+      "p25": 88.5,
+      "p75": 95.4,
+      "min": 80.3,
+      "max": 95.9
+    },
+    {
+      "groupLabel": "MISTO-+Europa",
+      "count": 3,
+      "mean": 83.3,
+      "median": 93.2,
+      "p25": 77.2,
+      "p75": 94.4,
+      "min": 61.2,
+      "max": 95.6
+    }
+  ],
+  "caveats": [
+    "Presenza = voti espressi + missioni sulle votazioni elettroniche in Aula.",
+    "Le missioni non sono presenza fisica in Aula; il lavoro in commissione non è incluso.",
+    "Il Senato non pubblica una tabella ufficiale equivalente: nessuna distribuzione Senato.",
+    "La tabella ufficiale misura la partecipazione alle votazioni elettroniche e le missioni, non le sedute di commissione.",
+    "Il collegamento al deputato in carica usa cognome unico in aula o corrispondenza sul nome: le righe senza match restano nel snapshot senza personaId."
+  ],
+  "assets": {
+    "presenze-camera.pdf": {
+      "bytes": 139900,
+      "sha256": "183bfc7b2d4c03aa6782e1f8281fc3ca5703844dcb190f0f5ab151fed1bc8f68"
+    }
+  }
+}

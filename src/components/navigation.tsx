@@ -156,8 +156,8 @@ function NavigationLinks({ pathname, currentSearch, id, onNavigate }:
           return (
             <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
               data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>
-              {item.href === "/imprese" || item.href === "/report" ? (
-                <span className="sidebar-group">{item.href === "/report" ? "Pubblicazioni" : "Dati"}</span>
+              {item.href === "/imprese" || item.href === "/studi" ? (
+                <span className="sidebar-group">{item.href === "/studi" ? "Pubblicazioni" : "Dati"}</span>
               ) : null}
               <IntentLink href={item.href}
                 aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}

@@ -26,15 +26,17 @@ const announcements = [
   ...(latestPaper ? [{
     label: "Paper",
     title: latestPaper.title,
-    description: latestPaper.webPath === "/studi/tre-interventi-sprechi"
-      ? "Farmaci, giustizia ed edilizia: tre spese da verificare"
-      : latestPaper.webPath === "/studi/dai-fondi-ai-posti"
-        ? "Asili PNRR: i finanziamenti diventano posti disponibili?"
-        : latestPaper.title,
+    description: latestPaper.webPath === "/studi/presenze-camera"
+      ? "Distribuzione ufficiale delle presenze al voto alla Camera"
+      : latestPaper.webPath === "/studi/tre-interventi-sprechi"
+        ? "Farmaci, giustizia ed edilizia: tre spese da verificare"
+        : latestPaper.webPath === "/studi/dai-fondi-ai-posti"
+          ? "Asili PNRR: i finanziamenti diventano posti disponibili?"
+          : latestPaper.title,
     cta: "Scopri il paper",
     href: latestPaper.webPath ?? "/studi",
   }] : []),
-  { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/report/${stateBudgetReport.slug}` },
+  { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/studi/${stateBudgetReport.slug}` },
 ];
 
 export const metadata: Metadata = {

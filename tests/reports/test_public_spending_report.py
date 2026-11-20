@@ -53,7 +53,7 @@ class ReportTests(unittest.TestCase):
             for entry in REPORT[collection]:self.assertIn(entry[key],text)
     def test_no_emdash(self): self.assertNotIn('\u2014',builder.markdown(REPORT))
     def test_money_unit(self): self.assertEqual(builder.it('1109.15'),'1.109,15')
-    def test_previous_report_not_replaced(self):self.assertEqual(REPORT['predecessor']['href'],'/report/bilancio-stato-2025')
+    def test_previous_report_not_replaced(self):self.assertEqual(REPORT['predecessor']['href'],'/studi/bilancio-stato-2025')
     def test_no_publication_attestation(self):self.assertIsNone(REPORT['scope']['reviewerSignoff'])
     def test_no_savings_total(self):self.assertTrue(REPORT['noSavingsTotal'])
     def test_all_operands_bound(self):

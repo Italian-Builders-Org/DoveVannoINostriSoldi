@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 // committed vincitori dataset so a live OpenBDAP outage cannot fail this gate.
 export const RECHARTS_ROUTES = [
   ["/debito", 1], ["/spese/sanita/storico", 2], ["/coesione", 1],
-  ["/istruzione", 1], ["/report/2026-08", 2], ["/dati/vincitori", 1], ["/enti", 1],
+  ["/istruzione", 1], ["/studi/2026-08", 2], ["/dati/vincitori", 1], ["/enti", 1],
   ["/spese/sanita", 1], ["/palazzo-chigi", 1], ["/ministeri", 1],
   ["/regioni", 1], ["/spese/legge-di-bilancio", 2],
 ];

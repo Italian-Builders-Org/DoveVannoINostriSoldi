@@ -1,9 +1,22 @@
 import type { PublishedPaper } from "@/lib/papers-contract";
 import { PUBLIC_SITE_URL } from "@/lib/site";
-import { childcareStudy, wasteInterventionsStudy } from "@/lib/studies";
+import { cameraPresenzeStudy, childcareStudy, wasteInterventionsStudy } from "@/lib/studies";
 
 /** Published metadata only; study capsules remain the source of their values. */
 export const PUBLISHED_PAPERS = [{
+  status: "published",
+  slug: cameraPresenzeStudy.slug,
+  title: cameraPresenzeStudy.title,
+  abstract: `${cameraPresenzeStudy.subtitle}. ${cameraPresenzeStudy.description}`,
+  authors: ["DoveVannoINostriSoldi"],
+  publishedOn: cameraPresenzeStudy.publishedOn,
+  version: cameraPresenzeStudy.version,
+  webPath: cameraPresenzeStudy.path,
+  limitations: cameraPresenzeStudy.limitations,
+  pdfUrl: `${PUBLIC_SITE_URL}${cameraPresenzeStudy.assetPath}/presenze-camera.pdf`,
+  pdfSha256: cameraPresenzeStudy.assets["presenze-camera.pdf"].sha256,
+  reproducibilityUrl: cameraPresenzeStudy.reproducibilityUrl,
+}, {
   status: "published",
   slug: wasteInterventionsStudy.slug,
   title: wasteInterventionsStudy.title,

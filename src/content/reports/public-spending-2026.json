@@ -10,10 +10,10 @@
   "repositoryBase": "f9bb915a731a8278cd895d648517eb56e9f053c5",
   "predecessor": {
     "pr": 506,
-    "href": "/report/bilancio-stato-2025",
+    "href": "/studi/bilancio-stato-2025",
     "note": "La prima analisi rimane consultabile e non viene riscritta."
   },
-  "pdfPath": "/report/spesa-pubblica-italiana-2026.pdf",
+  "pdfPath": "/studi/spesa-pubblica-italiana-2026.pdf",
   "jsonPath": "/data/reports/public-spending-2026.json",
   "csvPath": "/data/reports/public-spending-2026-claims.csv",
   "scope": {

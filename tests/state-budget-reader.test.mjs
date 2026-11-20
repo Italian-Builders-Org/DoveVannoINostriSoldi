@@ -38,7 +38,7 @@ for(const [label,mutate] of [
  ['unsupported verdict',r=>{r.cases[0].kind='proved-fraud';}],
  ['missing period',r=>{r.cases[0].period='';}],
  ['national waste total',r=>{r.noNationalWasteTotal=false;}],
- ['second public edition',r=>{r.route='/report/new-v2';}],
+ ['second public edition',r=>{r.route='/studi/new-v2';}],
  ['em dash',r=>{r.title+='\u2014';}],
 ])test(`reader rejects ${label}`,()=>{const r=clone();mutate(r);assert.throws(()=>validateReader(r));});
 test('exact 11-cell excerpt reconciles; this is not a full original-file hash check',()=>validateReaderSnapshot(report,cells));

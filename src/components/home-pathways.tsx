@@ -110,8 +110,8 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
           <p>Appalti, affidamenti e risultati dei controlli, insieme a studi sulla spesa pubblica. I valori anomali richiedono verifiche e non dimostrano, da soli, sprechi o illeciti.</p>
           <Link prefetch={false} href="/controlli" className={styles.primaryLink}>Apri i controlli <Arrow /></Link>
           <div className={styles.related}>
-            <Link prefetch={false} href="/studi">Paper di ricerca</Link>
-            <Link prefetch={false} href="/report">Articoli e approfondimenti</Link>
+            <Link prefetch={false} href="/studi">Studi e analisi</Link>
+            <Link prefetch={false} href="/studi/presenze-camera">Presenze al voto alla Camera</Link>
           </div>
         </div>
         {children}

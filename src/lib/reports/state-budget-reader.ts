@@ -107,7 +107,7 @@ export function readerCalculationText(report: ReaderReport, c: ReaderCalculation
   return `${expression} = ${readerNumber(readerValue(report, c.id), c.digits)} ${c.unit}`;
 }
 export function validateReader(report: ReaderReport): ReaderReport {
-  if (report.schemaVersion !== 1 || report.route !== '/report/bilancio-stato-2025' || report.pdfPath !== '/report/bilancio-stato-2025.pdf') throw new Error('Identità o URL del report non validi');
+  if (report.schemaVersion !== 1 || report.route !== '/studi/bilancio-stato-2025' || report.pdfPath !== '/studi/bilancio-stato-2025.pdf') throw new Error('Identità o URL del report non validi');
   if (report.noNationalWasteTotal !== true) throw new Error('Totale degli sprechi non documentato');
   if (JSON.stringify(report).includes('\u2014')) throw new Error('Em dash nel contenuto');
   const ids = report.cases.map(x => x.id);

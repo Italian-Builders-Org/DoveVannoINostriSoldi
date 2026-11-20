@@ -33,7 +33,7 @@ class StateBudgetReportTests(unittest.TestCase):
 
     def test_pdf_contains_all_findings_limits_and_verifiable_source_links(self):
         report = json.loads((ROOT / "src/content/reports/state-budget-reader.json").read_text(encoding="utf-8"))
-        reader = PdfReader(ROOT / "public/report/bilancio-stato-2025.pdf")
+        reader = PdfReader(ROOT / "public/studi/bilancio-stato-2025.pdf")
         normalize = lambda value: re.sub(r"\s+", "", unicodedata.normalize("NFKC", value))
         text = normalize("\n".join(page.extract_text() for page in reader.pages))
         self.assertNotIn("\u2014", text)
@@ -57,7 +57,7 @@ class StateBudgetReportTests(unittest.TestCase):
         self.assertIn(report["legacyEvidenceUrl"], links)
 
     def test_pdf_uses_dvns_palette_and_reviewed_logo(self):
-        reader = PdfReader(ROOT / "public/report/bilancio-stato-2025.pdf")
+        reader = PdfReader(ROOT / "public/studi/bilancio-stato-2025.pdf")
         colours, images = set(), []
         for page in reader.pages:
             for values, operator in page.get_contents().operations:
@@ -134,7 +134,7 @@ class StateBudgetReportTests(unittest.TestCase):
         self.assertEqual(legacy_blob, receipt["legacyManuscriptGitBlob"])
         current = (ROOT / "src/content/reports/state-budget-reader.json").read_bytes()
         self.assertEqual(hashlib.sha256(current).hexdigest(), receipt["readerManuscriptSha256"])
-        pdf = (ROOT / "public/report/bilancio-stato-2025.pdf").read_bytes()
+        pdf = (ROOT / "public/studi/bilancio-stato-2025.pdf").read_bytes()
         self.assertTrue(pdf.startswith(b"%PDF-"))
         self.assertEqual(hashlib.sha256(pdf).hexdigest(), receipt["pdfSha256"])
         self.assertEqual(len(pdf), receipt["pdfBytes"])

@@ -27,12 +27,12 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
     });
     assert.deepEqual(state, { accessible: true, visible: true, fullCopy: true, paused: true, static: true }, 'Il link attivo deve essere accessibile, fermo e interamente visibile');
   };
-  assert.equal((await active()).href, '/report/2026-08');
+  assert.equal((await active()).href, '/studi/2026-08');
   if (!testTiming) {
     await page.focus('[data-announcement] button[aria-label^="Mostra:"]');
     await page.keyboard.press('Enter');
   }
-  await page.waitForFunction(() => document.querySelector('[data-announcement] a[data-active="true"]')?.getAttribute('href') === '/studi/tre-interventi-sprechi', { timeout: 10_000 });
+  await page.waitForFunction(() => document.querySelector('[data-announcement] a[data-active="true"]')?.getAttribute('href') === '/studi/presenze-camera', { timeout: 10_000 });
   await page.focus('[data-announcement] a[data-active="true"]');
   await page.waitForFunction(() => document.querySelector('[data-announcement]')?.dataset.static === 'true');
   await assertStationaryLink();
@@ -48,13 +48,13 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
   if (testTiming) await new Promise((resolve) => setTimeout(resolve, 7_200));
   assert.deepEqual(await active(), paused, 'Pausa mantiene articolo e URL');
   await page.focus('[data-announcement] button[aria-label^="Mostra:"]'); await page.keyboard.press('Enter');
-  assert.equal((await active()).href, '/report/bilancio-stato-2025');
+  assert.equal((await active()).href, '/studi/bilancio-stato-2025');
   assert.equal(await page.$eval('[data-announcement]', (node) => node.dataset.instant), 'true');
   assert.equal(await page.$$eval('[data-announcement] a:not([tabindex="-1"])', (nodes) => nodes.length), 1);
   await assertStationaryLink();
   await page.focus('[data-announcement] a[data-active="true"]');
   await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
-  assert.equal(new URL(page.url()).pathname, '/report/bilancio-stato-2025', 'Il nuovo rapporto si apre dal banner da tastiera');
+  assert.equal(new URL(page.url()).pathname, '/studi/bilancio-stato-2025', 'Il nuovo rapporto si apre dal banner da tastiera');
   await page.goto(homeUrl, { waitUntil: 'networkidle2' });
   await page.emulateMediaFeatures([
     { name: 'prefers-color-scheme', value: colorScheme },
@@ -68,10 +68,10 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
   assert.ok(['none', 'blur(0px)'].includes(await page.$eval('[data-announcement] a[data-active="true"]', (node) => getComputedStyle(node).filter)));
   await assertStationaryLink();
   await page.focus('[data-announcement] button[aria-label^="Mostra:"]'); await page.keyboard.press('Enter');
-  assert.equal((await active()).href, '/studi/tre-interventi-sprechi', 'Prossimo annuncio cambia anche il link visibile con movimento ridotto');
+  assert.equal((await active()).href, '/studi/presenze-camera', 'Prossimo annuncio cambia anche il link visibile con movimento ridotto');
   await assertStationaryLink();
   await page.focus('[data-announcement] a[data-active="true"]');
   await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2' }), page.keyboard.press('Enter')]);
-  assert.equal(new URL(page.url()).pathname, '/studi/tre-interventi-sprechi', 'Il link dell’annuncio si apre da tastiera');
+  assert.equal(new URL(page.url()).pathname, '/studi/presenze-camera', 'Il link dell’annuncio si apre da tastiera');
   await page.goto(homeUrl, { waitUntil: 'networkidle2' });
 }

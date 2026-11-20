@@ -20,7 +20,7 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[2]
 AUDIT = runpy.run_path(str(ROOT / 'scripts/reports/audit_state_budget.py'))
 CONTENT = Path('src/content/reports/state-budget-reader.json')
-PDF = Path('public/report/bilancio-stato-2025.pdf')
+PDF = Path('public/studi/bilancio-stato-2025.pdf')
 RECEIPT = Path('docs/research/state-budget-2025/pdf-receipt.json')
 DATA = Path('public/data/reports/state-budget-reader.json')
 CSV = Path('public/data/reports/state-budget-reader.csv')
@@ -64,7 +64,7 @@ def number(report: dict, key: str, seen: tuple = ()) -> Decimal:
 
 
 def validate(report: dict) -> None:
-    if report['route'] != '/report/bilancio-stato-2025' or report['pdfPath'] != '/report/bilancio-stato-2025.pdf':
+    if report['route'] != '/studi/bilancio-stato-2025' or report['pdfPath'] != '/studi/bilancio-stato-2025.pdf':
         raise ValueError('Canonical URL changed')
     if report.get('noNationalWasteTotal') is not True:
         raise ValueError('Undocumented waste total')

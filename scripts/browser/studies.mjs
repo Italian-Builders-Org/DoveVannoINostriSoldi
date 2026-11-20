@@ -21,13 +21,13 @@ try {
         await page.click('.mobile-menu-trigger');
         await page.waitForSelector('#mobile-navigation:modal .primary-nav', {visible: true});
         await page.click('#mobile-navigation-links a[href="/studi"]');
-        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Paper di ricerca");
+        await page.waitForFunction(() => location.pathname === "/studi" && document.querySelector("main h1")?.textContent === "Studi");
         await page.waitForFunction(() => {
           const title = document.querySelector("main h1")?.getBoundingClientRect();
           const header = document.querySelector(".site-header")?.getBoundingClientRect();
           return title && header && title.top >= header.bottom && title.bottom <= innerHeight;
         });
-        assert.equal(await page.$eval("main h1", el => el.textContent), "Paper di ricerca");
+        assert.equal(await page.$eval("main h1", el => el.textContent), "Studi");
         await page.screenshot({ path: fileURLToPath(new URL(`archive-${width}.png`, evidence)), fullPage: true });
         await page.screenshot({ path: fileURLToPath(new URL(`archive-top-${width}.png`, evidence)) });
         await page.click('main a[href="/studi/dai-fondi-ai-posti"]');

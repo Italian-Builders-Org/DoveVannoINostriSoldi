@@ -27,21 +27,23 @@ try {
           pdf: document.querySelector('main a[href$=".pdf"]')?.getAttribute("href"),
           research: document.querySelector('main a[href*="/tree/"]')?.getAttribute("href"),
         }));
-        assert.deepEqual(state.headings, ["Paper di ricerca"]);
+        assert.deepEqual(state.headings, ["Studi"]);
         assert.equal(state.overflow, false);
         assert.deepEqual(state.current, ["Studi"]);
+        assert.match(state.text, /Presenze al voto alla Camera/);
         assert.match(state.text, /Tre interventi per ridurre gli sprechi/);
         assert.match(state.text, /Dai fondi ai posti/);
         assert.match(state.text, /Versione 1(?:\.3)?/);
         assert.match(state.text, /22 settembre 2026/);
         assert.match(state.text, /13 giugno 2026/);
         assert.doesNotMatch(state.text, /Non ci sono ancora studi/);
-        assert.equal(state.pdf, "/studi/tre-interventi-sprechi/v1/tre-interventi-sprechi.pdf");
+        assert.equal(state.pdf, "/studi/presenze-camera/v1/presenze-camera.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
         const navLabels = await page.$$eval('#mobile-navigation-links .nav-item > a', (links) => links.map((link) => link.textContent.trim()));
         assert.deepEqual(navLabels.slice(0, 7), ['Home', 'Imprese', 'Istruzione', 'Povertà', 'Soldi', 'Economia', 'Territori']);
-        assert.deepEqual(navLabels.slice(-2), ['Report', 'Studi']);
+        assert.deepEqual(navLabels.slice(-1), ['Studi']);
+        assert.equal(navLabels.includes('Report'), false, 'Report non deve restare nella nav primaria');
         assert.equal(await page.$$eval('#mobile-navigation-links .nav-item > a > svg', (icons) => icons.length), navLabels.length);
         await page.keyboard.press('Escape');
         const details = await page.$("main details summary");

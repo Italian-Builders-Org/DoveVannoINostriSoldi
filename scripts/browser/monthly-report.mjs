@@ -74,7 +74,7 @@ async function inspectReport(page, width) {
   assert.deepEqual(state.rowCounts, [16, 20], `${label}: righe grafici e tabelle divergenti`);
   assert.equal(state.captions.length, 2, `${label}: caption delle tabelle assenti`);
   assert.ok(state.captions.every(Boolean), `${label}: caption vuota`);
-  assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
+  assert.deepEqual(state.currentLinks, ["Studi"], `${label}: navigazione attiva errata`);
   assert.equal(
     state.canonical,
     "https://www.dovevannoinostrisoldi.com/studi/2026-08",
@@ -128,11 +128,11 @@ async function inspectArchive(page, width) {
       .map((link) => link.textContent?.trim()),
   }));
   assert.equal(state.h1Count, 1, `${label}: serve un solo h1`);
-  assert.equal(state.h1, "Report", `${label}: titolo inatteso`);
+  assert.equal(state.h1, "Studi", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
   assert.ok(state.issueLinks.includes("/studi/2026-08"), `${label}: edizione assente`);
   assert.ok(state.issueLinks.includes(`/studi/${budgetReport.slug}`), `${label}: analisi del bilancio assente`);
-  assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
+  assert.deepEqual(state.currentLinks, ["Studi"], `${label}: navigazione attiva errata`);
 }
 
 async function inspectStateBudget(page, width) {

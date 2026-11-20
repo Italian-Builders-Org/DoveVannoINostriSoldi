@@ -5,6 +5,8 @@ elettroniche alla Camera (XIX legislatura, fino a febbraio 2026).
 
 ## Versioni
 
+- v2.1 (20 novembre 2026): Umberto Bossi, deceduto, esce dalle classifiche dei
+  singoli deputati; la sua riga ufficiale resta nella tabella completa e nei totali.
 - v2 (20 novembre 2026): tutte le 397 righe ufficiali, voti espressi separati
   dalle missioni, gruppi, maggioranza e opposizione, membri del Governo e
   Ufficio di Presidenza, assenze giustificate, profili (genere, età, tipo di
@@ -15,7 +17,7 @@ elettroniche alla Camera (XIX legislatura, fino a febbraio 2026).
 ## Pubblicazione
 
 - Pagina HTML: `/studi/presenze-camera`
-- PDF versionato: `public/studi/presenze-camera/v2/presenze-camera.pdf`
+- PDF versionato: `public/studi/presenze-camera/v2.1/presenze-camera.pdf` (v2 e v1 restano pubblicati)
 - Copia di ricerca: `paper/presenze-camera.pdf` (byte identici al PDF pubblico)
 - Capsule congelata: `src/content/studies/camera-presenze.json`
 - Righe per deputato: `src/content/studies/camera-presenze-deputati.json`

@@ -19,7 +19,7 @@ test("paper: il catalogo pubblicato conserva gli studi e la discovery canonica",
   const attendance = published.find((paper) => paper.slug === "presenze-camera");
   assert.equal(childcare.version, "1.3");
   assert.equal(waste.version, "1");
-  assert.equal(attendance.version, "2");
+  assert.equal(attendance.version, "2.1");
   const childcareCapsule = JSON.parse(readFileSync(new URL("../src/content/studies/childcare.json", import.meta.url), "utf8"));
   const wasteCapsule = JSON.parse(readFileSync(new URL("../src/content/studies/waste-interventions.json", import.meta.url), "utf8"));
   const attendanceCapsule = JSON.parse(readFileSync(new URL("../src/content/studies/camera-presenze.json", import.meta.url), "utf8"));
@@ -28,7 +28,7 @@ test("paper: il catalogo pubblicato conserva gli studi e la discovery canonica",
   assert.equal(attendance.pdfSha256, attendanceCapsule.assets["presenze-camera.pdf"].sha256);
   assert.match(childcare.pdfUrl, /\/studi\/dai-fondi-ai-posti\/v1\.3\/dai-fondi-ai-posti\.pdf$/);
   assert.match(waste.pdfUrl, /\/studi\/tre-interventi-sprechi\/v1\/tre-interventi-sprechi\.pdf$/);
-  assert.match(attendance.pdfUrl, /\/studi\/presenze-camera\/v2\/presenze-camera\.pdf$/);
+  assert.match(attendance.pdfUrl, /\/studi\/presenze-camera\/v2\.1\/presenze-camera\.pdf$/);
   for (const paper of published) {
     assert.match(paper.reproducibilityUrl, /\/tree\/[a-f0-9]{40}\/research\//);
   }

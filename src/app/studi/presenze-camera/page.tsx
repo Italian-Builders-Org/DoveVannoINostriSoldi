@@ -66,7 +66,8 @@ function RankTable({ caption, rows }: { caption: string; rows: readonly DeputyRo
 export default function CameraPresenzeStudyPage() {
   const h = study.headline;
   const deputies: DeputyRow[] = deputiesFile.deputies;
-  const fullTerm = deputies.filter((d) => d.votable === h.totalVotes);
+  // Rankings name individuals: deceased deputies stay in the full table only.
+  const fullTerm = deputies.filter((d) => d.votable === h.totalVotes && !d.deceased);
   const lowest = [...fullTerm].sort((a, b) => a.presence - b.presence).slice(0, 10);
   const mostVotes = [...fullTerm].sort((a, b) => b.votes - a.votes || a.name.localeCompare(b.name, "it")).slice(0, 10);
   const government = deputies.filter((d) => d.government).sort((a, b) => a.votes - b.votes);
@@ -267,7 +268,8 @@ export default function CameraPresenzeStudyPage() {
       <section className={styles.section} aria-labelledby="estremi">
         <h2 id="estremi">5. Gli estremi della distribuzione</h2>
         <p>
-          Le due tabelle considerano solo i deputati in carica per tutta la legislatura. Una presenza
+          Le due tabelle considerano solo i deputati in carica per tutta la legislatura. Umberto
+          Bossi, deceduto, non è incluso: la sua riga resta nella tabella completa. Una presenza
           bassa può avere ragioni che la tabella non registra, come una malattia: la Camera avverte che
           il sistema di voto non distingue sempre queste cause.
         </p>
@@ -383,6 +385,9 @@ export default function CameraPresenzeStudyPage() {
           </li>
           <li>
             <Link href="/metodologia">Come leggiamo i dati</Link>
+          </li>
+          <li>
+            <a href="/studi/presenze-camera/v2/presenze-camera.pdf">Versione 2 del paper (20 novembre 2026)</a>
           </li>
           <li>
             <a href="/studi/presenze-camera/v1/presenze-camera.pdf">Versione 1 del paper (20 novembre 2026)</a>

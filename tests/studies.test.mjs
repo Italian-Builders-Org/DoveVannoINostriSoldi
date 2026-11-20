@@ -59,7 +59,7 @@ test("waste interventions capsule matches the versioned public and research PDF"
 
 test("camera presenze capsule matches the versioned public and research PDF", async () => {
   const capsule = await json("../src/content/studies/camera-presenze.json");
-  assert.equal(capsule.version, "2");
+  assert.equal(capsule.version, "2.1");
   assert.equal(capsule.publishedOn, "2026-11-20");
   assert.doesNotMatch(JSON.stringify(capsule), /\u2014|\u2013/);
   for (const [name, expected] of Object.entries(capsule.assets)) {
@@ -108,9 +108,21 @@ test("camera presenze v2 keeps every official row and conserves its denominators
   for (const total of means) assert.ok(Math.abs(total - 100) <= 0.3);
 });
 
+test("camera presenze rankings exclude deceased deputies but keep their official row", async () => {
+  const { deputies } = await json("../src/content/studies/camera-presenze-deputati.json");
+  const bossi = deputies.find((d) => d.name === "Umberto Bossi");
+  assert.equal(bossi?.deceased, true, "la riga ufficiale resta nella tabella completa, marcata");
+  for (const path of ["../src/app/studi/presenze-camera/page.tsx", "../research/camera-presenze-voto/render-pdf.mjs"]) {
+    const code = await readFile(new URL(path, import.meta.url), "utf8");
+    assert.match(code, /!d\.deceased/, `${path} deve escludere i deputati deceduti dalle classifiche`);
+  }
+});
+
 test("camera presenze v1 PDF stays published with its original checksum", async () => {
   const v1 = await readFile(new URL("../public/studi/presenze-camera/v1/presenze-camera.pdf", import.meta.url));
   assert.equal(createHash("sha256").update(v1).digest("hex"), "183bfc7b2d4c03aa6782e1f8281fc3ca5703844dcb190f0f5ab151fed1bc8f68");
+  const v2 = await readFile(new URL("../public/studi/presenze-camera/v2/presenze-camera.pdf", import.meta.url));
+  assert.equal(createHash("sha256").update(v2).digest("hex"), "4bea42976f95851393e72e55adf92b52346fdff509bc32ce8dff4ebc01b40395");
 });
 
 test("previous published PDF remains available with its original checksum", async () => {

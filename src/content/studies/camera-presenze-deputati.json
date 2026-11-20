@@ -1,5 +1,5 @@
 {
- "version": "2",
+ "version": "2.1",
  "observedDate": "2026-02-28",
  "deputies": [
   {
@@ -531,7 +531,8 @@
    "absences": 99.98,
    "justified": 99.98,
    "votable": 17081,
-   "unmatched": true
+   "unmatched": true,
+   "deceased": true
   },
   {
    "name": "Chiara Braga",

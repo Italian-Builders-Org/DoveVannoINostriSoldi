@@ -40,6 +40,7 @@ export type DeputyRow = {
   role?: string;
   government?: boolean;
   unmatched?: boolean;
+  deceased?: boolean;
 };
 
 /** Votes cast always carry the accent: they are the measure this study is about. */
@@ -283,6 +284,7 @@ export function DeputiesTable({ deputies, groups, totalVotes }: { deputies: read
                 <th scope="row">
                   {d.name}
                   {d.role ? <span className={styles.role}>{d.role}</span> : null}
+                  {d.deceased ? <span className={styles.role}>Deceduto, escluso dalle classifiche</span> : null}
                   {d.votable < totalVotes ? <span className={styles.role}>Mandato parziale: {d.votable.toLocaleString("it-IT")} votazioni</span> : null}
                 </th>
                 <td className={styles.num}>{pct(d.presence)}</td>

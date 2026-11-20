@@ -1,5 +1,5 @@
 {
-  "version": "2",
+  "version": "2.1",
   "revisedAt": "2026-11-20",
   "series": "Quaderni parlamentari",
   "publishedOn": "2026-11-20",
@@ -16,24 +16,24 @@
     "presence": {
       "count": 397,
       "mean": 83.1,
-      "median": 87.0,
-      "p10": 66.0,
-      "p25": 76.0,
+      "median": 87,
+      "p10": 66,
+      "p25": 76,
       "p75": 93.6,
       "p90": 96.7,
-      "min": 0.0,
-      "max": 100.0
+      "min": 0,
+      "max": 100
     },
     "votes": {
       "count": 397,
       "mean": 67.6,
-      "median": 76.0,
-      "p10": 21.0,
+      "median": 76,
+      "p10": 21,
       "p25": 54.2,
       "p75": 87.9,
       "p90": 93.9,
-      "min": 0.0,
-      "max": 100.0
+      "min": 0,
+      "max": 100
     },
     "tailBelowP10": 40,
     "presenceBelow50": 15,
@@ -422,12 +422,12 @@
     {
       "label": "Partito Democratico",
       "count": 70,
-      "presence": 83.0,
+      "presence": 83,
       "votes": 79.7,
       "missions": 0.6,
       "meanVotes": 75.2,
       "meanMissions": 5.8,
-      "meanAbsences": 19.0,
+      "meanAbsences": 19,
       "missionsOver50": 3,
       "short": "PD",
       "bloc": "opposizione",
@@ -440,14 +440,14 @@
       "presence": 81.8,
       "votes": 74.6,
       "missions": 0.8,
-      "meanVotes": 70.0,
+      "meanVotes": 70,
       "meanMissions": 8.8,
       "meanAbsences": 21.1,
       "missionsOver50": 3,
       "short": "M5S",
       "bloc": "opposizione",
       "p25": 72.6,
-      "p75": 86.0
+      "p75": 86
     },
     {
       "label": "Azione",
@@ -482,7 +482,7 @@
     {
       "label": "Noi Moderati",
       "count": 9,
-      "presence": 75.0,
+      "presence": 75,
       "votes": 43.6,
       "missions": 30.9,
       "meanVotes": 41.3,
@@ -502,9 +502,9 @@
       "presence": 89.9,
       "votes": 76.2,
       "missions": 1.2,
-      "meanVotes": 65.0,
-      "meanMissions": 20.0,
-      "meanAbsences": 15.0,
+      "meanVotes": 65,
+      "meanMissions": 20,
+      "meanAbsences": 15,
       "missionsOver50": 46,
       "key": "maggioranza"
     },
@@ -540,7 +540,7 @@
         "count": 132,
         "presence": 85.6,
         "votes": 78.6,
-        "missions": 1.0,
+        "missions": 1,
         "meanVotes": 70.5,
         "meanMissions": 12.2,
         "meanAbsences": 17.3,
@@ -551,9 +551,9 @@
         "count": 262,
         "presence": 87.9,
         "votes": 75.2,
-        "missions": 1.0,
+        "missions": 1,
         "meanVotes": 66.7,
-        "meanMissions": 17.0,
+        "meanMissions": 17,
         "meanAbsences": 16.3,
         "missionsOver50": 43
       }
@@ -562,18 +562,18 @@
       {
         "label": "Meno di 40 anni",
         "count": 31,
-        "presence": 83.0,
+        "presence": 83,
         "votes": 72.1,
         "missions": 1.2,
         "meanVotes": 66.6,
-        "meanMissions": 13.0,
+        "meanMissions": 13,
         "meanAbsences": 20.4,
         "missionsOver50": 5
       },
       {
         "label": "40-49 anni",
         "count": 128,
-        "presence": 86.0,
+        "presence": 86,
         "votes": 76.3,
         "missions": 0.6,
         "meanVotes": 71.5,
@@ -684,7 +684,7 @@
       "p25": 2.6,
       "p75": 9.6,
       "p90": 14.2,
-      "min": 0.0,
+      "min": 0,
       "max": 30.5
     },
     "justified": {
@@ -695,8 +695,8 @@
       "p25": 2.5,
       "p75": 13.2,
       "p90": 22.6,
-      "min": 0.0,
-      "max": 100.0
+      "min": 0,
+      "max": 100
     },
     "unjustifiedOver20": 11,
     "noJustified": 20
@@ -709,12 +709,13 @@
     "Il gruppo è quello indicato dalla Camera per il periodo; incarichi di governo e dell'Ufficio di Presidenza sono quelli in corso a settembre 2026.",
     "Undici deputati sono entrati o usciti nel corso della legislatura: le loro percentuali sono calcolate sulle votazioni del loro mandato.",
     "Il Senato non è incluso: non abbiamo ancora acquisito una sua fonte equivalente con hash e periodo verificati.",
+    "Umberto Bossi, deceduto, è escluso dalle classifiche dei singoli deputati; la sua riga ufficiale resta nella tabella completa e nei totali.",
     "La nota della Camera avverte che il sistema di voto non distingue sempre le assenze per malattia o altre cause giustificate oltre alla colonna dedicata."
   ],
   "assets": {
     "presenze-camera.pdf": {
-      "bytes": 1442575,
-      "sha256": "4bea42976f95851393e72e55adf92b52346fdff509bc32ce8dff4ebc01b40395"
+      "bytes": 1446854,
+      "sha256": "9bd74bcb11d2049d3fa9ddd16ad9b8d91d42e6fb455bf1a8fe2d928f8c5b3a37"
     }
   }
 }

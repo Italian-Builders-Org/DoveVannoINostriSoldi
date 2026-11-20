@@ -24,7 +24,7 @@ CAPSULE = ROOT / "src/content/studies/camera-presenze.json"
 DEPUTIES = ROOT / "src/content/studies/camera-presenze-deputati.json"
 DISTRIBUTION = Path(__file__).resolve().parent / "generated" / "distribution.json"
 
-VERSION = "2"
+VERSION = "2.1"
 REVISED_AT = "2026-11-20"
 PUBLISHED_ON = "2026-11-20"
 
@@ -43,6 +43,10 @@ GROUPS = [
     ("italia viva", "IV", "Italia Viva", "opposizione"),
     ("misto", "Misto", "Misto", "misto"),
 ]
+# Official rows of deputies who have died: they stay in the full table (the Camera
+# still publishes them) but leave the rankings, where a name reads as a judgement.
+DECEASED = {"BOSSI UMBERTO"}
+
 BLOC_LABELS = {"maggioranza": "Maggioranza", "opposizione": "Opposizione", "misto": "Gruppo Misto"}
 
 
@@ -303,6 +307,7 @@ def main() -> None:
             **({"role": r["role"]} if r["role"] else {}),
             **({"government": True} if r["government"] else {}),
             **({"unmatched": True} if not r["matched"] else {}),
+            **({"deceased": True} if r["sourceName"] in DECEASED else {}),
         }
         for r in rows
     ]
@@ -384,6 +389,7 @@ def main() -> None:
             "Il gruppo è quello indicato dalla Camera per il periodo; incarichi di governo e dell'Ufficio di Presidenza sono quelli in corso a settembre 2026.",
             "Undici deputati sono entrati o usciti nel corso della legislatura: le loro percentuali sono calcolate sulle votazioni del loro mandato.",
             "Il Senato non è incluso: non abbiamo ancora acquisito una sua fonte equivalente con hash e periodo verificati.",
+            "Umberto Bossi, deceduto, è escluso dalle classifiche dei singoli deputati; la sua riga ufficiale resta nella tabella completa e nei totali.",
             clean(raw["caveats"][3]),
         ],
         "assets": assets,

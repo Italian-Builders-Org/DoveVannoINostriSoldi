@@ -37,7 +37,7 @@ try {
         assert.match(state.text, /22 settembre 2026/);
         assert.match(state.text, /13 giugno 2026/);
         assert.doesNotMatch(state.text, /Non ci sono ancora studi/);
-        assert.equal(state.pdf, "/studi/presenze-camera/v2/presenze-camera.pdf");
+        assert.equal(state.pdf, "/studi/presenze-camera/v2.1/presenze-camera.pdf");
         assert.match(state.research, /\/tree\/[a-f0-9]{40}\//);
         assert.equal(state.canonical, "https://www.dovevannoinostrisoldi.com/studi");
         const navLabels = await page.$$eval('#mobile-navigation-links .nav-item > a', (links) => links.map((link) => link.textContent.trim()));

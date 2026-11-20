@@ -42,7 +42,8 @@ const [women, men] = capsule.profiles.gender;
 const foreign = capsule.profiles.elected.find((p) => p.label === "Circoscrizione Estero");
 const majorityGroups = groups.filter((g) => g.bloc === "maggioranza");
 const pd = groups.find((g) => g.short === "PD");
-const fullTerm = deputies.filter((d) => d.votable === h.totalVotes);
+// Rankings name individuals: deceased deputies stay in the appendix only.
+const fullTerm = deputies.filter((d) => d.votable === h.totalVotes && !d.deceased);
 const lowest = [...fullTerm].sort((x, y) => x.presence - y.presence).slice(0, 10);
 const mostVotes = [...fullTerm].sort((x, y) => y.votes - x.votes || x.name.localeCompare(y.name, "it")).slice(0, 10);
 const government = deputies.filter((d) => d.government).sort((x, y) => x.votes - y.votes);
@@ -173,7 +174,7 @@ const deputyRows = (list) => list.map((d) => [esc(d.name), esc(d.group), pct(d.p
 
 // The freeze keeps the Camera's own order (surname first), so no re-sorting here.
 const appendixRows = deputies.map((d) => [
-    `${esc(d.name)}${d.government ? '<sup>G</sup>' : d.role ? '<sup>P</sup>' : ""}${d.votable < h.totalVotes ? "<sup>*</sup>" : ""}`,
+    `${esc(d.name)}${d.government ? '<sup>G</sup>' : d.role ? '<sup>P</sup>' : ""}${d.votable < h.totalVotes ? "<sup>*</sup>" : ""}${d.deceased ? "<sup>†</sup>" : ""}`,
     esc(d.group),
     pct(d.presence),
     pct(d.votes),
@@ -335,7 +336,7 @@ const html = `<!doctype html>
 
 <section>
   <h2><span class="num">5</span>Gli estremi della distribuzione</h2>
-  <p>Le tabelle seguenti considerano solo i ${fullTerm.length} deputati in carica per tutta la legislatura, così che le percentuali poggino sullo stesso numero di votazioni. Una presenza bassa può avere ragioni che la tabella non registra, come una malattia: la Camera avverte che il sistema di voto non distingue sempre queste cause.</p>
+  <p>Le tabelle seguenti considerano solo i ${fullTerm.length} deputati in carica per tutta la legislatura, così che le percentuali poggino sullo stesso numero di votazioni. Umberto Bossi, deceduto, non è incluso: la sua riga resta nell'appendice. Una presenza bassa può avere ragioni che la tabella non registra, come una malattia: la Camera avverte che il sistema di voto non distingue sempre queste cause.</p>
   <h3>Le 10 presenze ufficiali più basse</h3>
   ${table(["Deputato", "Gruppo", "Presenza", "Voti espressi", "Missioni"], deputyRows(lowest), "", 2)}
   <h3>I 10 deputati con più voti espressi</h3>
@@ -365,7 +366,7 @@ const html = `<!doctype html>
 
 <section class="break appendix">
   <h2><span class="num">A</span>Tutti i ${h.rows} deputati</h2>
-  <p class="small">Ordine alfabetico per cognome, come nella tabella della Camera. Valori in percentuale delle votazioni a cui il deputato poteva partecipare. Presenza = voti espressi + missioni; assenze = 100% − presenza; la colonna «giustif.» è la parte delle assenze che la Camera classifica come giustificata. <sup>G</sup> incarico di governo in corso, <sup>P</sup> Ufficio di Presidenza, <sup>*</sup> mandato non coperto per intero (${h.partialTenure} deputati).</p>
+  <p class="small">Ordine alfabetico per cognome, come nella tabella della Camera. Valori in percentuale delle votazioni a cui il deputato poteva partecipare. Presenza = voti espressi + missioni; assenze = 100% − presenza; la colonna «giustif.» è la parte delle assenze che la Camera classifica come giustificata. <sup>G</sup> incarico di governo in corso, <sup>P</sup> Ufficio di Presidenza, <sup>*</sup> mandato non coperto per intero (${h.partialTenure} deputati), <sup>†</sup> deceduto.</p>
   ${table(["Deputato", "Gruppo", "Presenza", "Voti", "Missioni", "Assenze", "Giustif."], appendixRows, "dense", 2)}
 </section>
 
@@ -380,7 +381,7 @@ const html = `<!doctype html>
   <h3>Limiti</h3>
   <ul>${capsule.caveats.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
   <h3>Riproducibilità</h3>
-  <p>I numeri sono congelati in <code>src/content/studies/camera-presenze.json</code> dallo script <code>research/camera-presenze-voto/freeze.py</code>, che legge solo snapshot già versionati nel repository. Questo PDF è generato da <code>research/camera-presenze-voto/render-pdf.mjs</code>. Studio DVNS, non sottoposto a peer review esterna. La versione 1 resta disponibile all'indirizzo /studi/presenze-camera/v1/presenze-camera.pdf.</p>
+  <p>I numeri sono congelati in <code>src/content/studies/camera-presenze.json</code> dallo script <code>research/camera-presenze-voto/freeze.py</code>, che legge solo snapshot già versionati nel repository. Questo PDF è generato da <code>research/camera-presenze-voto/render-pdf.mjs</code>. Studio DVNS, non sottoposto a peer review esterna. Le versioni precedenti restano disponibili: /studi/presenze-camera/v2/presenze-camera.pdf e /studi/presenze-camera/v1/presenze-camera.pdf. La 2.1 esclude dalle classifiche Umberto Bossi, deceduto.</p>
 </section>
 
 </body>

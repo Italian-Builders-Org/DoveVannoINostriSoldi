@@ -1,41 +1,110 @@
 {
-  "version": "1",
+  "version": "2",
   "revisedAt": "2026-11-20",
   "series": "Quaderni parlamentari",
   "publishedOn": "2026-11-20",
   "title": "Presenze al voto alla Camera",
-  "subtitle": "Distribuzione ufficiale della partecipazione alle votazioni elettroniche",
-  "description": "Mediana, fasce e gruppi parlamentari sulla tabella ufficiale della Camera per la XIX legislatura, fino a febbraio 2026.",
-  "limitations": "Presenza = voti espressi + missioni sulle votazioni elettroniche in Aula. Le missioni non sono presenza fisica. Il lavoro in commissione non è incluso. Il Senato non pubblica una tabella equivalente. Solo deputati con match anagrafico entrano nella distribuzione. Non equivale a peer review esterna.",
+  "subtitle": "Chi vota, chi è in missione, chi manca: 397 deputati e 17.081 votazioni della XIX legislatura",
+  "description": "Lo studio completo sulla tabella ufficiale della Camera: presenze deputato per deputato, peso delle missioni, gruppi, maggioranza e opposizione, governo e assenze, fino a febbraio 2026.",
+  "limitations": "Presenza = voti espressi + missioni sulle votazioni elettroniche in Aula. Le missioni non sono presenza fisica. Il lavoro in commissione non è incluso. Il Senato non è incluso. Incarichi di governo e dell'Ufficio di Presidenza sono quelli in corso alla data degli snapshot, non lungo tutto il periodo. Non equivale a peer review esterna.",
   "sourcesConsultedOn": "2026-02-28",
   "headline": {
+    "rows": 397,
     "matchedDeputies": 394,
-    "mean": 83.4,
-    "median": 87,
-    "p10": 66.7,
-    "p90": 96.8,
-    "min": 0.1,
-    "max": 100,
-    "tailBelowP10": 40
+    "totalVotes": 17081,
+    "partialTenure": 11,
+    "presence": {
+      "count": 397,
+      "mean": 83.1,
+      "median": 87.0,
+      "p10": 66.0,
+      "p25": 76.0,
+      "p75": 93.6,
+      "p90": 96.7,
+      "min": 0.0,
+      "max": 100.0
+    },
+    "votes": {
+      "count": 397,
+      "mean": 67.6,
+      "median": 76.0,
+      "p10": 21.0,
+      "p25": 54.2,
+      "p75": 87.9,
+      "p90": 93.9,
+      "min": 0.0,
+      "max": 100.0
+    },
+    "tailBelowP10": 40,
+    "presenceBelow50": 15,
+    "votesBelow50": 91,
+    "presenceAtLeast95": 77,
+    "missionsOver20": 93,
+    "missionsOver50": 57,
+    "gapOver20": 93,
+    "aggregate": {
+      "votesShare": 67.2,
+      "missionsShare": 15.8,
+      "absencesShare": 17.1,
+      "justifiedOfAbsences": 60.1
+    },
+    "lowestDecileCount": 40,
+    "lowestDecileAbsenceShare": 30.3,
+    "governmentCount": 24,
+    "governmentMedianPresence": 94.3,
+    "governmentMedianVotes": 6.6,
+    "nonGovernmentMedianVotes": 78.3
   },
   "period": {
     "label": "Dall'inizio della XIX legislatura al mese di febbraio 2026",
     "observedDate": "2026-02-28",
     "monthLabel": "Febbraio 2026",
-    "legislature": "XIX legislatura"
+    "legislature": "XIX legislatura",
+    "legislatureStart": "2022-10-13"
   },
   "source": {
     "owner": "Camera dei deputati",
-    "title": "Camera dei deputati  ·  partecipazione al voto (presenze/assenze per deputato, XIX legislatura)",
+    "title": "Camera dei deputati , partecipazione al voto (presenze/assenze per deputato, XIX legislatura)",
     "pageUrl": "https://www.camera.it/deputati/statistiche_voto/vista?leg=19&type=deputati&riepil_mese_end=2026-02-28",
-    "landingUrl": "https://www.camera.it/deputati/statistiche_voto"
+    "landingUrl": "https://www.camera.it/deputati/statistiche_voto",
+    "sha256": "4fc7cf9074259ef8fcf68ff43042c4fda698d99ac9a6a33394582d5f3509d07e"
   },
-  "bins": [
+  "joins": {
+    "roster": {
+      "title": "Camera dei deputati, anagrafe XIX legislatura (dati.camera.it)",
+      "acquiredAt": "2026-09-17"
+    },
+    "government": {
+      "title": "I Governo Meloni, incarichi in corso (dati.camera.it)",
+      "acquiredAt": "2026-09-17"
+    }
+  },
+  "diaria": {
+    "monthlyEuro": "3.503,11",
+    "dailyDeductionEuro": "206,58",
+    "pageUrl": "https://www.camera.it/deputati/trattamento-economico",
+    "observedDate": "2026-09-18"
+  },
+  "external": [
+    {
+      "owner": "Openpolis",
+      "title": "Nella XIX legislatura diminuiscono le assenze ma aumentano le missioni",
+      "url": "https://www.openpolis.it/numeri/nella-xix-legislatura-diminuiscono-le-assenze-ma-aumentano-le-missioni/",
+      "finding": "Nei dati della XIX legislatura analizzati da Openpolis le missioni pesano il 14,7% delle votazioni, la quota più alta tra le legislature confrontate."
+    },
+    {
+      "owner": "Openpolis",
+      "title": "Presenze in Parlamento: come si contano e cosa non sappiamo",
+      "url": "https://blog.openpolis.it/presenze-in-parlamento-come-si-contano-e-cosa-non-sappiamo-intema-14",
+      "finding": "La decurtazione della diaria scatta per giornata: chi partecipa ad almeno un terzo circa delle votazioni del giorno la evita, e l'indennità non viene toccata."
+    }
+  ],
+  "presenceBins": [
     {
       "from": 0,
       "to": 5,
       "label": "0-5%",
-      "count": 1
+      "count": 2
     },
     {
       "from": 5,
@@ -89,7 +158,7 @@
       "from": 45,
       "to": 50,
       "label": "45-50%",
-      "count": 5
+      "count": 6
     },
     {
       "from": 50,
@@ -143,7 +212,7 @@
       "from": 90,
       "to": 95,
       "label": "90-95%",
-      "count": 80
+      "count": 81
     },
     {
       "from": 95,
@@ -152,139 +221,500 @@
       "count": 77
     }
   ],
-  "groups": [
+  "votesBins": [
     {
-      "groupLabel": "Fratelli d'Italia",
-      "count": 116,
-      "mean": 90.2,
-      "median": 92.7,
-      "p25": 87.6,
-      "p75": 95.6,
-      "min": 57.4,
-      "max": 99.8
+      "from": 0,
+      "to": 5,
+      "label": "0-5%",
+      "count": 12
     },
     {
-      "groupLabel": "Partito Democratico - Italia Democratica e Progressista",
-      "count": 70,
-      "mean": 81,
-      "median": 83,
-      "p25": 74.9,
-      "p75": 89.7,
-      "min": 20,
-      "max": 99.6
+      "from": 5,
+      "to": 10,
+      "label": "5-10%",
+      "count": 12
     },
     {
-      "groupLabel": "Lega - Salvini Premier",
-      "count": 56,
-      "mean": 83,
-      "median": 89.5,
-      "p25": 76.3,
-      "p75": 93.9,
-      "min": 0.1,
-      "max": 99.5
+      "from": 10,
+      "to": 15,
+      "label": "10-15%",
+      "count": 6
     },
     {
-      "groupLabel": "Forza Italia - Berlusconi Presidente - PPE",
-      "count": 53,
-      "mean": 79.7,
-      "median": 83.5,
-      "p25": 73.4,
-      "p75": 91,
-      "min": 10.7,
-      "max": 100
+      "from": 15,
+      "to": 20,
+      "label": "15-20%",
+      "count": 10
     },
     {
-      "groupLabel": "MoVimento 5 Stelle",
-      "count": 49,
-      "mean": 78.9,
-      "median": 81.8,
-      "p25": 72.6,
-      "p75": 86,
-      "min": 17.5,
-      "max": 97
+      "from": 20,
+      "to": 25,
+      "label": "20-25%",
+      "count": 7
     },
     {
-      "groupLabel": "Alleanza Verdi e Sinistra",
-      "count": 10,
-      "mean": 87.8,
-      "median": 93.4,
-      "p25": 85.1,
-      "p75": 96.1,
-      "min": 60.5,
-      "max": 99.9
+      "from": 25,
+      "to": 30,
+      "label": "25-30%",
+      "count": 5
     },
     {
-      "groupLabel": "Azione-Popolari europeisti riformatori-Renew Europe",
-      "count": 10,
-      "mean": 80.9,
-      "median": 77.5,
-      "p25": 75.2,
-      "p75": 85.2,
-      "min": 67.6,
-      "max": 96.1
+      "from": 30,
+      "to": 35,
+      "label": "30-35%",
+      "count": 5
     },
     {
-      "groupLabel": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-      "count": 9,
-      "mean": 74.1,
-      "median": 75,
-      "p25": 56.8,
-      "p75": 92.3,
-      "min": 45.1,
-      "max": 97.2
+      "from": 35,
+      "to": 40,
+      "label": "35-40%",
+      "count": 6
     },
     {
-      "groupLabel": "MISTO",
-      "count": 8,
-      "mean": 70.8,
-      "median": 75.2,
-      "p25": 54.1,
-      "p75": 86.6,
-      "min": 42.6,
-      "max": 92.2
+      "from": 40,
+      "to": 45,
+      "label": "40-45%",
+      "count": 13
     },
     {
-      "groupLabel": "Italia Viva-Il Centro-Renew Europe",
-      "count": 6,
-      "mean": 74.1,
-      "median": 77.4,
-      "p25": 74.5,
-      "p75": 83.6,
-      "min": 42,
-      "max": 89
+      "from": 45,
+      "to": 50,
+      "label": "45-50%",
+      "count": 15
     },
     {
-      "groupLabel": "MISTO-Minoranze Linguistiche",
-      "count": 4,
-      "mean": 90.7,
-      "median": 93.2,
-      "p25": 88.5,
-      "p75": 95.4,
-      "min": 80.3,
-      "max": 95.9
+      "from": 50,
+      "to": 55,
+      "label": "50-55%",
+      "count": 13
     },
     {
-      "groupLabel": "MISTO-+Europa",
-      "count": 3,
-      "mean": 83.3,
-      "median": 93.2,
-      "p25": 77.2,
-      "p75": 94.4,
-      "min": 61.2,
-      "max": 95.6
+      "from": 55,
+      "to": 60,
+      "label": "55-60%",
+      "count": 8
+    },
+    {
+      "from": 60,
+      "to": 65,
+      "label": "60-65%",
+      "count": 24
+    },
+    {
+      "from": 65,
+      "to": 70,
+      "label": "65-70%",
+      "count": 23
+    },
+    {
+      "from": 70,
+      "to": 75,
+      "label": "70-75%",
+      "count": 31
+    },
+    {
+      "from": 75,
+      "to": 80,
+      "label": "75-80%",
+      "count": 37
+    },
+    {
+      "from": 80,
+      "to": 85,
+      "label": "80-85%",
+      "count": 43
+    },
+    {
+      "from": 85,
+      "to": 90,
+      "label": "85-90%",
+      "count": 51
+    },
+    {
+      "from": 90,
+      "to": 95,
+      "label": "90-95%",
+      "count": 49
+    },
+    {
+      "from": 95,
+      "to": 100,
+      "label": "95-100%",
+      "count": 27
     }
   ],
+  "groups": [
+    {
+      "label": "Alleanza Verdi e Sinistra",
+      "count": 10,
+      "presence": 93.4,
+      "votes": 83.9,
+      "missions": 0.9,
+      "meanVotes": 79.7,
+      "meanMissions": 8.2,
+      "meanAbsences": 12.2,
+      "missionsOver50": 0,
+      "short": "AVS",
+      "bloc": "opposizione",
+      "p25": 85.1,
+      "p75": 96.1
+    },
+    {
+      "label": "Fratelli d'Italia",
+      "count": 116,
+      "presence": 92.7,
+      "votes": 86.4,
+      "missions": 1.2,
+      "meanVotes": 70.8,
+      "meanMissions": 19.5,
+      "meanAbsences": 9.8,
+      "missionsOver50": 20,
+      "short": "FdI",
+      "bloc": "maggioranza",
+      "p25": 87.6,
+      "p75": 95.6
+    },
+    {
+      "label": "Lega",
+      "count": 58,
+      "presence": 89.5,
+      "votes": 74.5,
+      "missions": 0.6,
+      "meanVotes": 61.3,
+      "meanMissions": 20.4,
+      "meanAbsences": 18.3,
+      "missionsOver50": 14,
+      "short": "Lega",
+      "bloc": "maggioranza",
+      "p25": 76.3,
+      "p75": 93.6
+    },
+    {
+      "label": "Misto",
+      "count": 15,
+      "presence": 85.2,
+      "votes": 60.9,
+      "missions": 0.5,
+      "meanVotes": 64.4,
+      "meanMissions": 14.3,
+      "meanAbsences": 21.4,
+      "missionsOver50": 3,
+      "short": "Misto",
+      "bloc": "misto",
+      "p25": 67.2,
+      "p75": 92.7
+    },
+    {
+      "label": "Forza Italia",
+      "count": 54,
+      "presence": 83.3,
+      "votes": 65.5,
+      "missions": 1.2,
+      "meanVotes": 60.6,
+      "meanMissions": 18.5,
+      "meanAbsences": 20.9,
+      "missionsOver50": 9,
+      "short": "FI",
+      "bloc": "maggioranza",
+      "p25": 70.1,
+      "p75": 90.7
+    },
+    {
+      "label": "Partito Democratico",
+      "count": 70,
+      "presence": 83.0,
+      "votes": 79.7,
+      "missions": 0.6,
+      "meanVotes": 75.2,
+      "meanMissions": 5.8,
+      "meanAbsences": 19.0,
+      "missionsOver50": 3,
+      "short": "PD",
+      "bloc": "opposizione",
+      "p25": 74.9,
+      "p75": 89.7
+    },
+    {
+      "label": "MoVimento 5 Stelle",
+      "count": 49,
+      "presence": 81.8,
+      "votes": 74.6,
+      "missions": 0.8,
+      "meanVotes": 70.0,
+      "meanMissions": 8.8,
+      "meanAbsences": 21.1,
+      "missionsOver50": 3,
+      "short": "M5S",
+      "bloc": "opposizione",
+      "p25": 72.6,
+      "p75": 86.0
+    },
+    {
+      "label": "Azione",
+      "count": 10,
+      "presence": 77.5,
+      "votes": 60.8,
+      "missions": 16.9,
+      "meanVotes": 61.1,
+      "meanMissions": 19.8,
+      "meanAbsences": 19.1,
+      "missionsOver50": 2,
+      "short": "Azione",
+      "bloc": "opposizione",
+      "p25": 75.2,
+      "p75": 85.2
+    },
+    {
+      "label": "Italia Viva",
+      "count": 6,
+      "presence": 77.4,
+      "votes": 62.7,
+      "missions": 13.6,
+      "meanVotes": 61.6,
+      "meanMissions": 12.5,
+      "meanAbsences": 25.9,
+      "missionsOver50": 0,
+      "short": "IV",
+      "bloc": "opposizione",
+      "p25": 74.5,
+      "p75": 83.6
+    },
+    {
+      "label": "Noi Moderati",
+      "count": 9,
+      "presence": 75.0,
+      "votes": 43.6,
+      "missions": 30.9,
+      "meanVotes": 41.3,
+      "meanMissions": 32.8,
+      "meanAbsences": 25.9,
+      "missionsOver50": 3,
+      "short": "NM",
+      "bloc": "maggioranza",
+      "p25": 56.8,
+      "p75": 92.3
+    }
+  ],
+  "blocs": [
+    {
+      "label": "Maggioranza",
+      "count": 237,
+      "presence": 89.9,
+      "votes": 76.2,
+      "missions": 1.2,
+      "meanVotes": 65.0,
+      "meanMissions": 20.0,
+      "meanAbsences": 15.0,
+      "missionsOver50": 46,
+      "key": "maggioranza"
+    },
+    {
+      "label": "Opposizione",
+      "count": 145,
+      "presence": 82.9,
+      "votes": 75.7,
+      "missions": 0.8,
+      "meanVotes": 72.2,
+      "meanMissions": 8.2,
+      "meanAbsences": 19.5,
+      "missionsOver50": 8,
+      "key": "opposizione"
+    },
+    {
+      "label": "Gruppo Misto",
+      "count": 15,
+      "presence": 85.2,
+      "votes": 60.9,
+      "missions": 0.5,
+      "meanVotes": 64.4,
+      "meanMissions": 14.3,
+      "meanAbsences": 21.4,
+      "missionsOver50": 3,
+      "key": "misto"
+    }
+  ],
+  "profiles": {
+    "gender": [
+      {
+        "label": "Donne",
+        "count": 132,
+        "presence": 85.6,
+        "votes": 78.6,
+        "missions": 1.0,
+        "meanVotes": 70.5,
+        "meanMissions": 12.2,
+        "meanAbsences": 17.3,
+        "missionsOver50": 13
+      },
+      {
+        "label": "Uomini",
+        "count": 262,
+        "presence": 87.9,
+        "votes": 75.2,
+        "missions": 1.0,
+        "meanVotes": 66.7,
+        "meanMissions": 17.0,
+        "meanAbsences": 16.3,
+        "missionsOver50": 43
+      }
+    ],
+    "age": [
+      {
+        "label": "Meno di 40 anni",
+        "count": 31,
+        "presence": 83.0,
+        "votes": 72.1,
+        "missions": 1.2,
+        "meanVotes": 66.6,
+        "meanMissions": 13.0,
+        "meanAbsences": 20.4,
+        "missionsOver50": 5
+      },
+      {
+        "label": "40-49 anni",
+        "count": 128,
+        "presence": 86.0,
+        "votes": 76.3,
+        "missions": 0.6,
+        "meanVotes": 71.5,
+        "meanMissions": 12.7,
+        "meanAbsences": 15.7,
+        "missionsOver50": 16
+      },
+      {
+        "label": "50-59 anni",
+        "count": 138,
+        "presence": 87.2,
+        "votes": 78.2,
+        "missions": 1.2,
+        "meanVotes": 68.3,
+        "meanMissions": 15.1,
+        "meanAbsences": 16.6,
+        "missionsOver50": 18
+      },
+      {
+        "label": "60 anni e oltre",
+        "count": 97,
+        "presence": 88.1,
+        "votes": 73.8,
+        "missions": 1.4,
+        "meanVotes": 63.2,
+        "meanMissions": 20.2,
+        "meanAbsences": 16.5,
+        "missionsOver50": 17
+      }
+    ],
+    "elected": [
+      {
+        "label": "Collegio uninominale",
+        "count": 142,
+        "presence": 90.6,
+        "votes": 76.1,
+        "missions": 1.4,
+        "meanVotes": 65.2,
+        "meanMissions": 20.2,
+        "meanAbsences": 14.6,
+        "missionsOver50": 29
+      },
+      {
+        "label": "Lista proporzionale",
+        "count": 244,
+        "presence": 85.6,
+        "votes": 76.9,
+        "missions": 0.8,
+        "meanVotes": 69.7,
+        "meanMissions": 12.9,
+        "meanAbsences": 17.4,
+        "missionsOver50": 27
+      },
+      {
+        "label": "Circoscrizione Estero",
+        "count": 8,
+        "presence": 69.7,
+        "votes": 59.7,
+        "missions": 2.9,
+        "meanVotes": 62.6,
+        "meanMissions": 7.3,
+        "meanAbsences": 30.1,
+        "missionsOver50": 0
+      }
+    ],
+    "roles": [
+      {
+        "label": "Membri del Governo",
+        "count": 24,
+        "presence": 94.3,
+        "votes": 6.6,
+        "missions": 86.8,
+        "meanVotes": 10.6,
+        "meanMissions": 83.1,
+        "meanAbsences": 6.4,
+        "missionsOver50": 22
+      },
+      {
+        "label": "Ufficio di Presidenza della Camera",
+        "count": 21,
+        "presence": 95.6,
+        "votes": 44.7,
+        "missions": 51.5,
+        "meanVotes": 46.7,
+        "meanMissions": 47.8,
+        "meanAbsences": 5.6,
+        "missionsOver50": 12
+      },
+      {
+        "label": "Altri deputati",
+        "count": 352,
+        "presence": 85.4,
+        "votes": 79.1,
+        "missions": 0.6,
+        "meanVotes": 72.8,
+        "meanMissions": 8.9,
+        "meanAbsences": 18.3,
+        "missionsOver50": 23
+      }
+    ]
+  },
+  "absences": {
+    "unjustified": {
+      "count": 397,
+      "mean": 6.7,
+      "median": 5.3,
+      "p10": 1.3,
+      "p25": 2.6,
+      "p75": 9.6,
+      "p90": 14.2,
+      "min": 0.0,
+      "max": 30.5
+    },
+    "justified": {
+      "count": 397,
+      "mean": 10.2,
+      "median": 6.6,
+      "p10": 0.6,
+      "p25": 2.5,
+      "p75": 13.2,
+      "p90": 22.6,
+      "min": 0.0,
+      "max": 100.0
+    },
+    "unjustifiedOver20": 11,
+    "noJustified": 20
+  },
   "caveats": [
-    "Presenza = voti espressi + missioni sulle votazioni elettroniche in Aula.",
-    "Le missioni non sono presenza fisica in Aula; il lavoro in commissione non è incluso.",
-    "Il Senato non pubblica una tabella ufficiale equivalente: nessuna distribuzione Senato.",
-    "La tabella ufficiale misura la partecipazione alle votazioni elettroniche e le missioni, non le sedute di commissione.",
-    "Il collegamento al deputato in carica usa cognome unico in aula o corrispondenza sul nome: le righe senza match restano nel snapshot senza personaId."
+    "Presenza = voti espressi + missioni, in percentuale delle votazioni elettroniche in Aula a cui il deputato poteva partecipare.",
+    "La missione è un'assenza per incarico istituzionale (governo, incarichi della Camera fuori sede): conta come presenza nella statistica ufficiale ma non è un voto.",
+    "Il lavoro in commissione, nelle giunte e nelle delegazioni non è misurato da questa tabella.",
+    "Un voto non espresso può essere una scelta politica, ad esempio uscire dall'Aula per far mancare il numero legale: la tabella non distingue i motivi.",
+    "Il gruppo è quello indicato dalla Camera per il periodo; incarichi di governo e dell'Ufficio di Presidenza sono quelli in corso a settembre 2026.",
+    "Undici deputati sono entrati o usciti nel corso della legislatura: le loro percentuali sono calcolate sulle votazioni del loro mandato.",
+    "Il Senato non è incluso: non abbiamo ancora acquisito una sua fonte equivalente con hash e periodo verificati.",
+    "La nota della Camera avverte che il sistema di voto non distingue sempre le assenze per malattia o altre cause giustificate oltre alla colonna dedicata."
   ],
   "assets": {
     "presenze-camera.pdf": {
-      "bytes": 139900,
-      "sha256": "183bfc7b2d4c03aa6782e1f8281fc3ca5703844dcb190f0f5ab151fed1bc8f68"
+      "bytes": 1442575,
+      "sha256": "4bea42976f95851393e72e55adf92b52346fdff509bc32ce8dff4ebc01b40395"
     }
   }
 }

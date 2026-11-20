@@ -34,3 +34,122 @@
   font-size: 12px;
   line-height: 1.45;
 }
+
+.caption {
+  font-size: .88rem;
+  line-height: 1.6;
+  opacity: .85;
+  margin-top: .6rem;
+  max-width: 72ch;
+}
+
+.directory {
+  margin-top: 1.2rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem 1.2rem;
+  align-items: end;
+}
+
+.filters label {
+  display: grid;
+  gap: .35rem;
+  font-size: .85rem;
+  font-weight: 560;
+}
+
+.filters input,
+.filters select {
+  font: inherit;
+  font-weight: 400;
+  min-height: 44px;
+  padding: .5rem .75rem;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 6px;
+  background: var(--color-raised);
+  color: var(--color-text);
+  min-width: min(100%, 260px);
+}
+
+.count {
+  font-size: .85rem;
+  margin: .8rem 0 .4rem;
+  opacity: .8;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .88rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.table th,
+.table td {
+  padding: .6rem .5rem;
+  border-bottom: 1px solid var(--color-neutral-300);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.table thead button {
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: .3rem 0;
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.table tbody th {
+  font-weight: 500;
+  min-width: 11rem;
+}
+
+.num {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.role {
+  display: block;
+  font-size: .75rem;
+  font-weight: 400;
+  opacity: .75;
+  margin-top: .15rem;
+}
+
+.more {
+  margin-top: .9rem;
+  min-height: 44px;
+  padding: .5rem 1rem;
+  font: inherit;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.legendText {
+  color: var(--color-text);
+}
+
+.left {
+  text-align: left !important;
+}

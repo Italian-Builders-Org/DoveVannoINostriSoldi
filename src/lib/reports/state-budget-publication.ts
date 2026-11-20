@@ -7,6 +7,8 @@ const stateBudgetPublication = {
   summary: report.summary,
   date: report.publishedOn,
   updatedOn: report.modifiedOn,
+  route: report.route,
+  pdfPath: report.pdfPath,
 };
 
 export default stateBudgetPublication;

@@ -1,6 +1,6 @@
 export const MONTHLY_REPORT_SERIES = {
-  routeBase: "/report",
-  navigationLabel: "Report mensili",
+  routeBase: "/studi",
+  navigationLabel: "Studi mensili",
   title: "Il mese dei soldi pubblici",
   byline: "Redazione DVNS",
   targetReadingMinutes: { min: 5, max: 7 },
@@ -150,7 +150,7 @@ export type MonthlyReportDraft = MonthlyReportBody & Readonly<{
 export type MonthlyReportSummary = Readonly<{
   issueMonth: YearMonth;
   issueLabel: string;
-  href: `/report/${string}`;
+  href: `/studi/${string}`;
   title: string;
   dek: string;
   teaser: string;

@@ -1,5 +1,6 @@
 import childcare from "../content/studies/childcare.json";
 import wasteInterventions from "../content/studies/waste-interventions.json";
+import cameraPresenze from "../content/studies/camera-presenze.json";
 
 /** Occasional research, independent of the monthly editorial calendar.
  * Values are frozen at revision time, never imported from live raw snapshots.
@@ -24,4 +25,13 @@ export const wasteInterventionsStudy = {
   ...wasteInterventions,
 } as const;
 
-export const studies = [wasteInterventionsStudy, childcareStudy] as const;
+export const cameraPresenzeStudy = {
+  slug: "presenze-camera",
+  path: "/studi/presenze-camera" as const,
+  teaser: "Distribuzione ufficiale delle presenze al voto alla Camera",
+  reproducibilityUrl: "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/main/research/camera-presenze-voto",
+  assetPath: `/studi/presenze-camera/v${cameraPresenze.version}`,
+  ...cameraPresenze,
+} as const;
+
+export const studies = [cameraPresenzeStudy, wasteInterventionsStudy, childcareStudy] as const;

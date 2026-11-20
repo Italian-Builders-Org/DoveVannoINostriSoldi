@@ -57,6 +57,28 @@ test("waste interventions capsule matches the versioned public and research PDF"
   assert.equal(research.subarray(0, 5).toString(), "%PDF-");
 });
 
+test("camera presenze capsule matches the versioned public and research PDF", async () => {
+  const capsule = await json("../src/content/studies/camera-presenze.json");
+  assert.equal(capsule.version, "1");
+  assert.equal(capsule.publishedOn, "2026-11-20");
+  assert.equal(capsule.headline.matchedDeputies, 394);
+  assert.equal(capsule.headline.median, 87);
+  assert.doesNotMatch(JSON.stringify(capsule), /\u2014|\u2013/);
+  for (const [name, expected] of Object.entries(capsule.assets)) {
+    const bytes = await readFile(new URL(`../public/studi/presenze-camera/v${capsule.version}/${name}`, import.meta.url));
+    assert.equal(bytes.length, expected.bytes);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), expected.sha256);
+  }
+  const research = await readFile(new URL("../research/camera-presenze-voto/paper/presenze-camera.pdf", import.meta.url));
+  assert.equal(createHash("sha256").update(research).digest("hex"), capsule.assets["presenze-camera.pdf"].sha256);
+  assert.equal(research.subarray(0, 5).toString(), "%PDF-");
+  const page = await readFile(new URL("../src/app/studi/presenze-camera/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /Cosa misura/);
+  assert.match(page, /vista=presenze/);
+  assert.doesNotMatch(page, /\u2014/);
+  assert.doesNotMatch(page, /href="\/report/);
+});
+
 test("previous published PDF remains available with its original checksum", async () => {
   const previous = await readFile(new URL("../public/studi/dai-fondi-ai-posti/v1.2/dai-fondi-ai-posti.pdf", import.meta.url));
   assert.equal(createHash("sha256").update(previous).digest("hex"), "0f82b5d9f4204ef6f180c290923c5fd445214c9d758dfaeab4a5b9f236e66c01");

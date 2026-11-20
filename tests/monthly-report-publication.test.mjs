@@ -22,7 +22,7 @@ test("agosto 2026 è una capsula pubblicata, congelata e della lunghezza previst
   const reports = monthlyReports.listPublished();
   assert.equal(reports.length, 1);
   assert.equal(reports[0].issueMonth, "2026-08");
-  assert.equal(reports[0].href, "/report/2026-08");
+  assert.equal(reports[0].href, "/studi/2026-08");
   const report = monthlyReports.getPublished("2026-08");
   assert.ok(report);
   assert.equal(report.title, "Imprese e territori");
@@ -57,7 +57,7 @@ test("bozze, mesi sconosciuti e dati correnti restano fuori dal pubblico", async
   assert.equal(monthlyReports.getPublished("2026-09"), null);
   const drafts = await readdir(new URL("../src/content/monthly-reports/drafts/", import.meta.url));
   assert.deepEqual(drafts, ["README.md"]);
-  const route = await readFile(new URL("../src/app/report/[issueMonth]/page.tsx", import.meta.url), "utf8");
+  const route = await readFile(new URL("../src/app/studi/[issueMonth]/page.tsx", import.meta.url), "utf8");
   assert.match(route, /generateStaticParams/);
   assert.match(route, /dynamicParams = false/);
   assert.match(route, /if \(!report\) notFound\(\)/);
@@ -68,9 +68,11 @@ test("bozze, mesi sconosciuti e dati correnti restano fuori dal pubblico", async
 
 test("navigazione, home, ricerca, sitemap e discovery espongono archivio ed edizione", async () => {
   assert.deepEqual(PRIMARY_NAV.slice(0, 7).map((item) => item.href), ["/", "/imprese", "/istruzione", "/poverta", "/spese", "/economia", "/territori"]);
-  assert.deepEqual(PRIMARY_NAV.slice(-2).map((item) => item.href), ["/report", "/studi"]);
-  const reportGroup = SITE_MAP_GROUPS.find((group) => group.title === "Report");
-  assert.deepEqual(reportGroup?.links.map((link) => link.href), ["/report", "/report/bilancio-stato-2025", "/report/2026-08"]);
+  assert.deepEqual(PRIMARY_NAV.slice(-1).map((item) => item.href), ["/studi"]);
+  const studiGroup = SITE_MAP_GROUPS.find((group) => group.title === "Studi");
+  assert.ok(studiGroup?.links.some((link) => link.href === "/studi/2026-08"));
+  assert.ok(studiGroup?.links.some((link) => link.href === "/studi/bilancio-stato-2025"));
+  assert.ok(studiGroup?.links.some((link) => link.href === "/studi/presenze-camera"));
 
   const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
   assert.ok(PRIMARY_NAV.every((item) => typeof item.icon === "string"));
@@ -82,10 +84,10 @@ test("navigazione, home, ricerca, sitemap e discovery espongono archivio ed ediz
   assert.match(layout, /href: latestReport\.href/);
   assert.match(navigation, /PublicationAnnouncement items=\{announcements\}/);
 
-  const result = searchSiteDocuments("imprese territori").find((item) => item.href === "/report/2026-08");
+  const result = searchSiteDocuments("imprese territori").find((item) => item.href === "/studi/2026-08");
   assert.equal(result?.title, "Agosto 2026: Imprese e territori");
-  assert.deepEqual(PUBLISHED_MONTHLY_REPORT_PATHS, ["/report/2026-08"]);
-  for (const path of ["/report", "/report/2026-08"]) {
+  assert.deepEqual(PUBLISHED_MONTHLY_REPORT_PATHS, ["/studi/2026-08"]);
+  for (const path of ["/studi", "/studi/2026-08"]) {
     assert.equal(PUBLIC_INDEXABLE_PATHS.includes(path), true);
     assert.equal(LLMS_DISCOVERY_PATHS.includes(path), true);
   }

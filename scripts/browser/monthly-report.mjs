@@ -77,7 +77,7 @@ async function inspectReport(page, width) {
   assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
   assert.equal(
     state.canonical,
-    "https://www.dovevannoinostrisoldi.com/report/2026-08",
+    "https://www.dovevannoinostrisoldi.com/studi/2026-08",
     `${label}: canonical errato`,
   );
   assert.equal(state.publishedOn, "2026-09-06", `${label}: data di pubblicazione errata`);
@@ -122,7 +122,7 @@ async function inspectArchive(page, width) {
     h1: document.querySelector("main h1")?.textContent?.trim(),
     bodyWidth: document.body.scrollWidth,
     clientWidth: document.documentElement.clientWidth,
-    issueLinks: [...document.querySelectorAll('main a[href^="/report/"]')]
+    issueLinks: [...document.querySelectorAll('main a[href^="/studi/"]')]
       .map((link) => link.getAttribute("href")),
     currentLinks: [...document.querySelectorAll('nav.primary-nav a[data-section-active="true"]')]
       .map((link) => link.textContent?.trim()),
@@ -130,8 +130,8 @@ async function inspectArchive(page, width) {
   assert.equal(state.h1Count, 1, `${label}: serve un solo h1`);
   assert.equal(state.h1, "Report", `${label}: titolo inatteso`);
   assert.ok(state.bodyWidth <= state.clientWidth + 1, `${label}: overflow globale`);
-  assert.ok(state.issueLinks.includes("/report/2026-08"), `${label}: edizione assente`);
-  assert.ok(state.issueLinks.includes(`/report/${budgetReport.slug}`), `${label}: analisi del bilancio assente`);
+  assert.ok(state.issueLinks.includes("/studi/2026-08"), `${label}: edizione assente`);
+  assert.ok(state.issueLinks.includes(`/studi/${budgetReport.slug}`), `${label}: analisi del bilancio assente`);
   assert.deepEqual(state.currentLinks, ["Report"], `${label}: navigazione attiva errata`);
 }
 
@@ -142,17 +142,17 @@ async function inspectStateBudget(page, width) {
 }
 
 await waitForServer(baseUrl);
-const missingResponse = await fetch(new URL("/report/2026-09", baseUrl));
+const missingResponse = await fetch(new URL("/studi/2026-09", baseUrl));
 assert.equal(missingResponse.status, 404, "Un mese sconosciuto deve restituire 404");
-const pdfResponse = await fetch(new URL(`/report/${budgetReport.slug}.pdf`, baseUrl));
+const pdfResponse = await fetch(new URL(`/studi/${budgetReport.slug}.pdf`, baseUrl));
 assert.equal(pdfResponse.status, 200, "PDF del bilancio non disponibile");
 assert.match(pdfResponse.headers.get("content-type") ?? "", /^application\/pdf(?:;|$)/i);
 assert.deepEqual(Buffer.from(await pdfResponse.arrayBuffer()),
-  readFileSync(path.join(root, `public/report/${budgetReport.slug}.pdf`)), "Il PDF servito diverge da quello revisionato");
+  readFileSync(path.join(root, `public/studi/${budgetReport.slug}.pdf`)), "Il PDF servito diverge da quello revisionato");
 
 const compatibility = await fetch(new URL("/report/spesa-pubblica-italiana-2026", baseUrl), { redirect: "manual" });
 assert.equal(compatibility.status, 308, "The previous entry must redirect, not publish another edition");
-assert.equal(new URL(compatibility.headers.get("location"), baseUrl).pathname, "/report/bilancio-stato-2025");
+assert.equal(new URL(compatibility.headers.get("location"), baseUrl).pathname, "/studi/bilancio-stato-2025");
 const browser = await launchBrowser();
 try {
   const previousScheme = process.env.DVNS_COLOR_SCHEME;
@@ -161,7 +161,7 @@ try {
     for (const width of [320, 390, 768, 1280]) {
       await runScenario(browser, {
         label: `Bilancio dello Stato ${scheme} ${width}px`,
-        pathname: `/report/${budgetReport.slug}`,
+        pathname: `/studi/${budgetReport.slug}`,
         width,
         suite: "monthly-report",
         validate: (page) => inspectStateBudget(page, width),
@@ -173,14 +173,14 @@ try {
   for (const width of [390, 768, 1280]) {
     await runScenario(browser, {
       label: `Archivio report ${width}px`,
-      pathname: "/report",
+      pathname: "/studi",
       width,
       suite: "monthly-report",
       validate: (page) => inspectArchive(page, width),
     });
     await runScenario(browser, {
       label: `Report agosto 2026 ${width}px`,
-      pathname: "/report/2026-08",
+      pathname: "/studi/2026-08",
       width,
       suite: "monthly-report",
       validate: (page) => inspectReport(page, width),

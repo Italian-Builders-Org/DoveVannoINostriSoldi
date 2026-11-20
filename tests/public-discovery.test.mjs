@@ -107,9 +107,9 @@ test("published monthly report editions are explicit and use the static dynamic 
   assert.equal(new Set(PUBLISHED_MONTHLY_REPORT_PATHS).size, PUBLISHED_MONTHLY_REPORT_PATHS.length);
   for (const reportPath of PUBLISHED_MONTHLY_REPORT_PATHS) {
     assert.equal(PUBLIC_INDEXABLE_PATHS.includes(reportPath), true);
-    assert.match(reportPath, /^\/report\/\d{4}-(0[1-9]|1[0-2])$/);
+    assert.match(reportPath, /^\/studi\/\d{4}-(0[1-9]|1[0-2])$/);
   }
-  await access(path.join(appRoot, "report", "[issueMonth]", "page.tsx"), constants.R_OK);
+  await access(path.join(appRoot, "studi", "[issueMonth]", "page.tsx"), constants.R_OK);
 });
 
 test("sitemap exposes only canonical HTTPS public pages", async () => {
@@ -148,7 +148,7 @@ test("llms discovery paths are indexable and resolve to public pages", async () 
   for (const routePath of LLMS_DISCOVERY_PATHS) {
     assert.equal(PUBLIC_INDEXABLE_PATHS.includes(routePath), true);
     const pagePath = PUBLISHED_MONTHLY_REPORT_PATHS.includes(routePath)
-      ? path.join(appRoot, "report", "[issueMonth]", "page.tsx")
+      ? path.join(appRoot, "studi", "[issueMonth]", "page.tsx")
       : routePath === "/"
       ? path.join(appRoot, "page.tsx")
       : path.join(appRoot, routePath.slice(1), "page.tsx");
@@ -161,6 +161,9 @@ test("legacy paper entry redirects permanently and stays outside discovery", asy
   assert.deepEqual(PUBLIC_REDIRECT_PATHS, [
     "/assistente/anteprima",
     "/paper",
+    "/report",
+    "/report/bilancio-stato-2025",
+    "/report/2026-08",
     "/report/spesa-pubblica-italiana-2026",
   ]);
   for (const routePath of PUBLIC_REDIRECT_PATHS) {
@@ -174,7 +177,9 @@ test("legacy paper entry redirects permanently and stays outside discovery", asy
     path.join(appRoot, "report", "spesa-pubblica-italiana-2026", "page.tsx"),
     "utf8",
   );
-  assert.match(legacyReport, /permanentRedirect\('\/report\/bilancio-stato-2025'\)/);
+  assert.match(legacyReport, /permanentRedirect\("\/studi\/bilancio-stato-2025"\)/);
+  const legacyArchive = await readFile(path.join(appRoot, "report", "page.tsx"), "utf8");
+  assert.match(legacyArchive, /permanentRedirect\("\/studi"\)/);
 });
 
 test("assistant design preview redirects to the canonical chat", async () => {

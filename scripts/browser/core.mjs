@@ -1999,7 +1999,7 @@ try {
         assert.ok(headings.includes("Fonti e metodo"), `${label}: sezione Fonti e metodo assente`);
         assert.ok(headings.includes("Studi"), `${label}: sezione Studi assente`);
         assert.ok(!headings.includes("Legale"), `${label}: sezione Legale non attesa in mappa`);
-        for (const href of ["/report", "/report/2026-08", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione", "/pil"]) {
+        for (const href of ["/studi", "/studi/2026-08", "/poverta", "/economia", "/cuneo-fiscale", "/inflazione", "/pil"]) {
           assert.ok(
             await page.$(`#esplora a[href='${href}']`),
             `${label}: link ${href} assente dalla mappa`,

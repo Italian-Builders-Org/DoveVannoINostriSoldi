@@ -34,7 +34,7 @@ const announcements = [
     cta: "Scopri il paper",
     href: latestPaper.webPath ?? "/studi",
   }] : []),
-  { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/report/${stateBudgetReport.slug}` },
+  { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/studi/${stateBudgetReport.slug}` },
 ];
 
 export const metadata: Metadata = {

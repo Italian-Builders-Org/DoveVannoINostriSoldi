@@ -23,7 +23,7 @@ API AI a pagamento o funzioni pubbliche per avviare audit.
 ## Materiali
 
 - Contenuto comune a pagina e PDF: `src/content/reports/state-budget-2025.json`.
-- PDF: `public/report/bilancio-stato-2025.pdf`.
+- PDF: `public/studi/bilancio-stato-2025.pdf`.
 - `evidence.zip`: selezione dei contributi, input, estratti, ricevute e calcoli.
 - `evidence-manifest.json`: hash e dimensione di ogni file archiviato.
 - `pdf-receipt.json`: hash del contenuto editoriale e del PDF derivato.

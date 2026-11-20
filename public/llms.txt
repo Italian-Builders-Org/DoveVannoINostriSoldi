@@ -5,8 +5,10 @@
 ## Superficie principale
 
 - [Home](https://www.dovevannoinostrisoldi.com/): quadro dei pagamenti comunali, mappa e collegamenti alle fonti.
-- [Report mensili](https://www.dovevannoinostrisoldi.com/report): archivio di articoli mensili con una storia principale, due visualizzazioni accessibili, periodi, perimetri e limiti.
-- [Agosto 2026: Imprese e territori](https://www.dovevannoinostrisoldi.com/report/2026-08): stock delle sedi di impresa attive e confronto regionale tra luglio 2025 e luglio 2026.
+- [Studi](https://www.dovevannoinostrisoldi.com/studi): archivio unico di paper, analisi di spesa ed edizioni mensili, con periodi, perimetri e limiti.
+- [Presenze al voto alla Camera](https://www.dovevannoinostrisoldi.com/studi/presenze-camera): distribuzione ufficiale della partecipazione alle votazioni elettroniche alla Camera.
+- [Spesa pubblica: costi evitabili, anomalie ed errori](https://www.dovevannoinostrisoldi.com/studi/bilancio-stato-2025): analisi del bilancio dello Stato con casi documentati e riconciliazioni.
+- [Agosto 2026: Imprese e territori](https://www.dovevannoinostrisoldi.com/studi/2026-08): stock delle sedi di impresa attive e confronto regionale tra luglio 2025 e luglio 2026.
 - [Soldi](https://www.dovevannoinostrisoldi.com/spese): uscite di cassa dei Comuni da SIOPE, con serie temporali e voci contabili.
 - [Incassi comunali](https://www.dovevannoinostrisoldi.com/entrate): incassi di cassa SIOPE 2024–2026, con periodo osservato e stato completo o parziale espliciti, aggregati nazionali e regionali e dettaglio comunale paginato; non accertamenti né entrate di competenza, nessun saldo o classifica.
 - [Inflazione IPCA](https://www.dovevannoinostrisoldi.com/inflazione): prezzi al consumo armonizzati Eurostat, con tasso annuo e mensile Italia, indice 2025=100, divisioni ECOICOP v2, pesi del paniere e confronto UE27/area euro; non è spesa pubblica.
@@ -56,6 +58,9 @@
 La sezione [Paper di ricerca](https://www.dovevannoinostrisoldi.com/studi) raccoglie
 gli studi pubblicati con metodi, limiti e materiali riproducibili. Le bozze non
 sono incluse nel catalogo pubblico; la pubblicazione non ha una cadenza fissa.
+[Presenze al voto alla Camera](https://www.dovevannoinostrisoldi.com/studi/presenze-camera)
+descrive la distribuzione ufficiale della partecipazione alle votazioni elettroniche
+alla Camera (XIX legislatura, fino a febbraio 2026), con limiti su missioni e Senato.
 [Dai fondi ai posti](https://www.dovevannoinostrisoldi.com/studi/dai-fondi-ai-posti)
 analizza lo stato amministrativo dei progetti PNRR per asili nido al 13 giugno 2026,
 senza misurare i posti effettivamente aperti o certificati.

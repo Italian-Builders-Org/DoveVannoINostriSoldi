@@ -164,6 +164,7 @@ export const PUBLIC_REDIRECT_PATHS = [
 export const LLMS_DISCOVERY_PATHS = [
   "/",
   "/studi",
+  "/studi/presenze-camera",
   "/studi/dai-fondi-ai-posti",
   "/studi/tre-interventi-sprechi",
   "/spese",

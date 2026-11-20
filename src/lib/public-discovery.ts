@@ -74,7 +74,6 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/documenti",
   "/politici",
   "/politici/europa",
-  "/comuni",
   "/mappe/mobilita",
   "/partecipazioni",
   "/patrimonio",

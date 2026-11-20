@@ -29,7 +29,7 @@ export const cameraPresenzeStudy = {
   slug: "presenze-camera",
   path: "/studi/presenze-camera" as const,
   teaser: "Distribuzione ufficiale delle presenze al voto alla Camera",
-  reproducibilityUrl: "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/main/research/camera-presenze-voto",
+  reproducibilityUrl: "https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/tree/3038287704f880fe00639af52960b76058ef65a3/research/camera-presenze-voto",
   assetPath: `/studi/presenze-camera/v${cameraPresenze.version}`,
   ...cameraPresenze,
 } as const;

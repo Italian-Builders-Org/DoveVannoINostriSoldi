@@ -56,10 +56,7 @@
 }
 .filterOption:hover .checkbox { border-color: var(--color-text); }
 
-.warning {
-  font-size: 13px; line-height: 1.5; padding-left: 12px;
-  border-left: 3px solid var(--color-warning); color: var(--color-text);
-}
+.warning { font-size: 13px; line-height: 1.5; font-weight: 600; color: var(--color-warning); }
 
 .selected, .suggestions { display: grid; }
 .selectedItem, .suggestions li {

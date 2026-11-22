@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { footprintStatusLabel, type ComuniFootprint } from "@/lib/comuni-footprint";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
@@ -141,6 +142,8 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
     ? null
     : footprint.schoolServices.message;
 
+  const compareHref = `/comuni/confronta?ente=${encodeURIComponent(footprint.codiceIpa)}`;
+
   return (
     <div className={styles.dossierShell}>
       <header className={styles.pageHead}>
@@ -178,14 +181,18 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           </ul>
         </div>
         <div className={styles.headActions}>
+          <Link className={`btn btn-primary ${styles.compareAction}`} href={compareHref} prefetch={false}>
+            Confronta con comuni simili
+          </Link>
+          <ChangeComuneButton />
           <SitePageLink className={styles.textLink} href={footprint.entityHref}>
             Scheda ente
           </SitePageLink>
-          <ChangeComuneButton />
         </div>
       </header>
 
       <nav className={styles.domainNav} aria-label="Sezioni del dossier">
+        <Link className={styles.domainNavCompare} href={compareHref} prefetch={false}>Confronta</Link>
         {DOMAIN_LINKS.map((link) => (
           <a key={link.href} href={link.href}>{link.label}</a>
         ))}
@@ -208,6 +215,10 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           {" · "}
           <strong>{hasPeerMedian ? "mediana" : "riferimento"}</strong>.
         </p>
+        <Link className={styles.radarCompareLink} href={compareHref} prefetch={false}>
+          Confronta {footprint.displayName} voce per voce con i comuni della stessa fascia di popolazione
+          <span aria-hidden="true"> →</span>
+        </Link>
       </section>
 
       <dl className={styles.heroMetrics} aria-label="Sintesi dei flussi">

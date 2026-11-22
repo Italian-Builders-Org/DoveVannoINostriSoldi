@@ -84,6 +84,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
             href="/"
             aria-label="Torna al sito DoveVannoINostriSoldi"
           >
+            <span aria-hidden="true">←</span>
             <span className={styles.homeLinkLabel}>Torna al sito</span>
           </SitePageLink>
           <ThemeToggle />

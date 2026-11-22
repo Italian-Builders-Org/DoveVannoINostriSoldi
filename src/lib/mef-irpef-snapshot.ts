@@ -446,6 +446,25 @@ const regionRecords = snapshot.regions.map(regionRecord).sort(compareRecords);
 const provinceRecords = snapshot.provinces.map(provinceRecord).sort(compareRecords);
 const municipalityRecords = snapshot.municipalities.map(municipalityRecord).sort(compareRecords);
 
+/** Declared comprehensive income per municipality (ISTAT code) for peer comparisons. */
+export type MefIrpefMunicipalIncome = Readonly<{
+  taxpayers: number;
+  /** Null when the source suppresses the frequency or the amount. */
+  comprehensiveIncomeFrequency: number | null;
+  comprehensiveIncomeAmountCents: number | null;
+}>;
+
+let municipalIncome: ReadonlyMap<string, MefIrpefMunicipalIncome> | null = null;
+
+export function mefIrpefMunicipalIncome(): ReadonlyMap<string, MefIrpefMunicipalIncome> {
+  municipalIncome ??= new Map(snapshot.municipalities.map((row) => [row[0], {
+    taxpayers: row[6],
+    comprehensiveIncomeFrequency: row[7],
+    comprehensiveIncomeAmountCents: row[8],
+  }]));
+  return municipalIncome;
+}
+
 const regionsByCode = new Map(regionRecords.map((record) => [record.territory.code, record]));
 const provincesByCode = new Map(provinceRecords.map((record) => [record.territory.code, record]));
 const municipalitiesByCode = new Map(

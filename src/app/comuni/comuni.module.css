@@ -301,7 +301,7 @@
   width: 100%;
 }
 .radarSvg {
-  width: min(100%, 560px);
+  width: min(100%, 680px);
   height: auto;
   overflow: visible;
 }
@@ -320,15 +320,18 @@
 }
 .radarPoint { fill: var(--chart-data-primary); }
 .radarAxisLabel {
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
   text-align: center;
   color: var(--color-text);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.25;
   pointer-events: none;
 }
-.radarAxisLabel strong { display: block; font-size: 13px; font-weight: 650; margin-bottom: 2px; }
+/* Sizes are in viewBox units (840 wide): about 0.8x on desktop. */
+.radarAxisLabel strong { display: block; font-size: 17px; font-weight: 650; margin-bottom: 2px; }
 .radarAxisIndex { color: var(--color-neutral-600); font-weight: 700; }
-.radarAxisLabel span { color: var(--color-neutral-600); font-size: 11px; }
+.radarAxisLabel span { color: var(--color-neutral-600); font-size: 14px; }
 .radarCaption {
   color: var(--color-neutral-600);
   font-size: 13px;
@@ -338,6 +341,17 @@
 }
 .radarEmpty { color: var(--color-neutral-600); text-align: center; padding: var(--space-5); }
 
+.radarCompareLink {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-text);
+  border-radius: 999px;
+  background: var(--color-raised);
+  font-weight: 650; font-size: 13px; text-align: center;
+  text-decoration: none;
+}
+.radarCompareLink:hover { background: var(--color-text); color: var(--color-raised) !important; }
+.compareAction { white-space: nowrap; text-decoration: none; color: var(--color-on-strong) !important; }
 .radarHero .readingGuide {
   max-width: 62ch;
   text-align: center;
@@ -475,6 +489,11 @@
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
+}
+.domainNav .domainNavCompare {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-raised);
 }
 .domainNav a:hover,
 .domainNav a:focus-visible {
@@ -849,7 +868,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .radarSvg {
-    width: min(100%, 620px);
+    width: min(100%, 760px);
   }
 }
 
@@ -870,6 +889,7 @@
 @media (max-width: 720px) {
   .domainNav {
     top: 112px;
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
   }
   .panel {
     scroll-margin-top: 220px;
@@ -927,8 +947,9 @@
   }
   .radarSvg { width: min(100%, 100%); }
   .radarCaption { font-size: 12px; padding-inline: var(--space-2); }
-  .radarAxisLabel strong { font-size: 11px; }
-  .radarAxisLabel span { font-size: 10px; }
+  /* Labels live in the 840-unit viewBox: at phone width it renders at ~0.42x. */
+  .radarAxisLabel strong { font-size: 25px; line-height: 1.1; }
+  .radarAxisLabel span { font-size: 20px; line-height: 1.15; }
   .radarHero { padding-top: var(--space-2); }
   .indicatorList {
     grid-template-columns: 1fr;

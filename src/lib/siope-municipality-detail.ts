@@ -366,6 +366,40 @@ export function getSiopeMunicipalityPeerObservations(year: number): readonly Sio
   return observations;
 }
 
+export type SiopeMunicipalityCompareRow = Readonly<{
+  taxCode: string;
+  codiceIpa: string;
+  name: string;
+  province: string;
+  region: string | null;
+  population: number | null;
+  totalCents: number;
+  /** Packed SIOPE title amounts in `TITLE_ORDER` (0, 1, 2, 3, 4, 5, 7). */
+  titleCents: readonly number[] | null;
+}>;
+
+const compareRows = new Map<number, ReadonlyMap<string, SiopeMunicipalityCompareRow>>();
+
+/**
+ * Validated detail rows with an unambiguous Codice IPA and observed movements,
+ * keyed by tax code. Used by the peer comparison; no new reads, no I/O.
+ */
+export function getSiopeMunicipalityCompareRows(year: number): ReadonlyMap<string, SiopeMunicipalityCompareRow> {
+  const cached = compareRows.get(year);
+  if (cached) return cached;
+  const artifact = artifacts.find((item) => item.year === year);
+  const rows = new Map<string, SiopeMunicipalityCompareRow>();
+  for (const row of artifact?.rows ?? []) {
+    if (row[1] === null || row[6] === null) continue;
+    rows.set(row[0], {
+      taxCode: row[0], codiceIpa: row[1], name: row[2], province: row[3], region: row[4],
+      population: row[5], totalCents: row[6], titleCents: row[7],
+    });
+  }
+  compareRows.set(year, rows);
+  return rows;
+}
+
 /**
  * Public paths of the municipal profile pages, enumerated from the committed
  * SIOPE detail snapshots without request-time I/O. The ETL publishes

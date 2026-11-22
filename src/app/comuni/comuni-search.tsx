@@ -21,7 +21,28 @@ type SearchResponse = Readonly<{
   hits: readonly SearchHit[];
 }>;
 
-export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
+type ComuniSearchProps = Readonly<{
+  initialQuery?: string;
+  /** Destination for a picked Comune: the Codice IPA is appended, URL-encoded. */
+  hrefPrefix?: string;
+  label?: string;
+  placeholder?: string;
+  submitLabel?: string;
+  /** Picking is the only action (compare page): submit selects the first hit. */
+  pickOnly?: boolean;
+  /** Stable id: the change-Comune button and browser gates focus `#comuni-search`. */
+  inputId?: string;
+}>;
+
+export function ComuniSearch({
+  initialQuery = "",
+  hrefPrefix = "/comuni?ente=",
+  label = "Cerca un Comune",
+  placeholder = "Inizia a scrivere un Comune…",
+  submitLabel = "Cerca",
+  pickOnly = false,
+  inputId = "comuni-search",
+}: ComuniSearchProps) {
   const router = useRouter();
   const listboxId = useId();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -101,7 +122,7 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
   function goToHit(hit: SearchHit) {
     setOpen(false);
     setQuery(hit.label);
-    router.push(`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`);
+    router.push(`${hrefPrefix}${encodeURIComponent(hit.codiceIpa)}`);
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -142,17 +163,24 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
           if (activeIndex >= 0 && visibleHits[activeIndex]) {
             event.preventDefault();
             goToHit(visibleHits[activeIndex]!);
+            return;
+          }
+          if (pickOnly) {
+            // The compare page has no results view: pick the first hit or wait for one.
+            event.preventDefault();
+            if (visibleHits[0]) goToHit(visibleHits[0]);
+            else setOpen(true);
           }
         }}
       >
-        <label className={styles.srOnly} htmlFor="comuni-search">Cerca un Comune</label>
+        <label className={styles.srOnly} htmlFor={inputId}>{label}</label>
         <input
-          id="comuni-search"
+          id={inputId}
           name="q"
           type="search"
           role="combobox"
           value={query}
-          placeholder="Inizia a scrivere un Comune…"
+          placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
           minLength={MIN_QUERY}
@@ -179,7 +207,7 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
           }}
           onKeyDown={onKeyDown}
         />
-        <button type="submit">{visibleLoading ? "…" : "Cerca"}</button>
+        <button type="submit">{visibleLoading ? "…" : submitLabel}</button>
       </form>
 
       {showDropdown ? (
@@ -210,7 +238,7 @@ export function ComuniSearch({ initialQuery = "" }: { initialQuery?: string }) {
                     ? `${styles.searchSuggestion} ${styles.searchSuggestionActive}`
                     : styles.searchSuggestion
                 }
-                href={`/comuni?ente=${encodeURIComponent(hit.codiceIpa)}`}
+                href={`${hrefPrefix}${encodeURIComponent(hit.codiceIpa)}`}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => setOpen(false)}
               >

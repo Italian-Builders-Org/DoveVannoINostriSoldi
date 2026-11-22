@@ -26,6 +26,8 @@ export function immersiveKind(
   pathname = pathname === null ? null : publicSurfacePath(pathname);
   if (pathname === "/politici" || pathname === "/politici/") return "politici";
   if (pathname === "/comuni" || pathname === "/comuni/") return "comuni";
+  // The compare view shares the immersive Comuni chrome.
+  if (pathname === "/comuni/confronta" || pathname === "/comuni/confronta/") return "comuni";
   if (pathname === "/mappe/mobilita" || pathname === "/mappe/mobilita/") return "mobilita";
   if (pathname && isBoardsPath(pathname)) return "boards";
   // Proxy rewrites subdomain `/` but the URL bar stays `/`.

@@ -125,6 +125,8 @@ test("comuni immersive helpers recognise path and subdomain", () => {
   assert.equal(isComuniImmersive("/", "www.dovevannoinostrisoldi.com"), false);
   assert.equal(immersiveKind("/politici", "localhost"), "politici");
   assert.equal(immersiveKind("/comuni", "localhost"), "comuni");
+  assert.equal(immersiveKind("/comuni/confronta", "localhost"), "comuni");
+  assert.equal(immersiveKind("/comuni/altro", "localhost"), null);
   assert.equal(immersiveKind("/snapshot-pages/comuni/c_f205", "localhost"), "comuni");
   assert.equal(immersiveKind("/dashboard", "localhost"), "boards");
   assert.equal(immersiveKind("/dashboard/settings", "localhost"), "boards");

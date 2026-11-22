@@ -185,6 +185,9 @@ a caso.
     Regione + quote bilancio) e card social `/api/share/busta-paga` con
     @DVNSoldi.
   - [docs/SIOPE_MUNICIPAL.md](SIOPE_MUNICIPAL.md): pagamenti e incassi di cassa.
+  - [src/lib/comuni-compare.ts](../src/lib/comuni-compare.ts) e
+    [src/app/comuni/confronta/](../src/app/comuni/confronta/): confronto tra Comuni
+    simili (fascia di popolazione e filtri), mediane del gruppo senza il Comune scelto.
   - [docs/ISTAT_REGIONAL_MAP.md](ISTAT_REGIONAL_MAP.md): geografia e perimetri
     territoriali ISTAT.
   - [src/lib/data/eurostat-gdp-contract.ts](../src/lib/data/eurostat-gdp-contract.ts):

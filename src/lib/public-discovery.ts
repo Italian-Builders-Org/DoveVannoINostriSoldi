@@ -148,6 +148,8 @@ export const PUBLIC_NOINDEX_PATHS = [
   "/dashboard",
   "/dashboard/settings",
   "/snapshot-pages/personale-pa/conto-annuale",
+  // Unbounded combinations of Comuni and filters: crawlable, never indexed.
+  "/comuni/confronta",
 ] as const satisfies readonly PublicPath[];
 
 /** Legacy entry points redirect to canonical pages and stay out of the sitemap. */

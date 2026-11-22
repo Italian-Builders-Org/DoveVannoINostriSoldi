@@ -81,8 +81,11 @@ test("search results stay crawlable for noindex while remaining outside the site
     "/dashboard",
     "/dashboard/settings",
     "/snapshot-pages/personale-pa/conto-annuale",
+    "/comuni/confronta",
   ]);
   assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/cerca"), false);
+  const comparePage = await readFile(path.join(appRoot, "comuni", "confronta", "page.tsx"), "utf8");
+  assert.match(comparePage, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*,?\s*\}/);
   assert.equal(PUBLIC_INDEXABLE_PATHS.includes("/dashboard"), false);
 
   const searchPage = await readFile(path.join(appRoot, "cerca", "page.tsx"), "utf8");

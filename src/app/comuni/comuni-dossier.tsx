@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Link from "next/link";
 import { compactEuro, integer, longDate, percent } from "@/lib/format";
 import { footprintStatusLabel, type ComuniFootprint } from "@/lib/comuni-footprint";
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
@@ -70,30 +71,6 @@ const DOMAIN_LINKS = [
   { href: "#dossier-pnrr", label: "PNRR" },
 ] as const;
 
-/** CSS conic-gradient segments for the spending mix ring. */
-function spendingMixStyle(shares: readonly number[]): CSSProperties {
-  if (shares.length === 0 || shares.every((share) => share <= 0)) {
-    return { background: "var(--chart-data-track)" };
-  }
-  const palette = [
-    "var(--chart-data-primary)",
-    "var(--color-accent-800)",
-    "var(--color-neutral-700)",
-    "var(--color-neutral-500)",
-    "var(--color-neutral-400)",
-    "var(--color-neutral-300)",
-  ];
-  let cursor = 0;
-  const stops: string[] = [];
-  for (const [index, share] of shares.entries()) {
-    const next = cursor + Math.max(0, Math.min(100, share));
-    stops.push(`${palette[index % palette.length]} ${cursor}% ${next}%`);
-    cursor = next;
-  }
-  if (cursor < 100) stops.push(`var(--chart-data-track) ${cursor}% 100%`);
-  return { background: `conic-gradient(from -90deg, ${stops.join(", ")})` };
-}
-
 export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
   const peer = footprint.peer;
   const openCivitas = footprint.openCivitas.status === "available" ? footprint.openCivitas.data : null;
@@ -141,186 +118,187 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
     ? null
     : footprint.schoolServices.message;
 
+  const compareHref = `/comuni/confronta?ente=${encodeURIComponent(footprint.codiceIpa)}`;
+
   return (
     <div className={styles.dossierShell}>
       <header className={styles.pageHead}>
         <div className={styles.pageHeadText}>
-          <p className={styles.kicker}>Comuni · confronto SIOPE</p>
+          <p className={styles.pageEyebrow}>{place}</p>
           <h1 id="comuni-dossier-title" className={styles.pageTitle}>{footprint.displayName}</h1>
           <p className={styles.pageMeta}>
-            {place}
-            {footprint.population === null ? "" : ` · ${integer(footprint.population)} abitanti`}
-            {" · "}
-            {periodLabel(footprint)}
-            {footprint.completeness === "partial" ? " (parziale)" : ""}
+            {footprint.population === null ? "" : `${integer(footprint.population)} abitanti · `}
+            pagamenti e incassi di cassa SIOPE, {periodLabel(footprint).toLocaleLowerCase("it-IT")}
+            {footprint.completeness === "partial" ? " (anno in corso)" : ""}
           </p>
-          <ul className={styles.idCodes} aria-label="Identificativi ufficiali">
-            <li>
-              <span>IPA</span>
-              <strong>{footprint.codiceIpa}</strong>
-            </li>
-            <li>
-              <span>CF ente</span>
-              <strong>{footprint.taxCode}</strong>
-            </li>
-            {istatCode ? (
-              <li>
-                <span>ISTAT</span>
-                <strong>{istatCode}</strong>
-              </li>
-            ) : null}
-            {cadastralCode ? (
-              <li>
-                <span>Catastale</span>
-                <strong>{cadastralCode}</strong>
-              </li>
-            ) : null}
-          </ul>
+          <p className={styles.idCodes} aria-label="Identificativi ufficiali">
+            IPA {footprint.codiceIpa} · CF {footprint.taxCode}
+            {istatCode ? ` · ISTAT ${istatCode}` : ""}
+            {cadastralCode ? ` · catastale ${cadastralCode}` : ""}
+          </p>
         </div>
         <div className={styles.headActions}>
+          <Link className={styles.compareAction} href={compareHref} prefetch={false}>
+            Confronta con i comuni simili
+          </Link>
+          <ChangeComuneButton />
           <SitePageLink className={styles.textLink} href={footprint.entityHref}>
             Scheda ente
           </SitePageLink>
-          <ChangeComuneButton />
         </div>
       </header>
 
-      <nav className={styles.domainNav} aria-label="Sezioni del dossier">
+      <nav className={styles.domainNav} aria-label="Sezioni della scheda">
+        <a href="#comuni-sintesi">Sintesi</a>
+        <a href="#comuni-distanza">Distanza dalla mediana</a>
         {DOMAIN_LINKS.map((link) => (
           <a key={link.href} href={link.href}>{link.label}</a>
         ))}
+        <Link href={compareHref} prefetch={false}>Confronta</Link>
       </nav>
 
-      <section className={styles.radarHero} aria-labelledby="comuni-dossier-title">
-        <p className={styles.radarHeroKicker}>
-          Impronta vs mediana dei pari (= 100)
-          {peer ? ` · ${peer.peers} enti confrontabili` : ""}
-        </p>
-        <ComuniRadar
-          indicators={footprint.indicators}
-          municipalityLabel={footprint.displayName}
-          hasPeerMedian={hasPeerMedian}
-        />
-        <p className={styles.readingGuide}>
-          Non è un voto né un rischio: solo distanza dal gruppo
-          {peer ? ` (${peer.criteria.join(", ")})` : ""}.
-          Due numeri su ogni punta: <strong>questo Comune</strong>
-          {" · "}
-          <strong>{hasPeerMedian ? "mediana" : "riferimento"}</strong>.
-        </p>
+      <section className={styles.hero} id="comuni-sintesi" aria-labelledby="comuni-sintesi-title">
+        <div className={styles.heroChart}>
+          <h2 id="comuni-sintesi-title" className={styles.heroTitle}>
+            {footprint.displayName} rispetto ai comuni simili
+          </h2>
+          <p className={styles.heroLead}>
+            {peer
+              ? `${peer.peers} comuni con caratteristiche simili (${peer.criteria.join(", ")}). Il cerchio tratteggiato è la loro mediana, uguale a 100 su ogni asse.`
+              : "Mediana dei comuni simili non disponibile: il grafico mostra solo i valori di riferimento."}
+          </p>
+          <ComuniRadar
+            indicators={footprint.indicators}
+            municipalityLabel={footprint.displayName}
+            hasPeerMedian={hasPeerMedian}
+          />
+        </div>
+
+        <dl className={styles.heroFacts} aria-label="Sintesi dei flussi">
+          <div>
+            <dt>Pagato</dt>
+            <dd>{footprint.totalCents === null ? "n.d." : compactEuro(footprint.totalCents / 100)}</dd>
+            <small>{periodLabel(footprint)}</small>
+          </div>
+          <div>
+            <dt>Per abitante</dt>
+            <dd>
+              {footprint.perCapitaCents === null
+                ? "n.d."
+                : `${integer(Math.round(footprint.perCapitaCents / 100))} €`}
+            </dd>
+            <small>pagamenti di cassa</small>
+          </div>
+          <div>
+            <dt>Incassato</dt>
+            <dd>
+              {footprint.receiptsTotalCents === null
+                ? "n.d."
+                : compactEuro(footprint.receiptsTotalCents / 100)}
+            </dd>
+            <small>
+              {footprint.receiptsPerCapitaCents === null
+                ? "incassi SIOPE"
+                : `${integer(Math.round(footprint.receiptsPerCapitaCents / 100))} € per abitante`}
+            </small>
+          </div>
+          <div>
+            <dt>Per km²</dt>
+            <dd>
+              {footprint.perSquareKmCents === null
+                ? "n.d."
+                : compactEuro(footprint.perSquareKmCents / 100)}
+            </dd>
+            <small>superficie ISTAT</small>
+          </div>
+          {openCivitas ? (
+            <div>
+              <dt>Rispetto al fabbisogno standard</dt>
+              <dd>{signedEuro(openCivitas.record.differenceCents)}</dd>
+              <small>OpenCivitas {openCivitas.referenceYear}</small>
+            </div>
+          ) : null}
+          {schools ? (
+            <div>
+              <dt>Sedi scolastiche statali</dt>
+              <dd>{integer(schools.schoolSites)}</dd>
+              <small>MIM, a.s. {schools.schoolYear}</small>
+            </div>
+          ) : null}
+          <div>
+            <dt>Progetti PNRR sul territorio</dt>
+            <dd>
+              {pnrr.localizedRegistrations === null
+                ? "n.d."
+                : integer(pnrr.localizedRegistrations)}
+            </dd>
+            <small>registrazioni ReGiS localizzate</small>
+          </div>
+          {anac.status === "available" ? (
+            <div>
+              <dt>Appalti aggiudicati</dt>
+              <dd>{integer(anac.awardCount)}</dd>
+              <small>{anac.awardValueLabel}</small>
+            </div>
+          ) : null}
+        </dl>
       </section>
 
-      <dl className={styles.heroMetrics} aria-label="Sintesi dei flussi">
-        <div>
-          <dt>Pagato</dt>
-          <dd>{footprint.totalCents === null ? "n.d." : compactEuro(footprint.totalCents / 100)}</dd>
-          <small>{periodLabel(footprint)}</small>
-        </div>
-        <div>
-          <dt>Incassato</dt>
-          <dd>
-            {footprint.receiptsTotalCents === null
-              ? "n.d."
-              : compactEuro(footprint.receiptsTotalCents / 100)}
-          </dd>
-          <small>
-            {footprint.receiptsPerCapitaCents === null
-              ? "Incassi SIOPE"
-              : `${integer(Math.round(footprint.receiptsPerCapitaCents / 100))} € / ab.`}
-          </small>
-        </div>
-        <div>
-          <dt>Per abitante</dt>
-          <dd>
-            {footprint.perCapitaCents === null
-              ? "n.d."
-              : `${integer(Math.round(footprint.perCapitaCents / 100))} €`}
-          </dd>
-          <small>Pagamenti di cassa</small>
-        </div>
-        <div>
-          <dt>Per km²</dt>
-          <dd>
-            {footprint.perSquareKmCents === null
-              ? "n.d."
-              : compactEuro(footprint.perSquareKmCents / 100)}
-          </dd>
-          <small>Superficie ISTAT</small>
-        </div>
-        {openCivitas ? (
-          <div>
-            <dt>Vs standard</dt>
-            <dd>{signedEuro(openCivitas.record.differenceCents)}</dd>
-            <small>OpenCivitas {openCivitas.referenceYear}</small>
-          </div>
-        ) : null}
-        {schools ? (
-          <div>
-            <dt>Sedi scolastiche</dt>
-            <dd>{integer(schools.schoolSites)}</dd>
-            <small>MIM · a.s. {schools.schoolYear}</small>
-          </div>
-        ) : null}
-        <div>
-          <dt>PNRR sul territorio</dt>
-          <dd>
-            {pnrr.localizedRegistrations === null
-              ? "n.d."
-              : integer(pnrr.localizedRegistrations)}
-          </dd>
-          <small>Registrazioni ReGiS localizzate</small>
-        </div>
-        {anac.status === "available" ? (
-          <div>
-            <dt>Appalti ANAC</dt>
-            <dd>{integer(anac.awardCount)}</dd>
-            <small>{anac.awardValueLabel}</small>
-          </div>
-        ) : null}
-      </dl>
-
-      <section className={styles.axisGlossary} aria-labelledby="assi-title">
-        <div className={styles.axisGlossaryHead}>
-          <h2 id="assi-title" className={styles.sectionLabel}>
-            Cosa misurano gli assi
-          </h2>
-          <p className={styles.axisGlossaryHint}>
-            Indice &gt; 100 = sopra la mediana; &lt; 100 = sotto.
-            I numeri 1-{footprint.indicators.length} coincidono con il grafico.
+      <section className={styles.distance} id="comuni-distanza" aria-labelledby="assi-title">
+        <header className={styles.sectionHead}>
+          <h2 id="assi-title" className={styles.sectionTitle}>Distanza dalla mediana</h2>
+          <p>
+            Gli stessi {footprint.indicators.length} assi del grafico. 100 è la mediana dei comuni simili:
+            sopra 100 il valore di {footprint.displayName} è più alto, sotto è più basso.
+            Non è un giudizio.
           </p>
-        </div>
+        </header>
         <ol className={styles.indicatorList}>
-          {footprint.indicators.map((item, index) => (
-            <li key={item.id} className={styles.indicatorRow} id={`asse-${index + 1}`}>
-              <div className={styles.indicatorHead}>
+          {footprint.indicators.map((item, index) => {
+            const capped = item.index === null ? null : Math.min(200, Math.max(0, item.index));
+            return (
+              <li key={item.id} className={styles.indicatorRow} id={`asse-${index + 1}`}>
                 <span className={styles.indicatorIndex} aria-hidden="true">{index + 1}</span>
-                <div className={styles.indicatorTitle}>
-                  <strong>{item.label}</strong>
-                  {item.index !== null ? (
-                    <span className={styles.indexValue}>indice {item.index}</span>
-                  ) : null}
+                <div className={styles.indicatorText}>
+                  <h3>{item.label}</h3>
+                  <p className={styles.indicatorMeaning}>{item.meaning}</p>
+                  {item.note ? <p className={styles.indicatorNote}>{item.note}</p> : null}
                 </div>
-                <span className={`${styles.statusTag} ${statusClass(item.index)}`}>
-                  {footprintStatusLabel(item.index)}
-                </span>
-              </div>
-              <p className={styles.indicatorValues}>
-                <span className={styles.valueThis}>{item.valueLabel}</span>
-                {item.medianLabel ? (
-                  <>
-                    <span className={styles.valueSep} aria-hidden="true"> · </span>
-                    <span className={styles.valuePeer}>
+                <p className={styles.indicatorValues}>
+                  <strong>{item.valueLabel}</strong>
+                  {item.medianLabel ? (
+                    <span>
                       {item.id === "opencivitas-vs-standard" ? "standard " : "mediana "}
                       {item.medianLabel}
                     </span>
-                  </>
-                ) : null}
-              </p>
-              <p className={styles.indicatorMeaning}>{item.meaning}</p>
-              {item.note ? <p className={styles.indicatorNote}>{item.note}</p> : null}
-            </li>
-          ))}
+                  ) : null}
+                </p>
+                <div className={styles.indexCell}>
+                  <span className={styles.indexBar} aria-hidden="true">
+                    <span className={styles.indexMid} />
+                    {capped === null ? null : (
+                      <span
+                        className={styles.indexFill}
+                        style={{
+                          left: `${Math.min(capped, 100) / 2}%`,
+                          width: `${Math.abs(capped - 100) / 2}%`,
+                        }}
+                      />
+                    )}
+                  </span>
+                  <span className={`${styles.statusText} ${statusClass(item.index)}`}>
+                    {item.index === null ? footprintStatusLabel(item.index) : `${footprintStatusLabel(item.index)} · ${item.index}`}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
         </ol>
+        <p className={styles.distanceFoot}>
+          <Link href={compareHref} prefetch={false}>
+            Metti {footprint.displayName} accanto ad altri comuni, voce per voce
+          </Link>
+        </p>
       </section>
 
       <section className={styles.deepDossier} aria-labelledby="dossier-deep-title">
@@ -330,14 +308,14 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           <section className={styles.panel} aria-labelledby="voci-title">
             <h3 id="voci-title">Voci di pagamento</h3>
             <div className={styles.mixLayout}>
-              <div
-                className={styles.mixRing}
-                style={spendingMixStyle(spendingShares)}
-                aria-hidden="true"
-              >
-                <span className={styles.mixRingHole}>
-                  {footprint.totalCents === null ? "n.d." : compactEuro(footprint.totalCents / 100)}
-                </span>
+              <p className={styles.mixTotal}>
+                {footprint.totalCents === null ? "n.d." : compactEuro(footprint.totalCents / 100)}
+                <small> pagati, {periodLabel(footprint).toLocaleLowerCase("it-IT")}</small>
+              </p>
+              <div className={styles.mixBar} aria-hidden="true">
+                {spendingShares.map((share, index) => share > 0 ? (
+                  <span key={index} data-tone={index % 6} style={{ width: `${Math.min(100, share)}%` }} />
+                ) : null)}
               </div>
               <ul className={styles.spendingList}>
                 {footprint.spendingRows.map((row, index) => {
@@ -354,11 +332,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                           {share > 0 ? ` · ${percent(share)}` : ""}
                         </span>
                       </div>
-                      <div
-                        className={styles.spendingBar}
-                        style={{ "--share": `${Math.min(100, share)}%` } as CSSProperties}
-                        aria-hidden="true"
-                      />
+
                       <p>{row.explanation}</p>
                     </li>
                   );

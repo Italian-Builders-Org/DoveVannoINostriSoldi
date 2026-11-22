@@ -58,7 +58,8 @@ export function ComuniRadar({ indicators, municipalityLabel, hasPeerMedian }: Ra
     <figure className={styles.radarFigure} aria-label={`Confronto indicatori di ${municipalityLabel}`}>
       <svg
         className={styles.radarSvg}
-        viewBox={`0 0 ${size} ${size}`}
+        // Side margins keep the axis labels inside the box on narrow screens.
+        viewBox={`-100 0 ${size + 200} ${size}`}
         role="img"
         aria-labelledby="comuni-radar-title comuni-radar-desc"
       >
@@ -91,7 +92,7 @@ export function ComuniRadar({ indicators, municipalityLabel, hasPeerMedian }: Ra
           return (
             <g key={axis.id}>
               <circle className={styles.radarPoint} cx={tip.x} cy={tip.y} r={4.5} />
-              <foreignObject x={label.x - 78} y={label.y - 30} width={156} height={60}>
+              <foreignObject x={label.x - 120} y={label.y - 56} width={240} height={112}>
                 <div className={styles.radarAxisLabel}>
                   <strong>
                     <span className={styles.radarAxisIndex} aria-hidden="true">{index + 1}. </span>
@@ -107,10 +108,13 @@ export function ComuniRadar({ indicators, municipalityLabel, hasPeerMedian }: Ra
           );
         })}
       </svg>
-      <figcaption className={styles.radarCaption}>
-        Linea petrolio: {municipalityLabel}
-        {hasPeerMedian ? " · area tratteggiata: mediana dei pari (= 100)" : " · mediana incompleta"}.
-        {" "}Su ogni asse: valore di questo Comune · mediana. I numeri da 1 a {axes.length} rimandano alla legenda sotto.
+      <figcaption className={styles.radarLegend}>
+        <span><i className={styles.legendSelf} aria-hidden="true" />{municipalityLabel}</span>
+        {hasPeerMedian ? (
+          <span><i className={styles.legendPeer} aria-hidden="true" />mediana dei comuni simili (100)</span>
+        ) : (
+          <span>mediana dei comuni simili non disponibile</span>
+        )}
       </figcaption>
     </figure>
   );

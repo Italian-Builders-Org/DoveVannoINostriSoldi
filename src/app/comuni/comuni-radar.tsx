@@ -108,10 +108,13 @@ export function ComuniRadar({ indicators, municipalityLabel, hasPeerMedian }: Ra
           );
         })}
       </svg>
-      <figcaption className={styles.radarCaption}>
-        Linea petrolio: {municipalityLabel}
-        {hasPeerMedian ? " · area tratteggiata: mediana dei pari (= 100)" : " · mediana incompleta"}.
-        {" "}Su ogni asse: valore di questo Comune · mediana. I numeri da 1 a {axes.length} rimandano alla legenda sotto.
+      <figcaption className={styles.radarLegend}>
+        <span><i className={styles.legendSelf} aria-hidden="true" />{municipalityLabel}</span>
+        {hasPeerMedian ? (
+          <span><i className={styles.legendPeer} aria-hidden="true" />mediana dei comuni simili (100)</span>
+        ) : (
+          <span>mediana dei comuni simili non disponibile</span>
+        )}
       </figcaption>
     </figure>
   );

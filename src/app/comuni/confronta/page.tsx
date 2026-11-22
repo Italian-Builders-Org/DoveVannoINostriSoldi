@@ -142,7 +142,7 @@ function Composition({ members }: { members: readonly (CompareMember & { label: 
       <ul className={styles.compositionRows}>
         {members.map((member) => (
           <li key={member.codiceIpa}>
-            <span className={styles.compositionName}><b className={styles.chipBadge} data-base={member.label === "★" || undefined}>{member.label}</b>{member.name}</span>
+            <span className={styles.compositionName}><Badge label={member.label} />{member.name}</span>
             {member.composition ? (
               <span className={styles.compositionBar} role="img" aria-label={parts.map((p) => `${p.label} ${decimalFormat.format(member.composition![p.key])}%`).join(", ")}>
                 {parts.map((part) => (
@@ -175,89 +175,102 @@ function EmptyState({ requested }: { requested: string | null }) {
   );
 }
 
+/** The chosen Comune is a plain dot; compared Comuni carry their number. */
+function Badge({ label }: { label: string }) {
+  return label ? <b className={styles.badge}>{label}</b> : <b className={styles.badge} data-base="" aria-hidden="true" />;
+}
+
 function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
   const { base, compared, group, request, stats, basePercentile } = comparison;
   const filters = request.filters;
   const codes = compared.map((m) => m.codiceIpa);
   const members = [
-    { ...base, label: "★" },
+    { ...base, label: "" },
     ...compared.map((m, i) => ({ ...m, label: String(i + 1) })),
   ];
   const full = codes.length >= COMPARE_MAX_COMPARED;
   const toggle = (key: "region" | "altitude" | "coast") =>
     compareHref(base.codiceIpa, codes, { ...filters, [key]: !filters[key] });
   const searchPrefix = compareAddPrefix(base.codiceIpa, codes, filters);
-  const filterChips = [
-    { key: "region" as const, on: filters.region, label: `Stessa regione (${base.region ?? "n.d."})` },
-    { key: "altitude" as const, on: filters.altitude, label: `Stessa zona altimetrica (${base.altimetricZoneLabel ?? "n.d."})` },
-    { key: "coast" as const, on: filters.coast, label: base.coastal ? "Solo comuni costieri" : "Solo comuni non costieri" },
+  const filterOptions = [
+    { key: "region" as const, on: filters.region, label: "Stessa regione", detail: base.region ?? "n.d." },
+    { key: "altitude" as const, on: filters.altitude, label: "Stessa zona altimetrica", detail: base.altimetricZoneLabel ?? "n.d." },
+    { key: "coast" as const, on: filters.coast, label: base.coastal ? "Solo comuni costieri" : "Solo comuni non costieri", detail: base.coastal ? `${base.name} è sulla costa` : `${base.name} non è sulla costa` },
   ];
+  const spesa = comparison.metrics.find((m) => m.id === "spesaTotale")!;
+  const spesaStat = stats.spesaTotale;
+  const spesaRows = members.flatMap((m) => (m.values.spesaTotale === null ? [] : [{ ...m, value: m.values.spesaTotale }]));
+  const spesaMax = Math.max(1, ...spesaRows.map((r) => r.value), spesaStat?.median ?? 0);
 
   return (
     <>
       <header className={styles.hero}>
-        <p className={styles.kicker}>Confronta · pagamenti e incassi {comparison.year}</p>
+        <p className={styles.eyebrow}>
+          {base.province}, {base.region}{base.population ? ` · ${numberFormat.format(base.population)} abitanti` : ""}
+        </p>
         <h1>{base.name} e i comuni simili</h1>
         <p className={styles.lede}>
-          {base.province}, {base.region}. {base.population ? `${numberFormat.format(base.population)} abitanti. ` : ""}
-          Il gruppo di confronto conta <strong>{numberFormat.format(group.size)} comuni</strong>: {group.criteria.join(", ")}.
-          La mediana è il valore centrale del gruppo; {base.name} non entra nel calcolo.
+          Pagamenti e incassi di cassa {comparison.year} a confronto con <strong>{numberFormat.format(group.size)} comuni</strong>:{" "}
+          {group.criteria.join(", ")}. La mediana è il valore centrale del gruppo e non include {base.name}.
         </p>
-        <div className={styles.heroActions}>
-          <Link className={styles.secondaryAction} href={`/comuni?ente=${encodeURIComponent(base.codiceIpa)}`}>Scheda di {base.name}</Link>
-          <Link className={styles.secondaryAction} href="/comuni/confronta">Cambia Comune</Link>
-        </div>
+        <p className={styles.heroLinks}>
+          <Link href={`/comuni?ente=${encodeURIComponent(base.codiceIpa)}`}>← Scheda di {base.name}</Link>
+          <Link href="/comuni/confronta">Cambia comune</Link>
+        </p>
       </header>
 
-      <section className={styles.controls} aria-labelledby="gruppo-titolo">
-        <div className={styles.controlBlock}>
-          <h2 id="gruppo-titolo" className={styles.blockTitle}>Gruppo di confronto</h2>
-          <p className={styles.muted}>Parte dalla fascia di popolazione. Restringi il gruppo con i filtri.</p>
-          <ul className={styles.filterChips}>
-            {filterChips.map((chip) => (
-              <li key={chip.key}>
-                <Link href={toggle(chip.key)} className={styles.filterChip} aria-pressed={chip.on} data-on={chip.on || undefined} scroll={false}>
-                  <span aria-hidden="true">{chip.on ? "✓" : "+"}</span> {chip.label}
+      <section className={styles.setup} aria-label="Impostazioni del confronto">
+        <div className={styles.setupColumn}>
+          <h2 className={styles.setupTitle}>Il gruppo</h2>
+          <p className={styles.groupSize}><strong>{numberFormat.format(group.size)}</strong> comuni</p>
+          <ul className={styles.filterList}>
+            {filterOptions.map((option) => (
+              <li key={option.key}>
+                <Link href={toggle(option.key)} className={styles.filterOption} aria-pressed={option.on} data-on={option.on || undefined} scroll={false}>
+                  <span className={styles.checkbox} aria-hidden="true" />
+                  <span>{option.label}<small>{option.detail}</small></span>
                 </Link>
               </li>
             ))}
           </ul>
           {group.size < 20 ? (
             <p className={styles.warning} role="status">
-              Gruppo piccolo ({group.size} comuni): mediana e intervalli sono meno stabili.
+              Con {group.size} comuni mediana e intervalli sono poco stabili.
             </p>
           ) : null}
         </div>
 
-        <div className={styles.controlBlock}>
-          <h2 className={styles.blockTitle}>Comuni a confronto <span className={styles.muted}>({codes.length}/{COMPARE_MAX_COMPARED})</span></h2>
-          <ul className={styles.selected}>
-            <li className={styles.selectedItem} data-base="">
-              <b className={styles.chipBadge} data-base="">★</b>
-              <span><strong>{base.name}</strong><small>Comune scelto</small></span>
+        <div className={styles.setupColumn}>
+          <h2 className={styles.setupTitle}>
+            A confronto <span className={styles.muted}>{codes.length} di {COMPARE_MAX_COMPARED}</span>
+          </h2>
+          <ol className={styles.selected}>
+            <li className={styles.selectedItem}>
+              <Badge label="" />
+              <span className={styles.selectedName}><strong>{base.name}</strong><small>comune scelto</small></span>
             </li>
             {compared.map((member, i) => (
               <li key={member.codiceIpa} className={styles.selectedItem}>
-                <b className={styles.chipBadge}>{i + 1}</b>
-                <span>
+                <Badge label={String(i + 1)} />
+                <span className={styles.selectedName}>
                   <strong>{member.name}</strong>
                   <small>
                     {member.province}
+                    {member.population ? ` · ${numberFormat.format(member.population)} ab.` : ""}
                     {member.inGroup ? "" : " · fuori dal gruppo"}
-                    {member.autoSuggested ? " · suggerito" : ""}
                   </small>
                 </span>
                 <Link
-                  className={styles.remove}
+                  className={styles.rowAction}
                   href={compareHref(base.codiceIpa, codes.filter((c) => c !== member.codiceIpa), filters)}
                   aria-label={`Togli ${member.name} dal confronto`}
                   scroll={false}
                 >
-                  ×
+                  Togli
                 </Link>
               </li>
             ))}
-          </ul>
+          </ol>
           {comparison.missing.length || request.rejected.length || request.truncated ? (
             <p className={styles.warning} role="status">
               {comparison.missing.length ? `Codici senza dati SIOPE ${comparison.year}: ${comparison.missing.join(", ")}. ` : ""}
@@ -267,13 +280,16 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
           ) : null}
           {full ? null : (
             <>
-              <h3 className={styles.subTitle}>Aggiungi un comune simile</h3>
+              <h3 className={styles.subTitle}>Più vicini per popolazione</h3>
               <ul className={styles.suggestions}>
                 {comparison.suggestions.map((s) => (
                   <li key={s.codiceIpa}>
-                    <Link href={compareHref(base.codiceIpa, codes, filters, s.codiceIpa)} scroll={false}>
-                      <span><span aria-hidden="true">+ </span>{s.name}</span>
+                    <span className={styles.selectedName}>
+                      <strong>{s.name}</strong>
                       <small>{s.province}{s.population ? ` · ${numberFormat.format(s.population)} ab.` : ""}</small>
+                    </span>
+                    <Link className={styles.rowAction} href={compareHref(base.codiceIpa, codes, filters, s.codiceIpa)} scroll={false} aria-label={`Aggiungi ${s.name} al confronto`}>
+                      Aggiungi
                     </Link>
                   </li>
                 ))}
@@ -283,7 +299,7 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
                   hrefPrefix={searchPrefix}
                   inputId="confronta-search"
                   label="Aggiungi un altro Comune al confronto"
-                  placeholder="Oppure cerca un Comune…"
+                  placeholder="Cerca un altro comune"
                   submitLabel="Aggiungi"
                   pickOnly
                 />
@@ -293,36 +309,47 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
         </div>
       </section>
 
-      <section className={styles.cards} aria-label="Sintesi">
-        {members.map((member) => {
-          const metric = comparison.metrics.find((m) => m.id === "spesaTotale")!;
-          const delta = formatDelta(metric, member.values.spesaTotale, stats.spesaTotale);
-          return (
-            <article key={member.codiceIpa} className={styles.card} data-base={member.label === "★" || undefined}>
-              <header><b className={styles.chipBadge} data-base={member.label === "★" || undefined}>{member.label}</b><h2>{member.name}</h2></header>
-              <p className={styles.muted}>{member.province} · {member.population ? `${numberFormat.format(member.population)} ab.` : "popolazione n.d."}</p>
-              <p className={styles.cardValue}>{formatValue(metric, member.values.spesaTotale)}<small> pagati per abitante</small></p>
-              {delta ? <p className={styles.cardDelta}>{delta}</p> : null}
-            </article>
-          );
-        })}
-        {stats.spesaTotale ? (
-          <article className={styles.card} data-median="">
-            <header><b className={styles.chipBadge} data-median="">M</b><h2>Mediana del gruppo</h2></header>
-            <p className={styles.muted}>{numberFormat.format(group.size)} comuni</p>
-            <p className={styles.cardValue}>{euroFormat.format(stats.spesaTotale.median)}<small> per abitante</small></p>
-            <p className={styles.cardDelta}>metà dei comuni tra {euroFormat.format(stats.spesaTotale.p25)} e {euroFormat.format(stats.spesaTotale.p75)}</p>
-          </article>
-        ) : null}
-      </section>
+      {spesaStat ? (
+        <section className={styles.headline} aria-labelledby="headline-title">
+          <h2 id="headline-title" className={styles.groupTitle}>Quanto pagano per abitante</h2>
+          <p className={styles.muted}>{spesa.description}</p>
+          <ul className={styles.barList}>
+            {spesaRows.map((row) => {
+              const delta = formatDelta(spesa, row.value, spesaStat);
+              return (
+                <li key={row.codiceIpa} data-base={row.label === "" || undefined}>
+                  <span className={styles.barName}><Badge label={row.label} />{row.name}</span>
+                  <span className={styles.barTrack} aria-hidden="true">
+                    <span className={styles.barFill} style={{ width: `${(row.value / spesaMax) * 100}%` }} />
+                    <span className={styles.barMedian} style={{ left: `${(spesaStat.median / spesaMax) * 100}%` }} />
+                  </span>
+                  <span className={styles.barValue}>
+                    <strong>{euroFormat.format(row.value)}</strong>
+                    {delta ? <small>{delta}</small> : null}
+                  </span>
+                </li>
+              );
+            })}
+            <li className={styles.barMedianRow}>
+              <span className={styles.barName}><b className={styles.badge} data-median="" aria-hidden="true" />Mediana del gruppo</span>
+              <span className={styles.barTrack} aria-hidden="true">
+                <span className={styles.barMedian} style={{ left: `${(spesaStat.median / spesaMax) * 100}%` }} />
+              </span>
+              <span className={styles.barValue}>
+                <strong>{euroFormat.format(spesaStat.median)}</strong>
+                <small>metà dei comuni tra {euroFormat.format(spesaStat.p25)} e {euroFormat.format(spesaStat.p75)}</small>
+              </span>
+            </li>
+          </ul>
+        </section>
+      ) : null}
 
       <section className={styles.legendBlock} aria-label="Come leggere i grafici">
-        <span><i className={styles.legendRange} /> 80% centrale dei comuni del gruppo</span>
+        <span><i className={styles.legendRange} /> 80% centrale del gruppo</span>
         <span><i className={styles.legendBox} /> metà centrale</span>
         <span><i className={styles.legendMedian} /> mediana</span>
-        <span><b className={styles.chipBadge} data-base="">★</b> {base.name}</span>
-        {compared.map((m, i) => <span key={m.codiceIpa}><b className={styles.chipBadge}>{i + 1}</b> {m.name}</span>)}
-        <span className={styles.muted}>Un segno schiacciato sul bordo indica un valore fuori scala.</span>
+        <span><Badge label="" /> {base.name}</span>
+        {compared.map((m, i) => <span key={m.codiceIpa}><Badge label={String(i + 1)} /> {m.name}</span>)}
       </section>
 
       {GROUP_ORDER.map((groupName) => {
@@ -330,7 +357,7 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
         return (
           <section key={groupName} className={styles.metricGroup} aria-labelledby={`g-${groupName}`}>
             <header className={styles.metricGroupHeader}>
-              <h2 id={`g-${groupName}`}>{groupName}</h2>
+              <h2 id={`g-${groupName}`} className={styles.groupTitle}>{groupName}</h2>
               <p className={styles.muted}>{GROUP_INTRO[groupName]}</p>
             </header>
             {groupName === "Come spende" ? <Composition members={members} /> : null}
@@ -340,7 +367,7 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
                 const own = base.values[metric.id];
                 const markers: Marker[] = members.flatMap((member) => {
                   const value = member.values[metric.id];
-                  return value === null ? [] : [{ key: member.codiceIpa, label: member.label, value, base: member.label === "★", name: member.name }];
+                  return value === null ? [] : [{ key: member.codiceIpa, label: member.label, value, base: member.label === "", name: member.name }];
                 });
                 const delta = formatDelta(metric, own, stat);
                 const percentile = basePercentile[metric.id];
@@ -350,9 +377,9 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
                       <h3>{metric.label}</h3>
                       <p className={styles.metricValue}>
                         <strong>{formatValue(metric, own)}</strong>
-                        {stat ? <span> · mediana {formatValue(metric, stat.median)}</span> : null}
+                        {stat ? <span>mediana {formatValue(metric, stat.median)}</span> : null}
                       </p>
-                      {delta ? <p className={styles.metricDelta}>{delta}{percentile !== null ? `, supera il ${numberFormat.format(percentile)}% dei comuni del gruppo` : ""}</p> : null}
+                      {delta ? <p className={styles.metricDelta}>{delta}{percentile !== null ? `, supera il ${numberFormat.format(percentile)}% del gruppo` : ""}</p> : null}
                     </div>
                     {stat && markers.length ? (
                       <PositionStrip metric={metric} stat={stat} markers={markers} />
@@ -369,14 +396,14 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
       })}
 
       <section className={styles.tableSection} aria-labelledby="tabella-titolo">
-        <h2 id="tabella-titolo">Tutti i valori</h2>
+        <h2 id="tabella-titolo" className={styles.groupTitle}>Tutti i valori</h2>
         <div className={styles.tableScroll} role="region" aria-labelledby="tabella-titolo" tabIndex={0}>
           <table className={styles.table}>
             <thead>
               <tr>
                 <th scope="col">Indicatore</th>
-                {members.map((m) => <th key={m.codiceIpa} scope="col">{m.label} {m.name}</th>)}
-                <th scope="col">Mediana gruppo</th>
+                {members.map((m) => <th key={m.codiceIpa} scope="col"><span className={styles.thName}><Badge label={m.label} />{m.name}</span></th>)}
+                <th scope="col">Mediana del gruppo</th>
               </tr>
             </thead>
             <tbody>
@@ -393,7 +420,7 @@ function ComparisonView({ comparison }: { comparison: ComuniComparison }) {
       </section>
 
       <section className={styles.method} aria-labelledby="metodo-titolo">
-        <h2 id="metodo-titolo">Come leggere il confronto</h2>
+        <h2 id="metodo-titolo" className={styles.groupTitle}>Come leggere il confronto</h2>
         <ul>
           <li>Non è una classifica né un giudizio: spendere di più può voler dire più servizi, più turisti, più investimenti PNRR o più partite di giro.</li>
           <li>Pagamenti e incassi sono flussi di cassa SIOPE {comparison.year}, anno completo. Non sono impegni né accertamenti di bilancio.</li>

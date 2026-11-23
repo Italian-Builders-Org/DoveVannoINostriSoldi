@@ -38,7 +38,7 @@ function periodRange(row: GovernmentDebateRow): string {
 
 function eventPeriod(start: string, end: string | null): string {
   if (end === null) return `dal ${start.slice(0, 4)}, in corso`;
-  return start.slice(0, 4) === end.slice(0, 4) ? start.slice(0, 4) : `${start.slice(0, 4)}–${end.slice(0, 4)}`;
+  return start.slice(0, 4) === end.slice(0, 4) ? start.slice(0, 4) : `${start.slice(0, 4)}-${end.slice(0, 4)}`;
 }
 
 export default function GovernmentDebateQuestionsPage() {
@@ -119,7 +119,7 @@ export default function GovernmentDebateQuestionsPage() {
                   <tr key={row.government_id} data-government={row.government_id}>
                     <th scope="row">
                       <Link href={`/governi/${row.government_id}`}>{row.name}</Link>
-                      <small>{row.status === "current" ? "in carica, dati fino all'ultimo periodo pubblicato" : `${row.start_date.slice(0, 4)}–${row.end_date?.slice(0, 4)}`}</small>
+                      <small>{row.status === "current" ? "in carica, dati fino all'ultimo periodo pubblicato" : `${row.start_date.slice(0, 4)}-${row.end_date?.slice(0, 4)}`}</small>
                     </th>
                     {row.change === null || !row.first || !row.last ? (
                       <td colSpan={7} className={styles.missing}>{row.missing_reason}</td>
@@ -135,7 +135,7 @@ export default function GovernmentDebateQuestionsPage() {
                       </>
                     )}
                     <td data-label="Eventi">
-                      {row.event_numbers.length === 0 ? "–" : row.event_numbers.map((number, index) => {
+                      {row.event_numbers.length === 0 ? "nessuno" : row.event_numbers.map((number, index) => {
                         const event = events.find((candidate) => candidate.number === number)!;
                         return (
                           <span key={number}>

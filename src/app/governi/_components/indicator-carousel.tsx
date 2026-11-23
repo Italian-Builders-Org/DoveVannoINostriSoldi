@@ -47,7 +47,7 @@ function formatEventPeriod(event: GovernmentScorecardChartEvent): string {
   const start = event.start_date.slice(0, 4);
   if (event.end_date === null) return `dal ${start}, in corso`;
   const end = event.end_date.slice(0, 4);
-  return start === end ? start : `${start}–${end}`;
+  return start === end ? start : `${start}-${end}`;
 }
 
 function IndicatorChart({

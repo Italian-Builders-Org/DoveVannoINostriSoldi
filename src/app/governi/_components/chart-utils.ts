@@ -145,3 +145,54 @@ export function splitGovernmentChartAtMissingPeriods(
   }
   return segments;
 }
+
+export type GovernmentChartEventSpan = {
+  id: string;
+  fromIndex: number;
+  toIndex: number;
+  /** The event started before the first visible period. */
+  clippedStart: boolean;
+  /** The event continues after the last visible period, or has no end date. */
+  clippedEnd: boolean;
+  /** Overlapping events stack on separate lanes for their labels. */
+  lane: number;
+};
+
+/**
+ * Maps dated events onto the categorical x-axis of a chart: an event covers
+ * every visible period whose time span intersects it. Events entirely outside
+ * the visible periods are dropped; nothing is interpolated.
+ */
+export function getGovernmentChartEventSpans(
+  events: readonly { id: string; start_date: string; end_date: string | null }[],
+  periods: readonly { period: string; period_start: string }[],
+  frequency: GovernmentScorecardV6ChartSlide["frequency"],
+): GovernmentChartEventSpan[] {
+  if (periods.length === 0) return [];
+  const ends = periods.map((period) => governmentChartPeriodEndExclusive(period.period_start, frequency));
+  const visibleStart = periods[0]!.period_start;
+  const visibleEndExclusive = ends.at(-1)!;
+  const laneEnds: number[] = [];
+  const spans: GovernmentChartEventSpan[] = [];
+  for (const event of events) {
+    if (event.start_date >= visibleEndExclusive) continue;
+    if (event.end_date !== null && event.end_date < visibleStart) continue;
+    const fromIndex = periods.findIndex((_, index) => event.start_date < ends[index]!);
+    const lastIndex = event.end_date === null
+      ? periods.length - 1
+      : periods.findLastIndex((period) => period.period_start <= event.end_date!);
+    if (fromIndex < 0 || lastIndex < fromIndex) continue;
+    let lane = laneEnds.findIndex((end) => end < fromIndex);
+    if (lane < 0) lane = laneEnds.length;
+    laneEnds[lane] = lastIndex;
+    spans.push({
+      id: event.id,
+      fromIndex,
+      toIndex: lastIndex,
+      clippedStart: event.start_date < visibleStart,
+      clippedEnd: event.end_date === null || event.end_date >= visibleEndExclusive,
+      lane,
+    });
+  }
+  return spans;
+}

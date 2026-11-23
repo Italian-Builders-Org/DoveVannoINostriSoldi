@@ -155,6 +155,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/politici", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },
       { href: "/governi", label: "Pagella dei governi" },
+      { href: "/governi/domande", label: "Domande sui governi" },
       { href: "/programmi", label: "Programmi elettorali 2027" },
       { href: "/ministeri", label: "Ministeri" },
       { href: "/regioni", label: "Regioni" },

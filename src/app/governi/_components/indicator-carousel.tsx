@@ -13,6 +13,7 @@ import type {
   GovernmentScorecardV6ChartCollection,
   GovernmentScorecardV6ChartSlide,
 } from "@/lib/government-scorecard-page";
+import type { GovernmentScorecardChartEvent } from "@/lib/government-scorecard-events";
 
 import { formatChartTabLabel } from "./chart-tab-label";
 import {
@@ -23,6 +24,7 @@ import {
   formatGovernmentChartPeriod,
   formatGovernmentChartPointStatus,
   formatGovernmentChartValue,
+  getGovernmentChartEventSpans,
   getGovernmentChartLatestCommonPeriod,
   getGovernmentChartSelection,
   GOVERNMENT_CHART_COLORS,
@@ -41,14 +43,23 @@ function formatChange(value: number, unit: string): string {
   return `${value > 0 ? "+" : ""}${formatGovernmentChartValue(value, unit)}`;
 }
 
+function formatEventPeriod(event: GovernmentScorecardChartEvent): string {
+  const start = event.start_date.slice(0, 4);
+  if (event.end_date === null) return `dal ${start}, in corso`;
+  const end = event.end_date.slice(0, 4);
+  return start === end ? start : `${start}–${end}`;
+}
+
 function IndicatorChart({
   chart,
+  events,
   scope,
   position,
   total,
   listView = false,
 }: {
   chart: GovernmentScorecardV6ChartSlide;
+  events: readonly GovernmentScorecardChartEvent[];
   scope: ChartScope;
   position: number;
   total: number;
@@ -78,6 +89,15 @@ function IndicatorChart({
     ))?.period ?? null
     : null;
   const periodIndex = useMemo(() => new Map(periods.map((period, index) => [period, index])), [periods]);
+  const eventSpans = useMemo(() => {
+    const starts = new Map(visibleSeries.flatMap((series) => series.points.map((point) => [point.period, point.period_start] as const)));
+    return getGovernmentChartEventSpans(
+      events,
+      periods.map((period) => ({ period, period_start: starts.get(period)! })),
+      chart.frequency,
+    );
+  }, [chart.frequency, events, periods, visibleSeries]);
+  const visibleEvents = eventSpans.map((span) => ({ span, event: events.find((event) => event.id === span.id)! }));
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const activePeriod = selectedPeriod !== null && periods.includes(selectedPeriod) ? selectedPeriod : getGovernmentChartLatestCommonPeriod(visibleSeries) ?? periods.at(-1) ?? null;
   const values = visibleSeries.flatMap((series) => series.points.map((point) => point.value));
@@ -93,6 +113,11 @@ function IndicatorChart({
     ? VIEWBOX.left + plotWidth / 2
     : VIEWBOX.left + ((periodIndex.get(period) ?? 0) / (periods.length - 1)) * plotWidth;
   const y = (value: number) => VIEWBOX.top + ((maximum - value) / (maximum - minimum)) * plotHeight;
+  const periodStep = periods.length <= 1 ? plotWidth : plotWidth / (periods.length - 1);
+  const bandStart = (index: number) => index === 0 ? VIEWBOX.left : VIEWBOX.left + (index - 0.5) * periodStep;
+  const bandEnd = (index: number) => index === periods.length - 1
+    ? VIEWBOX.width - VIEWBOX.right
+    : VIEWBOX.left + (index + 0.5) * periodStep;
   const ticks = Array.from({ length: 5 }, (_, index) => maximum - ((maximum - minimum) * index) / 4);
   const axisPeriods = periods.length <= 2
     ? periods
@@ -192,8 +217,19 @@ function IndicatorChart({
           onKeyDown={onPlotKeyDown}
         >
           <desc id={descriptionId}>
-            {`${chart.question} Dati pubblicati dal ${periods[0]} al ${periods.at(-1)}. Usa freccia sinistra e destra per leggere un periodo.`}
+            {`${chart.question} Dati pubblicati dal ${periods[0]} al ${periods.at(-1)}.${visibleEvents.length > 0 ? ` Bande numerate: ${visibleEvents.map(({ event }) => `${event.number} ${event.short_label}`).join(", ")}.` : ""} Usa freccia sinistra e destra per leggere un periodo.`}
           </desc>
+          {visibleEvents.map(({ span, event }) => {
+            const left = bandStart(span.fromIndex);
+            const width = Math.max(2, bandEnd(span.toIndex) - left);
+            return (
+              <g key={event.id} data-chart-event={event.id} aria-hidden="true">
+                <rect className={styles.chartEventBand} x={left} y={VIEWBOX.top} width={width} height={plotHeight} />
+                <circle className={styles.chartEventBadge} cx={left + 9} cy={VIEWBOX.top + 9 + span.lane * 18} r={8} />
+                <text className={styles.chartEventNumber} x={left + 9} y={VIEWBOX.top + 12.5 + span.lane * 18} textAnchor="middle">{event.number}</text>
+              </g>
+            );
+          })}
           {ticks.map((tick) => {
             const tickY = y(tick);
             return (
@@ -239,6 +275,28 @@ function IndicatorChart({
           )}
         </svg>}
       </div>
+      {visibleEvents.length === 0 ? null : (
+        <div className={styles.chartEvents}>
+          <p className={styles.chartMeta}>Eventi esterni nel periodo · contesto, non cambiano il voto</p>
+          <ol aria-label="Eventi esterni evidenziati nel grafico">
+            {visibleEvents.map(({ event }) => (
+              <li key={event.id} data-chart-event-item={event.id}>
+                <b aria-hidden="true">{event.number}</b>
+                <span>
+                  <strong>{event.title}</strong> · {formatEventPeriod(event)}
+                  {" · "}
+                  {event.sources.map((source, index) => (
+                    <span key={source.url}>
+                      {index > 0 ? ", " : null}
+                      <a href={source.url} target="_blank" rel="noreferrer" aria-label={`Fonte di ${event.title}: ${source.owner}, in una nuova scheda`}>{source.owner} ↗</a>
+                    </span>
+                  ))}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
       {activePeriod === null ? null : (
         <div className={styles.chartTooltip} role="status" aria-live="polite">
           <strong>{formatGovernmentChartPeriod(activePeriod)}</strong>
@@ -365,7 +423,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
         <ol className={styles.indicatorList} aria-label="Tutti i grafici degli indicatori">
           {charts.slides.map((chart, index) => (
             <li key={chart.indicator_id}>
-              <IndicatorChart key={scope} chart={chart} scope={scope} position={index + 1} total={total} listView />
+              <IndicatorChart key={scope} chart={chart} events={charts.events} scope={scope} position={index + 1} total={total} listView />
             </li>
           ))}
         </ol>
@@ -381,7 +439,7 @@ export function IndicatorCarousel({ charts }: { charts: GovernmentScorecardV6Cha
           onPointerUp={onPointerUp}
           onPointerCancel={() => { pointerStart.current = null; }}
         >
-          <IndicatorChart key={`${activeSlide.indicator_id}-${scope}`} chart={activeSlide} scope={scope} position={activeIndex + 1} total={total} />
+          <IndicatorChart key={`${activeSlide.indicator_id}-${scope}`} chart={activeSlide} events={charts.events} scope={scope} position={activeIndex + 1} total={total} />
         </div>
       )}
 

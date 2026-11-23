@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   GOVERNMENT_SCORECARD_V6_METHOD_STEPS,
   presentGovernmentScorecardV6View,
@@ -368,6 +369,7 @@ export function GovernmentScorecardPage({ view }: { view: GovernmentScorecardV6P
           <a href="#contesto">Contesto</a>
           <a href="#metodo">Come viene calcolato</a>
           <a href="#dati-e-fonti">Scarica i dati</a>
+          <Link href="/governi/domande">Domande dal dibattito</Link>
         </nav>
       </header>
 

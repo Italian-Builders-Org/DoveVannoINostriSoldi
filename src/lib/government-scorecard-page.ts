@@ -1,3 +1,4 @@
+import type { GovernmentScorecardChartEvent } from "@/lib/government-scorecard-events";
 import { GOVERNMENT_SCORECARD_V6_MANIFEST } from "@/lib/data/government-scorecard-contract";
 import { durationDaysV6 } from "@/lib/government-scorecard-temporal";
 import type { calculateGovernmentScorecardV6 } from "@/lib/government-scorecard";
@@ -174,6 +175,8 @@ export type GovernmentScorecardV6ChartCollection = {
   status: "ready";
   default_scope: "mandate";
   slides: readonly GovernmentScorecardV6ChartSlide[];
+  /** External events drawn as bands; context only, they never change the score. */
+  events: readonly GovernmentScorecardChartEvent[];
 } | {
   status: "empty";
   message: string;

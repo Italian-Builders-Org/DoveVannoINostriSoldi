@@ -25,6 +25,7 @@ import {
   type GovernmentScorecardV6Ui,
 } from "@/lib/government-scorecard-page";
 import { getGovernmentScorecardV6Sensitivity } from "@/lib/government-scorecard-sensitivity";
+import { resolveGovernmentScorecardChartEvents } from "@/lib/government-scorecard-events";
 import { deriveAnnualStatisticalWindowV6, durationDaysV6 } from "@/lib/government-scorecard-temporal";
 
 export const GOVERNMENT_SCORECARD_V6_GOVERNMENT_IDS = GOVERNMENT_SCORECARD_V6_CHRONOLOGY.map((government) => government.id);
@@ -493,6 +494,7 @@ function buildTimeSeriesCharts(
   return {
     status: "ready",
     default_scope: "mandate",
+    events: resolveGovernmentScorecardChartEvents(snapshot),
     slides: snapshot.series.map((indicator) => {
       const points = indicator.geographies.flatMap((geography) => geography.points);
       const years = points.map((point) => point.year);

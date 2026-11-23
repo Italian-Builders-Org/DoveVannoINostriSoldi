@@ -48,6 +48,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/fonti/stato",
   "/governi",
   "/governi/confronta",
+  "/governi/domande",
   "/programmi",
   "/imprese",
   "/inflazione",

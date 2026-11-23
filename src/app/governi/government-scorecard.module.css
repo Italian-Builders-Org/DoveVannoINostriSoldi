@@ -901,6 +901,64 @@
   cursor: crosshair;
 }
 
+.chartEventBand {
+  fill: var(--color-neutral-300);
+  opacity: 0.45;
+}
+
+.chartEventBadge {
+  fill: var(--color-raised);
+  stroke: var(--color-neutral-600);
+  stroke-width: 1;
+}
+
+.chartEventNumber {
+  fill: var(--color-text);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.chartEvents {
+  margin: 10px 0 0;
+}
+
+.chartEvents ol {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.chartEvents li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chartEvents li > b {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-600);
+  border-radius: 50%;
+}
+
+.chartEvents a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
 .chartGridLine {
   stroke: var(--color-neutral-300);
   stroke-dasharray: 4 6;

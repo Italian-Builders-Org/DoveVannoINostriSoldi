@@ -900,6 +900,79 @@ try {
   }
 
   for (const width of [390, 768, 1280]) {
+    const label = `Domande sui governi ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/governi/domande",
+      width,
+      validate: async (page) => {
+        assert.equal(
+          await page.$eval("main h1", (element) => element.textContent?.trim()),
+          "Domande frequenti dal dibattito",
+          `${label}: H1 assente`,
+        );
+        const text = await bodyText(page);
+        assertTextMatches(text, /non misura quanta parte dei risultati sia stata causata dal governo/i, label);
+        assert.doesNotMatch(text, /ranking|vincitore|classifica/i, `${label}: linguaggio da classifica`);
+        const tables = await page.$$eval("main section[id] [role=\"region\"][tabindex=\"0\"] table", (items) => items.length);
+        assert.equal(tables, 7, `${label}: attese sette tabelle navigabili`);
+        const rows = await page.$$eval("#debito tbody tr", (items) => items.map((row) => row.dataset.government));
+        assert.equal(rows[0], "dini-i", `${label}: prima riga non cronologica`);
+        assert.equal(rows.at(-1), "meloni-i", `${label}: ultimo governo assente`);
+        assert.match(
+          await page.$eval('#debito tr[data-government="dini-i"] td', (cell) => cell.textContent ?? ""),
+          /Nessun dato pubblicato/i,
+          `${label}: dato mancante non dichiarato`,
+        );
+        const regionFits = await page.$eval("#debito [role=\"region\"]", (region) => region.getBoundingClientRect().right <= document.documentElement.clientWidth + 1);
+        assert.ok(regionFits, `${label}: la tabella esce dalla pagina invece di scorrere`);
+
+        await page.$eval("#debito [role=\"region\"]", (region) => region.focus());
+        assert.equal(
+          await page.$eval("#debito [role=\"region\"]", (region) => document.activeElement === region),
+          true,
+          `${label}: la tabella non riceve il focus da tastiera`,
+        );
+
+        await page.click('#debito tr[data-government="berlusconi-iv"] a[href="#evento-global-financial-crisis"]');
+        await page.waitForFunction(() => window.location.hash === "#evento-global-financial-crisis");
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          page.click('#debito tr[data-government="berlusconi-iv"] th a'),
+        ]);
+        assert.equal(new URL(page.url()).pathname, "/governi/berlusconi-iv", `${label}: link alla scheda del governo errato`);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Eventi esterni nei grafici ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/governi/berlusconi-iv",
+      width,
+      validate: async (page) => {
+        const mandateEvents = await page.$$eval("[data-slide-id] [data-chart-event-item]", (items) => items.map((item) => item.dataset.chartEventItem));
+        assert.deepEqual(mandateEvents, ["global-financial-crisis", "sovereign-debt-crisis"], `${label}: eventi del mandato inattesi`);
+        assert.equal(
+          await page.$$eval("[data-slide-id] svg [data-chart-event]", (bands) => bands.length),
+          2,
+          `${label}: bande del mandato assenti`,
+        );
+        const sourceLink = await page.$('[data-chart-event-item="global-financial-crisis"] a[href^="https://"]');
+        assert.ok(sourceLink, `${label}: fonte dell'evento assente`);
+        await page.evaluate(() => {
+          [...document.querySelectorAll("button")].find((button) => button.textContent?.trim() === "Serie completa")?.click();
+        });
+        await page.waitForFunction(() => document.querySelectorAll("[data-slide-id] [data-chart-event-item]").length === 5);
+        await assertGovernmentChartKeyboard(page, label);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
     const label = `Scheda governo Meloni-I ${width}px`;
     await runScenario(browser, {
       label,

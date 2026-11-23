@@ -20,6 +20,16 @@ Ogni scheda contiene, nello stesso ordine:
 
 Le fonti dei grafici e delle schede di contesto sono raggiungibili dalla pagina.
 
+La pagina `/governi/domande` risponde a sette domande ricorrenti del dibattito
+(debito, disoccupazione, inflazione, stipendi reali, crescita, tassi e
+investimenti) con gli stessi numeri della vista «Mandato» di ogni scheda: primo
+e ultimo periodo pubblicato nel mandato, lo stesso trimestre per le serie
+trimestrali e la variazione di Francia, Germania e Spagna negli stessi periodi.
+Non aggiunge dati né punteggi; una riga senza abbastanza periodi pubblicati lo
+dichiara invece di stimare. È generata al build (`force-static`) dallo snapshot
+versionato e non ha lavoro per richiesta. Codice:
+`src/lib/government-debate-questions.ts`.
+
 ## Scarica i dati
 
 La voce "Scarica i dati" porta a due file principali: "Dati usati nel voto" per controllare il punteggio e "Dati di grafici e contesto" per ricostruire ciò che appare nella pagina. Metodo, cronologia e contratti di provenienza restano disponibili nel pannello espandibile "File tecnici per verificare i dati".
@@ -112,6 +122,15 @@ il calcolo usa solo le osservazioni annuali AMECO descritte sopra.
 Il debito per abitante è calcolato solo quando Eurostat fornisce, per lo stesso paese e lo stesso anno, debito pubblico consolidato e popolazione. Non vengono interpolati valori mancanti.
 
 Le schede di contesto raccolgono eventi e decisioni da fonti istituzionali. Servono a spiegare in quale situazione ha operato il governo, ma hanno sempre impatto zero sul voto.
+
+Cinque di questi eventi (crisi dot-com, crisi finanziaria globale, debiti
+sovrani, pandemia, energia e guerra in Ucraina) compaiono anche come bande
+numerate sui grafici, con titolo, periodo e fonte sotto il grafico. Non sono
+fatti nuovi: `src/lib/government-scorecard-events.ts` li prende dagli elementi
+di contesto già congelati nello snapshot e interrompe il build se un elemento
+manca o se le sue copie nei diversi governi non coincidono. Una banda copre ogni
+periodo pubblicato che interseca l'evento; gli eventi fuori dalla finestra
+visibile non vengono disegnati.
 
 ## Come viene calcolato, in cinque passaggi
 

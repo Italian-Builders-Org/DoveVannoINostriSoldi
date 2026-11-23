@@ -13,6 +13,7 @@ la CPU della produzione né libera il disco temporaneo di una nuova build.
 | `/comuni?ente=...` e radice del sottodominio Comuni | ISR 6 ore per un Comune pubblicato | Profilo finanziario; nessuna scansione di patrimonio o servizi scolastici non visualizzati |
 | `/comuni?q=...` | Dinamica | Ricerca locale; nessun prefetch dei risultati o dei Comuni suggeriti |
 | `/comuni/confronta?ente=...&con=...` | Dinamica, `noindex` | Un indice per istanza dagli snapshot già nel deployment (SIOPE 2025, OpenCivitas 2022, IRPEF, ISTAT; circa 0,2 s la prima volta), poi un filtro in memoria per richiesta. Al massimo 4 Comuni e 24 token analizzati in `con`; filtri solo `1`; nessuna cache HTML per combinazioni, nessun prefetch dei link di confronto |
+| `/governi/domande` | Statica (`force-static`), una sola URL senza parametri | Calcolata al build dallo snapshot della pagella per 17 governi e 7 indicatori; nessuna lettura per richiesta |
 | `/api/comuni/search` | Dinamica, `no-store` | Indice dei nomi normalizzato una volta per istanza dal solo snapshot; ordinamento per pertinenza prima del limite, senza cache delle query |
 | `/api/search` | Dinamica, `no-store` | Campi del catalogo e identità comunali normalizzati una volta per istanza; record IPA elaborati dalla risposta corrente, senza cache delle query |
 | `/enti/[codice]` e API ente | Dinamica dove usa IPA live | Profilo completo, inclusi patrimonio e scuole; identità ufficiali riconciliate |

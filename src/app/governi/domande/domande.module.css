@@ -1,0 +1,235 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.intro {
+  max-width: 72ch;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-neutral-600);
+}
+
+.intro h1 {
+  margin: 4px 0 12px;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.05;
+}
+
+.intro p {
+  margin: 0 0 10px;
+  line-height: 1.55;
+}
+
+.disclaimer {
+  color: var(--color-neutral-700);
+  font-size: 14px;
+}
+
+.toc ol {
+  display: grid;
+  gap: 2px;
+  margin: 20px 0;
+  padding-left: 22px;
+}
+
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.events,
+.question,
+.limits {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.events h2,
+.question h2,
+.limits h2 {
+  margin: 0 0 10px;
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.2;
+}
+
+.question > p,
+.events > p,
+.limits p,
+.limits li {
+  max-width: 78ch;
+  line-height: 1.55;
+}
+
+.events ol {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.events li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  max-width: 78ch;
+  line-height: 1.5;
+}
+
+.events li > b {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-600);
+  border-radius: 50%;
+}
+
+.events a,
+.source a {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.tableScroll {
+  max-width: 100%;
+  margin-top: 14px;
+  overflow-x: auto;
+}
+
+.tableScroll:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.tableScroll table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableScroll caption {
+  padding: 0 0 8px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.tableScroll th,
+.tableScroll td {
+  padding: 8px 7px;
+  border-bottom: 1px solid var(--color-neutral-300);
+  text-align: right;
+  vertical-align: top;
+}
+
+.tableScroll thead th {
+  border-bottom: 1px solid var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.tableScroll th:first-child {
+  text-align: left;
+}
+
+.tableScroll tbody th a {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.tableScroll tbody th small {
+  display: block;
+  color: var(--color-neutral-700);
+  font-weight: 400;
+}
+
+.tableScroll td a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.change {
+  font-weight: 800;
+}
+
+.missing {
+  color: var(--color-neutral-700);
+  text-align: left !important;
+}
+
+.source {
+  margin: 10px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+/* Narrow screens: one card per government instead of a nine-column scroll. */
+@media (max-width: 720px) {
+  .tableScroll table {
+    min-width: 0;
+  }
+
+  .tableScroll thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tableScroll tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .tableScroll th,
+  .tableScroll td {
+    padding: 2px 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .tableScroll tbody th,
+  .tableScroll td.missing {
+    grid-column: 1 / -1;
+  }
+
+  .tableScroll td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--color-neutral-700);
+    font-size: 11px;
+  }
+
+  .tableScroll td[data-label="Periodi confrontati"] {
+    grid-column: 1 / -1;
+  }
+}

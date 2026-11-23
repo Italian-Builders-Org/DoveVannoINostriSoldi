@@ -954,7 +954,7 @@
 .chartEvents a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 32px;
   color: var(--color-text);
   font-weight: 700;
 }

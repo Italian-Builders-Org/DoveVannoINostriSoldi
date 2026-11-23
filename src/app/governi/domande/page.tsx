@@ -24,6 +24,8 @@ export const metadata: Metadata = {
 // Built once from the versioned snapshot: no per-request work.
 export const dynamic = "force-static";
 
+const FREQUENCY_LABELS = { Annuale: "dati annuali", Trimestrale: "dati trimestrali", Mensile: "dati mensili" } as const;
+
 function signed(value: number, unit: string): string {
   if (value === 0) return formatGovernmentChartValue(0, unit);
   return `${value > 0 ? "+" : "−"}${formatGovernmentChartValue(Math.abs(value), unit)}`;
@@ -98,7 +100,7 @@ export default function GovernmentDebateQuestionsPage() {
           <p><strong>Come leggerlo.</strong> {answer.how_to_read}</p>
           <div className={styles.tableScroll} role="region" aria-labelledby={`${answer.id}-tabella`} tabIndex={0}>
             <table>
-              <caption id={`${answer.id}-tabella`}>{answer.title} · {answer.unit} · dati {answer.frequency.toLowerCase()}</caption>
+              <caption id={`${answer.id}-tabella`}>{answer.title} · {answer.unit} · {FREQUENCY_LABELS[answer.frequency]}</caption>
               <thead>
                 <tr>
                   <th scope="col">Governo</th>
@@ -123,16 +125,16 @@ export default function GovernmentDebateQuestionsPage() {
                       <td colSpan={7} className={styles.missing}>{row.missing_reason}</td>
                     ) : (
                       <>
-                        <td>{periodRange(row)}</td>
-                        <td>{formatGovernmentChartValue(row.first.value, answer.unit)}{formatGovernmentChartPublicationStatus(row.first.status)}</td>
-                        <td>{formatGovernmentChartValue(row.last.value, answer.unit)}{formatGovernmentChartPublicationStatus(row.last.status)}</td>
-                        <td className={styles.change}>{signed(row.change, answer.unit)}</td>
+                        <td data-label="Periodi confrontati">{periodRange(row)}</td>
+                        <td data-label="Italia, inizio">{formatGovernmentChartValue(row.first.value, answer.unit)}{formatGovernmentChartPublicationStatus(row.first.status)}</td>
+                        <td data-label="Italia, fine">{formatGovernmentChartValue(row.last.value, answer.unit)}{formatGovernmentChartPublicationStatus(row.last.status)}</td>
+                        <td className={styles.change} data-label="Variazione Italia">{signed(row.change, answer.unit)}</td>
                         {row.peers.map((peer) => (
-                          <td key={peer.id}>{peer.change === null ? "n.d." : signed(peer.change, answer.unit)}</td>
+                          <td key={peer.id} data-label={peer.label}>{peer.change === null ? "n.d." : signed(peer.change, answer.unit)}</td>
                         ))}
                       </>
                     )}
-                    <td>
+                    <td data-label="Eventi">
                       {row.event_numbers.length === 0 ? "–" : row.event_numbers.map((number, index) => {
                         const event = events.find((candidate) => candidate.number === number)!;
                         return (

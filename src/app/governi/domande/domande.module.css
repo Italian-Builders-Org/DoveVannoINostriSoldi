@@ -187,3 +187,49 @@
   color: var(--color-neutral-600);
   font-size: 12px;
 }
+
+/* Narrow screens: one card per government instead of a nine-column scroll. */
+@media (max-width: 720px) {
+  .tableScroll table {
+    min-width: 0;
+  }
+
+  .tableScroll thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .tableScroll tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+
+  .tableScroll th,
+  .tableScroll td {
+    padding: 2px 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .tableScroll tbody th,
+  .tableScroll td.missing {
+    grid-column: 1 / -1;
+  }
+
+  .tableScroll td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--color-neutral-700);
+    font-size: 11px;
+  }
+
+  .tableScroll td[data-label="Periodi confrontati"] {
+    grid-column: 1 / -1;
+  }
+}

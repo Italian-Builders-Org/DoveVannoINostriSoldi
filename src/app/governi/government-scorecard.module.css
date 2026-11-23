@@ -1670,7 +1670,8 @@
     margin-top: 8px;
   }
 
-  .hero nav a:not(:last-child) {
+  /* On phones keep only the downloads and the debate questions links. */
+  .hero nav a:not([href="#dati-e-fonti"]):not([href="/governi/domande"]) {
     display: none;
   }
 

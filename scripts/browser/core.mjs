@@ -913,7 +913,9 @@ try {
         );
         const text = await bodyText(page);
         assertTextMatches(text, /non misura quanta parte dei risultati sia stata causata dal governo/i, label);
-        assert.doesNotMatch(text, /ranking|vincitore|classifica/i, `${label}: linguaggio da classifica`);
+        // Only the page content: the site menu legitimately lists "Documenti declassificati".
+        const mainText = await page.$eval("main", (element) => element.innerText);
+        assert.doesNotMatch(mainText, /\b(ranking|vincitor[ei]|classifica|classifiche)\b/i, `${label}: linguaggio da classifica`);
         const tables = await page.$$eval("main section[id] [role=\"region\"][tabindex=\"0\"] table", (items) => items.length);
         assert.equal(tables, 7, `${label}: attese sette tabelle navigabili`);
         const rows = await page.$$eval("#debito tbody tr", (items) => items.map((row) => row.dataset.government));

@@ -177,7 +177,7 @@ def render_pdf(report: dict, destination: Path) -> None:
         from reportlab.pdfbase.ttfonts import TTFont
         from reportlab.platypus import BaseDocTemplate, Frame, PageTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, KeepTogether
     except ImportError as error:
-        raise SystemExit('PDF: installare la dipendenza di sviluppo reportlab (vedere requirements-public-spending.txt).') from error
+        raise SystemExit('PDF: installare la dipendenza di sviluppo reportlab (vedere scripts/reports/requirements-public-spending.txt).') from error
     rl_config.invariant = 1
     # Use local fonts, never download or redistribute font files with this script.
     regular = Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')

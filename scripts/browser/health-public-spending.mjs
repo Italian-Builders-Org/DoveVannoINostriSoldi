@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { defaultArtifactsDir, defaultBaseUrl } from "./harness.mjs";
+import {
+  assertSsnHistoryStoricoContent,
+  waitForSsnHistoryStoricoPage,
+} from "./ssn-storico-ready.mjs";
 
 const exactEuro = (amount) => new Intl.NumberFormat("it-IT", {
   style: "currency", currency: "EUR", maximumFractionDigits: 2, useGrouping: "always",
@@ -120,14 +124,13 @@ export async function inspectHealthHistory(page) {
   await chart.screenshot({ path: path.join(directory, "history.png") });
 
   if ([390, 1280].includes(hierarchy.width)) {
-    await page.focus('main header a[href="/spese/sanita/storico"]');
-    await page.keyboard.press("Enter");
-    // This route can spend up to 50s on OpenBDAP before its verified fallback.
-    await page.waitForFunction(() => location.pathname === "/spese/sanita/storico", { timeout: 60_000 });
-    await page.waitForSelector("main table", { timeout: 60_000 });
-    assert.match(await page.$eval("main h1", (element) => element.textContent), /Serie storica/);
-    const years = await page.$$eval("main table tbody tr th", (elements) => elements.map((element) => element.textContent));
-    assert.ok(years.includes("2012") && years.includes("2024"));
+    const storicoLink = 'main header a[href="/spese/sanita/storico"]';
+    await page.focus(storicoLink);
+    await Promise.all([
+      waitForSsnHistoryStoricoPage(page),
+      page.keyboard.press("Enter"),
+    ]);
+    await assertSsnHistoryStoricoContent(page);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), "SSN history: overflow");
   }
   console.log(`PASS Sanità history ${theme} ${hierarchy.width}px: home year, source values, keyboard, scope, reload, layout`);

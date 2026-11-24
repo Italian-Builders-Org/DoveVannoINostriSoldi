@@ -236,14 +236,21 @@ async function discoverNationalPackages(
     })),
     signal,
   );
-  if (!response.ok) throw new Error(`OpenBDAP package_search HTTP ${response.status}`);
+  if (!response.ok) {
+    if ([408, 425, 429, 500, 502, 503, 504].includes(response.status)) {
+      throw new OpenBdapUnavailableError(
+        `OpenBDAP package_search temporaneamente non disponibile (HTTP ${response.status})`,
+      );
+    }
+    throw new Error(`OpenBDAP package_search HTTP ${response.status}`);
+  }
 
   const payload = await withAbort(
     readOpenBdapJsonResponse<PackageSearchResponse>(response, "package_search"),
     signal,
   );
   if (!payload.success || !Array.isArray(payload.result?.results)) {
-    throw new Error("Risposta package_search OpenBDAP non valida");
+    throw new OpenBdapUnavailableError("Risposta package_search OpenBDAP non valida");
   }
 
   const byYear = new Map<number, NationalPackage>();

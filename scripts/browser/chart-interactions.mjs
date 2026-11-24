@@ -111,7 +111,7 @@ try {
     for (const [pathname, minimumCharts] of RECHARTS_ROUTES) {
       await runScenario(browser, {
         suite: "chart-interactions", label: `chart-${pathname}-${width}`, pathname, width, baseUrl,
-        validate: (page) => inspectRecharts(page, minimumCharts),
+        validate: (page) => inspectRecharts(page, minimumCharts, { pathname }),
       });
       console.log(`PASS chart interactions ${pathname} ${width}px`);
     }

@@ -1183,12 +1183,16 @@ def is_safe_public_url(url: str) -> bool:
         return False
 
 
-def extract_public_urls(values: Iterable[str]) -> list[str]:
+def extract_public_urls(
+    values: Iterable[str],
+    *,
+    url_validator: Callable[[str], bool] = is_safe_public_url,
+) -> list[str]:
     urls: set[str] = set()
     for value in values:
         for match in HTTP_URL_RE.findall(value):
             candidate = match.rstrip(".,)]}\"")
-            if is_safe_public_url(candidate):
+            if url_validator(candidate):
                 urls.add(candidate)
     return sorted(urls)
 
@@ -1198,6 +1202,8 @@ def sanitize_public_cell(
     value: str,
     private_fields: set[str],
     private_values: set[str] | None = None,
+    *,
+    url_validator: Callable[[str], bool] = is_safe_public_url,
 ) -> tuple[str | None, list[str]]:
     if field in private_fields and value:
         return None, ["personal-identifier"]
@@ -1210,7 +1216,7 @@ def sanitize_public_cell(
         raw = match.group(0)
         candidate = raw.rstrip(".,)]}\"'")
         suffix = raw[len(candidate):]
-        if is_safe_public_url(candidate):
+        if url_validator(candidate):
             return raw
         unsafe_url_found = True
         return "[URL riservato rimosso]" + suffix
@@ -2332,10 +2338,14 @@ def build_dataset(
     item: dict[str, Any],
     parsed: ParsedDataset,
     source_metadata: dict[str, Any],
-    *, row_offset: int = 0,
+    *,
+    row_offset: int = 0,
+    url_validator: Callable[[str], bool] | None = None,
 ) -> tuple[dict[str, Any], bytes | None, dict[str, Any], list[dict[str, Any]]]:
     if type(row_offset) is not int or row_offset < 0:
         raise DatasetBuildError("offset righe non valido")
+    if url_validator is None:
+        url_validator = _memoized_url_validator(is_safe_public_url)
     dataset_id = item["id"]
     private_fields = set(item["privateFields"])
     source_fields = set(item["sourceFields"])
@@ -2351,7 +2361,10 @@ def build_dataset(
         private_values = repeated_private_identifiers(canonical_cells, private_fields)
         urls = [
             url
-            for url in extract_public_urls(canonical_cells[field] for field in source_fields)
+            for url in extract_public_urls(
+                (canonical_cells[field] for field in source_fields),
+                url_validator=url_validator,
+            )
             if not any(private_value in url for private_value in private_values)
         ]
         if urls:
@@ -2376,6 +2389,7 @@ def build_dataset(
                 value,
                 private_fields,
                 private_values if field not in private_fields else set(),
+                url_validator=url_validator,
             )
             cells[field] = sanitized
             for reason in reasons:
@@ -2481,6 +2495,7 @@ def build_delimited_artifacts(
     digest = hashlib.sha256()
     artifacts = {}
     entry = receipt = None
+    url_validator = _memoized_url_validator(is_safe_public_url)
     with open_verified_pinned_source(source_root / item["relativePath"], expected["bytes"], expected["sha256"], item["id"]) as raw:
         text = io.TextIOWrapper(raw, encoding=item.get("encoding", "utf-8-sig"), newline="")
         try:
@@ -2492,7 +2507,9 @@ def build_delimited_artifacts(
                     raise DatasetBuildError(f"righe malformed per {item['id']}")
                 parsed = ParsedDataset(headers, list(batch), expected["sha256"], expected["bytes"], [],
                     [("source-0001", count + i) for i in range(1, len(batch) + 1)], False, len(batch), None)
-                entry, payload, receipt, _ = build_dataset(item, parsed, source_metadata, row_offset=count)
+                entry, payload, receipt, _ = build_dataset(
+                    item, parsed, source_metadata, row_offset=count, url_validator=url_validator,
+                )
                 count += len(batch)
                 if count > expected["rows"]:
                     raise DatasetBuildError(f"conteggio sorgente divergente per {item['id']}")
@@ -2509,7 +2526,7 @@ def build_delimited_artifacts(
         raise DatasetBuildError(f"conteggio sorgente divergente per {item['id']}")
     if entry is None:
         parsed = ParsedDataset(headers, [], expected["sha256"], expected["bytes"], [], [], False, 0, None)
-        entry, _, receipt, _ = build_dataset(item, parsed, source_metadata)
+        entry, _, receipt, _ = build_dataset(item, parsed, source_metadata, url_validator=url_validator)
     receipt["source"]["rows"] = count
     receipt["publication"].update(publicRows=count, redactions=redactions, rowsWithPublicSource=sourced)
     receipt["rowsSha256"] = digest.hexdigest() if count else None
@@ -2539,12 +2556,14 @@ def build_artifacts(*, spec_path: Path, source_root: Path, catalog_path: Path, r
     catalog_entries: list[dict[str, Any]] = []
     private_map: dict[str, Any] = {"schemaVersion": 2, "datasets": []}
     totals = {"datasets": 0, "sourceRows": 0, "publicRows": 0, "catalogOnlyRows": 0, "derivedOnlyRows": 0, "sourceBytes": 0}
+    url_validator = _memoized_url_validator(is_safe_public_url)
     for item in datasets:
         parsed = parse_dataset(source_root, item)
         catalog_entry, rows_payload, receipt, private_rows = build_dataset(
             item,
             parsed,
             resolved_source_metadata(spec, item["id"]),
+            url_validator=url_validator,
         )
         catalog_entries.append(catalog_entry)
         artifacts[str(receipts_dir / f"{item['id']}.receipt.json")] = canonical_json(receipt)

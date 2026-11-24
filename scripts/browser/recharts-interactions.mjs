@@ -1,4 +1,7 @@
 import assert from "node:assert/strict";
+import {
+  waitForSsnHistoryStoricoCharts,
+} from "./ssn-storico-ready.mjs";
 
 // Covers snapshot-backed Recharts through public callers. State spending,
 // administrations and datasets reuse SpendingBarChart, exercised with the
@@ -10,15 +13,19 @@ export const RECHARTS_ROUTES = [
   ["/regioni", 1], ["/spese/legge-di-bilancio", 2],
 ];
 
-export async function inspectRecharts(page, minimumCharts) {
-  // Some callers (notably /enti) still hit a live registry. When that budget
-  // expires the panel stays empty on purpose — do not treat it as a chart bug.
-  await page.waitForFunction((minimum) => {
-    if (document.querySelectorAll(".recharts-wrapper svg").length >= minimum) return true;
-    return /Distribuzione non disponibile dalla fonte IPA|non è disponibile ora/i.test(
-      document.body?.innerText ?? "",
-    );
-  }, { timeout: 45_000 }, minimumCharts);
+export async function inspectRecharts(page, minimumCharts, { pathname = null } = {}) {
+  if (pathname === "/spese/sanita/storico" && minimumCharts >= 2) {
+    await waitForSsnHistoryStoricoCharts(page, minimumCharts);
+  } else {
+    // Some callers (notably /enti) still hit a live registry. When that budget
+    // expires the panel stays empty on purpose — do not treat it as a chart bug.
+    await page.waitForFunction((minimum) => {
+      if (document.querySelectorAll(".recharts-wrapper svg").length >= minimum) return true;
+      return /Distribuzione non disponibile dalla fonte IPA|non è disponibile ora/i.test(
+        document.body?.innerText ?? "",
+      );
+    }, { timeout: 45_000 }, minimumCharts);
+  }
 
   const charts = await page.$$(".recharts-wrapper");
   if (charts.length < minimumCharts) {

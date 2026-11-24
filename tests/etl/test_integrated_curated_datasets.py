@@ -392,6 +392,52 @@ class IntegratedCuratedDatasetsTests(unittest.TestCase):
 
         self.assertEqual(validator.call_count, 1)
 
+    def test_build_reuses_repeated_public_url_decisions_within_one_invocation(self) -> None:
+        payload = (
+            "name|private_id|amount|source|note\n"
+            "Alpha||1|https://example.gov.it/atto/1|note\n"
+            "Beta||2|https://example.gov.it/atto/1|note\n"
+            "Gamma||3|https://example.gov.it/atto/1|note\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=3)
+
+        original = ETL.is_safe_public_url
+        with mock.patch.object(ETL, "is_safe_public_url", wraps=original) as validator:
+            self.build()
+
+        self.assertEqual(validator.call_count, 1)
+        rows = [
+            json.loads(line)
+            for line in self.read_rows_payload().decode("utf-8").splitlines()
+        ]
+        self.assertEqual(len(rows), 3)
+        canonical = "https://example.gov.it/atto/1"
+        for row in rows:
+            self.assertEqual(row["sourceUrls"], [canonical])
+
+    def test_build_redacts_repeated_unsafe_urls_on_every_row(self) -> None:
+        unsafe = "http://user:pass@evil.example.gov.it/doc"
+        payload = (
+            "name|private_id|amount|source|note\n"
+            f"Alpha||1|https://example.gov.it/atto/1|see {unsafe}\n"
+            f"Beta||2|https://example.gov.it/atto/1|also {unsafe}\n"
+        ).encode("utf-8")
+        self.write_fixture(payload, rows=2)
+        self.build()
+
+        rows = [
+            json.loads(line)
+            for line in self.read_rows_payload().decode("utf-8").splitlines()
+        ]
+        redacted = "[URL riservato rimosso]"
+        for row in rows:
+            self.assertIn(redacted, row["cells"]["note"])
+            self.assertNotIn(unsafe, row["cells"]["note"])
+            self.assertEqual(
+                [redaction for redaction in row["redactions"] if redaction["reason"] == "unsafe-url"],
+                [{"field": "note", "reason": "unsafe-url"}],
+            )
+
     def test_check_reuses_url_decisions_across_metadata_and_rows(self) -> None:
         payload = (
             "name|private_id|amount|source|note\n"

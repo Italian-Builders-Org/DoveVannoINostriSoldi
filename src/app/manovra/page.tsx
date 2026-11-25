@@ -384,6 +384,7 @@ export default async function ManovraPage({
             Archivio RGS
           </a>
           <Link href="/spese/legge-di-bilancio">Simulatore Legge di Bilancio</Link>
+          <Link href="/parlamento/emendamenti">Emendamenti alla manovra 2027</Link>
         </div>
       </header>
 

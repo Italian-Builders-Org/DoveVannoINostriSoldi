@@ -65,3 +65,5 @@ __pycache__/
 
 # Manovra payload lives in dvns_snapshots; local ETL output only.
 /src/data/generated/rgs-bilancio-in-breve.json
+# Same for the amendments to the 2027 budget law.
+/src/data/generated/camera-emendamenti-bilancio-2027.json

@@ -465,3 +465,193 @@
 .pager a[rel="next"] {
   justify-self: end;
 }
+
+.newBanner {
+  max-width: 78ch;
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  line-height: 1.5;
+  background: var(--color-raised);
+  border-left: 3px solid var(--chart-map-5);
+}
+
+.newBanner a {
+  color: var(--color-text);
+  font-weight: 700;
+  text-underline-offset: 0.15em;
+}
+
+.moneyMap {
+  margin: 0;
+}
+
+.moneyControl {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  max-width: 420px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.moneyControl select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+}
+
+.moneyControl select:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.moneyLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.moneySvg {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+}
+
+.moneyRegion {
+  stroke: var(--color-neutral-500);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: fill 160ms ease;
+}
+
+.moneyRegion:hover {
+  stroke: var(--color-text);
+  stroke-width: 2;
+}
+
+.moneyRegion[data-class="0"],
+.moneySwatch[data-class="0"] {
+  fill: var(--chart-data-track);
+  background: var(--chart-data-track);
+}
+
+.moneyRegion[data-class="1"],
+.moneySwatch[data-class="1"] {
+  fill: var(--chart-map-1);
+  background: var(--chart-map-1);
+}
+
+.moneyRegion[data-class="2"],
+.moneySwatch[data-class="2"] {
+  fill: var(--chart-map-2);
+  background: var(--chart-map-2);
+}
+
+.moneyRegion[data-class="3"],
+.moneySwatch[data-class="3"] {
+  fill: var(--chart-map-3);
+  background: var(--chart-map-3);
+}
+
+.moneyRegion[data-class="4"],
+.moneySwatch[data-class="4"] {
+  fill: var(--chart-map-4);
+  background: var(--chart-map-4);
+}
+
+.moneyRegion[data-class="5"],
+.moneySwatch[data-class="5"] {
+  fill: var(--chart-map-5);
+  background: var(--chart-map-5);
+}
+
+.moneySide {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.moneyTotal {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.moneyTotal strong {
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.moneyTotal span {
+  color: var(--color-neutral-600);
+  font-size: 14px;
+}
+
+.moneyTop {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moneyTop li {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.moneyTop li strong {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.moneyLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  list-style: none;
+}
+
+.moneyLegend li {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.moneySwatch {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--color-neutral-400);
+}
+
+@media (max-width: 760px) {
+  .moneyLayout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .moneySvg {
+    max-width: 360px;
+    margin: 0 auto;
+  }
+}

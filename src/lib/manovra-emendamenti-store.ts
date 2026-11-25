@@ -9,8 +9,10 @@ import {
   assertEmendamentiSnapshot,
   buildEmendamentiView,
   buildExplorerRows,
+  buildMoneyMap,
   shortGroupLabel,
   type ExplorerRow,
+  type MoneyMap,
   type EmendamentiSnapshot,
   type EmendamentiView,
 } from "@/lib/manovra-emendamenti";
@@ -107,6 +109,7 @@ export type EmendamentiPageData = Pick<EmendamentiSnapshot, "act" | "source" | "
   view: EmendamentiView;
   /** Compact rows for the searchable list: about 6.500 small objects per instance. */
   rows: ExplorerRow[];
+  moneyMap: MoneyMap;
   groups: { id: string; label: string }[];
 };
 
@@ -139,6 +142,7 @@ async function resolveView(): Promise<EmendamentiPageData> {
     municipalitiesSource: snapshot.municipalitiesSource,
     view,
     rows: buildExplorerRows(snapshot),
+    moneyMap: buildMoneyMap(snapshot),
     groups: view.groups.map((group) => ({ id: group.id, label: shortGroupLabel(group.label) })),
   };
 }

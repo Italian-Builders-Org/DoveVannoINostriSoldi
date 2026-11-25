@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-foi-annuale",
+  "period": {
+    "from": 1996,
+    "to": 2025
+  },
+  "targetBase": 2025,
+  "series": {
+    "00": "foi",
+    "00ST": "foiNoTobacco"
+  },
+  "source": {
+    "owner": "ISTAT — Istituto nazionale di statistica",
+    "landingUrl": "https://esploradati.istat.it/databrowser/",
+    "licenseId": "not-declared",
+    "licenseNote": "Né le risposte SDMX-CSV né il file dei coefficienti espongono una licenza: come per gli altri snapshot ISTAT non ne viene inferita alcuna.",
+    "assets": {
+      "base-1995": {
+        "filename": "foi-base-1995.csv",
+        "dataflowId": "144_118_DF_DCSP_FOI2_1",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,144_118_DF_DCSP_FOI2_1,1.0/A.IT.5.4.00+00ST",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 2212,
+        "sha256": "2dd01dfcaa4a2f5ab710346e7551dd53472e92f1a11e402d75c69e7613356251",
+        "base": 1995,
+        "dataType": "5",
+        "from": 1996,
+        "to": 2010
+      },
+      "base-2010": {
+        "filename": "foi-base-2010.csv",
+        "dataflowId": "169_28_DF_DCSP_FOI2B2010_1",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,169_28_DF_DCSP_FOI2B2010_1,1.0/A.IT.12.4.00+00ST",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 926,
+        "sha256": "4eec1c9f4683f6a5dd8abdf74f1d765896dea40d57d49a7aedeb5719f331293a",
+        "base": 2010,
+        "dataType": "12",
+        "from": 2011,
+        "to": 2015
+      },
+      "base-2015": {
+        "filename": "foi-base-2015.csv",
+        "dataflowId": "169_746_DF_DCSP_FOI2B2015_1",
+        "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,169_746_DF_DCSP_FOI2B2015_1,1.0/A.IT.56.4.00+00ST",
+        "format": "SDMX-CSV 1.0.0",
+        "bytes": 1670,
+        "sha256": "3872cc3e4849bb5e6f15ab420b6f2501c0ef9bb625112476920189f0fdb2795c",
+        "base": 2015,
+        "dataType": "56",
+        "from": 2016,
+        "to": 2025
+      },
+      "raccordo": {
+        "filename": "foi-coefficienti-raccordo.xlsx",
+        "dataflowId": "DF_BULK_DCSP_FOI1B2025_TB1",
+        "url": "https://esploradati.istat.it/databrowser/DWL/Prezzi/DCSP_FOI1B2025/DCSP_FOI_CR_Ecoicopv2.xlsx",
+        "format": "XLSX",
+        "bytes": 15232,
+        "sha256": "8d7b3b1ed3c36d5993175fcd41a3d2918ce851660669115ba692a395e3587e32",
+        "lastModified": "2026-03-20"
+      }
+    },
+    "acquisition": {
+      "acquiredAt": "2026-11-03",
+      "checkedAt": "2026-11-03",
+      "note": "Si usano i tre dataflow annuali per base perché il dataflow unico 1996-2025 (169_750_DF_DCSP_FOI2B2025_1) non contiene il primo anno di ogni base (1996, 2011, 2016). Ogni risposta è stata scaricata due volte con byte identici; il file dei coefficienti è l'allegato del dataflow DF_BULK_DCSP_FOI1B2025_TB1."
+    }
+  }
+}

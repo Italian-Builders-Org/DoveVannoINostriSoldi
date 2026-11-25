@@ -72,6 +72,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/opere",
   "/palazzo-chigi",
   "/parlamento",
+  "/parlamento/indennita",
   "/documenti",
   "/politici",
   "/politici/europa",

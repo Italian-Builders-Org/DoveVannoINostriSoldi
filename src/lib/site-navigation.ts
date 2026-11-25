@@ -151,6 +151,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     children: [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
+      { href: "/parlamento/indennita", label: "Indennità e salari" },
       { href: "/documenti", label: "Documenti declassificati" },
       { href: "/politici", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },

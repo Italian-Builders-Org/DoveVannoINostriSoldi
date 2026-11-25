@@ -111,6 +111,40 @@ struttura SDMX, timestamp di aggiornamento, byte e SHA-256. Il controllo offline
 è `python3 scripts/etl/eurostat_hicp_snapshot.py --check`; il source lock è
 `scripts/etl/specs/eurostat-hicp-2022-2026.source.json`.
 
+Per deflazionare importi su periodi lunghi c'è anche la serie annua
+`eurostat-hicp-annuale` (prc_hicp_ainr, Italia, 1996-2025, base 2025=100),
+con lo stesso source lock e controllo offline
+`python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check`.
+
+## Inflazione FOI · ISTAT
+
+`istat-foi-annuale` raccoglie le medie annue FOI 1996-2025 (indice generale e
+senza tabacchi) dai tre dataflow annuali per base (1995, 2010, 2015) e i
+coefficienti di raccordo ufficiali dal file allegato a
+`DF_BULK_DCSP_FOI1B2025_TB1`. Ogni anno conserva il valore pubblicato nella sua
+base; la serie in base 2025 è derivata con quei coefficienti. Il controllo
+riconcilia ogni coefficiente con l'indice medio dell'anno base pubblicato nella
+base precedente. Controllo offline:
+`python3 scripts/etl/istat_foi_annual_snapshot.py --check`.
+
+## Retribuzioni contrattuali · ISTAT
+
+`istat-retribuzioni-contrattuali` è l'indice delle retribuzioni contrattuali per
+dipendente (totale economia, dirigenti esclusi), media annua 2005-2025, base
+dicembre 2021=100, dal dataflow `155_318_DF_DCSC_RETRCONTR1C_4`. Gli anni prima
+del 2021 sono la serie ricostruita da ISTAT nella nuova base. Misura la tariffa
+fissata dai contratti, quindi si confronta con un'indennità istituzionale meglio
+della retribuzione media BES, che risente della composizione dell'occupazione.
+Controllo offline: `python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check`.
+
+La pagina `/parlamento/indennita` usa questi snapshot insieme a
+`camera-trattamento-economico`: indennità lorda dei deputati per anno dai
+gradini della Camera e indice delle retribuzioni contrattuali, con il primo anno
+comune (2005) uguale a 100, nominali e divisi per il FOI (controllo con HICP).
+I contratti di confine sono in `src/lib/data/annual-price-wage-indices-contract.ts`,
+il calcolo in `src/lib/deputati-indennita-salari.ts`: un anno mancante in una
+serie ferma il build invece di essere interpolato.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

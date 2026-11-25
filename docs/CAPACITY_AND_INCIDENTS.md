@@ -33,6 +33,10 @@ non interrompe una build già in corso e non elimina una coda di build produzion
 - Verificare la preview della revisione esatta e i gate richiesti prima del merge.
 - Per una build che esaurisce memoria, verificare i log, poi provare una macchina
   più grande. Conservare tutti i controlli. Aumentare CPU non corregge errori di codice.
+- Il controllo dei tipi di `next build` e di `npm run typecheck` supera di poco
+  l'heap predefinito di Node (circa 4,1 GB, exit 134): i due script fissano
+  `--max-old-space-size=6144`. Se torna l'OOM, misurare con
+  `tsc --noEmit --extendedDiagnostics` prima di alzare ancora il limite.
 - Per un rilascio urgente bloccato dalla coda, valutare **Start Building Now**
   sul singolo deployment. Evitare di abilitare tutta la concorrenza a consumo
   per risolvere un'urgenza occasionale.

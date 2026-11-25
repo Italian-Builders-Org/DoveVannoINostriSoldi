@@ -222,7 +222,7 @@ export function proxy(request: NextRequest) {
   // ANAC entity/operator pages dominate Fluid Active CPU: cap every client.
   // Declared training crawlers keep the broader surface allowance below.
   if (isProcurementSurface(pathname)
-    || (/^\/(?:enti|appalti|comuni|dati|personale-pa|progetti|confronti|controlli|patrimonio|politici)(?:\/|$)/.test(pathname)
+    || (/^\/(?:enti|appalti|comuni|dati|personale-pa|progetti|confronti|controlli|patrimonio|politici|parlamento\/emendamenti)(?:\/|$)/.test(pathname)
       && TRAINING_CRAWLER.test(request.headers.get("user-agent") ?? ""))) {
     const blocked = rateLimit(request, entityState, ENTITY_PER_IP_MAX);
     if (blocked) return blocked;
@@ -253,5 +253,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/mcp", "/enti/:path*", "/appalti/:path*", "/comuni/:path*", "/dati/:path*", "/personale-pa/:path*", "/progetti/:path*", "/confronti/:path*", "/controlli/:path*", "/patrimonio/:path*", "/politici/:path*", "/snapshot-pages/:path*", "/api/:path*"],
+  matcher: ["/", "/mcp", "/enti/:path*", "/appalti/:path*", "/comuni/:path*", "/dati/:path*", "/personale-pa/:path*", "/progetti/:path*", "/confronti/:path*", "/controlli/:path*", "/patrimonio/:path*", "/politici/:path*", "/parlamento/emendamenti", "/snapshot-pages/:path*", "/api/:path*"],
 };

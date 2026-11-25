@@ -1,0 +1,43 @@
+{
+  "datasetId": "camera-emendamenti-bilancio-2027",
+  "title": "Camera dei deputati: proposte emendative al disegno di legge di bilancio 2027 (C. 3174-bis)",
+  "act": {
+    "number": "C. 3174-bis",
+    "title": "Bilancio di previsione dello Stato per l'anno finanziario 2027 e bilancio pluriennale per il triennio 2027-2029",
+    "legislature": 19,
+    "chamber": "Camera dei deputati",
+    "committee": "V Commissione (Bilancio, tesoro e programmazione)",
+    "stage": "sede referente",
+    "sittingDate": "2026-11-23",
+    "actUrl": "https://www.camera.it/leg19/126?leg=19&idDocumento=3174-bis"
+  },
+  "source": {
+    "owner": "Camera dei deputati",
+    "landingUrl": "https://www.camera.it/leg19/126?leg=19&idDocumento=3174-bis",
+    "license": "Riuso con citazione della fonte (Camera dei deputati)",
+    "licenseUrl": "https://www.camera.it/",
+    "acquiredAt": "2026-11-25",
+    "list": {
+      "url": "https://documenti.camera.it/apps/emendamenti/getProposteEmendativeSeduta.aspx?contenitorePortante=leg.19.eme.ac.3174-bis&tipoSeduta=1&sedeEsame=referente&urnTestoRiferimento=urn:leg:19:3174:bis:null:com:05:referente&dataSeduta=20261123&tipoListaEmendamenti=1",
+      "bytes": 5534953,
+      "sha256": "f5e193a774f67d689220d5bcd984180891b6f3935d0a821c11e22fe7025dbd43"
+    },
+    "pages": {
+      "urlTemplate": "https://documenti.camera.it/apps/emendamenti/getPropostaEmendativa.aspx?contenitorePortante=leg.19.eme.ac.3174-bis&tipoSeduta=1&sedeEsame=referente&urnTestoRiferimento=urn:leg:19:3174:bis:null:com:05:referente&dataSeduta=20261123&idPropostaEmendativa={id}.&position={published}",
+      "bytes": 41052950,
+      "manifestSha256": "aa240c60d071e13570eb2eae5ea508728ea7a63a5a794e8e6f029196a5afd8af"
+    }
+  },
+  "expected": {
+    "totals": {
+      "amendments": 6558,
+      "inadmissible": 1685,
+      "partiallyInadmissible": 36,
+      "withIdentical": 1355,
+      "sections": 154
+    },
+    "proponentsWithoutGroup": [
+      "309360"
+    ]
+  }
+}

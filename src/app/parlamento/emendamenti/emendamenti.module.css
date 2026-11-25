@@ -1,0 +1,467 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 8px;
+  color: var(--color-neutral-600);
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.sections {
+  display: grid;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.lede {
+  max-width: 72ch;
+  margin: 0 0 14px;
+  line-height: 1.55;
+}
+
+.note {
+  max-width: 78ch;
+  margin: 12px 0 0;
+  color: var(--color-neutral-600);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.subtitle {
+  margin: 24px 0 10px;
+  font-size: 17px;
+}
+
+.figure {
+  margin: 0;
+}
+
+/* The outcome of the admissibility check as one bar split in three. */
+.stack {
+  display: flex;
+  gap: 2px;
+  height: 36px;
+  margin: 4px 0 10px;
+}
+
+.stack span {
+  flex-basis: 0;
+  min-width: 3px;
+}
+
+.stack [data-tone="admissible"],
+.swatch[data-tone="admissible"],
+.barFill [data-tone="admissible"],
+.stack [data-tone="plain"],
+.swatch[data-tone="plain"],
+.barFill [data-tone="plain"] {
+  background: var(--chart-category-teal);
+}
+
+.stack [data-tone="partial"],
+.swatch[data-tone="partial"],
+.barFill [data-tone="partial"] {
+  background: var(--chart-quaternary);
+}
+
+.stack [data-tone="coverage"],
+.swatch[data-tone="coverage"],
+.barFill [data-tone="coverage"] {
+  background: var(--chart-category-amber);
+}
+
+.stack [data-tone="matter"],
+.swatch[data-tone="matter"],
+.barFill [data-tone="matter"] {
+  background: var(--chart-category-purple);
+}
+
+.stack [data-tone="place"],
+.swatch[data-tone="place"],
+.barFill [data-tone="place"] {
+  background: var(--chart-category-blue);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 0 0 14px;
+  padding: 0;
+  font-size: 14px;
+  list-style: none;
+}
+
+.legend li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.swatch {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+/* Bar list: label, bar, number. On narrow screens the bar goes under the label. */
+.bars {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bars li {
+  display: grid;
+  /* Fixed side columns: every row is its own grid and the bars must share one scale. */
+  grid-template-columns: 260px minmax(0, 1fr) 170px;
+  gap: 4px 16px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.bars li:first-child {
+  border-top: 0;
+}
+
+.barLabel {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.barTrack {
+  display: block;
+  height: 22px;
+  background: var(--chart-data-track);
+}
+
+.barFill {
+  display: flex;
+  gap: 2px;
+  min-width: 2px;
+  height: 100%;
+}
+
+.barFill span {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.barValue {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.barValue strong {
+  font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .bars li {
+    grid-template-columns: 190px minmax(0, 1fr) 150px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bars li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .barTrack {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    height: 16px;
+  }
+}
+
+.cellNote {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.evidence {
+  display: block;
+  max-width: 52ch;
+  margin-top: 4px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.muted {
+  color: var(--color-neutral-600);
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-neutral-400);
+}
+
+.badge[data-outcome="inammissibile"] {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+}
+
+.badgeNote {
+  display: block;
+  font-weight: 400;
+}
+
+/* The full list is long: it scrolls inside its own region and keeps the header visible. */
+.tall {
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.tall thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-raised);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  list-style: none;
+}
+
+.chips li {
+  padding: 6px 10px;
+  border: 1px solid var(--color-neutral-300);
+}
+
+.points {
+  display: grid;
+  gap: 8px;
+  max-width: 78ch;
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.55;
+}
+
+.sources {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.sources a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.sources small {
+  display: block;
+  color: var(--color-neutral-600);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+/* Wide tables become one card per row on phones: no sideways scrolling to read a proposal. */
+@media (max-width: 640px) {
+  .cards thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .cards,
+  .cards tbody,
+  .cards tr,
+  .cards th,
+  .cards td {
+    display: block;
+    width: auto;
+  }
+
+  .cards tr {
+    padding: 12px 0;
+    border-top: 1px solid var(--color-neutral-300);
+  }
+
+  .cards th,
+  .cards td {
+    padding: 3px 0;
+    text-align: left;
+    border: 0;
+  }
+
+  .cards td[data-label]::before {
+    content: attr(data-label) ": ";
+    color: var(--color-neutral-600);
+    font-size: 12px;
+  }
+
+  .evidence {
+    max-width: none;
+  }
+}
+
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--color-text);
+  font-weight: 600;
+  text-underline-offset: 0.15em;
+}
+
+.callout {
+  max-width: 78ch;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  line-height: 1.55;
+  background: var(--color-raised);
+  border-left: 3px solid var(--chart-category-teal);
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 16px;
+  align-items: end;
+  margin: 0 0 12px;
+}
+
+.filters label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.filters input[type="search"],
+.filters select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 400;
+  background: var(--color-raised);
+  border: 1px solid var(--color-neutral-400);
+}
+
+.filters .check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 400;
+}
+
+.filterActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.filterActions button {
+  min-height: 44px;
+  padding: 8px 20px;
+  color: var(--color-raised);
+  font: inherit;
+  font-weight: 700;
+  background: var(--color-text);
+  border: 0;
+  cursor: pointer;
+}
+
+.filterActions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+}
+
+.filters :focus-visible,
+.pager a:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
+.resultCount {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.pager a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.pager a[rel="next"] {
+  justify-self: end;
+}

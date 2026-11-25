@@ -145,6 +145,47 @@ I contratti di confine sono in `src/lib/data/annual-price-wage-indices-contract.
 il calcolo in `src/lib/deputati-indennita-salari.ts`: un anno mancante in una
 serie ferma il build invece di essere interpolato.
 
+## Emendamenti alla legge di bilancio 2027 · Camera dei deputati
+
+La pagina `/parlamento/emendamenti` (sezione Istituzioni) usa lo snapshot
+`camera-emendamenti-bilancio-2027`: le proposte emendative al disegno di legge
+C. 3174-bis pubblicate dalla V Commissione della Camera nell'elenco della seduta
+del 23 novembre 2026, con la pagina ufficiale di ogni proposta (testo,
+firmatari, esito di ammissibilità).
+
+- Fonte: `documenti.camera.it/apps/emendamenti` (elenco e pagina singola);
+  source lock in `scripts/etl/specs/camera-emendamenti-bilancio-2027.source.json`
+  con byte e SHA-256 dell'elenco e manifest SHA-256 delle pagine.
+- Licenza: le pagine non dichiarano una licenza propria; riuso con citazione
+  della fonte, come per le altre pagine della Camera già usate dal sito.
+- Fatti della fonte: numero, articolo, firmatari, esito, annotazione, proposte
+  identiche. L'ETL rifiuta esiti non previsti e ogni differenza tra elenco e
+  pagina (numero, primo firmatario, numero di firme, esito).
+- Campi letti dal testo, sempre con la frase di origine: Comuni nominati dopo
+  «comune di», «comuni di», «città di» e riconosciuti nell'elenco ISTAT (gli
+  omonimi restano non attribuiti) e spesa dichiarata con formule esplicite
+  («è autorizzata la spesa di», «con una dotazione di», «un contributo di»).
+  Un importo senza anni resta senza totale triennale; gli importi non vengono
+  mai sommati tra proposte.
+- Dalle clausole di copertura («si provvede», «mediante corrispondente
+  riduzione», «a valere su») si legge solo se citano il FISPE (art. 10, c. 5,
+  DL 282/2004) o il Fondo per le esigenze indifferibili (art. 1, c. 200,
+  L. 190/2014): altra copertura e nessuna clausola restano distinte.
+- I testi identici sono le annotazioni «ident.» dell'elenco, raggruppate; le
+  firme condivise contano i gruppi di tutti i firmatari. Maggioranza e
+  opposizione sono una collocazione del sito (`COALITION_BY_GROUP`), dichiarata
+  in pagina.
+- Gruppo e circoscrizione del primo firmatario vengono da
+  `politici-camera-xix`; chi non è in quell'anagrafica resta senza gruppo.
+- Il JSON completo non è versionato: come per `/manovra`, nel repository c'è la
+  ricevuta (`camera-emendamenti-bilancio-2027.receipt.json`) e il payload sta in
+  `dvns_snapshots`. Senza payload corrispondente alla ricevuta la pagina mostra
+  lo stato «dati non disponibili».
+
+Rigenerazione: `python3 scripts/etl/camera_emendamenti_bilancio_2027.py --fetch --write --code-sha SHA`,
+poi `python scripts/etl/supabase_snapshot_documents.py --code-sha SHA --env-file /percorso/.env.local`.
+Il contratto di confine e la vista sono in `src/lib/manovra-emendamenti.ts`.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

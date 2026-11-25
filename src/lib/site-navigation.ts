@@ -152,6 +152,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       { href: "/istituzioni", label: "Panoramica" },
       { href: "/parlamento", label: "Parlamento" },
       { href: "/parlamento/indennita", label: "Indennità e salari" },
+      { href: "/parlamento/emendamenti", label: "Emendamenti alla manovra 2027" },
       { href: "/documenti", label: "Documenti declassificati" },
       { href: "/politici", label: "Mappa della politica" },
       { href: "/palazzo-chigi", label: "Palazzo Chigi" },

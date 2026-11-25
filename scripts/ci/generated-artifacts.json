@@ -12,6 +12,10 @@
     {
       "path": "src/data/generated/rgs-bilancio-in-breve.json",
       "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
+    },
+    {
+      "path": "src/data/generated/camera-emendamenti-bilancio-2027.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -865,6 +869,33 @@
       "refreshWorkflow": null,
       "sourceSpec": null,
       "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Reader fail-closed su receipt/hash/schema.",
+      "publication": null
+    },
+    {
+      "id": "camera-emendamenti-bilancio-2027",
+      "owner": "Camera dei deputati: proposte emendative al disegno di legge di bilancio 2027 (C. 3174-bis), V Commissione",
+      "files": [
+        "src/data/generated/camera-emendamenti-bilancio-2027.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_camera_emendamenti_bilancio_2027_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_camera_emendamenti_bilancio_2027.py",
+        "tests/etl/test_camera_emendamenti_bilancio_2027_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/manovra-emendamenti.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/camera_emendamenti_bilancio_2027.py --fetch --write --code-sha SHA",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/camera-emendamenti-bilancio-2027.source.json",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su elenco e manifest delle pagine; reader fail-closed su receipt/hash/schema e totali ricalcolati dalle righe.",
       "publication": null
     },
     {

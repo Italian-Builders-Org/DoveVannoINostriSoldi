@@ -175,6 +175,11 @@ firmatari, esito di ammissibilità).
   firme condivise contano i gruppi di tutti i firmatari. Maggioranza e
   opposizione sono una collocazione del sito (`COALITION_BY_GROUP`), dichiarata
   in pagina.
+- La mappa «Dove finirebbero i soldi» somma la spesa dichiarata solo per le
+  proposte che nominano un solo Comune e legano l'importo agli anni 2027-2029,
+  regione per regione e per partito del primo firmatario; le copie identiche
+  contano una volta. È il totale chiesto, non un costo stimato né una spesa
+  approvata (`buildMoneyMap` in `src/lib/manovra-emendamenti.ts`).
 - Gruppo e circoscrizione del primo firmatario vengono da
   `politici-camera-xix`; chi non è in quell'anagrafica resta senza gruppo.
 - Il JSON completo non è versionato: come per `/manovra`, nel repository c'è la

@@ -18,6 +18,7 @@ import {
 import { EmendamentiSnapshotUnavailableError, loadEmendamentiView, type EmendamentiPageData } from "@/lib/manovra-emendamenti-store";
 
 import { BarChart, OUTCOME_LEGEND, type BarRow } from "./bar-chart";
+import { MoneyMap } from "./money-map";
 import styles from "./emendamenti.module.css";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -173,6 +174,10 @@ export default async function ManovraEmendamentiPage({ searchParams }: { searchP
           problemi di copertura, {integer.format(totals.byReason.estraneita_materia)} perché estranee alla materia della
           legge di bilancio.
         </p>
+        <p className={styles.newBanner}>
+          <strong>Nuovo:</strong> dove finirebbero i soldi chiesti per un singolo Comune, regione per regione e partito per
+          partito. <a href="#mappa-soldi">Vai alla mappa ↓</a>
+        </p>
         <nav className={styles.toc} aria-label="In questa pagina">
           <a href="#ammissibilita">Ammissibilità</a>
           <a href="#gruppi">Gruppi e schieramenti</a>
@@ -181,6 +186,7 @@ export default async function ManovraEmendamentiPage({ searchParams }: { searchP
           <a href="#comuni">Comuni</a>
           <a href="#spesa">Spesa e coperture</a>
           <a href="#elenco">Cerca una proposta</a>
+          <a href="#mappa-soldi">Mappa dei soldi per partito</a>
         </nav>
       </div>
 
@@ -787,6 +793,27 @@ export default async function ManovraEmendamentiPage({ searchParams }: { searchP
               ) : null}
             </>
           ) : null}
+        </section>
+
+        <section className="panel" aria-labelledby="mappa-soldi">
+          <h2 id="mappa-soldi" className="panel-title">Dove finirebbero i soldi, partito per partito</h2>
+          <p className={styles.lede}>
+            {integer.format(data.moneyMap.amendments)} proposte nominano un solo Comune e scrivono quanto chiedono per il
+            2027-2029. Sommandole regione per regione si vede dove andrebbero i soldi se fossero tutte approvate. Scegli un
+            partito per vedere dove porta le sue richieste.
+          </p>
+          <MoneyMap options={data.moneyMap.options} />
+          <p className={styles.note}>
+            Sono soldi chiesti, non spesi: molte proposte sono state dichiarate inammissibili e le altre devono ancora essere
+            votate. Il partito è quello del primo firmatario. Restano fuori le{" "}
+            {integer.format(data.moneyMap.withoutAmount)} proposte per un solo Comune che non legano un importo agli anni
+            2027-2029 e quelle che nominano più Comuni
+            {data.moneyMap.duplicatesSkipped > 0
+              ? `; ${integer.format(data.moneyMap.duplicatesSkipped)} copie identiche sono contate una volta sola`
+              : ""}
+            . Le singole proposte, con la frase da cui leggiamo Comune e importo, sono nella sezione{" "}
+            <a href="#comuni">Le proposte che nominano un solo Comune</a>.
+          </p>
         </section>
 
         <section className="panel" aria-labelledby="come-leggere">

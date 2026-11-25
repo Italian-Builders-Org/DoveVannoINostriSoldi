@@ -7,6 +7,7 @@ const {
   assertEmendamentiSnapshot,
   buildEmendamentiView,
   buildExplorerRows,
+  buildMoneyMap,
   isExplorerQueryActive,
   parseExplorerQuery,
   queryAmendments,
@@ -239,4 +240,43 @@ test("elenco: ricerca senza accenti, filtri combinati e pagine entro i limiti", 
   assert.equal(isExplorerQueryActive(parseExplorerQuery({}, groupIds)), false);
   assert.equal(isExplorerQueryActive(parseExplorerQuery({ comune: "1" }, groupIds)), true);
   assert.equal(run({ q: "nessunrisultato" }).total, 0);
+});
+
+test("mappa dei soldi: solo un Comune con importo 2027-2029, copie identiche contate una volta, opzioni per schieramento e gruppo", () => {
+  const spending = (cents) => ({ kind: "spesa autorizzata", trienniumCents: cents, byYearCents: { 2027: cents, 2028: 0, 2029: 0 }, permanent: false, evidence: "è autorizzata la spesa" });
+  const snapshot = assertEmendamentiSnapshot(payload((data) => {
+    data.amendments[0].spending = spending(3_000_000_000);
+    data.amendments[1].spending = spending(1_000_000_000);
+    // 2.5 names two Comuni: it stays out even with an amount.
+    data.amendments[4].spending = spending(9_000_000_000);
+    // A seventh proposal, identical to 2.1 and on the same Comune: not counted twice.
+    data.amendments.push(amendment(7, { proponent: "200", signerGroups: ["gr4132"], identicalTo: ["2.1"], spending: spending(3_000_000_000), territory: { municipalities: [pescia], ambiguousNames: [], evidence: "al comune di Pescia" } }));
+    data.amendments[0].identicalTo = ["2.7"];
+    data.totals.amendments = 7;
+    data.totals.withIdentical = 4;
+    data.source.pages.count = 7;
+  }));
+  const map = buildMoneyMap(snapshot);
+  assert.equal(map.amendments, 2);
+  assert.equal(map.duplicatesSkipped, 1);
+  // 2.1 and 2.2 name one Comune; 2.2 has no amount in the base payload, here it has one; 2.7 is the copy.
+  assert.equal(map.withoutAmount, 0);
+  const byKey = Object.fromEntries(map.options.map((option) => [option.key, option]));
+  assert.deepEqual(Object.keys(byKey), ["tutte", "opposizione", "maggioranza", "gr4136", "gr4132"]);
+  assert.equal(byKey.tutte.totalCents, 4_000_000_000);
+  assert.deepEqual(byKey.tutte.regions, [{ code: "09", amendments: 2, cents: 4_000_000_000, inadmissible: 1 }]);
+  assert.equal(byKey.opposizione.totalCents, 3_000_000_000);
+  assert.equal(byKey.gr4132.regions[0].inadmissible, 1);
+  for (const option of map.options) {
+    assert.equal(option.regions.reduce((sum, region) => sum + region.cents, 0), option.totalCents, option.key);
+    assert.equal(option.regions.reduce((sum, region) => sum + region.amendments, 0), option.amendments, option.key);
+  }
+});
+
+test("mappa dei soldi: senza importi resta vuota ma conta le proposte escluse", () => {
+  const map = buildMoneyMap(assertEmendamentiSnapshot(payload()));
+  assert.equal(map.amendments, 0);
+  assert.equal(map.withoutAmount, 2);
+  assert.deepEqual(map.options.map((option) => option.key), ["tutte"]);
+  assert.deepEqual(map.options[0].regions, []);
 });

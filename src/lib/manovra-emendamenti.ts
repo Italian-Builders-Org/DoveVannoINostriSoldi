@@ -820,3 +820,94 @@ export function queryAmendments(rows: readonly ExplorerRow[], query: ExplorerQue
   const page = Math.min(query.page, pages);
   return { total: matches.length, page, pages, rows: matches.slice((page - 1) * EXPLORER_PAGE_SIZE, page * EXPLORER_PAGE_SIZE) };
 }
+
+/** Spesa dichiarata dalle proposte per un solo Comune, regione per regione. */
+export type MoneyMapRegion = { code: string; amendments: number; cents: number; inadmissible: number };
+
+export type MoneyMapOption = {
+  key: string;
+  label: string;
+  kind: "all" | "coalition" | "group";
+  amendments: number;
+  totalCents: number;
+  regions: MoneyMapRegion[];
+};
+
+export type MoneyMap = {
+  options: MoneyMapOption[];
+  /** Proposte sulla mappa: un solo Comune e un importo legato agli anni 2027-2029. */
+  amendments: number;
+  /** Proposte per un solo Comune senza importo leggibile per il triennio. */
+  withoutAmount: number;
+  /** Copie identiche di una proposta già sulla mappa: non sommate due volte. */
+  duplicatesSkipped: number;
+};
+
+/**
+ * Where the money of single-Comune proposals would go, by region and by the
+ * first signer's coalition or group. It sums declared amounts only inside
+ * this subset, where each proposal names one place, and skips identical
+ * copies: the result is the total requested, not a cost or an approved sum.
+ */
+export function buildMoneyMap(snapshot: EmendamentiSnapshot): MoneyMap {
+  const proponentByKey = new Map(snapshot.proponents.map((proponent) => [proponent.key, proponent]));
+  const groupById = new Map(snapshot.groups.map((group) => [group.id, group]));
+  const options = new Map<string, MoneyMapOption & { byRegion: Map<string, MoneyMapRegion> }>();
+  const option = (key: string, label: string, kind: MoneyMapOption["kind"]) => {
+    let entry = options.get(key);
+    if (!entry) {
+      entry = { key, label, kind, amendments: 0, totalCents: 0, regions: [], byRegion: new Map() };
+      options.set(key, entry);
+    }
+    return entry;
+  };
+  option("tutte", "Tutti i gruppi", "all");
+
+  const counted = new Set<string>();
+  let withoutAmount = 0;
+  let duplicatesSkipped = 0;
+  for (const amendment of snapshot.amendments) {
+    const territory = amendment.territory;
+    if (!territory || territory.municipalities.length !== 1 || territory.ambiguousNames.length > 0) continue;
+    const cents = amendment.spending?.trienniumCents ?? null;
+    if (cents === null || cents <= 0) {
+      withoutAmount += 1;
+      continue;
+    }
+    if (amendment.identicalTo.some((id) => counted.has(id))) {
+      duplicatesSkipped += 1;
+      continue;
+    }
+    counted.add(amendment.id);
+    const regionCode = territory.municipalities[0]!.regionCode;
+    const groupId = proponentByKey.get(amendment.proponent)!.groupId;
+    const targets = [options.get("tutte")!];
+    if (groupId !== null) {
+      const coalition = COALITION_BY_GROUP[groupId];
+      if (coalition && coalition !== "misto") targets.push(option(coalition, COALITION_LABEL[coalition], "coalition"));
+      targets.push(option(groupId, shortGroupLabel(groupById.get(groupId)!.label), "group"));
+    }
+    for (const target of targets) {
+      target.amendments += 1;
+      target.totalCents += cents;
+      const region = target.byRegion.get(regionCode) ?? { code: regionCode, amendments: 0, cents: 0, inadmissible: 0 };
+      region.amendments += 1;
+      region.cents += cents;
+      if (amendment.outcome === "inammissibile") region.inadmissible += 1;
+      target.byRegion.set(regionCode, region);
+    }
+  }
+
+  const rank = { all: 0, coalition: 1, group: 2 } as const;
+  return {
+    options: [...options.values()]
+      .sort((a, b) => rank[a.kind] - rank[b.kind] || b.totalCents - a.totalCents || a.label.localeCompare(b.label, "it"))
+      .map(({ byRegion, ...rest }) => ({
+        ...rest,
+        regions: [...byRegion.values()].sort((a, b) => b.cents - a.cents || a.code.localeCompare(b.code)),
+      })),
+    amendments: counted.size,
+    withoutAmount,
+    duplicatesSkipped,
+  };
+}

@@ -77,7 +77,7 @@ try {
 
         // Each chart repeats its numbers in a table that opens from the keyboard.
         const summaries = await page.$$("main details.chart-data > summary");
-        assert.equal(summaries.length, 8);
+        assert.equal(summaries.length, 9);
         await summaries[0].focus();
         await page.keyboard.press("Enter");
         assert.equal(await page.$eval("main details.chart-data", (el) => el.open), true, "la tabella del grafico non si apre da tastiera");
@@ -106,6 +106,28 @@ try {
           assert.match(href ?? "", /^https:\/\//, `fonte ${id} senza link`);
         }
         assert.equal(await page.$eval('main nav[aria-label="Percorso"] a', (el) => el.getAttribute("href")), "/parlamento");
+
+        // Money map: announced at the top, every option redraws the map and its total.
+        assert.equal(await page.$eval('main .page-intro a[href="#mappa-soldi"]', (el) => el.textContent?.trim()), "Vai alla mappa ↓");
+        const map = 'main section[aria-labelledby="mappa-soldi"]';
+        assert.equal((await page.$$(`${map} svg path[data-region]`)).length, 20, "la mappa deve avere 20 regioni");
+        const options = await page.$$eval(`${map} select option`, (nodes) => nodes.map((node) => node.value));
+        assert.ok(options.length >= 5 && options[0] === "tutte" && options.includes("maggioranza") && options.includes("opposizione"));
+        const mapState = () => page.$eval(map, (section) => ({
+          key: section.querySelector("[data-money-map]")?.getAttribute("data-money-map"),
+          total: section.querySelector("p[aria-live] strong")?.textContent ?? "",
+          coloured: section.querySelectorAll('path[data-class]:not([data-class="0"])').length,
+          label: section.querySelector("svg")?.getAttribute("aria-label") ?? "",
+        }));
+        const all = await mapState();
+        assert.match(all.total, /mld €|mln €/);
+        assert.ok(all.coloured >= 10, `regioni colorate: ${all.coloured}`);
+        await page.select(`${map} select`, "maggioranza");
+        await page.waitForFunction((selector) => document.querySelector(`${selector} [data-money-map]`)?.getAttribute("data-money-map") === "maggioranza", {}, map);
+        const majority = await mapState();
+        assert.notEqual(majority.total, all.total, "il totale non cambia con il partito");
+        assert.ok(majority.coloured < all.coloured, "la maggioranza non può colorare più regioni del totale");
+        assert.match(majority.label, /^Maggioranza:/);
 
         // Searchable list: unfiltered it holds every proposal and the page is indexable.
         assert.equal(await page.$eval("main [data-result-total]", (el) => el.getAttribute("data-result-total")), "6558");

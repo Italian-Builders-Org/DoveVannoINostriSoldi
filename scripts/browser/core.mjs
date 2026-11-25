@@ -911,7 +911,8 @@ try {
           "Indennità dei deputati e salari degli italiani, dal 2005 al 2025",
           `${label}: H1 assente`,
         );
-        const stats = await page.$$eval("main .stat-strip dd", (items) => items.map((item) => item.textContent?.trim()));
+        // Intl puts a no-break space before the euro sign.
+        const stats = await page.$$eval("main .stat-strip dd", (items) => items.map((item) => item.textContent?.replace(/\u00a0/g, " ").trim()));
         assert.deepEqual(stats, ["10.435 €", "−16,1%", "+42,8%", "+43,3%"], `${label}: valori di sintesi inattesi`);
         const mainText = await page.$eval("main", (element) => element.innerText);
         assertTextMatches(mainText, /non è la busta paga/i, label);

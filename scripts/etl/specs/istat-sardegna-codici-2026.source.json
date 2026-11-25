@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-sardegna-codici-2026",
+  "source": {
+    "owner": "Istat",
+    "title": "Elenco dei codici e delle denominazioni delle unità amministrative della Sardegna",
+    "landingUrl": "https://www.istat.it/classificazione/codici-dei-comuni-delle-province-e-delle-regioni/",
+    "url": "https://www.istat.it/wp-content/uploads/2024/09/Codici-statistici-e-denominazioni-delle-unita-amministrative-della-Sardegna.zip",
+    "path": "tests/fixtures/istat-sardegna-codici-2026/Codici-statistici-e-denominazioni-delle-unita-amministrative-della-Sardegna.zip",
+    "bytes": 31795,
+    "sha256": "6fb4b421a165c26ebc855d2793ef95ae1e65eceb9ea067aa51a4c3f613e503ca",
+    "csvMemberSuffix": ".csv",
+    "csvBytes": 31773,
+    "csvSha256": "38c6eb9941a827bff94cb66fefcb5de377671f5254f3d880d45069cd3b2be225",
+    "csvEncoding": "latin-1",
+    "csvDelimiter": ";",
+    "licenseId": "CC-BY-4.0",
+    "licenseUrl": "https://www.istat.it/note-legali/",
+    "legalBasis": "L.R. Sardegna 12 aprile 2021, n. 7; DGR n. 36/34 del 9 luglio 2025 (B.U.R.A.S. n. 39 del 17 luglio 2025)",
+    "effectiveFrom": "2026-01-01",
+    "publishedAt": "2025-08-04",
+    "publishedAtEvidence": "Header HTTP Last-Modified del file zip: Mon, 04 Aug 2025 12:47:40 GMT",
+    "acquiredAt": "2026-11-25",
+    "checkedAt": "2026-11-25",
+    "geography": "Regione Sardegna (codice regione 20): soli Comuni",
+    "updateFrequency": "una tantum (riforma dell'assetto territoriale)"
+  },
+  "expected": {
+    "title": "Codici statistici e denominazioni delle unità amministrative rispondenti ai nuovi assetti territoriali della Sardegna. In vigore dal 1° gennaio 2026",
+    "headers": [
+      "Denominazione Provincia/\nCittà metropolitana",
+      "Codice Provincia/\nCittà metropolitana",
+      "Codice Comune",
+      "Denominazione Comune",
+      "Codice Comune precedente",
+      "Codice Provincia/\nCittà metropolitana precedente",
+      "Denominazione Provincia/\nCittà metropolitana\n(ripartizione precedente)"
+    ],
+    "municipalities": 377,
+    "provinceCodes": ["113", "114", "115", "116", "117", "119", "312", "318"],
+    "previousProvinceCodes": ["090", "091", "095", "111", "292"]
+  }
+}

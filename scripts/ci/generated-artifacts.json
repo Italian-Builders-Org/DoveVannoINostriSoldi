@@ -676,6 +676,33 @@
       "trustModel": "The committed annual snapshot is validated offline for schema, coverage, identifiers, denominators, and provenance; online generation downloads the official ISTAT SITUAS reports."
     },
     {
+      "id": "istat-sardegna-codici-2026",
+      "owner": "ISTAT crosswalk of the 2026 Sardinian municipal codes for joins with pre-2026 sources",
+      "files": [
+        "src/data/generated/istat-sardegna-codici-2026.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_sardegna_codici_2026.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_sardegna_codici_2026.py"
+      ],
+      "nodeTests": [
+        "tests/istat-municipality-code-aliases.test.mjs",
+        "tests/comuni-footprint.test.mjs",
+        "tests/municipality-profile.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/istat_sardegna_codici_2026.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/istat-sardegna-codici-2026.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock on the official ISTAT zip (URL, bytes, SHA-256 of zip and CSV, title, headers). 377 Comuni, unique new and previous codes, no code shared between the two sets, province prefixes checked. Every pair is reconciled with the committed SITUAS geography: previous code in 2025, new code in 2026, same tax code, and neither code names another Comune in the other year. Names never drive the join."
+    },
+    {
       "id": "istat-population-grid-2021",
       "owner": "ISTAT Census 2021 1km population grid static overview",
       "files": [

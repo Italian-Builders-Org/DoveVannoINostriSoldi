@@ -90,6 +90,8 @@ export type ComuniFootprint = Readonly<{
     perCapitaCents: number | null;
     completeness: "complete" | "partial";
   }>[];
+  /** ISTAT codes verified through MEF: `source` is the one used by pre-2026 sources. */
+  istatCodes: Readonly<{ current: string; source: string }> | null;
   openCivitas: MunicipalityFinancialProfile["openCivitas"];
   irpef: MunicipalityFinancialProfile["irpef"];
   irpefIncomeBands: readonly ComuniIrpefIncomeBand[] | null;
@@ -519,6 +521,9 @@ export function buildComuniFootprint(
         perCapitaCents: year.perCapitaCents,
         completeness: year.completeness,
       })),
+    istatCodes: profile.identifiers.istatCode && profile.identifiers.currentIstatCode
+      ? { current: profile.identifiers.currentIstatCode, source: profile.identifiers.istatCode }
+      : null,
     openCivitas: profile.openCivitas,
     irpef: profile.irpef,
     irpefIncomeBands: irpefIncomeBandsFromProfile(profile.irpef),

@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 137
+- Artefatti nel registro: 138
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 120 (PR umana dopo revisione)
+- manuale: 121 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -68,6 +68,7 @@ La revisione e il merge restano umani.
 | `municipality-chunk-bounds` | non dichiarato nello snapshot | non dichiarato | https://dati.istruzione.it/opendata/opendata/catalogo/elements1/leaf?area=Scuole&datasetId=DS0400SCUANAGRAFESTAT | nessuno | nessuno | manuale | `node --experimental-strip-types scripts/ci/municipality-chunk-bounds.mjs` |
 | `rgs-conto-annuale-occupazione-ente-index` | 2024 | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `node scripts/etl/rgs_conto_annuale_occupazione_ente_index.mjs` |
 | `istat-municipality-geography` | 31/12/2022 | 2026-08-25T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_municipality_geography.py --validate-committed` |
+| `istat-sardegna-codici-2026` | 2025-08-04 | 2026-11-25 | https://www.istat.it/classificazione/codici-dei-comuni-delle-province-e-delle-regioni/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_sardegna_codici_2026.py --check` |
 | `istat-population-grid-2021` | non dichiarato nello snapshot | 2026-09-26T07:15:00.000Z | https://www.istat.it/notizia/statistiche-sulla-popolazione-per-griglia-regolare/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_population_grid_2021.py --check` |
 | `istat-regions-2024` | 2024 | 2026-08-22T00:00:00Z | non dichiarato nel registro | nessuno | nessuno | manuale | `python scripts/etl/istat_regions_account.py --validate-committed` |
 | `mef-irpef-2024` | 2024 | non dichiarato | https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php?tree=2025 | `17 6 * * 1` | `.github/workflows/mef-irpef-refresh.yml` | solo rilevamento | `python scripts/etl/mef_irpef_municipal_snapshot.py --check` |

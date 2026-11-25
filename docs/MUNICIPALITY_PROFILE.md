@@ -11,7 +11,12 @@ Il profilo si attiva soltanto quando il codice fiscale IPA individua una riga de
 comunale SIOPE e il Codice IPA pubblicato nei due dataset coincide. I collegamenti successivi sono:
 
 - MEF IRPEF: Codice ISTAT comunale a sei cifre; anche il codice catastale MEF deve coincidere con
-  quello IPA;
+  quello IPA. Dal 1° gennaio 2026 ISTAT ha ricodificato tutti i Comuni sardi: IPA e SITUAS 2026
+  usano il codice nuovo, MEF 2024, MIM e ReGiS quello precedente. Il collegamento prova i due
+  codici della [tabella ufficiale ISTAT](../scripts/etl/specs/istat-sardegna-codici-2026.source.json),
+  riconciliata offline con SITUAS 2025/2026; il primo record MEF trovato deve comunque avere lo
+  stesso codice catastale. Scuole, OpenCivitas e PNRR usano poi il codice con cui MEF pubblica il
+  Comune; la scheda mostra il codice corrente e, se diverso, quello precedente;
 - OpenCivitas: lo stesso Codice ISTAT, soltanto dopo la verifica MEF/IPA del codice catastale;
 - PNRR asili e prima infanzia: codice fiscale esatto del soggetto attuatore;
 - SIOPE: codice fiscale e Codice IPA, mantenendo separate le annualità 2024, 2025 e 2026.

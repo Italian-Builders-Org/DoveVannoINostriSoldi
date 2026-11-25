@@ -106,8 +106,10 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
   }
   if (footprint.region?.trim()) placeParts.push(footprint.region.trim());
   const place = placeParts.join(" · ");
-  const istatCode = openCivitas?.record.istatCode
-    ?? (irpef?.record.territory.level === "municipality" ? irpef.record.territory.code : null);
+  // `source` is the code under which MEF, MIM and ReGiS publish the Comune; for
+  // Sardinia it is the pre-2026 code, so links to those datasets must use it.
+  const istatCode = footprint.istatCodes?.source ?? null;
+  const currentIstatCode = footprint.istatCodes?.current ?? null;
   const cadastralCode = irpef?.record.territory.level === "municipality"
     ? irpef.record.territory.cadastralCode
     : null;
@@ -133,7 +135,8 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
           </p>
           <p className={styles.idCodes} aria-label="Identificativi ufficiali">
             IPA {footprint.codiceIpa} · CF {footprint.taxCode}
-            {istatCode ? ` · ISTAT ${istatCode}` : ""}
+            {currentIstatCode ? ` · ISTAT ${currentIstatCode}` : ""}
+            {istatCode && istatCode !== currentIstatCode ? ` (fino al 2025: ${istatCode})` : ""}
             {cadastralCode ? ` · catastale ${cadastralCode}` : ""}
           </p>
         </div>

@@ -119,6 +119,40 @@ test("Milano falls back to large-city peer group instead of staying unmatched", 
   assert.ok(payments?.index !== null);
 });
 
+// Dal 1/1/2026 ISTAT ha ricodificato i Comuni sardi (SITUAS 2026), mentre MEF
+// IRPEF 2024, anagrafe MIM e ReGiS pubblicano ancora il codice precedente.
+for (const { ipa, name, currentCode, sourceCode, cadastralCode, taxpayers } of [
+  { ipa: "c_g446", name: "Perdaxius", currentCode: "119014", sourceCode: "111054", cadastralCode: "G446", taxpayers: 856 },
+  { ipa: "c_e281", name: "Iglesias", currentCode: "119009", sourceCode: "111035", cadastralCode: "E281", taxpayers: null },
+]) {
+  test(`${name} joins MEF, MIM and ReGiS through the pre-2026 ISTAT code`, async () => {
+    const footprint = await getComuniFootprintByIpaCode(ipa);
+    assert.ok(footprint);
+    assert.equal(footprint.displayName, name);
+    assert.equal(footprint.irpef.status, "available");
+    const territory = footprint.irpef.data.record.territory;
+    assert.equal(territory.level, "municipality");
+    assert.equal(territory.code, sourceCode);
+    assert.equal(territory.cadastralCode, cadastralCode);
+    if (taxpayers !== null) assert.equal(footprint.irpef.data.record.taxpayers, taxpayers);
+    assert.ok(footprint.irpefIncomeBands?.length === 8);
+    assert.deepEqual(footprint.istatCodes, { current: currentCode, source: sourceCode });
+    assert.equal(footprint.schoolServices.status, "available");
+    assert.ok(footprint.schoolServices.data.schoolSites > 0);
+    assert.ok((footprint.pnrr.localizedRegistrations ?? 0) > 0);
+    assert.equal(footprint.pnrr.projectsHref, `/pnrr?territory=${sourceCode}`);
+  });
+}
+
+test("non-Sardinian ISTAT codes are joined unchanged", async () => {
+  const footprint = await getComuniFootprintByIpaCode("c_e897");
+  assert.ok(footprint);
+  assert.equal(footprint.irpef.status, "available");
+  assert.equal(footprint.irpef.data.record.territory.code, "020030");
+  assert.deepEqual(footprint.istatCodes, { current: "020030", source: "020030" });
+  assert.equal(footprint.pnrr.projectsHref, "/pnrr?territory=020030");
+});
+
 test("comuni immersive helpers recognise path and subdomain", () => {
   assert.equal(isComuniImmersive("/comuni", "www.dovevannoinostrisoldi.com"), true);
   assert.equal(isComuniImmersive("/", "comuni.dovevannoinostrisoldi.com"), true);

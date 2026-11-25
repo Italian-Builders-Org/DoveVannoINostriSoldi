@@ -156,6 +156,37 @@ test("municipality without childcare projects reports zero only in the analysed 
   assert.deepEqual(profile.pnrrChildcare.data.projects, []);
 });
 
+test("IPA 2026 Sardinian ISTAT code joins MEF and MIM through the official previous code", async () => {
+  const profile = await getMunicipalityProfile(entity({
+    codiceIpa: "c_g446",
+    taxCode: "81002390920",
+    istatCode: "119014",
+    cadastralCode: "G446",
+  }));
+  assert.ok(profile);
+  assert.equal(profile.irpef.status, "available");
+  assert.equal(profile.irpef.data.record.territory.code, "111054");
+  assert.equal(profile.irpef.data.record.taxpayers, 856);
+  assert.equal(profile.identifiers.istatCode, "111054");
+  assert.equal(profile.identifiers.currentIstatCode, "119014");
+  assert.equal(profile.schoolServices.status, "available");
+  assert.equal(profile.schoolServices.data.istatCode, "111054");
+});
+
+test("a recoded ISTAT alias still fails closed when the cadastral code belongs to another Comune", async () => {
+  // 119014 is Perdaxius; E281 is Iglesias. The alias must not bypass the MEF cadastral check.
+  const profile = await getMunicipalityProfile(entity({
+    codiceIpa: "c_g446",
+    taxCode: "81002390920",
+    istatCode: "119014",
+    cadastralCode: "E281",
+  }));
+  assert.ok(profile);
+  assert.equal(profile.irpef.status, "not_found");
+  assert.equal(profile.identifiers.istatCode, null);
+  assert.equal(profile.schoolServices.status, "not_found");
+});
+
 test("mismatched territorial identifiers fail closed and non-municipal entities stay unchanged", async () => {
   const mismatch = await getMunicipalityProfile(entity({
     codiceIpa: "c_a783",

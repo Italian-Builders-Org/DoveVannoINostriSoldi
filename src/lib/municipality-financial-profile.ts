@@ -3,6 +3,7 @@ import "server-only";
 import { ArtifactCache } from "@/lib/data/artifact-cache";
 
 import type { IpaEntity } from "@/lib/ipa";
+import { istatMunicipalityCodeAliases } from "@/lib/istat-municipality-code-aliases";
 import type { OpenCivitasMunicipality, OpenCivitasSnapshot } from "@/lib/data/opencivitas-contract";
 import type { PnrrChildcareMeta } from "@/lib/data/pnrr-childcare-contract";
 import type { MefIrpefQueryResult, MefIrpefTerritoryRecord } from "@/lib/mef-irpef-snapshot";
@@ -30,7 +31,10 @@ export type MunicipalityFinancialProfile = Readonly<{
   identifiers: Readonly<{
     codiceIpa: string;
     taxCode: string;
+    /** Code under which MEF publishes the Comune: other pre-2026 sources join on it. */
     istatCode: string | null;
+    /** Current ISTAT code of the same Comune; differs from istatCode for Sardinia after 2026. */
+    currentIstatCode: string | null;
     joinMethod: "exact_official_identifiers";
   }>;
   siope: Readonly<{
@@ -227,6 +231,7 @@ export async function getMunicipalityFinancialProfile(
 
   let irpef: MunicipalityFinancialProfile["irpef"];
   let istatCode: string | null = null;
+  let currentIstatCode: string | null = null;
   if (!candidateIstatCode || (!cadastralCode && !options.allowCommittedIstatIdentity)) {
     irpef = unavailable(
       "not_found",
@@ -234,43 +239,56 @@ export async function getMunicipalityFinancialProfile(
       "IPA non pubblica codici ISTAT e catastale comunali validi per verificare il collegamento MEF.",
     );
   } else {
-    try {
-      const result = irpefModule.queryMefMunicipalIrpef({
-        year: 2024,
-        level: "municipality",
-        code: candidateIstatCode,
-        limit: 1,
-        detail: "income-bands",
-      });
-      const record = result.data[0];
-      if (
-        record?.territory.level !== "municipality" ||
-        (cadastralCode !== null && record.territory.cadastralCode !== cadastralCode)
-      ) {
-        irpef = unavailable(
-          "not_found",
-          "no_matching_record",
-          "I codici ISTAT e catastale IPA non riconciliano con lo stesso record MEF.",
-        );
-      } else {
-        istatCode = candidateIstatCode;
-        irpef = {
-          status: "available",
-          data: {
-            period: result.period,
-            record,
-            methodology: result.methodology,
-            source: result.provenance.source,
-          },
+    // MEF 2024 predates the 2026 ISTAT recoding of Sardinia: try every official
+    // alias of the IPA/SITUAS code. The first record found decides the join and
+    // must still match the cadastral code; a mismatch never falls through.
+    const aliases = istatMunicipalityCodeAliases(candidateIstatCode);
+    let found: Readonly<{ code: string; result: MefIrpefQueryResult }> | null = null;
+    for (const code of aliases) {
+      try {
+        found = {
+          code,
+          result: irpefModule.queryMefMunicipalIrpef({
+            year: 2024,
+            level: "municipality",
+            code,
+            limit: 1,
+            detail: "income-bands",
+          }),
         };
+        break;
+      } catch (error) {
+        if (!(error instanceof irpefModule.MefIrpefQueryError) || error.code !== "not_found") throw error;
       }
-    } catch (error) {
-      if (!(error instanceof irpefModule.MefIrpefQueryError) || error.code !== "not_found") throw error;
+    }
+    const record = found?.result.data[0];
+    if (!found) {
       irpef = unavailable(
         "not_found",
         "no_matching_record",
-        `Il rilascio MEF 2024 non contiene un Comune con codice ISTAT ${candidateIstatCode}.`,
+        `Il rilascio MEF 2024 non contiene un Comune con codice ISTAT ${aliases.join(" o ")}.`,
       );
+    } else if (
+      record?.territory.level !== "municipality" ||
+      (cadastralCode !== null && record.territory.cadastralCode !== cadastralCode)
+    ) {
+      irpef = unavailable(
+        "not_found",
+        "no_matching_record",
+        "I codici ISTAT e catastale IPA non riconciliano con lo stesso record MEF.",
+      );
+    } else {
+      istatCode = found.code;
+      currentIstatCode = aliases[0] ?? null;
+      irpef = {
+        status: "available",
+        data: {
+          period: found.result.period,
+          record,
+          methodology: found.result.methodology,
+          source: found.result.provenance.source,
+        },
+      };
     }
   }
 
@@ -334,6 +352,7 @@ export async function getMunicipalityFinancialProfile(
       codiceIpa: entity.codiceIpa,
       taxCode,
       istatCode,
+      currentIstatCode,
       joinMethod: "exact_official_identifiers",
     },
     siope: {

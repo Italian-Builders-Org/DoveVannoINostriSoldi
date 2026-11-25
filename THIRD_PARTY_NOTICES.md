@@ -64,6 +64,19 @@ Attribution: `MEF – Dipartimento delle Finanze. Redditi e principali variabili
 
 Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2026. CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
 
+## ISTAT codes of the Sardinian administrative units
+
+`tests/fixtures/istat-sardegna-codici-2026/` keeps the official archive unchanged;
+`src/data/generated/istat-sardegna-codici-2026.json` is derived from it:
+
+- **Work:** Elenco dei codici e delle denominazioni delle unità amministrative della Sardegna, in vigore dal 1° gennaio 2026;
+- **Publisher:** Istituto Nazionale di Statistica (ISTAT);
+- **Source:** https://www.istat.it/wp-content/uploads/2024/09/Codici-statistici-e-denominazioni-delle-unita-amministrative-della-Sardegna.zip;
+- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0), https://www.istat.it/note-legali/;
+- **Changes:** only the municipal rows of the CSV were kept, as new code, previous code, name, new and previous province code; province names were dropped.
+
+Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2025. CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
+
 ## OpenCivitas municipal data
 
 - **Work:** Comuni, servizi totali, indicatori e determinanti 2022;

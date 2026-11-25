@@ -137,6 +137,14 @@ fissata dai contratti, quindi si confronta con un'indennità istituzionale megli
 della retribuzione media BES, che risente della composizione dell'occupazione.
 Controllo offline: `python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check`.
 
+La pagina `/parlamento/indennita` usa questi snapshot insieme a
+`camera-trattamento-economico`: indennità lorda dei deputati per anno dai
+gradini della Camera e indice delle retribuzioni contrattuali, con il primo anno
+comune (2005) uguale a 100, nominali e divisi per il FOI (controllo con HICP).
+I contratti di confine sono in `src/lib/data/annual-price-wage-indices-contract.ts`,
+il calcolo in `src/lib/deputati-indennita-salari.ts`: un anno mancante in una
+serie ferma il build invece di essere interpolato.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

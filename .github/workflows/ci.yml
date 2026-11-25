@@ -58,6 +58,10 @@ jobs:
         run: bash scripts/ci/check-whitespace.sh
 
       - name: Lint, typecheck, design and brand checks
+        # The repository typecheck needs about 4.2-4.5 GB, above Node's default
+        # heap on this runner (exit 134, heap out of memory). The runner has 16 GB.
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run ci:static
 
       - name: Actionlint (checksum-verified)

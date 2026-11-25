@@ -1,7 +1,5 @@
-import cameraRaw from "@/data/generated/camera-trattamento-economico.json";
-import hicpRaw from "@/data/generated/eurostat-hicp-annuale.json";
-import foiRaw from "@/data/generated/istat-foi-annuale.json";
-import contractualRaw from "@/data/generated/istat-retribuzioni-contrattuali.json";
+import { join } from "node:path";
+
 import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import {
   parseEurostatHicpAnnualSnapshot,
@@ -16,6 +14,7 @@ import {
   type CameraTrattamentoComponent,
   type CameraTrattamentoEconomicoSnapshot,
 } from "@/lib/data/camera-trattamento-economico-contract";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 
 /**
  * Deputies' gross monthly indemnity (institutional rate, Camera) against the
@@ -277,6 +276,18 @@ export function buildDeputiesVsWagesComparison(input: Inputs): DeputiesVsWagesCo
   };
 }
 
+// Read, not imported: typed JSON imports would add to a typecheck that is
+// already close to the CI heap limit. Each file is a few kilobytes.
+// Literal paths keep the file tracer from pulling in the whole directory.
+const MAX_SNAPSHOT_BYTES = 256 * 1024;
+const SNAPSHOT_PATHS = {
+  camera: join(process.cwd(), "src/data/generated/camera-trattamento-economico.json"),
+  foi: join(process.cwd(), "src/data/generated/istat-foi-annuale.json"),
+  hicp: join(process.cwd(), "src/data/generated/eurostat-hicp-annuale.json"),
+  contractual: join(process.cwd(), "src/data/generated/istat-retribuzioni-contrattuali.json"),
+} as const;
+const snapshot = (id: keyof typeof SNAPSHOT_PATHS) => readJsonSnapshot(SNAPSHOT_PATHS[id], MAX_SNAPSHOT_BYTES);
+
 let cached: DeputiesVsWagesComparison | null = null;
 
 export function getDeputiesVsWagesComparison(): DeputiesVsWagesComparison {
@@ -297,10 +308,10 @@ export function getDeputiesVsWagesComparison(): DeputiesVsWagesComparison {
       acquiredOn: besSource.acquisition.acquiredAt,
       period: `${effective[0]?.year ?? "?"}-${effective.at(-1)?.year ?? "?"}`,
     },
-    camera: parseCameraTrattamentoEconomicoSnapshot(cameraRaw),
-    foi: parseIstatFoiAnnualSnapshot(foiRaw),
-    hicp: parseEurostatHicpAnnualSnapshot(hicpRaw),
-    contractual: parseIstatContractualWagesSnapshot(contractualRaw),
+    camera: parseCameraTrattamentoEconomicoSnapshot(snapshot("camera")),
+    foi: parseIstatFoiAnnualSnapshot(snapshot("foi")),
+    hicp: parseEurostatHicpAnnualSnapshot(snapshot("hicp")),
+    contractual: parseIstatContractualWagesSnapshot(snapshot("contractual")),
   });
   return cached;
 }

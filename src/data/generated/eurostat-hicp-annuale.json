@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "eurostat-hicp-annuale",
+  "referencePeriod": "1996-2025",
+  "observedAt": "2026-11-03",
+  "caveats": [
+    "Indice armonizzato dei prezzi al consumo (IPCA/HICP) per l'Italia, media annua, base 2025=100: serve a deflazionare importi nominali, non è spesa pubblica.",
+    "Il tasso è la variazione della media annua sulla media dell'anno precedente, calcolata da Eurostat sugli indici non arrotondati: ricalcolato dagli indici a un decimale può scostarsi di qualche decimo.",
+    "Il 1996 è il primo anno della serie e non ha tasso di variazione.",
+    "IPCA, NIC e FOI sono indici diversi. Le rivalutazioni di legge usano il FOI ISTAT, che questo snapshot non contiene."
+  ],
+  "units": {
+    "indexTenths": "decimi di indice, base 2025=100",
+    "annualAverageRateTenths": "decimi di punto percentuale, media annua sulla media dell'anno precedente"
+  },
+  "flags": {
+    "e": "stima Eurostat"
+  },
+  "observations": [
+    {
+      "year": 1996,
+      "indexTenths": 551
+    },
+    {
+      "year": 1997,
+      "indexTenths": 561,
+      "annualAverageRateTenths": 19
+    },
+    {
+      "year": 1998,
+      "indexTenths": 573,
+      "annualAverageRateTenths": 20
+    },
+    {
+      "year": 1999,
+      "indexTenths": 582,
+      "annualAverageRateTenths": 16
+    },
+    {
+      "year": 2000,
+      "indexTenths": 597,
+      "annualAverageRateTenths": 26
+    },
+    {
+      "year": 2001,
+      "indexTenths": 611,
+      "annualAverageRateTenths": 23
+    },
+    {
+      "year": 2002,
+      "indexTenths": 627,
+      "annualAverageRateTenths": 26
+    },
+    {
+      "year": 2003,
+      "indexTenths": 645,
+      "annualAverageRateTenths": 28
+    },
+    {
+      "year": 2004,
+      "indexTenths": 659,
+      "annualAverageRateTenths": 23
+    },
+    {
+      "year": 2005,
+      "indexTenths": 674,
+      "annualAverageRateTenths": 22
+    },
+    {
+      "year": 2006,
+      "indexTenths": 689,
+      "annualAverageRateTenths": 22
+    },
+    {
+      "year": 2007,
+      "indexTenths": 703,
+      "annualAverageRateTenths": 20
+    },
+    {
+      "year": 2008,
+      "indexTenths": 727,
+      "annualAverageRateTenths": 35
+    },
+    {
+      "year": 2009,
+      "indexTenths": 733,
+      "annualAverageRateTenths": 8
+    },
+    {
+      "year": 2010,
+      "indexTenths": 745,
+      "annualAverageRateTenths": 16
+    },
+    {
+      "year": 2011,
+      "indexTenths": 767,
+      "annualAverageRateTenths": 29
+    },
+    {
+      "year": 2012,
+      "indexTenths": 792,
+      "annualAverageRateTenths": 33
+    },
+    {
+      "year": 2013,
+      "indexTenths": 802,
+      "annualAverageRateTenths": 13
+    },
+    {
+      "year": 2014,
+      "indexTenths": 803,
+      "annualAverageRateTenths": 2
+    },
+    {
+      "year": 2015,
+      "indexTenths": 805,
+      "annualAverageRateTenths": 2
+    },
+    {
+      "year": 2016,
+      "indexTenths": 804,
+      "annualAverageRateTenths": -1
+    },
+    {
+      "year": 2017,
+      "indexTenths": 815,
+      "annualAverageRateTenths": 13
+    },
+    {
+      "year": 2018,
+      "indexTenths": 825,
+      "annualAverageRateTenths": 12
+    },
+    {
+      "year": 2019,
+      "indexTenths": 830,
+      "annualAverageRateTenths": 7
+    },
+    {
+      "year": 2020,
+      "indexTenths": 829,
+      "annualAverageRateTenths": -2
+    },
+    {
+      "year": 2021,
+      "indexTenths": 845,
+      "annualAverageRateTenths": 20
+    },
+    {
+      "year": 2022,
+      "indexTenths": 919,
+      "annualAverageRateTenths": 87
+    },
+    {
+      "year": 2023,
+      "indexTenths": 973,
+      "annualAverageRateTenths": 59
+    },
+    {
+      "year": 2024,
+      "indexTenths": 984,
+      "annualAverageRateTenths": 11
+    },
+    {
+      "year": 2025,
+      "indexTenths": 1000,
+      "annualAverageRateTenths": 16
+    }
+  ],
+  "coverage": {
+    "expectedCells": 59,
+    "observedCells": 59
+  },
+  "reconciliation": {
+    "rateToleranceTenths": 3,
+    "maxRateGapTenths": 1,
+    "note": "Ogni tasso pubblicato è confrontato con quello ricalcolato dagli indici arrotondati; lo scarto ammesso copre solo l'arrotondamento."
+  },
+  "semantics": {
+    "soldi": {
+      "applicable": false,
+      "unit": "non applicabile",
+      "nature": "indice dei prezzi al consumo armonizzato (IPCA/HICP), non flusso monetario pubblico"
+    },
+    "periodo": {
+      "referencePeriod": "1996-2025",
+      "granularity": "anno solare, media dei dodici indici mensili"
+    },
+    "provenance": {
+      "holder": "Eurostat (Commissione europea)",
+      "landingUrl": "https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_ainr/default/table?lang=en",
+      "informationUrl": "https://ec.europa.eu/eurostat/web/hicp/information-data",
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/prc_hicp_ainr?format=JSON&lang=EN&freq=A&unit=INX_A_AVG&unit=RCH_A_AVG&coicop18=TOTAL&geo=IT&sinceTimePeriod=1996&untilTimePeriod=2025",
+      "structure": {
+        "id": "PRC_HICP_AINR",
+        "agencyId": "ESTAT",
+        "version": "10.0"
+      },
+      "publicationDate": "2026-09-17T11:00:00+0200",
+      "acquisitionDate": "2026-11-03",
+      "license": "CC-BY-4.0",
+      "licenseNote": "Eurostat copyright notice: dati Eurostat riutilizzabili sotto Creative Commons Attribution 4.0 International con attribuzione e indicazione delle modifiche.",
+      "bytes": 5301,
+      "sha256": "c6a2123f74e62d9f2c4a0f653b344fd1964ba3ee1468dc28139d4df3facb6bc2"
+    }
+  }
+}

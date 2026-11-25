@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "istat-foi-annuale",
+  "referencePeriod": "1996-2025",
+  "observedAt": "2026-11-03",
+  "caveats": [
+    "FOI: indice dei prezzi al consumo per le famiglie di operai e impiegati, media annua. È l'indice delle rivalutazioni di legge; non è spesa pubblica.",
+    "Ogni anno conserva il valore pubblicato nella propria base (1995, 2010 o 2015). La serie in base 2025 è derivata dividendo per i coefficienti di raccordo ufficiali ISTAT e arrotondando al centesimo.",
+    "Il FOI senza tabacchi è la variante usata per adeguare canoni e assegni; il FOI generale include i tabacchi.",
+    "FOI, NIC e IPCA sono indici diversi per popolazione di riferimento e finalità."
+  ],
+  "units": {
+    "foiTenths": "decimi di indice nella base pubblicata per quell'anno (base=100)",
+    "base2025": "centesimi di indice, base 2025=100, derivati con i coefficienti di raccordo",
+    "splicing": "millesimi: indice medio dell'anno della nuova base espresso nella base precedente, diviso 100"
+  },
+  "series": {
+    "foi": "FOI indice generale",
+    "foiNoTobacco": "FOI indice generale senza tabacchi"
+  },
+  "splicing": [
+    {
+      "from": 1995,
+      "to": 2010,
+      "foiThousandths": 1385,
+      "foiNoTobaccoThousandths": 1373
+    },
+    {
+      "from": 2010,
+      "to": 2015,
+      "foiThousandths": 1074,
+      "foiNoTobaccoThousandths": 1071
+    },
+    {
+      "from": 2015,
+      "to": 2025,
+      "foiThousandths": 1214,
+      "foiNoTobaccoThousandths": 1214
+    }
+  ],
+  "observations": [
+    {
+      "year": 1996,
+      "base": 1995,
+      "foiTenths": 1039,
+      "foiNoTobaccoTenths": 1039,
+      "base2025": {
+        "foiHundredths": 5754,
+        "foiNoTobaccoHundredths": 5820
+      }
+    },
+    {
+      "year": 1997,
+      "base": 1995,
+      "foiTenths": 1058,
+      "foiNoTobaccoTenths": 1057,
+      "base2025": {
+        "foiHundredths": 5859,
+        "foiNoTobaccoHundredths": 5921
+      }
+    },
+    {
+      "year": 1998,
+      "base": 1995,
+      "foiTenths": 1077,
+      "foiNoTobaccoTenths": 1076,
+      "base2025": {
+        "foiHundredths": 5964,
+        "foiNoTobaccoHundredths": 6027
+      }
+    },
+    {
+      "year": 1999,
+      "base": 1995,
+      "foiTenths": 1095,
+      "foiNoTobaccoTenths": 1093,
+      "base2025": {
+        "foiHundredths": 6064,
+        "foiNoTobaccoHundredths": 6123
+      }
+    },
+    {
+      "year": 2000,
+      "base": 1995,
+      "foiTenths": 1122,
+      "foiNoTobaccoTenths": 1121,
+      "base2025": {
+        "foiHundredths": 6213,
+        "foiNoTobaccoHundredths": 6280
+      }
+    },
+    {
+      "year": 2001,
+      "base": 1995,
+      "foiTenths": 1153,
+      "foiNoTobaccoTenths": 1151,
+      "base2025": {
+        "foiHundredths": 6385,
+        "foiNoTobaccoHundredths": 6448
+      }
+    },
+    {
+      "year": 2002,
+      "base": 1995,
+      "foiTenths": 1180,
+      "foiNoTobaccoTenths": 1179,
+      "base2025": {
+        "foiHundredths": 6534,
+        "foiNoTobaccoHundredths": 6604
+      }
+    },
+    {
+      "year": 2003,
+      "base": 1995,
+      "foiTenths": 1210,
+      "foiNoTobaccoTenths": 1208,
+      "base2025": {
+        "foiHundredths": 6701,
+        "foiNoTobaccoHundredths": 6767
+      }
+    },
+    {
+      "year": 2004,
+      "base": 1995,
+      "foiTenths": 1237,
+      "foiNoTobaccoTenths": 1232,
+      "base2025": {
+        "foiHundredths": 6850,
+        "foiNoTobaccoHundredths": 6901
+      }
+    },
+    {
+      "year": 2005,
+      "base": 1995,
+      "foiTenths": 1260,
+      "foiNoTobaccoTenths": 1253,
+      "base2025": {
+        "foiHundredths": 6977,
+        "foiNoTobaccoHundredths": 7019
+      }
+    },
+    {
+      "year": 2006,
+      "base": 1995,
+      "foiTenths": 1287,
+      "foiNoTobaccoTenths": 1278,
+      "base2025": {
+        "foiHundredths": 7127,
+        "foiNoTobaccoHundredths": 7159
+      }
+    },
+    {
+      "year": 2007,
+      "base": 1995,
+      "foiTenths": 1309,
+      "foiNoTobaccoTenths": 1300,
+      "base2025": {
+        "foiHundredths": 7249,
+        "foiNoTobaccoHundredths": 7282
+      }
+    },
+    {
+      "year": 2008,
+      "base": 1995,
+      "foiTenths": 1353,
+      "foiNoTobaccoTenths": 1342,
+      "base2025": {
+        "foiHundredths": 7492,
+        "foiNoTobaccoHundredths": 7518
+      }
+    },
+    {
+      "year": 2009,
+      "base": 1995,
+      "foiTenths": 1363,
+      "foiNoTobaccoTenths": 1352,
+      "base2025": {
+        "foiHundredths": 7548,
+        "foiNoTobaccoHundredths": 7574
+      }
+    },
+    {
+      "year": 2010,
+      "base": 1995,
+      "foiTenths": 1385,
+      "foiNoTobaccoTenths": 1373,
+      "base2025": {
+        "foiHundredths": 7670,
+        "foiNoTobaccoHundredths": 7691
+      }
+    },
+    {
+      "year": 2011,
+      "base": 2010,
+      "foiTenths": 1028,
+      "foiNoTobaccoTenths": 1027,
+      "base2025": {
+        "foiHundredths": 7884,
+        "foiNoTobaccoHundredths": 7899
+      }
+    },
+    {
+      "year": 2012,
+      "base": 2010,
+      "foiTenths": 1060,
+      "foiNoTobaccoTenths": 1058,
+      "base2025": {
+        "foiHundredths": 8130,
+        "foiNoTobaccoHundredths": 8137
+      }
+    },
+    {
+      "year": 2013,
+      "base": 2010,
+      "foiTenths": 1072,
+      "foiNoTobaccoTenths": 1070,
+      "base2025": {
+        "foiHundredths": 8222,
+        "foiNoTobaccoHundredths": 8230
+      }
+    },
+    {
+      "year": 2014,
+      "base": 2010,
+      "foiTenths": 1074,
+      "foiNoTobaccoTenths": 1072,
+      "base2025": {
+        "foiHundredths": 8237,
+        "foiNoTobaccoHundredths": 8245
+      }
+    },
+    {
+      "year": 2015,
+      "base": 2010,
+      "foiTenths": 1074,
+      "foiNoTobaccoTenths": 1071,
+      "base2025": {
+        "foiHundredths": 8237,
+        "foiNoTobaccoHundredths": 8237
+      }
+    },
+    {
+      "year": 2016,
+      "base": 2015,
+      "foiTenths": 999,
+      "foiNoTobaccoTenths": 999,
+      "base2025": {
+        "foiHundredths": 8229,
+        "foiNoTobaccoHundredths": 8229
+      }
+    },
+    {
+      "year": 2017,
+      "base": 2015,
+      "foiTenths": 1011,
+      "foiNoTobaccoTenths": 1010,
+      "base2025": {
+        "foiHundredths": 8328,
+        "foiNoTobaccoHundredths": 8320
+      }
+    },
+    {
+      "year": 2018,
+      "base": 2015,
+      "foiTenths": 1022,
+      "foiNoTobaccoTenths": 1021,
+      "base2025": {
+        "foiHundredths": 8418,
+        "foiNoTobaccoHundredths": 8410
+      }
+    },
+    {
+      "year": 2019,
+      "base": 2015,
+      "foiTenths": 1027,
+      "foiNoTobaccoTenths": 1026,
+      "base2025": {
+        "foiHundredths": 8460,
+        "foiNoTobaccoHundredths": 8451
+      }
+    },
+    {
+      "year": 2020,
+      "base": 2015,
+      "foiTenths": 1025,
+      "foiNoTobaccoTenths": 1023,
+      "base2025": {
+        "foiHundredths": 8443,
+        "foiNoTobaccoHundredths": 8427
+      }
+    },
+    {
+      "year": 2021,
+      "base": 2015,
+      "foiTenths": 1044,
+      "foiNoTobaccoTenths": 1042,
+      "base2025": {
+        "foiHundredths": 8600,
+        "foiNoTobaccoHundredths": 8583
+      }
+    },
+    {
+      "year": 2022,
+      "base": 2015,
+      "foiTenths": 1126,
+      "foiNoTobaccoTenths": 1126,
+      "base2025": {
+        "foiHundredths": 9275,
+        "foiNoTobaccoHundredths": 9275
+      }
+    },
+    {
+      "year": 2023,
+      "base": 2015,
+      "foiTenths": 1186,
+      "foiNoTobaccoTenths": 1187,
+      "base2025": {
+        "foiHundredths": 9769,
+        "foiNoTobaccoHundredths": 9778
+      }
+    },
+    {
+      "year": 2024,
+      "base": 2015,
+      "foiTenths": 1197,
+      "foiNoTobaccoTenths": 1197,
+      "base2025": {
+        "foiHundredths": 9860,
+        "foiNoTobaccoHundredths": 9860
+      }
+    },
+    {
+      "year": 2025,
+      "base": 2015,
+      "foiTenths": 1214,
+      "foiNoTobaccoTenths": 1214,
+      "base2025": {
+        "foiHundredths": 10000,
+        "foiNoTobaccoHundredths": 10000
+      }
+    }
+  ],
+  "semantics": {
+    "soldi": {
+      "applicable": false,
+      "unit": "non applicabile",
+      "nature": "indice dei prezzi al consumo (FOI), non flusso monetario pubblico"
+    },
+    "periodo": {
+      "referencePeriod": "1996-2025",
+      "granularity": "anno solare, media annua pubblicata da ISTAT"
+    },
+    "provenance": {
+      "holder": "ISTAT — Istituto nazionale di statistica",
+      "landingUrl": "https://esploradati.istat.it/databrowser/",
+      "license": "not-declared",
+      "licenseNote": "Né le risposte SDMX-CSV né il file dei coefficienti espongono una licenza: come per gli altri snapshot ISTAT non ne viene inferita alcuna.",
+      "acquisitionDate": "2026-11-03",
+      "assets": {
+        "base-1995": {
+          "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,144_118_DF_DCSP_FOI2_1,1.0/A.IT.5.4.00+00ST",
+          "dataflowId": "144_118_DF_DCSP_FOI2_1",
+          "format": "SDMX-CSV 1.0.0",
+          "bytes": 2212,
+          "sha256": "2dd01dfcaa4a2f5ab710346e7551dd53472e92f1a11e402d75c69e7613356251"
+        },
+        "base-2010": {
+          "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,169_28_DF_DCSP_FOI2B2010_1,1.0/A.IT.12.4.00+00ST",
+          "dataflowId": "169_28_DF_DCSP_FOI2B2010_1",
+          "format": "SDMX-CSV 1.0.0",
+          "bytes": 926,
+          "sha256": "4eec1c9f4683f6a5dd8abdf74f1d765896dea40d57d49a7aedeb5719f331293a"
+        },
+        "base-2015": {
+          "url": "https://esploradati.istat.it/SDMXWS/rest/data/IT1,169_746_DF_DCSP_FOI2B2015_1,1.0/A.IT.56.4.00+00ST",
+          "dataflowId": "169_746_DF_DCSP_FOI2B2015_1",
+          "format": "SDMX-CSV 1.0.0",
+          "bytes": 1670,
+          "sha256": "3872cc3e4849bb5e6f15ab420b6f2501c0ef9bb625112476920189f0fdb2795c"
+        },
+        "raccordo": {
+          "url": "https://esploradati.istat.it/databrowser/DWL/Prezzi/DCSP_FOI1B2025/DCSP_FOI_CR_Ecoicopv2.xlsx",
+          "dataflowId": "DF_BULK_DCSP_FOI1B2025_TB1",
+          "format": "XLSX",
+          "bytes": 15232,
+          "sha256": "8d7b3b1ed3c36d5993175fcd41a3d2918ce851660669115ba692a395e3587e32"
+        }
+      }
+    }
+  }
+}

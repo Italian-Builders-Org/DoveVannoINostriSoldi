@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 135
+- Artefatti nel registro: 138
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 118 (PR umana dopo revisione)
+- manuale: 121 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -110,6 +110,9 @@ La revisione e il merge restano umani.
 | `company-atlas` | 2026-10-22 | 2026-10-22T00:00:00.000Z | https://opendata.marche.camcom.it/data/Stock-Imprese-Attive-Italia.json | `41 5 * * *` | `.github/workflows/company-atlas-refresh.yml` | PR automatica | `node scripts/etl/company_atlas_snapshot.mjs --check` |
 | `istat-pensions-2012-2022` | 2012-2022 | non dichiarato | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_pensions_snapshot.py --check` |
 | `consip-ordini-2024-2026` | 2024-2026 | non dichiarato | https://dati.consip.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/consip_ordini_snapshot.py --check` |
+| `eurostat-hicp-annuale` | 1996-2025 | 2026-11-03 | https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_ainr/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check` |
+| `istat-foi-annuale` | 1996-2025 | 2026-11-03 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_foi_annual_snapshot.py --check` |
+| `istat-retribuzioni-contrattuali` | 2005-2025 | 2026-11-03 | https://esploradati.istat.it/databrowser/ | nessuno | nessuno | manuale | `python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check` |
 | `eurostat-hicp-2022-2026` | 2022-01/2026-08 (totale Italia); 2026-07 (confronto e divisioni); pesi 2025-2026 | 2026-09-10 | https://ec.europa.eu/eurostat/databrowser/view/prc_hicp_minr/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_hicp_snapshot.py --check` |
 | `oecd-taxing-wages-2000-2025` | 2000-2025 (Italia AW100/AW67); 2015-2025 (confronto peer AW100) | 2026-09-11 | https://www.oecd.org/en/publications/taxing-wages-2025_b3a95829-en.html | nessuno | nessuno | manuale | `python3 scripts/etl/oecd_taxing_wages_snapshot.py --check` |
 | `eurostat-gdp-2015-2026` | trimestrale Italia 2015-Q1/2026-Q2; annuale Italia 2015/2025; peer 2019-Q1/2026-Q2 | 2026-09-12 | https://ec.europa.eu/eurostat/databrowser/view/namq_10_gdp/default/table?lang=en | nessuno | nessuno | manuale | `python3 scripts/etl/eurostat_gdp_snapshot.py --check` |
@@ -161,7 +164,7 @@ La revisione e il merge restano umani.
 | `camera-partecipazione-voto` | non dichiarato nello snapshot | 2026-09-18T07:54:37Z | https://www.camera.it/deputati/statistiche_voto | nessuno | nessuno | manuale | `python3 scripts/etl/camera_partecipazione_voto_snapshot.py --check` |
 | `camera-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-22T15:11:42+00:00 | https://dati.camera.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/camera_atti_voti_xix_snapshot.py --check` |
 | `senato-atti-voti-xix` | non dichiarato nello snapshot | 2026-09-23T08:38:08+00:00 | https://dati.senato.it/ | nessuno | nessuno | manuale | `python3 scripts/etl/senato_atti_voti_xix_snapshot.py --check` |
-| `camera-trattamento-economico` | non dichiarato nello snapshot | 2026-09-18T07:54:38Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
+| `camera-trattamento-economico` | 2005-2026 | 2026-11-02T21:58:08Z | https://www.camera.it/deputati/trattamento-economico | nessuno | nessuno | manuale | `python3 scripts/etl/camera_trattamento_economico_snapshot.py --check` |
 | `parlamento-giudiziario-xix` | XIX legislatura, dal 2022-10-13 | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/555 | nessuno | nessuno | manuale | `python3 scripts/etl/parlamento_giudiziario_xix_snapshot.py --check` |
 | `documenti-declassificati` | Pilota 1970-2024: Commissioni Moro e Terrorismo e stragi, atti Camera XVII, fondi Senato declassificati e guide ACS/archivi | non dichiarato | https://github.com/Italian-Builders-Org/DoveVannoINostriSoldi/issues/799 | nessuno | nessuno | manuale | `python3 scripts/etl/documenti_declassificati_snapshot.py --check` |
 | `opencivitas-2022-polizia` | 2022 | 2026-09-22T13:19:50Z | https://www.opencivitas.it/it/dataset/2022-comuni-polizia-locale-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2022_polizia_snapshot.py --check` |

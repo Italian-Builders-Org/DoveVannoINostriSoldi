@@ -1847,6 +1847,75 @@
       "trustModel": "Source-lock: i sei CSV annuali ufficiali (Convenzioni e MEPA 2024-2026, CC BY 4.0) sono acquisiti localmente e vincolati per URL, schema, righe, byte e SHA-256; --check valida il bundle committato senza rete e le riconciliazioni fra aggregati e totali falliscono chiuse."
     },
     {
+      "id": "eurostat-hicp-annuale",
+      "owner": "Eurostat HICP Italia, medie annue 1996-2025",
+      "files": [
+        "src/data/generated/eurostat-hicp-annuale.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/eurostat_hicp_annual_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_eurostat_hicp_annual_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/eurostat_hicp_annual_snapshot.py --input <risposta JSON-stat dall'URL del lock> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/eurostat-hicp-annuale.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: una risposta JSON-stat ufficiale Eurostat (prc_hicp_ainr, CC BY 4.0) fissata per URL, struttura SDMX, timestamp upstream, byte e SHA-256. Pretende 30 indici annui e 29 tassi, indice 100 nell'anno base 2025, e ogni tasso coerente con quello ricalcolato dagli indici entro il solo arrotondamento."
+    },
+    {
+      "id": "istat-foi-annuale",
+      "owner": "ISTAT FOI, medie annue 1996-2025 con raccordo alla base 2025",
+      "files": [
+        "src/data/generated/istat-foi-annuale.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_foi_annual_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_foi_annual_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/istat_foi_annual_snapshot.py --input-dir <cartella con le tre risposte SDMX-CSV e il file dei coefficienti> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-foi-annuale.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: tre risposte SDMX-CSV ISTAT (una per base: 1995, 2010, 2015) e il file ufficiale dei coefficienti di raccordo, fissati per URL, byte e SHA-256. Pretende 30 anni senza buchi per FOI generale e senza tabacchi, nessun flag, ogni coefficiente uguale all'indice medio dell'anno base nella base precedente e la serie derivata in base 2025 ricalcolabile esattamente, con il 2025 a 100."
+    },
+    {
+      "id": "istat-retribuzioni-contrattuali",
+      "owner": "ISTAT indice delle retribuzioni contrattuali per dipendente 2005-2025",
+      "files": [
+        "src/data/generated/istat-retribuzioni-contrattuali.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_istat_retribuzioni_contrattuali_snapshot.py"
+      ],
+      "nodeTests": [],
+      "generator": {
+        "command": "python3 scripts/etl/istat_retribuzioni_contrattuali_snapshot.py --input <risposta SDMX-CSV dall'URL del lock> --write",
+        "requiresNetworkInput": true
+      },
+      "sourceSpec": "scripts/etl/specs/istat-retribuzioni-contrattuali.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source-lock: una risposta SDMX-CSV ISTAT (155_318_DF_DCSC_RETRCONTR1C_4) fissata per URL, byte e SHA-256, con la chiave della serie ricavata dallo spec. Pretende 21 anni senza buchi, solo indice per dipendente, totale economia e dipendenti esclusi i dirigenti, e nessun flag."
+    },
+    {
       "id": "eurostat-hicp-2022-2026",
       "owner": "Eurostat HICP prezzi al consumo armonizzati 2022-2026",
       "files": [
@@ -3225,7 +3294,7 @@
       },
       "sourceSpec": "scripts/etl/specs/camera-trattamento-economico.source.json",
       "refreshWorkflow": null,
-      "trustModel": "Pagina ufficiale del trattamento economico dei deputati pinnata per byte/SHA-256. Pubblica solo aliquote istituzionali estratte da frasi letterali (indennità, diaria, rimborso): non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
+      "trustModel": "Pagina ufficiale del trattamento economico dei deputati: SHA-256 dei byte registrato, lock sul testo della sezione (i byte cambiano con il token di cache CSS di Drupal). Pubblica solo aliquote istituzionali e gradini storici estratti da frasi letterali (indennità, diaria, rimborsi, trattenute), con la catena da/a verificata: non sono cedolini individuali. Il trattamento del Senato resta fuori finché la pagina non è acquisibile senza challenge WAF."
     },
     {
       "id": "parlamento-giudiziario-xix",

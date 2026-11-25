@@ -1,6 +1,13 @@
 import "server-only";
 
-import rawSnapshot from "@/data/generated/istat-municipality-geography.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
+
+// Read at runtime: a typed JSON import makes tsc infer every packed row (3.1 MiB).
+const rawSnapshot: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/istat-municipality-geography.json"),
+  7 * 1024 * 1024,
+);
 
 export type MunicipalityGeography = Readonly<{
   year: number;
@@ -71,11 +78,18 @@ function invariant(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(`Snapshot geografico ISTAT non valido: ${message}`);
 }
 
+type GeographySource = Readonly<{
+  owner: string;
+  catalogUrl: string;
+  methodologyUrl: string;
+  rightsNote: string;
+}>;
+
 type GeographySnapshot = Readonly<{
   schemaVersion: number;
   datasetId: string;
   generatedAt: string;
-  source: typeof rawSnapshot.source;
+  source: GeographySource;
   columns: readonly string[];
   years: Array<{ year: number; referenceDate: string; municipalities: number; rows: PackedRow[] }>;
 }>;
@@ -84,6 +98,12 @@ const snapshot = rawSnapshot as unknown as GeographySnapshot;
 
 invariant(snapshot.schemaVersion === 1, "schemaVersion inattesa");
 invariant(snapshot.datasetId === "istat-municipality-geography", "dataset inatteso");
+invariant(
+  (["owner", "catalogUrl", "methodologyUrl", "rightsNote"] as const).every(
+    (key) => typeof snapshot.source?.[key] === "string" && snapshot.source[key].length > 0,
+  ),
+  "fonte incompleta",
+);
 invariant(
   snapshot.columns.length === EXPECTED_COLUMNS.length &&
     snapshot.columns.every((column, index) => column === EXPECTED_COLUMNS[index]),

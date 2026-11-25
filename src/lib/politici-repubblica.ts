@@ -1,6 +1,5 @@
 import attendanceJson from "@/data/generated/camera-partecipazione-voto.json";
-import attiVotiJson from "@/data/generated/camera-atti-voti-xix.json";
-import senatoAttiVotiJson from "@/data/generated/senato-atti-voti-xix.json";
+import { cameraAttiVotiJson as attiVotiJson, senatoAttiVotiJson } from "@/lib/parlamento-atti-voti-raw";
 import cameraJson from "@/data/generated/politici-camera-xix.json";
 import mandatiJson from "@/data/generated/parlamento-mandati-xix.json";
 import governmentJson from "@/data/generated/governo-meloni.json";

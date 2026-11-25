@@ -1,6 +1,7 @@
 import "server-only";
 
-import dataArtifact from "@/data/generated/istat-epea-2016-2022.data.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import metadataArtifact from "@/data/generated/istat-epea-2016-2022.meta.json";
 import {
   parseIstatEpeaData,
@@ -8,6 +9,12 @@ import {
   type IstatEpeaData,
   type IstatEpeaMeta,
 } from "@/lib/data/istat-epea-contracts";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const dataArtifact: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/istat-epea-2016-2022.data.json"),
+  2 * 1024 * 1024,
+);
 
 const data: IstatEpeaData = parseIstatEpeaData(dataArtifact);
 const metadata: IstatEpeaMeta = parseIstatEpeaMeta(metadataArtifact);

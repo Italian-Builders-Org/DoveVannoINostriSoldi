@@ -1,5 +1,6 @@
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import { createHash } from "node:crypto";
-import mefIrpefDataJson from "@/data/generated/mef-irpef-2024.data.json";
 import mefIrpefMetaJson from "@/data/generated/mef-irpef-2024.meta.json";
 import {
   MEF_IRPEF_DATASET_ID,
@@ -20,6 +21,12 @@ import {
   type MefIrpefSummaryMeasureKey,
   validateMefIrpefSnapshot,
 } from "@/lib/data/mef-irpef-contract";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const mefIrpefDataJson: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/mef-irpef-2024.data.json"),
+  5 * 1024 * 1024,
+);
 
 export type MefIrpefLevel = "region" | "province" | "municipality";
 export type MefIrpefDetail = "summary" | "income-sources" | "income-bands" | "all";

@@ -1,6 +1,7 @@
 import "server-only";
 
-import rawSnapshot from "@/data/generated/company-atlas-snapshot.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import {
   validateCompanyAtlasSnapshot,
   type CompanyAtlasMetric,
@@ -9,6 +10,12 @@ import {
   type CompanyAtlasSource,
 } from "@/lib/company-atlas-contract";
 import { createCompanyAtlasObservationIndex } from "@/lib/company-atlas-index";
+
+// Read at runtime: a typed JSON import makes tsc infer every row (5903 KiB).
+const rawSnapshot: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/company-atlas-snapshot.json"),
+  12 * 1024 * 1024,
+);
 
 export const COMPANY_ATLAS_ALL = "all" as const;
 

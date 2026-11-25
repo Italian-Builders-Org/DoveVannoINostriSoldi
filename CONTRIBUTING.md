@@ -112,6 +112,14 @@ deterministica riproducibile.
 `ci:static` esegue lint, typecheck, `reports:check`, `design:check`, `brand:check`,
 `agent-context:check` e `agent-public:check` in quest'ordine. `typecheck` genera
 i tipi Next anche in una checkout appena installata.
+Il typecheck completo deve restare ben sotto il limite di heap predefinito di
+Node nei runner (circa 4 GB): un JSON importato da TypeScript fa inferire un tipo
+per ogni riga. Gli snapshot grandi si leggono a runtime con `readJsonSnapshot`
+e un percorso letterale, validati dal contratto del modulo; il nuovo file va
+aggiunto ai requisiti di `scripts/ci/check-runtime-traces.mjs`.
+`tests/typed-json-import-budget.test.mjs` limita dimensione e totale dei JSON
+tipizzati; alzare quei limiti richiede una misura di
+`npx tsc --noEmit --incremental false --extendedDiagnostics` nella PR.
 Artifact dei test/benchmark e virtualenv sono esclusi da lint e typecheck;
 le copie di sorgenti salvate lì non entrano nel progetto TypeScript.
 Se il tuo interprete Python non si chiama `python3`, indicalo con `PYTHON`

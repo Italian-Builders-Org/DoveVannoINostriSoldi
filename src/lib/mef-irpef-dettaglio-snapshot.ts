@@ -1,6 +1,7 @@
 import "server-only";
 
-import dataArtifact from "@/data/generated/mef-irpef-dettaglio-2017-2025.data.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import metadataArtifact from "@/data/generated/mef-irpef-dettaglio-2017-2025.meta.json";
 import {
   validateMefIrpefDettaglioBundle,
@@ -10,6 +11,12 @@ import {
   type MefIrpefDettaglioSchema,
   type MefIrpefDettaglioTable,
 } from "@/lib/data/mef-irpef-dettaglio-contract";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const dataArtifact: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/mef-irpef-dettaglio-2017-2025.data.json"),
+  11 * 1024 * 1024,
+);
 
 const validated = validateMefIrpefDettaglioBundle(dataArtifact, metadataArtifact);
 

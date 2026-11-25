@@ -1,17 +1,28 @@
 import "server-only";
 
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import { createHash } from "node:crypto";
-import rawDetail from "@/data/generated/siope-nonmunicipal-detail.json";
 import nativeProvenance from "@/data/generated/siope-nonmunicipal-provenance.json";
 import viewProof from "@/data/generated/siope-nonmunicipal-view-proof.json";
 import integratedCatalog from "@/data/generated/integrated/catalog.json";
-import datasetProof from "../../data/source-ledger/dataset-proof.json";
 import integratedReleaseProof from "../../data/source-ledger/release-proof.json";
 import inventoryReceipt from "../../data/source-ledger/datasets/siope-inventario-enti.receipt.json";
 import metroReceipt from "../../data/source-ledger/datasets/siope-uscite-citta-metropolitane.receipt.json";
 import provinceReceipt from "../../data/source-ledger/datasets/siope-uscite-province.receipt.json";
 import aslReceipt from "../../data/source-ledger/datasets/siope-uscite-asl.receipt.json";
 import regionReceipt from "../../data/source-ledger/datasets/siope-uscite-regioni.receipt.json";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const rawDetail: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-nonmunicipal-detail.json"),
+  9 * 1024 * 1024,
+);
+// The ledger proof is only hashed and compared below; its 1.2 MiB need no inferred type.
+const datasetProof = readJsonSnapshot(
+  join(process.cwd(), "data/source-ledger/dataset-proof.json"),
+  4 * 1024 * 1024,
+) as Readonly<{ catalogSha256?: unknown }>;
 
 export type NonMunicipalYear = {
   year: 2024 | 2025 | 2026;

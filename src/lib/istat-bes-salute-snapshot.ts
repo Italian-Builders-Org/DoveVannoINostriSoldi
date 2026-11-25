@@ -1,7 +1,14 @@
 import "server-only";
-import dataArtifact from "@/data/generated/istat-bes-salute-2004-2024.data.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import metadataArtifact from "@/data/generated/istat-bes-salute-2004-2024.meta.json";
 import { validateIstatBesSaluteBundle } from "@/lib/data/istat-bes-salute-contract";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const dataArtifact: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/istat-bes-salute-2004-2024.data.json"),
+  9 * 1024 * 1024,
+);
 
 const validated = validateIstatBesSaluteBundle(dataArtifact, metadataArtifact);
 export const istatBesSaluteData = validated.data;

@@ -1,10 +1,17 @@
 import "server-only";
-import snapshotJson from "@/data/generated/opencivitas-2021-rifiuti.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import {
   assertOpenCivitas2021RifiutiSnapshot,
   type OpenCivitas2021RifiutiSnapshot,
 } from "@/lib/data/opencivitas-2021-rifiuti-contract";
 import { resolveOpenCivitasRegionName } from "@/lib/region-query";
+
+// Read at runtime: a typed JSON import makes tsc infer every row (794 KiB).
+const snapshotJson: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/opencivitas-2021-rifiuti.json"),
+  2 * 1024 * 1024,
+);
 
 export const openCivitas2021RifiutiSnapshot: OpenCivitas2021RifiutiSnapshot =
   assertOpenCivitas2021RifiutiSnapshot(snapshotJson);

@@ -1,10 +1,9 @@
 import "server-only";
 
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import type { IpaEntity } from "@/lib/ipa";
 
-import detail2024 from "@/data/generated/siope-municipal-detail-2024.json";
-import detail2025 from "@/data/generated/siope-municipal-detail-2025.json";
-import detail2026 from "@/data/generated/siope-municipal-detail.json";
 import { partialMonthOf } from "@/lib/siope-calendar";
 import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import {
@@ -12,6 +11,20 @@ import {
   getMunicipalityGeographyByTaxCodeIfNameAgrees,
   type MunicipalityGeography,
 } from "@/lib/municipality-geography";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const detail2024: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-detail-2024.json"),
+  3 * 1024 * 1024,
+);
+const detail2025: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-detail-2025.json"),
+  3 * 1024 * 1024,
+);
+const detail2026: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-detail.json"),
+  3 * 1024 * 1024,
+);
 
 const TITLE_ORDER = ["0", "1", "2", "3", "4", "5", "7"] as const;
 const EXPECTED_COLUMNS = [

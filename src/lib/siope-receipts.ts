@@ -1,11 +1,10 @@
 import "server-only";
 
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import summary2024 from "@/data/generated/siope-municipal-receipts-2024.json";
 import summary2025 from "@/data/generated/siope-municipal-receipts-2025.json";
 import summary2026 from "@/data/generated/siope-municipal-receipts-2026.json";
-import detail2024 from "@/data/generated/siope-municipal-receipts-detail-2024.json";
-import detail2025 from "@/data/generated/siope-municipal-receipts-detail-2025.json";
-import detail2026 from "@/data/generated/siope-municipal-receipts-detail-2026.json";
 import {
   siopeReceiptsPeriod,
   validateSiopeReceiptsArtifacts,
@@ -16,6 +15,20 @@ import { getSiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
 import { getSiopeMunicipalityDetail } from "@/lib/siope-municipality-detail";
 import { eurosPerSquareKilometreCents, getMunicipalityGeographyByTaxCodeIfNameAgrees } from "@/lib/municipality-geography";
 import { formatRegionNotFoundError, resolveCanonicalRegionName } from "@/lib/region-query";
+
+// Read at runtime: typed JSON imports make tsc infer every row of large snapshots.
+const detail2024: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-receipts-detail-2024.json"),
+  3 * 1024 * 1024,
+);
+const detail2025: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-receipts-detail-2025.json"),
+  3 * 1024 * 1024,
+);
+const detail2026: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/siope-municipal-receipts-detail-2026.json"),
+  3 * 1024 * 1024,
+);
 
 export type { SiopeMunicipalReceiptsSnapshot, SiopeReceiptsPeriod } from "@/lib/data/siope-receipts-contract";
 export const availableSiopeReceiptsYears: readonly number[] = [2026, 2025, 2024];

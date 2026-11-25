@@ -1,6 +1,7 @@
 import "server-only";
 
-import rawSnapshot from "@/data/generated/education-atlas-snapshot.json";
+import { join } from "node:path";
+import { readJsonSnapshot } from "@/lib/data/read-json-snapshot";
 import {
   validateEducationAtlasSnapshot,
   type EducationAtlasAddressObservation,
@@ -11,6 +12,12 @@ import {
   type EducationAtlasSource,
   type EducationSchoolType,
 } from "@/lib/education-atlas-contract";
+
+// Read at runtime: a typed JSON import makes tsc infer every row (2515 KiB).
+const rawSnapshot: unknown = readJsonSnapshot(
+  join(process.cwd(), "src/data/generated/education-atlas-snapshot.json"),
+  5 * 1024 * 1024,
+);
 
 export const EDUCATION_ATLAS_ALL = "all" as const;
 export type EducationAtlasSelection = typeof EDUCATION_ATLAS_ALL;

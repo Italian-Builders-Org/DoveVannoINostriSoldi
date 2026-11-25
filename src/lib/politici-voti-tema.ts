@@ -22,9 +22,8 @@ import {
   VOTE_THEMES,
   type VoteThemeDefinition,
 } from "@/lib/politici-voti-tema-catalog";
-import cameraAttiVotiJson from "@/data/generated/camera-atti-voti-xix.json";
 import cameraPeopleJson from "@/data/generated/politici-camera-xix.json";
-import senatoAttiVotiJson from "@/data/generated/senato-atti-voti-xix.json";
+import { cameraAttiVotiJson, senatoAttiVotiJson } from "@/lib/parlamento-atti-voti-raw";
 import senatoPeopleJson from "@/data/generated/politici-senato-xix.json";
 import curatedComparisonsJson from "@/data/politici-confronti-curati.json";
 

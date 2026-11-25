@@ -2,6 +2,7 @@ import cameraRaw from "@/data/generated/camera-trattamento-economico.json";
 import hicpRaw from "@/data/generated/eurostat-hicp-annuale.json";
 import foiRaw from "@/data/generated/istat-foi-annuale.json";
 import contractualRaw from "@/data/generated/istat-retribuzioni-contrattuali.json";
+import { istatBesData, istatBesMetadata } from "@/lib/istat-bes-snapshot";
 import {
   parseEurostatHicpAnnualSnapshot,
   parseIstatContractualWagesSnapshot,
@@ -71,7 +72,7 @@ export type ComparisonRow = {
 };
 
 export type ComparisonSource = {
-  id: "camera" | "contractual" | "foi" | "hicp";
+  id: "camera" | "contractual" | "effective" | "foi" | "hicp";
   owner: string;
   title: string;
   url: string;
@@ -95,6 +96,19 @@ export type DeputiesVsWagesComparison = {
     indemnityRealHicpPct: number;
     contractualRealHicpPct: number;
   };
+  /**
+   * Second lens on wages: average annual pay actually received by employees
+   * (ISTAT BES 04BEC002P, Italy, both sexes). It reflects composition (part-time,
+   * sectors) and covers fewer years, so it is a check, not the main series.
+   */
+  effectiveWages: {
+    fromYear: number;
+    toYear: number;
+    firstEuro: number;
+    lastEuro: number;
+    nominalPct: number;
+    realPct: number;
+  };
   freeze: CameraTrattamentoEconomicoSnapshot["freeze"];
   steps: { componentId: string; label: string; fromYear: number | null; fromDate: string | null; amountCents: number; derived: boolean; evidence: string }[];
   components: CameraTrattamentoComponent[];
@@ -102,11 +116,16 @@ export type DeputiesVsWagesComparison = {
   caveats: { camera: string[]; contractual: string[]; foi: string[]; hicp: string[] };
 };
 
+export type EffectiveWageObservation = { year: number; euro: number };
+
 type Inputs = {
+  /** BES average annual pay of employees, Italy, total; contiguous years. */
+  effective: readonly EffectiveWageObservation[];
   camera: CameraTrattamentoEconomicoSnapshot;
   foi: IstatFoiAnnualSnapshot;
   hicp: EurostatHicpAnnualSnapshot;
   contractual: IstatContractualWagesSnapshot;
+  effectiveSource?: ComparisonSource;
 };
 
 function lookup<T extends { year: number }>(rows: readonly T[], name: string) {
@@ -159,6 +178,17 @@ export function buildDeputiesVsWagesComparison(input: Inputs): DeputiesVsWagesCo
   });
   const last = rows.at(-1)!;
 
+  if (input.effective.length < 2) throw new Error("retribuzione media BES: servono almeno due anni");
+  for (let index = 1; index < input.effective.length; index += 1) {
+    if (input.effective[index]!.year !== input.effective[index - 1]!.year + 1) {
+      throw new Error(`retribuzione media BES: anni non consecutivi dopo il ${input.effective[index - 1]!.year}`);
+    }
+  }
+  const effectiveFirst = input.effective[0]!;
+  const effectiveLast = input.effective.at(-1)!;
+  const effectivePrices = foi(effectiveLast.year).base2025.foiHundredths / foi(effectiveFirst.year).base2025.foiHundredths;
+  const effectiveNominal = effectiveLast.euro / effectiveFirst.euro;
+
   const labels = new Map(input.camera.components.map((component) => [component.id, component.label]));
   const cameraSource = input.camera.source;
   const hicpProvenance = input.hicp.semantics.provenance;
@@ -179,6 +209,14 @@ export function buildDeputiesVsWagesComparison(input: Inputs): DeputiesVsWagesCo
       pricesPct: pct(last.prices),
       indemnityRealHicpPct: pct(last.indemnityRealHicp),
       contractualRealHicpPct: pct(last.contractualRealHicp),
+    },
+    effectiveWages: {
+      fromYear: effectiveFirst.year,
+      toYear: effectiveLast.year,
+      firstEuro: effectiveFirst.euro,
+      lastEuro: effectiveLast.euro,
+      nominalPct: (effectiveNominal - 1) * 100,
+      realPct: (effectiveNominal / effectivePrices - 1) * 100,
     },
     freeze: input.camera.freeze,
     steps: input.camera.history.map((step) => ({
@@ -210,6 +248,7 @@ export function buildDeputiesVsWagesComparison(input: Inputs): DeputiesVsWagesCo
         acquiredOn: contractualProvenance.acquisitionDate,
         period: input.contractual.referencePeriod,
       },
+      ...(input.effectiveSource ? [input.effectiveSource] : []),
       {
         id: "foi",
         owner: foiProvenance.holder,
@@ -241,7 +280,23 @@ export function buildDeputiesVsWagesComparison(input: Inputs): DeputiesVsWagesCo
 let cached: DeputiesVsWagesComparison | null = null;
 
 export function getDeputiesVsWagesComparison(): DeputiesVsWagesComparison {
+  const effective = istatBesData.observations
+    .filter((row) => row.indicator === "04BEC002P" && row.territory === "IT" && row.sex === "T")
+    // A missing value is dropped here and then fails the contiguity check: never read as zero.
+    .flatMap((row) => (row.valueTenths === null ? [] : [{ year: row.year, euro: row.valueTenths / 10 }]))
+    .toSorted((left, right) => left.year - right.year);
+  const besSource = istatBesMetadata.source;
   cached ??= buildDeputiesVsWagesComparison({
+    effective,
+    effectiveSource: {
+      id: "effective",
+      owner: besSource.owner,
+      title: "Retribuzione media annua dei lavoratori dipendenti (BES dei territori)",
+      url: besSource.landingUrl,
+      license: besSource.licenseId,
+      acquiredOn: besSource.acquisition.acquiredAt,
+      period: `${effective[0]?.year ?? "?"}-${effective.at(-1)?.year ?? "?"}`,
+    },
     camera: parseCameraTrattamentoEconomicoSnapshot(cameraRaw),
     foi: parseIstatFoiAnnualSnapshot(foiRaw),
     hicp: parseEurostatHicpAnnualSnapshot(hicpRaw),

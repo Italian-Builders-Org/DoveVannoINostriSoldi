@@ -10,7 +10,12 @@ const raw = {
   foi: read("istat-foi-annuale"),
   hicp: read("eurostat-hicp-annuale"),
   contractual: read("istat-retribuzioni-contrattuali"),
+  bes: read("istat-bes-economico-2004-2024.data"),
 };
+const effective = raw.bes.observations
+  .filter((row) => row.indicator === "04BEC002P" && row.territory === "IT" && row.sex === "T")
+  .map((row) => ({ year: row.year, euro: row.valueTenths / 10 }))
+  .sort((left, right) => left.year - right.year);
 
 const {
   parseEurostatHicpAnnualSnapshot,
@@ -25,6 +30,7 @@ const {
 } = await import("../src/lib/deputati-indennita-salari.ts");
 
 const parsed = () => ({
+  effective: structuredClone(effective),
   camera: parseCameraTrattamentoEconomicoSnapshot(structuredClone(raw.camera)),
   foi: parseIstatFoiAnnualSnapshot(structuredClone(raw.foi)),
   hicp: parseEurostatHicpAnnualSnapshot(structuredClone(raw.hicp)),
@@ -106,12 +112,26 @@ test("headline changes match the rows and the comparison fails closed on a missi
   const input = parsed();
   input.foi.observations = input.foi.observations.filter((row) => row.year !== 2015);
   assert.throws(() => buildDeputiesVsWagesComparison(input), /2015/);
+
+  const gap = parsed();
+  gap.effective = gap.effective.filter((row) => row.year !== 2016);
+  assert.throws(() => buildDeputiesVsWagesComparison(gap), /BES/);
+});
+
+test("effective average pay (BES) is a second lens: nominal up, real down since 2008", () => {
+  const { effectiveWages } = buildDeputiesVsWagesComparison(parsed());
+  assert.equal(effectiveWages.fromYear, 2008);
+  assert.equal(effectiveWages.toYear, 2023);
+  assert.equal(effectiveWages.firstEuro, 20006);
+  close(effectiveWages.lastEuro, 23630.3, "retribuzione media 2023");
+  close(Math.round(effectiveWages.nominalPct * 10) / 10, 18.1, "BES nominale");
+  close(Math.round(effectiveWages.realPct * 10) / 10, -9.4, "BES reale");
 });
 
 test("the committed snapshots load through the public entry point with sources and caveats", () => {
   const comparison = getDeputiesVsWagesComparison();
   assert.equal(comparison.rows.length, 21);
-  assert.deepEqual(comparison.sources.map((source) => source.id), ["camera", "contractual", "foi", "hicp"]);
+  assert.deepEqual(comparison.sources.map((source) => source.id), ["camera", "contractual", "effective", "foi", "hicp"]);
   for (const source of comparison.sources) {
     assert.match(source.url, /^https:\/\//, source.id);
     assert.ok(source.license.length > 0, source.id);

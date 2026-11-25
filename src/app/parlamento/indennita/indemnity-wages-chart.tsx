@@ -23,28 +23,29 @@ const index = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 1, minimum
 const SERIES = {
   nominal: [
     { key: "indemnityNominal", label: "Indennità lorda dei deputati", color: "var(--chart-primary)", dash: undefined },
-    { key: "contractualNominal", label: "Retribuzioni contrattuali", color: "var(--chart-category-amber)", dash: "6 4" },
+    { key: "contractualNominal", label: "Retribuzioni contrattuali dei dipendenti", color: "var(--chart-category-amber)", dash: "6 4" },
     { key: "prices", label: "Prezzi al consumo (FOI)", color: "var(--chart-tertiary)", dash: "2 4" },
   ],
   real: [
     { key: "indemnityReal", label: "Indennità lorda dei deputati", color: "var(--chart-primary)", dash: undefined },
-    { key: "contractualReal", label: "Retribuzioni contrattuali", color: "var(--chart-category-amber)", dash: "6 4" },
+    { key: "contractualReal", label: "Retribuzioni contrattuali dei dipendenti", color: "var(--chart-category-amber)", dash: "6 4" },
   ],
 } as const;
 
 export function IndemnityWagesChart({ rows, baseYear }: { rows: readonly IndemnityWagesChartRow[]; baseYear: number }) {
-  const [mode, setMode] = useState<Mode>("nominal");
+  // Real terms first: nominal growth alone would read as a raise that prices already took back.
+  const [mode, setMode] = useState<Mode>("real");
   const series = SERIES[mode];
   const last = rows.at(-1)!;
   const summary = mode === "nominal"
-    ? `Dal ${baseYear} al ${last.year}, con ${baseYear} uguale a 100: indennità ${index.format(last.indemnityNominal)}, retribuzioni contrattuali ${index.format(last.contractualNominal)}, prezzi ${index.format(last.prices)}.`
-    : `Dal ${baseYear} al ${last.year}, al netto dei prezzi e con ${baseYear} uguale a 100: indennità ${index.format(last.indemnityReal)}, retribuzioni contrattuali ${index.format(last.contractualReal)}.`;
+    ? `Dal ${baseYear} al ${last.year}, con ${baseYear} uguale a 100: indennità ${index.format(last.indemnityNominal)}, retribuzioni contrattuali dei dipendenti ${index.format(last.contractualNominal)}, prezzi ${index.format(last.prices)}.`
+    : `Dal ${baseYear} al ${last.year}, al netto dei prezzi e con ${baseYear} uguale a 100: indennità ${index.format(last.indemnityReal)}, retribuzioni contrattuali dei dipendenti ${index.format(last.contractualReal)}.`;
 
   return (
     <figure className={styles.figure}>
       <div className={styles.modeControl} role="group" aria-label="Valori del grafico">
-        <button type="button" aria-pressed={mode === "nominal"} onClick={() => setMode("nominal")}>Valori nominali</button>
         <button type="button" aria-pressed={mode === "real"} onClick={() => setMode("real")}>Al netto dei prezzi</button>
+        <button type="button" aria-pressed={mode === "nominal"} onClick={() => setMode("nominal")}>Valori nominali</button>
       </div>
       <div className={styles.chart} role="img" aria-label={summary} data-chart-mode={mode}>
         <ResponsiveContainer width="100%" height="100%">

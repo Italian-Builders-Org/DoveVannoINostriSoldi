@@ -58,10 +58,12 @@ export default function DeputiesIndemnityPage() {
       <div className="page-intro">
         <h1>Indennità dei deputati e salari degli italiani, dal {baseYear} al {lastYear}</h1>
         <p>
-          Dal {baseYear} l&apos;indennità lorda di un deputato è scesa da {euro.format(headline.indemnityFirstCents / 100)} a{" "}
-          {euro.format(headline.indemnityLastCents / 100)} al mese ed è ferma dal 2012. Nello stesso periodo le retribuzioni
-          fissate dai contratti collettivi sono salite del {oneDecimal.format(headline.contractualNominalPct)}%, quasi quanto i
-          prezzi. Qui mettiamo a confronto le due serie, in valori nominali e al netto dell&apos;inflazione.
+          Al netto dei prezzi, in vent&apos;anni le retribuzioni dei lavoratori dipendenti fissate dai contratti collettivi
+          sono rimaste ferme ({signedPct(headline.contractualRealPct)}): sulla carta sono salite del{" "}
+          {oneDecimal.format(headline.contractualNominalPct)}%, ma i prezzi sono saliti del {oneDecimal.format(headline.pricesPct)}%.
+          L&apos;indennità lorda dei deputati, invece, è scesa da {euro.format(headline.indemnityFirstCents / 100)} a{" "}
+          {euro.format(headline.indemnityLastCents / 100)} al mese ed è ferma dal 2012: al netto dei prezzi vale il{" "}
+          {oneDecimal.format(Math.abs(headline.indemnityRealPct))}% in meno rispetto al {baseYear}.
         </p>
       </div>
 
@@ -72,14 +74,14 @@ export default function DeputiesIndemnityPage() {
           <span className="stat-note">al mese, adeguamenti sospesi dal {data.freeze.adjustmentsSuspendedFromYear}</span>
         </div>
         <div>
-          <dt>Indennità {baseYear}-{lastYear}</dt>
-          <dd>{signedPct(headline.indemnityNominalPct)}</dd>
-          <span className="stat-note">al netto dei prezzi {signedPct(headline.indemnityRealPct)}</span>
+          <dt>Retribuzioni dei dipendenti, al netto dei prezzi</dt>
+          <dd>{signedPct(headline.contractualRealPct)}</dd>
+          <span className="stat-note">{baseYear}-{lastYear}, contratti collettivi; nominale {signedPct(headline.contractualNominalPct)}</span>
         </div>
         <div>
-          <dt>Retribuzioni contrattuali {baseYear}-{lastYear}</dt>
-          <dd>{signedPct(headline.contractualNominalPct)}</dd>
-          <span className="stat-note">al netto dei prezzi {signedPct(headline.contractualRealPct)}</span>
+          <dt>Indennità dei deputati, al netto dei prezzi</dt>
+          <dd>{signedPct(headline.indemnityRealPct)}</dd>
+          <span className="stat-note">{baseYear}-{lastYear}; nominale {signedPct(headline.indemnityNominalPct)}</span>
         </div>
         <div>
           <dt>Prezzi al consumo {baseYear}-{lastYear}</dt>
@@ -92,8 +94,9 @@ export default function DeputiesIndemnityPage() {
         <section className="panel" aria-labelledby="confronto">
           <h2 id="confronto" className="panel-title">Il confronto anno per anno</h2>
           <p className={styles.lede}>
-            Entrambe le serie partono da 100 nel {baseYear}. L&apos;indennità segue i gradini decisi dalla Camera; le
-            retribuzioni contrattuali sono l&apos;indice ISTAT per dipendente di tutta l&apos;economia, dirigenti esclusi.
+            Entrambe le serie partono da 100 nel {baseYear}. L&apos;indennità dei deputati segue i gradini decisi dalla Camera;
+            le retribuzioni dei dipendenti sono l&apos;indice ISTAT delle retribuzioni contrattuali per dipendente di tutta
+            l&apos;economia, dirigenti esclusi: non riguardano i parlamentari.
           </p>
           <IndemnityWagesChart rows={chartRows} baseYear={baseYear} />
         </section>
@@ -108,6 +111,13 @@ export default function DeputiesIndemnityPage() {
             <li>
               Le retribuzioni contrattuali misurano quanto stabiliscono i contratti collettivi, non quanto viene
               effettivamente pagato: straordinari, premi e cambi di qualifica restano fuori.
+            </li>
+            <li>
+              Anche le retribuzioni effettivamente pagate, misurate da ISTAT nel BES, dicono la stessa cosa: dal{" "}
+              {data.effectiveWages.fromYear} al {data.effectiveWages.toYear} la retribuzione media annua di un dipendente è passata
+              da {euroRound.format(data.effectiveWages.firstEuro)} a {euroRound.format(data.effectiveWages.lastEuro)}
+              {" "}({signedPct(data.effectiveWages.nominalPct)}), ma al netto dei prezzi è {signedPct(data.effectiveWages.realPct)}.
+              Risente anche di part-time e settori, per questo resta una seconda lente.
             </li>
             <li>
               Confrontiamo andamenti, non livelli: un indice a 100 nel {baseYear} non dice che un deputato e un dipendente

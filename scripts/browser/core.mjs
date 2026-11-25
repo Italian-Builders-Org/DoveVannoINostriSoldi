@@ -913,29 +913,30 @@ try {
         );
         // Intl puts a no-break space before the euro sign.
         const stats = await page.$$eval("main .stat-strip dd", (items) => items.map((item) => item.textContent?.replace(/\u00a0/g, " ").trim()));
-        assert.deepEqual(stats, ["10.435 €", "−16,1%", "+42,8%", "+43,3%"], `${label}: valori di sintesi inattesi`);
+        assert.deepEqual(stats, ["10.435 €", "−0,4%", "−41,4%", "+43,3%"], `${label}: valori di sintesi inattesi`);
         const mainText = await page.$eval("main", (element) => element.innerText);
         assertTextMatches(mainText, /non è la busta paga/i, label);
         assert.doesNotMatch(mainText, /\b(ranking|vincitor[ei]|classifica)\b/i, `${label}: linguaggio da classifica`);
 
-        await page.waitForSelector('[data-chart-mode="nominal"] svg');
-        const realButton = await page.$('button[aria-pressed="false"]');
-        assert.ok(realButton, `${label}: pulsante "Al netto dei prezzi" assente`);
-        assert.ok(
-          await realButton.evaluate((element) => element.getBoundingClientRect().height >= 44),
-          `${label}: pulsante del grafico sotto i 44px`,
-        );
-        await realButton.focus();
-        await page.keyboard.press("Enter");
+        // Real terms are the default view; nominal is one keypress away.
         await page.waitForSelector('[data-chart-mode="real"] svg');
         assert.match(
           await page.$eval('[data-chart-mode="real"]', (element) => element.getAttribute("aria-label") ?? ""),
           /al netto dei prezzi/i,
           `${label}: descrizione del grafico reale assente`,
         );
+        const nominalButton = await page.$('[role="group"][aria-label="Valori del grafico"] button[aria-pressed="false"]');
+        assert.ok(nominalButton, `${label}: pulsante "Valori nominali" assente`);
+        assert.ok(
+          await nominalButton.evaluate((element) => element.getBoundingClientRect().height >= 44),
+          `${label}: pulsante del grafico sotto i 44px`,
+        );
+        await nominalButton.focus();
+        await page.keyboard.press("Enter");
+        await page.waitForSelector('[data-chart-mode="nominal"] svg');
         assert.match(
           await page.$eval("details.chart-data caption", (element) => element.textContent ?? ""),
-          /al netto dei prezzi FOI/i,
+          /Indici nominali/i,
           `${label}: tabella del grafico non aggiornata`,
         );
 
@@ -949,10 +950,10 @@ try {
           `${label}: trattenute non distinte`,
         );
         const sources = await page.$$eval("[data-source] a", (links) => links.map((link) => link.getAttribute("href") ?? ""));
-        assert.equal(sources.length, 4, `${label}: fonti incomplete`);
+        assert.equal(sources.length, 5, `${label}: fonti incomplete`);
         assert.ok(sources.every((href) => href.startsWith("https://")), `${label}: fonte senza https`);
 
-        const regionFits = await page.$eval("#gradini [role=\"region\"]", (region) => region.getBoundingClientRect().right <= document.documentElement.clientWidth + 1);
+        const regionFits = await page.$eval("section[aria-labelledby=\"gradini\"] [role=\"region\"]", (region) => region.getBoundingClientRect().right <= document.documentElement.clientWidth + 1);
         assert.ok(regionFits, `${label}: la tabella esce dalla pagina invece di scorrere`);
       },
     });

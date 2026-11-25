@@ -30,7 +30,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   return {
     title: "Emendamenti alla manovra 2027: chi li firma, quanti sono inammissibili",
     description:
-      "Le 6.558 proposte emendative alla legge di bilancio 2027 in Commissione Bilancio alla Camera: esito di ammissibilità, gruppi, firme, testi identici, coperture, Comuni nominati e spesa dichiarata, con le fonti ufficiali.",
+      "Le proposte emendative alla legge di bilancio 2027 in Commissione Bilancio alla Camera: esito di ammissibilità, gruppi, firme, testi identici, coperture, Comuni nominati e spesa dichiarata, con le fonti ufficiali.",
     alternates: { canonical: PAGE_PATH },
     ...(filtered ? { robots: { index: false, follow: true } } : {}),
   };

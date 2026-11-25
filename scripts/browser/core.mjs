@@ -900,6 +900,84 @@ try {
   }
 
   for (const width of [390, 768, 1280]) {
+    const label = `Indennità deputati e salari ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/parlamento/indennita",
+      width,
+      validate: async (page) => {
+        assert.equal(
+          await page.$eval("main h1", (element) => element.textContent?.trim()),
+          "Indennità dei deputati e salari degli italiani, dal 2005 al 2025",
+          `${label}: H1 assente`,
+        );
+        // Intl puts a no-break space before the euro sign.
+        const stats = await page.$$eval("main .stat-strip dd", (items) => items.map((item) => item.textContent?.replace(/\u00a0/g, " ").trim()));
+        assert.deepEqual(stats, ["10.435 €", "−0,4%", "−41,4%", "+43,3%"], `${label}: valori di sintesi inattesi`);
+        const mainText = await page.$eval("main", (element) => element.innerText);
+        assertTextMatches(mainText, /non è la busta paga/i, label);
+        assert.doesNotMatch(mainText, /\b(ranking|vincitor[ei]|classifica)\b/i, `${label}: linguaggio da classifica`);
+
+        // Real terms are the default view; nominal is one keypress away.
+        await page.waitForSelector('[data-chart-mode="real"] svg');
+        assert.match(
+          await page.$eval('[data-chart-mode="real"]', (element) => element.getAttribute("aria-label") ?? ""),
+          /al netto dei prezzi/i,
+          `${label}: descrizione del grafico reale assente`,
+        );
+        const nominalButton = await page.$('[role="group"][aria-label="Valori del grafico"] button[aria-pressed="false"]');
+        assert.ok(nominalButton, `${label}: pulsante "Valori nominali" assente`);
+        assert.ok(
+          await nominalButton.evaluate((element) => element.getBoundingClientRect().height >= 44),
+          `${label}: pulsante del grafico sotto i 44px`,
+        );
+        await nominalButton.focus();
+        await page.keyboard.press("Enter");
+        await page.waitForSelector('[data-chart-mode="nominal"] svg');
+        assert.match(
+          await page.$eval("details.chart-data caption", (element) => element.textContent ?? ""),
+          /Indici nominali/i,
+          `${label}: tabella del grafico non aggiornata`,
+        );
+
+        assert.equal(
+          await page.$$eval('[data-step="indennita-parlamentare-lordo"]', (rows) => rows.length),
+          4,
+          `${label}: gradini dell'indennità incompleti`,
+        );
+        assert.ok(
+          await page.$$eval('[data-component] td', (cells) => cells.some((cell) => cell.textContent?.includes("Trattenuta"))),
+          `${label}: trattenute non distinte`,
+        );
+        const sources = await page.$$eval("[data-source] a", (links) => links.map((link) => link.getAttribute("href") ?? ""));
+        assert.equal(sources.length, 5, `${label}: fonti incomplete`);
+        assert.ok(sources.every((href) => href.startsWith("https://")), `${label}: fonte senza https`);
+
+        const regionFits = await page.$eval("section[aria-labelledby=\"gradini\"] [role=\"region\"]", (region) => region.getBoundingClientRect().right <= document.documentElement.clientWidth + 1);
+        assert.ok(regionFits, `${label}: la tabella esce dalla pagina invece di scorrere`);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 1280]) {
+    const label = `Parlamento verso indennità ${width}px`;
+    await runScenario(browser, {
+      label,
+      pathname: "/parlamento",
+      width,
+      validate: async (page) => {
+        await Promise.all([
+          page.waitForNavigation({ waitUntil: "domcontentloaded" }),
+          page.click('main .page-intro a[href="/parlamento/indennita"]'),
+        ]);
+        assert.equal(new URL(page.url()).pathname, "/parlamento/indennita", `${label}: link alla pagina dell'indennità errato`);
+      },
+    });
+    completed.push(label);
+  }
+
+  for (const width of [390, 768, 1280]) {
     const label = `Domande sui governi ${width}px`;
     await runScenario(browser, {
       label,

@@ -65,6 +65,10 @@ export default function ParliamentPage() {
           (senatori, personale, funzionamento, previdenza). Il Quirinale espone previsioni 2022-2025 per
           comparti e la serie della dotazione.
         </p>
+        <p>
+          <Link href="/parlamento/indennita">Indennità dei deputati e salari degli italiani dal 2005</Link>:
+          come è cambiata la tariffa dei deputati rispetto ai contratti e ai prezzi.
+        </p>
       </div>
 
       <dl className="stat-strip">

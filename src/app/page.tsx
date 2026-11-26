@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  AiChat02Icon,
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -17,6 +18,9 @@ import {
   getSiopeMunicipalSnapshot,
 } from "@/lib/siope-snapshot";
 import { SiteDirectory } from "@/components/site-directory";
+import { HOME_ASSISTANT_EXAMPLES, HOME_QUESTION_MAX, assistantHref } from "@/lib/assistant-home";
+import { MOBILITA_MAP_PATH } from "@/lib/site";
+import Image from "next/image";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -26,6 +30,37 @@ export const metadata: Metadata = {
   description:
     "Spesa pubblica, imprese e territori: dati ufficiali italiani con fonti e perimetri espliciti.",
 };
+
+/** Static previews captured from the live maps: no map code or data is loaded on the home page. */
+const HOME_MAPS = [
+  {
+    href: MOBILITA_MAP_PATH,
+    title: "Mappa della mobilità",
+    text: "Dove tram, metro e bus rallentano, dagli orari ufficiali.",
+    image: "/home/mappa-mobilita.webp",
+    width: 1200,
+    height: 652,
+    tile: "large",
+  },
+  {
+    href: "/politici",
+    title: "Mappa della politica",
+    text: "Camera, Senato e Governo: gruppi, incarichi, presenze e voti.",
+    image: "/home/mappa-politica.webp",
+    width: 900,
+    height: 528,
+    tile: "small",
+  },
+  {
+    href: "/comuni",
+    title: "Mappa dei Comuni",
+    text: "Il tuo Comune confrontato con quelli simili.",
+    image: "/home/mappa-comuni.webp",
+    width: 900,
+    height: 726,
+    tile: "small",
+  },
+] as const;
 
 const HOME_ANOMALY_PRESENTATION = {
   "procurement-direct-awards-2025": {
@@ -97,6 +132,26 @@ export default async function HomePage({
           <p className={styles.lead}>Spesa pubblica, territori e istituzioni. Esplora i dati italiani, con fonti e periodi di riferimento.</p>
           <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
+        <div className={styles.ask}>
+          <form className={styles.askBar} action="/assistente" method="get" role="search" aria-label="Chiedi ai dati con l'assistente">
+            <label htmlFor="home-assistant-question" className={styles.askLabel}>
+              <HugeiconsIcon icon={AiChat02Icon} size={18} aria-hidden="true" />Chiedi ai dati
+            </label>
+            <input id="home-assistant-question" name="q" type="text" required maxLength={HOME_QUESTION_MAX} autoComplete="off"
+              placeholder="Quanto spende il mio Comune?" />
+            <button type="submit" aria-label="Invia la domanda all'assistente">
+              <HugeiconsIcon icon={ArrowRight01Icon} size={20} aria-hidden="true" />
+            </button>
+          </form>
+          <div className={styles.askMeta}>
+            <ul className={styles.askExamples} aria-label="Domande di esempio">
+              {HOME_ASSISTANT_EXAMPLES.map((example) => (
+                <li key={example}><Link prefetch={false} href={assistantHref(example)}>{example}</Link></li>
+              ))}
+            </ul>
+            <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
+          </div>
+        </div>
       </header>
       <HomePathways funnel={funnel} siope={siope}>
       <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
@@ -154,6 +209,33 @@ export default async function HomePage({
       </section>
 
       </HomePathways>
+
+      <section className={styles.mapsFeature} aria-labelledby="home-maps-title">
+        <div className={styles.mapsCopy}>
+          <h2 id="home-maps-title">Le mappe</h2>
+          <p>I dati sul territorio e nelle istituzioni, da esplorare a colpo d&apos;occhio: il tuo Comune accanto a quelli simili, il Parlamento seggio per seggio, i mezzi pubblici tratta per tratta.</p>
+          <ul className={styles.mapsList}>
+            {HOME_MAPS.map((map) => (
+              <li key={map.href}>
+                <Link prefetch={false} href={map.href}>
+                  <span><strong>{map.title}</strong>{map.text}</span>
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <ul className={styles.mapsMosaic} aria-label="Anteprime delle mappe">
+          {HOME_MAPS.map((map) => (
+            <li key={map.href} data-home-map={map.href} data-tile={map.tile}>
+              <Link prefetch={false} href={map.href} tabIndex={-1} aria-hidden="true">
+                <Image src={map.image} alt="" width={map.width} height={map.height} sizes={map.tile === "large" ? "(max-width: 900px) 100vw, 640px" : "(max-width: 900px) 50vw, 320px"} />
+                <span className={styles.mapsTag}>{map.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section id="esplora" className={styles.exploration} aria-labelledby="exploration-title">
         <div className={styles.explorationHeading}>

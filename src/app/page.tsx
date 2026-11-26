@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  AiChat02Icon,
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -33,22 +34,31 @@ export const metadata: Metadata = {
 /** Static previews captured from the live maps: no map code or data is loaded on the home page. */
 const HOME_MAPS = [
   {
-    href: "/comuni",
-    title: "Mappa dei Comuni",
-    text: "Cerca il tuo Comune e confrontalo con quelli simili: pagamenti, incassi, IRPEF, appalti, scuole e PNRR.",
-    image: "/home/mappa-comuni.webp",
+    href: MOBILITA_MAP_PATH,
+    title: "Mappa della mobilità",
+    text: "Dove tram, metro e bus rallentano, dagli orari ufficiali.",
+    image: "/home/mappa-mobilita.webp",
+    width: 1200,
+    height: 652,
+    tile: "large",
   },
   {
     href: "/politici",
     title: "Mappa della politica",
-    text: "Camera, Senato e Governo seggio per seggio: gruppi, incarichi, presenze e voti.",
+    text: "Camera, Senato e Governo: gruppi, incarichi, presenze e voti.",
     image: "/home/mappa-politica.webp",
+    width: 900,
+    height: 528,
+    tile: "small",
   },
   {
-    href: MOBILITA_MAP_PATH,
-    title: "Mappa della mobilità",
-    text: "Dove tram, metro e bus rallentano, tratta per tratta, dagli orari ufficiali.",
-    image: "/home/mappa-mobilita.webp",
+    href: "/comuni",
+    title: "Mappa dei Comuni",
+    text: "Il tuo Comune confrontato con quelli simili.",
+    image: "/home/mappa-comuni.webp",
+    width: 900,
+    height: 726,
+    tile: "small",
   },
 ] as const;
 
@@ -122,24 +132,27 @@ export default async function HomePage({
           <p className={styles.lead}>Spesa pubblica, territori e istituzioni. Esplora i dati italiani, con fonti e periodi di riferimento.</p>
           <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
-      </header>
-      <section className={styles.assistantEntry} aria-labelledby="assistant-entry-title">
-        <div className={styles.assistantCopy}>
-          <h2 id="assistant-entry-title">Chiedi ai dati</h2>
-          <p>Fai una domanda in italiano: l&apos;assistente risponde con i dati del sito e cita le fonti. 10 domande gratuite al giorno.</p>
+        <div className={styles.ask}>
+          <form className={styles.askBar} action="/assistente" method="get" role="search" aria-label="Chiedi ai dati con l'assistente">
+            <label htmlFor="home-assistant-question" className={styles.askLabel}>
+              <HugeiconsIcon icon={AiChat02Icon} size={18} aria-hidden="true" />Chiedi ai dati
+            </label>
+            <input id="home-assistant-question" name="q" type="text" required maxLength={HOME_QUESTION_MAX} autoComplete="off"
+              placeholder="Quanto spende il mio Comune?" />
+            <button type="submit" aria-label="Invia la domanda all'assistente">
+              <HugeiconsIcon icon={ArrowRight01Icon} size={20} aria-hidden="true" />
+            </button>
+          </form>
+          <div className={styles.askMeta}>
+            <ul className={styles.askExamples} aria-label="Domande di esempio">
+              {HOME_ASSISTANT_EXAMPLES.map((example) => (
+                <li key={example}><Link prefetch={false} href={assistantHref(example)}>{example}</Link></li>
+              ))}
+            </ul>
+            <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
+          </div>
         </div>
-        <form className={styles.assistantForm} action="/assistente" method="get" role="search" aria-label="Fai una domanda all'assistente">
-          <label htmlFor="home-assistant-question" className="sr-only">La tua domanda</label>
-          <input id="home-assistant-question" name="q" type="text" required maxLength={HOME_QUESTION_MAX} autoComplete="off"
-            placeholder="es. Quanto spende il mio Comune?" />
-          <button type="submit">Chiedi<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></button>
-        </form>
-        <ul className={styles.assistantExamples} aria-label="Domande di esempio">
-          {HOME_ASSISTANT_EXAMPLES.map((example) => (
-            <li key={example}><Link prefetch={false} href={assistantHref(example)}>{example}</Link></li>
-          ))}
-        </ul>
-      </section>
+      </header>
       <HomePathways funnel={funnel} siope={siope}>
       <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
         <div className={styles.anomaliesHeader}>
@@ -197,20 +210,27 @@ export default async function HomePage({
 
       </HomePathways>
 
-      <section className={styles.mapsSection} aria-labelledby="home-maps-title">
-        <div className={styles.explorationHeading}>
+      <section className={styles.mapsFeature} aria-labelledby="home-maps-title">
+        <div className={styles.mapsCopy}>
           <h2 id="home-maps-title">Le mappe</h2>
-          <p>Tre modi per vedere i dati sul territorio e nelle istituzioni.</p>
+          <p>I dati sul territorio e nelle istituzioni, da esplorare a colpo d&apos;occhio: il tuo Comune accanto a quelli simili, il Parlamento seggio per seggio, i mezzi pubblici tratta per tratta.</p>
+          <ul className={styles.mapsList}>
+            {HOME_MAPS.map((map) => (
+              <li key={map.href}>
+                <Link prefetch={false} href={map.href}>
+                  <span><strong>{map.title}</strong>{map.text}</span>
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className={styles.mapCards}>
+        <ul className={styles.mapsMosaic} aria-label="Anteprime delle mappe">
           {HOME_MAPS.map((map) => (
-            <li key={map.href} data-home-map={map.href}>
-              <Link prefetch={false} href={map.href} className={styles.mapCard}>
-                <Image src={map.image} alt="" width={960} height={600} sizes="(max-width: 760px) 100vw, 420px" />
-                <span className={styles.mapCardBody}>
-                  <strong>{map.title}<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></strong>
-                  <span>{map.text}</span>
-                </span>
+            <li key={map.href} data-home-map={map.href} data-tile={map.tile}>
+              <Link prefetch={false} href={map.href} tabIndex={-1} aria-hidden="true">
+                <Image src={map.image} alt="" width={map.width} height={map.height} sizes={map.tile === "large" ? "(max-width: 900px) 100vw, 640px" : "(max-width: 900px) 50vw, 320px"} />
+                <span className={styles.mapsTag}>{map.title}</span>
               </Link>
             </li>
           ))}

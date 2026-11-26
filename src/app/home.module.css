@@ -34,32 +34,54 @@
   .anomalyValue { font-size: 24px; text-align: left; }
 }
 
-/* Assistant entry: a plain GET form to /assistente. The chat, its consent and quota load only there. */
-.assistantEntry { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px 32px; align-items: center; padding: 24px; margin-bottom: 8px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
-.assistantCopy h2 { margin: 0 0 6px; font-size: clamp(20px, 2.2vw, 24px); font-weight: 500; letter-spacing: -.02em; }
-.assistantCopy p { margin: 0; color: var(--color-neutral-700); font-size: 15px; line-height: 1.55; }
-.assistantForm { display: flex; gap: 8px; min-width: 0; }
-.assistantForm input { flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 14px; font: inherit; font-size: 16px; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-neutral-400); }
-.assistantForm input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
-.assistantForm button { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 18px; font: inherit; font-weight: 600; color: #fff; background: var(--color-accent); border: 0; cursor: pointer; }
-.assistantForm button:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
-.assistantExamples { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.assistantExamples a { display: inline-flex; align-items: center; min-height: 36px; padding: 4px 12px; color: var(--color-text); font-size: 14px; text-decoration: none; border: 1px solid var(--color-neutral-300); background: var(--color-surface); }
-.assistantExamples a:hover { border-color: var(--color-neutral-500); }
-.mapsSection { display: grid; gap: 20px; padding-block: 40px 8px; border-top: 1px solid var(--color-neutral-300); }
-.mapCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
-.mapCard { display: grid; height: 100%; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
-.mapCard img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-bottom: 1px solid var(--color-neutral-300); }
-.mapCardBody { display: grid; gap: 6px; padding: 16px; }
-.mapCardBody strong { display: inline-flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 600; }
-.mapCardBody span { color: var(--color-neutral-700); font-size: 14px; line-height: 1.5; }
-.mapCard:hover strong, .mapCard:focus-visible strong { text-decoration: underline; text-underline-offset: 3px; }
-.mapCard:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+/* Ask bar in the hero: a plain GET form to /assistente. Chat code, consent and quota load only there. */
+.ask { display: grid; gap: 12px; margin-top: 8px; }
+.askBar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch; min-height: 60px; border: 1px solid var(--color-neutral-400); background: var(--color-raised); box-shadow: 0 1px 2px rgb(16 24 40 / 6%); }
+.askBar:focus-within { border-color: var(--color-text); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.askLabel { display: inline-flex; align-items: center; gap: 8px; padding: 0 16px 0 18px; color: var(--color-accent); font-size: 14px; font-weight: 600; white-space: nowrap; border-right: 1px solid var(--color-neutral-300); }
+.askBar input { min-width: 0; padding: 0 16px; font: inherit; font-size: 17px; color: var(--color-text); background: transparent; border: 0; }
+.askBar input::placeholder { color: var(--color-neutral-500); }
+.askBar input:focus { outline: none; }
+.askBar button { display: inline-flex; align-items: center; justify-content: center; width: 60px; color: var(--color-on-strong); background: var(--color-accent); border: 0; cursor: pointer; }
+.askBar button:hover { background: var(--color-accent-800); }
+.askBar button:focus-visible { outline: 2px solid var(--color-text); outline-offset: -4px; }
+.askMeta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; }
+.askMeta p { margin: 0; color: var(--color-neutral-600); font-size: 13px; }
+.askExamples { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; }
+.askExamples a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); font-size: 14px; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-underline-offset: 4px; }
+.askExamples a:hover { color: var(--color-accent); text-decoration-color: currentColor; }
+
+/* Maps: same rhythm as the home pathways, copy on the left and a mosaic of static previews on the right. */
+.mapsFeature { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: center; gap: clamp(28px, 4vw, 64px); padding-block: 48px; border-bottom: 1px solid var(--color-neutral-300); }
+.mapsCopy { display: grid; gap: 18px; min-width: 0; }
+.mapsCopy h2 { margin: 0; font-size: clamp(28px, 3vw, 38px); line-height: 1.15; font-weight: 500; letter-spacing: -.025em; }
+.mapsCopy > p { margin: 0; max-width: 46ch; font-size: 16px; line-height: 1.65; color: var(--color-neutral-700); }
+.mapsList { display: grid; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-neutral-300); }
+.mapsList a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 64px; padding-block: 12px; color: var(--color-text); text-decoration: none; border-bottom: 1px solid var(--color-neutral-300); }
+.mapsList a > span { display: grid; gap: 2px; color: var(--color-neutral-600); font-size: 13px; line-height: 1.5; }
+.mapsList strong { color: var(--color-text); font-size: 16px; font-weight: 600; }
+.mapsList a:hover strong { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
+.mapsList a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.mapsMosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 260px 180px; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.mapsMosaic li { min-width: 0; }
+.mapsMosaic li[data-tile="large"] { grid-column: 1 / -1; }
+.mapsMosaic a { position: relative; display: block; height: 100%; overflow: hidden; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
+.mapsMosaic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.mapsMosaic a:hover img { transform: scale(1.03); }
+.mapsTag { position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; color: var(--color-text); font-size: 13px; font-weight: 600; background: var(--color-raised); border: 1px solid var(--color-neutral-300); }
+@media (prefers-reduced-motion: reduce) { .mapsMosaic img { transition: none; } .mapsMosaic a:hover img { transform: none; } }
 @media (max-width: 900px) {
-  .assistantEntry { grid-template-columns: 1fr; padding: 20px; }
-  .mapCards { grid-template-columns: 1fr; }
+  .mapsFeature { grid-template-columns: 1fr; gap: 24px; padding-block: 36px; }
+  .mapsMosaic { grid-template-rows: 200px 140px; }
 }
-@media (max-width: 480px) {
-  .assistantForm { flex-direction: column; }
-  .assistantForm button { justify-content: center; }
+@media (max-width: 620px) {
+  .askBar { grid-template-columns: minmax(0, 1fr) auto; }
+  .askLabel { grid-column: 1 / -1; min-height: 40px; border-right: 0; border-bottom: 1px solid var(--color-neutral-300); padding: 0 14px; }
+  .askBar input { min-height: 54px; padding: 0 14px; font-size: 16px; }
+  .askBar button { width: 54px; }
+  .mapsCopy h2 { font-size: 30px; }
+  .mapsCopy > p { font-size: 15px; }
+  .mapsMosaic { grid-template-rows: 170px 120px; gap: 8px; }
+  .mapsTag { left: 8px; bottom: 8px; padding: 3px 8px; font-size: 12px; }
 }

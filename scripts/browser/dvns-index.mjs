@@ -73,6 +73,7 @@ try {
         assert.equal(parts.length, 4, `formula: ${formula}`);
         assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${formula}`);
         assert.match(main, /1° su 35/u, "posizione tra le città simili");
+        assert.match(await page.$eval("[data-rank-range]", (el) => el.textContent ?? ""), /con pesi diversi (tra \d+° e \d+°|sempre \d+°)/u);
         assert.ok(await page.$('#scheda a[href^="/comuni?ente="]'), "manca il link alla scheda del Comune");
         assert.ok(await page.$('#scheda a[href="/dvns-index/metodo"]'), "manca il link al metodo dalla scheda");
         // The ranking is the main action at the top; the method sits next to it and in the callout.
@@ -144,14 +145,30 @@ try {
         await assertLayout(page, "scheda Gubbio");
 
         await page.goto(`${baseUrl}/dvns-index?regione=08&fascia=A`, { waitUntil: "domcontentloaded" });
-        const rows = await page.$$eval("[data-ranking-row]", (items) => items.map((row) => row.textContent ?? ""));
+        const rows = await page.$$eval("[data-ranking-row]", (items) => items.map((row) => ({ region: row.cells[2]?.textContent ?? "", band: row.cells[5]?.textContent ?? "", range: row.cells[6]?.textContent ?? "" })));
         assert.ok(rows.length > 0 && rows.length <= 50);
-        assert.ok(rows.every((row) => /Emilia-Romagna/u.test(row) && /A$/u.test(row.trim())), "filtro regione o fascia non applicato");
+        assert.ok(rows.every((row) => row.region === "Emilia-Romagna" && row.band === "A"), "filtro regione o fascia non applicato");
+        assert.ok(rows.every((row) => /tra .*° e .*°|sempre .*°/u.test(row.range)), "manca l'intervallo di posizione");
         assert.ok(await page.$('meta[name="robots"][content*="noindex"]'), "le viste filtrate devono essere noindex");
         await assertLayout(page, "classifica filtrata");
 
         const missing = await page.evaluate(async () => (await fetch("/api/dvns-index/punto?colonna=999&riga=0")).status);
         assert.equal(missing, 404);
+      },
+    });
+
+    await runScenario(browser, {
+      suite: "dvns-index",
+      label: `DVNS Index dato da verificare ${width}px`,
+      pathname: "/dvns-index?comune=077007",
+      width,
+      expectedFailure,
+      async validate(page) {
+        // Craco: OpenCivitas services from +373% (2021) to +50% (2022) must be flagged, not shown as solid.
+        const warning = await page.$eval("[data-volatile]", (el) => el.textContent ?? "");
+        assert.match(warning, /Dato da verificare/u);
+        assert.match(warning, /questionari compilati dai Comuni/u);
+        await assertLayout(page, "dato da verificare");
       },
     });
 

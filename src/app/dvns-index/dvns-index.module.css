@@ -148,3 +148,7 @@
 .methodCallout > a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; color: var(--color-on-strong); background: var(--color-accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
 .methodCallout > a:hover { background: var(--color-accent-800); }
 .methodCallout > a:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
+
+.warning { margin: 0; padding: 12px 14px; line-height: 1.55; background: color-mix(in srgb, var(--chart-category-amber) 12%, transparent); border-left: 3px solid var(--chart-category-amber); }
+.rangeCell { white-space: nowrap; color: var(--color-neutral-700); font-size: 14px; }
+.flag { display: inline-block; margin-left: 8px; padding: 1px 6px; color: var(--color-text); font-size: 12px; background: color-mix(in srgb, var(--chart-category-amber) 18%, transparent); border: 1px solid var(--chart-category-amber); }

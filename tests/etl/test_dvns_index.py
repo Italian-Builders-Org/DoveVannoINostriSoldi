@@ -58,6 +58,10 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(etl.peer_position(67.3, [80.0, 50.0, 67.3, 90.0]), (3, 5))
         self.assertEqual(etl.peer_position(10.0, []), (1, 1))
 
+    def test_rank_interval_excludes_the_extreme_draws(self) -> None:
+        self.assertEqual(etl.rank_interval(list(range(1, 101))), (5, 95))
+        self.assertEqual(etl.rank_interval([]), (None, None))
+
     def test_bands_are_quintiles(self) -> None:
         self.assertEqual([etl.band_of(p, 10) for p in range(1, 11)], list("AABBCCDDEE"))
 

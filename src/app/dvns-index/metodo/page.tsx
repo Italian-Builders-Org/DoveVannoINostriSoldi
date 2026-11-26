@@ -180,6 +180,7 @@ export default async function DvnsIndexMethodPage() {
             <li><strong>Punteggio.</strong> Media pesata dei quattro percentili: {weight("resa")} resa della spesa, {weight("sovraspesa")} spesa non giustificata, {weight("investire")} capacità di investire, {weight("appalti")} apertura degli appalti.</li>
             <li><strong>Classifica.</strong> Entrano solo i Comuni con tutti e quattro i pilastri: oggi {integer.format(summary.ranked)}. Gli altri hanno un punteggio parziale ({integer.format(summary.partial)}) oppure non sono valutabili ({integer.format(summary.specialStatute)} nelle Regioni a statuto speciale, che OpenCivitas non copre).</li>
             <li><strong>Fasce.</strong> A raccoglie il 20% migliore, E il 20% peggiore. Le soglie attuali sono: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}. La fascia conta più della posizione esatta: tra il 1.200° e il 1.250° posto la differenza è piccola.</li>
+            <li><strong>Intervallo di posizione.</strong> Dagli stessi ricalcoli ricaviamo dove cade la posizione di ogni Comune escludendo il 5% dei casi più estremi da ciascun lato, per esempio &quot;tra 1° e 19°&quot;. In cima alla classifica le distanze sono piccole e la posizione esatta cambia facilmente: la fascia è il dato più affidabile.</li>
             <li><strong>Solidità.</strong> I pesi sono una scelta, quindi li mettiamo alla prova: ricalcoliamo la classifica {integer.format(rules.sensitivity.draws)} volte spostando ogni peso fino a {Math.round(rules.sensitivity.spread * 100)} punti in più o in meno. La solidità è la quota di volte in cui il Comune resta nella stessa fascia. Oggi la mediana è {one.format(summary.medianStability * 100)}%.</li>
           </ul>
         </section>
@@ -227,6 +228,7 @@ export default async function DvnsIndexMethodPage() {
             <li>Non indica sprechi né illeciti. Un affidamento diretto è spesso legittimo: la quota senza gara dice quanto il Comune usa la concorrenza, non se ha violato regole.</li>
             <li>Mette insieme periodi diversi: servizi e fabbisogni 2021-2022, gli ultimi pubblicati da OpenCivitas; pagamenti 2024-2025; appalti 2025.</li>
             <li>Il fabbisogno standard è una stima statistica ufficiale, non un dato contabile.</li>
+            <li>La quantità di servizi viene dai questionari che i Comuni compilano per SOSE. Quando tra il 2021 e il 2022 cambia di più di 100 punti percentuali lo segnaliamo come &quot;dato da verificare&quot;: è più probabile un errore di compilazione che un cambiamento reale. Succede soprattutto nei Comuni piccoli.</li>
             <li>Non copre i Comuni delle Regioni a statuto speciale, per i quali OpenCivitas non pubblica dati.</li>
           </ul>
         </section>

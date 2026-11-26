@@ -117,6 +117,16 @@ def peer_position(score: float, peer_scores: list[float]) -> tuple[int, int]:
     return 1 + sum(other > score for other in peer_scores), 1 + len(peer_scores)
 
 
+def rank_interval(positions: list[int]) -> tuple[int | None, int | None]:
+    """5th and 95th percentile of the positions over the weight draws: where the Comune falls with other weights."""
+    if not positions:
+        return None, None
+    ordered = sorted(positions)
+    low = ordered[int(0.05 * (len(ordered) - 1))]
+    high = ordered[int(round(0.95 * (len(ordered) - 1)))]
+    return low, high
+
+
 def band_of(position: int, total: int) -> str:
     return BANDS[min(4, (position - 1) * 5 // total)]
 
@@ -342,6 +352,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
 
     rng = random.Random(rules["sensitivity"]["seed"])
     stable: dict[str, int] = defaultdict(int)
+    positions: dict[str, list[int]] = defaultdict(list)
     draws = rules["sensitivity"]["draws"]
     spread = rules["sensitivity"]["spread"]
     for _ in range(draws):
@@ -350,6 +361,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
         alt_weights = {p: v / norm for p, v in raw_w.items()}
         order = sorted(ranked, key=lambda r: (-weighted_score(r["pillars"], alt_weights), r["g"]["istat"]))
         for position, r in enumerate(order, 1):
+            positions[r["g"]["istat"]].append(position)
             if band_of(position, total) == r["band"]:
                 stable[r["g"]["istat"]] += 1
 
@@ -368,7 +380,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             g["istat"], g["tax"], g["name"], g["region"], g["pop"], r["status"],
             None if r["score"] is None else round(r["score"], 1),
             r.get("band"), None if "band" not in r else round(stable[g["istat"]] / draws, 3),
-            r.get("rank"), r.get("peerRank"), r.get("peerRanked"),
+            r.get("rank"), *rank_interval(positions.get(g["istat"], [])), r.get("peerRank"), r.get("peerRanked"),
             None if r["key"] is None else group_ids[r["key"]],
             *[None if name not in p else round(p[name], 1) for name in ("resa", "sovraspesa", "investire", "appalti")],
             f.get("spending2022"), f.get("services2022"), f.get("spending2021"), f.get("services2021"),
@@ -383,7 +395,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
         "version": spec["version"],
         "rules": rules,
         "functions": list(FUNCTIONS),
-        "columns": ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "peerRank", "peerRanked", "group",
+        "columns": ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
                     "pResa", "pSovraspesa", "pInvestire", "pAppalti",
                     "spending2022", "services2022", "spending2021", "services2021",
                     "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa"],

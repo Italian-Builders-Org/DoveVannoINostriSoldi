@@ -6,7 +6,7 @@ import "./helpers/register-ts-alias.mjs";
 const { assertIndexSnapshot, explainEntry, functionHighlights, describeGroup, distribution, parseRankingQuery, queryRanking, RANKING_PAGE_SIZE } =
   await import("../src/lib/dvns-index.ts");
 
-const columns = ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "peerRank", "peerRanked", "group",
+const columns = ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
   "pResa", "pSovraspesa", "pInvestire", "pAppalti", "spending2022", "services2022", "spending2021", "services2021",
   "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa"];
 const functions = ["amministrazione", "istruzione", "polizia", "rifiuti", "sociale-asili", "viabilita"];
@@ -15,7 +15,7 @@ const rules = { weights: { resa: 0.5, sovraspesa: 0.15, investire: 0.2, appalti:
 function row(istat, overrides = {}) {
   const base = {
     istat, taxCode: "0001", name: "Comune", region: "08", population: 5000, status: "ranked", score: 60, band: "A", bandStability: 1,
-    rank: 1, peerRank: 1, peerRanked: 2, group: 0, pResa: 80, pSovraspesa: 60, pInvestire: 40, pAppalti: 20,
+    rank: 1, rankLow: 1, rankHigh: 3, peerRank: 1, peerRanked: 2, group: 0, pResa: 80, pSovraspesa: 60, pInvestire: 40, pAppalti: 20,
     spending2022: 31.9, services2022: 65.1, spending2021: 30, services2021: 60,
     investmentShare: 33.8, withoutTenderShare: 19.4, procedures: 12, topSupplierShare: 13.5, awards: 40, functionResa: [10, 20, 30, -5, -20, 5],
     ...overrides,
@@ -36,6 +36,16 @@ test("refuses a ranked Comune without position and a gap in the ranking", () => 
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { rank: null })])), /posizione/);
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { rank: 2 })])), /consecutive/);
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { status: "partial" })])), /fuori classifica/);
+});
+
+test("rank range and unstable OpenCivitas services are reported, not hidden", async () => {
+  const { rankRange, servicesVolatility } = await import("../src/lib/dvns-index.ts");
+  const parsed = assertIndexSnapshot(snapshot([row("037006"), row("077009", { rank: 2, rankLow: 2, rankHigh: 2, services2021: 373.2, services2022: 49.8 })]));
+  assert.equal(rankRange(parsed.entries[0]), "tra 1° e 3°");
+  assert.equal(rankRange(parsed.entries[1]), "sempre 2°");
+  assert.equal(servicesVolatility(parsed.entries[0]), null);
+  // Craco: +373% services in 2021, +50% in 2022.
+  assert.equal(servicesVolatility(parsed.entries[1]), 323);
 });
 
 test("the explanation adds up to the score and names the data behind each pillar", () => {

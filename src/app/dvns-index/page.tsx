@@ -14,7 +14,9 @@ import {
   functionHighlights,
   parseRankingQuery,
   queryRanking,
+  rankRange,
   regionName,
+  servicesVolatility,
   stabilityLabel,
   statusLabel,
   type IndexEntry,
@@ -119,6 +121,7 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
           <div>
             <dt>In Italia</dt>
             <dd>{integer.format(entry.rank)}° su {integer.format(snapshot.summary.ranked)}</dd>
+            {rankRange(entry) ? <small data-rank-range>con pesi diversi {rankRange(entry)}</small> : null}
           </div>
           <div>
             <dt>Tra i Comuni simili</dt>
@@ -134,6 +137,16 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
             </small>
           </div>
         </dl>
+      ) : null}
+
+      {servicesVolatility(entry) ? (
+        <p className={styles.warning} data-volatile>
+          <strong>Dato da verificare.</strong> Secondo OpenCivitas i servizi di questo Comune sono cambiati di{" "}
+          {integer.format(servicesVolatility(entry) ?? 0)} punti percentuali tra il 2021 e il 2022
+          ({one.format(entry.services2021 ?? 0)}% e {one.format(entry.services2022 ?? 0)}% rispetto alla media). I dati sui servizi
+          vengono dai questionari compilati dai Comuni: un salto così grande è più probabilmente un errore di compilazione che
+          un cambiamento reale, e pesa sul punteggio.
+        </p>
       ) : null}
 
       {entry.score !== null ? (
@@ -329,7 +342,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <h2 id="classifica" className="panel-title">La classifica</h2>
           <p className={styles.lede}>
             Fasce da A a E: ogni fascia contiene un quinto dei Comuni in classifica. La posizione esatta conta meno della
-            fascia: tra il 1.200° e il 1.250° posto la differenza è piccola.
+            fascia: l&apos;ultima colonna mostra dove cade il Comune se cambiamo i pesi, e &quot;dato da verificare&quot; segnala i
+            Comuni con servizi OpenCivitas molto variabili tra un anno e l&apos;altro.
           </p>
           <form className={styles.filters} action={`${PAGE_PATH}#classifica`} method="get" aria-label="Filtra la classifica">
             <label>
@@ -369,6 +383,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
                   <th scope="col" className="num">Abitanti</th>
                   <th scope="col" className="num">Punteggio</th>
                   <th scope="col">Fascia</th>
+                  <th scope="col">Con pesi diversi</th>
                 </tr>
               </thead>
               <tbody>
@@ -380,6 +395,10 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
                     <td className="num">{integer.format(entry.population)}</td>
                     <td className="num">{one.format(entry.score ?? 0)}</td>
                     <td><BandBadge band={entry.band ?? ""} /></td>
+                    <td className={styles.rangeCell}>
+                      {rankRange(entry)}
+                      {servicesVolatility(entry) ? <span className={styles.flag} title="Dato OpenCivitas sui servizi molto variabile tra 2021 e 2022">dato da verificare</span> : null}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -44,6 +44,9 @@ export type IndexEntry = {
   band: Band | null;
   bandStability: number | null;
   rank: number | null;
+  /** Positions at the 5th and 95th percentile of the weight draws. */
+  rankLow: number | null;
+  rankHigh: number | null;
   peerRank: number | null;
   peerRanked: number | null;
   group: number | null;
@@ -93,7 +96,7 @@ export type IndexSnapshot = {
 };
 
 const COLUMNS = [
-  "istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "peerRank", "peerRanked", "group",
+  "istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
   "pResa", "pSovraspesa", "pInvestire", "pAppalti",
   "spending2022", "services2022", "spending2021", "services2021",
   "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
@@ -154,7 +157,7 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
     const path = `rows[${index}]`;
     const row = list(item, path);
     if (row.length !== COLUMNS.length) fail(`${path}: lunghezza`);
-    const [istat, taxCode, name, region, population, status, score, band, stability, rank, peerRank, peerRanked, group,
+    const [istat, taxCode, name, region, population, status, score, band, stability, rank, rankLow, rankHigh, peerRank, peerRanked, group,
       pResa, pSovraspesa, pInvestire, pAppalti, spending2022, services2022, spending2021, services2021,
       investmentShare, withoutTenderShare, procedures, topSupplierShare, awards, functionResa] = row;
     if (typeof istat !== "string" || !/^\d{6}$/u.test(istat) || seen.has(istat)) fail(`${path}: codice ISTAT`);
@@ -185,6 +188,8 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
       band: band as Band | null,
       bandStability: optNum(stability, `${path}.bandStability`, 0, 1),
       rank: optInt(rank, `${path}.rank`, 1),
+      rankLow: optInt(rankLow, `${path}.rankLow`, 1),
+      rankHigh: optInt(rankHigh, `${path}.rankHigh`, 1),
       peerRank: optInt(peerRank, `${path}.peerRank`, 1),
       peerRanked: optInt(peerRanked, `${path}.peerRanked`, 1),
       group: groupId,
@@ -325,6 +330,26 @@ export function functionHighlights(entry: IndexEntry, functions: string[]): { be
     .sort((a, b) => b.value - a.value);
   if (known.length < 3) return { best: [], worst: [] };
   return { best: known.slice(0, 2).map((item) => item.name), worst: known.slice(-2).reverse().map((item) => item.name) };
+}
+
+/** Threshold above which the OpenCivitas services value is flagged as unstable between 2021 and 2022. */
+export const VOLATILE_SERVICES_POINTS = 100;
+
+/**
+ * OpenCivitas service quantities come from questionnaires filled in by the
+ * Comuni: a jump of more than 100 points in one year is more likely a
+ * reporting error than a real change, so the page says so.
+ */
+export function servicesVolatility(entry: IndexEntry): number | null {
+  if (entry.services2021 === null || entry.services2022 === null) return null;
+  const jump = Math.abs(entry.services2022 - entry.services2021);
+  return jump > VOLATILE_SERVICES_POINTS ? Math.round(jump) : null;
+}
+
+export function rankRange(entry: IndexEntry): string | null {
+  if (entry.rankLow === null || entry.rankHigh === null) return null;
+  if (entry.rankLow === entry.rankHigh) return `sempre ${entry.rankLow}°`;
+  return `tra ${entry.rankLow.toLocaleString("it-IT")}° e ${entry.rankHigh.toLocaleString("it-IT")}°`;
 }
 
 export function stabilityLabel(stability: number | null): string {

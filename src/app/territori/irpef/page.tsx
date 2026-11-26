@@ -19,6 +19,7 @@ import {
   getRegionGeography,
 } from "@/lib/municipality-geography";
 import { MefIrpefSwissBorderNote } from "@/components/mef-irpef-swiss-border-note";
+import { swissBorderZoneSize } from "@/lib/swiss-border-zone";
 import styles from "./irpef.module.css";
 
 export const metadata: Metadata = {
@@ -307,6 +308,13 @@ export default async function MefIrpefPage({
       </div>
 
       <MefIrpefSwissBorderNote variant="notice" />
+      <p className={styles.borderNoticeNote}>
+        Nella tabella i Comuni dell&apos;
+        <a href="https://www.estv.admin.ch/dam/it/sd-web/nNcONtU7G1ke/int-laender-it-dba-aa-20231222-it.pdf" target="_blank" rel="noopener noreferrer">
+          elenco ufficiale della fascia di 20 km ↗
+        </a>{" "}
+        sono segnalati riga per riga ({integer(swissBorderZoneSize())} Comuni, in vigore dal 1° gennaio 2024).
+      </p>
 
       {queryError ? (
         <div className="notice warning-notice" role="alert">
@@ -474,6 +482,11 @@ export default async function MefIrpefPage({
                         ) : null}{" "}
                         {territoryName(record)}
                         {context ? <small>{context}</small> : null}
+                        {record.territory.level === "municipality" && record.territory.swissBorderZone ? (
+                          <small className={styles.borderFlag} data-swiss-border-zone="true">
+                            Fascia di confine con la Svizzera: redditi da lavoro in Svizzera possono mancare
+                          </small>
+                        ) : null}
                       </th>
                       <td className="num">{integer(record.taxpayers)}</td>
                       <td>{geography ?? "Non disponibile per questo livello"}</td>

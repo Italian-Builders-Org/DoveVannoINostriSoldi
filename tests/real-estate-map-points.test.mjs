@@ -57,3 +57,13 @@ test("the census keeps 30 municipalities whose cadastral code is no longer in us
   assert.equal(without.length, 30);
   assert.ok(without.includes("I879"));
 });
+
+test("Comuni in the Swiss border zone are flagged for the per-taxpayer ranking, and only them", async () => {
+  const lombardia = await getRealEstateRegionData("03");
+  const flagged = lombardia.municipalities.filter((municipality) => municipality.swissBorderZone);
+  assert.ok(flagged.length > 0, "nessun Comune lombardo di confine segnalato");
+  // Como (C933) is in the official list, Milano (F205) is not.
+  assert.equal(lombardia.municipalities.find((municipality) => municipality.code === "C933")?.swissBorderZone, true);
+  assert.equal(lombardia.municipalities.find((municipality) => municipality.code === "F205")?.swissBorderZone, undefined);
+  assert.ok(lombardia.municipalities.every((municipality) => municipality.swissBorderZone === undefined || municipality.swissBorderZone === true));
+});

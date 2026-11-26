@@ -309,3 +309,17 @@
 @media (max-width: 460px) {
   .summary { grid-template-columns: minmax(0, 1fr); }
 }
+
+.borderFlag {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.borderNoticeNote {
+  max-width: 78ch;
+  margin: -8px 0 16px;
+  color: var(--color-neutral-600);
+  font-size: 14px;
+}

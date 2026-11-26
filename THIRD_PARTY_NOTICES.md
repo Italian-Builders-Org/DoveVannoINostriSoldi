@@ -77,6 +77,17 @@ Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2026. CC BY 4.0. Adap
 
 Attribution: `© Istituto Nazionale di Statistica (ISTAT), 2025. CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
 
+## Italian Comuni within 20 km of the Swiss border
+
+`tests/fixtures/svizzera-frontalieri-comuni-20km/` keeps the official XLSX unchanged;
+`src/data/generated/svizzera-frontalieri-comuni-20km.json` is derived from it:
+
+- **Work:** Accordo tra la Svizzera e l'Italia relativo all'imposizione dei lavoratori frontalieri, elenco dei comuni italiani entro la fascia di 20 km dal confine (valido dal 1° gennaio 2024), and the mutual agreement of 22 December 2023 (Annex B) it reproduces;
+- **Publisher:** Amministrazione federale delle contribuzioni AFC / Eidgenössische Steuerverwaltung ESTV;
+- **Source:** https://www.estv.admin.ch/dam/it/sd-web/jjD-hrVGX46W/qst-20231222-comuni-italiani-nei-20-km-it.xlsx and https://www.estv.admin.ch/dam/it/sd-web/nNcONtU7G1ke/int-laender-it-dba-aa-20231222-it.pdf;
+- **License:** not declared by the publisher; an official list of place names annexed to an agreement between tax authorities, reproduced with attribution;
+- **Changes:** only the list of Comuni was kept and joined to ISTAT codes; postal codes, German and French names and regions were dropped.
+
 ## OpenCivitas municipal data
 
 - **Work:** Comuni, servizi totali, indicatori e determinanti 2022;

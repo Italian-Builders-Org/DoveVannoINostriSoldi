@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import mefIrpefDataJson from "@/data/generated/mef-irpef-2024.data.json";
 import mefIrpefMetaJson from "@/data/generated/mef-irpef-2024.meta.json";
+import { isInSwissBorderZone } from "@/lib/swiss-border-zone";
 import {
   MEF_IRPEF_DATASET_ID,
   MEF_IRPEF_INCOME_BAND_MEASURE_ORDER,
@@ -86,6 +87,12 @@ export type MefIrpefTerritoryRecord = Readonly<{
         provinceCode: string;
         provinceAbbreviation: string;
         regionCode: string;
+        /**
+         * Present (true) only for Comuni in the official list of the 20 km zone of the
+         * Italy-Switzerland cross-border workers agreement: income earned in Switzerland
+         * may be missing from these returns. Absent elsewhere.
+         */
+        swissBorderZone?: true;
       }>;
   taxpayers: number;
   measures: MefIrpefMeasures;
@@ -438,6 +445,7 @@ function municipalityRecord(row: MefIrpefPackedMunicipality): InternalRecord {
       provinceCode: row[3],
       provinceAbbreviation: row[4],
       regionCode: row[5],
+      ...(isInSwissBorderZone(row[0]) ? { swissBorderZone: true as const } : {}),
     },
   };
 }

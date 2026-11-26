@@ -531,7 +531,10 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                   Dichiarazioni IRPEF collegabili a questo Comune nel rilascio MEF.
                   Non è reddito medio individuale né capacità fiscale effettiva.
                 </p>
-                <MefIrpefSwissBorderNote className={styles.sourceInline} variant="inline" />
+                {/* Only Comuni in the official 20 km list: elsewhere the note would describe a limit that does not apply. */}
+                {irpef.record.territory.level === "municipality" && irpef.record.territory.swissBorderZone ? (
+                  <MefIrpefSwissBorderNote className={styles.sourceInline} variant="municipality" />
+                ) : null}
                 <dl className={styles.factGrid}>
                   <div>
                     <dt>Contribuenti</dt>

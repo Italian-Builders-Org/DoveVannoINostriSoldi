@@ -87,6 +87,20 @@ dichiarati possono quindi risultare più bassi rispetto ai residenti. È un
 limite legale della fonte, non un errore di pubblicazione; DVNS non modifica i
 valori MEF.
 
+I Comuni interessati sono quelli dell'elenco ufficiale della fascia di 20 km
+(Allegato B all'accordo amichevole del 22 dicembre 2023, in vigore dal
+1° gennaio 2024): 518 righe, 517 Comuni attuali dopo la fusione di Ronago e
+Uggiate-Trevano. Lo snapshot `svizzera-frontalieri-comuni-20km` blocca l'XLSX
+dell'Amministrazione federale delle contribuzioni e il PDF firmato, verifica la
+trascrizione del PDF riga per riga e i nomi riportati dalla Gazzetta Ufficiale
+n. 236 dell'8 ottobre 2024, e collega i nomi ai codici ISTAT dentro la
+provincia indicata. I record comunali dei Comuni in elenco hanno
+`territory.swissBorderZone: true` (assente altrove): lo usano la scheda Comune,
+`/territori/irpef`, la classifica per contribuenti di `/patrimonio` e il
+dataset MCP `mef_irpef_comunale`. Essere in elenco non dice quanti residenti
+lavorino in Svizzera e le distanze dal confine non sono pubblicate: nella
+scansione non sono leggibili con certezza.
+
 ## Copertura e aggregazioni
 
 Il file contiene 7.896 Comuni univoci, 107 Province, 20 Regioni e una riga

@@ -120,8 +120,8 @@ export function RealEstateMap({ total, byRegion, byUse, municipalities, view = N
   const stats = useMemo(() => {
     if (!data) return [];
     const wanted = typeFilter.length ? new Set(typeFilter) : null;
-    const entries = data.municipalities.map(({ code, name, taxpayers }, id) => ({
-      id, code, name, taxpayers, total: 0, area: 0, uses: {} as Record<string, number>, types: {} as Record<string, number>,
+    const entries = data.municipalities.map(({ code, name, taxpayers, swissBorderZone }, id) => ({
+      id, code, name, taxpayers, swissBorder: swissBorderZone === true, total: 0, area: 0, uses: {} as Record<string, number>, types: {} as Record<string, number>,
     }));
     data.cells.municipality.forEach((id, index) => {
       const type = data.types[data.cells.type[index]];
@@ -333,9 +333,13 @@ export function RealEstateMap({ total, byRegion, byUse, municipalities, view = N
                         className={styles.bar}
                         aria-pressed={selectedSet.has(entry.code)}
                         onClick={() => toggle(entry.code)}
-                        aria-label={`${entry.name}: ${format(value)}${metric === "ratio" ? " fabbricati fermi ogni 1.000 contribuenti" : " fabbricati fermi"}`}
+                        aria-label={`${entry.name}: ${format(value)}${metric === "ratio" ? " fabbricati fermi ogni 1.000 contribuenti" : " fabbricati fermi"}${
+                          metric === "ratio" && entry.swissBorder ? ", Comune di confine con la Svizzera: i contribuenti possono essere meno dei residenti" : ""}`}
                       >
-                        <span className={styles.barName}>{entry.name}</span>
+                        <span className={styles.barName}>
+                          {entry.name}
+                          {metric === "ratio" && entry.swissBorder ? <sup className={styles.borderMark} aria-hidden="true">CH</sup> : null}
+                        </span>
                         <b className={styles.barValue}>{format(value)}</b>
                         <span className={styles.barTrack} aria-hidden="true">
                           {USES.map((use) => (
@@ -361,6 +365,9 @@ export function RealEstateMap({ total, byRegion, byUse, municipalities, view = N
                     ? `. Contribuenti IRPEF 2024 del Comune, che non sono i residenti; ${
                       ranking.excluded ? `esclusi ${integer(ranking.excluded)} Comuni sotto i ${integer(MIN_TAXPAYERS)} contribuenti o soppressi` : "nessun Comune escluso"}.`
                     : "."}
+                  {metric === "ratio" && ranking.rows.some(({ entry }) => entry.swissBorder)
+                    ? " CH: Comune entro 20 km dal confine svizzero nell'elenco ufficiale dell'accordo sui frontalieri. Chi lavora in Svizzera può non risultare tra i contribuenti IRPEF, quindi il rapporto può risultare più alto."
+                    : null}
                 </small>
               </div>
             </>

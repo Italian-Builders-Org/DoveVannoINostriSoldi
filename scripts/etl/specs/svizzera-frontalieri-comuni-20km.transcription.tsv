@@ -1,0 +1,519 @@
+n	provincia	comune
+1	Bergamo	Schilpario
+2	Bergamo	Valbondione
+3	Bergamo	Vilminore di Scalve
+4	Brescia	Berzo Demo
+5	Brescia	Corteno Golgi
+6	Brescia	Edolo
+7	Brescia	Incudine
+8	Brescia	Malonno
+9	Brescia	Monno
+10	Brescia	Paisco Loveno
+11	Brescia	Ponte di Legno
+12	Brescia	Sonico
+13	Brescia	Vezza d'Oglio
+14	Brescia	Vione
+15	Como	Albavilla
+16	Como	Albese con Cassano
+17	Como	Albiolo
+18	Como	Alserio
+19	Como	Alta Valle Intelvi
+20	Como	Alzate Brianza
+21	Como	Anzano del Parco
+22	Como	Appiano Gentile
+23	Como	Argegno
+24	Como	Arosio
+25	Como	Asso
+26	Como	Barni
+27	Como	Bellagio
+28	Como	Bene Lario
+29	Como	Beregazzo con Figliaro
+30	Como	Binago
+31	Como	Bizzarone
+32	Como	Blessagno
+33	Como	Blevio
+34	Como	Bregnano
+35	Como	Brenna
+36	Como	Brienno
+37	Como	Brunate
+38	Como	Bulgarograsso
+39	Como	Cabiate
+40	Como	Cadorago
+41	Como	Caglio
+42	Como	Campione d'Italia
+43	Como	Cantù
+44	Como	Canzo
+45	Como	Capiago Intimiano
+46	Como	Carate Urio
+47	Como	Carbonate
+48	Como	Carimate
+49	Como	Carlazzo
+50	Como	Carugo
+51	Como	Caslino d'Erba
+52	Como	Casnate con Bernate
+53	Como	Cassina Rizzardi
+54	Como	Castelmarte
+55	Como	Castelnuovo Bozzente
+56	Como	Cavargna
+57	Como	Centro Valle Intelvi
+58	Como	Cerano d'Intelvi
+59	Como	Cermenate
+60	Como	Cernobbio
+61	Como	Cirimido
+62	Como	Claino con Osteno
+63	Como	Colonno
+64	Como	Colverde
+65	Como	Como
+66	Como	Corrido
+67	Como	Cremia
+68	Como	Cucciago
+69	Como	Cusino
+70	Como	Dizzasco
+71	Como	Domaso
+72	Como	Dongo
+73	Como	Dosso del Liro
+74	Como	Erba
+75	Como	Eupilio
+76	Como	Faggeto Lario
+77	Como	Faloppio
+78	Como	Fenegrò
+79	Como	Figino Serenza
+80	Como	Fino Mornasco
+81	Como	Garzeno
+82	Como	Gera Lario
+83	Como	Grandate
+84	Como	Grandola ed Uniti
+85	Como	Gravedona ed Uniti
+86	Como	Griante
+87	Como	Guanzate
+88	Como	Inverigo
+89	Como	Laglio
+90	Como	Laino
+91	Como	Lambrugo
+92	Como	Lasnigo
+93	Como	Lezzeno
+94	Como	Limido Comasco
+95	Como	Lipomo
+96	Como	Livo
+97	Como	Locate Varesino
+98	Como	Lomazzo
+99	Como	Longone al Segrino
+100	Como	Luisago
+101	Como	Lurago d'Erba
+102	Como	Lurago Marinone
+103	Como	Lurate Caccivio
+104	Como	Magreglio
+105	Como	Mariano Comense
+106	Como	Maslianico
+107	Como	Menaggio
+108	Como	Merone
+109	Como	Moltrasio
+110	Como	Monguzzo
+111	Como	Montano Lucino
+112	Como	Montemezzo
+113	Como	Montorfano
+114	Como	Mozzate
+115	Como	Musso
+116	Como	Nesso
+117	Como	Novedrate
+118	Como	Olgiate Comasco
+119	Como	Oltrona di San Mamette
+120	Como	Orsenigo
+121	Como	Peglio
+122	Como	Pianello del Lario
+123	Como	Pigra
+124	Como	Plesio
+125	Como	Pognana Lario
+126	Como	Ponna
+127	Como	Ponte Lambro
+128	Como	Porlezza
+129	Como	Proserpio
+130	Como	Pusiano
+131	Como	Rezzago
+132	Como	Rodero
+133	Como	Ronago
+134	Como	Rovellasca
+135	Como	Rovello Porro
+136	Como	Sala Comacina
+137	Como	San Bartolomeo Val Cavargna
+138	Como	San Fermo della Battaglia
+139	Como	San Nazzaro Val Cavargna
+140	Como	San Siro
+141	Como	Schignano
+142	Como	Senna Comasco
+143	Como	Solbiate con Cagno
+144	Como	Sorico
+145	Como	Sormano
+146	Como	Stazzona
+147	Como	Tavernerio
+148	Como	Torno
+149	Como	Tremezzina
+150	Como	Trezzone
+151	Como	Turate
+152	Como	Uggiate-Trevano
+153	Como	Val Rezzo
+154	Como	Valbrona
+155	Como	Valmorea
+156	Como	Valsolda
+157	Como	Veleso
+158	Como	Veniano
+159	Como	Vercana
+160	Como	Vertemate con Minoprio
+161	Como	Villa Guardia
+162	Como	Zelbio
+163	Lecco	Abbadia Lariana
+164	Lecco	Bellano
+165	Lecco	Bosisio Parini
+166	Lecco	Bulciago
+167	Lecco	Casargo
+168	Lecco	Cesana Brianza
+169	Lecco	Civate
+170	Lecco	Colico
+171	Lecco	Costa Masnaga
+172	Lecco	Dervio
+173	Lecco	Dorio
+174	Lecco	Esino Lario
+175	Lecco	Lierna
+176	Lecco	Mandello del Lario
+177	Lecco	Molteno
+178	Lecco	Nibionno
+179	Lecco	Oliveto Lario
+180	Lecco	Pagnona
+181	Lecco	Perledo
+182	Lecco	Rogeno
+183	Lecco	Sueglio
+184	Lecco	Suello
+185	Lecco	Valmadrera
+186	Lecco	Valvarrone
+187	Lecco	Varenna
+188	Monza e della Brianza	Barlassina
+189	Monza e della Brianza	Briosco
+190	Monza e della Brianza	Cogliate
+191	Monza e della Brianza	Giussano
+192	Monza e della Brianza	Lazzate
+193	Monza e della Brianza	Lentate sul Seveso
+194	Monza e della Brianza	Meda
+195	Monza e della Brianza	Misinto
+196	Monza e della Brianza	Veduggio con Colzano
+197	Sondrio	Albaredo per San Marco
+198	Sondrio	Albosaggia
+199	Sondrio	Andalo Valtellino
+200	Sondrio	Aprica
+201	Sondrio	Ardenno
+202	Sondrio	Bema
+203	Sondrio	Berbenno di Valtellina
+204	Sondrio	Bianzone
+205	Sondrio	Bormio
+206	Sondrio	Buglio in Monte
+207	Sondrio	Caiolo
+208	Sondrio	Campodolcino
+209	Sondrio	Caspoggio
+210	Sondrio	Castello dell'Acqua
+211	Sondrio	Castione Andevenno
+212	Sondrio	Cedrasco
+213	Sondrio	Cercino
+214	Sondrio	Chiavenna
+215	Sondrio	Chiesa in Valmalenco
+216	Sondrio	Chiuro
+217	Sondrio	Cino
+218	Sondrio	Civo
+219	Sondrio	Colorina
+220	Sondrio	Cosio Valtellino
+221	Sondrio	Dazio
+222	Sondrio	Delebio
+223	Sondrio	Dubino
+224	Sondrio	Faedo Valtellino
+225	Sondrio	Forcola
+226	Sondrio	Fusine
+227	Sondrio	Gordona
+228	Sondrio	Grosio
+229	Sondrio	Grosotto
+230	Sondrio	Lanzada
+231	Sondrio	Livigno
+232	Sondrio	Lovero
+233	Sondrio	Madesimo
+234	Sondrio	Mantello
+235	Sondrio	Mazzo di Valtellina
+236	Sondrio	Mello
+237	Sondrio	Mese
+238	Sondrio	Montagna in Valtellina
+239	Sondrio	Morbegno
+240	Sondrio	Novate Mezzola
+241	Sondrio	Piantedo
+242	Sondrio	Piateda
+243	Sondrio	Piuro
+244	Sondrio	Poggiridenti
+245	Sondrio	Ponte in Valtellina
+246	Sondrio	Postalesio
+247	Sondrio	Prata Camportaccio
+248	Sondrio	Rogolo
+249	Sondrio	Samolaco
+250	Sondrio	San Giacomo Filippo
+251	Sondrio	Sernio
+252	Sondrio	Sondalo
+253	Sondrio	Sondrio
+254	Sondrio	Spriana
+255	Sondrio	Talamona
+256	Sondrio	Tartano
+257	Sondrio	Teglio
+258	Sondrio	Tirano
+259	Sondrio	Torre di Santa Maria
+260	Sondrio	Tovo di Sant'Agata
+261	Sondrio	Traona
+262	Sondrio	Tresivio
+263	Sondrio	Val Masino
+264	Sondrio	Valdidentro
+265	Sondrio	Valdisotto
+266	Sondrio	Valfurva
+267	Sondrio	Verceia
+268	Sondrio	Vervio
+269	Sondrio	Villa di Chiavenna
+270	Sondrio	Villa di Tirano
+271	Varese	Agra
+272	Varese	Albizzate
+273	Varese	Arcisate
+274	Varese	Arsago Seprio
+275	Varese	Azzate
+276	Varese	Azzio
+277	Varese	Barasso
+278	Varese	Bardello con Malgesso e Bregan
+279	Varese	Bedero Valcuvia
+280	Varese	Besano
+281	Varese	Besnate
+282	Varese	Besozzo
+283	Varese	Biandronno
+284	Varese	Bisuschio
+285	Varese	Bodio Lomnago
+286	Varese	Brebbia
+287	Varese	Brenta
+288	Varese	Brezzo di Bedero
+289	Varese	Brinzio
+290	Varese	Brissago-Valtravaglia
+291	Varese	Brunello
+292	Varese	Brusimpiano
+293	Varese	Buguggiate
+294	Varese	Cadegliano-Viconago
+295	Varese	Cadrezzate con Osmate
+296	Varese	Cairate
+297	Varese	Cantello
+298	Varese	Caravate
+299	Varese	Carnago
+300	Varese	Caronno Varesino
+301	Varese	Casale Litta
+302	Varese	Casalzuigno
+303	Varese	Casciago
+304	Varese	Cassano Magnago
+305	Varese	Cassano Valcuvia
+306	Varese	Castello Cabiaglio
+307	Varese	Castelseprio
+308	Varese	Castelveccana
+309	Varese	Castiglione Olona
+310	Varese	Castronno
+311	Varese	Cavaria con Premezzo
+312	Varese	Cazzago Brabbia
+313	Varese	Cislago
+314	Varese	Cittiglio
+315	Varese	Clivio
+316	Varese	Cocquio-Trevisago
+317	Varese	Comabbio
+318	Varese	Comerio
+319	Varese	Cremenaga
+320	Varese	Crosio della Valle
+321	Varese	Cuasso al Monte
+322	Varese	Cugliate-Fabiasco
+323	Varese	Cunardo
+324	Varese	Curiglia con Monteviasco
+325	Varese	Cuveglio
+326	Varese	Cuvio
+327	Varese	Daverio
+328	Varese	Dumenza
+329	Varese	Duno
+330	Varese	Fagnano Olona
+331	Varese	Ferrera di Varese
+332	Varese	Gallarate
+333	Varese	Galliate Lombardo
+334	Varese	Gavirate
+335	Varese	Gazzada Schianno
+336	Varese	Gemonio
+337	Varese	Gerenzano
+338	Varese	Germignaga
+339	Varese	Gorla Maggiore
+340	Varese	Gorla Minore
+341	Varese	Gornate Olona
+342	Varese	Grantola
+343	Varese	Inarzo
+344	Varese	Induno Olona
+345	Varese	Jerago con Orago
+346	Varese	Lavena Ponte Tresa
+347	Varese	Laveno-Mombello
+348	Varese	Leggiuno
+349	Varese	Lonate Ceppino
+350	Varese	Lozza
+351	Varese	Luino
+352	Varese	Luvinate
+353	Varese	Maccagno con Pino e Veddasca
+354	Varese	Malnate
+355	Varese	Marchirolo
+356	Varese	Marzio
+357	Varese	Masciago Primo
+358	Varese	Mercallo
+359	Varese	Mesenzana
+360	Varese	Montegrino Valtravaglia
+361	Varese	Monvalle
+362	Varese	Morazzone
+363	Varese	Mornago
+364	Varese	Oggiona con Santo Stefano
+365	Varese	Orino
+366	Varese	Porto Ceresio
+367	Varese	Porto Valtravaglia
+368	Varese	Rancio Valcuvia
+369	Varese	Saltrio
+370	Varese	Sangiano
+371	Varese	Saronno
+372	Varese	Solbiate Arno
+373	Varese	Solbiate Olona
+374	Varese	Sumirago
+375	Varese	Ternate
+376	Varese	Tradate
+377	Varese	Travedona-Monate
+378	Varese	Tronzano Lago Maggiore
+379	Varese	Valganna
+380	Varese	Varano Borghi
+381	Varese	Varese
+382	Varese	Vedano Olona
+383	Varese	Venegono Inferiore
+384	Varese	Venegono Superiore
+385	Varese	Vergiate
+386	Varese	Viggiù
+387	Verbano-Cusio-Ossola	Antrona Schieranco
+388	Verbano-Cusio-Ossola	Arizzano
+389	Verbano-Cusio-Ossola	Aurano
+390	Verbano-Cusio-Ossola	Baceno
+391	Verbano-Cusio-Ossola	Bannio Anzino
+392	Verbano-Cusio-Ossola	Bee
+393	Verbano-Cusio-Ossola	Beura-Cardezza
+394	Verbano-Cusio-Ossola	Bognanco
+395	Verbano-Cusio-Ossola	Borgomezzavalle
+396	Verbano-Cusio-Ossola	Calasca-Castiglione
+397	Verbano-Cusio-Ossola	Cambiasca
+398	Verbano-Cusio-Ossola	Cannero Riviera
+399	Verbano-Cusio-Ossola	Cannobio
+400	Verbano-Cusio-Ossola	Caprezzo
+401	Verbano-Cusio-Ossola	Ceppo Morelli
+402	Verbano-Cusio-Ossola	Cossogno
+403	Verbano-Cusio-Ossola	Craveggia
+404	Verbano-Cusio-Ossola	Crevoladossola
+405	Verbano-Cusio-Ossola	Crodo
+406	Verbano-Cusio-Ossola	Domodossola
+407	Verbano-Cusio-Ossola	Druogno
+408	Verbano-Cusio-Ossola	Formazza
+409	Verbano-Cusio-Ossola	Ghiffa
+410	Verbano-Cusio-Ossola	Gurro
+411	Verbano-Cusio-Ossola	Intragna
+412	Verbano-Cusio-Ossola	Macugnaga
+413	Verbano-Cusio-Ossola	Malesco
+414	Verbano-Cusio-Ossola	Masera
+415	Verbano-Cusio-Ossola	Mergozzo
+416	Verbano-Cusio-Ossola	Miazzina
+417	Verbano-Cusio-Ossola	Montecrestese
+418	Verbano-Cusio-Ossola	Montescheno
+419	Verbano-Cusio-Ossola	Oggebbio
+420	Verbano-Cusio-Ossola	Pallanzeno
+421	Verbano-Cusio-Ossola	Piedimulera
+422	Verbano-Cusio-Ossola	Pieve Vergonte
+423	Verbano-Cusio-Ossola	Premeno
+424	Verbano-Cusio-Ossola	Premia
+425	Verbano-Cusio-Ossola	Premosello-Chiovenda
+426	Verbano-Cusio-Ossola	Re
+427	Verbano-Cusio-Ossola	San Bernardino Verbano
+428	Verbano-Cusio-Ossola	Santa Maria Maggiore
+429	Verbano-Cusio-Ossola	Stresa
+430	Verbano-Cusio-Ossola	Toceno
+431	Verbano-Cusio-Ossola	Trarego Viggiona
+432	Verbano-Cusio-Ossola	Trasquera
+433	Verbano-Cusio-Ossola	Trontano
+434	Verbano-Cusio-Ossola	Valle Cannobina
+435	Verbano-Cusio-Ossola	Valstrona
+436	Verbano-Cusio-Ossola	Vanzone con San Carlo
+437	Verbano-Cusio-Ossola	Varzo
+438	Verbano-Cusio-Ossola	Verbania
+439	Verbano-Cusio-Ossola	Vignone
+440	Verbano-Cusio-Ossola	Villadossola
+441	Verbano-Cusio-Ossola	Villette
+442	Verbano-Cusio-Ossola	Vogogna
+443	Vercelli	Alagna Valsesia
+444	Vercelli	Alto Sermenza
+445	Vercelli	Boccioleto
+446	Vercelli	Campertogno
+447	Vercelli	Carcoforo
+448	Vercelli	Cervatto
+449	Vercelli	Cravagliana
+450	Vercelli	Fobello
+451	Vercelli	Mollia
+452	Vercelli	Piode
+453	Vercelli	Rassa
+454	Vercelli	Rimella
+455	Vercelli	Rossa
+456	Bolzano	Curon Venosta
+457	Bolzano	Glorenza
+458	Bolzano	Lasa
+459	Bolzano	Malles Venosta
+460	Bolzano	Martello
+461	Bolzano	Prato allo Stelvio
+462	Bolzano	Silandro
+463	Bolzano	Sluderno
+464	Bolzano	Stelvio
+465	Bolzano	Tubre
+466	Trento	Peio
+467	Trento	Rabbi
+468	Aosta	Allein
+469	Aosta	Antey-Saint-André
+470	Aosta	Aosta
+471	Aosta	Arvier
+472	Aosta	Avise
+473	Aosta	Ayas
+474	Aosta	Aymavilles
+475	Aosta	Bionaz
+476	Aosta	Brissogne
+477	Aosta	Brusson
+478	Aosta	Chambave
+479	Aosta	Chamois
+480	Aosta	Charvensod
+481	Aosta	Châtillon
+482	Aosta	Courmayeur
+483	Aosta	Doues
+484	Aosta	Emarèse
+485	Aosta	Etroubles
+486	Aosta	Fénis
+487	Aosta	Gaby
+488	Aosta	Gignod
+489	Aosta	Gressan
+490	Aosta	Gressoney-La-Trinité
+491	Aosta	Gressoney-Saint-Jean
+492	Aosta	Introd
+493	Aosta	Jovençan
+494	Aosta	La Magdeleine
+495	Aosta	La Salle
+496	Aosta	La Thuile
+497	Aosta	Morgex
+498	Aosta	Nus
+499	Aosta	Ollomont
+500	Aosta	Oyace
+501	Aosta	Pollein
+502	Aosta	Pré-Saint-Didier
+503	Aosta	Quart
+504	Aosta	Roisan
+505	Aosta	Saint-Christophe
+506	Aosta	Saint-Denis
+507	Aosta	Saint-Marcel
+508	Aosta	Saint-Nicolas
+509	Aosta	Saint-Oyen
+510	Aosta	Saint-Pierre
+511	Aosta	Saint-Rhémy-en-Bosses
+512	Aosta	Saint-Vincent
+513	Aosta	Sarre
+514	Aosta	Torgnon
+515	Aosta	Valpelline
+516	Aosta	Valtournenche
+517	Aosta	Verrayes
+518	Aosta	Villeneuve

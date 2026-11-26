@@ -707,6 +707,31 @@
       "trustModel": "Source lock on the official ISTAT zip (URL, bytes, SHA-256 of zip and CSV, title, headers). 377 Comuni, unique new and previous codes, no code shared between the two sets, province prefixes checked. Every pair is reconciled with the committed SITUAS geography: previous code in 2025, new code in 2026, same tax code, and neither code names another Comune in the other year. Names never drive the join."
     },
     {
+      "id": "svizzera-frontalieri-comuni-20km",
+      "owner": "Official list of Italian Comuni within 20 km of the Swiss border (Italy-Switzerland cross-border workers agreement, Annex B of the mutual agreement of 22 December 2023)",
+      "files": [
+        "src/data/generated/svizzera-frontalieri-comuni-20km.json"
+      ],
+      "verificationMode": "source-lock",
+      "offlineCheck": {
+        "command": "python3 scripts/etl/svizzera_frontalieri_comuni_20km.py --check",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_svizzera_frontalieri_comuni_20km.py"
+      ],
+      "nodeTests": [
+        "tests/swiss-border-zone.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/svizzera_frontalieri_comuni_20km.py --write",
+        "requiresNetworkInput": false
+      },
+      "sourceSpec": "scripts/etl/specs/svizzera-frontalieri-comuni-20km.source.json",
+      "refreshWorkflow": null,
+      "trustModel": "Source lock on the Swiss Federal Tax Administration XLSX (bytes, SHA-256, sheet, headers, validity 2024-01-01) and on the signed agreement PDF it names as authoritative. The reviewed transcription of the scanned PDF must match the XLSX in all 518 rows; every name quoted by Gazzetta Ufficiale no. 236/2024 (Annexes 1 and 2) must be listed, and the Brescia and Sondrio lists must match exactly. Names join ISTAT codes only within the stated province (SITUAS 2023), merged Comuni map to declared, registry-checked successors. No distances are published."
+    },
+    {
       "id": "istat-population-grid-2021",
       "owner": "ISTAT Census 2021 1km population grid static overview",
       "files": [

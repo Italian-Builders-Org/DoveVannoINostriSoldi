@@ -213,3 +213,13 @@ table .linkButton { min-height: 0; }
   .summary { grid-area: 4 / 1; margin-top: var(--space-3); }
   .searchRow { flex-wrap: wrap; }
 }
+
+.borderMark {
+  margin-left: 4px;
+  padding: 0 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: super;
+  border: 1px solid currentColor;
+}

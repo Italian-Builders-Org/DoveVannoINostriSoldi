@@ -45,6 +45,6 @@ export const MEF_IRPEF_SOURCE = Object.freeze({
     summary:
       "Contribuenti, redditi, imposta netta dichiarata e addizionali per Comune, Provincia e Regione, con dettaglio opzionale per fonte e fascia di reddito.",
     caveat:
-      "È imposta netta dichiarata, non gettito fiscale totale. Le fonti di reddito possono sovrapporsi; i valori oscurati restano parziali e non vanno sottratti alla spesa o al saldo CPT.",
+      "È imposta netta dichiarata, non gettito fiscale totale. Le fonti di reddito possono sovrapporsi; i valori oscurati restano parziali e non vanno sottratti alla spesa o al saldo CPT. I Comuni con territory.swissBorderZone sono nell'elenco ufficiale della fascia di 20 km dal confine svizzero (accordo sui frontalieri): il reddito da lavoro svolto in Svizzera può mancare dalle dichiarazioni, quindi contribuenti e redditi possono risultare più bassi dei residenti.",
   },
 });

@@ -26,7 +26,13 @@ export type RealEstateRegionData = Readonly<{
   uses: readonly string[];
   types: readonly string[];
   /** IRPEF 2024 taxpayers by cadastral code; null for municipalities merged away since the census. */
-  municipalities: readonly Readonly<{ code: string; name: string; taxpayers: number | null }>[];
+  municipalities: readonly Readonly<{
+    code: string;
+    name: string;
+    taxpayers: number | null;
+    /** Present (true) only in the official 20 km zone of the Swiss border: taxpayers may undercount residents. */
+    swissBorderZone?: true;
+  }>[];
   cells: Readonly<{
     municipality: readonly number[];
     use: readonly number[];
@@ -97,6 +103,7 @@ function dictionary() {
 }
 
 let taxpayersByCode: ReadonlyMap<string, number> | null = null;
+let swissBorderByCode: ReadonlySet<string> = new Set();
 
 /**
  * IRPEF taxpayers by cadastral code, through the IRPEF query boundary. Nationwide, not per region:
@@ -105,23 +112,27 @@ let taxpayersByCode: ReadonlyMap<string, number> | null = null;
 function taxpayersOf(cadastral: string): number | null {
   if (!taxpayersByCode) {
     const found = new Map<string, number>();
+    const border = new Set<string>();
     for (let region = 1; region <= 20; region += 1) {
       for (let offset = 0, total = 1; offset < total; offset += 100) {
         const page = queryMefMunicipalIrpef({ level: "municipality", region: String(region).padStart(2, "0"), detail: "summary", limit: 100, offset });
         for (const record of page.data) {
-          if (record.territory.level === "municipality") found.set(record.territory.cadastralCode, record.taxpayers);
+          if (record.territory.level !== "municipality") continue;
+          found.set(record.territory.cadastralCode, record.taxpayers);
+          if (record.territory.swissBorderZone) border.add(record.territory.cadastralCode);
         }
         total = page.pagination.total;
       }
     }
     taxpayersByCode = found;
+    swissBorderByCode = border;
   }
   return taxpayersByCode.get(cadastral) ?? null;
 }
 
 export function aggregateRealEstateRegion(rows: readonly RealEstateCountRow[]): RealEstateRegionData {
   const uses = dictionary(), types = dictionary();
-  const municipalities: { code: string; name: string; taxpayers: number | null }[] = [];
+  const municipalities: { code: string; name: string; taxpayers: number | null; swissBorderZone?: true }[] = [];
   const municipalityIndex = new Map<string, number>();
   // Rows differ by owner too: the owner is summed away, municipality × use × type stays.
   const cells = new Map<string, { municipality: number; use: number; type: number; buildings: number; area: number }>();
@@ -130,7 +141,13 @@ export function aggregateRealEstateRegion(rows: readonly RealEstateCountRow[]): 
     if (municipality === undefined) {
       municipality = municipalities.length;
       municipalityIndex.set(row.cadastral, municipality);
-      municipalities.push({ code: row.cadastral, name: row.municipality, taxpayers: taxpayersOf(row.cadastral) });
+      const taxpayers = taxpayersOf(row.cadastral);
+      municipalities.push({
+        code: row.cadastral,
+        name: row.municipality,
+        taxpayers,
+        ...(swissBorderByCode.has(row.cadastral) ? { swissBorderZone: true as const } : {}),
+      });
     }
     const use = uses.id(row.use), type = types.id(row.type);
     const key = `${municipality}|${use}|${type}`;

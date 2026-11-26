@@ -28,9 +28,9 @@ export const FUNCTION_LABELS: Record<string, string> = {
 };
 export const PILLAR_LABELS: Record<Pillar, { title: string; question: string }> = {
   resa: { title: "Resa della spesa", question: "Quanti servizi ottiene per quello che spende?" },
-  sovraspesa: { title: "Spesa non giustificata", question: "Spende più del necessario senza dare di più?" },
-  investire: { title: "Capacità di investire", question: "Quanta parte dei soldi va in opere e beni durevoli?" },
-  appalti: { title: "Apertura degli appalti", question: "Fa gare vere o affida senza confronto?" },
+  sovraspesa: { title: "Spesa non giustificata", question: "Spende più del necessario senza offrire di più?" },
+  investire: { title: "Capacità di investire", question: "Quanta parte della spesa va in opere e beni durevoli?" },
+  appalti: { title: "Apertura degli appalti", question: "Mette in gara gli appalti o li affida senza confronto?" },
 };
 
 export type IndexEntry = {
@@ -225,23 +225,33 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
 
 const ALTITUDE: Record<number, string> = { 1: "montagna interna", 2: "montagna litoranea", 3: "collina interna", 4: "collina litoranea", 5: "pianura" };
 const URBAN: Record<number, string> = { 1: "città", 2: "zona a densità intermedia", 3: "zona rurale" };
-const POPULATION = ["meno di 1.000 abitanti", "1.000-4.999 abitanti", "5.000-19.999 abitanti", "20.000-49.999 abitanti", "50.000-99.999 abitanti", "100.000 abitanti o più"];
-const SURFACE = ["meno di 10 km²", "10-50 km²", "50-200 km²", "200-500 km²", "500 km² o più"];
+const POPULATION = ["con meno di 1.000 abitanti", "da 1.000 a 4.999 abitanti", "da 5.000 a 19.999 abitanti", "da 20.000 a 49.999 abitanti", "da 50.000 a 99.999 abitanti", "con almeno 100.000 abitanti"];
+const SURFACE = ["meno di 10 km²", "10-50 km²", "50-200 km²", "200-500 km²", "oltre 500 km²"];
 
-/** "Comuni da 1.000-4.999 abitanti, 10-50 km², collina interna, zona rurale, non costieri" */
+/** Es. "i Comuni da 1.000 a 4.999 abitanti, con 10-50 km² di superficie, in collina interna e in zona rurale, non costieri". */
 export function describeGroup(group: PeerGroup): string {
-  if (group.stage === "big") return "le città con 100.000 abitanti o più";
+  if (group.stage === "big") return "le città con almeno 100.000 abitanti";
   const [population, surface, altitude, urban, coastal, island] = group.values as [number, number?, number?, number?, boolean?, boolean?];
-  const parts = [POPULATION[population]];
-  if (surface !== undefined) parts.push(SURFACE[surface]);
-  if (altitude !== undefined && altitude !== null) parts.push(ALTITUDE[altitude]);
-  if (urban !== undefined && urban !== null) parts.push(URBAN[urban]);
+  const parts = [`i Comuni ${POPULATION[population]}`];
+  if (surface !== undefined) parts.push(`con ${SURFACE[surface]} di superficie`);
+  const place = [
+    altitude !== undefined && altitude !== null ? `in ${ALTITUDE[altitude]}` : null,
+    urban !== undefined && urban !== null ? `in ${URBAN[urban]}` : null,
+  ].filter(Boolean);
+  if (place.length) parts.push(place.join(" e "));
   if (coastal !== undefined) parts.push(coastal ? "sulla costa" : "non costieri");
   if (island) parts.push("su un'isola");
-  return `i Comuni con ${parts.join(", ")}`;
+  return parts.join(", ");
 }
 
-const signed = (value: number) => `${value > 0 ? "+" : value < 0 ? "−" : ""}${Math.abs(value).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`;
+/** "il 12,3% di servizi in più", "il 18,1% in meno", "in linea". */
+function relative(value: number, noun?: string): string {
+  const rounded = Math.round(value * 10) / 10;
+  if (rounded === 0) return noun ? `${noun} in linea` : "in linea";
+  const amount = `il ${Math.abs(rounded).toLocaleString("it-IT", { maximumFractionDigits: 1 })}%`;
+  return `${amount}${noun ? ` di ${noun}` : ""} ${rounded > 0 ? "in più" : "in meno"}`;
+}
+
 const points = (value: number) => {
   const rounded = Math.round(value * 10) / 10;
   return `${rounded > 0 ? "+" : rounded < 0 ? "−" : ""}${Math.abs(rounded).toLocaleString("it-IT", { maximumFractionDigits: 1 })}`;
@@ -274,32 +284,36 @@ export function explainEntry(entry: IndexEntry, rules: IndexRules): PillarExplan
     const facts: string[] = [];
     if (pillar === "resa") {
       if (entry.spending2022 !== null && entry.services2022 !== null) {
-        facts.push(`Nel 2022 offre servizi ${signed(entry.services2022)} rispetto alla media dei Comuni della sua fascia e spende ${signed(entry.spending2022)} rispetto al fabbisogno standard.`);
+        facts.push(`Nel 2022 offre ${relative(entry.services2022, "servizi")} rispetto alla media dei Comuni della sua fascia e spende ${relative(entry.spending2022)} rispetto al fabbisogno standard.`);
         facts.push(`Saldo tra servizi e spesa: ${points(entry.services2022 - entry.spending2022)} punti percentuali nel 2022${entry.spending2021 !== null && entry.services2021 !== null ? `, ${points(entry.services2021 - entry.spending2021)} nel 2021` : ""}.`);
       } else facts.push("OpenCivitas non pubblica livelli di spesa e servizi per questo Comune.");
     } else if (pillar === "sovraspesa") {
       if (entry.spending2022 !== null && entry.services2022 !== null) {
         const gap = Math.max(0, entry.spending2022 - Math.max(0, entry.services2022));
         facts.push(gap > 0
-          ? `Spende ${pct(Math.round(gap * 10) / 10)} oltre il fabbisogno senza servizi in più che lo giustifichino.`
+          ? `Spende il ${pct(Math.round(gap * 10) / 10)} oltre il fabbisogno senza servizi in più che lo giustifichino.`
           : entry.spending2022 > 0
-            ? "Spende sopra il fabbisogno, ma offre servizi in più almeno in proporzione: nessuna penalità."
-            : "Spende in linea o sotto il fabbisogno standard: nessuna penalità.");
+            ? "Spende più del fabbisogno, ma offre servizi in più almeno nella stessa misura: nessuna penalità."
+            : "Spende quanto il fabbisogno standard o meno: nessuna penalità.");
       }
     } else if (pillar === "investire") {
-      if (entry.investmentShare !== null) facts.push(`Il ${pct(entry.investmentShare)} dei pagamenti 2024-2025 è andato in investimenti, il resto in spesa corrente.`);
+      if (entry.investmentShare !== null) facts.push(`Nel 2024 e nel 2025 il ${pct(entry.investmentShare)} dei pagamenti è andato in investimenti, il resto in spesa corrente.`);
       else facts.push("Pagamenti SIOPE 2024-2025 non disponibili.");
     } else {
       if (entry.withoutTenderShare !== null && entry.procedures !== null) {
-        facts.push(`Il ${pct(entry.withoutTenderShare)} del valore delle sue ${integer(entry.procedures)} procedure sopra ${integer(rules.procurementThresholdEuro)} € pubblicate nel 2025 è stato assegnato senza gara.`);
+        facts.push(`Delle sue ${integer(entry.procedures)} procedure da almeno ${integer(rules.procurementThresholdEuro)} € pubblicate nel 2025, il ${pct(entry.withoutTenderShare)} del valore è stato assegnato senza gara.`);
       }
       if (entry.topSupplierShare !== null && entry.awards !== null) {
-        facts.push(`Il fornitore principale ha ricevuto il ${pct(entry.topSupplierShare)} del valore delle ${integer(entry.awards)} aggiudicazioni a un singolo operatore.`);
+        facts.push(`Il fornitore principale ha ricevuto il ${pct(entry.topSupplierShare)} del valore delle sue ${integer(entry.awards)} aggiudicazioni a un singolo operatore.`);
       }
-      if (!facts.length) facts.push("Troppe poche procedure e aggiudicazioni nel 2025 per un confronto affidabile.");
-      else if ((entry.procedures ?? 0) < 20 || (entry.awards ?? 0) < 20) facts.push("Con pochi appalti il valore è stato avvicinato alla mediana nazionale, per non premiare o punire il caso.");
+      if (!facts.length) facts.push("Nel 2025 le procedure e le aggiudicazioni sono troppo poche per un confronto affidabile.");
+      else if ((entry.procedures ?? 0) < 20 || (entry.awards ?? 0) < 20) facts.push("Con pochi appalti un solo contratto sposta molto la quota: per questo il valore è stato avvicinato alla mediana nazionale.");
     }
-    return { pillar, percentile, weight, points: percentile === null ? null : Math.round(percentile * weight * 10) / 10, verdict: betterThan(percentile), facts };
+    // With no unjustified spending a Comune ties with most of its peers: "better than 58%" would read as a fault.
+    const noPenalty = pillar === "sovraspesa" && entry.spending2022 !== null && entry.services2022 !== null
+      && entry.spending2022 - Math.max(0, entry.services2022) <= 0;
+    const label = noPenalty && percentile !== null ? "Nessuna spesa non giustificata, come la maggior parte dei Comuni simili" : betterThan(percentile);
+    return { pillar, percentile, weight, points: percentile === null ? null : Math.round(percentile * weight * 10) / 10, verdict: label, facts };
   });
 }
 
@@ -322,9 +336,9 @@ export function stabilityLabel(stability: number | null): string {
 }
 
 export function statusLabel(status: Status): string {
-  if (status === "partial") return "Punteggio parziale: manca almeno un pilastro, fuori classifica";
+  if (status === "partial") return "Punteggio parziale: manca almeno un pilastro, quindi il Comune non è in classifica";
   if (status === "special-statute") return "Non valutabile: OpenCivitas non copre le Regioni a statuto speciale";
-  if (status === "no-opencivitas") return "Non valutabile: livelli di spesa e servizi non pubblicati";
+  if (status === "no-opencivitas") return "Non valutabile: OpenCivitas non pubblica i livelli di spesa e servizi di questo Comune";
   return "In classifica";
 }
 

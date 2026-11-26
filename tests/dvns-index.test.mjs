@@ -43,20 +43,21 @@ test("the explanation adds up to the score and names the data behind each pillar
   const parts = explainEntry(parsed.entries[0], rules);
   assert.equal(parts.length, 4);
   assert.equal(Math.round(parts.reduce((sum, part) => sum + part.points, 0)), Math.round(80 * 0.5 + 60 * 0.15 + 40 * 0.2 + 20 * 0.15));
-  assert.match(parts[0].facts[0], /servizi \+65,1%.*spende \+31,9%/u);
+  assert.match(parts[0].facts[0], /offre il 65,1% di servizi in più .* spende il 31,9% in più rispetto al fabbisogno/u);
   // Spending more to deliver more services is not called unjustified.
   assert.match(parts[1].facts[0], /nessuna penalità/u);
-  assert.match(parts[3].facts[0], /19,4% del valore delle sue 12 procedure sopra 40\.000 €/u);
+  assert.match(parts[3].facts[0], /Delle sue 12 procedure da almeno 40\.000 € pubblicate nel 2025, il 19,4% del valore/u);
   assert.match(parts[3].facts.at(-1), /mediana nazionale/u);
   assert.equal(parts[0].verdict, "Meglio dell'80% dei Comuni simili");
+  assert.equal(parts[1].verdict, "Nessuna spesa non giustificata, come la maggior parte dei Comuni simili");
   assert.equal(parts[2].verdict, "Meglio del 40% dei Comuni simili");
 });
 
 test("function highlights, group labels and distribution", () => {
   const parsed = assertIndexSnapshot(snapshot([row("037006")]));
   assert.deepEqual(functionHighlights(parsed.entries[0], functions), { best: ["polizia locale", "istruzione"], worst: ["sociale e asili nido", "rifiuti"] });
-  assert.equal(describeGroup({ stage: "big", values: [], size: 36 }), "le città con 100.000 abitanti o più");
-  assert.equal(describeGroup({ stage: "a", values: [1, 1, 3, 3, false, false], size: 40 }), "i Comuni con 1.000-4.999 abitanti, 10-50 km², collina interna, zona rurale, non costieri");
+  assert.equal(describeGroup({ stage: "big", values: [], size: 36 }), "le città con almeno 100.000 abitanti");
+  assert.equal(describeGroup({ stage: "a", values: [1, 1, 3, 3, false, false], size: 40 }), "i Comuni da 1.000 a 4.999 abitanti, con 10-50 km² di superficie, in collina interna e in zona rurale, non costieri");
   const bins = distribution(parsed.entries);
   assert.equal(bins.reduce((sum, value) => sum + value, 0), 1);
   assert.equal(bins[30], 1);

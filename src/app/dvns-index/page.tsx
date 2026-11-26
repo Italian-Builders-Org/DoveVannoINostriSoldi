@@ -139,7 +139,7 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
       {entry.score !== null ? (
         <div className={styles.formula}>
           <h3>Perché {one.format(entry.score)}</h3>
-          <p>Il punteggio è la somma dei quattro pilastri, ognuno moltiplicato per il suo peso.</p>
+          <p>Il punteggio somma i quattro pilastri, ciascuno moltiplicato per il proprio peso.</p>
           <div className={styles.stack} aria-hidden="true">
             {parts.map((part) => (part.points ? <span key={part.pillar} data-pillar={part.pillar} style={{ flexGrow: part.points }} /> : null))}
             <span className={styles.stackRest} style={{ flexGrow: Math.max(0, 100 - total) }} />
@@ -174,7 +174,7 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
             </div>
             <p className={styles.verdict}>
               <strong>{part.verdict}</strong>
-              {part.points !== null ? ` · ${one.format(part.percentile ?? 0)} su 100, vale ${one.format(part.points)} punti` : ""}
+              {part.points !== null ? ` · ${one.format(part.percentile ?? 0)} su 100, pari a ${one.format(part.points)} punti dell'indice` : ""}
             </p>
             <ul className={styles.facts}>
               {part.facts.map((fact) => <li key={fact}>{fact}</li>)}
@@ -185,15 +185,14 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
 
       {highlights.best.length ? (
         <p className={styles.functions}>
-          <strong>Dove rende di più:</strong> {highlights.best.join(" e ")}. <strong>Dove rende di meno:</strong> {highlights.worst.join(" e ")}.
-          <span> Saldo tra servizi e spesa per funzione, OpenCivitas 2022.</span>
+          <strong>Dove rende di più:</strong> {highlights.best.join(", ")}. <strong>Dove rende di meno:</strong> {highlights.worst.join(", ")}.
+          <span> Confronto tra servizi e spesa nelle singole funzioni, OpenCivitas 2022.</span>
         </p>
       ) : null}
-      {dossierHref ? (
-        <p className={styles.cardLinks}>
-          <Link href={dossierHref} prefetch={false}>Apri la scheda completa di {name}</Link>
-        </p>
-      ) : null}
+      <p className={styles.cardLinks}>
+        {dossierHref ? <Link href={dossierHref} prefetch={false}>Apri la scheda completa di {name}</Link> : null}
+        <Link href="/dvns-index/metodo" prefetch={false}>Come si calcola il punteggio</Link>
+      </p>
     </section>
   );
 }
@@ -239,6 +238,10 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
               <span className={styles.lime}>Index</span>
             </h1>
             <p className={styles.tagline}>Il tuo Comune spende meglio o peggio degli altri?</p>
+            <p className={styles.heroLinks}>
+              <Link href="/dvns-index/metodo" prefetch={false} className={styles.heroMethod} data-method-link="hero">Come si calcola l&apos;indice →</Link>
+              <a href="#classifica">Vai alla classifica</a>
+            </p>
             <ol className={styles.heroList}>
               {PILLARS.map((pillar, index) => (
                 <li key={pillar}>
@@ -279,7 +282,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <div>
             <dt>Punteggio parziale</dt>
             <dd>{integer.format(summary.partial)}</dd>
-            <span className="stat-note">troppi pochi appalti o dati mancanti</span>
+            <span className="stat-note">appalti troppo pochi o dati mancanti</span>
           </div>
           <div>
             <dt>Non valutabili</dt>
@@ -287,11 +290,22 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             <span className="stat-note">Regioni a statuto speciale, fuori OpenCivitas</span>
           </div>
           <div>
-            <dt>Fasce solide</dt>
+            <dt>Solidità delle fasce</dt>
             <dd>{one.format(summary.medianStability * 100)}%</dd>
-            <span className="stat-note">mediana delle conferme cambiando i pesi</span>
+            <span className="stat-note">quota mediana di ricalcoli con pesi diversi che confermano la fascia</span>
           </div>
         </dl>
+
+        <aside className={styles.methodCallout} aria-labelledby="metodo-callout">
+          <div>
+            <h2 id="metodo-callout">Come funziona il DVNS Index</h2>
+            <p>
+              Dati ufficiali di OpenCivitas, SIOPE e ANAC, quattro pilastri con pesi dichiarati, confronto solo tra Comuni
+              simili. Ogni regola, ogni fonte e un esempio completo sono nella pagina del metodo.
+            </p>
+          </div>
+          <Link href="/dvns-index/metodo" prefetch={false} data-method-link="callout">Leggi il metodo completo →</Link>
+        </aside>
 
         {selected ? (
           <ComuneCard entry={selected} data={data} dossierHref={dossier ? `/comuni?ente=${encodeURIComponent(dossier.codiceIpa)}` : null} />
@@ -383,7 +397,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <h2 id="metodo" className="panel-title">Come si calcola</h2>
           <p className={styles.lede}>
             Il DVNS Index ha una base oggettiva, dati ufficiali che chiunque può verificare, e una parte di indicatore:
-            le regole con cui decidiamo cosa conta come &quot;meglio&quot; e quanto pesa. Le regole sono queste, tutte.
+            le regole con cui decidiamo cosa conta come &quot;meglio&quot; e quanto pesa. Qui trovi la sintesi; il{" "}
+            <Link href="/dvns-index/metodo" prefetch={false}>metodo completo</Link> spiega ogni passaggio con un esempio.
           </p>
           <div className="table-scroll" role="region" aria-labelledby="pilastri-tabella" tabIndex={0}>
             <table className={`table ${styles.methodTable}`}>

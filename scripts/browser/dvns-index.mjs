@@ -74,6 +74,12 @@ try {
         assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${formula}`);
         assert.match(main, /1° su 35/u, "posizione tra le città simili");
         assert.ok(await page.$('#scheda a[href^="/comuni?ente="]'), "manca il link alla scheda del Comune");
+        assert.ok(await page.$('#scheda a[href="/dvns-index/metodo"]'), "manca il link al metodo dalla scheda");
+        // The method is reachable from the top, without scrolling, and from the callout under the numbers.
+        const methodTop = await page.$eval('[data-method-link="hero"]', (el) => ({ href: el.getAttribute("href"), visible: el.getBoundingClientRect().bottom <= window.innerHeight * 1.6 && el.getBoundingClientRect().width > 0 }));
+        assert.equal(methodTop.href, "/dvns-index/metodo");
+        assert.ok(methodTop.visible, "il pulsante del metodo non è ben visibile in alto");
+        assert.equal(await page.$eval('[data-method-link="callout"]', (el) => el.getAttribute("href")), "/dvns-index/metodo");
 
         // The searched Comune is labelled on the chart.
         assert.equal(await page.$eval('[data-highlight="true"] text', (el) => el.textContent), "Bologna");
@@ -142,6 +148,27 @@ try {
 
         const missing = await page.evaluate(async () => (await fetch("/api/dvns-index/punto?colonna=999&riga=0")).status);
         assert.equal(missing, 404);
+      },
+    });
+
+    await runScenario(browser, {
+      suite: "dvns-index",
+      label: `DVNS Index metodo ${width}px`,
+      pathname: "/dvns-index/metodo",
+      width,
+      expectedFailure,
+      async validate(page) {
+        await assertLayout(page, "metodo");
+        const headings = await page.$$eval("main h2", (items) => items.map((item) => item.textContent));
+        for (const title of ["In breve", "I dati", "I quattro pilastri", "Il confronto tra Comuni simili", "Punteggio, fasce e solidità", "Un esempio completo: Bologna", "Cosa l'indice non dice", "Come verificarlo"]) {
+          assert.ok(headings.includes(title), `manca la sezione "${title}"`);
+        }
+        // The worked example adds up: four pillar points equal the published score.
+        const cells = await page.$$eval("#esempio ~ div table tbody tr td:last-child, section[aria-labelledby=esempio] tbody td:last-child", (items) => items.map((item) => item.textContent ?? ""));
+        const total = await page.$eval("section[aria-labelledby=esempio] tfoot strong", (el) => el.textContent ?? "");
+        assert.equal(cells.length, 4);
+        assert.ok(Math.abs(cells.map(number).reduce((sum, value) => sum + value, 0) - number(total)) <= 0.2, "l'esempio non somma al punteggio");
+        assert.doesNotMatch(await page.$eval("main", (el) => el.innerText), /\bNaN\b|\bundefined\b|n\.d\./u);
       },
     });
 

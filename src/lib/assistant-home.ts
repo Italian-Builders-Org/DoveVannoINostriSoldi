@@ -21,6 +21,5 @@ export function assistantHref(question: string): string {
 /** Bozza dalla query string: una riga, senza caratteri di controllo, al massimo HOME_QUESTION_MAX caratteri. */
 export function assistantPrefill(search: string): string {
   const raw = new URLSearchParams(search).get("q") ?? "";
-  // eslint-disable-next-line no-control-regex
   return raw.replace(/[\u0000-\u0008\u000B-\u001F\u007F]/gu, "").replace(/\s+/gu, " ").trim().slice(0, HOME_QUESTION_MAX);
 }

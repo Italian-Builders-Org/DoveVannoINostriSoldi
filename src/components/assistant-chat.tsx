@@ -93,11 +93,16 @@ export function AssistantChat() {
     // A question typed on the home page arrives as ?q=: it becomes a draft, never an automatic send.
     const prefill = assistantPrefill(window.location.search);
     if (!prefill) return;
-    setDraft(prefill);
-    const url = new URL(window.location.href);
-    url.searchParams.delete("q");
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-    input.current?.focus();
+    // After the first paint: the server-rendered empty composer hydrates first, then takes the draft.
+    // The URL is cleaned in the same callback, so a cancelled frame (Strict Mode) leaves ?q= for the rerun.
+    const frame = requestAnimationFrame(() => {
+      setDraft(prefill);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("q");
+      window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+      input.current?.focus();
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
   useEffect(() => {
     const leave = () => { connectionRef.current = null; freeConsent.current = false; setFreeRequest(null); pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };

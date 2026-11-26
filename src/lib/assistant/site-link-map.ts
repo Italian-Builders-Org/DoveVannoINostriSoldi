@@ -213,7 +213,7 @@ export const DATASET_SITE_LINKS: Readonly<Record<DatasetId, DatasetLinkResolver>
       description: "Spesa sanitaria per dispositivi BD/RDM, classificazione CND e territorio",
     };
     const deviceNumber = query.deviceNumber?.trim();
-    if (query.deviceType && deviceNumber && DEVICE_NUMBER_PATTERN.test(deviceNumber)) {
+    if ((query.deviceType === "1" || query.deviceType === "2") && deviceNumber && DEVICE_NUMBER_PATTERN.test(deviceNumber)) {
       return [
         {
           href: `/spese/sanita/dispositivi/${encodeURIComponent(query.deviceType)}/${encodeURIComponent(deviceNumber)}`,

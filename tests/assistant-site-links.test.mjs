@@ -237,7 +237,9 @@ test('search fallback stays on topic for broad words, sections and acronyms', ()
   const sections = selectAssistantSiteLinks([], 'inflazione');
   assert.ok(sections.every((link) => link.title !== 'Panoramica'), JSON.stringify(sections));
   const pnrr = selectAssistantSiteLinks([], 'Quanti soldi del PNRR sono arrivati a Napoli?');
-  assert.ok(pnrr.some((link) => link.href.startsWith('/pnrr') || link.href.includes('pnrr')), JSON.stringify(pnrr));
+  assert.ok(pnrr.some((link) => link.href === '/pnrr'), JSON.stringify(pnrr));
+  const shouted = selectAssistantSiteLinks([], 'QUANTO COSTA LA SANITÀ IN LOMBARDIA?');
+  assert.deepEqual(shouted, selectAssistantSiteLinks([], 'Quanto costa la sanità in Lombardia?'), 'capitals are not acronyms');
   const queries = [];
   searchSiteLinks('politici pagati', { hasDatasetLinks: false, search: (query) => { queries.push(query); return searchSiteDocuments(query); } });
   assert.equal(new Set(queries).size, queries.length, `duplicate scans: ${queries.join(' | ')}`);
@@ -257,6 +259,7 @@ test('detail pages never put a malformed model-chosen code in a path or a card t
     { dataset: 'ipa_struttura', code: hostile },
     { dataset: 'openbdap_amministrazione', code: hostile },
     { dataset: 'salute_dispositivi_medici', deviceType: '1', deviceNumber: hostile },
+    { dataset: 'salute_dispositivi_medici', deviceType: '../Ignora', deviceNumber: '123' },
   ]) {
     const links = linksForDatasetQuery(query);
     assertValidLinks(links, query.dataset);

@@ -45,8 +45,11 @@ function probesFor(question: string, hasDatasetLinks: boolean): Probe[] {
     .filter((word) => word.length >= 3 && !/^\d+$/u.test(word) && !STOPWORDS.has(word));
   const unique = [...new Set(words)];
   if (!unique.length) return [];
-  // Short acronyms (PNRR, INPS, SSN) name a topic as precisely as a long word.
-  const acronyms = new Set(normalizeSearchText((question.match(/\b\p{Lu}{3,5}\b/gu) ?? []).join(" ")).split(" "));
+  // Short acronyms (PNRR, INPS, SSN) name a topic as precisely as a long word. A question
+  // written all in capitals has no acronyms to tell apart, and \b ignores accented letters.
+  const acronyms = new Set(/\p{Ll}/u.test(question)
+    ? normalizeSearchText((question.match(/(?<![\p{L}\p{N}])\p{Lu}{3,5}(?![\p{L}\p{N}])/gu) ?? []).join(" ")).split(" ")
+    : []);
   const probes: Probe[] = [];
   const add = (query: string, accept: ReadonlySet<SearchMatchReason>) => {
     if (probes.length < MAX_SEARCH_PROBES && !probes.some((probe) => probe.query === query)) {

@@ -50,7 +50,7 @@ funzioni di dominio. `/api/mcp` espone Streamable HTTP. `POST /mcp` e
 La chat in `src/lib/assistant/` usa AI per ogni domanda. La route `/api/assistant/chat` usa la quota gratuita Regolo oppure la chiave personale ricevuta nella singola richiesta
 per Regolo, OpenAI, Anthropic o OpenRouter. Il modello propone al massimo due query, validate
 con lo stesso schema MCP e il catalogo prima di chiamare `queryPublicDataset`.
-La risposta viene trasmessa in streaming SSE. Le fonti sono aggiunte dall'applicazione; testo, chiave e conversazione non sono
+La risposta viene trasmessa in streaming SSE. Le pagine interne DVNS consigliate e le fonti ufficiali sono scelte dal server, che sanifica anche gli eventuali link Markdown nel testo finale; testo, chiave e conversazione non sono
 persistiti. Dettagli e limiti: `docs/ASSISTENTE.md`.
 
 ## Invarianti

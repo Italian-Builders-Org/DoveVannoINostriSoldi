@@ -202,7 +202,8 @@
       "65",
       "09"
     ],
-    "implausibleEarlyPaymentDays": 60
+    "implausibleEarlyPaymentDays": 60,
+    "minPeers": 30
   },
   "sources": [
     {

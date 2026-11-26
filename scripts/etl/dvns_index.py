@@ -144,6 +144,23 @@ def volatile_services(services_2021: float | None, services_2022: float | None, 
     return services_2021 is not None and services_2022 is not None and abs(services_2022 - services_2021) > threshold
 
 
+def pick_peers(istat: str, keys: list[tuple | None], minimums: list[int], groups: dict[tuple, list[str]],
+               eligible: set[str]) -> tuple[tuple | None, list[str]]:
+    """The narrowest group with enough comparable Comuni, and its members.
+
+    Only eligible Comuni (those OpenCivitas covers) count and are compared:
+    a group of 11 where 4 lack the data would otherwise rank a Comune among 7,
+    where being the best of a handful already means a percentile of 100.
+    """
+    for key, minimum in zip(keys, minimums):
+        if key is None:
+            continue
+        members = [i for i in groups.get(key, []) if i != istat and i in eligible]
+        if len(members) >= minimum:
+            return key, members
+    return None, []
+
+
 def plausible_delay(days: float, max_early_days: float) -> float | None:
     """A payment delay, or None when it is a recording error.
 
@@ -426,11 +443,11 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
     groups: dict[tuple, list[str]] = defaultdict(list)
     stages: list[tuple[Callable[[dict], tuple | None], int, str]] = [
         (lambda g: ("big",) if g["pop"] >= 100_000 else None, 5, "big"),
-        (lambda g: ("a", g["pband"], g["sband"], g["alt"], g["urb"], g["coastal"], g["island"]), 10, "a"),
-        (lambda g: ("b", g["pband"], g["sband"], g["alt"], g["urb"]), 10, "b"),
-        (lambda g: ("c", g["pband"], g["sband"], g["alt"]), 10, "c"),
-        (lambda g: ("d", g["pband"], g["sband"]), 10, "d"),
-        (lambda g: ("f", g["pband"]), 10, "f"),
+        (lambda g: ("a", g["pband"], g["sband"], g["alt"], g["urb"], g["coastal"], g["island"]), rules["minPeers"], "a"),
+        (lambda g: ("b", g["pband"], g["sband"], g["alt"], g["urb"]), rules["minPeers"], "b"),
+        (lambda g: ("c", g["pband"], g["sband"], g["alt"]), rules["minPeers"], "c"),
+        (lambda g: ("d", g["pband"], g["sband"]), rules["minPeers"], "d"),
+        (lambda g: ("f", g["pband"]), rules["minPeers"], "f"),
     ]
     for g in geo.values():
         for stage, _, _ in stages:
@@ -439,11 +456,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
                 groups[key].append(g["istat"])
 
     def peers_of(g: dict) -> tuple[tuple | None, list[str]]:
-        for stage, minimum, _ in stages:
-            key = stage(g)
-            if key is not None and len(groups[key]) - 1 >= minimum:
-                return key, [i for i in groups[key] if i != g["istat"]]
-        return None, []
+        return pick_peers(g["istat"], [stage(g) for stage, _, _ in stages], [minimum for _, minimum, _ in stages], groups, rso)
 
     results = []
     for g in geo.values():
@@ -507,7 +520,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
         key = r["key"]
         if key is not None and key not in group_ids:
             group_ids[key] = len(group_rows)
-            group_rows.append({"id": len(group_rows), "stage": key[0], "values": list(key[1:]), "size": len(groups[key])})
+            group_rows.append({"id": len(group_rows), "stage": key[0], "values": list(key[1:]), "size": sum(i in rso for i in groups[key])})
 
     rows = []
     for r in sorted(results, key=lambda r: r["g"]["istat"]):

@@ -90,6 +90,8 @@ export type IndexRules = {
   sensitivity: { draws: number; spread: number };
   volatileServicesPoints: number;
   implausibleEarlyPaymentDays: number;
+  /** Minimum comparable Comuni (covered by OpenCivitas) in a peer group before it is widened. */
+  minPeers: number;
   concentrationExcludedCpvDivisions: string[];
 };
 export type IndexSnapshot = {

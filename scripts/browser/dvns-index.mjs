@@ -147,7 +147,7 @@ try {
         await Promise.all([page.waitForNavigation({ waitUntil: "domcontentloaded" }), page.keyboard.press("Enter")]);
         await page.waitForSelector("#scheda-title");
         assert.equal(await page.$eval("#scheda-title", (el) => el.textContent), "Gubbio");
-        assert.match(await page.$eval("#scheda", (el) => el.innerText), /93° su 314/u);
+        assert.match(await page.$eval("#scheda", (el) => el.innerText), /86° su 314/u);
         await assertLayout(page, "scheda Gubbio");
 
         await page.goto(`${baseUrl}/dvns-index?regione=08&fascia=A`, { waitUntil: "domcontentloaded" });
@@ -218,7 +218,7 @@ try {
         await page.waitForSelector("[data-dvns-index-badge]");
         const badge = await page.$eval("[data-dvns-index-badge]", (el) => ({ href: el.getAttribute("href"), text: el.textContent ?? "" }));
         assert.equal(badge.href, "/dvns-index?comune=037006#scheda");
-        assert.match(badge.text, /83,3.*20° su 5\.123.*fascia A/u);
+        assert.match(badge.text, /83,3.*14° su 5\.129.*fascia A/u);
         const colors = await page.$eval("[data-dvns-index-badge]", (el) => [...el.querySelectorAll("span, strong")].map((node) => getComputedStyle(node).color));
         assert.ok(colors.every((color) => color !== "rgb(13, 14, 16)"), "testo del badge invisibile sul fondo scuro");
       },

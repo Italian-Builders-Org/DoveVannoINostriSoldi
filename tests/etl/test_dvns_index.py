@@ -55,6 +55,24 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(etl.italian_number("68,2"), 68.2)
         self.assertIsNone(etl.italian_number(""))
 
+    def test_peer_groups_widen_until_enough_comparable_comuni(self) -> None:
+        # Rivello: 11 Comuni in the narrowest group, but only 7 with OpenCivitas data.
+        groups = {
+            ("a",): ["rivello"] + [f"rso{i}" for i in range(6)] + [f"special{i}" for i in range(4)],
+            ("b",): ["rivello"] + [f"rso{i}" for i in range(40)],
+        }
+        eligible = {"rivello"} | {f"rso{i}" for i in range(40)}
+        key, members = etl.pick_peers("rivello", [("a",), ("b",)], [30, 30], groups, eligible)
+        self.assertEqual(key, ("b",))
+        self.assertEqual(len(members), 40)
+        self.assertNotIn("rivello", members)
+        # Comuni without OpenCivitas data never count toward the minimum, and are not peers.
+        key, members = etl.pick_peers("rivello", [("a",)], [5], groups, eligible)
+        self.assertEqual(key, ("a",))
+        self.assertEqual(sorted(members), sorted(f"rso{i}" for i in range(6)))
+        # No group large enough: no peers, so no score.
+        self.assertEqual(etl.pick_peers("rivello", [("a",)], [30], groups, eligible), (None, []))
+
     def test_few_observations_move_toward_the_median(self) -> None:
         # 5 procedures all without tender: pulled well below 100%.
         self.assertAlmostEqual(etl.shrink(1.0, 5, 0.77, 8), 0.77 + 0.23 * 5 / 13)

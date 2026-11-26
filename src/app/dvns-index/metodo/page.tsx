@@ -197,9 +197,10 @@ export default async function DvnsIndexMethodPage() {
           <p className={styles.lede}>
             Confrontare Milano con un paese di montagna non avrebbe senso. Ogni Comune viene confrontato con i Comuni che
             hanno la stessa fascia di popolazione e di superficie, la stessa zona altimetrica, lo stesso grado di
-            urbanizzazione e la stessa posizione rispetto a costa e isole. Se i Comuni così simili sono meno di 10,
-            allarghiamo il gruppo togliendo un criterio alla volta. Le città con almeno 100.000 abitanti si confrontano
-            sempre tra loro.
+            urbanizzazione e la stessa posizione rispetto a costa e isole. Contano solo i Comuni coperti da OpenCivitas:
+            se sono meno di {integer.format(rules.minPeers)}, allarghiamo il gruppo togliendo un criterio alla volta. Con
+            pochi Comuni il confronto è troppo grossolano: essere il migliore su 7 vale già 100, anche con risultati
+            soltanto buoni. Le città con almeno 100.000 abitanti si confrontano sempre tra loro.
           </p>
           <p className={styles.lede}>
             Dentro il gruppo ogni misura diventa un percentile: 70 vuol dire che il Comune fa meglio del 70% dei Comuni

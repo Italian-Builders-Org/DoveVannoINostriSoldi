@@ -73,6 +73,20 @@ Gli aggregati che includono celle oscurate espongono soltanto il subtotale
 noto, il numero di righe soppresse e lo stato `partial`. Non vengono stimati o
 ricostruiti valori mancanti.
 
+## Frontalieri e fascia di confine con la Svizzera
+
+Nei Comuni entro circa 20 km dal confine con la Svizzera molti residenti
+lavorano oltreconfine. Per i lavoratori frontalieri previsti dall'accordo tra
+Italia e Svizzera del 23 dicembre 2020 (ratificato con
+[legge 13 giugno 2023, n. 83](https://www.gazzettaufficiale.it/eli/id/2023/06/30/23G00087/SG))
+il reddito da lavoro dipendente svolto in Svizzera non entra nelle dichiarazioni
+IRPEF che il MEF aggrega su base comunale, oppure ne copre solo una parte.
+
+Nei territori più vicini al confine il numero di contribuenti e i redditi
+dichiarati possono quindi risultare più bassi rispetto ai residenti. È un
+limite legale della fonte, non un errore di pubblicazione; DVNS non modifica i
+valori MEF.
+
 ## Copertura e aggregazioni
 
 Il file contiene 7.896 Comuni univoci, 107 Province, 20 Regioni e una riga

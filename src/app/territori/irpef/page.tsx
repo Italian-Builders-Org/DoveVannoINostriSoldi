@@ -18,6 +18,7 @@ import {
   getMunicipalityGeographyByIstatCode,
   getRegionGeography,
 } from "@/lib/municipality-geography";
+import { MefIrpefSwissBorderNote } from "@/components/mef-irpef-swiss-border-note";
 import styles from "./irpef.module.css";
 
 export const metadata: Metadata = {
@@ -304,6 +305,8 @@ export default async function MefIrpefPage({
           dichiarazioni. Resta separata da spesa e saldo CPT.
         </p>
       </div>
+
+      <MefIrpefSwissBorderNote variant="notice" />
 
       {queryError ? (
         <div className="notice warning-notice" role="alert">

@@ -255,9 +255,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
               highlight={selected?.status === "ranked" ? locateDot(data.dots, selected.istat) : null}
               highlightLabel={selected ? displayMunicipalityName(selected.name) : ""}
             />
-            <div className={styles.axis}><span>Peggio</span><span>Meglio</span></div>
             <p className={styles.chartNote}>
-              {integer.format(summary.ranked)} Comuni in classifica. Ogni punto è un gruppo di circa {perDot} Comuni con punteggio simile: clicca per vederli.
+              {integer.format(summary.ranked)} Comuni in classifica. Ogni punto è un gruppo di circa {perDot} Comuni con punteggio simile.
             </p>
           </div>
         </div>

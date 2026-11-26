@@ -12,6 +12,17 @@ const STEP = 14;
 const RADIUS = 4.2;
 const LIME = "#d8f74a";
 
+function format(score: number): string {
+  return score.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
+function range(members: Member[]): string {
+  const scores = members.map((member) => member.score);
+  const low = Math.min(...scores);
+  const high = Math.max(...scores);
+  return low === high ? format(low) : `da ${format(low)} a ${format(high)}`;
+}
+
 /**
  * Every ranked Comune as part of a dot: one column per two points of score,
  * each dot a group of up to ten Comuni with consecutive positions. Clicking a
@@ -71,7 +82,6 @@ export function DotDistribution({
   const dir = toLeft ? -1 : 1;
   // The label always sits above the whole cloud, so it never covers other dots.
   const elbow = marker ? { x: marker.x + dir * 34, y: Math.min(marker.y - 46, mid - (tallest * STEP) / 2 - 28) } : null;
-  const popover = open ? position(open) : null;
 
   return (
     <div className={styles.dotField}>
@@ -94,13 +104,17 @@ export function DotDistribution({
                 r={active ? RADIUS * 1.5 : RADIUS}
                 fill={active ? LIME : "#f4f4f5"}
                 fillOpacity={active ? 1 : tone}
+                // Transparent stroke: the tap target fills the whole cell, so small dots stay easy to hit.
+                stroke="transparent"
+                strokeWidth={STEP / 2 - RADIUS}
+                pointerEvents="all"
                 data-dot={`${column}-${row}`}
                 onClick={() => void show({ column, row })}
               />
             );
           }),
         )}
-        {marker && elbow ? (
+        {marker && elbow && !open ? (
           <g data-highlight="true" pointerEvents="none">
             <circle cx={marker.x} cy={marker.y} r={RADIUS * 4} fill="none" stroke={LIME} strokeOpacity={0.35} />
             <circle cx={marker.x} cy={marker.y} r={RADIUS * 2.4} fill="none" stroke={LIME} strokeOpacity={0.7} />
@@ -117,20 +131,16 @@ export function DotDistribution({
           </g>
         ) : null}
       </svg>
-      {open && popover ? (
-        <div
-          className={styles.dotPopover}
-          role="dialog"
-          aria-label="Comuni di questo punto"
-          data-dot-popover
-          style={{
-            left: `${Math.min(62, Math.max(0, ((popover.x - viewBox.x) / viewBox.w) * 100 - 15))}%`,
-            top: `${((popover.y - viewBox.y) / viewBox.h) * 100}%`,
-          }}
-        >
-          <div className={styles.dotPopoverHead}>
-            <strong>{members ? `${members.length} Comuni con punteggio simile` : "Comuni di questo punto"}</strong>
-            <button type="button" onClick={() => setOpen(null)} aria-label="Chiudi">×</button>
+      <div className={styles.axis}><span>Peggio</span><span>Meglio</span></div>
+      {open ? (
+        <div className={styles.dotPanel} role="region" aria-live="polite" aria-label="Comuni del punto selezionato" data-dot-popover>
+          <div className={styles.dotPanelHead}>
+            <strong>
+              {members
+                ? `${members.length} Comuni con punteggio ${range(members)}`
+                : "Comuni di questo punto"}
+            </strong>
+            <button type="button" onClick={() => setOpen(null)}>Chiudi</button>
           </div>
           {error ? <p>Impossibile caricare i Comuni di questo punto.</p> : null}
           {!members && !error ? <p>Caricamento…</p> : null}
@@ -140,7 +150,7 @@ export function DotDistribution({
                 <li key={member.istat}>
                   <Link href={`/dvns-index?comune=${member.istat}#scheda`} prefetch={false}>
                     <span>{member.rank}° {member.name}</span>
-                    <span className={styles.dotPopoverScore}>{member.score.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
+                    <span className={styles.dotPopoverScore}>{format(member.score)}</span>
                   </Link>
                   <small>{member.region} · fascia {member.band}</small>
                 </li>
@@ -148,7 +158,9 @@ export function DotDistribution({
             </ol>
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        <p className={styles.dotHint}>Clicca un punto per vedere i Comuni che rappresenta.</p>
+      )}
     </div>
   );
 }

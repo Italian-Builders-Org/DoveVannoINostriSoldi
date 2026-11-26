@@ -15,15 +15,17 @@
 .dotField { position: relative; }
 .dot { cursor: pointer; transition: fill-opacity .15s ease; }
 .dot:hover { fill-opacity: 1; }
-.dotPopover { position: absolute; z-index: 5; width: min(320px, 90vw); max-height: 360px; overflow: auto; padding: 14px 16px; color: #f4f4f5; background: #18181b; border: 1px solid #3f3f46; box-shadow: 0 12px 32px rgb(0 0 0 / 45%); transform: translateY(14px); }
-.dotPopoverHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; font-size: 14px; }
-.dotPopoverHead button { min-width: 32px; min-height: 32px; color: #f4f4f5; font-size: 20px; background: none; border: 1px solid #3f3f46; cursor: pointer; }
-.dotPopover ol { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
-.dotPopover li { display: grid; padding: 6px 0; border-top: 1px solid #27272a; }
-.dotPopover a { display: flex; justify-content: space-between; gap: 12px; color: #f4f4f5; font-size: 14px; font-weight: 600; text-decoration: none; }
-.dotPopover a:hover { color: var(--lime); }
-.dotPopover small { color: var(--hero-muted); font-size: 12px; }
-.dotPopover p { margin: 0; color: var(--hero-muted); font-size: 14px; }
+.dotPanel { margin-top: 14px; padding: 14px 16px; background: #18181b; border: 1px solid #3f3f46; }
+.dotPanelHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; margin-bottom: 8px; font-size: 15px; }
+.dotPanelHead button { min-height: 36px; padding: 0 12px; color: #f4f4f5; font: inherit; font-size: 14px; background: none; border: 1px solid #3f3f46; cursor: pointer; }
+.dotPanelHead button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.dotPanel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+.dotPanel li { display: grid; padding: 7px 0; border-top: 1px solid #27272a; }
+.dotPanel a { display: flex; justify-content: space-between; gap: 12px; color: #f4f4f5; font-size: 14px; font-weight: 600; text-decoration: none; }
+.dotPanel a:hover { color: var(--lime); }
+.dotPanel small { color: var(--hero-muted); font-size: 12px; }
+.dotPanel p { margin: 0; color: var(--hero-muted); font-size: 14px; }
+.dotHint { margin: 10px 0 0; color: var(--hero-muted); font-size: 13px; }
 .dotPopoverScore { color: var(--lime); font-variant-numeric: tabular-nums; }
 .domain { margin: 0; justify-self: end; color: var(--hero-muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: .25em; }
 .axis { display: flex; justify-content: space-between; padding-top: 12px; border-top: 1px solid #3f3f46; color: var(--hero-muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: .25em; text-transform: uppercase; }
@@ -112,8 +114,7 @@
   .pillars { grid-template-columns: 1fr; }
 }
 @media (max-width: 620px) {
-  /* On phones the list opens as a sheet at the bottom of the screen, never off-canvas. */
-  .dotPopover { position: fixed; inset: auto 12px 12px 12px !important; width: auto; max-height: 60vh; transform: none; }
+  .dotPanel ol { grid-template-columns: 1fr; }
   .positions { grid-template-columns: 1fr; }
   .search > div { flex-direction: column; }
   .heroList li { grid-template-columns: 36px minmax(0, 1fr); }

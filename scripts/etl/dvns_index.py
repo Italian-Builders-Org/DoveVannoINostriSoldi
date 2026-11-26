@@ -33,6 +33,7 @@ import io
 import json
 import random
 import re
+import unicodedata
 import statistics
 import sys
 import zipfile
@@ -142,6 +143,70 @@ def resa_value(spending: float, services: float, pays_on_time: bool | None) -> f
 def volatile_services(services_2021: float | None, services_2022: float | None, threshold: float) -> bool:
     """OpenCivitas services come from questionnaires filled in by the Comuni: a jump above the threshold is suspect."""
     return services_2021 is not None and services_2022 is not None and abs(services_2022 - services_2021) > threshold
+
+
+def peer_candidates(istat: str, keys: list[tuple | None], minimums: list[int], groups: dict[tuple, list[str]],
+                    eligible: set[str]) -> list[tuple[tuple, list[str]]]:
+    """Every group, from the narrowest, with enough comparable Comuni: each indicator uses the first that fits it."""
+    found = []
+    for key, minimum in zip(keys, minimums):
+        if key is None:
+            continue
+        members = [i for i in groups.get(key, []) if i != istat and i in eligible]
+        if len(members) >= minimum:
+            found.append((key, members))
+    return found
+
+
+def indicator_peers(candidates: list[list[str]], has_value: Callable[[str], bool], minimum: int) -> list[str] | None:
+    """The narrowest group where at least `minimum` Comuni report the indicator.
+
+    A group of 35 where only 10 report it would rank the Comune among 10:
+    too coarse, so that indicator alone moves to the wider group.
+    """
+    for members in candidates:
+        if sum(1 for i in members if has_value(i)) >= minimum:
+            return members
+    return None
+
+
+DISSESTO_ROW = re.compile(r"^\s*([A-Z][A-Z' .\-]+?)(?:\(\d+\))?\s{2,}([A-Z]{2})\s+(\d{4})\s+[\d.]+\s+\d\d/\d\d/\d{4}", re.M)
+
+
+def parse_dissesto(text: str) -> list[tuple[str, str, int]]:
+    """Rows of the decree table: name, province, year of the deficit."""
+    return [(m.group(1).strip(), m.group(2), int(m.group(3))) for m in DISSESTO_ROW.finditer(text)]
+
+
+def plain_name(name: str) -> str:
+    folded = unicodedata.normalize("NFD", name.upper().replace("'", "").replace("’", "").replace("-", " "))
+    return " ".join("".join(c for c in folded if unicodedata.category(c) != "Mn").split())
+
+
+def match_names(rows: list[tuple[str, str, int]], names: dict[str, str]) -> tuple[list[str], list[str]]:
+    """ISTAT codes of the listed Comuni; a name shared by two Comuni is left out rather than guessed."""
+    by_name: dict[str, list[str]] = defaultdict(list)
+    for istat, name in names.items():
+        by_name[plain_name(name)].append(istat)
+    matched, missing = [], []
+    for name, _, _ in rows:
+        codes = by_name.get(plain_name(name), [])
+        if len(codes) == 1:
+            matched.append(codes[0])
+        else:
+            missing.append(name)
+    return matched, missing
+
+
+def load_dissesto(spec: dict[str, Any]) -> list[tuple[str, str, int]]:
+    """Comuni in financial distress from the Interior Ministry decree (external check, not a pillar)."""
+    from pypdf import PdfReader
+
+    reader = PdfReader(io.BytesIO(read_locked(spec, "dissesto2024")))
+    rows = parse_dissesto("\n".join(page.extract_text(extraction_mode="layout") for page in reader.pages))
+    if len(rows) < 80:
+        raise IndexError_(f"decreto dissesti: solo {len(rows)} righe lette")
+    return rows
 
 
 def pick_peers(istat: str, keys: list[tuple | None], minimums: list[int], groups: dict[tuple, list[str]],
@@ -455,24 +520,32 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             if key is not None:
                 groups[key].append(g["istat"])
 
-    def peers_of(g: dict) -> tuple[tuple | None, list[str]]:
-        return pick_peers(g["istat"], [stage(g) for stage, _, _ in stages], [minimum for _, minimum, _ in stages], groups, rso)
-
+    neutral_when_missing = {name for name, pillar in rules["pillars"].items() if pillar.get("neutralWhenMissing")}
     results = []
+    neutral: set[str] = set()
     for g in geo.values():
-        key, members = peers_of(g)
+        candidates = peer_candidates(g["istat"], [stage(g) for stage, _, _ in stages], [minimum for _, minimum, _ in stages], groups, rso)
+        key, members = candidates[0] if candidates else (None, [])
         mine = raw.get(g["istat"], {})
         pillars: dict[str, float] = {}
         complete = True
         for name, parts in pillars_def.items():
             acc = weight = 0.0
             for indicator, w in parts:
-                values = [raw[p][indicator] for p in members if indicator in raw.get(p, {})]
-                if indicator in mine and len(values) >= rules["minPeerValues"]:
-                    acc += w * percentile(mine[indicator], values)
+                if indicator not in mine:
+                    continue
+                chosen = indicator_peers([m for _, m in candidates], lambda i, ind=indicator: ind in raw.get(i, {}), rules["minPeerValues"])
+                if chosen is not None:
+                    acc += w * percentile(mine[indicator], [raw[p][indicator] for p in chosen if indicator in raw.get(p, {})])
                     weight += w
             if weight:
                 pillars[name] = acc / weight
+            elif name in neutral_when_missing and g["istat"] in rso and not any(i in mine for i, _ in parts):
+                # Too few contracts to judge: no evidence either way, so the middle value. With zero
+                # procedures the shrinkage toward the median used above would give the same answer.
+                pillars[name] = 50.0
+                neutral.add(g["istat"])
+                continue
             if not weight or not all(i in mine for i in required[name]):
                 complete = False
         score = weighted_score(pillars, weights)
@@ -536,10 +609,23 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             f.get("investmentShare"), f.get("withoutTenderShare"), f.get("procedures"), f.get("topSupplierShare"), f.get("awards"),
             [functions.get(g["istat"], {}).get(name) for name in FUNCTIONS],
             f.get("delay2024"), f.get("delay2025"), f.get("rd2022"), f.get("rd2023"), f.get("capitalPerCapita"),
-            bool(f.get("underspendWithoutCredit")), g["istat"] in volatile,
+            bool(f.get("underspendWithoutCredit")), g["istat"] in volatile, g["istat"] in neutral,
         ])
 
     scores = sorted(r["score"] for r in ranked)
+    distress = load_dissesto(spec)
+    matched, missing = match_names(distress, {g["istat"]: g["name"] for g in geo.values()})
+    if len(matched) < 0.9 * len(distress):
+        raise IndexError_(f"decreto dissesti: non abbinati {missing}")
+    by_istat = {r["g"]["istat"]: r for r in results}
+    distress_ranked = [by_istat[i] for i in matched if by_istat[i]["status"] == "ranked"]
+    validation = {
+        "listed": len(distress),
+        "matched": len(matched),
+        "ranked": len(distress_ranked),
+        "medianScore": round(statistics.median(r["score"] for r in distress_ranked), 1),
+        "bands": {b: sum(r["band"] == b for r in distress_ranked) for b in "ABCDE"},
+    }
     return {
         "schemaVersion": 1,
         "datasetId": "dvns-index",
@@ -550,7 +636,7 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
                     "pResa", "pSovraspesa", "pInvestire", "pAppalti", "pPuntualita", "pRisultati",
                     "spending2022", "services2022", "spending2021", "services2021",
                     "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
-                    "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile"],
+                    "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile", "appaltiNeutral"],
         "rows": rows,
         "groups": group_rows,
         "summary": {
@@ -567,6 +653,9 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             "bandCutoffs": [round(ranked[min(total - 1, i * total // 5 - 1)]["score"], 1) for i in range(1, 5)],
             "anacProcedures": len(latest),
             "medianWithoutTenderShare": round(100 * median_share, 1),
+            "appaltiNeutral": len(neutral & {r["g"]["istat"] for r in ranked}),
+            "peersBelowMinimum": sum(1 for r in ranked if r["peerRanked"] < rules["minPeers"]),
+            "validation": validation,
         },
         "sources": spec["sources"],
         "provenance": {key: {"path": entry["path"], "sha256": entry["sha256"]} for key, entry in spec["artefacts"].items()},

@@ -9,7 +9,7 @@ const { assertIndexSnapshot, explainEntry, functionHighlights, describeGroup, di
 const columns = ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
   "pResa", "pSovraspesa", "pInvestire", "pAppalti", "pPuntualita", "pRisultati", "spending2022", "services2022", "spending2021", "services2021",
   "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
-  "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile"];
+  "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile", "appaltiNeutral"];
 const functions = ["amministrazione", "istruzione", "polizia", "rifiuti", "sociale-asili", "viabilita"];
 const rules = {
   weights: { resa: 0.4, sovraspesa: 0.1, investire: 0.15, appalti: 0.1, puntualita: 0.15, risultati: 0.1 },
@@ -22,7 +22,7 @@ function row(istat, overrides = {}) {
     rank: 1, rankLow: 1, rankHigh: 3, peerRank: 1, peerRanked: 2, group: 0, pResa: 80, pSovraspesa: 60, pInvestire: 40, pAppalti: 20, pPuntualita: 70, pRisultati: 90,
     spending2022: 31.9, services2022: 65.1, spending2021: 30, services2021: 60,
     investmentShare: 33.8, withoutTenderShare: 19.4, procedures: 12, topSupplierShare: 13.5, awards: 40, functionResa: [10, 20, 30, -5, -20, 5],
-    delay2024: 12.4, delay2025: -3, rd2022: 71.2, rd2023: 74.8, capitalPerCapita: 412.6, underspendWithoutCredit: false, volatile: false,
+    delay2024: 12.4, delay2025: -3, rd2022: 71.2, rd2023: 74.8, capitalPerCapita: 412.6, underspendWithoutCredit: false, volatile: false, appaltiNeutral: false,
     ...overrides,
   };
   return columns.map((column) => base[column]);
@@ -32,7 +32,10 @@ function snapshot(rows) {
   return {
     schemaVersion: 1, datasetId: "dvns-index", version: "2026.1", rules, functions, columns,
     rows, groups: [{ id: 0, stage: "big", values: [], size: 36 }],
-    summary: { ranked: rows.filter((item) => item[5] === "ranked").length },
+    summary: {
+      ranked: rows.filter((item) => item[5] === "ranked").length,
+      validation: { listed: 2, matched: 2, ranked: 1, medianScore: 30, bands: { A: 0, B: 0, C: 0, D: 0, E: 1 } },
+    },
     sources: [{ id: "opencivitas", label: "OpenCivitas", owner: "MEF", url: "https://www.opencivitas.it/", license: "CC BY 4.0" }],
   };
 }
@@ -41,6 +44,22 @@ test("refuses a ranked Comune without position and a gap in the ranking", () => 
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { rank: null })])), /posizione/);
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { rank: 2 })])), /consecutive/);
   assert.throws(() => assertIndexSnapshot(snapshot([row("037006", { status: "partial" })])), /fuori classifica/);
+});
+
+test("too few contracts: the procurement pillar is the middle value and the page says so", () => {
+  const neutral = { pAppalti: 50, withoutTenderShare: null, procedures: null, topSupplierShare: null, awards: null, appaltiNeutral: true };
+  const parsed = assertIndexSnapshot(snapshot([row("001001", neutral)]));
+  const appalti = explainEntry(parsed.entries[0], rules)[3];
+  assert.equal(appalti.percentile, 50);
+  assert.match(appalti.facts[0], /troppo poche per giudicare: il pilastro vale 50/u);
+  // A neutral flag with any other value is a corrupted snapshot.
+  assert.throws(() => assertIndexSnapshot(snapshot([row("001001", { ...neutral, pAppalti: 70 })])), /appalti neutri/u);
+});
+
+test("refuses an external check whose bands do not add up", () => {
+  const bad = snapshot([row("037006")]);
+  bad.summary.validation.bands.E = 3;
+  assert.throws(() => assertIndexSnapshot(bad), /dissesti incoerente/u);
 });
 
 test("refuses flags that are not booleans", () => {

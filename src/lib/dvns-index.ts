@@ -75,6 +75,8 @@ export type IndexEntry = {
   underspendWithoutCredit: boolean;
   /** OpenCivitas services changed by more than the threshold between 2021 and 2022: out of the ranking. */
   volatile: boolean;
+  /** Too few contracts to judge: the procurement pillar is set to 50, the middle value. */
+  appaltiNeutral: boolean;
 };
 
 export type PeerGroup = { id: number; stage: string; values: (number | boolean | null)[]; size: number };
@@ -90,6 +92,7 @@ export type IndexRules = {
   sensitivity: { draws: number; spread: number };
   volatileServicesPoints: number;
   implausibleEarlyPaymentDays: number;
+  minPeerValues: number;
   /** Minimum comparable Comuni (covered by OpenCivitas) in a peer group before it is widened. */
   minPeers: number;
   concentrationExcludedCpvDivisions: string[];
@@ -114,6 +117,9 @@ export type IndexSnapshot = {
     bandCutoffs: number[];
     anacProcedures: number;
     medianWithoutTenderShare: number;
+    appaltiNeutral: number;
+    /** External check: Comuni in financial distress (Interior Ministry decree) and where the index puts them. */
+    validation: { listed: number; matched: number; ranked: number; medianScore: number; bands: Record<Band, number> };
   };
   sources: { id: string; label: string; owner: string; url: string; license: string }[];
 };
@@ -123,7 +129,7 @@ const COLUMNS = [
   "pResa", "pSovraspesa", "pInvestire", "pAppalti", "pPuntualita", "pRisultati",
   "spending2022", "services2022", "spending2021", "services2021",
   "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
-  "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile",
+  "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile", "appaltiNeutral",
 ] as const;
 
 function fail(message: string): never {
@@ -191,7 +197,7 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
     const [istat, taxCode, name, region, population, status, score, band, stability, rank, rankLow, rankHigh, peerRank, peerRanked, group,
       pResa, pSovraspesa, pInvestire, pAppalti, pPuntualita, pRisultati, spending2022, services2022, spending2021, services2021,
       investmentShare, withoutTenderShare, procedures, topSupplierShare, awards, functionResa,
-      delay2024, delay2025, rd2022, rd2023, capitalPerCapita, underspendWithoutCredit, volatile] = row;
+      delay2024, delay2025, rd2022, rd2023, capitalPerCapita, underspendWithoutCredit, volatile, appaltiNeutral] = row;
     if (typeof istat !== "string" || !/^\d{6}$/u.test(istat) || seen.has(istat)) fail(`${path}: codice ISTAT`);
     seen.add(istat);
     if (status !== "ranked" && status !== "partial" && status !== "special-statute" && status !== "no-opencivitas") fail(`${path}: stato`);
@@ -243,10 +249,16 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
       capitalPerCapita: optNum(capitalPerCapita, `${path}.capitalPerCapita`, 0),
       underspendWithoutCredit: bool(underspendWithoutCredit, `${path}.underspendWithoutCredit`),
       volatile: bool(volatile, `${path}.volatile`),
+      appaltiNeutral: bool(appaltiNeutral, `${path}.appaltiNeutral`),
     };
   });
   const summary = record(root.summary, "summary");
   if (summary.ranked !== ranked) fail("il riepilogo non corrisponde ai Comuni in classifica");
+  if (entries.some((entry) => entry.appaltiNeutral && entry.pillars.appalti !== 50)) fail("appalti neutri diversi da 50");
+  const validation = record(summary.validation, "summary.validation");
+  const validationBands = record(validation.bands, "summary.validation.bands");
+  const bandTotal = BANDS.reduce((sum, band) => sum + num(validationBands[band], `summary.validation.bands.${band}`, 0), 0);
+  if (bandTotal !== num(validation.ranked, "summary.validation.ranked", 0)) fail("controllo sui dissesti incoerente");
   const ranks = entries.flatMap((entry) => (entry.rank === null ? [] : [entry.rank])).sort((a, b) => a - b);
   if (ranks.some((rank, index) => rank !== index + 1)) fail("posizioni non consecutive");
   return {
@@ -366,7 +378,9 @@ export function explainEntry(entry: IndexEntry, rules: IndexRules): PillarExplan
       if (entry.topSupplierShare !== null && entry.awards !== null) {
         facts.push(`Il fornitore principale ha ricevuto il ${pct(entry.topSupplierShare)} del valore delle sue ${integer(entry.awards)} aggiudicazioni a un singolo operatore. Rifiuti, energia e acqua sono esclusi: lì un solo gestore è la norma.`);
       }
-      if (!facts.length) facts.push("Nel 2025 le procedure e le aggiudicazioni sono troppo poche per un confronto affidabile.");
+      if (!facts.length) facts.push(entry.appaltiNeutral
+        ? "Nel 2025 le procedure e le aggiudicazioni sono troppo poche per giudicare: il pilastro vale 50, la media, così non premia e non penalizza."
+        : "Nel 2025 le procedure e le aggiudicazioni sono troppo poche per un confronto affidabile.");
       else if ((entry.procedures ?? 0) < 20 || (entry.awards ?? 0) < 20) facts.push("Con pochi appalti un solo contratto sposta molto la quota: per questo il valore è stato avvicinato alla mediana nazionale.");
     }
     // With no unjustified spending a Comune ties with most of its peers: "better than 58%" would read as a fault.

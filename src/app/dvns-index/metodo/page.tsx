@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { FUNCTION_LABELS, PILLAR_LABELS, PILLARS, describeGroup, explainEntry, regionName, regionVarianceShare, stabilityByBand } from "@/lib/dvns-index";
+import { BANDS, FUNCTION_LABELS, PILLAR_LABELS, PILLARS, describeGroup, explainEntry, regionName, regionVarianceShare, stabilityByBand } from "@/lib/dvns-index";
 import { IndexSnapshotUnavailableError, loadDvnsIndex, type IndexData } from "@/lib/dvns-index-store";
 
 import styles from "../dvns-index.module.css";
@@ -172,7 +172,7 @@ export default async function DvnsIndexMethodPage() {
               <p><strong>Misura, per il 60%.</strong> La quota del valore delle procedure da almeno {integer.format(rules.procurementThresholdEuro)} € assegnata con affidamento diretto o con procedura negoziata senza bando.</p>
               <p><strong>Misura, per il 40%.</strong> Quanto il valore aggiudicato si concentra su pochi fornitori, con l&apos;indice di Herfindahl-Hirschman, usato anche dalle autorità della concorrenza. Escludiamo rifiuti, energia e acqua (divisioni CPV {rules.concentrationExcludedCpvDivisions.join(", ")}): in questi servizi un solo gestore per territorio è normale e non dice nulla sulle scelte del Comune.</p>
               <p><strong>Regola.</strong> Meno concentrazione e meno procedure senza gara è meglio. Non contano le adesioni alle convenzioni Consip, perché la gara si è già svolta a monte, né gli affidamenti alle società in house del Comune. Le procedure delegate a una centrale di committenza restano del Comune che le ha delegate.</p>
-              <p><strong>Pochi appalti.</strong> Servono almeno {rules.minProcedures} procedure o {rules.minAwards} aggiudicazioni. Quando sono poche, un solo contratto sposta molto la quota: per questo avviciniamo il valore alla mediana nazionale ({one.format(summary.medianWithoutTenderShare)}% del valore senza gara) in proporzione a quanti dati mancano. Con 5 procedure il valore si sposta molto, con 200 quasi per niente.</p>
+              <p><strong>Pochi appalti.</strong> Servono almeno {rules.minProcedures} procedure o {rules.minAwards} aggiudicazioni. Quando sono poche, un solo contratto sposta molto la quota: per questo avviciniamo il valore alla mediana nazionale ({one.format(summary.medianWithoutTenderShare)}% del valore senza gara) in proporzione a quanti dati mancano. Con 5 procedure il valore si sposta molto, con 200 quasi per niente. Un Comune che non arriva nemmeno alle soglie minime prende 50, la media: con zero procedure la stessa regola darebbe esattamente la mediana. Oggi succede a {integer.format(summary.appaltiNeutral)} Comuni in classifica, quasi tutti piccoli; la scheda di ognuno lo segnala.</p>
             </article>
             <article>
               <h3>05 · {PILLAR_LABELS.puntualita.title} <span>peso {weight("puntualita")}</span></h3>
@@ -213,7 +213,7 @@ export default async function DvnsIndexMethodPage() {
           <h2 id="punteggio" className="panel-title">Punteggio, fasce e solidità</h2>
           <ul className={styles.criteria}>
             <li><strong>Punteggio.</strong> Media pesata dei sei percentili: {weight("resa")} resa della spesa, {weight("sovraspesa")} spesa non giustificata, {weight("investire")} capacità di investire, {weight("appalti")} apertura degli appalti, {weight("puntualita")} puntualità nei pagamenti, {weight("risultati")} raccolta differenziata.</li>
-            <li><strong>Classifica.</strong> Entrano solo i Comuni con tutti e sei i pilastri e con dati sui servizi coerenti tra il 2021 e il 2022: oggi {integer.format(summary.ranked)}. Gli altri hanno un punteggio parziale ({integer.format(summary.partial)}, di cui {integer.format(summary.volatile)} per servizi dichiarati troppo variabili) oppure non sono valutabili ({integer.format(summary.specialStatute)} nelle Regioni a statuto speciale, che OpenCivitas non copre).</li>
+            <li><strong>Classifica.</strong> Entrano i Comuni con tutti i pilastri, contando come presenti gli appalti neutri, e con dati sui servizi coerenti tra il 2021 e il 2022: oggi {integer.format(summary.ranked)}. Gli altri hanno un punteggio parziale ({integer.format(summary.partial)}, di cui {integer.format(summary.volatile)} per servizi dichiarati troppo variabili) oppure non sono valutabili ({integer.format(summary.specialStatute)} nelle Regioni a statuto speciale, che OpenCivitas non copre).</li>
             <li><strong>Fasce.</strong> A raccoglie il 20% migliore, E il 20% peggiore. Le soglie attuali sono: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}. La fascia conta più della posizione esatta: tra il 1.200° e il 1.250° posto la differenza è piccola.</li>
             <li><strong>Posizione nella Regione.</strong> Ogni scheda mostra anche la posizione tra i Comuni della stessa Regione. Aiuta a separare &quot;fa bene per il contesto in cui si trova&quot; da &quot;fa bene in assoluto&quot;.</li>
             <li><strong>Intervallo di posizione.</strong> Dagli stessi ricalcoli ricaviamo dove cade la posizione di ogni Comune escludendo il 5% dei casi più estremi da ciascun lato, per esempio &quot;tra 1° e 6°&quot;. In cima alla classifica le distanze sono piccole e la posizione esatta cambia facilmente: la fascia è il dato più affidabile.</li>
@@ -257,6 +257,42 @@ export default async function DvnsIndexMethodPage() {
           </section>
         ) : null}
 
+        <section className="panel" aria-labelledby="prova">
+          <h2 id="prova" className="panel-title">Una prova esterna: i Comuni in dissesto</h2>
+          <p className={styles.lede}>
+            Per capire se l&apos;indice misura qualcosa di reale lo confrontiamo con un dato che non usa: l&apos;elenco dei
+            Comuni in dissesto finanziario pubblicato dal Ministero dell&apos;Interno (decreto del 17 giugno 2024,{" "}
+            {integer.format(summary.validation.listed)} Comuni che hanno dichiarato il dissesto dal 2017). Di questi,{" "}
+            {integer.format(summary.validation.ranked)} sono in classifica; gli altri sono quasi tutti in Sicilia, che
+            OpenCivitas non copre.
+          </p>
+          <div className="table-scroll" role="region" aria-labelledby="prova-tabella" tabIndex={0}>
+            <table className={`table ${styles.methodTable}`}>
+              <caption id="prova-tabella" className="table-caption">Comuni in dissesto per fascia del DVNS Index</caption>
+              <thead>
+                <tr><th scope="col">Fascia</th><th scope="col" className="num">Comuni in dissesto</th><th scope="col" className="num">Quota</th><th scope="col" className="num">Se l&apos;indice fosse casuale</th></tr>
+              </thead>
+              <tbody>
+                {BANDS.map((band) => (
+                  <tr key={band}>
+                    <th scope="row">{band}</th>
+                    <td className="num">{integer.format(summary.validation.bands[band])}</td>
+                    <td className="num">{Math.round((100 * summary.validation.bands[band]) / summary.validation.ranked)}%</td>
+                    <td className="num">20%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className={styles.lede}>
+            Se l&apos;indice fosse rumore, i Comuni in dissesto si distribuirebbero un quinto per fascia. Invece il loro
+            punteggio mediano è {one.format(summary.validation.medianScore)}, contro {one.format(summary.medianScore)} di tutti
+            i Comuni, e il {Math.round((100 * summary.validation.bands.E) / summary.validation.ranked)}% è in fascia E, quella degli ultimi. I pilastri che li riconoscono meglio sono la puntualità nei pagamenti e
+            la resa della spesa. I pochi in fascia A o B hanno dichiarato il dissesto anni fa e oggi pagano i fornitori quasi
+            in tempo: è plausibile che si siano rimessi in sesto.
+          </p>
+        </section>
+
         <section className="panel" aria-labelledby="fiducia">
           <h2 id="fiducia" className="panel-title">Quanto fidarsi dell&apos;indice</h2>
           <p className={styles.lede}>
@@ -285,7 +321,8 @@ export default async function DvnsIndexMethodPage() {
                 <tr><th scope="row">I servizi OpenCivitas sono dichiarati dai Comuni</th><td>Usiamo la media di due anni. I Comuni con uno scarto di oltre {integer.format(rules.volatileServicesPoints)} punti tra un anno e l&apos;altro ({integer.format(summary.volatile)}) restano fuori dalla classifica.</td></tr>
                 <tr><th scope="row">Un Comune con poca spesa corrente sembrava investire molto</th><td>Metà del pilastro investimenti ora guarda agli euro per abitante, non solo alla quota.</td></tr>
                 <tr><th scope="row">Rifiuti, energia e acqua hanno quasi sempre un solo fornitore</th><td>Esclusi dal calcolo della concentrazione sui fornitori.</td></tr>
-                <tr><th scope="row">Pochi appalti, quote estreme</th><td>Sotto le soglie minime il valore viene avvicinato alla mediana nazionale.</td></tr>
+                <tr><th scope="row">Pochi appalti, quote estreme</th><td>Con pochi appalti il valore viene avvicinato alla mediana nazionale; senza appalti sufficienti il pilastro vale 50. Prima questi Comuni restavano fuori: sotto i 1.000 abitanti era in classifica meno della metà.</td></tr>
+                <tr><th scope="row">Gruppi di confronto troppo piccoli</th><td>Ogni pilastro si calcola su almeno {integer.format(rules.minPeerValues)} Comuni simili che hanno quel dato; se non bastano, per quel pilastro il gruppo si allarga.</td></tr>
                 <tr><th scope="row">La posizione esatta in cima alla classifica è instabile</th><td>Per ogni Comune pubblichiamo l&apos;intervallo di posizione con pesi diversi e la solidità della fascia.</td></tr>
               </tbody>
             </table>

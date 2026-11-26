@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "datasetId": "dvns-index",
-  "version": "2026.2",
+  "version": "2026.3",
   "artefacts": {
     "geography": {
       "path": "src/data/generated/istat-municipality-geography.json",
@@ -82,6 +82,11 @@
     "anacCpvMeta": {
       "path": "src/data/generated/anac-procurement-cpv/meta.json",
       "sha256": "71a43e9d3fa179e9378d108b7cc232bff9bc088d6458ee50357e1700989f3979"
+    },
+    "dissesto2024": {
+      "path": ".cache/dvns-index/interno/decreto-fl-17-06-2024.pdf",
+      "sha256": "c43d684f702888612ef31808d0765490e00230054c7ab062e8280865d1df5d10",
+      "url": "https://dait.interno.gov.it/documenti/decreto-fl-17-06-2024.pdf"
     }
   },
   "rules": {
@@ -150,7 +155,8 @@
             "weight": 0.4
           }
         ],
-        "required": []
+        "required": [],
+        "neutralWhenMissing": true
       },
       "puntualita": {
         "indicators": [
@@ -180,7 +186,7 @@
     "minAwards": 10,
     "shrinkProcedures": 8,
     "shrinkAwards": 10,
-    "minPeerValues": 5,
+    "minPeerValues": 30,
     "minRanked": 4000,
     "reducedCompetition": [
       "AFFIDAMENTO DIRETTO",
@@ -254,6 +260,13 @@
       "owner": "ISPRA, Catasto nazionale rifiuti",
       "url": "https://www.catasto-rifiuti.isprambiente.it/index.php?pg=downloadComune",
       "license": "dati pubblici ISPRA"
+    },
+    {
+      "id": "dissesto",
+      "label": "Decreto 17 giugno 2024, Comuni in dissesto finanziario (controllo esterno)",
+      "owner": "Ministero dell'Interno, Direzione centrale per la finanza locale",
+      "url": "https://dait.interno.gov.it/documenti/decreto-fl-17-06-2024.pdf",
+      "license": "Atto pubblico"
     }
   ]
 }

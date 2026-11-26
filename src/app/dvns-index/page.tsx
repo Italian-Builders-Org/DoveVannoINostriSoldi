@@ -307,12 +307,12 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <div>
             <dt>Comuni in classifica</dt>
             <dd>{integer.format(summary.ranked)}</dd>
-            <span className="stat-note">con tutti e sei i pilastri</span>
+            <span className="stat-note">su {integer.format(summary.municipalities)} Comuni italiani</span>
           </div>
           <div>
             <dt>Punteggio parziale</dt>
             <dd>{integer.format(summary.partial)}</dd>
-            <span className="stat-note">dati mancanti o servizi dichiarati troppo variabili</span>
+            <span className="stat-note">un dato mancante o servizi dichiarati troppo variabili</span>
           </div>
           <div>
             <dt>Non valutabili</dt>
@@ -483,9 +483,9 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <h3 className={styles.subtitle}>Criteri</h3>
           <ul className={styles.criteria}>
             <li><strong>Confronto tra simili.</strong> Ogni dato diventa un percentile tra i Comuni con la stessa fascia di popolazione e superficie, zona altimetrica, grado di urbanizzazione, costa e isole. Le città sopra i 100.000 abitanti si confrontano tra loro. Il punteggio da 0 a 100 è quindi già corretto per il contesto.</li>
-            <li><strong>Appalti.</strong> Le adesioni a convenzioni Consip e gli affidamenti a società in house non contano né come gara né come affidamento diretto. Le procedure delegate a una centrale di committenza restano del Comune che le ha delegate. Servono almeno {rules.minProcedures} procedure o {rules.minAwards} aggiudicazioni; con pochi appalti il valore viene avvicinato alla mediana nazionale ({one.format(summary.medianWithoutTenderShare)}% del valore senza gara), così il caso non decide il voto.</li>
+            <li><strong>Appalti.</strong> Le adesioni a convenzioni Consip e gli affidamenti a società in house non contano né come gara né come affidamento diretto. Le procedure delegate a una centrale di committenza restano del Comune che le ha delegate. Servono almeno {rules.minProcedures} procedure o {rules.minAwards} aggiudicazioni; con pochi appalti il valore viene avvicinato alla mediana nazionale ({one.format(summary.medianWithoutTenderShare)}% del valore senza gara), così il caso non decide il voto. Se non ce ne sono abbastanza nemmeno per questo, il pilastro vale 50, la media: non premia e non penalizza.</li>
             <li><strong>Spesa bassa e cassa.</strong> Spendere meno del fabbisogno conta come efficienza solo se il Comune paga i fornitori nei tempi. Se paga in ritardo, la spesa bassa può essere mancanza di soldi e nel calcolo della resa contano solo i servizi.</li>
-            <li><strong>Classifica.</strong> Entrano solo i Comuni con tutti e sei i pilastri e con servizi OpenCivitas coerenti tra i due anni (scarto massimo di {integer.format(rules.volatileServicesPoints)} punti). Le fasce sono quintili: A i migliori 20%, E gli ultimi 20%. Soglie attuali: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}.</li>
+            <li><strong>Classifica.</strong> Entrano i Comuni con tutti i pilastri, appalti neutri compresi, e con servizi OpenCivitas coerenti tra i due anni (scarto massimo di {integer.format(rules.volatileServicesPoints)} punti). Le fasce sono quintili: A i migliori 20%, E gli ultimi 20%. Soglie attuali: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}.</li>
             <li><strong>Solidità.</strong> Ricalcoliamo la classifica {integer.format(rules.sensitivity.draws)} volte spostando ogni peso fino a {Math.round(rules.sensitivity.spread * 100)} punti. La solidità è la quota di volte in cui il Comune resta nella stessa fascia.</li>
             <li><strong>Funzioni.</strong> &quot;Dove rende di più e di meno&quot; confronta il saldo tra servizi e spesa nelle sei funzioni OpenCivitas: {Object.values(FUNCTION_LABELS).join(", ")}.</li>
           </ul>

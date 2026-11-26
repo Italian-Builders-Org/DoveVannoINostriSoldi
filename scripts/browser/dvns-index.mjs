@@ -66,7 +66,7 @@ try {
 
         // The card explains the score: six pillars whose points add up to it.
         const score = Number(await page.$eval("[data-score]", (el) => el.getAttribute("data-score")));
-        assert.equal(score, 83.3);
+        assert.equal(score, 84.5);
         assert.equal((await page.$$("[data-pillar-card]")).length, 6);
         const guide = await page.$eval("[data-read-guide]", (el) => el.textContent ?? "");
         assert.match(guide, /70 vuol dire meglio di 70 Comuni simili su 100/u, "manca la spiegazione di come leggere i valori");
@@ -74,7 +74,7 @@ try {
         const parts = [...formula.matchAll(/(\d+,\d)\s+[a-zà]/gu)].map((match) => number(match[1]));
         assert.equal(parts.length, 6, `formula: ${formula}`);
         assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${formula}`);
-        assert.match(main, /2° su 35/u, "posizione tra le città simili");
+        assert.match(main, /1° su 35/u, "posizione tra le città simili");
         assert.match(await page.$eval("[data-regional-rank]", (el) => el.innerText), /In Emilia-Romagna\s+\d+° su \d+/u, "manca la posizione nella Regione");
         const facts = await page.$eval("#scheda", (el) => el.innerText);
         assert.match(facts, /Ritardo medio ponderato nel pagare le fatture/u, "manca il dato PCC");
@@ -147,7 +147,7 @@ try {
         await Promise.all([page.waitForNavigation({ waitUntil: "domcontentloaded" }), page.keyboard.press("Enter")]);
         await page.waitForSelector("#scheda-title");
         assert.equal(await page.$eval("#scheda-title", (el) => el.textContent), "Gubbio");
-        assert.match(await page.$eval("#scheda", (el) => el.innerText), /86° su 314/u);
+        assert.match(await page.$eval("#scheda", (el) => el.innerText), /86° su 315/u);
         await assertLayout(page, "scheda Gubbio");
 
         await page.goto(`${baseUrl}/dvns-index?regione=08&fascia=A`, { waitUntil: "domcontentloaded" });
@@ -190,7 +190,7 @@ try {
       async validate(page) {
         await assertLayout(page, "metodo");
         const headings = await page.$$eval("main h2", (items) => items.map((item) => item.textContent));
-        for (const title of ["In breve", "I dati", "I sei pilastri", "Il confronto tra Comuni simili", "Punteggio, fasce e solidità", "Un esempio completo: Bologna", "Quanto fidarsi dell'indice", "Cosa l'indice non dice", "Come verificarlo"]) {
+        for (const title of ["In breve", "I dati", "I sei pilastri", "Il confronto tra Comuni simili", "Punteggio, fasce e solidità", "Un esempio completo: Bologna", "Una prova esterna: i Comuni in dissesto", "Quanto fidarsi dell'indice", "Cosa l'indice non dice", "Come verificarlo"]) {
           assert.ok(headings.includes(title), `manca la sezione "${title}"`);
         }
         // The worked example adds up: six pillar points equal the published score.
@@ -218,7 +218,7 @@ try {
         await page.waitForSelector("[data-dvns-index-badge]");
         const badge = await page.$eval("[data-dvns-index-badge]", (el) => ({ href: el.getAttribute("href"), text: el.textContent ?? "" }));
         assert.equal(badge.href, "/dvns-index?comune=037006#scheda");
-        assert.match(badge.text, /83,3.*14° su 5\.129.*fascia A/u);
+        assert.match(badge.text, /84,5.*9° su 6\.390.*fascia A/u);
         const colors = await page.$eval("[data-dvns-index-badge]", (el) => [...el.querySelectorAll("span, strong")].map((node) => getComputedStyle(node).color));
         assert.ok(colors.every((color) => color !== "rgb(13, 14, 16)"), "testo del badge invisibile sul fondo scuro");
       },

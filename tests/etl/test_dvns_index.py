@@ -73,6 +73,37 @@ class RuleTests(unittest.TestCase):
         # No group large enough: no peers, so no score.
         self.assertEqual(etl.pick_peers("rivello", [("a",)], [30], groups, eligible), (None, []))
 
+    def test_each_indicator_widens_until_enough_peers_have_it(self) -> None:
+        narrow = [f"n{i}" for i in range(35)]
+        wide = narrow + [f"w{i}" for i in range(60)]
+        has = {i: True for i in wide}
+        # Only 10 Comuni of the narrow group report the indicator: the wider group is used for it.
+        has.update({i: False for i in narrow[10:]})
+        chosen = etl.indicator_peers([narrow, wide], lambda i: has[i], 30)
+        self.assertIs(chosen, wide)
+        self.assertIs(etl.indicator_peers([narrow, wide], lambda i: True, 30), narrow)
+        self.assertIsNone(etl.indicator_peers([narrow], lambda i: has[i], 30))
+
+    def test_peer_candidates_list_every_group_large_enough(self) -> None:
+        groups = {("a",): ["x"] + [f"r{i}" for i in range(31)], ("b",): ["x"] + [f"r{i}" for i in range(80)], ("c",): ["x", "r1"]}
+        eligible = {"x"} | {f"r{i}" for i in range(80)}
+        found = etl.peer_candidates("x", [("a",), ("c",), ("b",)], [30, 30, 30], groups, eligible)
+        self.assertEqual([key for key, _ in found], [("a",), ("b",)])
+
+    def test_dissesto_rows_are_read_from_the_decree_table(self) -> None:
+        text = """          ENTE             PROV.           ABITANTI    DELIBERA     MASSA PASSIVA
+ACQUAPPESA(713)             CS      2020       1.838   25/02/2021     3.700.000,00       3.700.000,00        126.313,30
+CANICATTI'(739)             AG      2021      34.697   20/04/2022     18.300.000,00     18.300.000,00      2.384.489,99
+CARAFFA DI CATANZARO        CZ      2020       1.800   08/01/2020     1.899.543,50       1.899.543,50        123.701,82
+   RILEVATO CHE il Comune di Piazza Armerina (EN), pur avendo trasmesso"""
+        self.assertEqual(etl.parse_dissesto(text), [("ACQUAPPESA", "CS", 2020), ("CANICATTI'", "AG", 2021), ("CARAFFA DI CATANZARO", "CZ", 2020)])
+
+    def test_dissesto_names_match_only_when_unambiguous(self) -> None:
+        names = {"072011": "Canicattì", "080020": "Caraffa di Catanzaro", "001001": "Castro", "002002": "Castro"}
+        matched, missing = etl.match_names([("CANICATTI'", "AG", 2021), ("CARAFFA DI CATANZARO", "CZ", 2020), ("CASTRO", "BG", 2019)], names)
+        self.assertEqual(matched, ["072011", "080020"])
+        self.assertEqual(missing, ["CASTRO"])
+
     def test_few_observations_move_toward_the_median(self) -> None:
         # 5 procedures all without tender: pulled well below 100%.
         self.assertAlmostEqual(etl.shrink(1.0, 5, 0.77, 8), 0.77 + 0.23 * 5 / 13)

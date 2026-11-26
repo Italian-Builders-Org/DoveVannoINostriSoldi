@@ -1,6 +1,6 @@
 import type { AiActivity } from "./activity-contracts";
 import * as z from "zod/v4";
-import { datasetCatalog, type DatasetQuery } from "@/lib/mcp/catalog";
+import { datasetCatalog, type DatasetId, type DatasetQuery } from "@/lib/mcp/catalog";
 import { datasetQuerySchema } from "@/lib/mcp/query-schema";
 import { queryPublicDataset } from "@/lib/mcp/datasets";
 import { AI_MAX_EVIDENCE_CHARS, AI_MAX_QUERIES, type AiAnswer, type AiConnection, type AiEvidence, type AiMessage, type AiSiteLink } from "@/lib/assistant/byok-contracts";
@@ -42,8 +42,12 @@ function evidenceFor(query: DatasetQuery): AiEvidence {
     name: source.name || source.owner, url: source.url,
     ...(source.period || source.dataAsOf ? { period: source.period || source.dataAsOf } : {}),
   }));
-  const caveat = humanizeAssistantCaveat(dataset.id, dataset.caveat);
-  return { dataset: dataset.id, title: dataset.title, sources, ...(caveat ? { caveat } : {}) };
+  return { dataset: dataset.id, title: dataset.title, sources, ...(dataset.caveat ? { caveat: dataset.caveat } : {}) };
+}
+
+function forPeople({ caveat, ...entry }: AiEvidence): AiEvidence {
+  const readable = humanizeAssistantCaveat(entry.dataset as DatasetId, caveat);
+  return readable ? { ...entry, caveat: readable } : entry;
 }
 
 function boundedQuery(value: DatasetQuery): DatasetQuery {
@@ -93,7 +97,8 @@ export async function executeByokChat(
   const answer = (text: string, evidence: AiEvidence[] = [], siteLinks: AiSiteLink[] = []): AiAnswer => ({
     ok: true, kind: "ai_answer", provider: activeConnection.provider, model: activeConnection.model,
     text: sanitizeAssistantLinks(text, siteLinks),
-    evidence: [...new Map(evidence.map((entry) => [JSON.stringify(entry), entry])).values()],
+    // The model reads the full catalog caveat; people read the citizen-facing version.
+    evidence: [...new Map(evidence.map((entry) => [JSON.stringify(entry), forPeople(entry)])).values()],
     siteLinks,
   });
   const prompt = messages.at(-1)?.content ?? "";
@@ -164,7 +169,7 @@ Compila gli argomenti dello strumento: queries è un array, clarification una st
   const deeper = connection.provider === "openrouter" && connection.model === "openai/gpt-5.6-luna" && reasoning === "medium";
   activity({ id: "answer", label: deeper ? "Analisi approfondita" : "Preparo la risposta", status: "running" });
   const siteLinksData = siteLinks.length
-    ? ` pagineInterneDvns: ${JSON.stringify(siteLinks.map(({ href, title }) => ({ href, title })))} (puoi citare solo questi href interni come [testo](/percorso); mai altri link).`
+    ? ` pagineInterneDvns: ${JSON.stringify(siteLinks.map(({ href, title }) => ({ href, title })))} (puoi citarne uno o due nel testo come [testo](/percorso) quando aiutano; l'app le mostra già come schede, quindi non elencarle in fondo; mai altri link).`
     : "";
   const text = await complete(DVNS_AI_SYSTEM_PROMPT, [
     ...safeMessages,

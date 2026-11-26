@@ -8,6 +8,7 @@ import { SitePageLink } from "@/components/site-page-link";
 import { MefIrpefSwissBorderNote } from "@/components/mef-irpef-swiss-border-note";
 import { ChangeComuneButton } from "./change-comune-button";
 import { ComuniRadar } from "./comuni-radar";
+import type { IndexEntry } from "@/lib/dvns-index";
 import styles from "./comuni.module.css";
 
 function monthName(month: number): string {
@@ -72,7 +73,25 @@ const DOMAIN_LINKS = [
   { href: "#dossier-pnrr", label: "PNRR" },
 ] as const;
 
-export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
+function DvnsIndexBadge({ entry, ranked }: { entry: IndexEntry; ranked: number }) {
+  const href = `/dvns-index?comune=${entry.istat}#scheda`;
+  const score = entry.score === null ? null : entry.score.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const detail = entry.status === "ranked" && entry.rank !== null
+    ? `${integer(entry.rank)}° su ${integer(ranked)} · fascia ${entry.band}`
+    : entry.status === "partial"
+      ? "punteggio parziale, fuori classifica"
+      : "non valutabile";
+  return (
+    <Link className={styles.indexBadge} href={href} prefetch={false} data-dvns-index-badge={entry.status}>
+      <span className={styles.indexBadgeMark}>DVNS <span>Index</span></span>
+      {score ? <strong>{score}<small>/100</small></strong> : null}
+      <span className={styles.indexBadgeDetail}>{detail}</span>
+      <span aria-hidden="true">→</span>
+    </Link>
+  );
+}
+
+export function ComuniDossier({ footprint, dvnsIndex = null }: { footprint: ComuniFootprint; dvnsIndex?: { entry: IndexEntry; ranked: number } | null }) {
   const peer = footprint.peer;
   const openCivitas = footprint.openCivitas.status === "available" ? footprint.openCivitas.data : null;
   const irpef = footprint.irpef.status === "available" ? footprint.irpef.data : null;
@@ -134,6 +153,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
             pagamenti e incassi di cassa SIOPE, {periodLabel(footprint).toLocaleLowerCase("it-IT")}
             {footprint.completeness === "partial" ? " (anno in corso)" : ""}
           </p>
+          {dvnsIndex ? <DvnsIndexBadge entry={dvnsIndex.entry} ranked={dvnsIndex.ranked} /> : null}
           <p className={styles.idCodes} aria-label="Identificativi ufficiali">
             IPA {footprint.codiceIpa} · CF {footprint.taxCode}
             {currentIstatCode ? ` · ISTAT ${currentIstatCode}` : ""}

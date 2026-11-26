@@ -22,6 +22,7 @@ const geist = Geist({
 const latestReport = monthlyReports.listPublished()[0];
 const latestPaper = papers.listPublished()[0];
 const announcements = [
+  { label: "Nuovo", title: "DVNS Index", description: "DVNS Index: il tuo Comune spende meglio o peggio degli altri?", cta: "Scopri la classifica", href: "/dvns-index" },
   ...(latestReport ? [{ label: "Articolo", title: latestReport.title, description: latestReport.issueMonth === "2026-08" ? "Imprese e territori: cosa sta cambiando in Italia?" : latestReport.title, cta: "Leggi l’articolo", href: latestReport.href }] : []),
   ...(latestPaper ? [{
     label: "Paper",

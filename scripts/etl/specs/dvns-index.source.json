@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "dvns-index",
+  "version": "2026.1",
+  "artefacts": {
+    "geography": {
+      "path": "src/data/generated/istat-municipality-geography.json",
+      "sha256": "0f7f042f631c81bb879160e2a5543132c031160e80d96b0340526697e773bb41"
+    },
+    "opencivitas2021": {
+      "path": "src/data/generated/opencivitas-2021.json",
+      "sha256": "3e1395e81d67a7eab85e7d1c51001b972e2a71e949c81dcd4285d7b1a659995d"
+    },
+    "opencivitas2022": {
+      "path": "src/data/generated/opencivitas-2022.json",
+      "sha256": "57bda32137d1649b518b606b0a26da30b94590a1447f4f53382f43ffb7f9f598"
+    },
+    "opencivitas2022-amministrazione": {
+      "path": "src/data/generated/opencivitas-2022-amministrazione.json",
+      "sha256": "495229245ed90fc33f3baf8753f86c99e0781a909d6e34cab22c4abc397981d5"
+    },
+    "opencivitas2022-istruzione": {
+      "path": "src/data/generated/opencivitas-2022-istruzione.json",
+      "sha256": "83eab3d2d0f9faeca3e47016a8c5fbc8a8d7e92859b6fd8e7bf3327d09573516"
+    },
+    "opencivitas2022-polizia": {
+      "path": "src/data/generated/opencivitas-2022-polizia.json",
+      "sha256": "1b2d43b002e6e1178aa6fcddef92597a56050ddec103f97b746e84923fb97103"
+    },
+    "opencivitas2022-rifiuti": {
+      "path": "src/data/generated/opencivitas-2022-rifiuti.json",
+      "sha256": "a9690f0fc7b584e611013b6d5134fa06df2fa923466f174709e8778fa95b64d8"
+    },
+    "opencivitas2022-sociale-asili": {
+      "path": "src/data/generated/opencivitas-2022-sociale-asili.json",
+      "sha256": "66a0a17c462b8b8952645448c611694beb56e4bf377813c786e1e42d2c9199e3"
+    },
+    "opencivitas2022-viabilita": {
+      "path": "src/data/generated/opencivitas-2022-viabilita.json",
+      "sha256": "db206ba22ca6834d2f322561cf4ac06262ae41b57b23303cce62a224bdde48d6"
+    },
+    "siope2024": {
+      "path": "src/data/generated/siope-municipal-detail-2024.json",
+      "sha256": "8615ed50cf269f1eeb81ebc61b7f3c421a68accb7da06c1f11914c1ba9949b73"
+    },
+    "siope2025": {
+      "path": "src/data/generated/siope-municipal-detail-2025.json",
+      "sha256": "ab2c27c8d99083cbc23cf59dbd53f80f0e931a255812bea5b37700ad96d7f69e"
+    },
+    "anacPeers": {
+      "path": "src/data/generated/anac-procurement-peers/snapshot.json.gz",
+      "sha256": "18fc242c5493c820f0af58d2699db916125b76e52a4f93068386959fe8392820"
+    },
+    "anacAwardsMeta": {
+      "path": "src/data/generated/anac-entity-procurement-page/meta.json",
+      "sha256": "9e81be0fd8734c7927cbe38af6a3a6e5ba537f6c7d63d83c9442337fe2770f87"
+    },
+    "anacCigSpec": {
+      "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+    }
+  },
+  "rules": {
+    "weights": {
+      "resa": 0.5,
+      "sovraspesa": 0.15,
+      "investire": 0.2,
+      "appalti": 0.15
+    },
+    "pillars": {
+      "resa": {
+        "indicators": [
+          {
+            "id": "resa2021",
+            "weight": 0.5
+          },
+          {
+            "id": "resa2022",
+            "weight": 0.5
+          }
+        ],
+        "required": [
+          "resa2022"
+        ]
+      },
+      "sovraspesa": {
+        "indicators": [
+          {
+            "id": "sovraspesa2021",
+            "weight": 0.5
+          },
+          {
+            "id": "sovraspesa2022",
+            "weight": 0.5
+          }
+        ],
+        "required": [
+          "sovraspesa2022"
+        ]
+      },
+      "investire": {
+        "indicators": [
+          {
+            "id": "investimenti",
+            "weight": 1.0
+          }
+        ],
+        "required": [
+          "investimenti"
+        ]
+      },
+      "appalti": {
+        "indicators": [
+          {
+            "id": "concorrenza",
+            "weight": 0.6
+          },
+          {
+            "id": "fornitori",
+            "weight": 0.4
+          }
+        ],
+        "required": []
+      }
+    },
+    "procurementThresholdEuro": 40000,
+    "minProcedures": 5,
+    "minAwards": 10,
+    "shrinkProcedures": 8,
+    "shrinkAwards": 10,
+    "minPeerValues": 5,
+    "minRanked": 4000,
+    "reducedCompetition": [
+      "AFFIDAMENTO DIRETTO",
+      "PROCEDURA NEGOZIATA SENZA PREVIA PUBBLICAZIONE"
+    ],
+    "neutral": [
+      "AFFIDAMENTO DIRETTO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE",
+      "AFFIDAMENTO DIRETTO A SOCIETA' IN HOUSE",
+      "CONFRONTO COMPETITIVO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE"
+    ],
+    "sensitivity": {
+      "draws": 500,
+      "spread": 0.1,
+      "seed": 886
+    }
+  },
+  "sources": [
+    {
+      "id": "opencivitas",
+      "label": "OpenCivitas, fabbisogni standard e livelli dei servizi 2021 e 2022",
+      "owner": "MEF e SOSE",
+      "url": "https://www.opencivitas.it/",
+      "license": "CC BY 4.0"
+    },
+    {
+      "id": "siope",
+      "label": "SIOPE, pagamenti di cassa dei Comuni 2024 e 2025",
+      "owner": "Ragioneria Generale dello Stato e Banca d'Italia",
+      "url": "https://www.siope.it/",
+      "license": "non dichiarata dalla fonte"
+    },
+    {
+      "id": "anac-cig",
+      "label": "ANAC, CIG pubblicati nel 2025",
+      "owner": "ANAC",
+      "url": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "id": "anac-aggiudicazioni",
+      "label": "ANAC, aggiudicazioni dei CIG 2025",
+      "owner": "ANAC",
+      "url": "https://dati.anticorruzione.it/opendata",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "id": "istat",
+      "label": "ISTAT SITUAS, caratteristiche geografiche dei Comuni",
+      "owner": "ISTAT",
+      "url": "https://situas.istat.it/",
+      "license": "CC BY 4.0"
+    }
+  ]
+}

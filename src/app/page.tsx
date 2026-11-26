@@ -153,6 +153,12 @@ export default async function HomePage({
           </div>
         </div>
       </header>
+      <Link prefetch={false} href="/dvns-index" className={styles.indexLaunch} data-dvns-index-launch>
+        <span className={styles.indexBadge}>Nuovo</span>
+        <span className={styles.indexMark}>DVNS <span>Index</span></span>
+        <span className={styles.indexText}>Il tuo Comune spende meglio o peggio degli altri? La classifica di oltre 5.000 Comuni, con il perché di ogni punteggio.</span>
+        <span className={styles.indexCta}>Scopri la classifica<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></span>
+      </Link>
       <HomePathways funnel={funnel} siope={siope}>
       <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
         <div className={styles.anomaliesHeader}>

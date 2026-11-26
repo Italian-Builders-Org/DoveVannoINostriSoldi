@@ -601,3 +601,14 @@
   .featuredGrid { grid-template-columns: 1fr; }
   .chromeSearch button { padding: 0 var(--space-3); }
 }
+
+/* DVNS Index badge in the dossier head: links to the Comune's explanation on /dvns-index. */
+.indexBadge { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; width: fit-content; max-width: 100%; margin: 10px 0 4px; padding: 8px 14px; color: #f4f4f5; text-decoration: none; background: #0d0e10; border: 1px solid #27272a; font-size: 14px; }
+.indexBadge:hover .indexBadgeDetail { text-decoration: underline; text-underline-offset: 3px; }
+.indexBadge:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.indexBadgeMark { color: #f4f4f5; font-weight: 700; letter-spacing: -.02em; }
+.indexBadgeMark span { color: #d8f74a; }
+.indexBadge strong { color: #f4f4f5; font-size: 18px; font-variant-numeric: tabular-nums; }
+.indexBadge strong small { margin-left: 2px; color: #a1a1aa; font-size: 12px; font-weight: 500; }
+.indexBadgeDetail { color: #d4d4d8; }
+.indexBadge > span:last-child { color: #d8f74a; }

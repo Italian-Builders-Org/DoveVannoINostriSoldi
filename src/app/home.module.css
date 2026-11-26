@@ -85,3 +85,17 @@
   .mapsMosaic { grid-template-rows: 170px 120px; gap: 8px; }
   .mapsTag { left: 8px; bottom: 8px; padding: 3px 8px; font-size: 12px; }
 }
+
+/* DVNS Index launch: same dark and lime identity as the index page hero. */
+.indexLaunch { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 12px 24px; margin: 4px 0 28px; padding: 18px 24px; color: #f4f4f5; text-decoration: none; background: radial-gradient(ellipse at 80% 50%, #1f2024 0%, #0d0e10 70%); border: 1px solid #27272a; }
+.indexLaunch:hover .indexCta { text-decoration: underline; text-underline-offset: 4px; }
+.indexLaunch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.indexBadge { padding: 3px 8px; color: #0d0e10; background: #d8f74a; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.indexMark { font-size: 26px; font-weight: 700; letter-spacing: -.04em; white-space: nowrap; }
+.indexMark span { color: #d8f74a; }
+.indexText { color: #d4d4d8; font-size: 15px; line-height: 1.5; }
+.indexCta { display: inline-flex; align-items: center; gap: 6px; color: #d8f74a; font-size: 14px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 900px) {
+  .indexLaunch { grid-template-columns: auto minmax(0, 1fr); }
+  .indexText, .indexCta { grid-column: 1 / -1; }
+}

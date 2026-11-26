@@ -9,6 +9,8 @@ import {
   searchComuni,
 } from "@/lib/comuni-footprint";
 import { SitePageLink } from "@/components/site-page-link";
+import { loadDvnsIndex } from "@/lib/dvns-index-store";
+import type { IndexEntry } from "@/lib/dvns-index";
 import { ComuniDossier } from "./comuni-dossier";
 import { ComuniSearch } from "./comuni-search";
 import styles from "./comuni.module.css";
@@ -38,6 +40,18 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
     ? await getComuniFootprintByIpaCode(DEFAULT_COMUNI_IPA)
     : null;
   const shown = footprint ?? defaultFootprint;
+  // The DVNS Index badge is optional: without the snapshot the dossier renders as before.
+  let indexEntry: IndexEntry | null = null;
+  let indexRanked = 0;
+  if (shown && !searching) {
+    try {
+      const index = await loadDvnsIndex();
+      indexEntry = index.byTaxCode.get(shown.taxCode) ?? null;
+      indexRanked = index.snapshot.summary.ranked;
+    } catch {
+      indexEntry = null;
+    }
+  }
   const searchHits = searching ? searchComuni(query, 14) : [];
   const featured = featuredComuni();
   const missingRequested = Boolean(requestedEnte && !footprint);
@@ -137,7 +151,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
           </section>
         ) : null}
 
-        {shown && !searching ? <ComuniDossier footprint={shown} /> : null}
+        {shown && !searching ? <ComuniDossier footprint={shown} dvnsIndex={indexEntry ? { entry: indexEntry, ranked: indexRanked } : null} /> : null}
       </div>
     </main>
   );

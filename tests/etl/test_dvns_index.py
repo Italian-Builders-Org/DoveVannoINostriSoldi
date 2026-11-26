@@ -27,6 +27,34 @@ class RuleTests(unittest.TestCase):
         # Spending below the need is never a penalty.
         self.assertEqual(etl.unjustified_spending(-20.0, -40.0), 0.0)
 
+    def test_underspending_counts_only_when_suppliers_are_paid_on_time(self) -> None:
+        # Spends 25% under the need with average services and pays on time: efficiency.
+        self.assertEqual(etl.resa_value(-25.0, 0.0, True), 25.0)
+        # Same numbers, pays 40 days late: likely short of cash, only the services count.
+        self.assertEqual(etl.resa_value(-25.0, 0.0, False), 0.0)
+        # No payment data: no evidence of distress, the spending counts.
+        self.assertEqual(etl.resa_value(-25.0, 0.0, None), 25.0)
+        # Overspending always counts, late payer or not.
+        self.assertEqual(etl.resa_value(30.0, 10.0, False), -20.0)
+
+    def test_services_that_jump_between_years_are_suspect(self) -> None:
+        # Craco: +373% services in 2021, +50% in 2022.
+        self.assertTrue(etl.volatile_services(373.2, 49.8, 100))
+        self.assertFalse(etl.volatile_services(60.0, 65.1, 100))
+        self.assertFalse(etl.volatile_services(None, 49.8, 100))
+
+    def test_payments_far_before_the_due_date_are_recording_errors(self) -> None:
+        # Terms are 30 or 60 days from the invoice: paying 771 days early means paying before the invoice.
+        self.assertIsNone(etl.plausible_delay(-770.8, 60))
+        self.assertIsNone(etl.plausible_delay(-60.1, 60))
+        self.assertEqual(etl.plausible_delay(-60.0, 60), -60.0)
+        self.assertEqual(etl.plausible_delay(53.0, 60), 53.0)
+
+    def test_italian_numbers(self) -> None:
+        self.assertEqual(etl.italian_number("1.234,5"), 1234.5)
+        self.assertEqual(etl.italian_number("68,2"), 68.2)
+        self.assertIsNone(etl.italian_number(""))
+
     def test_few_observations_move_toward_the_median(self) -> None:
         # 5 procedures all without tender: pulled well below 100%.
         self.assertAlmostEqual(etl.shrink(1.0, 5, 0.77, 8), 0.77 + 0.23 * 5 / 13)
@@ -67,8 +95,12 @@ class RuleTests(unittest.TestCase):
 
     def test_score_needs_the_core_pillar(self) -> None:
         self.assertIsNone(etl.weighted_score({"investire": 90.0, "appalti": 80.0}, RULES["weights"]))
-        self.assertAlmostEqual(etl.weighted_score({"resa": 80.0, "sovraspesa": 60.0, "investire": 40.0, "appalti": 20.0}, RULES["weights"]),
-                               80 * 0.5 + 60 * 0.15 + 40 * 0.2 + 20 * 0.15)
+        w = RULES["weights"]
+        full = {"resa": 80.0, "sovraspesa": 60.0, "investire": 40.0, "appalti": 20.0, "puntualita": 70.0, "risultati": 90.0}
+        self.assertAlmostEqual(etl.weighted_score(full, w), sum(full[p] * w[p] for p in full))
+        # A missing pillar does not count as zero: the other weights are rescaled.
+        partial = {key: value for key, value in full.items() if key != "risultati"}
+        self.assertAlmostEqual(etl.weighted_score(partial, w), sum(partial[p] * w[p] for p in partial) / (1 - w["risultati"]))
 
     def test_weights_add_up_and_population_bands(self) -> None:
         self.assertAlmostEqual(sum(RULES["weights"].values()), 1.0)

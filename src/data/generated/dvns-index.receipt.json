@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "documentPath": "src/data/generated/dvns-index.json",
   "codeSha": "0000000000000000000000000000000000000000",
-  "sourceSha256": "b67285f5391031d8fefbf29ed78f40ddc1ad97d9eaf72497d5a1c34e73710c61",
-  "sourceBytes": 1585606,
-  "version": "2026.1",
-  "ranked": 5421
+  "sourceSha256": "82eeeb596508964b13095ae14ef46c74bdf51a93bd007a8379846e16626eb415",
+  "sourceBytes": 1959441,
+  "version": "2026.2",
+  "ranked": 5123
 }

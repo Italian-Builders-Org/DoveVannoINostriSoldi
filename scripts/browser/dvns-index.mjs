@@ -64,15 +64,21 @@ try {
         assert.ok(hero.top >= headerBottom, "il titolo finisce sotto la barra del sito");
         assert.ok(hero.size >= 60, `wordmark troppo piccolo: ${hero.size}px`);
 
-        // The card explains the score: four pillars whose points add up to it.
+        // The card explains the score: six pillars whose points add up to it.
         const score = Number(await page.$eval("[data-score]", (el) => el.getAttribute("data-score")));
-        assert.equal(score, 86.2);
-        assert.equal((await page.$$("[data-pillar-card]")).length, 4);
-        const formula = await page.$eval("#scheda h3 + p + div + p", (el) => el.textContent ?? "");
-        const parts = [...formula.matchAll(/(\d+,\d)\s+[a-z]/gu)].map((match) => number(match[1]));
-        assert.equal(parts.length, 4, `formula: ${formula}`);
+        assert.equal(score, 83.3);
+        assert.equal((await page.$$("[data-pillar-card]")).length, 6);
+        const guide = await page.$eval("[data-read-guide]", (el) => el.textContent ?? "");
+        assert.match(guide, /70 vuol dire meglio di 70 Comuni simili su 100/u, "manca la spiegazione di come leggere i valori");
+        const formula = await page.$eval("[data-read-guide] + div + p", (el) => el.textContent ?? "");
+        const parts = [...formula.matchAll(/(\d+,\d)\s+[a-zà]/gu)].map((match) => number(match[1]));
+        assert.equal(parts.length, 6, `formula: ${formula}`);
         assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${formula}`);
-        assert.match(main, /1° su 35/u, "posizione tra le città simili");
+        assert.match(main, /2° su 35/u, "posizione tra le città simili");
+        assert.match(await page.$eval("[data-regional-rank]", (el) => el.innerText), /In Emilia-Romagna\s+\d+° su \d+/u, "manca la posizione nella Regione");
+        const facts = await page.$eval("#scheda", (el) => el.innerText);
+        assert.match(facts, /Ritardo medio ponderato nel pagare le fatture/u, "manca il dato PCC");
+        assert.match(facts, /Raccolta differenziata: \d+,\d% nel 2022/u, "manca il dato ISPRA");
         assert.match(await page.$eval("[data-rank-range]", (el) => el.textContent ?? ""), /con pesi diversi (tra \d+° e \d+°|sempre \d+°)/u);
         assert.ok(await page.$('#scheda a[href^="/comuni?ente="]'), "manca il link alla scheda del Comune");
         assert.ok(await page.$('#scheda a[href="/dvns-index/metodo"]'), "manca il link al metodo dalla scheda");
@@ -141,11 +147,11 @@ try {
         await Promise.all([page.waitForNavigation({ waitUntil: "domcontentloaded" }), page.keyboard.press("Enter")]);
         await page.waitForSelector("#scheda-title");
         assert.equal(await page.$eval("#scheda-title", (el) => el.textContent), "Gubbio");
-        assert.match(await page.$eval("#scheda", (el) => el.innerText), /60° su 314/u);
+        assert.match(await page.$eval("#scheda", (el) => el.innerText), /93° su 314/u);
         await assertLayout(page, "scheda Gubbio");
 
         await page.goto(`${baseUrl}/dvns-index?regione=08&fascia=A`, { waitUntil: "domcontentloaded" });
-        const rows = await page.$$eval("[data-ranking-row]", (items) => items.map((row) => ({ region: row.cells[2]?.textContent ?? "", band: row.cells[5]?.textContent ?? "", range: row.cells[6]?.textContent ?? "" })));
+        const rows = await page.$$eval("[data-ranking-row]", (items) => items.map((row) => ({ region: row.querySelector("[data-region-note]")?.textContent ?? "", band: row.cells[4]?.textContent ?? "", range: row.cells[5]?.textContent ?? "" })));
         assert.ok(rows.length > 0 && rows.length <= 50);
         assert.ok(rows.every((row) => row.region === "Emilia-Romagna" && row.band === "A"), "filtro regione o fascia non applicato");
         assert.ok(rows.every((row) => /tra .*° e .*°|sempre .*°/u.test(row.range)), "manca l'intervallo di posizione");
@@ -164,10 +170,13 @@ try {
       width,
       expectedFailure,
       async validate(page) {
-        // Craco: OpenCivitas services from +373% (2021) to +50% (2022) must be flagged, not shown as solid.
+        // Craco: OpenCivitas services from +373% (2021) to +50% (2022): flagged and kept out of the ranking.
         const warning = await page.$eval("[data-volatile]", (el) => el.textContent ?? "");
         assert.match(warning, /Dato da verificare/u);
         assert.match(warning, /questionari compilati dai Comuni/u);
+        assert.match(warning, /non entra in classifica/u);
+        assert.equal(await page.$("[data-rank-range]"), null, "un Comune fuori classifica non ha posizione");
+        assert.match(await page.$eval("#scheda", (el) => el.innerText), /Punteggio indicativo/u);
         await assertLayout(page, "dato da verificare");
       },
     });
@@ -181,13 +190,16 @@ try {
       async validate(page) {
         await assertLayout(page, "metodo");
         const headings = await page.$$eval("main h2", (items) => items.map((item) => item.textContent));
-        for (const title of ["In breve", "I dati", "I quattro pilastri", "Il confronto tra Comuni simili", "Punteggio, fasce e solidità", "Un esempio completo: Bologna", "Cosa l'indice non dice", "Come verificarlo"]) {
+        for (const title of ["In breve", "I dati", "I sei pilastri", "Il confronto tra Comuni simili", "Punteggio, fasce e solidità", "Un esempio completo: Bologna", "Quanto fidarsi dell'indice", "Cosa l'indice non dice", "Come verificarlo"]) {
           assert.ok(headings.includes(title), `manca la sezione "${title}"`);
         }
-        // The worked example adds up: four pillar points equal the published score.
+        // The worked example adds up: six pillar points equal the published score.
         const cells = await page.$$eval("#esempio ~ div table tbody tr td:last-child, section[aria-labelledby=esempio] tbody td:last-child", (items) => items.map((item) => item.textContent ?? ""));
         const total = await page.$eval("section[aria-labelledby=esempio] tfoot strong", (el) => el.textContent ?? "");
-        assert.equal(cells.length, 4);
+        assert.equal(cells.length, 6);
+        const trust = await page.$eval("section[aria-labelledby=fiducia]", (el) => el.innerText);
+        assert.match(trust, /La Regione spiega circa il \d+% delle differenze/u);
+        assert.match(trust, /Le obiezioni che restano/u);
         assert.ok(Math.abs(cells.map(number).reduce((sum, value) => sum + value, 0) - number(total)) <= 0.2, "l'esempio non somma al punteggio");
         assert.doesNotMatch(await page.$eval("main", (el) => el.innerText), /\bNaN\b|\bundefined\b|n\.d\./u);
       },
@@ -206,7 +218,7 @@ try {
         await page.waitForSelector("[data-dvns-index-badge]");
         const badge = await page.$eval("[data-dvns-index-badge]", (el) => ({ href: el.getAttribute("href"), text: el.textContent ?? "" }));
         assert.equal(badge.href, "/dvns-index?comune=037006#scheda");
-        assert.match(badge.text, /86,2.*19° su 5\.421.*fascia A/u);
+        assert.match(badge.text, /83,3.*20° su 5\.123.*fascia A/u);
         const colors = await page.$eval("[data-dvns-index-badge]", (el) => [...el.querySelectorAll("span, strong")].map((node) => getComputedStyle(node).color));
         assert.ok(colors.every((color) => color !== "rgb(13, 14, 16)"), "testo del badge invisibile sul fondo scuro");
       },

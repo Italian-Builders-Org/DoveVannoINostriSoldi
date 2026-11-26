@@ -99,13 +99,14 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
   const group = entry.group === null ? null : snapshot.groups[entry.group];
   const name = displayMunicipalityName(entry.name);
   const total = parts.reduce((sum, part) => sum + (part.points ?? 0), 0);
+  const rules = snapshot.rules;
   return (
     <section className={styles.card} id="scheda" aria-labelledby="scheda-title">
       <div className={styles.cardHead}>
         <div>
           <p className={styles.eyebrow}>{regionName(entry.regionCode)} · {integer.format(entry.population)} abitanti</p>
           <h2 id="scheda-title" className={styles.cardTitle}>{name}</h2>
-          <p className={styles.status}>{statusLabel(entry.status)}</p>
+          <p className={styles.status}>{statusLabel(entry.status, entry.volatile)}</p>
         </div>
         {entry.score !== null ? (
           <div className={styles.scoreBox} data-score={entry.score}>
@@ -128,6 +129,13 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
             <dd>{entry.peerRank}° su {entry.peerRanked}</dd>
             {group ? <small>confronto con {describeGroup(group)}</small> : null}
           </div>
+          {data.regional.get(entry.istat) ? (
+            <div data-regional-rank>
+              <dt>In {regionName(entry.regionCode)}</dt>
+              <dd>{integer.format(data.regional.get(entry.istat)?.rank ?? 0)}° su {integer.format(data.regional.get(entry.istat)?.total ?? 0)}</dd>
+              <small>la classifica nazionale risente anche del divario tra Nord e Sud</small>
+            </div>
+          ) : null}
           <div>
             <dt>Solidità della fascia</dt>
             <dd>{stabilityLabel(entry.bandStability)}</dd>
@@ -145,14 +153,23 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
           {integer.format(servicesVolatility(entry) ?? 0)} punti percentuali tra il 2021 e il 2022
           ({one.format(entry.services2021 ?? 0)}% e {one.format(entry.services2022 ?? 0)}% rispetto alla media). I dati sui servizi
           vengono dai questionari compilati dai Comuni: un salto così grande è più probabilmente un errore di compilazione che
-          un cambiamento reale, e pesa sul punteggio.
+          un cambiamento reale. Per questo il Comune non entra in classifica: il punteggio è indicativo.
         </p>
       ) : null}
 
       {entry.score !== null ? (
         <div className={styles.formula}>
           <h3>Perché {one.format(entry.score)}</h3>
-          <p>Il punteggio somma i quattro pilastri, ciascuno moltiplicato per il proprio peso.</p>
+          <div className={styles.readGuide} data-read-guide>
+            <p>
+              <strong>Come leggere i numeri.</strong> Ogni pilastro ha un valore da 0 a 100: è la quota di Comuni simili che fanno
+              peggio. 70 vuol dire meglio di 70 Comuni simili su 100, 50 è nella media.
+            </p>
+            <p>
+              Il valore viene moltiplicato per il peso del pilastro: 70 nella resa, che pesa il {Math.round(rules.weights.resa * 100)}%,
+              vale {one.format(70 * rules.weights.resa)} punti. La somma dei sei pilastri è il punteggio.
+            </p>
+          </div>
           <div className={styles.stack} aria-hidden="true">
             {parts.map((part) => (part.points ? <span key={part.pillar} data-pillar={part.pillar} style={{ flexGrow: part.points }} /> : null))}
             <span className={styles.stackRest} style={{ flexGrow: Math.max(0, 100 - total) }} />
@@ -290,12 +307,12 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <div>
             <dt>Comuni in classifica</dt>
             <dd>{integer.format(summary.ranked)}</dd>
-            <span className="stat-note">con tutti e quattro i pilastri</span>
+            <span className="stat-note">con tutti e sei i pilastri</span>
           </div>
           <div>
             <dt>Punteggio parziale</dt>
             <dd>{integer.format(summary.partial)}</dd>
-            <span className="stat-note">appalti troppo pochi o dati mancanti</span>
+            <span className="stat-note">dati mancanti o servizi dichiarati troppo variabili</span>
           </div>
           <div>
             <dt>Non valutabili</dt>
@@ -313,8 +330,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <div>
             <h2 id="metodo-callout">Come funziona il DVNS Index</h2>
             <p>
-              Dati ufficiali di OpenCivitas, SIOPE e ANAC, quattro pilastri con pesi dichiarati, confronto solo tra Comuni
-              simili. Ogni regola, ogni fonte e un esempio completo sono nella pagina del metodo.
+              Dati ufficiali di OpenCivitas, SIOPE, ANAC, Ragioneria Generale dello Stato e ISPRA, sei pilastri con pesi
+              dichiarati, confronto solo tra Comuni simili. Regole, fonti, limiti e un esempio completo sono nella pagina del metodo.
             </p>
           </div>
           <Link href="/dvns-index/metodo" prefetch={false} data-method-link="callout">Leggi il metodo completo →</Link>
@@ -342,8 +359,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <h2 id="classifica" className="panel-title">La classifica</h2>
           <p className={styles.lede}>
             Fasce da A a E: ogni fascia contiene un quinto dei Comuni in classifica. La posizione esatta conta meno della
-            fascia: l&apos;ultima colonna mostra dove cade il Comune se cambiamo i pesi, e &quot;dato da verificare&quot; segnala i
-            Comuni con servizi OpenCivitas molto variabili tra un anno e l&apos;altro.
+            fascia: l&apos;ultima colonna mostra dove cade il Comune se cambiamo i pesi. I Comuni con servizi OpenCivitas
+            molto variabili tra un anno e l&apos;altro restano fuori dalla classifica.
           </p>
           <form className={styles.filters} action={`${PAGE_PATH}#classifica`} method="get" aria-label="Filtra la classifica">
             <label>
@@ -377,10 +394,9 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
               <caption id="classifica-tabella" className="table-caption">DVNS Index, Comuni in classifica</caption>
               <thead>
                 <tr>
-                  <th scope="col" className="num">Posizione</th>
+                  <th scope="col" className="num"><abbr title="Posizione">Pos.</abbr></th>
                   <th scope="col">Comune</th>
-                  <th scope="col">Regione</th>
-                  <th scope="col" className="num">Abitanti</th>
+                  <th scope="col" className={`num ${styles.wideOnly}`}>Abitanti</th>
                   <th scope="col" className="num">Punteggio</th>
                   <th scope="col">Fascia</th>
                   <th scope="col">Con pesi diversi</th>
@@ -390,15 +406,17 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
                 {result.rows.map((entry) => (
                   <tr key={entry.istat} data-ranking-row={entry.istat}>
                     <td className="num">{integer.format(entry.rank ?? 0)}</td>
-                    <th scope="row"><Link href={comuneHref(entry)} prefetch={false}>{displayMunicipalityName(entry.name)}</Link></th>
-                    <td>{regionName(entry.regionCode)}</td>
-                    <td className="num">{integer.format(entry.population)}</td>
+                    <th scope="row">
+                      <Link href={comuneHref(entry)} prefetch={false}>{displayMunicipalityName(entry.name)}</Link>
+                      <small className={styles.regionNote}>
+                        <span data-region-note>{regionName(entry.regionCode)}</span>
+                        <span className={styles.narrowOnly}> · {integer.format(entry.population)} ab.</span>
+                      </small>
+                    </th>
+                    <td className={`num ${styles.wideOnly}`}>{integer.format(entry.population)}</td>
                     <td className="num">{one.format(entry.score ?? 0)}</td>
                     <td><BandBadge band={entry.band ?? ""} /></td>
-                    <td className={styles.rangeCell}>
-                      {rankRange(entry)}
-                      {servicesVolatility(entry) ? <span className={styles.flag} title="Dato OpenCivitas sui servizi molto variabile tra 2021 e 2022">dato da verificare</span> : null}
-                    </td>
+                    <td className={styles.rangeCell}>{rankRange(entry)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -421,7 +439,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           </p>
           <div className="table-scroll" role="region" aria-labelledby="pilastri-tabella" tabIndex={0}>
             <table className={`table ${styles.methodTable}`}>
-              <caption id="pilastri-tabella" className="table-caption">I quattro pilastri</caption>
+              <caption id="pilastri-tabella" className="table-caption">I sei pilastri</caption>
               <thead>
                 <tr><th scope="col">Pilastro</th><th scope="col" className="num">Peso</th><th scope="col">Dato ufficiale</th><th scope="col">Regola</th></tr>
               </thead>
@@ -439,15 +457,25 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
                 <tr>
                   <th scope="row">Capacità di investire</th><td className="num">{Math.round(rules.weights.investire * 100)}%</td>
                   <td>SIOPE (Ragioneria Generale dello Stato e Banca d&apos;Italia), pagamenti di cassa 2024 e 2025.</td>
-                  <td>Quota degli investimenti sul totale di spesa corrente e investimenti, sommando i due anni. Più investimenti è meglio.</td>
+                  <td>Metà peso alla quota degli investimenti sul totale di spesa corrente e investimenti, metà agli euro investiti per abitante. Più investimenti è meglio.</td>
                 </tr>
                 <tr>
                   <th scope="row">Apertura degli appalti</th><td className="num">{Math.round(rules.weights.appalti * 100)}%</td>
                   <td>ANAC: {integer.format(summary.anacProcedures)} CIG pubblicati nel 2025 e le aggiudicazioni dei CIG 2025.</td>
                   <td>
                     60%: quota del valore delle procedure sopra {integer.format(rules.procurementThresholdEuro)} € assegnata con affidamento diretto o negoziata senza bando.
-                    40%: concentrazione del valore aggiudicato sui fornitori. Meno è meglio.
+                    40%: concentrazione del valore aggiudicato sui fornitori, esclusi rifiuti, energia e acqua. Meno è meglio.
                   </td>
+                </tr>
+                <tr>
+                  <th scope="row">Puntualità nei pagamenti</th><td className="num">{Math.round(rules.weights.puntualita * 100)}%</td>
+                  <td>Piattaforma dei crediti commerciali (Ragioneria Generale dello Stato), fatture pagate nel 2024 e nel 2025.</td>
+                  <td>Ritardo medio ponderato sull&apos;importo rispetto alla scadenza. Meno ritardo è meglio.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Risultati misurati</th><td className="num">{Math.round(rules.weights.risultati * 100)}%</td>
+                  <td>ISPRA, Catasto rifiuti, 2022 e 2023.</td>
+                  <td>Percentuale di raccolta differenziata, media dei due anni. Più alta è meglio.</td>
                 </tr>
               </tbody>
             </table>
@@ -456,7 +484,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <ul className={styles.criteria}>
             <li><strong>Confronto tra simili.</strong> Ogni dato diventa un percentile tra i Comuni con la stessa fascia di popolazione e superficie, zona altimetrica, grado di urbanizzazione, costa e isole. Le città sopra i 100.000 abitanti si confrontano tra loro. Il punteggio da 0 a 100 è quindi già corretto per il contesto.</li>
             <li><strong>Appalti.</strong> Le adesioni a convenzioni Consip e gli affidamenti a società in house non contano né come gara né come affidamento diretto. Le procedure delegate a una centrale di committenza restano del Comune che le ha delegate. Servono almeno {rules.minProcedures} procedure o {rules.minAwards} aggiudicazioni; con pochi appalti il valore viene avvicinato alla mediana nazionale ({one.format(summary.medianWithoutTenderShare)}% del valore senza gara), così il caso non decide il voto.</li>
-            <li><strong>Classifica.</strong> Entrano solo i Comuni con tutti e quattro i pilastri. Le fasce sono quintili: A i migliori 20%, E gli ultimi 20%. Soglie attuali: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}.</li>
+            <li><strong>Spesa bassa e cassa.</strong> Spendere meno del fabbisogno conta come efficienza solo se il Comune paga i fornitori nei tempi. Se paga in ritardo, la spesa bassa può essere mancanza di soldi e nel calcolo della resa contano solo i servizi.</li>
+            <li><strong>Classifica.</strong> Entrano solo i Comuni con tutti e sei i pilastri e con servizi OpenCivitas coerenti tra i due anni (scarto massimo di {integer.format(rules.volatileServicesPoints)} punti). Le fasce sono quintili: A i migliori 20%, E gli ultimi 20%. Soglie attuali: A da {one.format(summary.bandCutoffs[0])}, B da {one.format(summary.bandCutoffs[1])}, C da {one.format(summary.bandCutoffs[2])}, D da {one.format(summary.bandCutoffs[3])}.</li>
             <li><strong>Solidità.</strong> Ricalcoliamo la classifica {integer.format(rules.sensitivity.draws)} volte spostando ogni peso fino a {Math.round(rules.sensitivity.spread * 100)} punti. La solidità è la quota di volte in cui il Comune resta nella stessa fascia.</li>
             <li><strong>Funzioni.</strong> &quot;Dove rende di più e di meno&quot; confronta il saldo tra servizi e spesa nelle sei funzioni OpenCivitas: {Object.values(FUNCTION_LABELS).join(", ")}.</li>
           </ul>
@@ -464,7 +493,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           <ul className={styles.criteria}>
             <li>Non misura la qualità dei servizi: OpenCivitas ne misura la quantità, per esempio posti negli asili o strade gestite.</li>
             <li>Non indica sprechi né illeciti. Un affidamento diretto è spesso legittimo: la quota senza gara dice quanto il Comune usa la concorrenza, non se ha violato regole.</li>
-            <li>Fotografa periodi diversi: servizi e fabbisogni 2021-2022, gli ultimi pubblicati da OpenCivitas; pagamenti 2024-2025; appalti 2025.</li>
+            <li>Fotografa periodi diversi: servizi e fabbisogni 2021-2022, gli ultimi pubblicati da OpenCivitas; raccolta differenziata 2022-2023; pagamenti 2024-2025; appalti 2025.</li>
+            <li>Una parte della distanza tra Nord e Sud dipende dal contesto economico e non solo dall&apos;amministrazione: per questo la scheda mostra anche la posizione nella Regione.</li>
             <li>È un indice costruito da DoveVannoINostriSoldi: i dati sono ufficiali, le regole e i pesi sono scelte nostre, dichiarate qui.</li>
           </ul>
           <h3 className={styles.subtitle}>Fonti</h3>

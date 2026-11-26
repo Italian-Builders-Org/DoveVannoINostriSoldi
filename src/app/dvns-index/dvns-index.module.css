@@ -83,6 +83,8 @@
 .card [data-pillar="sovraspesa"] { background: var(--chart-category-amber); }
 .card [data-pillar="investire"] { background: var(--chart-category-blue); }
 .card [data-pillar="appalti"] { background: var(--chart-category-purple); }
+.card [data-pillar="puntualita"] { background: var(--chart-category-slate); }
+.card [data-pillar="risultati"] { background: var(--chart-category-green); }
 .pillars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
 .pillars > li { display: grid; gap: 10px; align-content: start; padding: 18px; border: 1px solid var(--color-neutral-300); background: var(--color-surface); }
 .pillarHead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; }
@@ -152,3 +154,30 @@
 .warning { margin: 0; padding: 12px 14px; line-height: 1.55; background: color-mix(in srgb, var(--chart-category-amber) 12%, transparent); border-left: 3px solid var(--chart-category-amber); }
 .rangeCell { white-space: nowrap; color: var(--color-neutral-700); font-size: 14px; }
 .flag { display: inline-block; margin-left: 8px; padding: 1px 6px; color: var(--color-text); font-size: 12px; background: color-mix(in srgb, var(--chart-category-amber) 18%, transparent); border: 1px solid var(--chart-category-amber); }
+
+.regionNote {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.readGuide {
+  margin: 0 0 var(--space-4, 16px);
+  padding: 12px 14px;
+  border-left: 3px solid var(--chart-category-teal);
+  background: var(--surface-subtle, rgba(0, 0, 0, 0.03));
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.readGuide p { margin: 0 0 6px; }
+.readGuide p:last-child { margin-bottom: 0; }
+
+.narrowOnly { display: none; }
+
+@media (max-width: 640px) {
+  .wideOnly { display: none; }
+  .narrowOnly { display: inline; }
+}

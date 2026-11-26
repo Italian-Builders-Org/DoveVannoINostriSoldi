@@ -49,6 +49,7 @@ DEFAULT_OUTPUT = GEN / "dvns-index.json"
 DEFAULT_RECEIPT = GEN / "dvns-index.receipt.json"
 
 BANDS = "ABCDE"
+PILLAR_ORDER = ("resa", "sovraspesa", "investire", "appalti", "puntualita", "risultati")
 FUNCTIONS = ("amministrazione", "istruzione", "polizia", "rifiuti", "sociale-asili", "viabilita")
 
 
@@ -127,6 +128,41 @@ def rank_interval(positions: list[int]) -> tuple[int | None, int | None]:
     return low, high
 
 
+def resa_value(spending: float, services: float, pays_on_time: bool | None) -> float:
+    """Services vs the band average minus spending vs the need.
+
+    Spending below the need counts as efficiency only when the Comune pays its
+    suppliers on time: a Comune that spends little and pays late is more likely
+    short of cash than efficient, so its underspending earns no credit.
+    """
+    spending_term = spending if spending >= 0 or pays_on_time is not False else 0.0
+    return services - spending_term
+
+
+def volatile_services(services_2021: float | None, services_2022: float | None, threshold: float) -> bool:
+    """OpenCivitas services come from questionnaires filled in by the Comuni: a jump above the threshold is suspect."""
+    return services_2021 is not None and services_2022 is not None and abs(services_2022 - services_2021) > threshold
+
+
+def plausible_delay(days: float, max_early_days: float) -> float | None:
+    """A payment delay, or None when it is a recording error.
+
+    Legal terms are 30 or 60 days from the invoice, so paying more than
+    max_early_days before the due date would mean paying before receiving the
+    invoice: the due date was recorded wrongly (Fortunago 2025: -770,8 days).
+    Kept, such a year would make the Comune the most punctual in Italy.
+    """
+    return None if days < -max_early_days else days
+
+
+def italian_number(text: str) -> float | None:
+    cleaned = text.strip().replace(".", "").replace(",", ".")
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
 def band_of(position: int, total: int) -> str:
     return BANDS[min(4, (position - 1) * 5 // total)]
 
@@ -172,6 +208,50 @@ def anac_procedures(spec: dict[str, Any], cache: Path) -> Iterable[dict[str, str
             yield from csv.DictReader(handle, delimiter=";")
 
 
+def load_pcc(spec: dict[str, Any], ipa_to_istat: dict[str, str]) -> dict[str, dict[int, float]]:
+    """Weighted average payment delay in days (PCC, Ragioneria Generale dello Stato), Comuni only."""
+    import openpyxl
+
+    delays: dict[str, dict[int, float]] = defaultdict(dict)
+    for year in (2024, 2025):
+        payload = read_locked(spec, f"pcc{year}")
+        sheet = openpyxl.load_workbook(io.BytesIO(payload), read_only=True)["tabella lettera A"]
+        header = [cell for cell in next(sheet.iter_rows(min_row=3, max_row=3, values_only=True))]
+        if "Tempo Medio ponderato di\nRitardo (gg)" not in header:
+            raise IndexError_(f"PCC {year}: colonna del ritardo non trovata")
+        for row in sheet.iter_rows(min_row=4, values_only=True):
+            if not row[0] or row[9] != "COMUNI" or not isinstance(row[7], (int, float)):
+                continue
+            match = re.search(r"\(([^()]+)\)\s*$", str(row[0]))
+            istat = ipa_to_istat.get(match.group(1).lower()) if match else None
+            if istat:
+                delays[istat][year] = float(row[7])
+    if len(delays) < 7000:
+        raise IndexError_(f"PCC: solo {len(delays)} Comuni collegati")
+    return delays
+
+
+def load_ispra(spec: dict[str, Any]) -> dict[str, dict[int, float]]:
+    """Separate collection share of municipal waste (ISPRA, Catasto rifiuti)."""
+    shares: dict[str, dict[int, float]] = defaultdict(dict)
+    for year in (2022, 2023):
+        text = read_locked(spec, f"ispraRd{year}").decode("latin-1")
+        lines = [line for line in text.splitlines() if line.strip()]
+        start = next(index for index, line in enumerate(lines) if line.strip().startswith("IstatComune"))
+        header = [cell.strip() for cell in lines[start].strip().split(";")]
+        if header[0] != "IstatComune" or "Percentuale RD (%)" not in header or header[5] != "Dato riferito a":
+            raise IndexError_(f"ISPRA {year}: intestazioni inattese")
+        column = header.index("Percentuale RD (%)")
+        for line in lines[start + 1:]:
+            cells = [cell.strip() for cell in line.strip().split(";")]
+            if len(cells) <= column or cells[5] != "Comune":
+                continue
+            share = italian_number(cells[column].rstrip("%"))
+            if share is not None and 0 <= share <= 100:
+                shares[cells[0][-6:]][year] = share
+    return shares
+
+
 # ── build ───────────────────────────────────────────────────────────────────
 
 def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
@@ -181,6 +261,33 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
     by_tax = {g["tax"]: g["istat"] for g in geo.values() if g["tax"]}
     raw: dict[str, dict[str, float]] = defaultdict(dict)
     facts: dict[str, dict[str, Any]] = defaultdict(dict)
+
+    siope_latest = json.loads(read_locked(spec, "siope2025"))
+    ipa_to_istat_siope = {}
+    for item in siope_latest["municipalities"]:
+        row = dict(zip(siope_latest["columns"], item))
+        if row["codiceIpa"] and row["taxCode"] in by_tax:
+            ipa_to_istat_siope[row["codiceIpa"].lower()] = by_tax[row["taxCode"]]
+    delays = load_pcc(spec, ipa_to_istat_siope)
+    max_early = rules["implausibleEarlyPaymentDays"]
+    implausible = 0
+    for by_year in delays.values():
+        for year in list(by_year):
+            if plausible_delay(by_year[year], max_early) is None:
+                del by_year[year]
+                implausible += 1
+    on_time: dict[str, bool] = {}
+    for istat, by_year in delays.items():
+        if not by_year:
+            continue
+        mean_delay = sum(by_year.values()) / len(by_year)
+        on_time[istat] = mean_delay <= 0
+        raw[istat]["ritardo"] = -mean_delay
+        facts[istat].update({f"delay{year}": round(value, 1) for year, value in by_year.items()})
+    for istat, by_year in load_ispra(spec).items():
+        if istat in geo:
+            raw[istat]["differenziata"] = sum(by_year.values()) / len(by_year)
+            facts[istat].update({f"rd{year}": round(value, 1) for year, value in by_year.items()})
 
     rso: set[str] = set()
     for year in (2021, 2022):
@@ -194,10 +301,17 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             if r["servicesAssessmentReason"] or r["spendingAssessmentReason"]:
                 continue
             spend, serv = r["differenceBasisPoints"] / 100, r["serviceDifferenceBasisPoints"] / 100
-            raw[r["istatCode"]][f"resa{year}"] = serv - spend
+            raw[r["istatCode"]][f"resa{year}"] = resa_value(spend, serv, on_time.get(r["istatCode"]))
+            if spend < 0 and on_time.get(r["istatCode"]) is False:
+                facts[r["istatCode"]]["underspendWithoutCredit"] = True
             raw[r["istatCode"]][f"sovraspesa{year}"] = -unjustified_spending(spend, serv)
             facts[r["istatCode"]][f"spending{year}"] = round(spend, 2)
             facts[r["istatCode"]][f"services{year}"] = round(serv, 2)
+
+    volatile = {
+        istat for istat, item in facts.items()
+        if volatile_services(item.get("services2021"), item.get("services2022"), rules["volatileServicesPoints"])
+    }
 
     functions: dict[str, dict[str, float]] = defaultdict(dict)
     for name in FUNCTIONS:
@@ -221,6 +335,10 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
     for istat, (current, capital) in payments.items():
         if current + capital > 0:
             raw[istat]["investimenti"] = capital / (current + capital)
+            if geo.get(istat, {}).get("pop"):
+                per_capita = capital / 100 / 2 / geo[istat]["pop"]
+                raw[istat]["investimentiProCapite"] = per_capita
+                facts[istat]["capitalPerCapita"] = round(per_capita)
             facts[istat]["investmentShare"] = round(100 * capital / (current + capital), 1)
             facts[istat]["paymentsCents"] = current + capital
 
@@ -258,6 +376,18 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
 
     peers_snapshot = json.loads(gzip.decompress(read_locked(spec, "anacPeers")))
     ipa_to_istat = {r["codiceIpa"]: r["istatCode"] for r in peers_snapshot["rows"] if r.get("istatCode")}
+    excluded = tuple(rules["concentrationExcludedCpvDivisions"])
+    cpv_meta = json.loads(read_locked(spec, "anacCpvMeta"))
+    cpv_of: dict[str, str] = {}
+    for shard in cpv_meta["shards"]:
+        path = ROOT / "src/data/generated/anac-procurement-cpv" / f"{shard['id']}.jsonl.gz"
+        payload = path.read_bytes()
+        if sha256(payload) != shard["sha256"]:
+            raise IndexError_(f"{path.name}: diverso da meta.json")
+        for line in gzip.decompress(payload).decode("utf-8").splitlines():
+            if line.strip():
+                for procedure in json.loads(line)["procedures"]:
+                    cpv_of[procedure["cig"]] = procedure["rawCode"] or ""
     hhi_obs: dict[str, tuple[float, int]] = {}
     meta = json.loads(read_locked(spec, "anacAwardsMeta"))
     for shard in meta["shards"]:
@@ -274,6 +404,10 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             by_operator: dict[str, float] = defaultdict(float)
             n = 0
             for award in entity["awards"]:
+                # Waste collection, energy and water usually have one operator by nature: they would
+                # make concentration look like a choice of the Comune.
+                if cpv_of.get(award["cig"], "").startswith(excluded):
+                    continue
                 if award["attribution"] == "single-operator" and award["amountStatus"].startswith("positive"):
                     by_operator[award["operatorRefs"][0]] += float(award["amount"])
                     n += 1
@@ -333,6 +467,8 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             status = "special-statute"
         elif score is None:
             status = "no-opencivitas"
+        elif g["istat"] in volatile:
+            status = "partial"
         elif complete:
             status = "ranked"
         else:
@@ -382,10 +518,12 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             r.get("band"), None if "band" not in r else round(stable[g["istat"]] / draws, 3),
             r.get("rank"), *rank_interval(positions.get(g["istat"], [])), r.get("peerRank"), r.get("peerRanked"),
             None if r["key"] is None else group_ids[r["key"]],
-            *[None if name not in p else round(p[name], 1) for name in ("resa", "sovraspesa", "investire", "appalti")],
+            *[None if name not in p else round(p[name], 1) for name in PILLAR_ORDER],
             f.get("spending2022"), f.get("services2022"), f.get("spending2021"), f.get("services2021"),
             f.get("investmentShare"), f.get("withoutTenderShare"), f.get("procedures"), f.get("topSupplierShare"), f.get("awards"),
             [functions.get(g["istat"], {}).get(name) for name in FUNCTIONS],
+            f.get("delay2024"), f.get("delay2025"), f.get("rd2022"), f.get("rd2023"), f.get("capitalPerCapita"),
+            bool(f.get("underspendWithoutCredit")), g["istat"] in volatile,
         ])
 
     scores = sorted(r["score"] for r in ranked)
@@ -396,9 +534,10 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
         "rules": rules,
         "functions": list(FUNCTIONS),
         "columns": ["istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
-                    "pResa", "pSovraspesa", "pInvestire", "pAppalti",
+                    "pResa", "pSovraspesa", "pInvestire", "pAppalti", "pPuntualita", "pRisultati",
                     "spending2022", "services2022", "spending2021", "services2021",
-                    "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa"],
+                    "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
+                    "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile"],
         "rows": rows,
         "groups": group_rows,
         "summary": {
@@ -407,6 +546,9 @@ def build(spec: dict[str, Any], cache: Path) -> dict[str, Any]:
             "partial": sum(r["status"] == "partial" for r in results),
             "specialStatute": sum(r["status"] == "special-statute" for r in results),
             "noOpenCivitas": sum(r["status"] == "no-opencivitas" for r in results),
+            "volatile": len(volatile & rso),
+            "implausibleDelays": implausible,
+            "underspendWithoutCredit": sum(1 for item in facts.values() if item.get("underspendWithoutCredit")),
             "medianScore": round(statistics.median(scores), 1),
             "medianStability": round(statistics.median(stable[r["g"]["istat"]] / draws for r in ranked), 3),
             "bandCutoffs": [round(ranked[min(total - 1, i * total // 5 - 1)]["score"], 1) for i in range(1, 5)],

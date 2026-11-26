@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import { database, databaseConnectionUrl } from "@/lib/integrated-supabase-reader";
-import { assertIndexSnapshot, distribution, dotLayout, type IndexEntry, type IndexSnapshot } from "@/lib/dvns-index";
+import { assertIndexSnapshot, distribution, dotLayout, regionalRanks, type IndexEntry, type IndexSnapshot, type RegionalRank } from "@/lib/dvns-index";
 
 /**
  * Same pattern as the amendments and Bilancio in Breve snapshots: only the
@@ -102,6 +102,8 @@ export type IndexData = {
   bins: number[];
   /** Columns of dots, each dot the Comuni it stands for (about 5.400 references, no copies). */
   dots: IndexEntry[][][];
+  /** Position among the ranked Comuni of the same region. */
+  regional: Map<string, RegionalRank>;
 };
 
 async function resolveView(): Promise<IndexData> {
@@ -130,6 +132,7 @@ async function resolveView(): Promise<IndexData> {
     byTaxCode: new Map(snapshot.entries.flatMap((entry) => (entry.taxCode ? [[entry.taxCode, entry] as const] : []))),
     bins: distribution(snapshot.entries),
     dots: dotLayout(snapshot.entries),
+    regional: regionalRanks(snapshot.entries),
   };
 }
 

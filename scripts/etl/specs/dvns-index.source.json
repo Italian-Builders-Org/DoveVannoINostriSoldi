@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "datasetId": "dvns-index",
-  "version": "2026.1",
+  "version": "2026.2",
   "artefacts": {
     "geography": {
       "path": "src/data/generated/istat-municipality-geography.json",
@@ -58,14 +58,40 @@
     "anacCigSpec": {
       "path": "scripts/etl/specs/anac-entity-procurement.source.json",
       "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+    },
+    "pcc2024": {
+      "path": ".cache/dvns-index/pcc/Fatture-del-2024-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx",
+      "sha256": "f6f67ff3fdfb37a74102c246e3a9c7a050bebee249c0c2c3b911e66151d691e8",
+      "url": "https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio_dei_tempi_di_pagamento_delle_pubbliche_amministrazioni/il_monitoraggio_dello_stock_di_debiti_commerciali_residui/2024/Tempi-di-pagamento/Fatture-del-2024-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx"
+    },
+    "pcc2025": {
+      "path": ".cache/dvns-index/pcc/Fatture-del-2025-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx",
+      "sha256": "acac14aad8399a92e6fcfc6926cf61aa0557e8ed9cd40102183c9a9f893e918f",
+      "url": "https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio_dei_tempi_di_pagamento_delle_pubbliche_amministrazioni/il_monitoraggio_dello_stock_di_debiti_commerciali_residui/2025/Tempi-di-pagamento/Fatture-del-2025-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx"
+    },
+    "ispraRd2022": {
+      "path": ".cache/dvns-index/ispra/rd-2022.csv",
+      "sha256": "ab242d30cd19e47fba406b72d65ad7281cca7c3f746970aa62cb4adcb9363c2d",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/get/getDettaglioComunale.csv.php?&aa=2022"
+    },
+    "ispraRd2023": {
+      "path": ".cache/dvns-index/ispra/rd-2023.csv",
+      "sha256": "6f7c1dca7b2dd0573185096adea299c405152d7c55d7e4d781c6cbbca42cc6cd",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/get/getDettaglioComunale.csv.php?&aa=2023"
+    },
+    "anacCpvMeta": {
+      "path": "src/data/generated/anac-procurement-cpv/meta.json",
+      "sha256": "71a43e9d3fa179e9378d108b7cc232bff9bc088d6458ee50357e1700989f3979"
     }
   },
   "rules": {
     "weights": {
-      "resa": 0.5,
-      "sovraspesa": 0.15,
-      "investire": 0.2,
-      "appalti": 0.15
+      "resa": 0.4,
+      "sovraspesa": 0.1,
+      "investire": 0.15,
+      "appalti": 0.1,
+      "puntualita": 0.15,
+      "risultati": 0.1
     },
     "pillars": {
       "resa": {
@@ -102,7 +128,11 @@
         "indicators": [
           {
             "id": "investimenti",
-            "weight": 1.0
+            "weight": 0.5
+          },
+          {
+            "id": "investimentiProCapite",
+            "weight": 0.5
           }
         ],
         "required": [
@@ -121,6 +151,28 @@
           }
         ],
         "required": []
+      },
+      "puntualita": {
+        "indicators": [
+          {
+            "id": "ritardo",
+            "weight": 1.0
+          }
+        ],
+        "required": [
+          "ritardo"
+        ]
+      },
+      "risultati": {
+        "indicators": [
+          {
+            "id": "differenziata",
+            "weight": 1.0
+          }
+        ],
+        "required": [
+          "differenziata"
+        ]
       }
     },
     "procurementThresholdEuro": 40000,
@@ -143,7 +195,14 @@
       "draws": 500,
       "spread": 0.1,
       "seed": 886
-    }
+    },
+    "volatileServicesPoints": 100,
+    "concentrationExcludedCpvDivisions": [
+      "90",
+      "65",
+      "09"
+    ],
+    "implausibleEarlyPaymentDays": 60
   },
   "sources": [
     {
@@ -180,6 +239,20 @@
       "owner": "ISTAT",
       "url": "https://situas.istat.it/",
       "license": "CC BY 4.0"
+    },
+    {
+      "id": "pcc",
+      "label": "Tempi di pagamento dei fornitori 2024 e 2025 (Piattaforma dei Crediti Commerciali)",
+      "owner": "Ragioneria Generale dello Stato",
+      "url": "https://www.rgs.mef.gov.it/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio/dati_per_singola_amministrazione/",
+      "license": "dati pubblicati per legge (art. 1, comma 869, legge 145/2018)"
+    },
+    {
+      "id": "ispra",
+      "label": "Raccolta differenziata dei rifiuti urbani per Comune 2022 e 2023",
+      "owner": "ISPRA, Catasto nazionale rifiuti",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/index.php?pg=downloadComune",
+      "license": "dati pubblici ISPRA"
     }
   ]
 }

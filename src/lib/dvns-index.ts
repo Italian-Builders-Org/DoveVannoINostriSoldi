@@ -13,7 +13,7 @@
  */
 import { REGION_NAME_BY_ISTAT_CODE } from "@/lib/italy-regions";
 
-export const PILLARS = ["resa", "sovraspesa", "investire", "appalti"] as const;
+export const PILLARS = ["resa", "sovraspesa", "investire", "appalti", "puntualita", "risultati"] as const;
 export type Pillar = (typeof PILLARS)[number];
 export const BANDS = ["A", "B", "C", "D", "E"] as const;
 export type Band = (typeof BANDS)[number];
@@ -31,6 +31,8 @@ export const PILLAR_LABELS: Record<Pillar, { title: string; question: string }> 
   sovraspesa: { title: "Spesa non giustificata", question: "Spende più del necessario senza offrire di più?" },
   investire: { title: "Capacità di investire", question: "Quanta parte della spesa va in opere e beni durevoli?" },
   appalti: { title: "Apertura degli appalti", question: "Mette in gara gli appalti o li affida senza confronto?" },
+  puntualita: { title: "Puntualità nei pagamenti", question: "Paga i fornitori entro i tempi di legge?" },
+  risultati: { title: "Risultati misurati", question: "Quanta parte dei rifiuti viene differenziata?" },
 };
 
 export type IndexEntry = {
@@ -61,6 +63,18 @@ export type IndexEntry = {
   topSupplierShare: number | null;
   awards: number | null;
   functionResa: (number | null)[];
+  /** Weighted average delay in paying suppliers, days (negative = early). PCC, Ragioneria Generale dello Stato. */
+  delay2024: number | null;
+  delay2025: number | null;
+  /** Separate waste collection, % (ISPRA). */
+  rd2022: number | null;
+  rd2023: number | null;
+  /** Capital payments per resident per year, euro (SIOPE 2024-2025). */
+  capitalPerCapita: number | null;
+  /** Spends below the need but pays suppliers late: the lower spending earns no efficiency credit. */
+  underspendWithoutCredit: boolean;
+  /** OpenCivitas services changed by more than the threshold between 2021 and 2022: out of the ranking. */
+  volatile: boolean;
 };
 
 export type PeerGroup = { id: number; stage: string; values: (number | boolean | null)[]; size: number };
@@ -74,6 +88,9 @@ export type IndexRules = {
   reducedCompetition: string[];
   neutral: string[];
   sensitivity: { draws: number; spread: number };
+  volatileServicesPoints: number;
+  implausibleEarlyPaymentDays: number;
+  concentrationExcludedCpvDivisions: string[];
 };
 export type IndexSnapshot = {
   version: string;
@@ -86,6 +103,10 @@ export type IndexSnapshot = {
     ranked: number;
     partial: number;
     specialStatute: number;
+    volatile: number;
+    /** Payment years discarded because the payment would precede the invoice. */
+    implausibleDelays: number;
+    underspendWithoutCredit: number;
     medianScore: number;
     medianStability: number;
     bandCutoffs: number[];
@@ -97,9 +118,10 @@ export type IndexSnapshot = {
 
 const COLUMNS = [
   "istat", "taxCode", "name", "region", "population", "status", "score", "band", "bandStability", "rank", "rankLow", "rankHigh", "peerRank", "peerRanked", "group",
-  "pResa", "pSovraspesa", "pInvestire", "pAppalti",
+  "pResa", "pSovraspesa", "pInvestire", "pAppalti", "pPuntualita", "pRisultati",
   "spending2022", "services2022", "spending2021", "services2021",
   "investmentShare", "withoutTenderShare", "procedures", "topSupplierShare", "awards", "functionResa",
+  "delay2024", "delay2025", "rd2022", "rd2023", "capitalPerCapita", "underspendWithoutCredit", "volatile",
 ] as const;
 
 function fail(message: string): never {
@@ -131,6 +153,11 @@ function optInt(value: unknown, path: string, min = 0): number | null {
   return value as number;
 }
 
+function bool(value: unknown, path: string): boolean {
+  if (typeof value !== "boolean") fail(`${path} non è vero/falso`);
+  return value;
+}
+
 function text(value: unknown, path: string): string {
   if (typeof value !== "string" || value.trim() === "") fail(`${path} vuoto`);
   return value;
@@ -144,6 +171,8 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
   const rules = record(root.rules, "rules");
   const weights = record(rules.weights, "rules.weights");
   const weightValues = PILLARS.map((pillar) => num(weights[pillar], `rules.weights.${pillar}`, 0, 1));
+  num(rules.volatileServicesPoints, "rules.volatileServicesPoints", 1);
+  if (!Array.isArray(rules.concentrationExcludedCpvDivisions)) fail("rules.concentrationExcludedCpvDivisions non è un elenco");
   if (Math.abs(weightValues.reduce((sum, item) => sum + item, 0) - 1) > 1e-9) fail("i pesi non sommano a 1");
   const functions = list(root.functions, "functions").map((item, index) => text(item, `functions[${index}]`));
   const groups = list(root.groups, "groups").map((item, index): PeerGroup => {
@@ -158,8 +187,9 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
     const row = list(item, path);
     if (row.length !== COLUMNS.length) fail(`${path}: lunghezza`);
     const [istat, taxCode, name, region, population, status, score, band, stability, rank, rankLow, rankHigh, peerRank, peerRanked, group,
-      pResa, pSovraspesa, pInvestire, pAppalti, spending2022, services2022, spending2021, services2021,
-      investmentShare, withoutTenderShare, procedures, topSupplierShare, awards, functionResa] = row;
+      pResa, pSovraspesa, pInvestire, pAppalti, pPuntualita, pRisultati, spending2022, services2022, spending2021, services2021,
+      investmentShare, withoutTenderShare, procedures, topSupplierShare, awards, functionResa,
+      delay2024, delay2025, rd2022, rd2023, capitalPerCapita, underspendWithoutCredit, volatile] = row;
     if (typeof istat !== "string" || !/^\d{6}$/u.test(istat) || seen.has(istat)) fail(`${path}: codice ISTAT`);
     seen.add(istat);
     if (status !== "ranked" && status !== "partial" && status !== "special-statute" && status !== "no-opencivitas") fail(`${path}: stato`);
@@ -171,7 +201,7 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
     const groupId = optInt(group, `${path}.group`);
     if (groupId !== null && groupId >= groups.length) fail(`${path}: gruppo sconosciuto`);
     const pillars: Partial<Record<Pillar, number>> = {};
-    for (const [pillar, value] of [["resa", pResa], ["sovraspesa", pSovraspesa], ["investire", pInvestire], ["appalti", pAppalti]] as const) {
+    for (const [pillar, value] of [["resa", pResa], ["sovraspesa", pSovraspesa], ["investire", pInvestire], ["appalti", pAppalti], ["puntualita", pPuntualita], ["risultati", pRisultati]] as const) {
       const parsed = optNum(value, `${path}.${pillar}`, 0, 100);
       if (parsed !== null) pillars[pillar] = parsed;
     }
@@ -204,6 +234,13 @@ export function assertIndexSnapshot(value: unknown): IndexSnapshot {
       topSupplierShare: optNum(topSupplierShare, `${path}.topSupplierShare`, 0, 100),
       awards: optInt(awards, `${path}.awards`),
       functionResa: resaByFunction.map((value, position) => optNum(value, `${path}.functionResa[${position}]`)),
+      delay2024: optNum(delay2024, `${path}.delay2024`, -60, 2000),
+      delay2025: optNum(delay2025, `${path}.delay2025`, -60, 2000),
+      rd2022: optNum(rd2022, `${path}.rd2022`, 0, 100),
+      rd2023: optNum(rd2023, `${path}.rd2023`, 0, 100),
+      capitalPerCapita: optNum(capitalPerCapita, `${path}.capitalPerCapita`, 0),
+      underspendWithoutCredit: bool(underspendWithoutCredit, `${path}.underspendWithoutCredit`),
+      volatile: bool(volatile, `${path}.volatile`),
     };
   });
   const summary = record(root.summary, "summary");
@@ -290,7 +327,10 @@ export function explainEntry(entry: IndexEntry, rules: IndexRules): PillarExplan
     if (pillar === "resa") {
       if (entry.spending2022 !== null && entry.services2022 !== null) {
         facts.push(`Nel 2022 offre ${relative(entry.services2022, "servizi")} rispetto alla media dei Comuni della sua fascia e spende ${relative(entry.spending2022)} rispetto al fabbisogno standard.`);
-        facts.push(`Saldo tra servizi e spesa: ${points(entry.services2022 - entry.spending2022)} punti percentuali nel 2022${entry.spending2021 !== null && entry.services2021 !== null ? `, ${points(entry.services2021 - entry.spending2021)} nel 2021` : ""}.`);
+        // Same rule as resa_value in the ETL: late payers get no credit for spending below the need.
+        const saldo = (services: number, spending: number) => services - (entry.underspendWithoutCredit && spending < 0 ? 0 : spending);
+        facts.push(`Saldo ${entry.underspendWithoutCredit ? "usato nel calcolo" : "tra servizi e spesa"}: ${points(saldo(entry.services2022, entry.spending2022))} punti percentuali nel 2022${entry.spending2021 !== null && entry.services2021 !== null ? `, ${points(saldo(entry.services2021, entry.spending2021))} nel 2021` : ""}. Più il saldo è alto, più servizi ottiene per ogni euro.`);
+        if (entry.underspendWithoutCredit) facts.push("Spende meno del fabbisogno ma paga i fornitori in ritardo: la spesa bassa può dipendere da difficoltà di cassa, quindi non conta come efficienza. Nel saldo contano solo i servizi.");
       } else facts.push("OpenCivitas non pubblica livelli di spesa e servizi per questo Comune.");
     } else if (pillar === "sovraspesa") {
       if (entry.spending2022 !== null && entry.services2022 !== null) {
@@ -303,13 +343,26 @@ export function explainEntry(entry: IndexEntry, rules: IndexRules): PillarExplan
       }
     } else if (pillar === "investire") {
       if (entry.investmentShare !== null) facts.push(`Nel 2024 e nel 2025 il ${pct(entry.investmentShare)} dei pagamenti è andato in investimenti, il resto in spesa corrente.`);
-      else facts.push("Pagamenti SIOPE 2024-2025 non disponibili.");
+      if (entry.capitalPerCapita !== null) facts.push(`In media ${integer(Math.round(entry.capitalPerCapita))} € di investimenti per abitante all'anno. La quota e la cifra per abitante pesano metà ciascuna, così un Comune con poca spesa corrente non sembra un grande investitore.`);
+      if (!facts.length) facts.push("Pagamenti SIOPE 2024-2025 non disponibili.");
+    } else if (pillar === "puntualita") {
+      const delays = [[2024, entry.delay2024], [2025, entry.delay2025]].filter((pair): pair is [number, number] => pair[1] !== null);
+      if (delays.length) {
+        facts.push(`Ritardo medio ponderato nel pagare le fatture: ${delays.map(([year, days]) => `${days > 0 ? `${integer(Math.round(days))} giorni oltre la scadenza` : days < 0 ? `${integer(Math.round(-days))} giorni prima della scadenza` : "in pari con la scadenza"} nel ${year}`).join(", ")}.`);
+        facts.push("La legge chiede di pagare entro 30 giorni (60 per alcune forniture). Un ritardo indica cassa in difficoltà o uffici lenti, e costa interessi ai fornitori.");
+      } else facts.push("La Piattaforma dei crediti commerciali non riporta tempi di pagamento per questo Comune.");
+    } else if (pillar === "risultati") {
+      const rd = [[2022, entry.rd2022], [2023, entry.rd2023]].filter((pair): pair is [number, number] => pair[1] !== null);
+      if (rd.length) {
+        facts.push(`Raccolta differenziata: ${rd.map(([year, value]) => `${pct(Math.round(value * 10) / 10)} nel ${year}`).join(", ")}. L'obiettivo di legge è il 65%.`);
+        facts.push("È uno dei pochi risultati misurati da un ente terzo (ISPRA) per tutti i Comuni: non dice tutto sulla qualità dei servizi, ma non dipende da quanto dichiara il Comune.");
+      } else facts.push("ISPRA non pubblica la raccolta differenziata di questo Comune.");
     } else {
       if (entry.withoutTenderShare !== null && entry.procedures !== null) {
         facts.push(`Delle sue ${integer(entry.procedures)} procedure da almeno ${integer(rules.procurementThresholdEuro)} € pubblicate nel 2025, il ${pct(entry.withoutTenderShare)} del valore è stato assegnato senza gara.`);
       }
       if (entry.topSupplierShare !== null && entry.awards !== null) {
-        facts.push(`Il fornitore principale ha ricevuto il ${pct(entry.topSupplierShare)} del valore delle sue ${integer(entry.awards)} aggiudicazioni a un singolo operatore.`);
+        facts.push(`Il fornitore principale ha ricevuto il ${pct(entry.topSupplierShare)} del valore delle sue ${integer(entry.awards)} aggiudicazioni a un singolo operatore. Rifiuti, energia e acqua sono esclusi: lì un solo gestore è la norma.`);
       }
       if (!facts.length) facts.push("Nel 2025 le procedure e le aggiudicazioni sono troppo poche per un confronto affidabile.");
       else if ((entry.procedures ?? 0) < 20 || (entry.awards ?? 0) < 20) facts.push("Con pochi appalti un solo contratto sposta molto la quota: per questo il valore è stato avvicinato alla mediana nazionale.");
@@ -332,18 +385,15 @@ export function functionHighlights(entry: IndexEntry, functions: string[]): { be
   return { best: known.slice(0, 2).map((item) => item.name), worst: known.slice(-2).reverse().map((item) => item.name) };
 }
 
-/** Threshold above which the OpenCivitas services value is flagged as unstable between 2021 and 2022. */
-export const VOLATILE_SERVICES_POINTS = 100;
-
 /**
  * OpenCivitas service quantities come from questionnaires filled in by the
- * Comuni: a jump of more than 100 points in one year is more likely a
- * reporting error than a real change, so the page says so.
+ * Comuni: a jump above rules.volatileServicesPoints in one year is more
+ * likely a reporting error than a real change, so the ETL keeps the Comune
+ * out of the ranking and the page says why.
  */
 export function servicesVolatility(entry: IndexEntry): number | null {
-  if (entry.services2021 === null || entry.services2022 === null) return null;
-  const jump = Math.abs(entry.services2022 - entry.services2021);
-  return jump > VOLATILE_SERVICES_POINTS ? Math.round(jump) : null;
+  if (!entry.volatile || entry.services2021 === null || entry.services2022 === null) return null;
+  return Math.round(Math.abs(entry.services2022 - entry.services2021));
 }
 
 export function rankRange(entry: IndexEntry): string | null {
@@ -360,7 +410,8 @@ export function stabilityLabel(stability: number | null): string {
   return "Fascia fragile";
 }
 
-export function statusLabel(status: Status): string {
+export function statusLabel(status: Status, volatile = false): string {
+  if (status === "partial" && volatile) return "Punteggio indicativo: i servizi dichiarati a OpenCivitas cambiano troppo tra il 2021 e il 2022, quindi il Comune non è in classifica";
   if (status === "partial") return "Punteggio parziale: manca almeno un pilastro, quindi il Comune non è in classifica";
   if (status === "special-statute") return "Non valutabile: OpenCivitas non copre le Regioni a statuto speciale";
   if (status === "no-opencivitas") return "Non valutabile: OpenCivitas non pubblica i livelli di spesa e servizi di questo Comune";
@@ -451,4 +502,72 @@ export function queryRanking(entries: IndexEntry[], query: RankingQuery) {
 
 export function regionName(code: string): string {
   return (REGION_NAME_BY_ISTAT_CODE as Record<string, string>)[code] ?? code;
+}
+
+export type RegionalRank = { rank: number; total: number };
+
+/**
+ * Position among the ranked Comuni of the same region. The national ranking
+ * also measures a North-South gap (payment delays, separate collection): the
+ * regional position separates "good for where it is" from "good in Italy".
+ */
+export function regionalRanks(entries: IndexEntry[]): Map<string, RegionalRank> {
+  const byRegion = new Map<string, IndexEntry[]>();
+  for (const entry of entries) {
+    if (entry.rank === null || entry.score === null) continue;
+    const list = byRegion.get(entry.regionCode) ?? [];
+    list.push(entry);
+    byRegion.set(entry.regionCode, list);
+  }
+  const ranks = new Map<string, RegionalRank>();
+  for (const list of byRegion.values()) {
+    list.sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0));
+    list.forEach((entry, position) => ranks.set(entry.istat, { rank: position + 1, total: list.length }));
+  }
+  return ranks;
+}
+
+function median(values: number[]): number | null {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+/** Median band stability for each band among the ranked Comuni. */
+export function stabilityByBand(entries: IndexEntry[]): Partial<Record<Band, number>> {
+  const result: Partial<Record<Band, number>> = {};
+  for (const band of BANDS) {
+    const value = median(entries.flatMap((entry) => (entry.rank !== null && entry.band === band && entry.bandStability !== null ? [entry.bandStability] : [])));
+    if (value !== null) result[band] = value;
+  }
+  return result;
+}
+
+/**
+ * Share of the variance of a value explained by the region (between-region
+ * sum of squares over total), among the ranked Comuni: how much of a
+ * difference is "where", not "who".
+ */
+export function regionVarianceShare(entries: IndexEntry[], value: (entry: IndexEntry) => number | null): number | null {
+  const groups = new Map<string, number[]>();
+  const all: number[] = [];
+  for (const entry of entries) {
+    const current = entry.rank === null ? null : value(entry);
+    if (current === null) continue;
+    all.push(current);
+    const list = groups.get(entry.regionCode) ?? [];
+    list.push(current);
+    groups.set(entry.regionCode, list);
+  }
+  if (all.length < 2) return null;
+  const mean = all.reduce((sum, item) => sum + item, 0) / all.length;
+  const total = all.reduce((sum, item) => sum + (item - mean) ** 2, 0);
+  if (total === 0) return null;
+  let between = 0;
+  for (const list of groups.values()) {
+    const groupMean = list.reduce((sum, item) => sum + item, 0) / list.length;
+    between += list.length * (groupMean - mean) ** 2;
+  }
+  return between / total;
 }

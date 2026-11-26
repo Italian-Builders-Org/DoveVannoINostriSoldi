@@ -238,6 +238,9 @@ test('search fallback stays on topic for broad words, sections and acronyms', ()
   assert.ok(sections.every((link) => link.title !== 'Panoramica'), JSON.stringify(sections));
   const pnrr = selectAssistantSiteLinks([], 'Quanti soldi del PNRR sono arrivati a Napoli?');
   assert.ok(pnrr.some((link) => link.href === '/pnrr'), JSON.stringify(pnrr));
+  for (const bare of ['PNRR', 'pnrr']) {
+    assert.ok(selectAssistantSiteLinks([], bare).some((link) => link.href === '/pnrr'), `${bare} alone is the topic`);
+  }
   const shouted = selectAssistantSiteLinks([], 'QUANTO COSTA LA SANITÀ IN LOMBARDIA?');
   assert.deepEqual(shouted, selectAssistantSiteLinks([], 'Quanto costa la sanità in Lombardia?'), 'capitals are not acronyms');
   const queries = [];

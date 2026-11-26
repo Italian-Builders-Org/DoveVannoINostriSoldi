@@ -62,7 +62,8 @@ function probesFor(question: string, hasDatasetLinks: boolean): Probe[] {
   for (let index = 0; index + 1 < unique.length && probes.length < 3; index += 1) {
     add(`${unique[index]} ${unique[index + 1]}`, TITLE_OR_ALIAS);
   }
-  const distinctive = unique.filter((word) => word.length >= 5 || acronyms.has(word))
+  // A one-word question is its own topic, however short (a bare "pnrr" or "INPS").
+  const distinctive = unique.filter((word) => unique.length === 1 || word.length >= 5 || acronyms.has(word))
     .sort((a, b) => Number(acronyms.has(b)) - Number(acronyms.has(a)) || b.length - a.length);
   for (const word of distinctive) add(word, hasDatasetLinks ? TITLE : TITLE_OR_ALIAS);
   return probes;

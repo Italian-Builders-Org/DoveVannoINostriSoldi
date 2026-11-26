@@ -76,7 +76,7 @@ try {
     }));
     assert.ok(reply.list&&!reply.dash,'label + list lines render a real list');
     assert.deepEqual(reply.inline,[{href:'/comuni',target:'_blank',text:'i Comuni'}],'only allow-listed internal links are anchors');
-    assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&!/example\.com/u.test(reply.text),'rejected links keep only their label');
+    assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&reply.text.split('example.com').length===1,'rejected links keep only their label');
     assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank',cited:true},{href:'/spese/panoramica',target:'_blank',cited:false}],'site links open in a new tab so the in-memory chat survives; pages cited in the text come first, marked');
     assert.equal(reply.landmarks,0,'site pages are a labelled section, not one nav landmark per answer');
     assert.deepEqual(reply.table,['Anno','Totale']);assert.equal(reply.pipes,false,'a label line before a table must not leave raw pipes');

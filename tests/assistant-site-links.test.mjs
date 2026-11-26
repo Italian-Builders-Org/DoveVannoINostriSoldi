@@ -15,6 +15,11 @@ const { executeByokChat } = await import('../src/lib/assistant/byok-engine.ts');
 const { DVNS_AI_SYSTEM_PROMPT } = await import('../src/lib/assistant/system-prompt.ts');
 const { POST: chatRoute } = await import('../src/app/api/assistant/chat/route.ts');
 
+/** Absence/presence of a literal fragment, not URL validation. */
+function assertAbsent(text, fragment) {
+  assert.equal(text.split(fragment).length, 1, `unexpected ${fragment} in ${text}`);
+}
+
 /** Collect every Next.js App Router page pattern under src/app. */
 function collectAppRoutePatterns(rootDir) {
   const patterns = [];
@@ -320,7 +325,7 @@ test('sanitizeAssistantLinks allows only exact provided internal hrefs and strip
   ].join('\n');
 
   const cleaned = sanitizeAssistantLinks(hostile, allowed);
-  assert.doesNotMatch(cleaned, /https:\/\/www\.mef\.gov\.it/u);
+  assertAbsent(cleaned, 'https://www.mef.gov.it');
   assert.doesNotMatch(cleaned, /https:\/\/evil\.example/u);
   assert.doesNotMatch(cleaned, /javascript:/u);
   assert.doesNotMatch(cleaned, /\/\/evil\.example/u);
@@ -329,7 +334,7 @@ test('sanitizeAssistantLinks allows only exact provided internal hrefs and strip
   assert.doesNotMatch(cleaned, /!\[/u);
   assert.doesNotMatch(cleaned, /https:\/\/a\.test/u);
   assert.doesNotMatch(cleaned, /https:\/\/b\.test/u);
-  assert.doesNotMatch(cleaned, /wikipedia\.org/u);
+  assertAbsent(cleaned, 'wikipedia.org');
 
   assert.ok(cleaned.includes('Esterno: MEF.'));
   assert.ok(cleaned.includes('Script: clicca.'));
@@ -411,10 +416,10 @@ test('executeByokChat attaches siteLinks, provides them as data, sanitizes outpu
   assert.ok(Array.isArray(result.siteLinks) && result.siteLinks.length >= 2);
   assert.equal(result.siteLinks[0].href, '/territori?anno=2025&regione=Calabria');
   assert.equal(result.siteLinks[1].href, '/spese?anno=2025');
-  assert.match(deltas.join(''), /https:\/\/example\.com/u);
+  assert.notEqual(deltas.join('').split('https://example.com').length, 1, 'raw deltas still carry the model text');
   assert.ok(result.text.includes('[Territori](/territori?anno=2025&regione=Calabria)'));
   assert.doesNotMatch(result.text, /\/sezione-finta/u);
-  assert.doesNotMatch(result.text, /https:\/\/example\.com/u);
+  assertAbsent(result.text, 'https://example.com');
   assert.ok(result.text.includes('link inventato'));
   assert.ok(result.text.includes('esterno'));
   assert.equal(/GET\s+\/api\/|\bMCP\b|Il campo distribution/.test(result.evidence[0].caveat ?? ''), false);

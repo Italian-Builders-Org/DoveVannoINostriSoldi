@@ -191,6 +191,41 @@ Rigenerazione: `python3 scripts/etl/camera_emendamenti_bilancio_2027.py --fetch 
 poi `python scripts/etl/supabase_snapshot_documents.py --code-sha SHA --env-file /percorso/.env.local`.
 Il contratto di confine e la vista sono in `src/lib/manovra-emendamenti.ts`.
 
+## Licenze software della PA · Consip, ANAC, SIOPE
+
+La pagina `/appalti/licenze-software` (sezione Appalti, issue #886) usa lo
+snapshot `pa-licenze-software`, che mette accanto tre misure ufficiali senza
+sommarle:
+
+- **Ordinato su convenzioni Consip** (CC BY 4.0): CSV annuali degli ordini in
+  convenzione 2024-2026 da `dati.consip.it`, filtrati sulle famiglie Microsoft
+  Enterprise Agreement, Licenze Software Multibrand e Prodotti Software On
+  Premise. Il produttore viene dal nome del lotto con regole chiuse nello spec;
+  un lotto non riconosciuto blocca la pubblicazione. Red Hat e SUSE sono marcati
+  open source perché la fonte li chiama così. Gli storni negativi concorrono col
+  loro segno, come in `consip-ordini`.
+- **Ordinato sul MePA** (CC BY 4.0): categorie «Licenze software-Mepa Beni» e
+  «Licenze software-Mepa Servizi». Le righe delle licenze non portano il numero
+  di ordini: resta `null`, non zero.
+- **Aggiudicato ANAC** (CC BY-SA 4.0): procedure con CPV della divisione 48 della
+  coorte CIG 2025, dagli artefatti `anac-procurement-cpv` e
+  `anac-entity-procurement-page` già nel repository (shard verificati contro i
+  loro `meta.json`). Aggiudicatario attribuito solo per aggiudicazioni a un
+  singolo operatore; nomi degli enti dal dump IPA. Contiene anche ordini Consip.
+- **Pagato SIOPE**: codice 5205 «Licenze software» degli enti sanitari presenti
+  in `siope-nonmunicipal-detail.json`; non è il totale nazionale.
+
+Nessuna stima di risparmio: nessuna fonte ufficiale pubblica il costo di
+un'alternativa equivalente. Source lock in
+`scripts/etl/specs/pa-licenze-software.source.json` (byte, SHA-256 e
+Last-Modified dei CSV Consip e del dump IPA). Il JSON completo non è
+versionato: nel repository c'è la ricevuta
+(`pa-licenze-software.receipt.json`) e il payload sta in `dvns_snapshots`.
+
+Rigenerazione: `python3 scripts/etl/pa_licenze_software.py --fetch --write --code-sha SHA`,
+poi `python scripts/etl/supabase_snapshot_documents.py --code-sha SHA --env-file /percorso/.env.local`.
+Il contratto di confine e la vista sono in `src/lib/pa-licenze-software.ts`.
+
 ## Contatore busta paga · stima illustrativa
 
 La pagina `/busta-paga` stima un cedolino da lavoro dipendente privato (12, 13

@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "pa-licenze-software",
+  "consip": {
+    "owner": "Consip S.p.A. (società del MEF)",
+    "landingUrl": "https://dati.consip.it/",
+    "license": "CC-BY-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "acquiredAt": "2026-11-26",
+    "encoding": "latin-1",
+    "years": [
+      2024,
+      2025,
+      2026
+    ],
+    "partialYear": 2026,
+    "assets": {
+      "convenzioni-2024": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2024.csv",
+        "file": "conv2024.csv",
+        "bytes": 4003508,
+        "sha256": "c2ab590606a4ff561daa573f61704c1f7401cbf0a27f4c4a14d8f1b2e741884a",
+        "lastModified": "2025-05-21",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Convenzione",
+          "Lotto",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "Numero_Ordini",
+          "Importo_Ordinato",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      },
+      "convenzioni-2025": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2025.csv",
+        "file": "conv2025.csv",
+        "bytes": 3277614,
+        "sha256": "21c13ae578dfb4d759077fecbdd89e7f40690032669eb14f58a6d16a3ec6c7c9",
+        "lastModified": "2026-03-19",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Convenzione",
+          "Lotto",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "Numero_Ordini",
+          "Importo_Ordinato",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      },
+      "convenzioni-2026": {
+        "url": "https://dati.consip.it/download/dataset/ordini-convenzione-2026.csv",
+        "file": "conv2026.csv",
+        "bytes": 2761073,
+        "sha256": "0be90d784d787d941e83c6c130f56f71cf17f03717561064819e7493030911a3",
+        "lastModified": "2026-11-25",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Convenzione",
+          "Lotto",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "Numero_Ordini",
+          "Importo_Ordinato",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      },
+      "mepa-2024": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2024.csv",
+        "file": "mepa2024.csv",
+        "bytes": 20764197,
+        "sha256": "3b9dfcfd3379054bbfa4cd6eaffa410165b6bb2c1201b03350baef535d4c44e2",
+        "lastModified": "2025-05-21",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Bando_Mepa",
+          "Categoria_Abilitazione",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "N_Ordini",
+          "Valore_economico_Ordini",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      },
+      "mepa-2025": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2025.csv",
+        "file": "mepa2025.csv",
+        "bytes": 19927093,
+        "sha256": "9f208c50b7c7d8be20238fba336b2698ac47c0e339013016dbebaf09efe1af5e",
+        "lastModified": "2026-03-19",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Bando_Mepa",
+          "Categoria_Abilitazione",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "N_Ordini",
+          "Valore_economico_Ordini",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      },
+      "mepa-2026": {
+        "url": "https://dati.consip.it/download/dataset/ordini-mepa-2026.csv",
+        "file": "mepa2026.csv",
+        "bytes": 14453423,
+        "sha256": "b2009cc58c447f94183a9d18b07e2b60edcf3f7151b1d55373583e0263dc583d",
+        "lastModified": "2026-11-25",
+        "headers": [
+          "#Anno_Riferimento",
+          "Tipologia_Amministrazione",
+          "Regione_PA",
+          "Provincia_PA",
+          "Sigla_provincia_PA",
+          "Regione_Fornitore",
+          "Bando_Mepa",
+          "Categoria_Abilitazione",
+          "bene_servizio",
+          "codice_CPV",
+          "descrizione_CPV",
+          "N_Ordini",
+          "Valore_economico_Ordini",
+          "N_PA",
+          "N_fornitori",
+          "N_PO"
+        ]
+      }
+    },
+    "families": [
+      {
+        "id": "microsoft-ea",
+        "prefix": "MICROSOFT ENTERPRISE AGREEMENT",
+        "label": "Microsoft Enterprise Agreement"
+      },
+      {
+        "id": "multibrand",
+        "prefix": "LICENZE SOFTWARE MULTIBRAND",
+        "label": "Licenze Software Multibrand"
+      },
+      {
+        "id": "on-premise",
+        "prefix": "PRODOTTI SOFTWARE ON PREMISE",
+        "label": "Prodotti Software On Premise"
+      }
+    ],
+    "vendors": [
+      {
+        "pattern": "\\bADOBE\\b",
+        "vendor": "Adobe",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bBMC\\b",
+        "vendor": "BMC",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bCISCO\\b",
+        "vendor": "Cisco",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bCITRIX-TIBCO\\b",
+        "vendor": "Citrix-Tibco",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bDELL\\b",
+        "vendor": "Dell",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bHCL\\b",
+        "vendor": "HCL",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bIBM\\b",
+        "vendor": "IBM",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bMICROSOFT\\b",
+        "vendor": "Microsoft",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bMONGODB\\b",
+        "vendor": "MongoDB",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bNUTANIX\\b",
+        "vendor": "Nutanix",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bRED HAT\\b",
+        "vendor": "Red Hat",
+        "openSource": true
+      },
+      {
+        "pattern": "\\bSUSE\\b",
+        "vendor": "SUSE",
+        "openSource": true
+      },
+      {
+        "pattern": "\\bOPENTEXT\\b",
+        "vendor": "OpenText",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bORACLE\\b",
+        "vendor": "Oracle",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bSAP\\b",
+        "vendor": "SAP",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bSAS\\b",
+        "vendor": "SAS",
+        "openSource": false
+      },
+      {
+        "pattern": "\\bVMWARE\\b",
+        "vendor": "VMware (Broadcom)",
+        "openSource": false
+      }
+    ],
+    "mepaCategories": [
+      "Licenze software-Mepa Beni",
+      "Licenze software-Mepa Servizi"
+    ]
+  },
+  "anac": {
+    "owner": "ANAC, Autorità Nazionale Anticorruzione",
+    "landingUrl": "https://dati.anticorruzione.it/opendata",
+    "license": "CC-BY-SA-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "cohort": "CIG pubblicati nel 2025",
+    "cpvDivision": "48"
+  },
+  "siope": {
+    "owner": "Ragioneria Generale dello Stato e Banca d'Italia (SIOPE)",
+    "landingUrl": "https://www.siope.it/",
+    "license": "non dichiarata dalla fonte",
+    "code": "5205",
+    "label": "Licenze software"
+  },
+  "ipa": {
+    "url": "https://indicepa.gov.it/ipa-dati/datastore/dump/d09adf99-dc10-4349-8c53-27b1e5aa97b6?bom=True",
+    "file": "ipa.csv",
+    "bytes": 7366794,
+    "sha256": "497a5914aef9b5533d306744512f9c9d4f5441bf938abf8e2472acd508c0dd89",
+    "acquiredAt": "2026-11-26",
+    "license": "CC-BY-4.0"
+  },
+  "expected": {
+    "conventionsMinCents": {
+      "2024": 50000000000,
+      "2025": 50000000000
+    }
+  }
+}

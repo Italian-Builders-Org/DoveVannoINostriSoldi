@@ -19,6 +19,20 @@ their original licenses and attribution requirements.
 
 Attribution: `Consip S.p.A., dataset Partecipazioni 2024–2026, CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
 
+## Consip orders for software licences 2024–2026
+
+- **Works:** `ordini-convenzione-2024/2025/2026.csv` and
+  `ordini-mepa-2024/2025/2026.csv`;
+- **Publisher:** Consip S.p.A.;
+- **Sources:** https://dati.consip.it/dataset/dataset-ordini-diretti-di-acquisto-in-convenzione and https://dati.consip.it/dataset/dataset-ordini-diretti-di-acquisto-sul-mepa;
+- **License:** Creative Commons Attribution 4.0 International (CC BY 4.0),
+  https://creativecommons.org/licenses/by/4.0/;
+- **Changes:** only the software licence conventions and the MePA licence
+  categories are kept; amounts are aggregated by year, vendor (read from the
+  lot name), convention and administration type, in integer cents.
+
+Attribution: `Consip S.p.A., ordini in convenzione e sul MePA 2024–2026, CC BY 4.0. Adapted by DoveVannoINostriSoldi.`
+
 ## RGS State accounts for consulting, 2024–2025
 
 - **Works:** `2024/2025 - Rendiconto Pubblicato Elaborabile Spese - Piano di gestione`;

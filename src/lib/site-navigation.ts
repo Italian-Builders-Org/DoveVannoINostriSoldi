@@ -188,6 +188,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
           { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
           { href: "/appalti/ted", label: "Avvisi TED" },
           { href: "/appalti/dettaglio", label: "Dettaglio e fornitori" },
+          { href: "/appalti/licenze-software", label: "Licenze software della PA" },
         ],
       },
       {
@@ -353,6 +354,7 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/appalti/dettaglio", label: "Appalti di dettaglio" },
       { href: "/appalti/operatori", label: "Imprese aggiudicatarie" },
       { href: "/appalti/ted", label: "Avvisi TED" },
+      { href: "/appalti/licenze-software", label: "Licenze software della PA" },
       { href: "/incarichi", label: "Incarichi" },
       { href: "/incarichi/territori", label: "Incarichi per territorio" },
       { href: "/incarichi/dettaglio", label: "Incarichi di dettaglio" },

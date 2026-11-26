@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "documentPath": "src/data/generated/pa-licenze-software.json",
+  "codeSha": "fd3ae3b969b6979a1ec34cfceab4fea829fdae61",
+  "sourceSha256": "9dc74d3246d38ac9629b91082292171a7d1ce274e84163a99a703893efb18cc3",
+  "sourceBytes": 23471,
+  "consipYears": [
+    2024,
+    2025,
+    2026
+  ],
+  "anacCohort": "CIG pubblicati nel 2025"
+}

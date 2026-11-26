@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { database, databaseConnectionUrl } from "@/lib/integrated-supabase-reader";
+import { database, databaseConnectionUrl } from "@/lib/snapshot-database";
 import { assertIndexSnapshot, distribution, dotLayout, regionalRanks, type IndexEntry, type IndexSnapshot, type RegionalRank } from "@/lib/dvns-index";
 
 /**

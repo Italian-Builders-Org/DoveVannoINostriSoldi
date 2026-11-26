@@ -87,5 +87,6 @@ export function sanitizeMarkdownLinks(text: string, allowedHrefs: ReadonlySet<st
     if (next === current) return current;
     current = next;
   }
-  return sanitizePass(current, new Set()).replace(/[[\]]/gu, "\\$&");
+  // Backslashes too: otherwise an already escaped "\[" would become "\\[", an escaped backslash before a live bracket.
+  return sanitizePass(current, new Set()).replace(/[\\[\]]/gu, "\\$&");
 }

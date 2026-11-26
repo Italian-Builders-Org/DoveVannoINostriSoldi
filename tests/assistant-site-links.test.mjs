@@ -282,6 +282,14 @@ test('link sanitizer stays linear on unclosed brackets and cannot be tricked int
   assert.equal(/\]\((?:\/evil|https:)/u.test(joined), false, joined);
 });
 
+test('link sanitizer fallback escapes backslashes too, so an escaped bracket stays escaped', () => {
+  // Each "![]…(x)" layer disappears one pass later and finally joins "[a]" with "(/evil)".
+  let vanishing = '![](x)';
+  for (let depth = 0; depth < 6; depth += 1) vanishing = `![]${vanishing}(x)`;
+  const cleaned = sanitizeAssistantLinks(`\\[b\\](/evil) [a]${vanishing}(/evil)`, []);
+  assert.doesNotMatch(cleaned.replace(/\\\\/gu, ''), /(?<!\\)\]\(/u, cleaned);
+});
+
 test('sanitizeAssistantLinks allows only exact provided internal hrefs and strips unsafe or unlisted links', () => {
   const allowed = [
     { href: '/spese?anno=2025', title: 'Pagamenti comunali' },
@@ -312,16 +320,16 @@ test('sanitizeAssistantLinks allows only exact provided internal hrefs and strip
   ].join('\n');
 
   const cleaned = sanitizeAssistantLinks(hostile, allowed);
-  assert.equal(cleaned.includes('https://www.mef.gov.it'), false);
-  assert.equal(cleaned.includes('https://evil.example'), false);
-  assert.equal(cleaned.includes('javascript:'), false);
-  assert.equal(cleaned.includes('//evil.example'), false);
-  assert.equal(cleaned.includes('(/debito)'), false);
-  assert.equal(cleaned.includes('(/mcp)'), false);
-  assert.equal(cleaned.includes('!['), false);
-  assert.equal(cleaned.includes('https://a.test'), false);
-  assert.equal(cleaned.includes('https://b.test'), false);
-  assert.equal(cleaned.includes('wikipedia.org'), false);
+  assert.doesNotMatch(cleaned, /https:\/\/www\.mef\.gov\.it/u);
+  assert.doesNotMatch(cleaned, /https:\/\/evil\.example/u);
+  assert.doesNotMatch(cleaned, /javascript:/u);
+  assert.doesNotMatch(cleaned, /\/\/evil\.example/u);
+  assert.doesNotMatch(cleaned, /\(\/debito\)/u);
+  assert.doesNotMatch(cleaned, /\(\/mcp\)/u);
+  assert.doesNotMatch(cleaned, /!\[/u);
+  assert.doesNotMatch(cleaned, /https:\/\/a\.test/u);
+  assert.doesNotMatch(cleaned, /https:\/\/b\.test/u);
+  assert.doesNotMatch(cleaned, /wikipedia\.org/u);
 
   assert.ok(cleaned.includes('Esterno: MEF.'));
   assert.ok(cleaned.includes('Script: clicca.'));
@@ -403,10 +411,10 @@ test('executeByokChat attaches siteLinks, provides them as data, sanitizes outpu
   assert.ok(Array.isArray(result.siteLinks) && result.siteLinks.length >= 2);
   assert.equal(result.siteLinks[0].href, '/territori?anno=2025&regione=Calabria');
   assert.equal(result.siteLinks[1].href, '/spese?anno=2025');
-  assert.ok(deltas.join('').includes('https://example.com'));
+  assert.match(deltas.join(''), /https:\/\/example\.com/u);
   assert.ok(result.text.includes('[Territori](/territori?anno=2025&regione=Calabria)'));
-  assert.equal(result.text.includes('/sezione-finta'), false);
-  assert.equal(result.text.includes('https://example.com'), false);
+  assert.doesNotMatch(result.text, /\/sezione-finta/u);
+  assert.doesNotMatch(result.text, /https:\/\/example\.com/u);
   assert.ok(result.text.includes('link inventato'));
   assert.ok(result.text.includes('esterno'));
   assert.equal(/GET\s+\/api\/|\bMCP\b|Il campo distribution/.test(result.evidence[0].caveat ?? ''), false);
@@ -438,7 +446,7 @@ test('executeByokChat attaches search siteLinks and sanitizes text on clarificat
   assert.deepEqual(result.evidence, []);
   assert.ok(result.siteLinks.some((link) => link.href === '/cuneo-fiscale'));
   assert.ok(result.text.includes('[Cuneo fiscale](/cuneo-fiscale)'));
-  assert.equal(result.text.includes('https://evil.example'), false);
+  assert.doesNotMatch(result.text, /https:\/\/evil\.example/u);
 
   // Whitespace-only clarification falls back to a non-empty prompt instead of an empty bubble.
   const blank = await executeByokChat(
@@ -498,7 +506,7 @@ test('chat SSE route delivers sanitized text and siteLinks in the terminal done 
   assert.equal(isAiResponse(done.response), true);
   assert.ok(done.response.siteLinks.some((link) => link.href === '/spese?anno=2025'));
   assert.ok(done.response.text.includes('[Pagamenti comunali](/spese?anno=2025)'));
-  assert.equal(done.response.text.includes('https://example.invalid'), false);
+  assert.doesNotMatch(done.response.text, /https:\/\/example\.invalid/u);
 });
 
 test('chat route uses consistent Regolo message for free JSON network failures and personal GLM image errors', async (t) => {
@@ -522,7 +530,7 @@ test('chat route uses consistent Regolo message for free JSON network failures a
   const personalRes = await chatRoute(personalImageReq);
   assert.equal(personalRes.status, 400);
   const personalBody = await personalRes.json();
-  assert.equal(personalBody.message.includes('quota gratuita'), false);
+  assert.doesNotMatch(personalBody.message, /quota gratuita/u);
 
   const savedEnv = {};
   for (const [key, value] of Object.entries({
@@ -564,4 +572,3 @@ test('chat route uses consistent Regolo message for free JSON network failures a
   const freeBody = await freeRes.json();
   assert.match(freeBody.message, /Regolo non ha completato/);
 });
-

@@ -13,7 +13,7 @@ try {
     page.on('pageerror',error=>errors.push(error.message));
     await page.setViewport({width,height:width<600?844:900});
     await page.setRequestInterception(true);
-    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'},{href:'/spese/panoramica',title:'Spesa pubblica'}]};
+    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nEcco i dati:\n| Anno | Totale |\n|---|---:|\n| 2025 | 4,65 mld |\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/spese/panoramica',title:'Spesa pubblica'},{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'}]};
     const fulfill=request=>request.respond({status:200,contentType:'text/event-stream',body:[{type:'delta',text:answer.text.slice(0,16)},{type:'delta',text:answer.text.slice(16)},{type:'done',response:answer}].map(event=>`data: ${JSON.stringify(event)}\n\n`).join('')});
     page.on('request',request=>{
       if(new URL(request.url()).pathname!=='/api/assistant/chat'){void request.continue();return;}
@@ -66,14 +66,21 @@ try {
       dash:/(^|\n)- /.test(el.innerText),
       inline:[...el.querySelectorAll('p a')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
       text:el.innerText,
-      site:[...el.querySelectorAll('nav a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
-      external:[...el.querySelectorAll('section a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      site:[...el.querySelectorAll('[data-site-links] a')].map(a=>({href:a.getAttribute('href'),target:a.target,cited:a.dataset.cited==='true'})),
+      external:[...el.querySelectorAll('section:not([data-site-links]) a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      landmarks:el.querySelectorAll('nav').length,
+      table:[...el.querySelectorAll('table th')].map(th=>th.textContent),
+      pipes:/\|/.test(el.innerText),
+      hints:el.querySelectorAll('[data-site-links] p').length,
       overflow:document.body.scrollWidth-innerWidth,
     }));
     assert.ok(reply.list&&!reply.dash,'label + list lines render a real list');
     assert.deepEqual(reply.inline,[{href:'/comuni',target:'_blank',text:'i Comuni'}],'only allow-listed internal links are anchors');
     assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&!reply.text.includes('example.com'),'rejected links keep only their label');
-    assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank'},{href:'/spese/panoramica',target:'_blank'}],'site links open in a new tab so the in-memory chat survives');
+    assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank',cited:true},{href:'/spese/panoramica',target:'_blank',cited:false}],'site links open in a new tab so the in-memory chat survives; pages cited in the text come first, marked');
+    assert.equal(reply.landmarks,0,'site pages are a labelled section, not one nav landmark per answer');
+    assert.deepEqual(reply.table,['Anno','Totale']);assert.equal(reply.pipes,false,'a label line before a table must not leave raw pipes');
+    assert.equal(reply.hints,1,'the new-tab hint shows on the first answer with site pages');
     assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
     assert.ok(reply.overflow<=1,`${width}: answer overflow`);
     await page.click('[data-assistant-reply] details summary');
@@ -88,6 +95,7 @@ try {
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);
     assert.deepEqual(requests[1].body.messages.map(message=>message.role),['user','assistant','user']);
+    assert.deepEqual(await page.$$eval('[data-assistant-reply]',els=>els.map(el=>el.querySelectorAll('[data-site-links] p').length)),[1,0],'the hint is not repeated on later answers');
     await (await page.$$('button[aria-label="Rigenera risposta"]')).at(-1).click();await complete(2);
     assert.equal(requests.length,3);assert.equal(requests[2].body.messages.at(-1).content,'E nel 2024?');
     await (await page.$$('button[aria-label="Modifica domanda"]'))[0].click();

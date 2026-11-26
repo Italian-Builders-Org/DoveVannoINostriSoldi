@@ -218,11 +218,53 @@
 .aiText p { margin: 0 0 14px; }
 .aiModel, .aiDisclaimer { color: var(--assistant-muted); font-size: 11px; line-height: 1.7; }
 .aiModel { margin: -8px 0 16px; overflow-wrap: anywhere; }
-.aiSources { display: grid; gap: 18px; margin: 22px 0 16px; padding-top: 18px; border-top: 1px solid var(--assistant-stroke); font-size: 12px; }
-.aiSources p { margin: 0 0 6px; }
-.aiSources small { display: block; color: var(--assistant-muted); }
-.aiSources a { overflow-wrap: anywhere; }
-.aiCaveat { color: var(--assistant-muted); font-size: 11px; }
+.aiDisclaimer { margin: 18px 0 0; }
+
+/* After the text, the answer reads: where to continue on DVNS, then what was
+   consulted and where to verify it. Same section label for both, like .panel-title. */
+.replyLabel { margin: 0 0 10px; color: var(--color-neutral-700); font-size: 11px; font-weight: 600; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
+.page .inlineSiteLink { color: var(--color-accent-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.siteLinks { margin: 24px 0 0; }
+.siteLinksHint { margin: -4px 0 10px; color: var(--assistant-muted); font-size: 12px; line-height: 1.5; }
+.siteLinks ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.siteLinks li { display: flex; min-width: 0; }
+.page .siteLink { display: flex; flex: 1; align-items: center; gap: 12px; min-width: 0; min-height: 56px; padding: 11px 12px 11px 14px; border: 1px solid var(--assistant-stroke); border-radius: 12px; color: var(--assistant-ink); background: var(--assistant-panel); text-decoration: none; transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out); }
+.siteLink > span:first-child { display: grid; flex: 1; gap: 2px; min-width: 0; }
+.siteLink strong { font-size: 13px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.siteLink small { display: -webkit-box; overflow: hidden; color: var(--assistant-muted); font-size: 12px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.siteLink > svg { flex: none; color: var(--color-accent-700); transition: transform 140ms var(--ease-out); }
+.siteLink:active { transform: scale(.99); }
+
+.evidence { margin: 24px 0 0; padding-top: 18px; border-top: 1px solid var(--assistant-stroke); }
+.evidenceList { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.evidenceItem { padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--assistant-stroke) 70%, transparent); }
+.evidenceItem:first-child { padding-top: 0; }
+.evidenceItem:last-child { border-bottom: 0; padding-bottom: 0; }
+.evidenceTitle { margin: 0 0 4px; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.sourceList { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.5; }
+.sourceList li { display: inline-flex; align-items: baseline; gap: 6px; min-width: 0; }
+.page .sourceLink { display: inline-flex; align-items: center; gap: 3px; min-height: 32px; color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; }
+.sourceLink svg { flex: none; color: var(--assistant-muted); }
+.sourcePeriod { color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.limits { margin-top: 2px; font-size: 12px; }
+.limits summary { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--color-neutral-700); cursor: pointer; list-style: none; }
+.limits summary::-webkit-details-marker { display: none; }
+.limits summary::before { content: ""; width: 6px; height: 6px; margin: 0 3px 2px 1px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform 140ms var(--ease-out); }
+.limits[open] summary::before { transform: rotate(45deg); }
+.limits p { max-width: 68ch; margin: 2px 0 4px; padding-left: 12px; border-left: 2px solid var(--assistant-stroke); color: var(--color-neutral-700); line-height: 1.65; overflow-wrap: anywhere; }
+@media (hover: hover) and (pointer: fine) {
+  .page .siteLink:hover { border-color: var(--color-neutral-400); background: var(--assistant-surface); }
+  .siteLink:hover > svg { transform: translate(1px, -1px); }
+  .page .sourceLink:hover, .page .inlineSiteLink:hover { text-decoration-color: currentColor; }
+  .limits summary:hover { color: var(--assistant-ink); }
+}
+@media (pointer: coarse) {
+  .page .sourceLink, .limits summary { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page .siteLink, .siteLink > svg, .limits summary::before { transition: none; }
+  .siteLink:active, .siteLink:hover > svg { transform: none; }
+}
 @media (max-width: 600px) {
   .toolbar { gap: 6px; }
   .toolbarActions { gap: 4px; }

@@ -13,7 +13,7 @@ try {
     page.on('pageerror',error=>errors.push(error.message));
     await page.setViewport({width,height:width<600?844:900});
     await page.setRequestInterception(true);
-    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n- Periodo 2025\n- Fonte ufficiale',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}]}]};
+    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'},{href:'/spese/panoramica',title:'Spesa pubblica'}]};
     const fulfill=request=>request.respond({status:200,contentType:'text/event-stream',body:[{type:'delta',text:answer.text.slice(0,16)},{type:'delta',text:answer.text.slice(16)},{type:'done',response:answer}].map(event=>`data: ${JSON.stringify(event)}\n\n`).join('')});
     page.on('request',request=>{
       if(new URL(request.url()).pathname!=='/api/assistant/chat'){void request.continue();return;}
@@ -60,10 +60,30 @@ try {
     assert.equal(JSON.stringify(requests[0].body).includes('test-only-openai-key-123'),false);
     assert.equal(requests[0].body.consent,true);
     assert.equal(await page.$$eval('[data-assistant-reply] b',els=>els.length),0);
-    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),2);
+    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),4,'2 bold runs + 2 site link titles');
+    const reply=await page.$eval('[data-assistant-reply]',el=>({
+      list:[...el.querySelectorAll('ul li')].some(li=>li.textContent==='Periodo 2025'),
+      dash:/(^|\n)- /.test(el.innerText),
+      inline:[...el.querySelectorAll('p a')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
+      text:el.innerText,
+      site:[...el.querySelectorAll('nav a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      external:[...el.querySelectorAll('section a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      overflow:document.body.scrollWidth-innerWidth,
+    }));
+    assert.ok(reply.list&&!reply.dash,'label + list lines render a real list');
+    assert.deepEqual(reply.inline,[{href:'/comuni',target:'_blank',text:'i Comuni'}],'only allow-listed internal links are anchors');
+    assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&!reply.text.includes('example.com'),'rejected links keep only their label');
+    assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank'},{href:'/spese/panoramica',target:'_blank'}],'site links open in a new tab so the in-memory chat survives');
+    assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
+    assert.ok(reply.overflow<=1,`${width}: answer overflow`);
+    await page.click('[data-assistant-reply] details summary');
+    assert.equal(await page.$eval('[data-assistant-reply] details',el=>el.open),true);
+    await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-answer-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
     await click('Copia risposta');
     await page.waitForFunction(()=>typeof window.__copiedText==='string');
-    assert.equal(await page.evaluate(()=>window.__copiedText.split('\n').at(-1)), 'SIOPE: https://www.siope.it/');
+    const copiedAnswer=await page.evaluate(()=>window.__copiedText);
+    assert.equal(copiedAnswer.split('\n').at(-1),'SIOPE: https://www.siope.it/');
+    assert.ok(copiedAnswer.includes('Apri i Comuni,')&&copiedAnswer.includes(`Comuni: ${new URL('/comuni',base).href}`),'copy flattens links and lists site pages');
     await click('Copia domanda');
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);
@@ -102,6 +122,6 @@ try {
     assert.equal(await page.evaluate(()=>[...Object.values(localStorage),...Object.values(sessionStorage)].some(value=>value.includes('test-only-'))),false);
     await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Utilizza il tuo servizio AI');
     assert.deepEqual(errors,[]);await page.close();
-    console.log(`PASS assistant ${width}px: key consent, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
+    console.log(`PASS assistant ${width}px: key consent, markdown lists, site links allow-list, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
   }
 } finally {await closeBrowser(browser);}

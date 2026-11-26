@@ -1,26 +1,32 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useMemo, type ReactNode } from "react";
+import { isInternalSiteHref, type AiSiteLink } from "@/lib/assistant/byok-contracts";
+import { parseAssistantMarkdown, type AssistantInline } from "@/components/assistant-markdown-parse";
 import styles from "@/app/assistente/assistant.module.css";
 
-/** Intentionally small Markdown subset: no HTML, images or model-controlled links. */
-function inline(text: string): ReactNode[] {
-  return text.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/u).map((part, index) =>
-    part.startsWith("**") && part.endsWith("**") ? <strong key={index}>{part.slice(2, -2)}</strong>
-      : part.startsWith("`") && part.endsWith("`") ? <code key={index}>{part.slice(1, -1)}</code>
-        : <Fragment key={index}>{part}</Fragment>,
-  );
+function inline(nodes: AssistantInline[]): ReactNode[] {
+  return nodes.map((node, index) => node.type === "strong" ? <strong key={index}>{inline(node.children)}</strong>
+    : node.type === "code" ? <code key={index}>{node.text}</code>
+      // New tab like the site-link cards: the in-memory conversation must survive the visit.
+      : node.type === "link" ? <a key={index} href={node.href} target="_blank" rel="noopener" className={styles.inlineSiteLink}>{node.text}<span className={styles.srOnly}> (nuova scheda)</span></a>
+        : <Fragment key={index}>{node.text}</Fragment>);
 }
 
-export function AssistantMarkdown({ text }: { text: string }) {
-  return <>{text.split(/\n\s*\n/u).map((block, index) => {
-    const lines = block.split("\n");
-    const cells = (line: string) => line.trim().replace(/^\||\|$/gu, "").split("|").map((cell) => cell.trim());
-    if (lines.length >= 2 && lines[0].includes("|") && cells(lines[1]).every((cell) => /^:?-{3,}:?$/u.test(cell))) {
-      const headings = cells(lines[0]);
-      if (headings.length <= 8 && lines.slice(2).every((line) => cells(line).length === headings.length)) return <div key={index} className={styles.answerTable} role="region" aria-label="Tabella della risposta" tabIndex={0}><table><thead><tr>{headings.map((cell, column) => <th key={column} scope="col">{inline(cell)}</th>)}</tr></thead><tbody>{lines.slice(2).map((line, row) => <tr key={row}>{cells(line).map((cell, column) => <td key={column}>{inline(cell)}</td>)}</tr>)}</tbody></table></div>;
+/** Model text as escaped React nodes; only hrefs from this answer's `siteLinks` become links. */
+export function AssistantMarkdown({ text, siteLinks = [] }: { text: string; siteLinks?: readonly AiSiteLink[] }) {
+  const blocks = useMemo(() => {
+    const allowed = new Set(siteLinks.map((link) => link.href));
+    return parseAssistantMarkdown(text, (href) => allowed.has(href) && isInternalSiteHref(href));
+  }, [text, siteLinks]);
+  return <>{blocks.map((block, index) => {
+    if (block.type === "heading") return <h3 key={index}>{inline(block.content)}</h3>;
+    if (block.type === "paragraph") return <p key={index}>{inline(block.content)}</p>;
+    if (block.type === "list") {
+      const items = block.items.map((item, row) => <li key={row}>{inline(item)}</li>);
+      return block.ordered ? <ol key={index} start={block.start === 1 ? undefined : block.start}>{items}</ol> : <ul key={index}>{items}</ul>;
     }
-    if (lines.every((line) => /^\s*[-*] /u.test(line))) return <ul key={index}>{lines.map((line, row) => <li key={row}>{inline(line.replace(/^\s*[-*] /u, ""))}</li>)}</ul>;
-    if (lines.every((line) => /^\s*\d+\. /u.test(line))) return <ol key={index}>{lines.map((line, row) => <li key={row}>{inline(line.replace(/^\s*\d+\. /u, ""))}</li>)}</ol>;
-    if (/^#{1,3} /u.test(block) && lines.length === 1) return <h3 key={index}>{inline(block.replace(/^#{1,3} /u, ""))}</h3>;
-    return <p key={index}>{inline(block)}</p>;
+    return <div key={index} className={styles.answerTable} role="region" aria-label="Tabella della risposta" tabIndex={0}><table>
+      <thead><tr>{block.head.map((cell, column) => <th key={column} scope="col">{inline(cell)}</th>)}</tr></thead>
+      <tbody>{block.rows.map((row, line) => <tr key={line}>{row.map((cell, column) => <td key={column}>{inline(cell)}</td>)}</tr>)}</tbody>
+    </table></div>;
   })}</>;
 }

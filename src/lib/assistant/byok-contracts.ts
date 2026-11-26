@@ -41,11 +41,26 @@ export const AI_MODEL_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,119}$/u;
 export const AI_KEY_PATTERN = /^[\x21-\x7E]{16,512}$/u;
 export type AiSource = { name: string; url: string; period?: string };
 export type AiEvidence = { dataset: string; title: string; sources: AiSource[]; caveat?: string };
+/** A same-origin DVNS page chosen by the server, never by the model. */
+export type AiSiteLink = { href: string; title: string; description?: string };
+export const AI_MAX_SITE_LINKS = 4;
 export type AiAnswer = {
   ok: true; kind: "ai_answer"; provider: AiProvider; model: string; text: string; evidence: AiEvidence[];
+  /** Optional on the wire so answers produced before this field still validate. */
+  siteLinks?: AiSiteLink[];
 };
 export type AiFailure = { ok: false; kind: "ai_error"; code: string; message: string };
 export type AiResponse = AiAnswer | AiFailure;
+/** Root-relative path on this site: no scheme, host, protocol-relative prefix, backslash or control character. */
+export function isInternalSiteHref(value: unknown): value is string {
+  return typeof value === "string" && value.length <= 300 && /^\/(?![/\\])[^\s\\\p{Cc}]*$/u.test(value);
+}
+function isAiSiteLink(value: unknown): value is AiSiteLink {
+  if (!value || typeof value !== "object") return false;
+  const link = value as Record<string, unknown>;
+  return isInternalSiteHref(link.href) && typeof link.title === "string" && link.title.length > 0 && link.title.length <= 120 &&
+    (link.description === undefined || (typeof link.description === "string" && link.description.length <= 240));
+}
 function isAiProvider(value: unknown): value is AiProvider {
   return typeof value === "string" && Object.hasOwn(AI_PROVIDERS, value);
 }
@@ -54,6 +69,7 @@ export function isAiResponse(value: unknown): value is AiResponse {
   const item = value as Record<string, unknown>;
   if (item.ok === false && item.kind === "ai_error") return typeof item.code === "string" && typeof item.message === "string";
   if (item.ok !== true || item.kind !== "ai_answer" || !isAiProvider(item.provider) || typeof item.model !== "string" || typeof item.text !== "string" || item.text.length > AI_MAX_TEXT_CHARS || !Array.isArray(item.evidence) || item.evidence.length > AI_MAX_QUERIES) return false;
+  if (item.siteLinks !== undefined && (!Array.isArray(item.siteLinks) || item.siteLinks.length > AI_MAX_SITE_LINKS || !item.siteLinks.every(isAiSiteLink))) return false;
   return item.evidence.every((entry: unknown) => {
     if (!entry || typeof entry !== "object") return false;
     const evidence = entry as Record<string, unknown>;

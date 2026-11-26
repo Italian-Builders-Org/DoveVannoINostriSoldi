@@ -22,11 +22,11 @@ workflow scrive su `main`.
 
 ## Riepilogo
 
-- Artefatti nel registro: 140
+- Artefatti nel registro: 141
 - PR automatica: 11 (data bot, branch `automation/data/*`, PR)
 - solo rilevamento: 3 (controlla l'upstream, non pubblica)
 - invalidazione cache: 3 (invalida tag, non tocca gli snapshot)
-- manuale: 123 (PR umana dopo revisione)
+- manuale: 124 (PR umana dopo revisione)
 
 ## Rollback per modo
 
@@ -77,6 +77,7 @@ La revisione e il merge restano umani.
 | `rgs-bilancio-in-breve` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 -m unittest tests.etl.test_rgs_bilancio_in_breve_receipt` |
 | `camera-emendamenti-bilancio-2027` | non dichiarato nello snapshot | non dichiarato | https://www.camera.it/leg19/126?leg=19&idDocumento=3174-bis | nessuno | nessuno | manuale | `python3 -m unittest tests.etl.test_camera_emendamenti_bilancio_2027_receipt` |
 | `pa-licenze-software` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 -m unittest tests.etl.test_pa_licenze_software_receipt` |
+| `dvns-index` | non dichiarato nello snapshot | non dichiarato | non dichiarato nel registro | nessuno | nessuno | manuale | `python3 -m unittest tests.etl.test_dvns_index_receipt` |
 | `openbdap-defence-budget-macroaggregates` | non dichiarato nello snapshot | 2026-09-22T10:30:00.000Z | https://bdap-opendata.rgs.mef.gov.it/content/legge-di-bilancio-pubblicata-serie-storica-spese-amministrazione-missione-programma-1?metadati=showall | nessuno | nessuno | manuale | `node --experimental-strip-types --import ./tests/helpers/register-ts-alias.mjs scripts/etl/openbdap_defence_budget_macroaggregates.mjs --check` |
 | `opencivitas-2022` | 2022 | 2026-08-20T12:35:16Z | https://www.opencivitas.it/portale/open-data | `23 4 * * *` | `.github/workflows/opencivitas-refresh.yml` | PR automatica | `python scripts/etl/opencivitas_snapshot.py --check` |
 | `opencivitas-2015` | 2015 | 2026-09-17T10:10:34Z | https://www.opencivitas.it/it/dataset/2015-comuni-servizi-totali-indicatori-e-determinanti | nessuno | nessuno | manuale | `python scripts/etl/opencivitas_2015_snapshot.py --check` |

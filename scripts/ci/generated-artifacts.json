@@ -20,6 +20,10 @@
     {
       "path": "src/data/generated/pa-licenze-software.json",
       "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
+    },
+    {
+      "path": "src/data/generated/dvns-index.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -927,6 +931,33 @@
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/pa-licenze-software.source.json",
       "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su byte e SHA-256 dei CSV Consip e del dump IPA, shard ANAC verificati contro i loro meta.json; reader fail-closed su receipt/hash/schema e totali ricalcolati dalle righe.",
+      "publication": null
+    },
+    {
+      "id": "dvns-index",
+      "owner": "DVNS Index dei Comuni: OpenCivitas, SIOPE, ANAC, tempi di pagamento PCC, raccolta differenziata ISPRA, con controllo esterno sui dissesti",
+      "files": [
+        "src/data/generated/dvns-index.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_dvns_index_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_dvns_index.py",
+        "tests/etl/test_dvns_index_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/dvns-index.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/dvns_index.py --write --code-sha SHA",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/dvns-index.source.json",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su byte e SHA-256 di ogni file di partenza (OpenCivitas, SIOPE, PCC, ISPRA, decreto dissesti), shard ANAC verificati contro i loro meta.json; reader fail-closed su receipt, hash e contratto delle colonne.",
       "publication": null
     },
     {

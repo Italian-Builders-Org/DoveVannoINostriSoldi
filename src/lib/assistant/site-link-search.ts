@@ -35,28 +35,33 @@ const STOPWORDS = new Set([
   "soltanto", "oppure", "ciao", "salve", "buongiorno", "buonasera", "grazie", "aiuto", "oggi",
   "ieri", "domani", "stai", "progetto", "dvns", "vostri", "nostri", "vostro", "nostro", "funziona",
   "usate", "usare", "usano", "avere", "essere", "cambiati", "cambiato", "confronto", "confronta",
-  "rispetto", "regione", "regioni", "comune", "comuni", "provincia", "province",
+  "rispetto", "secondo", "sta", "regione", "regioni", "comune", "comuni", "provincia", "province",
 ]);
 
-type Probe = Readonly<{ query: string; accept: ReadonlySet<SearchMatchReason> }>;
+type Probe = Readonly<{ query: string; accept: ReadonlySet<SearchMatchReason>; single: boolean }>;
 
 function probesFor(question: string, hasDatasetLinks: boolean): Probe[] {
   const words = normalizeSearchText(question).split(" ")
     .filter((word) => word.length >= 3 && !/^\d+$/u.test(word) && !STOPWORDS.has(word));
   const unique = [...new Set(words)];
   if (!unique.length) return [];
+  // Short acronyms (PNRR, INPS, SSN) name a topic as precisely as a long word.
+  const acronyms = new Set(normalizeSearchText((question.match(/\b\p{Lu}{3,5}\b/gu) ?? []).join(" ")).split(" "));
   const probes: Probe[] = [];
+  const add = (query: string, accept: ReadonlySet<SearchMatchReason>) => {
+    if (probes.length < MAX_SEARCH_PROBES && !probes.some((probe) => probe.query === query)) {
+      probes.push({ query, accept, single: !query.includes(" ") });
+    }
+  };
   // The index requires every query word to match one field, so a whole-question
   // probe only helps for short questions; longer ones are split into pairs and words.
-  if (unique.length >= 2 && unique.length <= 4) probes.push({ query: unique.join(" "), accept: ANY_FIELD });
+  if (unique.length >= 2 && unique.length <= 4) add(unique.join(" "), ANY_FIELD);
   for (let index = 0; index + 1 < unique.length && probes.length < 3; index += 1) {
-    probes.push({ query: `${unique[index]} ${unique[index + 1]}`, accept: TITLE_OR_ALIAS });
+    add(`${unique[index]} ${unique[index + 1]}`, TITLE_OR_ALIAS);
   }
-  const distinctive = unique.filter((word) => word.length >= 5).sort((a, b) => b.length - a.length);
-  for (const word of distinctive) {
-    if (probes.length >= MAX_SEARCH_PROBES) break;
-    probes.push({ query: word, accept: hasDatasetLinks ? TITLE : TITLE_OR_ALIAS });
-  }
+  const distinctive = unique.filter((word) => word.length >= 5 || acronyms.has(word))
+    .sort((a, b) => Number(acronyms.has(b)) - Number(acronyms.has(a)) || b.length - a.length);
+  for (const word of distinctive) add(word, hasDatasetLinks ? TITLE : TITLE_OR_ALIAS);
   return probes;
 }
 
@@ -66,6 +71,11 @@ function eligible(hit: SearchResult, accept: ReadonlySet<SearchMatchReason>): bo
   const pathname = sitePathname(hit.href);
   if (EXCLUDED_PATHS.has(pathname) || EXCLUDED_PREFIXES.some((prefix) => pathname.startsWith(prefix))) return false;
   return !TITLE_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix)) || TITLE.has(hit.match.reason);
+}
+
+/** Sections share labels such as «Panoramica»: prefix the area so the card says where it leads. */
+function titleOf(hit: SearchResult): string {
+  return hit.type === "sezione" && hit.context && !hit.title.includes(hit.context) ? `${hit.context} · ${hit.title}` : hit.title;
 }
 
 /**
@@ -78,8 +88,15 @@ export function searchSiteLinks(
 ): AiSiteLink[] {
   const found = new Map<string, { hit: SearchResult; probe: number; hits: number }>();
   probesFor(question, hasDatasetLinks).forEach((probe, index) => {
+    let aliasTaken = false;
     for (const hit of search(probe.query)) {
       if (!eligible(hit, probe.accept)) continue;
+      // One word is a weak signal through aliases ("salute" also tags the source
+      // status page): keep only its best alias hit. Results arrive best first.
+      if (probe.single && hit.match.reason === "alias") {
+        if (aliasTaken) continue;
+        aliasTaken = true;
+      }
       const key = sitePageKey(hit.href);
       const current = found.get(key);
       found.set(key, current
@@ -89,6 +106,6 @@ export function searchSiteLinks(
   });
   return [...found.values()]
     .sort((left, right) => left.probe - right.probe || right.hits - left.hits || right.hit.score - left.hit.score || left.hit.href.localeCompare(right.hit.href))
-    .map(({ hit }) => cleanSiteLink({ href: hit.href, title: hit.title, ...(hit.description || hit.context ? { description: hit.description ?? hit.context } : {}) }))
+    .map(({ hit }) => cleanSiteLink({ href: hit.href, title: titleOf(hit), ...(hit.description ? { description: hit.description } : {}) }))
     .filter((link): link is AiSiteLink => link !== null);
 }

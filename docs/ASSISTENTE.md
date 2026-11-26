@@ -18,10 +18,11 @@ Ogni risposta propone fino a quattro pagine del sito («Approfondisci su DVNS»)
 server e mai dal modello:
 
 - `site-link-map.ts` collega ogni dataset MCP alla sua pagina pubblica (mai `/mcp`); un codice
-  diventa parte del percorso solo se ha il formato atteso, e non entra mai nel titolo;
+  scelto dal modello entra nel percorso, o in un titolo come il CUP, solo se ha il formato atteso;
 - `site-link-search.ts` completa l’elenco con la ricerca del sito sulla domanda: al massimo
   cinque scansioni dell’indice, accettate in base al tipo di corrispondenza (titolo, alias,
-  descrizione) e non al punteggio numerico; gli studi compaiono solo se corrisponde il titolo;
+  descrizione) e non al punteggio numerico; una parola sola vale al più un alias, gli acronimi
+  (PNRR, INPS) contano come parole distintive e gli studi compaiono solo se corrisponde il titolo;
 - il modello riceve le pagine come dati e può citarle con `[testo](/percorso)`;
   `markdown-link-sanitizer.ts` riduce a testo, prima dell’evento `done`, ogni altro link.
 

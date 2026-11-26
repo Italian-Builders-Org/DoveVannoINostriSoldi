@@ -6,7 +6,7 @@ import './helpers/register-ts-alias.mjs';
 
 const { DATASET_IDS, datasetCatalog } = await import('../src/lib/mcp/catalog.ts');
 const { AI_MAX_SITE_LINKS, isAiResponse, isInternalSiteHref } = await import('../src/lib/assistant/byok-contracts.ts');
-const { DATASET_SITE_LINKS, linksForDatasetQuery } = await import('../src/lib/assistant/site-link-map.ts');
+const { DATASET_SITE_LINKS, cleanSiteLink, linksForDatasetQuery } = await import('../src/lib/assistant/site-link-map.ts');
 const { MAX_SEARCH_PROBES, searchSiteLinks } = await import('../src/lib/assistant/site-link-search.ts');
 const { sanitizeAssistantLinks, selectAssistantSiteLinks } = await import('../src/lib/assistant/site-links.ts');
 const { searchSiteDocuments } = await import('../src/lib/global-search.ts');
@@ -229,6 +229,25 @@ test('search fallback scans the site index a bounded number of times per answer'
   queries.length = 0;
   searchSiteLinks('Ciao, come stai oggi?', { hasDatasetLinks: false, search });
   assert.deepEqual(queries, []);
+});
+
+test('search fallback stays on topic for broad words, sections and acronyms', () => {
+  const health = selectAssistantSiteLinks([{ dataset: 'istat_bes_salute' }], 'Come sta la salute degli italiani secondo il BES?');
+  assert.ok(health.every((link) => !['/fonti/stato', '/spese/sport'].includes(link.href)), JSON.stringify(health));
+  const sections = selectAssistantSiteLinks([], 'inflazione');
+  assert.ok(sections.every((link) => link.title !== 'Panoramica'), JSON.stringify(sections));
+  const pnrr = selectAssistantSiteLinks([], 'Quanti soldi del PNRR sono arrivati a Napoli?');
+  assert.ok(pnrr.some((link) => link.href.startsWith('/pnrr') || link.href.includes('pnrr')), JSON.stringify(pnrr));
+  const queries = [];
+  searchSiteLinks('politici pagati', { hasDatasetLinks: false, search: (query) => { queries.push(query); return searchSiteDocuments(query); } });
+  assert.equal(new Set(queries).size, queries.length, `duplicate scans: ${queries.join(' | ')}`);
+});
+
+test('truncated page titles and descriptions say they were cut', () => {
+  const [link] = linksForDatasetQuery({ dataset: 'ipa_enti' });
+  const long = cleanSiteLink({ ...link, title: 'T'.repeat(200), description: 'D'.repeat(300) });
+  assert.ok(long.title.length <= 120 && long.title.endsWith('…'));
+  assert.ok(long.description.length <= 240 && long.description.endsWith('…'));
 });
 
 test('detail pages never put a malformed model-chosen code in a path or a card title', () => {

@@ -64,6 +64,6 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
         </details> : null}
       </li>)}</ul>
     </section> : null}
-    <p className={styles.aiDisclaimer}>Le risposte possono contenere errori: verifica numeri e interpretazioni sulle fonti.</p>
+    <p className={styles.aiDisclaimer}>Verifica numeri e interpretazioni sulle fonti.</p>
   </div>;
 }

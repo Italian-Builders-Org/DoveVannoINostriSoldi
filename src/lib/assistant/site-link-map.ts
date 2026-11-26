@@ -531,13 +531,17 @@ export const DATASET_SITE_LINKS: Readonly<Record<DatasetId, DatasetLinkResolver>
   }],
 };
 
+function clip(text: string, max: number): string {
+  return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
+}
+
 /** Normalizes a candidate page; rejects anything outside the public, human-facing site. */
 export function cleanSiteLink(link: AiSiteLink): AiSiteLink | null {
   if (!isInternalSiteHref(link.href)) return null;
   if (link.href.startsWith("/mcp") || link.href.startsWith("/api/") || link.href.startsWith("/assistente")) return null;
-  const title = link.title.trim().slice(0, 120);
+  const title = clip(link.title.trim(), 120);
   if (!title) return null;
-  const description = link.description?.trim().slice(0, 240);
+  const description = link.description ? clip(link.description.trim(), 240) : "";
   return description ? { href: link.href, title, description } : { href: link.href, title };
 }
 

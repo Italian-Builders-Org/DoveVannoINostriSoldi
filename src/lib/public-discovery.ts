@@ -22,6 +22,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/appalti",
   "/appalti/bandi-aperti",
   "/appalti/dettaglio",
+  "/appalti/licenze-software",
   "/appalti/mepa",
   "/appalti/operatori",
   "/appalti/ted",

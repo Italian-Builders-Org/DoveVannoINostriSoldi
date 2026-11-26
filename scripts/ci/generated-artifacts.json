@@ -16,6 +16,10 @@
     {
       "path": "src/data/generated/camera-emendamenti-bilancio-2027.json",
       "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
+    },
+    {
+      "path": "src/data/generated/pa-licenze-software.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -896,6 +900,33 @@
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/camera-emendamenti-bilancio-2027.source.json",
       "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su elenco e manifest delle pagine; reader fail-closed su receipt/hash/schema e totali ricalcolati dalle righe.",
+      "publication": null
+    },
+    {
+      "id": "pa-licenze-software",
+      "owner": "Spesa della PA in licenze software: ordini Consip (convenzioni e MePA), aggiudicazioni ANAC CPV 48, pagamenti SIOPE ASL codice 5205",
+      "files": [
+        "src/data/generated/pa-licenze-software.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_pa_licenze_software_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_pa_licenze_software.py",
+        "tests/etl/test_pa_licenze_software_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/pa-licenze-software.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/pa_licenze_software.py --fetch --write --code-sha SHA",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/pa-licenze-software.source.json",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su byte e SHA-256 dei CSV Consip e del dump IPA, shard ANAC verificati contro i loro meta.json; reader fail-closed su receipt/hash/schema e totali ricalcolati dalle righe.",
       "publication": null
     },
     {

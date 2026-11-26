@@ -93,6 +93,10 @@ export default async function MepaPage({ searchParams }: { searchParams: Promise
           Gli <Link href="/appalti">ordini storici Consip</Link> misurano acquisti conclusi (MEPA/Convenzioni), non opportunità in corso.
           Per gare sopra soglia UE usa <Link href="/appalti/bandi-aperti">bandi aperti TED</Link>.
         </p>
+        <p>
+          Quanto ordinano le amministrazioni in licenze software, produttore per produttore:{" "}
+          <Link href="/appalti/licenze-software">licenze software della PA</Link>.
+        </p>
         <p className={styles.externalLinks}>
           <a href="https://www.acquistinretepa.it/opencms/opencms/vetrina_iniziative.html" rel="noreferrer" target="_blank">
             Vetrina ufficiale MePA

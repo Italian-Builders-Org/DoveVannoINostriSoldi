@@ -1,0 +1,40 @@
+import {
+  MEF_IRPEF_SWISS_BORDER_AGREEMENT_LABEL,
+  MEF_IRPEF_SWISS_BORDER_AGREEMENT_URL,
+  MEF_IRPEF_SWISS_BORDER_NOTE_BODY,
+  MEF_IRPEF_SWISS_BORDER_NOTE_TITLE,
+} from "@/lib/mef-irpef-swiss-border-note";
+
+type Variant = "notice" | "inline";
+
+export function MefIrpefSwissBorderNote({
+  variant,
+  className,
+}: {
+  variant: Variant;
+  className?: string;
+}) {
+  const sourceLink = (
+    <a href={MEF_IRPEF_SWISS_BORDER_AGREEMENT_URL} target="_blank" rel="noopener noreferrer">
+      {MEF_IRPEF_SWISS_BORDER_AGREEMENT_LABEL} ↗
+    </a>
+  );
+
+  if (variant === "notice") {
+    return (
+      <div className="notice">
+        <strong>{MEF_IRPEF_SWISS_BORDER_NOTE_TITLE}</strong>
+        <p>
+          {MEF_IRPEF_SWISS_BORDER_NOTE_BODY} Fonte: {sourceLink}.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <p className={className}>
+      <strong>{MEF_IRPEF_SWISS_BORDER_NOTE_TITLE}.</strong> {MEF_IRPEF_SWISS_BORDER_NOTE_BODY} Fonte:{" "}
+      {sourceLink}.
+    </p>
+  );
+}

@@ -17,6 +17,7 @@ test("the IRPEF page is server-rendered, bounded, and semantically explicit", as
   assert.doesNotMatch(page, /mef-irpef-2024\.data\.json/);
   assert.equal(page.match(/<h1\b/g)?.length, 1);
   assert.match(page, /Che cosa misura l&apos;imposta netta dichiarata/);
+  assert.match(page, /MefIrpefSwissBorderNote/);
   assert.match(page, /cifra presente nelle statistiche MEF/);
   assert.match(page, /Resta separata da spesa e saldo CPT/);
   assert.match(page, /HorizontalScrollRegion/);

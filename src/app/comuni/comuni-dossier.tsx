@@ -5,6 +5,7 @@ import { footprintStatusLabel, type ComuniFootprint } from "@/lib/comuni-footpri
 import type { ReportedMeasure } from "@/lib/mef-irpef-snapshot";
 import { schoolServicesSource } from "@/lib/mim-school-services-source";
 import { SitePageLink } from "@/components/site-page-link";
+import { MefIrpefSwissBorderNote } from "@/components/mef-irpef-swiss-border-note";
 import { ChangeComuneButton } from "./change-comune-button";
 import { ComuniRadar } from "./comuni-radar";
 import styles from "./comuni.module.css";
@@ -530,6 +531,7 @@ export function ComuniDossier({ footprint }: { footprint: ComuniFootprint }) {
                   Dichiarazioni IRPEF collegabili a questo Comune nel rilascio MEF.
                   Non è reddito medio individuale né capacità fiscale effettiva.
                 </p>
+                <MefIrpefSwissBorderNote className={styles.sourceInline} variant="inline" />
                 <dl className={styles.factGrid}>
                   <div>
                     <dt>Contribuenti</dt>

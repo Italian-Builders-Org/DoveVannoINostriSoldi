@@ -12,6 +12,8 @@ import {
   explainEntry,
   locateDot,
   functionHighlights,
+  pillarKeyFact,
+  regionSummaries,
   parseRankingQuery,
   queryRanking,
   rankRange,
@@ -28,6 +30,7 @@ import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import { displayMunicipalityName } from "@/lib/comuni-search";
 
 import { DotDistribution } from "./dot-distribution";
+import { RegionsMap } from "./regions-map";
 import styles from "./dvns-index.module.css";
 
 const PAGE_PATH = "/dvns-index";
@@ -39,7 +42,7 @@ export async function generateMetadata({ searchParams }: { searchParams: SearchP
   return {
     title: "DVNS Index: il tuo Comune spende meglio o peggio degli altri?",
     description:
-      "L'indice di DoveVannoINostriSoldi che confronta ogni Comune con quelli simili: servizi ottenuti per quello che spende, spesa oltre il fabbisogno, investimenti e apertura degli appalti, su dati ufficiali OpenCivitas, SIOPE e ANAC.",
+      "L'indice di DoveVannoINostriSoldi che confronta ogni Comune con quelli simili per dimensione e territorio: resa della spesa, spesa non giustificata, investimenti, appalti, puntualità nei pagamenti e raccolta differenziata, su dati di OpenCivitas, SIOPE, ANAC, Ragioneria Generale dello Stato e ISPRA. Con la mappa delle Regioni.",
     alternates: { canonical: PAGE_PATH },
     ...(filtered ? { robots: { index: false, follow: true } } : {}),
   };
@@ -99,7 +102,8 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
   const group = entry.group === null ? null : snapshot.groups[entry.group];
   const name = displayMunicipalityName(entry.name);
   const total = parts.reduce((sum, part) => sum + (part.points ?? 0), 0);
-  const rules = snapshot.rules;
+  const regional = data.regional.get(entry.istat);
+  const better = (value: number) => (Math.round(value) === 1 ? "1 Comune simile su 100" : `${Math.round(value)} Comuni simili su 100`);
   return (
     <section className={styles.card} id="scheda" aria-labelledby="scheda-title">
       <div className={styles.cardHead}>
@@ -116,6 +120,12 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
           </div>
         ) : null}
       </div>
+      {entry.band && entry.bandStability !== null ? (
+        <p className={styles.stabilityLine}>
+          Fascia {entry.band} confermata in {integer.format(Math.round(entry.bandStability * snapshot.rules.sensitivity.draws))} ricalcoli su{" "}
+          {integer.format(snapshot.rules.sensitivity.draws)} con pesi diversi: {stabilityLabel(entry.bandStability).toLocaleLowerCase("it-IT")}.
+        </p>
+      ) : null}
 
       {entry.status === "ranked" && entry.rank !== null ? (
         <dl className={styles.positions}>
@@ -124,25 +134,17 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
             <dd>{integer.format(entry.rank)}° su {integer.format(snapshot.summary.ranked)}</dd>
             {rankRange(entry) ? <small data-rank-range>con pesi diversi {rankRange(entry)}</small> : null}
           </div>
+          {regional ? (
+            <div data-regional-rank>
+              <dt>In {regionName(entry.regionCode)}</dt>
+              <dd>{integer.format(regional.rank)}° su {integer.format(regional.total)}</dd>
+              <small>la classifica nazionale risente anche del divario tra territori</small>
+            </div>
+          ) : null}
           <div>
             <dt>Tra i Comuni simili</dt>
             <dd>{entry.peerRank}° su {entry.peerRanked}</dd>
             {group ? <small>confronto con {describeGroup(group)}</small> : null}
-          </div>
-          {data.regional.get(entry.istat) ? (
-            <div data-regional-rank>
-              <dt>In {regionName(entry.regionCode)}</dt>
-              <dd>{integer.format(data.regional.get(entry.istat)?.rank ?? 0)}° su {integer.format(data.regional.get(entry.istat)?.total ?? 0)}</dd>
-              <small>la classifica nazionale risente anche del divario tra Nord e Sud</small>
-            </div>
-          ) : null}
-          <div>
-            <dt>Solidità della fascia</dt>
-            <dd>{stabilityLabel(entry.bandStability)}</dd>
-            <small>
-              fascia {entry.band} confermata in {integer.format(Math.round((entry.bandStability ?? 0) * snapshot.rules.sensitivity.draws))} su{" "}
-              {integer.format(snapshot.rules.sensitivity.draws)} combinazioni di pesi diverse
-            </small>
           </div>
         </dl>
       ) : null}
@@ -158,64 +160,54 @@ function ComuneCard({ entry, data, dossierHref }: { entry: IndexEntry; data: Ind
       ) : null}
 
       {entry.score !== null ? (
-        <div className={styles.formula}>
-          <h3>Perché {one.format(entry.score)}</h3>
-          <div className={styles.readGuide} data-read-guide>
-            <p>
-              <strong>Come leggere i numeri.</strong> Ogni pilastro ha un valore da 0 a 100: è la quota di Comuni simili che fanno
-              peggio. 70 vuol dire meglio di 70 Comuni simili su 100, 50 è nella media.
-            </p>
-            <p>
-              Il valore viene moltiplicato per il peso del pilastro: 70 nella resa, che pesa il {Math.round(rules.weights.resa * 100)}%,
-              vale {one.format(70 * rules.weights.resa)} punti. La somma dei sei pilastri è il punteggio.
-            </p>
-          </div>
+        <div className={styles.breakdown}>
           <div className={styles.stack} aria-hidden="true">
             {parts.map((part) => (part.points ? <span key={part.pillar} data-pillar={part.pillar} style={{ flexGrow: part.points }} /> : null))}
             <span className={styles.stackRest} style={{ flexGrow: Math.max(0, 100 - total) }} />
           </div>
-          <p className={styles.formulaLine}>
-            {parts.filter((part) => part.points !== null).map((part, index) => (
-              <span key={part.pillar}>
-                {index ? " + " : ""}
-                <span className={styles.swatch} data-pillar={part.pillar} aria-hidden="true" />
-                {one.format(part.points ?? 0)} {PILLAR_LABELS[part.pillar].title.toLocaleLowerCase("it-IT")}
-              </span>
-            ))}
-            {" = "}<strong>{one.format(entry.score)}</strong>
-            {parts.some((part) => part.points === null) ? " (pesi riproporzionati sui pilastri disponibili)" : ""}
+          <p className={styles.readLine} data-read-guide>
+            Ogni pilastro dà punti fino al suo peso. La barra mostra quanti Comuni simili fanno peggio: 70 vuol dire meglio di 70
+            Comuni simili su 100, 50 è la media.
+            {parts.some((part) => part.points === null) ? " Dove manca un pilastro, i pesi degli altri sono riproporzionati." : ""}
           </p>
+          <ul className={styles.pillarRows}>
+            {parts.map((part) => (
+              <li key={part.pillar} data-pillar-card={part.pillar}>
+                <div className={styles.pillarRowHead}>
+                  <span className={styles.pillarDot} data-pillar={part.pillar} aria-hidden="true" />
+                  <h3>{PILLAR_LABELS[part.pillar].title}</h3>
+                  <span className={styles.pillarPoints} data-pillar-points={part.points ?? ""}>
+                    {part.points === null ? "n.d." : one.format(part.points)} <small>su {Math.round(part.weight * 100)}</small>
+                  </span>
+                </div>
+                <div className={styles.meter} aria-hidden="true">
+                  <span style={{ width: `${part.percentile ?? 0}%` }} data-pillar={part.pillar} />
+                </div>
+                <p className={styles.keyFact}>{pillarKeyFact(entry, part.pillar)}</p>
+                <p className={styles.better}>{part.percentile === null ? "Non valutabile: dati insufficienti" : `Meglio di ${better(part.percentile)}`}</p>
+                {part.pillar === "resa" && entry.underspendWithoutCredit ? (
+                  <p className={styles.cashNote}>Spende poco ma paga in ritardo: la spesa bassa non viene premiata.</p>
+                ) : null}
+                <details className={styles.why}>
+                  <summary>Perché questo valore</summary>
+                  <ul>
+                    <li>{PILLAR_LABELS[part.pillar].question}</li>
+                    {part.facts.map((fact) => <li key={fact}>{fact}</li>)}
+                  </ul>
+                </details>
+              </li>
+            ))}
+            <li className={styles.pillarTotal}>
+              <span>Punteggio</span>
+              <span className={styles.pillarPoints}>{one.format(entry.score)}</span>
+            </li>
+          </ul>
         </div>
       ) : null}
 
-      <ol className={styles.pillars}>
-        {parts.map((part, index) => (
-          <li key={part.pillar} data-pillar-card={part.pillar}>
-            <div className={styles.pillarHead}>
-              <span className={styles.pillarNumber}>0{index + 1}</span>
-              <div>
-                <h3>{PILLAR_LABELS[part.pillar].title}</h3>
-                <p>{PILLAR_LABELS[part.pillar].question}</p>
-              </div>
-              <span className={styles.weight}>peso {Math.round(part.weight * 100)}%</span>
-            </div>
-            <div className={styles.meter} aria-hidden="true">
-              <span style={{ width: `${part.percentile ?? 0}%` }} data-pillar={part.pillar} />
-            </div>
-            <p className={styles.verdict}>
-              <strong>{part.verdict}</strong>
-              {part.points !== null ? ` · ${one.format(part.percentile ?? 0)} su 100, pari a ${one.format(part.points)} punti dell'indice` : ""}
-            </p>
-            <ul className={styles.facts}>
-              {part.facts.map((fact) => <li key={fact}>{fact}</li>)}
-            </ul>
-          </li>
-        ))}
-      </ol>
-
       {highlights.best.length ? (
         <p className={styles.functions}>
-          <strong>Dove rende di più:</strong> {highlights.best.join(", ")}. <strong>Dove rende di meno:</strong> {highlights.worst.join(", ")}.
+          Rende di più in {highlights.best.join(" e ")}, di meno in {highlights.worst.join(" e ")}.
           <span> Confronto tra servizi e spesa nelle singole funzioni, OpenCivitas 2022.</span>
         </p>
       ) : null}
@@ -267,22 +259,16 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
               <span>DVNS</span>
               <span className={styles.lime}>Index</span>
             </h1>
-            <p className={styles.tagline}>Il tuo Comune spende meglio o peggio degli altri?</p>
+            <p className={styles.tagline}>Come spendono i Comuni italiani, confrontati con quelli simili per dimensione e territorio.</p>
+            <p className={styles.pillarsLine}>
+              <strong>Sei pilastri:</strong> {PILLARS.map((pillar) => PILLAR_LABELS[pillar].short).join(", ")}.
+            </p>
             <p className={styles.heroLinks}>
-              <a href="#classifica" className={styles.heroPrimary} data-ranking-link="hero">Vai alla classifica ↓</a>
+              <a href="#regioni" className={styles.heroPrimary} data-ranking-link="hero">Vai alla classifica ↓</a>
               <Link href="/dvns-index/metodo" prefetch={false} data-method-link="hero">Come si calcola l&apos;indice →</Link>
             </p>
-            <ol className={styles.heroList}>
-              {PILLARS.map((pillar, index) => (
-                <li key={pillar}>
-                  <span>0{index + 1}</span>
-                  {PILLAR_LABELS[pillar].question}
-                </li>
-              ))}
-            </ol>
           </div>
           <div className={styles.heroChart}>
-            <p className={styles.domain}>DOVEVANNOINOSTRISOLDI.COM</p>
             <DotDistribution
               columns={data.dots.map((column) => column.length)}
               highlight={selected?.status === "ranked" ? locateDot(data.dots, selected.istat) : null}
@@ -310,31 +296,29 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             <span className="stat-note">su {integer.format(summary.municipalities)} Comuni italiani</span>
           </div>
           <div>
-            <dt>Punteggio parziale</dt>
-            <dd>{integer.format(summary.partial)}</dd>
-            <span className="stat-note">un dato mancante o servizi dichiarati troppo variabili</span>
+            <dt>Non in classifica</dt>
+            <dd>{integer.format(summary.specialStatute + summary.partial)}</dd>
+            <span className="stat-note">{integer.format(summary.specialStatute)} in Regioni a statuto speciale, {integer.format(summary.partial)} senza tutti i dati</span>
           </div>
           <div>
-            <dt>Non valutabili</dt>
-            <dd>{integer.format(summary.specialStatute)}</dd>
-            <span className="stat-note">Regioni a statuto speciale, fuori OpenCivitas</span>
+            <dt>Pilastri</dt>
+            <dd>6</dd>
+            <span className="stat-note">da cinque fonti pubbliche</span>
           </div>
           <div>
-            <dt>Solidità delle fasce</dt>
-            <dd>{one.format(summary.medianStability * 100)}%</dd>
-            <span className="stat-note">quota mediana di ricalcoli con pesi diversi che confermano la fascia</span>
+            <dt>Anni dei dati</dt>
+            <dd>2021-2025</dd>
+            <span className="stat-note">gli ultimi pubblicati per ogni fonte</span>
           </div>
         </dl>
 
-        <aside className={styles.methodCallout} aria-labelledby="metodo-callout">
-          <div>
-            <h2 id="metodo-callout">Come funziona il DVNS Index</h2>
-            <p>
-              Dati ufficiali di OpenCivitas, SIOPE, ANAC, Ragioneria Generale dello Stato e ISPRA, sei pilastri con pesi
-              dichiarati, confronto solo tra Comuni simili. Regole, fonti, limiti e un esempio completo sono nella pagina del metodo.
-            </p>
-          </div>
-          <Link href="/dvns-index/metodo" prefetch={false} data-method-link="callout">Leggi il metodo completo →</Link>
+        <aside className={styles.methodCallout} aria-label="Dati e indicatore">
+          <p>
+            I numeri di partenza vengono da fonti pubbliche (OpenCivitas, SIOPE, ANAC, Ragioneria Generale dello Stato, ISPRA)
+            e non sono modificati: chiunque può verificarli. Il punteggio invece è un indicatore costruito da noi: scegliamo
+            quali dati contano, come confrontare i Comuni e quanto pesa ogni aspetto. Ogni scelta è descritta nel{" "}
+            <Link href="/dvns-index/metodo" prefetch={false} data-method-link="callout">metodo</Link>.
+          </p>
         </aside>
 
         {selected ? (
@@ -354,6 +338,15 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
         ) : query ? (
           <section className={styles.card} id="scheda"><p>Nessun Comune trovato per «{query}».</p></section>
         ) : null}
+
+        <section className={`panel ${styles.scrollTarget}`} id="regioni" aria-labelledby="regioni-title">
+          <h2 id="regioni-title" className="panel-title">Le Regioni</h2>
+          <p className={styles.lede}>
+            Il colore è la fascia del Comune tipico di ogni Regione, con le stesse soglie della classifica nazionale. In ogni
+            Regione ci sono Comuni di tutte le fasce, e le differenze dentro una Regione sono più grandi di quelle tra Regioni.
+          </p>
+          <RegionsMap regions={regionSummaries(snapshot.entries, summary.bandCutoffs)} cutoffs={summary.bandCutoffs} />
+        </section>
 
         <section className="panel" aria-labelledby="classifica">
           <h2 id="classifica" className="panel-title">La classifica</h2>
@@ -430,8 +423,11 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
           ) : null}
         </section>
 
-        <section className="panel" aria-labelledby="metodo">
-          <h2 id="metodo" className="panel-title">Come si calcola</h2>
+        <details className={`panel ${styles.methodDetails}`} id="metodo">
+          <summary>
+            <h2 className="panel-title">Come si calcola</h2>
+            <span className={styles.methodHint} aria-hidden="true" />
+          </summary>
           <p className={styles.lede}>
             Il DVNS Index ha una base oggettiva, dati ufficiali che chiunque può verificare, e una parte di indicatore:
             le regole con cui decidiamo cosa conta come &quot;meglio&quot; e quanto pesa. Qui trovi la sintesi; il{" "}
@@ -506,7 +502,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             ))}
           </ul>
           <p className={styles.version}>Versione {snapshot.version} dell&apos;indice.</p>
-        </section>
+        </details>
       </div>
     </main>
   );

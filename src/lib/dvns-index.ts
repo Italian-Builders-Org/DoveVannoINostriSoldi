@@ -26,13 +26,13 @@ export const FUNCTION_LABELS: Record<string, string> = {
   "sociale-asili": "sociale e asili nido",
   viabilita: "viabilità e territorio",
 };
-export const PILLAR_LABELS: Record<Pillar, { title: string; question: string }> = {
-  resa: { title: "Resa della spesa", question: "Quanti servizi ottiene per quello che spende?" },
-  sovraspesa: { title: "Spesa non giustificata", question: "Spende più del necessario senza offrire di più?" },
-  investire: { title: "Capacità di investire", question: "Quanta parte della spesa va in opere e beni durevoli?" },
-  appalti: { title: "Apertura degli appalti", question: "Mette in gara gli appalti o li affida senza confronto?" },
-  puntualita: { title: "Puntualità nei pagamenti", question: "Paga i fornitori entro i tempi di legge?" },
-  risultati: { title: "Risultati misurati", question: "Quanta parte dei rifiuti viene differenziata?" },
+export const PILLAR_LABELS: Record<Pillar, { title: string; short: string; question: string }> = {
+  resa: { title: "Resa della spesa", short: "resa della spesa", question: "Quanti servizi ottiene per quello che spende?" },
+  sovraspesa: { title: "Spesa non giustificata", short: "spesa non giustificata", question: "Spende più del necessario senza offrire di più?" },
+  investire: { title: "Capacità di investire", short: "investimenti", question: "Quanta parte della spesa va in opere e beni durevoli?" },
+  appalti: { title: "Apertura degli appalti", short: "apertura degli appalti", question: "Mette in gara gli appalti o li affida senza confronto?" },
+  puntualita: { title: "Puntualità nei pagamenti", short: "puntualità nei pagamenti", question: "Paga i fornitori entro i tempi di legge?" },
+  risultati: { title: "Raccolta differenziata", short: "raccolta differenziata", question: "Quanta parte dei rifiuti viene differenziata?" },
 };
 
 export type IndexEntry = {
@@ -586,4 +586,94 @@ export function regionVarianceShare(entries: IndexEntry[], value: (entry: IndexE
     between += list.length * (groupMean - mean) ** 2;
   }
   return between / total;
+}
+
+/** The figure that matters most for each pillar, in one line: the card shows it under the bar. */
+export function pillarKeyFact(entry: IndexEntry, pillar: Pillar): string {
+  if (pillar === "resa") {
+    return entry.services2022 === null || entry.spending2022 === null
+      ? "Dati OpenCivitas non disponibili"
+      : `Servizi ${points(entry.services2022)}% sulla media, spesa ${points(entry.spending2022)}% sul fabbisogno (2022)`;
+  }
+  if (pillar === "sovraspesa") {
+    if (entry.spending2022 === null || entry.services2022 === null) return "Dati OpenCivitas non disponibili";
+    const gap = Math.max(0, entry.spending2022 - Math.max(0, entry.services2022));
+    return gap > 0 ? `${pct(Math.round(gap * 10) / 10)} di spesa oltre il fabbisogno non coperta da servizi` : "Nessuna spesa oltre il fabbisogno senza servizi in più";
+  }
+  if (pillar === "investire") {
+    const parts = [
+      entry.investmentShare === null ? null : `${pct(entry.investmentShare)} dei pagamenti in investimenti`,
+      entry.capitalPerCapita === null ? null : `${integer(Math.round(entry.capitalPerCapita))} € per abitante l'anno`,
+    ].filter(Boolean);
+    return parts.length ? parts.join(" · ") : "Pagamenti SIOPE non disponibili";
+  }
+  if (pillar === "appalti") {
+    if (entry.appaltiNeutral) return "Troppo pochi appalti per giudicare: vale 50, la media";
+    if (entry.withoutTenderShare !== null && entry.procedures !== null) return `${pct(entry.withoutTenderShare)} del valore senza gara, ${integer(entry.procedures)} procedure nel 2025`;
+    if (entry.topSupplierShare !== null) return `Primo fornitore al ${pct(entry.topSupplierShare)} del valore aggiudicato`;
+    return "Pochi appalti nel 2025";
+  }
+  if (pillar === "puntualita") {
+    const one = (days: number | null, year: number) => {
+      if (days === null) return null;
+      const value = integer(Math.round(Math.abs(days)));
+      return Math.round(days) > 0 ? `${value} giorni di ritardo (${year})` : Math.round(days) < 0 ? `${value} giorni d'anticipo (${year})` : `puntuale (${year})`;
+    };
+    return [one(entry.delay2024, 2024), one(entry.delay2025, 2025)].filter(Boolean).join(" · ") || "Tempi di pagamento non disponibili";
+  }
+  const rd = [[entry.rd2022, 2022], [entry.rd2023, 2023]] as const;
+  const parts = rd.filter(([value]) => value !== null).map(([value, year]) => `${pct(Math.round((value as number) * 10) / 10)} (${year})`);
+  return parts.length ? `${parts.join(" · ")} · obiettivo 65%` : "Raccolta differenziata non disponibile";
+}
+
+export type RegionSummary = {
+  code: string;
+  comuni: number;
+  ranked: number;
+  coverage: number;
+  populationCoverage: number;
+  median: number | null;
+  weighted: number | null;
+  bandMedian: Band | null;
+  bandWeighted: Band | null;
+  bands: Record<Band, number>;
+  best: { istat: string; name: string; score: number } | null;
+  worst: { istat: string; name: string; score: number } | null;
+};
+
+function bandForScore(score: number, cutoffs: number[]): Band {
+  return BANDS[cutoffs.findIndex((cut) => score >= cut)] ?? "E";
+}
+
+/**
+ * One row per region: the score of the typical Comune (median, each Comune
+ * counts once) and per resident (population-weighted mean, big cities weigh
+ * more), with the same band cut-offs as the national ranking.
+ */
+export function regionSummaries(entries: IndexEntry[], cutoffs: number[]): RegionSummary[] {
+  const byRegion = new Map<string, IndexEntry[]>();
+  for (const entry of entries) byRegion.set(entry.regionCode, [...(byRegion.get(entry.regionCode) ?? []), entry]);
+  return [...byRegion.entries()].map(([code, all]) => {
+    const ranked = all.filter((entry): entry is IndexEntry & { score: number } => entry.rank !== null && entry.score !== null);
+    const population = (list: IndexEntry[]) => list.reduce((sum, entry) => sum + entry.population, 0);
+    const bands = Object.fromEntries(BANDS.map((band) => [band, ranked.filter((entry) => entry.band === band).length])) as Record<Band, number>;
+    const medianScore = median(ranked.map((entry) => entry.score));
+    const weighted = ranked.length ? ranked.reduce((sum, entry) => sum + entry.score * entry.population, 0) / population(ranked) : null;
+    const sorted = [...ranked].sort((a, b) => b.score - a.score);
+    const pick = (entry: (typeof ranked)[number] | undefined) => (entry ? { istat: entry.istat, name: entry.name, score: entry.score } : null);
+    return {
+      code,
+      comuni: all.length,
+      ranked: ranked.length,
+      coverage: all.length ? ranked.length / all.length : 0,
+      populationCoverage: population(all) ? population(ranked) / population(all) : 0,
+      median: medianScore,
+      weighted,
+      bandMedian: medianScore === null ? null : bandForScore(medianScore, cutoffs),
+      bandWeighted: weighted === null ? null : bandForScore(weighted, cutoffs),
+      bands,
+      best: pick(sorted[0]),
+      worst: pick(sorted.at(-1)),
+    };
+  });
 }

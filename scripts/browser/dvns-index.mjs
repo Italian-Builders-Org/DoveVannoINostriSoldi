@@ -70,13 +70,17 @@ try {
         assert.equal((await page.$$("[data-pillar-card]")).length, 6);
         const guide = await page.$eval("[data-read-guide]", (el) => el.textContent ?? "");
         assert.match(guide, /70 vuol dire meglio di 70 Comuni simili su 100/u, "manca la spiegazione di come leggere i valori");
-        const formula = await page.$eval("[data-read-guide] + div + p", (el) => el.textContent ?? "");
-        const parts = [...formula.matchAll(/(\d+,\d)\s+[a-zà]/gu)].map((match) => number(match[1]));
-        assert.equal(parts.length, 6, `formula: ${formula}`);
-        assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${formula}`);
+        const parts = (await page.$$eval("[data-pillar-points]", (items) => items.map((item) => item.getAttribute("data-pillar-points") ?? ""))).map(Number);
+        assert.equal(parts.length, 6, `punti: ${parts}`);
+        assert.ok(Math.abs(parts.reduce((sum, value) => sum + value, 0) - score) <= 0.2, `i pilastri non sommano al punteggio: ${parts}`);
+        // The full explanation is one tap away, closed by default.
+        const why = await page.$('[data-pillar-card="puntualita"] details');
+        assert.equal(await why.evaluate((el) => el.open), false);
+        await why.evaluate((el) => el.querySelector("summary").click());
+        assert.equal(await why.evaluate((el) => el.open), true);
         assert.match(main, /1° su 35/u, "posizione tra le città simili");
         assert.match(await page.$eval("[data-regional-rank]", (el) => el.innerText), /In Emilia-Romagna\s+\d+° su \d+/u, "manca la posizione nella Regione");
-        const facts = await page.$eval("#scheda", (el) => el.innerText);
+        const facts = await page.$eval("#scheda", (el) => el.textContent ?? "");
         assert.match(facts, /Ritardo medio ponderato nel pagare le fatture/u, "manca il dato PCC");
         assert.match(facts, /Raccolta differenziata: \d+,\d% nel 2022/u, "manca il dato ISPRA");
         assert.match(await page.$eval("[data-rank-range]", (el) => el.textContent ?? ""), /con pesi diversi (tra \d+° e \d+°|sempre \d+°)/u);
@@ -84,13 +88,33 @@ try {
         assert.ok(await page.$('#scheda a[href="/dvns-index/metodo"]'), "manca il link al metodo dalla scheda");
         // The ranking is the main action at the top; the method sits next to it and in the callout.
         const primary = await page.$eval('[data-ranking-link="hero"]', (el) => ({ href: el.getAttribute("href"), background: getComputedStyle(el).backgroundColor, left: el.getBoundingClientRect().left }));
-        assert.equal(primary.href, "#classifica");
-        assert.equal(primary.background, "rgb(216, 247, 74)", "il pulsante della classifica deve essere quello evidenziato");
+        assert.equal(primary.href, "#regioni");
+        assert.equal(primary.background, "rgb(180, 35, 50)", "il pulsante della classifica deve avere il rosso del sito");
         assert.ok(primary.left < (await page.$eval('[data-method-link="hero"]', (el) => el.getBoundingClientRect().left)) || width <= 390, "la classifica va a sinistra del metodo");
         const methodTop = await page.$eval('[data-method-link="hero"]', (el) => ({ href: el.getAttribute("href"), visible: el.getBoundingClientRect().bottom <= window.innerHeight * 1.6 && el.getBoundingClientRect().width > 0 }));
         assert.equal(methodTop.href, "/dvns-index/metodo");
         assert.ok(methodTop.visible, "il pulsante del metodo non è ben visibile in alto");
         assert.equal(await page.$eval('[data-method-link="callout"]', (el) => el.getAttribute("href")), "/dvns-index/metodo");
+
+        // Regions: coloured map, special-statute regions hatched, a click selects, the mode changes the value.
+        assert.equal((await page.$$("#regioni path[data-region]")).length, 20);
+        assert.equal(await page.$eval('#regioni path[data-region="19"]', (el) => el.getAttribute("data-band")), "none");
+        const lazio = await page.$('#regioni path[data-region="12"]');
+        await lazio.evaluate((el) => el.scrollIntoView({ block: "center", behavior: "instant" }));
+        await lazio.click();
+        await page.waitForSelector('[data-region-card="12"]');
+        const typical = await page.$eval('[data-region-card="12"]', (el) => el.textContent ?? "");
+        await page.$eval('[data-region-mode="weighted"]', (el) => { el.scrollIntoView({ block: "center", behavior: "instant" }); el.click(); });
+        await page.waitForFunction((before) => document.querySelector('[data-region-card="12"]')?.textContent !== before, { timeout: 5000 }, typical)
+          .catch(() => assert.fail("il passaggio a per abitante non cambia il valore"));
+        assert.equal(await page.$eval('[data-region-mode="weighted"]', (el) => el.getAttribute("aria-pressed")), "true");
+        assert.equal(await page.$eval('[data-region-card="12"] a', (el) => el.getAttribute("href")), "/dvns-index?regione=12#classifica");
+        await assertLayout(page, "regioni");
+
+        // Method summary at the bottom: closed until opened.
+        assert.equal(await page.$eval("#metodo", (el) => el.open), false);
+        await page.$eval("#metodo > summary", (el) => el.click());
+        assert.equal(await page.$eval("#metodo", (el) => el.open), true);
 
         // The searched Comune is labelled on the chart.
         assert.equal(await page.$eval('[data-highlight="true"] text', (el) => el.textContent), "Bologna");

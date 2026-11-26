@@ -175,3 +175,45 @@ test("every ranked Comune sits in exactly one dot, at most 10 per dot", async ()
   assert.deepEqual(locateDot(layout, "200015"), { column: 30, row: 1 });
   assert.equal(locateDot(layout, "300000"), null);
 });
+
+test("regional summaries: median and per-resident score, bands, coverage, best and worst", async () => {
+  const { regionSummaries } = await import("../src/lib/dvns-index.ts");
+  const rows = [
+    row("037006", { rank: 1, region: "08", score: 70, population: 100000, band: "A" }),
+    row("037001", { rank: 2, region: "08", score: 60, population: 1000, band: "B" }),
+    row("037002", { rank: 3, region: "08", score: 40, population: 1000, band: "D" }),
+    row("037003", { status: "partial", rank: null, rankLow: null, rankHigh: null, band: null, peerRank: null, peerRanked: null, region: "08", score: 90, population: 2000 }),
+    row("082001", { status: "special-statute", rank: null, rankLow: null, rankHigh: null, band: null, peerRank: null, peerRanked: null, region: "19", score: null, population: 5000 }),
+  ];
+  const parsed = assertIndexSnapshot(snapshot(rows));
+  const byCode = new Map(regionSummaries(parsed.entries, [64, 54.7, 45.7, 35.2]).map((item) => [item.code, item]));
+  const emilia = byCode.get("08");
+  assert.equal(emilia.median, 60);
+  // Weighted by population, the big city dominates.
+  assert.equal(Math.round(emilia.weighted * 10) / 10, 69.6);
+  assert.equal(emilia.bandMedian, "B");
+  assert.equal(emilia.bandWeighted, "A");
+  assert.deepEqual(emilia.bands, { A: 1, B: 1, C: 0, D: 1, E: 0 });
+  assert.equal(emilia.ranked, 3);
+  assert.equal(emilia.comuni, 4);
+  assert.deepEqual(emilia.best, { istat: "037006", name: "Comune", score: 70 });
+  // A partial Comune counts for coverage, never for the scores.
+  assert.equal(Math.round(emilia.populationCoverage * 1000), Math.round((102000 / 104000) * 1000));
+  // Special-statute regions have no score at all.
+  assert.equal(byCode.get("19").ranked, 0);
+  assert.equal(byCode.get("19").median, null);
+});
+
+test("one-line fact per pillar, the same data as the full explanation", async () => {
+  const { pillarKeyFact } = await import("../src/lib/dvns-index.ts");
+  const parsed = assertIndexSnapshot(snapshot([row("037006")]));
+  const entry = parsed.entries[0];
+  assert.equal(pillarKeyFact(entry, "resa"), "Servizi +65,1% sulla media, spesa +31,9% sul fabbisogno (2022)");
+  assert.equal(pillarKeyFact(entry, "sovraspesa"), "Nessuna spesa oltre il fabbisogno senza servizi in più");
+  assert.equal(pillarKeyFact(entry, "investire"), "33,8% dei pagamenti in investimenti · 413 € per abitante l'anno");
+  assert.equal(pillarKeyFact(entry, "appalti"), "19,4% del valore senza gara, 12 procedure nel 2025");
+  assert.equal(pillarKeyFact(entry, "puntualita"), "12 giorni di ritardo (2024) · 3 giorni d'anticipo (2025)");
+  assert.equal(pillarKeyFact(entry, "risultati"), "71,2% (2022) · 74,8% (2023) · obiettivo 65%");
+  const neutral = assertIndexSnapshot(snapshot([row("001001", { pAppalti: 50, withoutTenderShare: null, procedures: null, topSupplierShare: null, awards: null, appaltiNeutral: true })])).entries[0];
+  assert.equal(pillarKeyFact(neutral, "appalti"), "Troppo pochi appalti per giudicare: vale 50, la media");
+});

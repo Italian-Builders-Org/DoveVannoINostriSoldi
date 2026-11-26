@@ -10,7 +10,9 @@ type Dot = { column: number; row: number };
 
 const STEP = 14;
 const RADIUS = 4.2;
-const LIME = "#d8f74a";
+// Colours come from the hero variables, so the chart follows the page palette.
+const ACCENT = "var(--hero-accent)";
+const DOT = "var(--hero-dot)";
 
 function format(score: number): string {
   return score.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -102,7 +104,7 @@ export function DotDistribution({
                 cx={x}
                 cy={y}
                 r={active ? RADIUS * 1.5 : RADIUS}
-                fill={active ? LIME : "#f4f4f5"}
+                style={{ fill: active ? ACCENT : DOT }}
                 fillOpacity={active ? 1 : tone}
                 // Transparent stroke: the tap target fills the whole cell, so small dots stay easy to hit.
                 stroke="transparent"
@@ -116,16 +118,16 @@ export function DotDistribution({
         )}
         {marker && elbow && !open ? (
           <g data-highlight="true" pointerEvents="none">
-            <circle cx={marker.x} cy={marker.y} r={RADIUS * 4} fill="none" stroke={LIME} strokeOpacity={0.35} />
-            <circle cx={marker.x} cy={marker.y} r={RADIUS * 2.4} fill="none" stroke={LIME} strokeOpacity={0.7} />
-            <circle cx={marker.x} cy={marker.y} r={RADIUS * 1.3} fill={LIME} />
+            <circle cx={marker.x} cy={marker.y} r={RADIUS * 4} fill="none" style={{ stroke: ACCENT }} strokeOpacity={0.35} />
+            <circle cx={marker.x} cy={marker.y} r={RADIUS * 2.4} fill="none" style={{ stroke: ACCENT }} strokeOpacity={0.7} />
+            <circle cx={marker.x} cy={marker.y} r={RADIUS * 1.3} style={{ fill: ACCENT }} />
             <polyline
               points={`${marker.x + dir * RADIUS * 2.6},${marker.y - RADIUS * 2.6} ${elbow.x},${elbow.y} ${elbow.x + dir * 120},${elbow.y}`}
               fill="none"
-              stroke={LIME}
+              style={{ stroke: ACCENT }}
               strokeWidth={1.5}
             />
-            <text x={elbow.x + dir * 4} y={elbow.y - 10} fill={LIME} fontSize={19} fontWeight={600} textAnchor={toLeft ? "end" : "start"}>
+            <text x={elbow.x + dir * 4} y={elbow.y - 10} style={{ fill: ACCENT }} fontSize={19} fontWeight={600} textAnchor={toLeft ? "end" : "start"}>
               {highlightLabel}
             </text>
           </g>

@@ -158,8 +158,16 @@ CARAFFA DI CATANZARO        CZ      2020       1.800   08/01/2020     1.899.543,
 
 class SourceLockTests(unittest.TestCase):
     def test_every_artefact_matches_its_lock(self) -> None:
-        for key in SPEC["artefacts"]:
+        for key, entry in SPEC["artefacts"].items():
             with self.subTest(artefact=key):
+                if entry["path"].startswith(".cache/"):
+                    # Downloaded inputs are not versioned (like the ANAC CIG archives): the lock
+                    # must name the official URL and the hash; the bytes are checked wherever
+                    # the file is present, which is every run that regenerates the index.
+                    self.assertRegex(entry["sha256"], r"^[0-9a-f]{64}$")
+                    self.assertTrue(entry["url"].startswith("https://"), entry["url"])
+                    if not (etl.ROOT / entry["path"]).exists():
+                        continue
                 etl.read_locked(SPEC, key)
 
     def test_a_drifted_artefact_blocks_publication(self) -> None:

@@ -239,8 +239,8 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             </h1>
             <p className={styles.tagline}>Il tuo Comune spende meglio o peggio degli altri?</p>
             <p className={styles.heroLinks}>
-              <Link href="/dvns-index/metodo" prefetch={false} className={styles.heroMethod} data-method-link="hero">Come si calcola l&apos;indice →</Link>
-              <a href="#classifica">Vai alla classifica</a>
+              <a href="#classifica" className={styles.heroPrimary} data-ranking-link="hero">Vai alla classifica ↓</a>
+              <Link href="/dvns-index/metodo" prefetch={false} data-method-link="hero">Come si calcola l&apos;indice →</Link>
             </p>
             <ol className={styles.heroList}>
               {PILLARS.map((pillar, index) => (

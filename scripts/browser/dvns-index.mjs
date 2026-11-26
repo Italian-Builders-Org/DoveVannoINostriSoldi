@@ -75,7 +75,11 @@ try {
         assert.match(main, /1° su 35/u, "posizione tra le città simili");
         assert.ok(await page.$('#scheda a[href^="/comuni?ente="]'), "manca il link alla scheda del Comune");
         assert.ok(await page.$('#scheda a[href="/dvns-index/metodo"]'), "manca il link al metodo dalla scheda");
-        // The method is reachable from the top, without scrolling, and from the callout under the numbers.
+        // The ranking is the main action at the top; the method sits next to it and in the callout.
+        const primary = await page.$eval('[data-ranking-link="hero"]', (el) => ({ href: el.getAttribute("href"), background: getComputedStyle(el).backgroundColor, left: el.getBoundingClientRect().left }));
+        assert.equal(primary.href, "#classifica");
+        assert.equal(primary.background, "rgb(216, 247, 74)", "il pulsante della classifica deve essere quello evidenziato");
+        assert.ok(primary.left < (await page.$eval('[data-method-link="hero"]', (el) => el.getBoundingClientRect().left)) || width <= 390, "la classifica va a sinistra del metodo");
         const methodTop = await page.$eval('[data-method-link="hero"]', (el) => ({ href: el.getAttribute("href"), visible: el.getBoundingClientRect().bottom <= window.innerHeight * 1.6 && el.getBoundingClientRect().width > 0 }));
         assert.equal(methodTop.href, "/dvns-index/metodo");
         assert.ok(methodTop.visible, "il pulsante del metodo non è ben visibile in alto");

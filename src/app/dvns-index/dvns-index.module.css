@@ -13,8 +13,8 @@
 .heroLinks { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
 .heroLinks { align-items: center; }
 .heroLinks a { display: inline-flex; align-items: center; min-height: 44px; color: var(--hero-text); font-weight: 600; text-underline-offset: 4px; }
-.heroLinks .heroMethod { padding: 0 18px; min-height: 48px; color: #0d0e10; background: var(--lime); text-decoration: none; }
-.heroLinks .heroMethod:hover { background: #e6fb7a; }
+.heroLinks .heroPrimary { padding: 0 18px; min-height: 48px; color: #0d0e10; background: var(--lime); text-decoration: none; }
+.heroLinks .heroPrimary:hover { background: #e6fb7a; }
 .heroLinks a:focus-visible { outline: 2px solid var(--hero-text); outline-offset: 2px; }
 .heroChart { display: grid; gap: 8px; min-width: 0; }
 .heroChart svg { display: block; width: 100%; height: auto; }

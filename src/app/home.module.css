@@ -33,3 +33,33 @@
   .anomalyItem { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .anomalyValue { font-size: 24px; text-align: left; }
 }
+
+/* Assistant entry: a plain GET form to /assistente. The chat, its consent and quota load only there. */
+.assistantEntry { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 14px 32px; align-items: center; padding: 24px; margin-bottom: 8px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
+.assistantCopy h2 { margin: 0 0 6px; font-size: clamp(20px, 2.2vw, 24px); font-weight: 500; letter-spacing: -.02em; }
+.assistantCopy p { margin: 0; color: var(--color-neutral-700); font-size: 15px; line-height: 1.55; }
+.assistantForm { display: flex; gap: 8px; min-width: 0; }
+.assistantForm input { flex: 1 1 auto; min-width: 0; min-height: 48px; padding: 0 14px; font: inherit; font-size: 16px; color: var(--color-text); background: var(--color-surface); border: 1px solid var(--color-neutral-400); }
+.assistantForm input:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 1px; }
+.assistantForm button { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 18px; font: inherit; font-weight: 600; color: #fff; background: var(--color-accent); border: 0; cursor: pointer; }
+.assistantForm button:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
+.assistantExamples { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.assistantExamples a { display: inline-flex; align-items: center; min-height: 36px; padding: 4px 12px; color: var(--color-text); font-size: 14px; text-decoration: none; border: 1px solid var(--color-neutral-300); background: var(--color-surface); }
+.assistantExamples a:hover { border-color: var(--color-neutral-500); }
+.mapsSection { display: grid; gap: 20px; padding-block: 40px 8px; border-top: 1px solid var(--color-neutral-300); }
+.mapCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.mapCard { display: grid; height: 100%; color: var(--color-text); text-decoration: none; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
+.mapCard img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-bottom: 1px solid var(--color-neutral-300); }
+.mapCardBody { display: grid; gap: 6px; padding: 16px; }
+.mapCardBody strong { display: inline-flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 600; }
+.mapCardBody span { color: var(--color-neutral-700); font-size: 14px; line-height: 1.5; }
+.mapCard:hover strong, .mapCard:focus-visible strong { text-decoration: underline; text-underline-offset: 3px; }
+.mapCard:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+@media (max-width: 900px) {
+  .assistantEntry { grid-template-columns: 1fr; padding: 20px; }
+  .mapCards { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .assistantForm { flex-direction: column; }
+  .assistantForm button { justify-content: center; }
+}

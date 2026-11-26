@@ -17,6 +17,7 @@ import type { AiActivity } from "@/lib/assistant/activity-contracts";
 import { AssistantAttachments, AssistantAttachmentPreview } from "@/components/assistant-attachments";
 import { useAssistantAttachments } from "@/components/use-assistant-attachments";
 import { ATTACHMENT_ACCEPT, ATTACHMENT_MAX_FILES, ATTACHMENT_MAX_TEXT_CHARS, attachmentTextSize, type AiAttachment } from "@/lib/assistant/attachment-contracts";
+import { assistantPrefill } from "@/lib/assistant-home";
 import { integer } from "@/lib/format";
 import { useAssistantVoice } from "@/components/use-assistant-voice";
 import styles from "@/app/assistente/assistant.module.css";
@@ -87,6 +88,16 @@ export function AssistantChat() {
     viewport?.addEventListener("resize", update);
     window.addEventListener("resize", update);
     return () => { observer.disconnect(); viewport?.removeEventListener("resize", update); window.removeEventListener("resize", update); };
+  }, []);
+  useEffect(() => {
+    // A question typed on the home page arrives as ?q=: it becomes a draft, never an automatic send.
+    const prefill = assistantPrefill(window.location.search);
+    if (!prefill) return;
+    setDraft(prefill);
+    const url = new URL(window.location.href);
+    url.searchParams.delete("q");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    input.current?.focus();
   }, []);
   useEffect(() => {
     const leave = () => { connectionRef.current = null; freeConsent.current = false; setFreeRequest(null); pending.current?.abort(); pending.current = null; setConnection(null); setSettings(false); setLoading(false); setTurns([]); setEditing(null); setPreview(null); };

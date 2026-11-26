@@ -17,6 +17,9 @@ import {
   getSiopeMunicipalSnapshot,
 } from "@/lib/siope-snapshot";
 import { SiteDirectory } from "@/components/site-directory";
+import { HOME_ASSISTANT_EXAMPLES, HOME_QUESTION_MAX, assistantHref } from "@/lib/assistant-home";
+import { MOBILITA_MAP_PATH } from "@/lib/site";
+import Image from "next/image";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -26,6 +29,28 @@ export const metadata: Metadata = {
   description:
     "Spesa pubblica, imprese e territori: dati ufficiali italiani con fonti e perimetri espliciti.",
 };
+
+/** Static previews captured from the live maps: no map code or data is loaded on the home page. */
+const HOME_MAPS = [
+  {
+    href: "/comuni",
+    title: "Mappa dei Comuni",
+    text: "Cerca il tuo Comune e confrontalo con quelli simili: pagamenti, incassi, IRPEF, appalti, scuole e PNRR.",
+    image: "/home/mappa-comuni.webp",
+  },
+  {
+    href: "/politici",
+    title: "Mappa della politica",
+    text: "Camera, Senato e Governo seggio per seggio: gruppi, incarichi, presenze e voti.",
+    image: "/home/mappa-politica.webp",
+  },
+  {
+    href: MOBILITA_MAP_PATH,
+    title: "Mappa della mobilità",
+    text: "Dove tram, metro e bus rallentano, tratta per tratta, dagli orari ufficiali.",
+    image: "/home/mappa-mobilita.webp",
+  },
+] as const;
 
 const HOME_ANOMALY_PRESENTATION = {
   "procurement-direct-awards-2025": {
@@ -98,6 +123,23 @@ export default async function HomePage({
           <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
       </header>
+      <section className={styles.assistantEntry} aria-labelledby="assistant-entry-title">
+        <div className={styles.assistantCopy}>
+          <h2 id="assistant-entry-title">Chiedi ai dati</h2>
+          <p>Fai una domanda in italiano: l&apos;assistente risponde con i dati del sito e cita le fonti. 10 domande gratuite al giorno.</p>
+        </div>
+        <form className={styles.assistantForm} action="/assistente" method="get" role="search" aria-label="Fai una domanda all'assistente">
+          <label htmlFor="home-assistant-question" className="sr-only">La tua domanda</label>
+          <input id="home-assistant-question" name="q" type="text" required maxLength={HOME_QUESTION_MAX} autoComplete="off"
+            placeholder="es. Quanto spende il mio Comune?" />
+          <button type="submit">Chiedi<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></button>
+        </form>
+        <ul className={styles.assistantExamples} aria-label="Domande di esempio">
+          {HOME_ASSISTANT_EXAMPLES.map((example) => (
+            <li key={example}><Link prefetch={false} href={assistantHref(example)}>{example}</Link></li>
+          ))}
+        </ul>
+      </section>
       <HomePathways funnel={funnel} siope={siope}>
       <section className={`panel ${styles.anomaliesPanel}`} aria-labelledby="anomalies-title">
         <div className={styles.anomaliesHeader}>
@@ -154,6 +196,26 @@ export default async function HomePage({
       </section>
 
       </HomePathways>
+
+      <section className={styles.mapsSection} aria-labelledby="home-maps-title">
+        <div className={styles.explorationHeading}>
+          <h2 id="home-maps-title">Le mappe</h2>
+          <p>Tre modi per vedere i dati sul territorio e nelle istituzioni.</p>
+        </div>
+        <ul className={styles.mapCards}>
+          {HOME_MAPS.map((map) => (
+            <li key={map.href} data-home-map={map.href}>
+              <Link prefetch={false} href={map.href} className={styles.mapCard}>
+                <Image src={map.image} alt="" width={960} height={600} sizes="(max-width: 760px) 100vw, 420px" />
+                <span className={styles.mapCardBody}>
+                  <strong>{map.title}<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></strong>
+                  <span>{map.text}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section id="esplora" className={styles.exploration} aria-labelledby="exploration-title">
         <div className={styles.explorationHeading}>

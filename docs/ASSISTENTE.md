@@ -9,13 +9,17 @@ Se il servizio gratuito non è disponibile, l’invio apre il pannello della chi
 
 ## Interazione e contesto
 
-Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
-conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
+Il compositore è centrale all’inizio e si sposta in basso al primo invio; è largo quanto la
+colonna di lettura e su telefono, durante la conversazione, diventa una sola riga. «@ Fonti» e
+«/ Scorciatoie» sono bottoni che aprono gli stessi menu della digitazione. Nella
+conversazione scorre solo l’elenco dei messaggi; quota gratuita e link di servizio stanno in
+un’unica riga sotto il compositore. Le risposte arrivano in streaming reale,
 sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
 elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
 
-Ogni risposta propone fino a quattro pagine del sito («Approfondisci su DVNS»), scelte dal
-server e mai dal modello:
+Dopo il testo la risposta mostra, nell’ordine, i dati consultati con le fonti ufficiali e i
+limiti del dato (sempre visibili: cambiano la lettura del numero), poi fino a quattro pagine del
+sito («Approfondisci su DVNS»), scelte dal server e mai dal modello:
 
 - `site-link-map.ts` collega ogni dataset MCP alla sua pagina pubblica (mai `/mcp`); un codice
   scelto dal modello entra nel percorso, o in un titolo come il CUP, solo se ha il formato atteso;
@@ -27,11 +31,12 @@ server e mai dal modello:
   `markdown-link-sanitizer.ts` riduce a testo, prima dell’evento `done`, ogni altro link.
 
 Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
-pagina e andrebbe persa uscendo. I link alle fonti ufficiali vengono dal catalogo server.
+pagina e andrebbe persa uscendo. Le pagine citate nel testo sono marcate «Citata nella
+risposta»; la freccia → indica una pagina DVNS, ↗ una fonte esterna. I link alle fonti ufficiali vengono dal catalogo server.
 Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
 senza dettagli di protocollo MCP/API (`public-caveat.ts`).
 
-Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
+Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus); ogni risposta completata ha copia e rigenerazione, accanto alla nota «Verifica numeri e interpretazioni sulle fonti».
 La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.

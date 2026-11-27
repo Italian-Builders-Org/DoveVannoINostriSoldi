@@ -10,16 +10,17 @@ Se il servizio gratuito non è disponibile, l’invio apre il pannello della chi
 ## Interazione e contesto
 
 Il compositore è centrale all’inizio e si sposta in basso al primo invio; è largo quanto la
-colonna di lettura e su telefono, durante la conversazione, diventa una sola riga. «@ Fonti» e
-«/ Scorciatoie» sono bottoni che aprono gli stessi menu della digitazione. Nella
-conversazione scorre solo l’elenco dei messaggi; quota gratuita e link di servizio stanno in
-un’unica riga sotto il compositore. Le risposte arrivano in streaming reale,
+colonna di lettura e, durante la conversazione, diventa una sola riga (aggiungi · campo ·
+dettatura · invio) a ogni larghezza. I suggerimenti iniziali mostrano la domanda intera e la
+scrivono nel campo senza inviarla; digitare @ o / apre gli stessi esempi (lo spiega «Come
+funziona»). Nella conversazione scorre solo l’elenco dei messaggi; sotto il compositore resta
+un’unica riga con l’avviso sull’AI e «Come funziona», che contiene anche il link alla privacy. Le risposte arrivano in streaming reale,
 sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
 elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
 
-Dopo il testo la risposta mostra, nell’ordine, i dati consultati con le fonti ufficiali e i
+Dopo il testo la risposta mostra, nell’ordine, le fonti ufficiali dei dati consultati e i
 limiti del dato (sempre visibili: cambiano la lettura del numero), poi fino a quattro pagine del
-sito («Approfondisci su DVNS»), scelte dal server e mai dal modello:
+sito («Approfondisci»), scelte dal server e mai dal modello:
 
 - `site-link-map.ts` collega ogni dataset MCP alla sua pagina pubblica (mai `/mcp`); un codice
   scelto dal modello entra nel percorso, o in un titolo come il CUP, solo se ha il formato atteso;
@@ -31,13 +32,21 @@ sito («Approfondisci su DVNS»), scelte dal server e mai dal modello:
   `markdown-link-sanitizer.ts` riduce a testo, prima dell’evento `done`, ogni altro link.
 
 Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
-pagina e andrebbe persa uscendo. Le pagine citate nel testo sono marcate «Citata nella
-risposta». I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
+pagina e andrebbe persa uscendo; lo segnalano l’icona ↗ e un testo per i lettori di schermo.
+Una pagina già linkata nel testo non viene ripetuta nell’elenco. I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
 citazioni del testo del modello. I link alle fonti ufficiali vengono dal catalogo server.
 Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
-senza dettagli di protocollo MCP/API (`public-caveat.ts`).
+senza dettagli di protocollo MCP/API (`public-caveat.ts`). Il prompt chiede al modello di non
+ripetere questi limiti generali nel testo.
 
-Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus); ogni risposta completata ha copia e rigenerazione, accanto alla nota «Verifica numeri e interpretazioni sulle fonti».
+Un solo avviso sull’AI: «L’AI può sbagliare: verifica le fonti», fisso sotto il compositore.
+Le risposte non ripetono etichette o note di verifica: il marchio DVNS indica chi risponde e,
+accanto, la riga di stato («Consulto i dati», poi «Dati consultati», apribile con i passaggi);
+il dataset è nominato una volta sola, in «Fonti», insieme al periodo. Durante la conversazione
+le domande gratuite rimaste compaiono accanto all’avviso solo quando ne restano tre o meno; i
+lettori di schermo ricevono comunque ogni aggiornamento.
+
+Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus); ogni risposta completata ha copia e rigenerazione.
 La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.

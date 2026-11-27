@@ -33,12 +33,12 @@ try {
     const themeLabel=process.env.DVNS_COLOR_SCHEME==='dark'?'Passa al tema chiaro':'Passa al tema scuro';
     assert.equal(await page.$$eval(`button[aria-label="${themeLabel}"]`,els=>els.length),1);
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
-    if(width>600){
-      // The @ and / hints are buttons: they type the trigger, keep focus in the field and open the menu.
-      await page.click('button::-p-text(Scorciatoie)');await page.waitForSelector('[role="listbox"]');
-      assert.equal(await page.$eval(field,el=>el.value),'/');assert.equal(await page.evaluate(()=>document.activeElement?.id),'assistant-prompt');
-      await page.keyboard.press('Escape');await replace(field,'');assert.equal(await page.$('[role="listbox"]'),null);
-    }
+    // A suggestion shows the whole question it writes: clicking fills the field, without sending, and keeps typing there.
+    const suggestion=await page.$eval('[aria-label="Domande di esempio"] button',el=>el.innerText.trim());
+    await page.click('[aria-label="Domande di esempio"] button');
+    assert.equal(await page.$eval(field,el=>el.value),suggestion);assert.match(suggestion,/\?$/);
+    await page.waitForFunction(()=>document.activeElement?.id==='assistant-prompt');assert.equal(requests.length,0);
+    await replace(field,'');
     await page.type(field,'@');await page.waitForSelector('[role="listbox"]');
     await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
     assert.match(await page.$eval(field,el=>el.value),/Calabria/);assert.equal(requests.length,0);
@@ -66,13 +66,13 @@ try {
     assert.equal(JSON.stringify(requests[0].body).includes('test-only-openai-key-123'),false);
     assert.equal(requests[0].body.consent,true);
     assert.equal(await page.$$eval('[data-assistant-reply] b',els=>els.length),0);
-    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),5,'2 bold runs + 2 site link titles + the data-limit label');
+    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),4,'2 bold runs + 1 site link title + the data-limit label');
     const reply=await page.$eval('[data-assistant-reply]',el=>({
       list:[...el.querySelectorAll('ul li')].some(li=>li.textContent==='Periodo 2025'),
       dash:/(^|\n)- /.test(el.innerText),
       inline:[...el.querySelectorAll('p a')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
       text:el.innerText,
-      site:[...el.querySelectorAll('[data-site-links] a')].map(a=>({href:a.getAttribute('href'),target:a.target,cited:a.dataset.cited==='true'})),
+      site:[...el.querySelectorAll('[data-site-links] a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
       external:[...el.querySelectorAll('section:not([data-site-links]) a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
       landmarks:el.querySelectorAll('nav').length,
       table:[...el.querySelectorAll('table th')].map(th=>th.textContent),
@@ -83,10 +83,11 @@ try {
     assert.ok(reply.list&&!reply.dash,'label + list lines render a real list');
     assert.deepEqual(reply.inline,[{href:'/comuni',target:'_blank',text:'i Comuni'}],'only allow-listed internal links are anchors');
     assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&reply.text.split('example.com').length===1,'rejected links keep only their label');
-    assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank',cited:true},{href:'/spese/panoramica',target:'_blank',cited:false}],'site links open in a new tab so the in-memory chat survives; pages cited in the text come first, marked');
+    assert.deepEqual(reply.site,[{href:'/spese/panoramica',target:'_blank'}],'site links open in a new tab so the in-memory chat survives; a page already linked in the text is not listed again');
     assert.equal(reply.landmarks,0,'site pages are a labelled section, not one nav landmark per answer');
     assert.deepEqual(reply.table,['Anno','Totale']);assert.equal(reply.pipes,false,'a label line before a table must not leave raw pipes');
-    assert.equal(reply.hints,1,'the new-tab hint shows on the first answer with site pages');
+    assert.equal(reply.hints,0,'the ↗ icon and screen-reader text already say pages open in a new tab');
+    assert.doesNotMatch(reply.text,/generata con AI|Verifica numeri|Citata nella risposta/,'one AI notice lives under the composer: answers repeat no labels or verification notes');
     assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
     assert.ok(reply.overflow<=1,`${width}: answer overflow`);
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
@@ -105,7 +106,6 @@ try {
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);
     assert.deepEqual(requests[1].body.messages.map(message=>message.role),['user','assistant','user']);
-    assert.deepEqual(await page.$$eval('[data-assistant-reply]',els=>els.map(el=>el.querySelectorAll('[data-site-links] p').length)),[1,0],'the hint is not repeated on later answers');
     await (await page.$$('button[aria-label="Rigenera risposta"]')).at(-1).click();await complete(2);
     assert.equal(requests.length,3);assert.equal(requests[2].body.messages.at(-1).content,'E nel 2024?');
     await (await page.$$('button[aria-label="Modifica domanda"]'))[0].click();

@@ -78,7 +78,6 @@ export function AssistantChat() {
   const hasConversation = turns.length > 0;
   const tooLong = draft.length > AI_MAX_PROMPT_CHARS;
   const atLimit = turns.length >= MAX_TURNS;
-  const firstLinkedTurn = turns.find((turn) => turn.response?.ok && turn.response.siteLinks?.length)?.id;
   const options = (menu === "add" ? [] : menu === "sources" ? EXAMPLES.slice(0, 3) : EXAMPLES).filter((option) =>
     `${option.source} ${option.label} ${option.command}`.toLocaleLowerCase("it-IT").includes(query.toLocaleLowerCase("it-IT")),
   );
@@ -155,15 +154,6 @@ export function AssistantChat() {
     setMenu(null);
     requestAnimationFrame(() => input.current?.focus());
   }, []);
-
-  /** The "@" and "/" hints are real buttons: they type the trigger and open its menu, like typing it would. */
-  function insertTrigger(trigger: "@" | "/") {
-    const value = `${draft}${draft && !/\s$/u.test(draft) ? " " : ""}${trigger}`;
-    // Focus moves back to the field in the same event, so the menu never shows with focus left on the button.
-    input.current?.focus();
-    changeDraft(value);
-    requestAnimationFrame(() => input.current?.setSelectionRange(value.length, value.length));
-  }
 
   function changeDraft(value: string) {
     setDraft(value);
@@ -290,10 +280,11 @@ export function AssistantChat() {
     }
   }
 
-  const quotaLine = !connection && free.quota?.available ? <p className={styles.quota} role="status" aria-live="polite" data-free-quota>
-    {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita rimasta" : "domande gratuite rimaste"} oggi` : "Domande gratuite esaurite. Nuova quota a mezzanotte."}
+  // During a conversation the count shows only when it starts to matter; screen readers still hear each update.
+  const quotaLine = !connection && free.quota?.available ? <span className={hasConversation && free.quota.remaining > 3 ? styles.srOnly : styles.quota} role="status" aria-live="polite" data-free-quota>
+    {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita rimasta" : "domande gratuite rimaste"} oggi` : "Domande gratuite esaurite fino a mezzanotte."}
     {free.quota.remaining === 0 ? <> <button type="button" className={styles.inlineAction} onClick={() => setSettings(true)}>Usa la tua chiave</button></> : null}
-  </p> : null;
+  </span> : null;
 
   return (
     <main ref={pageRoot} className={styles.page} data-conversation={hasConversation} aria-label="Assistente sui dati pubblici"
@@ -304,12 +295,13 @@ export function AssistantChat() {
         else if (info) { event.preventDefault(); setInfo(false); }
       }}>
       <header className={styles.toolbar}>
-        <div className={styles.toolbarTitle}><span>Assistente</span></div>
+        {/* The page title stays in every state; the welcome question is the empty state's subheading. */}
+        <h1 className={styles.toolbarTitle}>Assistente</h1>
         <div className={styles.toolbarActions}>
-          <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <><span className={styles.wideOnly}>Usa la tua chiave AI</span><span className={styles.narrowOnly}>La tua chiave</span></>}</span>
-          </button>
           <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" disabled={!hasConversation && !draft && !attachments.items.length} onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
+          <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "La tua chiave AI"}</span>
+          </button>
         </div>
       </header>
 
@@ -333,14 +325,14 @@ export function AssistantChat() {
                     </div></>}
                   </div>
                   <div className={styles.assistantMessage} data-assistant-reply aria-live={loading && !turn.response ? "off" : "polite"} aria-busy={!turn.response && !turn.stopped}>
-                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span>DVNS</span><small><span aria-hidden="true">· </span>Risposta generata con AI</small></div>
+                    {/* The mark says who answers; the status beside it says what was done. No label repeats either. */}
+                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span className={styles.srOnly}>DVNS:</span>
+                      <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} /></div>
                     {turn.contextReduced ? <p className={styles.contextNotice}>I nuovi allegati superano il limite del contesto: i file dei messaggi più vecchi non sono inclusi in questa risposta. Per confrontarli, riallega insieme i file utili (massimo 3).</p> : null}
-                    <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} />
-                    {turn.response ? <AssistantAiReply response={turn.response} showNewTabHint={turn.id === firstLinkedTurn} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} streaming />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
+                    {turn.response ? <AssistantAiReply response={turn.response} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} streaming />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
                     {turn.response || turn.stopped ? <div className={styles.messageActions}>
                       {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => { if (turn.response?.ok) void copyText(copyableAnswer(turn.response), `assistant-${turn.id}`); }}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
                       <button type="button" aria-label="Rigenera risposta" title={`Rigenera risposta; sostituisce anche i messaggi successivi${connection ? "" : " e usa una domanda gratuita"}`} disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
-                      {turn.response?.ok ? <span className={styles.actionsNote}>Verifica numeri e interpretazioni sulle fonti.</span> : null}
                     </div> : null}
                   </div>
                 </div>
@@ -348,8 +340,8 @@ export function AssistantChat() {
             </div>
           </div>
         ) : <div className={styles.welcome}>
-          <h1>Cosa vuoi sapere?</h1>
-          <p>Risposte dai dataset pubblici del sito, con la fonte ufficiale di ogni dato.</p>
+          <h2>Cosa vuoi sapere?</h2>
+          <p>Spese, entrate e territori: risposte dai dati ufficiali.</p>
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>
@@ -389,19 +381,18 @@ export function AssistantChat() {
                 {dragging ? <span className={styles.dropHint}>Rilascia i file qui</span> : null}
                 <label htmlFor="assistant-prompt" className={styles.srOnly}>Domanda in italiano</label>
                 <textarea ref={input} id="assistant-prompt" value={draft} onChange={(event) => changeDraft(event.target.value)} onKeyDown={keyDown}
-                  placeholder={hasConversation ? "Fai un’altra domanda…" : "Chiedi qualcosa sui dati pubblici…"} rows={3} readOnly={voice.busy} aria-invalid={tooLong || undefined}
+                  placeholder={hasConversation ? "Fai un’altra domanda…" : "Fai una domanda…"} rows={3} readOnly={voice.busy} aria-invalid={tooLong || undefined}
                   aria-describedby={`assistant-help assistant-count${tooLong ? " assistant-prompt-limit" : ""}`} aria-controls={menu && menu !== "add" ? "assistant-options" : undefined}
                   aria-activedescendant={menu && options[activeOption] ? `assistant-option-${activeOption}` : undefined} aria-haspopup="listbox" />
                 <div className={styles.composerControls}>
                   <button type="button" className={styles.iconButton} disabled={voice.busy || loading} aria-label="Aggiungi allegati e fonti" aria-expanded={menu === "add"} aria-controls="assistant-add-menu" title="Aggiungi allegati e fonti" onClick={() => setMenu(menu === "add" ? null : "add")}>
                     <HugeiconsIcon icon={Add01Icon} size={23} strokeWidth={1.6} aria-hidden="true" />
                   </button>
-                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.triggers}><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("@")} title="Scegli una domanda per fonte (oppure digita @)"><span aria-hidden="true">@</span>Fonti</button><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("/")} title="Apri le scorciatoie (oppure digita /)"><span aria-hidden="true">/</span>Scorciatoie</button></span>}
+                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : null}
                   <span id="assistant-count" className={styles.count} data-overflow={tooLong}>{draft.length >= AI_MAX_PROMPT_CHARS * .8 ? `${draft.length}/${AI_MAX_PROMPT_CHARS}` : ""}</span>
                   <button type="button" className={`${styles.iconButton} ${styles.microphone}`} data-recording={voice.active} disabled={loading || voice.voice?.status === "checking" || voice.voice?.status === "installing" || voice.voice?.status === "stopping"}
                     aria-label={voice.active ? "Termina dettatura" : "Detta la domanda"} aria-pressed={voice.active} title={voice.active ? "Termina dettatura" : "Detta la domanda"} onClick={voice.start}>
                     <HugeiconsIcon icon={voice.active ? StopIcon : Mic01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
-                    <span className={styles.micLabel}>{voice.active ? "Termina" : "Detta"}</span>
                   </button>
                   {loading ? <button type="button" className={styles.send} aria-label="Interrompi ricerca" title="Interrompi ricerca" onClick={stop}><HugeiconsIcon icon={StopIcon} size={21} strokeWidth={1.9} aria-hidden="true" /></button>
                     : <button type="submit" className={styles.send} disabled={!draft.trim() || tooLong || voice.busy || atLimit || attachments.blocked} aria-label="Invia domanda" title="Invia domanda"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="square" strokeLinejoin="miter" /></svg></button>}
@@ -423,17 +414,17 @@ export function AssistantChat() {
           {tooLong ? <p id="assistant-prompt-limit" className={styles.draftError} role="alert">Massimo 8.000 caratteri. Rimuovine {integer(draft.length - AI_MAX_PROMPT_CHARS)} per inviare.</p> : null}
           {atLimit ? <p className={styles.draftError}>Hai raggiunto il limite di questa conversazione. Apri una nuova chat per continuare.</p> : null}
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
-            {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}
+            {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" /><span>{example.prompt}</span></button>)}
           </div> : null}
           {hasConversation ? null : quotaLine}
           <p className={voice.active || (!connection && free.quota && !free.quota.available) ? styles.composerHint : styles.srOnly} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Le domande gratuite non sono disponibili: usa la tua chiave AI per iniziare."}</p>
         </div>
       </div>
 
-      {/* During a conversation the quota joins the footer links: one quiet line under the composer instead of two. */}
+      {/* The only AI notice on the page, in every state: answers carry no labels or verification notes of their own. */}
       <footer className={styles.footer}>
-        {hasConversation ? quotaLine : <span>L’AI può commettere errori. Verifica le fonti.</span>}
-        <div><button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button><a href="/privacy">Privacy</a></div>
+        <p className={styles.footerNote}><span>L’AI può sbagliare: verifica le fonti.</span>{hasConversation ? quotaLine : null}</p>
+        <button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button>
       </footer>
       {freeRequest ? <AssistantFreeConsent onClose={() => { setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); }} onAccept={() => { const request = freeRequest; freeConsent.current = true; setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); void ask(request.value, request.retryId); }} /> : null}
       {settings ? <AssistantProviderSettings connection={connection} onSave={(next) => { stop(); voice.close(); connectionRef.current = next; setConnection(next); setEditing(null); freeConsent.current = false; }} onClose={() => { setSettings(false); requestAnimationFrame(() => providerButton.current?.focus()); }} /> : null}
@@ -444,6 +435,7 @@ export function AssistantChat() {
         <h2>Dati e conversazione</h2>
         <p>Usa le domande gratuite con Regolo oppure collega la tua chiave: il modello consulta i dataset del sito attraverso ricerche validate e può commettere errori. Controlla sempre periodo, fonti e limiti.</p>
         <p>La conversazione resta nella memoria di questa pagina. “Nuova chat” la svuota. La voce usa il riconoscimento locale nei browser compatibili: nessun audio viene inviato a DVNS.</p>
+        <p>Digita @ o / nel campo per partire da una domanda di esempio. <a href="/privacy" target="_blank" rel="noreferrer">Informativa privacy<span className={styles.srOnly}> (nuova scheda)</span></a></p>
       </div> : null}
     </main>
   );

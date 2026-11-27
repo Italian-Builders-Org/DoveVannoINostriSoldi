@@ -224,7 +224,7 @@
   gap: var(--space-3);
   margin: auto 0 var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .cardMetadata dt {
@@ -336,7 +336,7 @@
 .sourceMetadata > div {
   min-width: 0;
   padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .sourceMetadata > div:nth-child(odd) {
@@ -731,7 +731,7 @@
   display: grid;
   gap: var(--space-4);
   padding: var(--space-4) 18px 18px;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .metaDetailsBody > p {

@@ -252,7 +252,7 @@
   display: grid;
   gap: 8px;
   padding: 14px 16px 12px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 @media (max-width: 899px) {
@@ -379,7 +379,7 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
   padding: 14px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .section:last-child {
@@ -410,7 +410,7 @@
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   font-size: 13px;
   color: var(--color-neutral-700);
 }
@@ -642,7 +642,7 @@
   padding: 3px;
   border-radius: 11px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .segmented button {
@@ -714,7 +714,7 @@
   gap: 6px;
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   background: var(--color-neutral-100);
 }
 
@@ -914,7 +914,7 @@
   padding: 2px;
   border-radius: 999px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .colorToggle button {
@@ -973,7 +973,7 @@
   white-space: nowrap;
   background: var(--color-neutral-100);
   color: var(--color-neutral-700);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .delayChip[data-bucket="ontime"] {

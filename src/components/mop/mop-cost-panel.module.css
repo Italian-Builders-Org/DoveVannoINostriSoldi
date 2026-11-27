@@ -126,7 +126,7 @@
   display: grid;
   gap: 2px;
   padding: 8px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .provenanceGrid dt {

@@ -1,7 +1,7 @@
 .section {
   width: 100%;
   padding: 44px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .header {
@@ -40,13 +40,13 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin-bottom: 18px;
-  border-top: 1px solid var(--color-neutral-200);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .metrics > div {
   padding: 18px 22px 18px 0;
-  border-right: 1px solid var(--color-neutral-200);
+  border-right: 1px solid var(--color-divider);
 }
 
 .metrics > div + div {
@@ -91,7 +91,7 @@
   gap: 24px;
   margin-top: 18px;
   padding-top: 18px;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .coverageNote {
@@ -143,14 +143,14 @@
 
 .loadingGrid div {
   min-height: 410px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
     background: var(--color-neutral-100);
 }
 
 .error {
   padding: 26px 0;
-  border-top: 1px solid var(--color-neutral-200);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .error strong {
@@ -188,7 +188,7 @@
   .metrics > div + div {
     padding: 15px 0;
     border-right: 0;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: 1px solid var(--color-divider);
   }
 
   .metrics > div:last-child {

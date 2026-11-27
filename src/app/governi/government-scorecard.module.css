@@ -146,7 +146,7 @@
   margin: 0;
   padding: 14px clamp(16px, 3vw, 24px);
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   font-size: 14px;
 }
 
@@ -196,7 +196,7 @@
   scroll-margin-top: 160px;
   padding: 16px;
   background: var(--color-raised);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .downloadPanel h3,
@@ -248,7 +248,7 @@
 }
 
 .downloadTechnical {
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .downloadTechnical summary {
@@ -310,7 +310,7 @@
 .progressiveDetails {
   margin-top: 14px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .progressiveDetails > summary {
@@ -324,7 +324,7 @@
 
 .detailBody {
   padding: clamp(16px, 3vw, 28px);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .pillars {
@@ -337,7 +337,7 @@
 .pillar {
   padding: 18px;
   background: var(--color-raised);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .pillar header {
@@ -368,7 +368,7 @@
   justify-content: space-between;
   gap: 14px;
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .indicator dt,
@@ -889,7 +889,7 @@
   position: relative;
   min-height: 400px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   overflow: hidden;
   touch-action: pan-y;
 }
@@ -1033,7 +1033,7 @@
   min-width: 0;
   padding: 11px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .seriesSummary h4 {
@@ -1065,7 +1065,7 @@
 
 .chartTableDetails {
   margin-top: 12px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .chartTableDetails > summary {
@@ -1077,7 +1077,7 @@
 .chartTableDetails .tableRegion {
   margin: 0;
   padding: 12px;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .chartTableDetails table {
@@ -1510,7 +1510,7 @@
   max-width: 100%;
   overflow: hidden;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .comparisonChanges {

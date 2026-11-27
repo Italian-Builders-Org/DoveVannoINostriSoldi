@@ -9,15 +9,13 @@
 .sources thead th:first-child { min-width: 240px; }
 /* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
 .sources td.cadence { min-width: 140px; }
-/* A row whose cadence is stated by its sub-group: a muted dot, not a blank
-   that reads as missing data. */
-.sources td.cadenceShared { color: var(--color-neutral-500); }
 
 /* Names, publisher headings and column headings start on the panel's
    content edge (padding inside the cells, not an extra indent). */
 .sources thead th:first-child,
 .sources th[scope="row"] { padding-left: 0; }
 .sources :is(th, td):last-child { padding-right: 0; }
+
 
 .visuallyHidden {
   position: absolute;
@@ -45,22 +43,24 @@
   background: transparent;
 }
 /* A theme shared by three or more sources of one publisher (e.g. the BES
-   domains): a lighter, smaller sub-heading indented 16px, with its rows
+   domains): a sub-heading in body colour, 1px larger than the source names
+   (the count stays grey), indented 16px, with its rows
    indented the same, so it reads as a child of the publisher. The plain
    rows of the publisher come before it (clusterPublisherSources). */
 .sources .clusterRow th {
   padding: var(--space-4) 0 var(--space-1) 16px;
   border-bottom: 1px solid var(--color-divider);
-  color: var(--color-neutral-700);
-  font-size: 13px;
+  color: var(--color-text);
+  font-size: 14px;
   font-weight: 600;
   text-align: left;
   background: transparent;
 }
 .sources .clusterMember th[scope="row"] { padding-left: 16px; }
-/* The cadence shared by the whole theme, under the sub-group title. */
+/* The cadence shared by the whole theme, under the sub-group title. Phone
+   cards only: wide tables show it in the cadence column of each row. */
 .clusterNote {
-  display: block;
+  display: none;
   margin-top: 2px;
   color: var(--color-neutral-600);
   font-size: 12px;
@@ -74,6 +74,7 @@
 
 .groupCount {
   margin-left: var(--space-2);
+  white-space: nowrap;
   color: var(--color-neutral-600);
   font-weight: 500;
   letter-spacing: 0;
@@ -83,10 +84,15 @@
 /* Long descriptions: a preview cut at a word (coveragePreview), then the
    whole text on demand. The summary holds the full text, so screen readers
    always get all of it; the preview is visual only. */
+/* The summary is the description itself: body colour and weight, not the
+   accent and semibold of the shared disclosure-more style (globals.css),
+   which only the "Mostra tutto" toggle below takes. */
 .coverage summary {
   display: block;
   cursor: pointer;
   list-style: none;
+  color: var(--color-text);
+  font-weight: 400;
 }
 .coverage summary::-webkit-details-marker { display: none; }
 .coverage .preview { display: block; }
@@ -162,20 +168,9 @@
     border: 1px solid var(--color-neutral-300);
     background: var(--color-raised);
   }
-  .publisherIndex > summary {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: 44px;
-    padding: 0 var(--space-3);
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .publisherIndex > summary > span {
-    color: var(--color-neutral-600);
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-  }
+  /* Type, colour and chevron come from the shared disclosure style
+     (globals.css); the module only gives the row its 44px height. */
+  .publisherIndex > summary { padding: 12px var(--space-3); line-height: 20px; }
   .publisherIndex nav { padding: 0 var(--space-3) var(--space-3); }
   .publisherIndex ul {
     display: flex;
@@ -211,9 +206,8 @@
 
   /* The name link is the card's only control: give it a full touch target. */
   .sources th[scope="row"] a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
+    display: inline-block;
+    padding-block: 12px;
   }
   .sources th[scope="row"] small { margin: 0 0 var(--space-2); }
 
@@ -235,7 +229,8 @@
     margin-inline: 6px;
   }
   /* The sub-group note under the title already gives the cadence. */
-  .sources td.cadenceShared { display: none; }
+  .clusterNote { display: block; }
+  .sources td.cadenceInGroup { display: none; }
   .sources .clusterRow th { padding-left: 16px; border-bottom: 0; }
   /* The card's cells are blocks: indent the whole card, not only its name. */
   .sources .clusterMember { padding-left: 16px; }

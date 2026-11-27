@@ -95,7 +95,7 @@
 .tableWrap th,
 .tableWrap td {
   padding: 10px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   color: var(--color-text);
   font-size: 12px;
   font-weight: 520;

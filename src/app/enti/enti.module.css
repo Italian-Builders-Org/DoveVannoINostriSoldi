@@ -2,6 +2,15 @@
 .fiveUp {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
+/* Label, value and note are three shared rows: when one label wraps to two
+   lines ("Enti che dichiarano quote" on phones), every value in that row
+   still starts on the same line. */
+.fiveUp > div {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  align-content: start;
+}
 
 .searchForm {
   display: flex;
@@ -22,15 +31,18 @@
   border: 0;
 }
 
+/* When the meta line wraps under the title (phones), it sits 8px below it
+   and 12px above the list's first rule. */
 .resultsHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
+  row-gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 }
-.resultsHead :global(.panel-title),
-.resultsHead > h2 { margin-bottom: var(--space-3); }
+.resultsHead > h2 { margin: 0; }
 .resultsHead > span {
   font-size: 12px;
   color: var(--color-neutral-600);
@@ -106,16 +118,7 @@
   padding-top: var(--space-3);
   border-top: 1px solid var(--color-divider);
 }
-.details summary {
-  cursor: pointer;
-  font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
-}
-.details summary:hover { color: var(--color-accent-700); }
+/* The summary takes the shared disclosure style (globals.css). */
 .details p {
   margin: var(--space-3) 0 0;
   font-size: 13px;
@@ -179,6 +182,8 @@
   border-top: 1px solid var(--color-neutral-300);
 }
 .typeGroup { border-bottom: 1px solid var(--color-neutral-300); }
+/* The panel edge closes the list: a last divider left a stray line above it. */
+.typeGroup:last-child { border-bottom: 0; }
 .typeGroup > summary {
   display: flex;
   align-items: center;
@@ -273,9 +278,8 @@
   border-top: 1px solid var(--color-divider);
   cursor: pointer;
   list-style: none;
+  /* Colour and weight: .disclosure-more (globals.css). */
   font-size: 13px;
-  font-weight: 600;
-  color: var(--color-accent-700);
 }
 .moreEntities > summary::-webkit-details-marker { display: none; }
 .moreEntities > summary:active { background: var(--color-neutral-200); }
@@ -304,6 +308,19 @@
 @media (prefers-reduced-motion: reduce) {
   .rowChevron,
   .moreChevron { transition: none; }
+}
+
+/* "Tutte le partecipazioni": semibold like the other card actions. Beside
+   the title on wide screens; on phones a full-width row closing the card. */
+.allLink {
+  color: var(--color-accent-700);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.endLink { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .allLink:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 /* The type is a table column on wide screens and a chip under the name on
@@ -351,4 +368,21 @@
   }
   .searchForm { flex-direction: column; }
   .bigNumber { font-size: 30px; }
+  .headLink { display: none; }
+  .endLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 48px;
+    margin-top: var(--space-3);
+    border-top: 1px solid var(--color-divider);
+  }
+  .endLink:active { background: var(--color-neutral-200); }
+}
+
+/* Right-aligned counts read the same in every /enti table and list. */
+.edgeTable td.num {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }

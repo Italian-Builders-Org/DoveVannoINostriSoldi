@@ -72,7 +72,7 @@
   grid-column: 1 / -1;
   margin: 0;
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
   color: var(--color-neutral-600);
   font-size: 11px;
 }
@@ -216,7 +216,7 @@
 }
 .glossary > div {
   padding: var(--space-4) 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .glossary dt { font-weight: 700; }
 .glossary dd { margin: 4px 0 0; color: var(--color-neutral-700); }
@@ -234,7 +234,7 @@
   grid-template-columns: minmax(130px, .6fr) minmax(0, 1fr);
   gap: var(--space-3);
   padding: 8px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .metadata dt { color: var(--color-neutral-600); }
 .metadata dd { margin: 0; overflow-wrap: anywhere; }

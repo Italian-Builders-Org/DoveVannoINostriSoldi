@@ -146,7 +146,7 @@ export default async function HomePage({
             <div className={styles.askFoot}>
               <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
               <a className={styles.askChatgpt} href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="Usa DVNS su ChatGPT (nuova scheda)">
-                <BrandIcon name="chatgpt" size={15} />Usa DVNS anche su ChatGPT<span aria-hidden="true">↗</span>
+                <BrandIcon name="chatgpt" size={15} /><span className="link-external">Usa DVNS anche su ChatGPT</span>
               </a>
             </div>
           </div>

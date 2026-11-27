@@ -17,21 +17,32 @@
   --glyph-arrow-up-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7'/%3E%3Cpath d='M8.5 7H17v8.5'/%3E%3C/svg%3E");
 }
 
-/* Disclosures: every <details> shows the same chevron-down after its label,
-   turning to point up when open, instead of the UA triangle. Zero
-   specificity (:where) so module rules still set layout and colour; a summary
-   that already carries an icon keeps it as its only indicator. A module that
-   needs no chevron sets `summary::after { content: none; }`. */
-:where(details) > summary { list-style: none; cursor: pointer; }
+/* Disclosures: one look on every page. The label is sentence case, weight
+   600, body colour; a 16px chevron-down sits 8px after it and turns to point
+   up when open (no UA triangle). Zero specificity (:where) so modules still
+   set layout (display, padding, min-height, size); they should not restyle the
+   label itself. A summary that already carries an icon keeps it as its only
+   indicator; a module that needs no chevron sets `summary::after { content: none; }`.
+   List expanders ("Mostra tutti", "Mostra tutto") add `.disclosure-more` on the
+   summary: the only disclosures in the accent colour. */
+:where(details) > summary {
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: none;
+  letter-spacing: normal;
+}
 :where(details) > summary::-webkit-details-marker { display: none; }
 :where(details) > summary:not(:has(svg))::after {
   content: "";
   display: inline-block;
   flex: none;
-  width: 1.15em;
-  height: 1.15em;
-  margin-left: .35em;
-  vertical-align: -.22em;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  vertical-align: -3px;
   background-color: currentColor;
   -webkit-mask: var(--glyph-chevron-down) center / contain no-repeat;
   mask: var(--glyph-chevron-down) center / contain no-repeat;
@@ -41,20 +52,23 @@
 @media (prefers-reduced-motion: reduce) {
   :where(details) > summary:not(:has(svg))::after { transition: none; }
 }
+:where(details) > summary.disclosure-more { color: var(--color-accent-700); }
 
 /* Inline link arrows: internal destinations end with chevron-right,
-   external ones with arrow-up-right. Same glyphs as <Icon>. */
+   external ones with arrow-up-right. Same glyphs as <Icon>. The glyph is an
+   inline box holding a word joiner (U+2060) and drawn in its padding: the
+   joiner forbids a line break between the last word and the arrow, so the
+   arrow never wraps alone onto the next line (an inline-block would allow
+   that break). */
 .link-arrow::after,
 .link-external::after {
-  content: "";
-  display: inline-block;
-  width: 1em;
-  height: 1em;
+  content: "\2060";
+  display: inline;
+  padding-left: 1em;
   margin-left: .25em;
-  vertical-align: -.15em;
   background-color: currentColor;
-  -webkit-mask: var(--glyph-chevron-right) center / contain no-repeat;
-  mask: var(--glyph-chevron-right) center / contain no-repeat;
+  -webkit-mask: var(--glyph-chevron-right) right center / 1em 1em no-repeat;
+  mask: var(--glyph-chevron-right) right center / 1em 1em no-repeat;
 }
 .link-external::after {
   -webkit-mask-image: var(--glyph-arrow-up-right);
@@ -615,14 +629,20 @@ main { display: block; }
   padding-block: var(--space-6) 0;
 }
 
+/* One page header everywhere: the H1 sits 24px under the section nav, its
+   lead 12px under it at 16px, and the content starts 24px below (the .page
+   gap plus this margin). Pages with their own intro markup should use these
+   classes rather than restating the spacing. */
+.page > .page-intro { margin-bottom: var(--space-2); }
 .page-intro h1 {
   margin: 0;
   font-size: 30px;
 }
 .page-intro p {
-  margin: 6px 0 0;
-  max-width: 78ch;
-  font-size: 14px;
+  margin: 12px 0 0;
+  max-width: 68ch;
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--color-neutral-700);
 }
 
@@ -693,7 +713,14 @@ main { display: block; }
   .footer-actions { justify-content: flex-start; }
   .footer-social ul { margin-inline: -12.5px 0; }
 }
-@media (pointer: coarse) {
+/* Seven service links: a 4+3 grid keeps the rows even instead of leaving
+   one word alone on the second line. */
+@media (max-width: 620px) {
+  .footer-actions { display: grid; grid-template-columns: repeat(4, max-content); justify-content: start; gap: 0 18px; }
+}
+/* Touch sizing also applies at phone width, so a narrow window, a phone
+   that reports a fine pointer and phone-width screenshots agree. */
+@media (pointer: coarse), (max-width: 620px) {
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle, .desktop-sidebar .nav-submenu a { min-height: 44px; }
   .footer-makers a, .footer-backer a { min-height: 44px; }
   /* Short words ("Fonti", 27px) get a 44px-wide target from the gaps between
@@ -858,9 +885,6 @@ main { display: block; }
   min-height: 44px;
   display: flex;
   align-items: center;
-  cursor: pointer;
-  color: var(--color-accent-700);
-  font-weight: 700;
 }
 .chart-data .table-scroll {
   width: 100%;
@@ -941,8 +965,7 @@ body { --announcement-height: 44px; }
 
 #contenuto-principale h1 { font-family: var(--font-body); font-size: clamp(28px, 3vw, 40px); font-weight: 600; line-height: 1.15; letter-spacing: -.025em; }
 .data-details { border-top: 1px solid var(--color-neutral-300); }
-.data-details > summary { min-height: 48px; padding-block: 12px; cursor: pointer; font-weight: 600; }
-.data-details > summary:hover { color: var(--color-text); }
+.data-details > summary { min-height: 48px; padding-block: 12px; }
 .data-details[open] > summary { margin-bottom: 12px; }
 
 .table-details {
@@ -955,9 +978,6 @@ body { --announcement-height: 44px; }
 .table-details summary {
   min-height: 44px;
   padding-block: 12px;
-  cursor: pointer;
-  font-weight: 400;
-  list-style-position: inside;
 }
 
 /* Shared shell: the full menu opens on request at every viewport. */

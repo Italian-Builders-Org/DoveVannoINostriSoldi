@@ -325,7 +325,7 @@ test("panoramica: period selectors end at the card edge and the map box uses pla
 
 test("footer: touch targets reach 44px and social glyphs align with the text edge", async () => {
   const css = await source("../src/app/globals.css");
-  const coarse = css.match(/@media \(pointer: coarse\) \{[\s\S]*?\n\}/)[0];
+  const coarse = css.match(/@media \(pointer: coarse\), \(max-width: 620px\) \{[\s\S]*?\n\}/)[0];
   assert.match(coarse, /\.footer-actions a::after[^{]*\{[^}]*inset: 0 -9px;/);
   assert.match(css, /\.footer-social ul \{[^}]*margin-inline-end: -12\.5px;/);
   assert.match(css, /@media \(max-width: 900px\) \{[^@]*\.footer-social ul \{ margin-inline: -12\.5px 0; \}/);
@@ -339,4 +339,38 @@ test("home cards share one label style and one footer link style", async () => {
   assert.match(pathways.match(/\.previewLink \{[^}]*\}/)[0], link);
   assert.match(home.match(/\.anomaliesLink \{[^}]*\}/)[0], link);
   assert.match(pathways.match(/\.institutionLinks a \{[^}]*\}/)[0], /font-weight: 600;/);
+});
+
+test("disclosures share one label style and list expanders alone take the accent", async () => {
+  // Regression (round 5): the same <summary> read regular, bold, accent or
+  // letter-spaced caps depending on the page.
+  const css = await source("../src/app/globals.css");
+  const base = css.match(/:where\(details\) > summary \{[^}]*\}/)[0];
+  for (const rule of [/font-weight: 600;/, /color: var\(--color-text\);/, /text-transform: none;/, /letter-spacing: normal;/]) assert.match(base, rule);
+  const chevron = css.match(/:where\(details\) > summary:not\(:has\(svg\)\)::after \{[^}]*\}/)[0];
+  assert.match(chevron, /width: 16px;[\s\S]*height: 16px;[\s\S]*margin-left: 8px;/);
+  assert.match(css, /summary\.disclosure-more \{ color: var\(--color-accent-700\); \}/);
+  // Shared disclosures must not restyle the label back.
+  assert.doesNotMatch(css.match(/\.chart-data summary \{[^}]*\}/)[0], /color|font-weight/);
+  assert.doesNotMatch(await source("../src/components/spending-reading-guide.module.css"), /summary \{[^}]*font-weight/);
+});
+
+test("an external or internal link arrow never wraps alone onto the next line", async () => {
+  // Regression (/fonti): "... (EPEA)" then "↗" alone on the next line. An
+  // inline-block glyph leaves a break opportunity before it; an inline box
+  // that starts with a word joiner (U+2060) does not.
+  const css = await source("../src/app/globals.css");
+  const glyph = css.match(/\.link-arrow::after,\s*\.link-external::after \{[^}]*\}/)[0];
+  assert.match(glyph, /content: "\\2060";/);
+  assert.match(glyph, /display: inline;/);
+  assert.doesNotMatch(glyph, /inline-block/);
+});
+
+test("the current breadcrumb reads the same on every page and page intros share one rhythm", async () => {
+  const [nav, css] = await Promise.all([source("../src/components/section-nav.module.css"), source("../src/app/globals.css")]);
+  // /cerca and /dvns-index print the current crumb as a span: it must match
+  // the section picker (body colour, 600), not the grey links before it.
+  assert.match(nav, /\.breadcrumb \[aria-current="page"\] \{[^}]*color: var\(--color-text\);[^}]*font-weight: 600;/);
+  assert.match(css, /\.page-intro p \{[^}]*margin: 12px 0 0;[^}]*font-size: 16px;/);
+  assert.match(css, /\.page > \.page-intro \{[^}]*margin-bottom: var\(--space-2\);/);
 });

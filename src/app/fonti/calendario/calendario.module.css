@@ -21,7 +21,7 @@
   gap: 24px;
   align-items: center;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .kicker {
@@ -50,8 +50,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 0;
-  border-top: 1px solid var(--color-neutral-200);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .summary div {
@@ -61,7 +61,7 @@
 
 .summary div:nth-child(odd) {
   padding-right: 18px;
-  border-right: 1px solid var(--color-neutral-200);
+  border-right: 1px solid var(--color-divider);
 }
 
 .summary div:nth-child(even) {
@@ -91,7 +91,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   padding: 16px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .explainer h2 {
@@ -146,7 +146,7 @@
   align-items: center;
   min-height: 156px;
   padding: 24px 4px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .date span,
@@ -322,7 +322,7 @@
   .summary div:nth-child(even) {
     padding: 13px 0;
     border-right: 0;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: 1px solid var(--color-divider);
   }
 
   .summary div:last-child {

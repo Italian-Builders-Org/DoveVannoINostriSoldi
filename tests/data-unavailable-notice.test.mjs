@@ -68,6 +68,18 @@ test("a retry action is a secondary link to the same page, after the primary way
   assert.doesNotMatch(html, /<button/);
 });
 
+test("the primary way out ends with a chevron like the other navigation CTAs; Riprova does not", () => {
+  const html = renderToStaticMarkup(createElement(DataUnavailableNotice, {
+    title: "Classifica non disponibile",
+    action: { href: "/comuni", label: "Vai alla mappa dei Comuni" },
+    retry: { href: "/dvns-index", label: "Riprova" },
+  }, "Riprova più tardi."));
+  const primary = html.match(/<a[^>]*href="\/comuni"[^>]*>([\s\S]*?)<\/a>/)[1];
+  assert.match(primary, /Vai alla mappa dei Comuni<svg[^>]*aria-hidden="true"/);
+  const retry = html.match(/<a[^>]*href="\/dvns-index"[^>]*>([\s\S]*?)<\/a>/)[1];
+  assert.equal(retry, "Riprova");
+});
+
 test("the DVNS Index notice says what the Index is and offers a retry on the same URL", () => {
   const source = readFileSync(new URL("../src/app/dvns-index/page.tsx", import.meta.url), "utf8");
   const unavailable = source.slice(source.indexOf("function Unavailable"), source.indexOf("function BandBadge"));

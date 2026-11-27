@@ -360,7 +360,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           </ul>
           {centralAdministrations.records.length > CENTRAL_VISIBLE_ON_PHONES ? (
             <details className={styles.moreEntities}>
-              <summary>
+              <summary className="disclosure-more">
                 <span className={styles.moreClosed}>
                   Mostra tutti ({integer(centralAdministrations.records.length)})
                 </span>
@@ -434,7 +434,9 @@ export default async function EntiPage({ searchParams }: PageProps) {
       <section className="panel">
         <div className={styles.resultsHead}>
           <h2 className="panel-title">Le società con più enti soci</h2>
-          <Link className="link-arrow" href="/partecipazioni">Tutte le partecipazioni</Link>
+          {/* Wide screens: beside the title. Phones: a full-width row at
+              the end of the card (below), after the table it leads to. */}
+          <Link className={`link-arrow ${styles.allLink} ${styles.headLink}`} href="/partecipazioni">Tutte le partecipazioni</Link>
         </div>
         <div className="table-scroll" role="region" aria-label="Partecipazioni pubbliche" tabIndex={0}>
           <table className={`table ${styles.edgeTable}`}>
@@ -459,6 +461,10 @@ export default async function EntiPage({ searchParams }: PageProps) {
           Quasi tutte gestiscono servizi condivisi tra molti Comuni: acqua, energia, informatica,
           riscossione. Per questo hanno centinaia di enti soci.
         </p>
+        <Link className={`${styles.allLink} ${styles.endLink}`} href="/partecipazioni">
+          Tutte le partecipazioni
+          <Icon name="chevron-right" size={18} />
+        </Link>
       </section>
 
       <section className="panel">
@@ -467,8 +473,8 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <div>
             <dt>Registro degli enti</dt>
             <dd>
-              <a href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">
-                IPA · AgID ↗
+              <a className="link-external" href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">
+                IPA · AgID
               </a>
             </dd>
           </div>
@@ -485,8 +491,8 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <div>
             <dt>Partecipazioni</dt>
             <dd>
-              <a href={participations.source.landingUrl} target="_blank" rel="noreferrer">
-                MEF · open data {participations.referenceYear} ↗
+              <a className="link-external" href={participations.source.landingUrl} target="_blank" rel="noreferrer">
+                MEF · open data {participations.referenceYear}
               </a>
             </dd>
           </div>

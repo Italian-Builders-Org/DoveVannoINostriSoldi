@@ -21,7 +21,7 @@ export function DataUnavailableNotice({ title, action, retry, children }: Readon
         <strong>{title}</strong>
         <p>{children}</p>
         <div className="data-unavailable-actions">
-          <Link prefetch={false} href={action.href} className="btn btn-primary">{action.label}</Link>
+          <Link prefetch={false} href={action.href} className="btn btn-primary">{action.label}<Icon name="chevron-right" size={16} /></Link>
           {/* A plain anchor, not next/link: a retry must reach the server again. */}
           {retry ? <a href={retry.href} className="btn btn-secondary">{retry.label}</a> : null}
         </div>

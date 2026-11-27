@@ -26,7 +26,8 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
+  /* 260px: "Italia, da gennaio a settembre 2026" fits one line. */
+  grid-template-columns: minmax(0, 1fr) 260px;
   gap: var(--space-3);
   align-items: start;
 }
@@ -239,7 +240,7 @@
     display: block;
     margin-top: var(--space-3);
     padding-top: var(--space-2);
-    border-top: 1px solid var(--color-neutral-200);
+    border-top: 1px solid var(--color-divider);
   }
   .mobilePeriod :global(nav) { width: 100%; }
   .mobileSelector select {

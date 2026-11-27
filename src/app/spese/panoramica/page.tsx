@@ -321,8 +321,9 @@ export default async function SpendingOverviewPage({
                 observedAt: longDate(siope.source.observedAt),
               }}
             />
-            <Link prefetch={false} className={`btn btn-secondary ${styles.detailLink}`} href={`/spese?anno=${year}`}>
+            <Link prefetch={false} className={`${styles.inlineLink} ${styles.detailLink}`} href={`/spese?anno=${year}`}>
               Dettaglio delle spese
+              <Icon name="chevron-right" data-link-arrow="true" size={16} />
             </Link>
           </section>
         </div>
@@ -343,9 +344,10 @@ export default async function SpendingOverviewPage({
                     Di cui {compactEuro(siope.coverage.paymentsWithoutRegion)} senza regione IPA,
                     esclusi dalla mappa
                   </small>
-                  <small>
-                    <Link prefetch={false} href={`/territori?anno=${year}`}>Apri Territori</Link>
-                  </small>
+                  <Link prefetch={false} className={styles.inlineLink} href={`/territori?anno=${year}`}>
+                    Apri i territori
+                    <Icon name="chevron-right" data-link-arrow="true" size={16} />
+                  </Link>
                 </div>
               </div>
             }

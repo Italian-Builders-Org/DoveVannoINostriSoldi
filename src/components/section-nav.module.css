@@ -11,6 +11,9 @@
 
 .breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; color: var(--color-neutral-600); }
 .breadcrumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
+/* The current page reads like the section picker on every page: /cerca and
+   /dvns-index print it as a plain crumb, sections as the picker. */
+.breadcrumb [aria-current="page"] { color: var(--color-text); font-weight: 600; }
 @media (hover: hover) and (pointer: fine) {
   .breadcrumb a:hover { color: var(--color-accent-700); text-decoration: underline; }
   .label:hover { color: var(--color-accent-700); }
@@ -97,6 +100,9 @@
   /* The manual-copy fallback (an input) needs the full row. */
   .shareSlot:has(input) { grid-column: 1 / -1; }
   .breadcrumb a { min-height: 44px; }
+  /* "Home" is 35px wide: its hit area grows into half of each 10px gap. */
+  .breadcrumb a { position: relative; }
+  .breadcrumb a::after { content: ""; position: absolute; inset: 0 -5px; }
   /* One line at every phone width: the middle crumb gives way first
      ("Enti e soc…"), then the picker's own ellipsis. */
   .trail { flex-wrap: nowrap; }

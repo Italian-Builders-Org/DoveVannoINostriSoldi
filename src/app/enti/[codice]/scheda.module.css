@@ -129,7 +129,7 @@
   gap: var(--space-4);
   margin: 0 0 var(--space-4);
   padding-bottom: var(--space-4);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 .structureSummary dt {
   font-size: 11px;
@@ -182,7 +182,7 @@
 }
 
 .officeOrgans details {
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   min-width: 0;
 }
 
@@ -217,7 +217,7 @@
 }
 
 .officeMembers li {
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
   min-width: 0;
   padding-top: var(--space-2);
 }
@@ -236,7 +236,7 @@
 
 .officeCompensation,
 .officeSources {
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
   margin-top: var(--space-4);
   padding-top: var(--space-3);
 }
@@ -297,7 +297,7 @@
   padding: var(--space-4);
 }
 .singlePaymentSummary { grid-template-columns: minmax(0, 1fr); }
-.paymentSummary > div + div { border-left: 1px solid var(--color-neutral-200); }
+.paymentSummary > div + div { border-left: 1px solid var(--color-divider); }
 
 .paymentSummary dt {
   color: var(--color-neutral-700);
@@ -337,7 +337,7 @@
   min-width: 0;
   padding: var(--space-4);
 }
-.paymentFacts > div + div { border-left: 1px solid var(--color-neutral-200); }
+.paymentFacts > div + div { border-left: 1px solid var(--color-divider); }
 .paymentFacts dd { font-size: 19px; overflow-wrap: normal; }
 
 .peerBenchmark {
@@ -481,7 +481,7 @@
   align-items: start;
   gap: var(--space-3);
   padding: 12px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .spendingCopy {
@@ -759,14 +759,14 @@
   margin: var(--space-4) 0 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .projectList li {
   display: grid;
   gap: 4px;
   padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .projectList a { font-weight: 650; }
@@ -800,7 +800,7 @@
   grid-template-columns: minmax(180px, .8fr) minmax(240px, 1.5fr);
   gap: var(--space-3);
   padding: 9px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .methodDetails dt { font-size: 12px; font-weight: 650; }
 .methodDetails dd { margin: 0; color: var(--color-neutral-600); font-size: 12px; }
@@ -860,7 +860,7 @@
 
 .informationContent > section + section {
   padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .informationContent h2 {
@@ -957,7 +957,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-2) var(--space-3);
     padding: var(--space-3);
-    border: 1px solid var(--color-neutral-200);
+    border: 1px solid var(--color-divider);
     background: var(--color-neutral-100);
   }
 

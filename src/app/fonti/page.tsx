@@ -35,6 +35,14 @@ const publisherGroups = groupSourcesByPublisher(publicSources).map((group) => ({
 
 type SourceEntry = (typeof publisherGroups)[number]["sources"][number];
 
+// An external link's label with the shared arrow-up-right glyph
+// (.link-external in globals.css): a mask joined to the last word by a word
+// joiner, so it never wraps alone. An inline <Icon> could not do this, because
+// every <svg> is display:block site-wide.
+function External({ label }: { label: string }) {
+  return <span className="link-external">{label}</span>;
+}
+
 // What the "Periodo coperto" column shows. It comes before the cadence so a
 // phone card reads "2014-2024 · Annuale" as one line in source order. Dates are the reference date of
 // the latest data ("al ..."); periods are shown as published, with plain
@@ -53,9 +61,9 @@ function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): s
   return [area, detail].filter(Boolean).join(" · ") || null;
 }
 
-// `cadenceInHeading`: the theme sub-group heading already states the cadence
-// shared by all its rows. The cell keeps a muted dot, so it does not read as
-// a missing value, and tells screen readers where the cadence is.
+// `cadenceInHeading`: the theme sub-group heading states the cadence shared by
+// all its rows. Wide tables still show it in each row's column (a lone dot
+// read as missing data); phone cards drop it, since the heading note says it.
 function SourceRow({
   entry,
   inCluster,
@@ -79,7 +87,7 @@ function SourceRow({
           rel="noreferrer"
           aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
         >
-          {title} ↗
+          <External label={title} />
         </a>
         {note ? <small>{note}</small> : null}
       </th>
@@ -88,7 +96,7 @@ function SourceRow({
             preview is the visual stand-in while the details are closed. */}
         {preview ? (
           <details className={styles.coverage}>
-            <summary>
+            <summary className="disclosure-more">
               <span className={styles.preview} aria-hidden="true">{preview}</span>
               <span className={styles.full}>{coverage}</span>
             </summary>
@@ -96,14 +104,9 @@ function SourceRow({
         ) : coverage}
       </td>
       <td role="cell" className={styles.latest}>{period}</td>
-      {cadenceInHeading ? (
-        <td role="cell" className={`${styles.cadence} ${styles.cadenceShared}`}>
-          <span aria-hidden="true">·</span>
-          <span className={styles.visuallyHidden}>come indicato nel gruppo</span>
-        </td>
-      ) : (
-        <td role="cell" className={styles.cadence}>{plainRangeLabel(source.cadence)}</td>
-      )}
+      <td role="cell" className={cadenceInHeading ? `${styles.cadence} ${styles.cadenceInGroup}` : styles.cadence}>
+        {plainRangeLabel(source.cadence)}
+      </td>
     </tr>
   );
 }
@@ -204,7 +207,7 @@ export default function SourcesPage() {
         <p>ARERA, rendiconti 2024-2025: <Link href="/dati/arera-entrate-2024-2025?q=E.1.01.01.99">contributi di funzionamento</Link>,{" "}
           <Link href="/dati/arera-entrate-2024-2025">tutte le entrate</Link>{" "}
           e <Link href="/dati/arera-spese-2024-2025">spese per titolo</Link>. Fonte ARERA, licenza{" "}
-          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0 ↗</a>.
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer"><External label="CC BY-SA 4.0" /></a>.
         </p>
         <p><Link href="/dati/ade-cinque-per-mille-territori-2024">5 per mille 2024 per territorio</Link>{" "}
           e <a href="/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip" download>CSV originali (ZIP)</a>. Fonte: Agenzia delle Entrate. Importi erogabili, non pagamenti verificati.</p>
@@ -212,11 +215,11 @@ export default function SourcesPage() {
           <summary>Fonti non ancora integrate</summary>
           <p>I collegamenti seguenti portano ai dati degli enti: non sono ancora interrogabili su DVNS.</p>
           <ul>
-            <li>Consorzi di bonifica: <a href="https://www.consorziobonificalitoralenord.it/amministrazione-trasparente/" target="_blank" rel="noreferrer">Litorale Nord ↗</a>{" "}
-              (successore di Tevere e Agro Romano) e <a href="https://www.consorziobonifica8rg.it/amministrazione-trasparente/bilanci/bilancio-preventivo-e-consuntivo.html" target="_blank" rel="noreferrer">Ragusa ↗</a>.</li>
-            <li>Contributi ambientali: <a href="https://www.conai.org/" target="_blank" rel="noreferrer">CONAI ↗</a>.</li>
-            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer">8 per mille ↗</a>{" "}
-              e <a href="https://www1.finanze.gov.it/finanze/2xmille/public/index.php?tree=2025AADUEXM0101" target="_blank" rel="noreferrer">2 per mille ↗</a>.</li>
+            <li>Consorzi di bonifica: <a href="https://www.consorziobonificalitoralenord.it/amministrazione-trasparente/" target="_blank" rel="noreferrer"><External label="Litorale Nord" /></a>{" "}
+              (successore di Tevere e Agro Romano) e <a href="https://www.consorziobonifica8rg.it/amministrazione-trasparente/bilanci/bilancio-preventivo-e-consuntivo.html" target="_blank" rel="noreferrer"><External label="Ragusa" /></a>.</li>
+            <li>Contributi ambientali: <a href="https://www.conai.org/" target="_blank" rel="noreferrer"><External label="CONAI" /></a>.</li>
+            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer"><External label="8 per mille" /></a>{" "}
+              e <a href="https://www1.finanze.gov.it/finanze/2xmille/public/index.php?tree=2025AADUEXM0101" target="_blank" rel="noreferrer"><External label="2 per mille" /></a>.</li>
           </ul>
         </details>
       </section>
@@ -251,7 +254,7 @@ export default function SourcesPage() {
               {[...companyAtlasSourceList, istatTurnoverSourceMetadata].map((source) => (
                 <tr key={source.id}>
                   <th scope="row">
-                    <a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a>
+                    <a href={source.url} target="_blank" rel="noreferrer"><External label={source.label} /></a>
                   </th>
                   <td>{source.coverage}</td>
                   <td>{shortDate(source.updatedAt)} · osservato {shortDate(source.observedAt)}</td>

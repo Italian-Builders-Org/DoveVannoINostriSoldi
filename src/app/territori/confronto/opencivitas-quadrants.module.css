@@ -315,7 +315,7 @@
 .provenance {
   margin: var(--space-5) 0 0;
   padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
   line-height: 1.5;
 }
 

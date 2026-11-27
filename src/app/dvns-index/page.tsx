@@ -82,9 +82,10 @@ function Unavailable() {
     <main className="shell page">
       <div className="page-intro">
         <h1>DVNS Index</h1>
+        <p>Confronta oltre 6.000 Comuni su sei aspetti della spesa, dai servizi resi ai tempi di pagamento.</p>
       </div>
-      <DataUnavailableNotice title="Classifica non disponibile" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }}>
-        Mostriamo i punteggi solo quando i dati sono verificati. Riprova più tardi.
+      <DataUnavailableNotice title="Classifica non disponibile" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }} retry={{ href: PAGE_PATH, label: "Riprova" }}>
+        Mostriamo i punteggi solo con dati verificati, che in questo momento non sono disponibili.
       </DataUnavailableNotice>
     </main>
   );

@@ -93,11 +93,6 @@ function locationLabel(indirizzo: string | null, cap: string | null): string {
   return indirizzo ?? cap ?? "Sede non indicata nel record IPA";
 }
 
-function centralCategory(entity: { codiceIpa: string; codiceNatura: string | null }): string {
-  if (entity.codiceIpa === "PCM") return "Presidenza del Consiglio";
-  return entity.codiceNatura === "2220" ? "Ministero" : "Amministrazione centrale";
-}
-
 function observedAtLabel(value: string | null): string {
   if (!value) return "Non disponibile";
   const date = new Date(value);
@@ -340,33 +335,22 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <section className="panel" id="amministrazioni-centrali">
           <div className={styles.resultsHead}>
             <h2 className="panel-title">Ministeri, Presidenza e Avvocatura</h2>
-            <span>{integer(centralAdministrations.total)} enti · aggiornamento giornaliero</span>
+            <span>
+              {integer(centralAdministrations.total)} enti · amministrazioni centrali · aggiornamento giornaliero
+            </span>
           </div>
-          <div className="table-scroll" role="region" aria-label="Principali enti pubblici" tabIndex={0}>
-            <table className={`table ${styles.entities}`}>
-              <thead className={styles.mobileHiddenHead}>
-                <tr>
-                  <th scope="col">Amministrazione</th>
-                  <th scope="col" className={styles.typeCell}>Categoria</th>
-
-                </tr>
-              </thead>
-              <tbody>
-                {centralAdministrations.records.map((entity) => (
-                  <tr key={entity.codiceIpa}>
-                    <th scope="row">
-                      <Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
-                        {displayEntityName(entity.denominazione)}
-                      </Link>
-                      <small className={styles.code}>IPA <code>{entity.codiceIpa}</code></small>
-                      <span className={styles.typeChip}>{centralCategory(entity)}</span>
-                    </th>
-                    <td className={styles.typeCell}>{centralCategory(entity)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {/* Every record here is IPA category C1, so the category is said once
+              in the heading line instead of as a chip on each row. */}
+          <ul className={styles.entityList} aria-label="Amministrazioni centrali">
+            {centralAdministrations.records.map((entity) => (
+              <li key={entity.codiceIpa}>
+                <Link prefetch={false} href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
+                  <span className={styles.entityName}>{displayEntityName(entity.denominazione)}</span>
+                  <small className={styles.code}>IPA <code>{entity.codiceIpa}</code></small>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

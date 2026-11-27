@@ -94,3 +94,37 @@ test("shared caption labels use a caption token of at least 12px", () => {
     assert.match(block, /font-size: var\(--font-size-caption\)/, selector);
   }
 });
+
+test("composition tiles use the petrol data ramp and neutral steps, readable and distinct in both themes", () => {
+  // Regression: tiles were 40% tints of purple and amber, a lilac and a sand
+  // that matched nothing else on /spese/panoramica.
+  const source = fs.readFileSync(new URL("../src/components/spending-composition.module.css", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /--chart-category-/);
+  const fills = Object.fromEntries(["services", "investment", "pass-through", "financing", "other"].map((family) => {
+    const rule = source.match(new RegExp(`\\n\\.${family} \\{ background: ([^;]+); \\}`));
+    assert.ok(rule, `.${family} fill missing`);
+    return [family, rule[1]];
+  }));
+  const hex = (color) => [1, 3, 5].map((offset) => parseInt(color.slice(offset, offset + 2), 16));
+  for (const [theme, tokens] of Object.entries({ light, dark })) {
+    const resolve = (expression) => {
+      const alias = expression.match(/^var\((--[\w-]+)\)$/);
+      if (alias) return value(tokens, alias[1]);
+      const mix = expression.match(/^color-mix\(in srgb, var\((--[\w-]+)\) (\d+)%, var\((--[\w-]+)\)\)$/);
+      assert.ok(mix, `unsupported fill ${expression}`);
+      const share = Number(mix[2]) / 100;
+      const [a, b] = [hex(value(tokens, mix[1])), hex(value(tokens, mix[3]))];
+      return `#${a.map((channel, index) => Math.round(channel * share + b[index] * (1 - share)).toString(16).padStart(2, "0")).join("")}`;
+    };
+    const resolved = Object.fromEntries(Object.entries(fills).map(([family, fill]) => [family, resolve(fill)]));
+    for (const [family, fill] of Object.entries(resolved)) {
+      assert.ok(contrast(value(tokens, "--color-text"), fill) >= 4.5, `${theme} ${family}: tile text`);
+    }
+    // Neighbouring legend swatches must not be the same colour.
+    const ordered = Object.values(resolved);
+    assert.equal(new Set(ordered).size, ordered.length, `${theme}: two families share a fill`);
+    for (let index = 1; index < ordered.length; index++) {
+      assert.ok(contrast(ordered[index], ordered[index - 1]) >= 1.15, `${theme}: families ${index} and ${index + 1} too close`);
+    }
+  }
+});

@@ -158,10 +158,14 @@ test("reported chart styles stay within the registry design tokens", async () =>
   for (const css of [historyCss, barCss, registryCss, cohesionCss]) {
     assert.doesNotMatch(css, /#ffffff/i);
   }
-  for (const chart of [historyChart, barChart, registryChart]) {
+  for (const chart of [historyChart, barChart]) {
     assert.doesNotMatch(chart, /radius=\{\[[^\]]*3/);
     assert.match(chart, /radius=\{0\}/);
   }
+  // The IPA type list is plain HTML bars: same square-ended data roles.
+  assert.doesNotMatch(registryChart, /recharts/);
+  assert.doesNotMatch(registryCss, /border-radius/);
+  assert.match(registryCss, /background: var\(--chart-data-primary\)/);
 });
 
 test("quantitative bars reserve red for alerts and actions", async () => {
@@ -265,4 +269,21 @@ test("the relationship explorer uses its module styles and keeps result context"
   assert.match(explorer, /euro\.format\(r\.amount\)/);
   assert.match(explorer, /r\.confidence_note/);
   assert.doesNotMatch(explorer, /className="(?:search-input|relation-list|relation-item)"/);
+});
+
+test("the home links each destination once per section and styles sources like the rest of the site", async () => {
+  const [page, pathways, previews, pathwaysCss] = await Promise.all([
+    source("../src/app/page.tsx"),
+    source("../src/components/home-pathways.tsx"),
+    source("../src/components/home-data-previews.tsx"),
+    source("../src/components/home-pathways.module.css"),
+  ]);
+  // The header already offers "Esplora i dati"; the hero does not repeat it.
+  assert.doesNotMatch(page, /href="#esplora"/);
+  const politics = pathways.slice(pathways.indexOf('id="politica-istituzioni"'), pathways.indexOf('id="economia-societa"'));
+  const institutions = previews.slice(previews.indexOf("export function InstitutionsPreview"), previews.indexOf("export function EconomyPreviews"));
+  assert.equal((politics + institutions).match(/href="\/governi"/g)?.length, 1);
+  assert.equal((politics + institutions).match(/href="\/parlamento"/g)?.length, 1);
+  // Source links take the site link colour, as on /spese.
+  assert.doesNotMatch(pathwaysCss, /\.source a \{[^}]*color: inherit/);
 });

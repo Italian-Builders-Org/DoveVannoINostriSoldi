@@ -88,22 +88,53 @@
 .noData { fill: var(--color-neutral-200); background: var(--color-neutral-200); }
 
 .legend {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-top: var(--space-2);
+  display: grid;
+  gap: 6px;
+  width: min(100%, 420px);
+  margin: var(--space-2) auto 0;
+  color: var(--color-neutral-700);
   font-size: 11px;
-  color: var(--color-neutral-600);
+  line-height: 1.3;
 }
-.legend i {
-  width: 26px;
+.legendTitle {
+  color: var(--color-neutral-700);
+  font-size: 12px;
+}
+/* One swatch per class with its range underneath, five equal columns. */
+.legendClasses {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.legendClasses li {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.legendClasses i {
+  display: block;
   height: 10px;
-  flex: none;
   border: 1px solid var(--color-neutral-400);
 }
-.legendEnd { white-space: nowrap; }
-.legendEnd:first-child { margin-right: var(--space-2); }
-.legendEnd:last-child { margin-left: var(--space-2); }
+.legendClasses span {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.legendOutline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.legendOutline i {
+  width: 14px;
+  height: 10px;
+  flex: none;
+  border: 2px solid var(--color-text);
+}
 
 .mobileSelector { display: none; }
 
@@ -187,9 +218,6 @@
 }
 
 @media (max-width: 760px) {
-  .legendEnd { display: none; }
-  .legend { justify-content: center; }
-
   .mapHeader {
     display: block;
     min-height: 0;
@@ -238,9 +266,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .region { transition: none; }
-}
-
-@container regional-map (max-width: 400px) {
-  .legendEnd { display: none; }
-  .legend { justify-content: center; }
 }

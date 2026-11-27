@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-import { groupSourcesByPublisher, sourcePublisher } from "../src/lib/source-publishers.ts";
+import { clusterPublisherSources, groupSourcesByPublisher, plainRangeLabel, publisherAnchor, sourcePublisher, subtitleRepeatsTitle } from "../src/lib/source-publishers.ts";
 
 // Dynamic: sources.ts uses the @/ alias, registered by the helper above.
 const { publicSources } = await import("../src/lib/sources.ts");
@@ -42,4 +42,55 @@ test("a source name drops the publisher prefix already shown by its group headin
   ]);
   const titles = Object.fromEntries(groups.flatMap((group) => group.sources.map((entry) => [entry.source.slug, entry.title])));
   assert.deepEqual(titles, { a: "Povertà assoluta", b: "ISTAT SITUAS", c: "OpenBDAP", d: "gov_10a_main" });
+});
+
+test("a subtitle that paraphrases the title is recognised, a distinct one is kept", () => {
+  // Regression: /fonti showed "Consumi finali della PA per funzione" over
+  // "Consumi finali delle Amministrazioni pubbliche per funzione".
+  assert.equal(subtitleRepeatsTitle("Consumi finali della PA per funzione (COFOG)", "Consumi finali delle Amministrazioni pubbliche per funzione"), true);
+  assert.equal(subtitleRepeatsTitle("Spesa pubblica per funzione (COFOG)", "Spesa delle Amministrazioni pubbliche per funzione"), true);
+  assert.equal(subtitleRepeatsTitle("Debito pubblico", "Debito lordo della Pubblica amministrazione"), false);
+  assert.equal(subtitleRepeatsTitle("Povertà assoluta", "Condizioni economiche delle famiglie"), false);
+  assert.equal(subtitleRepeatsTitle("Spesa sanitaria SHA", "Spesa sanitaria per schema di finanziamento (SHA)"), false);
+  assert.equal(subtitleRepeatsTitle("Senato", ""), false);
+});
+
+test("sources sharing a theme are grouped once, with only their distinguishing label", () => {
+  // Regression: "Benessere equo e sostenibile dei territori" was repeated on
+  // twelve consecutive rows under ISTAT.
+  const entry = (slug, title, area) => ({ source: { slug, name: title, owner: "ISTAT", area }, title, detail: null });
+  const bes = "Benessere equo e sostenibile dei territori";
+  const items = clusterPublisherSources([
+    entry("cofog", "Consumi finali della PA", "Conti"),
+    entry("bes-a", "BES dei territori, benessere economico", bes),
+    entry("bes-b", "BES dei territori, Salute", bes),
+    entry("sit", "ISTAT SITUAS", "Territori"),
+    entry("bes-c", "BES dei territori, Istruzione", bes),
+    entry("pair-a", "Povertà assoluta", "Famiglie"),
+    entry("pair-b", "Povertà relativa", "Famiglie"),
+  ]);
+  assert.deepEqual(items.map((item) => item.kind === "cluster" ? `cluster:${item.label}` : item.entry.source.slug), [
+    "cofog", `cluster:${bes}`, "sit", "pair-a", "pair-b",
+  ]);
+  const cluster = items[1];
+  assert.deepEqual(cluster.entries.map((item) => item.title), ["Benessere economico", "Salute", "Istruzione"]);
+  // Every source is still listed exactly once.
+  const slugs = items.flatMap((item) => item.kind === "cluster" ? item.entries.map((e) => e.source.slug) : [item.entry.source.slug]);
+  assert.equal(slugs.length, 7);
+  assert.equal(new Set(slugs).size, 7);
+});
+
+test("publisher anchors are stable, unique fragment ids", () => {
+  assert.equal(publisherAnchor("RGS · Banca d'Italia"), "editore-rgs-banca-d-italia");
+  assert.equal(publisherAnchor("Presidenza del Consiglio dei ministri"), "editore-presidenza-del-consiglio-dei-ministri");
+  const groups = groupSourcesByPublisher(publicSources);
+  const anchors = groups.map((group) => publisherAnchor(group.name));
+  assert.equal(new Set(anchors).size, anchors.length);
+});
+
+test("period labels show year ranges with a plain hyphen, as the rest of the site", () => {
+  assert.equal(plainRangeLabel("2004\u20132024; periodo distinto per indicatore"), "2004-2024; periodo distinto per indicatore");
+  assert.equal(plainRangeLabel("incassi 2026 gennaio\u2013settembre"), "incassi 2026 gennaio-settembre");
+  assert.equal(plainRangeLabel("2014-2024"), "2014-2024");
+  assert.equal(plainRangeLabel("2005\u20132024 per territorio \u2013 dati ISTAT"), "2005-2024 per territorio \u2013 dati ISTAT");
 });

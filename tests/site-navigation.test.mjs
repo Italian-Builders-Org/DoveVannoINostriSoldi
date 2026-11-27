@@ -339,3 +339,31 @@ test("short pages push the footer to the bottom of the viewport", () => {
   assert.match(globalsCss, /\.site-content \{[^}]*flex: 1 0 auto;[^}]*display: flex;[^}]*flex-direction: column;/);
   assert.match(globalsCss, /#contenuto-principale \{ flex: 1 0 auto; \}/);
 });
+
+test("the section picker reads as an inline crumb and the share control keeps a visible label on phones", async () => {
+  const [component, css, share, shareCss] = await Promise.all([
+    readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/section-nav.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/share-view-button.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/share-view-button.module.css", import.meta.url), "utf8"),
+  ]);
+  // Text + chevron, not a form field.
+  assert.match(css, /\.select \{[\s\S]*?border: 0;[\s\S]*?background-color: transparent;/);
+  // DOM order is breadcrumb, picker, share: phones must not lift the share
+  // control onto the row above the picker (tab order would jump back).
+  assert.ok(component.indexOf("styles.pickerNav") < component.indexOf("ShareViewButton key"));
+  assert.doesNotMatch(css, /\.shareSlot \{[^}]*grid-row: 1;/);
+  assert.doesNotMatch(css, /\.pickerNav \{[^}]*grid-row: 2;/);
+  // "Condividi" stays visible on phones; only " questa vista" collapses.
+  assert.match(share, /Condividi<span className=\{styles\.triggerExtra\}> questa vista<\/span>/);
+  assert.doesNotMatch(shareCss, /\.triggerText \{[^}]*clip-path/);
+  assert.match(shareCss, /\.triggerExtra \{[^}]*clip-path: inset\(50%\)/);
+});
+
+test("phones reach GitHub from the menu instead of a header slot", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  const tools = navigation.slice(navigation.indexOf('className="navigation-tools"'));
+  assert.match(tools, /href=\{REPO_URL\}[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+  assert.match(navigation, /className="header-action header-action-icon header-action-repo"/);
+  assert.match(globalsCss, /@media \(max-width: 620px\) \{[\s\S]*?\.header-action-repo \{ display: none; \}/);
+});

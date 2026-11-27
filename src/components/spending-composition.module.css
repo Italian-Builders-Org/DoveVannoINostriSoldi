@@ -76,11 +76,15 @@
   align-content: center;
   padding: 0;
 }
-.services { background: color-mix(in srgb, var(--chart-category-blue) 40%, var(--color-raised)); }
-.investment { background: color-mix(in srgb, var(--chart-category-purple) 40%, var(--color-raised)); }
-.pass-through { background: color-mix(in srgb, var(--chart-category-amber) 40%, var(--color-raised)); }
-.financing { background: color-mix(in srgb, var(--chart-category-teal) 40%, var(--color-raised)); }
-.other { background: color-mix(in srgb, var(--chart-category-slate) 40%, var(--color-raised)); }
+/* Real spending (services, investment) takes the petrol data ramp used by the
+   bars and the map on the same page; accounting flows (partite di giro,
+   loans, other) are neutral steps mixed from the ink. Every fill keeps ink
+   text at AA in both themes (tests/institutional-ui-palette.test.mjs). */
+.services { background: var(--chart-map-2); }
+.investment { background: var(--chart-map-1); }
+.pass-through { background: color-mix(in srgb, var(--color-text) 34%, var(--color-raised)); }
+.financing { background: color-mix(in srgb, var(--color-text) 12%, var(--color-raised)); }
+.other { background: color-mix(in srgb, var(--color-text) 30%, var(--color-raised)); }
 
 /* Single column in the home rail (~360px); two columns only when the
    composition surface itself is wide enough for readable labels. */

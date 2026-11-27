@@ -82,3 +82,47 @@ test("trend axis labels are HTML text, so the viewBox scale cannot shrink them o
     assert.ok(Number(rule[1]) >= 11, `axis label font-size ${rule[1]}px is below 11px`);
   }
 });
+
+test("a trend whose axis does not start at zero is a line without a filled area", () => {
+  // Regression: the y axis started at 820 billion and the area under the line
+  // was filled, so the fill height exaggerated growth since 2014.
+  const points = Array.from({ length: 11 }, (_, index) => ({
+    year: 2014 + index,
+    totalEuro: (820 + index * 30) * 1e9,
+    gdpSharePercent: 50,
+  }));
+  const html = renderToStaticMarkup(createElement(HomeItalyTrendChart, { points, selectedYear: 2024 }));
+  const svg = html.match(/<svg[\s\S]*?<\/svg>/)?.[0] ?? "";
+  assert.doesNotMatch(svg, /class="trendArea"/);
+  assert.match(svg, /class="trendLine"/);
+  // The caption says the axis is cut instead of repeating the headline total
+  // and the source already named once at the end of the section.
+  const caption = html.match(/<figcaption[\s\S]*?<\/figcaption>/)?.[0] ?? "";
+  assert.match(caption, /non da zero/);
+  assert.doesNotMatch(caption, /Eurostat|1\.120,00 mld/);
+});
+
+test("a trend drawn from a zero baseline keeps its area fill", () => {
+  const points = [
+    { year: 2023, totalEuro: 0, gdpSharePercent: 0 },
+    { year: 2024, totalEuro: 5e9, gdpSharePercent: 1 },
+  ];
+  const html = renderToStaticMarkup(createElement(HomeItalyTrendChart, { points, selectedYear: 2024 }));
+  assert.match(html, /class="trendArea"/);
+  assert.doesNotMatch(html, /non da zero/);
+});
+
+test("every composition row reserves the same info column, with a trigger only where a note exists", () => {
+  // Regression: the "?" sat inside the label, so it moved with the text and
+  // only three rows had one; the bar and share columns started at different x.
+  const slices = [
+    { id: "GF10", label: "Pensioni e protezione sociale", amountEuro: 468e9, sharePercent: 42.2, href: "/a", note: "Perimetro" },
+    { id: "GF07", label: "Sanità", amountEuro: 146e9, sharePercent: 13.2, href: "/b", note: null },
+  ];
+  const html = renderToStaticMarkup(createElement(HomeItalyCompositionChart, { slices, ariaLabel: "Composizione" }));
+  const rows = html.match(/<li[\s\S]*?<\/li>/g) ?? [];
+  assert.equal(rows.length, 2);
+  for (const row of rows) assert.match(row, /class="barInfo"/);
+  assert.match(rows[0], /class="barInfo"[^>]*>[\s\S]*data-info-tooltip/);
+  assert.doesNotMatch(rows[1], /data-info-tooltip/);
+});

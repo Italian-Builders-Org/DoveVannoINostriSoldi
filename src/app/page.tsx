@@ -125,10 +125,7 @@ export default async function HomePage({
     <main className={`shell ${styles.hub}`} data-home-editorial="true">
       <header className={styles.intro}>
         <h1 className={styles.pageTitle}>Dove vanno <span>i nostri soldi?</span></h1>
-        <div className={styles.introBottom}>
-          <p className={styles.lead}>Spesa pubblica, territori e istituzioni: dati ufficiali con fonti e periodi.</p>
-          <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
-        </div>
+        <p className={styles.lead}>Spesa pubblica, territori e istituzioni: dati ufficiali con fonti e periodi.</p>
         <div className={styles.ask}>
           <form className={styles.askBar} action="/assistente" method="get" role="search" aria-label="Chiedi ai dati con l'assistente">
             <label htmlFor="home-assistant-question" className={styles.askLabel}>

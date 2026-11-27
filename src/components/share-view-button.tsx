@@ -27,7 +27,7 @@ export function ShareViewButton() {
   function close() { setManualUrl(""); setStatus(""); trigger.current?.focus(); }
 
   return <div className={styles.share}>
-    <button ref={trigger} type="button" className={styles.trigger} onClick={copyView}><span className={styles.triggerText}>Condividi questa vista</span> <Icon name="share" size={16} /></button>
+    <button ref={trigger} type="button" className={styles.trigger} onClick={copyView}><span className={styles.triggerText}>Condividi<span className={styles.triggerExtra}> questa vista</span></span> <Icon name="share" size={16} /></button>
     {status ? <span role="status" className={styles.status}>{status}</span> : null}
     {manualUrl ? <div className={styles.fallback} onKeyDown={(event) => { if (event.key === "Escape") close(); }}>
       <label htmlFor={id}>Link alla vista corrente</label>

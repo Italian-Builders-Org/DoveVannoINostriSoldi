@@ -81,11 +81,8 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
         <div className={styles.copy}>
           <h2 id="politica-istituzioni-title">Politica e istituzioni</h2>
           <p>Composizione delle istituzioni, incarichi e attività parlamentari.</p>
+          {/* Governi and Parlamento sit in the card's link list on the right: one place each. */}
           <Link prefetch={false} href="/politici" className={styles.primaryLink}>Apri la mappa della politica <Arrow /></Link>
-          <div className={styles.related}>
-            <Link prefetch={false} href="/governi">Governi a confronto</Link>
-            <Link prefetch={false} href="/parlamento">Parlamento</Link>
-          </div>
         </div>
         <InstitutionsPreview />
       </section>

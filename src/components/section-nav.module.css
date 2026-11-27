@@ -13,7 +13,8 @@
 .breadcrumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
 @media (hover: hover) and (pointer: fine) {
   .breadcrumb a:hover { color: var(--color-accent-700); text-decoration: underline; }
-  .select:hover { border-color: var(--color-neutral-500); background-color: var(--color-neutral-100); }
+  .label:hover { color: var(--color-accent-700); }
+  .select:hover { color: var(--color-accent-700); }
 }
 /* Breadcrumb and section picker read as one trail: Home / Soldi / [page ▾]. */
 .trail { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-width: 0; flex: 1 1 auto; }
@@ -31,33 +32,41 @@
   margin: 0;
 }
 
+/* The picker is the last crumb: plain text plus a chevron, no field border.
+   field-sizing keeps it as wide as the current page name, not the longest
+   option, so the chevron sits right after the text (older engines fall back
+   to the widest option, still capped by max-width). */
 .select {
   display: block;
   width: auto;
+  field-sizing: content;
   max-width: min(100%, 26rem);
   min-height: 44px;
-  padding: 0.55rem 2.4rem 0.55rem 0.85rem;
-  border: 1px solid var(--color-neutral-400);
+  padding: 0 22px 0 0;
+  border: 0;
   border-radius: 0;
-  background-color: var(--color-raised);
+  background-color: transparent;
   color: var(--color-text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  text-overflow: ellipsis;
   appearance: none;
   cursor: pointer;
+  transition: color 140ms ease;
 }
 
 .label::after {
   content: "";
   position: absolute;
-  right: 1rem;
-  top: calc(50% - 5px);
-  width: 7px;
-  height: 7px;
+  right: 4px;
+  top: calc(50% - 6px);
+  width: 6px;
+  height: 6px;
   border-right: 1.5px solid currentColor;
   border-bottom: 1.5px solid currentColor;
   transform: rotate(45deg);
   pointer-events: none;
+  transition: color 140ms ease;
 }
 
 .select:focus-visible {
@@ -77,17 +86,14 @@
   border: 0;
 }
 
-/* Phones: breadcrumb and share icon share one row, the section picker (the
-   last crumb) takes the full row below it. */
+/* Phones: the trail (Home / Section / page) wraps inside the first column and
+   "Condividi" sits at the end of its last line. Bottom alignment keeps the
+   visual order equal to the DOM and tab order: crumbs, picker, share. */
 @media (max-width: 620px) {
-  .sectionNav { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding-block: 6px 12px; }
-  .trail { display: contents; }
-  .breadcrumb { grid-column: 1; grid-row: 1; }
-  .trailSeparator { display: none; }
-  .pickerNav { grid-column: 1 / -1; grid-row: 2; }
-  .shareSlot { grid-column: 2; grid-row: 1; margin-left: 0; }
+  .sectionNav { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 4px 12px; padding-block: 4px 8px; }
+  .trail { column-gap: 10px; row-gap: 0; }
+  .shareSlot { margin-left: 0; }
   /* The manual-copy fallback (an input) needs the full row. */
-  .shareSlot:has(input) { grid-column: 1 / -1; grid-row: 3; }
+  .shareSlot:has(input) { grid-column: 1 / -1; }
   .breadcrumb a { min-height: 44px; }
-  .select { width: 100%; max-width: none; }
 }

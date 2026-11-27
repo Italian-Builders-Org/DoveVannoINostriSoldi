@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { shortDate } from "@/lib/format";
 import { companyAtlasSourceList } from "@/lib/company-atlas-metadata";
 import { istatTurnoverSourceMetadata } from "@/lib/istat-turnover-metadata";
 import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
-import { groupSourcesByPublisher } from "@/lib/source-publishers";
+import {
+  clusterPublisherSources,
+  groupSourcesByPublisher,
+  plainRangeLabel,
+  publisherAnchor,
+  subtitleRepeatsTitle,
+} from "@/lib/source-publishers";
 import { publicSources, sourceCounts } from "@/lib/sources";
 import styles from "./fonti.module.css";
 
@@ -16,7 +23,63 @@ export const metadata: Metadata = {
 
 // Descriptions longer than this are clamped to two lines with an expander.
 const LONG_COVERAGE = 120;
-const publisherGroups = groupSourcesByPublisher(publicSources);
+const publisherGroups = groupSourcesByPublisher(publicSources).map((group) => ({
+  ...group,
+  anchor: publisherAnchor(group.name),
+  items: clusterPublisherSources(group.sources),
+}));
+
+type SourceEntry = (typeof publisherGroups)[number]["sources"][number];
+
+// What the "Periodo coperto" column shows. Dates are the reference date of
+// the latest data ("al ..."); periods are shown as published, with plain
+// hyphens in ranges; null means the adapter finds the latest release itself.
+function coveredPeriod(slug: string): string {
+  const latest = latestDataBySlug[slug];
+  if (latest?.kind === "date") return `al ${shortDate(latest.value)}`;
+  if (latest?.kind === "period") return plainRangeLabel(latest.label);
+  return "ultimo rilascio disponibile";
+}
+
+// The theme line under a source name, unless it only restates the name or
+// the sub-group heading already says it.
+function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): string | null {
+  const area = inCluster || subtitleRepeatsTitle(title, source.area) ? null : source.area;
+  return [area, detail].filter(Boolean).join(" · ") || null;
+}
+
+function SourceRow({ entry, inCluster }: { entry: SourceEntry; inCluster: boolean }) {
+  const { source, title } = entry;
+  const note = subtitle(entry, inCluster);
+  return (
+    <tr id={source.slug} role="row">
+      <th scope="row" role="rowheader">
+        <a
+          href={source.url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
+        >
+          {title} ↗
+        </a>
+        {note ? <small>{note}</small> : null}
+      </th>
+      <td role="cell" data-label="Cosa contiene">
+        {source.coverage.length > LONG_COVERAGE ? (
+          <details className={styles.coverage}>
+            <summary>
+              <span>{plainRangeLabel(source.coverage)}</span>
+            </summary>
+          </details>
+        ) : plainRangeLabel(source.coverage)}
+      </td>
+      <td role="cell" data-label="Ogni quanto esce">{plainRangeLabel(source.cadence)}</td>
+      <td role="cell" data-label="Periodo coperto" className={styles.latest}>
+        {coveredPeriod(source.slug)}
+      </td>
+    </tr>
+  );
+}
 
 export default function SourcesPage() {
   return (
@@ -28,25 +91,48 @@ export default function SourcesPage() {
 
       <p><strong>{sourceCounts.total} fonti collegate</strong> al portale, da {publisherGroups.length} enti pubblicatori.</p>
 
+      {/* On phones the register is a long column of cards: a collapsed index
+          of the publishers jumps straight to a group without pushing the
+          register down. Hidden from 640px, where the table is easy to scan. */}
+      <details className={styles.publisherIndex}>
+        <summary>
+          Vai a un ente pubblicatore
+          <span>{publisherGroups.length}</span>
+        </summary>
+        <nav aria-label="Enti pubblicatori">
+          <ul>
+            {publisherGroups.map((group) => (
+              <li key={group.anchor}>
+                <a href={`#${group.anchor}`}>
+                  {group.name}
+                  <span>{group.sources.length}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </details>
+
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
           {/* Under 640px the rows become stacked cards (fonti.module.css). The
               explicit roles keep table semantics for screen readers, which
               some browsers drop once table parts are display: block. Each
               publisher is a row group headed by its short name, so the
-              publisher is not repeated on every row. */}
+              publisher is not repeated on every row; three or more sources
+              on the same theme get one sub-heading instead of repeating it. */}
           <table className={`table ${styles.sources}`} role="table">
             <thead role="rowgroup">
               <tr role="row">
                 <th scope="col" role="columnheader">Fonte</th>
                 <th scope="col" role="columnheader">Cosa contiene</th>
                 <th scope="col" role="columnheader">Ogni quanto esce</th>
-                <th scope="col" role="columnheader">Ultimo dato</th>
+                <th scope="col" role="columnheader">Periodo coperto</th>
               </tr>
             </thead>
             {publisherGroups.map((group) => (
               <tbody role="rowgroup" key={group.name} className={styles.group}>
-                <tr role="row" className={styles.groupRow}>
+                <tr role="row" className={styles.groupRow} id={group.anchor}>
                   <th scope="colgroup" colSpan={4} role="columnheader">
                     {group.name}
                     <span className={styles.groupCount}>
@@ -54,41 +140,23 @@ export default function SourcesPage() {
                     </span>
                   </th>
                 </tr>
-                {group.sources.map(({ source, title, detail }) => {
-                  const latest = latestDataBySlug[source.slug];
-                  return (
-                    <tr id={source.slug} key={source.slug} role="row">
-                      <th scope="row" role="rowheader">
-                        <a
-                          href={source.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
-                        >
-                          {title} ↗
-                        </a>
-                        <small>{detail ? `${source.area} · ${detail}` : source.area}</small>
-                      </th>
-                      <td role="cell" data-label="Cosa contiene">
-                        {source.coverage.length > LONG_COVERAGE ? (
-                          <details className={styles.coverage}>
-                            <summary>
-                              <span>{source.coverage}</span>
-                            </summary>
-                          </details>
-                        ) : source.coverage}
-                      </td>
-                      <td role="cell" data-label="Ogni quanto esce">{source.cadence}</td>
-                      <td role="cell" data-label="Ultimo dato" className={styles.latest}>
-                        {latest?.kind === "date"
-                          ? shortDate(latest.value)
-                          : latest?.kind === "period"
-                            ? latest.label
-                            : "scoperta automatica"}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {group.items.map((item) =>
+                  item.kind === "source" ? (
+                    <SourceRow key={item.entry.source.slug} entry={item.entry} inCluster={false} />
+                  ) : (
+                    <Fragment key={`cluster-${item.label}`}>
+                      <tr role="row" className={styles.clusterRow}>
+                        <th scope="colgroup" colSpan={4} role="columnheader">
+                          {item.label}
+                          <span className={styles.groupCount}>{item.entries.length} fonti</span>
+                        </th>
+                      </tr>
+                      {item.entries.map((entry) => (
+                        <SourceRow key={entry.source.slug} entry={entry} inCluster />
+                      ))}
+                    </Fragment>
+                  ),
+                )}
               </tbody>
             ))}
           </table>

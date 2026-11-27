@@ -11,13 +11,12 @@
 .fallback label { font-size: 13px; }
 .fallback input { width: 100%; min-width: 0; min-height: 44px; padding: 10px; background: var(--color-raised); color: var(--color-text); border: 1px solid var(--color-neutral-400); font-size: 16px; }
 .fallback button { justify-self: start; }
-/* Phones: the trigger becomes a 44px icon button on the breadcrumb row; the
-   text stays as its accessible name. A manual-copy fallback spans the row. */
+/* Phones: the label shortens to "Condividi" (the accessible name keeps
+   "questa vista"); a manual-copy fallback spans the row. */
 @media (max-width: 620px) {
-  .share { justify-items: end; }
+  .share { position: relative; justify-items: end; }
   .share:has(.fallback) { grid-column: 1 / -1; justify-items: start; }
-  .trigger { width: 44px; justify-content: center; padding: 0; }
-  .share { position: relative; }
+  .trigger { gap: 8px; padding: 8px 10px; font-size: 13px; }
   .share:not(:has(.fallback)) .status { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; padding: 6px 10px; white-space: nowrap; background: var(--color-raised); border: 1px solid var(--color-neutral-300); }
-  .triggerText { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .triggerExtra { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 }

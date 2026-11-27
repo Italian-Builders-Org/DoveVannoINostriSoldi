@@ -28,8 +28,8 @@ function Unavailable() {
       <div className="page-intro">
         <h1>DVNS Index, il metodo</h1>
       </div>
-      <DataUnavailableNotice title="Esempi numerici non disponibili" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }}>
-        Mostriamo i numeri del metodo solo quando i dati sono verificati. Riprova più tardi.
+      <DataUnavailableNotice title="Esempi numerici non disponibili" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }} retry={{ href: "/dvns-index/metodo", label: "Riprova" }}>
+        Mostriamo i numeri del metodo solo con dati verificati, che in questo momento non sono disponibili.
       </DataUnavailableNotice>
     </main>
   );

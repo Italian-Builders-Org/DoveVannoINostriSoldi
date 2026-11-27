@@ -15,6 +15,7 @@ import {
   fromJanuaryTo,
   longDate,
   percent,
+  periodDateLabel,
 } from "@/lib/format";
 import { buildHomeItalyFunnel } from "@/lib/home-italy-funnel";
 import {
@@ -145,7 +146,8 @@ export default async function SpendingOverviewPage({
             <div className={styles.italySummaryFacts}>
               <p className={styles.freshness}>
                 <i aria-hidden="true" />
-                Italia · Eurostat COFOG · {funnel.pa.year}
+                {/* The source is named once, at the end of this section. */}
+                Italia · {funnel.pa.year}
               </p>
               <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
               <dl className={styles.factRows}>
@@ -175,7 +177,7 @@ export default async function SpendingOverviewPage({
                 {funnel.pa.source.label}
               </a>
               {" · "}
-              pubblicato {funnel.pa.source.observedAt}
+              pubblicato il {periodDateLabel(funnel.pa.source.observedAt)}
             </p>
           </section>
 
@@ -266,7 +268,6 @@ export default async function SpendingOverviewPage({
                 items: buckets.map((bucket) => ({
                   id: bucket.id,
                   label: bucket.name,
-                  shortLabel: bucket.shortName,
                   valueEuro: bucket.value,
                   explanation: bucket.explanation,
                   family: bucket.family,

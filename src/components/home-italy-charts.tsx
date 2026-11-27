@@ -22,15 +22,17 @@ export function HomeItalyCompositionChart({
           : 0;
         return (
           // A linked row is one target: the name's link covers the row (CSS),
-          // the chevron says so, and the "?" stays above it in its own column.
+          // the chevron says so. The "?" has its own fixed column on every row,
+          // empty where the slice has no perimeter note, so bars and shares
+          // start at the same x on every row.
           <li key={slice.id} data-linked={slice.href ? "true" : undefined}>
             <div className={styles.barCopy}>
-              <div className={styles.barText}>
-                <span className={styles.barName}>
-                  {slice.href ? <Link prefetch={false} href={slice.href}>{slice.label}</Link> : slice.label}
-                </span>
-                <span className={styles.barAmount}>{billions(slice.amountEuro)} mld €</span>
-              </div>
+              <span className={styles.barName}>
+                {slice.href ? <Link prefetch={false} href={slice.href}>{slice.label}</Link> : slice.label}
+              </span>
+              <span className={styles.barAmount}>{billions(slice.amountEuro)} mld €</span>
+            </div>
+            <span className={styles.barInfo}>
               {slice.note ? (
                 <InfoTooltip
                   id={`home-slice-${slice.id.replace(/[^a-zA-Z0-9_-]/g, "-")}`}
@@ -39,7 +41,7 @@ export function HomeItalyCompositionChart({
                   {slice.note}
                 </InfoTooltip>
               ) : null}
-            </div>
+            </span>
             <i aria-hidden="true">
               <b style={{ width: `${width}%` }} />
             </i>
@@ -85,7 +87,11 @@ export function HomeItalyTrendChart({
     .join(" ");
   const firstPoint = coordinates[0];
   const lastPoint = coordinates.at(-1);
-  const areaPath = firstPoint && lastPoint
+  // An area encodes magnitude from its baseline: filled above a cut axis it
+  // makes growth look larger than it is. With a non-zero baseline the series
+  // is drawn as a line only and the caption says where the axis starts.
+  const zeroBaseline = minValue <= 0;
+  const areaPath = zeroBaseline && firstPoint && lastPoint
     ? `${linePath} L ${lastPoint.x.toFixed(2)} 100 L ${firstPoint.x.toFixed(2)} 100 Z`
     : "";
   const ticks = [minValue, minValue + valueRange / 2, maxValue];
@@ -120,12 +126,12 @@ export function HomeItalyTrendChart({
           >
             <title id={`${chartId}-title`}>Spesa pubblica totale italiana anno per anno</title>
             <desc id={`${chartId}-description`}>
-              Serie Eurostat COFOG dal {points[0]?.year} al {points.at(-1)?.year}. Il punto evidenziato è il {selected?.year}; la scala verticale è espressa in miliardi di euro e non parte da zero.
+              Serie Eurostat COFOG dal {points[0]?.year} al {points.at(-1)?.year}. Il punto evidenziato è il {selected?.year}; la scala verticale è espressa in miliardi di euro{zeroBaseline ? "" : " e non parte da zero"}.
             </desc>
             {ticks.map((tick) => (
               <line key={tick} className={styles.trendGrid} x1={0} x2={100} y1={yFor(tick)} y2={yFor(tick)} />
             ))}
-            <path className={styles.trendArea} d={areaPath} aria-hidden="true" />
+            {areaPath ? <path className={styles.trendArea} d={areaPath} aria-hidden="true" /> : null}
             <path className={styles.trendLine} d={linePath} aria-hidden="true" />
           </svg>
           {coordinates.map(({ point, x, y }) => (
@@ -153,9 +159,11 @@ export function HomeItalyTrendChart({
         </div>
       </div>
 
+      {/* The selected total is the card headline and the source closes the
+          section: the caption only states the series span and the axis cut. */}
       <figcaption className={styles.trendCaption}>
-        <span>Eurostat COFOG · {points[0]?.year}-{points.at(-1)?.year}</span>
-        <strong>{selected ? `${selected.year}: ${billions(selected.totalEuro)} mld €` : "Dato non disponibile"}</strong>
+        {points[0]?.year}-{points.at(-1)?.year}
+        {zeroBaseline ? "" : ` · asse da ${minValue.toLocaleString("it-IT", { maximumFractionDigits: 0 })} mld €, non da zero`}
       </figcaption>
 
       <div className={styles.srOnly}>

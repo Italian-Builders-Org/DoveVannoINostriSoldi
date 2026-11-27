@@ -57,3 +57,122 @@ export function groupSourcesByPublisher<T extends GroupableSource>(sources: read
   // Largest publishers first; ties keep registry order (Array.sort is stable).
   return [...groups.values()].sort((left, right) => right.sources.length - left.sources.length);
 }
+
+const STOPWORDS = new Set([
+  "a", "ad", "al", "alla", "alle", "allo", "ai", "agli", "con", "da", "dal", "dalla", "dai", "de", "del",
+  "dell", "della", "delle", "dello", "dei", "degli", "di", "e", "ed", "fra", "gli", "i", "il", "in", "l",
+  "la", "le", "lo", "nel", "nella", "nei", "o", "per", "su", "sul", "sulla", "sui", "tra", "un", "una", "uno",
+]);
+
+// Lower-cased, accent-free word stems (first five letters), so "funzione" and
+// "funzioni" match; "Amministrazioni pubbliche", "spesa pubblica" and "PA"
+// name the same subject.
+function stems(text: string): Set<string> {
+  const normalised = text
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase("it-IT")
+    .replace(/\b(?:amministrazion[ei] pubblich[ea]|pubblic[ah] amministrazion[ei])\b/g, "pa")
+    .replace(/\bpubblic[aoeih]+\b/g, "pa");
+  return new Set(
+    normalised
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter((word) => word && !STOPWORDS.has(word))
+      .map((word) => word.slice(0, 5)),
+  );
+}
+
+/**
+ * True when the subtitle mostly restates the title: at least three quarters
+ * of its significant words already appear in the title. Used to hide a
+ * subtitle that adds nothing, never to change a title.
+ */
+export function subtitleRepeatsTitle(title: string, subtitle: string): boolean {
+  const subtitleStems = stems(subtitle);
+  if (subtitleStems.size === 0) return false;
+  const titleStems = stems(title);
+  let shared = 0;
+  for (const stem of subtitleStems) if (titleStems.has(stem)) shared += 1;
+  return shared / subtitleStems.size >= 0.75;
+}
+
+type ClusterableEntry = { source: { slug: string; area: string }; title: string; detail: string | null };
+
+export type PublisherItem<E extends ClusterableEntry> =
+  | { kind: "source"; entry: E }
+  | { kind: "cluster"; label: string; entries: E[] };
+
+// Smallest run of sources sharing one theme that is shown as a sub-group.
+const MIN_CLUSTER = 3;
+
+// "BES dei territori, Salute" and "BES dei territori, Lavoro" share the
+// prefix "BES dei territori, "; inside the sub-group only the rest is shown.
+function commonLabelPrefix(titles: readonly string[]): string {
+  if (titles.length < 2) return "";
+  let prefix = titles[0];
+  for (const title of titles.slice(1)) {
+    while (prefix && !title.startsWith(prefix)) prefix = prefix.slice(0, -1);
+  }
+  const boundary = Math.max(prefix.lastIndexOf(", "), prefix.lastIndexOf(" · "));
+  return boundary > 0 ? prefix.slice(0, boundary + (prefix[boundary] === "," ? 2 : 3)) : "";
+}
+
+function capitalise(text: string): string {
+  return text.charAt(0).toLocaleUpperCase("it-IT") + text.slice(1);
+}
+
+/**
+ * Within one publisher, sources that share a theme (`area`) at least three
+ * times become one sub-group headed by that theme, placed where its first
+ * member was. Every source still appears exactly once; titles lose only a
+ * prefix common to the whole sub-group.
+ */
+export function clusterPublisherSources<E extends ClusterableEntry>(entries: readonly E[]): PublisherItem<E>[] {
+  const byArea = new Map<string, E[]>();
+  for (const entry of entries) {
+    const members = byArea.get(entry.source.area) ?? [];
+    members.push(entry);
+    byArea.set(entry.source.area, members);
+  }
+  const items: PublisherItem<E>[] = [];
+  const emitted = new Set<string>();
+  for (const entry of entries) {
+    const members = byArea.get(entry.source.area) ?? [entry];
+    if (members.length < MIN_CLUSTER) {
+      items.push({ kind: "source", entry });
+      continue;
+    }
+    if (emitted.has(entry.source.area)) continue;
+    emitted.add(entry.source.area);
+    const prefix = commonLabelPrefix(members.map((member) => member.title));
+    items.push({
+      kind: "cluster",
+      label: entry.source.area,
+      entries: members.map((member) => ({
+        ...member,
+        title: prefix ? capitalise(member.title.slice(prefix.length).trim()) : member.title,
+      })),
+    });
+  }
+  return items;
+}
+
+/** Fragment id for a publisher heading on /fonti. */
+export function publisherAnchor(name: string): string {
+  const slug = name
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase("it-IT")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return `editore-${slug}`;
+}
+
+/**
+ * Display form of registry text: an unspaced range dash ("2014–2024")
+ * becomes a plain hyphen, as elsewhere on the site. A spaced dash between
+ * clauses is punctuation, not a range, and is left alone.
+ */
+export function plainRangeLabel(label: string): string {
+  return label.replace(/(\S)[–—](?=\S)/g, "$1-");
+}

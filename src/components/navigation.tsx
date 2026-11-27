@@ -271,7 +271,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <div className="header-actions">
             <ThemeToggle />
             {pathname !== "/" ? <BoardsAccountMenu /> : null}
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="header-action header-action-icon" aria-label="Codice su GitHub (nuova scheda)" title="Codice su GitHub (nuova scheda)">
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="header-action header-action-icon header-action-repo" aria-label="Codice su GitHub (nuova scheda)" title="Codice su GitHub (nuova scheda)">
               <BrandIcon name="github" size={22} />
             </a>
           </div>
@@ -310,6 +310,10 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <NavigationLinks id="mobile-navigation-links" pathname={pathname} currentSearch={currentSearch} onNavigate={closeDrawer} />
           <nav className="navigation-tools" aria-label="Strumenti del progetto">
             <IntentLink href="/mcp" onNavigate={closeDrawer}>Accesso MCP</IntentLink>
+            {/* Phones drop the header GitHub icon to free a slot; the menu keeps it reachable. */}
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+              Codice su GitHub<span className="sr-only"> (nuova scheda)</span>
+            </a>
           </nav>
           <div className="sidebar-callout"><ReportProblemButton variant="sidebar" onOpen={closeDrawer} restoreFocusRef={mobileTriggerRef} /></div>
         </div>

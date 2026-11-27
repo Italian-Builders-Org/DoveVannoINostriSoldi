@@ -53,3 +53,24 @@ test("both DVNS Index pages use the shared notice when the snapshot is missing",
     assert.match(source, /href: "\/comuni"/, file);
   }
 });
+
+test("a retry action is a secondary link to the same page, after the primary way out", () => {
+  const html = renderToStaticMarkup(createElement(DataUnavailableNotice, {
+    title: "Classifica non disponibile",
+    action: { href: "/comuni", label: "Vai alla mappa dei Comuni" },
+    retry: { href: "/dvns-index", label: "Riprova" },
+  }, "Riprova più tardi."));
+  const primary = html.indexOf('href="/comuni"');
+  const retry = html.search(/<a[^>]*href="\/dvns-index"[^>]*>Riprova<\/a>|<a[^>]*>Riprova<\/a>/);
+  assert.ok(primary > -1 && retry > primary, "Riprova follows the primary action");
+  assert.match(html, /<a[^>]*class="btn btn-secondary"[^>]*href="\/dvns-index"|<a[^>]*href="\/dvns-index"[^>]*class="btn btn-secondary"/);
+  // No client JS: a plain link, never a button that needs a handler.
+  assert.doesNotMatch(html, /<button/);
+});
+
+test("the DVNS Index notice says what the Index is and offers a retry on the same URL", () => {
+  const source = readFileSync(new URL("../src/app/dvns-index/page.tsx", import.meta.url), "utf8");
+  const unavailable = source.slice(source.indexOf("function Unavailable"), source.indexOf("function BandBadge"));
+  assert.match(unavailable, /<p>Confronta oltre 6\.000 Comuni su sei aspetti della spesa/);
+  assert.match(unavailable, /retry=\{\{ href: PAGE_PATH, label: "Riprova" \}\}/);
+});

@@ -776,7 +776,7 @@ main { display: block; }
 .data-unavailable-body { display: grid; justify-items: start; gap: 6px; min-width: 0; }
 .data-unavailable-body > strong { font-family: var(--font-heading); font-size: 16px; font-weight: 600; color: var(--color-text); }
 .data-unavailable-body > p { margin: 0; font-size: 14px; color: var(--color-neutral-700); }
-.data-unavailable-body > .btn { margin-top: 10px; }
+.data-unavailable-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .warning-notice strong { color: var(--color-warning); }
 
 /* Any table that can outgrow its column scrolls inside its own box rather
@@ -856,6 +856,8 @@ main { display: block; }
   .brand-mark { width: 38px; height: 38px; }
   .brand-text strong { font-size: 17px; }
   .header-action { padding-inline: 12px; }
+  /* GitHub moves into the menu (navigation-tools) to free a header slot. */
+  .header-action-repo { display: none; }
   .page-intro h1 { font-size: 24px; }
   .stat-strip { grid-template-columns: 1fr; }
   .stat-strip > div { border-right: 0; border-bottom: 1px solid var(--color-neutral-200); }

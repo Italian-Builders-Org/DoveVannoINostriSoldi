@@ -16,7 +16,7 @@ export function AssistantFreeConsent({ onAccept, onClose }: { onAccept: () => vo
   return <dialog ref={dialog} tabIndex={-1} className={`${styles.providerDialog} ${styles.consentDialog}`} aria-labelledby="assistant-free-title" aria-describedby="assistant-free-description"
     onCancel={(event) => { event.preventDefault(); onClose(); }}>
     <button type="button" className={styles.iconButton} aria-label="Chiudi" title="Chiudi" onClick={onClose}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>
-    <h2 id="assistant-free-title">Prova l’assistente gratis</h2>
+    <h2 id="assistant-free-title">Domande gratuite: cosa condividi</h2>
     <p id="assistant-free-description">{FREE_DAILY_QUESTIONS} domande al giorno, generate da Regolo, il servizio AI che usiamo per la prova. La quota riparte a mezzanotte, ora italiana.</p>
     <ul className={styles.consentPoints}>
       <li>Anche una risposta interrotta usa una domanda.</li>

@@ -305,7 +305,7 @@ export function AssistantChat() {
         <div className={styles.toolbarTitle}><span>Assistente</span></div>
         <div className={styles.toolbarActions}>
           <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "Usa la tua chiave AI"}</span>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <>Usa la tua <span className={styles.wideOnly}>chiave AI</span><span className={styles.narrowOnly}>chiave</span></>}</span>
           </button>
           <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
         </div>
@@ -337,7 +337,7 @@ export function AssistantChat() {
                     {turn.response ? <AssistantAiReply response={turn.response} showNewTabHint={turn.id === firstLinkedTurn} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} streaming />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
                     {turn.response || turn.stopped ? <div className={styles.messageActions}>
                       {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => { if (turn.response?.ok) void copyText(copyableAnswer(turn.response), `assistant-${turn.id}`); }}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
-                      <button type="button" aria-label="Rigenera risposta" title="Rigenera risposta; sostituisce anche i messaggi successivi" disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
+                      <button type="button" aria-label="Rigenera risposta" title={`Rigenera risposta; sostituisce anche i messaggi successivi${connection ? "" : " e usa una domanda gratuita"}`} disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
                       {turn.response?.ok ? <span className={styles.actionsNote}>Verifica numeri e interpretazioni sulle fonti.</span> : null}
                     </div> : null}
                   </div>
@@ -347,7 +347,7 @@ export function AssistantChat() {
           </div>
         ) : <div className={styles.welcome}>
           <h1>Cosa vuoi sapere?</h1>
-          <p>Risposte dai dati pubblici del sito, con le fonti ufficiali da verificare.</p>
+          <p>Risposte dai dataset pubblici del sito, con la fonte ufficiale di ogni dato.</p>
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>

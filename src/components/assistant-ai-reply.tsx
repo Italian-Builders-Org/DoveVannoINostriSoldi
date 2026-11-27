@@ -1,6 +1,6 @@
 import { useId, useMemo } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
+import { ArrowUpRight01Icon, InformationCircleIcon } from "@hugeicons/core-free-icons";
 import { isInternalSiteHref, type AiResponse, type AiSiteLink } from "@/lib/assistant/byok-contracts";
 import { AssistantMarkdownBlocks, useAssistantBlocks } from "@/components/assistant-markdown";
 import { linkHrefs } from "@/components/assistant-markdown-parse";
@@ -38,7 +38,10 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
           {source.period ? <> <span className={styles.sourcePeriod}>{source.period}</span></> : null}
         </li>)}</ul> : null}
         {/* The limit stays visible: on a public-spending answer it changes how the number reads. */}
-        {entry.caveat ? <p className={styles.limits}><strong>Limiti del dato</strong> {entry.caveat}</p> : null}
+        {entry.caveat ? <div className={styles.limits}>
+          <HugeiconsIcon icon={InformationCircleIcon} size={16} strokeWidth={1.8} aria-hidden="true" />
+          <p><strong>Limiti del dato</strong> {entry.caveat}</p>
+        </div> : null}
       </li>)}</ul>
     </section> : null}
 
@@ -58,8 +61,7 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
               {link.description}
             </small> : null}
           </span>
-          {/* A plain arrow: the page stays on DVNS. The ↗ glyph is kept for official sources that leave the site. */}
-          <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
+          <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
           <span className={styles.srOnly}> (nuova scheda)</span>
         </a>
       </li>)}</ul>

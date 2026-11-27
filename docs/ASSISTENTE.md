@@ -32,7 +32,8 @@ sito («Approfondisci su DVNS»), scelte dal server e mai dal modello:
 
 Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
 pagina e andrebbe persa uscendo. Le pagine citate nel testo sono marcate «Citata nella
-risposta»; la freccia → indica una pagina DVNS, ↗ una fonte esterna. I link alle fonti ufficiali vengono dal catalogo server.
+risposta». I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
+citazioni del testo del modello. I link alle fonti ufficiali vengono dal catalogo server.
 Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
 senza dettagli di protocollo MCP/API (`public-caveat.ts`).
 

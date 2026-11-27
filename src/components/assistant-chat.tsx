@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
+import { Add01Icon, BookOpen01Icon, BubbleChatAddIcon, Building03Icon, Cancel01Icon, ChartLineData01Icon, Coins01Icon, Edit02Icon, Invoice01Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
 import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_PROMPT_CHARS, AI_PROVIDERS, type AiAnswer, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
 import { FREE_MODEL } from "@/lib/assistant/free-contracts";
 import { useAssistantQuota } from "@/components/use-assistant-quota";
@@ -25,9 +25,9 @@ import styles from "@/app/assistente/assistant.module.css";
 
 const EXAMPLES = [
   { label: "Pagamenti dei Comuni", source: "SIOPE", detail: "Pagamenti di cassa dei Comuni", command: "pagamenti", icon: Coins01Icon, prompt: "Quanto hanno speso i Comuni nel 2025?" },
-  { label: "Redditi dichiarati", source: "MEF", detail: "Dichiarazioni dei redditi IRPEF", command: "redditi", icon: ChartColumnIcon, prompt: "Qual è l’imposta netta dichiarata in Calabria nel 2024?" },
+  { label: "Redditi dichiarati", source: "MEF", detail: "Dichiarazioni dei redditi IRPEF", command: "redditi", icon: Invoice01Icon, prompt: "Qual è l’imposta netta dichiarata in Calabria nel 2024?" },
   { label: "Bilancio dello Stato", source: "RGS", detail: "Pagamenti delle amministrazioni centrali", command: "stato", icon: Building03Icon, prompt: "Quanto ha speso lo Stato nel 2025?" },
-  { label: "Confronta due anni", source: "SIOPE", detail: "Variazione tra annualità complete", command: "confronta", icon: ChartColumnIcon, prompt: "Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?" },
+  { label: "Confronta due anni", source: "SIOPE", detail: "Variazione tra annualità complete", command: "confronta", icon: ChartLineData01Icon, prompt: "Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?" },
 ] as const;
 const MAX_TURNS = 12;
 /** Plain text for the clipboard: Markdown links become their label, site pages and sources absolute URLs. */
@@ -156,6 +156,13 @@ export function AssistantChat() {
     requestAnimationFrame(() => input.current?.focus());
   }, []);
 
+  /** The "@" and "/" hints are real buttons: they type the trigger and open its menu, like typing it would. */
+  function insertTrigger(trigger: "@" | "/") {
+    const value = `${draft}${draft && !/\s$/u.test(draft) ? " " : ""}${trigger}`;
+    changeDraft(value);
+    requestAnimationFrame(() => { const field = input.current; if (field) { field.focus(); field.setSelectionRange(value.length, value.length); } });
+  }
+
   function changeDraft(value: string) {
     setDraft(value);
     const token = /(?:^|\s)([@/])([^\s]*)$/u.exec(value);
@@ -188,6 +195,8 @@ export function AssistantChat() {
     voice.close();
     setMenu(null);
     setLoading(true);
+    // On touch screens the keyboard would cover half of the answer that is about to stream in.
+    if (retryId === undefined && window.matchMedia("(pointer: coarse)").matches) input.current?.blur();
     if (retryId === undefined) {
       setTurns((current) => [...current, { id, prompt: value.trim(), response: null, attachments: files, startedAt: Date.now() }]);
       setDraft("");
@@ -279,6 +288,11 @@ export function AssistantChat() {
     }
   }
 
+  const quotaLine = !connection && free.quota?.available ? <p className={styles.quota} role="status" aria-live="polite" data-free-quota>
+    {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita rimasta" : "domande gratuite rimaste"} oggi` : "Domande gratuite esaurite. Nuova quota a mezzanotte."}
+    {free.quota.remaining === 0 ? <> <button type="button" className={styles.inlineAction} onClick={() => setSettings(true)}>Usa la tua chiave</button></> : null}
+  </p> : null;
+
   return (
     <main ref={pageRoot} className={styles.page} data-conversation={hasConversation} aria-label="Assistente sui dati pubblici"
       onKeyDown={(event) => {
@@ -290,10 +304,10 @@ export function AssistantChat() {
       <header className={styles.toolbar}>
         <div className={styles.toolbarTitle}><span>Assistente</span></div>
         <div className={styles.toolbarActions}>
-          <button ref={providerButton} type="button" className={styles.providerButton} onClick={() => setSettings(true)} aria-haspopup="dialog" aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Utilizza il tuo servizio AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "Utilizza il tuo servizio AI"}</span>
+          <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "Usa la tua chiave AI"}</span>
           </button>
-          <button type="button" className={styles.newChat} aria-label="Nuova chat" onClick={reset}><HugeiconsIcon icon={Edit02Icon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
+          <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
         </div>
       </header>
 
@@ -324,6 +338,7 @@ export function AssistantChat() {
                     {turn.response || turn.stopped ? <div className={styles.messageActions}>
                       {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => { if (turn.response?.ok) void copyText(copyableAnswer(turn.response), `assistant-${turn.id}`); }}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
                       <button type="button" aria-label="Rigenera risposta" title="Rigenera risposta; sostituisce anche i messaggi successivi" disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
+                      {turn.response?.ok ? <span className={styles.actionsNote}>Verifica numeri e interpretazioni sulle fonti.</span> : null}
                     </div> : null}
                   </div>
                 </div>
@@ -331,9 +346,8 @@ export function AssistantChat() {
             </div>
           </div>
         ) : <div className={styles.welcome}>
-          <Image className={styles.heroMark} src="/brand/dvns-mark-transparent.png" alt="" width={48} height={56} priority />
           <h1>Cosa vuoi sapere?</h1>
-
+          <p>Risposte dai dati pubblici del sito, con le fonti ufficiali da verificare.</p>
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>
@@ -373,14 +387,14 @@ export function AssistantChat() {
                 {dragging ? <span className={styles.dropHint}>Rilascia i file qui</span> : null}
                 <label htmlFor="assistant-prompt" className={styles.srOnly}>Domanda in italiano</label>
                 <textarea ref={input} id="assistant-prompt" value={draft} onChange={(event) => changeDraft(event.target.value)} onKeyDown={keyDown}
-                  placeholder="Chiedi qualcosa sui dati pubblici…" rows={3} readOnly={voice.busy} aria-invalid={tooLong || undefined}
+                  placeholder={hasConversation ? "Fai un’altra domanda…" : "Chiedi qualcosa sui dati pubblici…"} rows={3} readOnly={voice.busy} aria-invalid={tooLong || undefined}
                   aria-describedby={`assistant-help assistant-count${tooLong ? " assistant-prompt-limit" : ""}`} aria-controls={menu && menu !== "add" ? "assistant-options" : undefined}
                   aria-activedescendant={menu && options[activeOption] ? `assistant-option-${activeOption}` : undefined} aria-haspopup="listbox" />
                 <div className={styles.composerControls}>
                   <button type="button" className={styles.iconButton} disabled={voice.busy || loading} aria-label="Aggiungi allegati e fonti" aria-expanded={menu === "add"} aria-controls="assistant-add-menu" title="Aggiungi allegati e fonti" onClick={() => setMenu(menu === "add" ? null : "add")}>
                     <HugeiconsIcon icon={Add01Icon} size={23} strokeWidth={1.6} aria-hidden="true" />
                   </button>
-                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.keyboardHint}>@ fonti <span>·</span> / scorciatoie</span>}
+                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.triggers}><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("@")}><kbd>@</kbd>Fonti</button><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("/")}><kbd>/</kbd>Scorciatoie</button></span>}
                   <span id="assistant-count" className={styles.count} data-overflow={tooLong}>{draft.length >= AI_MAX_PROMPT_CHARS * .8 ? `${draft.length}/${AI_MAX_PROMPT_CHARS}` : ""}</span>
                   <button type="button" className={`${styles.iconButton} ${styles.microphone}`} data-recording={voice.active} disabled={loading || voice.voice?.status === "checking" || voice.voice?.status === "installing" || voice.voice?.status === "stopping"}
                     aria-label={voice.active ? "Termina dettatura" : "Detta la domanda"} aria-pressed={voice.active} title={voice.active ? "Termina dettatura" : "Detta la domanda"} onClick={voice.start}>
@@ -401,10 +415,6 @@ export function AssistantChat() {
                 {voice.voice.status === "downloadable" ? <button type="button" className={styles.inlineAction} onClick={async () => { await voice.install(); input.current?.focus(); }}>Scarica italiano</button> : null}
                 <button type="button" className={styles.iconButton} aria-label={voice.active ? "Annulla dettatura" : "Chiudi messaggio voce"} title={voice.active ? "Annulla dettatura" : "Chiudi"} onClick={() => { if (voice.active) voice.cancel(); else voice.close(); input.current?.focus(); }}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>
               </div> : null}
-              <div className={styles.composerFoot}>
-                <span><HugeiconsIcon icon={BookOpen01Icon} size={16} strokeWidth={1.6} aria-hidden="true" />Esempi da fonti ufficiali</span>
-                <div className={styles.sourceChips}>{EXAMPLES.slice(0, 3).map((example) => <button key={example.source} type="button" disabled={voice.busy} title={example.detail} onClick={() => chooseExample(example.prompt)}>{example.source}</button>)}</div>
-              </div>
             </form>
           </div>
           {attachments.error ? <p key={attachments.noticeVersion} className={styles.limitNotice} role="alert">{attachments.error}</p> : null}
@@ -413,16 +423,14 @@ export function AssistantChat() {
           {!hasConversation ? <div className={styles.suggestions} aria-label="Domande di esempio">
             {EXAMPLES.map((example) => <button key={example.label} type="button" onClick={() => chooseExample(example.prompt)} disabled={voice.busy}><HugeiconsIcon icon={example.icon} size={17} strokeWidth={1.6} aria-hidden="true" />{example.label}</button>)}
           </div> : null}
-          {!connection && free.quota?.available ? <p className={styles.composerHint} role="status" aria-live="polite" data-free-quota>
-            {free.quota.remaining > 0 ? `${free.quota.remaining} ${free.quota.remaining === 1 ? "domanda gratuita" : "domande gratuite"} oggi · Regolo` : "Domande gratuite esaurite. Nuova quota a mezzanotte."}
-            {free.quota.remaining === 0 ? <> <button type="button" className={styles.inlineAction} onClick={() => setSettings(true)}>Usa la tua chiave</button></> : null}
-          </p> : null}
-          <p className={hasConversation && !connection && !voice.active ? styles.srOnly : styles.composerHint} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Configura il tuo servizio AI per iniziare."}</p>
+          {hasConversation ? null : quotaLine}
+          <p className={voice.active || (!connection && free.quota && !free.quota.available) ? styles.composerHint : styles.srOnly} id="assistant-help">{voice.active ? "Premi il microfono per terminare." : connection ? `${AI_PROVIDERS[connection.provider].label} · L’AI può commettere errori.` : free.quota?.available ? "Anche gli invii interrotti consumano una domanda." : "Le domande gratuite non sono disponibili: usa la tua chiave AI per iniziare."}</p>
         </div>
       </div>
 
+      {/* During a conversation the quota joins the footer links: one quiet line under the composer instead of two. */}
       <footer className={styles.footer}>
-        <span>L’AI può commettere errori. Verifica le fonti.</span>
+        {hasConversation ? quotaLine : <span>L’AI può commettere errori. Verifica le fonti.</span>}
         <div><button type="button" aria-expanded={info} aria-controls="assistant-info" onClick={() => setInfo(!info)}>Come funziona</button><a href="/privacy">Privacy</a></div>
       </footer>
       {freeRequest ? <AssistantFreeConsent onClose={() => { setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); }} onAccept={() => { const request = freeRequest; freeConsent.current = true; setFreeRequest(null); requestAnimationFrame(() => input.current?.focus()); void ask(request.value, request.retryId); }} /> : null}

@@ -17,7 +17,7 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
   const answer = response.ok ? response : null;
   const siteLinks = useMemo(() => answer?.siteLinks?.filter((link) => isInternalSiteHref(link.href)) ?? NO_LINKS, [answer]);
   const blocks = useAssistantBlocks(answer?.text ?? "", siteLinks);
-  // Pages already linked in the text come first and are marked, so the cards read as their continuation, not a repeat.
+  // Pages already linked in the text come first and are marked, so the list reads as their continuation, not a repeat.
   const pages = useMemo(() => {
     const cited = linkHrefs(blocks);
     return siteLinks.map((link) => ({ ...link, cited: cited.has(link.href) })).sort((a, b) => Number(b.cited) - Number(a.cited));
@@ -25,27 +25,6 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
   if (!response.ok) return <p role="status">{response.message}</p>;
   return <div className={styles.aiAnswer}>
     <div className={styles.aiText}><AssistantMarkdownBlocks blocks={blocks} /></div>
-
-    {pages.length ? <section className={styles.siteLinks} aria-labelledby={`${id}-site`} data-site-links>
-      <div className={styles.replyHead}>
-        <h3 id={`${id}-site`} className={styles.replyLabel}>Approfondisci su DVNS</h3>
-        {showNewTabHint ? <p className={styles.replyHint}>Si aprono in una nuova scheda</p> : null}
-      </div>
-      <ul className={styles.siteLinkList}>{pages.map((link) => <li key={link.href}>
-        {/* The chat lives only in memory (nothing is persisted), so leaving this tab would erase it. */}
-        <a href={link.href} target="_blank" rel="noopener" className={styles.siteLink} data-cited={link.cited || undefined}>
-          <span className={styles.siteLinkText}>
-            <span className={styles.siteLinkTitle}>
-              <strong>{link.title}</strong>
-              {link.cited ? <span className={styles.citedTag}><span aria-hidden="true">Nel testo</span><span className={styles.srOnly}>, citata nella risposta</span></span> : null}
-            </span>
-            {link.description ? <small>{link.description}</small> : null}
-          </span>
-          <HugeiconsIcon icon={ArrowUpRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
-          <span className={styles.srOnly}> (nuova scheda)</span>
-        </a>
-      </li>)}</ul>
-    </section> : null}
 
     {response.evidence.length ? <section className={styles.evidence} aria-labelledby={`${id}-evidence`}>
       <h3 id={`${id}-evidence`} className={styles.replyLabel}>Dati consultati e fonti ufficiali</h3>
@@ -58,12 +37,32 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
           </a>
           {source.period ? <> <span className={styles.sourcePeriod}>{source.period}</span></> : null}
         </li>)}</ul> : null}
-        {entry.caveat ? <details className={styles.limits}>
-          <summary><HugeiconsIcon icon={ArrowRight01Icon} size={14} strokeWidth={2} aria-hidden="true" />Limiti del dato</summary>
-          <p>{entry.caveat}</p>
-        </details> : null}
+        {/* The limit stays visible: on a public-spending answer it changes how the number reads. */}
+        {entry.caveat ? <p className={styles.limits}><strong>Limiti del dato</strong> {entry.caveat}</p> : null}
       </li>)}</ul>
     </section> : null}
-    <p className={styles.aiDisclaimer}>Verifica numeri e interpretazioni sulle fonti.</p>
+
+    {pages.length ? <section className={styles.siteLinks} aria-labelledby={`${id}-site`} data-site-links>
+      <div className={styles.replyHead}>
+        <h3 id={`${id}-site`} className={styles.replyLabel}>Approfondisci su DVNS</h3>
+        {showNewTabHint ? <p className={styles.replyHint}>Si aprono in una nuova scheda</p> : null}
+      </div>
+      <ul className={styles.siteLinkList}>{pages.map((link) => <li key={link.href}>
+        {/* The chat lives only in memory (nothing is persisted), so leaving this tab would erase it. */}
+        <a href={link.href} target="_blank" rel="noopener" className={styles.siteLink} data-cited={link.cited || undefined}>
+          <span className={styles.siteLinkText}>
+            <strong>{link.title}</strong>
+            {link.cited || link.description ? <small>
+              {link.cited ? <span className={styles.citedTag}>Citata nella risposta</span> : null}
+              {link.cited && link.description ? <span aria-hidden="true"> · </span> : null}
+              {link.description}
+            </small> : null}
+          </span>
+          {/* A plain arrow: the page stays on DVNS. The ↗ glyph is kept for official sources that leave the site. */}
+          <HugeiconsIcon icon={ArrowRight01Icon} size={18} strokeWidth={1.8} aria-hidden="true" />
+          <span className={styles.srOnly}> (nuova scheda)</span>
+        </a>
+      </li>)}</ul>
+    </section> : null}
   </div>;
 }

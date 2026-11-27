@@ -33,6 +33,12 @@ try {
     const themeLabel=process.env.DVNS_COLOR_SCHEME==='dark'?'Passa al tema chiaro':'Passa al tema scuro';
     assert.equal(await page.$$eval(`button[aria-label="${themeLabel}"]`,els=>els.length),1);
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
+    if(width>600){
+      // The @ and / hints are buttons: they type the trigger, keep focus in the field and open the menu.
+      await page.click('button::-p-text(Scorciatoie)');await page.waitForSelector('[role="listbox"]');
+      assert.equal(await page.$eval(field,el=>el.value),'/');assert.equal(await page.evaluate(()=>document.activeElement?.id),'assistant-prompt');
+      await page.keyboard.press('Escape');await replace(field,'');assert.equal(await page.$('[role="listbox"]'),null);
+    }
     await page.type(field,'@');await page.waitForSelector('[role="listbox"]');
     await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');
     assert.match(await page.$eval(field,el=>el.value),/Calabria/);assert.equal(requests.length,0);
@@ -86,8 +92,9 @@ try {
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
     const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
     assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);
-    await page.click('[data-assistant-reply] details summary');
-    assert.equal(await page.$eval('[data-assistant-reply] details',el=>el.open),true);
+    const order=await page.$eval('[data-assistant-reply]',el=>{const sections=[...el.querySelectorAll('section')];return{sources:sections.findIndex(section=>!section.hasAttribute('data-site-links')),pages:sections.findIndex(section=>section.hasAttribute('data-site-links')),limit:el.querySelector('section:not([data-site-links]) li p:last-child')?.innerText??''};});
+    assert.ok(order.sources>=0&&order.sources<order.pages,'official sources come before the DVNS pages');
+    assert.match(order.limit,/^Limiti del dato\s+Pagamenti di cassa/,'the data limit is visible without a click');
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-answer-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
     await click('Copia risposta');
     await page.waitForFunction(()=>typeof window.__copiedText==='string');
@@ -120,18 +127,18 @@ try {
     await click('Nuova chat');assert.equal(await page.$$eval('[data-assistant-reply]',els=>els.length),0);
     assert.ok(await page.$('button[aria-label^="Impostazioni AI:"]'));
     await page.click('button[aria-label^="Impostazioni AI:"]');await page.click('button::-p-text(Scollega e rimuovi chiave)');
-    await page.waitForSelector('button[aria-label="Utilizza il tuo servizio AI"]');
-    await click('Utilizza il tuo servizio AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
+    await page.waitForSelector('button[aria-label="Usa la tua chiave AI"]');
+    await click('Usa la tua chiave AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     await page.select('#assistant-provider','anthropic');await page.type('#assistant-api-key','test-only-anthropic-key-123');
     await page.click('dialog input[type="checkbox"]');await page.click('button[type="submit"]::-p-text(Usa in questa scheda)');
     await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));
-    await page.waitForSelector('button[aria-label="Utilizza il tuo servizio AI"]');await click('Utilizza il tuo servizio AI');
+    await page.waitForSelector('button[aria-label="Usa la tua chiave AI"]');await click('Usa la tua chiave AI');
     assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     await page.type('#assistant-api-key','test-only-unsaved-key-123');await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));
     await page.waitForFunction(()=>!document.querySelector('dialog[open]'));await page.reload({waitUntil:'networkidle0'});
-    await click('Utilizza il tuo servizio AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
+    await click('Usa la tua chiave AI');assert.equal(await page.$eval('#assistant-api-key',el=>el.value),'');
     assert.equal(await page.evaluate(()=>[...Object.values(localStorage),...Object.values(sessionStorage)].some(value=>value.includes('test-only-'))),false);
-    await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Utilizza il tuo servizio AI');
+    await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Usa la tua chiave AI');
     assert.deepEqual(errors,[]);await page.close();
     console.log(`PASS assistant ${width}px: key consent, markdown lists, site links allow-list, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
   }

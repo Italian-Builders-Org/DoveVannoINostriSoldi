@@ -177,5 +177,23 @@ test("/spese/panoramica: treemap index labels never drop below 12px; swatches ke
 test("/spese/panoramica: a card header's '?' glyph ends on the values' right edge", async () => {
   const css = await read("../src/app/spese/panoramica/panoramica.module.css");
   // 44px target, 18px glyph: 13px of the box sit right of the glyph.
-  assert.match(css, /\.panelHead > \[data-info-tooltip\] \{ margin-inline-end: -13px; \}/);
+  // Same on the block axis: the box must not make the header row taller
+  // than the sibling cards' headers.
+  assert.match(css, /\.panelHead > \[data-info-tooltip\] \{ margin-block: -13px; margin-inline-end: -13px; \}/);
+});
+
+test("/spese/panoramica: paired columns end on one line, like /enti", async () => {
+  const css = await read("../src/app/spese/panoramica/panoramica.module.css");
+  assert.match(rule(css, ".italySplit"), /align-items: stretch;/);
+  // Two stacked cards: the last one takes the spare height.
+  assert.match(rule(css, ".columnStack"), /grid-template-rows: auto 1fr;/);
+  // A stretched grid panel would spread its rows: content stays on top.
+  assert.match(rule(css, ".monthsPanel"), /align-content: start;/);
+});
+
+test("/spese/panoramica: the region map legend reads at the page's 12px note size", async () => {
+  const css = await read("../src/components/italy-regions-map.module.css");
+  assert.match(rule(css, ".legend"), /font-size: 12px;/);
+  // At 12px the ranges overflowed their column by up to 18px at 320px wide.
+  assert.match(css, /@media \(max-width: 480px\) \{\s*\.legendClasses span \{ white-space: normal; \}/);
 });

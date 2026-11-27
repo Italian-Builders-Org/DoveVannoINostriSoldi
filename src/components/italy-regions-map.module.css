@@ -91,10 +91,10 @@
 .legend {
   display: grid;
   gap: 6px;
-  width: min(100%, 420px);
+  width: min(100%, 480px);
   margin: var(--space-2) auto 0;
   color: var(--color-neutral-700);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.3;
 }
 .legendTitle {
@@ -123,6 +123,11 @@
 .legendClasses span {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+}
+/* Phones: five ranges at 12px do not fit one line each; a range breaks after
+   its dash ("1.187–" / "1.353") instead of spilling into the next column. */
+@media (max-width: 480px) {
+  .legendClasses span { white-space: normal; }
 }
 .legendOutline {
   display: flex;

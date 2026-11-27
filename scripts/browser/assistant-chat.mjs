@@ -13,7 +13,7 @@ try {
     page.on('pageerror',error=>errors.push(error.message));
     await page.setViewport({width,height:width<600?844:900});
     await page.setRequestInterception(true);
-    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n- Periodo 2025\n- Fonte ufficiale',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}]}]};
+    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nEcco i dati:\n| Anno | Totale |\n|---|---:|\n| 2025 | 4,65 mld |\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/spese/panoramica',title:'Spesa pubblica'},{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'}]};
     const fulfill=request=>request.respond({status:200,contentType:'text/event-stream',body:[{type:'delta',text:answer.text.slice(0,16)},{type:'delta',text:answer.text.slice(16)},{type:'done',response:answer}].map(event=>`data: ${JSON.stringify(event)}\n\n`).join('')});
     page.on('request',request=>{
       if(new URL(request.url()).pathname!=='/api/assistant/chat'){void request.continue();return;}
@@ -60,14 +60,45 @@ try {
     assert.equal(JSON.stringify(requests[0].body).includes('test-only-openai-key-123'),false);
     assert.equal(requests[0].body.consent,true);
     assert.equal(await page.$$eval('[data-assistant-reply] b',els=>els.length),0);
-    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),2);
+    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),4,'2 bold runs + 2 site link titles');
+    const reply=await page.$eval('[data-assistant-reply]',el=>({
+      list:[...el.querySelectorAll('ul li')].some(li=>li.textContent==='Periodo 2025'),
+      dash:/(^|\n)- /.test(el.innerText),
+      inline:[...el.querySelectorAll('p a')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
+      text:el.innerText,
+      site:[...el.querySelectorAll('[data-site-links] a')].map(a=>({href:a.getAttribute('href'),target:a.target,cited:a.dataset.cited==='true'})),
+      external:[...el.querySelectorAll('section:not([data-site-links]) a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      landmarks:el.querySelectorAll('nav').length,
+      table:[...el.querySelectorAll('table th')].map(th=>th.textContent),
+      pipes:/\|/.test(el.innerText),
+      hints:el.querySelectorAll('[data-site-links] p').length,
+      overflow:document.body.scrollWidth-innerWidth,
+    }));
+    assert.ok(reply.list&&!reply.dash,'label + list lines render a real list');
+    assert.deepEqual(reply.inline,[{href:'/comuni',target:'_blank',text:'i Comuni'}],'only allow-listed internal links are anchors');
+    assert.ok(reply.text.includes('pagina non citata')&&reply.text.includes('sito esterno')&&reply.text.split('example.com').length===1,'rejected links keep only their label');
+    assert.deepEqual(reply.site,[{href:'/comuni',target:'_blank',cited:true},{href:'/spese/panoramica',target:'_blank',cited:false}],'site links open in a new tab so the in-memory chat survives; pages cited in the text come first, marked');
+    assert.equal(reply.landmarks,0,'site pages are a labelled section, not one nav landmark per answer');
+    assert.deepEqual(reply.table,['Anno','Totale']);assert.equal(reply.pipes,false,'a label line before a table must not leave raw pipes');
+    assert.equal(reply.hints,1,'the new-tab hint shows on the first answer with site pages');
+    assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
+    assert.ok(reply.overflow<=1,`${width}: answer overflow`);
+    // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
+    const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
+    assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);
+    await page.click('[data-assistant-reply] details summary');
+    assert.equal(await page.$eval('[data-assistant-reply] details',el=>el.open),true);
+    await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-answer-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
     await click('Copia risposta');
     await page.waitForFunction(()=>typeof window.__copiedText==='string');
-    assert.equal(await page.evaluate(()=>window.__copiedText.split('\n').at(-1)), 'SIOPE: https://www.siope.it/');
+    const copiedAnswer=await page.evaluate(()=>window.__copiedText);
+    assert.equal(copiedAnswer.split('\n').at(-1),'SIOPE: https://www.siope.it/');
+    assert.ok(copiedAnswer.includes('Apri i Comuni,')&&copiedAnswer.includes(`Comuni: ${new URL('/comuni',base).href}`),'copy flattens links and lists site pages');
     await click('Copia domanda');
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);
     assert.deepEqual(requests[1].body.messages.map(message=>message.role),['user','assistant','user']);
+    assert.deepEqual(await page.$$eval('[data-assistant-reply]',els=>els.map(el=>el.querySelectorAll('[data-site-links] p').length)),[1,0],'the hint is not repeated on later answers');
     await (await page.$$('button[aria-label="Rigenera risposta"]')).at(-1).click();await complete(2);
     assert.equal(requests.length,3);assert.equal(requests[2].body.messages.at(-1).content,'E nel 2024?');
     await (await page.$$('button[aria-label="Modifica domanda"]'))[0].click();
@@ -102,6 +133,6 @@ try {
     assert.equal(await page.evaluate(()=>[...Object.values(localStorage),...Object.values(sessionStorage)].some(value=>value.includes('test-only-'))),false);
     await page.keyboard.press('Escape');await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Utilizza il tuo servizio AI');
     assert.deepEqual(errors,[]);await page.close();
-    console.log(`PASS assistant ${width}px: key consent, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
+    console.log(`PASS assistant ${width}px: key consent, markdown lists, site links allow-list, sources, streaming protocol, copy, edit, regenerate, stop, context, docked composer, new chat, disconnect, pagehide, reload`);
   }
 } finally {await closeBrowser(browser);}

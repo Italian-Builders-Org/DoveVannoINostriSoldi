@@ -7,6 +7,9 @@
   --assistant-stroke: color-mix(in srgb, var(--color-neutral-300) 66%, var(--color-raised));
   --assistant-send: var(--color-text);
   --assistant-on-send: var(--color-on-strong);
+  /* The chat keeps its own rounded scale until the site-wide radius redo lands. */
+  --assistant-radius-inner: 8px;
+  --assistant-radius-card: 12px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -100,7 +103,9 @@
 .draftError { margin: 8px 12px; color: var(--color-critical); font-size: 12px; }
 
 .page[data-conversation="true"] .stage { justify-content: flex-end; padding-top: 0; padding-bottom: 10px; }
-.conversation { position: relative; flex: 1; width: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
+/* The scroller clips horizontally too: an inner gutter as wide as the narrowest stage padding (14px),
+   cancelled by the negative margin, keeps focus rings and the optically pulled action row visible. */
+.conversation { position: relative; flex: 1; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
@@ -218,11 +223,73 @@
 .aiText p { margin: 0 0 14px; }
 .aiModel, .aiDisclaimer { color: var(--assistant-muted); font-size: 11px; line-height: 1.7; }
 .aiModel { margin: -8px 0 16px; overflow-wrap: anywhere; }
-.aiSources { display: grid; gap: 18px; margin: 22px 0 16px; padding-top: 18px; border-top: 1px solid var(--assistant-stroke); font-size: 12px; }
-.aiSources p { margin: 0 0 6px; }
-.aiSources small { display: block; color: var(--assistant-muted); }
-.aiSources a { overflow-wrap: anywhere; }
-.aiCaveat { color: var(--assistant-muted); font-size: 11px; }
+.aiDisclaimer { margin: 18px 0 0; }
+
+/* After the text, the answer reads: where to continue on DVNS, then what was
+   consulted and where to verify it. Same section label for both, like .panel-title. */
+.replyHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); margin: 0 0 var(--space-2); }
+.replyLabel { margin: 0 0 10px; color: var(--color-neutral-700); font-size: 11px; font-weight: 600; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
+.replyHead .replyLabel { margin: 0; }
+.replyHint { margin: 0; color: var(--assistant-muted); font-size: 12px; line-height: 1.4; white-space: nowrap; }
+.page .inlineSiteLink { color: var(--color-accent-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+
+/* One grouped list, never a grid: up to four pages stack in reading order at
+   every width, so no card is left orphaned and rows never need equal heights. */
+.siteLinks { margin: var(--space-6) 0 0; }
+.siteLinkList { margin: 0; padding: var(--space-1); list-style: none; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-card); background: var(--assistant-panel); }
+.siteLinkList li + li { border-top: 1px solid color-mix(in srgb, var(--assistant-stroke) 70%, transparent); }
+.page .siteLink { display: flex; align-items: center; gap: var(--space-3); min-height: 60px; padding: 10px var(--space-3); border-radius: var(--assistant-radius-inner); color: var(--assistant-ink); text-decoration: none; transition: background-color 140ms ease; }
+.page .siteLink:focus-visible { outline-offset: 0; }
+.siteLinkText { display: grid; flex: 1; gap: 2px; min-width: 0; }
+.siteLinkTitle { display: flex; flex-wrap: wrap; align-items: center; gap: 2px var(--space-2); min-width: 0; }
+.siteLinkTitle strong { min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
+.citedTag { flex: none; padding: 0 7px; border-radius: 999px; color: var(--color-neutral-700); background: var(--assistant-surface); box-shadow: inset 0 0 0 1px var(--assistant-stroke); font-size: 11px; font-weight: 500; line-height: 19px; }
+.siteLink small { display: -webkit-box; overflow: hidden; color: var(--assistant-muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.siteLink > svg { flex: none; color: var(--assistant-muted); transition: transform 160ms var(--ease-out), color 140ms ease; }
+/* A row inside a grouped list confirms the press with its fill, like a native list, instead of shrinking. */
+.page .siteLink:active { background: var(--color-neutral-200); }
+
+.evidence { margin: var(--space-6) 0 0; padding-top: 18px; border-top: 1px solid var(--assistant-stroke); }
+.evidenceList { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.evidenceItem { padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--assistant-stroke) 70%, transparent); }
+.evidenceItem:first-child { padding-top: 0; }
+.evidenceItem:last-child { border-bottom: 0; padding-bottom: 0; }
+.evidenceTitle { margin: 0 0 var(--space-1); font-size: 14px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.sourceList { display: flex; flex-wrap: wrap; gap: 0 18px; margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.5; }
+.sourceList li { min-width: 0; max-width: 100%; }
+/* inline-block, not flex: a long name wraps and the arrow follows its last word instead of drifting to the edge. */
+.page .sourceLink { display: inline-block; min-width: 0; padding-block: 6px; color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
+.sourceLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
+.sourcePeriod { padding-left: 2px; color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.limits { margin-top: 2px; font-size: 12px; }
+.limits summary { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; color: var(--color-neutral-700); cursor: pointer; list-style: none; transition: color 140ms ease; }
+.limits summary::-webkit-details-marker { display: none; }
+.limits summary svg { flex: none; margin-left: -2px; transition: transform 160ms var(--ease-out); }
+.limits[open] summary svg { transform: rotate(90deg); }
+.limits p { max-width: 68ch; margin: 2px 0 var(--space-1); padding-left: var(--space-3); border-left: 2px solid var(--assistant-stroke); color: var(--color-neutral-700); line-height: 1.65; overflow-wrap: anywhere; }
+
+/* Pages and sources arrive with the finished answer: they settle in after the
+   text, in reading order, so the eye is not pulled away from the answer. */
+.siteLinks, .evidence, .aiDisclaimer { transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
+.evidence { transition-delay: 50ms; }
+.aiDisclaimer { transition-delay: 100ms; }
+@starting-style { .siteLinks, .evidence, .aiDisclaimer { opacity: 0; transform: translateY(4px); } }
+
+@media (hover: hover) and (pointer: fine) {
+  .page .siteLink:hover { background: var(--assistant-surface); }
+  .page .siteLink:hover:active { background: var(--color-neutral-200); }
+  .siteLink:hover > svg { color: var(--color-accent-700); transform: translate(1px, -1px); }
+  .page .sourceLink:hover, .page .inlineSiteLink:hover { text-decoration-color: currentColor; }
+  .limits summary:hover { color: var(--assistant-ink); }
+}
+@media (pointer: coarse) {
+  .page .sourceLink { padding-block: 12px; }
+  .limits summary { min-height: 44px; }
+}
+/* Durations are already near zero globally under reduced motion; this only removes the hover nudge. */
+@media (prefers-reduced-motion: reduce) {
+  .siteLink:hover > svg { transform: none; }
+}
 @media (max-width: 600px) {
   .toolbar { gap: 6px; }
   .toolbarActions { gap: 4px; }
@@ -247,7 +314,7 @@
 .page[data-conversation="true"] .footer > span { display: none; }
 .page[data-conversation="true"] .footer > div { padding-right: 0; gap: 16px; }
 .page[data-conversation="true"] .footer button, .page[data-conversation="true"] .footer a { min-height: 44px; }
-.thread { padding-bottom: 14px; }
+.thread { padding-bottom: var(--space-6); }
 .turn { gap: 20px; margin-bottom: 28px; }
 .userBlock { display: flex; flex-direction: column; align-items: flex-end; }
 .userMessage { max-width: min(85%, 620px); }
@@ -258,13 +325,22 @@
 .messageActions button { display: inline-flex; justify-content: center; align-items: center; min-width: 36px; min-height: 36px; border: 0; border-radius: 9px; color: var(--assistant-muted); background: transparent; transition: transform 140ms cubic-bezier(.23, 1, .32, 1), background-color 140ms ease; }
 .messageActions button:active { transform: scale(.96); }
 .messageActions button:disabled { opacity: .4; }
+/* The row is pulled left for optical alignment, past the scroller gutter: draw the ring inside the button. */
+.page .messageActions button:focus-visible { outline-offset: -2px; }
 .editMessage { width: min(620px, 100%); padding: 14px; border: 1px solid var(--assistant-stroke); border-radius: 18px; background: var(--assistant-surface); }
 .editMessage textarea { width: 100%; min-height: 88px; resize: vertical; border: 0; background: transparent; font-size: 15px; color: var(--assistant-ink); }
 .editMessage p { margin: 8px 0; color: var(--assistant-muted); font-size: 11px; }
 .editMessage > div { display: flex; justify-content: flex-end; gap: 8px; }
 .editMessage button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--assistant-stroke); border-radius: 22px; background: var(--assistant-panel); color: var(--assistant-ink); font-size: 12px; }
 .editMessage button[type="submit"] { background: var(--assistant-send); color: var(--assistant-on-send); }
-.jumpLatest { position: absolute; bottom: calc(100% + 8px); left: calc(50% - 20px); display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--assistant-stroke); border-radius: 50%; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-sm); }
+.jumpLatest { position: absolute; z-index: 1; bottom: calc(100% + 8px); left: calc(50% - 20px); display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--assistant-stroke); border-radius: 50%; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-sm); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
+@starting-style { .jumpLatest { opacity: 0; transform: translateY(4px) scale(.96); } }
+.jumpLatest:active { transform: scale(.96); }
+/* Content fades out under the docked composer instead of being cut, so the
+   jump button reads as floating above the thread rather than covering it. */
+.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: var(--space-6); background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
+/* Icons sit inside 36–44px hit areas: pull the row back so the glyphs line up with the text edge. */
+.assistantMessage > .messageActions { margin-left: -9px; }
 .aiText { white-space: normal; }
 .aiText p { white-space: pre-wrap; }
 .aiText ul, .aiText ol { margin: 0 0 14px; padding-left: 22px; }
@@ -277,6 +353,7 @@
 }
 @media (pointer: coarse) {
   .messageActions button { min-width: 44px; min-height: 44px; }
+  .assistantMessage > .messageActions { margin-left: -13px; }
 }
 @media (max-width: 600px) {
   .page[data-conversation="true"] .toolbar { padding-block: 5px; }
@@ -286,7 +363,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .messageActions button { transition: none; }
-  .messageActions button:active { transform: none; }
+  .messageActions button:active, .jumpLatest:active { transform: none; }
 }
 
 /* The same compact surfaces and motion curve are shared by files and activity. */

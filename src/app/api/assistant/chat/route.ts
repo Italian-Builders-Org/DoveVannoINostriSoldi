@@ -64,7 +64,9 @@ export async function POST(request: Request) {
     return failure("invalid_request", "La conversazione supera i limiti disponibili. Inizia una nuova chat.");
   }
   if (parsed.provider === "regolo" && parsed.model === FREE_MODEL && attachments.some((file) => file.kind === "image")) {
-    return failure("model", "GLM 5.2 non legge immagini. Rimuovi le immagini oppure collega un modello con visione; la quota gratuita non è stata consumata.");
+    return failure("model", parsed.mode === "free"
+      ? "GLM 5.2 non legge immagini. Rimuovi le immagini oppure collega un modello con visione; la quota gratuita non è stata consumata."
+      : "GLM 5.2 non legge immagini. Rimuovi le immagini oppure scegli un modello con visione.");
   }
   const free = parsed.mode === "free";
   if (free && (request.headers.has("authorization") || parsed.provider !== "regolo" || parsed.model !== FREE_MODEL || parsed.reasoning !== undefined)) {
@@ -139,6 +141,6 @@ export async function POST(request: Request) {
     if (request.signal.aborted) return failure("cancelled", "Richiesta interrotta.", 499);
     if (error instanceof AiProviderError) return failure(error.code, upstreamMessage(error.code), error.code === "authentication" ? 401 : 502);
     // No exception strings, provider bodies, headers or user content enter a response or log.
-    return failure("provider", providerMessages.provider, 502);
+    return failure("provider", upstreamMessage("provider"), 502);
   }
 }

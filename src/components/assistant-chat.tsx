@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, BookOpen01Icon, Building03Icon, Cancel01Icon, ChartColumnIcon, Coins01Icon, Edit02Icon, Key01Icon, Mic01Icon, StopIcon, Copy01Icon, RefreshIcon, Tick02Icon, ArrowDown01Icon, Attachment01Icon } from "@hugeicons/core-free-icons";
-import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_PROMPT_CHARS, AI_PROVIDERS, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
+import { AI_MAX_HISTORY_CHARS, AI_MAX_HISTORY_MESSAGES, AI_MAX_PROMPT_CHARS, AI_PROVIDERS, type AiAnswer, type AiConnection, type AiMessage, type AiResponse } from "@/lib/assistant/byok-contracts";
 import { FREE_MODEL } from "@/lib/assistant/free-contracts";
 import { useAssistantQuota } from "@/components/use-assistant-quota";
 import { AssistantFreeConsent } from "@/components/assistant-free-consent";
 import { AssistantProviderSettings } from "@/components/assistant-provider-settings";
 import { AssistantAiReply } from "@/components/assistant-ai-reply";
 import { AssistantMarkdown } from "@/components/assistant-markdown";
+import { plainLinks } from "@/components/assistant-markdown-parse";
 import { readChatStream } from "@/lib/assistant/chat-stream";
 import { AssistantActivity } from "@/components/assistant-activity";
 import type { AiActivity } from "@/lib/assistant/activity-contracts";
@@ -29,6 +30,12 @@ const EXAMPLES = [
   { label: "Confronta due anni", source: "SIOPE", detail: "Variazione tra annualità complete", command: "confronta", icon: ChartColumnIcon, prompt: "Come sono cambiati i pagamenti dei Comuni tra il 2024 e il 2025?" },
 ] as const;
 const MAX_TURNS = 12;
+/** Plain text for the clipboard: Markdown links become their label, site pages and sources absolute URLs. */
+function copyableAnswer(response: AiAnswer) {
+  const pages = (response.siteLinks ?? []).map((link) => `${link.title}: ${new URL(link.href, window.location.origin).href}`);
+  const sources = response.evidence.flatMap((entry) => entry.sources.map((source) => `${source.name}: ${source.url}`));
+  return [plainLinks(response.text), ...(pages.length ? [`Approfondisci su DVNS:\n${pages.join("\n")}`] : []), ...sources].join("\n\n");
+}
 type Turn = { id: number; prompt: string; response: AiResponse | null; attachments?: AiAttachment[]; activities?: AiActivity[]; contextReduced?: boolean; startedAt: number; finishedAt?: number; partial?: string; stopped?: boolean };
 
 export function AssistantChat() {
@@ -71,6 +78,7 @@ export function AssistantChat() {
   const hasConversation = turns.length > 0;
   const tooLong = draft.length > AI_MAX_PROMPT_CHARS;
   const atLimit = turns.length >= MAX_TURNS;
+  const firstLinkedTurn = turns.find((turn) => turn.response?.ok && turn.response.siteLinks?.length)?.id;
   const options = (menu === "add" ? [] : menu === "sources" ? EXAMPLES.slice(0, 3) : EXAMPLES).filter((option) =>
     `${option.source} ${option.label} ${option.command}`.toLocaleLowerCase("it-IT").includes(query.toLocaleLowerCase("it-IT")),
   );
@@ -312,9 +320,9 @@ export function AssistantChat() {
                     <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span>DVNS</span><small>AI</small></div>
                     {turn.contextReduced ? <p className={styles.contextNotice}>I nuovi allegati superano il limite del contesto: i file dei messaggi più vecchi non sono inclusi in questa risposta. Per confrontarli, riallega insieme i file utili (massimo 3).</p> : null}
                     <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} />
-                    {turn.response ? <AssistantAiReply response={turn.response} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
+                    {turn.response ? <AssistantAiReply response={turn.response} showNewTabHint={turn.id === firstLinkedTurn} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} streaming />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
                     {turn.response || turn.stopped ? <div className={styles.messageActions}>
-                      {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => void copyText([turn.response?.ok ? turn.response.text : "", ...(turn.response?.ok ? turn.response.evidence.flatMap((entry) => entry.sources.map((source) => `${source.name}: ${source.url}`)) : [])].join("\n\n"), `assistant-${turn.id}`)}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
+                      {turn.response?.ok ? <button type="button" aria-label="Copia risposta" title={copied === `assistant-${turn.id}` ? "Copiato" : "Copia risposta"} onClick={() => { if (turn.response?.ok) void copyText(copyableAnswer(turn.response), `assistant-${turn.id}`); }}><HugeiconsIcon icon={copied === `assistant-${turn.id}` ? Tick02Icon : Copy01Icon} size={17} aria-hidden="true" /></button> : null}
                       <button type="button" aria-label="Rigenera risposta" title="Rigenera risposta; sostituisce anche i messaggi successivi" disabled={loading} onClick={() => void ask(turn.prompt, turn.id)}><HugeiconsIcon icon={RefreshIcon} size={17} aria-hidden="true" /></button>
                     </div> : null}
                   </div>

@@ -270,6 +270,18 @@ test('search fallback ignores near-miss aliases and spends its scans on content 
   assert.ok(nurseries.some((link) => link.href.startsWith('/coesione/asili')), JSON.stringify(nurseries));
 });
 
+test('search fallback keeps singular, plural and gender forms of a topic word', () => {
+  const cases = [
+    ['Quanto vale la spesa sanitaria?', '/spese/sanita'],
+    ['Quanto guadagna un deputato?', '/politici'],
+    ['rifiuto urbano', '/spese/ambiente'],
+  ];
+  for (const [question, href] of cases) {
+    const links = selectAssistantSiteLinks([], question);
+    assert.ok(links.some((link) => link.href === href), `${question}: ${JSON.stringify(links)}`);
+  }
+});
+
 test('truncated page titles and descriptions say they were cut', () => {
   const [link] = linksForDatasetQuery({ dataset: 'ipa_enti' });
   const long = cleanSiteLink({ ...link, title: 'T'.repeat(200), description: 'D'.repeat(300) });
@@ -383,7 +395,9 @@ test('humanizeAssistantCaveat removes MCP/API jargon across the whole catalog wh
     /\bcodeSsn=/u,
     /\bin centesimi di euro\b/iu,
     /\d+_\d{3}\b/u,
-    /\brestano null\b/iu,
+    /\bresta(?:no)? null\b/iu,
+    /\bin (?:centesimi|decimi|millesimi|milionesimi)\b/iu,
+    /\bpackage\b/iu,
   ];
 
   for (const dataset of datasetCatalog) {

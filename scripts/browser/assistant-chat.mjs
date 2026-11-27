@@ -84,8 +84,8 @@ try {
     assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
     assert.ok(reply.overflow<=1,`${width}: answer overflow`);
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
-    const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]')??el.parentElement;const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, [tabindex="0"]')].map(node=>{const rect=node.getBoundingClientRect();return Math.min(rect.left-box.left,box.right-rect.right);}));});
-    assert.ok(ringRoom>=5,`${width}: focus ring clipped, ${ringRoom}px from the scroller edge`);
+    const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
+    assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);
     await page.click('[data-assistant-reply] details summary');
     assert.equal(await page.$eval('[data-assistant-reply] details',el=>el.open),true);
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-answer-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});

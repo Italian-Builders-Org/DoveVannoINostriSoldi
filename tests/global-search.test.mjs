@@ -271,6 +271,16 @@ test("title matches outrank aliases and descriptions with an explicit reason", (
   assert.equal(results[2].match.label, "Descrizione");
 });
 
+test("a one-letter typo in an alias is labelled fuzzy, an Italian word ending is not", () => {
+  const documents = [
+    { id: "checks", href: "/checks", title: "Registro", context: "Pagine", type: "pagina", aliases: ["cosa controllare"], description: null },
+    { id: "health", href: "/health", title: "Quadro", context: "Pagine", type: "pagina", aliases: ["servizio sanitario"], description: null },
+  ];
+  assert.equal(rankSearchDocuments(documents, "costa")[0]?.match.reason, "alias-fuzzy");
+  assert.equal(rankSearchDocuments(documents, "costa")[0]?.match.label, "Corrispondenza simile in un alias");
+  assert.equal(rankSearchDocuments(documents, "sanitaria")[0]?.match.reason, "alias", "sanitaria/sanitario differ only in the ending");
+});
+
 test("site search has no duplicate destinations and exposes useful Italian aliases", () => {
   const results = searchSiteDocuments("consulenze");
   const hrefs = results.map((result) => result.href);

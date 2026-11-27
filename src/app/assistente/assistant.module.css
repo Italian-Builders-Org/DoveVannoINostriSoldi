@@ -103,8 +103,9 @@
 .draftError { margin: 8px 12px; color: var(--color-critical); font-size: 12px; }
 
 .page[data-conversation="true"] .stage { justify-content: flex-end; padding-top: 0; padding-bottom: 10px; }
-/* The scroller clips horizontally too: a 6px inner gutter, cancelled by the negative margin, keeps focus rings of flush-left links visible. */
-.conversation { position: relative; flex: 1; width: calc(100% + 12px); margin-inline: -6px; padding-inline: 6px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
+/* The scroller clips horizontally too: an inner gutter as wide as the narrowest stage padding (14px),
+   cancelled by the negative margin, keeps focus rings and the optically pulled action row visible. */
+.conversation { position: relative; flex: 1; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
@@ -324,6 +325,8 @@
 .messageActions button { display: inline-flex; justify-content: center; align-items: center; min-width: 36px; min-height: 36px; border: 0; border-radius: 9px; color: var(--assistant-muted); background: transparent; transition: transform 140ms cubic-bezier(.23, 1, .32, 1), background-color 140ms ease; }
 .messageActions button:active { transform: scale(.96); }
 .messageActions button:disabled { opacity: .4; }
+/* The row is pulled left for optical alignment, past the scroller gutter: draw the ring inside the button. */
+.page .messageActions button:focus-visible { outline-offset: -2px; }
 .editMessage { width: min(620px, 100%); padding: 14px; border: 1px solid var(--assistant-stroke); border-radius: 18px; background: var(--assistant-surface); }
 .editMessage textarea { width: 100%; min-height: 88px; resize: vertical; border: 0; background: transparent; font-size: 15px; color: var(--assistant-ink); }
 .editMessage p { margin: 8px 0; color: var(--assistant-muted); font-size: 11px; }

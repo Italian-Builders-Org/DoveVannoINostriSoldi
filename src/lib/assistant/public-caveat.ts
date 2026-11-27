@@ -41,7 +41,7 @@ const CURATED_PUBLIC_CAVEATS: Partial<Record<DatasetId, string>> = {
   eurostat_arope:
     "Indicatore europeo di rischio di povertà o esclusione sociale: non è spesa pubblica e non coincide con la povertà assoluta o relativa ISTAT, quindi non va sommato né confrontato con essa. Riguarda solo l’Italia; percentuali e migliaia di persone non si sommano fra loro.",
   istat_bes_salute:
-    "Ogni indicatore mantiene definizione, unità e periodo propri: anni di vita attesi, valori per 1.000 nati vivi o tassi per 10.000 residenti. Totale, donne e uomini sono serie distinte; un dato non disponibile non vale zero. Dati provinciali, non comunali, con confini che cambiano nel tempo. Non misura spesa, livelli di assistenza o efficienza: nessuna somma, media ricostruita, classifica o indice composito.",
+    "Ogni indicatore mantiene definizione, unità e periodo propri: anni di vita attesi, valori per 1.000 nati vivi o tassi standardizzati per 10.000 residenti nelle età indicate. Totale, donne e uomini sono serie distinte; un dato non disponibile non vale zero. Dati provinciali, non comunali, con confini che cambiano nel tempo. Non misura spesa, livelli di assistenza o efficienza: nessuna somma, media ricostruita, classifica o indice composito.",
   istat_bes_istruzione:
     "Percentuali e tassi con denominatori propri: non è spesa pubblica né una misura di qualità o efficienza. Nessuna somma fra territori o fra donne e uomini, nessuna stima per Comune e nessuna classifica. Un dato non disponibile non vale zero. Le prove INVALSI mancano per il 2020; tassi di partecipazione sopra il 100% sono valori ufficiali. I confini provinciali cambiano nel tempo.",
   istat_bes_lavoro:
@@ -55,13 +55,21 @@ const CURATED_PUBLIC_CAVEATS: Partial<Record<DatasetId, string>> = {
   mef_iva:
     "Importi dichiarati, non gettito riscosso né spesa pubblica. Importi, frequenze e numero di contribuenti non si sommano fra loro, e i totali ufficiali non si sommano alle righe di dettaglio. Le celle oscurate o mancanti non valgono zero. Le classificazioni delle attività cambiano fra i due anni: non è una serie omogenea.",
   eu_vat_gap_italy:
-    "Stima del divario fra l’IVA teorica e quella incassata: non è evasione accertata né un dato delle dichiarazioni MEF o dei conti ISTAT. Il 2024 è una stima preliminare; le celle senza valore non sono osservate.",
+    "Stima del divario fra l’IVA teorica e quella incassata: non è evasione accertata né un dato delle dichiarazioni MEF o delle stime ISTAT sull’economia non osservata. Il 2024 è una stima preliminare; le celle senza valore non sono osservate.",
+  inps_assegno_unico:
+    "Non è la platea completa dell’Assegno unico: sono esclusi i beneficiari del Reddito di cittadinanza. Nuclei, figli e mensilità sono misure distinte e non si sommano; il numero di figli per nucleo non va letto come conteggio di figli distinti. Nessun giudizio su adeguatezza o merito.",
+  aifa_farmaci_spesa:
+    "Tracciabilità (forniture alle strutture pubbliche, IVA inclusa) e convenzionata (farmacie, prezzo al pubblico) sono canali distinti e non vanno sommati. Gli importi sono al lordo dei payback: non sono spesa netta del SSN e non si sommano al Conto economico SSN, ai pagamenti SIOPE della sanità o alla spesa sanitaria COFOG. Un canale senza dato non vale zero; i valori negativi della tracciabilità sono resi e note di credito. Le confezioni non sono dosi.",
+  istat_bes_paesaggio:
+    "Densità museale, agriturismi e verde storico hanno unità territoriali distinte: non sono spesa pubblica, non si sommano e non formano un indice. Un dato non disponibile non vale zero. Dati provinciali.",
+  istat_bes_servizi:
+    "Percentuali, densità per abitante, medie per utente e posti-km hanno unità distinte: non sono spesa pubblica, non si sommano e non formano un indice. Un dato non disponibile non vale zero. Dati provinciali.",
   anac_operatori:
     "Indice storico cross-temporale: non dichiara la popolazione nazionale corrente. Gli importi rappresentano aggiudicazioni dichiarate, non pagamenti o incassi; il valore è attribuito solo agli affidamenti con operatore unico. Le classifiche sono descrittive e non provano irregolarità.",
 };
 
 const API_ONLY_SENTENCE =
-  /(?:GET\s+\/api\/|\/api\/|\bMCP\b|\bpayload\b|\bcursor\b|\boffset\b|\blimit\b|Specificare almeno un filtro|pagine di massimo \d+ righe|Il campo [a-zA-Z_]+|campi Cents|UNIT_MEAS|OBS_VALUE|dataMode|matchedRows|Accesso al corpus|\b(?:code|family|band|measure|territory)\s*=|territory omesso|Solo SEX=T|Licenza\s+(?:del payload\s+|zip\s+)?(?:not-declared|non dichiarata)|^(?:Importi|Valori) in (?:centesimi|decimi)(?:\s+da milioni di euro)?\.?$|\bflag [a-z/]+ resta(?:no)? null|\bcodeSsn=|\b\d{2}_\d{3}\b|in (?:centesimi|decimi|milionesimi)\b|Nessuna cella n\/g|I riferimenti op-)/iu;
+  /(?:GET\s+\/api\/|\/api\/|\bMCP\b|\bpayload\b|\bcursor\b|\boffset\b|\blimit\b|Specificare almeno un filtro|pagine di massimo \d+ righe|Il campo [a-zA-Z_]+|campi Cents|UNIT_MEAS|OBS_VALUE|dataMode|matchedRows|Accesso al corpus|\b(?:code|family|band|measure|territory)\s*=|territory omesso|Solo SEX=T|Licenza\s+(?:del payload\s+|zip\s+)?(?:not-declared|non dichiarata)|^(?:Importi|Valori) in (?:centesimi|decimi)(?:\s+da milioni di euro)?\.?$|\bflag [a-z/]+ resta(?:no)? null|\bcodeSsn=|\b\d{2}_\d{3}\b|in (?:centesimi|decimi|millesimi|milionesimi)\b|\bresta(?:no)? null\b|\bpackage\b|Nessuna cella n\/g|I riferimenti op-)/iu;
 
 export function humanizeAssistantCaveat(datasetId: DatasetId, rawCaveat?: string): string | undefined {
   const curated = CURATED_PUBLIC_CAVEATS[datasetId];

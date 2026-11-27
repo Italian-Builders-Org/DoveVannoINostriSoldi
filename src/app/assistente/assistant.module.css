@@ -143,7 +143,7 @@
 .comparison .answer h3 { font-size: 16px; }
 
 .footer { display: flex; flex: none; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 12px max(28px, calc((100% - 720px) / 2)) 18px; color: var(--assistant-muted); font-size: 12px; }
-.footer button { min-height: 44px; padding: 0; border: 0; color: inherit; background: transparent; font-size: inherit; }
+.footer button { min-height: 44px; padding: 0; border: 0; color: inherit; background: transparent; font-size: inherit; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; }
 .infoPanel { position: absolute; z-index: 10; right: 28px; bottom: 65px; width: min(420px, calc(100% - 40px)); padding: 22px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-card); color: var(--assistant-ink); background: var(--assistant-panel); box-shadow: var(--shadow-md); }
 .infoPanel > button { float: right; margin: -10px -10px 0 10px; }
@@ -332,7 +332,7 @@
 .editMessage > div { display: flex; justify-content: flex-end; gap: 8px; }
 .editMessage button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); background: var(--assistant-panel); color: var(--assistant-ink); font-size: 12px; }
 .editMessage button[type="submit"] { background: var(--assistant-send); color: var(--assistant-on-send); }
-.jumpLatest { position: absolute; z-index: 1; bottom: calc(100% + 12px); left: 50%; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px 0 11px; border: 1px solid var(--assistant-stroke); border-radius: 999px; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-md); font-size: 13px; transform: translateX(-50%); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
+.jumpLatest { position: absolute; z-index: 1; bottom: calc(100% + 12px); left: 50%; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 13px; border: 1px solid var(--assistant-stroke); border-radius: 999px; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-md); font-size: 13px; transform: translateX(-50%); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
 @starting-style { .jumpLatest { opacity: 0; transform: translate(-50%, 4px) scale(.96); } }
 .jumpLatest:active { transform: translateX(-50%) scale(.96); }
 /* Content fades out under the docked composer instead of being cut at a hard edge. */
@@ -511,3 +511,12 @@
   /* One 16px gutter on phones: toolbar, messages, composer and footer share the same left edge. */
   .page[data-conversation="true"] .stage { padding-inline: 16px; }
 }
+
+/* One external-link mark everywhere (text, sources, dataset, consent): same size relative to the
+   text, outside the underline, in the link's own colour. */
+.page :is(.inlineSiteLink, .sourceLink, .datasetLink, .providerDialog a) svg { display: inline-block; width: .8em; height: .8em; margin-left: .2em; color: inherit; vertical-align: -.05em; }
+.providerDialog a { text-decoration: underline; text-underline-offset: .2em; }
+
+/* While "Vai in fondo" shows, the fade above the composer grows to a solid band behind the whole pill
+   (12px gap + 44px pill + 8px), so no half-hidden figure sits beside it. */
+.page[data-conversation="true"] .composerArea:has(.jumpLatest)::before { height: 96px; background: linear-gradient(to bottom, transparent, var(--assistant-bg) 30%); }

@@ -2,14 +2,14 @@ import { Fragment, useMemo, type ReactNode } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { isInternalSiteHref, type AiSiteLink } from "@/lib/assistant/byok-contracts";
-import { parseAssistantMarkdown, type AssistantBlock, type AssistantInline } from "@/components/assistant-markdown-parse";
+import { keepFiguresWithUnits, parseAssistantMarkdown, type AssistantBlock, type AssistantInline } from "@/components/assistant-markdown-parse";
 import styles from "@/app/assistente/assistant.module.css";
 
 const NO_LINKS: readonly AiSiteLink[] = [];
 
 function inline(nodes: AssistantInline[]): ReactNode[] {
   return nodes.map((node, index) => {
-    if (node.type === "text") return <Fragment key={index}>{node.text}</Fragment>;
+    if (node.type === "text") return <Fragment key={index}>{keepFiguresWithUnits(node.text)}</Fragment>;
     if (node.type === "code") return <code key={index}>{node.text}</code>;
     if (node.type === "strong") return <strong key={index}>{inline(node.children)}</strong>;
     if (node.type === "em") return <em key={index}>{inline(node.children)}</em>;

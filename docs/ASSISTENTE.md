@@ -16,7 +16,8 @@ scrivono nel campo senza inviarla; digitare @ o / apre gli stessi esempi (lo spi
 funziona»). Nella conversazione scorre solo l’elenco dei messaggi; sotto il compositore resta
 un’unica riga con l’avviso sull’AI e «Come funziona», che contiene anche il link alla privacy. Le risposte arrivano in streaming reale,
 sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
-elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
+elenchi e tabelle con scorrimento orizzontale. Una cifra non va mai a capo separata dalla sua
+unità («3,21 miliardi», «12 %»): `keepFiguresWithUnits` usa uno spazio indivisibile solo in quel punto. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
 
 Dopo il testo la risposta mostra, nell’ordine, le fonti ufficiali dei dati consultati e i
 limiti del dato (sempre visibili: cambiano la lettura del numero), poi fino a quattro pagine del
@@ -33,7 +34,12 @@ sito («Approfondisci»), scelte dal server e mai dal modello:
 
 Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
 pagina e andrebbe persa uscendo; lo segnalano l’icona ↗ e un testo per i lettori di schermo.
-Una pagina già linkata nel testo non viene ripetuta nell’elenco. I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
+Sotto «Fonti» il nome del dataset apre la sua pagina DVNS: è il primo collegamento di
+`linksForDatasetQuery` per quella ricerca, scelto dal server e accettato dal contratto solo come
+percorso interno (`AiEvidence.href`). Una pagina già linkata nel testo o dal nome del dataset non
+viene ripetuta in «Approfondisci». La data di snapshot di una fonte (`dataAsOf` del catalogo) è
+un campo separato (`AiSource.asOf`, «dati al 14 set 2026») e non viene più presentata come periodo.
+I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
 citazioni del testo del modello. I link alle fonti ufficiali vengono dal catalogo server.
 Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
 senza dettagli di protocollo MCP/API (`public-caveat.ts`). Il prompt chiede al modello di non
@@ -46,7 +52,12 @@ il dataset è nominato una volta sola, in «Fonti», insieme al periodo. Durante
 le domande gratuite rimaste compaiono accanto all’avviso solo quando ne restano tre o meno; i
 lettori di schermo ricevono comunque ogni aggiornamento.
 
-Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus); ogni risposta completata ha copia e rigenerazione.
+Su telefono, durante la conversazione, la barra «Assistente» si nasconde quando chi legge
+scorre verso il basso (rotella o dito, mai durante lo streaming o con «Vai in fondo») e torna a
+ogni scorrimento verso l’alto o al focus; i messaggi sfumano sotto il suo bordo.
+
+Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus; sugli schermi
+touch restano solo sull’ultima domanda); ogni risposta completata ha copia e rigenerazione.
 La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.

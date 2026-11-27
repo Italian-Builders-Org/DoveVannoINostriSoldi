@@ -205,3 +205,19 @@ test('a two-year comparison keeps both queries but lists identical sources only 
 test('Regolo personal models do not inherit GLM-specific reasoning parameters',async()=>{
  const result=await completeProviderText({...connection,provider:'regolo',model:'other-account-model'},'System',messages,{signal:signal(),fetcher:async(url,init)=>{assert.equal(JSON.parse(init.body).reasoning_effort,undefined);return Response.json({choices:[{finish_reason:'stop',message:{content:'Testo'}}]});}});assert.equal(result,'Testo');
 });
+
+test('BYOK evidence links each dataset to its DVNS page and keeps an update date apart from the period',async()=>{
+  const planned=[{dataset:'siope_comuni',year:2025},{dataset:'salute_dispositivi_medici',view:'search',query:'PRPR0005'}];
+  let calls=0;
+  const response=await executeByokChat(connection,[{role:'user',content:'Pagamenti dei Comuni calabresi e dispositivi medici'}],{signal:signal(),queryDataset:async()=>({rows:[]}),fetcher:async()=>{
+    calls++;return textResponse(calls===1 ? JSON.stringify({queries:planned,clarification:''}) : 'Risposta.');
+  }});
+  assert.equal(isAiResponse(response),true);
+  const byId=Object.fromEntries(response.evidence.map(entry=>[entry.dataset,entry]));
+  // The dataset name in "Fonti" opens the DVNS page built from that dataset, chosen by the server.
+  assert.match(byId.siope_comuni.href??'',/^\/[a-z]/,'dataset page is an internal path');
+  assert.ok(isAiResponse({...response,evidence:[{...byId.siope_comuni,href:'https://example.com'}]})===false,'an external dataset href is rejected');
+  // A snapshot date is not a reference period: it is labelled separately.
+  const device=byId.salute_dispositivi_medici.sources.find(source=>source.name.startsWith('Banca dati'));
+  assert.equal(device.period,undefined);assert.equal(device.asOf,'2026-09-14');
+});

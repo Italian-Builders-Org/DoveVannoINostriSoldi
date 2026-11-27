@@ -41,15 +41,14 @@
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 /* On wide screens the toolbar shares the reading column's edges (720px), so title, thread and
-   composer hang on one axis; the 9px pull lines the icon glyphs up with that edge. */
+   composer hang on one axis; the pull equals the last button's padding, so its text ends on that edge. */
 .toolbar { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 16px; padding: 16px max(28px, calc((100% - 720px) / 2)); }
-.toolbarActions { margin-right: -9px; }
+.toolbarActions { margin-right: -12px; }
 .toolbarTitle { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0; font-size: 15px; font-weight: 550; letter-spacing: normal; line-height: 1.4; }
 .toolbarActions { display: flex; align-items: center; gap: 2px; }
 .iconButton, .newChat { display: inline-flex; flex: none; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 10px; border: 0; border-radius: 50%; color: var(--assistant-muted); background: transparent; }
 .iconButton svg, .newChat svg { flex: none; }
 /* Nothing to clear yet: the slot stays, so the toolbar does not jump when the chat starts. */
-.newChat:disabled { display: none; }
 .newChat { gap: 8px; padding: 10px 13px; border-radius: var(--assistant-radius-control); font-size: 13px; }
 .iconButton:active, .newChat:active, .send:active, .providerButton:active { transform: scale(.97); }
 .suggestions button:active { transform: scale(.98); }
@@ -233,7 +232,9 @@
 /* After the text, the answer reads: what was consulted and where to verify it, then where to
    continue on DVNS. Same section label for both, like .panel-title. */
 .replyLabel { margin: 0 0 10px; color: var(--assistant-ink); font-size: 14px; font-weight: 600; line-height: 1.4; }
-.page .inlineSiteLink { color: var(--color-accent-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.page .inlineSiteLink { color: var(--color-accent-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; white-space: normal; }
+/* The paragraph keeps the model's spacing (pre-wrap); inside a link a line-end space would hang underlined. */
+.inlineSiteLink svg { display: inline-block; margin-left: 2px; vertical-align: -1px; }
 
 /* One grouped list, never a grid: up to four pages stack in reading order at
    every width, so no card is left orphaned and rows never need equal heights. */
@@ -260,6 +261,9 @@
 .sourceList li { min-width: 0; max-width: 100%; }
 /* inline-block, not flex: a long name wraps and the arrow follows its last word instead of drifting to the edge. */
 .page .sourceLink { display: inline-block; min-width: 0; padding-block: 6px; color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
+/* The dataset name links to its DVNS page: same underline as the sources, at the title's size. */
+.page .datasetLink { color: inherit; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
+.datasetLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
 .sourceLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
 .sourcePeriod { padding-left: 6px; color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* A system note, shaped unlike a Markdown quote so it never reads as the model's words. */
@@ -278,7 +282,7 @@
   .page .siteLink:hover { background: var(--assistant-surface); }
   .page .siteLink:hover:active { background: var(--assistant-bubble); }
   .siteLink:hover > svg { color: var(--color-accent-700); transform: translate(1px, -1px); }
-  .page .sourceLink:hover, .page .inlineSiteLink:hover { text-decoration-color: currentColor; }
+  .page .sourceLink:hover, .page .inlineSiteLink:hover, .page .datasetLink:hover { text-decoration-color: currentColor; }
 }
 @media (pointer: coarse) {
   .page .sourceLink { padding-block: 6px; }
@@ -339,7 +343,7 @@
 .aiText { white-space: normal; }
 .aiText p { white-space: pre-wrap; }
 .aiText ul, .aiText ol { margin: 0 0 14px; padding-left: 20px; }
-.aiText li { padding-left: 2px; margin-bottom: 2px; text-wrap: pretty; }
+.aiText li { padding-left: 2px; margin-bottom: 2px; }
 .aiText li::marker { color: var(--assistant-muted); }
 .aiText h3 { margin: 20px 0 9px; font-size: 17px; font-weight: 600; }
 .aiText code { padding: 1px 4px; border-radius: 4px; background: var(--assistant-surface); font-size: .9em; overflow-wrap: anywhere; }
@@ -484,4 +488,26 @@
 /* The narrowest phones keep both toolbar actions on one line: "Nuova chat" becomes its icon. */
 @media (max-width: 380px) {
   .newChat span { display: none; }
+}
+
+/* Phones in a conversation: the page toolbar floats over the messages and slides away while the
+   reader scrolls down, giving the answer about 50px more; any scroll up, or focus inside it, brings it back. */
+@media (max-width: 600px) {
+  .page[data-conversation="true"] { position: relative; }
+  .page[data-conversation="true"] .toolbar { position: absolute; inset: 0 0 auto; z-index: 4; background: var(--assistant-bg); transition: transform 200ms var(--ease-out); }
+  .page[data-conversation="true"] .thread { padding-top: 64px; }
+  .page[data-toolbar-hidden="true"] .toolbar:not(:focus-within) { transform: translateY(-100%); }
+  /* While the toolbar covers the top, messages fade out under its edge instead of being cut by it. */
+  .page[data-conversation="true"]:not([data-toolbar-hidden="true"]) .conversation { mask-image: linear-gradient(to bottom, transparent 54px, #000 78px); }
+}
+/* Touch screens have no hover: copy and edit stay only on the latest question, where they are used. */
+@media (hover: none) {
+  .turn:not(:last-child) .userBlock > .messageActions { display: none; }
+}
+
+@media (max-width: 600px) {
+  /* The key button's text ends on the column edge: its 10px padding stays as touch area in the gutter. */
+  .toolbarActions { margin-right: -10px; }
+  /* One 16px gutter on phones: toolbar, messages, composer and footer share the same left edge. */
+  .page[data-conversation="true"] .stage { padding-inline: 16px; }
 }

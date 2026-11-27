@@ -62,6 +62,10 @@ export function AssistantChat() {
   const [copied, setCopied] = useState<string | null>(null);
   const [copyError, setCopyError] = useState(false);
   const [awayFromBottom, setAwayFromBottom] = useState(false);
+  // Phones only (CSS): the page toolbar slides away while the reader scrolls down and returns on any scroll up.
+  const [toolbarHidden, setToolbarHidden] = useState(false);
+  const lastScrollTop = useRef(0);
+  const userScrollAt = useRef(0);
   const followBottom = useRef(true);
   const composerArea = useRef<HTMLDivElement>(null);
   const beforeComposer = useRef<DOMRect | null>(null);
@@ -255,6 +259,7 @@ export function AssistantChat() {
   }
   function reset() {
     stop();
+    setToolbarHidden(false);
     voice.close();
     setTurns([]);
     setEditing(null);
@@ -287,7 +292,7 @@ export function AssistantChat() {
   </span> : null;
 
   return (
-    <main ref={pageRoot} className={styles.page} data-conversation={hasConversation} aria-label="Assistente sui dati pubblici"
+    <main ref={pageRoot} className={styles.page} data-conversation={hasConversation} data-toolbar-hidden={hasConversation && toolbarHidden} aria-label="Assistente sui dati pubblici"
       onKeyDown={(event) => {
         if (event.key !== "Escape" || event.defaultPrevented) return;
         if (menu) { event.preventDefault(); setMenu(null); input.current?.focus(); }
@@ -298,7 +303,8 @@ export function AssistantChat() {
         {/* The page title stays in every state; the welcome question is the empty state's subheading. */}
         <h1 className={styles.toolbarTitle}>Assistente</h1>
         <div className={styles.toolbarActions}>
-          <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" disabled={!hasConversation && !draft && !attachments.items.length} onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
+          {/* Only a conversation has something to reset: the toolbar does not change while typing a first question. */}
+          {hasConversation ? <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button> : null}
           <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
             <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : "La tua chiave AI"}</span>
           </button>
@@ -307,7 +313,17 @@ export function AssistantChat() {
 
       <div className={styles.stage}>
         {hasConversation ? (
-          <div className={styles.conversation} ref={scroller} onScroll={() => { const element = scroller.current; if (element) { followBottom.current = element.scrollHeight - element.scrollTop - element.clientHeight < 80; setAwayFromBottom(!followBottom.current); } }} role="log" aria-label="Conversazione di questa pagina">
+          <div className={styles.conversation} ref={scroller} onScroll={() => {
+            const element = scroller.current;
+            if (!element) return;
+            followBottom.current = element.scrollHeight - element.scrollTop - element.clientHeight < 80;
+            setAwayFromBottom(!followBottom.current);
+            const delta = element.scrollTop - lastScrollTop.current;
+            lastScrollTop.current = element.scrollTop;
+            // Only a scroll the reader makes moves the toolbar: streaming and "Vai in fondo" never hide controls.
+            if (element.scrollTop < 48 || delta < -6) setToolbarHidden(false);
+            else if (delta > 6 && Date.now() - userScrollAt.current < 300) setToolbarHidden(true);
+          }} onWheel={() => { userScrollAt.current = Date.now(); }} onTouchMove={() => { userScrollAt.current = Date.now(); }} role="log" aria-label="Conversazione di questa pagina">
             <div className={styles.thread}>
               {turns.map((turn, index) => (
                 <div className={styles.turn} key={turn.id} ref={index === turns.length - 1 ? lastTurn : undefined}>

@@ -13,7 +13,7 @@ try {
     page.on('pageerror',error=>errors.push(error.message));
     await page.setViewport({width,height:width<600?844:900});
     await page.setRequestInterception(true);
-    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nEcco i dati:\n| Anno | Totale |\n|---|---:|\n| 2025 | 4,65 mld |\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/spese/panoramica',title:'Spesa pubblica'},{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'}]};
+    const answer={ok:true,kind:'ai_answer',provider:'openai',model:'gpt-4.1-mini',text:'## Totale\n\n**Risposta di prova**: <b>testo semplice</b>\n\n**Limiti da considerare:**\n- Periodo 2025\n- Fonte ufficiale\n\nEcco i dati:\n| Anno | Totale |\n|---|---:|\n| 2025 | 4,65 mld |\n\nApri [i Comuni](/comuni), non [pagina non citata](/non-citata) né [sito esterno](https://example.com/).',evidence:[{dataset:'siope_comuni',title:'Pagamenti dei Comuni',href:'/territori',sources:[{name:'SIOPE',url:'https://www.siope.it/',period:'2025'}],caveat:'Pagamenti di cassa: non coincidono con gli impegni di bilancio.'}],siteLinks:[{href:'/spese/panoramica',title:'Spesa pubblica'},{href:'/territori',title:'Territori'},{href:'/comuni',title:'Comuni',description:'Pagamenti, entrate e confronti per ogni Comune'}]};
     const fulfill=request=>request.respond({status:200,contentType:'text/event-stream',body:[{type:'delta',text:answer.text.slice(0,16)},{type:'delta',text:answer.text.slice(16)},{type:'done',response:answer}].map(event=>`data: ${JSON.stringify(event)}\n\n`).join('')});
     page.on('request',request=>{
       if(new URL(request.url()).pathname!=='/api/assistant/chat'){void request.continue();return;}
@@ -73,7 +73,8 @@ try {
       inline:[...el.querySelectorAll('p a')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
       text:el.innerText,
       site:[...el.querySelectorAll('[data-site-links] a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
-      external:[...el.querySelectorAll('section:not([data-site-links]) a')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      external:[...el.querySelectorAll('section:not([data-site-links]) a[href^="http"]')].map(a=>({href:a.getAttribute('href'),target:a.target})),
+      dataset:[...el.querySelectorAll('section:not([data-site-links]) a[href^="/"]')].map(a=>({href:a.getAttribute('href'),target:a.target,text:a.firstChild.textContent})),
       landmarks:el.querySelectorAll('nav').length,
       table:[...el.querySelectorAll('table th')].map(th=>th.textContent),
       pipes:/\|/.test(el.innerText),
@@ -89,6 +90,7 @@ try {
     assert.equal(reply.hints,0,'the ↗ icon and screen-reader text already say pages open in a new tab');
     assert.doesNotMatch(reply.text,/generata con AI|Verifica numeri|Citata nella risposta/,'one AI notice lives under the composer: answers repeat no labels or verification notes');
     assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
+    assert.deepEqual(reply.dataset,[{href:'/territori',target:'_blank',text:'Pagamenti dei Comuni'}],'the dataset name opens its DVNS page, and that page is not listed again under Approfondisci');
     assert.ok(reply.overflow<=1,`${width}: answer overflow`);
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
     const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
@@ -106,6 +108,16 @@ try {
     assert.equal(await page.evaluate(()=>window.__copiedText),'Quanto hanno speso i Comuni nel 2025?');
     await page.type(field,'E nel 2024?');await page.keyboard.press('Enter');await complete(2);
     assert.deepEqual(requests[1].body.messages.map(message=>message.role),['user','assistant','user']);
+    assert.equal(await page.$('main[data-toolbar-hidden="true"]'),null,'streaming and auto-follow never hide the toolbar');
+    if(width<=600){
+      // On phones the toolbar slides away only when the reader scrolls down, and returns on scroll up.
+      await page.$eval('[role="log"]',el=>{el.scrollTop=0;});await page.waitForFunction(()=>!document.querySelector('main[data-toolbar-hidden="true"]'));
+      const box=await page.$eval('[role="log"]',el=>{const r=el.getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};});
+      await page.mouse.move(box.x,box.y);await page.mouse.wheel({deltaY:240});
+      await page.waitForFunction(()=>document.querySelector('main[data-toolbar-hidden="true"]'));
+      await page.mouse.wheel({deltaY:-120});
+      await page.waitForFunction(()=>!document.querySelector('main[data-toolbar-hidden="true"]'));
+    }
     await (await page.$$('button[aria-label="Rigenera risposta"]')).at(-1).click();await complete(2);
     assert.equal(requests.length,3);assert.equal(requests[2].body.messages.at(-1).content,'E nel 2024?');
     await (await page.$$('button[aria-label="Modifica domanda"]'))[0].click();

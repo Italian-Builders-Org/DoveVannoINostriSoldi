@@ -8,6 +8,7 @@ import { projectChatEvidence } from "@/lib/assistant/evidence-projection";
 import { AiProviderError, completeProviderText } from "@/lib/assistant/provider-client";
 import { humanizeAssistantCaveat } from "@/lib/assistant/public-caveat";
 import { sanitizeAssistantLinks, selectAssistantSiteLinks } from "@/lib/assistant/site-links";
+import { linksForDatasetQuery } from "@/lib/assistant/site-link-map";
 
 import { FREE_MODEL, FREE_FALLBACK_MODEL } from "@/lib/assistant/free-contracts";
 import { DVNS_AI_SYSTEM_PROMPT } from "@/lib/assistant/system-prompt";
@@ -40,9 +41,11 @@ function evidenceFor(query: DatasetQuery): AiEvidence {
     catch { return false; }
   }).slice(0, 8).map((source) => ({
     name: source.name || source.owner, url: source.url,
-    ...(source.period || source.dataAsOf ? { period: source.period || source.dataAsOf } : {}),
+    ...(source.period ? { period: source.period } : {}),
+    ...(source.dataAsOf ? { asOf: source.dataAsOf } : {}),
   }));
-  return { dataset: dataset.id, title: dataset.title, sources, ...(dataset.caveat ? { caveat: dataset.caveat } : {}) };
+  const href = linksForDatasetQuery(query)[0]?.href;
+  return { dataset: dataset.id, title: dataset.title, ...(href ? { href } : {}), sources, ...(dataset.caveat ? { caveat: dataset.caveat } : {}) };
 }
 
 function forPeople({ caveat, ...entry }: AiEvidence): AiEvidence {
@@ -98,7 +101,8 @@ export async function executeByokChat(
     ok: true, kind: "ai_answer", provider: activeConnection.provider, model: activeConnection.model,
     text: sanitizeAssistantLinks(text, siteLinks),
     // The model reads the full catalog caveat; people read the citizen-facing version.
-    evidence: [...new Map(evidence.map((entry) => [JSON.stringify(entry), forPeople(entry)])).values()],
+    // One entry per dataset: queries on different years share sources and caveat, only the page differs.
+    evidence: [...new Map(evidence.map((entry) => [JSON.stringify({ ...entry, href: undefined }), forPeople(entry)])).values()],
     siteLinks,
   });
   const prompt = messages.at(-1)?.content ?? "";

@@ -43,7 +43,7 @@ export function AssistantAiReply({ response }: { response: AiResponse }) {
         {/* The limit stays visible: on a public-spending answer it changes how the number reads. */}
         {entry.caveat ? <div className={styles.limits}>
           <HugeiconsIcon icon={InformationCircleIcon} size={16} strokeWidth={1.8} aria-hidden="true" />
-          <p><strong>Limiti del dato</strong> {entry.caveat}</p>
+          <p><strong>Limiti del dato:</strong> {entry.caveat}</p>
         </div> : null}
       </li>)}</ul>
     </section> : null}

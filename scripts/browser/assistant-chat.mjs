@@ -95,7 +95,7 @@ try {
     assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);
     const order=await page.$eval('[data-assistant-reply]',el=>{const sections=[...el.querySelectorAll('section')];return{sources:sections.findIndex(section=>!section.hasAttribute('data-site-links')),pages:sections.findIndex(section=>section.hasAttribute('data-site-links')),limit:el.querySelector('section:not([data-site-links]) li p:last-child')?.innerText??''};});
     assert.ok(order.sources>=0&&order.sources<order.pages,'official sources come before the DVNS pages');
-    assert.match(order.limit,/^Limiti del dato\s+Pagamenti di cassa/,'the data limit is visible without a click');
+    assert.match(order.limit,/^Limiti del dato:\s+Pagamenti di cassa/,'the data limit is visible without a click');
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-answer-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
     await click('Copia risposta');
     await page.waitForFunction(()=>typeof window.__copiedText==='string');

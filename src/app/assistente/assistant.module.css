@@ -85,8 +85,8 @@
 /* Disabled but legible (about 3.5:1): an empty field, not a broken control. */
 .send:disabled { color: color-mix(in srgb, var(--assistant-ink) 55%, var(--assistant-surface)); background: var(--assistant-surface); }
 .suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
-.suggestions button { display: flex; justify-content: flex-start; align-items: center; gap: 10px; min-height: 44px; padding: 11px 14px; text-align: left; text-wrap: pretty; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-muted); background: transparent; font-size: 13px; line-height: 1.45; transition: color 140ms ease, border-color 140ms ease, transform 140ms var(--ease-out); }
-.suggestions svg { flex: none; }
+.suggestions button { display: flex; justify-content: flex-start; align-items: center; gap: 10px; min-height: 44px; padding: 11px 14px; text-align: left; text-wrap: pretty; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-ink); background: transparent; font-size: 13px; line-height: 1.45; transition: background-color 140ms ease, border-color 140ms ease, transform 140ms var(--ease-out); }
+.suggestions svg { flex: none; color: var(--assistant-muted); }
 .composerHint { overflow-wrap: anywhere; margin: 14px 0 0; color: var(--assistant-muted); text-align: center; font-size: 12px; }
 .quota { display: block; margin: 16px 0 0; color: var(--assistant-muted); text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
 .footerNote { margin: 0; }
@@ -154,7 +154,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   .iconButton:hover, .newChat:hover, .providerButton:hover { color: var(--assistant-ink); background: var(--assistant-surface); }
-  .suggestions button:hover { color: var(--assistant-ink); border-color: var(--assistant-muted); }
+  .suggestions button:hover { border-color: var(--assistant-muted); background: var(--assistant-surface); }
   .send:not(:disabled):hover { opacity: .8; }
 }
 
@@ -194,7 +194,9 @@
 .providerButton span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .providerButton svg { flex: none; }
 .providerDialog { --assistant-stroke: var(--color-neutral-300); --assistant-ink: var(--color-text); --assistant-muted: var(--color-neutral-600); --assistant-panel: var(--color-raised); width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 28px; overflow: auto; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-panel); background: var(--color-raised); color: var(--assistant-ink); box-shadow: var(--shadow-md); }
-.providerDialog::backdrop { background: rgb(8 10 14 / .6); }
+/* Lighter in the light theme so the page stays clean; denser in the dark theme so the dialog lifts off it. */
+.providerDialog::backdrop { background: rgb(8 10 14 / .42); }
+:global([data-theme="dark"]) .providerDialog::backdrop { background: rgb(0 0 0 / .72); }
 :global([data-theme="dark"]) .providerDialog { border-color: color-mix(in srgb, var(--color-text) 20%, var(--color-raised)); background: color-mix(in srgb, var(--color-text) 5%, var(--color-raised)); }
 .providerDialog[open] { animation: dialogIn 200ms var(--ease-out); }
 @keyframes dialogIn { from { opacity: 0; transform: translateY(6px) scale(.985); } }

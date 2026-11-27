@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { PeriodSelector } from "@/components/period-selector";
 import { RegionCrest, RegionCrestAttribution } from "@/components/region-crest";
-import { compactEuro, compactEuroLike, exactEuro, integer, longDate } from "@/lib/format";
+import { compactEuro, compactEuroLike, exactEuro, fromJanuaryTo, integer, longDate } from "@/lib/format";
 import { municipalityName } from "@/lib/municipality-name";
 import { cptRegionAnchorOf, groupRegionsByMacroArea, istatCodeOfRegion } from "@/lib/italy-regions";
 import {
@@ -304,7 +304,7 @@ export default async function TerritoriesPage({
           ) : null}
           <h1>Pagamenti dei Comuni per territorio</h1>
           <p>
-            Pagamenti di cassa dei Comuni con sede nella regione, da gennaio a {monthLabel} {data.year}.
+            Pagamenti di cassa dei Comuni con sede nella regione, {fromJanuaryTo(monthLabel)} {data.year}.
             {" "}
             Per la griglia ufficiale ISTAT 1 km² del Censimento 2021 vedi{" "}
             <Link href="/territori/griglia">/territori/griglia</Link>.

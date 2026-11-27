@@ -112,7 +112,7 @@
 .legend li { min-width: 0; }
 .legend button {
   display: grid;
-  grid-template-columns: 7px minmax(0, 1fr) auto;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-2);
   width: 100%;
@@ -127,9 +127,9 @@
 .legend button:hover,
 .legend button[aria-pressed="true"] { border-color: var(--color-neutral-400); background: var(--color-neutral-100); }
 .legendSwatch {
-  width: 7px;
+  width: 10px;
+  height: 10px;
   align-self: center;
-  min-height: 7px;
   margin-block: 2px;
   border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
 }

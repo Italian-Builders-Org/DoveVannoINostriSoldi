@@ -19,11 +19,8 @@ export default function MethodPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
-        <h1>Come leggere i dati</h1>
-        <p>
-          Un numero senza contesto può confondere. Per questo mostriamo sempre la fonte, la data
-          e il significato di ogni cifra.
-        </p>
+        <h1>Come leggiamo i dati</h1>
+        <p>Sei regole che applichiamo a ogni numero del sito.</p>
       </div>
 
       <div className={styles.rules}>
@@ -38,8 +35,8 @@ export default function MethodPage() {
       <div className="notice warning-notice">
         <strong>Controlli e approfondimenti</strong>
         <p>
-          Qui trovi dati e segnali da verificare. I controlli ufficiali restano di ANAC, Corte dei
-          conti, magistratura e amministrazioni. Nessun algoritmo decide da solo illeciti o colpe.
+          I controlli ufficiali spettano ad ANAC, Corte dei conti, magistratura e amministrazioni.
+          Nessun algoritmo decide da solo illeciti o colpe.
         </p>
       </div>
     </main>

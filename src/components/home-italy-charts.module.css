@@ -23,8 +23,10 @@
   min-height: 44px;
 }
 
+/* The text fills the copy column so every "?" sits at the same x. */
 .barText {
   display: grid;
+  flex: 1 1 auto;
   gap: 1px;
   min-width: 0;
 }
@@ -110,11 +112,34 @@
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
+/* Ticks | plot, then the year row under the plot. The plot height is set in
+   CSS pixels, so a narrow figure gets a shorter box, not empty letterboxing. */
+.trendPlot {
+  --trend-plot-height: 150px;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  grid-template-rows: var(--trend-plot-height) auto;
+  column-gap: var(--space-2);
+  row-gap: 6px;
+  min-width: 0;
+  padding: 8px 12px 0 0;
+}
+.trendTicks,
+.trendCanvas,
+.trendYears {
+  position: relative;
+  min-width: 0;
+}
+.trendYears {
+  grid-column: 2;
+  height: 1.3em;
+}
 .trendChart {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 164px;
+  height: 100%;
   overflow: visible;
 }
 .trendGrid {
@@ -124,12 +149,22 @@
 }
 .trendTick,
 .trendYear {
-  fill: var(--color-neutral-600);
+  position: absolute;
+  color: var(--color-neutral-600);
   font-family: var(--font-body);
   font-size: 11px;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.trendYear { font-size: 10px; }
+.trendTick {
+  right: 0;
+  transform: translateY(-50%);
+}
+.trendYear {
+  top: 0;
+  transform: translateX(-50%);
+}
 .trendArea {
   fill: color-mix(in srgb, var(--chart-category-teal) 22%, transparent);
 }
@@ -141,17 +176,21 @@
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.trendPoint {
-  fill: var(--color-raised);
-  stroke: var(--chart-category-teal);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+.trendPoint,
+.trendPointSelected {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-raised);
+  border: 1.5px solid var(--chart-category-teal);
+  transform: translate(-50%, -50%);
 }
 .trendPointSelected {
-  fill: var(--chart-category-teal);
-  stroke: var(--color-text);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
+  width: 10px;
+  height: 10px;
+  background: var(--chart-category-teal);
+  border: 2px solid var(--color-text);
 }
 .trendCaption {
   display: flex;
@@ -194,8 +233,7 @@
   .bars strong { grid-area: share; align-self: center; }
 
   .trendFigure { padding-inline: var(--space-3); }
-  .trendChart { min-height: 156px; }
-  .trendTick { font-size: 10px; }
-  .trendYear { font-size: 9px; }
+  .trendPlot { --trend-plot-height: 112px; }
+  .trendYear[data-minor="true"] { display: none; }
   .trendCaption { align-items: flex-start; flex-direction: column; gap: 2px; }
 }

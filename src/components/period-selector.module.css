@@ -21,13 +21,15 @@
   color: var(--color-neutral-600);
 }
 
+/* The border sits on the year list, so «Altri» reads as a separate menu
+   trigger next to the segmented years rather than as one more year. */
 .years {
   display: inline-flex;
+  gap: var(--space-2);
   position: relative;
   max-width: 100%;
   min-width: 0;
   overflow: visible;
-  border: 1px solid var(--color-neutral-400);
 }
 
 .yearList {
@@ -35,6 +37,7 @@
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: thin;
+  border: 1px solid var(--color-neutral-400);
 }
 
 .yearList > a,
@@ -51,17 +54,27 @@
   background: transparent;
   border: 0;
   cursor: pointer;
-  transition: color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+  transition:
+    transform var(--press-duration) var(--ease-out),
+    color 140ms var(--ease-out),
+    background-color 140ms var(--ease-out);
+}
+
+.yearList > a:active,
+.older > button:active {
+  transform: scale(var(--press-scale));
 }
 
 .yearList > a + a {
   border-left: 1px solid var(--color-neutral-300);
 }
 
-.yearList > a:hover,
-.older > button:hover {
-  color: var(--color-text);
-  background: var(--color-neutral-200);
+@media (hover: hover) and (pointer: fine) {
+  .yearList > a:hover,
+  .older > button:hover {
+    color: var(--color-text);
+    background: var(--color-neutral-200);
+  }
 }
 
 .yearList > a[aria-current="page"],
@@ -70,17 +83,19 @@
   background: var(--color-accent-700);
 }
 
-.yearList > a[aria-current="page"]:hover,
-.older > button[aria-current="true"]:hover {
-  color: var(--color-on-strong);
-  background: var(--color-accent-800);
+@media (hover: hover) and (pointer: fine) {
+  .yearList > a[aria-current="page"]:hover,
+  .older > button[aria-current="true"]:hover {
+    color: var(--color-on-strong);
+    background: var(--color-accent-800);
+  }
 }
 
 .older {
   position: relative;
   flex: none;
   z-index: 2;
-  border-left: 1px solid var(--color-neutral-300);
+  border: 1px solid var(--color-neutral-400);
 }
 
 .older[data-open="true"] {

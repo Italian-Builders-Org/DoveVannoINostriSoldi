@@ -3,8 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight02Icon, Flag02Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "@/components/icons";
 import styles from "./report-problem.module.css";
 
 // The dialog, its schema and its styles are downloaded only on the first
@@ -57,14 +56,15 @@ export function ReportProblemButton({ variant = "inline", compact = false, onOpe
         onClick={openDialog}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label="Segnala un problema"
-        title="Segnala un problema"
+        // The visible text already names the button; only the icon-only compact
+        // sidebar needs an explicit accessible name.
+        aria-label={compact ? "Segnala un problema" : undefined}
         data-report-problem-trigger={variant}
       >
-        <HugeiconsIcon icon={Flag02Icon} size={variant === "sidebar" ? 18 : 16} strokeWidth={1.8} aria-hidden="true" />
+        <Icon name="flag" size={variant === "sidebar" ? 18 : 16} />
         {variant === "sidebar" ? (
           <span className={styles.sidebarCopy}>
-            <span className={styles.sidebarAction}>Segnala un problema <HugeiconsIcon icon={ArrowRight02Icon} size={15} aria-hidden="true" /></span>
+            <span className={styles.sidebarAction}>Segnala un problema <Icon name="arrow-right" size={15} /></span>
           </span>
         ) : (
           "Segnala un problema"

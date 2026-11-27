@@ -21,7 +21,7 @@ export function DatasetInsightPanel({
       <div className={styles.intro}>
         <h2 id="dataset-insight-title">{title}</h2>
         {lead ? <p className={styles.headline}>{lead.name}: {exactEuro(lead.totalEuro)}</p> : null}
-        <p className={styles.note}>{insights.coverageNote} Lettura di screening, non un giudizio automatico.</p>
+        <p className={styles.note}>{insights.coverageNote}</p>
         {insights.topRecipients.some((entry) => !hasNamedInsightRecipient(entry.name)) ? (
           <p className={styles.note}>“Destinatario non disponibile” raggruppa le righe senza nominativo; non rappresenta un unico soggetto.</p>
         ) : null}

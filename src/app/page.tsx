@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  AiChat02Icon,
-  ArrowRight01Icon,
-  ChatGptIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Icon } from "@/components/icons";
+import { BrandIcon } from "@/components/brand-icons";
 import { HomePathways } from "@/components/home-pathways";
 import { getHomeAnomalySignals, type AuditSignal } from "@/lib/audit-data";
 import { eurostatCofogData } from "@/lib/eurostat-cofog-snapshot";
@@ -130,18 +126,18 @@ export default async function HomePage({
       <header className={styles.intro}>
         <h1 className={styles.pageTitle}>Dove vanno <span>i nostri soldi?</span></h1>
         <div className={styles.introBottom}>
-          <p className={styles.lead}>Spesa pubblica, territori e istituzioni. Esplora i dati italiani, con fonti e periodi di riferimento.</p>
+          <p className={styles.lead}>Spesa pubblica, territori e istituzioni: dati ufficiali con fonti e periodi.</p>
           <a href="#esplora" className={styles.exploreJump}><span>Esplora i dati ↓</span></a>
         </div>
         <div className={styles.ask}>
           <form className={styles.askBar} action="/assistente" method="get" role="search" aria-label="Chiedi ai dati con l'assistente">
             <label htmlFor="home-assistant-question" className={styles.askLabel}>
-              <HugeiconsIcon icon={AiChat02Icon} size={18} aria-hidden="true" />Chiedi ai dati
+              <Icon name="chat" size={18} />Chiedi ai dati
             </label>
             <input id="home-assistant-question" name="q" type="text" required maxLength={HOME_QUESTION_MAX} autoComplete="off"
               placeholder="Quanto spende il mio Comune?" />
             <button type="submit" aria-label="Invia la domanda all'assistente">
-              <HugeiconsIcon icon={ArrowRight01Icon} size={20} aria-hidden="true" />
+              <Icon name="chevron-right" size={20} />
             </button>
           </form>
           <div className={styles.askMeta}>
@@ -153,7 +149,7 @@ export default async function HomePage({
             <div className={styles.askFoot}>
               <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
               <a className={styles.askChatgpt} href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="Usa DVNS su ChatGPT (nuova scheda)">
-                <HugeiconsIcon icon={ChatGptIcon} size={15} aria-hidden="true" />Usa DVNS anche su ChatGPT<span aria-hidden="true">↗</span>
+                <BrandIcon name="chatgpt" size={15} />Usa DVNS anche su ChatGPT<span aria-hidden="true">↗</span>
               </a>
             </div>
           </div>
@@ -161,8 +157,8 @@ export default async function HomePage({
         <Link prefetch={false} href="/dvns-index" className={styles.indexLaunch} data-dvns-index-launch>
           <span className={styles.indexBadge}>Nuovo</span>
           <span className={styles.indexMark}>DVNS <span>Index</span></span>
-          <span className={styles.indexText}>Il tuo Comune spende meglio o peggio degli altri? La classifica di oltre 6.000 Comuni e la mappa delle Regioni, con il perché di ogni punteggio.</span>
-          <span className={styles.indexCta}>Scopri la classifica<HugeiconsIcon icon={ArrowRight01Icon} size={16} aria-hidden="true" /></span>
+          <span className={styles.indexText}>La classifica di oltre 6.000 Comuni e la mappa delle Regioni, con il perché di ogni punteggio.</span>
+          <span className={styles.indexCta}>Scopri la classifica<Icon name="chevron-right" size={16} /></span>
         </Link>
       </header>
       <HomePathways funnel={funnel} siope={siope}>
@@ -176,7 +172,7 @@ export default async function HomePage({
           </div>
           <Link prefetch={false} className={styles.anomaliesLink} href="/controlli">
             Tutti i controlli
-            <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={16} aria-hidden="true" />
+            <Icon name="chevron-right" data-link-arrow="true" size={16} />
           </Link>
         </div>
         <div className={styles.anomalyGallery}>
@@ -225,13 +221,13 @@ export default async function HomePage({
       <section className={styles.mapsFeature} aria-labelledby="home-maps-title">
         <div className={styles.mapsCopy}>
           <h2 id="home-maps-title">Le mappe</h2>
-          <p>I dati sul territorio e nelle istituzioni, da esplorare a colpo d&apos;occhio: il tuo Comune accanto a quelli simili, il Parlamento seggio per seggio, i mezzi pubblici tratta per tratta.</p>
+          <p>Territorio e istituzioni a colpo d&apos;occhio.</p>
           <ul className={styles.mapsList}>
             {HOME_MAPS.map((map) => (
               <li key={map.href}>
                 <Link prefetch={false} href={map.href}>
                   <span><strong>{map.title}</strong>{map.text}</span>
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" />
+                  <Icon name="chevron-right" size={18} />
                 </Link>
               </li>
             ))}
@@ -252,7 +248,6 @@ export default async function HomePage({
       <section id="esplora" className={styles.exploration} aria-labelledby="exploration-title">
         <div className={styles.explorationHeading}>
           <h2 id="exploration-title">Esplora i dati</h2>
-          <p>Tutte le pagine, organizzate per argomento.</p>
         </div>
         <SiteDirectory showMaps />
       </section>

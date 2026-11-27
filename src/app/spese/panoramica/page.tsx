@@ -1,8 +1,7 @@
 import { SpendingReadingGuide } from "@/components/spending-reading-guide";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Icon } from "@/components/icons";
 import { HomeItalyCompositionChart, HomeItalyTrendChart } from "@/components/home-italy-charts";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { ItalyRegionsMap } from "@/components/italy-regions-map";
@@ -13,6 +12,7 @@ import {
   billions,
   compactEuro,
   exactEuro,
+  fromJanuaryTo,
   longDate,
   percent,
 } from "@/lib/format";
@@ -55,6 +55,10 @@ function selectedPaYear(value: string | string[] | undefined): number {
   return Number.isSafeInteger(parsed) && parsed >= from && parsed <= to ? parsed : to;
 }
 
+function sentence(text: string): string {
+  return text.charAt(0).toLocaleUpperCase("it-IT") + text.slice(1);
+}
+
 export default async function SpendingOverviewPage({
   searchParams,
 }: {
@@ -70,7 +74,10 @@ export default async function SpendingOverviewPage({
   };
   const siope = getSiopeMunicipalSnapshot(year);
   const monthLabel = siope.latestMonthLabel.toLocaleLowerCase("it-IT");
-  const period = `da gennaio a ${monthLabel} ${siope.year}`;
+  const runningMonthNote = partialMonth(siope) === null ? "" : `, ${monthLabel} parziale`;
+  // Totals that include the running month say so; the headline total
+  // (settledTotal) stops at the last completed month instead.
+  const period = `${fromJanuaryTo(monthLabel)} ${siope.year}${runningMonthNote}`;
   const passThrough =
     siope.titles.find((title) => title.code === PASS_THROUGH_TITLE_CODE)?.value ?? 0;
   const netPayments = siope.totalPaid - passThrough;
@@ -130,12 +137,9 @@ export default async function SpendingOverviewPage({
             <div className={styles.italySummaryFacts}>
               <p className={styles.freshness}>
                 <i aria-hidden="true" />
-                Eurostat COFOG · {funnel.pa.year}
+                Italia · Eurostat COFOG · {funnel.pa.year}
               </p>
               <strong className={styles.headline}>{billions(funnel.pa.totalEuro)} mld €</strong>
-              <p className={styles.headlineNote}>
-                Italia {funnel.pa.year}, tutta la pubblica amministrazione
-              </p>
               <dl className={styles.factRows}>
                 <div>
                   <dt>Quota del PIL</dt>
@@ -152,7 +156,6 @@ export default async function SpendingOverviewPage({
               <h3 id="pa-split-title" className="panel-title">
                 Dove va, in grandi voci
               </h3>
-              <span className={styles.headNote}>Eurostat COFOG · {funnel.pa.year}</span>
             </div>
             <HomeItalyCompositionChart
               slices={funnel.pa.slices}
@@ -186,7 +189,7 @@ export default async function SpendingOverviewPage({
           </dl>
           <Link prefetch={false} className={styles.inlineLink} href="/spese/legge-di-bilancio">
             Legge di Bilancio
-            <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={16} aria-hidden="true" />
+            <Icon name="chevron-right" data-link-arrow="true" size={16} />
           </Link>
         </aside>
       </section>
@@ -224,8 +227,8 @@ export default async function SpendingOverviewPage({
             <strong className={styles.headline}>{compactEuro(settledTotal ?? siope.totalPaid)}</strong>
             <p className={styles.headlineNote}>
               {runningMonth !== null && lastCompleted
-                ? `Da gennaio a ${lastCompleted.label.toLocaleLowerCase("it-IT")} ${siope.year}, in tutta Italia. ${siope.latestMonthLabel}, ancora parziale, è escluso.`
-                : `Da gennaio a ${monthLabel} ${siope.year}, in tutta Italia${partialSuffix}`}
+                ? `${sentence(fromJanuaryTo(lastCompleted.label))} ${siope.year}, in tutta Italia. ${siope.latestMonthLabel}, ancora parziale, è escluso.`
+                : `${sentence(fromJanuaryTo(monthLabel))} ${siope.year}, in tutta Italia${partialSuffix}`}
             </p>
             <dl className={styles.factRows}>
               <div>
@@ -239,8 +242,8 @@ export default async function SpendingOverviewPage({
                 </dd>
               </div>
               <div>
-                <dt>Al netto delle partite di giro</dt>
-                <dd>{compactEuro(netPayments)}{partialSuffix}</dd>
+                <dt>Al netto delle partite di giro{runningMonthNote ? ` (${monthLabel} parziale incluso)` : ""}</dt>
+                <dd>{compactEuro(netPayments)}</dd>
               </div>
               <div>
                 <dt>Ultimo mese completo</dt>
@@ -267,7 +270,7 @@ export default async function SpendingOverviewPage({
                   family: bucket.family,
                 })),
               }}
-              period={`Da gennaio a ${siope.latestMonthLabel.toLocaleLowerCase("it-IT")} ${siope.year}`}
+              period={sentence(period)}
               scope="Pagamenti di cassa dei Comuni in tutta Italia"
               denominator="totale dei pagamenti SIOPE dei Comuni nel periodo"
               source={{
@@ -276,7 +279,7 @@ export default async function SpendingOverviewPage({
                 observedAt: longDate(siope.source.observedAt),
               }}
             />
-            <Link prefetch={false} className={`btn btn-block ${styles.detailLink}`} href={`/spese?anno=${year}`}>
+            <Link prefetch={false} className={`btn btn-secondary ${styles.detailLink}`} href={`/spese?anno=${year}`}>
               Dettaglio delle spese
             </Link>
           </section>
@@ -326,7 +329,7 @@ export default async function SpendingOverviewPage({
             aside={
               <div className={styles.mapStats}>
                 <div>
-                  <span>Da gennaio a {monthLabel}</span>
+                  <span>{sentence(fromJanuaryTo(monthLabel))}{runningMonthNote}</span>
                   <strong>{compactEuro(siope.totalPaid)}</strong>
                   <small>
                     Italia · {compactEuro(siope.coverage.paymentsWithoutRegion)} senza regione IPA,

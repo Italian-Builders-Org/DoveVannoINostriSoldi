@@ -116,6 +116,42 @@
   overflow-wrap: anywhere;
 }
 
+/* Entity lists: the name is the row's link. Registry names often arrive in
+   capitals at the source, so red + caps read as shouting; plain text colour
+   with an underline on hover/focus keeps the link affordance quieter. */
+.entities th[scope="row"] { position: relative; }
+.entities th[scope="row"] a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 140ms ease;
+}
+/* The whole heading cell is the target, so the row clears 44px on touch. */
+.entities th[scope="row"] a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.entities th[scope="row"] a:focus-visible { text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .entities th[scope="row"]:hover a { text-decoration-color: currentColor; }
+}
+
+/* Identifier shown inline instead of behind a disclosure. */
+.code {
+  font-weight: 400;
+  color: var(--color-neutral-600);
+}
+.code code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* The type is a table column on wide screens and a chip under the name on
+   phones, where a third of the row width wrapped it onto three lines. */
+.typeChip { display: none; }
+
 @media (max-width: 1100px) {
   .fiveUp { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .fiveUp > div:nth-child(3n) { border-right: 0; }
@@ -130,8 +166,22 @@
 }
 
 @media (max-width: 620px) {
-  .fiveUp { grid-template-columns: 1fr; }
-  .fiveUp > div { border-right: 0; }
+  /* Two columns instead of a five-tile tower; the odd tile spans the row.
+     Doubled class beats the global single-column .stat-strip rule. */
+  .fiveUp.fiveUp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fiveUp.fiveUp > div { border-right: 1px solid var(--color-neutral-200); border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp.fiveUp > div:nth-child(2n) { border-right: 0; }
+  .fiveUp.fiveUp > div:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
+  .entities .typeCell { display: none; }
+  .typeChip {
+    display: inline-flex;
+    margin-top: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-800);
+  }
   .searchForm { flex-direction: column; }
   .bigNumber { font-size: 30px; }
 }

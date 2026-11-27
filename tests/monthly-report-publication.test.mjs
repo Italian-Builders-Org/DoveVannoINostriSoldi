@@ -67,7 +67,7 @@ test("bozze, mesi sconosciuti e dati correnti restano fuori dal pubblico", async
 });
 
 test("navigazione, home, ricerca, sitemap e discovery espongono archivio ed edizione", async () => {
-  assert.deepEqual(PRIMARY_NAV.slice(0, 7).map((item) => item.href), ["/", "/imprese", "/istruzione", "/poverta", "/spese", "/economia", "/territori"]);
+  assert.deepEqual(PRIMARY_NAV.slice(0, 7).map((item) => item.href), ["/", "/spese", "/imprese", "/istruzione", "/poverta", "/economia", "/territori"]);
   assert.deepEqual(PRIMARY_NAV.slice(-1).map((item) => item.href), ["/studi"]);
   const studiGroup = SITE_MAP_GROUPS.find((group) => group.title === "Studi");
   assert.ok(studiGroup?.links.some((link) => link.href === "/studi/2026-08"));

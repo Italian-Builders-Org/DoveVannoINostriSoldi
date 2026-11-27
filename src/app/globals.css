@@ -105,6 +105,7 @@ nav li a { text-decoration: none; }
   min-width: 0;
   align-items: center;
   gap: 14px;
+  min-height: 44px;
   color: inherit;
   flex: 0 1 auto;
 }
@@ -116,6 +117,13 @@ nav li a { text-decoration: none; }
   aspect-ratio: 1 / 1;
   object-fit: contain;
   flex: none;
+}
+/* The mark's black contour and stem vanish on the dark ground: redraw the
+   contour as a light hairline so the silhouette (and the stem) stay legible. */
+[data-theme="dark"] .brand-mark {
+  --brand-contour: color-mix(in srgb, var(--color-text) 72%, transparent);
+  filter: drop-shadow(1px 0 0 var(--brand-contour)) drop-shadow(-1px 0 0 var(--brand-contour))
+    drop-shadow(0 1px 0 var(--brand-contour)) drop-shadow(0 -1px 0 var(--brand-contour));
 }
 .brand-text { display: block; min-width: 0; overflow: hidden; }
 .brand-text strong {
@@ -164,7 +172,6 @@ nav li a { text-decoration: none; }
   background: transparent;
   cursor: pointer;
 }
-.header-search button:hover { color: var(--color-accent-700); }
 
 .header-search-dropdown {
   position: absolute;
@@ -255,53 +262,51 @@ nav li a { text-decoration: none; }
   flex: none;
 }
 
+/* No `display` here: module classes such as the account menu's
+   `.guestAccess { display: none }` must stay able to hide the action. */
 .header-action {
   background: transparent;
   flex: none;
   min-height: 44px;
-  padding: 11px 18px;
+  padding: 11px 16px;
   border: 1px solid var(--color-neutral-400);
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text);
   white-space: nowrap;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, color 140ms ease;
 }
-.header-action:hover { color: var(--color-text); background: var(--color-neutral-200); }
 .header-action-accent {
   border-color: var(--color-accent);
   color: var(--color-accent-700);
 }
-/* Icon-only action: a square the same height as its lettered siblings. */
-.header-action-icon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  padding-inline: 0;
-}
-.header-action-icon:hover { color: var(--color-accent-700); }
-
-/* Theme: solo icona, senza box — allineata al testo dell'header. */
+/* Icon-only header controls (menu, search, theme, GitHub) share one quiet
+   44px target: no border, so the only outlined control is a text action. */
+.header-action-icon,
 .theme-toggle {
   display: inline-grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-neutral-700);
   cursor: pointer;
   flex: none;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, color 140ms ease;
 }
-.theme-toggle:hover {
-  color: var(--color-accent-700);
-  background: transparent;
-}
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--color-accent-700);
-  outline-offset: 2px;
+.header-action-icon:active,
+.theme-toggle:active,
+.header-action:active,
+.navigation-button:active { transform: scale(var(--press-scale)); }
+@media (hover: hover) and (pointer: fine) {
+  .header-action:hover { color: var(--color-text); background: var(--color-neutral-200); }
+  .header-action-icon:hover,
+  .theme-toggle:hover { color: var(--color-text); background: var(--color-neutral-200); }
 }
 
 /* ── primary navigation ─────────────────────────────────────────────────── */
@@ -316,18 +321,20 @@ nav li a { text-decoration: none; }
   padding: 10px;
   flex: none;
   border: 0;
-  border-radius: 4px;
+  border-radius: 0;
   background: transparent;
   color: var(--color-neutral-700);
   cursor: pointer;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, color 140ms ease;
 }
-.navigation-button:hover { background: var(--color-neutral-200); color: var(--color-text); }
+@media (hover: hover) and (pointer: fine) {
+  .navigation-button:hover { background: var(--color-neutral-200); color: var(--color-text); }
+}
 .sidebar-toolbar { display: flex; align-items: center; justify-content: flex-end; flex: none; padding: 4px 12px; }
 .desktop-sidebar { display: none; }
-.sidebar-callout { flex: none; padding: 12px; }
-.navigation-tools { display: grid; flex: none; gap: 4px; padding: 12px; border-top: 1px solid var(--color-neutral-300); }
+.sidebar-callout { flex: none; padding: 0 12px 12px; }
+.navigation-tools { display: grid; flex: none; gap: 0; padding: 8px 12px 4px; border-top: 1px solid var(--color-neutral-300); }
 .navigation-tools a { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 12px; color: var(--color-neutral-700); font-size: 13px; }
-.navigation-tools a:hover { background: var(--color-neutral-100); color: var(--color-text); }
 .primary-nav { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 10px 20px; }
 .primary-nav-list, .nav-submenu { margin: 0; padding: 0; list-style: none; }
 .nav-item { display: grid; grid-template-columns: minmax(0, 1fr) 44px; position: relative; }
@@ -354,7 +361,6 @@ nav li a { text-decoration: none; }
   line-height: 1.35;
 }
 .nav-item > a > svg { flex: none; }
-.nav-item > a:hover, .nav-item-toggle:hover, .nav-submenu a:hover { color: var(--color-text); background: var(--color-neutral-200); }
 .nav-item > a[data-section-active="true"] { border-left-color: var(--color-accent); color: var(--color-text); background: var(--color-neutral-200); }
 .nav-item-toggle {
   display: grid;
@@ -368,6 +374,7 @@ nav li a { text-decoration: none; }
   background: transparent;
   cursor: pointer;
 }
+.nav-item-toggle > svg { transition: transform 200ms var(--ease-out); }
 .nav-item-toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
 .nav-submenu { grid-column: 1 / -1; margin: 4px 0 8px 21px; border-left: 1px solid var(--color-neutral-300); }
 .nav-submenu[hidden] { display: none; }
@@ -584,14 +591,13 @@ main { display: block; }
   border-radius: var(--radius-md);
   background: var(--color-raised);
   color: var(--color-text);
-  transition: background-color 140ms ease, border-color 140ms ease;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, border-color 140ms ease;
 }
 .footer-support-action > svg { flex: none; margin-top: 2px; }
 .footer-support-copy { display: grid; gap: 4px; min-width: 0; }
 .footer-support-copy strong { color: var(--color-text); font-size: 14px; font-weight: 600; }
 .footer-support-copy > span { color: var(--color-neutral-600); }
 .footer-support-copy .footer-support-label { display: flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--color-text); font-weight: 600; }
-.site-footer .footer-support-action:hover { color: var(--color-text); background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
 .footer-directory { display: grid; justify-items: end; gap: 8px; min-width: 0; }
 .footer-social ul { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .footer-social .footer-link {
@@ -601,12 +607,10 @@ main { display: block; }
   min-height: 44px;
   border-radius: var(--radius-sm);
   color: var(--color-neutral-700);
-  transition: background-color 140ms ease, color 140ms ease;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, color 140ms ease;
 }
-.footer-social .footer-link:hover { color: var(--color-text); background: var(--color-neutral-200); }
 .footer-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 0 18px; }
 .footer-actions a { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; color: var(--color-neutral-700); }
-.footer-actions a:hover { color: var(--color-text); }
 .footer-disclaimer {
   margin: 0;
   padding-top: 12px;
@@ -617,11 +621,9 @@ main { display: block; }
   line-height: 1.55;
 }
 .footer-disclaimer a { color: var(--color-neutral-700); text-decoration: underline; text-underline-offset: 0.12em; }
-.footer-disclaimer a:hover { color: var(--color-text); }
 .footer-credits { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; padding-top: 4px; }
 .footer-makers, .footer-backer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
 .footer-makers a, .footer-backer a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); }
-.footer-makers a:hover, .footer-backer a:hover { color: var(--color-text); }
 .footer-backer > span { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 5px; }
 @media (max-width: 900px) {
   .footer-top { grid-template-columns: minmax(0, 1fr); gap: 12px; }
@@ -632,6 +634,21 @@ main { display: block; }
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle, .desktop-sidebar .nav-submenu a { min-height: 44px; }
   .footer-makers a, .footer-backer a { min-height: 44px; }
 }
+
+/* Hover is a pointer affordance: on touch screens it would stick after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .header-search button:hover { color: var(--color-accent-700); }
+  .navigation-tools a:hover { background: var(--color-neutral-100); color: var(--color-text); }
+  .nav-item > a:hover, .nav-item-toggle:hover, .nav-submenu a:hover { color: var(--color-text); background: var(--color-neutral-200); }
+  .site-footer .footer-support-action:hover { color: var(--color-text); background: var(--color-neutral-100); border-color: var(--color-neutral-400); }
+  .footer-social .footer-link:hover { color: var(--color-text); background: var(--color-neutral-200); }
+  .footer-actions a:hover { color: var(--color-text); }
+  .footer-disclaimer a:hover { color: var(--color-text); }
+  .footer-makers a:hover, .footer-backer a:hover { color: var(--color-text); }
+}
+/* Pressable chrome answers the press itself; reduced motion sets the scale to 1. */
+.footer-support-action:active,
+.footer-social .footer-link:active { transform: scale(var(--press-scale)); }
 
 /* ── shared building blocks ─────────────────────────────────────────────── */
 
@@ -826,7 +843,6 @@ main { display: block; }
   .brand-mark { width: 38px; height: 38px; }
   .brand-text strong { font-size: 17px; }
   .header-action { padding-inline: 12px; }
-  .header-action-icon { padding-inline: 0; }
   .page-intro h1 { font-size: 24px; }
   .stat-strip { grid-template-columns: 1fr; }
   .stat-strip > div { border-right: 0; border-bottom: 1px solid var(--color-neutral-200); }
@@ -839,14 +855,11 @@ main { display: block; }
   .brand-text { display: none; }
 }
 
-/* The publication headline uses two lines on phones without moving the page
-   when article and paper alternate. */
+/* The publication ticker stays one 44px line at every width, so the sticky
+   header never takes more than ~112px of a phone screen. */
 body { --announcement-height: 44px; }
 @media (max-width: 1099px) {
   body:has([data-announcement]) { --site-header-height: calc(68px + var(--announcement-height)); }
-}
-@media (max-width: 620px) {
-  body { --announcement-height: 76px; }
 }
 
 #contenuto-principale h1 { font-family: var(--font-body); font-size: clamp(28px, 3vw, 40px); font-weight: 600; line-height: 1.15; letter-spacing: -.025em; }

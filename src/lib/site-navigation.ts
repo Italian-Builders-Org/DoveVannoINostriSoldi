@@ -13,7 +13,7 @@ export type NavLink = Readonly<{
   children?: readonly NavLink[];
 }>;
 
-export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "economy" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research";
+export type NavIcon = "home" | "news" | "business" | "education" | "society" | "money" | "economy" | "map" | "projects" | "institutions" | "entities" | "checks" | "assistant" | "sources" | "research" | "boards";
 
 export type NavSection = Readonly<{
   href: string;
@@ -25,34 +25,6 @@ export type NavSection = Readonly<{
 
 export const PRIMARY_NAV: readonly NavSection[] = [
   { href: "/", label: "Home", icon: "home" },
-  {
-    href: "/imprese",
-    label: "Imprese",
-    icon: "business",
-    children: [
-      { href: "/imprese", label: "Panoramica" },
-      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
-      { href: "/imprese?metric=employees", label: "Addetti" },
-      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
-      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
-      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
-    ],
-  },
-  {
-    href: "/istruzione",
-    label: "Istruzione",
-    icon: "education",
-    children: [
-      { href: "/istruzione", label: "Atlante della scuola" },
-      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
-    ],
-  },
-  {
-    href: "/poverta",
-    label: "Povertà",
-    icon: "society",
-    children: [{ href: "/poverta", label: "Assoluta e relativa" }],
-  },
   {
     href: "/spese",
     label: "Soldi",
@@ -93,6 +65,34 @@ export const PRIMARY_NAV: readonly NavSection[] = [
       },
       { href: "/debito", label: "Debito pubblico" },
     ],
+  },
+  {
+    href: "/imprese",
+    label: "Imprese",
+    icon: "business",
+    children: [
+      { href: "/imprese", label: "Panoramica" },
+      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
+      { href: "/imprese?metric=employees", label: "Addetti" },
+      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
+      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
+      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+    ],
+  },
+  {
+    href: "/istruzione",
+    label: "Istruzione",
+    icon: "education",
+    children: [
+      { href: "/istruzione", label: "Atlante della scuola" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
+  {
+    href: "/poverta",
+    label: "Povertà",
+    icon: "society",
+    children: [{ href: "/poverta", label: "Assoluta e relativa" }],
   },
   {
     href: "/economia",
@@ -208,7 +208,7 @@ export const PRIMARY_NAV: readonly NavSection[] = [
     ],
   },
   { href: "/assistente", label: "Assistente", icon: "assistant" },
-  { href: "/accedi", label: "Boards", icon: "projects", aliases: ["/dashboard"] },
+  { href: "/accedi", label: "Boards", icon: "boards", aliases: ["/dashboard"] },
   {
     href: "/fonti",
     label: "Fonti",
@@ -240,28 +240,6 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
     ],
   },
   {
-    title: "Imprese",
-    links: [
-      { href: "/imprese", label: "Panoramica" },
-      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
-      { href: "/imprese?metric=employees", label: "Addetti" },
-      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
-      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
-      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
-    ],
-  },
-  {
-    title: "Istruzione",
-    links: [
-      { href: "/istruzione", label: "Atlante Istruzione" },
-      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
-    ],
-  },
-  {
-    title: "Povertà",
-    links: [{ href: "/poverta", label: "Assoluta e relativa" }],
-  },
-  {
     title: "Soldi",
     links: [
       { href: "/spese/panoramica", label: "Spesa pubblica" },
@@ -288,6 +266,28 @@ export const SITE_MAP_GROUPS: readonly { title: string; links: readonly NavLink[
       { href: "/spese/legge-di-bilancio", label: "Legge di Bilancio" },
       { href: "/stato/legislature", label: "Spesa per legislatura" },
     ],
+  },
+  {
+    title: "Imprese",
+    links: [
+      { href: "/imprese", label: "Panoramica" },
+      { href: "/imprese?metric=active_enterprises", label: "Imprese attive" },
+      { href: "/imprese?metric=employees", label: "Addetti" },
+      { href: "/imprese?metric=active_local_units", label: "Localizzazioni attive" },
+      { href: "/imprese?metric=production_value_band_count", label: "Valore della produzione" },
+      { href: "/imprese?metric=turnover", label: "Fatturato aggregato (ISTAT)" },
+    ],
+  },
+  {
+    title: "Istruzione",
+    links: [
+      { href: "/istruzione", label: "Atlante Istruzione" },
+      { href: "/istruzione/universita-ricerca", label: "Università e Ricerca" },
+    ],
+  },
+  {
+    title: "Povertà",
+    links: [{ href: "/poverta", label: "Assoluta e relativa" }],
   },
   {
     title: "Economia",

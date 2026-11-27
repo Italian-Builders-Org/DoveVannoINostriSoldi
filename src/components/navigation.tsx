@@ -11,39 +11,37 @@ import { HeaderSearch } from "@/components/header-search";
 import { BoardsAccountMenu } from "@/components/boards-account-menu";
 import { ReportProblemButton } from "@/components/report-problem/report-problem-button";
 import { PublicationAnnouncement, type PublicationAnnouncementItem } from "@/components/publication-announcement";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ArrowDown01Icon, Menu01Icon, Cancel01Icon,
-  GithubIcon, Home01Icon, News01Icon, Building03Icon, School01Icon, Money01Icon,
-  Analytics01Icon, MapsGlobal01Icon, Task01Icon, Building04Icon, Building06Icon, Search01Icon,
-  AiChat01Icon, BookSearchIcon, BookOpen01Icon, UserGroupIcon,
-} from "@hugeicons/core-free-icons";
+import { Icon, type IconName } from "@/components/icons";
+import { BrandIcon } from "@/components/brand-icons";
 import {
   PRIMARY_NAV,
   isNavBranchActive,
   isNavChildActive,
   isNavSectionActive,
+  type NavIcon,
   type NavLink,
 } from "@/lib/site-navigation";
 import { REPO_URL } from "@/lib/site";
 
-const NAV_ICONS = {
-  home: Home01Icon,
-  news: News01Icon,
-  business: Building03Icon,
-  education: School01Icon,
-  society: UserGroupIcon,
-  money: Money01Icon,
-  economy: Analytics01Icon,
-  map: MapsGlobal01Icon,
-  projects: Task01Icon,
-  institutions: Building04Icon,
-  entities: Building06Icon,
-  checks: Search01Icon,
-  assistant: AiChat01Icon,
-  sources: BookSearchIcon,
-  research: BookOpen01Icon,
-} as const;
+// Section keys and icon names coincide today; the map keeps them decoupled.
+const NAV_ICONS: Record<NavIcon, IconName> = {
+  home: "home",
+  news: "news",
+  business: "business",
+  education: "education",
+  society: "society",
+  money: "money",
+  economy: "economy",
+  map: "map",
+  projects: "projects",
+  institutions: "institutions",
+  entities: "entities",
+  checks: "checks",
+  assistant: "assistant",
+  sources: "sources",
+  research: "research",
+  boards: "boards",
+};
 
 
 type NavigationLocation = Readonly<{ pathname: string; currentSearch: string | null }>;
@@ -104,7 +102,7 @@ function NavSubtree({
                 aria-label={`Pagine in ${child.label}`}
                 onClick={() => setSelection({ pathname, href: nestedOpen ? null : child.href })}
               >
-                <HugeiconsIcon icon={ArrowDown01Icon} size={14} strokeWidth={1.8} aria-hidden="true" />
+                <Icon name="chevron-down" size={14} />
               </button>
             ) : null}
             {hasNested ? (
@@ -156,20 +154,20 @@ function NavigationLinks({ pathname, currentSearch, id, onNavigate }:
           return (
             <li key={item.href} className={hasChildren ? "nav-item nav-item-has-menu" : "nav-item"}
               data-section-active={active ? "true" : undefined} data-open={open ? "true" : undefined}>
-              {item.href === "/imprese" || item.href === "/studi" ? (
+              {item.href === "/spese" || item.href === "/studi" ? (
                 <span className="sidebar-group">{item.href === "/studi" ? "Pubblicazioni" : "Dati"}</span>
               ) : null}
               <IntentLink href={item.href}
                 aria-current={pathname === item.href && currentSearch === "" && (!hasChildren || !open) ? "page" : undefined}
                 data-section-active={active ? "true" : undefined} onNavigate={onNavigate}>
-                <HugeiconsIcon icon={NAV_ICONS[item.icon]} size={19} strokeWidth={1.8} aria-hidden="true" />
+                <Icon name={NAV_ICONS[item.icon]} size={19} />
                 <span className="nav-label">{item.label}</span>
               </IntentLink>
               {hasChildren ? (
                 <button type="button" className="nav-item-toggle" aria-expanded={open}
                   aria-controls={menuId} aria-label={`Pagine in ${item.label}`}
                   onClick={() => setSelection({ pathname, href: open ? null : item.href })}>
-                  <HugeiconsIcon icon={ArrowDown01Icon} size={16} strokeWidth={1.8} aria-hidden="true" />
+                  <Icon name="chevron-down" size={16} />
                 </button>
               ) : null}
               {hasChildren ? (
@@ -256,7 +254,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <button type="button" className="navigation-button mobile-menu-trigger" ref={mobileTriggerRef}
             aria-label="Apri menu di navigazione" aria-controls="mobile-navigation" aria-expanded={drawerOpen}
             aria-haspopup="dialog" onClick={openDrawer}>
-            <HugeiconsIcon icon={Menu01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+            <Icon name="menu" size={22} />
           </button>
           <IntentLink href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
             <Image className="brand-mark" src="/brand/dvns-mark-transparent.png" width={44} height={44} alt="" aria-hidden="true" priority />
@@ -272,7 +270,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
             <ThemeToggle />
             {pathname !== "/" ? <BoardsAccountMenu /> : null}
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer" className="header-action header-action-icon" aria-label="Codice su GitHub (nuova scheda)" title="Codice su GitHub (nuova scheda)">
-              <HugeiconsIcon icon={GithubIcon} size={22} strokeWidth={1.7} aria-hidden="true" />
+              <BrandIcon name="github" size={22} />
             </a>
           </div>
         </div>
@@ -302,7 +300,7 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <div className="sidebar-toolbar">
             <h2 id="mobile-navigation-title" className="sr-only">Menu del sito</h2>
             <button type="button" className="navigation-button" ref={closeRef} aria-label="Chiudi menu di navigazione" onClick={closeDrawer}>
-              <HugeiconsIcon icon={Cancel01Icon} size={22} strokeWidth={1.8} aria-hidden="true" />
+              <Icon name="close" size={22} />
             </button>
           </div>
           {/* Keep the nav mounted while the dialog is closed so section-active

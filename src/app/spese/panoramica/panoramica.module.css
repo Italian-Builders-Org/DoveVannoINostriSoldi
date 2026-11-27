@@ -214,8 +214,11 @@
   line-height: 1.45;
 }
 
+/* Standard secondary button: normal width, sentence case (no `.btn-block`). */
 .detailLink {
+  align-self: flex-start;
   margin-top: auto;
+  text-transform: none;
 }
 
 .monthsPanel {

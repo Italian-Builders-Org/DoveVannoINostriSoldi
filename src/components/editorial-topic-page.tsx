@@ -270,7 +270,6 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
       <footer className={styles.provenance}>
         <p>
           Snapshot integrato: {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(new Date(overview.generatedAt))}.
-          I valori restano nel perimetro dichiarato da ciascun insieme.
         </p>
         <Link href="/fonti/copertura">Verifica copertura e provenienza</Link>
       </footer>

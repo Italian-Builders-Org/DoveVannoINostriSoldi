@@ -64,6 +64,14 @@ test("every page offers the rest of its section without the header menu", async 
   assert.match(css, /\.select \{[\s\S]*?border-radius: 0;/);
 });
 
+test("the search page breadcrumb names the search, and an empty search has nothing to share", async () => {
+  const component = await readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8");
+  // "Esplora i dati" is the fallback for pages outside a section; /cerca is
+  // the site search and must say so.
+  assert.match(component, /"\/cerca": "Cerca"/);
+  assert.match(component, /pathname === "\/cerca" && !new URLSearchParams\(currentSearch \?\? ""\)\.get\("q"\)/);
+});
+
 test("public legal pages expose only the authorized support mailbox", async () => {
   const files = await Promise.all([
     readFile(new URL("../src/app/privacy/page.tsx", import.meta.url), "utf8"),

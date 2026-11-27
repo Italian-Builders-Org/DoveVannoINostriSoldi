@@ -96,8 +96,7 @@ export default async function RegionsPage({
         </div>
         <div>
           <dt>Tipo</dt>
-          <dd>{selected.status === "ordinary" ? "Ordinaria" : selected.status === "special" ? "Speciale" : "Provincia"}</dd>
-          <span className="stat-note">{statusLabel[selected.status]}</span>
+          <dd>{selected.status === "ordinary" ? "Statuto ordinario" : selected.status === "special" ? "Statuto speciale" : "Provincia autonoma"}</dd>
         </div>
       </dl>
 
@@ -106,8 +105,7 @@ export default async function RegionsPage({
           <div>
             <h2 id="composizione-regionale">Composizione degli impegni</h2>
             <p>
-              Voci del bilancio di {selected.label}. Il totale coincide con il consuntivo ufficiale
-              2024.
+              Voci del bilancio 2024 di {selected.label}.
             </p>
           </div>
           <span>Consuntivo definitivo</span>

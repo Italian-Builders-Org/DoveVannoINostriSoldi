@@ -3,6 +3,74 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Source names are the row headings; below ~240px they wrapped onto five or
+   six lines while the description column had room to spare. */
+.sources th[scope="row"],
+.sources thead th:first-child { min-width: 240px; }
+/* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
+.sources td:nth-child(4) { min-width: 140px; }
+
+/* Under 640px five columns cannot fit, so each row becomes a card: the name
+   on top, then one labelled line per column. The column headings stay in the
+   accessibility tree (visually hidden) and the explicit ARIA roles in the
+   markup keep the table navigable even though its parts are display: block. */
+@media (max-width: 639px) {
+  .sources,
+  .sources tbody,
+  .sources tr,
+  .sources th[scope="row"],
+  .sources td { display: block; }
+
+  .sources thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sources tr {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+  .sources tr:last-child { border-bottom: 0; }
+
+  .sources th[scope="row"],
+  .sources td {
+    min-width: 0;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  /* The name link is the card's only control: give it a full touch target. */
+  .sources th[scope="row"] a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .sources th[scope="row"] small { margin: 0 0 var(--space-2); }
+
+  .sources td {
+    display: grid;
+    grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
+    gap: var(--space-2);
+    padding-block: 4px;
+    overflow-wrap: anywhere;
+  }
+  .sources td::before {
+    content: attr(data-label);
+    /* Empty alt text: the column header already names the cell for
+       assistive technology, so the visual label is not read twice. */
+    content: attr(data-label) / "";
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--color-neutral-600);
+  }
+  .sources .latest { white-space: normal; }
+}
+
 .scrollHint {
   margin: 0 0 var(--space-2);
   color: var(--color-neutral-700);

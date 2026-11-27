@@ -565,6 +565,12 @@ function resultForDocument(entry: PreparedDocument, query: SearchField): SearchR
 
 type EntityPlaceKind = "municipality" | "metropolitan_city" | "other";
 
+const ENTITY_CONTEXT: Readonly<Record<EntityPlaceKind, string>> = {
+  municipality: "Comune",
+  metropolitan_city: "Città metropolitana",
+  other: "Ente pubblico",
+};
+
 type EntityPlace = Readonly<{
   kind: EntityPlaceKind;
   placeName: string;
@@ -701,12 +707,14 @@ function resultForEntity(entry: PreparedEntity, query: EntityQuery): SearchResul
   const scoredPlaceMatch = query.place.normalized
     ? placeMatch
     : matchField(entry.placeField, query.field);
-  const description = [entity.tipologia, entity.codiceIpa].filter(Boolean).join(" · ") || null;
+  // Citizens read the kind of body, not the registry it comes from: the IPA
+  // code stays in the href and on the entity page, never in the result copy.
+  const description = isMunicipality || !entity.tipologia ? null : entity.tipologia;
   return {
     id: `entity:${entity.codiceIpa}`,
     href: `/enti/${encodeURIComponent(entity.codiceIpa)}`,
     title: isMunicipality ? municipalityName(entity.denominazione) : entity.denominazione,
-    context: isMunicipality ? "Comune · Registro IPA" : "Registro IPA",
+    context: ENTITY_CONTEXT[place.kind],
     type: "ente",
     description,
     match: { reason: "entity", label: SEARCH_MATCH_LABELS.entity },

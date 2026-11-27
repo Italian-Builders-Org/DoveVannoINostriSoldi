@@ -71,11 +71,15 @@
   .cta { padding-left: 12px; }
 }
 @media (max-width: 620px) {
+  /* Phones keep the one-line ticker: the sticky header stays 44px shorter
+     than a stacked two-line headline. The stationary copy may still wrap. */
   .inner { padding-inline: 0; }
-  .track { animation-duration: 22s; }
-  .link { width: min(calc(100vw - 40px), 430px); max-width: calc(100vw - 40px); flex-direction: column; gap: 6px; padding: 8px 0; text-align: center; }
-  .title { max-width: 40ch; font-size: 12px; }
-  .cta { padding: 0; border: 0; font-size: 12px; }
+  .track { animation-duration: 26s; }
+  .link { gap: 10px; padding-inline: 24px; white-space: nowrap; }
+  .title, .cta { font-size: 12px; }
+  .cta { padding-left: 10px; }
+  .bar[data-static="true"] .activeLink { white-space: normal; flex-wrap: wrap; justify-content: flex-start; gap: 4px 10px; padding-block: 8px; padding-inline: var(--gutter, 14px); }
+  .bar[data-static="true"] .cta { padding-left: 0; border-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .track { animation: none; transform: none; }

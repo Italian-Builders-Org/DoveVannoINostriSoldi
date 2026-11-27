@@ -1,6 +1,6 @@
-import { Bus02Icon } from "@hugeicons/core-free-icons";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import type { Freshness } from "@/lib/mobilita/roma-live-model";
+import { BUS_PATHS } from "@/components/icon-paths";
 
 export type Emphasis = "followed" | "selected" | "normal" | "muted";
 
@@ -37,16 +37,11 @@ type Hit = { id: string; x: number; y: number; r: number };
 
 const ANIMATION_MS = 1600;
 
-type IconNode = readonly (readonly [string, Record<string, unknown>])[];
-
 /** Bus pictogram from the site's icon set, as canvas paths (24×24 viewBox). */
 let busPaths: Path2D[] | null = null;
 function busGlyph(): Path2D[] {
   if (!busPaths) {
-    busPaths = (Bus02Icon as unknown as IconNode)
-      .map(([, attrs]) => attrs.d)
-      .filter((d): d is string => typeof d === "string")
-      .map((d) => new Path2D(d));
+    busPaths = BUS_PATHS.map((d) => new Path2D(d));
   }
   return busPaths;
 }
@@ -360,7 +355,7 @@ export class VehicleLayer {
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
     ctx.setLineDash([]);
-    // Bus pictogram (Hugeicons Bus02, stroked).
+    // Bus pictogram from the site icon set (stroke-only paths, dots are zero-length segments).
     const size = r * 1.25;
     ctx.save();
     ctx.translate(x - size / 2, y - size / 2);

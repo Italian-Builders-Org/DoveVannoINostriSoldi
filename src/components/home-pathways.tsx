@@ -1,16 +1,15 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "@/components/icons";
 import { ITALY_REGIONS_VIEWBOX, italyRegionGeometry } from "@/data/generated/italy-regions";
 import type { HomeItalyFunnel } from "@/lib/home-italy-funnel";
 import { partialMonth, type SiopeMunicipalSnapshot } from "@/lib/siope-snapshot";
-import { compactEuro, exactEuro, integer, longDate, percent } from "@/lib/format";
+import { compactEuro, exactEuro, fromJanuaryTo, integer, longDate, percent } from "@/lib/format";
 import { EconomyPreviews, InstitutionsPreview } from "./home-data-previews";
 import styles from "./home-pathways.module.css";
 
 function Arrow() {
-  return <HugeiconsIcon icon={ArrowRight01Icon} data-link-arrow="true" size={18} aria-hidden="true" />;
+  return <Icon name="chevron-right" data-link-arrow="true" size={18} />;
 }
 
 export function HomePathways({ funnel, siope, children }: Readonly<{
@@ -52,7 +51,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
       <section id="comuni-territori" className={styles.feature} aria-labelledby="comuni-territori-title">
         <div className={styles.copy}>
           <h2 id="comuni-territori-title">Comuni e territori</h2>
-          <p>Pagamenti e redditi dei Comuni italiani. La mappa permette di confrontare territori simili, con importi totali e valori per abitante.</p>
+          <p>Pagamenti e redditi dei Comuni italiani, in totale e per abitante.</p>
           <Link prefetch={false} href="/comuni" className={styles.primaryLink}>Apri la mappa dei Comuni <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href={`/territori?anno=${siope.year}`}>Confronta i territori</Link>
@@ -71,7 +70,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
               <strong>{integer(siope.coverage.withMovements)}</strong>
               <span className={styles.smallLabel}>Pagamenti per abitante</span>
               <strong>{siope.nationalPerCapita === null ? "Non disponibile" : exactEuro(siope.nationalPerCapita)}</strong>
-              <p>Da gennaio a {siope.latestMonthLabel.toLocaleLowerCase("it-IT")} {siope.year}. {partialMonth(siope) !== null ? "Periodo parziale." : ""}</p>
+              <p>Periodo: {fromJanuaryTo(siope.latestMonthLabel)} {siope.year}. {partialMonth(siope) !== null ? "Periodo parziale." : ""}</p>
             </div>
           </div>
           <p className={styles.source}>Cassa dei Comuni, distinta dalla spesa PA.<br /><a href={siope.source.siopeMovementsUrl} target="_blank" rel="noreferrer">SIOPE · RGS / Banca d’Italia</a> · verificato {longDate(siope.source.observedAt)}</p>
@@ -81,7 +80,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
       <section id="politica-istituzioni" className={styles.feature} aria-labelledby="politica-istituzioni-title">
         <div className={styles.copy}>
           <h2 id="politica-istituzioni-title">Politica e istituzioni</h2>
-          <p>Composizione delle istituzioni, incarichi e attività parlamentari. La mappa mostra le relazioni tra persone e organi della Repubblica.</p>
+          <p>Composizione delle istituzioni, incarichi e attività parlamentari.</p>
           <Link prefetch={false} href="/politici" className={styles.primaryLink}>Apri la mappa della politica <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/governi">Governi a confronto</Link>
@@ -107,7 +106,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
       <section id="controlli-analisi" className={`${styles.feature} ${styles.analysisFeature}`} aria-labelledby="controlli-analisi-title">
         <div className={styles.copy}>
           <h2 id="controlli-analisi-title">Controlli e analisi</h2>
-          <p>Appalti, affidamenti e risultati dei controlli, insieme a studi sulla spesa pubblica. I valori anomali richiedono verifiche e non dimostrano, da soli, sprechi o illeciti.</p>
+          <p>Appalti, affidamenti e risultati dei controlli, insieme a studi sulla spesa pubblica.</p>
           <Link prefetch={false} href="/controlli" className={styles.primaryLink}>Apri i controlli <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/studi">Studi e analisi</Link>

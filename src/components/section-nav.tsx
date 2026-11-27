@@ -9,6 +9,12 @@ import { Suspense, useId } from "react";
 import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
 
+// Pages outside every nav section that still deserve their own breadcrumb
+// label instead of the generic "Esplora i dati" fallback.
+const STANDALONE_LABELS: Readonly<Record<string, string>> = {
+  "/cerca": "Cerca",
+};
+
 export function SectionNav() {
   const pathname = publicSurfacePath(usePathname());
   return (
@@ -38,6 +44,9 @@ function SectionNavContent({
   if (pathname === "/mappe/mobilita" || pathname.startsWith("/mappe/mobilita/")) return null;
   if (pathname === "/assistente" || pathname.startsWith("/assistente/")) return null;
 
+  // An empty search page has no view worth sharing.
+  const emptySearch = pathname === "/cerca" && !new URLSearchParams(currentSearch ?? "").get("q");
+
   const currentHref =
     pages.find((page) =>
       isNavChildActive(pathname, page.href, pages, currentSearch ?? ""),
@@ -56,7 +65,11 @@ function SectionNavContent({
       <nav className={styles.breadcrumb} aria-label="Percorso della pagina">
         <Link prefetch={false} href="/">Home</Link>
         <span aria-hidden="true">/</span>
-        {section ? <Link prefetch={false} href={section.href}>{section.label}</Link> : <Link prefetch={false} href="/#esplora">Esplora i dati</Link>}
+        {section
+          ? <Link prefetch={false} href={section.href}>{section.label}</Link>
+          : STANDALONE_LABELS[pathname]
+            ? <span aria-current="page">{STANDALONE_LABELS[pathname]}</span>
+            : <Link prefetch={false} href="/#esplora">Esplora i dati</Link>}
       </nav>
       <div className={styles.controls}>
       {pages.length > 1 ? <nav aria-label={`Pagine in ${section!.label}`}>
@@ -81,7 +94,7 @@ function SectionNavContent({
         </label>
       </div>
       </nav> : null}
-      <ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} />
+      {emptySearch ? null : <ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} />}
       </div>
     </div>
   );

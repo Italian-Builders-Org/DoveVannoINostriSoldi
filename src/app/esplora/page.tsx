@@ -23,7 +23,7 @@ export default function EsploraPage() {
       <section className={styles.intro}>
         <h1>Esplora relazioni</h1>
         <p>
-          Cerca persone, enti e riferimenti agli atti in <strong>{integer(searchable)}</strong> relazioni tra incarichi ed enti pubblici.
+          Cerca persone, enti e riferimenti agli atti negli incarichi pubblici.
           Un collegamento indica dove approfondire; non dimostra un’irregolarità.
         </p>
 
@@ -39,7 +39,7 @@ export default function EsploraPage() {
 
       <details className="data-details">
         <summary>Fonti, identità e record esclusi</summary>
-        <p>La ricerca usa il dataset <code>incarichi-nominativi-shard</code>. Non unisce persone con lo stesso nome senza un identificativo stabile. I riferimenti CIG, CUP e agli atti sono ricercabili.</p>
+        <p>La ricerca usa il dataset <code>incarichi-nominativi-shard</code>. Non unisce persone con lo stesso nome senza un identificativo stabile.</p>
         {suspects > 0 ? (
           <p className={styles.caveat}>
             {integer(suspects)} record con importi sospetti (stesso atto, rapporto
@@ -52,7 +52,7 @@ export default function EsploraPage() {
       <section className={styles.provenance}>
         <Link href="/incarichi">Registro ufficiale incarichi</Link>
         <span aria-hidden="true"> · </span>
-        <Link href="/fonti">Fonti e metodo</Link>
+        <Link href="/fonti">Fonti</Link>
         <span aria-hidden="true"> · </span>
         <Link href="/controlli">Segnali</Link>
       </section>

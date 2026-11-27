@@ -93,6 +93,16 @@ export function compactEuroLike(value: number, reference: number): string {
   return euroFormatter.format(value);
 }
 
+/**
+ * "da gennaio ad agosto": Italian period label for cumulative monthly data.
+ * Uses the euphonic "ad" before a month starting with "a" (aprile, agosto).
+ */
+export function fromJanuaryTo(monthLabel: string): string {
+  const month = monthLabel.toLocaleLowerCase("it-IT");
+  if (month === "gennaio") return "a gennaio";
+  return `da gennaio ${month.startsWith("a") ? "ad" : "a"} ${month}`;
+}
+
 export function billions(value: number): string {
   return billionsFormatter.format(value / 1_000_000_000);
 }

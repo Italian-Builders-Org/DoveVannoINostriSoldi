@@ -9,7 +9,10 @@
 
 .breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; color: var(--color-neutral-600); }
 .breadcrumb a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
-.breadcrumb a:hover { color: var(--color-accent); text-decoration: underline; }
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb a:hover { color: var(--color-accent-700); text-decoration: underline; }
+  .select:hover { border-color: var(--color-neutral-500); background-color: var(--color-neutral-100); }
+}
 .controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px 24px; }
 .controls > nav { flex: 1 1 24rem; min-width: 0; }
 .controls > div { margin-left: auto; }
@@ -71,11 +74,6 @@
   pointer-events: none;
 }
 
-.select:hover {
-  border-color: var(--color-neutral-500);
-  background-color: var(--color-neutral-100);
-}
-
 .select:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
@@ -93,10 +91,14 @@
   border: 0;
 }
 
+/* Phones: breadcrumb and share icon share one row, the section picker sits
+   below — the band before the H1 drops from ~160px to ~110px. */
 @media (max-width: 620px) {
-  .controls { flex-direction: column; align-items: stretch; }
-  .controls > nav { flex-basis: auto; }
-  .controls > div { margin-left: 0; }
+  .sectionNav { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 12px; padding-block: 10px 12px; }
+  .controls { display: contents; }
+  .controls > nav { grid-column: 1 / -1; grid-row: 2; flex-basis: auto; }
+  .controls > div { grid-column: 2; grid-row: 1; margin-left: 0; }
+  .breadcrumb a { min-height: 44px; }
   .picker {
     flex-direction: column;
     align-items: stretch;

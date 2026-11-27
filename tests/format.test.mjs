@@ -34,3 +34,13 @@ test("dates use Rome civil time across year boundaries and reject unavailable va
     assert.equal(shortDate(value), "non disponibile");
   }
 });
+
+test("fromJanuaryTo uses the euphonic “ad” before months starting with a", async () => {
+  const { fromJanuaryTo } = await import("../src/lib/format.ts");
+  assert.equal(fromJanuaryTo("Agosto"), "da gennaio ad agosto");
+  assert.equal(fromJanuaryTo("aprile"), "da gennaio ad aprile");
+  assert.equal(fromJanuaryTo("Settembre"), "da gennaio a settembre");
+  assert.equal(fromJanuaryTo("ottobre"), "da gennaio a ottobre");
+  // A single month is not a range.
+  assert.equal(fromJanuaryTo("Gennaio"), "a gennaio");
+});

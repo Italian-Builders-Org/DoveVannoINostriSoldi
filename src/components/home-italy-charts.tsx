@@ -11,12 +11,14 @@ export function HomeItalyCompositionChart({
   slices: readonly HomeFunnelSlice[];
   ariaLabel: string;
 }) {
-  const maxShare = Math.max(...slices.map((slice) => slice.sharePercent), 0);
-
   return (
     <ol className={styles.bars} aria-label={ariaLabel}>
       {slices.map((slice) => {
-        const width = maxShare > 0 ? (slice.sharePercent / maxShare) * 100 : 0;
+        // A bar is the slice's share of the total, the same rule as the home
+        // card: scaling to the largest slice would make 42% fill the track.
+        const width = Number.isFinite(slice.sharePercent)
+          ? Math.min(Math.max(slice.sharePercent, 0), 100)
+          : 0;
         return (
           <li key={slice.id}>
             <div className={styles.barCopy}>
@@ -53,25 +55,22 @@ export function HomeItalyTrendChart({
   points: readonly HomeItalyTrendPoint[];
   selectedYear: number;
 }) {
-  const width = 720;
-  const height = 198;
-  const plotLeft = 48;
-  const plotRight = 14;
-  const plotTop = 16;
-  const plotBottom = 34;
-  const plotWidth = width - plotLeft - plotRight;
-  const plotHeight = height - plotTop - plotBottom;
+  // The plot is drawn in a 0-100 coordinate space stretched to the box
+  // (preserveAspectRatio="none", non-scaling strokes). Labels and points are
+  // HTML so their CSS pixel size never shrinks with the viewBox on mobile.
   const values = points.map((point) => point.totalEuro / 1_000_000_000);
   const minObserved = values.length > 0 ? Math.min(...values) : 0;
   const maxObserved = values.length > 0 ? Math.max(...values) : 0;
   const minValue = Math.floor(minObserved / 10) * 10;
   const maxValue = Math.ceil(maxObserved / 10) * 10;
   const valueRange = Math.max(maxValue - minValue, 1);
-  const xDenominator = Math.max(points.length - 1, 1);
-  const xFor = (index: number) => plotLeft + (index / xDenominator) * plotWidth;
-  const yFor = (value: number) => plotTop + ((maxValue - value) / valueRange) * plotHeight;
+  const lastIndex = points.length - 1;
+  const xDenominator = Math.max(lastIndex, 1);
+  const xFor = (index: number) => (index / xDenominator) * 100;
+  const yFor = (value: number) => ((maxValue - value) / valueRange) * 100;
   const coordinates = points.map((point, index) => ({
     point,
+    index,
     x: xFor(index),
     y: yFor(point.totalEuro / 1_000_000_000),
   }));
@@ -81,7 +80,7 @@ export function HomeItalyTrendChart({
   const firstPoint = coordinates[0];
   const lastPoint = coordinates.at(-1);
   const areaPath = firstPoint && lastPoint
-    ? `${linePath} L ${lastPoint.x.toFixed(2)} ${(plotTop + plotHeight).toFixed(2)} L ${firstPoint.x.toFixed(2)} ${(plotTop + plotHeight).toFixed(2)} Z`
+    ? `${linePath} L ${lastPoint.x.toFixed(2)} 100 L ${firstPoint.x.toFixed(2)} 100 Z`
     : "";
   const ticks = [minValue, minValue + valueRange / 2, maxValue];
   const selected = points.find((point) => point.year === selectedYear) ?? lastPoint?.point ?? null;
@@ -97,44 +96,56 @@ export function HomeItalyTrendChart({
         <span className={styles.trendUnit}>mld €</span>
       </div>
 
-      <svg
-        className={styles.trendChart}
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-labelledby={`${chartId}-title ${chartId}-description`}
-      >
-        <title id={`${chartId}-title`}>Spesa pubblica totale italiana anno per anno</title>
-        <desc id={`${chartId}-description`}>
-          Serie Eurostat COFOG dal {points[0]?.year} al {points.at(-1)?.year}. Il punto evidenziato è il {selected?.year}; la scala verticale è espressa in miliardi di euro e non parte da zero.
-        </desc>
-        {ticks.map((tick) => {
-          const y = yFor(tick);
-          return (
-            <g key={tick}>
-              <line className={styles.trendGrid} x1={plotLeft} x2={width - plotRight} y1={y} y2={y} />
-              <text className={styles.trendTick} x={plotLeft - 9} y={y + 4} textAnchor="end">
-                {tick.toLocaleString("it-IT", { maximumFractionDigits: 0 })}
-              </text>
-            </g>
-          );
-        })}
-        <path className={styles.trendArea} d={areaPath} aria-hidden="true" />
-        <path className={styles.trendLine} d={linePath} aria-hidden="true" />
-        {coordinates.map(({ point, x, y }) => (
-          <g key={point.year}>
-            <title>{`${point.year}: ${billions(point.totalEuro)} mld €${point.year === selected?.year ? " · anno selezionato" : ""}`}</title>
-            <circle
+      <div className={styles.trendPlot}>
+        <div className={styles.trendTicks} aria-hidden="true">
+          {ticks.map((tick) => (
+            <span key={tick} className={styles.trendTick} style={{ top: `${yFor(tick)}%` }}>
+              {tick.toLocaleString("it-IT", { maximumFractionDigits: 0 })}
+            </span>
+          ))}
+        </div>
+        <div className={styles.trendCanvas}>
+          <svg
+            className={styles.trendChart}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            role="img"
+            aria-labelledby={`${chartId}-title ${chartId}-description`}
+          >
+            <title id={`${chartId}-title`}>Spesa pubblica totale italiana anno per anno</title>
+            <desc id={`${chartId}-description`}>
+              Serie Eurostat COFOG dal {points[0]?.year} al {points.at(-1)?.year}. Il punto evidenziato è il {selected?.year}; la scala verticale è espressa in miliardi di euro e non parte da zero.
+            </desc>
+            {ticks.map((tick) => (
+              <line key={tick} className={styles.trendGrid} x1={0} x2={100} y1={yFor(tick)} y2={yFor(tick)} />
+            ))}
+            <path className={styles.trendArea} d={areaPath} aria-hidden="true" />
+            <path className={styles.trendLine} d={linePath} aria-hidden="true" />
+          </svg>
+          {coordinates.map(({ point, x, y }) => (
+            <span
+              key={point.year}
+              aria-hidden="true"
               className={point.year === selected?.year ? styles.trendPointSelected : styles.trendPoint}
-              cx={x}
-              cy={y}
-              r={point.year === selected?.year ? 5 : 3.5}
+              style={{ left: `${x}%`, top: `${y}%` }}
+              title={`${point.year}: ${billions(point.totalEuro)} mld €${point.year === selected?.year ? " · anno selezionato" : ""}`}
             />
-            <text className={styles.trendYear} x={x} y={height - 12} textAnchor="middle">
+          ))}
+        </div>
+        <div className={styles.trendYears} aria-hidden="true">
+          {coordinates.map(({ point, index, x }) => (
+            <span
+              key={point.year}
+              className={styles.trendYear}
+              // Narrow screens keep every other year, counted back from the latest.
+              data-minor={(lastIndex - index) % 2 === 1 ? "true" : undefined}
+              style={{ left: `${x}%` }}
+            >
               {point.year}
-            </text>
-          </g>
-        ))}
-      </svg>
+            </span>
+          ))}
+        </div>
+      </div>
 
       <figcaption className={styles.trendCaption}>
         <span>Eurostat COFOG · {points[0]?.year}-{points.at(-1)?.year}</span>

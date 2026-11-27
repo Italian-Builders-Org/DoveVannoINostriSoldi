@@ -28,6 +28,14 @@ export async function inspectAnnouncements(page, { testTiming = true } = {}) {
     assert.deepEqual(state, { accessible: true, visible: true, fullCopy: true, paused: true, static: true }, 'Il link attivo deve essere accessibile, fermo e interamente visibile');
   };
   assert.equal((await active()).href, '/studi/2026-08');
+  // While it moves, the ticker is one 44px line at every width: a wrapped
+  // two-line bar made the sticky header 144px tall on a 390px phone.
+  const ticker = await page.$eval('[data-announcement]', (banner) => ({
+    moving: banner.dataset.static === 'false',
+    height: Math.round(banner.getBoundingClientRect().height),
+    tallestCopy: Math.max(...[...banner.querySelectorAll('[aria-hidden="true"] a')].map((link) => Math.round(link.getBoundingClientRect().height))),
+  }));
+  if (ticker.moving) assert.ok(ticker.height <= 45 && ticker.tallestCopy <= 45, `Annunci su una riga: ${JSON.stringify(ticker)}`);
   if (!testTiming) {
     await page.focus('[data-announcement] button[aria-label^="Mostra:"]');
     await page.keyboard.press('Enter');

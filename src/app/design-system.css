@@ -168,12 +168,18 @@
   --graph-ring: color-mix(in srgb, #182b3a 14%, transparent);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  /* Press feedback: a short, strong ease-out so the control answers at once. */
+  --press-scale: .97;
+  --press-duration: 160ms;
   --focus-ring: var(--color-accent);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --color-accent: #ff8897;
+  /* One dark action hue: the accent equals the accent-700 step so links,
+     primary buttons and active markers stop switching between pink and
+     coral from page to page (7.07:1 on bg, 6.04:1 under dark labels). */
+  --color-accent: #ff765f;
   --color-accent-2: #efa0ad;
 
   --color-bg: #141313;
@@ -303,11 +309,11 @@
   padding: 7px var(--space-3);
   min-height: 44px;
   border-radius: var(--radius-md);
-  transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, border-color 140ms ease;
 }
 .btn svg { display: block; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn:active:not(:disabled) { transform: scale(.98); }
+.btn:active:not(:disabled) { transform: scale(var(--press-scale)); }
 .btn-primary { background: var(--color-accent-700); color: var(--color-raised); }
 .btn-primary:hover,
 .btn-primary:focus-visible {
@@ -316,12 +322,15 @@
 }
 .btn-primary:active { background: var(--color-accent-900); color: var(--color-raised); }
 .btn-secondary { border-color: var(--color-neutral-400); }
-.btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
 .btn-ghost { color: var(--color-accent-700); padding-inline: var(--space-1); }
-.btn-ghost:hover {
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  color: var(--color-accent-800);
+/* Pointer-only hover: on touch screens it would stick after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+  .btn-ghost:hover {
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent-800);
+  }
 }
 .btn-block {
   width: 100%;
@@ -451,8 +460,8 @@ textarea.input {
    the app aligns on the same digit width. */
 .num-tabular { font-variant-numeric: tabular-nums; }
 
-.transition-press { transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease; }
-.transition-press:active { transform: scale(.98); }
+.transition-press { transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, border-color 140ms ease; }
+.transition-press:active { transform: scale(var(--press-scale)); }
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -463,4 +472,6 @@ textarea.input {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Reduced motion keeps the colour change of a press, not the shrink. */
+  :root { --press-scale: 1; }
 }

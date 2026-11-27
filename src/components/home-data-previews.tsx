@@ -28,7 +28,7 @@ export function InstitutionsPreview() {
     <PreviewBars points={accounts.map((statement) => ({ label: String(statement.year), value: statement.values?.effectivePayments ?? null }))}
       format={(value) => value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} />
     <p className={styles.source}>Pagamenti di competenza sui Titoli I, II e III. I bilanci di Senato e Quirinale hanno perimetri distinti.
-      {latest ? <> <a href={latest.documentUrl} target="_blank" rel="noreferrer">Fonte: Camera dei deputati</a>.</> : null}
+      {latest ? <> <a href={latest.documentUrl} target="_blank" rel="noreferrer">Fonte</a>.</> : null}
     </p>
     <div className={styles.institutionLinks}>
       <Link prefetch={false} href="/politici?istituzione=presidenza-repubblica">Presidenza della Repubblica <span aria-hidden="true">→</span></Link>

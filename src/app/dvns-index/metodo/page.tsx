@@ -25,8 +25,9 @@ function Unavailable() {
     <main className="shell page">
       <div className="page-intro">
         <h1>DVNS Index, il metodo</h1>
-        <p>Dati temporaneamente non disponibili: senza lo snapshot verificato non mostriamo numeri.</p>
+        <p>Il metodo con gli esempi numerici non è disponibile in questo momento: mostriamo i numeri solo quando i dati sono verificati. Riprova più tardi.</p>
       </div>
+      <p><Link href="/comuni">Vai alla mappa dei Comuni</Link></p>
     </main>
   );
 }

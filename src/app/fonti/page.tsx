@@ -13,37 +13,49 @@ export const metadata: Metadata = {
   description: "Da dove arrivano i dati, quanto spesso cambiano e quali fonti sono già collegate.",
 };
 
+// The registry keeps each publisher's full legal name (also served to MCP);
+// the table repeats the same few publishers on many rows, so it shows the
+// common short name instead.
+const SHORT_OWNER: Readonly<Record<string, string>> = {
+  "ISTAT — Istituto nazionale di statistica": "ISTAT",
+  "Istituto nazionale di statistica": "ISTAT",
+  "Istituto Nazionale di Statistica (ISTAT)": "ISTAT",
+  "INPS — Istituto Nazionale della Previdenza Sociale": "INPS",
+  "Istituto Nazionale della Previdenza Sociale": "INPS",
+  "Eurostat (Commissione europea)": "Eurostat",
+};
+
 export default function SourcesPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
         <h1>Da dove arrivano i dati</h1>
-        <p>
-          Ogni numero su questo sito viene da una fonte pubblica ufficiale. Qui trovi quali sono,
-          cosa contengono e quando le controlliamo.
-        </p>
+        <p>Ogni numero su questo sito viene da una fonte pubblica ufficiale.</p>
       </div>
 
       <p><strong>{sourceCounts.total} fonti collegate</strong> al portale.</p>
 
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Fonte</th>
-                <th scope="col">Cosa contiene</th>
-                <th scope="col">Chi la pubblica</th>
-                <th scope="col">Ogni quanto esce</th>
-                <th scope="col">Ultimo dato</th>
+          {/* Under 640px the rows become stacked cards (fonti.module.css). The
+              explicit roles keep table semantics for screen readers, which
+              some browsers drop once table parts are display: block. */}
+          <table className={`table ${styles.sources}`} role="table">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th scope="col" role="columnheader">Fonte</th>
+                <th scope="col" role="columnheader">Cosa contiene</th>
+                <th scope="col" role="columnheader">Chi la pubblica</th>
+                <th scope="col" role="columnheader">Ogni quanto esce</th>
+                <th scope="col" role="columnheader">Ultimo dato</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody role="rowgroup">
               {publicSources.map((source) => {
                 const latest = latestDataBySlug[source.slug];
                 return (
-                  <tr id={source.slug} key={source.slug}>
-                    <th scope="row">
+                  <tr id={source.slug} key={source.slug} role="row">
+                    <th scope="row" role="rowheader">
                       <a
                         href={source.url}
                         target="_blank"
@@ -54,10 +66,10 @@ export default function SourcesPage() {
                       </a>
                       <small>{source.area}</small>
                     </th>
-                    <td>{source.coverage}</td>
-                    <td>{source.owner}</td>
-                    <td>{source.cadence}</td>
-                    <td className={styles.latest}>
+                    <td role="cell" data-label="Cosa contiene">{source.coverage}</td>
+                    <td role="cell" data-label="Chi la pubblica">{SHORT_OWNER[source.owner] ?? source.owner}</td>
+                    <td role="cell" data-label="Ogni quanto esce">{source.cadence}</td>
+                    <td role="cell" data-label="Ultimo dato" className={styles.latest}>
                       {latest?.kind === "date"
                         ? shortDate(latest.value)
                         : latest?.kind === "period"
@@ -143,18 +155,6 @@ export default function SourcesPage() {
 
       <div className={styles.principles}>
         <section className="panel">
-          <h2 className="panel-title">Come lavoriamo</h2>
-          <p>
-            Verifichiamo i file ufficiali e distinguiamo il periodo del dato dalla data del nostro controllo.
-          </p>
-        </section>
-        <section className="panel">
-          <h2 className="panel-title">Se un dato manca</h2>
-          <p>
-            Indichiamo accanto ai numeri ritardi e periodi non coperti dalla fonte.
-          </p>
-        </section>
-        <section className="panel">
           <h2 className="panel-title">Licenze e riuso</h2>
           <p>
             Ogni dato mantiene le condizioni di riuso indicate dalla fonte che lo pubblica. Il
@@ -166,24 +166,6 @@ export default function SourcesPage() {
           </p>
         </section>
       </div>
-
-      <section className="panel">
-        <h2 className="panel-title">Collegamenti diretti alle fonti</h2>
-        <ul className={styles.linkList}>
-          {publicSources.map((source) => (
-            <li key={source.slug}>
-              <a
-                href={source.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`${source.name} di ${source.owner}, si apre in una nuova scheda`}
-              >
-                {source.name} · {source.owner} <i aria-hidden="true">↗</i>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
 
       <div className="notice">
         <strong>“Aggiornato” quanto la fonte</strong>

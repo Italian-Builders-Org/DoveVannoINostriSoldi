@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "@/components/icons";
 import {
   GLOBAL_SEARCH_DEFAULT_LIMIT,
   GLOBAL_SEARCH_MAX_QUERY_LENGTH,
@@ -52,13 +51,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <main className="shell page">
       <div className="page-intro">
         <h1>Cerca nel sito</h1>
-        <p>
-          Cerca pagine, dataset o enti pubblici.
-        </p>
       </div>
 
       <section className="panel" aria-labelledby="global-search-title">
-        <h2 id="global-search-title" className="panel-title">Ricerca globale</h2>
+        <h2 id="global-search-title" className="sr-only">Modulo di ricerca</h2>
         <form className={styles.searchForm} action="/cerca" method="get">
           <label htmlFor="site-search-query">
             Parole da cercare
@@ -70,12 +66,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               defaultValue={query}
               minLength={GLOBAL_SEARCH_MIN_QUERY_LENGTH}
               maxLength={GLOBAL_SEARCH_MAX_QUERY_LENGTH}
-              placeholder="es. pagamenti comuni, PNRR o Ministero dell'Interno"
+              placeholder="es. Milano, PNRR, pensioni"
               autoComplete="off"
             />
           </label>
           <button className="btn btn-primary" type="submit">
-            <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.7} aria-hidden="true" />
+            <Icon name="search" size={16} />
             Cerca
           </button>
         </form>
@@ -90,8 +86,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       {upstreamError ? (
         <div className="notice warning-notice">
-          <strong>Ricerca temporaneamente non disponibile</strong>
-          <p>Il registro pubblico ha superato il tempo massimo. Riprova tra poco.</p>
+          <strong>Ricerca parziale</strong>
+          <p>Il registro degli enti pubblici non ha risposto in tempo: mostriamo pagine, dataset e Comuni. Riprova tra poco.</p>
         </div>
       ) : null}
 
@@ -101,7 +97,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             {result.total > 0
               ? `${result.total} risultat${result.total === 1 ? "o" : "i"} per “${result.query}”.`
               : `Nessun risultato per “${result.query}”.`}
-            {!result.entitiesAvailable ? " Il registro IPA non è raggiungibile in questo momento." : ""}
+            {!result.entitiesAvailable && !upstreamError ? " Ora possiamo cercare solo pagine, dataset e Comuni: gli altri enti pubblici non sono disponibili, riprova più tardi." : ""}
           </p>
 
           {result.groups.length > 0 ? (
@@ -116,7 +112,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                           <Link href={entry.href}>{entry.title}</Link>
                           <span className={styles.resultContext}>{entry.context}</span>
                         </div>
-                        <span className={styles.resultReason}>{entry.match.label}</span>
                         {entry.description ? (
                           <span className={styles.resultDescription}>{entry.description}</span>
                         ) : null}
@@ -128,7 +123,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </div>
           ) : (
             <div className="notice">
-              <strong>Nessuna corrispondenza</strong>
               <p>Prova con una parola più breve, un sinonimo oppure il nome dell&apos;ente.</p>
             </div>
           )}

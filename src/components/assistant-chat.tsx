@@ -122,7 +122,7 @@ export function AssistantChat() {
     if (!field) return;
     const resize = () => {
       field.style.height = "0px";
-      field.style.height = `${Math.min(hasConversation ? 140 : 180, Math.max(hasConversation ? 44 : 94, field.scrollHeight))}px`;
+      field.style.height = `${Math.min(hasConversation ? 140 : 180, Math.max(hasConversation ? 44 : 72, field.scrollHeight))}px`;
     };
     resize();
     window.addEventListener("resize", resize);
@@ -307,7 +307,7 @@ export function AssistantChat() {
         <div className={styles.toolbarTitle}><span>Assistente</span></div>
         <div className={styles.toolbarActions}>
           <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <>Usa la tua <span className={styles.wideOnly}>chiave AI</span><span className={styles.narrowOnly}>chiave</span></>}</span>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <><span className={styles.wideOnly}>Usa la tua chiave AI</span><span className={styles.narrowOnly}>Chiave AI</span></>}</span>
           </button>
           <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
         </div>
@@ -353,7 +353,7 @@ export function AssistantChat() {
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>
-          {hasConversation && awayFromBottom ? <button type="button" className={styles.jumpLatest} aria-label="Vai all’ultimo messaggio" onClick={() => { followBottom.current = true; setAwayFromBottom(false); scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}><HugeiconsIcon icon={ArrowDown01Icon} size={18} aria-hidden="true" /></button> : null}
+          {hasConversation && awayFromBottom ? <button type="button" className={styles.jumpLatest} aria-label="Vai all’ultimo messaggio" title="Vai all’ultimo messaggio" onClick={() => { followBottom.current = true; setAwayFromBottom(false); scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}><HugeiconsIcon icon={ArrowDown01Icon} size={16} aria-hidden="true" /><span>Ultimo messaggio</span></button> : null}
           <div className={styles.composerAnchor} ref={composer}>
             {menu && menu !== "add" ? <div className={styles.optionMenu} id="assistant-options" role="listbox" aria-label={menu === "sources" ? "Domande dalle fonti" : "Scorciatoie"}>
               <p>{menu === "sources" ? "Scegli una domanda dalla fonte" : "Inizia da una domanda"}</p>
@@ -396,7 +396,7 @@ export function AssistantChat() {
                   <button type="button" className={styles.iconButton} disabled={voice.busy || loading} aria-label="Aggiungi allegati e fonti" aria-expanded={menu === "add"} aria-controls="assistant-add-menu" title="Aggiungi allegati e fonti" onClick={() => setMenu(menu === "add" ? null : "add")}>
                     <HugeiconsIcon icon={Add01Icon} size={23} strokeWidth={1.6} aria-hidden="true" />
                   </button>
-                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.triggers}><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("@")}><kbd>@</kbd>Fonti</button><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("/")}><kbd>/</kbd>Scorciatoie</button></span>}
+                  {attachments.items.length ? <span key={attachments.items.length} className={styles.attachmentCount} data-full={attachments.items.length === ATTACHMENT_MAX_FILES} aria-label={`Allegati: ${attachments.items.length} di ${ATTACHMENT_MAX_FILES}`}><HugeiconsIcon icon={Attachment01Icon} size={13} aria-hidden="true" />{attachments.items.length}/{ATTACHMENT_MAX_FILES}</span> : <span className={styles.triggers}><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("@")} title="Scegli una domanda per fonte (oppure digita @)"><span aria-hidden="true">@</span>Fonti</button><button type="button" disabled={voice.busy || loading} onClick={() => insertTrigger("/")} title="Apri le scorciatoie (oppure digita /)"><span aria-hidden="true">/</span>Scorciatoie</button></span>}
                   <span id="assistant-count" className={styles.count} data-overflow={tooLong}>{draft.length >= AI_MAX_PROMPT_CHARS * .8 ? `${draft.length}/${AI_MAX_PROMPT_CHARS}` : ""}</span>
                   <button type="button" className={`${styles.iconButton} ${styles.microphone}`} data-recording={voice.active} disabled={loading || voice.voice?.status === "checking" || voice.voice?.status === "installing" || voice.voice?.status === "stopping"}
                     aria-label={voice.active ? "Termina dettatura" : "Detta la domanda"} aria-pressed={voice.active} title={voice.active ? "Termina dettatura" : "Detta la domanda"} onClick={voice.start}>

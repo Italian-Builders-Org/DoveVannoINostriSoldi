@@ -35,7 +35,7 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
             {/* Word joiner: the arrow never wraps alone onto a new line. */}
             {source.name}{"\u2060"}<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} strokeWidth={2} aria-hidden="true" /><span className={styles.srOnly}> (sito esterno, nuova scheda)</span>
           </a>
-          {source.period ? <> <span className={styles.sourcePeriod}>{source.period}</span></> : null}
+          {source.period ? <> <span className={styles.sourcePeriod}>periodo {source.period}</span></> : null}
         </li>)}</ul> : null}
         {/* The limit stays visible: on a public-spending answer it changes how the number reads. */}
         {entry.caveat ? <div className={styles.limits}>

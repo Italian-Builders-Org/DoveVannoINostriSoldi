@@ -32,12 +32,13 @@ export function AssistantActivity({ activities, active, stopped, startedAt, fini
   useEffect(() => { if (!active) return; const timer = setInterval(() => setNow(Date.now()), 250); return () => clearInterval(timer); }, [active]);
   if (!activities.some((item) => item.id === "attachments" || item.id.startsWith("query-"))) return null;
   const open = active || expanded;
-  const datasets = activities.filter((item) => item.id.startsWith("query-")).length;
+  // Once done, the row names what was consulted (more useful than how long it took).
+  const consulted = [...new Set(activities.filter((item) => item.id.startsWith("query-")).flatMap((item) => item.resources ?? []))];
   const elapsed = SECONDS.format(Math.max(0, ((finishedAt ?? now) - startedAt) / 1000));
   return <div className={styles.activity} data-assistant-activity data-active={active}>
     <button type="button" className={styles.activitySummary} aria-expanded={open} onClick={() => setExpanded(!expanded)} disabled={active}>
       <HugeiconsIcon icon={active ? Loading03Icon : stopped ? Cancel01Icon : Tick02Icon} size={15} aria-hidden="true" />
-      <span>{active ? "Consultazione in corso" : stopped ? "Attività interrotta" : datasets ? `${datasets} ${datasets === 1 ? "dataset consultato" : "dataset consultati"}` : "Attività svolte"}</span><time>{elapsed}</time><HugeiconsIcon icon={ArrowDown01Icon} size={14} aria-hidden="true" />
+      <span>{active ? "Consultazione in corso" : stopped ? "Attività interrotta" : consulted.length ? `Consultato: ${consulted.join(", ")}` : "Attività svolte"}</span>{active || stopped || !consulted.length ? <time>{elapsed}</time> : null}<HugeiconsIcon icon={ArrowDown01Icon} size={14} aria-hidden="true" />
     </button>
     <div className={styles.activityBody} data-open={open} aria-hidden={!open} inert={!open}><ol>
       {activities.map((item) => <ActivityRow key={item.id} item={item} active={active} />)}

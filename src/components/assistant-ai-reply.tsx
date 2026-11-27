@@ -8,6 +8,10 @@ import styles from "@/app/assistente/assistant.module.css";
 
 const NO_LINKS: readonly AiSiteLink[] = [];
 
+function sharedPeriod(sources: readonly { period?: string }[]) {
+  return sources.length > 1 && sources.every((source) => source.period && source.period === sources[0].period);
+}
+
 /**
  * Provider text is rendered only as escaped text; site pages and source links come from the server catalog.
  * `showNewTabHint` is set on the first answer with site pages only: repeating it on every answer is noise.
@@ -35,8 +39,11 @@ export function AssistantAiReply({ response, showNewTabHint = false }: { respons
             {/* Word joiner: the arrow never wraps alone onto a new line. */}
             {source.name}{"\u2060"}<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} strokeWidth={2} aria-hidden="true" /><span className={styles.srOnly}> (sito esterno, nuova scheda)</span>
           </a>
-          {source.period ? <> <span className={styles.sourcePeriod}>periodo {source.period}</span></> : null}
-        </li>)}</ul> : null}
+          {source.period && !sharedPeriod(entry.sources) ? <> <span className={styles.sourcePeriod}>periodo {source.period}</span></> : null}
+        </li>)}
+          {/* A period shared by every source is said once, as the list's last item. */}
+          {sharedPeriod(entry.sources) ? <li className={styles.sourcePeriod}>periodo {entry.sources[0].period}</li> : null}
+        </ul> : null}
         {/* The limit stays visible: on a public-spending answer it changes how the number reads. */}
         {entry.caveat ? <div className={styles.limits}>
           <HugeiconsIcon icon={InformationCircleIcon} size={16} strokeWidth={1.8} aria-hidden="true" />

@@ -307,9 +307,9 @@ export function AssistantChat() {
         <div className={styles.toolbarTitle}><span>Assistente</span></div>
         <div className={styles.toolbarActions}>
           <button ref={providerButton} type="button" className={styles.providerButton} data-connected={Boolean(connection)} onClick={() => setSettings(true)} aria-haspopup="dialog" title={connection ? undefined : "Usa la tua chiave AI"} aria-label={connection ? `Impostazioni AI: ${AI_PROVIDERS[connection.provider].label}, ${connection.model}` : "Usa la tua chiave AI"}>
-            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <><span className={styles.wideOnly}>Usa la tua chiave AI</span><span className={styles.narrowOnly}>Chiave AI</span></>}</span>
+            <HugeiconsIcon icon={Key01Icon} size={17} aria-hidden="true" /><span>{connection ? AI_PROVIDERS[connection.provider].label : <><span className={styles.wideOnly}>Usa la tua chiave AI</span><span className={styles.narrowOnly}>La tua chiave</span></>}</span>
           </button>
-          <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
+          <button type="button" className={styles.newChat} aria-label="Nuova chat" title="Nuova chat" disabled={!hasConversation && !draft && !attachments.items.length} onClick={reset}><HugeiconsIcon icon={BubbleChatAddIcon} size={18} strokeWidth={1.7} aria-hidden="true" /><span>Nuova chat</span></button>
         </div>
       </header>
 
@@ -333,7 +333,7 @@ export function AssistantChat() {
                     </div></>}
                   </div>
                   <div className={styles.assistantMessage} data-assistant-reply aria-live={loading && !turn.response ? "off" : "polite"} aria-busy={!turn.response && !turn.stopped}>
-                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span>DVNS</span><small>AI</small></div>
+                    <div className={styles.replyIdentity}><Image src="/brand/dvns-mark-transparent.png" alt="" width={22} height={26} /><span>DVNS</span><small>risposta generata con AI</small></div>
                     {turn.contextReduced ? <p className={styles.contextNotice}>I nuovi allegati superano il limite del contesto: i file dei messaggi più vecchi non sono inclusi in questa risposta. Per confrontarli, riallega insieme i file utili (massimo 3).</p> : null}
                     <AssistantActivity activities={turn.activities ?? []} active={loading && !turn.response && !turn.stopped} stopped={turn.stopped || turn.response?.ok === false} startedAt={turn.startedAt} finishedAt={turn.finishedAt} />
                     {turn.response ? <AssistantAiReply response={turn.response} showNewTabHint={turn.id === firstLinkedTurn} /> : turn.partial ? <div className={styles.aiText} data-streaming={!turn.stopped}><AssistantMarkdown text={turn.partial} streaming />{turn.stopped ? <p className={styles.status}>Risposta interrotta.</p> : null}</div> : !turn.stopped && turn.activities?.some((item) => item.id === "attachments" || item.id.startsWith("query-")) ? null : <p className={styles.status}>{turn.stopped ? "Ricerca interrotta." : <><span className={styles.workingDot} />Preparo la ricerca…</>}</p>}
@@ -353,7 +353,7 @@ export function AssistantChat() {
         </div>}
 
         <div className={styles.composerArea} ref={composerArea}>
-          {hasConversation && awayFromBottom ? <button type="button" className={styles.jumpLatest} aria-label="Vai all’ultimo messaggio" title="Vai all’ultimo messaggio" onClick={() => { followBottom.current = true; setAwayFromBottom(false); scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}><HugeiconsIcon icon={ArrowDown01Icon} size={16} aria-hidden="true" /><span>Ultimo messaggio</span></button> : null}
+          {hasConversation && awayFromBottom ? <button type="button" className={styles.jumpLatest} aria-label="Vai in fondo alla conversazione" title="Vai in fondo alla conversazione" onClick={() => { followBottom.current = true; setAwayFromBottom(false); scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" }); }}><HugeiconsIcon icon={ArrowDown01Icon} size={16} aria-hidden="true" /><span>Vai in fondo</span></button> : null}
           <div className={styles.composerAnchor} ref={composer}>
             {menu && menu !== "add" ? <div className={styles.optionMenu} id="assistant-options" role="listbox" aria-label={menu === "sources" ? "Domande dalle fonti" : "Scorciatoie"}>
               <p>{menu === "sources" ? "Scegli una domanda dalla fonte" : "Inizia da una domanda"}</p>

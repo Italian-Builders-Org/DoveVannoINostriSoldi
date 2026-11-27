@@ -28,6 +28,8 @@
   --color-neutral-100: #f6f8fa;
   --color-neutral-200: #e5eaf0;
   --color-neutral-300: #c5cfd8;
+  /* Hairlines between cells of one card (stat strips). */
+  --color-divider: #e5eaf0;
   --color-neutral-400: #71808e;
   --color-neutral-500: #657786;
   --color-neutral-600: #536474;
@@ -198,6 +200,8 @@
   --color-neutral-100: #1d1b1b;
   --color-neutral-200: #272424;
   --color-neutral-300: #373333;
+  /* neutral-200 is 1.03:1 on raised cards here; dividers need 1.5:1. */
+  --color-divider: #474343;
   --color-neutral-400: #7e858d;
   --color-neutral-500: #939ba3;
   --color-neutral-600: #9f9898;

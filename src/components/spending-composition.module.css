@@ -61,8 +61,8 @@
   overflow-wrap: anywhere;
 }
 .tileIndex {
-  display: grid;
-  place-items: center;
+  display: block;
+  text-align: center;
   width: auto;
   height: auto;
   font-family: var(--font-heading);
@@ -70,11 +70,17 @@
   font-weight: 650;
   line-height: 1;
 }
-/* Small tiles retain an index to the full label in the legend. */
+/* Small tiles retain an index to the full label in the legend, plus the
+   share ("4 · 4,0%") when the tile is wide enough to hold it. */
 .tile[data-label-mode="index"] {
   place-items: center;
   align-content: center;
   padding: 0;
+  container-type: inline-size;
+}
+.tileShare { white-space: nowrap; }
+@container (max-width: 64px) {
+  .tileShare { display: none; }
 }
 /* Real spending (services, investment) takes the petrol data ramp used by the
    bars and the map on the same page; accounting flows (partite di giro,
@@ -82,9 +88,12 @@
    text at AA in both themes (tests/institutional-ui-palette.test.mjs). */
 .services { background: var(--chart-map-2); }
 .investment { background: var(--chart-map-1); }
-.pass-through { background: color-mix(in srgb, var(--color-text) 34%, var(--color-raised)); }
-.financing { background: color-mix(in srgb, var(--color-text) 12%, var(--color-raised)); }
-.other { background: color-mix(in srgb, var(--color-text) 30%, var(--color-raised)); }
+/* Three clearly separate greys (light 14/24/36% ink): tiles 3, 4 and 5
+   share edges, so each pair keeps at least 1.25:1 between them and tile 4
+   at least 1.3:1 against the card. */
+.pass-through { background: color-mix(in srgb, var(--color-text) 36%, var(--color-raised)); }
+.financing { background: color-mix(in srgb, var(--color-text) 14%, var(--color-raised)); }
+.other { background: color-mix(in srgb, var(--color-text) 24%, var(--color-raised)); }
 
 /* Single column in the home rail (~360px); two columns only when the
    composition surface itself is wide enough for readable labels. */
@@ -102,7 +111,7 @@
 .legend li { min-width: 0; }
 .legend button {
   display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) auto;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
   align-items: start;
   gap: var(--space-2);
   width: 100%;
@@ -120,11 +129,12 @@
 .legend button[data-active="true"],
 .legend button[aria-pressed="true"] { border-color: var(--color-neutral-400); background: var(--color-neutral-100); }
 .legendSwatch {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   align-self: center;
   margin-block: 2px;
-  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  /* A visible edge so the lightest swatch never reads as empty. */
+  border: 1px solid color-mix(in srgb, var(--color-text) 45%, transparent);
 }
 /* Flex stack avoids Safari collapsing blockified phrasing inside <button>. */
 .legendCopy {

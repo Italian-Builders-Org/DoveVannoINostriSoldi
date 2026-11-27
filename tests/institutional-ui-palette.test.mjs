@@ -124,7 +124,12 @@ test("composition tiles use the petrol data ramp and neutral steps, readable and
     const ordered = Object.values(resolved);
     assert.equal(new Set(ordered).size, ordered.length, `${theme}: two families share a fill`);
     for (let index = 1; index < ordered.length; index++) {
-      assert.ok(contrast(ordered[index], ordered[index - 1]) >= 1.15, `${theme}: families ${index} and ${index + 1} too close`);
+      assert.ok(contrast(ordered[index], ordered[index - 1]) >= 1.2, `${theme}: families ${index} and ${index + 1} too close`);
     }
+    // Regression: partite di giro (34%) and altre uscite (30%) share an edge
+    // in the treemap and read as one grey; prestiti (12%) was a near-white
+    // swatch on the white card.
+    assert.ok(contrast(resolved["pass-through"], resolved.other) >= 1.25, `${theme}: tiles 3 and 5 read as one grey`);
+    assert.ok(contrast(resolved.financing, value(tokens, "--color-raised")) >= 1.3, `${theme}: tile 4 vanishes into the card`);
   }
 });

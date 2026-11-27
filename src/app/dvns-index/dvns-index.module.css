@@ -230,8 +230,10 @@
 .methodDetails > summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; list-style: none; cursor: pointer; }
 .methodDetails > summary::-webkit-details-marker { display: none; }
 .methodDetails > summary h2 { margin: 0; }
-.methodHint::after { content: "Apri il metodo ▾"; color: var(--color-accent); font-size: 14px; font-weight: 600; white-space: nowrap; }
-.methodDetails[open] .methodHint::after { content: "Chiudi il metodo ▴"; }
+.methodHint::after { content: "Apri il metodo"; color: var(--color-accent); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.methodDetails[open] .methodHint::after { content: "Chiudi il metodo"; }
+/* The shared summary chevron follows the hint, in the hint's colour. */
+.methodDetails > summary::after { margin-left: -6px; color: var(--color-accent); }
 .methodDetails > summary:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
 .methodDetails[open] > summary { margin-bottom: 16px; }
 

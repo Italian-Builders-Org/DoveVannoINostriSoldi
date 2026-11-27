@@ -162,19 +162,23 @@
   display: none;
 }
 
+/* Leading chevron-right (the icon set's glyph) turning down when open;
+   it replaces the shared trailing summary chevron. */
 .register summary::before {
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
-  border-right: 2px solid var(--color-neutral-700);
-  border-bottom: 2px solid var(--color-neutral-700);
+  background-color: var(--color-neutral-700);
+  -webkit-mask: var(--glyph-chevron-right) center / contain no-repeat;
+  mask: var(--glyph-chevron-right) center / contain no-repeat;
   content: "";
-  transform: rotate(-45deg);
-  transition: transform 140ms var(--ease-out);
+  transition: transform 200ms var(--ease-out);
 }
 
+.register summary::after { content: none; }
+
 .register[open] summary::before {
-  transform: rotate(45deg);
+  transform: rotate(90deg);
 }
 
 .register summary > span {

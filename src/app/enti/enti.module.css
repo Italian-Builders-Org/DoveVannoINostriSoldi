@@ -169,18 +169,8 @@
   color: var(--color-text);
 }
 .typeGroup > summary::-webkit-details-marker { display: none; }
-.typeGroup > summary::after {
-  content: "";
-  flex: none;
-  width: 8px;
-  height: 8px;
-  margin-left: var(--space-2);
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: translateY(-2px) rotate(45deg);
-  transition: transform 160ms var(--ease-out, ease-out);
-}
-.typeGroup[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+/* The chevron is the shared summary marker (globals.css). */
+.typeGroup > summary::after { margin-left: var(--space-2); }
 @media (hover: hover) and (pointer: fine) {
   .typeGroup > summary:hover { background: var(--color-neutral-100); }
 }
@@ -200,14 +190,31 @@
   list-style: none;
 }
 .entityList li { border-top: 1px solid var(--color-neutral-200); min-width: 0; }
+/* Each row is a link: name and code on the left, a chevron on the right,
+   and a background on hover/press so the whole row reads as one target. */
 .entityList a {
-  display: grid;
-  gap: 2px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   min-height: 44px;
   padding: 8px var(--space-1);
   color: var(--color-text);
   text-decoration: none;
+  transition: background-color 140ms ease;
 }
+.entityText {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.rowChevron {
+  flex: none;
+  color: var(--color-neutral-500);
+  transition: transform 160ms var(--ease-out, ease-out), color 140ms ease;
+}
+.entityList a:active { background: var(--color-neutral-200); }
+.entityList a:focus-visible .rowChevron { color: var(--color-text); }
 .entityName {
   font-size: 13px;
   font-weight: 600;
@@ -219,12 +226,55 @@
 }
 .entityList a:focus-visible .entityName { text-decoration-color: currentColor; }
 @media (hover: hover) and (pointer: fine) {
+  .entityList a:hover { background: var(--color-neutral-100); }
   .entityList a:hover .entityName { text-decoration-color: currentColor; }
+  .entityList a:hover .rowChevron { color: var(--color-text); transform: translateX(2px); }
+}
+
+/* Central administrations: six rows, then the rest behind "Mostra tutti" on
+   phones, so seventeen ministries do not fill five screens. From 621px the
+   rest is always shown and the toggle is hidden, where ::details-content can
+   be styled; older browsers keep the working toggle. */
+.moreEntities > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-1);
+  border-top: 1px solid var(--color-neutral-200);
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent-700);
+}
+.moreEntities > summary::-webkit-details-marker { display: none; }
+.moreEntities > summary:active { background: var(--color-neutral-200); }
+.moreOpen,
+.moreEntities[open] .moreClosed { display: none; }
+.moreEntities[open] .moreOpen { display: inline; }
+.moreChevron { transition: transform 160ms var(--ease-out, ease-out); }
+.moreEntities[open] .moreChevron { transform: rotate(180deg); }
+.moreEntities > .entityList { padding-top: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .moreEntities > summary:hover { background: var(--color-neutral-100); }
+}
+/* The first list keeps its bottom padding only when nothing follows it. */
+.entityList:has(+ .moreEntities) { padding-bottom: 0; }
+@supports selector(::details-content) {
+  @media (min-width: 621px) {
+    .moreEntities > summary { display: none; }
+    .moreEntities::details-content {
+      content-visibility: visible;
+      display: contents;
+    }
+  }
 }
 .entityList .code { font-size: 11px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .typeGroup > summary::after { transition: none; }
+  .rowChevron,
+  .moreChevron { transition: none; }
 }
 
 /* The type is a table column on wide screens and a chip under the name on
@@ -239,16 +289,16 @@
 
 @media (max-width: 760px) {
   .fiveUp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fiveUp > div { border-right: 1px solid var(--color-neutral-200); }
+  .fiveUp > div { border-right: 1px solid var(--color-divider); }
   .fiveUp > div:nth-child(2n) { border-right: 0; }
-  .fiveUp > div:not(:last-child) { border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp > div:not(:last-child) { border-bottom: 1px solid var(--color-divider); }
 }
 
 @media (max-width: 620px) {
   /* Two columns instead of a five-tile tower; the odd tile spans the row.
      Doubled class beats the global single-column .stat-strip rule. */
   .fiveUp.fiveUp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fiveUp.fiveUp > div { border-right: 1px solid var(--color-neutral-200); border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp.fiveUp > div { border-right: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); }
   .fiveUp.fiveUp > div:nth-child(2n) { border-right: 0; }
   .fiveUp.fiveUp > div:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
   .entities .typeCell { display: none; }

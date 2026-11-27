@@ -252,7 +252,13 @@ export function SpendingComposition({
                   <b>{item.shortLabel ?? item.label}</b>
                   <strong>{percent(share(item))}</strong>
                 </span>
-              ) : <span className={styles.tileIndex}>{index + 1}</span>}
+              ) : (
+                // The share follows the number when the tile is wide enough
+                // (container query on the tile); otherwise the legend has it.
+                <span className={styles.tileIndex}>
+                  {index + 1}<span className={styles.tileShare}>{" · "}{percent(share(item))}</span>
+                </span>
+              )}
             </button>
           );
         })}

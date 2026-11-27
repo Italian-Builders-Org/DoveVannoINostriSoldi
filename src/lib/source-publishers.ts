@@ -176,3 +176,28 @@ export function publisherAnchor(name: string): string {
 export function plainRangeLabel(label: string): string {
   return label.replace(/(\S)[–—](?=\S)/g, "$1-");
 }
+
+/**
+ * Display form of a source description next to its "Periodo coperto" cell:
+ * a year range that is its own clause (", 2014-2024;") and equals the
+ * covered period is dropped, so the years are not read twice in one row.
+ * The registry text, also served to MCP, is unchanged.
+ */
+export function coverageWithoutPeriod(coverage: string, period: string | null): string {
+  const plain = plainRangeLabel(coverage);
+  if (!period || !/^\d{4}-\d{4}$/.test(period)) return plain;
+  const range = period.replace("-", "[-–—]");
+  const stripped = plain.replace(new RegExp(`,\\s*${range}(?=[;:.]|$)`), "");
+  return stripped.trim() ? stripped : plain;
+}
+
+/**
+ * The cadence shared by every source of a theme sub-group, shown once in the
+ * sub-group heading instead of on each row; null when the rows differ or the
+ * group is too small to be a sub-group.
+ */
+export function sharedCadence(entries: readonly { source: { cadence: string } }[]): string | null {
+  if (entries.length < 2) return null;
+  const [first, ...rest] = entries.map((entry) => entry.source.cadence);
+  return rest.every((cadence) => cadence === first) ? first : null;
+}

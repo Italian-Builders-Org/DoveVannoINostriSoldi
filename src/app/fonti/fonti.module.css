@@ -8,9 +8,10 @@
 .sources th[scope="row"],
 .sources thead th:first-child { min-width: 240px; }
 /* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
-.sources td:nth-child(3) { min-width: 140px; }
+.sources td.cadence,
+.sources td.clusterCadence { min-width: 140px; }
 /* The description is the column people read; the period column may wrap. */
-.sources td:nth-child(2) { min-width: 280px; }
+.sources td.coverageCell { min-width: 280px; }
 .sources td.latest { white-space: normal; min-width: 110px; }
 
 /* One row group per publisher: a small heading row instead of a
@@ -37,6 +38,15 @@
   font-size: 13px;
   font-weight: 650;
   text-align: left;
+  background: transparent;
+}
+/* The cadence shared by a whole theme, aligned with the cadence column. */
+.sources .clusterRow td {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-neutral-300);
+  color: var(--color-neutral-700);
+  font-size: 13px;
   background: transparent;
 }
 /* Jump targets clear the sticky announcement + header. */
@@ -83,8 +93,19 @@
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
+  /* A text toggle, not the shared summary chevron (globals.css): drop its
+     mask, size and rotation. */
+  width: auto;
+  height: auto;
+  margin-left: 0;
+  vertical-align: baseline;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  transform: none;
+  transition: none;
 }
-.coverage[open] summary::after { content: "Riduci" / ""; }
+.coverage[open] summary::after { content: "Riduci" / ""; transform: none; }
 
 /* Under 640px five columns cannot fit, so each row becomes a card: the name
    on top, then one labelled line per column. The column headings stay in the
@@ -176,23 +197,31 @@
   }
   .sources th[scope="row"] small { margin: 0 0 var(--space-2); }
 
-  .sources td {
-    display: grid;
-    grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr);
-    gap: var(--space-2);
-    padding-block: 4px;
+  /* Card body: the description, then period and cadence as one muted line
+     of text ("2014-2024 · Annuale"). No visual labels: the column headers
+     stay in the accessibility tree, and the values read plainly in context. */
+  .sources td.coverageCell {
+    margin-bottom: var(--space-2);
     overflow-wrap: anywhere;
   }
-  .sources td::before {
-    content: attr(data-label);
-    /* Empty alt text: the column header already names the cell for
-       assistive technology, so the visual label is not read twice. */
-    content: attr(data-label) / "";
-    font-size: 11px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
+  .sources td.latest,
+  .sources td.cadence {
+    display: inline;
     color: var(--color-neutral-600);
+    font-size: 13px;
   }
+  .sources td.cadence:not(:empty)::before {
+    content: "\00b7" / "";
+    margin-inline: 6px;
+  }
+  .sources .clusterRow td {
+    padding: 2px 0 var(--space-1);
+    border-bottom: 1px solid var(--color-neutral-300);
+  }
+  .sources .clusterRow th { border-bottom: 0; }
+  /* The first publisher heading follows the panel edge directly. */
+  .sources tbody:first-of-type .groupRow,
+  .sources tbody:first-of-type .groupRow th { padding-top: 0; }
   .sources .latest { white-space: normal; }
 }
 

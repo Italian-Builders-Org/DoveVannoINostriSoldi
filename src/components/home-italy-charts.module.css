@@ -241,12 +241,14 @@
   /* Name, "?" and share on the title row; the bar takes the full row width
      underneath, so a 42% share is drawn at 42% of the card, not of 60%. */
   .bars { gap: var(--space-3); }
+  /* The "?" sits right after the name, away from the share and chevron:
+     its 44px target never touches the row link's chevron end. */
   .bars li {
-    grid-template-columns: minmax(0, 1fr) 44px 3.4rem 16px;
+    grid-template-columns: minmax(0, max-content) 44px minmax(8px, 1fr) 3.4rem 16px;
     grid-template-areas:
-      "copy info share chevron"
-      "bar bar bar bar";
-    column-gap: 8px;
+      "copy info . share chevron"
+      "bar bar bar bar bar";
+    column-gap: 4px;
   }
 
   .barCopy { grid-area: copy; }

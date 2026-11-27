@@ -8,6 +8,10 @@ import { compactEuro, exactEuro, fromJanuaryTo, integer, longDate, percent } fro
 import { EconomyPreviews, InstitutionsPreview } from "./home-data-previews";
 import styles from "./home-pathways.module.css";
 
+function sentenceCase(text: string): string {
+  return text.charAt(0).toLocaleUpperCase("it-IT") + text.slice(1);
+}
+
 function Arrow() {
   return <Icon name="chevron-right" data-link-arrow="true" size={18} />;
 }
@@ -22,7 +26,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
       <section id="spesa-pubblica" className={styles.feature} aria-labelledby="spesa-pubblica-title">
         <div className={styles.copy}>
           <h2 id="spesa-pubblica-title">Spesa pubblica</h2>
-          <p>La spesa delle amministrazioni pubbliche per sanità, istruzione, pensioni e altri servizi. Bilancio dello Stato e pagamenti comunali hanno viste dedicate.</p>
+          <p>La spesa delle amministrazioni pubbliche per sanità, istruzione, pensioni e altri servizi.</p>
           <Link prefetch={false} href="/spese/panoramica" className={styles.primaryLink}>Esplora la spesa <Arrow /></Link>
           <div className={styles.related}>
             <Link prefetch={false} href="/spese">Pagamenti comunali</Link>
@@ -70,7 +74,7 @@ export function HomePathways({ funnel, siope, children }: Readonly<{
               <strong>{integer(siope.coverage.withMovements)}</strong>
               <span className={styles.smallLabel}>Pagamenti per abitante</span>
               <strong>{siope.nationalPerCapita === null ? "Non disponibile" : exactEuro(siope.nationalPerCapita)}</strong>
-              <p>Periodo: {fromJanuaryTo(siope.latestMonthLabel)} {siope.year}. {partialMonth(siope) !== null ? "Periodo parziale." : ""}</p>
+              <p>{sentenceCase(fromJanuaryTo(siope.latestMonthLabel))} {siope.year}{partialMonth(siope) !== null ? " (parziale)" : ""}.</p>
             </div>
           </div>
           <p className={styles.source}>Cassa dei Comuni, distinta dalla spesa PA.<br /><a href={siope.source.siopeMovementsUrl} target="_blank" rel="noreferrer">SIOPE · RGS / Banca d’Italia</a> · verificato {longDate(siope.source.observedAt)}</p>

@@ -8,9 +8,11 @@ import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
 import {
   clusterPublisherSources,
+  coverageWithoutPeriod,
   groupSourcesByPublisher,
   plainRangeLabel,
   publisherAnchor,
+  sharedCadence,
   subtitleRepeatsTitle,
 } from "@/lib/source-publishers";
 import { publicSources, sourceCounts } from "@/lib/sources";
@@ -31,7 +33,8 @@ const publisherGroups = groupSourcesByPublisher(publicSources).map((group) => ({
 
 type SourceEntry = (typeof publisherGroups)[number]["sources"][number];
 
-// What the "Periodo coperto" column shows. Dates are the reference date of
+// What the "Periodo coperto" column shows. It comes before the cadence so a
+// phone card reads "2014-2024 · Annuale" as one line in source order. Dates are the reference date of
 // the latest data ("al ..."); periods are shown as published, with plain
 // hyphens in ranges; null means the adapter finds the latest release itself.
 function coveredPeriod(slug: string): string {
@@ -48,11 +51,23 @@ function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): s
   return [area, detail].filter(Boolean).join(" · ") || null;
 }
 
-function SourceRow({ entry, inCluster }: { entry: SourceEntry; inCluster: boolean }) {
+// `cadenceInHeading`: the theme sub-group heading already states the cadence
+// shared by all its rows, so the row leaves that cell empty.
+function SourceRow({
+  entry,
+  inCluster,
+  cadenceInHeading = false,
+}: {
+  entry: SourceEntry;
+  inCluster: boolean;
+  cadenceInHeading?: boolean;
+}) {
   const { source, title } = entry;
   const note = subtitle(entry, inCluster);
+  const period = coveredPeriod(source.slug);
+  const coverage = coverageWithoutPeriod(source.coverage, period);
   return (
-    <tr id={source.slug} role="row">
+    <tr id={source.slug} role="row" className={styles.sourceRow}>
       <th scope="row" role="rowheader">
         <a
           href={source.url}
@@ -64,18 +79,18 @@ function SourceRow({ entry, inCluster }: { entry: SourceEntry; inCluster: boolea
         </a>
         {note ? <small>{note}</small> : null}
       </th>
-      <td role="cell" data-label="Cosa contiene">
-        {source.coverage.length > LONG_COVERAGE ? (
+      <td role="cell" className={styles.coverageCell}>
+        {coverage.length > LONG_COVERAGE ? (
           <details className={styles.coverage}>
             <summary>
-              <span>{plainRangeLabel(source.coverage)}</span>
+              <span>{coverage}</span>
             </summary>
           </details>
-        ) : plainRangeLabel(source.coverage)}
+        ) : coverage}
       </td>
-      <td role="cell" data-label="Ogni quanto esce">{plainRangeLabel(source.cadence)}</td>
-      <td role="cell" data-label="Periodo coperto" className={styles.latest}>
-        {coveredPeriod(source.slug)}
+      <td role="cell" className={styles.latest}>{period}</td>
+      <td role="cell" className={styles.cadence}>
+        {cadenceInHeading ? null : plainRangeLabel(source.cadence)}
       </td>
     </tr>
   );
@@ -96,8 +111,8 @@ export default function SourcesPage() {
           register down. Hidden from 640px, where the table is easy to scan. */}
       <details className={styles.publisherIndex}>
         <summary>
+          {/* The publisher count is in the sentence above. */}
           Vai a un ente pubblicatore
-          <span>{publisherGroups.length}</span>
         </summary>
         <nav aria-label="Enti pubblicatori">
           <ul>
@@ -126,8 +141,8 @@ export default function SourcesPage() {
               <tr role="row">
                 <th scope="col" role="columnheader">Fonte</th>
                 <th scope="col" role="columnheader">Cosa contiene</th>
-                <th scope="col" role="columnheader">Ogni quanto esce</th>
                 <th scope="col" role="columnheader">Periodo coperto</th>
+                <th scope="col" role="columnheader">Ogni quanto esce</th>
               </tr>
             </thead>
             {publisherGroups.map((group) => (
@@ -140,23 +155,30 @@ export default function SourcesPage() {
                     </span>
                   </th>
                 </tr>
-                {group.items.map((item) =>
-                  item.kind === "source" ? (
-                    <SourceRow key={item.entry.source.slug} entry={item.entry} inCluster={false} />
-                  ) : (
+                {group.items.map((item) => {
+                  if (item.kind === "source") {
+                    return <SourceRow key={item.entry.source.slug} entry={item.entry} inCluster={false} />;
+                  }
+                  // A cadence common to the whole theme (the eleven BES rows)
+                  // sits once in the heading row, under the cadence column.
+                  const cadence = sharedCadence(item.entries);
+                  return (
                     <Fragment key={`cluster-${item.label}`}>
                       <tr role="row" className={styles.clusterRow}>
-                        <th scope="colgroup" colSpan={4} role="columnheader">
+                        <th scope="colgroup" colSpan={cadence ? 3 : 4} role="columnheader">
                           {item.label}
                           <span className={styles.groupCount}>{item.entries.length} fonti</span>
                         </th>
+                        {cadence ? (
+                          <td role="cell" className={styles.clusterCadence}>{plainRangeLabel(cadence)}</td>
+                        ) : null}
                       </tr>
                       {item.entries.map((entry) => (
-                        <SourceRow key={entry.source.slug} entry={entry} inCluster />
+                        <SourceRow key={entry.source.slug} entry={entry} inCluster cadenceInHeading={cadence !== null} />
                       ))}
                     </Fragment>
-                  ),
-                )}
+                  );
+                })}
               </tbody>
             ))}
           </table>
@@ -228,7 +250,7 @@ export default function SourcesPage() {
         <p>
           Il modulo mostra soltanto aggregati regionali: sezioni ATECO 2025 per le fonti
           camerali, macro-settori ATECO 2007 agg. 2022 per il fatturato ISTAT. Non nomi di
-          aziende, identificativi o fatturato individuale. <Link href="/imprese">Apri Atlante Imprese →</Link>
+          aziende, identificativi o fatturato individuale. <Link className="link-arrow" href="/imprese">Apri Atlante Imprese</Link>
         </p>
       </section>
 
@@ -251,9 +273,9 @@ export default function SourcesPage() {
         <p>
           Se la fonte pubblica i dati una volta al mese, non sono in tempo reale. Mostriamo ultimo
           periodo, ultimo controllo e prossimo aggiornamento atteso.{" "}
-          <Link href="/fonti/calendario">Calendario documenti →</Link> ·{" "}
-          <Link href="/fonti/stato">Stato delle fonti →</Link> ·{" "}
-          <Link href="/metodologia">Metodo →</Link>
+          <Link className="link-arrow" href="/fonti/calendario">Calendario documenti</Link> ·{" "}
+          <Link className="link-arrow" href="/fonti/stato">Stato delle fonti</Link> ·{" "}
+          <Link className="link-arrow" href="/metodologia">Metodo</Link>
         </p>
       </div>
     </main>

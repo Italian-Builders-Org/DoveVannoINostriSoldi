@@ -185,8 +185,6 @@ table .linkButton { min-height: 0; }
 .typePicker { position: relative; }
 .typePicker > summary { list-style: none; width: fit-content; }
 .typePicker > summary::-webkit-details-marker { display: none; }
-.typePicker > summary::after { content: "▾"; margin-left: var(--space-2); }
-.typePicker[open] > summary::after { content: "▴"; }
 /* Floats over the ranking: the controls keep their height when the list opens. */
 .typePanel {
   position: absolute;

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
 import { RegistryTypeChart } from "@/components/charts/registry-type-chart";
-import { displayEntityName } from "@/lib/entity-display-name";
+import { displayCompanyName, displayEntityName } from "@/lib/entity-display-name";
 import { integer, longDate } from "@/lib/format";
 import { mefParticipationsSnapshot as participations } from "@/lib/mef-participations-snapshot";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
@@ -61,6 +61,27 @@ const SIOPE_TYPE_GROUPS: ReadonlyArray<{
   { type: "ASL", label: "Aziende sanitarie", singular: "Azienda sanitaria locale" },
 ];
 
+// One row of an entity list: the whole row is the link to the entity page,
+// with a trailing chevron so it reads as navigable, not as a static name.
+function EntityRow({ code, name, meta }: { code: string; name: string; meta?: string }) {
+  return (
+    <Link prefetch={false} href={`/enti/${encodeURIComponent(code)}`}>
+      <span className={styles.entityText}>
+        <span className={styles.entityName}>{name}</span>
+        <small className={styles.code}>
+          IPA <code>{code}</code>
+          {meta ? ` · ${meta}` : ""}
+        </small>
+      </span>
+      <Icon name="chevron-right" size={18} className={styles.rowChevron} />
+    </Link>
+  );
+}
+
+// Rows shown before "Mostra tutti" on phones; on wider screens the rest are
+// shown too (enti.module.css), so the full list is one grid.
+const CENTRAL_VISIBLE_ON_PHONES = 6;
+
 function SiopeEntityList({
   entities,
   singular,
@@ -74,13 +95,11 @@ function SiopeEntityList({
         const type = getSiopeNonMunicipalTypeLabel(entity);
         return (
           <li key={entity.codiceIpa}>
-            <Link prefetch={false} href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
-              <span className={styles.entityName}>{displayEntityName(entity.entityName)}</span>
-              <small className={styles.code}>
-                IPA <code>{entity.codiceIpa}</code>
-                {type !== singular ? ` · ${type}` : ""}
-              </small>
-            </Link>
+            <EntityRow
+              code={entity.codiceIpa}
+              name={displayEntityName(entity.entityName)}
+              meta={type !== singular ? type : undefined}
+            />
           </li>
         );
       })}
@@ -166,15 +185,17 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
       <div className={`stat-strip ${styles.fiveUp}`}>
         <div>
-          {/* Registry count, not the "Comuni con movimenti" shown elsewhere:
-              the note gives both so the two figures reconcile. */}
-          <span className="stat-label">Comuni attivi in SIOPE</span>
+          {/* The value is the SIOPE registry count (activeSiopeMunicipalities);
+              withMovements counts the Comuni with at least one payment in the
+              payments snapshot for the year, so the label must not say
+              "attivi" and the note gives the second figure. */}
+          <span className="stat-label">Comuni in SIOPE</span>
           <span className="stat-value">
             {integer(siopeMunicipalSnapshot.coverage.activeSiopeMunicipalities)}
           </span>
           <span className="stat-note">
-            nell’anagrafica · {integer(siopeMunicipalSnapshot.coverage.withMovements)} con
-            movimenti nel {siopeMunicipalSnapshot.year}
+            {integer(siopeMunicipalSnapshot.coverage.withMovements)} con pagamenti nel{" "}
+            {siopeMunicipalSnapshot.year}
           </span>
         </div>
         <div>
@@ -342,15 +363,30 @@ export default async function EntiPage({ searchParams }: PageProps) {
           {/* Every record here is IPA category C1, so the category is said once
               in the heading line instead of as a chip on each row. */}
           <ul className={styles.entityList} aria-label="Amministrazioni centrali">
-            {centralAdministrations.records.map((entity) => (
+            {centralAdministrations.records.slice(0, CENTRAL_VISIBLE_ON_PHONES).map((entity) => (
               <li key={entity.codiceIpa}>
-                <Link prefetch={false} href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
-                  <span className={styles.entityName}>{displayEntityName(entity.denominazione)}</span>
-                  <small className={styles.code}>IPA <code>{entity.codiceIpa}</code></small>
-                </Link>
+                <EntityRow code={entity.codiceIpa} name={displayEntityName(entity.denominazione)} />
               </li>
             ))}
           </ul>
+          {centralAdministrations.records.length > CENTRAL_VISIBLE_ON_PHONES ? (
+            <details className={styles.moreEntities}>
+              <summary>
+                <span className={styles.moreClosed}>
+                  Mostra tutti ({integer(centralAdministrations.records.length)})
+                </span>
+                <span className={styles.moreOpen}>Riduci</span>
+                <Icon name="chevron-down" size={16} className={styles.moreChevron} />
+              </summary>
+              <ul className={styles.entityList} aria-label="Altre amministrazioni centrali">
+                {centralAdministrations.records.slice(CENTRAL_VISIBLE_ON_PHONES).map((entity) => (
+                  <li key={entity.codiceIpa}>
+                    <EntityRow code={entity.codiceIpa} name={displayEntityName(entity.denominazione)} />
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
         </section>
       )}
 
@@ -412,7 +448,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
       <section className="panel">
         <div className={styles.resultsHead}>
           <h2 className="panel-title">Le società con più enti soci</h2>
-          <Link href="/partecipazioni">Tutte le partecipazioni →</Link>
+          <Link className="link-arrow" href="/partecipazioni">Tutte le partecipazioni</Link>
         </div>
         <div className="table-scroll" role="region" aria-label="Partecipazioni pubbliche" tabIndex={0}>
           <table className="table">
@@ -426,7 +462,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
             <tbody>
               {participations.topCompaniesByDeclaringAdministrations.map((company) => (
                 <tr key={company.taxCode}>
-                  <th scope="row">{company.name}<small className={styles.code}>CF <code>{company.taxCode}</code></small></th>
+                  <th scope="row">{displayCompanyName(company.name)}<small className={styles.code}>CF <code>{company.taxCode}</code></small></th>
                   <td className="num">{integer(company.declaringAdministrations)}</td>
                 </tr>
               ))}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/icons";
 import { integer } from "@/lib/format";
 import { paginationWindow } from "@/lib/pagination";
 import styles from "./pagination.module.css";
@@ -59,12 +60,12 @@ export default function Pagination({
               href={hrefForPage(current - 1)}
               aria-label="Pagina precedente"
             >
-              <span aria-hidden="true">←</span>
+              <Icon name="chevron-left" size={16} />
               <span className={styles.stepLabel}>Precedente</span>
             </Link>
           ) : (
             <span className={styles.step} aria-hidden="true" data-disabled="true">
-              <span>←</span>
+              <Icon name="chevron-left" size={16} />
               <span className={styles.stepLabel}>Precedente</span>
             </span>
           )}
@@ -102,12 +103,12 @@ export default function Pagination({
               aria-label="Pagina successiva"
             >
               <span className={styles.stepLabel}>Successiva</span>
-              <span aria-hidden="true">→</span>
+              <Icon name="chevron-right" size={16} />
             </Link>
           ) : (
             <span className={styles.step} aria-hidden="true" data-disabled="true">
               <span className={styles.stepLabel}>Successiva</span>
-              <span>→</span>
+              <Icon name="chevron-right" size={16} />
             </span>
           )}
         </li>

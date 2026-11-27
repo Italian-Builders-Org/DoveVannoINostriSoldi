@@ -20,6 +20,7 @@
 .anomalyValue { font-size: clamp(20px, 2vw, 26px); font-weight: 600; text-align: right; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .anomalyMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
 .anomalyMeta a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.anomalyMeta a svg { margin-left: 2px; vertical-align: -2px; }
 .anomalyCaveat, .anomalyFallback { margin: 0; padding-top: 16px; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
 @media (max-width: 620px) {
   .intro { padding-block: 28px 24px; }

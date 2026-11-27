@@ -8,6 +8,59 @@
 
 * { box-sizing: border-box; }
 
+/* CSS twins of the icon module (icon-paths.ts), used as masks where an
+   element cannot hold an <Icon>: summary markers, list-row chevrons.
+   tests/site-glyphs.test.mjs keeps the path data identical. */
+:root {
+  --glyph-chevron-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 9.5 12 15l5.5-5.5'/%3E%3C/svg%3E");
+  --glyph-chevron-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 6.5 15 12l-5.5 5.5'/%3E%3C/svg%3E");
+  --glyph-arrow-up-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7'/%3E%3Cpath d='M8.5 7H17v8.5'/%3E%3C/svg%3E");
+}
+
+/* Disclosures: every <details> shows the same chevron-down after its label,
+   turning to point up when open, instead of the UA triangle. Zero
+   specificity (:where) so module rules still set layout and colour; a summary
+   that already carries an icon keeps it as its only indicator. A module that
+   needs no chevron sets `summary::after { content: none; }`. */
+:where(details) > summary { list-style: none; cursor: pointer; }
+:where(details) > summary::-webkit-details-marker { display: none; }
+:where(details) > summary:not(:has(svg))::after {
+  content: "";
+  display: inline-block;
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  margin-left: .35em;
+  vertical-align: -.22em;
+  background-color: currentColor;
+  -webkit-mask: var(--glyph-chevron-down) center / contain no-repeat;
+  mask: var(--glyph-chevron-down) center / contain no-repeat;
+  transition: transform 200ms var(--ease-out);
+}
+:where(details[open]) > summary::after { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  :where(details) > summary:not(:has(svg))::after { transition: none; }
+}
+
+/* Inline link arrows: internal destinations end with chevron-right,
+   external ones with arrow-up-right. Same glyphs as <Icon>. */
+.link-arrow::after,
+.link-external::after {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-left: .25em;
+  vertical-align: -.15em;
+  background-color: currentColor;
+  -webkit-mask: var(--glyph-chevron-right) center / contain no-repeat;
+  mask: var(--glyph-chevron-right) center / contain no-repeat;
+}
+.link-external::after {
+  -webkit-mask-image: var(--glyph-arrow-up-right);
+  mask-image: var(--glyph-arrow-up-right);
+}
+
 html {
   scroll-behavior: smooth;
   background: var(--color-bg);
@@ -666,7 +719,7 @@ main { display: block; }
 }
 .stat-strip > div {
   padding: 16px 18px;
-  border-right: 1px solid var(--color-neutral-200);
+  border-right: 1px solid var(--color-divider);
 }
 .stat-strip > div:last-child { border-right: 0; }
 .stat-strip dt,
@@ -847,7 +900,7 @@ main { display: block; }
 @media (max-width: 900px) {
   .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stat-strip > div:nth-child(2n) { border-right: 0; }
-  .stat-strip > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-neutral-200); }
+  .stat-strip > div:nth-child(-n + 2) { border-bottom: 1px solid var(--color-divider); }
 }
 
 @media (max-width: 620px) {
@@ -860,7 +913,7 @@ main { display: block; }
   .header-action-repo { display: none; }
   .page-intro h1 { font-size: 24px; }
   .stat-strip { grid-template-columns: 1fr; }
-  .stat-strip > div { border-right: 0; border-bottom: 1px solid var(--color-neutral-200); }
+  .stat-strip > div { border-right: 0; border-bottom: 1px solid var(--color-divider); }
   .stat-strip > div:last-child { border-bottom: 0; }
   .stat-strip dd,
   .stat-strip .stat-value { font-size: 21px; }

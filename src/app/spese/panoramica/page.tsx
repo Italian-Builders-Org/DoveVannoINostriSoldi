@@ -228,7 +228,10 @@ export default async function SpendingOverviewPage({
                 className={styles.periodSelector}
               />
         </div>
+        {/* Left: totals with the monthly bars under them; right: the
+            composition. Columns of similar height, no void beside a short card. */}
         <div className={styles.italySplit}>
+          <div className={styles.columnStack}>
           <section className={`panel ${styles.italyChartPanel}`}>
             <p className={styles.freshness}>
               <i aria-hidden="true" />
@@ -258,8 +261,44 @@ export default async function SpendingOverviewPage({
                 </dd>
               </div>
             </dl>
+          </section>
+          <section className={`panel ${styles.monthsPanel}`}>
             <div className={styles.panelHead}>
-              <h3 className="panel-title">Come si compone il totale</h3>
+              <h3 className="panel-title">Mese per mese</h3>
+              <span className={styles.headNote}>miliardi di €</span>
+              <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
+                Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
+                Il mese in corso è grigio e segnato «parziale» perché può ancora cambiare.
+              </InfoTooltip>
+            </div>
+            <ul className={styles.monthList}>
+              {siope.monthly.map((point) => {
+                const running = point.month === runningMonth;
+                return (
+                  <li key={point.month}>
+                    <span>
+                      {point.label}
+                      {running ? <em className={styles.partialTag}>parziale</em> : null}
+                    </span>
+                    <i aria-hidden="true">
+                      <b
+                        className={running ? styles.running : undefined}
+                        style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
+                      />
+                    </i>
+                    <b className="num-tabular">{billions(point.flow)}</b>
+                  </li>
+                );
+              })}
+            </ul>
+            {runningMonth === null ? (
+              <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
+            ) : null}
+          </section>
+          </div>
+          <section className={`panel ${styles.italyChartPanel}`} aria-labelledby="cash-split-title">
+            <div className={styles.panelHead}>
+              <h3 id="cash-split-title" className="panel-title">Come si compone il totale</h3>
             </div>
             <SpendingComposition
               state={{
@@ -286,39 +325,6 @@ export default async function SpendingOverviewPage({
               Dettaglio delle spese
             </Link>
           </section>
-        <section className={`panel ${styles.monthsPanel}`}>
-          <div className={styles.panelHead}>
-            <h3 className="panel-title">Mese per mese</h3>
-            <span className={styles.headNote}>miliardi di €</span>
-            <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
-              Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
-              Il mese in corso è grigio e segnato «parziale» perché può ancora cambiare.
-            </InfoTooltip>
-          </div>
-          <ul className={styles.monthList}>
-            {siope.monthly.map((point) => {
-              const running = point.month === runningMonth;
-              return (
-                <li key={point.month}>
-                  <span>
-                    {point.label}
-                    {running ? <em className={styles.partialTag}>parziale</em> : null}
-                  </span>
-                  <i aria-hidden="true">
-                    <b
-                      className={running ? styles.running : undefined}
-                      style={{ width: maxFlow > 0 ? `${(point.flow / maxFlow) * 100}%` : "0%" }}
-                    />
-                  </i>
-                  <b className="num-tabular">{billions(point.flow)}</b>
-                </li>
-              );
-            })}
-          </ul>
-          {runningMonth === null ? (
-            <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
-          ) : null}
-        </section>
         </div>
       <section className={`panel ${styles.mapPanel}`} aria-labelledby="regional-map-panel-title">
         <div className={styles.mapStage}>

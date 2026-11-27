@@ -197,7 +197,8 @@ export default async function HomePage({
                     rel="noreferrer"
                     aria-label={`Fonte ${signal.source.institution}: ${signal.source.title}`}
                   >
-                    {signal.source.institution} ↗
+                    {signal.source.institution}
+                    <Icon name="arrow-up-right" size={14} />
                   </a>
                 </p>
               </article>

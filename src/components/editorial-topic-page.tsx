@@ -101,7 +101,7 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
         <section className={styles.featuredExploration} aria-labelledby="explorazione-in-evidenza">
           <h2 id="explorazione-in-evidenza">{topic.featuredExploration.title}</h2>
           <p>{topic.featuredExploration.description}</p>
-          <p><Link href={topic.featuredExploration.href}>Apri l&apos;esplorazione →</Link></p>
+          <p><Link className="link-arrow" href={topic.featuredExploration.href}>Apri l&apos;esplorazione</Link></p>
         </section>
       ) : null}
 

@@ -367,3 +367,19 @@ test("phones reach GitHub from the menu instead of a header slot", async () => {
   assert.match(navigation, /className="header-action header-action-icon header-action-repo"/);
   assert.match(globalsCss, /@media \(max-width: 620px\) \{[\s\S]*?\.header-action-repo \{ display: none; \}/);
 });
+
+test("phone breadcrumbs never leave a dangling separator at the end of a line", async () => {
+  // Regression (/enti at 390px): "Home / Enti e società /" wrapped, then
+  // "Registro enti" alone on the next line. The separator before the picker
+  // belongs to the picker, and phones keep one line, truncating the middle crumb.
+  const [component, css] = await Promise.all([
+    readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/section-nav.module.css", import.meta.url), "utf8"),
+  ]);
+  const breadcrumb = component.match(/<nav className=\{styles\.breadcrumb\}[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(breadcrumb, /trailSeparator/);
+  assert.match(component, /<nav className=\{styles\.pickerNav\}[^>]*>\s*<span className=\{styles\.trailSeparator\} aria-hidden="true">\/<\/span>/);
+  const phone = css.match(/@media \(max-width: 620px\) \{([\s\S]*?)\n\}/)[1];
+  assert.match(phone, /\.trail \{[^}]*flex-wrap: nowrap;/);
+  assert.match(phone, /\.crumbTruncate \{[^}]*text-overflow: ellipsis;/);
+});

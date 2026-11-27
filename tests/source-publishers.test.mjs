@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-import { clusterPublisherSources, groupSourcesByPublisher, plainRangeLabel, publisherAnchor, sourcePublisher, subtitleRepeatsTitle } from "../src/lib/source-publishers.ts";
+import { clusterPublisherSources, coverageWithoutPeriod, groupSourcesByPublisher, plainRangeLabel, sharedCadence, publisherAnchor, sourcePublisher, subtitleRepeatsTitle } from "../src/lib/source-publishers.ts";
 
 // Dynamic: sources.ts uses the @/ alias, registered by the helper above.
 const { publicSources } = await import("../src/lib/sources.ts");
@@ -93,4 +93,32 @@ test("period labels show year ranges with a plain hyphen, as the rest of the sit
   assert.equal(plainRangeLabel("incassi 2026 gennaio\u2013settembre"), "incassi 2026 gennaio-settembre");
   assert.equal(plainRangeLabel("2014-2024"), "2014-2024");
   assert.equal(plainRangeLabel("2005\u20132024 per territorio \u2013 dati ISTAT"), "2005-2024 per territorio \u2013 dati ISTAT");
+});
+
+// /fonti showed the same years twice per row: in "Cosa contiene" and in
+// "Periodo coperto". The registry text (also served to MCP) is unchanged;
+// only the page drops the clause the period column already states.
+test("a year range already shown as the covered period is dropped from the description", () => {
+  assert.equal(coverageWithoutPeriod("Italia, tutte le et\u00e0 e i due sessi insieme, tasso e persone in migliaia, 2015\u20132025", "2015-2025"), "Italia, tutte le et\u00e0 e i due sessi insieme, tasso e persone in migliaia");
+  assert.equal(coverageWithoutPeriod("Italia e ripartizioni, 2014\u20132024; incidenza e intensit\u00e0", "2014-2024"), "Italia e ripartizioni; incidenza e intensit\u00e0");
+  assert.equal(coverageWithoutPeriod("UE27, area euro e 30 Stati, 2014\u20132024: totale e dieci funzioni", "2014-2024"), "UE27, area euro e 30 Stati: totale e dieci funzioni");
+  // A different period, or a range that is not its own clause, stays.
+  assert.equal(coverageWithoutPeriod("Italia e ripartizioni, 2014\u20132024; incidenza", "2015-2025"), "Italia e ripartizioni, 2014-2024; incidenza");
+  assert.equal(coverageWithoutPeriod("Comuni italiani 2022\u20132026: superficie", "2022-2026"), "Comuni italiani 2022-2026: superficie");
+  assert.equal(coverageWithoutPeriod("Italia, anni di imposta 2016\u20132024 (dichiarazioni 2017\u20132025)", "2016-2024 (anni di imposta)"), "Italia, anni di imposta 2016-2024 (dichiarazioni 2017-2025)");
+  assert.equal(coverageWithoutPeriod("Italia, 2014\u20132024", null), "Italia, 2014-2024");
+  // The description is never emptied.
+  assert.equal(coverageWithoutPeriod("2014\u20132024", "2014-2024"), "2014-2024");
+});
+
+test("a cadence shared by every source of a theme is stated once", () => {
+  const entry = (cadence) => ({ source: { cadence } });
+  assert.equal(sharedCadence([entry("Annuale; usiamo l\u2019edizione 2025"), entry("Annuale; usiamo l\u2019edizione 2025"), entry("Annuale; usiamo l\u2019edizione 2025")]), "Annuale; usiamo l\u2019edizione 2025");
+  assert.equal(sharedCadence([entry("Annuale"), entry("Annuale"), entry("Mensile")]), null);
+  assert.equal(sharedCadence([entry("Annuale")]), null);
+  assert.equal(sharedCadence([]), null);
+  // The real BES theme on /fonti shares one cadence.
+  const istat = groupSourcesByPublisher(publicSources).find((group) => group.name === "ISTAT");
+  const bes = clusterPublisherSources(istat.sources).find((item) => item.kind === "cluster" && /Benessere/.test(item.label));
+  assert.ok(bes && sharedCadence(bes.entries), "BES rows share their cadence");
 });

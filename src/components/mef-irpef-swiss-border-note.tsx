@@ -15,8 +15,8 @@ export function MefIrpefSwissBorderNote({
   className?: string;
 }) {
   const sourceLink = (
-    <a href={MEF_IRPEF_SWISS_BORDER_AGREEMENT_URL} target="_blank" rel="noopener noreferrer">
-      {MEF_IRPEF_SWISS_BORDER_AGREEMENT_LABEL} ↗
+    <a className="link-external" href={MEF_IRPEF_SWISS_BORDER_AGREEMENT_URL} target="_blank" rel="noopener noreferrer">
+      {MEF_IRPEF_SWISS_BORDER_AGREEMENT_LABEL}
     </a>
   );
 

@@ -1,4 +1,5 @@
 import { MopCostComparisonChart } from "@/components/charts/mop-cost-comparison-chart";
+import { Icon } from "@/components/icons";
 import { getPublicWorksByCup, type PublicWorksLookup } from "@/lib/bdap-public-works";
 import type { PublicWork } from "@/lib/data/bdap-public-works-contract";
 import { exactEuro, integer, longDate, percent } from "@/lib/format";
@@ -135,7 +136,8 @@ export async function MopCostPanel({
             target="_blank"
             rel="noreferrer"
           >
-            Landing OpenBDAP MOP ↗
+            Landing OpenBDAP MOP
+            <Icon name="arrow-up-right" size={16} />
           </a>
         </div>
       </div>
@@ -155,7 +157,8 @@ export async function MopCostPanel({
         </p>
         <div className={styles.actions}>
           <a className="btn btn-secondary" href={mop.source.landingUrl} target="_blank" rel="noreferrer">
-            Landing ufficiale ↗
+            Landing ufficiale
+          <Icon name="arrow-up-right" size={16} />
           </a>
           <a className="btn btn-secondary" href={`/api/opere?cup=${cup}`}>
             JSON live
@@ -210,7 +213,8 @@ export async function MopCostPanel({
 
       <div className={styles.actions}>
         <a className="btn btn-secondary" href={mop.source.landingUrl} target="_blank" rel="noreferrer">
-          Landing ufficiale ↗
+          Landing ufficiale
+          <Icon name="arrow-up-right" size={16} />
         </a>
         <a className="btn btn-secondary" href={`/api/opere?cup=${cup}`}>
           JSON live

@@ -65,13 +65,15 @@ function SectionNavContent({
           <Link prefetch={false} href="/">Home</Link>
           <span aria-hidden="true">/</span>
           {section
-            ? <Link prefetch={false} href={section.href}>{section.label}</Link>
+            ? <Link prefetch={false} className={styles.crumbTruncate} href={section.href}>{section.label}</Link>
             : standalone?.href
-              ? <Link prefetch={false} href={standalone.href}>{standalone.label}</Link>
-              : <span aria-current="page">{standalone?.label}</span>}
-          {hasPicker ? <span className={styles.trailSeparator} aria-hidden="true">/</span> : null}
+              ? <Link prefetch={false} className={styles.crumbTruncate} href={standalone.href}>{standalone.label}</Link>
+              : <span className={styles.crumbTruncate} aria-current="page">{standalone?.label}</span>}
         </nav>
+        {/* The "/" before the picker travels with it, so a wrap never leaves
+            a separator dangling at the end of a line. */}
         {hasPicker ? <nav className={styles.pickerNav} aria-label={`Pagine in ${section!.label}`}>
+          <span className={styles.trailSeparator} aria-hidden="true">/</span>
           <label className={styles.label} htmlFor={selectId}>
             <span className={styles.visuallyHidden}>Vai a una pagina della sezione</span>
             <select

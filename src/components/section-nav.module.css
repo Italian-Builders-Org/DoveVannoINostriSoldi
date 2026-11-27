@@ -18,8 +18,9 @@
 }
 /* Breadcrumb and section picker read as one trail: Home / Soldi / [page ▾]. */
 .trail { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-width: 0; flex: 1 1 auto; }
-.trailSeparator { margin-left: 0; }
-.pickerNav { min-width: 0; max-width: 100%; }
+.trailSeparator { flex: none; }
+.pickerNav { display: flex; align-items: center; gap: 10px; min-width: 0; max-width: 100%; }
+.pickerNav .label { min-width: 0; }
 .shareSlot { flex: none; margin-left: auto; }
 /* Server pages with nothing worth sharing (data unavailable) opt out. */
 :global(html:has([data-share-hidden])) .shareSlot { display: none; }
@@ -96,4 +97,13 @@
   /* The manual-copy fallback (an input) needs the full row. */
   .shareSlot:has(input) { grid-column: 1 / -1; }
   .breadcrumb a { min-height: 44px; }
+  /* One line at every phone width: the middle crumb gives way first
+     ("Enti e soc…"), then the picker's own ellipsis. */
+  .trail { flex-wrap: nowrap; }
+  .breadcrumb { flex: 0 100 auto; flex-wrap: nowrap; min-width: 0; }
+  .breadcrumb > * { flex: none; }
+  /* The current page keeps its whole name while there is room for at least
+     "Home / E…" beside it; longer names take the ellipsis themselves. */
+  .pickerNav { flex: 0 0 auto; max-width: calc(100% - 7.5em); }
+  .breadcrumb > .crumbTruncate { display: block; flex: 0 1 auto; min-width: 2.5em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 44px; }
 }

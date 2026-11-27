@@ -81,6 +81,7 @@ export const ICON_PATHS = {
   close: ["M6 6l12 12M18 6 6 18"],
   "chevron-down": ["M6.5 9.5 12 15l5.5-5.5"],
   "chevron-right": ["M9.5 6.5 15 12l-5.5 5.5"],
+  "chevron-left": ["M14.5 6.5 9 12l5.5 5.5"],
   "arrow-right": ["M4.5 12h15", "M13.5 6l6 6-6 6"],
   "arrow-up-right": ["M7 17 17 7", "M8.5 7H17v8.5"],
   // iOS-style share: an arrow leaving an open box.

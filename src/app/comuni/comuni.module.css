@@ -542,8 +542,7 @@
   min-height: 52px; display: flex; align-items: center; justify-content: space-between;
   font-weight: 700; font-size: 15px;
 }
-.sourcesDetails summary::after { content: "+"; font-weight: 400; font-size: 20px; color: var(--color-neutral-600); }
-.sourcesDetails[open] summary::after { content: "−"; }
+.sourcesDetails summary::after { color: var(--color-neutral-600); }
 .sourcesDetails summary::-webkit-details-marker { display: none; }
 .sourcesDetails div { padding: 0 0 var(--space-4); color: var(--color-neutral-700); font-size: 13px; line-height: 1.6; max-width: 80ch; }
 .sourcesDetails ul { display: grid; gap: var(--space-2); margin: var(--space-3) 0; }

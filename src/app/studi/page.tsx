@@ -94,6 +94,21 @@ export default function StudiesPage() {
             </a>
           </div>
         </article>
+        <article className={styles.card} id="exit-tax">
+          <p className={styles.eyebrow}>Studio · Fisco e residenza</p>
+          <h3>
+            <Link href="/studi/exit-tax">Exit tax: quanto vale tassare chi porta la residenza all&apos;estero</Link>
+          </h3>
+          <p>
+            Cosa prevede la manovra 2027, chi riguarda, la stima del Governo rifatta passo per passo, scenari dichiarati come
+            ipotesi e il confronto con Francia, Germania, Spagna, Stati Uniti e Norvegia.
+          </p>
+          <div className={styles.actions}>
+            <Link href="/studi/exit-tax" className="btn btn-primary">
+              Leggi lo studio
+            </Link>
+          </div>
+        </article>
       </section>
 
       <section aria-labelledby="monthly-title">

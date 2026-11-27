@@ -24,6 +24,10 @@
     {
       "path": "src/data/generated/dvns-index.json",
       "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
+    },
+    {
+      "path": "src/data/generated/exit-tax.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -958,6 +962,33 @@
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/dvns-index.source.json",
       "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su byte e SHA-256 di ogni file di partenza (OpenCivitas, SIOPE, PCC, ISPRA, decreto dissesti), shard ANAC verificati contro i loro meta.json; reader fail-closed su receipt, hash e contratto delle colonne.",
+      "publication": null
+    },
+    {
+      "id": "exit-tax",
+      "owner": "Studio sull'exit tax: manovra 2027 (Camera), Corte dei conti, ISTAT espatri, conti distributivi BCE, regole di Francia, Germania, Spagna, Stati Uniti e Norvegia",
+      "files": [
+        "src/data/generated/exit-tax.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_exit_tax_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_exit_tax.py",
+        "tests/etl/test_exit_tax_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/exit-tax.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/exit_tax.py --write --code-sha SHA",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/exit-tax.source.json",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su SHA-256 di ogni documento ufficiale; ogni cifra e frase citata è verificata nel testo; reader fail-closed su stima del Governo ricalcolata, scenari marcati come ipotesi e somme ISTAT.",
       "publication": null
     },
     {

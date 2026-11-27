@@ -67,6 +67,7 @@
     "test:browser:manovra-emendamenti": "node scripts/browser/manovra-emendamenti.mjs",
     "test:browser:pa-licenze-software": "node scripts/browser/pa-licenze-software.mjs",
     "test:browser:dvns-index": "node scripts/browser/dvns-index.mjs",
+    "test:browser:exit-tax": "node scripts/browser/exit-tax.mjs",
     "test:browser:pensioni": "node scripts/browser/pensioni.mjs",
     "test:browser:incarichi-territori": "node scripts/browser/incarichi-territori.mjs",
     "test:browser:documenti": "node scripts/browser/documenti.mjs",

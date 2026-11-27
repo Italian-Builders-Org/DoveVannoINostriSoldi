@@ -114,6 +114,7 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/studi/dai-fondi-ai-posti",
   "/studi/tre-interventi-sprechi",
   "/studi/rendite-inefficienze",
+  "/studi/exit-tax",
   "/supporter",
   "/supporto",
   "/termini",

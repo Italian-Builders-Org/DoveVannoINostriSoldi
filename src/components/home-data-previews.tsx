@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getCompanyAtlasView } from "@/lib/company-atlas";
 import { getEducationAtlasView } from "@/lib/education-atlas";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
-import { integer, longDate } from "@/lib/format";
+import { integer, longDate, periodDateLabel } from "@/lib/format";
 import styles from "./home-pathways.module.css";
 
 function PreviewBars({ points, format = integer }: Readonly<{
@@ -46,7 +46,7 @@ export function EconomyPreviews() {
   const educationSource = education.sources.find((source) => source.id === "students");
   return <div className={styles.atlasPreview}>
     <section className={styles.preview} aria-labelledby="home-company-title">
-      <div className={styles.previewHeader}><h3 id="home-company-title">Imprese attive</h3><span>{companies.periodLabel}</span></div>
+      <div className={styles.previewHeader}><h3 id="home-company-title">Imprese attive</h3><span>{periodDateLabel(companies.periodLabel)}</span></div>
       <strong className={styles.mediumNumber}>{companies.nationalValue === null ? "Non disponibile" : integer(companies.nationalValue)}</strong>
       <p className={styles.metricNote}>Sedi di impresa in Italia · le tre regioni con più sedi</p>
       <PreviewBars points={companies.ranking.slice(0, 3).map((point) => ({ label: point.name, value: point.value }))} />

@@ -8,7 +8,65 @@
 .sources th[scope="row"],
 .sources thead th:first-child { min-width: 240px; }
 /* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
-.sources td:nth-child(4) { min-width: 140px; }
+.sources td:nth-child(3) { min-width: 140px; }
+/* The description is the column people read; the period column may wrap. */
+.sources td:nth-child(2) { min-width: 280px; }
+.sources td.latest { white-space: normal; min-width: 110px; }
+
+/* One row group per publisher: a small heading row instead of a
+   "Chi la pubblica" column repeating the same name on every row. */
+.sources .groupRow th {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-neutral-400);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: left;
+  background: transparent;
+}
+.groupCount {
+  margin-left: var(--space-2);
+  color: var(--color-neutral-600);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Long descriptions: two lines, then the whole text on demand. The summary
+   holds the full text, so screen readers always get all of it; the clamp is
+   visual only. */
+.coverage summary {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+}
+.coverage summary::-webkit-details-marker { display: none; }
+.coverage summary span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.coverage[open] summary span {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+}
+.coverage summary::after {
+  content: "Mostra tutto" / "";
+  display: inline-block;
+  margin-top: 2px;
+  color: var(--color-accent-700);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.coverage[open] summary::after { content: "Riduci" / ""; }
 
 /* Under 640px five columns cannot fit, so each row becomes a card: the name
    on top, then one labelled line per column. The column headings stay in the
@@ -35,6 +93,8 @@
     border-bottom: 1px solid var(--color-neutral-200);
   }
   .sources tr:last-child { border-bottom: 0; }
+  .sources .groupRow { padding-bottom: 0; }
+  .sources .groupRow th { display: block; padding-inline: 0; }
 
   .sources th[scope="row"],
   .sources td {

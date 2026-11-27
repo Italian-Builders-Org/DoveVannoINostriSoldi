@@ -21,6 +21,17 @@ export const metadata: Metadata = {
 
 const PAGE_DATA_BUDGET_MS = 5_000;
 
+// Shown under an empty search box: the most visited destinations, so the
+// page is a starting point rather than a lone input. Every href is a route.
+const SEARCH_SUGGESTIONS = [
+  { href: "/spese/panoramica", label: "Spesa pubblica" },
+  { href: "/comuni", label: "Mappa dei Comuni" },
+  { href: "/dvns-index", label: "DVNS Index" },
+  { href: "/pnrr", label: "Progetti PNRR" },
+  { href: "/enti", label: "Enti pubblici" },
+  { href: "/fonti", label: "Fonti dei dati" },
+] as const;
+
 type SearchPageProps = {
   searchParams: Promise<{ q?: string | string[] }>;
 };
@@ -75,6 +86,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             Cerca
           </button>
         </form>
+        {query.length === 0 ? (
+          <nav className={styles.suggestions} aria-labelledby="search-suggestions-title">
+            <h3 id="search-suggestions-title">Da dove iniziare</h3>
+            <ul>
+              {SEARCH_SUGGESTIONS.map((item) => (
+                <li key={item.href}>
+                  <Link prefetch={false} href={item.href}>{item.label} <Icon name="chevron-right" size={16} /></Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
       </section>
 
       {query.length > 0 && query.length < GLOBAL_SEARCH_MIN_QUERY_LENGTH ? (

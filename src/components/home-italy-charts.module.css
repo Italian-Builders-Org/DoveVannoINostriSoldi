@@ -7,12 +7,36 @@
 }
 
 .bars li {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 3.4rem;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 3.4rem 16px;
   align-items: center;
   gap: 10px 12px;
   min-width: 0;
 }
+
+/* Whole-row link: the name's link stretches over the row; the "?" trigger
+   sits above the overlay so it stays its own control. */
+.bars li[data-linked="true"] .barName a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.barCopy > [data-info-tooltip] { z-index: 1; }
+.barChevron {
+  display: grid;
+  place-items: center;
+  color: var(--color-neutral-600);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bars li[data-linked="true"]:hover { background: var(--color-neutral-100); }
+  .bars li[data-linked="true"]:hover .barChevron { color: var(--color-text); }
+}
+.bars li:has(.barName a:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.barName a:focus-visible { outline: none; }
 
 .barCopy {
   display: flex;
@@ -42,6 +66,7 @@
 
 .barName a {
   color: inherit;
+  text-decoration: none;
 }
 
 .barAmount {
@@ -222,15 +247,16 @@
 
 @media (max-width: 640px) {
   .bars li {
-    grid-template-columns: minmax(0, 1fr) 3.4rem;
+    grid-template-columns: minmax(0, 1fr) 3.4rem 16px;
     grid-template-areas:
-      "copy share"
-      "bar share";
+      "copy share chevron"
+      "bar share chevron";
   }
 
   .barCopy { grid-area: copy; }
   .bars i { grid-area: bar; }
   .bars strong { grid-area: share; align-self: center; }
+  .barChevron { grid-area: chevron; }
 
   .trendFigure { padding-inline: var(--space-3); }
   .trendPlot { --trend-plot-height: 112px; }

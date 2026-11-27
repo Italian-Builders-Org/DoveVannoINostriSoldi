@@ -26,8 +26,8 @@ export function SiteFooter() {
             <Link prefetch={false} href="/privacy">Privacy</Link>
             <Link prefetch={false} href="/termini">Termini</Link>
             <Link prefetch={false} href="/supporto">Supporto</Link>
-            <a href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="DVNS su ChatGPT (nuova scheda)"><BrandIcon name="chatgpt" size={16} /> ChatGPT</a>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)"><BrandIcon name="github" size={16} /> GitHub</a>
+            <a href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="DVNS su ChatGPT (nuova scheda)">ChatGPT</a>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)">GitHub</a>
           </nav>
         </div>
       </div>

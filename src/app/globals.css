@@ -19,6 +19,9 @@ body {
   --site-chrome-width: 1320px;
   margin: 0;
   min-height: 100vh;
+  /* Sticky footer: the content slot absorbs spare height on short pages. */
+  display: flex;
+  flex-direction: column;
   color: var(--color-text);
   background: var(--color-bg);
   font-family: var(--font-body);
@@ -138,6 +141,9 @@ nav li a { text-decoration: none; }
   line-height: 1.1;
 }
 
+/* Phones only (see the 460px query): the full name does not fit. */
+.brand-short { display: none; font-family: var(--font-heading); font-size: 16px; font-weight: 700; letter-spacing: .02em; line-height: 1; white-space: nowrap; }
+
 .header-spacer { flex: 1 1 0; min-width: 0; }
 
 .header-search-root { position: relative; width: 300px; min-width: 160px; flex: 0 1 300px; }
@@ -230,7 +236,7 @@ nav li a { text-decoration: none; }
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--color-neutral-600);
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   line-height: 1.3;
 }
 .header-search-option-type {
@@ -238,7 +244,7 @@ nav li a { text-decoration: none; }
   margin-left: auto;
   max-width: 42%;
   overflow-wrap: anywhere;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   color: var(--color-neutral-600);
   line-height: 1.3;
   text-align: end;
@@ -617,7 +623,7 @@ main { display: block; }
   border-top: 1px solid var(--color-neutral-300);
   max-width: 72ch;
   color: var(--color-neutral-600);
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   line-height: 1.55;
 }
 .footer-disclaimer a { color: var(--color-neutral-700); text-decoration: underline; text-underline-offset: 0.12em; }
@@ -666,7 +672,7 @@ main { display: block; }
 .stat-strip dt,
 .stat-strip .stat-label {
   display: block;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   letter-spacing: .07em;
   text-transform: uppercase;
   color: var(--color-neutral-600);
@@ -691,7 +697,7 @@ main { display: block; }
 .status {
   display: inline-block;
   padding: 3px 9px;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   white-space: nowrap;
   border: 1px solid transparent;
 }
@@ -719,7 +725,7 @@ main { display: block; }
 .notice > strong {
   display: block;
   font-family: var(--font-heading);
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   font-weight: var(--font-heading-weight);
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -764,6 +770,13 @@ main { display: block; }
   border-top: 1px solid var(--color-neutral-200);
 }
 .warning-notice { border-color: var(--color-warning-border); background: var(--color-warning-bg); }
+/* Missing verified snapshot: icon, title, reason and one way out. */
+.data-unavailable { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; max-width: 44rem; padding: 20px 22px; background: var(--color-raised); }
+.data-unavailable-icon { margin-top: 1px; color: var(--color-neutral-700); }
+.data-unavailable-body { display: grid; justify-items: start; gap: 6px; min-width: 0; }
+.data-unavailable-body > strong { font-family: var(--font-heading); font-size: 16px; font-weight: 600; color: var(--color-text); }
+.data-unavailable-body > p { margin: 0; font-size: 14px; color: var(--color-neutral-700); }
+.data-unavailable-body > .btn { margin-top: 10px; }
 .warning-notice strong { color: var(--color-warning); }
 
 /* Any table that can outgrow its column scrolls inside its own box rather
@@ -853,6 +866,7 @@ main { display: block; }
 
 @media (max-width: 460px) {
   .brand-text { display: none; }
+  .brand-short { display: block; }
 }
 
 /* The publication ticker stays one 44px line at every width, so the sticky
@@ -885,7 +899,8 @@ body { --announcement-height: 44px; }
 
 /* Shared shell: the full menu opens on request at every viewport. */
 body:has([data-home-editorial]) { background: var(--color-raised); }
-.site-content { margin-left: 0; padding-left: 0; }
+.site-content { margin-left: 0; padding-left: 0; flex: 1 0 auto; display: flex; flex-direction: column; }
+#contenuto-principale { flex: 1 0 auto; }
 .mobile-menu-trigger { display: inline-flex; }
 .home-header-links { display: flex; align-items: center; flex: none; gap: 20px; }
 .home-header-links a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text); font-size: 13px; }

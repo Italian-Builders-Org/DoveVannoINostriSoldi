@@ -83,7 +83,7 @@ test("spending overview preserves national charts, map and source boundaries", a
   assert.match(page, /ItalyRegionsMap/);
   assert.match(page, /SpendingComposition/);
   assert.match(page, /monthList/);
-  assert.match(page, /Spesa pubblica totale/);
+  assert.match(page, /Tutta la pubblica amministrazione/);
   assert.match(page, /Dove va, in grandi voci/);
   assert.match(page, /Pagamenti effettuati dai Comuni/);
   assert.match(page, /Mese per mese/);

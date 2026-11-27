@@ -58,9 +58,11 @@
   .copy h2 { font-size: 30px; }
   .copy p { font-size: 15px; }
   .primaryLink { max-width: 100%; }
-  /* One destination per row on phones: each is a full-width 44px target. */
-  .related { flex-direction: column; align-self: stretch; }
-  .related a { min-height: 44px; }
+  /* Phones: a compact list of 44px rows with a chevron (same rows as the
+     card link lists), so destinations read as links, not stacked body copy. */
+  .related { flex-direction: column; align-self: stretch; border-bottom: 1px solid var(--color-neutral-300); }
+  .related a { justify-content: space-between; gap: 12px; border-top: 1px solid var(--color-neutral-300); text-decoration: none; }
+  .related a::after { content: ""; flex: none; width: 7px; height: 7px; margin-right: 4px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); color: var(--color-neutral-600); }
   .preview { padding: 20px; }
   .italy { height: 190px; }
   .territoryBody { gap: 12px; }

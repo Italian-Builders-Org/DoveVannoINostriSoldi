@@ -148,6 +148,85 @@
   font-size: 11px;
 }
 
+/* SIOPE entities: one collapsible group per type, so 241 names are not one
+   unbroken list. The summary row carries the count. */
+.typeGroups {
+  display: grid;
+  border-top: 1px solid var(--color-neutral-300);
+}
+.typeGroup { border-bottom: 1px solid var(--color-neutral-300); }
+.typeGroup > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: 0 var(--space-1);
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.typeGroup > summary::-webkit-details-marker { display: none; }
+.typeGroup > summary::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: var(--space-2);
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 160ms var(--ease-out, ease-out);
+}
+.typeGroup[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+@media (hover: hover) and (pointer: fine) {
+  .typeGroup > summary:hover { background: var(--color-neutral-100); }
+}
+.typeCount {
+  margin-left: auto;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.entityList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  column-gap: var(--space-4);
+  margin: 0;
+  padding: 0 0 var(--space-3);
+  list-style: none;
+}
+.entityList li { border-top: 1px solid var(--color-neutral-200); min-width: 0; }
+.entityList a {
+  display: grid;
+  gap: 2px;
+  min-height: 44px;
+  padding: 8px var(--space-1);
+  color: var(--color-text);
+  text-decoration: none;
+}
+.entityName {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 140ms ease;
+}
+.entityList a:focus-visible .entityName { text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .entityList a:hover .entityName { text-decoration-color: currentColor; }
+}
+.entityList .code { font-size: 11px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .typeGroup > summary::after { transition: none; }
+}
+
 /* The type is a table column on wide screens and a chip under the name on
    phones, where a third of the row width wrapped it onto three lines. */
 .typeChip { display: none; }
@@ -173,6 +252,15 @@
   .fiveUp.fiveUp > div:nth-child(2n) { border-right: 0; }
   .fiveUp.fiveUp > div:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
   .entities .typeCell { display: none; }
+  /* With the type column hidden, a lone "Ente" header is noise. */
+  .mobileHiddenHead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
   .typeChip {
     display: inline-flex;
     margin-top: 6px;

@@ -86,7 +86,15 @@ export default async function SpendingOverviewPage({
   const runningMonth = partialMonth(siope);
   const settledTotal = settledTotalPaid(siope);
   const settledPerCapita = settledNationalPerCapita(siope);
-  const partialSuffix = runningMonth === null ? "" : " (parziale)";
+  // Two periods coexist while a month is running: the headline stops at the
+  // last completed month, the other totals include the partial month. Each
+  // figure carries its own period; "parziale" is said once, in the card head.
+  const fullPeriod = `${fromJanuaryTo(monthLabel)} ${siope.year}`;
+  const settledPeriod = runningMonth !== null && lastCompleted
+    ? `${fromJanuaryTo(lastCompleted.label)} ${siope.year}`
+    : fullPeriod;
+  const perCapitaValue = settledPerCapita ?? siope.nationalPerCapita;
+  const perCapitaPeriod = settledPerCapita !== null ? settledPeriod : fullPeriod;
   const maxFlow = Math.max(...siope.monthly.map((point) => point.flow), 0);
   const valueByCode = new Map(siope.titles.map((title) => [title.code, title.value]));
   const buckets = HOME_SPENDING_BUCKETS.map((bucket, index) => {
@@ -111,7 +119,7 @@ export default async function SpendingOverviewPage({
           <div>
             <div className={styles.headingWithTooltip}>
               <h2 id="italy-band-title" className="panel-title">
-                Spesa pubblica totale
+                Tutta la pubblica amministrazione
               </h2>
               <InfoTooltip id="pa-sec-tip" label="Che tipo di soldi sono?">
                 Competenza economica SEC 2010 sulle amministrazioni pubbliche (Stato, Regioni,
@@ -223,30 +231,24 @@ export default async function SpendingOverviewPage({
             <p className={styles.freshness}>
               <i aria-hidden="true" />
               Aggiornati al {longDate(siope.source.siopeMovementsLastModified)}
+              {runningMonth !== null ? ` · ${monthLabel} parziale` : ""}
             </p>
             <strong className={styles.headline}>{compactEuro(settledTotal ?? siope.totalPaid)}</strong>
             <p className={styles.headlineNote}>
-              {runningMonth !== null && lastCompleted
-                ? `${sentence(fromJanuaryTo(lastCompleted.label))} ${siope.year}, in tutta Italia. ${siope.latestMonthLabel}, ancora parziale, è escluso.`
-                : `${sentence(fromJanuaryTo(monthLabel))} ${siope.year}, in tutta Italia${partialSuffix}`}
+              {sentence(settledPeriod)}
+              {runningMonth !== null && lastCompleted ? ", solo mesi completi" : ""}, in tutta Italia
             </p>
             <dl className={styles.factRows}>
               <div>
-                <dt>In media per abitante</dt>
-                <dd>
-                  {settledPerCapita !== null
-                    ? exactEuro(settledPerCapita)
-                    : siope.nationalPerCapita === null
-                      ? "Non disponibile"
-                      : `${exactEuro(siope.nationalPerCapita)}${partialSuffix}`}
-                </dd>
+                <dt>Per abitante, {perCapitaPeriod}</dt>
+                <dd>{perCapitaValue === null ? "Non disponibile" : exactEuro(perCapitaValue)}</dd>
               </div>
               <div>
-                <dt>Al netto delle partite di giro{runningMonthNote ? ` (${monthLabel} parziale incluso)` : ""}</dt>
+                <dt>Senza partite di giro, {fullPeriod}</dt>
                 <dd>{compactEuro(netPayments)}</dd>
               </div>
               <div>
-                <dt>Ultimo mese completo</dt>
+                <dt>{lastCompleted ? `${sentence(lastCompleted.label.toLocaleLowerCase("it-IT"))}, ultimo mese completo` : "Ultimo mese completo"}</dt>
                 <dd>
                   {lastCompleted
                     ? compactEuro(lastCompleted.flow)
@@ -270,7 +272,7 @@ export default async function SpendingOverviewPage({
                   family: bucket.family,
                 })),
               }}
-              period={sentence(period)}
+              period={sentence(fullPeriod)}
               scope="Pagamenti di cassa dei Comuni in tutta Italia"
               denominator="totale dei pagamenti SIOPE dei Comuni nel periodo"
               source={{
@@ -289,7 +291,7 @@ export default async function SpendingOverviewPage({
             <span className={styles.headNote}>miliardi di €</span>
             <InfoTooltip id="monthly-bars-tip" label="Come si leggono le barre mensili?">
               Ogni barra mostra i pagamenti registrati nel singolo mese, non il totale cumulato.
-              Il mese in corso è grigio perché può ancora cambiare.
+              Il mese in corso è grigio e segnato «parziale» perché può ancora cambiare.
             </InfoTooltip>
           </div>
           <ul className={styles.monthList}>
@@ -297,7 +299,10 @@ export default async function SpendingOverviewPage({
               const running = point.month === runningMonth;
               return (
                 <li key={point.month}>
-                  <span>{point.label}</span>
+                  <span>
+                    {point.label}
+                    {running ? <em className={styles.partialTag}>parziale</em> : null}
+                  </span>
                   <i aria-hidden="true">
                     <b
                       className={running ? styles.running : undefined}
@@ -311,11 +316,7 @@ export default async function SpendingOverviewPage({
           </ul>
           {runningMonth === null ? (
             <p className={styles.note}>Anno chiuso: tutti i mesi sono definitivi.</p>
-          ) : (
-            <p className={styles.note}>
-              {siope.latestMonthLabel} è parziale: il dato può cambiare.
-            </p>
-          )}
+          ) : null}
         </section>
         </div>
       <section className={`panel ${styles.mapPanel}`} aria-labelledby="regional-map-panel-title">
@@ -329,20 +330,12 @@ export default async function SpendingOverviewPage({
             aside={
               <div className={styles.mapStats}>
                 <div>
-                  <span>{sentence(fromJanuaryTo(monthLabel))}{runningMonthNote}</span>
+                  <span>Italia, {fullPeriod}</span>
                   <strong>{compactEuro(siope.totalPaid)}</strong>
                   <small>
-                    Italia · {compactEuro(siope.coverage.paymentsWithoutRegion)} senza regione IPA,
+                    Di cui {compactEuro(siope.coverage.paymentsWithoutRegion)} senza regione IPA,
                     esclusi dalla mappa
                   </small>
-                </div>
-                <div>
-                  <span>In media per abitante</span>
-                  <strong>
-                    {siope.nationalPerCapita === null
-                      ? "Non disponibile"
-                      : exactEuro(siope.nationalPerCapita)}
-                  </strong>
                   <small>
                     <Link prefetch={false} href={`/territori?anno=${year}`}>Apri Territori</Link>
                   </small>

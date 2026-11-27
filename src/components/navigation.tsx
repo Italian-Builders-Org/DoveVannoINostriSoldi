@@ -259,13 +259,15 @@ function NavigationContent({ pathname, currentSearch, announcements }: Navigatio
           <IntentLink href="/" className="brand" aria-label="Dove vanno i nostri soldi, home">
             <Image className="brand-mark" src="/brand/dvns-mark-transparent.png" width={44} height={44} alt="" aria-hidden="true" priority />
             <span className="brand-text"><strong>Dove vanno i nostri soldi?</strong></span>
+            <span className="brand-short" aria-hidden="true">DVNS</span>
           </IntentLink>
           <span className="header-spacer" />
           <nav className="home-header-links" aria-label="Sezioni del sito">
             <IntentLink href="/#analisi">Analisi</IntentLink>
             <IntentLink href="/#esplora">Esplora i dati</IntentLink>
           </nav>
-          <HeaderSearch />
+          {/* /cerca has its own search form: no second box above it. */}
+          {pathname === "/cerca" ? null : <HeaderSearch />}
           <div className="header-actions">
             <ThemeToggle />
             {pathname !== "/" ? <BoardsAccountMenu /> : null}

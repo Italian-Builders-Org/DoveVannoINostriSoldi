@@ -1,6 +1,8 @@
 .sectionNav {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
   max-width: var(--site-chrome-width);
   margin-top: 0;
   padding-block: var(--space-4);
@@ -13,42 +15,26 @@
   .breadcrumb a:hover { color: var(--color-accent-700); text-decoration: underline; }
   .select:hover { border-color: var(--color-neutral-500); background-color: var(--color-neutral-100); }
 }
-.controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px 24px; }
-.controls > nav { flex: 1 1 24rem; min-width: 0; }
-.controls > div { margin-left: auto; }
-
-.picker {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3) var(--space-4);
-  max-width: 30rem;
-}
-
-.title {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-neutral-600);
-}
-
-.title strong {
-  font-family: var(--font-heading);
-  font-weight: var(--font-heading-weight);
-  color: var(--color-text);
-}
+/* Breadcrumb and section picker read as one trail: Home / Soldi / [page ▾]. */
+.trail { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; min-width: 0; flex: 1 1 auto; }
+.trailSeparator { margin-left: 0; }
+.pickerNav { min-width: 0; max-width: 100%; }
+.shareSlot { flex: none; margin-left: auto; }
+/* Server pages with nothing worth sharing (data unavailable) opt out. */
+:global(html:has([data-share-hidden])) .shareSlot { display: none; }
 
 .label {
   position: relative;
   color: var(--color-text);
   display: block;
-  flex: 1 1 16rem;
-  min-width: min(100%, 16rem);
+  max-width: 100%;
   margin: 0;
 }
 
 .select {
   display: block;
-  width: 100%;
+  width: auto;
+  max-width: min(100%, 26rem);
   min-height: 44px;
   padding: 0.55rem 2.4rem 0.55rem 0.85rem;
   border: 1px solid var(--color-neutral-400);
@@ -91,21 +77,17 @@
   border: 0;
 }
 
-/* Phones: breadcrumb and share icon share one row, the section picker sits
-   below — the band before the H1 drops from ~160px to ~110px. */
+/* Phones: breadcrumb and share icon share one row, the section picker (the
+   last crumb) takes the full row below it. */
 @media (max-width: 620px) {
-  .sectionNav { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 12px; padding-block: 10px 12px; }
-  .controls { display: contents; }
-  .controls > nav { grid-column: 1 / -1; grid-row: 2; flex-basis: auto; }
-  .controls > div { grid-column: 2; grid-row: 1; margin-left: 0; }
+  .sectionNav { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 12px; padding-block: 6px 12px; }
+  .trail { display: contents; }
+  .breadcrumb { grid-column: 1; grid-row: 1; }
+  .trailSeparator { display: none; }
+  .pickerNav { grid-column: 1 / -1; grid-row: 2; }
+  .shareSlot { grid-column: 2; grid-row: 1; margin-left: 0; }
+  /* The manual-copy fallback (an input) needs the full row. */
+  .shareSlot:has(input) { grid-column: 1 / -1; grid-row: 3; }
   .breadcrumb a { min-height: 44px; }
-  .picker {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-2);
-  }
-
-  .label {
-    flex-basis: auto;
-  }
+  .select { width: 100%; max-width: none; }
 }

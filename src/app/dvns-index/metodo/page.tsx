@@ -4,6 +4,8 @@ import Link from "next/link";
 import { BANDS, FUNCTION_LABELS, PILLAR_LABELS, PILLARS, describeGroup, explainEntry, regionName, regionVarianceShare, stabilityByBand } from "@/lib/dvns-index";
 import { IndexSnapshotUnavailableError, loadDvnsIndex, type IndexData } from "@/lib/dvns-index-store";
 
+import { DataUnavailableNotice } from "@/components/data-unavailable-notice";
+
 import styles from "../dvns-index.module.css";
 
 export const metadata: Metadata = {
@@ -25,9 +27,10 @@ function Unavailable() {
     <main className="shell page">
       <div className="page-intro">
         <h1>DVNS Index, il metodo</h1>
-        <p>Il metodo con gli esempi numerici non è disponibile in questo momento: mostriamo i numeri solo quando i dati sono verificati. Riprova più tardi.</p>
       </div>
-      <p><Link href="/comuni">Vai alla mappa dei Comuni</Link></p>
+      <DataUnavailableNotice title="Esempi numerici non disponibili" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }}>
+        Mostriamo i numeri del metodo solo quando i dati sono verificati. Riprova più tardi.
+      </DataUnavailableNotice>
     </main>
   );
 }

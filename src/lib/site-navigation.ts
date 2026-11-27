@@ -506,3 +506,22 @@ export function isNavChildActive(
 export function isNavBranchActive(pathname: string, link: NavLink, search = ""): boolean {
   return navLinkMatchesLocation(parseNavigationLocation(pathname, search), link);
 }
+
+export type StandaloneCrumb = Readonly<{ label: string; href: string | null }>;
+
+// Pages outside every nav section that still deserve their own breadcrumb
+// label instead of the generic "Esplora i dati" fallback. `href: null` marks
+// the current page (plain text); a nested page links back to its root.
+const STANDALONE_PAGES: readonly Readonly<{ path: string; label: string }>[] = [
+  { path: "/cerca", label: "Cerca" },
+  { path: "/dvns-index", label: "DVNS Index" },
+];
+
+export function standaloneCrumb(pathname: string): StandaloneCrumb {
+  const path = parseNavigationLocation(pathname).pathname;
+  for (const page of STANDALONE_PAGES) {
+    if (path === page.path) return { label: page.label, href: null };
+    if (path.startsWith(`${page.path}/`)) return { label: page.label, href: page.path };
+  }
+  return { label: "Esplora i dati", href: "/#esplora" };
+}

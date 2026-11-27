@@ -5,6 +5,7 @@ import { companyAtlasSourceList } from "@/lib/company-atlas-metadata";
 import { istatTurnoverSourceMetadata } from "@/lib/istat-turnover-metadata";
 import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
+import { groupSourcesByPublisher } from "@/lib/source-publishers";
 import { publicSources, sourceCounts } from "@/lib/sources";
 import styles from "./fonti.module.css";
 
@@ -13,17 +14,9 @@ export const metadata: Metadata = {
   description: "Da dove arrivano i dati, quanto spesso cambiano e quali fonti sono già collegate.",
 };
 
-// The registry keeps each publisher's full legal name (also served to MCP);
-// the table repeats the same few publishers on many rows, so it shows the
-// common short name instead.
-const SHORT_OWNER: Readonly<Record<string, string>> = {
-  "ISTAT — Istituto nazionale di statistica": "ISTAT",
-  "Istituto nazionale di statistica": "ISTAT",
-  "Istituto Nazionale di Statistica (ISTAT)": "ISTAT",
-  "INPS — Istituto Nazionale della Previdenza Sociale": "INPS",
-  "Istituto Nazionale della Previdenza Sociale": "INPS",
-  "Eurostat (Commissione europea)": "Eurostat",
-};
+// Descriptions longer than this are clamped to two lines with an expander.
+const LONG_COVERAGE = 120;
+const publisherGroups = groupSourcesByPublisher(publicSources);
 
 export default function SourcesPage() {
   return (
@@ -33,53 +26,71 @@ export default function SourcesPage() {
         <p>Ogni numero su questo sito viene da una fonte pubblica ufficiale.</p>
       </div>
 
-      <p><strong>{sourceCounts.total} fonti collegate</strong> al portale.</p>
+      <p><strong>{sourceCounts.total} fonti collegate</strong> al portale, da {publisherGroups.length} enti pubblicatori.</p>
 
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
           {/* Under 640px the rows become stacked cards (fonti.module.css). The
               explicit roles keep table semantics for screen readers, which
-              some browsers drop once table parts are display: block. */}
+              some browsers drop once table parts are display: block. Each
+              publisher is a row group headed by its short name, so the
+              publisher is not repeated on every row. */}
           <table className={`table ${styles.sources}`} role="table">
             <thead role="rowgroup">
               <tr role="row">
                 <th scope="col" role="columnheader">Fonte</th>
                 <th scope="col" role="columnheader">Cosa contiene</th>
-                <th scope="col" role="columnheader">Chi la pubblica</th>
                 <th scope="col" role="columnheader">Ogni quanto esce</th>
                 <th scope="col" role="columnheader">Ultimo dato</th>
               </tr>
             </thead>
-            <tbody role="rowgroup">
-              {publicSources.map((source) => {
-                const latest = latestDataBySlug[source.slug];
-                return (
-                  <tr id={source.slug} key={source.slug} role="row">
-                    <th scope="row" role="rowheader">
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
-                      >
-                        {source.name} ↗
-                      </a>
-                      <small>{source.area}</small>
-                    </th>
-                    <td role="cell" data-label="Cosa contiene">{source.coverage}</td>
-                    <td role="cell" data-label="Chi la pubblica">{SHORT_OWNER[source.owner] ?? source.owner}</td>
-                    <td role="cell" data-label="Ogni quanto esce">{source.cadence}</td>
-                    <td role="cell" data-label="Ultimo dato" className={styles.latest}>
-                      {latest?.kind === "date"
-                        ? shortDate(latest.value)
-                        : latest?.kind === "period"
-                          ? latest.label
-                          : "scoperta automatica"}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+            {publisherGroups.map((group) => (
+              <tbody role="rowgroup" key={group.name} className={styles.group}>
+                <tr role="row" className={styles.groupRow}>
+                  <th scope="colgroup" colSpan={4} role="columnheader">
+                    {group.name}
+                    <span className={styles.groupCount}>
+                      {group.sources.length === 1 ? "1 fonte" : `${group.sources.length} fonti`}
+                    </span>
+                  </th>
+                </tr>
+                {group.sources.map(({ source, title, detail }) => {
+                  const latest = latestDataBySlug[source.slug];
+                  return (
+                    <tr id={source.slug} key={source.slug} role="row">
+                      <th scope="row" role="rowheader">
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
+                        >
+                          {title} ↗
+                        </a>
+                        <small>{detail ? `${source.area} · ${detail}` : source.area}</small>
+                      </th>
+                      <td role="cell" data-label="Cosa contiene">
+                        {source.coverage.length > LONG_COVERAGE ? (
+                          <details className={styles.coverage}>
+                            <summary>
+                              <span>{source.coverage}</span>
+                            </summary>
+                          </details>
+                        ) : source.coverage}
+                      </td>
+                      <td role="cell" data-label="Ogni quanto esce">{source.cadence}</td>
+                      <td role="cell" data-label="Ultimo dato" className={styles.latest}>
+                        {latest?.kind === "date"
+                          ? shortDate(latest.value)
+                          : latest?.kind === "period"
+                            ? latest.label
+                            : "scoperta automatica"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            ))}
           </table>
         </div>
       </section>

@@ -8,6 +8,9 @@
 
 :root {
   color-scheme: light;
+  /* Smallest text size for shared captions, eyebrows and table heads: 11px
+     uppercase grey read as borderline on dark cards. */
+  --font-size-caption: 12px;
   --color-announcement-bg: #182b3a;
   --color-announcement-text: #ffffff;
   --color-bg: #f3f5f7;
@@ -230,7 +233,9 @@
   --color-warning-border: #695333;
 
   --chart-data-primary: #65b7bf;
-  --chart-data-track: #283a3b;
+  /* Neutral, lighter than the raised card (1.5:1) and 4.6:1 under the teal
+     fill: the old teal-tinted track read as part of the bar. */
+  --chart-data-track: #423e3e;
   --chart-map-1: #324e59;
   --chart-map-2: #416775;
   --chart-map-3: #558797;
@@ -379,7 +384,7 @@ textarea.input {
 .panel-title {
   margin: 0 0 var(--space-3);
   font-family: var(--font-heading);
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   font-weight: var(--font-heading-weight);
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -393,7 +398,7 @@ textarea.input {
 .tag {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   letter-spacing: .02em;
   padding: 3px 10px;
   border-radius: var(--radius-sm);
@@ -412,7 +417,7 @@ textarea.input {
 /* Only column headings shout; a row heading is the row's name, not a label. */
 .table thead th {
   text-align: left;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   letter-spacing: .08em;
   text-transform: uppercase;
   font-weight: 600;
@@ -444,7 +449,7 @@ textarea.input {
 .table th[scope="row"] small {
   display: block;
   margin-top: 2px;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   font-weight: 400;
   color: var(--color-neutral-600);
 }

@@ -66,10 +66,21 @@ test("every page offers the rest of its section without the header menu", async 
 
 test("the search page breadcrumb names the search, and an empty search has nothing to share", async () => {
   const component = await readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8");
-  // "Esplora i dati" is the fallback for pages outside a section; /cerca is
-  // the site search and must say so.
-  assert.match(component, /"\/cerca": "Cerca"/);
   assert.match(component, /pathname === "\/cerca" && !new URLSearchParams\(currentSearch \?\? ""\)\.get\("q"\)/);
+  assert.match(component, /standaloneCrumb\(pathname\)/);
+});
+
+test("pages outside every section get their own breadcrumb instead of the generic fallback", async () => {
+  const { standaloneCrumb } = await import("../src/lib/site-navigation.ts");
+  // The current page is plain text; a parent page stays a link.
+  assert.deepEqual(standaloneCrumb("/cerca"), { label: "Cerca", href: null });
+  assert.deepEqual(standaloneCrumb("/dvns-index"), { label: "DVNS Index", href: null });
+  assert.deepEqual(standaloneCrumb("/dvns-index/metodo"), { label: "DVNS Index", href: "/dvns-index" });
+  // A lookalike prefix is not the index.
+  assert.deepEqual(standaloneCrumb("/dvns-indexes"), { label: "Esplora i dati", href: "/#esplora" });
+  assert.deepEqual(standaloneCrumb("/pagina-sconosciuta"), { label: "Esplora i dati", href: "/#esplora" });
+  // DVNS Index is not swallowed by a section that would win over it.
+  assert.equal(activeNavSection("/dvns-index"), null);
 });
 
 test("public legal pages expose only the authorized support mailbox", async () => {
@@ -300,4 +311,31 @@ test("ChatGPT plugin link is one shared address, opened safely from the home ask
   }
   // Touch layouts need a full-height target; the desktop row stays compact.
   assert.match(css, /@media[^{]*max-width[^{]*\{[\s\S]*?\.askChatgpt \{[^}]*min-height:\s*44px/);
+});
+
+test("the header does not stack a second search box above the /cerca form", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  assert.match(navigation, /pathname === "\/cerca" \? null : <HeaderSearch \/>/);
+});
+
+test("phones keep a compact wordmark next to the mark when the full name is hidden", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  assert.match(navigation, /className="brand-short" aria-hidden="true">DVNS</);
+  // Full name hidden at ≤460px, short wordmark shown only there.
+  assert.match(globalsCss, /@media \(max-width: 460px\) \{[\s\S]*?\.brand-text \{ display: none; \}[\s\S]*?\.brand-short \{ display: block;/);
+  assert.match(globalsCss, /\.brand-short \{[^}]*display: none;/);
+});
+
+test("the footer lists GitHub once, as a plain service link", async () => {
+  const footer = await readFile(new URL("../src/components/site-footer.tsx", import.meta.url), "utf8");
+  assert.equal(footer.match(/REPO_URL\}/g)?.length, 1);
+  assert.doesNotMatch(footer, /BrandIcon name="github"/);
+});
+
+test("short pages push the footer to the bottom of the viewport", () => {
+  // body and .site-content are flex columns; the content slot absorbs the
+  // spare height, so the footer never floats mid-screen.
+  assert.match(globalsCss, /body \{[^}]*display: flex;[^}]*flex-direction: column;/);
+  assert.match(globalsCss, /\.site-content \{[^}]*flex: 1 0 auto;[^}]*display: flex;[^}]*flex-direction: column;/);
+  assert.match(globalsCss, /#contenuto-principale \{ flex: 1 0 auto; \}/);
 });

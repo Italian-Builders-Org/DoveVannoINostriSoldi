@@ -6,14 +6,8 @@ import { ShareViewButton } from "./share-view-button";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useId } from "react";
-import { activeNavSection, flattenNavLinks, isNavChildActive } from "@/lib/site-navigation";
+import { activeNavSection, flattenNavLinks, isNavChildActive, standaloneCrumb } from "@/lib/site-navigation";
 import styles from "./section-nav.module.css";
-
-// Pages outside every nav section that still deserve their own breadcrumb
-// label instead of the generic "Esplora i dati" fallback.
-const STANDALONE_LABELS: Readonly<Record<string, string>> = {
-  "/cerca": "Cerca",
-};
 
 export function SectionNav() {
   const pathname = publicSurfacePath(usePathname());
@@ -58,44 +52,49 @@ function SectionNavContent({
     ?? pages[0]?.href
     ?? "";
 
+  const standalone = section ? null : standaloneCrumb(pathname);
+  const hasPicker = pages.length > 1;
+
+  // One row: "Home / Section / [current page ▾]" then the share action. The
+  // section picker *is* the last crumb, so the page name is not repeated in a
+  // second stacked control above the H1. Phones wrap the picker to its own row.
   return (
-    <div
-      className={`shell ${styles.sectionNav}`}
-    >
-      <nav className={styles.breadcrumb} aria-label="Percorso della pagina">
-        <Link prefetch={false} href="/">Home</Link>
-        <span aria-hidden="true">/</span>
-        {section
-          ? <Link prefetch={false} href={section.href}>{section.label}</Link>
-          : STANDALONE_LABELS[pathname]
-            ? <span aria-current="page">{STANDALONE_LABELS[pathname]}</span>
-            : <Link prefetch={false} href="/#esplora">Esplora i dati</Link>}
-      </nav>
-      <div className={styles.controls}>
-      {pages.length > 1 ? <nav aria-label={`Pagine in ${section!.label}`}>
-      <div className={styles.picker}>
-        <label className={styles.label} htmlFor={selectId}>
-          <span className={styles.visuallyHidden}>Vai a una pagina della sezione</span>
-          <select
-            id={selectId}
-            className={styles.select}
-            value={currentHref}
-            onChange={(event) => {
-              const next = event.target.value;
-              if (next && next !== currentHref) router.push(next);
-            }}
-          >
-            {pages.map((page) => (
-              <option key={`${page.href}:${page.label}`} value={page.href}>
-                {page.label}
-              </option>
-            ))}
-          </select>
-        </label>
+    <div className={`shell ${styles.sectionNav}`}>
+      <div className={styles.trail}>
+        <nav className={styles.breadcrumb} aria-label="Percorso della pagina">
+          <Link prefetch={false} href="/">Home</Link>
+          <span aria-hidden="true">/</span>
+          {section
+            ? <Link prefetch={false} href={section.href}>{section.label}</Link>
+            : standalone?.href
+              ? <Link prefetch={false} href={standalone.href}>{standalone.label}</Link>
+              : <span aria-current="page">{standalone?.label}</span>}
+          {hasPicker ? <span className={styles.trailSeparator} aria-hidden="true">/</span> : null}
+        </nav>
+        {hasPicker ? <nav className={styles.pickerNav} aria-label={`Pagine in ${section!.label}`}>
+          <label className={styles.label} htmlFor={selectId}>
+            <span className={styles.visuallyHidden}>Vai a una pagina della sezione</span>
+            <select
+              id={selectId}
+              className={styles.select}
+              value={currentHref}
+              onChange={(event) => {
+                const next = event.target.value;
+                if (next && next !== currentHref) router.push(next);
+              }}
+            >
+              {pages.map((page) => (
+                <option key={`${page.href}:${page.label}`} value={page.href}>
+                  {page.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </nav> : null}
       </div>
-      </nav> : null}
-      {emptySearch ? null : <ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} />}
-      </div>
+      {/* A server page with nothing to share (e.g. data unavailable) renders
+          [data-share-hidden]; the slot hides itself via :has() in the CSS. */}
+      {emptySearch ? null : <div className={styles.shareSlot}><ShareViewButton key={`${pathname}?${currentSearch ?? ""}`} /></div>}
     </div>
   );
 }

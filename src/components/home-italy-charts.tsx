@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icon } from "@/components/icons";
 import { InfoTooltip } from "@/components/info-tooltip";
 import { billions, percent } from "@/lib/format";
 import type { HomeFunnelSlice, HomeItalyTrendPoint } from "@/lib/home-italy-funnel";
@@ -20,11 +21,13 @@ export function HomeItalyCompositionChart({
           ? Math.min(Math.max(slice.sharePercent, 0), 100)
           : 0;
         return (
-          <li key={slice.id}>
+          // A linked row is one target: the name's link covers the row (CSS),
+          // the chevron says so, and the "?" stays above it in its own column.
+          <li key={slice.id} data-linked={slice.href ? "true" : undefined}>
             <div className={styles.barCopy}>
               <div className={styles.barText}>
                 <span className={styles.barName}>
-                  {slice.href ? <Link href={slice.href}>{slice.label}</Link> : slice.label}
+                  {slice.href ? <Link prefetch={false} href={slice.href}>{slice.label}</Link> : slice.label}
                 </span>
                 <span className={styles.barAmount}>{billions(slice.amountEuro)} mld €</span>
               </div>
@@ -41,6 +44,9 @@ export function HomeItalyCompositionChart({
               <b style={{ width: `${width}%` }} />
             </i>
             <strong>{percent(slice.sharePercent)}</strong>
+            <span className={styles.barChevron} aria-hidden="true">
+              {slice.href ? <Icon name="chevron-right" size={16} /> : null}
+            </span>
           </li>
         );
       })}

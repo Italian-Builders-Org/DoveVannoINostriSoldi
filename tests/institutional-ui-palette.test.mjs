@@ -75,3 +75,22 @@ test("spending bars, map and additive composition retain dedicated data roles an
   assert.match(map, /aria-label/);
   assert.match(map, /data-region-selector/);
 });
+
+test("dark bar tracks are a neutral grey visible on cards, not a dim copy of the teal fill", () => {
+  const track = value(dark, "--chart-data-track");
+  const [r, g, b] = [1, 3, 5].map((offset) => parseInt(track.slice(offset, offset + 2), 16));
+  assert.ok(Math.max(r, g, b) - Math.min(r, g, b) <= 8, `${track} is tinted`);
+  assert.ok(contrast(track, value(dark, "--color-raised")) >= 1.45, "track vanishes on raised cards");
+  assert.ok(contrast(value(dark, "--chart-data-primary"), track) >= 3);
+});
+
+test("shared caption labels use a caption token of at least 12px", () => {
+  const size = Number(light["--font-size-caption"]?.replace("px", ""));
+  assert.ok(size >= 12, `--font-size-caption is ${light["--font-size-caption"]}`);
+  const globals = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  for (const [source, selector] of [[css, ".panel-title"], [css, ".tag"], [css, ".table thead th"], [globals, ".stat-strip .stat-label"], [globals, ".notice > strong"]]) {
+    const block = source.match(new RegExp(`\\n${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\{([^}]*)\\}`))?.[1];
+    assert.ok(block, `${selector} rule not found`);
+    assert.match(block, /font-size: var\(--font-size-caption\)/, selector);
+  }
+});

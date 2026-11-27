@@ -29,6 +29,7 @@ import { REGION_NAME_BY_ISTAT_CODE } from "@/lib/italy-regions";
 import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import { displayMunicipalityName } from "@/lib/comuni-search";
 
+import { DataUnavailableNotice } from "@/components/data-unavailable-notice";
 import { DotDistribution } from "./dot-distribution";
 import { RegionsMap } from "./regions-map";
 import styles from "./dvns-index.module.css";
@@ -81,12 +82,10 @@ function Unavailable() {
     <main className="shell page">
       <div className="page-intro">
         <h1>DVNS Index</h1>
-        <p>
-          La classifica non è disponibile in questo momento: mostriamo i punteggi solo quando i dati sono
-          verificati. Riprova più tardi.
-        </p>
       </div>
-      <p><Link href="/comuni">Vai alla mappa dei Comuni</Link></p>
+      <DataUnavailableNotice title="Classifica non disponibile" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }}>
+        Mostriamo i punteggi solo quando i dati sono verificati. Riprova più tardi.
+      </DataUnavailableNotice>
     </main>
   );
 }

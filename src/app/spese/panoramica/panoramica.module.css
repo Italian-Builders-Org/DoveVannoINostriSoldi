@@ -201,8 +201,11 @@
 }
 
 .factRows dd {
+  flex: none;
   margin: 0;
   font-weight: 600;
+  /* "67,65 mld €" must not break between number and unit on phones. */
+  white-space: nowrap;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -267,6 +270,16 @@
 
 .monthList .running {
   background: var(--color-neutral-500);
+}
+
+/* The running month is named, not only greyed: colour alone is not a legend. */
+.partialTag {
+  display: block;
+  color: var(--color-neutral-600);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.1;
 }
 
 .note {

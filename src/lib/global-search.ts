@@ -58,11 +58,11 @@ export type SearchIndexDocument = Readonly<{
 
 type FieldMatch = Readonly<{
   quality: number;
-  // "inflected": every near miss only changes the last letter (sanitario/sanitaria).
+  // "inflected": every near miss only changes the final vowel (sanitario/sanitaria).
   reason: "exact" | "prefix" | "tokens" | "fuzzy" | "inflected";
 }>;
 
-// `identifier`: a slug such as "parti-atti", whose words are not inflected Italian.
+// `identifier`: a slug such as "parti-atti" or "siope_comuni", whose words are not inflected Italian.
 type SearchField = Readonly<{ normalized: string; tokens: readonly string[]; identifier?: boolean }>;
 type PreparedDocument = Readonly<{
   document: SearchIndexDocument;
@@ -423,7 +423,7 @@ function tokens(normalized: string): readonly string[] {
 
 function prepareField(value: string): SearchField {
   const normalized = normalizeSearchText(value);
-  return { normalized, tokens: tokens(normalized), ...(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+$/u.test(value.trim()) ? { identifier: true } : {}) };
+  return { normalized, tokens: tokens(normalized), ...(/^[\p{L}\p{N}]+(?:[-_][\p{L}\p{N}]+)+$/u.test(value.trim()) ? { identifier: true } : {}) };
 }
 
 function prepareDocument(document: SearchIndexDocument): PreparedDocument {

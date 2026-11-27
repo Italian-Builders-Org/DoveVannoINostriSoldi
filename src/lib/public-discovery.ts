@@ -32,6 +32,8 @@ export const PUBLIC_INDEXABLE_PATHS = [
   "/coesione/asili",
   "/coesione/logistica-mercati",
   "/comuni",
+  "/dvns-index",
+  "/dvns-index/metodo",
   "/confronti",
   "/controlli",
   "/controlli/sintesi",

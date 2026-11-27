@@ -68,3 +68,4 @@ __pycache__/
 # Same for the amendments to the 2027 budget law.
 /src/data/generated/camera-emendamenti-bilancio-2027.json
 /src/data/generated/pa-licenze-software.json
+/src/data/generated/dvns-index.json

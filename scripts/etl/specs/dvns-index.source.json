@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "dvns-index",
+  "version": "2026.3",
+  "artefacts": {
+    "geography": {
+      "path": "src/data/generated/istat-municipality-geography.json",
+      "sha256": "0f7f042f631c81bb879160e2a5543132c031160e80d96b0340526697e773bb41"
+    },
+    "opencivitas2021": {
+      "path": "src/data/generated/opencivitas-2021.json",
+      "sha256": "3e1395e81d67a7eab85e7d1c51001b972e2a71e949c81dcd4285d7b1a659995d"
+    },
+    "opencivitas2022": {
+      "path": "src/data/generated/opencivitas-2022.json",
+      "sha256": "57bda32137d1649b518b606b0a26da30b94590a1447f4f53382f43ffb7f9f598"
+    },
+    "opencivitas2022-amministrazione": {
+      "path": "src/data/generated/opencivitas-2022-amministrazione.json",
+      "sha256": "495229245ed90fc33f3baf8753f86c99e0781a909d6e34cab22c4abc397981d5"
+    },
+    "opencivitas2022-istruzione": {
+      "path": "src/data/generated/opencivitas-2022-istruzione.json",
+      "sha256": "83eab3d2d0f9faeca3e47016a8c5fbc8a8d7e92859b6fd8e7bf3327d09573516"
+    },
+    "opencivitas2022-polizia": {
+      "path": "src/data/generated/opencivitas-2022-polizia.json",
+      "sha256": "1b2d43b002e6e1178aa6fcddef92597a56050ddec103f97b746e84923fb97103"
+    },
+    "opencivitas2022-rifiuti": {
+      "path": "src/data/generated/opencivitas-2022-rifiuti.json",
+      "sha256": "a9690f0fc7b584e611013b6d5134fa06df2fa923466f174709e8778fa95b64d8"
+    },
+    "opencivitas2022-sociale-asili": {
+      "path": "src/data/generated/opencivitas-2022-sociale-asili.json",
+      "sha256": "66a0a17c462b8b8952645448c611694beb56e4bf377813c786e1e42d2c9199e3"
+    },
+    "opencivitas2022-viabilita": {
+      "path": "src/data/generated/opencivitas-2022-viabilita.json",
+      "sha256": "db206ba22ca6834d2f322561cf4ac06262ae41b57b23303cce62a224bdde48d6"
+    },
+    "siope2024": {
+      "path": "src/data/generated/siope-municipal-detail-2024.json",
+      "sha256": "8615ed50cf269f1eeb81ebc61b7f3c421a68accb7da06c1f11914c1ba9949b73"
+    },
+    "siope2025": {
+      "path": "src/data/generated/siope-municipal-detail-2025.json",
+      "sha256": "ab2c27c8d99083cbc23cf59dbd53f80f0e931a255812bea5b37700ad96d7f69e"
+    },
+    "anacPeers": {
+      "path": "src/data/generated/anac-procurement-peers/snapshot.json.gz",
+      "sha256": "18fc242c5493c820f0af58d2699db916125b76e52a4f93068386959fe8392820"
+    },
+    "anacAwardsMeta": {
+      "path": "src/data/generated/anac-entity-procurement-page/meta.json",
+      "sha256": "9e81be0fd8734c7927cbe38af6a3a6e5ba537f6c7d63d83c9442337fe2770f87"
+    },
+    "anacCigSpec": {
+      "path": "scripts/etl/specs/anac-entity-procurement.source.json",
+      "sha256": "83ad261f83e7b4ff50bdfe95581cc99f4a07f2a4e43708f4f079aceaf218825d"
+    },
+    "pcc2024": {
+      "path": ".cache/dvns-index/pcc/Fatture-del-2024-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx",
+      "sha256": "f6f67ff3fdfb37a74102c246e3a9c7a050bebee249c0c2c3b911e66151d691e8",
+      "url": "https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio_dei_tempi_di_pagamento_delle_pubbliche_amministrazioni/il_monitoraggio_dello_stock_di_debiti_commerciali_residui/2024/Tempi-di-pagamento/Fatture-del-2024-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx"
+    },
+    "pcc2025": {
+      "path": ".cache/dvns-index/pcc/Fatture-del-2025-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx",
+      "sha256": "acac14aad8399a92e6fcfc6926cf61aa0557e8ed9cd40102183c9a9f893e918f",
+      "url": "https://www.rgs.mef.gov.it/_Documenti/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio_dei_tempi_di_pagamento_delle_pubbliche_amministrazioni/il_monitoraggio_dello_stock_di_debiti_commerciali_residui/2025/Tempi-di-pagamento/Fatture-del-2025-Pagamenti-e-relativi-tempi-medi-ponderati-di-pagamento-e-di-ritardo.xlsx"
+    },
+    "ispraRd2022": {
+      "path": ".cache/dvns-index/ispra/rd-2022.csv",
+      "sha256": "ab242d30cd19e47fba406b72d65ad7281cca7c3f746970aa62cb4adcb9363c2d",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/get/getDettaglioComunale.csv.php?&aa=2022"
+    },
+    "ispraRd2023": {
+      "path": ".cache/dvns-index/ispra/rd-2023.csv",
+      "sha256": "6f7c1dca7b2dd0573185096adea299c405152d7c55d7e4d781c6cbbca42cc6cd",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/get/getDettaglioComunale.csv.php?&aa=2023"
+    },
+    "anacCpvMeta": {
+      "path": "src/data/generated/anac-procurement-cpv/meta.json",
+      "sha256": "71a43e9d3fa179e9378d108b7cc232bff9bc088d6458ee50357e1700989f3979"
+    },
+    "dissesto2024": {
+      "path": ".cache/dvns-index/interno/decreto-fl-17-06-2024.pdf",
+      "sha256": "c43d684f702888612ef31808d0765490e00230054c7ab062e8280865d1df5d10",
+      "url": "https://dait.interno.gov.it/documenti/decreto-fl-17-06-2024.pdf"
+    }
+  },
+  "rules": {
+    "weights": {
+      "resa": 0.4,
+      "sovraspesa": 0.1,
+      "investire": 0.15,
+      "appalti": 0.1,
+      "puntualita": 0.15,
+      "risultati": 0.1
+    },
+    "pillars": {
+      "resa": {
+        "indicators": [
+          {
+            "id": "resa2021",
+            "weight": 0.5
+          },
+          {
+            "id": "resa2022",
+            "weight": 0.5
+          }
+        ],
+        "required": [
+          "resa2022"
+        ]
+      },
+      "sovraspesa": {
+        "indicators": [
+          {
+            "id": "sovraspesa2021",
+            "weight": 0.5
+          },
+          {
+            "id": "sovraspesa2022",
+            "weight": 0.5
+          }
+        ],
+        "required": [
+          "sovraspesa2022"
+        ]
+      },
+      "investire": {
+        "indicators": [
+          {
+            "id": "investimenti",
+            "weight": 0.5
+          },
+          {
+            "id": "investimentiProCapite",
+            "weight": 0.5
+          }
+        ],
+        "required": [
+          "investimenti"
+        ]
+      },
+      "appalti": {
+        "indicators": [
+          {
+            "id": "concorrenza",
+            "weight": 0.6
+          },
+          {
+            "id": "fornitori",
+            "weight": 0.4
+          }
+        ],
+        "required": [],
+        "neutralWhenMissing": true
+      },
+      "puntualita": {
+        "indicators": [
+          {
+            "id": "ritardo",
+            "weight": 1.0
+          }
+        ],
+        "required": [
+          "ritardo"
+        ]
+      },
+      "risultati": {
+        "indicators": [
+          {
+            "id": "differenziata",
+            "weight": 1.0
+          }
+        ],
+        "required": [
+          "differenziata"
+        ]
+      }
+    },
+    "procurementThresholdEuro": 40000,
+    "minProcedures": 5,
+    "minAwards": 10,
+    "shrinkProcedures": 8,
+    "shrinkAwards": 10,
+    "minPeerValues": 30,
+    "minRanked": 4000,
+    "reducedCompetition": [
+      "AFFIDAMENTO DIRETTO",
+      "PROCEDURA NEGOZIATA SENZA PREVIA PUBBLICAZIONE"
+    ],
+    "neutral": [
+      "AFFIDAMENTO DIRETTO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE",
+      "AFFIDAMENTO DIRETTO A SOCIETA' IN HOUSE",
+      "CONFRONTO COMPETITIVO IN ADESIONE AD ACCORDO QUADRO/CONVENZIONE"
+    ],
+    "sensitivity": {
+      "draws": 500,
+      "spread": 0.1,
+      "seed": 886
+    },
+    "volatileServicesPoints": 100,
+    "concentrationExcludedCpvDivisions": [
+      "90",
+      "65",
+      "09"
+    ],
+    "implausibleEarlyPaymentDays": 60,
+    "minPeers": 30
+  },
+  "sources": [
+    {
+      "id": "opencivitas",
+      "label": "OpenCivitas, fabbisogni standard e livelli dei servizi 2021 e 2022",
+      "owner": "MEF e SOSE",
+      "url": "https://www.opencivitas.it/",
+      "license": "CC BY 4.0"
+    },
+    {
+      "id": "siope",
+      "label": "SIOPE, pagamenti di cassa dei Comuni 2024 e 2025",
+      "owner": "Ragioneria Generale dello Stato e Banca d'Italia",
+      "url": "https://www.siope.it/",
+      "license": "non dichiarata dalla fonte"
+    },
+    {
+      "id": "anac-cig",
+      "label": "ANAC, CIG pubblicati nel 2025",
+      "owner": "ANAC",
+      "url": "https://dati.anticorruzione.it/opendata/dataset/cig-2025",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "id": "anac-aggiudicazioni",
+      "label": "ANAC, aggiudicazioni dei CIG 2025",
+      "owner": "ANAC",
+      "url": "https://dati.anticorruzione.it/opendata",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "id": "istat",
+      "label": "ISTAT SITUAS, caratteristiche geografiche dei Comuni",
+      "owner": "ISTAT",
+      "url": "https://situas.istat.it/",
+      "license": "CC BY 4.0"
+    },
+    {
+      "id": "pcc",
+      "label": "Tempi di pagamento dei fornitori 2024 e 2025 (Piattaforma dei Crediti Commerciali)",
+      "owner": "Ragioneria Generale dello Stato",
+      "url": "https://www.rgs.mef.gov.it/VERSIONE-I/tempi_di_pagamento_e_debiti_commerciali_delle_pubbliche_amministrazioni/monitoraggio/dati_per_singola_amministrazione/",
+      "license": "dati pubblicati per legge (art. 1, comma 869, legge 145/2018)"
+    },
+    {
+      "id": "ispra",
+      "label": "Raccolta differenziata dei rifiuti urbani per Comune 2022 e 2023",
+      "owner": "ISPRA, Catasto nazionale rifiuti",
+      "url": "https://www.catasto-rifiuti.isprambiente.it/index.php?pg=downloadComune",
+      "license": "dati pubblici ISPRA"
+    },
+    {
+      "id": "dissesto",
+      "label": "Decreto 17 giugno 2024, Comuni in dissesto finanziario (controllo esterno)",
+      "owner": "Ministero dell'Interno, Direzione centrale per la finanza locale",
+      "url": "https://dait.interno.gov.it/documenti/decreto-fl-17-06-2024.pdf",
+      "license": "Atto pubblico"
+    }
+  ]
+}

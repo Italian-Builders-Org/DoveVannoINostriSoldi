@@ -37,6 +37,7 @@ const announcements = [
     href: latestPaper.webPath ?? "/studi",
   }] : []),
   { label: "Analisi", title: stateBudgetReport.title, description: "Spesa pubblica: costi evitabili, anomalie ed errori", cta: "Leggi l’analisi", href: `/studi/${stateBudgetReport.slug}` },
+  { label: "Nuovo", title: "DVNS Index", description: "DVNS Index: il tuo Comune spende meglio o peggio degli altri?", cta: "Scopri la classifica", href: "/dvns-index" },
 ];
 
 export const metadata: Metadata = {

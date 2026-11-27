@@ -47,6 +47,8 @@
   line-height: 1.5;
   text-transform: none;
   letter-spacing: normal;
+  /* Callers may sit in a nowrap context (a heading keeping the '?' on its last word). */
+  white-space: normal;
   box-shadow: var(--shadow-md);
 }
 

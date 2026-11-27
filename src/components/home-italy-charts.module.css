@@ -241,8 +241,9 @@
 
 @media (max-width: 640px) {
   /* Name, "?" and share on the title row; the bar takes the full row width
-     underneath, so a 42% share is drawn at 42% of the card, not of 60%. */
-  .bars { gap: var(--space-3); }
+     underneath, so a 42% share is drawn at 42% of the card, not of 60%.
+     Rows keep the desktop 8px gap: each row is already a 44px target plus
+     its bar (scripts/browser/home-composition.mjs allows at most 9px). */
   /* Fixed columns, as on desktop: the "?" sits in its own 44px column just
      before the share, so the triggers line up on every row instead of
      following the label length. The share column (3.4rem) keeps the 44px

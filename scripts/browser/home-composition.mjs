@@ -54,7 +54,9 @@ async function geometry(page) {
     const copy = row.querySelector(":scope > div");
     const name = copy.querySelector("a");
     const amount = copy.querySelector('[class*="barAmount"]');
-    const button = copy.querySelector("button");
+    // The "?" sits in its own fixed column after the copy (barInfo), empty
+    // on rows without a perimeter note.
+    const button = row.querySelector(':scope > [class*="barInfo"] button');
     const bounds = (element) => {
       const { top, bottom, left, right, height, width } = element.getBoundingClientRect();
       return { top, bottom, left, right, height, width };

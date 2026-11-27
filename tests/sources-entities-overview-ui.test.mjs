@@ -197,3 +197,10 @@ test("/spese/panoramica: the region map legend reads at the page's 12px note siz
   // At 12px the ranges overflowed their column by up to 18px at 320px wide.
   assert.match(css, /@media \(max-width: 480px\) \{\s*\.legendClasses span \{ white-space: normal; \}/);
 });
+
+test("an info tooltip wraps its text even inside a nowrap heading", async () => {
+  // /spese/panoramica keeps the '?' glued to the H2's last word with
+  // white-space: nowrap; inherited, it laid the tooltip text on one 700px line.
+  const css = await read("../src/components/info-tooltip.module.css");
+  assert.match(rule(css, ".tooltip"), /white-space: normal;/);
+});

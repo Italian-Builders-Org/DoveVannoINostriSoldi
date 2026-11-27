@@ -370,7 +370,7 @@ export const sourceCatalog: PublicSource[] = [
     name: "INPS · NASpI beneficiari e trattamenti",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",
     area: "Indennità di disoccupazione NASpI",
-    cadence: "Annuale; nove package SDMX verificati, preparati dalla fonte il 2024-12-17",
+    cadence: "Annuale; nove package SDMX verificati, preparati dalla fonte il 17 dicembre 2024",
     coverage:
       "Italia per ripartizioni, regioni e province, 2018–2022; beneficiari e trattamenti per sesso, classe di età e durata teorica",
     format: "SDMX-ML 2.1 · snapshot JSON verificato",
@@ -383,7 +383,7 @@ export const sourceCatalog: PublicSource[] = [
     name: "INPS · Assegno Unico (nuclei e figli)",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",
     area: "Assegno Unico e Universale a domanda",
-    cadence: "Annuale; package aggiornati al 2026-01-17",
+    cadence: "Annuale; package aggiornati al 17 gennaio 2026",
     coverage:
       "Italia per 106 province, 2022–2024; nuclei e figli con flag disabilità; package figli anche per classe ISEE ed età",
     format: "CSV UTF-8 · snapshot JSON verificato",
@@ -396,7 +396,7 @@ export const sourceCatalog: PublicSource[] = [
     name: "INPS · integrazioni salariali (lavoratori, domande, mensilità)",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",
     area: "Ammortizzatori sociali · integrazioni salariali",
-    cadence: "Annuale; package aggiornati al 2026-01-15",
+    cadence: "Annuale; package aggiornati al 15 gennaio 2026",
     coverage:
       "Italia per 20 regioni, dettaglio mensile 2023; cassa integrazione ordinaria, straordinaria e in deroga, FIS e fondi di solidarietà",
     format: "CSV UTF-8 · snapshot JSON verificato",
@@ -409,7 +409,7 @@ export const sourceCatalog: PublicSource[] = [
     name: "INPS · CIG Fondi di Solidarietà (ore autorizzate)",
     owner: "INPS — Istituto Nazionale della Previdenza Sociale",
     area: "Ammortizzatori sociali · CIG Fondi di Solidarietà",
-    cadence: "Annuale; package aggiornato al 2026-01-17",
+    cadence: "Annuale; package aggiornato al 17 gennaio 2026",
     coverage:
       "Italia per 20 regioni, dettaglio mensile 2023–2024; gestioni FIS e Altri fondi; rami Industria/Commercio/Credito/ex Enti Pubblici",
     format: "CSV UTF-8 · snapshot JSON verificato",
@@ -435,7 +435,7 @@ export const sourceCatalog: PublicSource[] = [
     name: "INL · vigilanza ispettiva (ispezioni, esiti, recuperi)",
     owner: "Ispettorato Nazionale del Lavoro",
     area: "Vigilanza sul lavoro · controlli e irregolarità",
-    cadence: "Annuale; Relazione 2025 pubblicata il 2026-04-23",
+    cadence: "Annuale; Relazione 2025 pubblicata il 23 aprile 2026",
     coverage:
       "Italia, DIL, regioni e province 2025; settori Agricoltura/Industria/Edilizia/Terziario/ND",
     format: "PDF ufficiale · snapshot JSON verificato",

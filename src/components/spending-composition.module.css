@@ -66,7 +66,7 @@
   width: auto;
   height: auto;
   font-family: var(--font-heading);
-  font-size: clamp(10px, 3.1cqw, 13px);
+  font-size: clamp(12px, 3.1cqw, 13px);
   font-weight: 650;
   line-height: 1;
 }
@@ -79,7 +79,7 @@
   container-type: inline-size;
 }
 .tileShare { white-space: nowrap; }
-@container (max-width: 64px) {
+@container (max-width: 72px) {
   .tileShare { display: none; }
 }
 /* Real spending (services, investment) takes the petrol data ramp used by the
@@ -134,7 +134,7 @@
   align-self: center;
   margin-block: 2px;
   /* A visible edge so the lightest swatch never reads as empty. */
-  border: 1px solid color-mix(in srgb, var(--color-text) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 60%, transparent);
 }
 /* Flex stack avoids Safari collapsing blockified phrasing inside <button>. */
 .legendCopy {

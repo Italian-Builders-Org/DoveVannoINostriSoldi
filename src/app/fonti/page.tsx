@@ -10,6 +10,7 @@ import {
   clusterPublisherSources,
   coveragePreview,
   coverageWithoutPeriod,
+  periodWithoutRepeatedCaveat,
   groupSourcesByPublisher,
   plainRangeLabel,
   publisherAnchor,
@@ -75,8 +76,8 @@ function SourceRow({
 }) {
   const { source, title } = entry;
   const note = subtitle(entry, inCluster);
-  const period = coveredPeriod(source.slug);
-  const coverage = coverageWithoutPeriod(source.coverage, period);
+  const coverage = coverageWithoutPeriod(source.coverage, coveredPeriod(source.slug));
+  const period = periodWithoutRepeatedCaveat(coveredPeriod(source.slug), coverage);
   const preview = coveragePreview(coverage, LONG_COVERAGE);
   return (
     <tr id={source.slug} role="row" className={inCluster ? `${styles.sourceRow} ${styles.clusterMember}` : styles.sourceRow}>

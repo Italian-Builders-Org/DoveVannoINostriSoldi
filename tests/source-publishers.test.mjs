@@ -148,3 +148,13 @@ test("a description is not clamped when the hidden remainder is short", () => {
   const clearly = "a".repeat(100) + " " + "b ".repeat(30);
   assert.equal(coveragePreview(clearly, 100), "a".repeat(100) + "…");
 });
+
+test("the period column drops 'periodo distinto per indicatore' only when the description already says it", async () => {
+  const { periodWithoutRepeatedCaveat } = await import("../src/lib/source-publishers.ts");
+  const label = "2004-2023; periodo distinto per indicatore";
+  assert.equal(periodWithoutRepeatedCaveat(label, "Sei indicatori; 14.481 valori. Periodi propri fra 2004 e 2023."), "2004-2023");
+  assert.equal(periodWithoutRepeatedCaveat(label, "Nove indicatori. Periodi e disponibilità per sesso distinti per indicatore fra 2004 e 2024."), "2004-2023");
+  // A description silent on the periods keeps the caveat: it is a data limit, not noise.
+  assert.equal(periodWithoutRepeatedCaveat(label, "Italia, ripartizioni, regioni e 111 province"), label);
+  assert.equal(periodWithoutRepeatedCaveat("2014-2024", "Periodi propri fra 2014 e 2024"), "2014-2024");
+});

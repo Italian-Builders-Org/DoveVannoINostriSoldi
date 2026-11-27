@@ -195,6 +195,19 @@ export function coverageWithoutPeriod(coverage: string, period: string | null): 
 }
 
 /**
+ * The period label without "; periodo distinto per indicatore" when the
+ * description next to it already says the periods differ by indicator
+ * ("Periodi propri fra...", "...distinti per indicatore"): the same caveat
+ * once per row, not twice. A description silent on it keeps the caveat.
+ */
+export function periodWithoutRepeatedCaveat(period: string, coverage: string): string {
+  const caveat = /;\s*periodo distinto per indicatore$/;
+  if (!caveat.test(period)) return period;
+  const described = /periodi propri|distint[ie] per indicatore/i.test(coverage);
+  return described ? period.replace(caveat, "") : period;
+}
+
+/**
  * The cadence shared by every source of a theme sub-group, shown once in the
  * sub-group heading instead of on each row; null when the rows differ or the
  * group is too small to be a sub-group.

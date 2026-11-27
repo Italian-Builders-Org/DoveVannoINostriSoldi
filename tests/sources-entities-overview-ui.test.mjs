@@ -154,3 +154,28 @@ test("footer: the rule above the AI note spans the footer while the text keeps i
   assert.doesNotMatch(disclaimer, /max-width/);
   assert.match(disclaimer, /padding-right: max\(0px, calc\(100% - 72ch\)\);/);
 });
+
+test("/fonti: cadence notes print dates the Italian way, never ISO", async () => {
+  const sources = await read("../src/lib/sources.ts");
+  const cadences = [...sources.matchAll(/cadence: "([^"]*)"/g)].map((match) => match[1]);
+  assert.ok(cadences.length > 20);
+  assert.deepEqual(cadences.filter((text) => /\d{4}-\d{2}-\d{2}/.test(text)), []);
+});
+
+test("/fonti: rows run the period through the repeated-caveat filter", async () => {
+  const page = await read("../src/app/fonti/page.tsx");
+  assert.match(page, /periodWithoutRepeatedCaveat\(coveredPeriod\(source\.slug\), coverage\)|periodWithoutRepeatedCaveat\(/);
+});
+
+test("/spese/panoramica: treemap index labels never drop below 12px; swatches keep a 3:1 edge", async () => {
+  const css = await read("../src/components/spending-composition.module.css");
+  assert.match(rule(css, ".tileIndex"), /font-size: clamp\(12px, 3\.1cqw, 13px\);/);
+  assert.match(css, /@container \(max-width: 72px\) \{\s*\.tileShare \{ display: none; \}/);
+  assert.match(rule(css, ".legendSwatch"), /border: 1px solid color-mix\(in srgb, var\(--color-text\) 60%, transparent\);/);
+});
+
+test("/spese/panoramica: a card header's '?' glyph ends on the values' right edge", async () => {
+  const css = await read("../src/app/spese/panoramica/panoramica.module.css");
+  // 44px target, 18px glyph: 13px of the box sit right of the glyph.
+  assert.match(css, /\.panelHead > \[data-info-tooltip\] \{ margin-inline-end: -13px; \}/);
+});

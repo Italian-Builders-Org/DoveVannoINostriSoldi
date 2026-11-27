@@ -50,6 +50,10 @@
   gap: var(--space-2) var(--space-3);
 }
 
+/* Optical edge: the 44px '?' target centres an 18px glyph, so the glyph,
+   not the invisible box, lines up with the values column below. */
+.panelHead > [data-info-tooltip] { margin-inline-end: -13px; }
+
 .panelHead > h2 {
   flex: 1 1 auto;
   min-width: 0;

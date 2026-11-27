@@ -11,7 +11,7 @@ Se il servizio gratuito non è disponibile, l’invio apre il pannello della chi
 
 Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
 conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
-sono allineate a sinistra e supportano paragrafi, titoli, grassetti, codice inline ed
+sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
 elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
 
 Ogni risposta propone fino a quattro pagine del sito («Approfondisci su DVNS»), scelte dal
@@ -32,7 +32,7 @@ Il modello legge i limiti completi del catalogo; la risposta mostra una versione
 senza dettagli di protocollo MCP/API (`public-caveat.ts`).
 
 Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
-La copia della risposta comprende i link alle fonti. Modifica e rigenerazione sostituiscono
+La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.
 

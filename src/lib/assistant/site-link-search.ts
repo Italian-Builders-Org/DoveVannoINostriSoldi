@@ -35,7 +35,9 @@ const STOPWORDS = new Set([
   "soltanto", "oppure", "ciao", "salve", "buongiorno", "buonasera", "grazie", "aiuto", "oggi",
   "ieri", "domani", "stai", "progetto", "dvns", "vostri", "nostri", "vostro", "nostro", "funziona",
   "usate", "usare", "usano", "avere", "essere", "cambiati", "cambiato", "confronto", "confronta",
-  "rispetto", "secondo", "sta", "regione", "regioni", "comune", "comuni", "provincia", "province",
+  "rispetto", "secondo", "sta", "gli", "uno", "una", "dal", "dallo", "dalla", "dai", "dagli", "dalle",
+  "alla", "allo", "agli", "alle", "non", "cos", "qual", "costa", "costano", "costato", "spende",
+  "spendono", "spendiamo", "spendere", "paga", "pagano", "pagato", "regione", "regioni", "comune", "comuni", "provincia", "province",
 ]);
 
 type Probe = Readonly<{ query: string; accept: ReadonlySet<SearchMatchReason>; single: boolean }>;

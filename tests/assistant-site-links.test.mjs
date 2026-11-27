@@ -5,6 +5,7 @@ import test from 'node:test';
 import './helpers/register-ts-alias.mjs';
 
 const { DATASET_IDS, datasetCatalog } = await import('../src/lib/mcp/catalog.ts');
+const { default: integratedCatalog } = await import('../src/data/generated/integrated/catalog.json', { with: { type: 'json' } });
 const { AI_MAX_SITE_LINKS, isAiResponse, isInternalSiteHref } = await import('../src/lib/assistant/byok-contracts.ts');
 const { DATASET_SITE_LINKS, cleanSiteLink, linksForDatasetQuery } = await import('../src/lib/assistant/site-link-map.ts');
 const { MAX_SEARCH_PROBES, searchSiteLinks } = await import('../src/lib/assistant/site-link-search.ts');
@@ -72,9 +73,15 @@ function assertValidLinks(links, context) {
 
 test('DATASET_SITE_LINKS covers every registered dataset id with valid real app routes and never /mcp', () => {
   assert.deepEqual(Object.keys(DATASET_SITE_LINKS).sort(), [...DATASET_IDS].sort());
+  const integratedSlugs = new Set(integratedCatalog.datasets.map((dataset) => dataset.id));
   for (const dataset of datasetCatalog) {
-    assertValidLinks(linksForDatasetQuery({ dataset: dataset.id }), `bare:${dataset.id}`);
-    assertValidLinks(linksForDatasetQuery(dataset.exampleQuery), `example:${dataset.id}`);
+    for (const links of [linksForDatasetQuery({ dataset: dataset.id }), linksForDatasetQuery(dataset.exampleQuery)]) {
+      assertValidLinks(links, dataset.id);
+      // /dati/[dataset] renders any slug; only published integrated datasets have a page.
+      for (const { href } of links.filter((link) => link.href.startsWith('/dati/'))) {
+        assert.ok(integratedSlugs.has(decodeURIComponent(href.split(/[?#]/u)[0].slice('/dati/'.length))), `${dataset.id}: unknown dataset page ${href}`);
+      }
+    }
   }
 });
 
@@ -253,6 +260,16 @@ test('search fallback stays on topic for broad words, sections and acronyms', ()
   assert.equal(new Set(queries).size, queries.length, `duplicate scans: ${queries.join(' | ')}`);
 });
 
+test('search fallback ignores near-miss aliases and spends its scans on content words', () => {
+  for (const question of ['Quanto costa lo sport?', 'Quanto costa un asilo nido?', 'Quanto costa il Parlamento?']) {
+    const links = selectAssistantSiteLinks([], question);
+    assert.ok(links.every((link) => !link.href.startsWith('/appalti/')), `${question}: ${JSON.stringify(links)}`);
+  }
+  assert.equal(selectAssistantSiteLinks([], 'Quanto costa lo sport?')[0]?.href, '/spese/sport');
+  const nurseries = selectAssistantSiteLinks([], 'Quali sono i progetti del PNRR per gli asili nido?');
+  assert.ok(nurseries.some((link) => link.href.startsWith('/coesione/asili')), JSON.stringify(nurseries));
+});
+
 test('truncated page titles and descriptions say they were cut', () => {
   const [link] = linksForDatasetQuery({ dataset: 'ipa_enti' });
   const long = cleanSiteLink({ ...link, title: 'T'.repeat(200), description: 'D'.repeat(300) });
@@ -362,6 +379,11 @@ test('humanizeAssistantCaveat removes MCP/API jargon across the whole catalog wh
     /\bmatchedRows\b/u,
     /\bAccesso al corpus\b/u,
     /\bpagine di massimo \d+ righe\b/u,
+    /\bflag [a-z/]+ resta(?:no)? null\b/iu,
+    /\bcodeSsn=/u,
+    /\bin centesimi di euro\b/iu,
+    /\d+_\d{3}\b/u,
+    /\brestano null\b/iu,
   ];
 
   for (const dataset of datasetCatalog) {

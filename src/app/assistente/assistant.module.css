@@ -103,7 +103,8 @@
 .draftError { margin: 8px 12px; color: var(--color-critical); font-size: 12px; }
 
 .page[data-conversation="true"] .stage { justify-content: flex-end; padding-top: 0; padding-bottom: 10px; }
-.conversation { position: relative; flex: 1; width: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
+/* The scroller clips horizontally too: a 6px inner gutter, cancelled by the negative margin, keeps focus rings of flush-left links visible. */
+.conversation { position: relative; flex: 1; width: calc(100% + 12px); margin-inline: -6px; padding-inline: 6px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px; }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
@@ -284,9 +285,8 @@
   .page .sourceLink { padding-block: 12px; }
   .limits summary { min-height: 44px; }
 }
+/* Durations are already near zero globally under reduced motion; this only removes the hover nudge. */
 @media (prefers-reduced-motion: reduce) {
-  .page .siteLinks, .page .evidence, .page .aiDisclaimer { transition: opacity 180ms ease; }
-  .siteLink:hover > svg, .limits[open] summary svg { transition: none; }
   .siteLink:hover > svg { transform: none; }
 }
 @media (max-width: 600px) {

@@ -233,6 +233,11 @@ export function plainLinks(text: string): string {
   let result = "";
   for (let index = 0; index < text.length; index++) {
     if (text[index] === "\\") { result += text.slice(index, index + 2); index++; continue; }
+    if (text[index] === "`") {
+      const close = text.indexOf("`", index + 1);
+      const newline = text.indexOf("\n", index + 1);
+      if (close !== -1 && (newline === -1 || close < newline)) { result += text.slice(index, close + 1); index = close; continue; }
+    }
     if (text[index] === "[" && text[index - 1] !== "!") {
       const link = matchLink(text, index);
       if (link) { result += link.label; index = link.end - 1; continue; }

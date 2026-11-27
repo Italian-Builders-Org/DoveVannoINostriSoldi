@@ -291,7 +291,7 @@ export const DATASET_SITE_LINKS: Readonly<Record<DatasetId, DatasetLinkResolver>
   pnrr_progetti: (query) => {
     const entries: [string, string | undefined][] = [];
     for (const [key, pattern] of Object.entries(PNRR_FILTER_PATTERNS) as [keyof typeof PNRR_FILTER_PATTERNS, RegExp][]) {
-      const value = query[key]?.trim();
+      const value = query[key]?.trim().toUpperCase();
       if (value && pattern.test(value)) entries.push([key, value]);
     }
     return [{

@@ -144,6 +144,7 @@ test("linkHrefs lists the hrefs that actually became links, in order and without
 
 test("plainLinks flattens every link to its label for the clipboard, including nested parentheses and images", () => {
   assert.equal(plainLinks("Vedi [i **Comuni**](/a(b)) e ![x](/i.png), \\[non link\\]"), "Vedi i **Comuni** e ![x](/i.png), \\[non link\\]");
+  assert.equal(plainLinks("Sintassi: `[testo](/percorso)`"), "Sintassi: `[testo](/percorso)`", "code spans are copied verbatim");
 });
 
 test("while streaming, bold that has not closed yet is already bold and a bare marker is hidden", () => {

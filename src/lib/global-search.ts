@@ -99,6 +99,7 @@ const SEARCH_MATCH_LABELS: Readonly<Record<SearchMatchReason, string>> = {
   "title-tokens": "Parole nel titolo",
   "title-fuzzy": "Corrispondenza simile nel titolo",
   alias: "Alias o sinonimo",
+  "alias-fuzzy": "Corrispondenza simile in un alias",
   description: "Descrizione",
   entity: "Nome dell'ente",
 };
@@ -526,7 +527,7 @@ function resultForDocument(entry: PreparedDocument, query: SearchField): SearchR
             : "title-tokens";
     score = 6_000 + titleMatch.quality * 100;
   } else if (aliasMatch) {
-    reason = "alias";
+    reason = aliasMatch.reason === "fuzzy" ? "alias-fuzzy" : "alias";
     score = 4_000 + aliasMatch.quality * 100;
   } else if (descriptionMatch) {
     reason = "description";

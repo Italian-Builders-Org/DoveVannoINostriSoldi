@@ -11,6 +11,7 @@ export type SearchMatchReason =
   | "title-tokens"
   | "title-fuzzy"
   | "alias"
+  | "alias-fuzzy"
   | "description"
   | "entity";
 

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
-import { REPO_URL, SOCIAL_LINKS } from "../../src/lib/site.ts";
+import { CHATGPT_PLUGIN_URL, REPO_URL, SOCIAL_LINKS } from "../../src/lib/site.ts";
 import { defaultArtifactsDir, runScenario } from "./harness.mjs";
 
 /** Exercise the actual anchors; third-party page availability is not part of our UI contract. */
@@ -13,6 +13,7 @@ export async function verifyExternalIconLinks(browser, baseUrl) {
   const links = [
     { selector: `.header-actions a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub header" },
     ...SOCIAL_LINKS.map((social) => ({ selector: `.footer-social a[href="${social.href}"]`, href: social.href, label: social.label })),
+    { selector: `.footer-actions a[href="${CHATGPT_PLUGIN_URL}"]`, href: CHATGPT_PLUGIN_URL, label: "ChatGPT footer" },
     { selector: `.footer-actions a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub footer" },
   ];
   try {

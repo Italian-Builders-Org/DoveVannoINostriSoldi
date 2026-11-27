@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  ChatGptIcon,
   Facebook01Icon,
   GithubIcon,
   InstagramIcon,
@@ -8,7 +9,7 @@ import {
   TiktokIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { REPO_URL, SOCIAL_LINKS } from "@/lib/site";
+import { CHATGPT_PLUGIN_URL, REPO_URL, SOCIAL_LINKS } from "@/lib/site";
 
 const SOCIAL_ICONS = {
   threads: ThreadsIcon,
@@ -43,6 +44,7 @@ export function SiteFooter() {
             <Link prefetch={false} href="/privacy">Privacy</Link>
             <Link prefetch={false} href="/termini">Termini</Link>
             <Link prefetch={false} href="/supporto">Supporto</Link>
+            <a href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="DVNS su ChatGPT (nuova scheda)"><HugeiconsIcon icon={ChatGptIcon} size={16} aria-hidden="true" /> ChatGPT</a>
             <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)"><HugeiconsIcon icon={GithubIcon} size={16} aria-hidden="true" /> GitHub</a>
           </nav>
         </div>

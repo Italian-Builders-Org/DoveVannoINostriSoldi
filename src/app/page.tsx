@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   AiChat02Icon,
   ArrowRight01Icon,
+  ChatGptIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { HomePathways } from "@/components/home-pathways";
@@ -19,7 +20,7 @@ import {
 } from "@/lib/siope-snapshot";
 import { SiteDirectory } from "@/components/site-directory";
 import { HOME_ASSISTANT_EXAMPLES, HOME_QUESTION_MAX, assistantHref } from "@/lib/assistant-home";
-import { MOBILITA_MAP_PATH } from "@/lib/site";
+import { CHATGPT_PLUGIN_URL, MOBILITA_MAP_PATH } from "@/lib/site";
 import Image from "next/image";
 import styles from "./home.module.css";
 
@@ -149,7 +150,12 @@ export default async function HomePage({
                 <li key={example}><Link prefetch={false} href={assistantHref(example)}>{example}</Link></li>
               ))}
             </ul>
-            <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
+            <div className={styles.askFoot}>
+              <p>Assistente AI · risposte con le fonti del sito · 10 domande gratuite al giorno</p>
+              <a className={styles.askChatgpt} href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="Usa DVNS su ChatGPT (nuova scheda)">
+                <HugeiconsIcon icon={ChatGptIcon} size={15} aria-hidden="true" />Usa DVNS anche su ChatGPT<span aria-hidden="true">↗</span>
+              </a>
+            </div>
           </div>
         </div>
         <Link prefetch={false} href="/dvns-index" className={styles.indexLaunch} data-dvns-index-launch>

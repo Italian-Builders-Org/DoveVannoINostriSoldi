@@ -14,6 +14,8 @@ export const PUBLIC_COMUNI_URL = "https://comuni.dovevannoinostrisoldi.com";
 export const MOBILITA_MAP_PATH = "/mappe/mobilita";
 export const MOBILITA_MAP_EXPLORER_PATH = "/mappe/mobilita/explorer/index.html";
 export const PUBLIC_MCP_ENDPOINT = `${PUBLIC_SITE_URL}/api/mcp`;
+/** Public listing of the DVNS app in ChatGPT: the same MCP data, used from a ChatGPT conversation. */
+export const CHATGPT_PLUGIN_URL = "https://chatgpt.com/plugins/plugin_asdk_app_6aa2d3d35ef08191aa832313d4ca9c41";
 export const BUY_ME_A_COFFEE_URL = "https://www.buymeacoffee.com/dovevannoinostrisoldi";
 export const GOOGLE_ANALYTICS_MEASUREMENT_ID = "G-6NKJM5HWR4";
 

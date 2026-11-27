@@ -279,10 +279,15 @@ test("ChatGPT plugin link is one shared address, opened safely from the home ask
     readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
   ]);
-  assert.match(site, /CHATGPT_PLUGIN_URL = "https:\/\/chatgpt\.com\/plugins\/plugin_asdk_app_[0-9a-f]{32}"/);
+  const address = /^export const CHATGPT_PLUGIN_URL = "([^"]+)";$/m.exec(site)?.[1];
+  assert.ok(address, "CHATGPT_PLUGIN_URL mancante in site.ts");
+  const url = new URL(address);
+  // Parsed, not pattern-matched: the host and the listing path are compared whole.
+  assert.equal(url.origin, "https://chatgpt.com");
+  assert.match(url.pathname, /^\/plugins\/plugin_asdk_app_[0-9a-f]{32}$/);
   for (const source of [footer, home]) {
     // The address lives in site.ts only: a copy in a component would drift when the listing changes.
-    assert.doesNotMatch(source, /chatgpt\.com/);
+    assert.equal(source.includes(url.hostname), false);
     assert.match(source, /<a (?:className=\{[^}]+\} )?href=\{CHATGPT_PLUGIN_URL\} target="_blank" rel="noopener noreferrer"[^>]*aria-label="[^"]*ChatGPT \(nuova scheda\)"/);
   }
   // Touch layouts need a full-height target; the desktop row stays compact.

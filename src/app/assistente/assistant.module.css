@@ -116,12 +116,12 @@
    cancelled by the negative margin, keeps focus rings and the optically pulled action row visible. */
 .conversation { position: relative; flex: 1; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px;
   /* Scrolled text fades under the toolbar instead of being cut at a hard edge. */
-  mask-image: linear-gradient(to bottom, transparent, #000 24px); }
+  mask-image: linear-gradient(to bottom, transparent, #000 12px); }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
 .userMessage { align-self: flex-end; max-width: 85%; padding: 12px 18px; border-radius: var(--assistant-radius-panel) var(--assistant-radius-panel) var(--assistant-radius-tag) var(--assistant-radius-panel); background: var(--assistant-bubble); color: var(--assistant-ink); font-size: 15px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
-.assistantMessage { min-width: 0; font-size: 14px; line-height: 1.7; }
+.assistantMessage { min-width: 0; font-size: 15px; line-height: 1.65; }
 .replyIdentity { display: flex; align-items: center; gap: 9px; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
 .replyIdentity small { margin-left: auto; color: var(--assistant-muted); font-size: 11px; font-weight: 400; }
 .status { display: flex; align-items: center; gap: 9px; color: var(--assistant-muted); }
@@ -142,7 +142,7 @@
 .comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
 .comparison .answer h3 { font-size: 16px; }
 
-.footer { display: flex; flex: none; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 12px max(28px, calc((100% - 720px) / 2)) 18px; color: var(--assistant-muted); font-size: 11px; }
+.footer { display: flex; flex: none; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 12px max(28px, calc((100% - 720px) / 2)) 18px; color: var(--assistant-muted); font-size: 12px; }
 .footer > div { display: flex; align-items: center; gap: 18px; }
 .footer button { min-height: 44px; padding: 0; border: 0; color: inherit; background: transparent; font-size: inherit; }
 .footer a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; }
@@ -173,13 +173,13 @@
   .welcome > p { font-size: 13px; }
   .inputSurface { padding: 12px 8px 8px 10px; }
   .triggers { display: none; }
-  .inputSurface textarea { min-height: 94px; font-size: 16px; }
+  .inputSurface textarea { min-height: 72px; font-size: 16px; }
   .composerControls { gap: 2px; }
   .suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 16px; }
   .suggestions button { justify-content: flex-start; min-height: 46px; padding: 9px 10px; font-size: 11px; }
   .suggestions svg { width: 15px; height: 15px; }
   .composerHint { margin-top: 12px; font-size: 10px; }
-  .footer { justify-content: center; gap: 6px; padding: 8px 20px 16px; font-size: 10px; text-align: center; }
+  .footer { justify-content: center; gap: 6px; padding: 8px 20px 16px; font-size: 12px; text-align: center; }
   .footer > span { width: 100%; }
   .footer > div { padding-right: 0; }
   .thread { padding-top: 12px; }
@@ -206,7 +206,7 @@
 .providerDialog > button { float: right; margin: -12px -12px 0 8px; }
 .providerDialog h2 { margin: 0 0 10px; font-size: 23px; font-weight: 550; letter-spacing: -.025em; }
 .page .consentDialog:focus-visible { outline: none; }
-.consentDialog h2 { margin-bottom: 8px; }
+.consentDialog h2 { margin-bottom: 8px; text-wrap: balance; }
 .consentDialog > p { margin-bottom: 16px; font-size: 15px; }
 .consentPoints { display: grid; gap: 10px; margin: 0 0 8px; padding-left: 18px; color: var(--assistant-ink); font-size: 13px; line-height: 1.55; }
 .consentPoints li::marker { color: var(--assistant-muted); }
@@ -230,11 +230,12 @@
 .providerSave { min-height: 44px; padding: 10px 16px; border: 0; border-radius: var(--assistant-radius-control); color: var(--color-on-strong); background: var(--color-text); font-size: 12px; }
 .aiText { white-space: pre-wrap; overflow-wrap: anywhere; }
 .aiText p { margin: 0 0 14px; }
+.aiText > :is(p, ul, ol, h3) { max-width: 68ch; }
 
 /* After the text, the answer reads: what was consulted and where to verify it, then where to
    continue on DVNS. Same section label for both, like .panel-title. */
 .replyHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); margin: 0 0 var(--space-2); }
-.replyLabel { margin: 0 0 10px; color: var(--color-neutral-700); font-size: 11px; font-weight: 600; letter-spacing: .09em; line-height: 1.4; text-transform: uppercase; }
+.replyLabel { margin: 0 0 10px; color: var(--assistant-ink); font-size: 14px; font-weight: 600; line-height: 1.4; }
 .replyHead .replyLabel { margin: 0; }
 .replyHint { margin: 0; color: var(--assistant-muted); font-size: 12px; line-height: 1.4; white-space: nowrap; }
 .page .inlineSiteLink { color: var(--color-accent-700); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
@@ -265,7 +266,7 @@
 /* inline-block, not flex: a long name wraps and the arrow follows its last word instead of drifting to the edge. */
 .page .sourceLink { display: inline-block; min-width: 0; padding-block: 6px; color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
 .sourceLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
-.sourcePeriod { padding-left: 2px; color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sourcePeriod { padding-left: 6px; color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* A system note, shaped unlike a Markdown quote so it never reads as the model's words. */
 .limits { display: flex; gap: var(--space-2); margin: var(--space-2) 0 var(--space-1); padding: 10px 12px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--color-neutral-700); background: var(--assistant-surface); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .limits svg { flex: none; margin-top: 1px; color: var(--assistant-muted); }
@@ -285,7 +286,7 @@
   .page .sourceLink:hover, .page .inlineSiteLink:hover { text-decoration-color: currentColor; }
 }
 @media (pointer: coarse) {
-  .page .sourceLink { padding-block: 9px; }
+  .page .sourceLink { padding-block: 6px; }
 }
 /* Durations are already near zero globally under reduced motion; this only removes the hover nudge. */
 @media (prefers-reduced-motion: reduce) {
@@ -326,7 +327,7 @@
 /* "AI" is a label of what follows, not a footnote: a small outlined tag next to the name. */
 .replyIdentity small { margin-left: 0; padding: 0 5px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-tag); color: var(--color-neutral-700); font-size: 10px; font-weight: 600; letter-spacing: .04em; line-height: 17px; }
 .messageActions { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin-top: 4px; }
-.actionsNote { margin-left: 8px; color: var(--assistant-muted); font-size: 11px; line-height: 1.5; }
+.actionsNote { margin-left: 8px; color: var(--assistant-muted); font-size: 12px; line-height: 1.5; }
 .messageActions button { display: inline-flex; justify-content: center; align-items: center; min-width: 36px; min-height: 36px; border: 0; border-radius: var(--assistant-radius-control); color: var(--assistant-muted); background: transparent; transition: transform 140ms cubic-bezier(.23, 1, .32, 1), background-color 140ms ease; }
 .messageActions button:active { transform: scale(.96); }
 .messageActions button:disabled { opacity: .4; }
@@ -338,12 +339,11 @@
 .editMessage > div { display: flex; justify-content: flex-end; gap: 8px; }
 .editMessage button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); background: var(--assistant-panel); color: var(--assistant-ink); font-size: 12px; }
 .editMessage button[type="submit"] { background: var(--assistant-send); color: var(--assistant-on-send); }
-.jumpLatest { position: absolute; z-index: 1; bottom: calc(100% + 10px); left: calc(50% - 20px); display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--assistant-stroke); border-radius: 50%; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-sm); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
+.jumpLatest { position: absolute; z-index: 1; bottom: calc(100% + 10px); right: 8px; display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--assistant-stroke); border-radius: 50%; background: var(--assistant-panel); color: var(--assistant-ink); box-shadow: var(--shadow-md); transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out); }
 @starting-style { .jumpLatest { opacity: 0; transform: translateY(4px) scale(.96); } }
 .jumpLatest:active { transform: scale(.96); }
-/* Content fades out under the docked composer instead of being cut; the fade is as tall as the
-   jump button's band, so whatever sits under the button is already receding. */
-.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: 56px; background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
+/* Content fades out under the docked composer instead of being cut at a hard edge. */
+.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: 24px; background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
 /* Icons sit inside 36–44px hit areas: pull the row back so the glyphs line up with the text edge. */
 .assistantMessage > .messageActions { margin-left: -9px; }
 .userBlock > .messageActions { margin-right: -9px; }
@@ -433,7 +433,7 @@
 .activity { margin: 4px 0 14px; font-size: 12px; color: var(--assistant-muted); }
 .activitySummary { display: flex; align-items: center; gap: 7px; max-width: 100%; min-height: 32px; margin-left: -8px; padding: 2px 8px; border: 0; border-radius: var(--assistant-radius-control); transition: background-color 140ms ease, color 140ms ease; color: inherit; background: transparent; text-align: left; }
 .activitySummary time { color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-.activitySummary time::before { content: "· "; }
+.activitySummary time::before { content: "·"; margin-right: 7px; }
 .activityBody { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 220ms cubic-bezier(.23,1,.32,1), opacity 180ms ease; }
 .activityBody[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
 .activityBody > ol { min-height: 0; margin: 0; padding: 0; overflow: hidden; list-style: none; }
@@ -471,7 +471,7 @@
 :global(html):has(.page), :global(body):has(.page) { background: var(--color-raised); }
 .providerDialog a { display: inline; overflow-wrap: anywhere; }
 @media (max-width: 600px) {
-  .page[data-conversation="true"] .footer { gap: 2px 14px; padding-inline: 16px; }
+  .page[data-conversation="true"] .footer { justify-content: space-between; gap: 2px 14px; padding-inline: 16px; }
   .providerButton { max-width: min(230px, 62vw); white-space: normal; text-align: left; }
   .page .providerActions { flex-direction: column-reverse; align-items: stretch; }
   .page .providerActions button { min-height: 48px; }

@@ -66,7 +66,7 @@ try {
     assert.equal(JSON.stringify(requests[0].body).includes('test-only-openai-key-123'),false);
     assert.equal(requests[0].body.consent,true);
     assert.equal(await page.$$eval('[data-assistant-reply] b',els=>els.length),0);
-    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),4,'2 bold runs + 2 site link titles');
+    assert.equal(await page.$$eval('[data-assistant-reply] strong',els=>els.length),5,'2 bold runs + 2 site link titles + the data-limit label');
     const reply=await page.$eval('[data-assistant-reply]',el=>({
       list:[...el.querySelectorAll('ul li')].some(li=>li.textContent==='Periodo 2025'),
       dash:/(^|\n)- /.test(el.innerText),

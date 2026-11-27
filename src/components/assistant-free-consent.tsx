@@ -19,10 +19,10 @@ export function AssistantFreeConsent({ onAccept, onClose }: { onAccept: () => vo
     <h2 id="assistant-free-title">Domande gratuite: cosa condividi</h2>
     <p id="assistant-free-description">{FREE_DAILY_QUESTIONS} domande al giorno, generate da Regolo, il servizio AI che usiamo per la prova. La quota riparte a mezzanotte, ora italiana.</p>
     <ul className={styles.consentPoints}>
-      <li>Anche una risposta interrotta usa una domanda.</li>
       <li>Regolo riceve domanda, contesto della chat e allegati, e dichiara di non conservarli né usarli per il training. <a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">Zero data retention<span aria-hidden="true">{" "}↗</span></a></li>
-      <li>Un cookie tecnico identifica il browser; il limite può essere condiviso sulla stessa rete.</li>
       <li>Non inviare dati personali o riservati. <a href="/privacy" target="_blank" rel="noreferrer">Privacy DVNS<span aria-hidden="true">{" "}↗</span></a></li>
+      <li>Un cookie tecnico identifica il browser; il limite può essere condiviso sulla stessa rete.</li>
+      <li>Anche una risposta interrotta usa una domanda.</li>
     </ul>
     <div className={styles.providerActions}>
       <button type="button" className={styles.inlineAction} onClick={onClose}>Annulla</button>

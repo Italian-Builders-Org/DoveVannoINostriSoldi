@@ -159,8 +159,10 @@ export function AssistantChat() {
   /** The "@" and "/" hints are real buttons: they type the trigger and open its menu, like typing it would. */
   function insertTrigger(trigger: "@" | "/") {
     const value = `${draft}${draft && !/\s$/u.test(draft) ? " " : ""}${trigger}`;
+    // Focus moves back to the field in the same event, so the menu never shows with focus left on the button.
+    input.current?.focus();
     changeDraft(value);
-    requestAnimationFrame(() => { const field = input.current; if (field) { field.focus(); field.setSelectionRange(value.length, value.length); } });
+    requestAnimationFrame(() => input.current?.setSelectionRange(value.length, value.length));
   }
 
   function changeDraft(value: string) {

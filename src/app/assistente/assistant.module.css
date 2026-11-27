@@ -51,7 +51,8 @@
 /* Nothing to clear yet: the slot stays, so the toolbar does not jump when the chat starts. */
 .newChat:disabled { display: none; }
 .newChat { gap: 8px; padding: 10px 13px; border-radius: var(--assistant-radius-control); font-size: 13px; }
-.iconButton:active, .newChat:active, .send:active { transform: scale(.97); }
+.iconButton:active, .newChat:active, .send:active, .providerButton:active { transform: scale(.97); }
+.suggestions button:active { transform: scale(.98); }
 
 .stage { display: flex; flex: 1; min-height: 0; flex-direction: column; align-items: center; justify-content: center; padding: 8px 28px 32px; }
 .welcome { flex: none; text-align: center; margin: 0 0 30px; }
@@ -66,7 +67,7 @@
 /* The field is focused for most of the session: a darker edge marks it without a permanent
    ring around the composer. */
 .inputSurface:focus-within { border-color: color-mix(in srgb, var(--assistant-ink) 55%, var(--assistant-panel)); }
-.inputSurface textarea { display: block; width: 100%; min-height: 72px; max-height: 180px; margin: 0; padding: 2px 5px 12px; resize: none; border: 0; border-radius: 0; outline: none; color: var(--assistant-ink); background: transparent; font-size: 17px; line-height: 1.6; }
+.inputSurface textarea { display: block; width: 100%; min-height: 56px; max-height: 180px; margin: 0; padding: 2px 5px 12px; resize: none; border: 0; border-radius: 0; outline: none; color: var(--assistant-ink); background: transparent; font-size: 17px; line-height: 1.6; }
 .inputSurface textarea:focus-visible { outline: none; }
 .inputSurface textarea::placeholder { color: var(--assistant-muted); opacity: .9; }
 .composerControls { display: flex; align-items: center; gap: 6px; min-width: 0; }
@@ -84,7 +85,7 @@
 /* Disabled but legible (about 3.5:1): an empty field, not a broken control. */
 .send:disabled { color: color-mix(in srgb, var(--assistant-ink) 55%, var(--assistant-surface)); background: var(--assistant-surface); }
 .suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
-.suggestions button { display: flex; justify-content: flex-start; align-items: center; gap: 10px; min-height: 44px; padding: 11px 14px; text-align: left; text-wrap: pretty; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-muted); background: transparent; font-size: 13px; line-height: 1.45; }
+.suggestions button { display: flex; justify-content: flex-start; align-items: center; gap: 10px; min-height: 44px; padding: 11px 14px; text-align: left; text-wrap: pretty; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-muted); background: transparent; font-size: 13px; line-height: 1.45; transition: color 140ms ease, border-color 140ms ease, transform 140ms var(--ease-out); }
 .suggestions svg { flex: none; }
 .composerHint { overflow-wrap: anywhere; margin: 14px 0 0; color: var(--assistant-muted); text-align: center; font-size: 12px; }
 .quota { display: block; margin: 16px 0 0; color: var(--assistant-muted); text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
@@ -117,7 +118,7 @@
    cancelled by the negative margin, keeps focus rings and the optically pulled action row visible. */
 .conversation { position: relative; flex: 1; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px;
   /* Scrolled text fades under the toolbar instead of being cut at a hard edge. */
-  mask-image: linear-gradient(to bottom, transparent, #000 12px); }
+  mask-image: linear-gradient(to bottom, transparent, #000 24px); }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
@@ -172,7 +173,7 @@
   :global(#contenuto-principale) h1.toolbarTitle { font-size: 14px; }
   .welcome > p { font-size: 13px; }
   .inputSurface { padding: 12px 8px 8px 10px; }
-  .inputSurface textarea { min-height: 72px; font-size: 16px; }
+  .inputSurface textarea { min-height: 56px; font-size: 16px; }
   .composerControls { gap: 2px; }
   .suggestions { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 14px; }
   .suggestions button { padding: 10px 12px; font-size: 13px; }
@@ -185,10 +186,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { scroll-behavior: auto; transition: none; animation: none; }
-  .iconButton:active, .newChat:active, .send:active { transform: none; }
+  .iconButton:active, .newChat:active, .send:active, .providerButton:active, .suggestions button:active { transform: none; }
 }
 
-.providerButton { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; max-width: 200px; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: var(--assistant-muted); font-size: 13px; }
+.providerButton { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; max-width: 200px; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; color: var(--assistant-muted); font-size: 13px; transition: transform 140ms var(--ease-out), background-color 140ms ease, color 140ms ease; }
 .providerButton[data-connected="true"] { color: var(--assistant-ink); box-shadow: inset 0 0 0 1px var(--assistant-stroke); }
 .providerButton span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .providerButton svg { flex: none; }
@@ -201,8 +202,8 @@
 .providerDialog h2 { margin: 0 0 10px; font-size: 23px; font-weight: 550; letter-spacing: -.025em; }
 .page .consentDialog:focus-visible { outline: none; }
 .consentDialog h2 { margin-bottom: 8px; text-wrap: balance; }
-.providerDialog.consentDialog > p { margin-bottom: 16px; color: var(--assistant-ink); font-size: 15px; }
-.consentPoints { display: grid; gap: 10px; margin: 0 0 8px; padding-left: 18px; color: var(--assistant-ink); font-size: 13px; line-height: 1.55; }
+.providerDialog.consentDialog > p { margin-bottom: 14px; color: var(--assistant-ink); font-size: 14px; line-height: 1.55; text-wrap: pretty; }
+.consentPoints { display: grid; gap: 10px; margin: 0 0 8px; padding-left: 18px; color: var(--assistant-ink); font-size: 14px; line-height: 1.55; text-wrap: pretty; }
 .consentPoints li::marker { color: var(--assistant-muted); }
 .consentPoints a { white-space: nowrap; }
 .providerDialog .inlineAction { border-color: color-mix(in srgb, var(--assistant-ink) 32%, transparent); background: transparent; }
@@ -224,7 +225,8 @@
 .providerSave { min-height: 44px; padding: 10px 16px; border: 0; border-radius: var(--assistant-radius-control); color: var(--color-on-strong); background: var(--color-text); font-size: 12px; }
 .aiText { white-space: pre-wrap; overflow-wrap: anywhere; }
 .aiText p { margin: 0 0 14px; }
-.aiText > :is(p, ul, ol, h3) { max-width: 68ch; }
+/* About 80 characters of Geist at 15px: prose stays readable while tables and cards keep the column. */
+.aiText > :is(p, ul, ol, h3) { max-width: 56ch; }
 
 /* After the text, the answer reads: what was consulted and where to verify it, then where to
    continue on DVNS. Same section label for both, like .panel-title. */
@@ -233,7 +235,7 @@
 
 /* One grouped list, never a grid: up to four pages stack in reading order at
    every width, so no card is left orphaned and rows never need equal heights. */
-.siteLinks { margin: var(--space-6) 0 0; }
+.siteLinks { margin: 32px 0 0; }
 .siteLinkList { margin: 0; padding: 0; overflow: hidden; list-style: none; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-card); background: var(--assistant-panel); }
 .siteLinkList li + li { border-top: 1px solid var(--assistant-stroke); }
 .page .siteLink { display: flex; align-items: flex-start; gap: var(--space-3); min-height: 60px; padding: 12px var(--space-4); color: var(--assistant-ink); text-decoration: none; transition: background-color 140ms ease; }
@@ -328,7 +330,7 @@
 @starting-style { .jumpLatest { opacity: 0; transform: translate(-50%, 4px) scale(.96); } }
 .jumpLatest:active { transform: translateX(-50%) scale(.96); }
 /* Content fades out under the docked composer instead of being cut at a hard edge. */
-.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: 32px; background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
+.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
 /* Icons sit inside 36–44px hit areas: pull the row back so the glyphs line up with the text edge. */
 .assistantMessage > .messageActions { margin-left: -9px; }
 .userBlock > .messageActions { margin-right: -9px; }

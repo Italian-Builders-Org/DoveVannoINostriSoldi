@@ -121,7 +121,7 @@ export function AssistantChat() {
     if (!field) return;
     const resize = () => {
       field.style.height = "0px";
-      field.style.height = `${Math.min(hasConversation ? 140 : 180, Math.max(hasConversation ? 44 : 72, field.scrollHeight))}px`;
+      field.style.height = `${Math.min(hasConversation ? 140 : 180, Math.max(hasConversation ? 44 : 56, field.scrollHeight))}px`;
     };
     resize();
     window.addEventListener("resize", resize);
@@ -435,7 +435,7 @@ export function AssistantChat() {
         <h2>Dati e conversazione</h2>
         <p>Usa le domande gratuite con Regolo oppure collega la tua chiave: il modello consulta i dataset del sito attraverso ricerche validate e può commettere errori. Controlla sempre periodo, fonti e limiti.</p>
         <p>La conversazione resta nella memoria di questa pagina. “Nuova chat” la svuota. La voce usa il riconoscimento locale nei browser compatibili: nessun audio viene inviato a DVNS.</p>
-        <p>Digita @ o / nel campo per partire da una domanda di esempio. <a href="/privacy" target="_blank" rel="noreferrer">Informativa privacy<span className={styles.srOnly}> (nuova scheda)</span></a></p>
+        <p>Ogni invio usa una domanda gratuita, anche se lo interrompi. Digita @ o / nel campo per partire da una domanda di esempio. <a href="/privacy" target="_blank" rel="noreferrer">Informativa privacy<span className={styles.srOnly}> (nuova scheda)</span></a></p>
       </div> : null}
     </main>
   );

@@ -15,11 +15,11 @@ export function AssistantFreeConsent({ onAccept, onClose }: { onAccept: () => vo
   return <dialog ref={dialog} tabIndex={-1} className={`${styles.providerDialog} ${styles.consentDialog}`} aria-labelledby="assistant-free-title" aria-describedby="assistant-free-description"
     onCancel={(event) => { event.preventDefault(); onClose(); }}>
     <button type="button" className={styles.iconButton} aria-label="Chiudi" title="Chiudi" onClick={onClose}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>
-    <h2 id="assistant-free-title">Come usiamo le tue domande</h2>
-    <p id="assistant-free-description">Le risposte gratuite sono generate da Regolo: riceve domanda, conversazione e allegati, e dichiara di non conservarli. <a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">Policy di Regolo<span aria-hidden="true">{"\u00a0"}↗</span><span className={styles.srOnly}> (nuova scheda)</span></a></p>
+    <h2 id="assistant-free-title">Prima di inviare</h2>
+    <p id="assistant-free-description">Le risposte gratuite sono generate da Regolo, che riceve domanda, conversazione e allegati e dichiara di non conservarli. <a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">Policy di Regolo<span aria-hidden="true">{"\u00a0"}↗</span><span className={styles.srOnly}> (nuova scheda)</span></a></p>
     <ul className={styles.consentPoints}>
       <li>Non inserire dati personali o riservati. <a href="/privacy" target="_blank" rel="noreferrer">Privacy<span aria-hidden="true">{"\u00a0"}↗</span><span className={styles.srOnly}> (nuova scheda)</span></a></li>
-      <li>Contiamo le domande, anche quelle interrotte, con un cookie tecnico e l’indirizzo IP.</li>
+      <li>Contiamo le domande con un cookie tecnico e l’indirizzo IP.</li>
     </ul>
     <div className={styles.providerActions}>
       <button type="button" className={styles.inlineAction} onClick={onClose}>Annulla</button>

@@ -148,7 +148,9 @@
 .sectionHeading > div { min-width: 0; }
 .sectionHeading h2 { margin: 0; color: var(--color-text); font-size: clamp(20px, 2vw, 26px); font-weight: 600; letter-spacing: -.02em; text-transform: none; }
 .sectionNote { margin: 8px 0 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.5; }
-.sectionHeading .periodSelector { flex: 0 1 24rem; min-width: 0; }
+/* Sized to its buttons and pushed to the band's right edge, so both "Anno"
+   groups end at the same x as the cards under them. */
+.sectionHeading .periodSelector { flex: 0 1 auto; width: auto; min-width: 0; margin-inline-start: auto; }
 .stateSummary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--space-6); align-items: center; padding: var(--space-4); background: var(--color-neutral-100); border: 1px solid var(--color-neutral-300); }
 .stateSummary h3 { margin: 0 0 6px; font-size: 15px; }
 .stateSummary .factRows { margin: 0; }
@@ -326,10 +328,10 @@
 
 .mapStats span {
   display: block;
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: var(--font-size-caption);
+  font-weight: 500;
   color: var(--color-neutral-600);
+  text-wrap: balance;
 }
 
 .mapStats strong {
@@ -350,9 +352,17 @@
 }
 
 .mapStats a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.12em;
+  color: var(--color-accent-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (pointer: coarse) {
+  .mapStats a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mapStats a:hover { text-decoration: underline; text-underline-offset: 0.12em; }
 }
 
 .readingPanel {

@@ -60,6 +60,30 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* What the live registry did not return: one muted line at body size with
+   the info glyph of the unavailable-data notice, never a status word in the
+   figure's place. */
+.statusRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-neutral-700);
+}
+.statusIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--color-neutral-600);
+}
+
+/* Tables inside a panel: the first and last columns start and end on the
+   panel's content edge, like the panel title and the entity lists, instead
+   of 8px inside it. */
+.edgeTable :is(th, td):first-child { padding-left: 0; }
+.edgeTable :is(th, td):last-child { padding-right: 0; }
+
 .evidence { margin: 0; }
 .evidence > div {
   display: flex;
@@ -67,7 +91,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   padding: 9px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   font-size: 13px;
 }
 .evidence dt { color: var(--color-neutral-700); }
@@ -80,7 +104,7 @@
 .details {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .details summary {
   cursor: pointer;
@@ -161,6 +185,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   min-height: 48px;
+  margin-inline: calc(-1 * var(--space-1));
   padding: 0 var(--space-1);
   cursor: pointer;
   list-style: none;
@@ -189,7 +214,7 @@
   padding: 0 0 var(--space-3);
   list-style: none;
 }
-.entityList li { border-top: 1px solid var(--color-neutral-200); min-width: 0; }
+.entityList li { border-top: 1px solid var(--color-divider); min-width: 0; }
 /* Each row is a link: name and code on the left, a chevron on the right,
    and a background on hover/press so the whole row reads as one target. */
 .entityList a {
@@ -197,6 +222,9 @@
   align-items: center;
   gap: var(--space-2);
   min-height: 44px;
+  /* The padding gives the hover/press background some air; the negative
+     margin puts the text back on the panel's content edge. */
+  margin-inline: calc(-1 * var(--space-1));
   padding: 8px var(--space-1);
   color: var(--color-text);
   text-decoration: none;
@@ -240,8 +268,9 @@
   align-items: center;
   gap: var(--space-2);
   min-height: 44px;
-  padding: 0 var(--space-1);
-  border-top: 1px solid var(--color-neutral-200);
+  /* No side padding: its top rule must line up with the rows' rules. */
+  padding: 0;
+  border-top: 1px solid var(--color-divider);
   cursor: pointer;
   list-style: none;
   font-size: 13px;
@@ -284,7 +313,7 @@
 @media (max-width: 1100px) {
   .fiveUp { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .fiveUp > div:nth-child(3n) { border-right: 0; }
-  .fiveUp > div:nth-child(-n + 3) { border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp > div:nth-child(-n + 3) { border-bottom: 1px solid var(--color-divider); }
 }
 
 @media (max-width: 760px) {

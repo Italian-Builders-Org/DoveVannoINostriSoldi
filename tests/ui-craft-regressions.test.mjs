@@ -287,3 +287,56 @@ test("the home links each destination once per section and styles sources like t
   // Source links take the site link colour, as on /spese.
   assert.doesNotMatch(pathwaysCss, /\.source a \{[^}]*color: inherit/);
 });
+
+test("dark row dividers stay visible on raised cards and /cerca rows use the divider token", async () => {
+  const [tokens, cerca] = await Promise.all([source("../src/app/design-system.css"), source("../src/app/cerca/cerca.module.css")]);
+  const dark = tokens.match(/\[data-theme="dark"\]\s*\{([\s\S]*?)\n\}/)[1];
+  const hex = (name) => [...dark.matchAll(new RegExp(`${name}: (#[\\da-f]{6});`, "gi"))].at(-1)?.[1];
+  const luminance = (value) => [1, 3, 5].map((o) => parseInt(value.slice(o, o + 2), 16) / 255)
+    .map((n) => n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
+  const ratio = (a, b) => { const [x, y] = [luminance(a), luminance(b)]; return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  // neutral-300 is the row/table divider of /fonti and /enti: at 1.27:1 it vanished in dark.
+  assert.ok(ratio(hex("--color-neutral-300"), hex("--color-raised")) >= 1.5, "dark neutral-300 on raised");
+  assert.ok(luminance(hex("--color-neutral-300")) > luminance(hex("--color-neutral-200")), "neutral scale order");
+  assert.doesNotMatch(dark, /--color-divider: color-mix/, "one dark divider declaration");
+  assert.match(cerca, /\.suggestions li \{ border-top: 1px solid var\(--color-divider\); \}/);
+  // Shared primitives (.table rows, search options, notices) draw row lines
+  // with the divider token: neutral-200 is a fill, 1.03:1 on dark cards.
+  const globals = await source("../src/app/globals.css");
+  for (const css of [tokens, globals]) assert.doesNotMatch(css, /border[a-z-]*: 1px solid var\(--color-neutral-200\)/);
+});
+
+test("panoramica: the mobile '?' column sits before the share, not after the label", async () => {
+  const css = await source("../src/components/home-italy-charts.module.css");
+  const mobile = css.match(/@media \(max-width: 640px\) \{[\s\S]*?\n\}/)[0];
+  assert.doesNotMatch(mobile, /max-content/, "a content-sized copy column moves the '?' with the label");
+  assert.match(mobile, /"copy info share chevron"/);
+});
+
+test("panoramica: period selectors end at the card edge and the map box uses plain links", async () => {
+  const css = await source("../src/app/spese/panoramica/panoramica.module.css");
+  assert.match(css, /\.sectionHeading \.periodSelector \{[^}]*margin-inline-start: auto;/);
+  assert.match(css, /\.sectionHeading \.periodSelector \{[^}]*width: auto;/);
+  const span = css.match(/\.mapStats span \{[^}]*\}/)[0];
+  assert.doesNotMatch(span, /uppercase/, "letter-spaced caps orphan the year on wrap");
+  assert.match(css, /\.mapStats a \{[^}]*color: var\(--color-accent-700\);/);
+});
+
+test("footer: touch targets reach 44px and social glyphs align with the text edge", async () => {
+  const css = await source("../src/app/globals.css");
+  const coarse = css.match(/@media \(pointer: coarse\) \{[\s\S]*?\n\}/)[0];
+  assert.match(coarse, /\.footer-actions a::after[^{]*\{[^}]*inset: 0 -9px;/);
+  assert.match(css, /\.footer-social ul \{[^}]*margin-inline-end: -12\.5px;/);
+  assert.match(css, /@media \(max-width: 900px\) \{[^@]*\.footer-social ul \{ margin-inline: -12\.5px 0; \}/);
+});
+
+test("home cards share one label style and one footer link style", async () => {
+  const [pathways, home] = await Promise.all([source("../src/components/home-pathways.module.css"), source("../src/app/home.module.css")]);
+  assert.match(pathways, /\.previewHeader h3 \{ margin: 0; font: inherit; color: inherit; \}/);
+  assert.match(home, /\.anomaliesHeader h3 \{[^}]*font-size: 13px; font-weight: 500;[^}]*color: var\(--color-neutral-600\);/);
+  const link = /font-size: 14px; font-weight: 600; color: var\(--color-accent-700\);/;
+  assert.match(pathways.match(/\.previewLink \{[^}]*\}/)[0], link);
+  assert.match(home.match(/\.anomaliesLink \{[^}]*\}/)[0], link);
+  assert.match(pathways.match(/\.institutionLinks a \{[^}]*\}/)[0], /font-weight: 600;/);
+});

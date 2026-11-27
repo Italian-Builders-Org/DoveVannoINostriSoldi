@@ -10,8 +10,9 @@
 .anomaliesPanel { display: grid; gap: 0; min-width: 0; padding: 24px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
 .anomaliesHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-neutral-300); }
 .headingWithTooltip { flex: 1 1 200px; min-width: 0; }
-.anomaliesHeader h3 { margin: 0; font-size: 15px; letter-spacing: 0; text-transform: none; }
-.anomaliesLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--color-accent-700); font-size: 14px; font-weight: 600; text-decoration: none; }
+/* Same grey caption as the other home card labels. */
+.anomaliesHeader h3 { margin: 0; font-size: 13px; font-weight: 500; line-height: 1.4; letter-spacing: 0; text-transform: none; color: var(--color-neutral-600); }
+.anomaliesLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--color-accent-700); text-decoration: none; }
 .anomalyGallery { display: grid; grid-template-columns: 1fr; gap: 0; }
 .anomalyItem { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; min-width: 0; padding: 20px 0; border-bottom: 1px solid var(--color-neutral-200); }
 .anomalyItemHead, .anomalyMeta { grid-column: 1 / -1; }

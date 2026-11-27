@@ -12,7 +12,8 @@
 .related a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-text); font-size: 14px; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: 4px; transition: text-decoration-color 140ms ease, color 140ms ease; }
 .preview { padding: 24px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); min-width: 0; }
 .previewHeader { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 12px; padding-bottom: 16px; font-size: 13px; font-weight: 500; color: var(--color-neutral-600); }
-.previewHeader h3 { margin: 0; font: inherit; font-weight: 600; color: var(--color-text); }
+/* One card label style: the grey caption, whether it is a heading or not. */
+.previewHeader h3 { margin: 0; font: inherit; color: inherit; }
 .previewTitle { margin: 0; font-size: 26px; font-weight: 500; line-height: 1.2; letter-spacing: -.02em; }
 .bigNumber, .mediumNumber { display: block; color: var(--color-text); font-weight: 500; line-height: 1.15; letter-spacing: -.035em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .bigNumber { font-size: clamp(30px, 3.5vw, 46px); }
@@ -34,12 +35,12 @@
 .territoryFacts strong + .smallLabel { margin-top: 10px; }
 .territoryFacts p { font-size: 13px; color: var(--color-neutral-600); line-height: 1.6; margin: 4px 0 0; }
 .institutionLinks { display: grid; margin-top: 20px; }
-.institutionLinks a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-height: 44px; gap: 12px; padding-block: 12px; border-top: 1px solid var(--color-neutral-300); color: var(--color-text); text-decoration: none; font-size: 14px; }
+.institutionLinks a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-height: 44px; gap: 12px; padding-block: 12px; border-top: 1px solid var(--color-neutral-300); color: var(--color-text); text-decoration: none; font-size: 14px; font-weight: 600; }
 .atlasPreview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .atlasPreview .preview { display: flex; flex-direction: column; padding: 20px; }
 .atlasPreview .source { margin-top: auto; padding-top: 16px; border-top: 0; }
 .atlasPreview .bars { margin-bottom: 20px; }
-.previewLink { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-neutral-300); color: var(--color-accent); font-size: 13px; text-decoration: none; }
+.previewLink { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-neutral-300); font-size: 14px; font-weight: 600; color: var(--color-accent-700); text-decoration: none; }
 .analysisFeature > section { grid-column: auto; }
 .primaryLink [data-link-arrow] { flex: none; width: 18px; height: 18px; }
 @media (hover: hover) and (pointer: fine) {

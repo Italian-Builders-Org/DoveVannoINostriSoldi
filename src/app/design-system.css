@@ -21,7 +21,6 @@
   --color-on-strong-muted: #c5cfd8;
   --color-accent: #b42332;
   --color-accent-2: #a82b3b;
-  --color-divider: color-mix(in srgb, #182b3a 40%, transparent);
 
   /* Cool paper and blue ink: restrained surfaces, AA text and 3:1 controls.
      See docs/INSTITUTIONAL_PALETTE.md for measured role pairs. */
@@ -195,11 +194,13 @@
   --color-on-strong: #242222;
   --color-on-strong-muted: #514b4b;
 
-  --color-divider: color-mix(in srgb, #f3eeee 24%, transparent);
-
   --color-neutral-100: #1d1b1b;
   --color-neutral-200: #272424;
-  --color-neutral-300: #373333;
+  /* neutral-300 is the row and table divider of most lists (1.27:1 vanished
+     on raised cards); #4d4848 is 1.76:1 there. neutral-200 stays a text
+     surface (AA for neutral-600), so it cannot be raised to divider strength:
+     row borders on raised cards use --color-divider or neutral-300. */
+  --color-neutral-300: #4d4848;
   /* neutral-200 is 1.03:1 on raised cards here; dividers need 1.5:1. */
   --color-divider: #474343;
   --color-neutral-400: #7e858d;
@@ -440,13 +441,13 @@ textarea.input {
 }
 .table td {
   padding: 11px var(--space-2);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 .table tbody tr:hover { background: var(--color-neutral-100); }
 .table th[scope="row"] {
   text-align: left;
   padding: 11px var(--space-2);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   font-weight: 600;
 }
 /* A row heading may carry one line of context under the name. */

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import "./helpers/register-ts-alias.mjs";
-import { clusterPublisherSources, coverageWithoutPeriod, groupSourcesByPublisher, plainRangeLabel, sharedCadence, publisherAnchor, sourcePublisher, subtitleRepeatsTitle } from "../src/lib/source-publishers.ts";
+import { clusterPublisherSources, coveragePreview, coverageWithoutPeriod, groupSourcesByPublisher, plainRangeLabel, sharedCadence, publisherAnchor, sourcePublisher, subtitleRepeatsTitle } from "../src/lib/source-publishers.ts";
 
 // Dynamic: sources.ts uses the @/ alias, registered by the helper above.
 const { publicSources } = await import("../src/lib/sources.ts");
@@ -69,10 +69,13 @@ test("sources sharing a theme are grouped once, with only their distinguishing l
     entry("pair-a", "Povertà assoluta", "Famiglie"),
     entry("pair-b", "Povertà relativa", "Famiglie"),
   ]);
+  // Regression: "ISTAT SITUAS" and the other plain rows after the BES
+  // sub-group read as part of it. Rows without a sub-group come first, in
+  // registry order; sub-groups close the publisher.
   assert.deepEqual(items.map((item) => item.kind === "cluster" ? `cluster:${item.label}` : item.entry.source.slug), [
-    "cofog", `cluster:${bes}`, "sit", "pair-a", "pair-b",
+    "cofog", "sit", "pair-a", "pair-b", `cluster:${bes}`,
   ]);
-  const cluster = items[1];
+  const cluster = items.at(-1);
   assert.deepEqual(cluster.entries.map((item) => item.title), ["Benessere economico", "Salute", "Istruzione"]);
   // Every source is still listed exactly once.
   const slugs = items.flatMap((item) => item.kind === "cluster" ? item.entries.map((e) => e.source.slug) : [item.entry.source.slug]);
@@ -121,4 +124,27 @@ test("a cadence shared by every source of a theme is stated once", () => {
   const istat = groupSourcesByPublisher(publicSources).find((group) => group.name === "ISTAT");
   const bes = clusterPublisherSources(istat.sources).find((item) => item.kind === "cluster" && /Benessere/.test(item.label));
   assert.ok(bes && sharedCadence(bes.entries), "BES rows share their cadence");
+});
+
+// Regression: on phones the CSS clamp ended long descriptions with ".…" and
+// sometimes hid only three words behind "Mostra tutto".
+test("a long description is previewed at a word boundary without dangling punctuation", () => {
+  const long = "Italia e ripartizioni, incidenza e intensità della povertà assoluta per famiglie e individui. Con dettaglio per tipologia familiare, cittadinanza e titolo di studio della persona di riferimento.";
+  const preview = coveragePreview(long, 90);
+  assert.ok(preview);
+  assert.ok(preview.endsWith("…"));
+  assert.doesNotMatch(preview, /[\s.,;:·(-]…$/u);
+  assert.ok(long.startsWith(preview.slice(0, -1)), "the preview is the start of the text");
+  assert.ok(preview.length <= 91);
+  // Cut exactly after a sentence: the full stop is dropped before the ellipsis.
+  assert.equal(coveragePreview("Prima frase completa. " + "x".repeat(60), 22), "Prima frase completa…");
+});
+
+test("a description is not clamped when the hidden remainder is short", () => {
+  assert.equal(coveragePreview("Breve descrizione.", 120), null);
+  // 25 characters past the limit: shown whole rather than behind a toggle.
+  const nearly = "a".repeat(100) + " " + "parole finali ancora qui.";
+  assert.equal(coveragePreview(nearly, 100), null);
+  const clearly = "a".repeat(100) + " " + "b ".repeat(30);
+  assert.equal(coveragePreview(clearly, 100), "a".repeat(100) + "…");
 });

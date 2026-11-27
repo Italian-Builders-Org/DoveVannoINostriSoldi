@@ -8,8 +8,25 @@
 .sources th[scope="row"],
 .sources thead th:first-child { min-width: 240px; }
 /* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
-.sources td.cadence,
-.sources td.clusterCadence { min-width: 140px; }
+.sources td.cadence { min-width: 140px; }
+/* A row whose cadence is stated by its sub-group: a muted dot, not a blank
+   that reads as missing data. */
+.sources td.cadenceShared { color: var(--color-neutral-500); }
+
+/* Names, publisher headings and column headings start on the panel's
+   content edge (padding inside the cells, not an extra indent). */
+.sources thead th:first-child,
+.sources th[scope="row"] { padding-left: 0; }
+.sources :is(th, td):last-child { padding-right: 0; }
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 /* The description is the column people read; the period column may wrap. */
 .sources td.coverageCell { min-width: 280px; }
 .sources td.latest { white-space: normal; min-width: 110px; }
@@ -17,8 +34,7 @@
 /* One row group per publisher: a small heading row instead of a
    "Chi la pubblica" column repeating the same name on every row. */
 .sources .groupRow th {
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-1);
+  padding: var(--space-4) 0 var(--space-1);
   border-bottom: 1px solid var(--color-neutral-400);
   color: var(--color-text);
   font-size: 12px;
@@ -28,26 +44,27 @@
   text-align: left;
   background: transparent;
 }
-/* A theme shared by three or more sources of one publisher (e.g. the twelve
-   BES domains): one sub-heading, in sentence case, below the publisher. */
+/* A theme shared by three or more sources of one publisher (e.g. the BES
+   domains): a lighter, smaller sub-heading indented 16px, with its rows
+   indented the same, so it reads as a child of the publisher. The plain
+   rows of the publisher come before it (clusterPublisherSources). */
 .sources .clusterRow th {
-  padding-top: var(--space-3);
-  padding-bottom: var(--space-1);
-  border-bottom: 1px solid var(--color-neutral-300);
-  color: var(--color-neutral-800);
+  padding: var(--space-4) 0 var(--space-1) 16px;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-neutral-700);
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 600;
   text-align: left;
   background: transparent;
 }
-/* The cadence shared by a whole theme, aligned with the cadence column. */
-.sources .clusterRow td {
-  padding-top: var(--space-3);
-  padding-bottom: var(--space-1);
-  border-bottom: 1px solid var(--color-neutral-300);
-  color: var(--color-neutral-700);
-  font-size: 13px;
-  background: transparent;
+.sources .clusterMember th[scope="row"] { padding-left: 16px; }
+/* The cadence shared by the whole theme, under the sub-group title. */
+.clusterNote {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 400;
 }
 /* Jump targets clear the sticky announcement + header. */
 .sources .groupRow { scroll-margin-top: calc(var(--announcement-height, 44px) + 88px); }
@@ -63,31 +80,35 @@
   text-transform: none;
 }
 
-/* Long descriptions: two lines, then the whole text on demand. The summary
-   holds the full text, so screen readers always get all of it; the clamp is
-   visual only. */
+/* Long descriptions: a preview cut at a word (coveragePreview), then the
+   whole text on demand. The summary holds the full text, so screen readers
+   always get all of it; the preview is visual only. */
 .coverage summary {
   display: block;
   cursor: pointer;
   list-style: none;
 }
 .coverage summary::-webkit-details-marker { display: none; }
-.coverage summary span {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+.coverage .preview { display: block; }
+.coverage:not([open]) .full {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.coverage[open] summary span {
-  display: block;
-  -webkit-line-clamp: unset;
-  line-clamp: none;
-}
+.coverage[open] .preview { display: none; }
+.coverage[open] .full { display: block; }
+/* The toggle is a 44px target: 12px of padding above and below a 20px
+   line, with negative margins so the card keeps its rhythm. */
 .coverage summary::after {
   content: "Mostra tutto" / "";
-  display: inline-block;
-  margin-top: 2px;
+  display: block;
+  width: fit-content;
+  padding-block: 12px;
+  margin-block: -10px -12px;
+  line-height: 20px;
   color: var(--color-accent-700);
   font-size: 12px;
   font-weight: 600;
@@ -95,7 +116,6 @@
   text-underline-offset: 2px;
   /* A text toggle, not the shared summary chevron (globals.css): drop its
      mask, size and rotation. */
-  width: auto;
   height: auto;
   margin-left: 0;
   vertical-align: baseline;
@@ -129,7 +149,7 @@
 
   .sources tr {
     padding: var(--space-3) 0;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: 1px solid var(--color-divider);
   }
   .sources tr:last-child { border-bottom: 0; }
   .sources .groupRow,
@@ -214,11 +234,12 @@
     content: "\00b7" / "";
     margin-inline: 6px;
   }
-  .sources .clusterRow td {
-    padding: 2px 0 var(--space-1);
-    border-bottom: 1px solid var(--color-neutral-300);
-  }
-  .sources .clusterRow th { border-bottom: 0; }
+  /* The sub-group note under the title already gives the cadence. */
+  .sources td.cadenceShared { display: none; }
+  .sources .clusterRow th { padding-left: 16px; border-bottom: 0; }
+  /* The card's cells are blocks: indent the whole card, not only its name. */
+  .sources .clusterMember { padding-left: 16px; }
+  .sources .clusterMember th[scope="row"] { padding-left: 0; }
   /* The first publisher heading follows the panel edge directly. */
   .sources tbody:first-of-type .groupRow,
   .sources tbody:first-of-type .groupRow th { padding-top: 0; }

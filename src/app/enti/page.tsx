@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/icons";
-import { RegistryTypeChart } from "@/components/charts/registry-type-chart";
 import { displayCompanyName, displayEntityName } from "@/lib/entity-display-name";
 import { integer, longDate } from "@/lib/format";
 import { mefParticipationsSnapshot as participations } from "@/lib/mef-participations-snapshot";
@@ -21,6 +20,7 @@ import {
   getSiopeNonMunicipalTypeLabel,
   type SiopeNonMunicipalEntity,
 } from "@/lib/siope-nonmunicipal";
+import { RegistrySummary } from "./registry-summary";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
@@ -110,17 +110,6 @@ function SiopeEntityList({
 function locationLabel(indirizzo: string | null, cap: string | null): string {
   if (indirizzo && cap) return `${indirizzo} · ${cap}`;
   return indirizzo ?? cap ?? "Sede non indicata nel record IPA";
-}
-
-function observedAtLabel(value: string | null): string {
-  if (!value) return "Non disponibile";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Non disponibile";
-  return new Intl.DateTimeFormat("it-IT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Europe/Rome",
-  }).format(date);
 }
 
 export default async function EntiPage({ searchParams }: PageProps) {
@@ -277,7 +266,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
           {result.records.length > 0 ? (
             <div className="table-scroll" role="region" aria-label="Risultati della ricerca enti" tabIndex={0}>
-              <table className={`table ${styles.entities}`}>
+              <table className={`table ${styles.entities} ${styles.edgeTable}`}>
                 <thead className={styles.mobileHiddenHead}>
                   <tr>
                     <th scope="col">Ente</th>
@@ -405,14 +394,11 @@ export default async function EntiPage({ searchParams }: PageProps) {
             <h2 className="panel-title">Il registro IPA in numeri</h2>
             <span>dati AgID</span>
           </div>
-          <strong className={styles.bigNumber}>
-            {stats ? integer(stats.total) : "Non disponibile"}
-          </strong>
-          <p className={styles.note}>
-            Enti presenti nel registro. Controllato il{" "}
-            {observedAtLabel(stats?.observedAt ?? distributionObservedAt)}.
-          </p>
-          <RegistryTypeChart data={distribution} />
+          <RegistrySummary
+            total={stats ? stats.total : null}
+            observedAt={stats?.observedAt ?? distributionObservedAt}
+            distribution={distribution}
+          />
         </section>
 
         <section className="panel">
@@ -451,7 +437,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <Link className="link-arrow" href="/partecipazioni">Tutte le partecipazioni</Link>
         </div>
         <div className="table-scroll" role="region" aria-label="Partecipazioni pubbliche" tabIndex={0}>
-          <table className="table">
+          <table className={`table ${styles.edgeTable}`}>
             <thead>
               <tr>
                 <th scope="col">Società</th>

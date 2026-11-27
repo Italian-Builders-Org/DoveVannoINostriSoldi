@@ -123,9 +123,11 @@ function capitalise(text: string): string {
 
 /**
  * Within one publisher, sources that share a theme (`area`) at least three
- * times become one sub-group headed by that theme, placed where its first
- * member was. Every source still appears exactly once; titles lose only a
- * prefix common to the whole sub-group.
+ * times become one sub-group headed by that theme. Sources without a
+ * sub-group come first, in registry order, and the sub-groups close the
+ * publisher: a plain row after a sub-group read as one of its members.
+ * Every source still appears exactly once; titles lose only a prefix common
+ * to the whole sub-group.
  */
 export function clusterPublisherSources<E extends ClusterableEntry>(entries: readonly E[]): PublisherItem<E>[] {
   const byArea = new Map<string, E[]>();
@@ -135,6 +137,7 @@ export function clusterPublisherSources<E extends ClusterableEntry>(entries: rea
     byArea.set(entry.source.area, members);
   }
   const items: PublisherItem<E>[] = [];
+  const clusters: PublisherItem<E>[] = [];
   const emitted = new Set<string>();
   for (const entry of entries) {
     const members = byArea.get(entry.source.area) ?? [entry];
@@ -145,7 +148,7 @@ export function clusterPublisherSources<E extends ClusterableEntry>(entries: rea
     if (emitted.has(entry.source.area)) continue;
     emitted.add(entry.source.area);
     const prefix = commonLabelPrefix(members.map((member) => member.title));
-    items.push({
+    clusters.push({
       kind: "cluster",
       label: entry.source.area,
       entries: members.map((member) => ({
@@ -154,7 +157,7 @@ export function clusterPublisherSources<E extends ClusterableEntry>(entries: rea
       })),
     });
   }
-  return items;
+  return [...items, ...clusters];
 }
 
 /** Fragment id for a publisher heading on /fonti. */
@@ -200,4 +203,24 @@ export function sharedCadence(entries: readonly { source: { cadence: string } }[
   if (entries.length < 2) return null;
   const [first, ...rest] = entries.map((entry) => entry.source.cadence);
   return rest.every((cadence) => cadence === first) ? first : null;
+}
+
+// A clamped description must hide at least this much text; a shorter rest is
+// shown whole, since a toggle that reveals three words costs more than it saves.
+const MIN_HIDDEN_CHARACTERS = 40;
+
+/**
+ * Preview of a long description for /fonti: the text up to the last word
+ * boundary within `limit` characters, without trailing punctuation, then an
+ * ellipsis ("persone." becomes "persone…", never ".…"). Null when the text is
+ * short enough, or the hidden rest under MIN_HIDDEN_CHARACTERS, to show whole.
+ */
+export function coveragePreview(text: string, limit: number): string | null {
+  const full = text.trim();
+  if (full.length - limit < MIN_HIDDEN_CHARACTERS) return null;
+  const boundary = full.lastIndexOf(" ", limit);
+  const cut = boundary > 0 ? boundary : limit;
+  if (full.slice(cut).trim().length < MIN_HIDDEN_CHARACTERS) return null;
+  const head = full.slice(0, cut).replace(/[\s.,;:·(\-]+$/u, "");
+  return head ? `${head}…` : null;
 }

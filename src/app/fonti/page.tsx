@@ -8,6 +8,7 @@ import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
 import {
   clusterPublisherSources,
+  coveragePreview,
   coverageWithoutPeriod,
   groupSourcesByPublisher,
   plainRangeLabel,
@@ -23,7 +24,8 @@ export const metadata: Metadata = {
   description: "Da dove arrivano i dati, quanto spesso cambiano e quali fonti sono già collegate.",
 };
 
-// Descriptions longer than this are clamped to two lines with an expander.
+// Descriptions longer than this (by at least 40 characters, see
+// coveragePreview) show a preview cut at a word and a "Mostra tutto" toggle.
 const LONG_COVERAGE = 120;
 const publisherGroups = groupSourcesByPublisher(publicSources).map((group) => ({
   ...group,
@@ -52,7 +54,8 @@ function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): s
 }
 
 // `cadenceInHeading`: the theme sub-group heading already states the cadence
-// shared by all its rows, so the row leaves that cell empty.
+// shared by all its rows. The cell keeps a muted dot, so it does not read as
+// a missing value, and tells screen readers where the cadence is.
 function SourceRow({
   entry,
   inCluster,
@@ -66,8 +69,9 @@ function SourceRow({
   const note = subtitle(entry, inCluster);
   const period = coveredPeriod(source.slug);
   const coverage = coverageWithoutPeriod(source.coverage, period);
+  const preview = coveragePreview(coverage, LONG_COVERAGE);
   return (
-    <tr id={source.slug} role="row" className={styles.sourceRow}>
+    <tr id={source.slug} role="row" className={inCluster ? `${styles.sourceRow} ${styles.clusterMember}` : styles.sourceRow}>
       <th scope="row" role="rowheader">
         <a
           href={source.url}
@@ -80,18 +84,26 @@ function SourceRow({
         {note ? <small>{note}</small> : null}
       </th>
       <td role="cell" className={styles.coverageCell}>
-        {coverage.length > LONG_COVERAGE ? (
+        {/* The summary always holds the full text for screen readers; the
+            preview is the visual stand-in while the details are closed. */}
+        {preview ? (
           <details className={styles.coverage}>
             <summary>
-              <span>{coverage}</span>
+              <span className={styles.preview} aria-hidden="true">{preview}</span>
+              <span className={styles.full}>{coverage}</span>
             </summary>
           </details>
         ) : coverage}
       </td>
       <td role="cell" className={styles.latest}>{period}</td>
-      <td role="cell" className={styles.cadence}>
-        {cadenceInHeading ? null : plainRangeLabel(source.cadence)}
-      </td>
+      {cadenceInHeading ? (
+        <td role="cell" className={`${styles.cadence} ${styles.cadenceShared}`}>
+          <span aria-hidden="true">·</span>
+          <span className={styles.visuallyHidden}>come indicato nel gruppo</span>
+        </td>
+      ) : (
+        <td role="cell" className={styles.cadence}>{plainRangeLabel(source.cadence)}</td>
+      )}
     </tr>
   );
 }
@@ -160,18 +172,20 @@ export default function SourcesPage() {
                     return <SourceRow key={item.entry.source.slug} entry={item.entry} inCluster={false} />;
                   }
                   // A cadence common to the whole theme (the eleven BES rows)
-                  // sits once in the heading row, under the cadence column.
+                  // is a note under the sub-group title, on every screen size.
                   const cadence = sharedCadence(item.entries);
                   return (
                     <Fragment key={`cluster-${item.label}`}>
                       <tr role="row" className={styles.clusterRow}>
-                        <th scope="colgroup" colSpan={cadence ? 3 : 4} role="columnheader">
+                        <th scope="colgroup" colSpan={4} role="columnheader">
                           {item.label}
                           <span className={styles.groupCount}>{item.entries.length} fonti</span>
+                          {cadence ? (
+                            <span className={styles.clusterNote}>
+                              Ogni quanto esce: {plainRangeLabel(cadence)}
+                            </span>
+                          ) : null}
                         </th>
-                        {cadence ? (
-                          <td role="cell" className={styles.clusterCadence}>{plainRangeLabel(cadence)}</td>
-                        ) : null}
                       </tr>
                       {item.entries.map((entry) => (
                         <SourceRow key={entry.source.slug} entry={entry} inCluster cadenceInHeading={cadence !== null} />

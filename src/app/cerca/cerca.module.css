@@ -122,7 +122,7 @@
 .suggestions {
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .suggestions h3 {
@@ -141,7 +141,7 @@
   list-style: none;
 }
 
-.suggestions li { border-top: 1px solid var(--color-neutral-200); }
+.suggestions li { border-top: 1px solid var(--color-divider); }
 
 .suggestions a {
   display: flex;

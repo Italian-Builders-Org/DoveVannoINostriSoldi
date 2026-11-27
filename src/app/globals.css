@@ -257,7 +257,7 @@ nav li a { text-decoration: none; }
   gap: var(--space-2);
   padding: 9px 12px;
   color: var(--color-text);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .header-search-option:hover,
 .header-search-option[data-active="true"] { background: var(--color-accent-100); color: var(--color-text); }
@@ -310,7 +310,7 @@ nav li a { text-decoration: none; }
   letter-spacing: .02em;
   color: var(--color-accent-700);
   background: var(--color-neutral-100);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .header-search-all:hover { background: var(--color-accent-100); color: var(--color-accent-800); }
 
@@ -658,7 +658,10 @@ main { display: block; }
 .footer-support-copy > span { color: var(--color-neutral-600); }
 .footer-support-copy .footer-support-label { display: flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--color-text); font-weight: 600; }
 .footer-directory { display: grid; justify-items: end; gap: 8px; min-width: 0; }
-.footer-social ul { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+/* Optical alignment: each 44px button centres a 19px glyph, 12.5px of
+   padding per side. The row is pulled out by that much so the glyphs, not the
+   invisible button boxes, line up with the text links below. */
+.footer-social ul { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; margin-inline-end: -12.5px; padding: 0; list-style: none; }
 .footer-social .footer-link {
   display: grid;
   place-items: center;
@@ -688,10 +691,15 @@ main { display: block; }
   .footer-top { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .footer-directory { justify-items: start; }
   .footer-actions { justify-content: flex-start; }
+  .footer-social ul { margin-inline: -12.5px 0; }
 }
 @media (pointer: coarse) {
   .desktop-sidebar .nav-item > a, .desktop-sidebar .nav-item-toggle, .desktop-sidebar .nav-submenu a { min-height: 44px; }
   .footer-makers a, .footer-backer a { min-height: 44px; }
+  /* Short words ("Fonti", 27px) get a 44px-wide target from the gaps between
+     links: the hit area grows into half of each gap, the layout stays put. */
+  .footer-actions a, .footer-makers a, .footer-backer a { position: relative; }
+  .footer-actions a::after { content: ""; position: absolute; inset: 0 -9px; }
 }
 
 /* Hover is a pointer affordance: on touch screens it would stick after a tap. */
@@ -820,7 +828,7 @@ main { display: block; }
   display: grid;
   gap: var(--space-2);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 .warning-notice { border-color: var(--color-warning-border); background: var(--color-warning-bg); }
 /* Missing verified snapshot: icon, title, reason and one way out. */

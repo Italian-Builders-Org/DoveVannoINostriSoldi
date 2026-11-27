@@ -271,3 +271,20 @@ test("mappa dei comuni nav keeps same-origin /comuni; homepage stays on the curr
   assert.ok(!home.includes("PUBLIC_COMUNI_URL"));
   assert.equal(PUBLIC_COMUNI_URL, "https://comuni.dovevannoinostrisoldi.com");
 });
+
+test("ChatGPT plugin link is one shared address, opened safely from the home ask bar and the footer", async () => {
+  const [site, footer, home, css] = await Promise.all([
+    readFile(new URL("../src/lib/site.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/site-footer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/app/home.module.css", import.meta.url), "utf8"),
+  ]);
+  assert.match(site, /CHATGPT_PLUGIN_URL = "https:\/\/chatgpt\.com\/plugins\/plugin_asdk_app_[0-9a-f]{32}"/);
+  for (const source of [footer, home]) {
+    // The address lives in site.ts only: a copy in a component would drift when the listing changes.
+    assert.doesNotMatch(source, /chatgpt\.com/);
+    assert.match(source, /<a (?:className=\{[^}]+\} )?href=\{CHATGPT_PLUGIN_URL\} target="_blank" rel="noopener noreferrer"[^>]*aria-label="[^"]*ChatGPT \(nuova scheda\)"/);
+  }
+  // Touch layouts need a full-height target; the desktop row stays compact.
+  assert.match(css, /@media[^{]*max-width[^{]*\{[\s\S]*?\.askChatgpt \{[^}]*min-height:\s*44px/);
+});

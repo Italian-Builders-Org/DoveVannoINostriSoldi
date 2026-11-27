@@ -46,7 +46,11 @@
 .askBar button { display: inline-flex; align-items: center; justify-content: center; width: 60px; color: var(--color-on-strong); background: var(--color-accent); border: 0; cursor: pointer; }
 .askBar button:hover { background: var(--color-accent-800); }
 .askBar button:focus-visible { outline: 2px solid var(--color-text); outline-offset: -4px; }
-.askMeta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 24px; }
+.askMeta { display: grid; gap: 6px; }
+.askFoot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 24px; }
+.askChatgpt { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--color-neutral-700); font-size: 13px; font-weight: 600; text-decoration: none; }
+.askChatgpt svg { flex: none; }
+.askChatgpt:hover { color: var(--color-accent); }
 .askMeta p { margin: 0; color: var(--color-neutral-600); font-size: 13px; }
 .askExamples { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; }
 .askExamples a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); font-size: 14px; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-underline-offset: 4px; }
@@ -77,6 +81,7 @@
 }
 @media (max-width: 620px) {
   .askBar { grid-template-columns: minmax(0, 1fr) auto; }
+  .askChatgpt { min-height: 44px; }
   .askLabel { grid-column: 1 / -1; min-height: 40px; border-right: 0; border-bottom: 1px solid var(--color-neutral-300); padding: 0 14px; }
   .askBar input { min-height: 54px; padding: 0 14px; font-size: 16px; }
   .askBar button { width: 54px; }

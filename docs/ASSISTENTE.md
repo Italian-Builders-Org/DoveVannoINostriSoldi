@@ -11,12 +11,28 @@ Se il servizio gratuito non è disponibile, l’invio apre il pannello della chi
 
 Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
 conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
-sono allineate a sinistra e supportano paragrafi, titoli, grassetti, codice inline ed
-elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link prodotti dal modello non diventano contenuto attivo.
-I link alle fonti vengono dal catalogo server.
+sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
+elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
+
+Ogni risposta propone fino a quattro pagine del sito («Approfondisci su DVNS»), scelte dal
+server e mai dal modello:
+
+- `site-link-map.ts` collega ogni dataset MCP alla sua pagina pubblica (mai `/mcp`); un codice
+  scelto dal modello entra nel percorso, o in un titolo come il CUP, solo se ha il formato atteso;
+- `site-link-search.ts` completa l’elenco con la ricerca del sito sulla domanda: al massimo
+  cinque scansioni dell’indice, accettate in base al tipo di corrispondenza (titolo, alias,
+  descrizione) e non al punteggio numerico; una parola sola vale al più un alias, gli acronimi
+  (PNRR, INPS) contano come parole distintive e gli studi compaiono solo se corrisponde il titolo;
+- il modello riceve le pagine come dati e può citarle con `[testo](/percorso)`;
+  `markdown-link-sanitizer.ts` riduce a testo, prima dell’evento `done`, ogni altro link.
+
+Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
+pagina e andrebbe persa uscendo. I link alle fonti ufficiali vengono dal catalogo server.
+Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
+senza dettagli di protocollo MCP/API (`public-caveat.ts`).
 
 Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
-La copia della risposta comprende i link alle fonti. Modifica e rigenerazione sostituiscono
+La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.
 

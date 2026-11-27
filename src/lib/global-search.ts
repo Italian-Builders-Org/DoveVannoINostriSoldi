@@ -58,10 +58,12 @@ export type SearchIndexDocument = Readonly<{
 
 type FieldMatch = Readonly<{
   quality: number;
-  reason: "exact" | "prefix" | "tokens" | "fuzzy";
+  // "inflected": every near miss only changes the final vowel (sanitario/sanitaria).
+  reason: "exact" | "prefix" | "tokens" | "fuzzy" | "inflected";
 }>;
 
-type SearchField = Readonly<{ normalized: string; tokens: readonly string[] }>;
+// `identifier`: a slug such as "parti-atti" or "siope_comuni", whose words are not inflected Italian.
+type SearchField = Readonly<{ normalized: string; tokens: readonly string[]; identifier?: boolean }>;
 type PreparedDocument = Readonly<{
   document: SearchIndexDocument;
   title: SearchField;
@@ -99,6 +101,7 @@ const SEARCH_MATCH_LABELS: Readonly<Record<SearchMatchReason, string>> = {
   "title-tokens": "Parole nel titolo",
   "title-fuzzy": "Corrispondenza simile nel titolo",
   alias: "Alias o sinonimo",
+  "alias-fuzzy": "Corrispondenza simile in un alias",
   description: "Descrizione",
   entity: "Nome dell'ente",
 };
@@ -420,7 +423,7 @@ function tokens(normalized: string): readonly string[] {
 
 function prepareField(value: string): SearchField {
   const normalized = normalizeSearchText(value);
-  return { normalized, tokens: tokens(normalized) };
+  return { normalized, tokens: tokens(normalized), ...(/^[\p{L}\p{N}]+(?:[-_][\p{L}\p{N}]+)+$/u.test(value.trim()) ? { identifier: true } : {}) };
 }
 
 function prepareDocument(document: SearchIndexDocument): PreparedDocument {
@@ -462,6 +465,12 @@ function editDistanceAtMostOne(left: string, right: string): boolean {
   return edits + (leftCharacters.length - leftIndex) + (rightCharacters.length - rightIndex) <= 1;
 }
 
+/** Italian inflects in the final vowel (sanitario/sanitaria, deputato/deputati); treno/trend is a typo. */
+function isWordFormVariant(left: string, right: string): boolean {
+  return left.length >= 5 && left.length === right.length && left.slice(0, -1) === right.slice(0, -1) &&
+    /[aeio]/u.test(left.at(-1)!) && /[aeio]/u.test(right.at(-1)!);
+}
+
 function tokenQuality(queryToken: string, candidateToken: string): number {
   if (candidateToken === queryToken) return 3;
   if (candidateToken.startsWith(queryToken)) return 2;
@@ -484,16 +493,21 @@ function matchField(field: SearchField, query: SearchField): FieldMatch | null {
 
   const candidateTokens = field.tokens;
   let weakest = 3;
+  let onlyInflections = true;
   for (const queryToken of query.tokens) {
     let best = 0;
+    let inflected = false;
     for (const candidateToken of candidateTokens) {
-      best = Math.max(best, tokenQuality(queryToken, candidateToken));
+      const quality = tokenQuality(queryToken, candidateToken);
+      if (quality === 0.5 && !field.identifier && isWordFormVariant(queryToken, candidateToken)) inflected = true;
+      best = Math.max(best, quality);
       if (best === 3) break;
     }
     if (best === 0) return null;
+    if (best === 0.5 && !inflected) onlyInflections = false;
     weakest = Math.min(weakest, best);
   }
-  if (weakest === 0.5) return { quality: 1.2, reason: "fuzzy" };
+  if (weakest === 0.5) return { quality: 1.2, reason: onlyInflections ? "inflected" : "fuzzy" };
   if (weakest === 3) return { quality: 1.8, reason: "tokens" };
   if (weakest >= 2) return { quality: 1.6, reason: "tokens" };
   return { quality: 1.4, reason: "tokens" };
@@ -505,7 +519,8 @@ function resultForDocument(entry: PreparedDocument, query: SearchField): SearchR
   const aliasMatch = titleMatch ? null : entry.aliases.reduce<FieldMatch | null>(
     (best, alias) => {
       const match = matchField(alias, query);
-      return match && (!best || match.quality > best.quality) ? match : best;
+      // Equal quality: an inflected alias is a better reading than a typo, whatever the alias order.
+      return match && (!best || match.quality > best.quality || (match.quality === best.quality && match.reason === "inflected" && best.reason === "fuzzy")) ? match : best;
     },
     null,
   );
@@ -521,12 +536,13 @@ function resultForDocument(entry: PreparedDocument, query: SearchField): SearchR
         ? "title-exact"
         : titleMatch.reason === "prefix"
           ? "title-prefix"
-          : titleMatch.reason === "fuzzy"
+          : titleMatch.reason === "fuzzy" || titleMatch.reason === "inflected"
             ? "title-fuzzy"
             : "title-tokens";
     score = 6_000 + titleMatch.quality * 100;
   } else if (aliasMatch) {
-    reason = "alias";
+    // Titles hold proper names (Jesolo/Jesola is a typo); aliases are curated common words.
+    reason = aliasMatch.reason === "fuzzy" ? "alias-fuzzy" : "alias";
     score = 4_000 + aliasMatch.quality * 100;
   } else if (descriptionMatch) {
     reason = "description";

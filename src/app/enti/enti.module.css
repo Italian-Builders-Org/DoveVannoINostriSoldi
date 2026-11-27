@@ -59,7 +59,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: var(--space-4);
-  align-items: start;
+  /* Side-by-side cards end on one line; content stays at the top. */
+  align-items: stretch;
 }
 
 .bigNumber {

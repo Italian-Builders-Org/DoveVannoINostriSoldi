@@ -57,10 +57,10 @@
   background: transparent;
 }
 .sources .clusterMember th[scope="row"] { padding-left: 16px; }
-/* The cadence shared by the whole theme, under the sub-group title. Phone
-   cards only: wide tables show it in the cadence column of each row. */
+/* The cadence shared by the whole theme, under the sub-group title, on
+   every screen: the rows' cadence cells hold it for screen readers only. */
 .clusterNote {
-  display: none;
+  display: block;
   margin-top: 2px;
   color: var(--color-neutral-600);
   font-size: 12px;
@@ -229,7 +229,6 @@
     margin-inline: 6px;
   }
   /* The sub-group note under the title already gives the cadence. */
-  .clusterNote { display: block; }
   .sources td.cadenceInGroup { display: none; }
   .sources .clusterRow th { padding-left: 16px; border-bottom: 0; }
   /* The card's cells are blocks: indent the whole card, not only its name. */

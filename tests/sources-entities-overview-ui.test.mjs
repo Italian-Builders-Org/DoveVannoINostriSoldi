@@ -33,14 +33,15 @@ test("/fonti: a sub-group count never splits '11' from 'fonti'", async () => {
   assert.match(rule(css, ".groupCount"), /white-space: nowrap;/);
 });
 
-test("/fonti: a shared cadence shows as a value in the table, as a note on phone cards", async () => {
+test("/fonti: a cadence shared by a theme is written once, in the sub-group heading, on every screen", async () => {
   const [css, page] = await Promise.all([read("../src/app/fonti/fonti.module.css"), read("../src/app/fonti/page.tsx")]);
-  // A lone muted dot in eleven rows read as missing data.
-  assert.doesNotMatch(page, /<span aria-hidden="true">·<\/span>\s*<span className=\{styles\.visuallyHidden\}>come indicato nel gruppo/);
-  assert.doesNotMatch(page, /cadenceShared/);
-  // The heading note repeats the column on wide screens: phones only.
-  assert.match(css, /\n\.clusterNote \{[^}]*display: none;/);
-  assert.match(css, /@media \(max-width: 639px\) \{[\s\S]*\.clusterNote \{ display: block; \}/);
+  // Round 6: a lone dot in eleven rows read as missing data. Round 7: the
+  // same sentence eleven times. The heading states it; the cells keep it for
+  // screen readers only.
+  assert.doesNotMatch(page, /<span aria-hidden="true">·<\/span>/);
+  assert.match(page, /className=\{styles\.visuallyHidden\}>\{plainRangeLabel\(source\.cadence\)\}<\/span>/);
+  assert.match(rule(css, ".clusterNote"), /display: block;/);
+  assert.doesNotMatch(css, /\.clusterNote \{ display: (none|block); \}/, "no per-breakpoint override");
 });
 
 test("/enti: grouped lists end without a stray divider and figures share one weight", async () => {
@@ -134,4 +135,22 @@ test("/spese/panoramica: year labels clear the lowest axis value; the map box fi
   assert.match(rule(charts, ".trendPlot"), /row-gap: 12px;/, "'820' overlapped '2014' with a 6px gap");
   assert.match(rule(charts, ".trendTick,\n.trendYear"), /font-size: 11px;/);
   assert.match(rule(map, ".layout"), /grid-template-columns: minmax\(0, 1fr\) 260px;/);
+});
+
+test("cards in one row end on one line; the State budget card is a card like its neighbours", async () => {
+  const [enti, panoramica] = await Promise.all([read("../src/app/enti/enti.module.css"), read("../src/app/spese/panoramica/panoramica.module.css")]);
+  assert.match(rule(enti, ".split"), /align-items: stretch;/);
+  assert.match(panoramica, /\.stateSummary \{[^}]*background: var\(--color-raised\);/);
+});
+
+test("unavailable notice: on phones both actions span the text column", async () => {
+  const css = await read("../src/app/globals.css");
+  assert.match(css, /@media \(max-width: 480px\) \{\s*\.data-unavailable-actions \{ display: grid; justify-self: stretch; \}/);
+});
+
+test("footer: the rule above the AI note spans the footer while the text keeps its measure", async () => {
+  const css = await read("../src/app/globals.css");
+  const disclaimer = rule(css, ".footer-disclaimer");
+  assert.doesNotMatch(disclaimer, /max-width/);
+  assert.match(disclaimer, /padding-right: max\(0px, calc\(100% - 72ch\)\);/);
 });

@@ -697,7 +697,8 @@ main { display: block; }
   margin: 0;
   padding-top: 12px;
   border-top: 1px solid var(--color-neutral-300);
-  max-width: 72ch;
+  /* The rule spans the footer; the padding keeps the text at 72ch. */
+  padding-right: max(0px, calc(100% - 72ch));
   color: var(--color-neutral-600);
   font-size: var(--font-size-caption);
   line-height: 1.55;
@@ -865,6 +866,10 @@ main { display: block; }
 .data-unavailable-body > strong { font-family: var(--font-heading); font-size: 16px; font-weight: 600; color: var(--color-text); }
 .data-unavailable-body > p { margin: 0; font-size: 14px; color: var(--color-neutral-700); }
 .data-unavailable-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+/* Phones: the two actions stack at the same width, like the other pages' full-width buttons. */
+@media (max-width: 480px) {
+  .data-unavailable-actions { display: grid; justify-self: stretch; }
+}
 .warning-notice strong { color: var(--color-warning); }
 
 /* Any table that can outgrow its column scrolls inside its own box rather

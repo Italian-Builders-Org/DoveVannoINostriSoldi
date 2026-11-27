@@ -62,8 +62,8 @@ function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): s
 }
 
 // `cadenceInHeading`: the theme sub-group heading states the cadence shared by
-// all its rows. Wide tables still show it in each row's column (a lone dot
-// read as missing data); phone cards drop it, since the heading note says it.
+// all its rows, once. The cell keeps it for screen readers only: repeating it
+// eleven times on screen added nothing, and a placeholder read as missing data.
 function SourceRow({
   entry,
   inCluster,
@@ -104,9 +104,13 @@ function SourceRow({
         ) : coverage}
       </td>
       <td role="cell" className={styles.latest}>{period}</td>
-      <td role="cell" className={cadenceInHeading ? `${styles.cadence} ${styles.cadenceInGroup}` : styles.cadence}>
-        {plainRangeLabel(source.cadence)}
-      </td>
+      {cadenceInHeading ? (
+        <td role="cell" className={`${styles.cadence} ${styles.cadenceInGroup}`}>
+          <span className={styles.visuallyHidden}>{plainRangeLabel(source.cadence)}</span>
+        </td>
+      ) : (
+        <td role="cell" className={styles.cadence}>{plainRangeLabel(source.cadence)}</td>
+      )}
     </tr>
   );
 }

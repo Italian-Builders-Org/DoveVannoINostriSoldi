@@ -57,7 +57,7 @@ const CURATED_PUBLIC_CAVEATS: Partial<Record<DatasetId, string>> = {
   eu_vat_gap_italy:
     "Stima del divario fra l’IVA teorica e quella incassata: non è evasione accertata né un dato delle dichiarazioni MEF o delle stime ISTAT sull’economia non osservata. Il 2024 è una stima preliminare; le celle senza valore non sono osservate.",
   inps_assegno_unico:
-    "Non è la platea completa dell’Assegno unico: sono esclusi i beneficiari del Reddito di cittadinanza. Nuclei, figli e mensilità sono misure distinte e non si sommano; il numero di figli per nucleo non va letto come conteggio di figli distinti. Nessun giudizio su adeguatezza o merito.",
+    "Non è la platea completa dell’Assegno unico: sono esclusi i beneficiari del Reddito di cittadinanza. Nuclei, figli e mensilità sono misure distinte e non si sommano; il numero di figli per nucleo non è documentato come conteggio di figli distinti. Nessun giudizio su adeguatezza o merito.",
   aifa_farmaci_spesa:
     "Tracciabilità (forniture alle strutture pubbliche, IVA inclusa) e convenzionata (farmacie, prezzo al pubblico) sono canali distinti e non vanno sommati. Gli importi sono al lordo dei payback: non sono spesa netta del SSN e non si sommano al Conto economico SSN, ai pagamenti SIOPE della sanità o alla spesa sanitaria COFOG. Un canale senza dato non vale zero; i valori negativi della tracciabilità sono resi e note di credito. Le confezioni non sono dosi.",
   istat_bes_paesaggio:

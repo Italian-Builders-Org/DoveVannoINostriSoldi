@@ -62,7 +62,8 @@ type FieldMatch = Readonly<{
   reason: "exact" | "prefix" | "tokens" | "fuzzy" | "inflected";
 }>;
 
-type SearchField = Readonly<{ normalized: string; tokens: readonly string[] }>;
+// `identifier`: a slug such as "parti-atti", whose words are not inflected Italian.
+type SearchField = Readonly<{ normalized: string; tokens: readonly string[]; identifier?: boolean }>;
 type PreparedDocument = Readonly<{
   document: SearchIndexDocument;
   title: SearchField;
@@ -422,7 +423,7 @@ function tokens(normalized: string): readonly string[] {
 
 function prepareField(value: string): SearchField {
   const normalized = normalizeSearchText(value);
-  return { normalized, tokens: tokens(normalized) };
+  return { normalized, tokens: tokens(normalized), ...(/^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)+$/u.test(value.trim()) ? { identifier: true } : {}) };
 }
 
 function prepareDocument(document: SearchIndexDocument): PreparedDocument {
@@ -464,9 +465,10 @@ function editDistanceAtMostOne(left: string, right: string): boolean {
   return edits + (leftCharacters.length - leftIndex) + (rightCharacters.length - rightIndex) <= 1;
 }
 
-/** Italian inflects in the last letter (sanitario/sanitaria, deputato/deputati). */
+/** Italian inflects in the final vowel (sanitario/sanitaria, deputato/deputati); treno/trend is a typo. */
 function isWordFormVariant(left: string, right: string): boolean {
-  return left.length >= 5 && left.length === right.length && left.slice(0, -1) === right.slice(0, -1);
+  return left.length >= 5 && left.length === right.length && left.slice(0, -1) === right.slice(0, -1) &&
+    /[aeio]/u.test(left.at(-1)!) && /[aeio]/u.test(right.at(-1)!);
 }
 
 function tokenQuality(queryToken: string, candidateToken: string): number {
@@ -497,7 +499,7 @@ function matchField(field: SearchField, query: SearchField): FieldMatch | null {
     let inflected = false;
     for (const candidateToken of candidateTokens) {
       const quality = tokenQuality(queryToken, candidateToken);
-      if (quality === 0.5 && isWordFormVariant(queryToken, candidateToken)) inflected = true;
+      if (quality === 0.5 && !field.identifier && isWordFormVariant(queryToken, candidateToken)) inflected = true;
       best = Math.max(best, quality);
       if (best === 3) break;
     }
@@ -517,7 +519,8 @@ function resultForDocument(entry: PreparedDocument, query: SearchField): SearchR
   const aliasMatch = titleMatch ? null : entry.aliases.reduce<FieldMatch | null>(
     (best, alias) => {
       const match = matchField(alias, query);
-      return match && (!best || match.quality > best.quality) ? match : best;
+      // Equal quality: an inflected alias is a better reading than a typo, whatever the alias order.
+      return match && (!best || match.quality > best.quality || (match.quality === best.quality && match.reason === "inflected" && best.reason === "fuzzy")) ? match : best;
     },
     null,
   );

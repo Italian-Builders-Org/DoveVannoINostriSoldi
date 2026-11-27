@@ -280,6 +280,9 @@ test('search fallback keeps singular, plural and gender forms of a topic word', 
     const links = selectAssistantSiteLinks([], question);
     assert.ok(links.some((link) => link.href === href), `${question}: ${JSON.stringify(links)}`);
   }
+  for (const question of ['Quanto costa il treno?', 'Quanto costa il parto?', 'piano casa']) {
+    assert.deepEqual(selectAssistantSiteLinks([], question), [], `${question} must not borrow an unrelated page`);
+  }
 });
 
 test('truncated page titles and descriptions say they were cut', () => {

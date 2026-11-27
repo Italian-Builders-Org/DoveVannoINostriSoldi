@@ -92,6 +92,11 @@ try {
     assert.deepEqual(reply.external,[{href:'https://www.siope.it/',target:'_blank'}],'official sources open in a new tab');
     assert.deepEqual(reply.dataset,[{href:'/territori',target:'_blank',text:'Pagamenti dei Comuni'}],'the dataset name opens its DVNS page, and that page is not listed again under Approfondisci');
     assert.ok(reply.overflow<=1,`${width}: answer overflow`);
+    if(width<600){
+      // On phones every standalone control is a 44px target; links inside a sentence are exempt (inline text).
+      const small=await page.evaluate(()=>[...document.querySelectorAll('[data-assistant-reply] section:not([data-site-links]) a, [data-assistant-reply] button, main [class*="activitySummary"], main footer button, main footer a')].filter(el=>el.getClientRects().length).map(el=>({label:(el.getAttribute('aria-label')||el.textContent).trim().slice(0,32),height:Math.round(el.getBoundingClientRect().height)})).filter(target=>target.height<44));
+      assert.deepEqual(small,[],`${width}: touch targets under 44px`);
+    }
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
     const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
     assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);

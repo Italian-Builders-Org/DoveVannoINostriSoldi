@@ -58,6 +58,9 @@ ogni scorrimento verso l’alto o al focus; i messaggi sfumano sotto il suo bord
 
 Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus; sugli schermi
 touch restano solo sull’ultima domanda); ogni risposta completata ha copia e rigenerazione.
+Su telefono e schermi touch ogni controllo isolato (fonti, «Dati consultati», copia,
+rigenera, «Come funziona») ha un bersaglio di almeno 44px, verificato dall’E2E; i link dentro
+una frase restano testo.
 La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.

@@ -284,9 +284,6 @@
   .siteLink:hover > svg { color: var(--color-accent-700); transform: translate(1px, -1px); }
   .page .sourceLink:hover, .page .inlineSiteLink:hover, .page .datasetLink:hover { text-decoration-color: currentColor; }
 }
-@media (pointer: coarse) {
-  .page .sourceLink { padding-block: 6px; }
-}
 /* Durations are already near zero globally under reduced motion; this only removes the hover nudge. */
 @media (prefers-reduced-motion: reduce) {
   .siteLink:hover > svg { transform: none; }
@@ -355,7 +352,7 @@
   .userBlock > .messageActions { opacity: 0; transition: opacity 140ms ease; }
   .userBlock:hover > .messageActions, .userBlock:focus-within > .messageActions { opacity: 1; }
 }
-@media (pointer: coarse) {
+@media (max-width: 600px), (pointer: coarse) {
   .messageActions button { min-width: 44px; min-height: 44px; }
   .assistantMessage > .messageActions { margin-left: -13px; }
   .userBlock > .messageActions { margin-right: -13px; }
@@ -373,7 +370,6 @@
 .page[data-conversation="true"] .attachmentCount, .page[data-conversation="true"] .count:empty { display: none; }
 .page[data-conversation="true"] .count { grid-row: 3; grid-column: 2 / -1; margin: 0; padding: 0 4px 4px; text-align: right; }
 @media (max-width: 600px) {
-  .page[data-conversation="true"] .footer button, .page[data-conversation="true"] .footer a { min-height: 32px; }
   .page[data-conversation="true"] .toolbar { padding-block: 5px; }
   .page[data-conversation="true"] .stage { padding-inline: 14px; }
   .page[data-conversation="true"] .inputSurface textarea { font-size: 16px; }
@@ -520,3 +516,15 @@
 /* While "Vai in fondo" shows, the fade above the composer grows to a solid band behind the whole pill
    (12px gap + 44px pill + 8px), so no half-hidden figure sits beside it. */
 .page[data-conversation="true"] .composerArea:has(.jumpLatest)::before { height: 96px; background: linear-gradient(to bottom, transparent, var(--assistant-bg) 30%); }
+/* Phones and touch screens: every standalone control is a 44px target. Padding (not flex) keeps a long
+   source name wrapping with its arrow; links inside a sentence stay inline text. */
+@media (max-width: 600px), (pointer: coarse) {
+  .page .sourceLink { min-height: 44px; padding-block: 12px; }
+  .page .datasetLink { display: inline-block; min-height: 44px; padding-block: 11.5px; }
+  .evidenceTitle { margin-bottom: 0; }
+  /* The taller link already adds the gap under the heading. */
+  .evidence .replyLabel { margin-bottom: 0; }
+  .activitySummary { min-height: 44px; }
+  .replyIdentity > img { margin-top: 9px; }
+  .page[data-conversation="true"] .footer { padding-top: 0; }
+}

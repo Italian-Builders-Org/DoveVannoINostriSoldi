@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "exit-tax",
+  "version": "2026.1",
+  "observedAt": "2026-11-27",
+  "artefacts": {
+    "ac3174Relazione": {
+      "path": ".cache/exit-tax/camera/ac3174-relazione.pdf",
+      "sha256": "7d464a2eb3af4171361b2a7c1276db8d529b333922e4a4bc33b24791f4a5e8ac",
+      "url": "https://documenti.camera.it/leg19/pdl/pdf/leg.19.pdl.camera.3174.19PDL0221140.pdf",
+      "pages": [238, 239]
+    },
+    "ac3174Bis": {
+      "path": ".cache/exit-tax/camera/ac3174-bis.pdf",
+      "sha256": "4571a1c828797243183d6355a46b08d3a662fe466675af911a5dbb5b97558109",
+      "url": "https://documenti.camera.it/leg19/pdl/pdf/leg.19.pdl.camera.3174-bis.19PDL0221760.pdf",
+      "pages": [33, 34, 35]
+    },
+    "corteConti2027": {
+      "path": ".cache/exit-tax/camera/corte-conti-audizione-2027.pdf",
+      "sha256": "e7a6e831605dec626e25fd595b0ca76183df501f746516488a2613aec3ef8321",
+      "url": "https://documenti.camera.it/leg19/documentiAcquisiti/COM05/Audizioni/leg19.com05.Audizioni.Memoria.PUBBLICO.ideGes.106014.09-11-2026-18-38-29.376.pdf",
+      "pages": [41, 42]
+    },
+    "ag42Relazione": {
+      "path": ".cache/exit-tax/camera/ag42-relazione.pdf",
+      "sha256": "67f77d5be5642fc3be1a7ff6dd34281e7120a6eab2d71ee77c1a2d5ad12cd0f1",
+      "url": "https://documenti.camera.it/apps/nuovosito/attigoverno/Schedalavori/getTesto.ashx?file=0042_F001.pdf&leg=XVIII",
+      "pages": [49]
+    },
+    "istatTavola9": {
+      "path": ".cache/exit-tax/istat/tavola9_serie_istr.xlsx",
+      "sha256": "88dc849f99425d49ad4e49f2674a55fd09106b22b49083335c341712b34173a1",
+      "url": "https://demo.istat.it/data/trasferimenti/tavola9_serie_istr.xlsx"
+    },
+    "istatTavola12": {
+      "path": ".cache/exit-tax/istat/tavola12_serie_istr.xlsx",
+      "sha256": "415a39d100679ae86a5a12b51d9416f7b13421679c7aaf5a330cedd8f51f60e7",
+      "url": "https://demo.istat.it/data/trasferimenti/tavola12_serie_istr.xlsx"
+    },
+    "ecbDwa": {
+      "path": ".cache/exit-tax/ecb/dwa-it.csv",
+      "sha256": "1eee7d5f0169282e24511abf6cb97a618c9b17db1d1c4ff07f598cf90813ab4f",
+      "url": "https://data-api.ecb.europa.eu/service/data/DWA/Q.IT.S14.A.LE..D10+D9+D8+B50+_Z.EUR+EUR_R_NH.S.N?format=csvdata"
+    },
+    "cameraAmendments": {
+      "path": "src/data/generated/camera-emendamenti-bilancio-2027.json",
+      "sha256": "aaa956921c8a1b24e04e845ac5b24b3f41e6da297b04c49ef97be4d8833bd5d4",
+      "url": "https://documenti.camera.it/_dati/leg19/lavori/bollet/202611/emendamenti/html/05/3174-bis/3174-bis.htm"
+    },
+    "frSenatQuestion": {
+      "path": ".cache/exit-tax/estero/fr-senat-q.html",
+      "sha256": "da997d0d56f4b8d4644f4c8f6d253456a336e14915e6acea3d11adeb5c13cf49",
+      "url": "https://www.senat.fr/questions/base/2018/qSEQ180906880.html"
+    },
+    "frSenatReport": {
+      "path": ".cache/exit-tax/estero/fr-senat-rap.pdf",
+      "sha256": "831c79cb83c8c1eb292fb4d45a096f2b23117bc35ed9a5002314ed454c8da940",
+      "url": "https://www.senat.fr/rap/l18-147-3-1/l18-147-3-11.pdf"
+    },
+    "deBundestagHib": {
+      "path": ".cache/exit-tax/estero/de-hib.html",
+      "sha256": "44dfcef2ec337fd2a66bbda9b43636e43197f55dcfb1026ed52d071f1a17a054",
+      "url": "https://www.bundestag.de/presse/hib/848904-848904"
+    },
+    "deBundestagBill": {
+      "path": ".cache/exit-tax/estero/de-bt.pdf",
+      "sha256": "8962cd8796a70172631e0e16033ef643c6473e5cc62e4e321105d8124bcc3d93",
+      "url": "https://dserver.bundestag.de/btd/19/286/1928652.pdf"
+    },
+    "esAeatManual": {
+      "path": ".cache/exit-tax/estero/es-aeat.html",
+      "sha256": "37fb2db856bbd6f14c3e6f02637790d63cb410e7d1678400f8a87989aa2b735a",
+      "url": "https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/irpf-2024/c11-ganancias-perdidas-patrimoniales/regimen-especial-ganancias-patrimoniales-cambio-residencia/introduccion-ambito-aplicacion.html"
+    },
+    "usIrsPage": {
+      "path": ".cache/exit-tax/estero/us-irs.html",
+      "sha256": "1426ad1929cd61d493853fb707c4aba16433299368f29cc9930e57be3ad49da4",
+      "url": "https://www.irs.gov/individuals/international-taxpayers/expatriation-tax"
+    },
+    "usRevProc": {
+      "path": ".cache/exit-tax/estero/us-rp2532.pdf",
+      "sha256": "e9ada115fb43a4af5ea326ca91edd40ab0bf29b9be01d2c13d7b8fa96214635b",
+      "url": "https://www.irs.gov/pub/irs-drop/rp-25-32.pdf"
+    },
+    "noStortingAnswer": {
+      "path": ".cache/exit-tax/estero/no-dok15.pdf",
+      "sha256": "84de9185ac22fee104d65e66f9bd74de378ee63652b37a82a4345fffabcf3034",
+      "url": "https://www.stortinget.no/globalassets/pdf/dokumentserien/2024-2025/dok15-202425-1236-vedlegg.pdf"
+    }
+  },
+  "proposal": {
+    "act": "A.C. 3174-bis",
+    "actTitle": "Disegno di legge di bilancio 2027",
+    "actUrl": "https://www.camera.it/leg19/126?idDocumento=3174-bis",
+    "article": "Art. 17",
+    "newArticle": "Art. 307-bis del testo unico delle imposte sui redditi (d.lgs. 117/2026)",
+    "thresholdEuro": 800000,
+    "ratePct": 26,
+    "residence": "almeno 6 degli ultimi 10 periodi d'imposta",
+    "governmentBondsPct": 48.08,
+    "paymentDays": 180,
+    "advancePct": 50,
+    "deferralYearsEu": 5,
+    "deferralYearsOther": 10,
+    "effectiveFrom": "2027-01-01",
+    "status": "In esame alla Camera, V Commissione Bilancio in sede referente (ultima seduta registrata: 24 novembre 2026)",
+    "phrases": {
+      "ac3174Bis": ["Art. 307-bis", "sei degli ultimi dieci periodi", "800.000 euro alla", "50 per cento dell", "cinque periodi"],
+      "ac3174Relazione": ["aliquota del 26 per cento", "48,08%", "73,1 per cento", "0,28 per cento", "6.581 milioni", "13,47 milioni", "6,74 milioni", "3,37 milioni"]
+    }
+  },
+  "governmentEstimate": {"substituteTaxMn": 6581, "shareAboveThresholdPct": 73.1, "emigrationRatePct": 0.28, "potentialMn": 13.47},
+  "corteConti": {
+    "phrase": "disincentivo ai trasferimenti di residenza motivati da ragioni fiscali",
+    "quote": "Tenuto conto degli importi previsti e dell'incertezza sul numero degli effettivi trasferimenti, la disposizione rileva più che sul piano finanziario quale disincentivo ai trasferimenti di residenza motivati da ragioni fiscali."
+  },
+  "businessExitTax": {
+    "rule": "Art. 166 TUIR, imposizione in uscita per chi esercita imprese commerciali (d.lgs. 142/2018, direttiva UE 2016/1164)",
+    "minEuro": 10000,
+    "maxEuro": 100000,
+    "phrases": ["esigua numerosit", "10.000 e 100.000"]
+  },
+  "scenarios": {
+    "assets": ["F3", "F5"],
+    "assetLabels": {"F3": "Titoli di debito", "F5": "Azioni, partecipazioni e fondi"},
+    "groups": ["D10", "D9", "D8", "B50", "_Z"],
+    "emigrationPct": [0.02, 0.05, 0.1, 0.28],
+    "gainSharePct": [20, 35, 50],
+    "ratePct": 26,
+    "note": "Ipotesi, non previsioni. La quota della ricchezza sopra la soglia (73,1%) è quella della relazione tecnica; quota di plusvalenza non realizzata e tasso di uscita dei più ricchi non sono pubblicati da nessuna fonte ufficiale."
+  },
+  "international": [
+    {
+      "country": "Francia",
+      "rule": "Art. 167 bis del Code général des impôts",
+      "who": "Chi lascia la Francia con titoli per più di 800.000 euro o almeno il 50% degli utili di una società",
+      "rate": "30% complessivo (12,8% di imposta più prelievi sociali)",
+      "deferral": "Sospensione per i trasferimenti nell'UE; dal 2019 il debito cade dopo 2 anni (prima 15)",
+      "revenue": "5,75 miliardi di imposte teoriche al 31/12/2017, ma solo 138 milioni incassati nel 2012-2017, circa 23 milioni l'anno",
+      "sources": [
+        {"artefact": "frSenatReport", "phrase": "800 000 euros"},
+        {"artefact": "frSenatReport", "phrase": "taux global de 30 %"},
+        {"artefact": "frSenatReport", "phrase": "quinze ans à deux ans"},
+        {"artefact": "frSenatQuestion", "phrase": "seuls 138 millions"}
+      ]
+    },
+    {
+      "country": "Germania",
+      "rule": "§ 6 Außensteuergesetz (versione in vigore dal 2022)",
+      "who": "Chi ha una partecipazione rilevante (§ 17 EStG) ed è stato residente almeno 7 dei 12 anni precedenti",
+      "rate": "Imposta sul reddito ordinaria sulla plusvalenza",
+      "deferral": "Pagamento in 7 rate annuali senza interessi, di regola con garanzia",
+      "revenue": "180,3 milioni nel 2018, di cui circa 170 milioni rinviati",
+      "sources": [
+        {"artefact": "deBundestagBill", "phrase": "sieben gleichen Jahresraten"},
+        {"artefact": "deBundestagBill", "phrase": "zwölf Jahre"},
+        {"artefact": "deBundestagHib", "phrase": "180,3 Millionen Euro"}
+      ]
+    },
+    {
+      "country": "Spagna",
+      "rule": "Art. 95 bis della legge sull'IRPF",
+      "who": "Chi è stato residente almeno 10 dei 15 anni precedenti e ha partecipazioni per più di 4 milioni, o più del 25% di una società con valore oltre 1 milione",
+      "rate": "Aliquota sui redditi da risparmio",
+      "deferral": "Per i trasferimenti nell'UE si paga solo se si vende o si lascia l'UE entro 10 anni",
+      "revenue": "Non pubblicato",
+      "sources": [
+        {"artefact": "esAeatManual", "phrase": "4.000.000 euros"},
+        {"artefact": "esAeatManual", "phrase": "diez de los quince"}
+      ]
+    },
+    {
+      "country": "Stati Uniti",
+      "rule": "Internal Revenue Code § 877A",
+      "who": "Chi rinuncia alla cittadinanza o alla residenza permanente con patrimonio netto di almeno 2 milioni di dollari, o imposta media sopra 211.000 dollari (2026)",
+      "rate": "Imposte ordinarie sulle plusvalenze, come se tutto fosse venduto il giorno prima",
+      "deferral": "Rinvio su richiesta, con garanzia e interessi; franchigia di 910.000 dollari (2026)",
+      "revenue": "Non pubblicato",
+      "sources": [
+        {"artefact": "usIrsPage", "phrase": "$2 million or more"},
+        {"artefact": "usIrsPage", "phrase": "mark-to-market"},
+        {"artefact": "usRevProc", "phrase": "$211,000"},
+        {"artefact": "usRevProc", "phrase": "$910,000"}
+      ]
+    },
+    {
+      "country": "Norvegia",
+      "rule": "Utflyttingsskatt (skatteloven § 10-70)",
+      "who": "Chi lascia la Norvegia con plusvalenze maturate su azioni e quote",
+      "rate": "Imposta ordinaria sui redditi da azioni",
+      "deferral": "Dal 29/11/2022 il debito non si estingue più dopo 5 anni",
+      "revenue": "Plusvalenze accertate all'uscita: 7.621 milioni di corone nel 2021, 134.405 nel 2022, 42.099 nel 2023",
+      "sources": [
+        {"artefact": "noStortingAnswer", "phrase": "7 621"},
+        {"artefact": "noStortingAnswer", "phrase": "134 405"},
+        {"artefact": "noStortingAnswer", "phrase": "42 099"}
+      ]
+    }
+  ],
+  "sources": [
+    {"id": "camera", "label": "Disegno di legge di bilancio 2027, A.C. 3174-bis, art. 17, e relazione tecnica A.C. 3174", "owner": "Camera dei deputati, Governo", "url": "https://www.camera.it/leg19/126?idDocumento=3174-bis", "license": "Atto pubblico"},
+    {"id": "corteconti", "label": "Audizione sul disegno di legge di bilancio 2027", "owner": "Corte dei conti, Sezioni riunite in sede di controllo", "url": "https://documenti.camera.it/leg19/documentiAcquisiti/COM05/Audizioni/leg19.com05.Audizioni.Memoria.PUBBLICO.ideGes.106014.09-11-2026-18-38-29.376.pdf", "license": "Atto pubblico"},
+    {"id": "ag42", "label": "Relazione tecnica allo schema di d.lgs. 142/2018 (art. 166 TUIR)", "owner": "Governo, Atto del Governo n. 42 (XVIII legislatura)", "url": "https://documenti.camera.it/apps/nuovosito/attigoverno/Schedalavori/getTesto.ashx?file=0042_F001.pdf&leg=XVIII", "license": "Atto pubblico"},
+    {"id": "istat", "label": "Trasferimenti di residenza, serie 2013-2025 (tavole 9 e 12)", "owner": "ISTAT", "url": "https://demo.istat.it/tavole/?t=apr4", "license": "CC BY 4.0"},
+    {"id": "ecb", "label": "Distributional Wealth Accounts, Italia", "owner": "Banca centrale europea e Banca d'Italia", "url": "https://data.ecb.europa.eu/data/datasets/DWA/data-information", "license": "Riutilizzo con citazione della fonte"},
+    {"id": "emendamenti", "label": "Emendamenti all'art. 17, V Commissione", "owner": "Camera dei deputati", "url": "https://documenti.camera.it/_dati/leg19/lavori/bollet/202611/emendamenti/html/05/3174-bis/3174-bis.htm", "license": "Atto pubblico"}
+  ]
+}

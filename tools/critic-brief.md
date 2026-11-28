@@ -13,7 +13,10 @@
 10. Il bordo più marcato del composer è il suo stato di focus: dopo l'invio il cursore resta nel campo, quindi negli screenshot della conversazione appare così. Non è un'incoerenza tra stati.
 11. Pulsanti del consenso: su desktop «Annulla | Accetta e invia» affiancati; su mobile, nel foglio dal basso, impilati con il primario sopra (convenzione delle piattaforme).
 12. Nello stato vuoto l'avviso sull'AI resta in fondo alla pagina, come piè di pagina; in conversazione è sotto il composer agganciato in basso. È lo stesso posto (in fondo), non un'incoerenza.
-13. Su telefono i controlli isolati (fonti, «Dati consultati», copia/rigenera, «Come funziona») hanno un bersaglio di 44px misurato nel DOM; i link dentro una frase sono testo e ne sono esenti.
+13. Su telefono i controlli isolati (fonti, «Dati consultati», copia/rigenera, «Come funziona», «Vai in fondo») hanno un bersaglio di 44px misurato nel DOM; i link dentro una frase sono testo e ne sono esenti.
+
+14. Su telefono le righe di link in «Fonti» distano di più che su desktop perché ogni link è alto 44px (decisione 13): non si comprimono con aree di tocco sovrapposte. Il passo titolo → contenuto invece è lo stesso in ogni sezione.
+15. Copia/modifica della domanda: su desktop compaiono al passaggio del mouse e al focus da tastiera; copia/rigenera della risposta sono sempre visibili perché sono l'azione successiva più probabile.
 
 ## Rubrica
 Per ogni difetto indica la classe:

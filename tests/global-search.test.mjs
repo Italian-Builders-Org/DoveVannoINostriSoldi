@@ -189,8 +189,12 @@ test("city-name queries prefer the municipality over agencies and metropolitan c
   const milano = rankEntitySearchResults(entities, "milano");
   assert.equal(milano[0].href, "/enti/c_f205");
   assert.equal(milano[0].title, "Milano");
-  assert.equal(milano[0].context, "Comune · Registro IPA");
+  // Plain context for citizens: no registry jargon, no internal IPA code.
+  assert.equal(milano[0].context, "Comune");
+  assert.equal(milano[0].description, null);
   assert.equal(milano[1].href, "/enti/cmmi");
+  assert.equal(milano[1].context, "Città metropolitana");
+  assert.ok(milano.every((result) => !/c_f205|cmmi/.test(`${result.context} ${result.description ?? ""}`)));
 
   for (const query of ["città di milano", "citta di milano", "Comune di Milano"]) {
     const ranked = rankEntitySearchResults(entities, query);
@@ -371,11 +375,11 @@ test("caller-owned search documents reflect title and alias changes between quer
 
 test("current IPA records reflect a changed name and entity kind on the next ranking", () => {
   const record = entity({ denominazione: "COMUNE DI MILANO" });
-  assert.equal(rankEntitySearchResults([record], "Milano")[0].context, "Comune · Registro IPA");
+  assert.equal(rankEntitySearchResults([record], "Milano")[0].context, "Comune");
   record.denominazione = "Città Metropolitana di Bologna";
   record.tipologia = "Città Metropolitana";
   assert.deepEqual(rankEntitySearchResults([record], "Milano"), []);
   const result = rankEntitySearchResults([record], "Bologna")[0];
   assert.equal(result.title, "Città Metropolitana di Bologna");
-  assert.equal(result.context, "Registro IPA");
+  assert.equal(result.context, "Città metropolitana");
 });

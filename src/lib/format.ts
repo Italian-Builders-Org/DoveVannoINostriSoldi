@@ -93,6 +93,16 @@ export function compactEuroLike(value: number, reference: number): string {
   return euroFormatter.format(value);
 }
 
+/**
+ * "da gennaio ad agosto": Italian period label for cumulative monthly data.
+ * Uses the euphonic "ad" before a month starting with "a" (aprile, agosto).
+ */
+export function fromJanuaryTo(monthLabel: string): string {
+  const month = monthLabel.toLocaleLowerCase("it-IT");
+  if (month === "gennaio") return "a gennaio";
+  return `da gennaio ${month.startsWith("a") ? "ad" : "a"} ${month}`;
+}
+
 export function billions(value: number): string {
   return billionsFormatter.format(value / 1_000_000_000);
 }
@@ -117,4 +127,19 @@ export function shortDate(value: string | null | undefined): string {
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return "non disponibile";
   return shortDateFormatter.format(parsed);
+}
+
+/**
+ * Display label for a snapshot period. Some snapshots label a monthly stock
+ * with its raw ISO day ("2026-09-30"): show it as an Italian long date and
+ * leave every other label (quarters, school years) untouched. Impossible days
+ * such as 2026-02-31 are not silently rolled over into the next month.
+ */
+export function periodDateLabel(label: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label);
+  if (!match) return label;
+  const [year, month, day] = match.slice(1).map(Number) as [number, number, number];
+  const parsed = new Date(Date.UTC(year, month - 1, day, 12));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return label;
+  return longDateFormatter.format(parsed);
 }

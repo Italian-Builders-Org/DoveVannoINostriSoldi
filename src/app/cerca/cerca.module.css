@@ -116,3 +116,54 @@
     justify-self: start;
   }
 }
+
+/* Starting points under an empty search box: full-width 48px rows with a
+   chevron, like the home link lists; two columns once there is room. */
+.suggestions {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+.suggestions h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
+.suggestions ul {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggestions li { border-top: 1px solid var(--color-divider); }
+
+.suggestions a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-block: 10px;
+  color: var(--color-text);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.suggestions a svg { flex: none; color: var(--color-neutral-600); }
+.suggestions a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+@media (min-width: 720px) {
+  .suggestions ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .suggestions a:hover { color: var(--color-accent-700); }
+  .suggestions a:hover svg { color: currentColor; }
+}

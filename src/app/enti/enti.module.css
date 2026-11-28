@@ -2,6 +2,15 @@
 .fiveUp {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
+/* Label, value and note are three shared rows: when one label wraps to two
+   lines ("Enti che dichiarano quote" on phones), every value in that row
+   still starts on the same line. */
+.fiveUp > div {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  align-content: start;
+}
 
 .searchForm {
   display: flex;
@@ -22,15 +31,18 @@
   border: 0;
 }
 
+/* When the meta line wraps under the title (phones), it sits 8px below it
+   and 12px above the list's first rule. */
 .resultsHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-3);
+  row-gap: 8px;
   flex-wrap: wrap;
+  margin-bottom: 12px;
 }
-.resultsHead :global(.panel-title),
-.resultsHead > h2 { margin-bottom: var(--space-3); }
+.resultsHead > h2 { margin: 0; }
 .resultsHead > span {
   font-size: 12px;
   color: var(--color-neutral-600);
@@ -47,7 +59,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
   gap: var(--space-4);
-  align-items: start;
+  /* Side-by-side cards end on one line; content stays at the top. */
+  align-items: stretch;
 }
 
 .bigNumber {
@@ -60,6 +73,30 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* What the live registry did not return: one muted line at body size with
+   the info glyph of the unavailable-data notice, never a status word in the
+   figure's place. */
+.statusRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-neutral-700);
+}
+.statusIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--color-neutral-600);
+}
+
+/* Tables inside a panel: the first and last columns start and end on the
+   panel's content edge, like the panel title and the entity lists, instead
+   of 8px inside it. */
+.edgeTable :is(th, td):first-child { padding-left: 0; }
+.edgeTable :is(th, td):last-child { padding-right: 0; }
+
 .evidence { margin: 0; }
 .evidence > div {
   display: flex;
@@ -67,7 +104,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   padding: 9px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   font-size: 13px;
 }
 .evidence dt { color: var(--color-neutral-700); }
@@ -80,18 +117,9 @@
 .details {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
-.details summary {
-  cursor: pointer;
-  font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: var(--font-heading-weight);
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
-}
-.details summary:hover { color: var(--color-accent-700); }
+/* The summary takes the shared disclosure style (globals.css). */
 .details p {
   margin: var(--space-3) 0 0;
   font-size: 13px;
@@ -116,22 +144,246 @@
   overflow-wrap: anywhere;
 }
 
+/* Entity lists: the name is the row's link. Registry names often arrive in
+   capitals at the source, so red + caps read as shouting; plain text colour
+   with an underline on hover/focus keeps the link affordance quieter. */
+.entities th[scope="row"] { position: relative; }
+.entities th[scope="row"] a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 140ms ease;
+}
+/* The whole heading cell is the target, so the row clears 44px on touch. */
+.entities th[scope="row"] a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.entities th[scope="row"] a:focus-visible { text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .entities th[scope="row"]:hover a { text-decoration-color: currentColor; }
+}
+
+/* Identifier shown inline instead of behind a disclosure. */
+.code {
+  font-weight: 400;
+  color: var(--color-neutral-600);
+}
+.code code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* SIOPE entities: one collapsible group per type, so 241 names are not one
+   unbroken list. The summary row carries the count. */
+.typeGroups {
+  display: grid;
+  border-top: 1px solid var(--color-neutral-300);
+}
+.typeGroup { border-bottom: 1px solid var(--color-neutral-300); }
+/* The panel edge closes the list: a last divider left a stray line above it. */
+.typeGroup:last-child { border-bottom: 0; }
+.typeGroup > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 48px;
+  margin-inline: calc(-1 * var(--space-1));
+  padding: 0 var(--space-1);
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.typeGroup > summary::-webkit-details-marker { display: none; }
+/* The chevron is the shared summary marker (globals.css). */
+.typeGroup > summary::after { margin-left: var(--space-2); }
+@media (hover: hover) and (pointer: fine) {
+  .typeGroup > summary:hover { background: var(--color-neutral-100); }
+}
+.typeCount {
+  margin-left: auto;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.entityList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  column-gap: var(--space-4);
+  margin: 0;
+  padding: 0 0 var(--space-3);
+  list-style: none;
+}
+.entityList li { border-top: 1px solid var(--color-divider); min-width: 0; }
+/* Each row is a link: name and code on the left, a chevron on the right,
+   and a background on hover/press so the whole row reads as one target. */
+.entityList a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  /* The padding gives the hover/press background some air; the negative
+     margin puts the text back on the panel's content edge. */
+  margin-inline: calc(-1 * var(--space-1));
+  padding: 8px var(--space-1);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 140ms ease;
+}
+.entityText {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.rowChevron {
+  flex: none;
+  color: var(--color-neutral-500);
+  transition: transform 160ms var(--ease-out, ease-out), color 140ms ease;
+}
+.entityList a:active { background: var(--color-neutral-200); }
+.entityList a:focus-visible .rowChevron { color: var(--color-text); }
+.entityName {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 140ms ease;
+}
+.entityList a:focus-visible .entityName { text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .entityList a:hover { background: var(--color-neutral-100); }
+  .entityList a:hover .entityName { text-decoration-color: currentColor; }
+  .entityList a:hover .rowChevron { color: var(--color-text); transform: translateX(2px); }
+}
+
+/* Central administrations: six rows, then the rest behind "Mostra tutti" on
+   phones, so seventeen ministries do not fill five screens. From 621px the
+   rest is always shown and the toggle is hidden, where ::details-content can
+   be styled; older browsers keep the working toggle. */
+.moreEntities > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  /* No side padding: its top rule must line up with the rows' rules. */
+  padding: 0;
+  border-top: 1px solid var(--color-divider);
+  cursor: pointer;
+  list-style: none;
+  /* Colour and weight: .disclosure-more (globals.css). */
+  font-size: 13px;
+}
+.moreEntities > summary::-webkit-details-marker { display: none; }
+.moreEntities > summary:active { background: var(--color-neutral-200); }
+.moreOpen,
+.moreEntities[open] .moreClosed { display: none; }
+.moreEntities[open] .moreOpen { display: inline; }
+.moreChevron { transition: transform 160ms var(--ease-out, ease-out); }
+.moreEntities[open] .moreChevron { transform: rotate(180deg); }
+.moreEntities > .entityList { padding-top: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .moreEntities > summary:hover { background: var(--color-neutral-100); }
+}
+/* The first list keeps its bottom padding only when nothing follows it. */
+.entityList:has(+ .moreEntities) { padding-bottom: 0; }
+@supports selector(::details-content) {
+  @media (min-width: 621px) {
+    .moreEntities > summary { display: none; }
+    .moreEntities::details-content {
+      content-visibility: visible;
+      display: contents;
+    }
+  }
+}
+.entityList .code { font-size: 11px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rowChevron,
+  .moreChevron { transition: none; }
+}
+
+/* "Tutte le partecipazioni": semibold like the other card actions. Beside
+   the title on wide screens; on phones a full-width row closing the card. */
+.allLink {
+  color: var(--color-accent-700);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.endLink { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .allLink:hover { text-decoration: underline; text-underline-offset: 3px; }
+}
+
+/* The type is a table column on wide screens and a chip under the name on
+   phones, where a third of the row width wrapped it onto three lines. */
+.typeChip { display: none; }
+
 @media (max-width: 1100px) {
   .fiveUp { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .fiveUp > div:nth-child(3n) { border-right: 0; }
-  .fiveUp > div:nth-child(-n + 3) { border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp > div:nth-child(-n + 3) { border-bottom: 1px solid var(--color-divider); }
 }
 
 @media (max-width: 760px) {
   .fiveUp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .fiveUp > div { border-right: 1px solid var(--color-neutral-200); }
+  .fiveUp > div { border-right: 1px solid var(--color-divider); }
   .fiveUp > div:nth-child(2n) { border-right: 0; }
-  .fiveUp > div:not(:last-child) { border-bottom: 1px solid var(--color-neutral-200); }
+  .fiveUp > div:not(:last-child) { border-bottom: 1px solid var(--color-divider); }
 }
 
 @media (max-width: 620px) {
-  .fiveUp { grid-template-columns: 1fr; }
-  .fiveUp > div { border-right: 0; }
+  /* Two columns instead of a five-tile tower; the odd tile spans the row.
+     Doubled class beats the global single-column .stat-strip rule. */
+  .fiveUp.fiveUp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fiveUp.fiveUp > div { border-right: 1px solid var(--color-divider); border-bottom: 1px solid var(--color-divider); }
+  .fiveUp.fiveUp > div:nth-child(2n) { border-right: 0; }
+  .fiveUp.fiveUp > div:last-child { grid-column: 1 / -1; border-right: 0; border-bottom: 0; }
+  .entities .typeCell { display: none; }
+  /* With the type column hidden, a lone "Ente" header is noise. */
+  .mobileHiddenHead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .typeChip {
+    display: inline-flex;
+    margin-top: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-800);
+  }
   .searchForm { flex-direction: column; }
   .bigNumber { font-size: 30px; }
+  .headLink { display: none; }
+  .endLink {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 48px;
+    margin-top: var(--space-3);
+    border-top: 1px solid var(--color-divider);
+  }
+  .endLink:active { background: var(--color-neutral-200); }
+}
+
+/* Right-aligned counts read the same in every /enti table and list. */
+.edgeTable td.num {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }

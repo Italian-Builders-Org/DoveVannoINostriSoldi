@@ -29,6 +29,7 @@ import { REGION_NAME_BY_ISTAT_CODE } from "@/lib/italy-regions";
 import { getMunicipalitySearchEntities } from "@/lib/siope-municipality-detail";
 import { displayMunicipalityName } from "@/lib/comuni-search";
 
+import { DataUnavailableNotice } from "@/components/data-unavailable-notice";
 import { DotDistribution } from "./dot-distribution";
 import { RegionsMap } from "./regions-map";
 import styles from "./dvns-index.module.css";
@@ -81,12 +82,11 @@ function Unavailable() {
     <main className="shell page">
       <div className="page-intro">
         <h1>DVNS Index</h1>
-        <p>
-          Dati temporaneamente non disponibili. La pagina legge uno snapshot verificato dell&apos;indice: quando non è
-          raggiungibile o non corrisponde alla ricevuta pubblicata, non mostriamo numeri.
-        </p>
+        <p>Confronta oltre 6.000 Comuni su sei aspetti della spesa, dai servizi resi ai tempi di pagamento.</p>
       </div>
-      <p><Link href="/comuni">Vai alla mappa dei Comuni</Link></p>
+      <DataUnavailableNotice title="Classifica non disponibile" action={{ href: "/comuni", label: "Vai alla mappa dei Comuni" }} retry={{ href: PAGE_PATH, label: "Riprova" }}>
+        Mostriamo i punteggi solo con dati verificati, che in questo momento non sono disponibili.
+      </DataUnavailableNotice>
     </main>
   );
 }
@@ -275,7 +275,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
               highlightLabel={selected ? displayMunicipalityName(selected.name) : ""}
             />
             <p className={styles.chartNote}>
-              {integer.format(summary.ranked)} Comuni in classifica. Ogni punto è un gruppo di circa {perDot} Comuni con punteggio simile.
+              Ogni punto è un gruppo di circa {perDot} Comuni con punteggio simile.
             </p>
           </div>
         </div>
@@ -299,11 +299,6 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             <dt>Non in classifica</dt>
             <dd>{integer.format(summary.specialStatute + summary.partial)}</dd>
             <span className="stat-note">{integer.format(summary.specialStatute)} in Regioni a statuto speciale, {integer.format(summary.partial)} senza tutti i dati</span>
-          </div>
-          <div>
-            <dt>Pilastri</dt>
-            <dd>6</dd>
-            <span className="stat-note">da cinque fonti pubbliche</span>
           </div>
           <div>
             <dt>Anni dei dati</dt>
@@ -429,8 +424,7 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             <span className={styles.methodHint} aria-hidden="true" />
           </summary>
           <p className={styles.lede}>
-            Il DVNS Index ha una base oggettiva, dati ufficiali che chiunque può verificare, e una parte di indicatore:
-            le regole con cui decidiamo cosa conta come &quot;meglio&quot; e quanto pesa. Qui trovi la sintesi; il{" "}
+            Qui trovi la sintesi; il{" "}
             <Link href="/dvns-index/metodo" prefetch={false}>metodo completo</Link> spiega ogni passaggio con un esempio.
           </p>
           <div className="table-scroll" role="region" aria-labelledby="pilastri-tabella" tabIndex={0}>
@@ -491,7 +485,6 @@ export default async function DvnsIndexPage({ searchParams }: { searchParams: Se
             <li>Non indica sprechi né illeciti. Un affidamento diretto è spesso legittimo: la quota senza gara dice quanto il Comune usa la concorrenza, non se ha violato regole.</li>
             <li>Fotografa periodi diversi: servizi e fabbisogni 2021-2022, gli ultimi pubblicati da OpenCivitas; raccolta differenziata 2022-2023; pagamenti 2024-2025; appalti 2025.</li>
             <li>Una parte della distanza tra Nord e Sud dipende dal contesto economico e non solo dall&apos;amministrazione: per questo la scheda mostra anche la posizione nella Regione.</li>
-            <li>È un indice costruito da DoveVannoINostriSoldi: i dati sono ufficiali, le regole e i pesi sono scelte nostre, dichiarate qui.</li>
           </ul>
           <h3 className={styles.subtitle}>Fonti</h3>
           <ul className={styles.criteria}>

@@ -101,7 +101,7 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
         <section className={styles.featuredExploration} aria-labelledby="explorazione-in-evidenza">
           <h2 id="explorazione-in-evidenza">{topic.featuredExploration.title}</h2>
           <p>{topic.featuredExploration.description}</p>
-          <p><Link href={topic.featuredExploration.href}>Apri l&apos;esplorazione →</Link></p>
+          <p><Link className="link-arrow" href={topic.featuredExploration.href}>Apri l&apos;esplorazione</Link></p>
         </section>
       ) : null}
 
@@ -270,7 +270,6 @@ export default async function EditorialTopicPage({ topic }: { topic: EditorialTo
       <footer className={styles.provenance}>
         <p>
           Snapshot integrato: {new Intl.DateTimeFormat("it-IT", { dateStyle: "long" }).format(new Date(overview.generatedAt))}.
-          I valori restano nel perimetro dichiarato da ciascun insieme.
         </p>
         <Link href="/fonti/copertura">Verifica copertura e provenienza</Link>
       </footer>

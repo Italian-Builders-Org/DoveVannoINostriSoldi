@@ -1,57 +1,67 @@
 .figure {
+  margin: var(--space-3) 0 0;
+}
+
+/* name | count on one row, the bar on the full row below. */
+.list {
+  display: grid;
+  gap: var(--space-3);
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
-.chart {
-  width: 100%;
-  min-height: 180px;
+.list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "label value"
+    "track track";
+  align-items: baseline;
+  gap: 4px var(--space-3);
+  min-width: 0;
 }
-
-.tooltip {
-  max-width: 300px;
-  padding: 10px 12px;
-  border: 1px solid var(--color-neutral-400);
-  color: var(--color-neutral-100);
-  background: var(--color-text);
-  box-shadow: var(--shadow-md);
+.label {
+  grid-area: label;
+  min-width: 0;
+  color: var(--color-neutral-800);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
-
-.tooltip span,
-.tooltip strong {
-  display: block;
-}
-
-.tooltip span {
-  color: var(--color-neutral-400);
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-.tooltip strong {
-  margin-top: 4px;
-  color: var(--color-raised);
+.value {
+  grid-area: value;
+  color: var(--color-text);
   font-size: 13px;
   font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+/* Square ends: a quantity bar, not a pill. */
+.track {
+  grid-area: track;
+  display: block;
+  height: 8px;
+  background: var(--chart-data-track);
+}
+.track b {
+  display: block;
+  height: 100%;
+  background: var(--chart-data-primary);
 }
 
 .caption {
   max-width: 760px;
-  margin-top: 12px;
+  margin-top: var(--space-3);
   color: var(--color-neutral-600);
-  font-size: 11px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .empty {
   display: grid;
-  min-height: 250px;
+  min-height: 120px;
   place-items: center;
   padding: 30px;
   color: var(--color-neutral-600);
   font-size: 12px;
   text-align: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tooltip { transition: none; }
 }

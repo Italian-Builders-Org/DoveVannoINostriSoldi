@@ -3,6 +3,243 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Source names are the row headings; below ~240px they wrapped onto five or
+   six lines while the description column had room to spare. */
+.sources th[scope="row"],
+.sources thead th:first-child { min-width: 240px; }
+/* Cadence ("Annuale; usiamo l'edizione 2025") otherwise shrinks to ~70px. */
+.sources td.cadence { min-width: 140px; }
+
+/* Names, publisher headings and column headings start on the panel's
+   content edge (padding inside the cells, not an extra indent). */
+.sources thead th:first-child,
+.sources th[scope="row"] { padding-left: 0; }
+.sources :is(th, td):last-child { padding-right: 0; }
+
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* The description is the column people read; the period column may wrap. */
+.sources td.coverageCell { min-width: 280px; }
+.sources td.latest { white-space: normal; min-width: 110px; }
+
+/* One row group per publisher: a small heading row instead of a
+   "Chi la pubblica" column repeating the same name on every row. */
+.sources .groupRow th {
+  padding: var(--space-4) 0 var(--space-1);
+  border-bottom: 1px solid var(--color-neutral-400);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: left;
+  background: transparent;
+}
+/* A theme shared by three or more sources of one publisher (e.g. the BES
+   domains): a sub-heading in body colour, 1px larger than the source names
+   (the count stays grey), indented 16px, with its rows
+   indented the same, so it reads as a child of the publisher. The plain
+   rows of the publisher come before it (clusterPublisherSources). */
+.sources .clusterRow th {
+  padding: var(--space-4) 0 var(--space-1) 16px;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  background: transparent;
+}
+.sources .clusterMember th[scope="row"] { padding-left: 16px; }
+/* The cadence shared by the whole theme, under the sub-group title, on
+   every screen: the rows' cadence cells hold it for screen readers only. */
+.clusterNote {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-neutral-600);
+  font-size: 12px;
+  font-weight: 400;
+}
+/* Jump targets clear the sticky announcement + header. */
+.sources .groupRow { scroll-margin-top: calc(var(--announcement-height, 44px) + 88px); }
+
+/* Publisher index: phones only (see the 640px rule below). */
+.publisherIndex { display: none; }
+
+.groupCount {
+  margin-left: var(--space-2);
+  white-space: nowrap;
+  color: var(--color-neutral-600);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Long descriptions: a preview cut at a word (coveragePreview), then the
+   whole text on demand. The summary holds the full text, so screen readers
+   always get all of it; the preview is visual only. */
+/* The summary is the description itself: body colour and weight, not the
+   accent and semibold of the shared disclosure-more style (globals.css),
+   which only the "Mostra tutto" toggle below takes. */
+.coverage summary {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+  color: var(--color-text);
+  font-weight: 400;
+}
+.coverage summary::-webkit-details-marker { display: none; }
+.coverage .preview { display: block; }
+.coverage:not([open]) .full {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.coverage[open] .preview { display: none; }
+.coverage[open] .full { display: block; }
+/* The toggle is a 44px target: 12px of padding above and below a 20px
+   line, with negative margins so the card keeps its rhythm. */
+.coverage summary::after {
+  content: "Mostra tutto" / "";
+  display: block;
+  width: fit-content;
+  padding-block: 12px;
+  margin-block: -10px -12px;
+  line-height: 20px;
+  color: var(--color-accent-700);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  /* A text toggle, not the shared summary chevron (globals.css): drop its
+     mask, size and rotation. */
+  height: auto;
+  margin-left: 0;
+  vertical-align: baseline;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+  transform: none;
+  transition: none;
+}
+.coverage[open] summary::after { content: "Riduci" / ""; transform: none; }
+
+/* Under 640px five columns cannot fit, so each row becomes a card: the name
+   on top, then one labelled line per column. The column headings stay in the
+   accessibility tree (visually hidden) and the explicit ARIA roles in the
+   markup keep the table navigable even though its parts are display: block. */
+@media (max-width: 639px) {
+  .sources,
+  .sources tbody,
+  .sources tr,
+  .sources th[scope="row"],
+  .sources td { display: block; }
+
+  .sources thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sources tr {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-divider);
+  }
+  .sources tr:last-child { border-bottom: 0; }
+  .sources .groupRow,
+  .sources .clusterRow { padding-bottom: 0; }
+  .sources .groupRow th,
+  .sources .clusterRow th { display: block; padding-inline: 0; }
+
+  .publisherIndex {
+    display: block;
+    border: 1px solid var(--color-neutral-300);
+    background: var(--color-raised);
+  }
+  /* Type, colour and chevron come from the shared disclosure style
+     (globals.css); the module only gives the row its 44px height. */
+  .publisherIndex > summary { padding: 12px var(--space-3); line-height: 20px; }
+  .publisherIndex nav { padding: 0 var(--space-3) var(--space-3); }
+  .publisherIndex ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .publisherIndex a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--color-neutral-300);
+    background: var(--color-raised);
+    color: var(--color-text);
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .publisherIndex a span {
+    color: var(--color-neutral-600);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sources th[scope="row"],
+  .sources td {
+    min-width: 0;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  /* The name link is the card's only control: give it a full touch target. */
+  .sources th[scope="row"] a {
+    display: inline-block;
+    padding-block: 12px;
+  }
+  .sources th[scope="row"] small { margin: 0 0 var(--space-2); }
+
+  /* Card body: the description, then period and cadence as one muted line
+     of text ("2014-2024 · Annuale"). No visual labels: the column headers
+     stay in the accessibility tree, and the values read plainly in context. */
+  .sources td.coverageCell {
+    margin-bottom: var(--space-2);
+    overflow-wrap: anywhere;
+  }
+  .sources td.latest,
+  .sources td.cadence {
+    display: inline;
+    color: var(--color-neutral-600);
+    font-size: 13px;
+  }
+  .sources td.cadence:not(:empty)::before {
+    content: "\00b7" / "";
+    margin-inline: 6px;
+  }
+  /* The sub-group note under the title already gives the cadence. */
+  .sources td.cadenceInGroup { display: none; }
+  .sources .clusterRow th { padding-left: 16px; border-bottom: 0; }
+  /* The card's cells are blocks: indent the whole card, not only its name. */
+  .sources .clusterMember { padding-left: 16px; }
+  .sources .clusterMember th[scope="row"] { padding-left: 0; }
+  /* The first publisher heading follows the panel edge directly. */
+  .sources tbody:first-of-type .groupRow,
+  .sources tbody:first-of-type .groupRow th { padding-top: 0; }
+  .sources .latest { white-space: normal; }
+}
+
 .scrollHint {
   margin: 0 0 var(--space-2);
   color: var(--color-neutral-700);

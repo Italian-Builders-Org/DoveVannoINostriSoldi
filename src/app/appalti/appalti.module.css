@@ -303,7 +303,7 @@
   grid-template-columns: minmax(110px, .4fr) minmax(0, 1fr);
   gap: var(--space-3);
   padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .sourceList dt {

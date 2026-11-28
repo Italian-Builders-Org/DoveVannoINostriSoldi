@@ -34,3 +34,31 @@ test("dates use Rome civil time across year boundaries and reject unavailable va
     assert.equal(shortDate(value), "non disponibile");
   }
 });
+
+test("fromJanuaryTo uses the euphonic “ad” before months starting with a", async () => {
+  const { fromJanuaryTo } = await import("../src/lib/format.ts");
+  assert.equal(fromJanuaryTo("Agosto"), "da gennaio ad agosto");
+  assert.equal(fromJanuaryTo("aprile"), "da gennaio ad aprile");
+  assert.equal(fromJanuaryTo("Settembre"), "da gennaio a settembre");
+  assert.equal(fromJanuaryTo("ottobre"), "da gennaio a ottobre");
+  // A single month is not a range.
+  assert.equal(fromJanuaryTo("Gennaio"), "a gennaio");
+});
+
+test("period labels turn ISO dates into Italian long dates and keep other labels", async () => {
+  const { periodDateLabel } = await import("../src/lib/format.ts");
+  // The company atlas snapshot labels monthly stocks with their raw ISO day.
+  assert.equal(periodDateLabel("2026-09-30"), "30 settembre 2026");
+  assert.equal(periodDateLabel("2025-12-31"), "31 dicembre 2025");
+  // Non-date labels pass through untouched, invalid days are not reformatted.
+  assert.equal(periodDateLabel("2° trimestre 2026"), "2° trimestre 2026");
+  assert.equal(periodDateLabel("2024/25"), "2024/25");
+  assert.equal(periodDateLabel("2026-02-31"), "2026-02-31");
+  assert.equal(periodDateLabel("2026"), "2026");
+});
+
+test("the home company card shows its ISO period as a long Italian date", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../src/components/home-data-previews.tsx", import.meta.url), "utf8");
+  assert.match(source, /periodDateLabel\(companies\.periodLabel\)/);
+});

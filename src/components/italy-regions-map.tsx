@@ -237,23 +237,32 @@ export function ItalyRegionsMap({
             })}
           </svg>
 
-          <div className={styles.legend} aria-label="Scala dei pagamenti pro capite">
-            <span className={styles.legendEnd}>Meno spesa per abitante</span>
-            {[0, 1, 2, 3, 4].map((index) => (
-              <i
-                key={index}
-                className={styles[`level${index}`]}
-                title={
-                  index === 0
-                    ? `fino a ${integer(thresholds[0])} €`
-                    : index === 4
-                      ? `oltre ${integer(thresholds[3])} €`
-                      : `da ${integer(thresholds[index - 1])} a ${integer(thresholds[index])} €`
-                }
-              />
-            ))}
-            <span className={styles.legendEnd}>Più spesa per abitante</span>
-          </div>
+          {/* Class ranges are visible text, not hover titles, so they read on
+              touch. Light theme: darker = more; dark theme: the ramp gets
+              brighter as the value grows. "Più intenso" holds for both. */}
+          <figure className={styles.legend} data-map-legend="true">
+            <figcaption className={styles.legendTitle}>
+              € per abitante coperto · colore più intenso, più spesa
+            </figcaption>
+            <ol className={styles.legendClasses}>
+              {[0, 1, 2, 3, 4].map((index) => (
+                <li key={index}>
+                  <i className={styles[`level${index}`]} aria-hidden="true" />
+                  <span>
+                    {index === 0
+                      ? `fino a ${integer(thresholds[0])}`
+                      : index === 4
+                        ? `oltre ${integer(thresholds[3])}`
+                        : `${integer(thresholds[index - 1])}-${integer(thresholds[index])}`}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className={styles.legendOutline}>
+              <i aria-hidden="true" />
+              Contorno: la regione descritta nel riquadro qui sotto
+            </p>
+          </figure>
 
           <div className={styles.mobilePeriod}>{periodSelector}</div>
         </div>

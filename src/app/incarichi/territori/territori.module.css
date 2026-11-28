@@ -146,7 +146,7 @@
 .readingList > div {
   min-width: 0;
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .readingList > div:last-child {
@@ -236,7 +236,7 @@
 .tableScroll th,
 .tableScroll td {
   padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   vertical-align: middle;
 }
 

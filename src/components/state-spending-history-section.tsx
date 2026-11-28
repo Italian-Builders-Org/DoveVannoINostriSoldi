@@ -128,8 +128,8 @@ export async function StateSpendingHistorySection() {
         </div>
         <div>
           <span>Semantica ufficiale</span>
-          <a href={history.methodology.officialSemanticsUrl} target="_blank" rel="noreferrer">
-            RGS: pagamenti dal 1° gennaio al mese indicato ↗
+          <a className="link-external" href={history.methodology.officialSemanticsUrl} target="_blank" rel="noreferrer">
+            RGS: pagamenti dal 1° gennaio al mese indicato
           </a>
         </div>
         <div>

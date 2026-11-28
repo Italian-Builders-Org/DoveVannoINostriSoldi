@@ -64,6 +64,25 @@ test("every page offers the rest of its section without the header menu", async 
   assert.match(css, /\.select \{[\s\S]*?border-radius: 0;/);
 });
 
+test("the search page breadcrumb names the search, and an empty search has nothing to share", async () => {
+  const component = await readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8");
+  assert.match(component, /pathname === "\/cerca" && !new URLSearchParams\(currentSearch \?\? ""\)\.get\("q"\)/);
+  assert.match(component, /standaloneCrumb\(pathname\)/);
+});
+
+test("pages outside every section get their own breadcrumb instead of the generic fallback", async () => {
+  const { standaloneCrumb } = await import("../src/lib/site-navigation.ts");
+  // The current page is plain text; a parent page stays a link.
+  assert.deepEqual(standaloneCrumb("/cerca"), { label: "Cerca", href: null });
+  assert.deepEqual(standaloneCrumb("/dvns-index"), { label: "DVNS Index", href: null });
+  assert.deepEqual(standaloneCrumb("/dvns-index/metodo"), { label: "DVNS Index", href: "/dvns-index" });
+  // A lookalike prefix is not the index.
+  assert.deepEqual(standaloneCrumb("/dvns-indexes"), { label: "Esplora i dati", href: "/#esplora" });
+  assert.deepEqual(standaloneCrumb("/pagina-sconosciuta"), { label: "Esplora i dati", href: "/#esplora" });
+  // DVNS Index is not swallowed by a section that would win over it.
+  assert.equal(activeNavSection("/dvns-index"), null);
+});
+
 test("public legal pages expose only the authorized support mailbox", async () => {
   const files = await Promise.all([
     readFile(new URL("../src/app/privacy/page.tsx", import.meta.url), "utf8"),
@@ -292,4 +311,75 @@ test("ChatGPT plugin link is one shared address, opened safely from the home ask
   }
   // Touch layouts need a full-height target; the desktop row stays compact.
   assert.match(css, /@media[^{]*max-width[^{]*\{[\s\S]*?\.askChatgpt \{[^}]*min-height:\s*44px/);
+});
+
+test("the header does not stack a second search box above the /cerca form", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  assert.match(navigation, /pathname === "\/cerca" \? null : <HeaderSearch \/>/);
+});
+
+test("phones keep a compact wordmark next to the mark when the full name is hidden", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  assert.match(navigation, /className="brand-short" aria-hidden="true">DVNS</);
+  // Full name hidden at ≤460px, short wordmark shown only there.
+  assert.match(globalsCss, /@media \(max-width: 460px\) \{[\s\S]*?\.brand-text \{ display: none; \}[\s\S]*?\.brand-short \{ display: block;/);
+  assert.match(globalsCss, /\.brand-short \{[^}]*display: none;/);
+});
+
+test("the footer lists GitHub once, as a plain service link", async () => {
+  const footer = await readFile(new URL("../src/components/site-footer.tsx", import.meta.url), "utf8");
+  assert.equal(footer.match(/REPO_URL\}/g)?.length, 1);
+  assert.doesNotMatch(footer, /BrandIcon name="github"/);
+});
+
+test("short pages push the footer to the bottom of the viewport", () => {
+  // body and .site-content are flex columns; the content slot absorbs the
+  // spare height, so the footer never floats mid-screen.
+  assert.match(globalsCss, /body \{[^}]*display: flex;[^}]*flex-direction: column;/);
+  assert.match(globalsCss, /\.site-content \{[^}]*flex: 1 0 auto;[^}]*display: flex;[^}]*flex-direction: column;/);
+  assert.match(globalsCss, /#contenuto-principale \{ flex: 1 0 auto; \}/);
+});
+
+test("the section picker reads as an inline crumb and the share control keeps a visible label on phones", async () => {
+  const [component, css, share, shareCss] = await Promise.all([
+    readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/section-nav.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/share-view-button.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/share-view-button.module.css", import.meta.url), "utf8"),
+  ]);
+  // Text + chevron, not a form field.
+  assert.match(css, /\.select \{[\s\S]*?border: 0;[\s\S]*?background-color: transparent;/);
+  // DOM order is breadcrumb, picker, share: phones must not lift the share
+  // control onto the row above the picker (tab order would jump back).
+  assert.ok(component.indexOf("styles.pickerNav") < component.indexOf("ShareViewButton key"));
+  assert.doesNotMatch(css, /\.shareSlot \{[^}]*grid-row: 1;/);
+  assert.doesNotMatch(css, /\.pickerNav \{[^}]*grid-row: 2;/);
+  // "Condividi" stays visible on phones; only " questa vista" collapses.
+  assert.match(share, /Condividi<span className=\{styles\.triggerExtra\}> questa vista<\/span>/);
+  assert.doesNotMatch(shareCss, /\.triggerText \{[^}]*clip-path/);
+  assert.match(shareCss, /\.triggerExtra \{[^}]*clip-path: inset\(50%\)/);
+});
+
+test("phones reach GitHub from the menu instead of a header slot", async () => {
+  const navigation = await readFile(new URL("../src/components/navigation.tsx", import.meta.url), "utf8");
+  const tools = navigation.slice(navigation.indexOf('className="navigation-tools"'));
+  assert.match(tools, /href=\{REPO_URL\}[^>]*target="_blank"[^>]*rel="noopener noreferrer"/);
+  assert.match(navigation, /className="header-action header-action-icon header-action-repo"/);
+  assert.match(globalsCss, /@media \(max-width: 620px\) \{[\s\S]*?\.header-action-repo \{ display: none; \}/);
+});
+
+test("phone breadcrumbs never leave a dangling separator at the end of a line", async () => {
+  // Regression (/enti at 390px): "Home / Enti e società /" wrapped, then
+  // "Registro enti" alone on the next line. The separator before the picker
+  // belongs to the picker, and phones keep one line, truncating the middle crumb.
+  const [component, css] = await Promise.all([
+    readFile(new URL("../src/components/section-nav.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/section-nav.module.css", import.meta.url), "utf8"),
+  ]);
+  const breadcrumb = component.match(/<nav className=\{styles\.breadcrumb\}[\s\S]*?<\/nav>/)[0];
+  assert.doesNotMatch(breadcrumb, /trailSeparator/);
+  assert.match(component, /<nav className=\{styles\.pickerNav\}[^>]*>\s*<span className=\{styles\.trailSeparator\} aria-hidden="true">\/<\/span>/);
+  const phone = css.match(/@media \(max-width: 620px\) \{([\s\S]*?)\n\}/)[1];
+  assert.match(phone, /\.trail \{[^}]*flex-wrap: nowrap;/);
+  assert.match(phone, /\.crumbTruncate \{[^}]*text-overflow: ellipsis;/);
 });

@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { Icon } from "@/components/icons";
 import { getCompanyAtlasView } from "@/lib/company-atlas";
 import { getEducationAtlasView } from "@/lib/education-atlas";
 import { parliamentSnapshot } from "@/lib/parliament-snapshot";
-import { integer, longDate } from "@/lib/format";
+import { integer, longDate, periodDateLabel } from "@/lib/format";
 import styles from "./home-pathways.module.css";
 
 function PreviewBars({ points, format = integer }: Readonly<{
@@ -28,12 +29,12 @@ export function InstitutionsPreview() {
     <PreviewBars points={accounts.map((statement) => ({ label: String(statement.year), value: statement.values?.effectivePayments ?? null }))}
       format={(value) => value.toLocaleString("it-IT", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} />
     <p className={styles.source}>Pagamenti di competenza sui Titoli I, II e III. I bilanci di Senato e Quirinale hanno perimetri distinti.
-      {latest ? <> <a href={latest.documentUrl} target="_blank" rel="noreferrer">Fonte: Camera dei deputati</a>.</> : null}
+      {latest ? <> <a href={latest.documentUrl} target="_blank" rel="noreferrer">Fonte</a>.</> : null}
     </p>
     <div className={styles.institutionLinks}>
-      <Link prefetch={false} href="/politici?istituzione=presidenza-repubblica">Presidenza della Repubblica <span aria-hidden="true">→</span></Link>
-      <Link prefetch={false} href="/governi">Governi a confronto <span aria-hidden="true">→</span></Link>
-      <Link prefetch={false} href="/parlamento">Bilanci di Camera, Senato e Quirinale <span aria-hidden="true">→</span></Link>
+      <Link prefetch={false} href="/politici?istituzione=presidenza-repubblica">Presidenza della Repubblica<Icon name="chevron-right" size={16} /></Link>
+      <Link prefetch={false} href="/governi">Governi a confronto<Icon name="chevron-right" size={16} /></Link>
+      <Link prefetch={false} href="/parlamento">Bilanci di Camera, Senato e Quirinale<Icon name="chevron-right" size={16} /></Link>
     </div>
   </div>;
 }
@@ -46,12 +47,12 @@ export function EconomyPreviews() {
   const educationSource = education.sources.find((source) => source.id === "students");
   return <div className={styles.atlasPreview}>
     <section className={styles.preview} aria-labelledby="home-company-title">
-      <div className={styles.previewHeader}><h3 id="home-company-title">Imprese attive</h3><span>{companies.periodLabel}</span></div>
+      <div className={styles.previewHeader}><h3 id="home-company-title">Imprese attive</h3><span>{periodDateLabel(companies.periodLabel)}</span></div>
       <strong className={styles.mediumNumber}>{companies.nationalValue === null ? "Non disponibile" : integer(companies.nationalValue)}</strong>
       <p className={styles.metricNote}>Sedi di impresa in Italia · le tre regioni con più sedi</p>
       <PreviewBars points={companies.ranking.slice(0, 3).map((point) => ({ label: point.name, value: point.value }))} />
       <p className={styles.source}>{companySource ? <><a href={companySource.url} target="_blank" rel="noreferrer">{companySource.publisher}</a> · verificato {longDate(companySource.observedAt)}</> : "Fonte non disponibile"}</p>
-      <Link prefetch={false} href="/imprese" className={styles.previewLink}>Confronta le regioni <span aria-hidden="true">→</span></Link>
+      <Link prefetch={false} href="/imprese" className={styles.previewLink}>Confronta le regioni<Icon name="chevron-right" size={16} /></Link>
     </section>
     <section className={styles.preview} aria-labelledby="home-education-title">
       <div className={styles.previewHeader}><h3 id="home-education-title">Studenti delle superiori</h3><span>{education.periodLabel}</span></div>
@@ -62,7 +63,7 @@ export function EconomyPreviews() {
         {educationSource ? <a href={educationSource.landingUrl} target="_blank" rel="noreferrer">Ministero dell’Istruzione e del Merito</a> : "Fonte non disponibile"}.
         {education.missingRegionNames.length ? ` Copertura parziale: ${education.missingRegionNames.join(", ")} fuori dal perimetro.` : " Copertura nazionale."}
       </p>
-      <Link prefetch={false} href="/istruzione" className={styles.previewLink}>Esplora i percorsi scolastici <span aria-hidden="true">→</span></Link>
+      <Link prefetch={false} href="/istruzione" className={styles.previewLink}>Esplora i percorsi scolastici<Icon name="chevron-right" size={16} /></Link>
     </section>
   </div>;
 }

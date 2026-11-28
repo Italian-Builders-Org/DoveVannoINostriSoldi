@@ -2,9 +2,7 @@
 .intro { display: grid; gap: 16px; padding-block: 36px 30px; }
 .pageTitle { margin: 0; color: var(--color-text); font-family: var(--font-heading); font-size: clamp(30px, 3.5vw, 42px); line-height: 1.15; letter-spacing: -.025em; font-weight: 500; text-wrap: balance; }
 .pageTitle span { color: var(--color-neutral-600); }
-.introBottom { display: flex; justify-content: space-between; align-items: center; gap: 16px 32px; }
 .lead { margin: 0; max-width: 62ch; color: var(--color-neutral-700); font-size: 16px; line-height: 1.65; }
-.exploreJump { flex: none; display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--color-accent); font-weight: 600; text-underline-offset: 4px; }
 .exploration { display: grid; gap: 24px; padding: 32px; margin-block: 32px; background: var(--color-surface); scroll-margin-top: calc(var(--site-header-height) + 16px); }
 .explorationHeading { display: grid; gap: 12px; }
 .explorationHeading h2 { font-size: clamp(26px, 3vw, 34px); font-weight: 500; line-height: 1.15; letter-spacing: -.025em; margin: 0; }
@@ -12,19 +10,19 @@
 .anomaliesPanel { display: grid; gap: 0; min-width: 0; padding: 24px; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
 .anomaliesHeader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-neutral-300); }
 .headingWithTooltip { flex: 1 1 200px; min-width: 0; }
-.anomaliesHeader h3 { margin: 0; font-size: 15px; letter-spacing: 0; text-transform: none; }
-.anomaliesLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--color-accent-700); font-size: 14px; font-weight: 600; text-decoration: none; }
-.anomaliesLink:hover { text-decoration: underline; }
+/* Same grey caption as the other home card labels. */
+.anomaliesHeader h3 { margin: 0; font-size: 13px; font-weight: 500; line-height: 1.4; letter-spacing: 0; text-transform: none; color: var(--color-neutral-600); }
+.anomaliesLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--color-accent-700); text-decoration: none; }
 .anomalyGallery { display: grid; grid-template-columns: 1fr; gap: 0; }
-.anomalyItem { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; min-width: 0; padding: 20px 0; border-bottom: 1px solid var(--color-neutral-200); }
+.anomalyItem { display: grid; align-items: baseline; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; min-width: 0; padding: 20px 0; border-bottom: 1px solid var(--color-divider); }
 .anomalyItemHead, .anomalyMeta { grid-column: 1 / -1; }
-.anomalyArea { color: var(--color-neutral-600); font-size: 12px; font-weight: 500; }
+.anomalyArea { color: var(--color-neutral-600); font-size: 13px; font-weight: 500; }
 .anomalyItem h3 { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.4; }
 .anomalyValue { font-size: clamp(20px, 2vw, 26px); font-weight: 600; text-align: right; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .anomalyMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
 .anomalyMeta a { color: var(--color-accent-700); text-underline-offset: 3px; }
+.anomalyMeta a svg { margin-left: 2px; vertical-align: -2px; }
 .anomalyCaveat, .anomalyFallback { margin: 0; padding-top: 16px; color: var(--color-neutral-600); font-size: 13px; line-height: 1.6; }
-@media (max-width: 900px) { .introBottom { flex-direction: column; align-items: flex-start; gap: 8px; } }
 @media (max-width: 620px) {
   .intro { padding-block: 28px 24px; }
   .lead { font-size: 15px; }
@@ -43,8 +41,10 @@
 .askBar input { min-width: 0; padding: 0 16px; font: inherit; font-size: 17px; color: var(--color-text); background: transparent; border: 0; }
 .askBar input::placeholder { color: var(--color-neutral-500); }
 .askBar input:focus { outline: none; }
-.askBar button { display: inline-flex; align-items: center; justify-content: center; width: 60px; color: var(--color-on-strong); background: var(--color-accent); border: 0; cursor: pointer; }
-.askBar button:hover { background: var(--color-accent-800); }
+.askBar button { display: inline-flex; align-items: center; justify-content: center; width: 60px; color: var(--color-on-strong); background: var(--color-accent); border: 0; cursor: pointer; transition: background-color 140ms ease; }
+.askBar button:active { background: var(--color-accent-900); }
+.askBar button:active > svg { transform: scale(.9); }
+.askBar button > svg { transition: transform var(--press-duration) var(--ease-out); }
 .askBar button:focus-visible { outline: 2px solid var(--color-text); outline-offset: -4px; }
 .askMeta { display: grid; gap: 6px; }
 .askFoot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 24px; }
@@ -54,7 +54,6 @@
 .askMeta p { margin: 0; color: var(--color-neutral-600); font-size: 13px; }
 .askExamples { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none; }
 .askExamples a { display: inline-flex; align-items: center; min-height: 32px; color: var(--color-neutral-700); font-size: 14px; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-underline-offset: 4px; }
-.askExamples a:hover { color: var(--color-accent); text-decoration-color: currentColor; }
 
 /* Maps: same rhythm as the home pathways, copy on the left and a mosaic of static previews on the right. */
 .mapsFeature { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: center; gap: clamp(28px, 4vw, 64px); padding-block: 48px; border-bottom: 1px solid var(--color-neutral-300); }
@@ -65,16 +64,14 @@
 .mapsList a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 64px; padding-block: 12px; color: var(--color-text); text-decoration: none; border-bottom: 1px solid var(--color-neutral-300); }
 .mapsList a > span { display: grid; gap: 2px; color: var(--color-neutral-600); font-size: 13px; line-height: 1.5; }
 .mapsList strong { color: var(--color-text); font-size: 16px; font-weight: 600; }
-.mapsList a:hover strong { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
 .mapsList a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 .mapsMosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 260px 180px; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .mapsMosaic li { min-width: 0; }
 .mapsMosaic li[data-tile="large"] { grid-column: 1 / -1; }
-.mapsMosaic a { position: relative; display: block; height: 100%; overflow: hidden; border: 1px solid var(--color-neutral-300); background: var(--color-raised); }
-.mapsMosaic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
-.mapsMosaic a:hover img { transform: scale(1.03); }
+.mapsMosaic a { position: relative; display: block; height: 100%; overflow: hidden; border: 1px solid var(--color-neutral-300); background: var(--color-raised); transition: transform var(--press-duration) var(--ease-out); }
+.mapsMosaic a:active { transform: scale(.985); }
+.mapsMosaic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 300ms var(--ease-out); }
 .mapsTag { position: absolute; left: 12px; bottom: 12px; padding: 5px 10px; color: var(--color-text); font-size: 13px; font-weight: 600; background: var(--color-raised); border: 1px solid var(--color-neutral-300); }
-@media (prefers-reduced-motion: reduce) { .mapsMosaic img { transition: none; } .mapsMosaic a:hover img { transform: none; } }
 @media (max-width: 900px) {
   .mapsFeature { grid-template-columns: 1fr; gap: 24px; padding-block: 36px; }
   .mapsMosaic { grid-template-rows: 200px 140px; }
@@ -92,11 +89,10 @@
 }
 
 /* DVNS Index launch: same quiet style as the ask bar above, accent from the site palette. */
-.indexLaunch { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 12px 24px; margin: 8px 0 0; padding: 18px 22px; color: var(--color-text); text-decoration: none; background: var(--color-raised); border: 1px solid var(--color-neutral-300); border-left: 3px solid var(--color-accent); }
-.indexLaunch:hover { border-color: var(--color-neutral-400); border-left-color: var(--color-accent); }
-.indexLaunch:hover .indexCta { text-decoration: underline; text-underline-offset: 4px; }
+.indexLaunch { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 12px 24px; margin: 8px 0 0; padding: 18px 22px; color: var(--color-text); text-decoration: none; background: var(--color-raised); border: 1px solid var(--color-neutral-300); border-left: 3px solid var(--color-accent); transition: transform var(--press-duration) var(--ease-out), border-color 140ms ease; }
+.indexLaunch:active { transform: scale(.99); }
 .indexLaunch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-.indexBadge { padding: 3px 8px; color: var(--color-accent-700); background: color-mix(in srgb, var(--color-accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.indexBadge { padding: 3px 8px; color: var(--color-accent-700); background: color-mix(in srgb, var(--color-accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent); font-size: 13px; font-weight: 600; }
 .indexMark { font-family: var(--font-heading); font-size: 22px; font-weight: 600; letter-spacing: -.02em; white-space: nowrap; }
 .indexMark span { color: var(--color-accent); }
 .indexText { color: var(--color-neutral-700); font-size: 15px; line-height: 1.5; }
@@ -104,4 +100,26 @@
 @media (max-width: 900px) {
   .indexLaunch { grid-template-columns: auto minmax(0, 1fr); }
   .indexText, .indexCta { grid-column: 1 / -1; }
+}
+
+/* Hover is a pointer affordance; touch screens keep the resting style. */
+@media (hover: hover) and (pointer: fine) {
+  .anomaliesLink:hover { text-decoration: underline; }
+  .askBar button:hover { background: var(--color-accent-800); }
+  .askExamples a:hover { color: var(--color-accent-700); text-decoration-color: currentColor; }
+  .mapsList a:hover strong { color: var(--color-accent-700); text-decoration: underline; text-underline-offset: 3px; }
+  .indexLaunch:hover { border-color: var(--color-neutral-400); border-left-color: var(--color-accent); }
+  .indexLaunch:hover .indexCta { text-decoration: underline; text-underline-offset: 4px; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .mapsMosaic a:hover img { transform: scale(1.03); }
+}
+/* Large pressable cards shrink less than buttons; reduced motion keeps them still. */
+@media (prefers-reduced-motion: reduce) {
+  .mapsMosaic a:active, .indexLaunch:active { transform: none; }
+  .askBar button:active > svg { transform: none; }
+}
+/* Example questions are tap targets on phones. */
+@media (pointer: coarse) {
+  .askExamples a { min-height: 44px; }
 }

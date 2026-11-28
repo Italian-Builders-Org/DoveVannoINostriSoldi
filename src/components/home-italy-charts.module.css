@@ -7,26 +7,52 @@
 }
 
 .bars li {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 3.4rem;
+  /* copy | info | bar | share | chevron: the 44px info column exists on every
+     row, so the "?" triggers line up and every bar starts at the same x. */
+  grid-template-columns: minmax(0, 1.15fr) 44px minmax(0, 1fr) 3.4rem 16px;
   align-items: center;
-  gap: 10px 12px;
+  gap: 4px 12px;
   min-width: 0;
 }
 
-.barCopy {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-width: 0;
-  /* Keep the 44px touch target beside both lines, not in the title row. */
+/* Whole-row link: the name's link stretches over the row; the "?" trigger
+   sits above the overlay so it stays its own control. */
+.bars li[data-linked="true"] .barName a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.barInfo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
   min-height: 44px;
 }
-
-.barText {
+.barChevron {
   display: grid;
+  place-items: center;
+  color: var(--color-neutral-600);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bars li[data-linked="true"]:hover { background: var(--color-neutral-100); }
+  .bars li[data-linked="true"]:hover .barChevron { color: var(--color-text); }
+}
+.bars li:has(.barName a:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.barName a:focus-visible { outline: none; }
+
+.barCopy {
+  display: grid;
+  align-content: center;
   gap: 1px;
   min-width: 0;
+  min-height: 44px;
 }
 
 .barName {
@@ -40,6 +66,7 @@
 
 .barName a {
   color: inherit;
+  text-decoration: none;
 }
 
 .barAmount {
@@ -110,11 +137,36 @@
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
+/* Ticks | plot, then the year row under the plot. The plot height is set in
+   CSS pixels, so a narrow figure gets a shorter box, not empty letterboxing. */
+.trendPlot {
+  --trend-plot-height: 150px;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  grid-template-rows: var(--trend-plot-height) auto;
+  column-gap: var(--space-2);
+  /* The lowest tick label is centred on the bottom gridline, so it hangs
+     about 7px below the plot: 12px keeps the first year label clear of it. */
+  row-gap: 12px;
+  min-width: 0;
+  padding: 8px 12px 0 0;
+}
+.trendTicks,
+.trendCanvas,
+.trendYears {
+  position: relative;
+  min-width: 0;
+}
+.trendYears {
+  grid-column: 2;
+  height: 1.3em;
+}
 .trendChart {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 164px;
+  height: 100%;
   overflow: visible;
 }
 .trendGrid {
@@ -124,12 +176,23 @@
 }
 .trendTick,
 .trendYear {
-  fill: var(--color-neutral-600);
+  position: absolute;
+  color: var(--color-neutral-600);
   font-family: var(--font-body);
   font-size: 11px;
+  line-height: 1.2;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.trendYear { font-size: 10px; }
+.trendTick {
+  right: 0;
+  transform: translateY(-50%);
+}
+.trendYear {
+  top: 0;
+  transform: translateX(-50%);
+}
+/* Only drawn when the axis starts at zero (see HomeItalyTrendChart). */
 .trendArea {
   fill: color-mix(in srgb, var(--chart-category-teal) 22%, transparent);
 }
@@ -141,32 +204,27 @@
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.trendPoint {
-  fill: var(--color-raised);
-  stroke: var(--chart-category-teal);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+.trendPoint,
+.trendPointSelected {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-raised);
+  border: 1.5px solid var(--chart-category-teal);
+  transform: translate(-50%, -50%);
 }
 .trendPointSelected {
-  fill: var(--chart-category-teal);
-  stroke: var(--color-text);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
+  width: 10px;
+  height: 10px;
+  background: var(--chart-category-teal);
+  border: 2px solid var(--color-text);
 }
 .trendCaption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
   color: var(--color-neutral-600);
   font-size: 11px;
   line-height: 1.3;
-}
-.trendCaption strong {
-  color: var(--color-text);
-  font-size: 12px;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 .srOnly {
   position: absolute;
@@ -182,20 +240,29 @@
 .srOnly table { width: 1px; min-width: 1px; max-width: 1px; table-layout: fixed; }
 
 @media (max-width: 640px) {
+  /* Name, "?" and share on the title row; the bar takes the full row width
+     underneath, so a 42% share is drawn at 42% of the card, not of 60%.
+     Rows keep the desktop 8px gap: each row is already a 44px target plus
+     its bar (scripts/browser/home-composition.mjs allows at most 9px). */
+  /* Fixed columns, as on desktop: the "?" sits in its own 44px column just
+     before the share, so the triggers line up on every row instead of
+     following the label length. The share column (3.4rem) keeps the 44px
+     target well clear of the row link's chevron. */
   .bars li {
-    grid-template-columns: minmax(0, 1fr) 3.4rem;
+    grid-template-columns: minmax(0, 1fr) 44px 3.4rem 16px;
     grid-template-areas:
-      "copy share"
-      "bar share";
+      "copy info share chevron"
+      "bar bar bar bar";
+    column-gap: 4px;
   }
 
   .barCopy { grid-area: copy; }
+  .barInfo { grid-area: info; }
   .bars i { grid-area: bar; }
   .bars strong { grid-area: share; align-self: center; }
+  .barChevron { grid-area: chevron; }
 
   .trendFigure { padding-inline: var(--space-3); }
-  .trendChart { min-height: 156px; }
-  .trendTick { font-size: 10px; }
-  .trendYear { font-size: 9px; }
-  .trendCaption { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .trendPlot { --trend-plot-height: 112px; }
+  .trendYear[data-minor="true"] { display: none; }
 }

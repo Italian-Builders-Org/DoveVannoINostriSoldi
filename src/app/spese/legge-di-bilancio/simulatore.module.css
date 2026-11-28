@@ -579,7 +579,7 @@
   gap: 5px;
   margin: var(--space-5) 0;
   padding: var(--space-4) 0;
-  border-block: 1px solid var(--color-neutral-200);
+  border-block: 1px solid var(--color-divider);
   color: var(--color-text);
   font-family: var(--font-heading);
   font-size: 16px;
@@ -842,7 +842,7 @@
   gap: var(--space-4);
   padding: var(--space-5);
   background: var(--color-raised);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-md);
 }
 
@@ -925,7 +925,7 @@
   gap: var(--space-2);
   margin-top: auto;
   padding-top: var(--space-4);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .controlReset {
@@ -944,7 +944,7 @@
   padding: 8px 10px;
   color: var(--color-neutral-700);
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   font-size: 11px;
   line-height: 1.45;
 }
@@ -960,7 +960,7 @@
   min-width: 0;
   margin: 0;
   padding: 22px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   background: var(--color-neutral-100);
 }
 
@@ -1002,7 +1002,7 @@
   min-width: 0;
   padding: var(--space-4);
   background: var(--color-raised);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   border-radius: var(--radius-md);
 }
 

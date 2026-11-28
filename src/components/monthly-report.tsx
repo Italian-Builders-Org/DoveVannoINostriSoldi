@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ArrowRight01Icon, Calendar03Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Icon } from "@/components/icons";
 import { MonthlyReportFigure } from "@/components/monthly-report-figure";
 import { formatReportPeriod, formatReportValueParts } from "@/lib/monthly-report-format";
 import {
@@ -91,8 +90,8 @@ export function MonthlyReportsArchive({ reports }: { reports: readonly MonthlyRe
   return (
     <main className={`shell ${styles.archive}`}>
       <header><h1>Report</h1><p className={styles.dek}>Analisi dei dati pubblici, con fonti e calcoli verificabili.</p></header>
-      <section aria-labelledby="analisi-title"><h2 id="analisi-title">Analisi</h2><div className={styles.archiveGrid}><article><p className={styles.issueDate}>Spesa pubblica · aggiornamento del {localDate(stateBudgetReport.updatedOn)}</p><h3><Link href={`/studi/${stateBudgetReport.slug}`}>{stateBudgetReport.title}</Link></h3><p>{stateBudgetReport.summary}</p><Link className={styles.readLink} href={`/studi/${stateBudgetReport.slug}`}>Leggi l’analisi <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" /></Link></article></div></section>
-      <section aria-labelledby="editions-title"><h2 id="editions-title">Tutte le edizioni</h2><div className={styles.archiveGrid}>{reports.map((report) => <article key={report.issueMonth}><p className={styles.issueDate}><HugeiconsIcon icon={Calendar03Icon} size={18} aria-hidden="true" />{report.issueLabel}</p><h3><Link href={report.href}>{report.title}</Link></h3><p>{report.teaser}</p><small>Pubblicato il {localDate(report.publishedOn)} · {report.readingMinutes} min · dati verificati al {localDate(report.dataCutoff)}</small><Link className={styles.readLink} href={report.href}>Leggi il report <HugeiconsIcon icon={ArrowRight01Icon} size={18} aria-hidden="true" /></Link></article>)}</div></section>
+      <section aria-labelledby="analisi-title"><h2 id="analisi-title">Analisi</h2><div className={styles.archiveGrid}><article><p className={styles.issueDate}>Spesa pubblica · aggiornamento del {localDate(stateBudgetReport.updatedOn)}</p><h3><Link href={`/studi/${stateBudgetReport.slug}`}>{stateBudgetReport.title}</Link></h3><p>{stateBudgetReport.summary}</p><Link className={styles.readLink} href={`/studi/${stateBudgetReport.slug}`}>Leggi l’analisi <Icon name="chevron-right" size={18} /></Link></article></div></section>
+      <section aria-labelledby="editions-title"><h2 id="editions-title">Tutte le edizioni</h2><div className={styles.archiveGrid}>{reports.map((report) => <article key={report.issueMonth}><p className={styles.issueDate}><Icon name="calendar" size={18} />{report.issueLabel}</p><h3><Link href={report.href}>{report.title}</Link></h3><p>{report.teaser}</p><small>Pubblicato il {localDate(report.publishedOn)} · {report.readingMinutes} min · dati verificati al {localDate(report.dataCutoff)}</small><Link className={styles.readLink} href={report.href}>Leggi il report <Icon name="chevron-right" size={18} /></Link></article>)}</div></section>
     </main>
   );
 }

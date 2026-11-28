@@ -76,7 +76,7 @@ export default async function IntegratedDomainHub({
 
       <section className="stat-strip" aria-label={`Copertura: ${title}`}>
         <div>
-          <span className="stat-label">Insiemi</span>
+          <span className="stat-label">Dataset</span>
           <span className="stat-value">{integer(selected.length)}</span>
         </div>
         <div>
@@ -122,9 +122,6 @@ export default async function IntegratedDomainHub({
                   ))}
                 </ul>
               </div>
-              <Link className={styles.openLink} href={`/${topic.section}/${topic.slug}`}>
-                Esplora i dati
-              </Link>
             </article>
           ))}
           {related.map((view) => (
@@ -136,7 +133,6 @@ export default async function IntegratedDomainHub({
                 <div className={styles.featureTitle}><h3><Link href={view.href}>{view.title}</Link></h3></div>
                 <p>{view.summary}</p>
               </div>
-              <Link className={styles.openLink} href={view.href}>Apri la vista</Link>
             </article>
           ))}
         </div>
@@ -145,8 +141,8 @@ export default async function IntegratedDomainHub({
       <details className={styles.register}>
         <summary>
           <span>
-            <strong>Tutti i dataset della sezione</strong>
-            <small>{integer(selected.length)} insiemi con stato, righe, fonti e limiti</small>
+            <strong>Tutti i dataset della sezione ({integer(selected.length)})</strong>
+            <small>Stato, righe, fonti e limiti di ciascuno</small>
           </span>
         </summary>
         <div
@@ -184,12 +180,10 @@ export default async function IntegratedDomainHub({
       </details>
 
       <section className={`panel ${styles.more}`}>
-        <h2 className="panel-title">Registro e provenienza</h2>
-        <p>
-          Il catalogo generale espone tutti i {integer(overview.totals.datasets)} dataset, con fonti e copertura.
-        </p>
+        <h2 className="panel-title">Catalogo completo</h2>
+        <p>Tutti i {integer(overview.totals.datasets)} dataset del sito, con fonti e copertura.</p>
         <div>
-          <Link href="/dati">Tutti gli insiemi</Link>
+          <Link href="/dati">Tutti i dataset</Link>
           <Link href="/fonti/copertura">Copertura completa</Link>
           <Link href="/fonti/catalogo">Catalogo delle fonti</Link>
         </div>

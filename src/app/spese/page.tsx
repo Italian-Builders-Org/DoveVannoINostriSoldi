@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import IntegratedSectionPreview from "@/components/integrated-section-preview";
 import { PeriodSelector } from "@/components/period-selector";
-import { billions, compactEuro, exactEuro, integer, percent, longDate } from "@/lib/format";
+import { billions, compactEuro, exactEuro, fromJanuaryTo, integer, percent, longDate } from "@/lib/format";
 import { PASS_THROUGH_TITLE_CODE, siopeTitleCopy } from "@/lib/siope-titles";
 import {
   availableSiopeYears,
@@ -88,7 +88,7 @@ export default async function MoneyPage({
         <div className="page-intro">
           <h1>Per cosa vengono spesi i soldi</h1>
           <p>
-            Pagamenti dei Comuni da gennaio a {monthLabel} {data.year}, divisi per tipo di uscita.
+            Pagamenti dei Comuni {fromJanuaryTo(monthLabel)} {data.year}, divisi per tipo di uscita.
             Fonte SIOPE, file del {longDate(data.source.siopeMovementsLastModified)}.
           </p>
         </div>
@@ -244,7 +244,7 @@ export default async function MoneyPage({
         className="notice scope-notice"
         aria-labelledby="spese-scope-title"
       >
-        <h2 id="spese-scope-title">Qui vedi i pagamenti dei Comuni</h2>
+        <h2 id="spese-scope-title">Gli altri conti pubblici</h2>
         <p>
           Solo uscite di cassa dei Comuni. Gli altri conti restano separati:{" "}
           <Link href={`/territori?anno=${year}`}>territori</Link>,{" "}

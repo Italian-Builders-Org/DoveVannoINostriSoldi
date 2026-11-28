@@ -31,7 +31,7 @@
 }
 
 .territorialFilters {
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   padding: var(--space-3);
 }
 
@@ -135,7 +135,7 @@
   justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-4);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   background: var(--color-neutral-100);
 }
 
@@ -160,7 +160,7 @@
 
 .provenance dl > div {
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .provenance dt {

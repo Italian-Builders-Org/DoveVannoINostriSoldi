@@ -10,8 +10,10 @@ export async function verifyExternalIconLinks(browser, baseUrl) {
   const output = path.join(defaultArtifactsDir(), "external-icon-links");
   mkdirSync(output, { recursive: true });
   const report = { revision: execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(), checks: [] };
-  const links = [
-    { selector: `.header-actions a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub header" },
+  // Phones hide the header GitHub icon and reach it from the menu drawer.
+  const headerRepo = { selector: `.header-actions a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub header" };
+  const menuRepo = { selector: `#mobile-navigation .navigation-tools a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub menu", inMenu: true };
+  const sharedLinks = [
     ...SOCIAL_LINKS.map((social) => ({ selector: `.footer-social a[href="${social.href}"]`, href: social.href, label: social.label })),
     { selector: `.footer-actions a[href="${CHATGPT_PLUGIN_URL}"]`, href: CHATGPT_PLUGIN_URL, label: "ChatGPT footer" },
     { selector: `.footer-actions a[href="${REPO_URL}"]`, href: REPO_URL, label: "GitHub footer" },
@@ -25,7 +27,16 @@ export async function verifyExternalIconLinks(browser, baseUrl) {
         validate: async (page) => {
           const originalUrl = page.url();
           const originalTitle = await page.$eval("main h1", (node) => node.textContent);
+          const links = width === 390 ? [menuRepo, ...sharedLinks] : [headerRepo, ...sharedLinks];
+          if (width === 390) {
+            assert.equal(await page.$eval(headerRepo.selector, (anchor) => getComputedStyle(anchor).display), "none", "GitHub header: nascosto su telefono");
+          }
           for (const link of links) {
+            if (link.inMenu) {
+              await page.tap(".mobile-menu-trigger");
+              await page.waitForSelector("dialog#mobile-navigation[open]");
+              await page.waitForSelector(link.selector, { visible: true });
+            }
             const attributes = await page.$eval(link.selector, (anchor) => ({
               href: anchor.href, target: anchor.target, rel: [...anchor.relList],
             }));
@@ -49,6 +60,10 @@ export async function verifyExternalIconLinks(browser, baseUrl) {
             } finally {
               await popup.close();
               await page.bringToFront();
+              if (link.inMenu) {
+                await page.keyboard.press("Escape");
+                await page.waitForFunction(() => !document.querySelector("dialog#mobile-navigation")?.open);
+              }
             }
           }
           // The external-link policy must not spread to the ordinary site menu/footer.

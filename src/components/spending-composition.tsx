@@ -206,17 +206,15 @@ export function SpendingComposition({
            * The geometry is expressed in the deterministic 100 × 62 layout
            * units.  Keep a generous safety margin around the copy: a tile is
            * allowed to show its name only when both dimensions leave room for
-           * the padding, two lines of type and the percentage.  The smallest
-           * cells use a compact version of the same label; only cells that
-           * cannot carry readable copy fall back to their ordinal.
+           * the padding, two lines of type and the percentage.  Smaller cells
+           * show only their legend number: a shrunken name ("Prestiti 4,0%"
+           * at 8px) was harder to read than the numbered legend beside it.
            */
           const labelMode = rectangle.width >= 42 && rectangle.height >= 28
             ? "detail"
             : rectangle.width >= 28 && rectangle.height >= 21
               ? "label"
-              : rectangle.width >= 15 && rectangle.height >= 14
-                ? "compact"
-                : "index";
+              : "index";
           return (
             <button
               type="button"
@@ -254,7 +252,13 @@ export function SpendingComposition({
                   <b>{item.shortLabel ?? item.label}</b>
                   <strong>{percent(share(item))}</strong>
                 </span>
-              ) : <span className={styles.tileIndex}>{index + 1}</span>}
+              ) : (
+                // The share follows the number when the tile is wide enough
+                // (container query on the tile); otherwise the legend has it.
+                <span className={styles.tileIndex}>
+                  {index + 1}<span className={styles.tileShare}>{" · "}{percent(share(item))}</span>
+                </span>
+              )}
             </button>
           );
         })}
@@ -265,6 +269,7 @@ export function SpendingComposition({
           <li key={item.id}>
             <button
               type="button"
+              data-active={displayedId === item.id ? "true" : undefined}
               aria-describedby={displayedId === item.id ? tooltipId : undefined}
               aria-pressed={pinnedId === item.id}
               onFocus={(event) => activate(item.id, event)}

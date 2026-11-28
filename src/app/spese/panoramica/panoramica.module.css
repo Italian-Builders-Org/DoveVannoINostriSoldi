@@ -50,6 +50,11 @@
   gap: var(--space-2) var(--space-3);
 }
 
+/* Optical edge: the 44px "?" target centres an 18px glyph, so the glyph,
+   not the invisible box, lines up with the values column below and sets
+   the header row height. */
+.panelHead > [data-info-tooltip] { margin-block: -13px; margin-inline-end: -13px; }
+
 .panelHead > h2 {
   flex: 1 1 auto;
   min-width: 0;
@@ -62,13 +67,20 @@
   margin: 0;
 }
 
+/* The "?" follows the title's last word on every width. Title and button
+   are inline; the break between them is governed by their common parent
+   (nowrap here), while the title itself wraps normally. A flex row instead
+   pushed the "?" to the right edge whenever the title wrapped. */
 .headingWithTooltip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  display: block;
+  white-space: nowrap;
   min-width: 0;
-  flex: 1 1 auto;
 }
+.headingWithTooltip > h2 {
+  display: inline;
+  white-space: normal;
+}
+.headingWithTooltip > [data-info-tooltip] { margin-left: -4px; }
 
 .inlineLink {
   display: inline-flex;
@@ -101,11 +113,19 @@
   padding: 0;
 }
 
+/* Paired columns end on one line (as on /enti): no gap under the shorter card. */
 .italySplit {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
-  align-items: start;
+  align-items: stretch;
+}
+
+.columnStack {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-4);
+  min-width: 0;
 }
 
 .italyChartPanel {
@@ -139,10 +159,12 @@
 }
 
 .sectionHeading > div { min-width: 0; }
-.sectionHeading h2 { margin: 0; font-size: clamp(20px, 2vw, 26px); letter-spacing: -.02em; text-transform: none; }
+.sectionHeading h2 { margin: 0; color: var(--color-text); font-size: clamp(20px, 2vw, 26px); font-weight: 600; letter-spacing: -.02em; text-transform: none; }
 .sectionNote { margin: 8px 0 0; color: var(--color-neutral-600); font-size: 13px; line-height: 1.5; }
-.sectionHeading .periodSelector { flex: 0 1 24rem; min-width: 0; }
-.stateSummary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--space-6); align-items: center; padding: var(--space-4); background: var(--color-neutral-100); border: 1px solid var(--color-neutral-300); }
+/* Sized to its buttons and pushed to the band's right edge, so both "Anno"
+   groups end at the same x as the cards under them. */
+.sectionHeading .periodSelector { flex: 0 1 auto; width: auto; min-width: 0; margin-inline-start: auto; }
+.stateSummary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--space-6); align-items: center; padding: var(--space-4); background: var(--color-raised); border: 1px solid var(--color-neutral-300); }
 .stateSummary h3 { margin: 0 0 6px; font-size: 15px; }
 .stateSummary .factRows { margin: 0; }
 .stateSummary .factRows > div:first-child { border-top: 0; }
@@ -192,7 +214,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 7px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
   font-size: 12.5px;
 }
 
@@ -201,8 +223,11 @@
 }
 
 .factRows dd {
+  flex: none;
   margin: 0;
   font-weight: 600;
+  /* "67,65 mld €" must not break between number and unit on phones. */
+  white-space: nowrap;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -214,13 +239,18 @@
   line-height: 1.45;
 }
 
+/* The card's closing action: a text link with a chevron, like "Legge di
+   Bilancio" and "Apri i territori". */
 .detailLink {
+  align-self: flex-start;
   margin-top: auto;
 }
 
 .monthsPanel {
   display: grid;
   gap: var(--space-3);
+  /* The panel may stretch to its column (.columnStack): content stays at the top. */
+  align-content: start;
   min-width: 0;
 }
 
@@ -266,6 +296,16 @@
   background: var(--color-neutral-500);
 }
 
+/* The running month is named, not only greyed: colour alone is not a legend. */
+.partialTag {
+  display: block;
+  color: var(--color-neutral-600);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
 .note {
   margin: 0;
   color: var(--color-neutral-600);
@@ -298,15 +338,15 @@
 .mapStats > div {
   padding: 8px 12px;
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .mapStats span {
   display: block;
-  font-size: 10px;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-size: var(--font-size-caption);
+  font-weight: 500;
   color: var(--color-neutral-600);
+  text-wrap: balance;
 }
 
 .mapStats strong {
@@ -326,10 +366,19 @@
   line-height: 1.4;
 }
 
+/* Weight and chevron from .inlineLink, like the other card actions. */
 .mapStats a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.12em;
+  margin-top: 4px;
+  color: var(--color-accent-700);
+  text-decoration: none;
+}
+
+@media (pointer: coarse) {
+  .mapStats a { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mapStats a:hover { text-decoration: underline; text-underline-offset: 0.12em; }
 }
 
 .readingPanel {

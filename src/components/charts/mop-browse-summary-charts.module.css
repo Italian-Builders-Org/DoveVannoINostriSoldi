@@ -121,7 +121,7 @@
   gap: 6px;
   min-width: 0;
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .sectorRow:last-child {

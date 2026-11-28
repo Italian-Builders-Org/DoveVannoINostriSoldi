@@ -80,7 +80,7 @@ export function SiteDirectory({ showMaps = false }: Readonly<{ showMaps?: boolea
       {groups.map((group) => <DirectoryGroup key={`${group.title}:${filtering}`} group={group} initiallyOpen={filtering} />)}
     </div> : filteredMaps.length ? null : <div className={styles.empty}>
       <p>Nessuna pagina corrisponde a «{query.trim()}».</p>
-      <Link prefetch={false} href={`/cerca?q=${encodeURIComponent(query.trim())}`}>Cerca anche nei dati e nei documenti →</Link>
+      <Link prefetch={false} href={`/cerca?q=${encodeURIComponent(query.trim())}`} className="link-arrow">Cerca anche nei dati e nei documenti</Link>
     </div>}
   </nav>;
 }

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon } from "@hugeicons/core-free-icons";
-import { RegistryTypeChart } from "@/components/charts/registry-type-chart";
+import { Icon } from "@/components/icons";
+import { displayCompanyName, displayEntityName } from "@/lib/entity-display-name";
 import { integer, longDate } from "@/lib/format";
 import { mefParticipationsSnapshot as participations } from "@/lib/mef-participations-snapshot";
 import { siopeMunicipalSnapshot } from "@/lib/siope-snapshot";
@@ -16,7 +15,12 @@ import {
   type IpaSearchResult,
 } from "@/lib/ipa";
 import { getIpaTypeDistribution, type IpaTypeStat } from "@/lib/ipa-stats";
-import { findSiopeNonMunicipalEntities, getSiopeNonMunicipalTypeLabel } from "@/lib/siope-nonmunicipal";
+import {
+  findSiopeNonMunicipalEntities,
+  getSiopeNonMunicipalTypeLabel,
+  type SiopeNonMunicipalEntity,
+} from "@/lib/siope-nonmunicipal";
+import { RegistrySummary } from "./registry-summary";
 import styles from "./enti.module.css";
 
 export const dynamic = "force-dynamic";
@@ -43,20 +47,69 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
+// The SIOPE list is grouped by type in <details> rather than filtered with a
+// ?tipo= parameter: this page is dynamic and calls IPA live on every request,
+// so each extra URL variant would multiply those calls for crawlers.
+const SIOPE_TYPE_GROUPS: ReadonlyArray<{
+  type: SiopeNonMunicipalEntity["entityType"];
+  label: string;
+  singular: string;
+}> = [
+  { type: "REGIONE", label: "Regioni e Province autonome", singular: "Regione" },
+  { type: "CITTA_METROP", label: "Città metropolitane", singular: "Città metropolitana" },
+  { type: "PROVINCIA", label: "Province e liberi consorzi", singular: "Provincia" },
+  { type: "ASL", label: "Aziende sanitarie", singular: "Azienda sanitaria locale" },
+];
+
+// One row of an entity list: the whole row is the link to the entity page,
+// with a trailing chevron so it reads as navigable, not as a static name.
+function EntityRow({ code, name, meta }: { code: string; name: string; meta?: string }) {
+  return (
+    <Link prefetch={false} href={`/enti/${encodeURIComponent(code)}`}>
+      <span className={styles.entityText}>
+        <span className={styles.entityName}>{name}</span>
+        <small className={styles.code}>
+          IPA <code>{code}</code>
+          {meta ? ` · ${meta}` : ""}
+        </small>
+      </span>
+      <Icon name="chevron-right" size={18} className={styles.rowChevron} />
+    </Link>
+  );
+}
+
+// Rows shown before "Mostra tutti" on phones; on wider screens the rest are
+// shown too (enti.module.css), so the full list is one grid.
+const CENTRAL_VISIBLE_ON_PHONES = 6;
+
+function SiopeEntityList({
+  entities,
+  singular,
+}: {
+  entities: readonly SiopeNonMunicipalEntity[];
+  singular: string | null;
+}) {
+  return (
+    <ul className={styles.entityList}>
+      {entities.map((entity) => {
+        const type = getSiopeNonMunicipalTypeLabel(entity);
+        return (
+          <li key={entity.codiceIpa}>
+            <EntityRow
+              code={entity.codiceIpa}
+              name={displayEntityName(entity.entityName)}
+              meta={type !== singular ? type : undefined}
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function locationLabel(indirizzo: string | null, cap: string | null): string {
   if (indirizzo && cap) return `${indirizzo} · ${cap}`;
   return indirizzo ?? cap ?? "Sede non indicata nel record IPA";
-}
-
-function observedAtLabel(value: string | null): string {
-  if (!value) return "Non disponibile";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Non disponibile";
-  return new Intl.DateTimeFormat("it-IT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Europe/Rome",
-  }).format(date);
 }
 
 export default async function EntiPage({ searchParams }: PageProps) {
@@ -121,11 +174,18 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
       <div className={`stat-strip ${styles.fiveUp}`}>
         <div>
-          <span className="stat-label">Comuni validi nel periodo SIOPE</span>
+          {/* The value is the SIOPE registry count (activeSiopeMunicipalities);
+              withMovements counts the Comuni with at least one payment in the
+              payments snapshot for the year, so the label must not say
+              "attivi" and the note gives the second figure. */}
+          <span className="stat-label">Comuni in SIOPE</span>
           <span className="stat-value">
             {integer(siopeMunicipalSnapshot.coverage.activeSiopeMunicipalities)}
           </span>
-          <span className="stat-note">anagrafe aggiornata ogni giorno</span>
+          <span className="stat-note">
+            {integer(siopeMunicipalSnapshot.coverage.withMovements)} con pagamenti nel{" "}
+            {siopeMunicipalSnapshot.year}
+          </span>
         </div>
         <div>
           <span className="stat-label">Società partecipate</span>
@@ -169,17 +229,14 @@ export default async function EntiPage({ searchParams }: PageProps) {
             name="q"
             type="search"
             defaultValue={query}
-            placeholder="Comune di Milano, Ministero dell'Interno, Regione Calabria, codice IPA…"
+            placeholder="es. Comune di Milano"
             autoComplete="off"
           />
           <button className="btn btn-primary" type="submit">
-            <HugeiconsIcon icon={Search01Icon} size={16} strokeWidth={1.7} aria-hidden="true" />
+            <Icon name="search" size={16} />
             Cerca ente
           </button>
         </form>
-        <p className={styles.note}>
-          Ricerca nel registro IPA di AgID.
-        </p>
       </section>
 
       {query && !canSearch && (
@@ -209,11 +266,11 @@ export default async function EntiPage({ searchParams }: PageProps) {
 
           {result.records.length > 0 ? (
             <div className="table-scroll" role="region" aria-label="Risultati della ricerca enti" tabIndex={0}>
-              <table className="table">
-                <thead>
+              <table className={`table ${styles.entities} ${styles.edgeTable}`}>
+                <thead className={styles.mobileHiddenHead}>
                   <tr>
                     <th scope="col">Ente</th>
-                    <th scope="col">Tipologia</th>
+                    <th scope="col" className={styles.typeCell}>Tipologia</th>
                     <th scope="col">Sede</th>
 
                   </tr>
@@ -223,9 +280,10 @@ export default async function EntiPage({ searchParams }: PageProps) {
                     <tr key={entity.codiceIpa}>
                       <th scope="row">
                         <Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
-                          {entity.denominazione}
+                          {displayEntityName(entity.denominazione)}
                         </Link>
-                        <details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details>
+                        <small className={styles.code}>IPA <code>{entity.codiceIpa}</code></small>
+                        <span className={styles.typeChip}>{entity.tipologia ?? "Non indicata"}</span>
                         {entity.acronimo || entity.inLiquidazione ? (
                           <small>
                             {entity.acronimo}
@@ -234,7 +292,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
                           </small>
                         ) : null}
                       </th>
-                      <td>{entity.tipologia ?? "Non indicata"}</td>
+                      <td className={styles.typeCell}>{entity.tipologia ?? "Non indicata"}</td>
                       <td>{locationLabel(entity.sede.indirizzo, entity.sede.cap)}</td>
                     </tr>
                   ))}
@@ -253,26 +311,33 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <section className="panel" aria-labelledby="siope-territoriali-title">
           <div className={styles.resultsHead}>
             <h2 className="panel-title" id="siope-territoriali-title">
-              {query ? "Enti SIOPE pubblicati" : "ASL, Province, Regioni e Città metropolitane SIOPE"}
+              {query ? "Enti SIOPE pubblicati" : "Enti territoriali e sanitari"}
             </h2>
-            <span>{integer(nonMunicipalEntities.length)} {query ? "corrispondenze" : "enti con dettaglio di cassa"}</span>
+            <span>
+              {integer(nonMunicipalEntities.length)} {query ? "corrispondenze" : "enti"} · rilascio SIOPE verificato
+            </span>
           </div>
-          <p className={styles.note}>
-            Elenco dal rilascio SIOPE verificato. La ricerca per nome o codice IPA usa lo stesso campo del registro; resta disponibile anche se IPA non risponde.
-          </p>
-          {nonMunicipalEntities.length > 0 ? (
-            <div className="table-scroll" role="region" aria-label="Enti SIOPE pubblicati" tabIndex={0}>
-              <table className="table">
-                <thead><tr><th scope="col">Ente</th><th scope="col">Tipologia SIOPE</th></tr></thead>
-                <tbody>{nonMunicipalEntities.map((entity) => (
-                  <tr key={entity.codiceIpa}>
-                    <th scope="row"><Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>{entity.entityName}</Link><details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details></th>
-                    <td>{getSiopeNonMunicipalTypeLabel(entity)}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
+          {nonMunicipalEntities.length === 0 ? (
+            <p className={styles.note}>Nessun ente SIOPE corrisponde alla ricerca.</p>
+          ) : query ? (
+            <SiopeEntityList entities={nonMunicipalEntities} singular={null} />
+          ) : (
+            <div className={styles.typeGroups}>
+              {SIOPE_TYPE_GROUPS.map((group) => {
+                const members = nonMunicipalEntities.filter((entity) => entity.entityType === group.type);
+                if (members.length === 0) return null;
+                return (
+                  <details key={group.type} className={styles.typeGroup}>
+                    <summary>
+                      <span>{group.label}</span>
+                      <span className={styles.typeCount}>{integer(members.length)}</span>
+                    </summary>
+                    <SiopeEntityList entities={members} singular={group.singular} />
+                  </details>
+                );
+              })}
             </div>
-          ) : <p className={styles.note}>Nessun ente SIOPE corrisponde alla ricerca.</p>}
+          )}
         </section>
       )}
 
@@ -280,38 +345,37 @@ export default async function EntiPage({ searchParams }: PageProps) {
         <section className="panel" id="amministrazioni-centrali">
           <div className={styles.resultsHead}>
             <h2 className="panel-title">Ministeri, Presidenza e Avvocatura</h2>
-            <span>{integer(centralAdministrations.total)} enti · aggiornamento giornaliero</span>
+            <span>
+              {integer(centralAdministrations.total)} enti · amministrazioni centrali · aggiornamento giornaliero
+            </span>
           </div>
-          <div className="table-scroll" role="region" aria-label="Principali enti pubblici" tabIndex={0}>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Amministrazione</th>
-                  <th scope="col">Categoria</th>
-
-                </tr>
-              </thead>
-              <tbody>
-                {centralAdministrations.records.map((entity) => (
-                  <tr key={entity.codiceIpa}>
-                    <th scope="row">
-                      <Link href={`/enti/${encodeURIComponent(entity.codiceIpa)}`}>
-                        {entity.denominazione}
-                      </Link>
-                      <details className="table-details"><summary>Codice IPA</summary><code>{entity.codiceIpa}</code></details>
-                    </th>
-                    <td>
-                      {entity.codiceIpa === "PCM"
-                        ? "Presidenza del Consiglio"
-                        : entity.codiceNatura === "2220"
-                          ? "Ministero"
-                          : "Amministrazione centrale"}
-                    </td>
-                  </tr>
+          {/* Every record here is IPA category C1, so the category is said once
+              in the heading line instead of as a chip on each row. */}
+          <ul className={styles.entityList} aria-label="Amministrazioni centrali">
+            {centralAdministrations.records.slice(0, CENTRAL_VISIBLE_ON_PHONES).map((entity) => (
+              <li key={entity.codiceIpa}>
+                <EntityRow code={entity.codiceIpa} name={displayEntityName(entity.denominazione)} />
+              </li>
+            ))}
+          </ul>
+          {centralAdministrations.records.length > CENTRAL_VISIBLE_ON_PHONES ? (
+            <details className={styles.moreEntities}>
+              <summary className="disclosure-more">
+                <span className={styles.moreClosed}>
+                  Mostra tutti ({integer(centralAdministrations.records.length)})
+                </span>
+                <span className={styles.moreOpen}>Riduci</span>
+                <Icon name="chevron-down" size={16} className={styles.moreChevron} />
+              </summary>
+              <ul className={styles.entityList} aria-label="Altre amministrazioni centrali">
+                {centralAdministrations.records.slice(CENTRAL_VISIBLE_ON_PHONES).map((entity) => (
+                  <li key={entity.codiceIpa}>
+                    <EntityRow code={entity.codiceIpa} name={displayEntityName(entity.denominazione)} />
+                  </li>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </ul>
+            </details>
+          ) : null}
         </section>
       )}
 
@@ -330,14 +394,11 @@ export default async function EntiPage({ searchParams }: PageProps) {
             <h2 className="panel-title">Il registro IPA in numeri</h2>
             <span>dati AgID</span>
           </div>
-          <strong className={styles.bigNumber}>
-            {stats ? integer(stats.total) : "Non disponibile"}
-          </strong>
-          <p className={styles.note}>
-            Enti presenti nel registro IPA. Controllato il{" "}
-            {observedAtLabel(stats?.observedAt ?? distributionObservedAt)}.
-          </p>
-          <RegistryTypeChart data={distribution} />
+          <RegistrySummary
+            total={stats ? stats.total : null}
+            observedAt={stats?.observedAt ?? distributionObservedAt}
+            distribution={distribution}
+          />
         </section>
 
         <section className="panel">
@@ -373,10 +434,12 @@ export default async function EntiPage({ searchParams }: PageProps) {
       <section className="panel">
         <div className={styles.resultsHead}>
           <h2 className="panel-title">Le società con più enti soci</h2>
-          <Link href="/partecipazioni">Tutte le partecipazioni →</Link>
+          {/* Wide screens: beside the title. Phones: a full-width row at
+              the end of the card (below), after the table it leads to. */}
+          <Link className={`link-arrow ${styles.allLink} ${styles.headLink}`} href="/partecipazioni">Tutte le partecipazioni</Link>
         </div>
         <div className="table-scroll" role="region" aria-label="Partecipazioni pubbliche" tabIndex={0}>
-          <table className="table">
+          <table className={`table ${styles.edgeTable}`}>
             <thead>
               <tr>
                 <th scope="col">Società</th>
@@ -387,7 +450,7 @@ export default async function EntiPage({ searchParams }: PageProps) {
             <tbody>
               {participations.topCompaniesByDeclaringAdministrations.map((company) => (
                 <tr key={company.taxCode}>
-                  <th scope="row">{company.name}<details className="table-details"><summary>Codice fiscale</summary><code>{company.taxCode}</code></details></th>
+                  <th scope="row">{displayCompanyName(company.name)}<small className={styles.code}>CF <code>{company.taxCode}</code></small></th>
                   <td className="num">{integer(company.declaringAdministrations)}</td>
                 </tr>
               ))}
@@ -398,6 +461,10 @@ export default async function EntiPage({ searchParams }: PageProps) {
           Quasi tutte gestiscono servizi condivisi tra molti Comuni: acqua, energia, informatica,
           riscossione. Per questo hanno centinaia di enti soci.
         </p>
+        <Link className={`${styles.allLink} ${styles.endLink}`} href="/partecipazioni">
+          Tutte le partecipazioni
+          <Icon name="chevron-right" size={18} />
+        </Link>
       </section>
 
       <section className="panel">
@@ -406,8 +473,8 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <div>
             <dt>Registro degli enti</dt>
             <dd>
-              <a href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">
-                IPA · AgID ↗
+              <a className="link-external" href={IPA_ENTI_DATASET_URL} target="_blank" rel="noreferrer">
+                IPA · AgID
               </a>
             </dd>
           </div>
@@ -424,8 +491,8 @@ export default async function EntiPage({ searchParams }: PageProps) {
           <div>
             <dt>Partecipazioni</dt>
             <dd>
-              <a href={participations.source.landingUrl} target="_blank" rel="noreferrer">
-                MEF · open data {participations.referenceYear} ↗
+              <a className="link-external" href={participations.source.landingUrl} target="_blank" rel="noreferrer">
+                MEF · open data {participations.referenceYear}
               </a>
             </dd>
           </div>

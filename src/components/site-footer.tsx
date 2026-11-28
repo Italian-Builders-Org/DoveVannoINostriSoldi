@@ -1,23 +1,6 @@
 import Link from "next/link";
-import {
-  ChatGptIcon,
-  Facebook01Icon,
-  GithubIcon,
-  InstagramIcon,
-  NewTwitterIcon,
-  ThreadsIcon,
-  TiktokIcon,
-} from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { BrandIcon } from "@/components/brand-icons";
 import { CHATGPT_PLUGIN_URL, REPO_URL, SOCIAL_LINKS } from "@/lib/site";
-
-const SOCIAL_ICONS = {
-  threads: ThreadsIcon,
-  facebook: Facebook01Icon,
-  instagram: InstagramIcon,
-  tiktok: TiktokIcon,
-  x: NewTwitterIcon,
-} as const;
 
 export function SiteFooter() {
   return (
@@ -27,14 +10,13 @@ export function SiteFooter() {
           <div className="footer-support-copy">
             <strong id="footer-support-title">Dove vanno i nostri soldi?</strong>
             <span>Dati ufficiali sulla spesa pubblica italiana.</span>
-            <Link prefetch={false} href="/metodologia" className="footer-support-label">Fonti e metodo</Link>
           </div>
         </aside>
         <div className="footer-directory">
           <nav className="footer-social" aria-label="Canali social">
             <ul>{SOCIAL_LINKS.map((channel) => <li key={channel.id}>
               <a className="footer-link" href={channel.href} target="_blank" rel="noopener noreferrer" aria-label={`${channel.label} (nuova scheda)`} title={`${channel.label} (nuova scheda)`}>
-                <HugeiconsIcon icon={SOCIAL_ICONS[channel.id]} size={19} strokeWidth={1.8} aria-hidden="true" />
+                <BrandIcon name={channel.id} size={19} />
               </a>
             </li>)}</ul>
           </nav>
@@ -44,17 +26,14 @@ export function SiteFooter() {
             <Link prefetch={false} href="/privacy">Privacy</Link>
             <Link prefetch={false} href="/termini">Termini</Link>
             <Link prefetch={false} href="/supporto">Supporto</Link>
-            <a href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="DVNS su ChatGPT (nuova scheda)"><HugeiconsIcon icon={ChatGptIcon} size={16} aria-hidden="true" /> ChatGPT</a>
-            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)"><HugeiconsIcon icon={GithubIcon} size={16} aria-hidden="true" /> GitHub</a>
+            <a href={CHATGPT_PLUGIN_URL} target="_blank" rel="noopener noreferrer" aria-label="DVNS su ChatGPT (nuova scheda)">ChatGPT</a>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub (nuova scheda)">GitHub</a>
           </nav>
         </div>
       </div>
       <p className="footer-disclaimer">
         Usiamo anche l’AI per organizzare e presentare i dati. Sono possibili errori:
-        verifica le fonti originali prima di decidere. Il sito non fornisce consulenza.{" "}
-        <Link prefetch={false} href="/metodologia">Metodo</Link>
-        {" · "}
-        <Link prefetch={false} href="/termini">Termini</Link>
+        verifica le fonti originali prima di decidere. Il sito non fornisce consulenza.
       </p>
       <div className="footer-credits">
         <div className="footer-makers">

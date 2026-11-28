@@ -8,6 +8,9 @@
 
 :root {
   color-scheme: light;
+  /* Smallest text size for shared captions, eyebrows and table heads: 11px
+     uppercase grey read as borderline on dark cards. */
+  --font-size-caption: 12px;
   --color-announcement-bg: #182b3a;
   --color-announcement-text: #ffffff;
   --color-bg: #f3f5f7;
@@ -18,13 +21,14 @@
   --color-on-strong-muted: #c5cfd8;
   --color-accent: #b42332;
   --color-accent-2: #a82b3b;
-  --color-divider: color-mix(in srgb, #182b3a 40%, transparent);
 
   /* Cool paper and blue ink: restrained surfaces, AA text and 3:1 controls.
      See docs/INSTITUTIONAL_PALETTE.md for measured role pairs. */
   --color-neutral-100: #f6f8fa;
   --color-neutral-200: #e5eaf0;
   --color-neutral-300: #c5cfd8;
+  /* Hairlines between cells of one card (stat strips). */
+  --color-divider: #e5eaf0;
   --color-neutral-400: #71808e;
   --color-neutral-500: #657786;
   --color-neutral-600: #536474;
@@ -168,12 +172,18 @@
   --graph-ring: color-mix(in srgb, #182b3a 14%, transparent);
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  /* Press feedback: a short, strong ease-out so the control answers at once. */
+  --press-scale: .97;
+  --press-duration: 160ms;
   --focus-ring: var(--color-accent);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --color-accent: #ff8897;
+  /* One dark action hue: the accent equals the accent-700 step so links,
+     primary buttons and active markers stop switching between pink and
+     coral from page to page (7.07:1 on bg, 6.04:1 under dark labels). */
+  --color-accent: #ff765f;
   --color-accent-2: #efa0ad;
 
   --color-bg: #141313;
@@ -184,11 +194,15 @@
   --color-on-strong: #242222;
   --color-on-strong-muted: #514b4b;
 
-  --color-divider: color-mix(in srgb, #f3eeee 24%, transparent);
-
   --color-neutral-100: #1d1b1b;
   --color-neutral-200: #272424;
-  --color-neutral-300: #373333;
+  /* neutral-300 is the row and table divider of most lists (1.27:1 vanished
+     on raised cards); #4d4848 is 1.76:1 there. neutral-200 stays a text
+     surface (AA for neutral-600), so it cannot be raised to divider strength:
+     row borders on raised cards use --color-divider or neutral-300. */
+  --color-neutral-300: #4d4848;
+  /* neutral-200 is 1.03:1 on raised cards here; dividers need 1.5:1. */
+  --color-divider: #474343;
   --color-neutral-400: #7e858d;
   --color-neutral-500: #939ba3;
   --color-neutral-600: #9f9898;
@@ -224,7 +238,9 @@
   --color-warning-border: #695333;
 
   --chart-data-primary: #65b7bf;
-  --chart-data-track: #283a3b;
+  /* Neutral, lighter than the raised card (1.5:1) and 4.6:1 under the teal
+     fill: the old teal-tinted track read as part of the bar. */
+  --chart-data-track: #423e3e;
   --chart-map-1: #324e59;
   --chart-map-2: #416775;
   --chart-map-3: #558797;
@@ -303,11 +319,11 @@
   padding: 7px var(--space-3);
   min-height: 44px;
   border-radius: var(--radius-md);
-  transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease;
+  transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, border-color 140ms ease;
 }
 .btn svg { display: block; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn:active:not(:disabled) { transform: scale(.98); }
+.btn:active:not(:disabled) { transform: scale(var(--press-scale)); }
 .btn-primary { background: var(--color-accent-700); color: var(--color-raised); }
 .btn-primary:hover,
 .btn-primary:focus-visible {
@@ -316,12 +332,15 @@
 }
 .btn-primary:active { background: var(--color-accent-900); color: var(--color-raised); }
 .btn-secondary { border-color: var(--color-neutral-400); }
-.btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
 .btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
 .btn-ghost { color: var(--color-accent-700); padding-inline: var(--space-1); }
-.btn-ghost:hover {
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  color: var(--color-accent-800);
+/* Pointer-only hover: on touch screens it would stick after a tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+  .btn-ghost:hover {
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    color: var(--color-accent-800);
+  }
 }
 .btn-block {
   width: 100%;
@@ -370,7 +389,7 @@ textarea.input {
 .panel-title {
   margin: 0 0 var(--space-3);
   font-family: var(--font-heading);
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   font-weight: var(--font-heading-weight);
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -384,7 +403,7 @@ textarea.input {
 .tag {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   letter-spacing: .02em;
   padding: 3px 10px;
   border-radius: var(--radius-sm);
@@ -403,7 +422,7 @@ textarea.input {
 /* Only column headings shout; a row heading is the row's name, not a label. */
 .table thead th {
   text-align: left;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   letter-spacing: .08em;
   text-transform: uppercase;
   font-weight: 600;
@@ -422,20 +441,20 @@ textarea.input {
 }
 .table td {
   padding: 11px var(--space-2);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 .table tbody tr:hover { background: var(--color-neutral-100); }
 .table th[scope="row"] {
   text-align: left;
   padding: 11px var(--space-2);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
   font-weight: 600;
 }
 /* A row heading may carry one line of context under the name. */
 .table th[scope="row"] small {
   display: block;
   margin-top: 2px;
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   font-weight: 400;
   color: var(--color-neutral-600);
 }
@@ -451,8 +470,8 @@ textarea.input {
    the app aligns on the same digit width. */
 .num-tabular { font-variant-numeric: tabular-nums; }
 
-.transition-press { transition: transform 140ms var(--ease-out), background-color 140ms ease, border-color 140ms ease; }
-.transition-press:active { transform: scale(.98); }
+.transition-press { transition: transform var(--press-duration) var(--ease-out), background-color 140ms ease, border-color 140ms ease; }
+.transition-press:active { transform: scale(var(--press-scale)); }
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -463,4 +482,6 @@ textarea.input {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Reduced motion keeps the colour change of a press, not the shrink. */
+  :root { --press-scale: 1; }
 }

@@ -41,7 +41,7 @@
 .filterList { display: grid; }
 .filterOption {
   display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px; align-items: start;
-  padding: 10px 0; text-decoration: none; border-bottom: 1px solid var(--color-neutral-200);
+  padding: 10px 0; text-decoration: none; border-bottom: 1px solid var(--color-divider);
   font-size: 15px; font-weight: 600;
 }
 .filterOption small { display: block; font-size: 13px; font-weight: 400; color: var(--color-neutral-600); margin-top: 2px; }
@@ -61,7 +61,7 @@
 .selected, .suggestions { display: grid; }
 .selectedItem, .suggestions li {
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
-  min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--color-neutral-200);
+  min-height: 52px; padding: 6px 0; border-bottom: 1px solid var(--color-divider);
 }
 .suggestions li { grid-template-columns: minmax(0, 1fr) auto; min-height: 46px; }
 .selectedName { display: grid; min-width: 0; }
@@ -95,7 +95,7 @@
 .barList { display: grid; margin-top: 8px; border-top: 1px solid var(--color-text); }
 .barList li {
   display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) minmax(130px, 190px);
-  gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-neutral-200);
+  gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-divider);
 }
 .barName { display: inline-flex; align-items: center; gap: 10px; font-weight: 650; font-size: 15px; min-width: 0; }
 .barTrack { position: relative; height: 18px; }
@@ -126,7 +126,7 @@
 .metricList { display: grid; border-top: 1px solid var(--color-text); }
 .metricRow {
   display: grid; grid-template-columns: minmax(220px, 320px) minmax(0, 1fr); gap: 6px 32px;
-  align-items: center; padding: 18px 0; border-bottom: 1px solid var(--color-neutral-200);
+  align-items: center; padding: 18px 0; border-bottom: 1px solid var(--color-divider);
 }
 .metricHead h3 { font-size: 15px; font-weight: 650; }
 .metricValue { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-variant-numeric: tabular-nums; margin-top: 2px; }
@@ -180,7 +180,7 @@
 .tableScroll { overflow-x: auto; border-top: 1px solid var(--color-text); }
 .tableScroll:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 .table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
-.table th, .table td { padding: 10px 12px; border-bottom: 1px solid var(--color-neutral-200); text-align: right; white-space: nowrap; }
+.table th, .table td { padding: 10px 12px; border-bottom: 1px solid var(--color-divider); text-align: right; white-space: nowrap; }
 .table thead th { font-weight: 650; vertical-align: bottom; }
 .thName { display: inline-flex; align-items: center; gap: 8px; }
 .table th:first-child { text-align: left; white-space: normal; min-width: 210px; padding-left: 0; }

@@ -42,7 +42,9 @@ async function triggerGeometry(page, selector) {
       width: rect.width,
       height: rect.height,
       text: button.textContent?.trim() ?? "",
-      name: button.getAttribute("aria-label") ?? "",
+      // Accessible name: aria-label when set (icon-only compact trigger),
+      // otherwise the visible text; the icons are aria-hidden.
+      name: (button.getAttribute("aria-label") ?? button.textContent ?? "").replace(/\s+/g, " ").trim(),
       visible: style.display !== "none" && style.visibility !== "hidden" && rect.width > 0,
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,

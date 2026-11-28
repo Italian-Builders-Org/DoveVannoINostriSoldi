@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { shortDate } from "@/lib/format";
 import { companyAtlasSourceList } from "@/lib/company-atlas-metadata";
 import { istatTurnoverSourceMetadata } from "@/lib/istat-turnover-metadata";
 import { REPO_URL } from "@/lib/site";
 import { latestDataBySlug } from "@/lib/source-latest-data";
+import {
+  clusterPublisherSources,
+  coveragePreview,
+  coverageWithoutPeriod,
+  periodWithoutRepeatedCaveat,
+  groupSourcesByPublisher,
+  plainRangeLabel,
+  publisherAnchor,
+  sharedCadence,
+  subtitleRepeatsTitle,
+} from "@/lib/source-publishers";
 import { publicSources, sourceCounts } from "@/lib/sources";
 import styles from "./fonti.module.css";
 
@@ -13,61 +25,184 @@ export const metadata: Metadata = {
   description: "Da dove arrivano i dati, quanto spesso cambiano e quali fonti sono già collegate.",
 };
 
+// Descriptions longer than this (by at least 40 characters, see
+// coveragePreview) show a preview cut at a word and a "Mostra tutto" toggle.
+const LONG_COVERAGE = 120;
+const publisherGroups = groupSourcesByPublisher(publicSources).map((group) => ({
+  ...group,
+  anchor: publisherAnchor(group.name),
+  items: clusterPublisherSources(group.sources),
+}));
+
+type SourceEntry = (typeof publisherGroups)[number]["sources"][number];
+
+// An external link's label with the shared arrow-up-right glyph
+// (.link-external in globals.css): a mask joined to the last word by a word
+// joiner, so it never wraps alone. An inline <Icon> could not do this, because
+// every <svg> is display:block site-wide.
+function External({ label }: { label: string }) {
+  return <span className="link-external">{label}</span>;
+}
+
+// What the "Periodo coperto" column shows. It comes before the cadence so a
+// phone card reads "2014-2024 · Annuale" as one line in source order. Dates are the reference date of
+// the latest data ("al ..."); periods are shown as published, with plain
+// hyphens in ranges; null means the adapter finds the latest release itself.
+function coveredPeriod(slug: string): string {
+  const latest = latestDataBySlug[slug];
+  if (latest?.kind === "date") return `al ${shortDate(latest.value)}`;
+  if (latest?.kind === "period") return plainRangeLabel(latest.label);
+  return "ultimo rilascio disponibile";
+}
+
+// The theme line under a source name, unless it only restates the name or
+// the sub-group heading already says it.
+function subtitle({ source, title, detail }: SourceEntry, inCluster: boolean): string | null {
+  const area = inCluster || subtitleRepeatsTitle(title, source.area) ? null : source.area;
+  return [area, detail].filter(Boolean).join(" · ") || null;
+}
+
+// `cadenceInHeading`: the theme sub-group heading states the cadence shared by
+// all its rows, once. The cell keeps it for screen readers only: repeating it
+// eleven times on screen added nothing, and a placeholder read as missing data.
+function SourceRow({
+  entry,
+  inCluster,
+  cadenceInHeading = false,
+}: {
+  entry: SourceEntry;
+  inCluster: boolean;
+  cadenceInHeading?: boolean;
+}) {
+  const { source, title } = entry;
+  const note = subtitle(entry, inCluster);
+  const coverage = coverageWithoutPeriod(source.coverage, coveredPeriod(source.slug));
+  const period = periodWithoutRepeatedCaveat(coveredPeriod(source.slug), coverage);
+  const preview = coveragePreview(coverage, LONG_COVERAGE);
+  return (
+    <tr id={source.slug} role="row" className={inCluster ? `${styles.sourceRow} ${styles.clusterMember}` : styles.sourceRow}>
+      <th scope="row" role="rowheader">
+        <a
+          href={source.url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
+        >
+          <External label={title} />
+        </a>
+        {note ? <small>{note}</small> : null}
+      </th>
+      <td role="cell" className={styles.coverageCell}>
+        {/* The summary always holds the full text for screen readers; the
+            preview is the visual stand-in while the details are closed. */}
+        {preview ? (
+          <details className={styles.coverage}>
+            <summary className="disclosure-more">
+              <span className={styles.preview} aria-hidden="true">{preview}</span>
+              <span className={styles.full}>{coverage}</span>
+            </summary>
+          </details>
+        ) : coverage}
+      </td>
+      <td role="cell" className={styles.latest}>{period}</td>
+      {cadenceInHeading ? (
+        <td role="cell" className={`${styles.cadence} ${styles.cadenceInGroup}`}>
+          <span className={styles.visuallyHidden}>{plainRangeLabel(source.cadence)}</span>
+        </td>
+      ) : (
+        <td role="cell" className={styles.cadence}>{plainRangeLabel(source.cadence)}</td>
+      )}
+    </tr>
+  );
+}
+
 export default function SourcesPage() {
   return (
     <main className="shell page">
       <div className="page-intro">
         <h1>Da dove arrivano i dati</h1>
-        <p>
-          Ogni numero su questo sito viene da una fonte pubblica ufficiale. Qui trovi quali sono,
-          cosa contengono e quando le controlliamo.
-        </p>
+        <p>Ogni numero su questo sito viene da una fonte pubblica ufficiale.</p>
       </div>
 
-      <p><strong>{sourceCounts.total} fonti collegate</strong> al portale.</p>
+      <p><strong>{sourceCounts.total} fonti collegate</strong> al portale, da {publisherGroups.length} enti pubblicatori.</p>
+
+      {/* On phones the register is a long column of cards: a collapsed index
+          of the publishers jumps straight to a group without pushing the
+          register down. Hidden from 640px, where the table is easy to scan. */}
+      <details className={styles.publisherIndex}>
+        <summary>
+          {/* The publisher count is in the sentence above. */}
+          Vai a un ente pubblicatore
+        </summary>
+        <nav aria-label="Enti pubblicatori">
+          <ul>
+            {publisherGroups.map((group) => (
+              <li key={group.anchor}>
+                <a href={`#${group.anchor}`}>
+                  {group.name}
+                  <span>{group.sources.length}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </details>
 
       <section className="panel">
         <div className="table-scroll" role="region" aria-label="Registro delle fonti" tabIndex={0}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Fonte</th>
-                <th scope="col">Cosa contiene</th>
-                <th scope="col">Chi la pubblica</th>
-                <th scope="col">Ogni quanto esce</th>
-                <th scope="col">Ultimo dato</th>
+          {/* Under 640px the rows become stacked cards (fonti.module.css). The
+              explicit roles keep table semantics for screen readers, which
+              some browsers drop once table parts are display: block. Each
+              publisher is a row group headed by its short name, so the
+              publisher is not repeated on every row; three or more sources
+              on the same theme get one sub-heading instead of repeating it. */}
+          <table className={`table ${styles.sources}`} role="table">
+            <thead role="rowgroup">
+              <tr role="row">
+                <th scope="col" role="columnheader">Fonte</th>
+                <th scope="col" role="columnheader">Cosa contiene</th>
+                <th scope="col" role="columnheader">Periodo coperto</th>
+                <th scope="col" role="columnheader">Ogni quanto esce</th>
               </tr>
             </thead>
-            <tbody>
-              {publicSources.map((source) => {
-                const latest = latestDataBySlug[source.slug];
-                return (
-                  <tr id={source.slug} key={source.slug}>
-                    <th scope="row">
-                      <a
-                        href={source.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${source.name}, fonte ufficiale, si apre in una nuova scheda`}
-                      >
-                        {source.name} ↗
-                      </a>
-                      <small>{source.area}</small>
-                    </th>
-                    <td>{source.coverage}</td>
-                    <td>{source.owner}</td>
-                    <td>{source.cadence}</td>
-                    <td className={styles.latest}>
-                      {latest?.kind === "date"
-                        ? shortDate(latest.value)
-                        : latest?.kind === "period"
-                          ? latest.label
-                          : "scoperta automatica"}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+            {publisherGroups.map((group) => (
+              <tbody role="rowgroup" key={group.name} className={styles.group}>
+                <tr role="row" className={styles.groupRow} id={group.anchor}>
+                  <th scope="colgroup" colSpan={4} role="columnheader">
+                    {group.name}
+                    <span className={styles.groupCount}>
+                      {group.sources.length === 1 ? "1 fonte" : `${group.sources.length} fonti`}
+                    </span>
+                  </th>
+                </tr>
+                {group.items.map((item) => {
+                  if (item.kind === "source") {
+                    return <SourceRow key={item.entry.source.slug} entry={item.entry} inCluster={false} />;
+                  }
+                  // A cadence common to the whole theme (the eleven BES rows)
+                  // is a note under the sub-group title, on every screen size.
+                  const cadence = sharedCadence(item.entries);
+                  return (
+                    <Fragment key={`cluster-${item.label}`}>
+                      <tr role="row" className={styles.clusterRow}>
+                        <th scope="colgroup" colSpan={4} role="columnheader">
+                          {item.label}
+                          <span className={styles.groupCount}>{item.entries.length} fonti</span>
+                          {cadence ? (
+                            <span className={styles.clusterNote}>
+                              Ogni quanto esce: {plainRangeLabel(cadence)}
+                            </span>
+                          ) : null}
+                        </th>
+                      </tr>
+                      {item.entries.map((entry) => (
+                        <SourceRow key={entry.source.slug} entry={entry} inCluster cadenceInHeading={cadence !== null} />
+                      ))}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            ))}
           </table>
         </div>
       </section>
@@ -77,7 +212,7 @@ export default function SourcesPage() {
         <p>ARERA, rendiconti 2024-2025: <Link href="/dati/arera-entrate-2024-2025?q=E.1.01.01.99">contributi di funzionamento</Link>,{" "}
           <Link href="/dati/arera-entrate-2024-2025">tutte le entrate</Link>{" "}
           e <Link href="/dati/arera-spese-2024-2025">spese per titolo</Link>. Fonte ARERA, licenza{" "}
-          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0 ↗</a>.
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer"><External label="CC BY-SA 4.0" /></a>.
         </p>
         <p><Link href="/dati/ade-cinque-per-mille-territori-2024">5 per mille 2024 per territorio</Link>{" "}
           e <a href="/downloads/cinque-per-mille-af2024-20260617-58e5fc410ce0.zip" download>CSV originali (ZIP)</a>. Fonte: Agenzia delle Entrate. Importi erogabili, non pagamenti verificati.</p>
@@ -85,11 +220,11 @@ export default function SourcesPage() {
           <summary>Fonti non ancora integrate</summary>
           <p>I collegamenti seguenti portano ai dati degli enti: non sono ancora interrogabili su DVNS.</p>
           <ul>
-            <li>Consorzi di bonifica: <a href="https://www.consorziobonificalitoralenord.it/amministrazione-trasparente/" target="_blank" rel="noreferrer">Litorale Nord ↗</a>{" "}
-              (successore di Tevere e Agro Romano) e <a href="https://www.consorziobonifica8rg.it/amministrazione-trasparente/bilanci/bilancio-preventivo-e-consuntivo.html" target="_blank" rel="noreferrer">Ragusa ↗</a>.</li>
-            <li>Contributi ambientali: <a href="https://www.conai.org/" target="_blank" rel="noreferrer">CONAI ↗</a>.</li>
-            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer">8 per mille ↗</a>{" "}
-              e <a href="https://www1.finanze.gov.it/finanze/2xmille/public/index.php?tree=2025AADUEXM0101" target="_blank" rel="noreferrer">2 per mille ↗</a>.</li>
+            <li>Consorzi di bonifica: <a href="https://www.consorziobonificalitoralenord.it/amministrazione-trasparente/" target="_blank" rel="noreferrer"><External label="Litorale Nord" /></a>{" "}
+              (successore di Tevere e Agro Romano) e <a href="https://www.consorziobonifica8rg.it/amministrazione-trasparente/bilanci/bilancio-preventivo-e-consuntivo.html" target="_blank" rel="noreferrer"><External label="Ragusa" /></a>.</li>
+            <li>Contributi ambientali: <a href="https://www.conai.org/" target="_blank" rel="noreferrer"><External label="CONAI" /></a>.</li>
+            <li>Destinazioni IRPEF: <a href="https://www1.finanze.gov.it/finanze/pagina_dichiarazioni/public/ottoxmille.php" target="_blank" rel="noreferrer"><External label="8 per mille" /></a>{" "}
+              e <a href="https://www1.finanze.gov.it/finanze/2xmille/public/index.php?tree=2025AADUEXM0101" target="_blank" rel="noreferrer"><External label="2 per mille" /></a>.</li>
           </ul>
         </details>
       </section>
@@ -124,7 +259,7 @@ export default function SourcesPage() {
               {[...companyAtlasSourceList, istatTurnoverSourceMetadata].map((source) => (
                 <tr key={source.id}>
                   <th scope="row">
-                    <a href={source.url} target="_blank" rel="noreferrer">{source.label} ↗</a>
+                    <a href={source.url} target="_blank" rel="noreferrer"><External label={source.label} /></a>
                   </th>
                   <td>{source.coverage}</td>
                   <td>{shortDate(source.updatedAt)} · osservato {shortDate(source.observedAt)}</td>
@@ -137,23 +272,11 @@ export default function SourcesPage() {
         <p>
           Il modulo mostra soltanto aggregati regionali: sezioni ATECO 2025 per le fonti
           camerali, macro-settori ATECO 2007 agg. 2022 per il fatturato ISTAT. Non nomi di
-          aziende, identificativi o fatturato individuale. <Link href="/imprese">Apri Atlante Imprese →</Link>
+          aziende, identificativi o fatturato individuale. <Link className="link-arrow" href="/imprese">Apri Atlante Imprese</Link>
         </p>
       </section>
 
       <div className={styles.principles}>
-        <section className="panel">
-          <h2 className="panel-title">Come lavoriamo</h2>
-          <p>
-            Verifichiamo i file ufficiali e distinguiamo il periodo del dato dalla data del nostro controllo.
-          </p>
-        </section>
-        <section className="panel">
-          <h2 className="panel-title">Se un dato manca</h2>
-          <p>
-            Indichiamo accanto ai numeri ritardi e periodi non coperti dalla fonte.
-          </p>
-        </section>
         <section className="panel">
           <h2 className="panel-title">Licenze e riuso</h2>
           <p>
@@ -167,32 +290,14 @@ export default function SourcesPage() {
         </section>
       </div>
 
-      <section className="panel">
-        <h2 className="panel-title">Collegamenti diretti alle fonti</h2>
-        <ul className={styles.linkList}>
-          {publicSources.map((source) => (
-            <li key={source.slug}>
-              <a
-                href={source.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`${source.name} di ${source.owner}, si apre in una nuova scheda`}
-              >
-                {source.name} · {source.owner} <i aria-hidden="true">↗</i>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <div className="notice">
         <strong>“Aggiornato” quanto la fonte</strong>
         <p>
           Se la fonte pubblica i dati una volta al mese, non sono in tempo reale. Mostriamo ultimo
           periodo, ultimo controllo e prossimo aggiornamento atteso.{" "}
-          <Link href="/fonti/calendario">Calendario documenti →</Link> ·{" "}
-          <Link href="/fonti/stato">Stato delle fonti →</Link> ·{" "}
-          <Link href="/metodologia">Metodo →</Link>
+          <Link className="link-arrow" href="/fonti/calendario">Calendario documenti</Link> ·{" "}
+          <Link className="link-arrow" href="/fonti/stato">Stato delle fonti</Link> ·{" "}
+          <Link className="link-arrow" href="/metodologia">Metodo</Link>
         </p>
       </div>
     </main>

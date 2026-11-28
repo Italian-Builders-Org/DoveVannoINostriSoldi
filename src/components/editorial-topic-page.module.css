@@ -124,9 +124,7 @@
 }
 
 .limitsDetails summary {
-  cursor: pointer;
   font-size: 14px;
-  font-weight: 700;
 }
 
 .limitsDetails ul {
@@ -196,19 +194,23 @@
   display: none;
 }
 
+/* Leading chevron-right (the icon set's glyph) turning down when open;
+   it replaces the shared trailing summary chevron. */
 .dataset summary::before {
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
-  border-right: 2px solid var(--color-neutral-700);
-  border-bottom: 2px solid var(--color-neutral-700);
+  background-color: var(--color-neutral-700);
+  -webkit-mask: var(--glyph-chevron-right) center / contain no-repeat;
+  mask: var(--glyph-chevron-right) center / contain no-repeat;
   content: "";
-  transform: rotate(-45deg);
-  transition: transform 140ms var(--ease-out);
+  transition: transform 200ms var(--ease-out);
 }
 
+.dataset summary::after { content: none; }
+
 .dataset[open] summary::before {
-  transform: rotate(45deg);
+  transform: rotate(90deg);
 }
 
 .dataset summary > span:first-of-type {
@@ -236,8 +238,8 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0;
-  border-top: 1px solid var(--color-neutral-200);
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .datasetMetadata > div {
@@ -266,7 +268,7 @@
 .empty {
   padding: var(--space-3);
   background: var(--color-neutral-100);
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
 }
 
 .provenance {

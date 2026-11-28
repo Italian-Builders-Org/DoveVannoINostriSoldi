@@ -75,3 +75,61 @@ test("spending bars, map and additive composition retain dedicated data roles an
   assert.match(map, /aria-label/);
   assert.match(map, /data-region-selector/);
 });
+
+test("dark bar tracks are a neutral grey visible on cards, not a dim copy of the teal fill", () => {
+  const track = value(dark, "--chart-data-track");
+  const [r, g, b] = [1, 3, 5].map((offset) => parseInt(track.slice(offset, offset + 2), 16));
+  assert.ok(Math.max(r, g, b) - Math.min(r, g, b) <= 8, `${track} is tinted`);
+  assert.ok(contrast(track, value(dark, "--color-raised")) >= 1.45, "track vanishes on raised cards");
+  assert.ok(contrast(value(dark, "--chart-data-primary"), track) >= 3);
+});
+
+test("shared caption labels use a caption token of at least 12px", () => {
+  const size = Number(light["--font-size-caption"]?.replace("px", ""));
+  assert.ok(size >= 12, `--font-size-caption is ${light["--font-size-caption"]}`);
+  const globals = fs.readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+  for (const [source, selector] of [[css, ".panel-title"], [css, ".tag"], [css, ".table thead th"], [globals, ".stat-strip .stat-label"], [globals, ".notice > strong"]]) {
+    const block = source.match(new RegExp(`\\n${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\{([^}]*)\\}`))?.[1];
+    assert.ok(block, `${selector} rule not found`);
+    assert.match(block, /font-size: var\(--font-size-caption\)/, selector);
+  }
+});
+
+test("composition tiles use the petrol data ramp and neutral steps, readable and distinct in both themes", () => {
+  // Regression: tiles were 40% tints of purple and amber, a lilac and a sand
+  // that matched nothing else on /spese/panoramica.
+  const source = fs.readFileSync(new URL("../src/components/spending-composition.module.css", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /--chart-category-/);
+  const fills = Object.fromEntries(["services", "investment", "pass-through", "financing", "other"].map((family) => {
+    const rule = source.match(new RegExp(`\\n\\.${family} \\{ background: ([^;]+); \\}`));
+    assert.ok(rule, `.${family} fill missing`);
+    return [family, rule[1]];
+  }));
+  const hex = (color) => [1, 3, 5].map((offset) => parseInt(color.slice(offset, offset + 2), 16));
+  for (const [theme, tokens] of Object.entries({ light, dark })) {
+    const resolve = (expression) => {
+      const alias = expression.match(/^var\((--[\w-]+)\)$/);
+      if (alias) return value(tokens, alias[1]);
+      const mix = expression.match(/^color-mix\(in srgb, var\((--[\w-]+)\) (\d+)%, var\((--[\w-]+)\)\)$/);
+      assert.ok(mix, `unsupported fill ${expression}`);
+      const share = Number(mix[2]) / 100;
+      const [a, b] = [hex(value(tokens, mix[1])), hex(value(tokens, mix[3]))];
+      return `#${a.map((channel, index) => Math.round(channel * share + b[index] * (1 - share)).toString(16).padStart(2, "0")).join("")}`;
+    };
+    const resolved = Object.fromEntries(Object.entries(fills).map(([family, fill]) => [family, resolve(fill)]));
+    for (const [family, fill] of Object.entries(resolved)) {
+      assert.ok(contrast(value(tokens, "--color-text"), fill) >= 4.5, `${theme} ${family}: tile text`);
+    }
+    // Neighbouring legend swatches must not be the same colour.
+    const ordered = Object.values(resolved);
+    assert.equal(new Set(ordered).size, ordered.length, `${theme}: two families share a fill`);
+    for (let index = 1; index < ordered.length; index++) {
+      assert.ok(contrast(ordered[index], ordered[index - 1]) >= 1.2, `${theme}: families ${index} and ${index + 1} too close`);
+    }
+    // Regression: partite di giro (34%) and altre uscite (30%) share an edge
+    // in the treemap and read as one grey; prestiti (12%) was a near-white
+    // swatch on the white card.
+    assert.ok(contrast(resolved["pass-through"], resolved.other) >= 1.25, `${theme}: tiles 3 and 5 read as one grey`);
+    assert.ok(contrast(resolved.financing, value(tokens, "--color-raised")) >= 1.3, `${theme}: tile 4 vanishes into the card`);
+  }
+});

@@ -22,7 +22,7 @@
   gap: 16px;
   margin-bottom: 30px;
   padding: 10px 0;
-  border-block: 1px solid var(--color-neutral-200);
+  border-block: 1px solid var(--color-divider);
 }
 
 .periodSelector > span {
@@ -114,7 +114,7 @@
   grid-template-columns: 105px minmax(0, 1fr);
   gap: 15px;
   padding: 11px 0;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .sourceSummaryRow:first-child {
@@ -149,7 +149,7 @@
 
 .primaryMetric {
   padding: 20px;
-  border-right: 1px solid var(--color-neutral-200);
+  border-right: 1px solid var(--color-divider);
 }
 
 .metricLabel {
@@ -202,7 +202,7 @@
   gap: 20px;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .fact:last-child {
@@ -230,7 +230,7 @@
 
 .section {
   padding: 42px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .sectionHeader {
@@ -266,7 +266,7 @@
 .chartBlock {
   min-width: 0;
   padding: 22px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   background: var(--color-raised);
 }
 
@@ -304,7 +304,7 @@
 
 .administrationTable {
   margin-top: 20px;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .administrationTable table {
@@ -368,13 +368,13 @@
 .qualityGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .qualityItem {
   min-width: 0;
   padding: 20px 24px 2px 0;
-  border-right: 1px solid var(--color-neutral-200);
+  border-right: 1px solid var(--color-divider);
 }
 
 .qualityItem + .qualityItem {
@@ -414,7 +414,7 @@
 
 .provenanceList {
   display: grid;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: 1px solid var(--color-divider);
 }
 
 .provenanceRow {
@@ -423,7 +423,7 @@
   gap: 25px;
   align-items: center;
   padding: 17px 0;
-  border-bottom: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .provenanceRow strong,
@@ -464,7 +464,7 @@
   display: inline-flex;
   align-items: center;
   padding: 0 11px;
-  border: 1px solid var(--color-neutral-200);
+  border: 1px solid var(--color-divider);
   color: var(--color-text);
   font-size: 11px;
   transition: background-color 130ms ease, transform 130ms var(--ease-out);
@@ -518,7 +518,7 @@
     min-height: 0;
     padding-right: 0;
     border-right: 0;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: 1px solid var(--color-divider);
   }
 
   .fact {
@@ -579,7 +579,7 @@
   .qualityItem + .qualityItem {
     padding: 17px 0;
     border-right: 0;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: 1px solid var(--color-divider);
   }
 
   .provenanceRow {

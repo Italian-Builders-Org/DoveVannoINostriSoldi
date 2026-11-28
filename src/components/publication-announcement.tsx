@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "@/components/icons";
 import styles from "./publication-announcement.module.css";
 
 export type PublicationAnnouncementItem = Readonly<{
@@ -72,7 +71,7 @@ export function PublicationAnnouncement({ items }: Readonly<{ items: readonly Pu
             {visualItems.map((item, index) => <Link prefetch={false} key={`${item.href}-${index}`} href={item.href} className={styles.link}
               tabIndex={-1}>
               <span className={styles.title}>{item.description}</span>
-              <span className={styles.cta}>{item.cta}<HugeiconsIcon icon={ArrowRight01Icon} size={14} aria-hidden="true" /></span>
+              <span className={styles.cta}>{item.cta}<Icon name="chevron-right" size={14} /></span>
             </Link>)}
           </div>
         </div>
@@ -80,7 +79,7 @@ export function PublicationAnnouncement({ items }: Readonly<{ items: readonly Pu
             replaces the moving copies with this stationary, visible link. */}
         <Link prefetch={false} href={activeItem.href} className={`${styles.link} ${styles.activeLink}`} data-active="true">
           <span className={styles.title}>{activeItem.description}</span>
-          <span className={styles.cta}>{activeItem.cta}<HugeiconsIcon icon={ArrowRight01Icon} size={14} aria-hidden="true" /></span>
+          <span className={styles.cta}>{activeItem.cta}<Icon name="chevron-right" size={14} /></span>
         </Link>
         {items.length > 1 && <div className={styles.controls}>
           <button type="button" aria-label={paused ? "Riprendi gli annunci" : "Metti in pausa gli annunci"}

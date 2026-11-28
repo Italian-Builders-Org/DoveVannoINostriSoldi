@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { Icon } from "@/components/icons";
 import {
   GLOBAL_SEARCH_MIN_QUERY_LENGTH,
   type GlobalSearchResponse,
@@ -172,7 +171,7 @@ export function HeaderSearch() {
       <button ref={triggerRef} type="button" className="navigation-button header-search-trigger"
         aria-label={expanded ? "Chiudi ricerca" : "Apri ricerca"} aria-expanded={expanded} aria-controls="header-search-form"
         onClick={() => expanded ? closeSearch(true) : setExpanded(true)}>
-        <HugeiconsIcon icon={expanded ? Cancel01Icon : Search01Icon} size={21} strokeWidth={1.7} aria-hidden="true" />
+        <Icon name={expanded ? "close" : "search"} size={21} />
       </button>
     <form
       id="header-search-form"
@@ -217,7 +216,7 @@ export function HeaderSearch() {
         }
       />
       <button type="submit" aria-label="Cerca nel sito">
-        <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.7} aria-hidden="true" />
+        <Icon name="search" size={18} />
       </button>
 
       {showDropdown ? (
@@ -261,7 +260,6 @@ export function HeaderSearch() {
                         <span className="header-search-option-name">{result.title}</span>
                         <span className="header-search-option-context">{result.context}</span>
                       </span>
-                      <span className="header-search-option-type">{result.match.label}</span>
                     </Link>
                   );
                 })}

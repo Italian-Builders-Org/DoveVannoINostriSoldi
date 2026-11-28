@@ -85,7 +85,7 @@ export default async function ComuniPage({ searchParams }: ComuniPageProps) {
                 <li>IRPEF MEF · contribuenti, misure e fasce di reddito, se collegabili.</li>
                 <li>ANAC · profilo appalti dell’ente, se pubblicato.</li>
                 <li>MIM · sedi scolastiche; PNRR ReGiS localizzato + slice asili.</li>
-                <li>BDAP (autonomia, FCDE, rigidità) non è inventata: resta fuori finché non c’è la fonte.</li>
+                <li>BDAP · autonomia finanziaria, fondo crediti e rigidità di bilancio: non ancora disponibili.</li>
               </ul>
               <p>
                 Zero, dato mancante e fuori perimetro restano distinti. La scheda completa dell’ente

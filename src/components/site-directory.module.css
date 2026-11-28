@@ -9,8 +9,7 @@
 .group { break-inside: avoid; padding-bottom: 20px; }
 .group summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; list-style: none; border-top: 1px solid var(--color-neutral-300); }
 .group summary::-webkit-details-marker { display: none; }
-.group summary::after { content: "+"; margin-left: auto; font-size: 20px; color: var(--color-neutral-600); }
-.group[open] summary::after { content: "−"; }
+.group summary::after { margin-left: auto; color: var(--color-neutral-600); }
 .maps { margin-bottom: 12px; max-width: 40rem; }
 .maps .group ul { display: grid; gap: 0; }
 .group h3 { margin: 0; color: var(--color-text); font-size: 16px; font-weight: 600; }

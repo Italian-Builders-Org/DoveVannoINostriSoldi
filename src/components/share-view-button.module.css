@@ -1,10 +1,22 @@
 .share { display: grid; justify-items: end; gap: 4px; min-width: 0; }
 .trigger, .fallback button { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; color: var(--color-neutral-700); border: 1px solid var(--color-neutral-300); background: var(--color-raised); font: inherit; cursor: pointer; }
-.trigger:hover { color: var(--color-accent); border-color: var(--color-accent); }
+.trigger { transition: transform var(--press-duration) var(--ease-out), color 140ms ease, border-color 140ms ease; }
+.trigger:active { transform: scale(var(--press-scale)); }
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover { color: var(--color-accent-700); border-color: var(--color-accent-700); }
+}
 .status { font-size: 12px; color: var(--color-neutral-700); }
 .status:empty { display: none; }
 .fallback { display: grid; gap: 8px; width: min(100%, 30rem); }
 .fallback label { font-size: 13px; }
 .fallback input { width: 100%; min-width: 0; min-height: 44px; padding: 10px; background: var(--color-raised); color: var(--color-text); border: 1px solid var(--color-neutral-400); font-size: 16px; }
 .fallback button { justify-self: start; }
-@media (max-width: 620px) { .share { justify-items: start; } }
+/* Phones: the label shortens to "Condividi" (the accessible name keeps
+   "questa vista"); a manual-copy fallback spans the row. */
+@media (max-width: 620px) {
+  .share { position: relative; justify-items: end; }
+  .share:has(.fallback) { grid-column: 1 / -1; justify-items: start; }
+  .trigger { gap: 8px; padding: 8px 10px; font-size: 13px; }
+  .share:not(:has(.fallback)) .status { position: absolute; top: calc(100% + 4px); right: 0; z-index: 5; padding: 6px 10px; white-space: nowrap; background: var(--color-raised); border: 1px solid var(--color-neutral-300); }
+  .triggerExtra { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}

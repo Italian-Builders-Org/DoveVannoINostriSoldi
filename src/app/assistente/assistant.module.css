@@ -62,7 +62,7 @@
 .composerArea { flex: none; width: min(720px, 100%); min-width: 0; }
 .composerAnchor { position: relative; }
 .composer { width: 100%; }
-.inputSurface { padding: 14px 10px 8px 12px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-panel); background: var(--assistant-panel); box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text) 4%, transparent), 0 8px 24px -12px color-mix(in srgb, var(--color-text) 14%, transparent); transition: border-color 140ms ease, box-shadow 140ms ease; }
+.inputSurface { padding: 14px 8px 8px 12px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-panel); background: var(--assistant-panel); box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text) 4%, transparent), 0 8px 24px -12px color-mix(in srgb, var(--color-text) 14%, transparent); transition: border-color 140ms ease, box-shadow 140ms ease; }
 /* The field is focused for most of the session: a darker edge marks it without a permanent
    ring around the composer. */
 .inputSurface:focus-within { border-color: color-mix(in srgb, var(--assistant-ink) 55%, var(--assistant-panel)); }
@@ -116,8 +116,11 @@
 /* The scroller clips horizontally too: an inner gutter as wide as the narrowest stage padding (14px),
    cancelled by the negative margin, keeps focus rings and the optically pulled action row visible. */
 .conversation { position: relative; flex: 1; width: calc(100% + 28px); margin-inline: -14px; padding-inline: 14px; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; scroll-padding-top: 24px;
-  /* Scrolled text fades under the toolbar instead of being cut at a hard edge. */
-  mask-image: linear-gradient(to bottom, transparent, #000 24px); }
+  /* Scrolled text fades out at both edges and reaches full transparency exactly at the edge, so no
+     half-cut glyph stays legible. Under «Vai in fondo» the bottom band is fully clear behind the pill. */
+  --fade-top-start: 0px; --fade-top-end: 24px; --fade-bottom-ramp: 40px; --fade-bottom-clear: 0px;
+  mask-image: linear-gradient(to bottom, transparent var(--fade-top-start), #000 var(--fade-top-end), #000 calc(100% - var(--fade-bottom-clear) - var(--fade-bottom-ramp)), transparent calc(100% - var(--fade-bottom-clear))); }
+.page:has(.jumpLatest) .conversation { --fade-bottom-ramp: 64px; --fade-bottom-clear: 60px; }
 .thread { width: min(720px, 100%); margin: 0 auto; padding: 24px 0 40px; }
 .turn { display: flex; flex-direction: column; align-items: stretch; gap: 28px; margin-bottom: 38px; }
 .turn:last-child { margin-bottom: 0; }
@@ -171,7 +174,7 @@
   .welcome h2 { font-size: 28px; }
   :global(#contenuto-principale) h1.toolbarTitle { font-size: 14px; }
   .welcome > p { font-size: 13px; }
-  .inputSurface { padding: 12px 8px 8px 10px; }
+  .inputSurface { padding: 12px 8px 8px 12px; }
   .inputSurface textarea { min-height: 56px; font-size: 16px; }
   .composerControls { gap: 2px; }
   .suggestions { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 14px; }
@@ -244,7 +247,7 @@
 .page .siteLink { display: flex; align-items: flex-start; gap: var(--space-3); min-height: 60px; padding: 12px var(--space-4); color: var(--assistant-ink); text-decoration: none; transition: background-color 140ms ease; }
 .page .siteLink:focus-visible { outline-offset: -2px; }
 .siteLinkText { display: grid; flex: 1; gap: 2px; min-width: 0; }
-.siteLinkText > strong { min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.45; overflow-wrap: anywhere; }
+.siteLinkText > strong { min-width: 0; font-size: 14px; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
 .siteLink small { display: -webkit-box; overflow: hidden; color: var(--assistant-muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .siteLink > svg { flex: none; margin-top: 2px; color: var(--assistant-muted); transition: transform 160ms var(--ease-out), color 140ms ease; }
 /* A row inside a grouped list confirms the press with its fill, like a native list, instead of shrinking. */
@@ -262,12 +265,12 @@
 /* inline-block, not flex: a long name wraps and the arrow follows its last word instead of drifting to the edge. */
 .page .sourceLink { display: inline-block; min-width: 0; padding-block: 6px; color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
 /* The dataset name links to its DVNS page: same underline as the sources, at the title's size. */
-.page .datasetLink { color: inherit; text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
+.page .datasetLink { color: var(--assistant-ink); text-decoration: underline; text-decoration-color: var(--color-neutral-400); text-decoration-thickness: 1px; text-underline-offset: .2em; overflow-wrap: anywhere; transition: text-decoration-color 140ms ease; }
 .datasetLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
 .sourceLink svg { display: inline-block; margin-left: 3px; color: var(--assistant-muted); vertical-align: -1px; }
 .sourcePeriod { padding-left: 6px; color: var(--assistant-muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* A system note, shaped unlike a Markdown quote so it never reads as the model's words. */
-.limits { display: flex; gap: var(--space-2); margin: var(--space-2) 0 var(--space-1); padding: 10px 12px; border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-ink); background: var(--assistant-surface); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
+.limits { display: flex; gap: var(--space-2); margin: var(--space-2) 0 var(--space-1); padding: 10px var(--space-4); border: 1px solid var(--assistant-stroke); border-radius: var(--assistant-radius-control); color: var(--assistant-ink); background: var(--assistant-surface); font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; }
 .limits svg { flex: none; margin-top: 1px; color: var(--assistant-muted); }
 .limits p { margin: 0; }
 .limits strong { color: var(--assistant-ink); font-weight: 600; }
@@ -333,7 +336,6 @@
 @starting-style { .jumpLatest { opacity: 0; transform: translate(-50%, 4px) scale(.96); } }
 .jumpLatest:active { transform: translateX(-50%) scale(.96); }
 /* Content fades out under the docked composer instead of being cut at a hard edge. */
-.page[data-conversation="true"] .composerArea::before { content: ""; position: absolute; inset: auto 0 100% 0; height: 40px; background: linear-gradient(to bottom, transparent, var(--assistant-bg)); pointer-events: none; }
 /* Icons sit inside 36–44px hit areas: pull the row back so the glyphs line up with the text edge. */
 .assistantMessage > .messageActions { margin-left: -9px; }
 .userBlock > .messageActions { margin-right: -9px; }
@@ -360,11 +362,14 @@
 /* In a conversation the docked composer is a single row (add · field · dictate · send) at every
    width, so the messages keep most of the screen. Controls join the field's grid; the field
    grows upward as the question gets longer. */
-.page[data-conversation="true"] .inputSurface { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: end; padding: 5px; }
+.page[data-conversation="true"] .inputSurface { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: end; padding: 8px; }
 .page[data-conversation="true"] .inputSurface > * { grid-column: 1 / -1; }
 .page[data-conversation="true"] .composerControls { display: contents; }
 .page[data-conversation="true"] .inputSurface textarea { grid-row: 2; grid-column: 2; min-height: 44px; padding: 11px 4px 9px; line-height: 1.5; }
-.page[data-conversation="true"] .composerControls > :first-child { grid-row: 2; grid-column: 1; }
+.page[data-conversation="true"] .composerControls > :first-child { grid-row: 2; grid-column: 1; margin-left: -5px; }
+/* The «+» glyph (not its 44px target) starts on the text's left edge in the empty composer and keeps
+   that distance from the composer edge once it docks (rule above). */
+.page[data-conversation="false"] .composerControls > :first-child { margin-left: -9px; }
 .page[data-conversation="true"] .microphone { grid-row: 2; grid-column: 3; }
 .page[data-conversation="true"] .send { grid-row: 2; grid-column: 4; }
 .page[data-conversation="true"] .attachmentCount, .page[data-conversation="true"] .count:empty { display: none; }
@@ -456,7 +461,7 @@
     radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--color-text) 16%, transparent), transparent) left / 10px 100% no-repeat scroll,
     radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--color-text) 16%, transparent), transparent) right / 10px 100% no-repeat scroll; }
 .answerTable table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
-.answerTable th, .answerTable td { padding: 10px 12px; border-bottom: 1px solid var(--assistant-stroke); text-align: right; white-space: nowrap; }
+.answerTable th, .answerTable td { padding: 10px var(--space-4); border-bottom: 1px solid var(--assistant-stroke); text-align: right; white-space: nowrap; }
 .answerTable th { background: var(--assistant-surface); font-weight: 550; }
 .answerTable th:first-child, .answerTable td:first-child { text-align: left; }
 @media (min-width: 601px) { .answerTable th:first-child { width: 40%; } }
@@ -494,7 +499,7 @@
   .page[data-conversation="true"] .thread { padding-top: 64px; }
   .page[data-toolbar-hidden="true"] .toolbar:not(:focus-within) { transform: translateY(-100%); }
   /* While the toolbar covers the top, messages fade out under its edge instead of being cut by it. */
-  .page[data-conversation="true"]:not([data-toolbar-hidden="true"]) .conversation { mask-image: linear-gradient(to bottom, transparent 54px, #000 78px); }
+  .page[data-conversation="true"]:not([data-toolbar-hidden="true"]) .conversation { --fade-top-start: 54px; --fade-top-end: 78px; }
 }
 /* Touch screens have no hover: copy and edit stay only on the latest question, where they are used. */
 @media (hover: none) {
@@ -515,15 +520,17 @@
 
 /* While "Vai in fondo" shows, the fade above the composer grows to a solid band behind the whole pill
    (12px gap + 44px pill + 8px), so no half-hidden figure sits beside it. */
-.page[data-conversation="true"] .composerArea:has(.jumpLatest)::before { height: 96px; background: linear-gradient(to bottom, transparent, var(--assistant-bg) 30%); }
 /* Phones and touch screens: every standalone control is a 44px target. Padding (not flex) keeps a long
    source name wrapping with its arrow; links inside a sentence stay inline text. */
 @media (max-width: 600px), (pointer: coarse) {
   .page .sourceLink { min-height: 44px; padding-block: 12px; }
   .page .datasetLink { display: inline-block; min-height: 44px; padding-block: 11.5px; }
   .evidenceTitle { margin-bottom: 0; }
-  /* The taller link already adds the gap under the heading. */
-  .evidence .replyLabel { margin-bottom: 0; }
+  /* Taller rows: the limits box steps further away so the sources stay grouped with their dataset. */
+  .limits { margin-top: 16px; }
+  /* The dataset link's top padding (44px target) would double the heading gap: give it back so every
+     section heading sits the same step above its content. */
+  .evidence .replyLabel { margin-bottom: -1.5px; }
   .activitySummary { min-height: 44px; }
   .replyIdentity > img { margin-top: 9px; }
   .page[data-conversation="true"] .footer { padding-top: 0; }

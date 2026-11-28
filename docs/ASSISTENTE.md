@@ -55,6 +55,9 @@ lettori di schermo ricevono comunque ogni aggiornamento.
 Su telefono, durante la conversazione, la barra «Assistente» si nasconde quando chi legge
 scorre verso il basso (rotella o dito, mai durante lo streaming o con «Vai in fondo») e torna a
 ogni scorrimento verso l’alto o al focus; i messaggi sfumano sotto il suo bordo.
+I messaggi sfumano anche sopra il composer con una maschera che arriva a trasparenza piena sul
+bordo dell’area che scorre (nessuna lettera tagliata a metà resta leggibile); con «Vai in fondo»
+visibile la fascia trasparente si allunga dietro la pillola.
 
 Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus; sugli schermi
 touch restano solo sull’ultima domanda); ogni risposta completata ha copia e rigenerazione.

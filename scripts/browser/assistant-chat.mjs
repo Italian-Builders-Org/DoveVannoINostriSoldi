@@ -30,6 +30,15 @@ try {
     const complete=async count=>{await page.waitForFunction(count=>document.querySelectorAll('[data-assistant-reply] a[href="https://www.siope.it/"]').length===count && !document.querySelector('button[aria-label="Interrompi ricerca"]'),{},count);await page.waitForFunction(()=>!document.getAnimations().some(animation=>animation.playState==='running' && animation.effect?.getComputedTiming?.().iterations!==Infinity));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));};
     await page.waitForSelector(field);
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth),`${width}: overflow`);
+    // The send button keeps one inset from the composer edge in both composer shapes (empty and docked).
+    const sendInset=()=>page.$eval('button[aria-label="Invia domanda"]',button=>{const send=button.getBoundingClientRect(),box=button.closest('[class*="inputSurface"]').getBoundingClientRect();return{right:Math.round(box.right-send.right),top:Math.round(send.top-box.top),bottom:Math.round(box.bottom-send.bottom)};});
+    const emptyInset=await sendInset();
+    // In the empty composer the «+» icon starts on the same left edge as the text in the field.
+    const plusOffset=await page.$eval(field,textarea=>{const style=getComputedStyle(textarea),textStart=textarea.getBoundingClientRect().left+parseFloat(style.paddingLeft)+parseFloat(style.borderLeftWidth);const svg=textarea.closest('[class*="inputSurface"]').querySelector('button[aria-label*="llegat"] svg'),box=svg.getBoundingClientRect(),drawn=svg.getBBox();return Math.round(box.left+drawn.x*box.width/svg.viewBox.baseVal.width-textStart);});
+    assert.ok(Math.abs(plusOffset)<=2,`${width}: the «+» icon starts ${plusOffset}px off the text edge`);
+    // …and the «+» glyph keeps that distance from the composer edge once the composer docks.
+    const plusEdge=()=>page.$eval('button[aria-label="Aggiungi allegati e fonti"] svg',svg=>{const box=svg.getBoundingClientRect(),drawn=svg.getBBox();return Math.round(box.left+drawn.x*box.width/svg.viewBox.baseVal.width-svg.closest('[class*="inputSurface"]').getBoundingClientRect().left);});
+    const emptyPlusEdge=await plusEdge();
     const themeLabel=process.env.DVNS_COLOR_SCHEME==='dark'?'Passa al tema chiaro':'Passa al tema scuro';
     assert.equal(await page.$$eval(`button[aria-label="${themeLabel}"]`,els=>els.length),1);
     await page.screenshot({path:`artifacts/browser/assistant-chat-${width}-${process.env.DVNS_COLOR_SCHEME ?? "light"}.png`,fullPage:true});
@@ -96,7 +105,42 @@ try {
       // On phones every standalone control is a 44px target; links inside a sentence are exempt (inline text).
       const small=await page.evaluate(()=>[...document.querySelectorAll('[data-assistant-reply] section:not([data-site-links]) a, [data-assistant-reply] button, main [class*="activitySummary"], main footer button, main footer a')].filter(el=>el.getClientRects().length).map(el=>({label:(el.getAttribute('aria-label')||el.textContent).trim().slice(0,32),height:Math.round(el.getBoundingClientRect().height)})).filter(target=>target.height<44));
       assert.deepEqual(small,[],`${width}: touch targets under 44px`);
+      // Taller targets must not break the rhythm: every section heading sits the same step above its content,
+      // and the sources stay closer to their dataset than to the limits box below.
+      const rhythm=await page.$eval('[data-assistant-reply]',reply=>{const section=reply.querySelector('section:not([data-site-links])'),pages=reply.querySelector('section[data-site-links]');
+        const text=el=>{const range=document.createRange();range.selectNodeContents(el);const rects=[...range.getClientRects()].filter(r=>r.height>0);return{top:Math.min(...rects.map(r=>r.top)),bottom:Math.max(...rects.map(r=>r.bottom))};};
+        const heading=text(section.querySelector('h2')),dataset=text(section.querySelector('a[href^="/"]').firstChild),source=text(section.querySelector('a[href^="http"]').firstChild);
+        const limits=section.querySelector('a[href^="http"]').closest('ul').nextElementSibling.getBoundingClientRect();
+        const pagesHeading=text(pages.querySelector('h2'));
+        return{headingToDataset:dataset.top-heading.bottom,headingToPages:pages.querySelector('a').getBoundingClientRect().top-pagesHeading.bottom,datasetToSources:source.top-dataset.bottom,sourcesToLimits:limits.top-source.bottom};
+      });
+      assert.ok(Math.abs(rhythm.headingToDataset-rhythm.headingToPages)<=2,`${width}: «Fonti» and «Approfondisci» headings sit at different steps ${JSON.stringify(rhythm)}`);
+      assert.ok(rhythm.sourcesToLimits>rhythm.datasetToSources,`${width}: sources sit closer to the limits than to their dataset ${JSON.stringify(rhythm)}`);
     }
+    // The dataset (the provenance on DVNS) is never paler than the upstream publishers listed under it.
+    const linkColors=await page.$eval('[data-assistant-reply] section:not([data-site-links])',section=>[section.querySelector('a[href^="/"]'),section.querySelector('a[href^="http"]')].map(a=>getComputedStyle(a).color));
+    assert.equal(linkColors[0],linkColors[1],`${width}: dataset link colour differs from source links`);
+    // One section grammar: the same visual step above «Fonti» and «Approfondisci», one inner inset for the
+    // bordered surfaces (table, limits, page card), and section headings that outrank the card titles below them.
+    const grammar=await page.$eval('[data-assistant-reply]',reply=>{
+      const glyphs=el=>{const range=document.createRange();range.selectNodeContents(el);const rects=[...range.getClientRects()].filter(r=>r.height>0);return{top:Math.min(...rects.map(r=>r.top)),bottom:Math.max(...rects.map(r=>r.bottom)),left:Math.min(...rects.map(r=>r.left))};};
+      const sources=reply.querySelector('section:not([data-site-links])'),pages=reply.querySelector('section[data-site-links]');
+      const prose=[...sources.previousElementSibling.querySelectorAll('p')].at(-1),limits=sources.querySelector('a[href^="http"]').closest('ul').nextElementSibling;
+      const table=reply.querySelector('table').parentElement,card=pages.querySelector('a'),box=el=>el.getBoundingClientRect();
+      return{
+        aboveSources:glyphs(sources.querySelector('h2')).top-glyphs(prose).bottom,
+        abovePages:glyphs(pages.querySelector('h2')).top-box(limits).bottom,
+        insets:[glyphs(reply.querySelector('td')).left-box(table).left,box(limits.querySelector('svg')).left-box(limits).left,glyphs(card.querySelector('strong')).left-box(card).left].map(Math.round),
+        weights:[getComputedStyle(pages.querySelector('h2')).fontWeight,getComputedStyle(card.querySelector('strong')).fontWeight].map(Number),
+      };
+    });
+    assert.ok(Math.abs(grammar.aboveSources-grammar.abovePages)<=3,`${width}: sections start at different steps ${JSON.stringify(grammar)}`);
+    assert.ok(Math.max(...grammar.insets)-Math.min(...grammar.insets)<=1,`${width}: bordered surfaces use different insets ${JSON.stringify(grammar)}`);
+    const dockedInset=await sendInset();
+    assert.equal(await plusEdge(),emptyPlusEdge,`${width}: the «+» moves when the composer docks`);
+    assert.equal(dockedInset.right,emptyInset.right,`${width}: send button inset changes with the composer shape ${JSON.stringify({emptyInset,dockedInset})}`);
+    assert.equal(dockedInset.bottom,dockedInset.right,`${width}: docked send button sits closer to one edge ${JSON.stringify(dockedInset)}`);
+    assert.ok(grammar.weights[0]>grammar.weights[1],`${width}: a card title is as heavy as its section heading ${JSON.stringify(grammar)}`);
     // Focus rings (2px + 3px offset) must fit inside the horizontally clipping scroller.
     const ringRoom=await page.$eval('[data-assistant-reply]',el=>{const scroller=el.closest('[role="log"]');const box=scroller.getBoundingClientRect();return Math.min(...[...el.querySelectorAll('a, summary, button, [tabindex="0"]')].map(node=>{node.focus({focusVisible:true});const style=getComputedStyle(node);const ring=parseFloat(style.outlineWidth)+parseFloat(style.outlineOffset);const rect=node.getBoundingClientRect();node.blur();return Math.min(rect.left-box.left,box.right-rect.right)-ring;}));});
     assert.ok(ringRoom>=0,`${width}: a focus ring is clipped by ${-ringRoom}px at the scroller edge`);

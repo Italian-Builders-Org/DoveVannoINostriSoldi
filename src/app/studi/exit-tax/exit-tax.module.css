@@ -68,3 +68,6 @@
   .steps li { grid-template-columns: 1fr; gap: .2rem; }
 }
 @media print { .breadcrumb { display: none; } .figure, .steps { break-inside: avoid; } }
+
+/* The page lets long URLs break anywhere; tables must not: a cell narrower than a word scrolls instead of splitting it letter by letter. */
+.table { overflow-wrap: normal; word-break: normal; }

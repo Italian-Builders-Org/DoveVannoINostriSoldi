@@ -42,6 +42,33 @@ async function assertLayout(page, where) {
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
 }
 
+
+/** No word inside a table may wrap across lines: a narrow column must scroll, not split "Anno" into "A n n o". */
+async function assertWholeWords(page, where) {
+  await page.evaluate(() => document.querySelectorAll("main details").forEach((d) => { d.open = true; }));
+  const broken = await page.evaluate(() => {
+    const out = [];
+    for (const cell of document.querySelectorAll("main table th, main table td")) {
+      const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        // A line break after a hyphen ("Trentino-" / "Alto Adige") is normal typography.
+        const re = /[^\s-]+/gu;
+        let m;
+        while ((m = re.exec(node.data))) {
+          const range = document.createRange();
+          range.setStart(node, m.index);
+          range.setEnd(node, m.index + m[0].length);
+          if (new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size > 1) out.push(m[0]);
+        }
+      }
+    }
+    return out;
+  });
+  await page.evaluate(() => document.querySelectorAll("main details").forEach((d) => { d.open = false; }));
+  assert.deepEqual(broken.slice(0, 10), [], `${where}: parole spezzate nelle tabelle`);
+}
+
 try {
   for (const width of [390, 768, 1280]) {
     await runScenario(browser, {
@@ -52,6 +79,7 @@ try {
       expectedFailure,
       async validate(page) {
         await assertLayout(page, "studio exit tax");
+        await assertWholeWords(page, "studio exit tax");
         const main = await page.$eval("main", (el) => el.innerText);
         assert.doesNotMatch(main, /non disponibil/iu, "la pagina mostra lo stato senza dati");
         assert.doesNotMatch(main, /\bNaN\b|\bundefined\b|\bnull\b|n\.d\./u, "valore non formattato o scenario mancante");

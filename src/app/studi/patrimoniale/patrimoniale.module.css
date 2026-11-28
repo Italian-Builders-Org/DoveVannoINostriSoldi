@@ -93,3 +93,6 @@
 .flag { display: block; font-weight: 400; font-size: .78rem; color: var(--color-neutral-600); }
 .levelsTable th[scope="row"] { min-width: 6.5rem; }
 @media (max-width: 620px) { .levelsTable td { white-space: normal; padding-inline: .4rem; } }
+
+/* The page lets long URLs break anywhere; tables must not: a cell narrower than a word scrolls instead of splitting it letter by letter. */
+.table { overflow-wrap: normal; word-break: normal; }

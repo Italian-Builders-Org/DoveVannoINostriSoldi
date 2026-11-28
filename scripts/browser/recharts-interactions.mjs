@@ -6,9 +6,11 @@ import {
 // Covers snapshot-backed Recharts through public callers. State spending,
 // administrations and datasets reuse SpendingBarChart, exercised with the
 // committed vincitori dataset so a live OpenBDAP outage cannot fail this gate.
+// /enti draws its IPA type distribution as an HTML bar list, not Recharts:
+// inspectRegistryTypeList below covers it.
 export const RECHARTS_ROUTES = [
   ["/debito", 1], ["/spese/sanita/storico", 2], ["/coesione", 1],
-  ["/istruzione", 1], ["/studi/2026-08", 2], ["/dati/vincitori", 1], ["/enti", 1],
+  ["/istruzione", 1], ["/studi/2026-08", 2], ["/dati/vincitori", 1],
   ["/spese/sanita", 1], ["/palazzo-chigi", 1], ["/ministeri", 1],
   ["/regioni", 1], ["/spese/legge-di-bilancio", 2],
 ];
@@ -68,5 +70,30 @@ export async function inspectRecharts(page, minimumCharts, { pathname = null } =
       texts.push(await chart.evaluate((element) => element.querySelector(".recharts-tooltip-wrapper").textContent));
     }
     assert.ok(new Set(texts).size >= 2, `grafico ${index}: il contenuto non segue il punto selezionato`);
+  }
+}
+
+// /enti: the live IPA registry either fills the type list (every row a label,
+// a figure and a bar no wider than its track) or the page says the
+// distribution is unavailable. An empty panel with neither is the bug.
+export async function inspectRegistryTypeList(page) {
+  const list = 'ol[aria-label="Enti del registro IPA per tipologia"]';
+  await page.waitForFunction((selector) => document.querySelector(selector)
+    || /non è disponibile ora/i.test(document.body?.innerText ?? ""), { timeout: 45_000 }, list);
+  if (!(await page.$(list))) return;
+  const rows = await page.$$eval(`${list} > li`, (items) => items.map((item) => {
+    const track = item.querySelector("i")?.getBoundingClientRect();
+    const bar = item.querySelector("i > b")?.getBoundingClientRect();
+    return {
+      label: item.querySelector("span")?.textContent?.trim() ?? "",
+      value: item.querySelector("strong")?.textContent?.trim() ?? "",
+      fits: Boolean(track && bar && bar.width <= track.width + 1),
+    };
+  }));
+  assert.ok(rows.length >= 1, "/enti: lista delle tipologie IPA vuota");
+  for (const row of rows) {
+    assert.ok(row.label, "/enti: tipologia senza nome");
+    assert.match(row.value, /^\d{1,3}(\.\d{3})*$/, `/enti: ${row.label} senza cifra`);
+    assert.ok(row.fits, `/enti: la barra di ${row.label} esce dalla traccia`);
   }
 }

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { closeBrowser, defaultBaseUrl, launchBrowser, runScenario } from "./harness.mjs";
-import { inspectRecharts, RECHARTS_ROUTES } from "./recharts-interactions.mjs";
+import { inspectRecharts, inspectRegistryTypeList, RECHARTS_ROUTES } from "./recharts-interactions.mjs";
 
 const baseUrl = defaultBaseUrl();
 const chronology = JSON.parse(readFileSync(new URL("../etl/specs/government-scorecard-chronology.json", import.meta.url), "utf8"));
@@ -115,5 +115,10 @@ try {
       });
       console.log(`PASS chart interactions ${pathname} ${width}px`);
     }
+    await runScenario(browser, {
+      suite: "chart-interactions", label: `registry-types-/enti-${width}`, pathname: "/enti", width, baseUrl,
+      validate: inspectRegistryTypeList,
+    });
+    console.log(`PASS registry type list /enti ${width}px`);
   }
 } finally { await closeBrowser(browser); }

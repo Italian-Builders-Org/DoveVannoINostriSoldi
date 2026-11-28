@@ -28,6 +28,10 @@
     {
       "path": "src/data/generated/exit-tax.json",
       "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
+    },
+    {
+      "path": "src/data/generated/patrimoniale.json",
+      "reason": "Payload runtime in dvns_snapshots; output ETL locale non versionato."
     }
   ],
   "artifacts": [
@@ -989,6 +993,33 @@
       "refreshWorkflow": null,
       "sourceSpec": "scripts/etl/specs/exit-tax.source.json",
       "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su SHA-256 di ogni documento ufficiale; ogni cifra e frase citata è verificata nel testo; reader fail-closed su stima del Governo ricalcolata, scenari marcati come ipotesi e somme ISTAT.",
+      "publication": null
+    },
+    {
+      "id": "patrimoniale",
+      "owner": "Studio sulla patrimoniale: conti distributivi BCE, entrate MEF, Gli immobili in Italia, indagine Banca d'Italia, atti di Camera e Senato, OCSE e fonti fiscali di Spagna, Svizzera, Norvegia e Francia",
+      "files": [
+        "src/data/generated/patrimoniale.receipt.json"
+      ],
+      "verificationMode": "online-refresh",
+      "offlineCheck": {
+        "command": "python3 -m unittest tests.etl.test_patrimoniale_receipt",
+        "coveredBy": "standalone"
+      },
+      "reconciliationTests": [
+        "tests/etl/test_patrimoniale.py",
+        "tests/etl/test_patrimoniale_receipt.py"
+      ],
+      "nodeTests": [
+        "tests/patrimoniale.test.mjs"
+      ],
+      "generator": {
+        "command": "python3 scripts/etl/patrimoniale.py --write --code-sha SHA",
+        "requiresNetworkInput": true
+      },
+      "refreshWorkflow": null,
+      "sourceSpec": "scripts/etl/specs/patrimoniale.source.json",
+      "trustModel": "Receipt tipizzato + payload in dvns_snapshots.documents. Il JSON completo non è versionato: ETL locale + import Supabase. Source lock su SHA-256 di ogni documento ufficiale; ogni cifra citata è cercata nel testo; fasce BCE che sommano al totale, modello della coda verificato sulla quota del 5% più ricco, scenari marcati come ipotesi e reader fail-closed.",
       "publication": null
     },
     {

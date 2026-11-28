@@ -109,6 +109,21 @@ export default function StudiesPage() {
             </Link>
           </div>
         </article>
+        <article className={styles.card} id="patrimoniale">
+          <p className={styles.eyebrow}>Studio · Fisco e ricchezza</p>
+          <h3>
+            <Link href="/studi/patrimoniale">Patrimoniale: quanto potrebbe rendere e chi la pagherebbe</Link>
+          </h3>
+          <p>
+            Come è distribuita la ricchezza delle famiglie, le imposte sul patrimonio che esistono già, le proposte in Parlamento, scenari
+            di gettito dichiarati come ipotesi e il confronto con Svizzera, Norvegia, Spagna e Francia.
+          </p>
+          <div className={styles.actions}>
+            <Link href="/studi/patrimoniale" className="btn btn-primary">
+              Leggi lo studio
+            </Link>
+          </div>
+        </article>
       </section>
 
       <section aria-labelledby="monthly-title">

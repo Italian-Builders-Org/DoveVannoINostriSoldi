@@ -153,3 +153,13 @@ test("while streaming, bold that has not closed yet is already bold and a bare m
   assert.deepEqual(parseAssistantMarkdown("Totale **", allowOnly(), streaming)[0].content, [text("Totale ")]);
   assert.deepEqual(parseAssistantMarkdown("Totale **4,65 mil", allowOnly())[0].content, [text("Totale **4,65 mil")]);
 });
+
+test('a figure never ends a line apart from its unit', async () => {
+  const { keepFiguresWithUnits } = await import('../src/components/assistant-markdown-parse.ts');
+  const nbsp = ' ';
+  assert.equal(keepFiguresWithUnits('per 3,21 miliardi di euro'), `per 3,21${nbsp}miliardi di euro`);
+  assert.equal(keepFiguresWithUnits('0,94 mld e 1.740 € e 12 % e 5 milioni'), `0,94${nbsp}mld e 1.740${nbsp}€ e 12${nbsp}% e 5${nbsp}milioni`);
+  // Only the space between a figure and a unit changes: words, years and other spaces stay breakable.
+  assert.equal(keepFiguresWithUnits('Nel 2025 i Comuni'), 'Nel 2025 i Comuni');
+  assert.equal(keepFiguresWithUnits('mld 3 Comuni'), 'mld 3 Comuni');
+});

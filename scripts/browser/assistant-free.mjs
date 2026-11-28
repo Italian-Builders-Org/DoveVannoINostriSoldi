@@ -17,6 +17,7 @@ try{
   await page.goto(new URL('/assistente',base).href,{waitUntil:'networkidle0'});await page.waitForSelector('[data-free-quota]');
   assert.match(await page.$eval('[data-free-quota]',e=>e.textContent),/10 domande/);
   await page.type('#assistant-prompt','Pagamenti dei comuni nel 2025');await page.keyboard.press('Enter');await page.waitForSelector('#assistant-free-title');assert.equal(requests.length,0);
+  assert.equal(await page.evaluate(()=>document.activeElement?.tagName),'DIALOG','the consent opens on its title, with no button pre-selected');
   await page.keyboard.press('Escape');await page.waitForFunction(()=>!document.querySelector('dialog[open]'));assert.equal(requests.length,0);
   await page.focus('#assistant-prompt');await page.keyboard.press('Enter');await page.waitForSelector('#assistant-free-title');
   const bounds=await page.$eval('dialog[open]',e=>{const r=e.getBoundingClientRect();return {left:r.left,right:r.right,w:innerWidth,overflow:e.scrollWidth-e.clientWidth};});assert.ok(bounds.left>=0&&bounds.right<=bounds.w&&bounds.overflow<=1);

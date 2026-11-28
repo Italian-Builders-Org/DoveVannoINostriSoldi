@@ -1,24 +1,28 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUpRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import styles from "@/app/assistente/assistant.module.css";
 
 export function AssistantFreeConsent({ onAccept, onClose }: { onAccept: () => void; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const cancel = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     dialog.current?.showModal();
-    cancel.current?.focus({ preventScroll: true });
+    // The dialog itself takes focus: screen readers start from its title, and no button looks pre-selected.
+    dialog.current?.focus({ preventScroll: true });
   }, []);
-  return <dialog ref={dialog} className={styles.providerDialog} aria-labelledby="assistant-free-title" aria-describedby="assistant-free-description"
+  return <dialog ref={dialog} tabIndex={-1} className={`${styles.providerDialog} ${styles.consentDialog}`} aria-labelledby="assistant-free-title" aria-describedby="assistant-free-description"
     onCancel={(event) => { event.preventDefault(); onClose(); }}>
-    <h2 id="assistant-free-title">Prova l’assistente con Regolo</h2>
-    <p id="assistant-free-description">10 domande gratuite al giorno; anche gli invii interrotti contano. Regolo riceve domanda, contesto della chat e allegati.</p>
-    <p>La quota riparte a mezzanotte, ora italiana. Un cookie tecnico identifica il browser; il limite può essere condiviso sulla stessa rete.</p>
-    <p>Regolo dichiara di non conservare domande, risposte e allegati né usarli per il training. <a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">Zero data retention ↗</a></p>
-    <p>Non inviare dati personali o riservati. <a href="/privacy" target="_blank" rel="noreferrer">Privacy DVNS ↗</a></p>
+    <button type="button" className={styles.iconButton} aria-label="Chiudi" title="Chiudi" onClick={onClose}><HugeiconsIcon icon={Cancel01Icon} size={18} aria-hidden="true" /></button>
+    <h2 id="assistant-free-title">Prima di inviare</h2>
+    <p id="assistant-free-description">Le risposte gratuite sono generate da Regolo, che riceve domanda, conversazione e allegati e dichiara di non conservarli. <a href="https://regolo.ai/zero-data-retention/" target="_blank" rel="noreferrer">Policy di Regolo{"\u2060"}<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} strokeWidth={2} aria-hidden="true" /><span className={styles.srOnly}> (nuova scheda)</span></a></p>
+    <ul className={styles.consentPoints}>
+      <li>Non inserire dati personali o riservati. <a href="/privacy" target="_blank" rel="noreferrer">Privacy{"\u2060"}<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} strokeWidth={2} aria-hidden="true" /><span className={styles.srOnly}> (nuova scheda)</span></a></li>
+      <li>Contiamo le domande con un cookie tecnico e l’indirizzo IP.</li>
+    </ul>
     <div className={styles.providerActions}>
-      <button ref={cancel} type="button" className={styles.inlineAction} onClick={onClose}>Annulla</button>
+      <button type="button" className={styles.inlineAction} onClick={onClose}>Annulla</button>
       <button type="button" className={styles.providerSave} onClick={onAccept}>Accetta e invia</button>
     </div>
   </dialog>;

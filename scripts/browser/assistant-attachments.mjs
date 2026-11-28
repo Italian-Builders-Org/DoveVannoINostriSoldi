@@ -128,7 +128,8 @@ try {
     assert.equal(await page.$eval('button[aria-label="Invia domanda"]',el=>el.disabled),true);
     assert.ok(await page.$eval('body',el=>el.scrollWidth<=innerWidth));
     await page.screenshot({path:`artifacts/browser/assistant-attachments-${width}-long-text.png`,fullPage:true});
-    await upload([fixture('riepilogo.pdf')]);await click('Nuova chat');await page.waitForFunction(()=>!document.querySelector('[aria-label="Allegati da inviare"]'));await page.waitForFunction(()=>document.activeElement?.id==='assistant-prompt');
+    assert.equal(await page.$('button[aria-label="Nuova chat"]'),null,'without a conversation there is nothing to reset');
+    await upload([fixture('riepilogo.pdf')]);await ready(1);await click('Rimuovi riepilogo.pdf');await page.waitForFunction(()=>!document.querySelector('[aria-label="Allegati da inviare"]'));
     const observed=await page.evaluate(()=>window.__progress);assert.ok(observed.some(p=>p>=0&&p<100),'real preparation progress observed');
     assert.deepEqual(errors,[]);await page.close();console.log(`PASS attachments ${width}px: actual PDF/DOCX/XLSX/PNG/TXT/MD extraction, preview, format identity, layout, message retention, budget, invalid files and cancellation`);
   }

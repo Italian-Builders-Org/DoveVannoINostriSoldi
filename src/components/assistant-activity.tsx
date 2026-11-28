@@ -6,6 +6,8 @@ import { ArrowDown01Icon, Tick02Icon, Loading03Icon, File01Icon, Cancel01Icon } 
 import type { AiActivity } from "@/lib/assistant/activity-contracts";
 import styles from "@/app/assistente/assistant.module.css";
 
+const SECONDS = new Intl.NumberFormat("it-IT", { style: "unit", unit: "second", unitDisplay: "short", minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
 function ActivityRow({ item, active }: { item: AiActivity; active: boolean }) {
   const row = useRef<HTMLLIElement>(null);
   useLayoutEffect(() => {
@@ -30,11 +32,12 @@ export function AssistantActivity({ activities, active, stopped, startedAt, fini
   useEffect(() => { if (!active) return; const timer = setInterval(() => setNow(Date.now()), 250); return () => clearInterval(timer); }, [active]);
   if (!activities.some((item) => item.id === "attachments" || item.id.startsWith("query-"))) return null;
   const open = active || expanded;
-  const elapsed = Math.max(0, ((finishedAt ?? now) - startedAt) / 1000).toFixed(1);
+  const elapsed = SECONDS.format(Math.max(0, ((finishedAt ?? now) - startedAt) / 1000));
   return <div className={styles.activity} data-assistant-activity data-active={active}>
     <button type="button" className={styles.activitySummary} aria-expanded={open} onClick={() => setExpanded(!expanded)} disabled={active}>
       <HugeiconsIcon icon={active ? Loading03Icon : stopped ? Cancel01Icon : Tick02Icon} size={15} aria-hidden="true" />
-      <span>{active ? "Consultazione in corso" : stopped ? "Attività interrotta" : "Attività svolte"}</span><time>{elapsed}s</time><HugeiconsIcon icon={ArrowDown01Icon} size={14} aria-hidden="true" />
+      {/* The datasets are named once, under "Fonti"; the timer only shows while the search runs or when it stopped. */}
+      <span>{active ? "Consulto i dati" : stopped ? "Ricerca interrotta" : "Dati consultati"}</span>{active || stopped ? <time>{elapsed}</time> : null}<HugeiconsIcon icon={ArrowDown01Icon} size={14} aria-hidden="true" />
     </button>
     <div className={styles.activityBody} data-open={open} aria-hidden={!open} inert={!open}><ol>
       {activities.map((item) => <ActivityRow key={item.id} item={item} active={active} />)}

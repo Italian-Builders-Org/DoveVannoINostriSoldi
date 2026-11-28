@@ -39,8 +39,10 @@ export const AI_REQUEST_TIMEOUT_MS = 50_000;
 export const AI_REQUEST_MAX_BYTES = 4_000_000;
 export const AI_MODEL_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,119}$/u;
 export const AI_KEY_PATTERN = /^[\x21-\x7E]{16,512}$/u;
-export type AiSource = { name: string; url: string; period?: string };
-export type AiEvidence = { dataset: string; title: string; sources: AiSource[]; caveat?: string };
+/** `period` is what the data covers; `asOf` is the snapshot date of the source, never shown as a period. */
+export type AiSource = { name: string; url: string; period?: string; asOf?: string };
+/** `href` is the DVNS page built from this dataset, chosen by the server. */
+export type AiEvidence = { dataset: string; title: string; href?: string; sources: AiSource[]; caveat?: string };
 /** A same-origin DVNS page chosen by the server, never by the model. */
 export type AiSiteLink = { href: string; title: string; description?: string };
 export const AI_MAX_SITE_LINKS = 4;
@@ -73,10 +75,10 @@ export function isAiResponse(value: unknown): value is AiResponse {
   return item.evidence.every((entry: unknown) => {
     if (!entry || typeof entry !== "object") return false;
     const evidence = entry as Record<string, unknown>;
-    return typeof evidence.dataset === "string" && typeof evidence.title === "string" && (evidence.caveat === undefined || typeof evidence.caveat === "string") && Array.isArray(evidence.sources) && evidence.sources.length <= 8 && evidence.sources.every((source: unknown) => {
+    return typeof evidence.dataset === "string" && typeof evidence.title === "string" && (evidence.href === undefined || isInternalSiteHref(evidence.href)) && (evidence.caveat === undefined || typeof evidence.caveat === "string") && Array.isArray(evidence.sources) && evidence.sources.length <= 8 && evidence.sources.every((source: unknown) => {
       if (!source || typeof source !== "object") return false;
       const s = source as Record<string, unknown>;
-      if (typeof s.name !== "string" || typeof s.url !== "string" || (s.period !== undefined && typeof s.period !== "string")) return false;
+      if (typeof s.name !== "string" || typeof s.url !== "string" || (s.period !== undefined && typeof s.period !== "string") || (s.asOf !== undefined && typeof s.asOf !== "string")) return false;
       try { const url = new URL(s.url); return url.protocol === "https:" && !url.username && !url.password; } catch { return false; }
     });
   });

@@ -1,18 +1,20 @@
 import { Fragment, useMemo, type ReactNode } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons";
 import { isInternalSiteHref, type AiSiteLink } from "@/lib/assistant/byok-contracts";
-import { parseAssistantMarkdown, type AssistantBlock, type AssistantInline } from "@/components/assistant-markdown-parse";
+import { keepFiguresWithUnits, parseAssistantMarkdown, type AssistantBlock, type AssistantInline } from "@/components/assistant-markdown-parse";
 import styles from "@/app/assistente/assistant.module.css";
 
 const NO_LINKS: readonly AiSiteLink[] = [];
 
 function inline(nodes: AssistantInline[]): ReactNode[] {
   return nodes.map((node, index) => {
-    if (node.type === "text") return <Fragment key={index}>{node.text}</Fragment>;
+    if (node.type === "text") return <Fragment key={index}>{keepFiguresWithUnits(node.text)}</Fragment>;
     if (node.type === "code") return <code key={index}>{node.text}</code>;
     if (node.type === "strong") return <strong key={index}>{inline(node.children)}</strong>;
     if (node.type === "em") return <em key={index}>{inline(node.children)}</em>;
     // New tab like the site-link cards: the in-memory conversation must survive the visit.
-    return <a key={index} href={node.href} target="_blank" rel="noopener" className={styles.inlineSiteLink}>{inline(node.children)}<span className={styles.srOnly}> (nuova scheda)</span></a>;
+    return <a key={index} href={node.href} target="_blank" rel="noopener" className={styles.inlineSiteLink}>{inline(node.children)}{/* Same new-tab mark as sources and cards; the word joiner keeps it on the last word. */}{"\u2060"}<HugeiconsIcon icon={ArrowUpRight01Icon} size={12} strokeWidth={2} aria-hidden="true" /><span className={styles.srOnly}> (nuova scheda)</span></a>;
   });
 }
 

@@ -229,6 +229,12 @@ export function linkHrefs(blocks: AssistantBlock[]): Set<string> {
 }
 
 /** Markdown text with every link reduced to its label (images and escapes untouched), for the clipboard. */
+const FIGURE_UNIT = /(\d)[ \t]+(?=(?:mld|mln|miliard[io]|milion[ei]|mila|€|euro|%)(?![\p{L}\d]))/gu;
+/** "3,21 miliardi" never splits across lines: a key figure read without its unit changes meaning. */
+export function keepFiguresWithUnits(text: string): string {
+  return text.replace(FIGURE_UNIT, "$1\u00a0");
+}
+
 export function plainLinks(text: string): string {
   let result = "";
   for (let index = 0; index < text.length; index++) {

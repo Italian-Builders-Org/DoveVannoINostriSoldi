@@ -9,13 +9,19 @@ Se il servizio gratuito non è disponibile, l’invio apre il pannello della chi
 
 ## Interazione e contesto
 
-Il compositore è centrale all’inizio e si sposta in basso al primo invio. Nella
-conversazione scorre solo l’elenco dei messaggi. Le risposte arrivano in streaming reale,
+Il compositore è centrale all’inizio e si sposta in basso al primo invio; è largo quanto la
+colonna di lettura e, durante la conversazione, diventa una sola riga (aggiungi · campo ·
+dettatura · invio) a ogni larghezza. I suggerimenti iniziali mostrano la domanda intera e la
+scrivono nel campo senza inviarla; digitare @ o / apre gli stessi esempi (lo spiega «Come
+funziona»). Nella conversazione scorre solo l’elenco dei messaggi; sotto il compositore resta
+un’unica riga con l’avviso sull’AI e «Come funziona», che contiene anche il link alla privacy. Le risposte arrivano in streaming reale,
 sono allineate a sinistra e supportano paragrafi, titoli, grassetti, corsivi, codice inline ed
-elenchi e tabelle con scorrimento orizzontale. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
+elenchi e tabelle con scorrimento orizzontale. Una cifra non va mai a capo separata dalla sua
+unità («3,21 miliardi», «12 %»): `keepFiguresWithUnits` usa uno spazio indivisibile solo in quel punto. HTML, immagini e link esterni o non presenti nell’elenco server non diventano contenuto attivo.
 
-Ogni risposta propone fino a quattro pagine del sito («Approfondisci su DVNS»), scelte dal
-server e mai dal modello:
+Dopo il testo la risposta mostra, nell’ordine, le fonti ufficiali dei dati consultati e i
+limiti del dato (sempre visibili: cambiano la lettura del numero), poi fino a quattro pagine del
+sito («Approfondisci»), scelte dal server e mai dal modello:
 
 - `site-link-map.ts` collega ogni dataset MCP alla sua pagina pubblica (mai `/mcp`); un codice
   scelto dal modello entra nel percorso, o in un titolo come il CUP, solo se ha il formato atteso;
@@ -27,11 +33,37 @@ server e mai dal modello:
   `markdown-link-sanitizer.ts` riduce a testo, prima dell’evento `done`, ogni altro link.
 
 Le pagine si aprono in una nuova scheda: la conversazione vive solo nella memoria della
-pagina e andrebbe persa uscendo. I link alle fonti ufficiali vengono dal catalogo server.
+pagina e andrebbe persa uscendo; lo segnalano l’icona ↗ e un testo per i lettori di schermo.
+Sotto «Fonti» il nome del dataset apre la sua pagina DVNS: è il primo collegamento di
+`linksForDatasetQuery` per quella ricerca, scelto dal server e accettato dal contratto solo come
+percorso interno (`AiEvidence.href`). Una pagina già linkata nel testo o dal nome del dataset non
+viene ripetuta in «Approfondisci». La data di snapshot di una fonte (`dataAsOf` del catalogo) è
+un campo separato (`AiSource.asOf`, «dati al 14 set 2026») e non viene più presentata come periodo.
+I limiti del dato sono una nota di sistema (icona e riquadro), distinta dalle
+citazioni del testo del modello. I link alle fonti ufficiali vengono dal catalogo server.
 Il modello legge i limiti completi del catalogo; la risposta mostra una versione leggibile,
-senza dettagli di protocollo MCP/API (`public-caveat.ts`).
+senza dettagli di protocollo MCP/API (`public-caveat.ts`). Il prompt chiede al modello di non
+ripetere questi limiti generali nel testo.
 
-Ogni domanda ha copia e modifica; ogni risposta completata ha copia e rigenerazione.
+Un solo avviso sull’AI: «L’AI può sbagliare: verifica le fonti», fisso sotto il compositore.
+Le risposte non ripetono etichette o note di verifica: il marchio DVNS indica chi risponde e,
+accanto, la riga di stato («Consulto i dati», poi «Dati consultati», apribile con i passaggi);
+il dataset è nominato una volta sola, in «Fonti», insieme al periodo. Durante la conversazione
+le domande gratuite rimaste compaiono accanto all’avviso solo quando ne restano tre o meno; i
+lettori di schermo ricevono comunque ogni aggiornamento.
+
+Su telefono, durante la conversazione, la barra «Assistente» si nasconde quando chi legge
+scorre verso il basso (rotella o dito, mai durante lo streaming o con «Vai in fondo») e torna a
+ogni scorrimento verso l’alto o al focus; i messaggi sfumano sotto il suo bordo.
+I messaggi sfumano anche sopra il composer con una maschera che arriva a trasparenza piena sul
+bordo dell’area che scorre (nessuna lettera tagliata a metà resta leggibile); con «Vai in fondo»
+visibile la fascia trasparente si allunga dietro la pillola.
+
+Ogni domanda ha copia e modifica (con il mouse compaiono al passaggio o al focus; sugli schermi
+touch restano solo sull’ultima domanda); ogni risposta completata ha copia e rigenerazione.
+Su telefono e schermi touch ogni controllo isolato (fonti, «Dati consultati», copia,
+rigenera, «Come funziona») ha un bersaglio di almeno 44px, verificato dall’E2E; i link dentro
+una frase restano testo.
 La copia della risposta comprende le pagine DVNS consigliate e i link alle fonti. Modifica e rigenerazione sostituiscono
 anche i messaggi successivi, per mantenere una sola cronologia coerente. La modifica
 richiede un invio esplicito e può essere annullata. Rigenerare consuma una nuova domanda gratuita o nuove chiamate sul conto personale.

@@ -1,0 +1,692 @@
+{
+  "version": "2026.1",
+  "observedAt": "2026-11-28",
+  "artefacts": {
+    "dwaIt": {
+      "path": ".cache/patrimoniale/ecb/dwa-it.csv",
+      "sha256": "601e0e2e672e5bad9a451352313bf13875a2b675b01b2eab740fc2245f2e2119",
+      "url": "https://data-api.ecb.europa.eu/service/data/DWA/Q.IT........?format=csvdata"
+    },
+    "dwaShares": {
+      "path": ".cache/patrimoniale/ecb/dwa-shares.csv",
+      "sha256": "9bc55e219ad47d1ee313f764dc91a9f2d07507e4df61e6c4110689abbfc71d90",
+      "url": "https://data-api.ecb.europa.eu/service/data/DWA/Q..S14._Z._Z.NWA.T10+T5+B50+_Z.PT+GI.S.N?format=csvdata&startPeriod=2026-Q1"
+    },
+    "gdp": {
+      "path": "src/data/generated/eurostat-gdp-2015-2026.data.json",
+      "sha256": "57d09f6544fe4f66b5aedba0030db7a8ebb147a3de8de98b3ec9a8e9cd14b56f",
+      "url": "https://ec.europa.eu/eurostat/databrowser/view/nama_10_gdp/default/table?lang=en"
+    },
+    "bollettino": {
+      "path": ".cache/patrimoniale/italia/Bollettino-entrate-Dicembre2025.pdf",
+      "sha256": "faf71e90b03c14a4dd261b307ae4fb05deb6a05e8dcce5348293421e707d727c",
+      "url": "https://www.finanze.gov.it/export/sites/finanze/.galleries/Documenti/entrate_tributarie_2025/Bollettino-entrate-Dicembre2025.pdf",
+      "pages": [
+        5,
+        8,
+        12
+      ]
+    },
+    "appendici": {
+      "path": ".cache/patrimoniale/italia/Bollettino-entrate-appendici-statistiche_Dicembre_2025.pdf",
+      "sha256": "61414ede3fa97d9f7dc9d05e4b6bbebc8d52c03a8704693c0220773ddd990302",
+      "url": "https://www.finanze.gov.it/export/sites/finanze/.galleries/Documenti/entrate_tributarie_2025/Bollettino-entrate-appendici-statistiche_Dicembre_2025.pdf",
+      "pages": [
+        24,
+        30,
+        33,
+        38
+      ]
+    },
+    "notaTecnica": {
+      "path": ".cache/patrimoniale/italia/Nota-tecnica-Dicembre-2025.pdf",
+      "sha256": "fe6512d7469b35e624d7af9ce2125e72877e285ec77e8bd79bb8da897eb388f8",
+      "url": "https://www.finanze.gov.it/export/sites/finanze/.galleries/Documenti/entrate_tributarie_2025/Nota-tecnica-Dicembre-2025.pdf",
+      "pages": [
+        8
+      ]
+    },
+    "irpef2024": {
+      "path": ".cache/patrimoniale/italia/analisi_dati_2024_irpef.pdf",
+      "sha256": "a37b5168b93d298781763ac65eb1b4b97d99b0f4cc6138d7c0fa4cf89f38cc64",
+      "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/analisi_dati_2024_irpef.pdf",
+      "pages": [
+        25
+      ]
+    },
+    "immobili": {
+      "path": ".cache/patrimoniale/italia/immobili_2026.pdf",
+      "sha256": "3f02739c682bc6a39ed56930d7d6af5c6b2d2fa91a3af03a8d4db7badbcbcaa5",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/contenuti/immobili_2026.pdf",
+      "pages": [
+        15,
+        51,
+        91,
+        92
+      ]
+    },
+    "immobiliRegioni": {
+      "path": ".cache/patrimoniale/italia/immobili_table_2026_02_01_02.json",
+      "sha256": "6debc2c7409ec4e17d6d6d98f4ad96b73b645a6da5178f78f9cad50afdb51681",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_02_01_02&cq=1"
+    },
+    "immobiliRapporto": {
+      "path": ".cache/patrimoniale/italia/immobili_table_2026_03_04_01.json",
+      "sha256": "2483cd0eb6fd3ba703fd5b2a75b0453caf9796577054fc0ba5c288bf625dcc68",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/api/api.php/get_table?id=2026_03_04_01&cq=1"
+    },
+    "ibfStoriche": {
+      "path": ".cache/patrimoniale/italia/IBF2022_tavole_storiche.xlsx",
+      "sha256": "5ca4540103083500ea1f602e414164331dda0256775d705c2680d9b0289176aa",
+      "url": "https://www.bancaditalia.it/pubblicazioni/indagine-famiglie/bil-fam2022/tavole_storiche.xlsx"
+    },
+    "emendamento41012": {
+      "path": ".cache/patrimoniale/parlamento/em_41.012.html",
+      "sha256": "9033fd21614bd48f98deca3ce04fd8654413cd5de8ba9405bcc86a02e36b35b3",
+      "url": "https://documenti.camera.it/apps/emendamenti/getPropostaEmendativa.aspx?contenitorePortante=leg.19.eme.ac.3174-bis&tipoSeduta=1&sedeEsame=referente&urnTestoRiferimento=urn:leg:19:3174:bis:null:com:05:referente&dataSeduta=20261123&idPropostaEmendativa=41.012.&position=1112"
+    },
+    "s2102": {
+      "path": ".cache/patrimoniale/parlamento/senato_S2102_fascicolo.pdf",
+      "sha256": "3ba13870bec1c2c040b756063f9fe19121d34cc963ccc9933a8e6e9688acdd99",
+      "url": "https://www.senato.it/leg/19/BGT/Schede/FascicoloSchedeDDL/ebook/60617.pdf",
+      "pages": [
+        4
+      ]
+    },
+    "dossierSenato": {
+      "path": ".cache/patrimoniale/parlamento/senato_dossier_189DE_01524000.pdf",
+      "sha256": "a2d9b4da89f27955edb1a8d9d0f99e3bf63eb1409b24e5ea42daf7e61f193dcd",
+      "url": "https://www.senato.it/service/PDF/PDFServer/BGT/01524000.pdf",
+      "pages": [
+        15
+      ]
+    },
+    "ricotti2021": {
+      "path": ".cache/patrimoniale/parlamento/bdi_Audizione_Ricotti_11012021.pdf",
+      "sha256": "5be8adb2126a467fbfab9cf06ac8e828803cef83bf0744c58908be61752ac9bf",
+      "url": "https://www.bancaditalia.it/pubblicazioni/interventi-vari/int-var-2021/Audizione_Ricotti_11012021.pdf",
+      "pages": [
+        15,
+        16
+      ]
+    },
+    "oecdAll": {
+      "path": ".cache/patrimoniale/estero/oecd_rs_4200_all.csv",
+      "sha256": "31ee99de8f34b4f0ad8a2cab8914b31929647828457ec61ac6a98f068f4a733c",
+      "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_OECD@DF_RSOECD,2.0/.TAX_REV..T_4200+_T..+PT_B1GQ+PT_OTR_REV_CUS+XDC.A?startPeriod=2000&dimensionAtObservation=AllDimensions&format=csvfilewithlabels"
+    },
+    "oecdSeries": {
+      "path": ".cache/patrimoniale/estero/oecd_rs_4200_series_5ctry.csv",
+      "sha256": "7b15b8871e81723c4911d5ebed8f823985bba876422054c1a1867a91dcd49653",
+      "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_OECD@DF_RSOECD,2.0/FRA+ESP+CHE+NOR+ITA.TAX_REV.S13.T_4200+T_4210+T_4220+_T..PT_B1GQ+XDC.A?startPeriod=1965&dimensionAtObservation=AllDimensions&format=csvfilewithlabels"
+    },
+    "esIpTotal": {
+      "path": ".cache/patrimoniale/estero/es_ip_2024/jrubikf2407f6da0e5b143a7fd37510a2cfaca014c9e377.html",
+      "sha256": "e33809aaaffa545ce8d4dcd5b409de90e8a3561025050ca77bf119a7c05800e2",
+      "url": "https://sede.agenciatributaria.gob.es/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Estadisticas/Publicaciones/sites/patrimonio/2024/jrubikf2407f6da0e5b143a7fd37510a2cfaca014c9e377.html"
+    },
+    "esIart23": {
+      "path": ".cache/patrimoniale/estero/es_IART23_es_es.pdf",
+      "sha256": "5c4115f4b2bd6ff9240a2fe2b3f16bbf95fbd6267c76ec6d5f95396ebc42fed4",
+      "url": "https://sede.agenciatributaria.gob.es/static_files/AEAT/Estudios/Estadisticas/Informes_Estadisticos/Informes_Anuales_de_Recaudacion_Tributaria/Ejercicio_2023/IART23_es_es.pdf",
+      "pages": [
+        29
+      ]
+    },
+    "esIart25": {
+      "path": ".cache/patrimoniale/estero/es_IART25_es_es.pdf",
+      "sha256": "7790bdd358ce1735177d6b93cf1fe7852e867fe1a77413c1660ba48124ecae85",
+      "url": "https://sede.agenciatributaria.gob.es/static_files/AEAT/Estudios/Estadisticas/Informes_Estadisticos/Informes_Anuales_de_Recaudacion_Tributaria/Ejercicio_2025/IART25_es_es.pdf",
+      "pages": [
+        62
+      ]
+    },
+    "esManual": {
+      "path": ".cache/patrimoniale/estero/es_ManualPatrimonio2025_es_es.pdf",
+      "sha256": "4118c72f46b499a0352c16e5efaf969a18924474fab564b2552afdb7f1b06bd0",
+      "url": "https://sede.agenciatributaria.gob.es/static_files/Sede/Biblioteca/Manual/Practicos/Patrimonio/Patrimonio-2025/ManualPatrimonio2025_es_es.pdf"
+    },
+    "esMetodologia": {
+      "path": ".cache/patrimoniale/estero/es_ip_metodologia_2024.pdf",
+      "sha256": "9054209c8f2b7b40a1570d412032c4e2cb9f8854f4d220b14e4ca1ef4c6442cd",
+      "url": "https://sede.agenciatributaria.gob.es/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Estadisticas/Publicaciones/sites/patrimonio/2024/docs/patrimonio/markoff_metod_patrimonio2024.pdf",
+      "pages": [
+        2
+      ]
+    },
+    "chStatistik": {
+      "path": ".cache/patrimoniale/estero/ch/statistik-vermoegen-np-2023.xlsx",
+      "sha256": "b6964cb8d900c02762a7de08d7becccf9f9e7261505b914befa31cad7c2319a9",
+      "url": "https://www.estv.admin.ch/dam/de/sd-web/pyAWh2WdA8Pj/statistik-vermoegen-np-2023.xlsx"
+    },
+    "chSystem": {
+      "path": ".cache/patrimoniale/estero/ch/ch-steuersystem-de.pdf",
+      "sha256": "e84677df81062b5455817aec8090595dcb4e99b49d04a4de79269dfee3f6052c",
+      "url": "https://www.estv.admin.ch/dam/de/sd-web/i8eiHb5Gk0xl/ch-steuersystem-de.pdf",
+      "pages": [
+        11,
+        65
+      ]
+    },
+    "noSatser2026": {
+      "path": ".cache/patrimoniale/estero/no/skatteetaten_satser_formuesskatt_2026.html",
+      "sha256": "342c3a511a9a0fa8814e37fffff6a8a5a0f55cd26e77c426457086a660f65780",
+      "url": "https://www.skatteetaten.no/satser/formuesskatt/?year=2026"
+    },
+    "noSsb": {
+      "path": ".cache/patrimoniale/estero/no/ssb_skatt_for_personer.html",
+      "sha256": "600911b180a92f5feafb87df94225d3a8998ff67d60251210e0571aa2fb8e2b4",
+      "url": "https://www.ssb.no/inntekt-og-forbruk/skatt-for-personer/statistikk/skatt-for-personer"
+    },
+    "frIfi": {
+      "path": ".cache/patrimoniale/estero/fr/dgfip_stat_45_ifi_2025.pdf",
+      "sha256": "90a63cbf1c22ab3b19337551b01cc1d813ffb8c47fa33feb4271f97e91bf7dad",
+      "url": "https://www.impots.gouv.fr/sites/default/files/media/9_statistiques/0_etudes_et_stats/0_publications/dgfip_statistiques/2026/num45_04/dgfip_stat_45_ifi_2025.pdf",
+      "pages": [
+        1
+      ]
+    }
+  },
+  "facts": [
+    {
+      "id": "bollo2025",
+      "artefact": "bollettino",
+      "phrase": "Bollo 8.859 10.998",
+      "valueText": "10.998",
+      "value": 10998
+    },
+    {
+      "id": "imuComuni2025",
+      "artefact": "bollettino",
+      "phrase": "IMU - IMIS (Quota comuni) - IMI 18.103 18.189",
+      "valueText": "18.189",
+      "value": 18189
+    },
+    {
+      "id": "successioni2025",
+      "artefact": "bollettino",
+      "phrase": "l'imposta sulle successioni e donazioni ha fatto registrare entrate per 1.081 milioni",
+      "valueText": "1.081",
+      "value": 1081
+    },
+    {
+      "id": "imuStato2025",
+      "artefact": "appendici",
+      "phrase": "Totale Gennaio - Dicembre 3.985 4.014 4.077",
+      "valueText": "4.077",
+      "value": 4077
+    },
+    {
+      "id": "tobin2025",
+      "artefact": "appendici",
+      "phrase": "Totale annuo 367 546 710",
+      "valueText": "710",
+      "value": 710
+    },
+    {
+      "id": "ivie2024",
+      "artefact": "irpef2024",
+      "phrase": "L'imposta IVIE dichiarata è di 149,8",
+      "valueText": "149,8",
+      "value": 149.8
+    },
+    {
+      "id": "ivafe2024",
+      "artefact": "irpef2024",
+      "phrase": "IVAFE dichiarata è pari a 103,9 milioni di euro",
+      "valueText": "103,9",
+      "value": 103.9
+    },
+    {
+      "id": "immobiliTotale",
+      "artefact": "immobili",
+      "phrase": "ammonta complessivamente a quasi 6.090 miliardi nel 2023",
+      "valueText": "6.090",
+      "value": 6090
+    },
+    {
+      "id": "rapportoVsmVip",
+      "artefact": "immobili",
+      "phrase": "rapporto è pari a 1,93 per le abitazioni principali e 2 per le secondarie",
+      "valueText": "1,93",
+      "value": 1.93
+    },
+    {
+      "id": "renditaCatastale",
+      "artefact": "immobili",
+      "phrase": "rendita catastale di circa 38,4 miliardi di euro",
+      "valueText": "38,4",
+      "value": 38.4
+    },
+    {
+      "id": "avsSoglia",
+      "artefact": "emendamento41012",
+      "phrase": "di valore superiore a 5.400.000 di euro",
+      "valueText": "5.400.000",
+      "value": 5400000
+    },
+    {
+      "id": "avsAliquota1",
+      "artefact": "emendamento41012",
+      "phrase": "1,7 per cento, fino a 2.100.000 euro",
+      "valueText": "1,7",
+      "value": 1.7
+    },
+    {
+      "id": "avsAliquota2",
+      "artefact": "emendamento41012",
+      "phrase": "2,1 per cento, sulla parte eccedente 2.100.000 euro e fino a 4.600.000 di euro",
+      "valueText": "2,1",
+      "value": 2.1
+    },
+    {
+      "id": "avsAliquota3",
+      "artefact": "emendamento41012",
+      "phrase": "3,5 per cento, sulla parte eccedente 4.600.000 di euro",
+      "valueText": "3,5",
+      "value": 3.5
+    },
+    {
+      "id": "avsTetto",
+      "artefact": "emendamento41012",
+      "phrase": "non può eccedere il 60 per cento del reddito rilevante",
+      "valueText": "60",
+      "value": 60
+    },
+    {
+      "id": "avsPrimaCasa",
+      "artefact": "emendamento41012",
+      "phrase": "fino a concorrenza di 500.000 di euro",
+      "valueText": "500.000",
+      "value": 500000
+    },
+    {
+      "id": "avsDetrazioni",
+      "artefact": "emendamento41012",
+      "phrase": "si detraggono",
+      "valueText": "detraggono",
+      "value": 0
+    },
+    {
+      "id": "avsDichiarazione",
+      "artefact": "emendamento41012",
+      "phrase": "4.000.000 di euro",
+      "valueText": "4.000.000",
+      "value": 4000000
+    },
+    {
+      "id": "avsBase",
+      "artefact": "emendamento41012",
+      "phrase": "patrimonio netto complessivo delle persone fisiche",
+      "valueText": "patrimonio",
+      "value": 0
+    },
+    {
+      "id": "s2102Data",
+      "artefact": "s2102",
+      "phrase": "Presentato in data 19 novembre 2026",
+      "valueText": "19 novembre 2026",
+      "value": 0
+    },
+    {
+      "id": "spagna2023Dossier",
+      "artefact": "dossierSenato",
+      "phrase": "di 2,2 miliardi di euro",
+      "valueText": "2,2",
+      "value": 2.2
+    },
+    {
+      "id": "ricottiGettito",
+      "artefact": "ricotti2021",
+      "phrase": "queste imposte è stato pari a circa 23 miliardi di euro (di cui circa 18,7 dovuti all'Imu",
+      "valueText": "23",
+      "value": 23
+    },
+    {
+      "id": "ricottiBollo",
+      "artefact": "ricotti2021",
+      "phrase": "e 4,5 all'imposta di bollo sui prodotti finanziari",
+      "valueText": "4,5",
+      "value": 4.5
+    },
+    {
+      "id": "ricottiSvizzera",
+      "artefact": "ricotti2021",
+      "phrase": "Il gettito è rilevante solo in Svizzera",
+      "valueText": "Svizzera",
+      "value": 0
+    },
+    {
+      "id": "esTotale2024",
+      "artefact": "esIpTotal",
+      "phrase": "2.177.649.501",
+      "valueText": "2.177.649.501",
+      "value": 2177649501
+    },
+    {
+      "id": "esDichiaranti2024",
+      "artefact": "esIpTotal",
+      "phrase": "227.424",
+      "valueText": "227.424",
+      "value": 227424
+    },
+    {
+      "id": "esItsgf2023",
+      "artefact": "esIart23",
+      "phrase": "Grandes Fortunas, por el que se recaudaron 623 millones",
+      "valueText": "623",
+      "value": 623
+    },
+    {
+      "id": "esItsgf2024",
+      "artefact": "esIart25",
+      "phrase": "pasando de los 37 millones ingresados en 2024 a los casi 19 en 2025",
+      "valueText": "37",
+      "value": 37
+    },
+    {
+      "id": "esMinimo",
+      "artefact": "esManual",
+      "phrase": "la base imponible se reducirá en 700.000 euros",
+      "valueText": "700.000",
+      "value": 700000
+    },
+    {
+      "id": "esViviendaHabitual",
+      "artefact": "esManual",
+      "phrase": "vivienda habitual sea superior a 300.000 euros",
+      "valueText": "300.000",
+      "value": 300000
+    },
+    {
+      "id": "esEscalaMax",
+      "artefact": "esManual",
+      "phrase": "10.695.996,06 183.670,29 En adelante 3,5",
+      "valueText": "3,5",
+      "value": 3.5
+    },
+    {
+      "id": "esMadrid",
+      "artefact": "esManual",
+      "phrase": "Bonificación general del 100 por 100",
+      "valueText": "100",
+      "value": 100
+    },
+    {
+      "id": "esItsgfSoglia",
+      "artefact": "esMetodologia",
+      "phrase": "superior a 3.000.000 de euros",
+      "valueText": "3.000.000",
+      "value": 3000000
+    },
+    {
+      "id": "chCantoni",
+      "artefact": "chSystem",
+      "phrase": "Die Kantone LU, UR, SZ, OW, NW, GL, AI, SG und TG kennen feste Steuersätze",
+      "valueText": "feste",
+      "value": 0
+    },
+    {
+      "id": "chSoglie",
+      "artefact": "chSystem",
+      "phrase": "zwischen CHF 51 000 und CHF 402 000 Reinvermögen",
+      "valueText": "51 000",
+      "value": 51000
+    },
+    {
+      "id": "noSogliaComune",
+      "artefact": "noSatser2026",
+      "phrase": "1 900 000",
+      "valueText": "1 900 000",
+      "value": 1900000
+    },
+    {
+      "id": "noSogliaStato",
+      "artefact": "noSatser2026",
+      "phrase": "21 500 000",
+      "valueText": "21 500 000",
+      "value": 21500000
+    },
+    {
+      "id": "noContribuenti2024",
+      "artefact": "noSsb",
+      "phrase": "701 482",
+      "valueText": "701 482",
+      "value": 701482
+    },
+    {
+      "id": "frIfiGettito",
+      "artefact": "frIfi",
+      "phrase": "IFI payé (M€) 2 159 2 332",
+      "valueText": "2 332",
+      "value": 2332
+    },
+    {
+      "id": "frIfiContribuenti",
+      "artefact": "frIfi",
+      "phrase": "Effectif 186 100 193 600",
+      "valueText": "193 600",
+      "value": 193600
+    },
+    {
+      "id": "chFederale1959",
+      "artefact": "chSystem",
+      "phrase": "Im Jahr 1959 wurde die Vermögenssteuer für natürliche Personen",
+      "valueText": "1959",
+      "value": 1959
+    },
+    {
+      "id": "noAliquotaComune",
+      "artefact": "noSatser2026",
+      "phrase": "1 900 001 kroner og over 0,35 %",
+      "valueText": "0,35",
+      "value": 0.35
+    },
+    {
+      "id": "noAliquotaStato",
+      "artefact": "noSatser2026",
+      "phrase": "1 900 001 kroner - 21 500 000 kroner 0,65 %",
+      "valueText": "0,65",
+      "value": 0.65
+    },
+    {
+      "id": "noAliquotaStatoAlta",
+      "artefact": "noSatser2026",
+      "phrase": "21 500 001 kroner og over 0,75 %",
+      "valueText": "0,75",
+      "value": 0.75
+    },
+    {
+      "id": "esTetto",
+      "artefact": "esManual",
+      "phrase": "no podrá exceder del 60 por 100 de la suma de las bases imponibles",
+      "valueText": "60",
+      "value": 60
+    },
+    {
+      "id": "esEmpresaFamiliar",
+      "artefact": "esManual",
+      "phrase": "participaciones de empresa familiar",
+      "valueText": "empresa familiar",
+      "value": 0
+    },
+    {
+      "id": "esItsgf2025",
+      "artefact": "esIart25",
+      "phrase": "pasando de los 37 millones ingresados en 2024 a los casi 19 en 2025",
+      "valueText": "19",
+      "value": 19
+    },
+    {
+      "id": "frBaremeInvariato",
+      "artefact": "frIfi",
+      "phrase": "le barème IFI est inchangé depuis sa création en 2018",
+      "valueText": "2018",
+      "value": 2018
+    },
+    {
+      "id": "bolloAssicurativiVersamento",
+      "artefact": "notaTecnica",
+      "phrase": "hanno inciso sulle modalità di versamento dell'imposta di bollo sui prodotti assicurativi",
+      "valueText": "bollo",
+      "value": 0
+    }
+  ],
+  "scenarios": {
+    "thresholdsK": [
+      1000,
+      2000,
+      5000
+    ],
+    "ratesPct": [
+      0.5,
+      1,
+      2
+    ],
+    "variantRatePct": 1,
+    "note": "Ipotesi, non previsioni. Soglie, aliquote e riduzioni della base sono scelte da noi per mostrare l'ordine di grandezza; la distribuzione è quella dei conti distributivi BCE, per famiglia e ai valori di mercato."
+  },
+  "euroAreaNames": {
+    "AT": "Austria",
+    "BE": "Belgio",
+    "CY": "Cipro",
+    "DE": "Germania",
+    "EE": "Estonia",
+    "ES": "Spagna",
+    "FI": "Finlandia",
+    "FR": "Francia",
+    "GR": "Grecia",
+    "HR": "Croazia",
+    "HU": "Ungheria",
+    "I10": "Area euro",
+    "IE": "Irlanda",
+    "IT": "Italia",
+    "LT": "Lituania",
+    "LU": "Lussemburgo",
+    "LV": "Lettonia",
+    "MT": "Malta",
+    "NL": "Paesi Bassi",
+    "PT": "Portogallo",
+    "SI": "Slovenia",
+    "SK": "Slovacchia"
+  },
+  "oecdNames": {
+    "BEL": "Belgio",
+    "CAN": "Canada",
+    "CHE": "Svizzera",
+    "COL": "Colombia",
+    "DEU": "Germania",
+    "ESP": "Spagna",
+    "FRA": "Francia",
+    "GRC": "Grecia",
+    "HUN": "Ungheria",
+    "IRL": "Irlanda",
+    "ISL": "Islanda",
+    "ITA": "Italia",
+    "LUX": "Lussemburgo",
+    "NOR": "Norvegia",
+    "OECD_REP": "Media OCSE",
+    "SVN": "Slovenia",
+    "TUR": "Turchia"
+  },
+  "sources": [
+    {
+      "id": "bce",
+      "label": "Distributional Wealth Accounts (DWA), famiglie italiane e area euro",
+      "owner": "Banca centrale europea",
+      "url": "https://data.ecb.europa.eu/data/datasets/DWA",
+      "license": "Riutilizzo libero con citazione della fonte"
+    },
+    {
+      "id": "mef",
+      "label": "Bollettino delle entrate tributarie, dicembre 2025, e appendici statistiche",
+      "owner": "MEF, Dipartimento delle Finanze",
+      "url": "https://www.finanze.gov.it/export/sites/finanze/.galleries/Documenti/entrate_tributarie_2025/Bollettino-entrate-Dicembre2025.pdf",
+      "license": "Dati pubblici"
+    },
+    {
+      "id": "irpef",
+      "label": "Analisi delle dichiarazioni IRPEF, anno d'imposta 2024 (IVIE e IVAFE)",
+      "owner": "MEF, Dipartimento delle Finanze",
+      "url": "https://www1.finanze.gov.it/finanze/analisi_stat/public/v_4_0_0/contenuti/analisi_dati_2024_irpef.pdf",
+      "license": "Dati pubblici"
+    },
+    {
+      "id": "immobili",
+      "label": "Gli immobili in Italia 2026",
+      "owner": "Agenzia delle Entrate e MEF",
+      "url": "https://www1.finanze.gov.it/finanze/immobili/public/contenuti/immobili_2026.pdf",
+      "license": "CC BY 3.0 IT"
+    },
+    {
+      "id": "ibf",
+      "label": "Indagine sui bilanci delle famiglie italiane 2022, tavole storiche",
+      "owner": "Banca d'Italia",
+      "url": "https://www.bancaditalia.it/pubblicazioni/indagine-famiglie/bil-fam2022/tavole_storiche.xlsx",
+      "license": "Dati pubblici con citazione della fonte"
+    },
+    {
+      "id": "emendamento",
+      "label": "Emendamento 41.012 al disegno di legge di bilancio 2027 (A.C. 3174-bis)",
+      "owner": "Camera dei deputati",
+      "url": "https://documenti.camera.it/apps/emendamenti/getPropostaEmendativa.aspx?contenitorePortante=leg.19.eme.ac.3174-bis&tipoSeduta=1&sedeEsame=referente&urnTestoRiferimento=urn:leg:19:3174:bis:null:com:05:referente&dataSeduta=20261123&idPropostaEmendativa=41.012.&position=1112",
+      "license": "Atto pubblico"
+    },
+    {
+      "id": "s2102",
+      "label": "Disegno di legge S.2102, Imposta grandi patrimoni",
+      "owner": "Senato della Repubblica",
+      "url": "https://www.senato.it/leggi-e-documenti/disegni-di-legge/scheda-ddl?did=60617",
+      "license": "Atto pubblico"
+    },
+    {
+      "id": "dossier",
+      "label": "Dossier europeo n. 189/DE, La tassazione degli individui con patrimoni netti elevati",
+      "owner": "Senato e Camera, servizi studi",
+      "url": "https://www.senato.it/service/PDF/PDFServer/BGT/01524000.pdf",
+      "license": "Atto pubblico"
+    },
+    {
+      "id": "ricotti",
+      "label": "Audizione sulla riforma dell'IRPEF, 11 gennaio 2021",
+      "owner": "Banca d'Italia",
+      "url": "https://www.bancaditalia.it/pubblicazioni/interventi-vari/int-var-2021/Audizione_Ricotti_11012021.pdf",
+      "license": "Dati pubblici con citazione della fonte"
+    },
+    {
+      "id": "ocse",
+      "label": "Revenue Statistics, voce 4200 (imposte ricorrenti sul patrimonio netto)",
+      "owner": "OCSE",
+      "url": "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_OECD@DF_RSOECD,2.0/.TAX_REV..T_4200+_T..+PT_B1GQ+PT_OTR_REV_CUS+XDC.A?startPeriod=2000&dimensionAtObservation=AllDimensions&format=csvfilewithlabels",
+      "license": "CC BY 4.0"
+    },
+    {
+      "id": "aeat",
+      "label": "Estadística del Impuesto sobre el Patrimonio 2024, informes de recaudación e manuale 2025",
+      "owner": "Agencia Tributaria (Spagna)",
+      "url": "https://sede.agenciatributaria.gob.es/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Estadisticas/Publicaciones/sites/patrimonio/2024/jrubikf2407f6da0e5b143a7fd37510a2cfaca014c9e377.html",
+      "license": "Dati pubblici"
+    },
+    {
+      "id": "estv",
+      "label": "Das schweizerische Steuersystem 2025",
+      "owner": "Amministrazione federale delle contribuzioni (Svizzera)",
+      "url": "https://www.estv.admin.ch/dam/de/sd-web/i8eiHb5Gk0xl/ch-steuersystem-de.pdf",
+      "license": "Dati pubblici"
+    },
+    {
+      "id": "skatteetaten",
+      "label": "Satser formuesskatt 2026 e statistica Skatt for personer",
+      "owner": "Skatteetaten e Statistisk sentralbyrå (Norvegia)",
+      "url": "https://www.skatteetaten.no/satser/formuesskatt/?year=2026",
+      "license": "Dati pubblici"
+    },
+    {
+      "id": "dgfip",
+      "label": "DGFiP Statistiques n. 45, L'impôt sur la fortune immobilière en 2025",
+      "owner": "Direction générale des Finances publiques (Francia)",
+      "url": "https://www.impots.gouv.fr/sites/default/files/media/9_statistiques/0_etudes_et_stats/0_publications/dgfip_statistiques/2026/num45_04/dgfip_stat_45_ifi_2025.pdf",
+      "license": "Licence Ouverte"
+    }
+  ]
+}
